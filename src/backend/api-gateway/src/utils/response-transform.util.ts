@@ -1,0 +1,109 @@
+import { HttpStatus, Logger } from '@nestjs/common';
+import { JOURNEY_IDS } from '../../../shared/src/constants/journey.constants';
+import * as ErrorCodes from 'src/backend/shared/src/constants/error-codes.constants';
+
+const logger = new Logger('ResponseTransformUtil');
+
+/**
+ * Transforms a successful response from a backend service into a standardized format for the client.
+ * 
+ * @param data - The data to transform
+ * @returns The transformed response data
+ */
+export function transformResponse(data: any): any {
+  // If data is null or undefined, return an empty object
+  if (data === null || data === undefined) {
+    return {};
+  }
+  
+  // Return the data as is
+  return data;
+}
+
+/**
+ * Transforms an error response from a backend service into a standardized format for the client.
+ * Extracts relevant information from various error types and converts them to a consistent format.
+ * 
+ * @param error - The error to transform
+ * @returns A standardized error response object
+ */
+export function transformErrorResponse(error: any): { 
+  statusCode: number; 
+  errorCode: string; 
+  message: string;
+  timestamp: string;
+  path?: string;
+  journey?: string;
+} {
+  let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+  let errorMessage = 'An unexpected error occurred';
+  let errorCode = ErrorCodes.SYS_INTERNAL_SERVER_ERROR;
+  let path: string | undefined;
+  let journey: string | undefined;
+
+  logger.error(`Transforming error response: ${JSON.stringify(error)}`, error.stack);
+
+  // Extract status code and message from error response if available
+  if (error.response) {
+    // Handle Axios-like error objects
+    statusCode = error.response.status || statusCode;
+    errorMessage = error.response.data?.message || error.message || errorMessage;
+    errorCode = error.response.data?.errorCode || errorCode;
+    path = error.response.data?.path || error.config?.url;
+    
+    // Extract journey from path if available
+    if (path) {
+      Object.values(JOURNEY_IDS).forEach(journeyId => {
+        if (path?.includes(`/${journeyId}/`)) {
+          journey = journeyId;
+        }
+      });
+    }
+  } else if (error.status) {
+    // Handle NestJS HttpException or similar error objects
+    statusCode = error.status;
+    errorMessage = error.message || errorMessage;
+    errorCode = error.errorCode || errorCode;
+    path = error.path;
+    journey = error.journey;
+  } else if (error instanceof Error) {
+    // Handle standard Error objects
+    errorMessage = error.message || errorMessage;
+  }
+
+  // Map specific error messages to appropriate error codes if not already set
+  if (errorCode === ErrorCodes.SYS_INTERNAL_SERVER_ERROR) {
+    if (errorMessage.toLowerCase().includes('unauthorized') || 
+        errorMessage.toLowerCase().includes('unauthenticated')) {
+      errorCode = ErrorCodes.AUTH_INVALID_CREDENTIALS;
+      statusCode = HttpStatus.UNAUTHORIZED;
+    } else if (errorMessage.toLowerCase().includes('forbidden')) {
+      errorCode = ErrorCodes.AUTH_INSUFFICIENT_PERMISSIONS;
+      statusCode = HttpStatus.FORBIDDEN;
+    } else if (errorMessage.toLowerCase().includes('token expired')) {
+      errorCode = ErrorCodes.AUTH_TOKEN_EXPIRED;
+      statusCode = HttpStatus.UNAUTHORIZED;
+    } else if (errorMessage.toLowerCase().includes('rate limit')) {
+      errorCode = ErrorCodes.API_RATE_LIMIT_EXCEEDED;
+      statusCode = HttpStatus.TOO_MANY_REQUESTS;
+    } else if (errorMessage.toLowerCase().includes('invalid input') || 
+               errorMessage.toLowerCase().includes('validation failed')) {
+      errorCode = ErrorCodes.API_INVALID_INPUT;
+      statusCode = HttpStatus.BAD_REQUEST;
+    }
+  }
+
+  // Create standardized error response
+  const errorResponse = {
+    statusCode,
+    errorCode,
+    message: errorMessage,
+    timestamp: new Date().toISOString(),
+    ...(path && { path }),
+    ...(journey && { journey })
+  };
+
+  logger.debug(`Transformed error response: ${JSON.stringify(errorResponse)}`);
+  
+  return errorResponse;
+}
