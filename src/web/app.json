@@ -1,0 +1,39 @@
+{
+  "name": "austa",
+  "displayName": "AUSTA SuperApp",
+  "version": "1.0.0",
+  "description": "A unified digital health platform with journey-centered design and gamification",
+  "author": {
+    "name": "AUSTA Health",
+    "email": "contact@austa.com.br",
+    "url": "https://austa.com.br"
+  },
+  "platforms": ["web", "ios", "android"],
+  "config": {
+    "journeys": {
+      "health": {
+        "name": "Minha Saúde",
+        "color": "#0ACF83",
+        "icon": "heart-pulse"
+      },
+      "care": {
+        "name": "Cuidar-me Agora",
+        "color": "#FF8C42",
+        "icon": "medical-bag"
+      },
+      "plan": {
+        "name": "Meu Plano & Benefícios",
+        "color": "#3A86FF",
+        "icon": "shield-check"
+      }
+    },
+    "apiUrl": "https://api.austa.com.br/graphql",
+    "features": {
+      "gamification": true,
+      "telemedicine": true,
+      "wearableSync": true,
+      "aiAssistant": false,
+      "socialFeatures": false
+    }
+  }
+}
