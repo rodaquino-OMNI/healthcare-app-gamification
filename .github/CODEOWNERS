@@ -1,0 +1,54 @@
+# This file defines ownership and review responsibilities for the AUSTA SuperApp codebase
+# Each line is a file pattern followed by one or more owners who will be automatically requested for review when PRs modify those files
+
+# Default owners for the entire repository
+*                                   @austa/lead-architects
+
+# Infrastructure and DevOps
+infrastructure/**                   @austa/devops-team @austa/security-team
+.github/workflows/**                @austa/devops-team
+docker-compose*.yml                 @austa/devops-team
+
+# Backend Shared Components
+src/backend/shared/**               @austa/backend-core
+src/backend/api-gateway/**          @austa/backend-core @austa/security-team
+src/backend/auth-service/**         @austa/backend-core @austa/security-team
+src/backend/notification-service/** @austa/backend-core
+
+# Frontend Shared Components
+src/web/shared/**                   @austa/frontend-core
+src/web/design-system/**            @austa/frontend-core @austa/ux-team
+
+# Health Journey
+src/backend/health-service/**       @austa/health-journey
+src/web/*/src/**/health/**          @austa/health-journey @austa/frontend-core
+
+# Care Journey
+src/backend/care-service/**         @austa/care-journey
+src/web/*/src/**/care/**            @austa/care-journey @austa/frontend-core
+
+# Plan Journey
+src/backend/plan-service/**         @austa/plan-journey
+src/web/*/src/**/plan/**            @austa/plan-journey @austa/frontend-core
+
+# Gamification Engine
+src/backend/gamification-engine/**  @austa/gamification-team
+src/web/*/src/**/gamification/**    @austa/gamification-team @austa/frontend-core
+
+# Mobile Application
+src/web/mobile/**                   @austa/mobile-team @austa/frontend-core
+*.gradle                            @austa/mobile-team
+*.podspec                           @austa/mobile-team
+
+# Web Application
+src/web/web/**                      @austa/web-team @austa/frontend-core
+next.config.js                      @austa/web-team
+
+# Documentation
+*.md                                @austa/documentation-team
+docs/**                             @austa/documentation-team
+
+# Security-sensitive files
+**/auth/**                          @austa/security-team
+**/security/**                      @austa/security-team
+**/*.env*                           @austa/security-team @austa/devops-team

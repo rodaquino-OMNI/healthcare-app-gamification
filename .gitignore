@@ -1,0 +1,92 @@
+# Dependencies
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+.pnp/
+.pnp.js
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+.nuxt/
+.output/
+
+# TypeScript
+*.tsbuildinfo
+
+# Testing
+coverage/
+.nyc_output/
+
+# Logs
+logs/
+*.log
+
+# IDE and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# React Native / Mobile specific
+android/app/build/
+android/.gradle/
+android/captures/
+android/local.properties
+android/gradlew
+android/gradlew.bat
+android/gradle/
+ios/Pods/
+ios/build/
+ios/*.xcworkspace
+ios/*.xcodeproj/**/xcuserdata
+*.keystore
+*.jks
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+
+# Kubernetes
+kubeconfig
+
+# Temporary files
+tmp/
+temp/
+
+# Generated files
+src/web/shared/graphql/schema.generated.ts
+src/backend/api-gateway/src/graphql/schema.generated.ts
+
+# Cache
+.cache/
+.eslintcache
+.stylelintcache
+
+# Yarn v2
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

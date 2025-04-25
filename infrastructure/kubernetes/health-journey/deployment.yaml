@@ -1,0 +1,77 @@
+# Kubernetes deployment configuration for the Health Journey service of the AUSTA SuperApp
+# This deployment ensures both scalability and high availability for the Health Journey component
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: health-journey
+  labels:
+    app: health-journey
+    journey: health
+spec:
+  # High Availability: Multiple replicas ensure the service remains available even if some pods fail
+  replicas: 3
+  selector:
+    matchLabels:
+      app: health-journey
+      journey: health
+  # High Availability: Rolling update strategy ensures zero downtime during deployments
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: "25%"
+      maxUnavailable: "25%"
+  template:
+    metadata:
+      labels:
+        app: health-journey
+        journey: health
+    spec:
+      containers:
+      - name: health-journey
+        image: austa-superapp/health-journey:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+          name: http
+        # Scalability: Resource requests and limits ensure efficient resource utilization and scaling
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "1Gi"
+        env:
+        - name: NODE_ENV
+          value: production
+        - name: API_URL
+          value: http://api-gateway:3000/graphql
+        # Secure credentials management using Kubernetes secrets
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: health-db-secret
+              key: database_url
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: redis-secret
+              key: redis_url
+        - name: KAFKA_BROKERS
+          valueFrom:
+            secretKeyRef:
+              name: kafka-secret
+              key: kafka_brokers
+        - name: SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: sentry-secret
+              key: sentry_dsn
+        - name: DATADOG_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: datadog-secret
+              key: datadog_api_key
+      # Secure image pulling from private registry
+      imagePullSecrets:
+      - name: regcred

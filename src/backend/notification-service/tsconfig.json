@@ -1,0 +1,21 @@
+{
+  "extends": "../shared/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "paths": {
+      "@notification/*": ["*"],
+      "@shared/*": ["../../shared/src/*"]
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "../../node_modules/@types"
+    ]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*spec.ts", "**/*.test.ts"],
+  "references": [
+    { "path": "../shared" }
+  ]
+}

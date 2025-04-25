@@ -1,0 +1,184 @@
+apiVersion: v1
+kind: List
+items:
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: health-journey
+    labels:
+      name: health-journey
+      journey: health
+      part-of: austa-superapp
+      managed-by: terraform
+    annotations:
+      description: Namespace for My Health Journey services and resources
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: care-journey
+    labels:
+      name: care-journey
+      journey: care
+      part-of: austa-superapp
+      managed-by: terraform
+    annotations:
+      description: Namespace for Care Now Journey services and resources
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: plan-journey
+    labels:
+      name: plan-journey
+      journey: plan
+      part-of: austa-superapp
+      managed-by: terraform
+    annotations:
+      description: Namespace for My Plan & Benefits Journey services and resources
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: gamification
+    labels:
+      name: gamification
+      component: gamification-engine
+      part-of: austa-superapp
+      managed-by: terraform
+    annotations:
+      description: Namespace for Gamification Engine services and resources
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: shared-services
+    labels:
+      name: shared-services
+      component: shared
+      part-of: austa-superapp
+      managed-by: terraform
+    annotations:
+      description: Namespace for shared services like API Gateway, Auth Service, and Notification Service
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: monitoring
+    labels:
+      name: monitoring
+      component: observability
+      part-of: austa-superapp
+      managed-by: terraform
+    annotations:
+      description: Namespace for monitoring and observability tools
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: ingress
+    labels:
+      name: ingress
+      component: networking
+      part-of: austa-superapp
+      managed-by: terraform
+    annotations:
+      description: Namespace for ingress controllers and related resources
+- apiVersion: v1
+  kind: ResourceQuota
+  metadata:
+    name: health-journey-quota
+    namespace: health-journey
+  spec:
+    hard:
+      pods: "50"
+      requests.cpu: "10"
+      requests.memory: "20Gi"
+      limits.cpu: "20"
+      limits.memory: "40Gi"
+- apiVersion: v1
+  kind: ResourceQuota
+  metadata:
+    name: care-journey-quota
+    namespace: care-journey
+  spec:
+    hard:
+      pods: "60"
+      requests.cpu: "15"
+      requests.memory: "30Gi"
+      limits.cpu: "30"
+      limits.memory: "60Gi"
+- apiVersion: v1
+  kind: ResourceQuota
+  metadata:
+    name: plan-journey-quota
+    namespace: plan-journey
+  spec:
+    hard:
+      pods: "40"
+      requests.cpu: "8"
+      requests.memory: "16Gi"
+      limits.cpu: "16"
+      limits.memory: "32Gi"
+- apiVersion: v1
+  kind: ResourceQuota
+  metadata:
+    name: gamification-quota
+    namespace: gamification
+  spec:
+    hard:
+      pods: "50"
+      requests.cpu: "12"
+      requests.memory: "24Gi"
+      limits.cpu: "24"
+      limits.memory: "48Gi"
+- apiVersion: v1
+  kind: LimitRange
+  metadata:
+    name: default-limits
+    namespace: health-journey
+  spec:
+    limits:
+    - type: Container
+      default:
+        cpu: 500m
+        memory: 512Mi
+      defaultRequest:
+        cpu: 250m
+        memory: 256Mi
+- apiVersion: v1
+  kind: LimitRange
+  metadata:
+    name: default-limits
+    namespace: care-journey
+  spec:
+    limits:
+    - type: Container
+      default:
+        cpu: 500m
+        memory: 512Mi
+      defaultRequest:
+        cpu: 250m
+        memory: 256Mi
+- apiVersion: v1
+  kind: LimitRange
+  metadata:
+    name: default-limits
+    namespace: plan-journey
+  spec:
+    limits:
+    - type: Container
+      default:
+        cpu: 500m
+        memory: 512Mi
+      defaultRequest:
+        cpu: 250m
+        memory: 256Mi
+- apiVersion: v1
+  kind: LimitRange
+  metadata:
+    name: default-limits
+    namespace: gamification
+  spec:
+    limits:
+    - type: Container
+      default:
+        cpu: 1000m
+        memory: 1Gi
+      defaultRequest:
+        cpu: 500m
+        memory: 512Mi

@@ -1,0 +1,323 @@
+/* 
+ * AUSTA SuperApp - Global CSS
+ * Version: 1.0.0
+ * 
+ * This file contains global styles and CSS variables for the AUSTA SuperApp
+ * including journey-specific theming, accessibility enhancements, and base styles.
+ */
+
+/* -----------------------------------------------------------------------------
+ * CSS Reset
+ * -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* -----------------------------------------------------------------------------
+ * Design Tokens - CSS Variables
+ * -------------------------------------------------------------------------- */
+:root {
+  /* Typography */
+  --font-family-base: 'Roboto, sans-serif';
+  --font-family-heading: 'Roboto, sans-serif';
+  --font-family-mono: 'Roboto Mono, monospace';
+  
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 30px;
+  --font-size-4xl: 36px;
+  
+  --line-height-tight: 1.2;
+  --line-height-base: 1.5;
+  --line-height-relaxed: 1.75;
+  
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+  --spacing-4xl: 96px;
+  
+  /* Border radius */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 16px;
+  --border-radius-xl: 24px;
+  --border-radius-full: 9999px;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+  
+  /* Animation */
+  --animation-duration-fast: 150ms;
+  --animation-duration-normal: 300ms;
+  --animation-duration-slow: 500ms;
+  --animation-easing-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --animation-easing-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --animation-easing-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Brand Colors */
+  --color-brand-primary: #0066CC;
+  --color-brand-secondary: #00A3E0;
+  --color-brand-tertiary: #6D2077;
+  
+  /* Journey-specific Colors */
+  /* Health Journey - Green */
+  --color-health-primary: #0ACF83;
+  --color-health-secondary: #05A66A;
+  --color-health-accent: #00875A;
+  --color-health-background: #F0FFF4;
+  
+  /* Care Journey - Orange */
+  --color-care-primary: #FF8C42;
+  --color-care-secondary: #F17C3A;
+  --color-care-accent: #E55A00;
+  --color-care-background: #FFF8F0;
+  
+  /* Plan Journey - Blue */
+  --color-plan-primary: #3A86FF;
+  --color-plan-secondary: #2D6FD9;
+  --color-plan-accent: #0057E7;
+  --color-plan-background: #F0F8FF;
+  
+  /* Semantic Colors */
+  --color-semantic-success: #00C853;
+  --color-semantic-warning: #FFD600;
+  --color-semantic-error: #FF3B30;
+  --color-semantic-info: #0066CC;
+  
+  /* Neutral Colors */
+  --color-neutral-white: #FFFFFF;
+  --color-neutral-gray100: #F5F5F5;
+  --color-neutral-gray200: #EEEEEE;
+  --color-neutral-gray300: #E0E0E0;
+  --color-neutral-gray400: #BDBDBD;
+  --color-neutral-gray500: #9E9E9E;
+  --color-neutral-gray600: #757575;
+  --color-neutral-gray700: #616161;
+  --color-neutral-gray800: #424242;
+  --color-neutral-gray900: #212121;
+  --color-neutral-black: #000000;
+  
+  /* Z-index layers */
+  --z-index-dropdown: 1000;
+  --z-index-sticky: 1100;
+  --z-index-fixed: 1200;
+  --z-index-modal-backdrop: 1300;
+  --z-index-modal: 1400;
+  --z-index-popover: 1500;
+  --z-index-tooltip: 1600;
+}
+
+/* -----------------------------------------------------------------------------
+ * Base Typography Styles
+ * -------------------------------------------------------------------------- */
+html, body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-base);
+  color: var(--color-neutral-gray900);
+  background-color: var(--color-neutral-white);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-heading);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  margin-bottom: 0.5em;
+}
+
+h1 {
+  font-size: var(--font-size-4xl);
+}
+
+h2 {
+  font-size: var(--font-size-3xl);
+}
+
+h3 {
+  font-size: var(--font-size-2xl);
+}
+
+h4 {
+  font-size: var(--font-size-xl);
+}
+
+h5 {
+  font-size: var(--font-size-lg);
+}
+
+h6 {
+  font-size: var(--font-size-md);
+}
+
+p {
+  margin-bottom: 1em;
+}
+
+a {
+  color: var(--color-brand-primary);
+  text-decoration: none;
+  transition: color var(--animation-duration-normal) var(--animation-easing-ease-in-out);
+}
+
+a:hover, a:focus {
+  text-decoration: underline;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+img, svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+code, pre {
+  font-family: var(--font-family-mono);
+}
+
+/* -----------------------------------------------------------------------------
+ * Accessibility Enhancements
+ * -------------------------------------------------------------------------- */
+:focus {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: 2px;
+}
+
+/* Visually hide content but keep it accessible to screen readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+ * Journey-specific Theme Variables
+ * -------------------------------------------------------------------------- */
+.journey-health {
+  --journey-primary: var(--color-health-primary);
+  --journey-secondary: var(--color-health-secondary);
+  --journey-accent: var(--color-health-accent);
+  --journey-background: var(--color-health-background);
+}
+
+.journey-care {
+  --journey-primary: var(--color-care-primary);
+  --journey-secondary: var(--color-care-secondary);
+  --journey-accent: var(--color-care-accent);
+  --journey-background: var(--color-care-background);
+}
+
+.journey-plan {
+  --journey-primary: var(--color-plan-primary);
+  --journey-secondary: var(--color-plan-secondary);
+  --journey-accent: var(--color-plan-accent);
+  --journey-background: var(--color-plan-background);
+}
+
+/* -----------------------------------------------------------------------------
+ * Utility Classes
+ * -------------------------------------------------------------------------- */
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Remove tap highlight on mobile devices */
+@media (hover: none) {
+  a:active,
+  button:active {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Prevent zooming on iOS when focusing on inputs */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  select, 
+  textarea, 
+  input {
+    font-size: 16px;
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "compilerOptions": {
+    "target": "es2021",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "strictBindCallApply": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "lib": ["es2021"]
+  },
+  "include": [
+    "shared/**/*",
+    "api-gateway/**/*",
+    "auth-service/**/*",
+    "health-service/**/*",
+    "care-service/**/*",
+    "plan-service/**/*",
+    "gamification-engine/**/*",
+    "notification-service/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.spec.ts",
+    "**/*.test.ts"
+  ],
+  "references": [
+    { "path": "./shared" },
+    { "path": "./api-gateway" },
+    { "path": "./auth-service" },
+    { "path": "./health-service" },
+    { "path": "./care-service" },
+    { "path": "./plan-service" },
+    { "path": "./gamification-engine" },
+    { "path": "./notification-service" }
+  ]
+}

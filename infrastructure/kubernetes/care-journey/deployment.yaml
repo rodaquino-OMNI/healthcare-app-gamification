@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: care-service
+  labels:
+    app: care-service
+    journey: care
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: care-service
+      journey: care
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: care-service
+        journey: care
+    spec:
+      containers:
+      - name: care-service
+        image: austa-superapp/care-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+          name: http
+        env:
+        - name: NODE_ENV
+          value: production
+        - name: PORT
+          value: "3000"
+        - name: API_GATEWAY_URL
+          value: http://api-gateway-service:3000
+        - name: DATABASE_URL
+          value: postgresql://user:password@care-db:5432/caredb
+        - name: REDIS_URL
+          value: redis://redis:6379
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: care-service-secrets
+              key: jwt-secret
+        resources:
+          requests:
+            cpu: 250m
+            memory: 512Mi
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3

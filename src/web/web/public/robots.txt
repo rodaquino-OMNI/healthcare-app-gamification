@@ -1,0 +1,33 @@
+# AUSTA SuperApp Robots.txt
+
+# Allow all web crawlers to access most of the site
+User-agent: *
+Allow: /
+
+# Disallow crawling of authentication pages
+Disallow: /auth/
+
+# Disallow crawling of user-specific data
+Disallow: /profile/
+Disallow: /notifications/
+
+# Journey-specific crawling rules
+# Allow health journey public pages
+Allow: /health/
+
+# Allow care journey public pages
+Allow: /care/
+
+# Allow plan journey public pages
+Allow: /plan/
+
+# Disallow crawling of API endpoints
+Disallow: /api/
+
+# Disallow crawling of private or sensitive areas
+Disallow: /health/metrics/
+Disallow: /care/appointments/
+Disallow: /plan/claims/
+
+# Sitemap location
+Sitemap: https://app.austa.com.br/sitemap.xml

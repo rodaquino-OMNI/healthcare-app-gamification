@@ -1,0 +1,907 @@
+# AUSTA SuperApp GraphQL Schema
+# This schema defines all types, queries, and mutations for the AUSTA SuperApp,
+# organized around the three core user journeys: My Health, Care Now, and My Plan & Benefits,
+# with cross-cutting gamification features.
+
+# Scalar Types
+scalar DateTime
+scalar JSON
+scalar Upload
+
+# Enums
+
+# Health Journey Enums
+enum MetricType {
+  HEART_RATE
+  BLOOD_PRESSURE
+  BLOOD_GLUCOSE
+  STEPS
+  SLEEP
+  WEIGHT
+  OXYGEN_SATURATION
+  BODY_TEMPERATURE
+  BODY_FAT
+  BMI
+}
+
+enum MetricSource {
+  MANUAL
+  DEVICE
+  IMPORTED
+  CALCULATED
+}
+
+enum GoalStatus {
+  ACTIVE
+  COMPLETED
+  ABANDONED
+  EXPIRED
+}
+
+enum MedicalEventType {
+  DIAGNOSIS
+  PROCEDURE
+  MEDICATION
+  VACCINATION
+  ALLERGY
+  CONSULTATION
+  LAB_TEST
+  IMAGING
+  HOSPITALIZATION
+  EMERGENCY
+  OTHER
+}
+
+enum MedicalEventSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+# Care Journey Enums
+enum AppointmentType {
+  IN_PERSON
+  VIDEO
+  PHONE
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  MISSED
+}
+
+enum TelemedicineStatus {
+  SCHEDULED
+  WAITING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  FAILED
+}
+
+# Plan Journey Enums
+enum ClaimType {
+  MEDICAL
+  DENTAL
+  VISION
+  PRESCRIPTION
+  OTHER
+}
+
+enum ClaimStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  ADDITIONAL_INFO_REQUIRED
+  APPROVED
+  DENIED
+  PROCESSING
+  COMPLETED
+  APPEALED
+  FINAL_DENIAL
+  EXPIRED
+  CANCELLED
+}
+
+enum PlanType {
+  HMO
+  PPO
+  EPO
+  POS
+  INDEMNITY
+}
+
+enum CoverageType {
+  MEDICAL_VISIT
+  SPECIALIST_VISIT
+  EMERGENCY_CARE
+  PREVENTIVE_CARE
+  PRESCRIPTION_DRUGS
+  MENTAL_HEALTH
+  REHABILITATION
+  DURABLE_MEDICAL_EQUIPMENT
+  LAB_TESTS
+  IMAGING
+  OTHER
+}
+
+enum DocumentType {
+  RECEIPT
+  MEDICAL_REPORT
+  PRESCRIPTION
+  REFERRAL
+  INSURANCE_CARD
+  EXPLANATION_OF_BENEFITS
+  OTHER
+}
+
+# Gamification Enums
+enum Journey {
+  HEALTH
+  CARE
+  PLAN
+}
+
+enum RewardType {
+  XP_BOOST
+  PREMIUM_FEATURE
+  DIGITAL_BADGE
+  PHYSICAL_REWARD
+  DONATION
+}
+
+enum LeaderboardPeriod {
+  DAILY
+  WEEKLY
+  MONTHLY
+  ALL_TIME
+}
+
+# Input Types
+
+# Health Journey Input Types
+input CreateHealthMetricInput {
+  type: MetricType!
+  value: Float!
+  unit: String!
+  timestamp: DateTime!
+  source: MetricSource
+  notes: String
+}
+
+input UpdateHealthMetricInput {
+  value: Float
+  unit: String
+  timestamp: DateTime
+  source: MetricSource
+  notes: String
+}
+
+input CreateHealthGoalInput {
+  type: String!
+  title: String!
+  description: String
+  target: Float!
+  unit: String!
+  startDate: DateTime!
+  endDate: DateTime
+  frequency: String
+}
+
+input UpdateHealthGoalInput {
+  title: String
+  description: String
+  target: Float
+  unit: String
+  startDate: DateTime
+  endDate: DateTime
+  frequency: String
+  status: GoalStatus
+  currentValue: Float
+}
+
+input CreateMedicalEventInput {
+  type: MedicalEventType!
+  title: String!
+  description: String
+  date: DateTime!
+  provider: String
+  location: String
+  documents: [String!]
+  severity: MedicalEventSeverity
+  outcome: String
+  notes: String
+}
+
+input UpdateMedicalEventInput {
+  type: MedicalEventType
+  title: String
+  description: String
+  date: DateTime
+  provider: String
+  location: String
+  documents: [String!]
+  severity: MedicalEventSeverity
+  outcome: String
+  notes: String
+}
+
+input ConnectDeviceInput {
+  deviceType: String!
+  deviceId: String!
+  deviceName: String!
+  connectionDetails: JSON
+}
+
+input UpdateDeviceConnectionInput {
+  deviceName: String
+  connectionDetails: JSON
+  status: String
+}
+
+# Care Journey Input Types
+input BookAppointmentInput {
+  providerId: ID!
+  dateTime: DateTime!
+  type: AppointmentType!
+  reason: String
+}
+
+input UpdateAppointmentInput {
+  dateTime: DateTime
+  type: AppointmentType
+  reason: String
+  notes: String
+}
+
+input CreateMedicationInput {
+  name: String!
+  dosage: String!
+  frequency: String!
+  startDate: DateTime!
+  endDate: DateTime
+  notes: String
+}
+
+input UpdateMedicationInput {
+  name: String
+  dosage: String
+  frequency: String
+  startDate: DateTime
+  endDate: DateTime
+  notes: String
+}
+
+input StartTelemedicineInput {
+  appointmentId: ID!
+  deviceInfo: JSON
+}
+
+# Plan Journey Input Types
+input SubmitClaimInput {
+  planId: ID!
+  type: ClaimType!
+  procedureCode: String!
+  providerName: String!
+  serviceDate: DateTime!
+  amount: Float!
+  documents: [ID!]
+}
+
+input UpdateClaimInput {
+  additionalInfo: JSON
+  status: ClaimStatus
+}
+
+input CreateCoverageInput {
+  planId: ID!
+  type: CoverageType!
+  details: String!
+  limitations: String
+  coPayment: Float
+}
+
+input UpdateCoverageInput {
+  details: String
+  limitations: String
+  coPayment: Float
+}
+
+# Object Types
+
+# Common Types
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  phone: String
+  cpf: String
+  profile: UserProfile
+  gameProfile: GameProfile
+  healthRecord: HealthRecord
+  careActivity: CareActivity
+  plan: Plan
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type UserProfile {
+  id: ID!
+  userId: ID!
+  avatar: String
+  preferences: JSON
+  contactInfo: JSON
+  settings: JSON
+}
+
+# Health Journey Types
+type HealthRecord {
+  id: ID!
+  userId: ID!
+  metrics: [HealthMetric!]!
+  medicalEvents: [MedicalEvent!]!
+  goals: [HealthGoal!]!
+  deviceConnections: [DeviceConnection!]!
+  preferences: JSON
+  lastUpdated: DateTime!
+}
+
+type HealthMetric {
+  id: ID!
+  userId: ID!
+  type: MetricType!
+  value: Float!
+  unit: String!
+  timestamp: DateTime!
+  source: MetricSource
+  notes: String
+  trend: String
+  isAbnormal: Boolean
+}
+
+type MedicalEvent {
+  id: ID!
+  userId: ID!
+  type: MedicalEventType!
+  title: String!
+  description: String
+  date: DateTime!
+  provider: String
+  location: String
+  documents: [String!]
+  severity: MedicalEventSeverity
+  outcome: String
+  notes: String
+  isImported: Boolean
+  importSource: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type HealthGoal {
+  id: ID!
+  userId: ID!
+  type: String!
+  title: String!
+  description: String
+  target: Float!
+  unit: String!
+  currentValue: Float
+  startDate: DateTime!
+  endDate: DateTime
+  frequency: String
+  status: GoalStatus!
+  progress: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type DeviceConnection {
+  id: ID!
+  userId: ID!
+  deviceType: String!
+  deviceId: String!
+  deviceName: String!
+  lastSync: DateTime
+  status: String!
+  connectionDetails: JSON
+}
+
+type MetricsSyncResult {
+  connection: DeviceConnection!
+  syncedMetrics: SyncedMetrics!
+  lastSync: DateTime!
+  success: Boolean!
+}
+
+type SyncedMetrics {
+  count: Int!
+  metrics: [HealthMetric!]!
+}
+
+# Care Journey Types
+type CareActivity {
+  id: ID!
+  userId: ID!
+  appointments: [Appointment!]!
+  medications: [Medication!]!
+  telemedicineSessions: [TelemedicineSession!]!
+  treatmentPlans: [TreatmentPlan!]!
+  type: String
+  status: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Appointment {
+  id: ID!
+  userId: ID!
+  providerId: ID!
+  provider: Provider!
+  dateTime: DateTime!
+  type: AppointmentType!
+  status: AppointmentStatus!
+  reason: String
+  notes: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Provider {
+  id: ID!
+  name: String!
+  specialty: String!
+  location: String!
+  rating: Float
+  availability: [ProviderAvailability!]
+  insurancePlans: [String!]
+}
+
+type ProviderAvailability {
+  date: DateTime!
+  slots: [DateTime!]!
+}
+
+type Medication {
+  id: ID!
+  userId: ID!
+  name: String!
+  dosage: String!
+  frequency: String!
+  startDate: DateTime!
+  endDate: DateTime
+  notes: String
+  adherence: Float
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type TelemedicineSession {
+  id: ID!
+  userId: ID!
+  providerId: ID!
+  provider: Provider!
+  appointmentId: ID
+  startTime: DateTime!
+  endTime: DateTime
+  status: TelemedicineStatus!
+  connectionDetails: JSON
+  notes: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type TreatmentPlan {
+  id: ID!
+  userId: ID!
+  name: String!
+  description: String!
+  startDate: DateTime!
+  endDate: DateTime
+  progress: Float!
+  tasks: [TreatmentTask!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type TreatmentTask {
+  id: ID!
+  treatmentPlanId: ID!
+  title: String!
+  description: String
+  completed: Boolean!
+  dueDate: DateTime
+}
+
+# Plan Journey Types
+type Plan {
+  id: ID!
+  userId: ID!
+  planNumber: String!
+  type: PlanType!
+  validityStart: DateTime!
+  validityEnd: DateTime!
+  coverageDetails: JSON
+  coverages: [Coverage!]!
+  benefits: [Benefit!]!
+  claims: [Claim!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Coverage {
+  id: ID!
+  planId: ID!
+  type: CoverageType!
+  details: String!
+  limitations: String
+  coPayment: Float
+}
+
+type Claim {
+  id: ID!
+  planId: ID!
+  type: ClaimType!
+  amount: Float!
+  status: ClaimStatus!
+  submittedAt: DateTime!
+  processedAt: DateTime
+  documents: [Document!]!
+  procedureCode: String
+  providerName: String
+  serviceDate: DateTime
+  additionalInfo: JSON
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Document {
+  id: ID!
+  entityId: ID!
+  entityType: String!
+  type: DocumentType!
+  fileName: String!
+  fileType: String!
+  fileSize: Int!
+  filePath: String!
+  uploadedAt: DateTime!
+}
+
+type Benefit {
+  id: ID!
+  planId: ID!
+  type: String!
+  description: String!
+  limitations: String
+  usage: String
+}
+
+# Gamification Types
+type GameProfile {
+  id: ID!
+  userId: ID!
+  level: Int!
+  xp: Int!
+  nextLevelXp: Int!
+  achievements: [Achievement!]!
+  quests: [Quest!]!
+  rewards: [Reward!]!
+  lastActivity: DateTime
+  settings: JSON
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Achievement {
+  id: ID!
+  title: String!
+  description: String!
+  journey: Journey!
+  icon: String!
+  progress: Int!
+  total: Int!
+  unlocked: Boolean!
+  unlockedAt: DateTime
+  xpReward: Int!
+}
+
+type Quest {
+  id: ID!
+  title: String!
+  description: String!
+  journey: Journey!
+  icon: String!
+  progress: Int!
+  total: Int!
+  completed: Boolean!
+  completedAt: DateTime
+  startDate: DateTime!
+  endDate: DateTime
+  tasks: [QuestTask!]!
+  xpReward: Int!
+}
+
+type QuestTask {
+  id: ID!
+  questId: ID!
+  title: String!
+  description: String
+  completed: Boolean!
+  completedAt: DateTime
+}
+
+type Reward {
+  id: ID!
+  title: String!
+  description: String!
+  journey: Journey!
+  icon: String!
+  type: RewardType!
+  value: String!
+  xp: Int!
+  unlockCondition: String
+  expiryDate: DateTime
+  claimed: Boolean
+  claimedAt: DateTime
+}
+
+type LeaderboardEntry {
+  userId: ID!
+  username: String!
+  avatar: String
+  level: Int!
+  xp: Int!
+  position: Int!
+}
+
+type JourneyProgress {
+  journey: Journey!
+  completedAchievements: Int!
+  totalAchievements: Int!
+  completedQuests: Int!
+  totalQuests: Int!
+  xpEarned: Int!
+}
+
+# Operation Response Types
+type DeleteResponse {
+  id: ID!
+  success: Boolean!
+}
+
+type BulkOperationResponse {
+  success: Boolean!
+  successCount: Int!
+  failureCount: Int!
+}
+
+type BulkMetricResponse {
+  metrics: [HealthMetric!]!
+  successCount: Int!
+  failureCount: Int!
+}
+
+type BulkEventResponse {
+  events: [MedicalEvent!]!
+  successCount: Int!
+  failureCount: Int!
+}
+
+# Query Type
+type Query {
+  # User queries
+  me: User!
+  getUser(id: ID!): User
+  
+  # Health Journey queries
+  getHealthRecord(userId: ID!): HealthRecord!
+  getHealthMetrics(
+    userId: ID!
+    types: [MetricType!]!
+    startDate: DateTime
+    endDate: DateTime
+    source: MetricSource
+  ): [HealthMetric!]!
+  getHealthMetric(id: ID!): HealthMetric
+  
+  getHealthGoals(
+    userId: ID!
+    status: GoalStatus
+    type: String
+  ): [HealthGoal!]!
+  getHealthGoal(id: ID!): HealthGoal
+  
+  getMedicalHistory(
+    userId: ID!
+    types: [MedicalEventType!]
+    startDate: DateTime
+    endDate: DateTime
+    severity: MedicalEventSeverity
+  ): [MedicalEvent!]!
+  getMedicalEvent(id: ID!): MedicalEvent
+  
+  getConnectedDevices(userId: ID!): [DeviceConnection!]!
+  getDeviceConnection(id: ID!): DeviceConnection
+  
+  # Care Journey queries
+  getCareActivity(userId: ID!): CareActivity!
+  
+  getAppointments(
+    userId: ID!
+    status: AppointmentStatus
+    startDate: DateTime
+    endDate: DateTime
+  ): [Appointment!]!
+  getAppointment(id: ID!): Appointment
+  
+  getProviders(
+    specialty: String
+    location: String
+    insurancePlan: String
+  ): [Provider!]!
+  getProvider(id: ID!): Provider
+  getProviderAvailability(
+    providerId: ID!
+    startDate: DateTime
+    endDate: DateTime
+  ): [ProviderAvailability!]!
+  
+  getMedications(
+    userId: ID!
+    active: Boolean
+  ): [Medication!]!
+  getMedication(id: ID!): Medication
+  
+  getTelemedicineSessions(
+    userId: ID!
+    status: TelemedicineStatus
+  ): [TelemedicineSession!]!
+  getTelemedicineSession(id: ID!): TelemedicineSession
+  
+  getTreatmentPlans(
+    userId: ID!
+    active: Boolean
+  ): [TreatmentPlan!]!
+  getTreatmentPlan(id: ID!): TreatmentPlan
+  
+  # Plan Journey queries
+  getPlan(planId: ID!): Plan!
+  getUserPlans(userId: ID!): [Plan!]!
+  
+  getCoverages(planId: ID!): [Coverage!]!
+  getCoverage(id: ID!): Coverage
+  
+  getClaims(
+    planId: ID!
+    status: ClaimStatus
+    startDate: DateTime
+    endDate: DateTime
+  ): [Claim!]!
+  getClaim(id: ID!): Claim
+  
+  getBenefits(planId: ID!): [Benefit!]!
+  getBenefit(id: ID!): Benefit
+  
+  # Gamification queries
+  gameProfile(userId: ID!): GameProfile!
+  
+  achievements(
+    userId: ID!
+    journey: Journey
+    unlocked: Boolean
+  ): [Achievement!]!
+  achievement(id: ID!): Achievement
+  
+  quests(
+    userId: ID!
+    journey: Journey
+    completed: Boolean
+    active: Boolean
+  ): [Quest!]!
+  quest(id: ID!): Quest
+  
+  rewards(
+    userId: ID!
+    journey: Journey
+    claimed: Boolean
+  ): [Reward!]!
+  reward(id: ID!): Reward
+  
+  leaderboard(
+    journey: Journey
+    period: LeaderboardPeriod
+    limit: Int
+  ): [LeaderboardEntry!]!
+  
+  journeyProgress(
+    userId: ID!
+    journey: Journey!
+  ): JourneyProgress!
+}
+
+# Mutation Type
+type Mutation {
+  # User mutations
+  updateUserProfile(input: JSON!): User!
+  
+  # Health Journey mutations
+  createHealthMetric(recordId: ID!, createMetricDto: CreateHealthMetricInput!): HealthMetric!
+  updateHealthMetric(id: ID!, updateMetricDto: UpdateHealthMetricInput!): HealthMetric!
+  deleteHealthMetric(id: ID!): DeleteResponse!
+  bulkCreateHealthMetrics(recordId: ID!, metrics: [CreateHealthMetricInput!]!): BulkMetricResponse!
+  
+  createHealthGoal(recordId: ID!, createGoalDto: CreateHealthGoalInput!): HealthGoal!
+  updateHealthGoal(id: ID!, updateGoalDto: UpdateHealthGoalInput!): HealthGoal!
+  deleteHealthGoal(id: ID!): DeleteResponse!
+  completeHealthGoal(id: ID!): HealthGoal!
+  
+  createMedicalEvent(recordId: ID!, createEventDto: CreateMedicalEventInput!): MedicalEvent!
+  updateMedicalEvent(id: ID!, updateEventDto: UpdateMedicalEventInput!): MedicalEvent!
+  deleteMedicalEvent(id: ID!): DeleteResponse!
+  importMedicalEvents(recordId: ID!, events: [CreateMedicalEventInput!]!, source: String!): BulkEventResponse!
+  
+  connectDevice(recordId: ID!, connectDeviceDto: ConnectDeviceInput!): DeviceConnection!
+  updateDeviceConnection(id: ID!, updateConnectionDto: UpdateDeviceConnectionInput!): DeviceConnection!
+  disconnectDevice(id: ID!): DeleteResponse!
+  syncDeviceData(id: ID!): MetricsSyncResult!
+  
+  # Care Journey mutations
+  bookAppointment(providerId: String!, dateTime: String!, type: String!, reason: String): Appointment!
+  updateAppointment(id: ID!, input: UpdateAppointmentInput!): Appointment!
+  cancelAppointment(id: ID!): Appointment!
+  
+  createMedication(userId: ID!, input: CreateMedicationInput!): Medication!
+  updateMedication(id: ID!, input: UpdateMedicationInput!): Medication!
+  deleteMedication(id: ID!): DeleteResponse!
+  
+  startTelemedicineSession(input: StartTelemedicineInput!): TelemedicineSession!
+  endTelemedicineSession(id: ID!): TelemedicineSession!
+  
+  createTreatmentPlan(userId: ID!, name: String!, description: String!, startDate: DateTime!, endDate: DateTime): TreatmentPlan!
+  updateTreatmentPlan(id: ID!, name: String, description: String, startDate: DateTime, endDate: DateTime): TreatmentPlan!
+  deleteTreatmentPlan(id: ID!): DeleteResponse!
+  
+  addTreatmentTask(planId: ID!, title: String!, description: String, dueDate: DateTime): TreatmentTask!
+  updateTreatmentTask(id: ID!, title: String, description: String, completed: Boolean, dueDate: DateTime): TreatmentTask!
+  deleteTreatmentTask(id: ID!): DeleteResponse!
+  
+  # Plan Journey mutations
+  submitClaim(
+    planId: String!,
+    type: String!,
+    procedureCode: String!,
+    providerName: String!,
+    serviceDate: String!,
+    amount: Float!,
+    documents: [String!]
+  ): Claim!
+  
+  updateClaim(id: String!, additionalInfo: JSON): Claim!
+  cancelClaim(id: String!): Claim!
+  
+  uploadClaimDocument(claimId: String!, file: Upload!): Document!
+  
+  createCoverage(input: CreateCoverageInput!): Coverage!
+  updateCoverage(id: ID!, input: UpdateCoverageInput!): Coverage!
+  deleteCoverage(id: ID!): DeleteResponse!
+  
+  # Gamification mutations
+  claimReward(rewardId: ID!): Reward!
+  completeQuestTask(questId: ID!, taskId: ID!): Quest!
+  acknowledgeAchievement(achievementId: ID!): Achievement!
+}
+
+# Subscription Type
+type Subscription {
+  healthMetricAdded(userId: ID!): HealthMetric!
+  appointmentUpdated(appointmentId: ID!): Appointment!
+  telemedicineSessionStateChanged(sessionId: ID!): TelemedicineSession!
+  claimStatusChanged(claimId: ID!): Claim!
+  achievementUnlocked(userId: ID!): Achievement!
+  questCompleted(userId: ID!): Quest!
+  newNotification(userId: ID!): JSON!
+}
