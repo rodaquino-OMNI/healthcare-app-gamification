@@ -1,0 +1,97 @@
+{
+  "name": "austa",
+  "displayName": "AUSTA",
+  "expo": {
+    "name": "AUSTA SuperApp",
+    "slug": "austa-superapp",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/images/logo.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./src/assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "br.com.austa.superapp",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to capture photos for health documentation and insurance claims.",
+        "NSPhotoLibraryUsageDescription": "This app accesses your photos to upload health documentation and insurance claims.",
+        "NSHealthShareUsageDescription": "This app accesses your health data to provide personalized health insights and track your progress.",
+        "NSHealthUpdateUsageDescription": "This app updates your health data to keep track of your health metrics and goals.",
+        "NSFaceIDUsageDescription": "This app uses Face ID to securely authenticate you.",
+        "NSBluetoothAlwaysUsageDescription": "This app uses Bluetooth to connect with your health devices.",
+        "NSBluetoothPeripheralUsageDescription": "This app uses Bluetooth to connect with your health devices.",
+        "UIBackgroundModes": [
+          "fetch",
+          "remote-notification"
+        ]
+      },
+      "config": {
+        "usesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "br.com.austa.superapp",
+      "versionCode": 1,
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "BLUETOOTH",
+        "BLUETOOTH_ADMIN",
+        "INTERNET",
+        "VIBRATE",
+        "RECEIVE_BOOT_COMPLETED",
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT"
+      ],
+      "googleServicesFile": "./google-services.json"
+    },
+    "web": {
+      "favicon": "./src/assets/images/favicon.png"
+    },
+    "plugins": [
+      "react-native-health",
+      "react-native-biometrics",
+      [
+        "expo-notifications",
+        {
+          "icon": "./src/assets/images/notification-icon.png",
+          "color": "#ffffff",
+          "sounds": [
+            "./src/assets/sounds/notification.wav",
+            "./src/assets/sounds/achievement.wav"
+          ]
+        }
+      ]
+    ],
+    "notification": {
+      "icon": "./src/assets/images/notification-icon.png",
+      "color": "#ffffff",
+      "androidMode": "default",
+      "androidCollapsedTitle": "AUSTA SuperApp"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/your-project-id"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "your-project-id"
+      }
+    }
+  }
+}
