@@ -1,0 +1,319 @@
+"""
+Main GraphQL schema for the AUSTA SuperApp
+This schema aggregates type definitions, queries, and mutations from various feature areas.
+"""
+
+# Scalar type definitions
+scalar DateTime
+scalar JSON
+scalar Upload
+
+# Enum type definitions
+enum MetricType {
+  HEART_RATE
+  BLOOD_PRESSURE
+  BLOOD_GLUCOSE
+  STEPS
+  SLEEP
+  WEIGHT
+  OXYGEN_SATURATION
+  TEMPERATURE
+  RESPIRATORY_RATE
+}
+
+enum MetricSource {
+  MANUAL
+  DEVICE
+  IMPORTED
+}
+
+enum GoalStatus {
+  ACTIVE
+  COMPLETED
+  ABANDONED
+  EXPIRED
+}
+
+enum GoalFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  CUSTOM
+}
+
+enum DeviceStatus {
+  CONNECTED
+  DISCONNECTED
+  PAIRING
+  ERROR
+}
+
+enum DeviceType {
+  SMARTWATCH
+  FITNESS_TRACKER
+  SMART_SCALE
+  BLOOD_PRESSURE_MONITOR
+  GLUCOSE_MONITOR
+  PULSE_OXIMETER
+  THERMOMETER
+}
+
+enum MedicalEventType {
+  APPOINTMENT
+  DIAGNOSIS
+  PROCEDURE
+  VACCINATION
+  MEDICATION
+  ALLERGY
+  LAB_RESULT
+  HOSPITALIZATION
+  EMERGENCY
+}
+
+enum MedicalEventSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum ClaimStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  ADDITIONAL_INFO_REQUIRED
+  APPROVED
+  DENIED
+  PROCESSING
+  COMPLETED
+  CANCELLED
+}
+
+# Object type definitions
+type HealthMetric {
+  id: ID!
+  userId: ID!
+  type: MetricType!
+  value: Float!
+  unit: String!
+  timestamp: DateTime!
+  source: MetricSource
+  notes: String
+  trend: Float
+  isAbnormal: Boolean
+}
+
+type HealthGoal {
+  id: ID!
+  userId: ID!
+  type: String!
+  title: String!
+  description: String
+  target: Float!
+  unit: String!
+  currentValue: Float!
+  startDate: DateTime!
+  endDate: DateTime
+  frequency: GoalFrequency!
+  status: GoalStatus!
+  progress: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type MedicalEvent {
+  id: ID!
+  userId: ID!
+  type: MedicalEventType!
+  title: String!
+  description: String
+  date: DateTime!
+  provider: String
+  location: String
+  documents: [String!]!
+  severity: MedicalEventSeverity
+  outcome: String
+  notes: String
+  isImported: Boolean!
+  importSource: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type DeviceConnection {
+  id: ID!
+  userId: ID!
+  deviceType: DeviceType!
+  deviceId: String!
+  deviceName: String!
+  lastSync: DateTime
+  status: DeviceStatus!
+  connectionDetails: JSON
+}
+
+type Appointment {
+  id: ID!
+  providerId: String!
+  dateTime: String!
+  type: String!
+  reason: String!
+}
+
+type Provider {
+  id: ID!
+  name: String!
+  specialty: String!
+  location: String!
+  availability: [String!]
+  rating: Float
+  reviews: Int
+  acceptedInsurance: [String!]
+  telehealth: Boolean
+}
+
+type Claim {
+  id: ID!
+  planId: String!
+  type: String!
+  procedureCode: String!
+  providerName: String!
+  serviceDate: String!
+  amount: Float!
+  status: ClaimStatus!
+  submittedAt: String!
+  processedAt: String
+  reimbursementAmount: Float
+  denialReason: String
+  additionalInfoRequired: JSON
+  documents: [String!]!
+}
+
+type ClaimDocument {
+  id: ID!
+  claimId: ID!
+  fileUrl: String!
+  fileName: String!
+  fileType: String!
+  uploadedAt: DateTime!
+}
+
+type Plan {
+  id: ID!
+  userId: ID!
+  planNumber: String!
+  type: String!
+  provider: String!
+  coverageDetails: JSON
+  startDate: String!
+  endDate: String
+  status: String!
+}
+
+type GameProfile {
+  level: Int!
+  xp: Int!
+  achievements: [Achievement!]!
+  quests: [Quest!]!
+}
+
+type Achievement {
+  id: ID!
+  title: String!
+  description: String!
+  icon: String!
+  progress: Int!
+  total: Int!
+  unlocked: Boolean!
+  journey: String!
+}
+
+type Quest {
+  id: ID!
+  title: String!
+  description: String!
+  journey: String!
+  progress: Int!
+  total: Int!
+  completed: Boolean!
+}
+
+type Reward {
+  id: ID!
+  title: String!
+  description: String!
+  icon: String!
+  type: String!
+  value: String!
+}
+
+type AuthSession {
+  accessToken: String!
+  refreshToken: String!
+  expiresAt: Float!
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+}
+
+# Input types
+input CreateHealthMetricInput {
+  type: MetricType!
+  value: Float!
+  unit: String!
+  timestamp: DateTime
+  source: MetricSource
+  notes: String
+}
+
+# Query and Mutation types
+type Query {
+  getHealthMetrics(userId: ID!, types: [MetricType!], startDate: DateTime, endDate: DateTime, source: MetricSource): [HealthMetric!]!
+  getHealthGoals(userId: ID!, status: GoalStatus, type: String): [HealthGoal!]!
+  getMedicalHistory(userId: ID!, types: [MedicalEventType!], startDate: DateTime, endDate: DateTime, severity: MedicalEventSeverity): [MedicalEvent!]!
+  getConnectedDevices(userId: ID!): [DeviceConnection!]!
+  getAppointments(userId: ID!): [Appointment!]!
+  getAppointment(id: ID!): Appointment
+  getProviders(specialty: String, location: String): [Provider!]!
+  getPlan(planId: ID!): Plan
+  getClaims(planId: ID!, status: ClaimStatus): [Claim!]!
+  getGameProfile(userId: ID!): GameProfile
+  getAchievements(userId: ID!): [Achievement!]!
+  getQuests(userId: ID!): [Quest!]!
+  getRewards(userId: ID!): [Reward!]!
+  getUser(id: ID!): User
+}
+
+type Mutation {
+  createHealthMetric(recordId: ID!, createMetricDto: CreateHealthMetricInput!): HealthMetric!
+  bookAppointment(providerId: String!, dateTime: String!, type: String!, reason: String): Appointment!
+  cancelAppointment(id: ID!): Appointment
+  submitClaim(planId: String!, type: String!, procedureCode: String!, providerName: String!, serviceDate: String!, amount: Float!, documents: [String!]): Claim!
+  uploadClaimDocument(claimId: String!, file: Upload!): ClaimDocument
+  updateClaim(id: String!, additionalInfo: JSON): Claim
+  cancelClaim(id: ID!): Claim
+  claimReward(rewardId: ID!): Reward
+  completeQuestTask(questId: ID!, taskId: ID!): Quest
+  acknowledgeAchievement(achievementId: ID!): Achievement
+  login(email: String!, password: String!): AuthSession
+  register(name: String!, email: String!, password: String!): AuthSession
+  logout: Boolean
+  refreshToken: AuthSession
+  verifyMFA(code: String!): AuthSession
+  requestPasswordReset(email: String!): Boolean
+  resetPassword(token: String!, password: String!): Boolean
+  updateUser(name: String, email: String): User
+  changePassword(oldPassword: String!, newPassword: String!): Boolean
+  setupMFA: Boolean
+  disableMFA: Boolean
+  socialLogin(provider: String!, token: String!): AuthSession
+  biometricLogin(biometricData: String!): AuthSession
+}
+
+# Schema definition
+schema {
+  query: Query
+  mutation: Mutation
+}
