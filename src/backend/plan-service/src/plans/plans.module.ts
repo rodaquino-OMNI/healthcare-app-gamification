@@ -1,0 +1,28 @@
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { PlansController } from './plans.controller';
+import { PlansService } from './plans.service';
+import { Plan } from './entities/plan.entity';
+import { ExceptionsModule } from '../../../shared/src/exceptions/exceptions.module';
+import { LoggerModule } from '../../../shared/src/logging/logger.module';
+import { KafkaModule } from '../../../shared/src/kafka/kafka.module';
+
+/**
+ * Configures the PlansModule, which is responsible for managing insurance plans
+ * as part of the "My Plan & Benefits Journey" in the AUSTA SuperApp.
+ * 
+ * This module encapsulates all functionality related to plan management,
+ * including CRUD operations, coverage verification, and cost calculation.
+ */
+@Module({
+  imports: [
+    TypeOrmModule.forFeature([Plan]), 
+    ExceptionsModule, 
+    LoggerModule, 
+    KafkaModule
+  ],
+  controllers: [PlansController],
+  providers: [PlansService],
+  exports: [PlansService],
+})
+export class PlansModule {}
