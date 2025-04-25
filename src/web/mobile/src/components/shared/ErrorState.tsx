@@ -1,0 +1,131 @@
+{
+  "name": "austa-superapp",
+  "version": "1.0.0",
+  "description": "AUSTA SuperApp - A unified digital health platform with journey-centered approach and gamification",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint --ext .ts,.tsx,.js,.jsx .",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "prepare": "husky install",
+    "mobile:start": "react-native start",
+    "mobile:android": "react-native run-android",
+    "mobile:ios": "react-native run-ios",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.7.0",
+    "@prisma/client": "^4.0.0",
+    "@react-native-async-storage/async-storage": "^1.17.0",
+    "@react-navigation/bottom-tabs": "^6.5.0",
+    "@react-navigation/native": "^6.1.0",
+    "@react-navigation/stack": "^6.3.0",
+    "apollo-server-micro": "^3.11.0",
+    "axios": "^1.4.0",
+    "date-fns": "^2.30.0",
+    "graphql": "^16.6.0",
+    "i18next": "^23.0.0",
+    "next": "^13.0.0",
+    "next-i18next": "^13.0.0",
+    "pg": "^8.11.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.0.0",
+    "react-i18next": "^12.0.0",
+    "react-native": "0.71.0",
+    "react-native-gesture-handler": "^2.9.0",
+    "react-native-reanimated": "^3.0.0",
+    "react-native-safe-area-context": "^4.5.0",
+    "react-native-screens": "^3.20.0",
+    "react-native-svg": "^13.8.0",
+    "react-native-web": "^0.18.0",
+    "react-query": "^4.0.0",
+    "redis": "^4.6.0",
+    "socket.io": "^4.0.0",
+    "socket.io-client": "^4.0.0",
+    "styled-components": "^6.0.0",
+    "victory-native": "^36.0.0",
+    "yup": "^1.0.0",
+    "zod": "^3.21.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.21.0",
+    "@graphql-codegen/cli": "^3.0.0",
+    "@graphql-codegen/typescript": "^3.0.0",
+    "@graphql-codegen/typescript-operations": "^3.0.0",
+    "@graphql-codegen/typescript-react-query": "^3.0.0",
+    "@storybook/addon-actions": "^7.0.0",
+    "@storybook/addon-essentials": "^7.0.0",
+    "@storybook/addon-links": "^7.0.0",
+    "@storybook/react": "^7.0.0",
+    "@testing-library/jest-dom": "^5.16.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/react-native": "^12.0.0",
+    "@types/jest": "^29.0.0",
+    "@types/node": "^18.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@types/react-native": "^0.71.0",
+    "@types/styled-components": "^5.1.0",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
+    "cypress": "^12.0.0",
+    "detox": "^20.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^13.0.0",
+    "eslint-config-prettier": "^8.7.0",
+    "eslint-plugin-react": "^7.32.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^8.0.0",
+    "jest": "^29.0.0",
+    "jest-environment-jsdom": "^29.0.0",
+    "lint-staged": "^13.0.0",
+    "prettier": "^2.8.0",
+    "prisma": "^4.0.0",
+    "ts-jest": "^29.0.0",
+    "typescript": "^5.0.0"
+  },
+  "resolutions": {
+    "styled-components": "^6.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
