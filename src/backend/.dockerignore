@@ -1,0 +1,59 @@
+# Dependencies
+node_modules
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Git
+.git
+.gitignore
+
+# Development files
+*.md
+*.log
+*.spec.ts
+*.test.ts
+test
+tests
+**/*.e2e-spec.ts
+jest.config.js
+.eslintrc.js
+.prettierrc
+
+# Build artifacts
+dist
+coverage
+.nyc_output
+
+# Docker files
+Dockerfile
+docker-compose*.yml
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Temporary files
+tmp
+temp
+
+# Tools and scripts
+tools
+scripts
+
+# Documentation
+docs
+README.md
+
+# Terraform and infrastructure files
+infrastructure
