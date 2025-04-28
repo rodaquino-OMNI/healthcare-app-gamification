@@ -13,7 +13,7 @@
     "@tanstack/react-query": "^4.0.0",
     "@types/react-redux": "7.1.25",
     "apollo-upload-client": "17.0.0",
-    "axios": "^1.4.0",
+    "axios": "^1.9.0",
     "date-fns": "latest",
     "framer-motion": "^10.12.16",
     "graphql": "1.6.0",

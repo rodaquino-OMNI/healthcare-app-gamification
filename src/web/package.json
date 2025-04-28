@@ -42,7 +42,7 @@
     "@tanstack/react-query": "^4.0.0",
     "agora-rtc-sdk": "4.17",
     "apollo-upload-client": "17.0.0",
-    "axios": "^1.4.0",
+    "axios": "^1.9.0",
     "cross-fetch": "3.1.5",
     "date-fns": "latest",
     "eslint-config-custom": "workspace:*",
