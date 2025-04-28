@@ -18,16 +18,36 @@ jobs:
         with:
           node-version: '18'
           
-      - name: Install dependencies
-        run: npm install
+      - name: Install backend dependencies
+        working-directory: src/backend
+        run: npm install --legacy-peer-deps
+          
+      - name: Install web dependencies
+        working-directory: src/web
+        run: npm install --legacy-peer-deps
         
-      - name: Run linters
+      - name: Run backend linters
+        working-directory: src/backend
         run: npm run lint
         
-      - name: Run tests
+      - name: Run web linters
+        working-directory: src/web
+        run: npm run lint
+        
+      - name: Run backend tests
+        working-directory: src/backend
         run: npm run test
         
-      - name: Build
+      - name: Run web tests
+        working-directory: src/web
+        run: npm run test
+        
+      - name: Build backend
+        working-directory: src/backend
+        run: npm run build
+        
+      - name: Build web
+        working-directory: src/web
         run: npm run build
         
       - name: Deploy to Staging
