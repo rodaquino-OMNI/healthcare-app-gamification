@@ -21,19 +21,23 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '18'
+        cache: 'yarn'
         
     - name: Install dependencies for Web Monorepo
       working-directory: src/web
-      run: npm install --legacy-peer-deps
+      run: yarn install
+      
+    - name: Validate package.json files
+      run: node scripts/validate-package-json.js
       
     - name: Lint Web Components
       working-directory: src/web
-      run: npm run lint
+      run: yarn lint
       
     - name: Test Web Components
       working-directory: src/web
-      run: npm run test
+      run: yarn test
       
     - name: Build Web Application
       working-directory: src/web
-      run: npm run build
+      run: yarn build

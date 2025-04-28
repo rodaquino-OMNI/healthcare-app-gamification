@@ -1,21 +1,15 @@
 {
-  "extends": "../shared/tsconfig.json",
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "baseUrl": "./src",
-    "paths": {
-      "@auth/*": ["*"],
-      "@shared/*": ["../../shared/src/*"]
-    },
-    "typeRoots": [
-      "./node_modules/@types",
-      "../../node_modules/@types"
-    ]
+    "outDir": "./dist"
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*spec.ts", "**/*.test.ts"],
-  "references": [
-    { "path": "../shared" }
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.spec.ts",
+    "**/*.test.ts"
   ]
 }

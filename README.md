@@ -83,9 +83,23 @@ src/web/
 ### Prerequisites
 
 - Node.js (v18.x or later)
-- npm or Yarn package manager
+- Yarn package manager (v1.22.x or later)
 - Docker and Docker Compose
 - AWS CLI (for deployment)
+
+### Package Management
+
+This project uses Yarn as the official package manager. Please do not use npm to avoid dependency resolution issues.
+
+```bash
+# Install dependencies (correct)
+yarn install
+
+# DO NOT use npm (incorrect)
+# npm install
+```
+
+For detailed guidance on dependency management, refer to the [Package Manager Standardization](./docs/package-manager-standardization.md) document.
 
 ### Development Environment Setup
 
@@ -110,22 +124,16 @@ You can run all backend services or just specific ones:
 
 2. Install dependencies:
    ```bash
-   npm install --legacy-peer-deps
-   # OR
-   yarn install --legacy-peer-deps
+   yarn install
    ```
 
 3. Start all backend services:
    ```bash
-   npm run start:dev
-   # OR
    yarn start:dev
    ```
 
 4. Or start a specific service (e.g., gamification-engine):
    ```bash
-   npm run start:gamification-engine
-   # OR
    yarn start:gamification-engine
    ```
 
@@ -138,16 +146,12 @@ You can run all backend services or just specific ones:
 
 2. Install dependencies:
    ```bash
-   npm install
-   # OR
    yarn install
    ```
 
 3. Start the web application:
    ```bash
-   npm run dev
-   # OR
-   yarn dev
+   yarn web:dev
    ```
 
 4. Access the web application at http://localhost:3000
@@ -161,8 +165,6 @@ You can run all backend services or just specific ones:
 
 2. Start the mobile application:
    ```bash
-   npm run dev -- --filter=mobile
-   # OR
    yarn dev --filter=mobile
    ```
 
@@ -185,8 +187,6 @@ The gamification engine can be run independently for development and testing:
 
 3. Start the gamification engine:
    ```bash
-   npm run start:dev
-   # OR
    yarn start:dev
    ```
 
@@ -198,11 +198,11 @@ The gamification engine can be run independently for development and testing:
    ```bash
    # For backend
    cd src/backend
-   npm run build
+   yarn build
    
    # For web and mobile
    cd src/web
-   npm run build
+   yarn build
    ```
 
 2. Deploy using the provided infrastructure configurations:
@@ -242,3 +242,8 @@ We welcome contributions to the AUSTA SuperApp project! Please follow these guid
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+## Dependency Management
+
+For information about how dependencies are managed and standardized in this project, please see the [Package Manager Standardization](./docs/package-manager-standardization.md) document.
+
+For details about dependency fixes and the scaling solution, see [Dependency Fixes](./DEPENDENCY_FIXES.md).
