@@ -44,7 +44,7 @@
     "class-validator": "^0.14.0",
     "date-fns": "^2.30.0",
     "fhir-kit-client": "^4.0.0",
-    "joi": "^17.9.1",
+    "joi": "^17.13.3",
     "kafkajs": "^2.2.4",
     "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13",
