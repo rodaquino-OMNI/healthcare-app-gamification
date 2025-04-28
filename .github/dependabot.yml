@@ -1,0 +1,139 @@
+version: 2
+updates:
+  # Backend root npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/src/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "rodaquino-OMNI"
+    labels:
+      - "dependencies"
+      - "backend"
+    groups:
+      nestjs:
+        patterns:
+          - "@nestjs/*"
+        update-types:
+          - "minor"
+          - "patch"
+      dev-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+        
+  # Gamification Engine npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/src/backend/gamification-engine"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "rodaquino-OMNI"
+    labels:
+      - "dependencies"
+      - "gamification"
+    groups:
+      nestjs:
+        patterns:
+          - "@nestjs/*"
+        update-types:
+          - "minor"
+          - "patch"
+      dev-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+        
+  # API Gateway npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/src/backend/api-gateway"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "rodaquino-OMNI"
+    labels:
+      - "dependencies"
+      - "api-gateway"
+    groups:
+      nestjs:
+        patterns:
+          - "@nestjs/*"
+        update-types:
+          - "minor"
+          - "patch"
+      dev-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+        
+  # Web root npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/src/web"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "rodaquino-OMNI"
+    labels:
+      - "dependencies"
+      - "frontend"
+    groups:
+      react:
+        patterns:
+          - "react"
+          - "react-*"
+          - "@react-*"
+        update-types:
+          - "minor"
+          - "patch"
+      dev-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+        
+  # GitHub Actions dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "rodaquino-OMNI"
+    labels:
+      - "dependencies"
+      - "github-actions"
+      
+  # Docker dependencies
+  - package-ecosystem: "docker"
+    directory: "/src/backend"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "rodaquino-OMNI"
+    labels:
+      - "dependencies"
+      - "docker"
