@@ -19,7 +19,6 @@
     "@austa/journey-context": "^1.0.0",
     "@austa/shared": "1.0.0",
     "@austa/web-shared": "0.1.0",
-    "@datadog/mobile-rum-react-native": "^1.14.0",
     "@design-system/primitives": "^1.0.0",
     "@hookform/resolvers": "^3.3.4",
     "@react-native-async-storage/async-storage": "1.18.2",
@@ -111,7 +110,6 @@
     "metro-react-native-babel-preset": "0.76.7",
     "prettier": "2.8.8",
     "react-test-renderer": "18.2.0",
-    "transform-react-remove-prop-types": "^0.4.24",
     "typescript": "5.1.6"
   },
   "engines": {
