@@ -50,7 +50,7 @@
     "kafkajs": "^2.2.4",
     "lodash": "^4.17.21",
     "redis": "^4.6.13",
-    "reflect-metadata": "^0.1.13",
+    "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.20",
     "uuid": "^9.0.1",
