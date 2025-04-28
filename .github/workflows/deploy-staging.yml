@@ -87,21 +87,21 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           
       - name: Build and push gamification-engine container
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v6
         with:
           context: ./src/backend/gamification-engine
           push: true
           tags: ${{ secrets.DOCKER_REGISTRY }}/austa-gamification-engine:${{ github.sha }},${{ secrets.DOCKER_REGISTRY }}/austa-gamification-engine:latest
           
       - name: Build and push api-gateway container
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v6
         with:
           context: ./src/backend/api-gateway
           push: true
           tags: ${{ secrets.DOCKER_REGISTRY }}/austa-api-gateway:${{ github.sha }},${{ secrets.DOCKER_REGISTRY }}/austa-api-gateway:latest
           
       - name: Build and push auth-service container
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v6
         with:
           context: ./src/backend/auth-service
           push: true
