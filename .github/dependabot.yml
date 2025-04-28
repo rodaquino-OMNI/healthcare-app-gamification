@@ -23,11 +23,10 @@ updates:
         update-types:
           - "minor"
           - "patch"
-          - "security"
       dev-dependencies:
         dependency-type: "development"
         update-types:
-          - "security"
+          - "patch"
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
@@ -57,7 +56,6 @@ updates:
         update-types:
           - "minor"
           - "patch"
-          - "security"
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
@@ -85,7 +83,6 @@ updates:
         update-types:
           - "minor"
           - "patch"
-          - "security"
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
@@ -113,7 +110,6 @@ updates:
         update-types:
           - "minor"
           - "patch"
-          - "security"
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
@@ -129,7 +125,7 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "quarterly"
+      interval: "monthly"
     open-pull-requests-limit: 3
     reviewers:
       - "rodaquino-OMNI"
@@ -148,7 +144,7 @@ updates:
   - package-ecosystem: "docker"
     directory: "/src/backend"
     schedule:
-      interval: "quarterly"
+      interval: "monthly"
     open-pull-requests-limit: 3
     reviewers:
       - "rodaquino-OMNI"
