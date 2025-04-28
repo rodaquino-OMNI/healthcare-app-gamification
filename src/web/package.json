@@ -82,7 +82,7 @@
     "styled-system": "5.1.5",
     "turbo": "^1.10.16",
     "victory": "36.0+",
-    "victory-native": "36.6.11",
+    "victory-native": "36.9.2",
     "yup": "^1.2.0",
     "zod": "latest"
   },

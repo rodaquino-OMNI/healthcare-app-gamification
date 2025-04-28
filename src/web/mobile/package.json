@@ -65,7 +65,7 @@
     "react-native-webview": "19.0.2",
     "react-router-native": "6.0+",
     "styled-components": "6.0.5",
-    "victory-native": "36.6.11",
+    "victory-native": "36.9.2",
     "yup": "1.2.0",
     "zod": "latest"
   },
