@@ -3,8 +3,12 @@ name: Backend CI
 on:
   push:
     branches: [ main, develop ]
+    paths:
+      - 'src/backend/**'
   pull_request:
     branches: [ main, develop ]
+    paths:
+      - 'src/backend/**'
 
 jobs:
   build:
@@ -18,11 +22,46 @@ jobs:
       with:
         node-version: '18'
         
-    - name: Install dependencies
-      run: npm install
+    - name: Install dependencies for Backend Monorepo
+      working-directory: src/backend
+      run: npm install --legacy-peer-deps
+
+    - name: Install dependencies for API Gateway
+      working-directory: src/backend/api-gateway
+      run: npm install --legacy-peer-deps
       
-    - name: Lint
+    - name: Install dependencies for Auth Service
+      working-directory: src/backend/auth-service
+      run: npm install --legacy-peer-deps
+      
+    - name: Install dependencies for Health Service
+      working-directory: src/backend/health-service
+      run: npm install --legacy-peer-deps
+    
+    - name: Install dependencies for Care Service
+      working-directory: src/backend/care-service
+      run: npm install --legacy-peer-deps
+      
+    - name: Install dependencies for Plan Service
+      working-directory: src/backend/plan-service
+      run: npm install --legacy-peer-deps
+      
+    - name: Install dependencies for Gamification Engine
+      working-directory: src/backend/gamification-engine
+      run: npm install --legacy-peer-deps
+      
+    - name: Install dependencies for Notification Service
+      working-directory: src/backend/notification-service
+      run: npm install --legacy-peer-deps
+
+    - name: Install dependencies for Shared
+      working-directory: src/backend/shared
+      run: npm install --legacy-peer-deps
+      
+    - name: Lint Backend Services
+      working-directory: src/backend
       run: npm run lint
       
-    - name: Test
+    - name: Test Backend Services
+      working-directory: src/backend
       run: npm run test

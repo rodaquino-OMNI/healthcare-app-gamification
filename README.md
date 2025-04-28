@@ -39,103 +39,179 @@ For comprehensive technical details, refer to the [Technical Specifications](./d
 - Infrastructure and deployment strategy
 - Testing approach and quality metrics
 
+## Repository Structure
+
+This repository follows a dual-monorepo architecture:
+
+```
+healthcare-super-app/
+├── src/
+│   ├── backend/       # Backend Lerna monorepo with NestJS microservices
+│   └── web/           # Frontend Turbo monorepo with Next.js and React Native
+├── infrastructure/    # Kubernetes and Terraform configurations
+└── docker-compose.dev.yml  # Development Docker Compose configuration
+```
+
+### Backend Structure
+The backend is a Lerna monorepo with several NestJS microservices:
+
+```
+src/backend/
+├── api-gateway/        # API Gateway service
+├── auth-service/       # Authentication service
+├── health-service/     # My Health journey service
+├── care-service/       # Care Now journey service
+├── plan-service/       # My Plan & Benefits journey service
+├── gamification-engine/ # Gamification Engine service
+├── notification-service/ # Notification service
+└── shared/             # Shared code, utilities, and Prisma schema
+```
+
+### Frontend Structure
+The frontend is a Turbo monorepo with shared code between web and mobile:
+
+```
+src/web/
+├── design-system/      # Shared component library
+├── shared/             # Shared utilities and types
+├── mobile/             # React Native mobile application
+└── web/                # Next.js web application
+```
+
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js (v18.x or later)
-- Yarn package manager
+- npm or Yarn package manager
 - Docker and Docker Compose
 - AWS CLI (for deployment)
 
 ### Development Environment Setup
 
-1. Clone the repository:
+Each part of the application can be run independently. You can choose to start with either the backend services, the web application, or the mobile application depending on your development focus.
+
+#### Starting the Infrastructure Services
+
+First, start the infrastructure services (database, Redis, Kafka):
+
+```bash
+docker-compose -f docker-compose.dev.yml up -d db redis kafka zookeeper
+```
+
+#### Running the Backend Services
+
+You can run all backend services or just specific ones:
+
+1. Navigate to the backend directory:
    ```bash
-   git clone https://github.com/yourusername/austa-superapp.git
-   cd austa-superapp
+   cd src/backend
    ```
 
 2. Install dependencies:
    ```bash
+   npm install --legacy-peer-deps
+   # OR
+   yarn install --legacy-peer-deps
+   ```
+
+3. Start all backend services:
+   ```bash
+   npm run start:dev
+   # OR
+   yarn start:dev
+   ```
+
+4. Or start a specific service (e.g., gamification-engine):
+   ```bash
+   npm run start:gamification-engine
+   # OR
+   yarn start:gamification-engine
+   ```
+
+#### Running the Web Application
+
+1. Navigate to the web directory:
+   ```bash
+   cd src/web
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   # OR
    yarn install
    ```
 
-3. Set up environment variables:
+3. Start the web application:
    ```bash
-   cp .env.example .env
-   # Edit .env file with appropriate values
-   ```
-
-4. Start the development environment:
-   ```bash
-   docker-compose up -d
+   npm run dev
+   # OR
    yarn dev
    ```
 
-5. Access the application:
-   - Mobile app: Open the project in Expo or your preferred emulator
-   - Web app: Navigate to http://localhost:3000
+4. Access the web application at http://localhost:3000
 
-### Building for Production
+#### Running the Mobile Application
 
-1. Build the application:
+1. From the web directory:
    ```bash
-   yarn build
+   cd src/web
    ```
 
-2. Run production build locally:
+2. Start the mobile application:
    ```bash
-   yarn start
+   npm run dev -- --filter=mobile
+   # OR
+   yarn dev --filter=mobile
    ```
 
-3. Deploy to AWS (requires proper credentials and configuration):
+3. Follow the instructions to open the app in Expo or an emulator
+
+### Working with the Gamification Engine
+
+The gamification engine can be run independently for development and testing:
+
+1. Navigate to the gamification engine directory:
    ```bash
-   yarn deploy
+   cd src/backend/gamification-engine
    ```
 
-## Project Structure
+2. Make sure you have set up the environment variables:
+   ```bash
+   cp .env.example .env
+   # Edit the .env file as needed
+   ```
 
-The project follows a journey-centered architecture with the following structure:
+3. Start the gamification engine:
+   ```bash
+   npm run start:dev
+   # OR
+   yarn start:dev
+   ```
 
-```
-austa-superapp/
-├── apps/
-│   ├── mobile/          # React Native mobile application
-│   └── web/             # Next.js web application
-├── packages/
-│   ├── api/             # API client and types
-│   ├── auth/            # Authentication utilities
-│   ├── components/      # Shared UI components
-│   ├── config/          # Configuration utilities
-│   ├── design-system/   # Design system and tokens
-│   ├── gamification/    # Gamification utilities
-│   └── utils/           # Shared utilities
-├── services/
-│   ├── api-gateway/     # API Gateway service
-│   ├── auth-service/    # Authentication service
-│   ├── health-service/  # My Health journey service
-│   ├── care-service/    # Care Now journey service
-│   ├── plan-service/    # My Plan & Benefits journey service
-│   └── game-service/    # Gamification Engine service
-├── infrastructure/      # Terraform IaC
-└── docs/                # Project documentation
-```
+4. The gamification engine will be available at http://localhost:3005
 
-Each journey service contains the following structure:
+## Building for Production
 
-```
-journey-service/
-├── src/
-│   ├── api/             # API controllers/resolvers
-│   ├── domain/          # Domain models and business logic
-│   ├── infrastructure/  # External dependencies and adapters
-│   ├── application/     # Use cases and application services
-│   └── config/          # Service configuration
-├── test/                # Test files
-├── Dockerfile           # Container definition
-└── package.json         # Dependencies
-```
+1. Build all components:
+   ```bash
+   # For backend
+   cd src/backend
+   npm run build
+   
+   # For web and mobile
+   cd src/web
+   npm run build
+   ```
+
+2. Deploy using the provided infrastructure configurations:
+   ```bash
+   # Using the Makefile
+   make deploy-staging
+   # OR
+   make deploy-production
+   ```
 
 ## Contributing
 
