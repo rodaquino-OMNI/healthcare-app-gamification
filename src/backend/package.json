@@ -95,7 +95,7 @@
     "@opentelemetry/exporter-trace-otlp-grpc": "^0.41.1",
     "@opentelemetry/sdk-node": "^0.41.1",
     "@opentelemetry/sdk-trace-base": "^1.22.0",
-    "@prisma/client": "^5.10.2",
+    "@prisma/client": "^5.22.0",
     "@sendgrid/client": "^8.1.0",
     "@sendgrid/mail": "^8.1.0",
     "agora-rtc-sdk-ng": "^4.19.3",

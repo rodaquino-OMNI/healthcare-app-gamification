@@ -16,7 +16,7 @@
     "@nestjs/typeorm": "^10.0.0",
     "@nestjs/websockets": "^10.0.0",
     "@austa/shared": "1.0.0",
-    "@prisma/client": "5.4.2",
+    "@prisma/client": "5.22.0",
     "axios": "^1.4.0",
     "bcrypt": "^5.0.0",
     "class-transformer": "^0.5.1",
