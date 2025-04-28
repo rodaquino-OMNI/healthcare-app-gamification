@@ -99,4 +99,16 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   }
+  ,
+  "overrides": {
+    "0": "8.4.31",
+    "0": "6.11.2",
+  }
+
+  ,
+  "resolutions": {
+    "0": "8.4.31",
+    "0": "6.11.2",
+  }
+
 }

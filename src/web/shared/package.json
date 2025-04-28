@@ -81,4 +81,28 @@
     "typecheck": "tsc --noEmit",
     "test": "jest"
   }
+  ,
+  "overrides": {
+    "0": "8.4.31",
+    "0": "6.11.2",
+  }
+
+  ,
+  "resolutions": {
+    "0": "8.4.31",
+    "webpack": "8.4.31",
+    "terser": "8.4.31",
+    "node-fetch": "8.4.31",
+    "shelljs": "8.4.31",
+    "minimist": "8.4.31",
+    "next/webpack": "8.4.31",
+    "0": "6.11.2",
+    "webpack": "6.11.2",
+    "terser": "6.11.2",
+    "node-fetch": "6.11.2",
+    "shelljs": "6.11.2",
+    "minimist": "6.11.2",
+    "@sentry/nextjs": {      "@sentry/core": {        "follow-redirects": "1.15.4"      }    },
+  }
+
 }

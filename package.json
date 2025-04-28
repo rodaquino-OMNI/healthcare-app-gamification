@@ -10,7 +10,16 @@
     "word-wrap": "1.2.4",
     "tough-cookie": "4.1.3",
     "postcss": "8.4.31",
-    "@babel/traverse": "7.23.2"
+    "@babel/traverse": "7.23.2",
+    "follow-redirects": "1.15.4",
+    "webpack": "5.76.0",
+    "node-fetch": "2.6.9",
+    "glob-parent": "5.1.2",
+    "terser": "5.16.6",
+    "loader-utils": "2.0.4",
+    "minimist": "1.2.8",
+    "shelljs": "0.8.5",
+    "qs": "6.11.2"
   },
   "resolutions": {
     "axios": "1.6.8",
@@ -20,6 +29,18 @@
     "word-wrap": "1.2.4",
     "tough-cookie": "4.1.3",
     "postcss": "8.4.31",
-    "@babel/traverse": "7.23.2"
+    "@babel/traverse": "7.23.2",
+    "follow-redirects": "1.15.4",
+    "webpack": "5.76.0",
+    "node-fetch": "2.6.9",
+    "glob-parent": "5.1.2",
+    "terser": "5.16.6",
+    "loader-utils": "2.0.4",
+    "minimist": "1.2.8",
+    "shelljs": "0.8.5",
+    "qs": "6.11.2"
+  },
+  "scripts": {
+    "postinstall": "node ./scripts/apply-security-patches.js"
   }
 }

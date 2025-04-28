@@ -1,0 +1,20 @@
+{
+  "axios": "6.11.2",
+  "semver": "6.11.2",
+  "json5": "6.11.2",
+  "minimatch": "6.11.2",
+  "word-wrap": "6.11.2",
+  "tough-cookie": "6.11.2",
+  "postcss": "6.11.2",
+  "@babel/traverse": "6.11.2",
+  "ua-parser-js": "6.11.2",
+  "follow-redirects": "6.11.2",
+  "webpack": "6.11.2",
+  "node-fetch": "6.11.2",
+  "glob-parent": "6.11.2",
+  "terser": "6.11.2",
+  "loader-utils": "6.11.2",
+  "minimist": "6.11.2",
+  "shelljs": "6.11.2",
+  "qs": "6.11.2"
+}

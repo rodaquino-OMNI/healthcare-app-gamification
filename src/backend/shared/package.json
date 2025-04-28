@@ -121,4 +121,22 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "ts-node prisma/seed.ts"
   }
+  ,
+  "overrides": {
+    "0": "8.4.31",
+    "0": "6.11.2",
+    "agora-rtc-sdk-ng": {      "axios": "1.6.8",      "follow-redirects": "1.15.4",      "@agora-js/media": {        "axios": "1.6.8",        "follow-redirects": "1.15.4"      },      "@agora-js/report": {        "axios": "1.6.8",        "follow-redirects": "1.15.4"      },      "@agora-js/shared": {        "axios": "1.6.8",        "follow-redirects": "1.15.4"      }    },
+    "agora-rtc-sdk": {      "axios": "1.6.8",      "follow-redirects": "1.15.4"    },
+    "agora-rtc-sdk-ng": {      "axios": "1.6.8",      "follow-redirects": "1.15.4",      "@agora-js/media": {        "axios": "1.6.8",        "follow-redirects": "1.15.4"      },      "@agora-js/report": {        "axios": "1.6.8",        "follow-redirects": "1.15.4"      },      "@agora-js/shared": {        "axios": "1.6.8",        "follow-redirects": "1.15.4"      }    },
+    "agora-rtc-sdk": {      "axios": "1.6.8",      "follow-redirects": "1.15.4"    },
+  }
+
+  ,
+  "resolutions": {
+    "0": "8.4.31",
+    "0": "6.11.2",
+    "agora-rtc-sdk": {      "axios": "1.6.8",      "follow-redirects": "1.15.4"    },
+    "agora-rtc-sdk": {      "axios": "1.6.8",      "follow-redirects": "1.15.4"    },
+  }
+
 }

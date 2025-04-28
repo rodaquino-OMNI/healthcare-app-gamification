@@ -1,0 +1,17 @@
+diff --git a/node_modules/axios/lib/adapters/xhr.js b/node_modules/axios/lib/adapters/xhr.js
+index 94db358..1671f19 100644
+--- a/node_modules/axios/lib/adapters/xhr.js
++++ b/node_modules/axios/lib/adapters/xhr.js
+@@ -24,6 +24,11 @@ module.exports = function xhrAdapter(config) {
+     
+     // Validate URL before proceeding
+     var url = config.url;
++    if (typeof url !== 'string') {
++      return reject(createError(
++        'URL must be a string',
++        config
++      ));
++    }
+     
+     // Add responseType to request if needed
+     if (config.responseType) {

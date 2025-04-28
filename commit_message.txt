@@ -1,11 +1,13 @@
-fix: resolve 32 dependency vulnerabilities (3 critical, 17 high, 10 moderate, 2 low)
+fix: resolve 34 dependency vulnerabilities with comprehensive security package
 
-- Updated axios to secure version 1.6.8 across all packages
-- Added package resolutions for common vulnerable dependencies
-- Added overrides for critical packages with known vulnerabilities
-- Created a script to automatically apply security patches
-- Fixed vulnerable dependencies including semver, json5, minimatch and others
-- Added SECURITY_FIXES.md documentation
+- Updated all package.json files with secure dependency versions
+- Added overrides and resolutions for known vulnerable dependencies in all workspaces
+- Created a security patch script to fix nested vulnerable dependencies
+- Added patch files to fix axios security issues
+- Created an automatic postinstall script to apply security patches
+- Added .npmrc and .yarnrc configuration files with security settings
+- Fixed issues with nested dependencies in Agora SDK and Sentry packages
 
-This commit addresses all GitHub reported security vulnerabilities and adds
-a security maintenance script for future use.
+This commit addresses all 34 GitHub-reported vulnerabilities (3 critical, 19 high,
+10 moderate, 2 low) by implementing a comprehensive security solution that works
+across the entire monorepo structure.
