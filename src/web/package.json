@@ -59,7 +59,7 @@
     "i18next": "^23.8.2",
     "intl": "^1.2.5",
     "jwt-decode": "4.0.0",
-    "next": "14.1.0",
+    "next": "14.2.25",
     "next-seo": "^6.4.0",
     "nookies": "2.5.2",
     "prettier": "^3.2.5",
@@ -92,8 +92,8 @@
     "@babel/preset-typescript": "^7.23.3",
     "@jest/globals": "^29.7.0",
     "@jest/types": "29.6.3",
-    "@next/bundle-analyzer": "^14.1.0",
-    "@next/eslint-plugin-next": "^14.1.0",
+    "@next/bundle-analyzer": "^14.2.25",
+    "@next/eslint-plugin-next": "^14.2.25",
     "@react-native/metro-config": "^0.73.5",
     "@react-native/typescript-config": "0.74.0",
     "@testing-library/jest-dom": "^6.4.2",
@@ -110,7 +110,7 @@
     "babel-plugin-styled-components": "^2.1.4",
     "babel-plugin-transform-imports": "^2.0.0",
     "eslint": "8.56.0",
-    "eslint-config-next": "14.1.0",
+    "eslint-config-next": "14.2.25",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsx-a11y": "^6.8.0",
@@ -154,7 +154,11 @@
     "agora-rtc-sdk-ng": {
       "axios": "1.6.8",
       "follow-redirects": "1.15.4"
-    }
+    },
+    "next": "14.2.25",
+    "eslint-config-next": "14.2.25",
+    "@next/bundle-analyzer": "14.2.25",
+    "@next/eslint-plugin-next": "14.2.25"
   },
   "resolutions": {
     "react": "18.2.0",
@@ -180,7 +184,11 @@
     "qs": "6.11.2",
     "ua-parser-js": "1.0.35",
     "@sentry/nextjs/webpack": "5.76.0",
-    "@sentry/nextjs/@babel/traverse": "7.23.2"
+    "@sentry/nextjs/@babel/traverse": "7.23.2",
+    "next": "14.2.25",
+    "eslint-config-next": "14.2.25",
+    "@next/bundle-analyzer": "14.2.25",
+    "@next/eslint-plugin-next": "14.2.25"
   },
   "engines": {
     "node": ">=18.0.0"

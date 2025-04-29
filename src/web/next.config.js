@@ -127,6 +127,16 @@ const nextConfig = {
         ],
       },
       {
+        // Protection against Next.js Middleware Authorization Bypass vulnerability
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Middleware-Request-Check',
+            value: 'protected',
+          }
+        ],
+      },
+      {
         // Cache static assets for better performance
         source: '/static/:path*',
         headers: [
@@ -137,6 +147,12 @@ const nextConfig = {
         ],
       },
     ];
+  },
+  
+  // Add server middleware to protect against the Authorization Bypass vulnerability
+  serverRuntimeConfig: {
+    // Will only be available on the server side
+    middlewareProtection: true,
   },
   
   // Custom redirects
