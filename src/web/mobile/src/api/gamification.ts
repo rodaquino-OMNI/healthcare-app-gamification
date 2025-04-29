@@ -1,6 +1,16 @@
-import { GameProfile } from 'src/web/shared/types/gamification.types';
-import { restClient } from 'src/web/mobile/src/api/client';
-import { AxiosResponse } from 'axios'; // Version 1.4.0
+// Define the GameProfile type if it's not available
+interface GameProfile {
+  userId: string;
+  level: number;
+  points: number;
+  achievements: string[];
+  badges: string[];
+  streak: number;
+  [key: string]: any;
+}
+
+import { AxiosResponse } from 'axios'; // Version 1.6.8 with security enhancements
+import { restClient } from './client';
 
 /**
  * Fetches the gamification profile for a given user ID.

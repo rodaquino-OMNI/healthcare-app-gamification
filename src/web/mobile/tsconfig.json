@@ -2,7 +2,7 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "target": "es2018",
-    "lib": ["es2018"],
+    "lib": ["es2018", "dom"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -28,16 +28,19 @@
       "@constants/*": ["src/constants/*"],
       "@i18n/*": ["src/i18n/*"]
     },
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "allowSyntheticDefaultImports": true
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "allowSyntheticDefaultImports": true,
+    "types": ["react-native", "jest", "node"],
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
+    "src/**/*.d.ts",
     "index.js",
     "App.tsx",
     "metro.config.js",

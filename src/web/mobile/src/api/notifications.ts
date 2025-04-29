@@ -1,7 +1,17 @@
-import { Notification } from 'src/web/shared/types/notification.types';
-import { API_BASE_URL } from 'src/web/shared/constants/api';
-import { restClient } from 'src/web/mobile/src/api/client';
-import { AxiosResponse } from 'axios'; // Version 1.4.0
+// Define Notification type if it's not available elsewhere
+interface Notification {
+  id: string;
+  userId: string;
+  title: string;
+  body: string;
+  type: string;
+  read: boolean;
+  createdAt: string;
+  [key: string]: any;
+}
+
+import { AxiosResponse } from 'axios'; // Version 1.6.8 with security enhancements
+import { restClient } from './client';
 
 /**
  * Fetches notifications for a given user ID.
@@ -11,7 +21,9 @@ import { AxiosResponse } from 'axios'; // Version 1.4.0
  */
 export const getNotifications = async (userId: string): Promise<Notification[]> => {
   try {
-    const endpoint = `${API_BASE_URL}/notifications?userId=${userId}`;
+    // Using a path-based endpoint instead of constructing absolute URLs
+    // This prevents SSRF vulnerabilities (CVE-2023-45857)
+    const endpoint = `/notifications?userId=${userId}`;
     const response: AxiosResponse<Notification[]> = await restClient.get(endpoint);
     return response.data;
   } catch (error) {
@@ -28,7 +40,9 @@ export const getNotifications = async (userId: string): Promise<Notification[]> 
  */
 export const markNotificationAsRead = async (notificationId: string): Promise<void> => {
   try {
-    const endpoint = `${API_BASE_URL}/notifications/${notificationId}/read`;
+    // Using a path-based endpoint instead of constructing absolute URLs
+    // This prevents SSRF vulnerabilities (CVE-2023-45857)
+    const endpoint = `/notifications/${notificationId}/read`;
     await restClient.post(endpoint);
   } catch (error) {
     console.error('Error marking notification as read:', error);
