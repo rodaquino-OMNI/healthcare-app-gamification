@@ -6,7 +6,7 @@ AUSTA SuperApp is a unified digital health platform designed to transform health
 
 The AUSTA SuperApp addresses the fragmentation and complexity in current healthcare digital experiences by providing a cohesive platform that aligns with how users naturally think about their healthcare needs.
 
-### Business Problems Addressed:
+### Business Problems Addressed
 
 - Fragmented healthcare digital experiences
 
@@ -16,7 +16,7 @@ The AUSTA SuperApp addresses the fragmentation and complexity in current healthc
 
 - Disconnected health data
 
-### Solution Approach:
+### Solution Approach
 
 - Journey-centered design with gamification
 
@@ -26,7 +26,7 @@ The AUSTA SuperApp addresses the fragmentation and complexity in current healthc
 
 - Integrated data architecture
 
-### Value Proposition:
+### Value Proposition
 
 - Improved user engagement and health outcomes
 
