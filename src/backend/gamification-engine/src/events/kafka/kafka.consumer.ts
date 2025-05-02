@@ -1,9 +1,9 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { EventsService } from '../events/events.service';
-import { RulesService } from '../rules/rules.service';
-import { ProfilesService } from '../profiles/profiles.service';
-import { KafkaService } from 'src/backend/shared/src/kafka/kafka.service';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
+import { EventsService } from '../../events/events.service';
+import { RulesService } from '../../rules/rules.service';
+import { ProfilesService } from '../../profiles/profiles.service';
+import { KafkaService } from '@shared/kafka/kafka.service';
+import { LoggerService } from '@shared/logging/logger.service';
 import { gamificationEngine } from '../../config/configuration';
 import { ProcessEventDto } from '../dto/process-event.dto';
 
@@ -13,7 +13,7 @@ import { ProcessEventDto } from '../dto/process-event.dto';
  * and forwarding them to the EventsService for gamification processing.
  */
 @Injectable()
-export class KafkaConsumer implements OnModuleInit {
+export class KafkaConsumerService implements OnModuleInit {
   /**
    * Injects the necessary services.
    * 

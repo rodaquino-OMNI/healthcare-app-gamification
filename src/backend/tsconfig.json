@@ -11,6 +11,11 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["shared/src/*"],
+      "@gamification/*": ["gamification-engine/src/*"],
+      "@prisma/*": ["shared/prisma/*"]
+    },
     "incremental": true,
     "skipLibCheck": true,
     "strict": false,
