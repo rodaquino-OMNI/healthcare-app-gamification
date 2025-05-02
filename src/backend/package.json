@@ -10,7 +10,8 @@
     "care-service",
     "plan-service",
     "gamification-engine",
-    "notification-service"
+    "notification-service",
+    "packages/*"
   ],
   "scripts": {
     "bootstrap": "lerna bootstrap",

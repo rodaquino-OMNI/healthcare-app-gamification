@@ -6,42 +6,60 @@ import {
   Query, 
   UseGuards, 
   NotFoundException,
-  Logger 
+  Logger,
+  createParamDecorator,
+  ExecutionContext
 } from '@nestjs/common'; // @nestjs/common ^9.0.0
-import { Roles } from '@app/auth'; // @app/auth ^1.0.0
-import { RolesGuard } from '@app/auth'; // @app/auth ^1.0.0
-import { CurrentUser } from '@app/auth'; // @app/auth ^1.0.0
-import { FilterDto } from '@app/shared'; // @app/shared ^1.0.0
-import { PaginationDto } from '@app/shared'; // @app/shared ^1.0.0
-import { LoggerService } from '@app/shared'; // @app/shared ^1.0.0
+import { AuthGuard } from '@nestjs/passport';
 import { QuestsService } from './quests.service';
+
+// Define the DTO interfaces locally since imports are failing
+interface PaginationDto {
+  page?: number;
+  limit?: number;
+}
+
+interface FilterDto {
+  orderBy?: Record<string, string>;
+  where?: Record<string, any>;
+  journey?: string;
+}
+
+// Create the CurrentUser decorator locally
+export const CurrentUser = createParamDecorator(
+  (data: string | undefined, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest();
+    const user = request.user;
+    return data ? user?.[data] : user;
+  },
+);
 
 /**
  * Controller for managing quests.
  */
 @Controller('quests')
 export class QuestsController {
+  private logger = new Logger(QuestsController.name);
+
   /**
-   * Injects the QuestsService and LoggerService.
+   * Injects the QuestsService.
    */
   constructor(
-    private readonly questsService: QuestsService,
-    private readonly logger: LoggerService
+    private readonly questsService: QuestsService
   ) {}
 
   /**
    * Retrieves all quests.
    */
   @Get()
-  @UseGuards(RolesGuard)
-  @Roles('user')
+  @UseGuards(AuthGuard('jwt'))
   async findAll(
     @Query() pagination: PaginationDto,
     @Query() filter: FilterDto
   ): Promise<any[]> {
-    this.logger.log('Finding all quests', 'QuestsController');
+    this.logger.log('Finding all quests');
     const quests = await this.questsService.findAll();
-    this.logger.log(`Found ${quests.length} quests`, 'QuestsController');
+    this.logger.log(`Found ${quests.length} quests`);
     return quests;
   }
 
@@ -49,17 +67,16 @@ export class QuestsController {
    * Retrieves a single quest by its ID.
    */
   @Get(':id')
-  @UseGuards(RolesGuard)
-  @Roles('user')
+  @UseGuards(AuthGuard('jwt'))
   async findOne(@Param('id') id: string): Promise<any> {
-    this.logger.log(`Finding quest with ID: ${id}`, 'QuestsController');
+    this.logger.log(`Finding quest with ID: ${id}`);
     const quest = await this.questsService.findOne(id);
     
     if (!quest) {
       throw new NotFoundException(`Quest with ID ${id} not found`);
     }
     
-    this.logger.log(`Found quest with ID: ${id}`, 'QuestsController');
+    this.logger.log(`Found quest with ID: ${id}`);
     return quest;
   }
 
@@ -67,15 +84,14 @@ export class QuestsController {
    * Starts a quest for a user.
    */
   @Post(':id/start')
-  @UseGuards(RolesGuard)
-  @Roles('user')
+  @UseGuards(AuthGuard('jwt'))
   async startQuest(
     @Param('id') id: string,
     @CurrentUser() user: any
   ): Promise<any> {
-    this.logger.log(`Starting quest ${id} for user ${user.id}`, 'QuestsController');
+    this.logger.log(`Starting quest ${id} for user ${user.id}`);
     const userQuest = await this.questsService.startQuest(user.id, id);
-    this.logger.log(`Started quest ${id} for user ${user.id}`, 'QuestsController');
+    this.logger.log(`Started quest ${id} for user ${user.id}`);
     return userQuest;
   }
 
@@ -83,15 +99,14 @@ export class QuestsController {
    * Completes a quest for a user.
    */
   @Post(':id/complete')
-  @UseGuards(RolesGuard)
-  @Roles('user')
+  @UseGuards(AuthGuard('jwt'))
   async completeQuest(
     @Param('id') id: string,
     @CurrentUser() user: any
   ): Promise<any> {
-    this.logger.log(`Completing quest ${id} for user ${user.id}`, 'QuestsController');
+    this.logger.log(`Completing quest ${id} for user ${user.id}`);
     const userQuest = await this.questsService.completeQuest(user.id, id);
-    this.logger.log(`Completed quest ${id} for user ${user.id}`, 'QuestsController');
+    this.logger.log(`Completed quest ${id} for user ${user.id}`);
     return userQuest;
   }
 }

@@ -1,7 +1,15 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "@app/auth": ["../auth-service/src"],
+      "@app/auth/*": ["../auth-service/src/*"],
+      "@app/shared": ["../shared/src"],
+      "@app/shared/*": ["../shared/src/*"]
+    }
   },
   "include": [
     "src/**/*"

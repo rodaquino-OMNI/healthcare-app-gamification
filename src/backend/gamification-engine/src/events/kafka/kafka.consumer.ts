@@ -2,8 +2,8 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { EventsService } from '../../events/events.service';
 import { RulesService } from '../../rules/rules.service';
 import { ProfilesService } from '../../profiles/profiles.service';
-import { KafkaService } from '@shared/kafka/kafka.service';
-import { LoggerService } from '@shared/logging/logger.service';
+import { KafkaService } from '@app/shared/kafka/kafka.service'; // @app/shared ^1.0.0
+import { LoggerService } from '@app/shared/logging/logger.service'; // @app/shared ^1.0.0
 import { gamificationEngine } from '../../config/configuration';
 import { ProcessEventDto } from '../dto/process-event.dto';
 
@@ -45,7 +45,7 @@ export class KafkaConsumerService implements OnModuleInit {
       await this.kafkaService.consume(
         topic,
         kafkaConfig.groupId,
-        async (message, key, headers) => {
+        async (message: any, key?: string, headers?: Record<string, string>) => {
           await this.processMessage(message);
         }
       );
@@ -68,7 +68,7 @@ export class KafkaConsumerService implements OnModuleInit {
         return;
       }
 
-      const eventData: ProcessEventDto = message;
+      const eventData = message as ProcessEventDto;
       
       this.logger.log(
         `Processing event: ${eventData.type} for user: ${eventData.userId} from journey: ${eventData.journey || 'unknown'}`,
@@ -82,11 +82,19 @@ export class KafkaConsumerService implements OnModuleInit {
         'KafkaConsumer'
       );
     } catch (error) {
-      this.logger.error(
-        `Error processing Kafka message: ${error.message}`,
-        error.stack,
-        'KafkaConsumer'
-      );
+      if (error instanceof Error) {
+        this.logger.error(
+          `Error processing Kafka message: ${error.message}`,
+          error.stack,
+          'KafkaConsumer'
+        );
+      } else {
+        this.logger.error(
+          `Error processing Kafka message: ${String(error)}`,
+          '',
+          'KafkaConsumer'
+        );
+      }
     }
   }
 }

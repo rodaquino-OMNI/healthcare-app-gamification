@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common'; // @nestjs/common 10.0.0
 import { InjectRepository } from '@nestjs/typeorm'; // @nestjs/typeorm 10.0.0
 import { Repository } from 'typeorm'; // typeorm 0.3.17
 import { Achievement } from './entities/achievement.entity';
-import { Service } from 'src/backend/shared/src/interfaces/service.interface';
-import { AppException } from 'src/backend/shared/src/exceptions/exceptions.types';
-import { FilterDto, PaginatedResponse, PaginationDto } from 'src/backend/shared/src/dto/pagination.dto';
-import { ErrorType } from 'src/backend/shared/src/exceptions/exceptions.types';
+import { Service } from '@app/shared/interfaces/service.interface'; // @app/shared ^1.0.0
+import { AppException } from '@app/shared/exceptions/exceptions.types'; // @app/shared ^1.0.0
+import { PaginatedResponse, PaginationDto } from '@app/shared/dto/pagination.dto'; // @app/shared ^1.0.0
+import { FilterDto } from '@app/shared/dto/filter.dto'; // @app/shared ^1.0.0
+import { ErrorType } from '@app/shared/exceptions/exceptions.types'; // @app/shared ^1.0.0
 
 /**
  * Service responsible for managing achievements in the gamification system.
@@ -58,7 +59,9 @@ export class AchievementsService implements Service<Achievement> {
       // Apply order by if provided
       if (filter?.orderBy) {
         Object.entries(filter.orderBy).forEach(([key, direction]) => {
-          queryBuilder.addOrderBy(`achievement.${key}`, direction.toUpperCase() as 'ASC' | 'DESC');
+          // Fix: Add type assertion for direction to ensure it has toUpperCase method
+          const sortDirection = (direction as string).toUpperCase() as 'ASC' | 'DESC';
+          queryBuilder.addOrderBy(`achievement.${key}`, sortDirection);
         });
       } else {
         // Default sorting
@@ -88,13 +91,13 @@ export class AchievementsService implements Service<Achievement> {
           hasPreviousPage: page > 1
         }
       };
-    } catch (error) {
+    } catch (error: unknown) {
       throw new AppException(
         'Failed to retrieve achievements',
         ErrorType.TECHNICAL,
         'GAME_002',
         { filter },
-        error
+        error as Error
       );
     }
   }
@@ -120,7 +123,7 @@ export class AchievementsService implements Service<Achievement> {
       }
       
       return achievement;
-    } catch (error) {
+    } catch (error: unknown) {
       if (error instanceof AppException) {
         throw error;
       }
@@ -130,7 +133,7 @@ export class AchievementsService implements Service<Achievement> {
         ErrorType.TECHNICAL,
         'GAME_002',
         { id },
-        error
+        error as Error
       );
     }
   }
@@ -146,13 +149,13 @@ export class AchievementsService implements Service<Achievement> {
     try {
       const achievement = this.achievementRepository.create(achievementData);
       return await this.achievementRepository.save(achievement);
-    } catch (error) {
+    } catch (error: unknown) {
       throw new AppException(
         'Failed to create achievement',
         ErrorType.TECHNICAL,
         'GAME_003',
         { achievementData },
-        error
+        error as Error
       );
     }
   }
@@ -173,7 +176,7 @@ export class AchievementsService implements Service<Achievement> {
       // Update the achievement
       const updated = { ...existingAchievement, ...achievementData };
       return await this.achievementRepository.save(updated);
-    } catch (error) {
+    } catch (error: unknown) {
       if (error instanceof AppException) {
         throw error;
       }
@@ -183,7 +186,7 @@ export class AchievementsService implements Service<Achievement> {
         ErrorType.TECHNICAL,
         'GAME_005',
         { id, achievementData },
-        error
+        error as Error
       );
     }
   }
@@ -202,8 +205,8 @@ export class AchievementsService implements Service<Achievement> {
       
       // Delete the achievement
       const result = await this.achievementRepository.delete(id);
-      return result.affected > 0;
-    } catch (error) {
+      return result.affected ? result.affected > 0 : false;
+    } catch (error: unknown) {
       if (error instanceof AppException) {
         throw error;
       }
@@ -213,7 +216,7 @@ export class AchievementsService implements Service<Achievement> {
         ErrorType.TECHNICAL,
         'GAME_006',
         { id },
-        error
+        error as Error
       );
     }
   }
@@ -241,13 +244,13 @@ export class AchievementsService implements Service<Achievement> {
       }
       
       return await queryBuilder.getCount();
-    } catch (error) {
+    } catch (error: unknown) {
       throw new AppException(
         'Failed to count achievements',
         ErrorType.TECHNICAL,
         'GAME_007',
         { filter },
-        error
+        error as Error
       );
     }
   }
@@ -324,13 +327,13 @@ export class AchievementsService implements Service<Achievement> {
           hasPreviousPage: page > 1
         }
       };
-    } catch (error) {
+    } catch (error: unknown) {
       throw new AppException(
         'Failed to search achievements',
         ErrorType.TECHNICAL,
         'GAME_008',
         { searchTerm },
-        error
+        error as Error
       );
     }
   }

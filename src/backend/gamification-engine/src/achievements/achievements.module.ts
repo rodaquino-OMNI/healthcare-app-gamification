@@ -4,11 +4,10 @@ import { AchievementsService } from './achievements.service';
 import { AchievementsController } from './achievements.controller';
 import { Achievement } from './entities/achievement.entity';
 import { UserAchievement } from './entities/user-achievement.entity';
-import { KafkaModule } from 'src/backend/shared/src/kafka/kafka.module';
-import { LoggerModule } from 'src/backend/shared/src/logging/logger.module';
-import { RedisModule } from 'src/backend/shared/src/redis/redis.module';
-import { TracingModule } from 'src/backend/shared/src/tracing/tracing.module';
-import { PrismaService } from 'src/backend/shared/src/database/prisma.service';
+import { KafkaModule } from '@app/shared/kafka/kafka.module'; // @app/shared ^1.0.0
+import { LoggerModule } from '@app/shared/logging/logger.module'; // @app/shared ^1.0.0
+import { RedisModule } from '@app/shared/redis/redis.module'; // @app/shared ^1.0.0
+import { TracingModule } from '@app/shared/tracing/tracing.module'; // @app/shared ^1.0.0
 
 /**
  * Module for managing achievements in the gamification system.
@@ -18,7 +17,7 @@ import { PrismaService } from 'src/backend/shared/src/database/prisma.service';
 @Module({
   imports: [TypeOrmModule.forFeature([Achievement, UserAchievement]), KafkaModule, RedisModule, LoggerModule, TracingModule],
   controllers: [AchievementsController],
-  providers: [AchievementsService, PrismaService],
+  providers: [AchievementsService],
   exports: [AchievementsService],
 })
 export class AchievementsModule {}

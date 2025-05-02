@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core'; // v10.0.0+
 import { AppModule } from './app.module';
 import { KafkaConsumerService } from './events/kafka/kafka.consumer';
-import { LoggerService } from '@shared/logging/logger.service';
+import { LoggerService } from '@app/shared/logging/logger.service'; // @app/shared ^1.0.0
 
 /**
  * Initializes and starts the NestJS application, configures the Kafka consumer, and sets up global exception handling.

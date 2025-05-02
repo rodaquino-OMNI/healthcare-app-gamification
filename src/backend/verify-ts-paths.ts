@@ -27,8 +27,12 @@ async function verifyPaths(): Promise<void> {
     
     logger.log('Path verification completed successfully!');
   } catch (error) {
-    logger.error(`Path verification failed: ${error.message}`);
-    logger.error(error.stack);
+    if (error instanceof Error) {
+      logger.error(`Path verification failed: ${error.message}`);
+      logger.error(error.stack);
+    } else {
+      logger.error(`Path verification failed: ${String(error)}`);
+    }
     process.exit(1);
   }
 }

@@ -1,8 +1,8 @@
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common'; // @nestjs/common 10.0.0
-import { JwtAuthGuard, RolesGuard } from '@nestjs/passport'; // @nestjs/passport 10.0.0
+import { AuthGuard } from '@nestjs/passport';
 import { AchievementsService } from './achievements.service';
-import { FilterDto } from 'src/backend/shared/src/dto/filter.dto';
-import { PaginationDto } from 'src/backend/shared/src/dto/pagination.dto';
+import { FilterDto } from '@app/shared/dto/filter.dto'; // @app/shared ^1.0.0
+import { PaginationDto } from '@app/shared/dto/pagination.dto'; // @app/shared ^1.0.0
 
 /**
  * Controller for managing achievements.
@@ -26,7 +26,7 @@ export class AchievementsController {
    * @returns A promise that resolves to an array of achievements.
    */
   @Get()
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(AuthGuard('jwt'))
   async findAll(
     @Query() pagination: PaginationDto,
     @Query() filter: FilterDto
@@ -41,7 +41,7 @@ export class AchievementsController {
    * @returns A promise that resolves to a single achievement.
    */
   @Get(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(AuthGuard('jwt'))
   async findOne(@Param('id') id: string): Promise<any> {
     return this.achievementsService.findById(id);
   }
