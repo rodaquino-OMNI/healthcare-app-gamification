@@ -5,9 +5,7 @@ This directory contains the source code for the AUSTA SuperApp's mobile applicat
 ## Technology Stack
 
 - React Native: Cross-platform mobile development framework
-
 - JavaScript/TypeScript: Programming language
-
 - Expo: Managed workflow for React Native
 
 ## Getting Started

@@ -5,33 +5,21 @@
 The Authentication Service is a critical component of the AUSTA SuperApp that manages user identity, authentication, and authorization. It provides secure access controls across all three journey domains: Health ("Minha Saúde"), Care ("Cuidar-me Agora"), and Plan ("Meu Plano & Benefícios").
 
 Key responsibilities include:
-
 - User registration and profile management
-
 - Secure authentication with multiple factors
-
 - Role-based access control with journey-specific permissions
-
 - OAuth 2.0 integration with external identity providers
-
 - JWT token issuance and validation
-
 - Session management and security enforcement
 
 ## Technology Stack
 
 - **Framework**: NestJS v10.0+
-
 - **Database**: PostgreSQL 14+ via Prisma ORM
-
 - **Authentication**: Passport.js with JWT, OAuth 2.0, and Local strategies
-
 - **Caching**: Redis for token blacklisting and rate limiting
-
 - **Message Broker**: Kafka for event distribution
-
 - **Security**: bcrypt for password hashing, helmet for HTTP security
-
 - **Testing**: Jest for unit and e2e tests
 
 ## Getting Started
@@ -39,13 +27,9 @@ Key responsibilities include:
 ### Prerequisites
 
 - Node.js 18.x or later
-
 - Docker and Docker Compose
-
 - PostgreSQL 14+ (can be run via Docker)
-
 - Redis (can be run via Docker)
-
 - Kafka (can be run via Docker)
 
 ### Installation
@@ -54,18 +38,18 @@ Key responsibilities include:
    ```bash
    git clone [repository-url]
    cd src/backend/auth-service
-   ```markdown
+   ```
 
 2. Install dependencies:
    ```bash
    npm install
-   ```markdown
+   ```
 
 3. Set up environment variables:
    ```bash
    cp .env.example .env
    # Edit .env with appropriate values
-   ```markdown
+   ```
 
 4. Run the service:
    ```bash
@@ -75,12 +59,12 @@ Key responsibilities include:
    # Production mode
    npm run build
    npm run start:prod
-   ```markdown
+   ```
 
 5. With Docker:
    ```bash
    docker-compose up -d
-   ```markdown
+   ```
 
 ## Configuration
 
@@ -103,7 +87,7 @@ Key configuration parameters include:
 
 The Auth Service is designed as a microservice with clear boundaries and responsibilities:
 
-```markdown
+```
 src/
 ├── auth/                  # Core authentication logic
 │   ├── controllers/       # API endpoints
@@ -117,7 +101,7 @@ src/
 ├── permissions/           # Permission management
 ├── config/                # Service configuration
 └── common/                # Shared utilities
-```markdown
+```
 
 ## API Endpoints
 
@@ -193,11 +177,8 @@ The service implements a comprehensive RBAC system with journey-specific permiss
 3. **Journey Context**: Permissions are scoped to specific journeys ("health", "care", "plan")
 
 Example permissions:
-
 - `health:metrics:read` - Can view health metrics
-
 - `care:appointment:create` - Can create appointments
-
 - `plan:claim:submit` - Can submit insurance claims
 
 Permissions are enforced using the `@Roles()` decorator and `RolesGuard`.
@@ -222,35 +203,29 @@ interface UserEvent {
     changedBy?: string;
   };
 }
-```markdown
+```
 
 ## Testing
 
 ### Unit Tests
 
 ```bash
-
 # Run all unit tests
-
 npm run test
 
 # Run with coverage
-
 npm run test:cov
-```markdown
+```
 
 ### End-to-End Tests
 
 ```bash
-
 # Run all e2e tests
-
 npm run test:e2e
 
 # Run specific test file
-
 npm run test:e2e -- auth.e2e-spec.ts
-```markdown
+```
 
 ### Test Environment Setup
 
@@ -259,17 +234,11 @@ The e2e tests use an in-memory database and mock external services. Configuratio
 ## Security Considerations
 
 - All passwords are hashed using bcrypt with appropriate cost factor
-
 - JWTs are signed with RS256 algorithm in production
-
 - Tokens include appropriate claims (iss, aud, exp, nbf)
-
 - Session management includes token revocation capabilities
-
 - Rate limiting is applied to sensitive endpoints
-
 - Security headers are applied using Helmet
-
 - Input validation using class-validator and Joi
 
 ## Troubleshooting

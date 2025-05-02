@@ -6,33 +6,22 @@ The AUSTA SuperApp Design System is a comprehensive collection of reusable compo
 
 ## Principles
 
-- **Journey-Centered:** Components adapt to each journey context with appropriate theming, behaviors, and patterns
-
-- **Accessibility First:** All components meet WCAG 2.1 Level AA standards to ensure inclusive experiences
-
-- **Gamification Ready:** Built-in support for achievement indicators, progress tracking, and rewards
-
-- **Cross-Platform:** Consistent implementation across web and mobile platforms
-
-- **Performance Optimized:** Lightweight, efficient components that maintain high performance
-
-- **Consistency with Flexibility:** Unified visual language that allows for journey-specific customization
+* **Journey-Centered:** Components adapt to each journey context with appropriate theming, behaviors, and patterns
+* **Accessibility First:** All components meet WCAG 2.1 Level AA standards to ensure inclusive experiences
+* **Gamification Ready:** Built-in support for achievement indicators, progress tracking, and rewards
+* **Cross-Platform:** Consistent implementation across web and mobile platforms
+* **Performance Optimized:** Lightweight, efficient components that maintain high performance
+* **Consistency with Flexibility:** Unified visual language that allows for journey-specific customization
 
 ## Technologies
 
-- **React/React Native:** Core UI framework for both web and mobile platforms
-
-- **Styled Components (v6.0+):** CSS-in-JS styling with theming capabilities
-
-- **TypeScript (v5.0+):** Type-safe component development and usage
-
-- **Storybook (v7.0+):** Component documentation and visual testing
-
-- **Jest/React Testing Library (v14.0+):** Component testing with accessibility validation
-
-- **Reanimated (v3.0+):** Performance-optimized animations for gamification effects
-
-- **Victory Native (v36.0+):** Cross-platform chart components for health metrics
+* **React/React Native:** Core UI framework for both web and mobile platforms
+* **Styled Components (v6.0+):** CSS-in-JS styling with theming capabilities
+* **TypeScript (v5.0+):** Type-safe component development and usage
+* **Storybook (v7.0+):** Component documentation and visual testing
+* **Jest/React Testing Library (v14.0+):** Component testing with accessibility validation
+* **Reanimated (v3.0+):** Performance-optimized animations for gamification effects
+* **Victory Native (v36.0+):** Cross-platform chart components for health metrics
 
 ## Getting Started
 
@@ -44,7 +33,7 @@ The AUSTA SuperApp Design System is a comprehensive collection of reusable compo
 
    # Using npm
    npm install @austa/design-system
-   ```markdown
+   ```
 
 2. **Setup:**
 
@@ -59,7 +48,7 @@ The AUSTA SuperApp Design System is a comprehensive collection of reusable compo
        </ThemeProvider>
      );
    };
-   ```markdown
+   ```
 
 3. **Basic Usage:**
 
@@ -79,7 +68,7 @@ The AUSTA SuperApp Design System is a comprehensive collection of reusable compo
        </Card>
      );
    };
-   ```markdown
+   ```
 
 4. **Journey-Specific Components:**
 
@@ -97,7 +86,7 @@ The AUSTA SuperApp Design System is a comprehensive collection of reusable compo
        />
      );
    };
-   ```markdown
+   ```
 
 ## Core Concepts
 
@@ -113,7 +102,7 @@ import { tokens } from '@austa/design-system';
 const primaryHealthColor = tokens.colors.journeys.health.primary; // #0ACF83
 const primaryCareColor = tokens.colors.journeys.care.primary; // #FF8C42
 const primaryPlanColor = tokens.colors.journeys.plan.primary; // #3A86FF
-```markdown
+```
 
 ### Journey Theming
 
@@ -124,7 +113,7 @@ All components support journey-specific styling via the `journey` prop.
 <Button journey="health">View Health Dashboard</Button>
 <Button journey="care">Book Appointment</Button>
 <Button journey="plan">Submit Claim</Button>
-```markdown
+```
 
 ### Accessibility Features
 
@@ -138,7 +127,7 @@ Built-in accessibility support in all components.
 >
   View Details
 </Button>
-```markdown
+```
 
 ### Gamification Components
 
@@ -167,39 +156,28 @@ import { AchievementBadge, ProgressTracker, RewardCard } from '@austa/design-sys
   label="Daily Steps"
   journey="health"
 />
-```markdown
+```
 
 ## Component Categories
 
-- **Typography:** Text, Heading, Label
-
-- **Layout:** Box, Flex, Grid, Stack
-
-- **Inputs:** Button, TextField, Select, Checkbox, RadioButton, Toggle, DatePicker
-
-- **Feedback:** Toast, Alert, ProgressBar, Skeleton
-
-- **Navigation:** Tabs, BottomNavigation, Breadcrumb, Link
-
-- **Containers:** Card, Modal, Drawer, Panel
-
-- **Data Display:** Table, List, Tag, Badge, Avatar
-
-- **Health Journey:** HealthMetricCard, MedicalTimeline, GoalCard, DeviceCard
-
-- **Care Journey:** ProviderCard, AppointmentCard, TelemedicineScreen, MedicationCard
-
-- **Plan Journey:** CoverageCard, ClaimCard, InsuranceCard, BenefitCard
-
-- **Gamification:** AchievementBadge, ProgressTracker, RewardCard, LevelIndicator
-
-- **Data Visualization:** BarChart, LineChart, PieChart, RadialProgress
+* **Typography:** Text, Heading, Label
+* **Layout:** Box, Flex, Grid, Stack
+* **Inputs:** Button, TextField, Select, Checkbox, RadioButton, Toggle, DatePicker
+* **Feedback:** Toast, Alert, ProgressBar, Skeleton
+* **Navigation:** Tabs, BottomNavigation, Breadcrumb, Link
+* **Containers:** Card, Modal, Drawer, Panel
+* **Data Display:** Table, List, Tag, Badge, Avatar
+* **Health Journey:** HealthMetricCard, MedicalTimeline, GoalCard, DeviceCard
+* **Care Journey:** ProviderCard, AppointmentCard, TelemedicineScreen, MedicationCard
+* **Plan Journey:** CoverageCard, ClaimCard, InsuranceCard, BenefitCard
+* **Gamification:** AchievementBadge, ProgressTracker, RewardCard, LevelIndicator
+* **Data Visualization:** BarChart, LineChart, PieChart, RadialProgress
 
 ## Documentation
 
 For detailed documentation on each component, including APIs, examples, and accessibility guidelines, visit our Storybook:
 
-[<https://design-system.austa.com.br](https://design-system.austa.com.br)>
+[https://design-system.austa.com.br](https://design-system.austa.com.br)
 
 ## Contributing
 

@@ -13,11 +13,8 @@ The `@austa/shared` module serves as the foundation for the journey-centered arc
 Provides structured, journey-aware logging with correlation IDs and consistent formatting:
 
 - Journey-specific context for all log entries
-
 - Standardized log levels and formats
-
 - Request correlation for tracing across services
-
 - Integration with centralized log management
 
 ### Exceptions Module (`@austa/shared/exceptions`)
@@ -25,11 +22,8 @@ Provides structured, journey-aware logging with correlation IDs and consistent f
 Standardized exception handling framework:
 
 - Journey-specific error types and codes
-
 - Consistent error response format
-
 - Built-in validation error handling
-
 - Automatic HTTP status code mapping
 
 ### Kafka Module (`@austa/shared/kafka`)
@@ -37,11 +31,8 @@ Standardized exception handling framework:
 Facilitates event-driven communication between services:
 
 - Producers and consumers with typed interfaces
-
 - Journey-based topic organization
-
 - Error handling and retry mechanisms
-
 - Event schema validation
 
 ### Redis Module (`@austa/shared/redis`)
@@ -49,11 +40,8 @@ Facilitates event-driven communication between services:
 Provides caching and real-time data capabilities:
 
 - Connection management and pooling
-
 - Typed cache interfaces
-
 - Distributed locking mechanisms
-
 - Leaderboard and real-time data utilities
 
 ### Tracing Module (`@austa/shared/tracing`)
@@ -61,11 +49,8 @@ Provides caching and real-time data capabilities:
 Implements distributed tracing:
 
 - OpenTelemetry integration
-
 - Cross-service request tracking
-
 - Journey-specific span attributes
-
 - Performance monitoring
 
 ### Database Module (`@austa/shared/database`)
@@ -73,25 +58,19 @@ Implements distributed tracing:
 Standardized database access via Prisma:
 
 - Connection management
-
 - Transaction support
-
 - Journey-specific model access
-
 - Database migration utilities
 
 ## Installation
 
 ```bash
-
 # npm
-
 npm install @austa/shared
 
 # yarn
-
 yarn add @austa/shared
-```markdown
+```
 
 ## Usage
 
@@ -131,7 +110,7 @@ import { PrismaService } from '@austa/shared/database';
   exports: [PrismaService],
 })
 export class AppModule {}
-```markdown
+```
 
 ### Logging Example
 
@@ -157,7 +136,7 @@ export class HealthMetricsService {
     }
   }
 }
-```markdown
+```
 
 ### Exception Handling Example
 
@@ -189,7 +168,7 @@ export class AppointmentService {
     // Continue with booking logic
   }
 }
-```markdown
+```
 
 ### Kafka Example
 
@@ -220,7 +199,7 @@ export class GameEventsService implements OnModuleInit {
     await this.kafkaProducer.send('game.achievements', achievementEvent);
   }
 }
-```markdown
+```
 
 ### Redis Example
 
@@ -247,7 +226,7 @@ export class LeaderboardService {
     }));
   }
 }
-```markdown
+```
 
 ### Tracing Example
 
@@ -268,7 +247,7 @@ export class HealthMetricsService {
     // Implementation
   }
 }
-```markdown
+```
 
 ### Database Example
 
@@ -291,22 +270,16 @@ export class AppointmentRepository {
     return this.prisma.appointment.create({ data });
   }
 }
-```markdown
+```
 
 ## Technologies
 
 - TypeScript 5.0+
-
 - NestJS 10.0+
-
 - Prisma ORM 4.0+
-
 - Kafka.js 2.0+
-
 - Redis 7.0+
-
 - OpenTelemetry
-
 - Winston 3.0+
 
 ## Contributing

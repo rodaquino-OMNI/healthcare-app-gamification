@@ -3046,21 +3046,13 @@ Each microservice follows a consistent structure:
 /service-name
   /src
     /api           # API controllers/resolvers
-
     /domain        # Domain models and business logic
-
     /infrastructure # External dependencies and adapters
-
     /application   # Use cases and application services
-
     /config        # Service configuration
-
   /test            # Test files
-
   Dockerfile       # Container definition
-
   package.json     # Dependencies
-
 ```markdown
 
 #### 6.2.3 Gamification Engine Design

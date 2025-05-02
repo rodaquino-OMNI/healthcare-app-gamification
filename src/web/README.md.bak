@@ -21,47 +21,26 @@ This architecture enables code reuse while maintaining platform-specific optimiz
 ```markdown
 src/web/
 ├── shared/            # Shared code between web and mobile
-
 │   ├── types/         # TypeScript type definitions
-
 │   ├── constants/     # Shared constants
-
 │   ├── utils/         # Utility functions
-
 │   ├── graphql/       # GraphQL queries and mutations
-
 │   └── config/        # Shared configuration
-
 ├── design-system/     # UI component library
-
 │   ├── src/           # Component source code
-
 │   ├── storybook/     # Component documentation
-
 │   └── tests/         # Component tests
-
 ├── mobile/           # React Native mobile application
-
 │   ├── src/           # Application source code
-
 │   ├── android/       # Android-specific code
-
 │   └── ios/           # iOS-specific code
-
 ├── web/              # Next.js web application
-
 │   ├── src/           # Application source code
-
 │   ├── public/        # Static assets
-
 │   └── pages/         # Next.js pages
-
 ├── package.json      # Root package.json for workspace
-
 ├── tsconfig.json     # TypeScript configuration
-
 └── README.md         # This file
-
 ```markdown
 
 ## Getting Started

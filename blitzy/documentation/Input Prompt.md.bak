@@ -466,39 +466,23 @@ A unified design system maintained in Storybook with:
 /
 ├── apps/
 │   ├── mobile/         # React Native app
-
 │   ├── web/            # Next.js app
-
 │   └── admin/          # Admin panel with gamification dashboard
-
 ├── packages/
 │   ├── ui/             # Shared component library with journey themes
-
 │   ├── api/            # GraphQL API layer
-
 │   ├── schema/         # Shared schema (GraphQL, validation)
-
 │   ├── gamification/   # Gamification components and hooks
-
 │   ├── hooks/          # Reusable React hooks
-
 │   └── utils/          # Shared utilities
-
 ├── services/
 │   ├── auth/           # Authentication service
-
 │   ├── health/         # My Health service
-
 │   ├── care/           # Care Now service
-
 │   ├── plan/           # My Plan service
-
 │   ├── gamification/   # Gamification engine
-
 │   └── notification/   # Notification service
-
 └── scripts/           # Automation and deployment scripts
-
 ```markdown
 
 ### **6.4 Testing Strategy**

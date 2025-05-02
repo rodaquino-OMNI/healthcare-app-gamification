@@ -9,27 +9,18 @@ This service provides endpoints for managing user insurance plans, coverage deta
 ## Features
 
 - Coverage Information: Display detailed insurance coverage information.
-
 - Digital Insurance Card: Provide a digital version of the insurance card with relevant details.
-
 - Claims Submission: Allow users to submit insurance claims with required documentation.
-
 - Claims Tracking: Enable users to track the status of submitted claims.
-
 - Cost Simulator: Calculate estimated costs for procedures based on coverage.
-
 - Benefits Showcase: Display available benefits and usage.
 
 ## Technical Stack
 
 - Node.js
-
 - NestJS
-
 - PostgreSQL
-
 - Prisma
-
 - Docker
 
 ## Setup Instructions
@@ -43,17 +34,11 @@ This service provides endpoints for managing user insurance plans, coverage deta
 ## Endpoints
 
 - `GET /plans`: Retrieve user insurance plans.
-
 - `GET /plans/:id`: Retrieve a specific insurance plan.
-
 - `GET /coverage`: Retrieve coverage details for a plan.
-
 - `POST /claims`: Submit an insurance claim.
-
 - `GET /claims/:id`: Retrieve a specific insurance claim.
-
 - `GET /benefits`: Retrieve available benefits for a plan.
-
 - `POST /cost-simulator`: Simulate costs for a procedure.
 
 ## Contributing

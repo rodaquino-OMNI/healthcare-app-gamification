@@ -7,19 +7,12 @@ The Gamification Engine is a core component of the AUSTA SuperApp that drives us
 ### Key Features
 
 - **Event-driven architecture** with high-throughput event processing
-
 - **Rule-based achievement system** with configurable conditions and rewards
-
 - **Real-time progress tracking** across all user journeys
-
 - **Journey-specific achievements** for Health, Care, and Plan journeys
-
 - **Leveling system** with XP (experience points) accumulation
-
 - **Reward distribution** for achievement unlocks and level progression
-
 - **Leaderboards** for social comparison and motivation
-
 - **Analytics integration** for measuring engagement impact on health outcomes
 
 ## Technical Architecture
@@ -46,7 +39,7 @@ graph TD
     AchievementManager --> AchievementStore[Achievement Store]
     QuestManager --> QuestStore[Quest Store]
     RewardManager --> RewardStore[Reward Store]
-```markdown
+```
 
 The engine processes over 1,000 events per second with sub-50ms latency, ensuring real-time feedback to users across all journeys.
 
@@ -55,13 +48,9 @@ The engine processes over 1,000 events per second with sub-50ms latency, ensurin
 ### Prerequisites
 
 - Node.js 18.x or later
-
 - Docker and Docker Compose
-
 - PostgreSQL 14 or later
-
 - Redis 7.0 or later
-
 - Kafka for event streaming
 
 ### Installation
@@ -70,12 +59,12 @@ The engine processes over 1,000 events per second with sub-50ms latency, ensurin
    ```bash
    git clone https://github.com/austa/superapp.git
    cd superapp/src/backend/gamification-engine
-   ```markdown
+   ```
 
 2. Install dependencies:
    ```bash
    npm install
-   ```markdown
+   ```
 
 3. Set up environment variables (see Configuration section below)
 
@@ -83,7 +72,7 @@ The engine processes over 1,000 events per second with sub-50ms latency, ensurin
    ```bash
    npm run db:migrate
    npm run db:seed
-   ```markdown
+   ```
 
 ### Running with Docker
 
@@ -91,7 +80,7 @@ The simplest way to run the service is using Docker Compose:
 
 ```bash
 docker-compose up -d
-```markdown
+```
 
 This will start the Gamification Engine along with its dependencies (Redis, PostgreSQL, and Kafka).
 
@@ -101,35 +90,30 @@ For development:
 
 ```bash
 npm run dev
-```markdown
+```
 
 For production:
 
 ```bash
 npm run build
 npm start
-```markdown
+```
 
 ### Running Tests
 
 ```bash
-
 # Unit tests
-
 npm run test
 
 # Integration tests
-
 npm run test:integration
 
 # End-to-end tests
-
 npm run test:e2e
 
 # All tests with coverage
-
 npm run test:coverage
-```markdown
+```
 
 ## API Documentation
 
@@ -144,11 +128,8 @@ The GraphQL API is available at `/graphql` and provides access to all engine fun
 The REST API provides endpoints for:
 
 - Processing events: `POST /api/events`
-
 - Managing achievements: `GET /api/achievements`
-
 - User profiles: `GET /api/profiles/:userId`
-
 - Leaderboards: `GET /api/leaderboards/:boardId`
 
 For detailed API documentation, see the [API Reference](./docs/api-reference.md) or run the service and visit `/api-docs` for Swagger documentation.
@@ -196,7 +177,7 @@ The Gamification Engine uses a flexible rule configuration system that can be ma
     }
   ]
 }
-```markdown
+```
 
 For detailed configuration options, see the [Rules Documentation](./docs/rules-configuration.md).
 
@@ -219,7 +200,7 @@ interface GamificationEvent {
     [key: string]: any;
   };
 }
-```markdown
+```
 
 ## Journeys and Achievement Types
 
@@ -236,13 +217,9 @@ The Gamification Engine supports achievements across all three journeys:
 The Gamification Engine is designed for high throughput and low latency:
 
 - Event processing rate: Up to 5,000 events/second
-
 - Processing latency: < 30ms per event
-
 - Rule evaluation: Optimized for fast condition checking
-
 - Redis caching: Used for user state and frequent lookups
-
 - Database interactions: Batched for efficiency
 
 ## Contributing
@@ -258,13 +235,9 @@ We welcome contributions to the Gamification Engine! Please follow these guideli
 ### Coding Standards
 
 - Follow the TypeScript style guide
-
 - Write unit tests for all new functionality
-
 - Maintain or improve code coverage
-
 - Document public APIs with JSDoc
-
 - Use semantic commit messages
 
 ### Development Process

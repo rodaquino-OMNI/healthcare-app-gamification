@@ -7,26 +7,19 @@ This document outlines the standardized approach to dependency management in the
 **Yarn** is the official package manager for this project. All dependency operations should be performed using Yarn.
 
 ```bash
-
 # Installing dependencies (correct)
-
 yarn install
 
 # Adding a dependency (correct)
-
 yarn add package-name
 
 # Adding a dev dependency (correct)
-
 yarn add --dev package-name
 
 # DO NOT use npm for dependency management
-
 # npm install  # incorrect
-
 # npm add      # incorrect
-
-```markdown
+```
 
 ## Dependency Specification Guidelines
 
@@ -40,7 +33,7 @@ yarn add --dev package-name
     "zod": "^3.22.4"
   }
 }
-```markdown
+```
 
 ### ❌ Incorrect Package Naming
 
@@ -51,7 +44,7 @@ yarn add --dev package-name
     "@hookform/resolvers/zod": "3.0.0"
   }
 }
-```markdown
+```
 
 ## Version Resolution
 
@@ -65,7 +58,7 @@ For managing React version conflicts, we use Yarn's resolutions field:
     "react-test-renderer": "18.2.0"
   }
 }
-```markdown
+```
 
 ## CI/CD Integration
 
@@ -74,7 +67,5 @@ Our CI pipeline has been updated to validate dependency specifications and ensur
 ## Troubleshooting Common Issues
 
 - If you encounter "Invalid package name" errors, check for incorrectly nested package paths
-
 - For React version conflicts, ensure the resolutions field is properly configured
-
 - When working with workspaces, use the `-W` flag for root dependencies: `yarn add -W package-name`

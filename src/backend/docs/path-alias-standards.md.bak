@@ -25,13 +25,13 @@ Our project uses the following path aliases defined in the root `tsconfig.json`:
    
    // INCORRECT: Using relative path
    import { LoggerService } from '../../shared/src/logging/logger.service';
-   ```markdown
+   ```
 
 2. **Use relative imports only for files within the same module**
    ```typescript
    // CORRECT: Using relative import within the same module
    import { AppConfig } from './config/app.config';
-   ```markdown
+   ```
 
 ### Path Alias Best Practices
 
@@ -45,7 +45,7 @@ Our project uses the following path aliases defined in the root `tsconfig.json`:
    
    // Then service-specific imports
    import { AppConfig } from './config/app.config';
-   ```markdown
+   ```
 
 2. **Avoid deep nested imports when possible**
    ```typescript
@@ -55,13 +55,13 @@ Our project uses the following path aliases defined in the root `tsconfig.json`:
    // INSTEAD OF:
    import { LoggerService } from '@shared/logging/logger.service';
    import { KafkaService } from '@shared/kafka/kafka.service';
-   ```markdown
+   ```
 
 3. **Never use absolute paths starting with `src/`**
    ```typescript
    // INCORRECT: Using src-based paths
    import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-   ```markdown
+   ```
 
 ## Runtime Path Resolution
 
@@ -77,7 +77,7 @@ Add `-r tsconfig-paths/register` to the Node.js command:
   "start:dev": "nest start --watch -r tsconfig-paths/register",
   "start:debug": "nest start --debug --watch -r tsconfig-paths/register"
 }
-```markdown
+```
 
 ### For Production
 
@@ -90,7 +90,7 @@ If you encounter issues with path resolution:
 1. Verify file existence using the verification script:
    ```bash
    node verify-paths-simple.js
-   ```markdown
+   ```
 
 2. Check that your IDE's TypeScript server has reloaded the configuration
 

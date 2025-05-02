@@ -5,19 +5,12 @@ The AUSTA SuperApp Notification Service is a specialized microservice that deliv
 ## Features
 
 - **Multi-channel delivery**: Send notifications via email, SMS, push notifications, and in-app messages
-
 - **Template-based notifications**: Use dynamic templates with personalization capabilities
-
 - **User preferences**: Respect user notification preferences by channel and notification type
-
 - **Journey-specific theming**: Apply visual styling consistent with the Health, Care, and Plan journeys
-
 - **Prioritization**: Intelligent message prioritization to prevent notification fatigue
-
 - **Real-time notifications**: WebSocket-based delivery for immediate in-app notifications
-
 - **Delivery tracking**: Monitor notification delivery status and user interactions
-
 - **Rate limiting**: Prevent notification flooding with configurable rate limits
 
 ## Architecture Overview
@@ -25,77 +18,56 @@ The AUSTA SuperApp Notification Service is a specialized microservice that deliv
 The Notification Service follows a modular architecture with the following components:
 
 - **Notification Controller**: REST API for sending notifications and querying delivery status
-
 - **Preferences Controller**: Manage user notification preferences
-
 - **Notification Service**: Core business logic for notification processing and routing
-
 - **Channel Services**: Specialized services for each delivery channel (email, SMS, push, in-app)
-
 - **Template Service**: Manages notification templates with personalization capabilities
-
 - **WebSocket Gateway**: Handles real-time in-app notification delivery
-
 - **Preference Service**: Manages user notification preferences
 
 ## Prerequisites
 
 - Node.js 18.x or higher
-
 - PostgreSQL 14.x or higher
-
 - Redis (for rate limiting and WebSocket adapter)
-
 - Amazon SES or SMTP server (for email notifications)
-
 - Firebase Cloud Messaging account (for push notifications)
-
 - Twilio account (for SMS notifications)
 
 ## Installation
 
 ```bash
-
 # Clone the repository (if not already done)
-
 git clone https://github.com/yourusername/austa-superapp.git
 
 # Navigate to the notification service directory
-
 cd austa-superapp/src/backend/notification-service
 
 # Install dependencies
-
 npm install
-```markdown
+```
 
 ## Configuration
 
 The service uses environment variables for configuration. Create a `.env` file in the root directory with the following variables:
 
-```markdown
-
+```
 # Application
-
 PORT=3003
 NODE_ENV=development
 
 # Database
-
 DATABASE_URL=postgresql://username:password@localhost:5432/austa_notifications
 
 # Redis
-
 REDIS_HOST=localhost
 REDIS_PORT=6379
 
 # JWT
-
 JWT_SECRET=your-jwt-secret
 JWT_EXPIRATION=1d
 
 # Email (Amazon SES)
-
 EMAIL_PROVIDER=ses
 AWS_REGION=us-east-1
 AWS_ACCESS_KEY_ID=your-access-key
@@ -103,22 +75,19 @@ AWS_SECRET_ACCESS_KEY=your-secret-key
 EMAIL_FROM=notifications@austa.com.br
 
 # Push Notifications (Firebase)
-
 FIREBASE_PROJECT_ID=your-project-id
 FIREBASE_PRIVATE_KEY=your-private-key
 FIREBASE_CLIENT_EMAIL=your-client-email
 
 # SMS (Twilio)
-
 TWILIO_ACCOUNT_SID=your-account-sid
 TWILIO_AUTH_TOKEN=your-auth-token
 TWILIO_PHONE_NUMBER=your-phone-number
 
 # Rate Limiting
-
 THROTTLE_TTL=60
 THROTTLE_LIMIT=10
-```markdown
+```
 
 Alternatively, you can use the configuration service that loads values from environment variables, configuration files, or environment-specific sources.
 
@@ -127,56 +96,43 @@ Alternatively, you can use the configuration service that loads values from envi
 ### Development Mode
 
 ```bash
-
 # Run in development mode with hot-reload
-
 npm run start:dev
-```markdown
+```
 
 ### Production Mode
 
 ```bash
-
 # Build the application
-
 npm run build
 
 # Run in production mode
-
 npm run start:prod
-```markdown
+```
 
 ### Docker Support
 
 ```bash
-
 # Build Docker image
-
 docker build -t austa-notification-service .
 
 # Run Docker container
-
 docker run -p 3003:3003 --env-file .env austa-notification-service
-```markdown
+```
 
 ## API Endpoints
 
 ### Notifications API
 
 - `POST /api/notifications` - Send a new notification
-
 - `GET /api/notifications` - Get notifications (with filtering options)
-
 - `GET /api/notifications/:id` - Get notification details by ID
-
 - `GET /api/notifications/status/:id` - Get notification delivery status
 
 ### Preferences API
 
 - `GET /api/preferences/:userId` - Get user notification preferences
-
 - `PATCH /api/preferences/:userId` - Update user notification preferences
-
 - `GET /api/preferences/:userId/channels` - Get user's enabled notification channels
 
 ## Usage Examples
@@ -210,7 +166,7 @@ const response = await fetch('http://localhost:3003/api/notifications', {
 
 const result = await response.json();
 console.log(result);
-```markdown
+```
 
 ### WebSocket Connection for Real-time Notifications
 
@@ -232,7 +188,7 @@ socket.on('notification', (notification) => {
 
 // Subscribe to specific channels
 socket.emit('subscribe', { userId: 'user-123' });
-```markdown
+```
 
 ## Notification Channels
 
@@ -257,30 +213,22 @@ Uses WebSockets to deliver real-time notifications within the application.
 ## Testing
 
 ```bash
-
 # Run unit tests
-
 npm run test
 
 # Run e2e tests
-
 npm run test:e2e
 
 # Run test coverage
-
 npm run test:cov
-```markdown
+```
 
 ## Design Considerations
 
 - **Journey Context**: Notifications include journey context (health, care, plan) for consistent theming
-
 - **Prioritization**: Critical notifications (like care reminders) are prioritized over informational messages
-
 - **User Control**: Users have granular control over notification preferences by type and channel
-
 - **Delivery Guarantees**: Critical notifications use multiple channels with delivery confirmation
-
 - **Compliance**: All communications comply with LGPD (Brazilian General Data Protection Law)
 
 ## License

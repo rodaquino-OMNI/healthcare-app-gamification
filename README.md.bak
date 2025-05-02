@@ -66,13 +66,9 @@ This repository follows a dual-monorepo architecture:
 healthcare-super-app/
 ├── src/
 │   ├── backend/       # Backend Lerna monorepo with NestJS microservices
-
 │   └── web/           # Frontend Turbo monorepo with Next.js and React Native
-
 ├── infrastructure/    # Kubernetes and Terraform configurations
-
 └── docker-compose.dev.yml  # Development Docker Compose configuration
-
 ```markdown
 
 ### Backend Structure
@@ -82,21 +78,13 @@ The backend is a Lerna monorepo with several NestJS microservices:
 ```markdown
 src/backend/
 ├── api-gateway/        # API Gateway service
-
 ├── auth-service/       # Authentication service
-
 ├── health-service/     # My Health journey service
-
 ├── care-service/       # Care Now journey service
-
 ├── plan-service/       # My Plan & Benefits journey service
-
 ├── gamification-engine/ # Gamification Engine service
-
 ├── notification-service/ # Notification service
-
 └── shared/             # Shared code, utilities, and Prisma schema
-
 ```markdown
 
 ### Frontend Structure
@@ -106,13 +94,9 @@ The frontend is a Turbo monorepo with shared code between web and mobile:
 ```markdown
 src/web/
 ├── design-system/      # Shared component library
-
 ├── shared/             # Shared utilities and types
-
 ├── mobile/             # React Native mobile application
-
 └── web/                # Next.js web application
-
 ```markdown
 
 ## Getting Started
@@ -227,7 +211,6 @@ The gamification engine can be run independently for development and testing:
    ```bash
    cp .env.example .env
    # Edit the .env file as needed
-
    ```markdown
 
 3. Start the gamification engine:
@@ -242,12 +225,10 @@ The gamification engine can be run independently for development and testing:
 1. Build all components:
    ```bash
    # For backend
-
    cd src/backend
    yarn build
    
    # For web and mobile
-
    cd src/web
    yarn build
    ```markdown
@@ -255,10 +236,8 @@ The gamification engine can be run independently for development and testing:
 2. Deploy using the provided infrastructure configurations:
    ```bash
    # Using the Makefile
-
    make deploy-staging
    # OR
-
    make deploy-production
    ```markdown
 
