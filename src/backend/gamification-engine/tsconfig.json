@@ -1,13 +1,16 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist",
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@app/auth": ["../auth-service/src"],
       "@app/auth/*": ["../auth-service/src/*"],
-      "@app/shared": ["../shared/src"],
+      "@app/health/*": ["../health-service/src/*"],
+      "@app/care/*": ["../care-service/src/*"],
+      "@app/plan/*": ["../plan-service/src/*"],
+      "@app/gamification/*": ["./src/*"],
+      "@app/notifications/*": ["../notification-service/src/*"],
       "@app/shared/*": ["../shared/src/*"]
     }
   },

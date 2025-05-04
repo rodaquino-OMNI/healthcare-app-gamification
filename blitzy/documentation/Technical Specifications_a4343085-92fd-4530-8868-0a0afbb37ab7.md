@@ -15,15 +15,15 @@ The AUSTA SuperApp is a unified digital health platform designed to transform he
 
 ### Key Stakeholders
 
-- Healthcare providers and clinicians
-
-- Insurance plan members and patients
-
-- Administrative staff and claims processors
-
-- Technical operations and support teams
-
-- Regulatory compliance officers
+| Stakeholder Group | Roles | Primary Concerns | System Interaction |
+|------------------|-------|------------------|-------------------|
+| Healthcare Providers and Clinicians | Primary Care Physicians, Specialists, Nurses, Therapists | Patient treatment efficacy, Accurate medical data, Streamlined workflows, Reduced administrative burden | Care Now journey, Patient health records, Telemedicine platform, Treatment plan management |
+| Insurance Plan Members and Patients | Active Users, Family/Dependent Users, Corporate Plan Members | Easy access to care, Health improvement, Claims simplicity, Cost transparency | All three journeys, Mobile/web applications, Achievement system, Personal health records |
+| Administrative Staff and Claims Processors | Insurance Administrators, Office Managers, Claim Reviewers | Operational efficiency, Compliance, Accurate processing, Cost management | My Plan & Benefits journey, Claims processing dashboards, Administrative portals |
+| Technical Operations and Support Teams | System Administrators, Support Staff, IT Managers, DevOps Engineers | System uptime, Performance, Security, Scalability, Troubleshooting | Monitoring dashboards, Administration tools, Support interfaces, Deployment systems |
+| Regulatory Compliance Officers | Privacy Officers, Security Officers, Compliance Auditors, Legal Representatives | LGPD compliance, Data protection, Security standards, Audit requirements | Compliance reporting, Audit logs, Privacy controls, Security configurations |
+| Executive Leadership | C-suite Executives, Board Members, Department Directors | Business outcomes, ROI, Market positioning, Strategic alignment | Executive dashboards, KPI reporting, Strategic planning tools |
+| Partner Organizations | EHR System Providers, Insurance Companies, Pharmacy Networks, Reward Partners | Integration reliability, Data exchange, Contract fulfillment | APIs, Integration points, Partner portals, Service agreements |
 
 ### SYSTEM OVERVIEW
 

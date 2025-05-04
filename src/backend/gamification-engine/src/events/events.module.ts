@@ -1,11 +1,13 @@
-import { Module } from '@nestjs/common'; // v10.0.0+
+import { Module } from '@nestjs/common';
 import { EventsController } from './events.controller';
 import { EventsService } from './events.service';
+import { EventsConsumer } from './events.consumer';
 import { KafkaConsumer } from './kafka/kafka.consumer';
 import { KafkaProducer } from './kafka/kafka.producer';
-import { KafkaModule } from 'src/backend/shared/src/kafka/kafka.module';
-import { LoggerModule } from 'src/backend/shared/src/logging/logger.module';
-import { TracingModule } from 'src/backend/shared/src/tracing/tracing.module';
+import { KafkaModule } from '@app/shared/kafka/kafka.module';
+import { LoggerModule } from '@app/shared/logging/logger.module';
+import { TracingModule } from '@app/shared/tracing/tracing.module';
+import { RulesModule } from '../rules/rules.module';
 
 /**
  * Configures the Events module, importing the controller and service, and setting up Kafka for event handling.
@@ -13,9 +15,19 @@ import { TracingModule } from 'src/backend/shared/src/tracing/tracing.module';
  * gamification engine, applying rules, and updating user achievements and points.
  */
 @Module({
-  imports: [KafkaModule, LoggerModule, TracingModule],
+  imports: [
+    KafkaModule, 
+    LoggerModule, 
+    TracingModule,
+    RulesModule
+  ],
   controllers: [EventsController],
-  providers: [EventsService, KafkaConsumer, KafkaProducer],
+  providers: [
+    EventsService, 
+    KafkaConsumer, 
+    KafkaProducer,
+    EventsConsumer
+  ],
   exports: [EventsService]
 })
 export class EventsModule {}

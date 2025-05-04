@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model GameProfile {
+  id            String            @id @default(uuid())
+  userId        String            @unique
+  level         Int               @default(1)
+  xp            Int               @default(0)
+  achievements  UserAchievement[]
+  quests        UserQuest[]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+}
+
+model Achievement {
+  id          String            @id @default(uuid())
+  title       String
+  description String
+  journey     String
+  icon        String
+  xpReward    Int
+  users       UserAchievement[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+model UserAchievement {
+  profileId     String
+  achievementId String
+  profile       GameProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  progress      Int         @default(0)
+  unlocked      Boolean     @default(false)
+  unlockedAt    DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@id([profileId, achievementId])
+}
+
+model Quest {
+  id          String       @id @default(uuid())
+  title       String
+  description String
+  journey     String
+  steps       Int
+  xpReward    Int
+  users       UserQuest[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model UserQuest {
+  profileId   String
+  questId     String
+  profile     GameProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  quest       Quest       @relation(fields: [questId], references: [id], onDelete: Cascade)
+  progress    Int         @default(0)
+  completed   Boolean     @default(false)
+  completedAt DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@id([profileId, questId])
+}
+
+model LeaderboardEntry {
+  id        String   @id @default(uuid())
+  userId    String
+  journey   String
+  score     Int
+  rank      Int
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, journey])
+  @@index([journey, score])
+}

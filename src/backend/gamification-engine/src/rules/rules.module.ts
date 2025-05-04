@@ -2,9 +2,12 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RulesService } from './rules.service';
 import { Rule } from './entities/rule.entity';
-import { KafkaModule } from 'src/backend/shared/src/kafka/kafka.module';
-import { LoggerModule } from 'src/backend/shared/src/logging/logger.module';
-import { ExceptionsModule } from 'src/backend/shared/src/exceptions/exceptions.module';
+import { KafkaModule } from '@app/shared/kafka/kafka.module';
+import { LoggerModule } from '@app/shared/logging/logger.module';
+import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
+import { ProfilesModule } from '../profiles/profiles.module';
+import { AchievementsModule } from '../achievements/achievements.module';
+import { ConfigModule } from '@nestjs/config';
 
 /**
  * Configures the RulesModule, making the RulesService available for dependency injection.
@@ -12,7 +15,15 @@ import { ExceptionsModule } from 'src/backend/shared/src/exceptions/exceptions.m
  * and achievements are awarded based on user actions across all journeys.
  */
 @Module({
-  imports: [TypeOrmModule.forFeature([Rule]), KafkaModule, LoggerModule, ExceptionsModule],
+  imports: [
+    TypeOrmModule.forFeature([Rule]), 
+    KafkaModule, 
+    LoggerModule, 
+    ExceptionsModule,
+    ProfilesModule,
+    AchievementsModule,
+    ConfigModule
+  ],
   providers: [RulesService],
   controllers: [],
   exports: [RulesService],

@@ -61,8 +61,7 @@ src/web/
 ├── tsconfig.json     # TypeScript configuration
 
 └── README.md         # This file
-
-```markdown
+```
 
 ## Getting Started
 
@@ -77,36 +76,29 @@ src/web/
 ### Installation
 
 ```bash
-
 # Install dependencies
-
 cd src/web
 yarn install
 
 # Set up environment variables
-
 cp .env.example .env.local
-```markdown
+```
 
 ### Development
 
 ```bash
-
 # Start the web application
-
 cd src/web
 yarn web:dev
 
 # Start the mobile application
-
 cd src/web
 yarn mobile:start
 
 # Run the design system storybook
-
 cd src/web
 yarn design-system:storybook
-```markdown
+```
 
 ## Journey Implementation
 
@@ -170,15 +162,12 @@ The project uses the following testing approach:
 - **E2E Tests**: Cypress (web) and Detox (mobile)
 
 ```bash
-
 # Run all tests
-
 yarn test
 
 # Run tests with coverage
-
 yarn test:coverage
-```markdown
+```
 
 ## Deployment
 

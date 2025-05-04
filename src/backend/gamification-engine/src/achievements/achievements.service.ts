@@ -7,6 +7,8 @@ import { AppException } from '@app/shared/exceptions/exceptions.types'; // @app/
 import { PaginatedResponse, PaginationDto } from '@app/shared/dto/pagination.dto'; // @app/shared ^1.0.0
 import { FilterDto } from '@app/shared/dto/filter.dto'; // @app/shared ^1.0.0
 import { ErrorType } from '@app/shared/exceptions/exceptions.types'; // @app/shared ^1.0.0
+import { UserAchievement } from './entities/user-achievement.entity';
+import { ProfilesService } from '../profiles/profiles.service';
 
 /**
  * Service responsible for managing achievements in the gamification system.
@@ -18,10 +20,15 @@ export class AchievementsService implements Service<Achievement> {
    * Creates an instance of the AchievementsService.
    * 
    * @param achievementRepository - Repository for interacting with achievements in the database
+   * @param userAchievementRepository - Repository for interacting with user achievements
+   * @param profilesService - Service for managing user game profiles
    */
   constructor(
     @InjectRepository(Achievement)
-    private readonly achievementRepository: Repository<Achievement>
+    private readonly achievementRepository: Repository<Achievement>,
+    @InjectRepository(UserAchievement)
+    private readonly userAchievementRepository: Repository<UserAchievement>,
+    private readonly profilesService: ProfilesService
   ) {}
 
   /**
@@ -250,6 +257,85 @@ export class AchievementsService implements Service<Achievement> {
         ErrorType.TECHNICAL,
         'GAME_007',
         { filter },
+        error as Error
+      );
+    }
+  }
+
+  /**
+   * Unlocks an achievement for a user.
+   * 
+   * @param userId - The ID of the user
+   * @param achievementId - The ID of the achievement to unlock
+   * @returns A promise resolving to the user achievement
+   * @throws AppException if the achievement doesn't exist or is already unlocked
+   */
+  async unlockAchievement(userId: string, achievementId: string): Promise<UserAchievement> {
+    try {
+      // Find the achievement
+      const achievement = await this.findById(achievementId);
+      
+      // Get the user's game profile
+      const userProfile = await this.profilesService.findById(userId);
+      
+      // Check if the user already has this achievement
+      const existingUserAchievement = await this.userAchievementRepository.findOne({
+        where: {
+          profileId: userProfile.id,
+          achievementId: achievement.id
+        }
+      });
+      
+      // If user already has this achievement unlocked, return it
+      if (existingUserAchievement && existingUserAchievement.unlocked) {
+        return existingUserAchievement;
+      }
+      
+      // If user has progress on this achievement but hasn't unlocked it yet
+      if (existingUserAchievement) {
+        existingUserAchievement.unlocked = true;
+        existingUserAchievement.unlockedAt = new Date();
+        existingUserAchievement.progress = 100;
+        
+        // Save the updated user achievement
+        const savedAchievement = await this.userAchievementRepository.save(existingUserAchievement);
+        
+        // Award XP for unlocking the achievement
+        await this.profilesService.update(userId, {
+          xp: userProfile.xp + achievement.xpReward
+        });
+        
+        return savedAchievement;
+      }
+      
+      // Create a new user achievement record
+      const userAchievement = this.userAchievementRepository.create({
+        profileId: userProfile.id,
+        achievementId: achievement.id,
+        unlocked: true,
+        unlockedAt: new Date(),
+        progress: 100
+      });
+      
+      // Save the new user achievement
+      const savedAchievement = await this.userAchievementRepository.save(userAchievement);
+      
+      // Award XP for unlocking the achievement
+      await this.profilesService.update(userId, {
+        xp: userProfile.xp + achievement.xpReward
+      });
+      
+      return savedAchievement;
+    } catch (error: unknown) {
+      if (error instanceof AppException) {
+        throw error;
+      }
+      
+      throw new AppException(
+        `Failed to unlock achievement ${achievementId} for user ${userId}`,
+        ErrorType.TECHNICAL,
+        'GAME_009',
+        { userId, achievementId },
         error as Error
       );
     }

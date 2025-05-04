@@ -12,23 +12,23 @@ This directory contains the source code for the AUSTA SuperApp's mobile applicat
 
 ## Getting Started
 
-1.  Install Node.js and npm or yarn.
-2.  Install Expo CLI: `npm install -g expo-cli` or `yarn global add expo-cli`.
-3.  Clone the repository.
-4.  Navigate to the `src/web/mobile` directory.
-5.  Install dependencies: `npm install` or `yarn install`.
-6.  Start the Expo development server: `expo start` or `yarn start`.
-7.  Follow the Expo CLI instructions to run the app on a simulator or physical device.
+1. Install Node.js and npm or yarn.
+2. Install Expo CLI: `npm install -g expo-cli` or `yarn global add expo-cli`.
+3. Clone the repository.
+4. Navigate to the `src/web/mobile` directory.
+5. Install dependencies: `npm install` or `yarn install`.
+6. Start the Expo development server: `expo start` or `yarn start`.
+7. Follow the Expo CLI instructions to run the app on a simulator or physical device.
 
 ## Directory Structure
 
 - `src/`: Contains the application's source code.
-    - `components/`: Reusable UI components.
-    - `screens/`: Application screens.
-    - `navigation/`: Navigation configuration.
-    - `api/`: API client and service integration.
-    - `utils/`: Utility functions.
-    - `assets/`: Static assets (images, fonts, etc.).
+  - `components/`: Reusable UI components.
+  - `screens/`: Application screens.
+  - `navigation/`: Navigation configuration.
+  - `api/`: API client and service integration.
+  - `utils/`: Utility functions.
+  - `assets/`: Static assets (images, fonts, etc.).
 
 ## Configuration
 

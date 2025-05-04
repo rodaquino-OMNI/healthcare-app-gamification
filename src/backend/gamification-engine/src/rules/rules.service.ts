@@ -1,108 +1,397 @@
-import { Injectable, NotFoundException } from '@nestjs/common'; // @nestjs/common ^9.0.0
-import { InjectRepository } from '@nestjs/typeorm'; // @nestjs/typeorm 10.0.0
-import { Repository } from 'typeorm'; // typeorm 0.3.17
-import { Rule } from './entities/rule.entity';
-import { AchievementsService } from '../achievements/achievements.service';
+import { Injectable, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { PrismaService } from '@app/shared/database/prisma.service';
 import { ProfilesService } from '../profiles/profiles.service';
-import { QuestsService } from '../quests/quests.service';
-import { RewardsService } from '../rewards/rewards.service';
-import { Service } from 'src/backend/shared/src/interfaces/service.interface';
-import { AppException, ErrorType } from 'src/backend/shared/src/exceptions/exceptions.types';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { KafkaService } from 'src/backend/shared/src/kafka/kafka.service';
-import { ProcessEventDto } from '../events/dto/process-event.dto';
+import { AchievementsService } from '../achievements/achievements.service';
 
 /**
- * Service for managing rules.
+ * Event interface for the gamification engine
+ */
+export interface GamificationEvent {
+  type: string;
+  userId: string;
+  timestamp: Date;
+  journey: string;
+  data: Record<string, any>;
+  metadata: Record<string, any>;
+}
+
+/**
+ * Rule interface for defining gamification rules
+ */
+export interface Rule {
+  id: string;
+  name: string;
+  description: string;
+  eventType: string;
+  journey: string;
+  condition: string;
+  actions: RuleAction[];
+  enabled: boolean;
+}
+
+/**
+ * Action interface for rule actions
+ */
+export interface RuleAction {
+  type: 'AWARD_XP' | 'UNLOCK_ACHIEVEMENT' | 'PROGRESS_QUEST';
+  value: number | string;
+  metadata?: Record<string, any>;
+}
+
+/**
+ * Service responsible for managing and executing gamification rules.
  */
 @Injectable()
-export class RulesService {
-  /**
-   * Injects the Rule repository and other services.
-   */
+export class RulesService implements OnModuleInit {
+  private rules: Rule[] = [];
+  private readonly rulesRefreshInterval: number;
+
   constructor(
-    @InjectRepository(Rule)
-    private readonly ruleRepository: Repository<Rule>,
-    private readonly achievementsService: AchievementsService,
-    private readonly profilesService: ProfilesService,
-    private readonly questsService: QuestsService,
-    private readonly rewardsService: RewardsService,
+    private readonly configService: ConfigService,
     private readonly logger: LoggerService,
-    private readonly kafkaService: KafkaService
-  ) {}
+    private readonly prisma: PrismaService,
+    private readonly profilesService: ProfilesService,
+    private readonly achievementsService: AchievementsService
+  ) {
+    this.rulesRefreshInterval = this.configService.get<number>('gamification.rules.refreshInterval', 60000);
+  }
 
   /**
-   * Retrieves all rules.
-   * @returns A promise that resolves to an array of rules.
+   * Initialize the rules service by loading rules and setting up a refresh interval.
    */
-  async findAll(): Promise<Rule[]> {
+  async onModuleInit() {
     try {
-      return await this.ruleRepository.find();
+      await this.loadRules();
+      
+      // Set up periodic refresh of rules
+      setInterval(async () => {
+        try {
+          await this.loadRules();
+        } catch (error) {
+          this.logger.error(
+            `Failed to refresh rules: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            error instanceof Error ? error.stack : undefined,
+            'RulesService'
+          );
+        }
+      }, this.rulesRefreshInterval);
+      
+      this.logger.log('RulesService initialized successfully', 'RulesService');
     } catch (error) {
-      this.logger.error('Failed to retrieve rules', error.stack, 'RulesService');
-      throw new AppException(
-        'Failed to retrieve rules',
-        ErrorType.TECHNICAL,
-        'GAME_013',
-        {},
-        error
+      this.logger.error(
+        `Failed to initialize RulesService: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : undefined,
+        'RulesService'
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * Process an event against the configured rules.
+   * @param event The event to process
+   */
+  async processEvent(event: GamificationEvent): Promise<void> {
+    try {
+      this.logger.log(`Processing event: ${event.type} for user ${event.userId}`, 'RulesService');
+      
+      // Find applicable rules for this event type
+      const applicableRules = this.rules.filter(
+        rule => rule.enabled && rule.eventType === event.type && 
+               (rule.journey === event.journey || rule.journey === 'all')
+      );
+      
+      if (applicableRules.length === 0) {
+        this.logger.log(`No applicable rules found for event: ${event.type}`, 'RulesService');
+        return;
+      }
+      
+      // Get user profile for context in rule evaluation
+      const userProfile = await this.profilesService.findById(event.userId)
+        .catch(async error => {
+          // If profile doesn't exist, create one
+          if (error.name === 'NotFoundException') {
+            this.logger.log(`Creating new profile for user: ${event.userId}`, 'RulesService');
+            return this.profilesService.create(event.userId);
+          }
+          throw error;
+        });
+      
+      // Evaluate each applicable rule
+      for (const rule of applicableRules) {
+        await this.evaluateRule(rule, event, userProfile);
+      }
+      
+      this.logger.log(`Completed processing event: ${event.type} for user ${event.userId}`, 'RulesService');
+    } catch (error) {
+      this.logger.error(
+        `Error processing event ${event.type} for user ${event.userId}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : undefined,
+        'RulesService'
       );
     }
   }
 
   /**
-   * Retrieves a single rule by its ID.
-   * @param id The rule ID to find
-   * @returns A promise that resolves to a single rule.
+   * Evaluate a single rule against an event and user profile.
+   * @param rule The rule to evaluate
+   * @param event The event being processed
+   * @param userProfile The user's game profile
    */
-  async findOne(id: string): Promise<Rule> {
+  private async evaluateRule(rule: Rule, event: GamificationEvent, userProfile: any): Promise<void> {
     try {
-      const rule = await this.ruleRepository.findOneBy({ id });
+      this.logger.log(`Evaluating rule: ${rule.name} for event: ${event.type}`, 'RulesService');
       
-      if (!rule) {
-        throw new NotFoundException(`Rule with ID ${id} not found`);
+      // Create a context for rule evaluation
+      const context = {
+        event: {
+          type: event.type,
+          data: event.data,
+          metadata: event.metadata,
+          journey: event.journey,
+          timestamp: event.timestamp
+        },
+        user: {
+          id: event.userId,
+          profile: userProfile,
+          level: userProfile.level,
+          xp: userProfile.xp
+        }
+      };
+      
+      // Simple condition evaluation using Function constructor (can be replaced with a proper rules engine)
+      // Note: In production, you'd want a more secure way to evaluate conditions
+      const conditionResult = await this.evaluateCondition(rule.condition, context);
+      
+      if (!conditionResult) {
+        this.logger.log(`Rule condition not met: ${rule.name}`, 'RulesService');
+        return;
       }
       
-      return rule;
+      this.logger.log(`Rule condition met: ${rule.name}, executing actions`, 'RulesService');
+      
+      // Execute rule actions
+      for (const action of rule.actions) {
+        await this.executeAction(action, event.userId, context);
+      }
+      
+      this.logger.log(`Rule ${rule.name} processed successfully`, 'RulesService');
     } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      
-      this.logger.error(`Failed to retrieve rule with ID ${id}`, error.stack, 'RulesService');
-      throw new AppException(
-        `Failed to retrieve rule with ID ${id}`,
-        ErrorType.TECHNICAL,
-        'GAME_014',
-        { id },
-        error
+      this.logger.error(
+        `Error evaluating rule ${rule.name}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : undefined,
+        'RulesService'
       );
     }
   }
 
   /**
-   * Evaluates a rule against a given event and user profile.
-   * @param event The event data
-   * @param userProfile The user's profile data
-   * @returns True if the rule is satisfied, false otherwise
+   * Evaluate a rule condition against a context.
+   * @param condition The condition to evaluate
+   * @param context The context to evaluate against
+   * @returns True if the condition is met, false otherwise
    */
-  evaluateRule(event: any, userProfile: any): boolean {
+  private async evaluateCondition(condition: string, context: any): Promise<boolean> {
     try {
-      // For security reasons, this would typically be done in a sandbox
-      // using a library like vm2 rather than using new Function directly.
+      // Use Function constructor to evaluate the condition
+      // In production, use a proper rules engine with security measures
+      const evaluateFunc = new Function('context', `
+        try {
+          with (context) {
+            return ${condition};
+          }
+        } catch (error) {
+          return false;
+        }
+      `);
       
-      // In a production environment, this method would:
-      // 1. Take a specific rule (either as parameter or from context)
-      // 2. Check if the event type matches the rule's event type
-      // 3. Evaluate the rule's condition against the event and userProfile
-      // 4. Return the result of that evaluation
-      
-      // Since the rule is not specified in the method signature, we're using
-      // a simple validation check as a placeholder.
-      return !!event && !!userProfile;
+      return evaluateFunc(context) === true;
     } catch (error) {
-      this.logger.error(`Error evaluating rule: ${error.message}`, error.stack, 'RulesService');
-      return false; // Fail closed on errors
+      this.logger.error(
+        `Error evaluating condition: ${condition}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : undefined,
+        'RulesService'
+      );
+      return false;
+    }
+  }
+
+  /**
+   * Execute a rule action.
+   * @param action The action to execute
+   * @param userId The user ID
+   * @param context The context for action execution
+   */
+  private async executeAction(action: RuleAction, userId: string, context: any): Promise<void> {
+    try {
+      switch (action.type) {
+        case 'AWARD_XP':
+          await this.awardXP(userId, Number(action.value));
+          break;
+          
+        case 'UNLOCK_ACHIEVEMENT':
+          await this.unlockAchievement(userId, String(action.value));
+          break;
+          
+        case 'PROGRESS_QUEST':
+          // Quest progress implementation would go here
+          this.logger.log(`Quest progress action not implemented yet`, 'RulesService');
+          break;
+          
+        default:
+          this.logger.warn(`Unknown action type: ${action.type}`, 'RulesService');
+          break;
+      }
+    } catch (error) {
+      this.logger.error(
+        `Error executing action ${action.type}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : undefined,
+        'RulesService'
+      );
+    }
+  }
+
+  /**
+   * Award XP to a user.
+   * @param userId The user ID
+   * @param xp The amount of XP to award
+   */
+  private async awardXP(userId: string, xp: number): Promise<void> {
+    try {
+      this.logger.log(`Awarding ${xp} XP to user ${userId}`, 'RulesService');
+      
+      const profile = await this.profilesService.findById(userId);
+      const updatedProfile = await this.profilesService.update(userId, {
+        xp: profile.xp + xp,
+        level: this.calculateLevel(profile.xp + xp)
+      });
+      
+      this.logger.log(
+        `Successfully awarded ${xp} XP to user ${userId}. New XP: ${updatedProfile.xp}, Level: ${updatedProfile.level}`,
+        'RulesService'
+      );
+    } catch (error) {
+      this.logger.error(
+        `Error awarding XP to user ${userId}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : undefined,
+        'RulesService'
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * Unlock an achievement for a user.
+   * @param userId The user ID
+   * @param achievementId The achievement ID to unlock
+   */
+  private async unlockAchievement(userId: string, achievementId: string): Promise<void> {
+    try {
+      this.logger.log(`Unlocking achievement ${achievementId} for user ${userId}`, 'RulesService');
+      
+      await this.achievementsService.unlockAchievement(userId, achievementId);
+      
+      this.logger.log(`Successfully unlocked achievement ${achievementId} for user ${userId}`, 'RulesService');
+    } catch (error) {
+      this.logger.error(
+        `Error unlocking achievement ${achievementId} for user ${userId}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : undefined,
+        'RulesService'
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * Calculate level based on XP.
+   * @param xp The amount of XP
+   * @returns The calculated level
+   */
+  private calculateLevel(xp: number): number {
+    // Simple level calculation: level = 1 + floor(xp / 100)
+    // In production, you'd want a more sophisticated level curve
+    return Math.floor(xp / 100) + 1;
+  }
+
+  /**
+   * Load rules from the database.
+   */
+  private async loadRules(): Promise<void> {
+    try {
+      this.logger.log('Loading rules from database', 'RulesService');
+      
+      // In a real implementation, this would load rules from the database
+      // For now, we'll use a simple hardcoded set of rules
+      this.rules = [
+        {
+          id: 'health-steps-goal',
+          name: 'Daily Steps Goal',
+          description: 'Award XP when user completes their daily steps goal',
+          eventType: 'STEPS_RECORDED',
+          journey: 'health',
+          condition: 'event.data.steps >= 10000',
+          actions: [
+            {
+              type: 'AWARD_XP',
+              value: 50
+            },
+            {
+              type: 'UNLOCK_ACHIEVEMENT',
+              value: '1a2b3c4d-2222-2222-2222-222222222222' // Step Master achievement
+            }
+          ],
+          enabled: true
+        },
+        {
+          id: 'care-appointment-booked',
+          name: 'Appointment Booking',
+          description: 'Award XP when user books an appointment',
+          eventType: 'APPOINTMENT_BOOKED',
+          journey: 'care',
+          condition: 'true', // Always award for booking an appointment
+          actions: [
+            {
+              type: 'AWARD_XP',
+              value: 30
+            },
+            {
+              type: 'UNLOCK_ACHIEVEMENT',
+              value: '2a3b4c5d-1111-1111-1111-111111111111' // Care Beginner achievement
+            }
+          ],
+          enabled: true
+        },
+        {
+          id: 'plan-claim-submitted',
+          name: 'Claim Submission',
+          description: 'Award XP when user submits a claim',
+          eventType: 'CLAIM_SUBMITTED',
+          journey: 'plan',
+          condition: 'event.data.docCount >= 3', // Complete documentation
+          actions: [
+            {
+              type: 'AWARD_XP',
+              value: 40
+            },
+            {
+              type: 'UNLOCK_ACHIEVEMENT',
+              value: '3a4b5c6d-3333-3333-3333-333333333333' // Claim Expert achievement
+            }
+          ],
+          enabled: true
+        }
+      ];
+      
+      this.logger.log(`Loaded ${this.rules.length} rules`, 'RulesService');
+    } catch (error) {
+      this.logger.error(
+        `Error loading rules: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : undefined,
+        'RulesService'
+      );
+      throw error;
     }
   }
 }

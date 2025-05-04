@@ -5,6 +5,7 @@
 ### Problem
 
 The build process was failing with the following error:
+
 ```markdown
 Error: https://registry.yarnpkg.com/transform-react-remove-prop-types: Not found
 ```markdown

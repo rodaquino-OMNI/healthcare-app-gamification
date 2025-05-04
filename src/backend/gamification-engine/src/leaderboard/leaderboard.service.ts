@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config'; // 3.1.1
+import { ConfigService } from '@nestjs/config';
 import { ProfilesService } from '../profiles/profiles.service';
-import { RedisService } from 'src/backend/shared/src/redis/redis.service';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { GameProfile } from 'src/backend/gamification-engine/src/profiles/entities/game-profile.entity';
+import { RedisService } from '@app/shared/redis/redis.service';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { GameProfile } from '../profiles/entities/game-profile.entity';
 
 /**
  * Service for generating and retrieving leaderboard data.
@@ -63,7 +63,10 @@ export class LeaderboardService {
       }));
       
       // Cache the leaderboard data with journey-specific TTL
-      const ttl = this.redisService.getJourneyTTL(journey);
+      const ttl = this.redisService.getJourneyTTL ? 
+        this.redisService.getJourneyTTL(journey) : 
+        this.LEADERBOARD_TTL;
+
       await this.redisService.set(
         cacheKey,
         JSON.stringify(leaderboardData),
@@ -74,7 +77,11 @@ export class LeaderboardService {
       
       return leaderboardData;
     } catch (error) {
-      this.logger.error(`Failed to get leaderboard for ${journey}: ${error.message}`, error.stack, 'LeaderboardService');
+      this.logger.error(
+        `Failed to get leaderboard for ${journey}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : undefined,
+        'LeaderboardService'
+      );
       throw error;
     }
   }
@@ -85,18 +92,17 @@ export class LeaderboardService {
    */
   private async calculateLeaderboard(): Promise<GameProfile[]> {
     try {
-      // In a real implementation, this would query the database to get all game profiles
-      // sorted by XP in descending order. Since the ProfilesService doesn't have a method
-      // to retrieve all profiles, this is implemented as a placeholder.
-      
-      // Fetch all game profiles - in a real implementation, this would query the database
-      // directly or use a method on ProfilesService that returns all profiles
-      const profiles: GameProfile[] = [];
+      // Use the ProfilesService to get all game profiles
+      const profiles = await this.profilesService.getAllProfiles();
       
       // Sort by XP in descending order
       return profiles.sort((a, b) => b.xp - a.xp);
     } catch (error) {
-      this.logger.error(`Failed to calculate leaderboard: ${error.message}`, error.stack, 'LeaderboardService');
+      this.logger.error(
+        `Failed to calculate leaderboard: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : undefined,
+        'LeaderboardService'
+      );
       throw error;
     }
   }

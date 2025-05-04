@@ -8,6 +8,7 @@ import { KafkaModule } from '@app/shared/kafka/kafka.module'; // @app/shared ^1.
 import { LoggerModule } from '@app/shared/logging/logger.module'; // @app/shared ^1.0.0
 import { RedisModule } from '@app/shared/redis/redis.module'; // @app/shared ^1.0.0
 import { TracingModule } from '@app/shared/tracing/tracing.module'; // @app/shared ^1.0.0
+import { ProfilesModule } from '../profiles/profiles.module';
 
 /**
  * Module for managing achievements in the gamification system.
@@ -15,7 +16,14 @@ import { TracingModule } from '@app/shared/tracing/tracing.module'; // @app/shar
  * for working with achievements across all journeys.
  */
 @Module({
-  imports: [TypeOrmModule.forFeature([Achievement, UserAchievement]), KafkaModule, RedisModule, LoggerModule, TracingModule],
+  imports: [
+    TypeOrmModule.forFeature([Achievement, UserAchievement]), 
+    KafkaModule, 
+    RedisModule, 
+    LoggerModule, 
+    TracingModule,
+    ProfilesModule // Add ProfilesModule to give AchievementsService access to ProfilesService
+  ],
   controllers: [AchievementsController],
   providers: [AchievementsService],
   exports: [AchievementsService],

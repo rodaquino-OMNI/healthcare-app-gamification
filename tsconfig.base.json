@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@app/shared/*": ["src/backend/shared/src/*"],
+      "@app/auth/*": ["src/backend/auth-service/src/*"],
+      "@app/health/*": ["src/backend/health-service/src/*"],
+      "@app/care/*": ["src/backend/care-service/src/*"],
+      "@app/plan/*": ["src/backend/plan-service/src/*"],
+      "@app/gamification/*": ["src/backend/gamification-engine/src/*"],
+      "@app/notifications/*": ["src/backend/notification-service/src/*"]
+    }
+  }
+}

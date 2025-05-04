@@ -1,284 +1,218 @@
 # AUSTA SuperApp Gamification Engine
 
-## Overview
+The Gamification Engine is a core service in the AUSTA SuperApp platform that manages all gamification-related functionality across the three main user journeys: Health, Care, and Plan.
 
-The Gamification Engine is a core component of the AUSTA SuperApp that drives user engagement across all journeys through points, achievements, quests, and rewards. It processes events from user actions, applies configurable rules, and creates a motivational feedback loop that encourages positive health behaviors.
+## Architecture
 
-### Key Features
+The Gamification Engine follows a modular architecture with the following components:
 
-- **Event-driven architecture** with high-throughput event processing
+- **Profiles**: Managing user game profiles including level, XP, and achievements
+- **Achievements**: Handling unlockable achievements across different journeys
+- **Quests**: Managing multi-step challenges for users to complete
+- **Rules**: Processing incoming events against configurable rules to award points and achievements
+- **Leaderboard**: Generating and caching leaderboards for different journeys
+- **Events**: Consuming and producing events to/from Kafka for cross-service integration
 
-- **Rule-based achievement system** with configurable conditions and rewards
+## Prerequisites
 
-- **Real-time progress tracking** across all user journeys
-
-- **Journey-specific achievements** for Health, Care, and Plan journeys
-
-- **Leveling system** with XP (experience points) accumulation
-
-- **Reward distribution** for achievement unlocks and level progression
-
-- **Leaderboards** for social comparison and motivation
-
-- **Analytics integration** for measuring engagement impact on health outcomes
-
-## Technical Architecture
-
-The Gamification Engine follows an event-driven microservice architecture:
-
-```mermaid
-graph TD
-    Events[Event Stream] --> EventProcessor[Event Processor]
-    EventProcessor --> RuleEngine[Rule Engine]
-    RuleEngine --> PointsCalculator[Points Calculator]
-    PointsCalculator --> AchievementManager[Achievement Manager]
-    AchievementManager --> QuestManager[Quest Manager]
-    QuestManager --> RewardManager[Reward Manager]
-    RewardManager --> NotificationTrigger[Notification Trigger]
-    
-    RuleEngine --> RuleConfig[Rule Configuration]
-    AchievementManager --> AchievementConfig[Achievement Configuration]
-    QuestManager --> QuestConfig[Quest Configuration]
-    RewardManager --> RewardConfig[Reward Configuration]
-    
-    EventProcessor --> EventStore[Event Store]
-    PointsCalculator --> UserProfileStore[User Profile Store]
-    AchievementManager --> AchievementStore[Achievement Store]
-    QuestManager --> QuestStore[Quest Store]
-    RewardManager --> RewardStore[Reward Store]
-```markdown
-
-The engine processes over 1,000 events per second with sub-50ms latency, ensuring real-time feedback to users across all journeys.
+- Node.js (v18 or higher)
+- npm or yarn
+- Docker and Docker Compose
+- PostgreSQL client (optional, for direct database access)
 
 ## Getting Started
 
-### Prerequisites
+### Using the Development Script
 
-- Node.js 18.x or later
-
-- Docker and Docker Compose
-
-- PostgreSQL 14 or later
-
-- Redis 7.0 or later
-
-- Kafka for event streaming
-
-### Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/austa/superapp.git
-   cd superapp/src/backend/gamification-engine
-   ```markdown
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```markdown
-
-3. Set up environment variables (see Configuration section below)
-
-4. Set up the database:
-   ```bash
-   npm run db:migrate
-   npm run db:seed
-   ```markdown
-
-### Running with Docker
-
-The simplest way to run the service is using Docker Compose:
+The easiest way to get started is to use the development script:
 
 ```bash
-docker-compose up -d
-```markdown
+# Make the script executable (if needed)
+chmod +x start-dev.sh
 
-This will start the Gamification Engine along with its dependencies (Redis, PostgreSQL, and Kafka).
+# Start the development environment
+./start-dev.sh
+```
 
-### Running Locally
+This script will:
 
-For development:
+1. Start all required Docker containers (PostgreSQL, Redis, Kafka)
+2. Generate the Prisma client
+3. Run database migrations
+4. Seed the database with sample data
+5. Start the service in development mode
 
-```bash
-npm run dev
-```markdown
+### Manual Setup
 
-For production:
-
-```bash
-npm run build
-npm start
-```markdown
-
-### Running Tests
+If you prefer to set up manually:
 
 ```bash
+# Start infrastructure services
+docker-compose -f docker-compose.local.yml up -d
 
-# Unit tests
+# Install dependencies
+npm install
 
-npm run test
+# Generate Prisma client
+npx prisma generate
 
-# Integration tests
+# Run database migrations
+npx prisma migrate dev
 
-npm run test:integration
+# Seed the database
+npx prisma db seed
 
-# End-to-end tests
+# Start the development server
+npm run start:dev
+```
 
-npm run test:e2e
+## Key Components
 
-# All tests with coverage
+### Game Profiles
 
-npm run test:coverage
-```markdown
+Every user has a game profile that tracks their gamification progress:
 
-## API Documentation
+- Level: Current user level
+- XP: Experience points accumulated
+- Achievements: Collection of unlocked achievements
 
-The Gamification Engine exposes both REST and GraphQL APIs:
+Game profiles are automatically created when a user first interacts with the platform.
 
-### GraphQL API
+### Achievements
 
-The GraphQL API is available at `/graphql` and provides access to all engine functionality. Detailed documentation is available via the GraphQL Playground, which is accessible at the same endpoint when running in development mode.
+Achievements are unlockable rewards that users can earn by completing specific actions:
 
-### REST API
+- Journey-specific achievements (Health, Care, Plan)
+- Different difficulty levels
+- XP rewards
+- Visual badges displayed in the app
 
-The REST API provides endpoints for:
+### Quests
 
-- Processing events: `POST /api/events`
+Quests are multi-step challenges that users can complete:
 
-- Managing achievements: `GET /api/achievements`
+- Sequential steps to complete
+- Progress tracking
+- XP rewards upon completion
 
-- User profiles: `GET /api/profiles/:userId`
+### Leaderboards
 
-- Leaderboards: `GET /api/leaderboards/:boardId`
+The service generates and caches leaderboards for different journeys:
 
-For detailed API documentation, see the [API Reference](./docs/api-reference.md) or run the service and visit `/api-docs` for Swagger documentation.
+- Overall leaderboard
+- Journey-specific leaderboards
+- Different time periods (daily, weekly, monthly)
+
+## API Endpoints
+
+### Profiles
+
+- `GET /api/profiles/:userId` - Get a user's game profile
+- `POST /api/profiles` - Create a new game profile
+- `PUT /api/profiles/:userId` - Update a user's game profile
+
+### Achievements
+
+- `GET /api/achievements` - List all available achievements
+- `GET /api/achievements/:id` - Get a specific achievement
+- `GET /api/users/:userId/achievements` - Get a user's achievements
+- `POST /api/users/:userId/achievements/:achievementId` - Award an achievement to a user
+
+### Quests
+
+- `GET /api/quests` - List all available quests
+- `GET /api/quests/:id` - Get a specific quest
+- `GET /api/users/:userId/quests` - Get a user's quests
+- `PUT /api/users/:userId/quests/:questId/progress` - Update a user's quest progress
+
+### Leaderboards
+
+- `GET /api/leaderboards/:journey` - Get leaderboard for a specific journey
+- `GET /api/leaderboards/:journey/user/:userId` - Get a user's rank in a leaderboard
+
+## Event Processing
+
+The Gamification Engine processes events from other services via Kafka:
+
+- Health events (steps recorded, metrics tracked)
+- Care events (appointments booked, medications tracked)
+- Plan events (claims submitted, plan details viewed)
+
+These events are processed against rule configurations to award XP and achievements.
 
 ## Configuration
 
-### Environment Variables
+Service configuration is managed through environment variables. See `.env` file for available options.
 
-| Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| `NODE_ENV` | Environment (development, test, production) | `development` | Yes |
-| `PORT` | HTTP port | `3002` | No |
-| `DATABASE_URL` | PostgreSQL connection string | - | Yes |
-| `REDIS_URL` | Redis connection string | - | Yes |
-| `KAFKA_BROKERS` | Comma-separated list of Kafka brokers | - | Yes |
-| `KAFKA_TOPIC` | Kafka topic for gamification events | `gamification.events` | No |
-| `JWT_SECRET` | Secret for JWT verification | - | Yes |
-| `LOG_LEVEL` | Logging level | `info` | No |
-| `RULES_REFRESH_INTERVAL` | Interval (ms) for refreshing rules from DB | `60000` | No |
-| `ACHIEVEMENT_BATCH_SIZE` | Batch size for achievement processing | `100` | No |
-| `REDIS_CACHE_TTL` | TTL for cached data in seconds | `300` | No |
+## Testing
 
-### Rules Configuration
+```bash
+# Run unit tests
+npm run test
 
-The Gamification Engine uses a flexible rule configuration system that can be managed through the database or configuration files:
+# Run integration tests
+npm run test:e2e
 
-```json
-{
-  "rules": [
-    {
-      "id": "daily-steps-goal",
-      "event": "STEPS_RECORDED",
-      "condition": "event.data.steps >= userState.goals.dailySteps",
-      "actions": [
-        {
-          "type": "AWARD_XP",
-          "value": 50
-        },
-        {
-          "type": "PROGRESS_QUEST",
-          "questId": "active-lifestyle",
-          "value": 1
-        }
-      ]
-    }
-  ]
-}
-```markdown
+# Generate test coverage
+npm run test:cov
+```
 
-For detailed configuration options, see the [Rules Documentation](./docs/rules-configuration.md).
+## Development Guidelines
 
-## Event Schema
+### Code Style
 
-Events sent to the Gamification Engine should follow this schema:
+The project follows the NestJS style guide and uses ESLint and Prettier for code formatting:
 
-```typescript
-interface GamificationEvent {
-  type: string;            // Event type (e.g., "STEPS_RECORDED", "APPOINTMENT_BOOKED")
-  userId: string;          // User ID
-  timestamp: string;       // ISO timestamp
-  journey: "health" | "care" | "plan" | "common";  // Journey context
-  data: {                  // Event-specific data
-    [key: string]: any;
-  };
-  metadata?: {             // Optional metadata
-    source: string;        // Source system
-    version: string;       // Source system version
-    [key: string]: any;
-  };
-}
-```markdown
+```bash
+# Format code
+npm run format
 
-## Journeys and Achievement Types
+# Lint code
+npm run lint
+```
 
-The Gamification Engine supports achievements across all three journeys:
+### Adding New Features
 
-| Journey | Example Achievements | Typical Events |
-|---------|---------------------|----------------|
-| Health | Activity Streaks, Health Goals, Metrics Tracking | Steps Recorded, Goal Achieved, Device Connected |
-| Care | Appointment Attendance, Medication Adherence, Treatment Completion | Appointment Booked, Medication Taken, Treatment Completed |
-| Plan | Claim Submissions, Coverage Utilization, Benefit Discovery | Claim Submitted, Coverage Checked, Benefit Used |
+When adding new features to the gamification engine:
 
-## Performance Considerations
+1. Create necessary entities and DTOs
+2. Create services for business logic
+3. Create controllers for API endpoints
+4. Write unit and integration tests
+5. Update documentation
 
-The Gamification Engine is designed for high throughput and low latency:
+### Working with Prisma
 
-- Event processing rate: Up to 5,000 events/second
+The service uses Prisma for database access:
 
-- Processing latency: < 30ms per event
+```bash
+# Generate Prisma client after schema changes
+npx prisma generate
 
-- Rule evaluation: Optimized for fast condition checking
+# Create a new migration
+npx prisma migrate dev --name your_migration_name
 
-- Redis caching: Used for user state and frequent lookups
+# Open Prisma Studio to view/edit data
+npx prisma studio
+```
 
-- Database interactions: Batched for efficiency
+## Debugging
 
-## Contributing
+- Development server runs on port 3005 by default
+- Swagger API documentation is available at `/api/docs`
+- Prisma Studio provides a visual database editor
+- Kafdrop is available on port 9000 for Kafka topic monitoring
 
-We welcome contributions to the Gamification Engine! Please follow these guidelines:
+## Integration with Other Services
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature-name`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin feature/your-feature-name`
-5. Submit a pull request
+The Gamification Engine integrates with other AUSTA SuperApp services:
 
-### Coding Standards
-
-- Follow the TypeScript style guide
-
-- Write unit tests for all new functionality
-
-- Maintain or improve code coverage
-
-- Document public APIs with JSDoc
-
-- Use semantic commit messages
-
-### Development Process
-
-1. Check the issues for existing tasks or create a new one
-2. Discuss approach in the issue before starting development
-3. Write tests before implementation (TDD preferred)
-4. Ensure all tests pass before submitting PR
-5. Request code review from at least one maintainer
+- **Auth Service**: User authentication and authorization
+- **Health Service**: Receives health journey events
+- **Care Service**: Receives care journey events
+- **Plan Service**: Receives plan journey events
+- **Notification Service**: Sends achievement notifications
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
-
-## Contact
-
-For questions or support, please contact the AUSTA development team at dev@austa.com.br.
+This project is proprietary and confidential. Unauthorized copying, transfer, or use is strictly prohibited.

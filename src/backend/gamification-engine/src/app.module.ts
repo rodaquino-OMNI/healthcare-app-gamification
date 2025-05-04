@@ -7,11 +7,11 @@ import { ProfilesModule } from './profiles/profiles.module';
 import { QuestsModule } from './quests/quests.module';
 import { RewardsModule } from './rewards/rewards.module';
 import { RulesModule } from './rules/rules.module';
-import { KafkaModule } from 'src/backend/shared/src/kafka/kafka.module';
-import { RedisModule } from 'src/backend/shared/src/redis/redis.module';
-import { LoggerModule } from 'src/backend/shared/src/logging/logger.module';
-import { TracingModule } from 'src/backend/shared/src/tracing/tracing.module';
-import { ExceptionsModule } from 'src/backend/shared/src/exceptions/exceptions.module';
+import { KafkaModule } from '@app/shared/kafka/kafka.module';
+import { RedisModule } from '@app/shared/redis/redis.module';
+import { LoggerModule } from '@app/shared/logging/logger.module';
+import { TracingModule } from '@app/shared/tracing/tracing.module';
+import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
 import { gamificationEngine } from './config/configuration';
 
 /**

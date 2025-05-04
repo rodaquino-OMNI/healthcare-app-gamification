@@ -1,10 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { GameProfile } from 'src/backend/gamification-engine/src/profiles/entities/game-profile.entity';
-import { UserAchievement } from 'src/backend/gamification-engine/src/achievements/entities/user-achievement.entity';
-import { Repository } from 'src/backend/shared/src/interfaces/repository.interface';
-import { AppException } from 'src/backend/shared/src/exceptions/exceptions.types';
-import { PrismaService } from 'src/backend/shared/src/database/prisma.service';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
+import { GameProfile } from './entities/game-profile.entity';
+import { PrismaService } from '@app/shared/database/prisma.service';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { mapToDomainGameProfile } from '../utils/entity-mappers';
 
 /**
  * Service for managing user game profiles.
@@ -32,12 +30,12 @@ export class ProfilesService {
       const existingProfile = await this.prisma.gameProfile.findUnique({
         where: { userId }
       });
-
+      
       if (existingProfile) {
         this.logger.warn(`Game profile already exists for user: ${userId}`, 'ProfilesService');
-        return existingProfile as unknown as GameProfile;
+        return mapToDomainGameProfile(existingProfile);
       }
-
+      
       // Create a new game profile with default values
       const newProfile = await this.prisma.gameProfile.create({
         data: {
@@ -46,11 +44,15 @@ export class ProfilesService {
           xp: 0
         }
       });
-
+      
       this.logger.log(`Created new game profile for user: ${userId}`, 'ProfilesService');
-      return newProfile as unknown as GameProfile;
+      return mapToDomainGameProfile(newProfile);
     } catch (error) {
-      this.logger.error(`Failed to create game profile for user: ${userId}`, error.stack, 'ProfilesService');
+      this.logger.error(
+        `Failed to create game profile for user: ${userId}`,
+        error instanceof Error ? error.stack : undefined,
+        'ProfilesService'
+      );
       throw error;
     }
   }
@@ -65,21 +67,29 @@ export class ProfilesService {
       const profile = await this.prisma.gameProfile.findUnique({
         where: { userId },
         include: {
-          achievements: true,
-          quests: true
+          achievements: {
+            include: {
+              achievement: true
+            }
+          }
         }
       });
-
+      
       if (!profile) {
         throw new NotFoundException(`Game profile not found for user: ${userId}`);
       }
-
-      return profile as unknown as GameProfile;
+      
+      return mapToDomainGameProfile(profile);
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      this.logger.error(`Failed to find game profile for user: ${userId}`, error.stack, 'ProfilesService');
+      
+      this.logger.error(
+        `Failed to find game profile for user: ${userId}`,
+        error instanceof Error ? error.stack : undefined,
+        'ProfilesService'
+      );
       throw error;
     }
   }
@@ -94,24 +104,43 @@ export class ProfilesService {
     try {
       // Ensure the profile exists before updating
       await this.findById(userId);
-
+      
+      // Only allow updating specific fields
+      const updateData = {
+        level: data.level,
+        xp: data.xp
+      };
+      
       const updatedProfile = await this.prisma.gameProfile.update({
         where: { userId },
-        data,
+        data: updateData,
         include: {
-          achievements: true,
-          quests: true
+          achievements: {
+            include: {
+              achievement: true
+            }
+          }
         }
       });
-
+      
       this.logger.log(`Updated game profile for user: ${userId}`, 'ProfilesService');
-      return updatedProfile as unknown as GameProfile;
+      return mapToDomainGameProfile(updatedProfile);
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
       }
-      this.logger.error(`Failed to update game profile for user: ${userId}`, error.stack, 'ProfilesService');
+      
+      this.logger.error(
+        `Failed to update game profile for user: ${userId}`,
+        error instanceof Error ? error.stack : undefined,
+        'ProfilesService'
+      );
       throw error;
     }
   }
-}
+
+  /**
+   * Retrieves all game profiles.
+   * @returns An array of all game profiles
+   */
+  async getAllProfiles(): Promise<GameProfile[]> {
