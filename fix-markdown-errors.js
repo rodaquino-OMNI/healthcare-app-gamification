@@ -4,6 +4,7 @@ const glob = require('glob'); // You may need to install this: npm install glob
 
 /**
  * Enhanced markdown linting error fix script
+ * - MD001: Heading increment (ensures headings only increment by one level at a time)
  * - MD004: Unordered list style (converts * to -)
  * - MD012: Multiple consecutive blank lines
  * - MD022: Blanks around headings
@@ -45,6 +46,9 @@ filesToFix.forEach(filePath => {
   
   // Track if we made changes
   let originalContent = content;
+  
+  // Fix MD001: Heading increment
+  content = fixHeadingIncrement(content);
   
   // Fix MD022: Blanks around headings
   content = fixBlanksAroundHeadings(content);
@@ -88,6 +92,44 @@ filesToFix.forEach(filePath => {
     console.log(`  No changes needed for: ${filePath}`);
   }
 });
+
+/**
+ * Fix heading increment errors
+ * Ensures headings only increment by one level at a time
+ */
+function fixHeadingIncrement(text) {
+  const lines = text.split('\n');
+  const resultLines = [...lines];
+  
+  let lastHeadingLevel = 0;
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);
+    
+    if (headingMatch) {
+      const currentLevel = headingMatch[1].length;
+      const title = headingMatch[2].trim();
+      
+      // If we're jumping more than one level
+      if (currentLevel > lastHeadingLevel + 1 && lastHeadingLevel > 0) {
+        // Create a new heading at the appropriate level
+        const newLevel = lastHeadingLevel + 1;
+        const newHeading = '#'.repeat(newLevel) + ' ' + title;
+        
+        // Replace the current heading
+        resultLines[i] = newHeading;
+        
+        console.log(`  Fixed heading increment: "${line}" -> "${newHeading}"`);
+      }
+      
+      // Update the last heading level
+      lastHeadingLevel = resultLines[i].match(/^(#{1,6})\s+/)[1].length;
+    }
+  }
+  
+  return resultLines.join('\n');
+}
 
 /**
  * Fix blanks around headings

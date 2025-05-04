@@ -38,7 +38,7 @@ const AnimatedProgress = ({ progress, color }) => {
     </View>
   );
 };
-```
+```markdown
 
 ## Authentication Service - JWT Helper Functions
 
@@ -69,7 +69,7 @@ export function verifyToken(token: string): any {
     throw new Error('Invalid token');
   }
 }
-```
+```markdown
 
 ## Health Service - Data Visualization Utilities
 
@@ -97,7 +97,7 @@ export function calculateMetricScale(
     );
   };
 }
-```
+```markdown
 
 ## Gamification Engine - Achievement System
 
@@ -135,7 +135,7 @@ export class AchievementVerifier {
     return true; // Simplified for example
   }
 }
-```
+```markdown
 
 ## Care Journey - Telemedicine Connection Handler
 
@@ -178,7 +178,7 @@ class TelemedicineSession {
   
   // Additional methods...
 }
-```
+```markdown
 
 ## Plan Journey - Insurance API Integration
 
@@ -235,7 +235,7 @@ export class InsuranceApiClient {
     return response.json();
   }
 }
-```
+```markdown
 
 ## Design System - Color Accessibility Functions
 
@@ -270,7 +270,7 @@ function getLuminance(hexColor) {
   
   return 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
 }
-```
+```markdown
 
 ## API Gateway - Request Rate Limiting
 
@@ -338,4 +338,4 @@ function createRateLimiter(options) {
     return next();
   };
 }
-```
+```markdown
