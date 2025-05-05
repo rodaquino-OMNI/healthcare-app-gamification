@@ -26,7 +26,7 @@ export class EventsConsumer implements OnModuleInit {
       this.logger.log('Initializing Kafka event consumers', 'EventsConsumer');
       
       for (const topic of this.topics) {
-        await this.kafkaService.subscribe(
+        await this.kafkaService.consume(
           topic,
           this.consumerGroup,
           this.handleEvent.bind(this)
@@ -48,16 +48,16 @@ export class EventsConsumer implements OnModuleInit {
   /**
    * Handles incoming events from Kafka.
    * @param payload The event payload
-   * @param topic The Kafka topic
-   * @param partition The Kafka partition
+   * @param key The message key
+   * @param headers The message headers
    */
-  private async handleEvent(payload: any, topic: string, partition: number): Promise<void> {
+  private async handleEvent(payload: any, key?: string, headers?: Record<string, string>): Promise<void> {
     try {
-      this.logger.log(`Processing event from topic ${topic}`, 'EventsConsumer');
+      this.logger.log(`Processing event`, 'EventsConsumer');
       
       // Validate the event structure
       if (!this.isValidEvent(payload)) {
-        this.logger.warn(`Invalid event received from topic ${topic}: ${JSON.stringify(payload)}`, 'EventsConsumer');
+        this.logger.warn(`Invalid event received: ${JSON.stringify(payload)}`, 'EventsConsumer');
         return;
       }
       
@@ -71,10 +71,10 @@ export class EventsConsumer implements OnModuleInit {
         metadata: payload.metadata || {}
       });
       
-      this.logger.log(`Successfully processed event from topic ${topic}`, 'EventsConsumer');
+      this.logger.log(`Successfully processed event`, 'EventsConsumer');
     } catch (error) {
       this.logger.error(
-        `Error processing event from topic ${topic}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Error processing event: ${error instanceof Error ? error.message : 'Unknown error'}`,
         error instanceof Error ? error.stack : undefined,
         'EventsConsumer'
       );

@@ -1,5 +1,5 @@
-import { FilterDto } from '../../dto/filter.dto';
-import { PaginationDto } from '../../dto/pagination.dto';
+import { FilterDto } from '../dto/filter.dto';
+import { PaginationDto } from '../dto/pagination.dto';
 
 /**
  * Generic repository interface that provides standardized data access methods

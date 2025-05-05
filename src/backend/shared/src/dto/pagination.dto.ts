@@ -1,108 +1,64 @@
 /**
- * Standard pagination DTO for query parameters across all journey services.
- * Provides a consistent way to handle pagination for API requests and repository queries.
- * 
- * Usage example:
- * ```
- * @Get('users')
- * async getUsers(@Query() paginationDto: PaginationDto): Promise<PaginatedResponse<User>> {
- *   // Implementation
- * }
- * ```
+ * Pagination request data transfer object.
+ * Used for paginating results in repository queries.
  */
-export interface PaginationDto {
+export class PaginationDto {
   /**
-   * Current page number (1-based)
-   * @example 1
+   * The page number (1-based).
+   * @default 1
    */
-  page?: number;
-  
+  page: number = 1;
+
   /**
-   * Number of items per page
-   * @example 10
+   * The number of items per page.
+   * @default 10
    */
-  limit?: number;
-  
-  /**
-   * Number of items to skip (alternative to page)
-   * Used for offset-based pagination
-   * @example 20
-   */
-  skip?: number;
-  
-  /**
-   * Cursor-based pagination identifier
-   * Used for cursor-based pagination when preferred over offset-based pagination
-   * @example "YXJyYXljb25uZWN0aW9uOjIw"
-   */
-  cursor?: string;
+  limit: number = 10;
 }
 
 /**
- * Standard metadata interface for pagination responses
- * Contains information about the pagination state
+ * Paginated response data transfer object.
+ * Used for returning paginated results.
  */
-export interface PaginationMeta {
+export class PaginatedResponse<T> {
   /**
-   * Current page number (1-based)
+   * The items for the current page.
    */
-  currentPage: number;
-  
-  /**
-   * Number of items per page
-   */
-  itemsPerPage: number;
-  
-  /**
-   * Total number of items across all pages
-   */
-  totalItems: number;
-  
-  /**
-   * Total number of pages
-   */
-  totalPages: number;
-  
-  /**
-   * Whether there is a next page
-   */
-  hasNextPage: boolean;
-  
-  /**
-   * Whether there is a previous page
-   */
-  hasPreviousPage: boolean;
-}
+  items: T[] = [];
 
-/**
- * Generic interface for paginated API responses.
- * Used to wrap any data type with standardized pagination metadata.
- * 
- * @typeParam T - The type of items being paginated
- * 
- * Usage example:
- * ```
- * return {
- *   data: users,
- *   meta: {
- *     currentPage: 1,
- *     itemsPerPage: 10,
- *     totalItems: 50,
- *     totalPages: 5,
- *     hasNextPage: true,
- *     hasPreviousPage: false
- *   }
- * } as PaginatedResponse<User>;
- * ```
- */
-export interface PaginatedResponse<T> {
   /**
-   * Array of items for the current page
+   * The total number of items across all pages.
    */
-  data: T[];
-  
+  total: number = 0;
+
   /**
-   * Pagination metadata
+   * The current page number.
    */
-  meta: PaginationMeta;
+  page: number = 1;
+
+  /**
+   * The number of items per page.
+   */
+  limit: number = 10;
+
+  /**
+   * The total number of pages.
+   */
+  totalPages: number = 1;
+
+  /**
+   * Whether there is a next page.
+   */
+  hasNext: boolean = false;
+
+  /**
+   * Whether there is a previous page.
+   */
+  hasPrevious: boolean = false;
+
+  constructor(partial?: Partial<PaginatedResponse<T>>) {
+    if (partial) {
+      Object.assign(this, partial);
+    }
+  }
 }

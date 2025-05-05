@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { GameProfile } from './entities/game-profile.entity';
-import { PrismaService } from '@app/shared/database/prisma.service';
+// Updated import to use local PrismaService
+import { PrismaService } from '../database/prisma.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { mapToDomainGameProfile } from '../utils/entity-mappers';
 
@@ -144,3 +145,26 @@ export class ProfilesService {
    * @returns An array of all game profiles
    */
   async getAllProfiles(): Promise<GameProfile[]> {
+    try {
+      const profiles = await this.prisma.gameProfile.findMany({
+        include: {
+          achievements: {
+            include: {
+              achievement: true
+            }
+          }
+        }
+      });
+      
+      // Fix: Added explicit type annotation for the profile parameter
+      return profiles.map((profile: any) => mapToDomainGameProfile(profile));
+    } catch (error) {
+      this.logger.error(
+        'Failed to retrieve all game profiles',
+        error instanceof Error ? error.stack : undefined,
+        'ProfilesService'
+      );
+      throw error;
+    }
+  }
+}

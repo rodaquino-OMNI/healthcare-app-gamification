@@ -15,8 +15,6 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   private kafka!: Kafka;
   private producer!: Producer;
   private consumer!: Consumer;
-  private readonly logger: LoggerService;
-  private readonly tracingService: TracingService;
   private readonly configNamespace = 'gamificationEngine.kafka'; // Match the namespace used in configuration.ts
 
   /**
@@ -43,8 +41,8 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
    */
   constructor(
     private readonly configService: ConfigService,
-    logger: LoggerService,
-    tracingService: TracingService
+    private readonly logger: LoggerService,
+    private readonly tracingService: TracingService
   ) {
     try {
       // Get configuration with fallbacks for compatibility
@@ -62,11 +60,9 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
         }
       });
       
-      this.logger = logger;
-      this.tracingService = tracingService;
       this.logger.log(`Initialized Kafka service with brokers: ${brokers.join(', ')}`, 'KafkaService');
     } catch (error) {
-      logger.error('Failed to initialize Kafka service', this.formatError(error), 'KafkaService');
+      this.logger.error('Failed to initialize Kafka service', this.formatError(error), 'KafkaService');
     }
   }
 

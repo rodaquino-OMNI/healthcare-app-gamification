@@ -1,5 +1,5 @@
-import { FilterDto } from '../../dto/filter.dto';
-import { PaginationDto, PaginatedResponse } from '../../dto/pagination.dto';
+import { FilterDto } from '../dto/filter.dto';
+import { PaginationDto, PaginatedResponse } from '../dto/pagination.dto';
 
 /**
  * Generic Service interface to be implemented by all services across the AUSTA SuperApp.

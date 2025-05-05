@@ -172,7 +172,7 @@ Each journey (Health, Care, Plan) has its own package and dependency structure. 
 
 ### Common Issues and Solutions
 
-**Duplicate React/React Native versions**
+#### Duplicate React/React Native versions
 
 ```bash
 # Check for duplicate React installations

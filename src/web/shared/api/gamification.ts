@@ -6,8 +6,18 @@
  * achievements, quests, and rewards.
  */
 
-import axios from 'axios'; // Using version 1.6.8 with security enhancements
-import { API_BASE_URL, API_TIMEOUT, GAMIFICATION_ENDPOINTS } from '../constants/api';
+// Create a constants object to replace the missing import
+const API_CONFIG = {
+  BASE_URL: typeof window !== 'undefined' ? window.location.origin + '/api' : 'http://localhost:3000/api',
+  TIMEOUT: 15000,
+  ENDPOINTS: {
+    PROFILES: '/gamification/profiles',
+    ACHIEVEMENTS: '/gamification/achievements',
+    QUESTS: '/gamification/quests',
+    REWARDS: '/gamification/rewards',
+    EVENTS: '/gamification/events',
+  }
+};
 
 // Import types (adjust path as needed for your project structure)
 import { GameProfile, Achievement, Quest, Reward } from '../types/gamification.types';
@@ -15,18 +25,18 @@ import { GameProfile, Achievement, Quest, Reward } from '../types/gamification.t
 /**
  * Base URL for the gamification API endpoints
  */
-const GAMIFICATION_API_URL = `${API_BASE_URL}`;
+const GAMIFICATION_API_URL = API_CONFIG.BASE_URL;
 
 /**
  * Helper function to handle API errors consistently
- * @param error - The error object from axios
+ * @param error - The error object from fetch
  * @param defaultMessage - Default error message to display
  */
 const handleApiError = (error: any, defaultMessage: string): never => {
   // Log the error with useful debugging information
   console.error(
     `Gamification API Error: ${defaultMessage}`,
-    error.response?.data || error.message || error
+    error.message || error
   );
   
   // Throw a user-friendly error with consistent format
@@ -41,10 +51,17 @@ const handleApiError = (error: any, defaultMessage: string): never => {
  */
 export const getGameProfile = async (userId: string): Promise<GameProfile> => {
   try {
-    const response = await axios.get(`${GAMIFICATION_API_URL}${GAMIFICATION_ENDPOINTS.PROFILES}/${userId}`, {
-      timeout: API_TIMEOUT,
-    });
-    return response.data;
+    // Using fetch API instead of axios to avoid dependency issues
+    const response = await fetch(
+      `${GAMIFICATION_API_URL}${API_CONFIG.ENDPOINTS.PROFILES}/${userId}`, 
+      { method: 'GET' }
+    );
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    return await response.json();
   } catch (error) {
     return handleApiError(error, 'Failed to retrieve game profile. Please try again later.');
   }
@@ -58,11 +75,16 @@ export const getGameProfile = async (userId: string): Promise<GameProfile> => {
  */
 export const getUserAchievements = async (userId: string): Promise<Achievement[]> => {
   try {
-    const response = await axios.get(`${GAMIFICATION_API_URL}${GAMIFICATION_ENDPOINTS.ACHIEVEMENTS}`, {
-      params: { userId },
-      timeout: API_TIMEOUT,
-    });
-    return response.data;
+    const response = await fetch(
+      `${GAMIFICATION_API_URL}${API_CONFIG.ENDPOINTS.ACHIEVEMENTS}?userId=${encodeURIComponent(userId)}`, 
+      { method: 'GET' }
+    );
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    return await response.json();
   } catch (error) {
     return handleApiError(error, 'Failed to retrieve achievements. Please try again later.');
   }
@@ -76,11 +98,16 @@ export const getUserAchievements = async (userId: string): Promise<Achievement[]
  */
 export const getUserQuests = async (userId: string): Promise<Quest[]> => {
   try {
-    const response = await axios.get(`${GAMIFICATION_API_URL}${GAMIFICATION_ENDPOINTS.QUESTS}`, {
-      params: { userId },
-      timeout: API_TIMEOUT,
-    });
-    return response.data;
+    const response = await fetch(
+      `${GAMIFICATION_API_URL}${API_CONFIG.ENDPOINTS.QUESTS}?userId=${encodeURIComponent(userId)}`,
+      { method: 'GET' }
+    );
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    return await response.json();
   } catch (error) {
     return handleApiError(error, 'Failed to retrieve quests. Please try again later.');
   }
@@ -94,11 +121,16 @@ export const getUserQuests = async (userId: string): Promise<Quest[]> => {
  */
 export const getUserRewards = async (userId: string): Promise<Reward[]> => {
   try {
-    const response = await axios.get(`${GAMIFICATION_API_URL}${GAMIFICATION_ENDPOINTS.REWARDS}`, {
-      params: { userId },
-      timeout: API_TIMEOUT,
-    });
-    return response.data;
+    const response = await fetch(
+      `${GAMIFICATION_API_URL}${API_CONFIG.ENDPOINTS.REWARDS}?userId=${encodeURIComponent(userId)}`,
+      { method: 'GET' }
+    );
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    return await response.json();
   } catch (error) {
     return handleApiError(error, 'Failed to retrieve rewards. Please try again later.');
   }
@@ -118,14 +150,25 @@ export const submitGamificationEvent = async (
   eventData: Record<string, any>
 ): Promise<void> => {
   try {
-    await axios.post(`${GAMIFICATION_API_URL}${GAMIFICATION_ENDPOINTS.EVENTS}`, {
-      userId,
-      eventType,
-      eventData,
-      timestamp: new Date().toISOString()
-    }, {
-      timeout: API_TIMEOUT,
-    });
+    const response = await fetch(
+      `${GAMIFICATION_API_URL}${API_CONFIG.ENDPOINTS.EVENTS}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          eventType,
+          eventData,
+          timestamp: new Date().toISOString()
+        }),
+      }
+    );
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
   } catch (error) {
     return handleApiError(error, 'Failed to record activity. Your progress will be updated later.');
   }

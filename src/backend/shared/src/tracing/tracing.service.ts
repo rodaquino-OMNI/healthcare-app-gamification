@@ -1,6 +1,6 @@
 import { Injectable, LoggerService } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Tracer, Context, trace, SpanStatusCode } from '@opentelemetry/api';
+import { Tracer, trace, SpanStatusCode, context, Exception } from '@opentelemetry/api';
 
 @Injectable()
 export class TracingService {
@@ -33,7 +33,8 @@ export class TracingService {
     
     try {
       // Execute the provided function within the context of the span
-      const result = await trace.with(trace.setSpan(trace.context(), span), fn);
+      // Using context.with instead of trace.with (which doesn't exist)
+      const result = await context.with(trace.setSpan(context.active(), span), fn);
       
       // If the function completes successfully, set the span status to OK
       if (span.isRecording()) {
@@ -44,11 +45,28 @@ export class TracingService {
     } catch (error) {
       // If the function throws an error, set the span status to ERROR and record the exception
       if (span.isRecording()) {
-        span.recordException(error);
-        span.setStatus({ code: SpanStatusCode.ERROR });
+        // Safe handling of error by ensuring it's an Exception type
+        if (error instanceof Error) {
+          span.recordException(error as unknown as Exception);
+          span.setStatus({ 
+            code: SpanStatusCode.ERROR,
+            message: error.message
+          });
+        } else {
+          span.setStatus({ 
+            code: SpanStatusCode.ERROR,
+            message: 'Unknown error occurred'
+          });
+        }
       }
       
-      this.logger.error(`Error in span ${name}: ${error.message}`, error.stack, 'AustaTracing');
+      // Safe error logging with proper type checking
+      if (error instanceof Error) {
+        this.logger.error(`Error in span ${name}: ${error.message}`, error.stack, 'AustaTracing');
+      } else {
+        this.logger.error(`Error in span ${name}: Unknown error`, undefined, 'AustaTracing');
+      }
+      
       throw error;
     } finally {
       // Always end the span regardless of success or failure

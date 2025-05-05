@@ -23,7 +23,7 @@ import {
   isBefore,
   isAfter
 } from 'date-fns'; // date-fns version: 2.30+
-import { ptBR, enUS } from 'date-fns/locale'; // date-fns version: 2.30+
+import { ptBR, enUS, Locale } from 'date-fns/locale'; // date-fns version: 2.30+
 
 // Default format strings
 export const DEFAULT_DATE_FORMAT = 'dd/MM/yyyy';
@@ -31,8 +31,8 @@ export const DEFAULT_TIME_FORMAT = 'HH:mm';
 export const DEFAULT_DATETIME_FORMAT = 'dd/MM/yyyy HH:mm';
 export const DEFAULT_LOCALE = 'pt-BR';
 
-// Locale mapping
-const LOCALE_MAP = {
+// Locale mapping with proper type definition to fix TypeScript errors
+const LOCALE_MAP: Record<string, Locale> = {
   'pt-BR': ptBR,
   'en-US': enUS
 };
