@@ -1,35 +1,33 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 
 /**
- * Custom decorator to extract the current authenticated user from the request object.
- * This decorator simplifies access to user data in controller methods.
+ * Parameter decorator that extracts the authenticated user from the request object.
+ * This decorator is designed to be used in controller methods where the user
+ * information is required.
  * 
- * The user object must be attached to the request by an authentication middleware
- * or guard (typically JwtAuthGuard) before this decorator can access it.
- *
+ * @throws AppException if no user is found in the request
+ * 
  * @example
- * // Get the entire user object
  * @Get('profile')
- * @UseGuards(JwtAuthGuard)
  * getProfile(@CurrentUser() user: User) {
  *   return user;
  * }
- *
- * @example
- * // Get a specific property from the user object
- * @Get('user-id')
- * @UseGuards(JwtAuthGuard)
- * getUserId(@CurrentUser('id') userId: string) {
- *   return { userId };
- * }
  */
 export const CurrentUser = createParamDecorator(
-  (data: string | undefined, ctx: ExecutionContext) => {
+  (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
-    const user = request.user;
     
-    // If data is provided, return the specified property
-    // Otherwise return the entire user object
-    return data ? user?.[data] : user;
+    // Check if user exists in request (set by JwtAuthGuard)
+    if (!request.user) {
+      throw new AppException(
+        'User not authenticated',
+        ErrorType.VALIDATION,
+        'AUTH_001',
+        {}
+      );
+    }
+    
+    return request.user;
   },
 );

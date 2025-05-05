@@ -18,7 +18,7 @@ export class ProcessEventDto {
    */
   @IsNotEmpty()
   @IsString()
-  type: string;
+  type: string = '';
 
   /**
    * The ID of the user associated with the event.
@@ -26,7 +26,7 @@ export class ProcessEventDto {
    */
   @IsNotEmpty()
   @IsUUID()
-  userId: string;
+  userId: string = '';
 
   /**
    * The data associated with the event.
@@ -37,7 +37,7 @@ export class ProcessEventDto {
    */
   @IsNotEmpty()
   @IsObject()
-  data: object;
+  data: object = {};
 
   /**
    * The journey associated with the event.
@@ -49,5 +49,5 @@ export class ProcessEventDto {
    */
   @IsOptional()
   @IsString()
-  journey: string;
+  journey: string = '';
 }

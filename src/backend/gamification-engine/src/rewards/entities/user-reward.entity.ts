@@ -6,8 +6,8 @@ import {
   JoinColumn,
   CreateDateColumn
 } from 'typeorm'; // typeorm 0.3.17
-import { GameProfile } from 'src/backend/gamification-engine/src/profiles/entities/game-profile.entity';
-import { Reward } from 'src/backend/gamification-engine/src/rewards/entities/reward.entity';
+import { GameProfile } from '@app/gamification/profiles/entities/game-profile.entity';
+import { Reward } from './reward.entity';
 
 /**
  * Represents a reward earned by a user.
@@ -20,25 +20,25 @@ export class UserReward {
    * Unique identifier for the user reward.
    */
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string = '';
 
   /**
    * The game profile associated with this reward.
    */
   @ManyToOne(() => GameProfile)
   @JoinColumn({ name: 'profileId' })
-  profile: GameProfile;
+  profile: GameProfile = {} as GameProfile;
 
   /**
    * The reward earned by the user.
    */
   @ManyToOne(() => Reward)
   @JoinColumn({ name: 'rewardId' })
-  reward: Reward;
+  reward: Reward = new Reward();
 
   /**
    * The date and time when the reward was earned.
    */
   @CreateDateColumn()
-  earnedAt: Date;
+  earnedAt: Date = new Date();
 }

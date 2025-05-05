@@ -1,8 +1,8 @@
 import { registerAs, ConfigType } from '@nestjs/config';
 // These imports are specified in the requirements but may be used in other auth service files
 import { AuthServiceConfigValidation } from '../config/validation.schema';
-import { LoggerModule } from 'src/backend/shared/src/logging/logger.module';
-import { TracingModule } from 'src/backend/shared/src/tracing/tracing.module';
+import { LoggerModule } from '@app/shared/logging/logger.module';
+import { TracingModule } from '@app/shared/tracing/tracing.module';
 
 /**
  * Configuration for the Auth Service
@@ -13,7 +13,7 @@ import { TracingModule } from 'src/backend/shared/src/tracing/tracing.module';
  */
 const configuration = registerAs('authService', () => ({
   server: {
-    port: parseInt(process.env.AUTH_SERVICE_PORT, 10) || 3001,
+    port: parseInt(process.env.AUTH_SERVICE_PORT || '3001', 10),
     environment: process.env.NODE_ENV || 'development',
     apiPrefix: process.env.AUTH_SERVICE_API_PREFIX || 'api/v1',
   },
@@ -49,8 +49,8 @@ const configuration = registerAs('authService', () => ({
   mfa: {
     enabled: process.env.MFA_ENABLED === 'true',
     issuer: process.env.MFA_ISSUER || 'AUSTA SuperApp',
-    codeExpiration: parseInt(process.env.MFA_CODE_EXPIRATION, 10) || 300, // 5 minutes in seconds
-    windowSize: parseInt(process.env.MFA_WINDOW_SIZE, 10) || 1, // Number of time steps to check
+    codeExpiration: parseInt(process.env.MFA_CODE_EXPIRATION || '300', 10), // 5 minutes in seconds
+    windowSize: parseInt(process.env.MFA_WINDOW_SIZE || '1', 10), // Number of time steps to check
     smsProvider: process.env.SMS_PROVIDER || 'twilio',
     emailEnabled: process.env.EMAIL_MFA_ENABLED === 'true',
     smsEnabled: process.env.SMS_MFA_ENABLED === 'true',
@@ -59,30 +59,30 @@ const configuration = registerAs('authService', () => ({
   database: {
     url: process.env.AUTH_DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/auth',
     ssl: process.env.DATABASE_SSL === 'true',
-    maxConnections: parseInt(process.env.DATABASE_MAX_CONNECTIONS, 10) || 20,
-    idleTimeout: parseInt(process.env.DATABASE_IDLE_TIMEOUT, 10) || 30000, // 30 seconds
+    maxConnections: parseInt(process.env.DATABASE_MAX_CONNECTIONS || '20', 10),
+    idleTimeout: parseInt(process.env.DATABASE_IDLE_TIMEOUT || '30000', 10), // 30 seconds
   },
   session: {
-    maxConcurrentSessions: parseInt(process.env.MAX_CONCURRENT_SESSIONS, 10) || 5,
-    absoluteTimeout: parseInt(process.env.SESSION_ABSOLUTE_TIMEOUT, 10) || 43200, // 12 hours in seconds
-    inactivityTimeout: parseInt(process.env.SESSION_INACTIVITY_TIMEOUT, 10) || 1800, // 30 minutes in seconds
-    rememberMeExtension: parseInt(process.env.REMEMBER_ME_EXTENSION, 10) || 2592000, // 30 days in seconds
+    maxConcurrentSessions: parseInt(process.env.MAX_CONCURRENT_SESSIONS || '5', 10),
+    absoluteTimeout: parseInt(process.env.SESSION_ABSOLUTE_TIMEOUT || '43200', 10), // 12 hours in seconds
+    inactivityTimeout: parseInt(process.env.SESSION_INACTIVITY_TIMEOUT || '1800', 10), // 30 minutes in seconds
+    rememberMeExtension: parseInt(process.env.REMEMBER_ME_EXTENSION || '2592000', 10), // 30 days in seconds
   },
   password: {
-    minLength: parseInt(process.env.PASSWORD_MIN_LENGTH, 10) || 10,
+    minLength: parseInt(process.env.PASSWORD_MIN_LENGTH || '10', 10),
     requireUppercase: process.env.PASSWORD_REQUIRE_UPPERCASE !== 'false', // Default to true
     requireLowercase: process.env.PASSWORD_REQUIRE_LOWERCASE !== 'false', // Default to true
     requireNumber: process.env.PASSWORD_REQUIRE_NUMBER !== 'false', // Default to true
     requireSpecialChar: process.env.PASSWORD_REQUIRE_SPECIAL !== 'false', // Default to true
-    history: parseInt(process.env.PASSWORD_HISTORY, 10) || 5, // Remember last 5 passwords
-    maxAge: parseInt(process.env.PASSWORD_MAX_AGE, 10) || 7776000, // 90 days in seconds
-    lockoutThreshold: parseInt(process.env.PASSWORD_LOCKOUT_THRESHOLD, 10) || 5, // 5 failed attempts
-    lockoutDuration: parseInt(process.env.PASSWORD_LOCKOUT_DURATION, 10) || 1800, // 30 minutes in seconds
+    history: parseInt(process.env.PASSWORD_HISTORY || '5', 10), // Remember last 5 passwords
+    maxAge: parseInt(process.env.PASSWORD_MAX_AGE || '7776000', 10), // 90 days in seconds
+    lockoutThreshold: parseInt(process.env.PASSWORD_LOCKOUT_THRESHOLD || '5', 10), // 5 failed attempts
+    lockoutDuration: parseInt(process.env.PASSWORD_LOCKOUT_DURATION || '1800', 10), // 30 minutes in seconds
   },
   security: {
     rateLimit: {
-      windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10) || 900000, // 15 minutes
-      max: parseInt(process.env.RATE_LIMIT_MAX, 10) || 100, // limit each IP to 100 requests per windowMs
+      windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000', 10), // 15 minutes
+      max: parseInt(process.env.RATE_LIMIT_MAX || '100', 10), // limit each IP to 100 requests per windowMs
     },
     cors: {
       origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : ['http://localhost:3000'],
@@ -117,6 +117,5 @@ const configuration = registerAs('authService', () => ({
 }));
 
 export type AuthServiceConfig = ConfigType<typeof configuration>;
-
 export default configuration;
 export { configuration };

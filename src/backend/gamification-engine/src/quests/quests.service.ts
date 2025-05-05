@@ -1,15 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common'; // @nestjs/common ^9.0.0
 import { InjectRepository } from '@nestjs/typeorm'; // @nestjs/typeorm 10.0.0
 import { Repository } from 'typeorm'; // typeorm 0.3.17
-import { Quest } from '../entities/quest.entity';
-import { UserQuest } from '../entities/user-quest.entity';
+import { Quest } from './entities/quest.entity';
+import { UserQuest } from './entities/user-quest.entity';
 import { ProfilesService } from '../profiles/profiles.service';
 import { AchievementsService } from '../achievements/achievements.service';
-import { AppException, ErrorType } from 'src/backend/shared/src/exceptions/exceptions.types';
-import { KafkaService } from 'src/backend/shared/src/kafka/kafka.service';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { FilterDto } from 'src/backend/shared/src/dto/filter.dto';
-import { PaginationDto } from 'src/backend/shared/src/dto/pagination.dto';
+import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+import { KafkaService } from '@app/shared/kafka/kafka.service';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { FilterDto } from '@app/shared/dto/filter.dto';
+import { PaginationDto } from '@app/shared/dto/pagination.dto';
 
 /**
  * Service for managing quests.
@@ -37,8 +37,8 @@ export class QuestsService {
   async findAll(): Promise<Quest[]> {
     try {
       return await this.questRepository.find();
-    } catch (error) {
-      this.logger.error('Failed to retrieve quests', error.stack, 'QuestsService');
+    } catch (error: any) {
+      this.logger.error('Failed to retrieve quests', error?.stack, 'QuestsService');
       throw new AppException(
         'Failed to retrieve quests',
         ErrorType.TECHNICAL,
@@ -63,12 +63,12 @@ export class QuestsService {
       }
       
       return quest;
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof NotFoundException) {
         throw error;
       }
       
-      this.logger.error(`Failed to retrieve quest with ID ${id}`, error.stack, 'QuestsService');
+      this.logger.error(`Failed to retrieve quest with ID ${id}`, error?.stack, 'QuestsService');
       throw new AppException(
         `Failed to retrieve quest with ID ${id}`,
         ErrorType.TECHNICAL,
@@ -125,12 +125,12 @@ export class QuestsService {
       });
       
       return savedUserQuest;
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof NotFoundException) {
         throw error;
       }
       
-      this.logger.error(`Failed to start quest ${questId} for user ${userId}`, error.stack, 'QuestsService');
+      this.logger.error(`Failed to start quest ${questId} for user ${userId}`, error?.stack, 'QuestsService');
       throw new AppException(
         `Failed to start quest ${questId} for user ${userId}`,
         ErrorType.TECHNICAL,
@@ -196,12 +196,12 @@ export class QuestsService {
       });
       
       return updatedUserQuest;
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof NotFoundException) {
         throw error;
       }
       
-      this.logger.error(`Failed to complete quest ${questId} for user ${userId}`, error.stack, 'QuestsService');
+      this.logger.error(`Failed to complete quest ${questId} for user ${userId}`, error?.stack, 'QuestsService');
       throw new AppException(
         `Failed to complete quest ${questId} for user ${userId}`,
         ErrorType.TECHNICAL,

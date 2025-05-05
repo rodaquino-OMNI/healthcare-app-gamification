@@ -1,7 +1,8 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { LoggerService } from '@app/shared/logging/logger.service';
-import { PrismaService } from '@app/shared/database/prisma.service';
+// Updated import paths to use the correct locations
+import { LoggerService } from '../../../shared/src/logging/logger.service';
+import { PrismaService } from '../database/prisma.service';
 import { ProfilesService } from '../profiles/profiles.service';
 import { AchievementsService } from '../achievements/achievements.service';
 
@@ -29,6 +30,14 @@ export interface Rule {
   condition: string;
   actions: RuleAction[];
   enabled: boolean;
+}
+
+/**
+ * Rule evaluation result interface
+ */
+export interface RuleEvaluationResult {
+  satisfied: boolean;
+  metadata?: Record<string, any>;
 }
 
 /**
@@ -132,6 +141,64 @@ export class RulesService implements OnModuleInit {
         'RulesService'
       );
     }
+  }
+
+  /**
+   * Process a specific rule against an event.
+   * @param ruleId The ID of the rule to process
+   * @param event The event data
+   * @param userProfile The user's profile data
+   * @returns A promise with the rule evaluation result
+   */
+  async processRule(ruleId: string, event: any, userProfile: any): Promise<RuleEvaluationResult> {
+    try {
+      // Find the rule by ID
+      const rule = this.rules.find(r => r.id === ruleId);
+      
+      if (!rule) {
+        throw new Error(`Rule with ID ${ruleId} not found`);
+      }
+
+      // Create context for evaluating the rule
+      const context = {
+        event: {
+          type: event.type,
+          data: event.data || {},
+          metadata: event.metadata || {},
+          journey: event.journey,
+          timestamp: event.timestamp || new Date()
+        },
+        user: {
+          id: event.userId,
+          profile: userProfile,
+          level: userProfile?.level || 1,
+          xp: userProfile?.xp || 0
+        }
+      };
+
+      // Evaluate the condition
+      const conditionResult = await this.evaluateCondition(rule.condition, context);
+      
+      return {
+        satisfied: conditionResult,
+        metadata: { ruleId: rule.id, ruleName: rule.name }
+      };
+    } catch (error) {
+      this.logger.error(
+        `Error processing rule ${ruleId}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error instanceof Error ? error.stack : undefined,
+        'RulesService'
+      );
+      return { satisfied: false };
+    }
+  }
+  
+  /**
+   * Get all available rules
+   * @returns Array of all rules
+   */
+  async getAll(): Promise<Rule[]> {
+    return this.rules;
   }
 
   /**

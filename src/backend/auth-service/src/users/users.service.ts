@@ -1,275 +1,322 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { hash, compare } from 'bcrypt'; // bcrypt@5.0.0+
-
+import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
-import { Repository } from 'src/backend/shared/src/interfaces/repository.interface';
-import { AppException } from 'src/backend/shared/src/exceptions/exceptions.types';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { PrismaService } from 'src/backend/shared/src/database/prisma.service';
-import { PaginationDto } from 'src/backend/shared/src/dto/pagination.dto';
-import { FilterDto } from 'src/backend/shared/src/dto/filter.dto';
-import { PermissionsService } from '../permissions/permissions.service';
-import { RolesService } from '../roles/roles.service';
+import { PaginationDto, PaginatedResponse } from '@app/shared/dto/pagination.dto';
+import { FilterDto } from '@app/shared/dto/filter.dto';
+import { hash, compare } from 'bcrypt';
+import { PrismaService } from '@app/shared/database/prisma.service';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 
 /**
- * Service class for managing users.
+ * Service that handles user management operations
  */
 @Injectable()
 export class UsersService {
-  /**
-   * Initializes the UsersService.
-   * @param prisma Prisma service for database operations
-   * @param logger Logger service for logging
-   * @param permissionsService Service for managing permissions
-   * @param rolesService Service for managing roles
-   */
   constructor(
-    private prisma: PrismaService,
-    private logger: LoggerService,
-    private permissionsService: PermissionsService,
-    private rolesService: RolesService
-  ) {
-    // Sets the logger context to 'UsersService'.
-  }
+    private readonly prisma: PrismaService,
+    private readonly logger: LoggerService
+  ) {}
 
   /**
-   * Creates a new user.
-   * @param createUserDto Data for creating a new user
-   * @returns The newly created user.
+   * Creates a new user
+   * 
+   * @param createUserDto The user creation data
+   * @returns The created user without sensitive information
    */
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    this.logger.log(`Creating new user with email: ${createUserDto.email}`, 'UsersService');
+  async create(createUserDto: CreateUserDto): Promise<any> {
+    this.logger.log(`Creating user with email: ${createUserDto.email}`, 'UsersService');
     
-    // Hash the password using bcrypt's hash function.
-    const hashedPassword = await hash(createUserDto.password, 10);
-    
-    // Create the user in the database using Prisma.
-    const user = await this.prisma.user.create({
-      data: {
-        name: createUserDto.name,
-        email: createUserDto.email,
-        password: hashedPassword,
-        phone: createUserDto.phone,
-        cpf: createUserDto.cpf
-      }
-    });
-    
-    // Assign default roles and permissions for the user.
     try {
-      // Get default user role (typically 'User')
-      const defaultRole = await this.prisma.role.findFirst({
-        where: { isDefault: true }
+      // Check if user already exists with the provided email
+      const existingUser = await this.prisma.user.findUnique({
+        where: { email: createUserDto.email }
       });
-      
-      if (defaultRole) {
-        await this.assignRole(user.id, defaultRole.id.toString());
+
+      if (existingUser) {
+        throw new AppException(
+          'User with this email already exists',
+          ErrorType.VALIDATION,
+          'USER_001'
+        );
       }
-      
-      // Add journey-specific default permissions
-      // health:metrics:read, care:appointment:create, plan:coverage:read
-      // Implementation would use permissionsService.assignPermission
+
+      // Hash the password before storing
+      const hashedPassword = await hash(createUserDto.password, 10);
+
+      // Create the user in the database
+      const user = await this.prisma.user.create({
+        data: {
+          email: createUserDto.email,
+          name: createUserDto.name,
+          password: hashedPassword,
+          phone: createUserDto.phone,
+          cpf: createUserDto.cpf
+        }
+      });
+
+      // Assign default role to the user
+      try {
+        const defaultRole = await this.prisma.role.findFirst({
+          where: { name: 'user' }
+        });
+
+        if (defaultRole) {
+          await this.prisma.userRole.create({
+            data: {
+              userId: user.id,
+              roleId: defaultRole.id
+            }
+          });
+        }
+      } catch (error: any) {
+        const errorMsg = error.message || 'Unknown error';
+        const errorStack = error.stack || '';
+        this.logger.error(`Failed to assign default roles to user ${user.id}`, errorStack, 'UsersService');
+        // Don't fail the user creation if role assignment fails
+      }
+
+      return this.sanitizeUser(user);
     } catch (error) {
-      this.logger.error(`Failed to assign default roles to user ${user.id}`, error.stack, 'UsersService');
-      // Continue, as the user is still created successfully
+      this.logger.error(`Failed to create user`, error instanceof Error ? error.stack : 'Unknown error', 'UsersService');
+      throw error;
     }
-    
-    // Return the created user without the password.
-    const { password, ...result } = user;
-    return result as User;
   }
 
   /**
-   * Retrieves all users, with optional filtering and pagination.
+   * Gets a paginated list of users
+   * 
    * @param paginationDto Pagination parameters
-   * @param filterDto Filtering parameters
-   * @returns A list of users.
+   * @param filterDto Filter parameters
+   * @returns Paginated list of users without sensitive information
    */
-  async findAll(paginationDto?: PaginationDto, filterDto?: FilterDto): Promise<User[]> {
+  async findAll(paginationDto?: PaginationDto, filterDto?: FilterDto): Promise<PaginatedResponse<any>> {
     this.logger.log('Finding all users', 'UsersService');
     
-    // Retrieve all users from the database using Prisma, applying pagination and filtering if provided.
-    const users = await this.prisma.user.findMany({
-      skip: paginationDto?.skip || (paginationDto?.page ? (paginationDto.page - 1) * (paginationDto.limit || 10) : undefined),
-      take: paginationDto?.limit,
-      where: filterDto?.where,
-      orderBy: filterDto?.orderBy,
-      include: filterDto?.include
-    });
+    // Build where condition based on filter
+    const where = {};
+    if (filterDto?.search) {
+      where['OR'] = [
+        { name: { contains: filterDto.search, mode: 'insensitive' } },
+        { email: { contains: filterDto.search, mode: 'insensitive' } }
+      ];
+    }
     
-    // Remove passwords from results for security
-    return users.map(user => {
-      const { password, ...result } = user;
-      return result as User;
+    const users = await this.prisma.user.findMany({
+      where,
+      skip: paginationDto?.skip || (paginationDto?.page ? (paginationDto.page - 1) * (paginationDto.limit || 10) : undefined),
+      take: paginationDto?.limit || 10,
+      include: {
+        roles: true
+      }
     });
+
+    const totalUsers = await this.prisma.user.count({ where });
+    
+    // Sanitize user data before returning
+    return {
+      items: users.map((user: any) => {
+        return this.sanitizeUser(user);
+      }),
+      total: totalUsers,
+      page: paginationDto?.page || 1,
+      limit: paginationDto?.limit || 10,
+      totalPages: Math.ceil(totalUsers / (paginationDto?.limit || 10)),
+      hasNext: (paginationDto?.page || 1) < Math.ceil(totalUsers / (paginationDto?.limit || 10)),
+      hasPrevious: (paginationDto?.page || 1) > 1
+    };
   }
 
   /**
-   * Retrieves a user by their ID.
-   * @param id The user ID
-   * @returns The user if found.
+   * Gets a single user by ID
+   * 
+   * @param id The ID of the user to retrieve
+   * @returns The user without sensitive information
    */
-  async findOne(id: string): Promise<User> {
-    this.logger.log(`Finding user by ID: ${id}`, 'UsersService');
+  async findOne(id: string): Promise<any> {
+    this.logger.log(`Finding user with ID: ${id}`, 'UsersService');
     
-    // Retrieve the user from the database using Prisma.
     const user = await this.prisma.user.findUnique({
       where: { id },
-      include: { roles: true }
+      include: {
+        roles: true
+      }
     });
-    
-    // If the user is not found, throw a NotFoundException.
+
     if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+      throw new AppException(
+        'User not found',
+        ErrorType.NOT_FOUND,
+        'USER_002',
+        { id }
+      );
     }
-    
-    // Remove password from result for security
-    const { password, ...result } = user;
-    return result as User;
+
+    return this.sanitizeUser(user);
   }
 
   /**
-   * Retrieves a user by their email address.
-   * @param email The user's email
-   * @returns The user if found.
+   * Updates a user's information
+   * 
+   * @param id The ID of the user to update
+   * @param updateUserDto The data to update
+   * @returns The updated user without sensitive information
    */
-  async findByEmail(email: string): Promise<User> {
-    this.logger.log(`Finding user by email: ${email}`, 'UsersService');
-    
-    // Retrieve the user from the database using Prisma with email filter.
-    const user = await this.prisma.user.findUnique({
-      where: { email },
-      include: { roles: true }
-    });
-    
-    // If the user is not found, throw a NotFoundException.
-    if (!user) {
-      throw new NotFoundException(`User with email ${email} not found`);
-    }
-    
-    return user as User;
-  }
-
-  /**
-   * Updates an existing user.
-   * @param id The user ID
-   * @param updateUserDto Data for updating the user
-   * @returns The updated user.
-   */
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<any> {
     this.logger.log(`Updating user with ID: ${id}`, 'UsersService');
     
-    // If password is included, hash it using bcrypt's hash function.
-    let dataToUpdate = { ...updateUserDto };
+    const user = await this.prisma.user.findUnique({
+      where: { id }
+    });
+
+    if (!user) {
+      throw new AppException(
+        'User not found',
+        ErrorType.NOT_FOUND,
+        'USER_003',
+        { id }
+      );
+    }
+
+    // Prepare the data to update
+    const dataToUpdate: any = {
+      name: updateUserDto.name,
+      email: updateUserDto.email,
+      phone: updateUserDto.phone,
+      cpf: updateUserDto.cpf
+    };
+
+    // If password is provided, hash it before storing
     if (updateUserDto.password) {
       dataToUpdate.password = await hash(updateUserDto.password, 10);
     }
-    
-    // Update the user in the database using Prisma.
+
+    // Update the user in the database
     const updatedUser = await this.prisma.user.update({
       where: { id },
       data: dataToUpdate,
-      include: { roles: true }
+      include: {
+        roles: true
+      }
     });
-    
-    // Remove password from result for security
-    const { password, ...result } = updatedUser;
-    return result as User;
+
+    return this.sanitizeUser(updatedUser);
   }
 
   /**
-   * Deletes a user by their ID.
-   * @param id The user ID
+   * Deletes a user
+   * 
+   * @param id The ID of the user to delete
    */
   async remove(id: string): Promise<void> {
     this.logger.log(`Removing user with ID: ${id}`, 'UsersService');
     
-    // Delete the user from the database using Prisma.
+    const user = await this.prisma.user.findUnique({
+      where: { id }
+    });
+
+    if (!user) {
+      throw new AppException(
+        'User not found',
+        ErrorType.NOT_FOUND,
+        'USER_004',
+        { id }
+      );
+    }
+
     await this.prisma.user.delete({
       where: { id }
     });
   }
 
   /**
-   * Validates a user's credentials for authentication.
-   * @param email The user's email
-   * @param password The user's password
-   * @returns The authenticated user if credentials are valid.
+   * Assigns roles to a user
+   * 
+   * @param userId The ID of the user
+   * @param roleIds Array of role IDs to assign
    */
-  async validateCredentials(email: string, password: string): Promise<User> {
-    this.logger.log(`Validating credentials for user: ${email}`, 'UsersService');
+  async assignRoles(userId: string, roleIds: number[]): Promise<void> {
+    this.logger.log(`Assigning roles to user with ID: ${userId}`, 'UsersService');
     
-    // Retrieve the user by email.
-    const user = await this.findByEmail(email);
-    
-    // Verify the password using bcrypt's compare function.
-    const isPasswordValid = await compare(password, user.password);
-    
-    // If verification fails, throw a BadRequestException.
-    if (!isPasswordValid) {
-      throw new BadRequestException('Invalid credentials');
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId }
+    });
+
+    if (!user) {
+      throw new AppException(
+        'User not found',
+        ErrorType.NOT_FOUND,
+        'USER_005',
+        { id: userId }
+      );
     }
-    
-    // Return the authenticated user without the password.
-    const { password: _, ...result } = user;
-    return result as User;
+
+    // First remove all existing role associations
+    await this.prisma.userRole.deleteMany({
+      where: { userId }
+    });
+
+    // Then create new role associations
+    for (const roleId of roleIds) {
+      await this.prisma.userRole.create({
+        data: {
+          userId,
+          roleId
+        }
+      });
+    }
   }
 
   /**
-   * Assigns a role to a user.
-   * @param userId The user ID
-   * @param roleId The role ID
-   * @returns The updated user with the assigned role.
+   * Validates a user's credentials for authentication
+   * 
+   * @param email User's email
+   * @param password User's password
+   * @returns The user if credentials are valid
    */
-  async assignRole(userId: string, roleId: string): Promise<User> {
-    this.logger.log(`Assigning role ${roleId} to user ${userId}`, 'UsersService');
+  async validateCredentials(email: string, password: string): Promise<any> {
+    this.logger.log(`Validating credentials for user with email: ${email}`, 'UsersService');
     
-    // Use rolesService to validate the role exists.
-    await this.rolesService.findOne(roleId);
-    
-    // Assign the role to the user using Prisma.
     const user = await this.prisma.user.update({
-      where: { id: userId },
+      where: { email },
       data: {
-        roles: {
-          connect: { id: parseInt(roleId) }
-        }
+        // Update last login date or other auditing info
       },
       include: {
         roles: true
       }
     });
+
+    if (!user) {
+      throw new AppException(
+        'Invalid email or password',
+        ErrorType.VALIDATION,
+        'USER_006'
+      );
+    }
+
+    // Compare the provided password with the stored hash
+    const passwordValid = await compare(password, user.password);
     
-    // Return the updated user.
-    const { password, ...result } = user;
-    return result as User;
+    if (!passwordValid) {
+      throw new AppException(
+        'Invalid email or password',
+        ErrorType.VALIDATION,
+        'USER_007'
+      );
+    }
+
+    return this.sanitizeUser(user);
   }
 
   /**
-   * Removes a role from a user.
-   * @param userId The user ID
-   * @param roleId The role ID
-   * @returns The updated user without the removed role.
+   * Removes sensitive information from the user object
+   * 
+   * @param user The user to sanitize
+   * @returns The user without sensitive information
    */
-  async removeRole(userId: string, roleId: string): Promise<User> {
-    this.logger.log(`Removing role ${roleId} from user ${userId}`, 'UsersService');
-    
-    // Remove the role from the user using Prisma.
-    const user = await this.prisma.user.update({
-      where: { id: userId },
-      data: {
-        roles: {
-          disconnect: { id: parseInt(roleId) }
-        }
-      },
-      include: {
-        roles: true
-      }
-    });
-    
-    // Return the updated user.
-    const { password, ...result } = user;
-    return result as User;
+  private sanitizeUser(user: any): any {
+    const { password, ...sanitizedUser } = user;
+    return sanitizedUser;
   }
 }

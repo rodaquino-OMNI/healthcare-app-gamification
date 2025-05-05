@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt'; // 10.0.0+
 import { PassportModule } from '@nestjs/passport'; // 10.0.0+
 import { ConfigModule, ConfigService } from '@nestjs/config'; // 10.0.0+
-
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
@@ -10,12 +9,11 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { OAuthStrategy } from './strategies/oauth.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
-import { PrismaService } from 'src/backend/shared/src/database/prisma.service';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
+import { PrismaService } from '@app/shared/database/prisma.service';
+import { LoggerService } from '@app/shared/logging/logger.service';
 import { configuration } from '../config/configuration';
-
-import { ExceptionsModule } from 'src/backend/shared/src/exceptions/exceptions.module';
-import { LoggerModule } from 'src/backend/shared/src/logging/logger.module';
+import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
+import { LoggerModule } from '@app/shared/logging/logger.module';
 import { RolesModule } from '../roles/roles.module';
 import { PermissionsModule } from '../permissions/permissions.module';
 

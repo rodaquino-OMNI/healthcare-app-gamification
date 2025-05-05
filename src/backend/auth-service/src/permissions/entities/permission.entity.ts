@@ -16,18 +16,18 @@ export class Permission {
    * Unique identifier for the permission
    */
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number = 0;
 
   /**
    * Name of the permission in the format journey:resource:action
    * Examples: health:metrics:read, care:appointment:create, plan:claim:submit
    */
   @Column()
-  name: string;
+  name: string = '';
 
   /**
    * Human-readable description of what the permission allows
    */
   @Column()
-  description: string;
+  description: string = '';
 }

@@ -52,8 +52,8 @@ async function bootstrap(): Promise<void> {
       } else {
         logger.warn('Kafka consumer service not found. Event processing may be disabled.', 'Bootstrap');
       }
-    } catch (kafkaError) {
-      logger.error(`Failed to initialize Kafka consumer: ${kafkaError.message}`, 'Bootstrap');
+    } catch (kafkaError: any) {
+      logger.error(`Failed to initialize Kafka consumer: ${kafkaError?.message || 'Unknown error'}`, 'Bootstrap');
       // Continue application startup even if Kafka fails - we don't want to prevent the API from working
     }
     

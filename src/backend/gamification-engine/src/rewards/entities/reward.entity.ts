@@ -10,36 +10,36 @@ export class Reward {
    * Unique identifier for the reward
    */
   @IsUUID()
-  id: string;
-
+  id: string = '';
+  
   /**
    * Title of the reward displayed to users
    */
   @IsString()
-  title: string;
-
+  title: string = '';
+  
   /**
    * Detailed description of the reward
    */
   @IsString()
-  description: string;
-
+  description: string = '';
+  
   /**
    * Amount of XP awarded when earning this reward
    */
   @IsNumber()
-  xpReward: number;
-
+  xpReward: number = 0;
+  
   /**
    * Icon name/path used to visually represent the reward
    */
   @IsString()
-  icon: string;
-
+  icon: string = '';
+  
   /**
    * The journey this reward is associated with
    * Can be 'health', 'care', 'plan', or 'global' for cross-journey rewards
    */
   @IsString()
-  journey: string;
+  journey: string = 'global';
 }

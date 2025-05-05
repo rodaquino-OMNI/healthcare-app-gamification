@@ -9,17 +9,18 @@ import {
   HttpCode,
   HttpStatus
 } from '@nestjs/common';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
-import { AllExceptionsFilter } from 'src/backend/shared/src/exceptions/exceptions.filter';
+import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 
 /**
  * Controller class for handling authentication-related requests.
  */
 @Controller('auth')
+@UseFilters(AllExceptionsFilter)
 export class AuthController {
   /**
    * Initializes the AuthController.
@@ -33,7 +34,6 @@ export class AuthController {
    * @returns The newly created user.
    */
   @Post('register')
-  @UseFilters(new AllExceptionsFilter())
   async register(@Body() createUserDto: CreateUserDto): Promise<any> {
     return this.authService.register(createUserDto);
   }
@@ -48,8 +48,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  @UseFilters(new AllExceptionsFilter())
-  async login(@Request() req): Promise<any> {
+  async login(@Request() req: any): Promise<any> {
     return this.authService.login(req.body.email, req.body.password);
   }
 
@@ -61,7 +60,7 @@ export class AuthController {
    */
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  getProfile(@CurrentUser() user): any {
+  getProfile(@CurrentUser() user: any): any {
     return user;
   }
 }

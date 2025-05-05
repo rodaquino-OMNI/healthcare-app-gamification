@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'; // ^9.0.0
 import { PermissionsService } from './permissions.service';
-import { PrismaService } from 'src/backend/shared/src/database/prisma.service';
+import { PrismaService } from '@app/shared/database/prisma.service';
 
 /**
  * Module that provides the PermissionsService for managing permissions in the auth service.

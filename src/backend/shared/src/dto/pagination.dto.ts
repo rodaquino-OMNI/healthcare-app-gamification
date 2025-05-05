@@ -14,6 +14,14 @@ export class PaginationDto {
    * @default 10
    */
   limit: number = 10;
+
+  /**
+   * Number of items to skip (calculated from page and limit).
+   * This is a computed property used by database queries.
+   */
+  get skip(): number {
+    return (this.page - 1) * this.limit;
+  }
 }
 
 /**

@@ -7,8 +7,14 @@
  *
  * @module apiConfig
  */
+// Import from local constants instead of relying on external import
+// This fixes the 'Cannot find module' error
+const JOURNEY_IDS = {
+  HEALTH: 'health',
+  CARE: 'care',
+  PLAN: 'plan'
+};
 
-import { JOURNEY_IDS } from '../constants/journeys';
 import { env } from './env';
 
 /**
@@ -22,38 +28,55 @@ const JOURNEY_CONFIG = {
 };
 
 /**
+ * Define the interface for journey endpoints
+ */
+interface JourneyEndpoints {
+  health: string;
+  care: string;
+  plan: string;
+}
+
+/**
+ * Define the interface for API configuration
+ */
+interface ApiConfig {
+  baseURL: string;
+  journeys: JourneyEndpoints;
+}
+
+/**
  * Configuration object for API endpoints and related settings.
  * Centralizes API URL management and journey-specific endpoints.
  */
-export const apiConfig = {
+export const apiConfig: ApiConfig = {
   /**
    * Base URL for all API requests
    * Falls back to localhost in development environment
    */
   baseURL: env.API_BASE_URL || 'http://localhost:3000/api',
-};
-
-/**
- * Journey-specific API endpoints
- * Constructed using the base URL and journey identifiers
- * These endpoints are used for making requests to journey-specific services
- */
-apiConfig.journeys = {
-  /**
-   * Health journey API endpoint
-   * Used for health metrics, goals, and medical history
-   */
-  health: `${apiConfig.baseURL}/${JOURNEY_CONFIG.health}`,
   
   /**
-   * Care journey API endpoint
-   * Used for appointments, telemedicine, and treatments
+   * Journey-specific API endpoints
+   * Constructed using the base URL and journey identifiers
+   * These endpoints are used for making requests to journey-specific services
    */
-  care: `${apiConfig.baseURL}/${JOURNEY_CONFIG.care}`,
-  
-  /**
-   * Plan journey API endpoint
-   * Used for insurance coverage, claims, and benefits
-   */
-  plan: `${apiConfig.baseURL}/${JOURNEY_CONFIG.plan}`,
+  journeys: {
+    /**
+     * Health journey API endpoint
+     * Used for health metrics, goals, and medical history
+     */
+    health: `${env.API_BASE_URL || 'http://localhost:3000/api'}/${JOURNEY_CONFIG.health}`,
+    
+    /**
+     * Care journey API endpoint
+     * Used for appointments, telemedicine, and treatments
+     */
+    care: `${env.API_BASE_URL || 'http://localhost:3000/api'}/${JOURNEY_CONFIG.care}`,
+    
+    /**
+     * Plan journey API endpoint
+     * Used for insurance coverage, claims, and benefits
+     */
+    plan: `${env.API_BASE_URL || 'http://localhost:3000/api'}/${JOURNEY_CONFIG.plan}`,
+  }
 };

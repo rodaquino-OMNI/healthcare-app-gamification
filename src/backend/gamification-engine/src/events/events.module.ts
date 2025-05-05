@@ -2,8 +2,6 @@ import { Module } from '@nestjs/common';
 import { EventsController } from './events.controller';
 import { EventsService } from './events.service';
 import { EventsConsumer } from './events.consumer';
-import { KafkaConsumer } from './kafka/kafka.consumer';
-import { KafkaProducer } from './kafka/kafka.producer';
 import { KafkaModule } from '@app/shared/kafka/kafka.module';
 import { LoggerModule } from '@app/shared/logging/logger.module';
 import { TracingModule } from '@app/shared/tracing/tracing.module';
@@ -24,8 +22,6 @@ import { RulesModule } from '../rules/rules.module';
   controllers: [EventsController],
   providers: [
     EventsService, 
-    KafkaConsumer, 
-    KafkaProducer,
     EventsConsumer
   ],
   exports: [EventsService]

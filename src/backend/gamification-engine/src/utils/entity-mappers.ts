@@ -1,14 +1,42 @@
-import { GameProfile as PrismaGameProfile, Achievement as PrismaAchievement, UserAchievement as PrismaUserAchievement } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+
 import { GameProfile } from '../profiles/entities/game-profile.entity';
 import { UserAchievement } from '../achievements/entities/user-achievement.entity';
 import { Achievement } from '../achievements/entities/achievement.entity';
+
+// Define types based on Prisma schema
+type PrismaGameProfile = {
+  id: string;
+  userId: string;
+  level: number;
+  xp: number;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+type PrismaAchievement = {
+  id: string;
+  title: string;
+  description: string;
+  journey: string;
+  icon: string;
+  xpReward: number;
+};
+
+type PrismaUserAchievement = {
+  profileId: string;
+  achievementId: string;
+  progress: number;
+  unlocked: boolean;
+  unlockedAt: Date | null;
+};
 
 /**
  * Maps a Prisma GameProfile to a domain GameProfile entity
  */
 export function mapToDomainGameProfile(
   prismaProfile: PrismaGameProfile & { 
-    achievements?: PrismaUserAchievement[] & { achievement?: PrismaAchievement }[]
+    achievements?: (PrismaUserAchievement & { achievement?: PrismaAchievement })[]
   }
 ): GameProfile {
   return {
@@ -19,7 +47,7 @@ export function mapToDomainGameProfile(
     achievements: prismaProfile.achievements?.map(mapToDomainUserAchievement) || [],
     createdAt: prismaProfile.createdAt,
     updatedAt: prismaProfile.updatedAt
-  };
+  } as GameProfile;
 }
 
 /**
@@ -33,7 +61,8 @@ export function mapToDomainUserAchievement(
   userAchievement.achievementId = prismaUserAchievement.achievementId;
   userAchievement.progress = prismaUserAchievement.progress;
   userAchievement.unlocked = prismaUserAchievement.unlocked;
-  userAchievement.unlockedAt = prismaUserAchievement.unlockedAt;
+  // Handle the null vs undefined type issue
+  userAchievement.unlockedAt = prismaUserAchievement.unlockedAt ?? undefined;
   
   if (prismaUserAchievement.achievement) {
     userAchievement.achievement = mapToDomainAchievement(prismaUserAchievement.achievement);

@@ -27,7 +27,13 @@ export enum ErrorType {
    * External system errors - failures in external services or dependencies
    * Maps to HTTP 502 Bad Gateway
    */
-  EXTERNAL = 'external'
+  EXTERNAL = 'external',
+  
+  /**
+   * Not found errors - requested resource doesn't exist
+   * Maps to HTTP 404 Not Found
+   */
+  NOT_FOUND = 'not_found'
 }
 
 /**
@@ -99,6 +105,8 @@ export class AppException extends Error {
         return HttpStatus.UNPROCESSABLE_ENTITY;
       case ErrorType.EXTERNAL:
         return HttpStatus.BAD_GATEWAY;
+      case ErrorType.NOT_FOUND:
+        return HttpStatus.NOT_FOUND;
       case ErrorType.TECHNICAL:
       default:
         return HttpStatus.INTERNAL_SERVER_ERROR;

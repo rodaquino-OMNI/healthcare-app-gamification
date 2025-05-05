@@ -1,18 +1,16 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config'; // 10.0.0+
-
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { configuration } from './config/configuration';
-
-import { ExceptionsModule } from 'src/backend/shared/src/exceptions/exceptions.module';
-import { LoggerModule } from 'src/backend/shared/src/logging/logger.module';
-import { TracingModule } from 'src/backend/shared/src/tracing/tracing.module';
-import { PrismaService } from 'src/backend/shared/src/database/prisma.service';
-import { KafkaModule } from 'src/backend/shared/src/kafka/kafka.module';
-import { RedisModule } from 'src/backend/shared/src/redis/redis.module';
+import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
+import { LoggerModule } from '@app/shared/logging/logger.module';
+import { TracingModule } from '@app/shared/tracing/tracing.module';
+import { PrismaService } from '@app/shared/database/prisma.service';
+import { KafkaModule } from '@app/shared/kafka/kafka.module';
+import { RedisModule } from '@app/shared/redis/redis.module';
 
 /**
  * Root module for the Auth Service that configures all necessary components.

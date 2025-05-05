@@ -10,7 +10,7 @@ export class CreateUserDto {
    */
   @IsString()
   @MaxLength(255)
-  name: string;
+  name: string = '';
 
   /**
    * Email address of the user.
@@ -19,7 +19,7 @@ export class CreateUserDto {
   @IsString()
   @IsEmail()
   @MaxLength(255)
-  email: string;
+  email: string = '';
 
   /**
    * Password of the user.
@@ -28,7 +28,7 @@ export class CreateUserDto {
   @IsString()
   @MinLength(8)
   @MaxLength(255)
-  password: string;
+  password: string = '';
 
   /**
    * Phone number of the user (optional).

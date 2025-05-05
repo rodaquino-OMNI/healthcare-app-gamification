@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Permission } from './entities/permission.entity';
 import { Role } from '../roles/entities/role.entity';
-import { Repository } from '../../../shared/src/interfaces/repository.interface';
-import { AppException, ErrorType } from '../../../shared/src/exceptions/exceptions.types';
-import { LoggerService } from '../../../shared/src/logging/logger.service';
-import { PrismaService } from '../../../shared/src/database/prisma.service';
+import { Repository } from '@app/shared/interfaces/repository.interface';
+import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { PrismaService } from '@app/shared/database/prisma.service';
 
 /**
  * Service for managing permissions
@@ -37,14 +37,14 @@ export class PermissionsService {
       });
       
       return permission;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`Failed to create permission: ${error.message}`, error.stack, 'PermissionsService');
       throw new AppException(
         'Failed to create permission',
         ErrorType.TECHNICAL,
         'PERM_001',
         null,
-        error
+        error as Error
       );
     }
   }
@@ -64,14 +64,14 @@ export class PermissionsService {
       });
       
       return permissions;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`Failed to retrieve permissions: ${error.message}`, error.stack, 'PermissionsService');
       throw new AppException(
         'Failed to retrieve permissions',
         ErrorType.TECHNICAL,
         'PERM_002',
         null,
-        error
+        error as Error
       );
     }
   }
@@ -92,14 +92,14 @@ export class PermissionsService {
       });
       
       return permission;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`Failed to retrieve permission: ${error.message}`, error.stack, 'PermissionsService');
       throw new AppException(
         'Failed to retrieve permission',
         ErrorType.TECHNICAL,
         'PERM_003',
         null,
-        error
+        error as Error
       );
     }
   }
@@ -125,14 +125,14 @@ export class PermissionsService {
       });
       
       return updatedPermission;
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`Failed to update permission: ${error.message}`, error.stack, 'PermissionsService');
       throw new AppException(
         'Failed to update permission',
         ErrorType.TECHNICAL,
         'PERM_004',
         null,
-        error
+        error as Error
       );
     }
   }
@@ -150,14 +150,14 @@ export class PermissionsService {
       await this.prisma.permission.delete({
         where: { id: Number(id) }
       });
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`Failed to delete permission: ${error.message}`, error.stack, 'PermissionsService');
       throw new AppException(
         'Failed to delete permission',
         ErrorType.TECHNICAL,
         'PERM_005',
         null,
-        error
+        error as Error
       );
     }
   }

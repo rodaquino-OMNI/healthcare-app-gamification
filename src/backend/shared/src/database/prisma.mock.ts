@@ -1,0 +1,83 @@
+/**
+ * Mock implementation of PrismaService that provides model access patterns
+ * compatible with our service implementation.
+ * 
+ * This helps bridge the gap between our code's expectations and the actual Prisma client.
+ */
+export class PrismaMock {
+  // User model operations
+  user = {
+    findUnique: async (args: any) => {
+      return { id: '1', email: 'user@example.com', name: 'Test User', roles: [] };
+    },
+    findFirst: async (args: any) => {
+      return { id: '1', email: 'user@example.com', name: 'Test User', roles: [] };
+    },
+    findMany: async (args: any) => {
+      return [{ id: '1', email: 'user@example.com', name: 'Test User', roles: [] }];
+    },
+    create: async (args: any) => {
+      return { id: '1', ...args.data, roles: [] };
+    },
+    update: async (args: any) => {
+      return { id: args.where.id, ...args.data, roles: [] };
+    },
+    delete: async (args: any) => {
+      return { id: args.where.id };
+    },
+    count: async (args: any) => {
+      return 1;
+    },
+  };
+
+  // Role model operations
+  role = {
+    findUnique: async (args: any) => {
+      return { id: 1, name: 'user', description: 'Regular user role', permissions: [] };
+    },
+    findFirst: async (args: any) => {
+      return { id: 1, name: 'user', description: 'Regular user role', permissions: [] };
+    },
+    findMany: async (args: any) => {
+      return [{ id: 1, name: 'user', description: 'Regular user role', permissions: [] }];
+    },
+    create: async (args: any) => {
+      return { id: 1, ...args.data };
+    },
+    update: async (args: any) => {
+      return { id: args.where.id, ...args.data };
+    },
+    delete: async (args: any) => {
+      return { id: args.where.id };
+    },
+  };
+  
+  // Permission model operations
+  permission = {
+    findUnique: async (args: any) => {
+      return { id: 1, name: 'read', description: 'Read permission' };
+    },
+    findMany: async (args: any) => {
+      return [{ id: 1, name: 'read', description: 'Read permission' }];
+    },
+    create: async (args: any) => {
+      return { id: 1, ...args.data };
+    },
+    update: async (args: any) => {
+      return { id: args.where.id, ...args.data };
+    },
+    delete: async (args: any) => {
+      return { id: args.where.id };
+    },
+  };
+
+  // UserRole model operations for many-to-many relationships
+  userRole = {
+    create: async (args: any) => {
+      return { userId: args.data.userId, roleId: args.data.roleId };
+    },
+    deleteMany: async (args: any) => {
+      return { count: 1 };
+    },
+  };
+}

@@ -1,8 +1,8 @@
 import { Controller, Post, Body, UseGuards, UseFilters, Inject } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { ProcessEventDto } from './dto/process-event.dto';
-import { AllExceptionsFilter } from 'src/backend/shared/src/exceptions/exceptions.filter';
-import { JwtAuthGuard } from 'src/backend/auth-service/src/auth/guards/jwt-auth.guard';
+import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
+import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 
 /**
  * Controller for handling incoming events from various parts of the AUSTA SuperApp

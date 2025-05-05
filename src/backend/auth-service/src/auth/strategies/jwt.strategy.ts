@@ -1,57 +1,49 @@
-import { ExtractJwt, Strategy } from 'passport-jwt'; // passport-jwt@4.0.0+
-import { Injectable } from '@nestjs/common'; // @nestjs/common@10.0.0+
-import { PassportStrategy } from '@nestjs/passport'; // @nestjs/passport@10.0.0+
-import { ConfigService } from '@nestjs/config'; // @nestjs/config@10.0.0+
-import { AuthService } from '@nestjs/auth'; // @nestjs/auth@10.0.0+
-import { UsersService } from '@nestjs/users'; // @nestjs/users@10.0.0+
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import { PassportStrategy } from '@nestjs/passport';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { AuthService } from '../auth.service';
+import { UsersService } from '../../users/users.service';
+import { LoggerService } from '@app/shared/logging/logger.service';
 
 /**
- * Passport strategy for authenticating users based on JWT tokens.
- * Validates tokens and extracts user information from the payload.
+ * Implementation of Passport's JWT strategy for token-based authentication.
+ * This is used by the JwtAuthGuard to authenticate users based on their JWT token.
  */
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  /**
-   * Initializes the JWT strategy with configuration options.
-   * 
-   * @param configService Service to access JWT configuration values
-   * @param authService Service to validate JWT token
-   * @param usersService Service to retrieve user information
-   */
   constructor(
     private configService: ConfigService,
     private authService: AuthService,
     private usersService: UsersService,
+    private logger: LoggerService
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false, // Enforce token expiration
-      secretOrKey: configService.get<string>('JWT_SECRET'),
-      audience: configService.get<string>('JWT_AUDIENCE'),
-      issuer: configService.get<string>('JWT_ISSUER'),
+      ignoreExpiration: false,
+      secretOrKey: configService.get<string>('authService.jwt.secret'),
     });
   }
 
   /**
-   * Validates the JWT payload and returns the user object.
-   * This method is called by Passport.js after the token is decoded.
+   * Validates the JWT payload and returns the user if valid.
+   * This is called by Passport during authentication.
    * 
-   * @param payload The decoded JWT payload
-   * @returns The user object if the token is valid, null otherwise
+   * @param payload - The decoded JWT payload
+   * @returns The authenticated user
    */
-  async validate(payload: any): Promise<any> {
-    // Extract the user ID from the payload
-    const userId = payload.sub;
+  async validate(payload: any) {
+    this.logger.debug(`Validating JWT for user ID: ${payload.sub}`, 'JwtStrategy');
     
-    // Call the UsersService to find the user by ID
-    const user = await this.usersService.findById(userId);
+    // Use the auth service to validate the token and get the user
+    const user = await this.authService.validateToken(payload);
     
-    // If the user doesn't exist, return null
+    // If user is not found or invalid, return null to fail authentication
     if (!user) {
+      this.logger.warn(`Failed to validate token for user ID: ${payload.sub}`, 'JwtStrategy');
       return null;
     }
     
-    // Return the user object
     return user;
   }
 }

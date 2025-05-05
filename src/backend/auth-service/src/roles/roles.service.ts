@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { Role } from './entities/role.entity';
-import { Permission } from '../../permissions/entities/permission.entity';
-import { Repository } from 'src/backend/shared/src/interfaces/repository.interface';
-import { AppException } from 'src/backend/shared/src/exceptions/exceptions.types';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { FilterDto } from 'src/backend/shared/src/dto/filter.dto';
-import { PaginationDto } from 'src/backend/shared/src/dto/pagination.dto';
-import { PrismaService } from 'src/backend/shared/src/database/prisma.service';
+import { Permission } from '../permissions/entities/permission.entity';
+import { Repository } from '@app/shared/interfaces/repository.interface';
+import { AppException } from '@app/shared/exceptions/exceptions.types';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { FilterDto } from '@app/shared/dto/filter.dto';
+import { PaginationDto } from '@app/shared/dto/pagination.dto';
+import { PrismaService } from '@app/shared/database/prisma.service';
 
 /**
  * Service class for managing roles.

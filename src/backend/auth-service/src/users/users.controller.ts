@@ -17,10 +17,10 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { AllExceptionsFilter } from 'src/backend/shared/src/exceptions/exceptions.filter';
+import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { FilterDto } from 'src/backend/shared/src/dto/filter.dto';
-import { PaginationDto } from 'src/backend/shared/src/dto/pagination.dto';
+import { FilterDto } from '@app/shared/dto/filter.dto';
+import { PaginationDto, PaginatedResponse } from '@app/shared/dto/pagination.dto';
 import { User } from './entities/user.entity';
 
 /**
@@ -58,7 +58,7 @@ export class UsersController {
    * Retrieves all users, with optional filtering and pagination.
    * @param paginationDto Pagination parameters
    * @param filterDto Filtering parameters
-   * @returns A list of users.
+   * @returns A paginated list of users.
    */
   @Get()
   @UseGuards(RolesGuard)
@@ -66,7 +66,7 @@ export class UsersController {
   findAll(
     @Query() paginationDto: PaginationDto, 
     @Query() filterDto: FilterDto
-  ): Promise<User[]> {
+  ): Promise<PaginatedResponse<User>> {
     return this.usersService.findAll(paginationDto, filterDto);
   }
 

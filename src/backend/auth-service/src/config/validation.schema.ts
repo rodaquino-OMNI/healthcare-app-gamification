@@ -1,5 +1,5 @@
 import * as Joi from 'joi';
-import { ErrorType } from 'src/backend/shared/src/exceptions/exceptions.types.ts';
+import { ErrorType } from '@app/shared/exceptions/exceptions.types';
 
 /**
  * Validation schema for the Auth Service configuration.
@@ -98,3 +98,6 @@ export class AuthServiceConfigValidation {
     REQUIRE_STRONG_PASSWORD: Joi.boolean().default(true),
   }).unknown();
 }
+
+// Define a default port constant that can be used throughout the codebase
+export const DEFAULT_PORT = 3001;

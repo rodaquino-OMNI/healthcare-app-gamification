@@ -20,48 +20,48 @@ export class Role {
    * Unique identifier for the role
    */
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number = 0;
 
   /**
    * Unique name of the role (e.g., 'User', 'Caregiver', 'Provider', 'Administrator')
    */
   @Column({ unique: true })
-  name: string;
+  name: string = '';
 
   /**
    * Description of the role and its purpose
    */
   @Column()
-  description: string;
+  description: string = '';
 
   /**
    * The journey this role is associated with (health, care, plan, or null for global roles)
    */
   @Column({ nullable: true })
-  journey: string;
+  journey: string = '';
 
   /**
    * Indicates if this is a default role assigned to new users
    */
   @Column({ default: false })
-  isDefault: boolean;
+  isDefault: boolean = false;
 
   /**
    * Permissions assigned to this role
    */
   @ManyToMany(() => Permission)
   @JoinTable()
-  permissions: Permission[];
+  permissions: Permission[] = [];
 
   /**
    * Timestamp of when the role was created
    */
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt: Date = new Date();
 
   /**
    * Timestamp of when the role was last updated
    */
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt: Date = new Date();
 }

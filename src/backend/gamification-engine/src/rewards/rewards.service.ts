@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
-import { Reward } from 'src/backend/gamification-engine/src/rewards/entities/reward.entity';
-import { UserReward } from 'src/backend/gamification-engine/src/rewards/entities/user-reward.entity';
-import { ProfilesService } from 'src/backend/gamification-engine/src/profiles/profiles.service';
-import { KafkaService } from 'src/backend/shared/src/kafka/kafka.service';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { AppException, ErrorType } from 'src/backend/shared/src/exceptions/exceptions.types';
-import { AchievementsService } from 'src/backend/gamification-engine/src/achievements/achievements.service';
-import { Repository } from 'src/backend/shared/src/interfaces/repository.interface';
-import { FilterDto } from 'src/backend/shared/src/dto/filter.dto';
+import { Repository } from 'typeorm';
+import { Reward } from './entities/reward.entity';
+import { UserReward } from './entities/user-reward.entity';
+import { ProfilesService } from '../profiles/profiles.service';
+import { KafkaService } from '@app/shared/kafka/kafka.service';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+import { AchievementsService } from '../achievements/achievements.service';
+import { FilterDto } from '@app/shared/dto/filter.dto';
 
 /**
  * Service for managing rewards.
@@ -31,7 +31,7 @@ export class RewardsService {
     private readonly achievementsService: AchievementsService,
     private readonly configService: ConfigService
   ) {}
-
+  
   /**
    * Creates a new reward.
    * @param reward The reward data to create
@@ -40,9 +40,9 @@ export class RewardsService {
   async create(reward: Reward): Promise<Reward> {
     try {
       this.logger.log(`Creating new reward: ${reward.title}`, 'RewardsService');
-      return await this.rewardRepository.create(reward as Omit<Reward, 'id'>);
-    } catch (error) {
-      this.logger.error(`Failed to create reward: ${error.message}`, error.stack, 'RewardsService');
+      return await this.rewardRepository.save(reward);
+    } catch (error: any) {
+      this.logger.error(`Failed to create reward: ${error.message}`, error?.stack, 'RewardsService');
       throw new AppException(
         'Failed to create reward',
         ErrorType.TECHNICAL,
@@ -52,7 +52,7 @@ export class RewardsService {
       );
     }
   }
-
+  
   /**
    * Retrieves all rewards.
    * @returns A promise that resolves to an array of rewards.
@@ -60,9 +60,9 @@ export class RewardsService {
   async findAll(): Promise<Reward[]> {
     try {
       this.logger.log('Retrieving all rewards', 'RewardsService');
-      return await this.rewardRepository.findAll();
-    } catch (error) {
-      this.logger.error(`Failed to retrieve rewards: ${error.message}`, error.stack, 'RewardsService');
+      return await this.rewardRepository.find();
+    } catch (error: any) {
+      this.logger.error(`Failed to retrieve rewards: ${error.message}`, error?.stack, 'RewardsService');
       throw new AppException(
         'Failed to retrieve rewards',
         ErrorType.TECHNICAL,
@@ -72,7 +72,7 @@ export class RewardsService {
       );
     }
   }
-
+  
   /**
    * Retrieves a single reward by its ID.
    * @param id The reward ID to find
@@ -81,7 +81,7 @@ export class RewardsService {
   async findOne(id: string): Promise<Reward> {
     try {
       this.logger.log(`Retrieving reward with ID: ${id}`, 'RewardsService');
-      const reward = await this.rewardRepository.findById(id);
+      const reward = await this.rewardRepository.findOneBy({ id });
       
       if (!reward) {
         this.logger.warn(`Reward with ID ${id} not found`, 'RewardsService');
@@ -94,12 +94,12 @@ export class RewardsService {
       }
       
       return reward;
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof AppException) {
         throw error;
       }
       
-      this.logger.error(`Failed to retrieve reward with ID ${id}: ${error.message}`, error.stack, 'RewardsService');
+      this.logger.error(`Failed to retrieve reward with ID ${id}: ${error.message}`, error?.stack, 'RewardsService');
       throw new AppException(
         `Failed to retrieve reward with ID ${id}`,
         ErrorType.TECHNICAL,
@@ -109,7 +109,7 @@ export class RewardsService {
       );
     }
   }
-
+  
   /**
    * Grants a reward to a user.
    * @param userId The ID of the user to grant the reward to
@@ -150,8 +150,8 @@ export class RewardsService {
       this.logger.log(`Successfully granted reward ${reward.title} to user ${userId}`, 'RewardsService');
       
       return userReward;
-    } catch (error) {
-      this.logger.error(`Failed to grant reward ${rewardId} to user ${userId}: ${error.message}`, error.stack, 'RewardsService');
+    } catch (error: any) {
+      this.logger.error(`Failed to grant reward ${rewardId} to user ${userId}: ${error.message}`, error?.stack, 'RewardsService');
       throw new AppException(
         'Failed to grant reward',
         ErrorType.TECHNICAL,

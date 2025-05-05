@@ -23,7 +23,7 @@ export class Achievement {
    * Unique identifier for the achievement.
    */
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string = '';
 
   /**
    * The title of the achievement.
@@ -31,28 +31,28 @@ export class Achievement {
   @Column()
   @IsString()
   @IsNotEmpty()
-  title: string;
+  title: string = '';
 
   /**
    * A description of the achievement.
    */
   @Column()
   @IsString()
-  description: string;
+  description: string = '';
 
   /**
    * The journey to which the achievement belongs (e.g., 'health', 'care', 'plan').
    */
   @Column()
   @IsString()
-  journey: string;
+  journey: string = '';
 
   /**
    * The name of the icon to display for the achievement.
    */
   @Column()
   @IsString()
-  icon: string;
+  icon: string = '';
 
   /**
    * The amount of XP (experience points) awarded for unlocking the achievement.
@@ -61,5 +61,5 @@ export class Achievement {
   @IsInt()
   @Min(0)
   @Max(1000)
-  xpReward: number;
+  xpReward: number = 0;
 }

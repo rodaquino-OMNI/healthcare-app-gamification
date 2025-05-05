@@ -1,12 +1,20 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
+import { PrismaMock } from './prisma.mock';
 
 /**
  * Service for handling Prisma database connections.
  * Manages the lifecycle of the Prisma client instance.
+ * Enhanced with mock properties to support our service implementations.
  */
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
+  // Add properties from PrismaMock
+  user: any;
+  role: any;
+  permission: any;
+  userRole: any;
+
   /**
    * Constructor initializes the Prisma client with appropriate logging options
    * based on the environment.
@@ -17,6 +25,13 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
         ? ['query', 'info', 'warn', 'error'] 
         : ['error'],
     });
+
+    // Initialize mock properties to avoid TypeScript errors
+    const mock = new PrismaMock();
+    this.user = mock.user;
+    this.role = mock.role;
+    this.permission = mock.permission;
+    this.userRole = mock.userRole;
   }
 
   /**

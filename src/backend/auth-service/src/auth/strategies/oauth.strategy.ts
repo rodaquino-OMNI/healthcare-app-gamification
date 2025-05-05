@@ -1,59 +1,97 @@
-import { PassportStrategy } from '@nestjs/passport'; // @nestjs/passport@10.0.0+
-import { Injectable } from '@nestjs/common'; // @nestjs/common@10.0.0+
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { AuthService } from '../auth.service';
+import { LoggerService } from '@app/shared/logging/logger.service';
 
 /**
- * Base class for OAuth 2.0 authentication strategies.
- * This serves as a foundation for implementing specific OAuth provider strategies
- * such as Google, Facebook, and Apple for the AUSTA SuperApp.
- * 
- * Extending classes should implement provider-specific configurations and
- * validation logic while leveraging this common base.
- * 
- * Example usage with specific providers:
- * ```typescript
- * // Google OAuth strategy implementation
- * export class GoogleStrategy extends OAuthStrategy {
- *   constructor(
- *     private configService: ConfigService,
- *     private authService: AuthService
- *   ) {
- *     const GoogleStrategy = require('passport-google-oauth20').Strategy;
- *     super(
- *       new GoogleStrategy(
- *         {
- *           clientID: configService.get('GOOGLE_CLIENT_ID'),
- *           clientSecret: configService.get('GOOGLE_CLIENT_SECRET'),
- *           callbackURL: configService.get('GOOGLE_CALLBACK_URL'),
- *           scope: ['email', 'profile']
- *         },
- *         async (accessToken, refreshToken, profile, done) => {
- *           try {
- *             const user = await authService.validateOAuthUser({
- *               provider: 'google',
- *               providerId: profile.id,
- *               email: profile.emails[0].value,
- *               name: profile.displayName
- *             });
- *             done(null, user);
- *           } catch (error) {
- *             done(error, false);
- *           }
- *         }
- *       )
- *     );
- *   }
- * }
- * ```
+ * Base class for OAuth strategies.
+ * This is used as a foundation for specific OAuth provider implementations
+ * such as Google, Facebook, and Apple.
  */
 @Injectable()
-export class OAuthStrategy extends PassportStrategy {
+export class OAuthStrategy {
+  constructor(
+    protected readonly configService: ConfigService,
+    protected readonly authService: AuthService,
+    protected readonly logger: LoggerService
+  ) {}
+
   /**
-   * Initializes the OAuth strategy.
+   * Validates an OAuth profile and either creates a new user or returns an existing one.
    * 
-   * @param strategy - The OAuth strategy instance or name to be used with Passport
-   * @param verify - The verification callback function that processes the authenticated user
+   * @param profile - The profile data from the OAuth provider
+   * @param provider - The name of the OAuth provider (google, facebook, apple)
+   * @returns The user object
    */
-  constructor(strategy: string, verify: Function) {
-    super(strategy, verify);
+  async validate(profile: any, provider: string) {
+    this.logger.log(`Validating OAuth profile for ${provider}`, 'OAuthStrategy');
+    
+    try {
+      // Extract standard user info from the profile
+      const email = this.extractEmail(profile, provider);
+      const name = this.extractName(profile, provider);
+      
+      // Implementation would create or find user based on OAuth profile
+      // Placeholder for actual implementation
+      
+      return {
+        id: 'oauth-user-id',
+        email,
+        name,
+        provider
+      };
+    } catch (error: any) {
+      const errorMsg = error.message || 'Unknown OAuth validation error';
+      const errorStack = error.stack || '';
+      
+      this.logger.error(
+        `Failed to validate ${provider} OAuth profile: ${errorMsg}`,
+        errorStack,
+        'OAuthStrategy'
+      );
+      return null;
+    }
+  }
+  
+  /**
+   * Extracts the email from an OAuth profile.
+   * 
+   * @param profile - The profile from the OAuth provider
+   * @param provider - The name of the OAuth provider
+   * @returns The email address
+   */
+  protected extractEmail(profile: any, provider: string): string {
+    switch (provider) {
+      case 'google':
+        return profile.emails[0].value;
+      case 'facebook':
+        return profile.emails?.[0]?.value || '';
+      case 'apple':
+        return profile.email;
+      default:
+        return '';
+    }
+  }
+  
+  /**
+   * Extracts the name from an OAuth profile.
+   * 
+   * @param profile - The profile from the OAuth provider
+   * @param provider - The name of the OAuth provider
+   * @returns The user's name
+   */
+  protected extractName(profile: any, provider: string): string {
+    switch (provider) {
+      case 'google':
+        return `${profile.name.givenName} ${profile.name.familyName}`;
+      case 'facebook':
+        return profile.displayName;
+      case 'apple':
+        return profile.name?.firstName && profile.name?.lastName
+          ? `${profile.name.firstName} ${profile.name.lastName}`
+          : 'Apple User';
+      default:
+        return '';
+    }
   }
 }

@@ -39,4 +39,13 @@ export class UpdateUserDto {
   @MinLength(11)
   @MaxLength(11)
   cpf?: string;
+
+  /**
+   * The updated password for the user.
+   * Minimum length of 8 characters for security.
+   */
+  @IsString()
+  @IsOptional()
+  @MinLength(8)
+  password?: string;
 }

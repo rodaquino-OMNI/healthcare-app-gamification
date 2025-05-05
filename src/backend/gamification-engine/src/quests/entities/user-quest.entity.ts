@@ -20,7 +20,7 @@ export class UserQuest {
    * Unique identifier for the user quest.
    */
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string = '';
 
   /**
    * The game profile of the user participating in the quest.
@@ -37,7 +37,7 @@ export class UserQuest {
    */
   @ManyToOne(() => Quest)
   @JoinColumn({ name: 'questId' })
-  quest: Quest;
+  quest: Quest = new Quest();
 
   /**
    * The user's current progress toward completing the quest (0-100).
@@ -48,7 +48,7 @@ export class UserQuest {
   @IsInt()
   @Min(0)
   @Max(100)
-  progress: number;
+  progress: number = 0;
 
   /**
    * Indicates whether the user has completed the quest.
@@ -56,5 +56,5 @@ export class UserQuest {
    */
   @Column({ default: false })
   @IsBoolean()
-  completed: boolean;
+  completed: boolean = false;
 }

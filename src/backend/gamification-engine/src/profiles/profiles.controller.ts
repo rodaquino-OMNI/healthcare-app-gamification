@@ -11,26 +11,29 @@ import {
   HttpStatus,
   HttpCode,
   Inject,
-  Roles,
-  CurrentUser,
 } from '@nestjs/common';
-import { ProfilesService } from 'src/backend/gamification-engine/src/profiles/profiles.service';
-import { GameProfile } from 'src/backend/gamification-engine/src/profiles/entities/game-profile.entity';
-import { AppException } from 'src/backend/shared/src/exceptions/exceptions.types';
-import { AllExceptionsFilter } from 'src/backend/shared/src/exceptions/exceptions.filter';
-import { PaginationDto } from 'src/backend/shared/src/dto/pagination.dto';
-import { FilterDto } from 'src/backend/shared/src/dto/filter.dto';
-import { AUTH_INSUFFICIENT_PERMISSIONS } from 'src/backend/shared/src/constants/error-codes.constants';
+import { ProfilesService } from './profiles.service';
+import { GameProfile } from './entities/game-profile.entity';
+import { AppException } from '@app/shared/exceptions/exceptions.types';
+import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
+import { PaginationDto } from '@app/shared/dto/pagination.dto';
+import { FilterDto } from '@app/shared/dto/filter.dto';
+import { AUTH_INSUFFICIENT_PERMISSIONS } from '@app/shared/constants/error-codes.constants';
+import { LoggerService } from '@app/shared/logging/logger.service';
 
 /**
  * Controller for managing user game profiles.
  */
 @Controller('profiles')
+@UseFilters(AllExceptionsFilter)
 export class ProfilesController {
   /**
    * Injects the ProfilesService dependency.
    */
-  constructor(private readonly profilesService: ProfilesService) {}
+  constructor(
+    private readonly profilesService: ProfilesService,
+    private readonly logger: LoggerService
+  ) {}
 
   /**
    * Retrieves a user's game profile by user ID.
@@ -38,7 +41,6 @@ export class ProfilesController {
    * @returns The user's game profile
    */
   @Get(':userId')
-  @UseFilters(new AllExceptionsFilter())
   async getProfile(@Param('userId') userId: string): Promise<GameProfile> {
     return this.profilesService.findById(userId);
   }
@@ -50,7 +52,6 @@ export class ProfilesController {
    */
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @UseFilters(new AllExceptionsFilter())
   async createProfile(@Body() data: { userId: string }): Promise<GameProfile> {
     return this.profilesService.create(data.userId);
   }
@@ -62,7 +63,6 @@ export class ProfilesController {
    * @returns The updated game profile
    */
   @Patch(':userId')
-  @UseFilters(new AllExceptionsFilter())
   async updateProfile(
     @Param('userId') userId: string,
     @Body() updateData: Partial<GameProfile>,

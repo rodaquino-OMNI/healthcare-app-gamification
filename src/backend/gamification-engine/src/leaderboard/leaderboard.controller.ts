@@ -1,9 +1,9 @@
 import { Controller, Get, Param, UseGuards, UseFilters, ParseEnumPipe } from '@nestjs/common';
 import { LeaderboardService } from './leaderboard.service';
-import { JOURNEY_IDS } from 'src/backend/shared/src/constants/journey.constants';
-import { AllExceptionsFilter } from 'src/backend/shared/src/exceptions/exceptions.filter';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { TracingService } from 'src/backend/shared/src/tracing/tracing.service';
+import { JOURNEY_IDS } from '@app/shared/constants/journey.constants';
+import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { TracingService } from '@app/shared/tracing/tracing.service';
 
 /**
  * Controller for handling leaderboard-related requests.

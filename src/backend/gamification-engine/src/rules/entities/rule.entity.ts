@@ -15,7 +15,7 @@ export class Rule {
    * Unique identifier for the rule
    */
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string = '';
 
   /**
    * The event type that this rule listens for
@@ -24,7 +24,7 @@ export class Rule {
   @Column()
   @IsString()
   @IsNotEmpty()
-  event: string;
+  event: string = '';
 
   /**
    * A javascript string that represents the condition to be met for the rule to trigger
@@ -33,7 +33,7 @@ export class Rule {
    */
   @Column()
   @IsString()
-  condition: string;
+  condition: string = '';
 
   /**
    * A JSON array of actions to be performed when the rule is triggered
@@ -45,5 +45,5 @@ export class Rule {
    */
   @Column({ type: 'jsonb' })
   @IsJSON()
-  actions: string;
+  actions: string = '[]';
 }

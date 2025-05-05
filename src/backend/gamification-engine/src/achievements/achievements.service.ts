@@ -88,15 +88,13 @@ export class AchievementsService implements Service<Achievement> {
       const totalPages = Math.ceil(totalItems / limit);
 
       return {
-        data: achievements,
-        meta: {
-          currentPage: page,
-          itemsPerPage: limit,
-          totalItems,
-          totalPages,
-          hasNextPage: page < totalPages,
-          hasPreviousPage: page > 1
-        }
+        items: achievements,
+        total: totalItems,
+        page: page,
+        limit: limit,
+        totalPages: totalPages,
+        hasNext: page < totalPages,
+        hasPrevious: page > 1
       };
     } catch (error: unknown) {
       throw new AppException(
@@ -403,15 +401,13 @@ export class AchievementsService implements Service<Achievement> {
       const totalPages = Math.ceil(totalItems / limit);
       
       return {
-        data: achievements,
-        meta: {
-          currentPage: page,
-          itemsPerPage: limit,
-          totalItems,
-          totalPages,
-          hasNextPage: page < totalPages,
-          hasPreviousPage: page > 1
-        }
+        items: achievements,
+        total: totalItems,
+        page: page,
+        limit: limit,
+        totalPages: totalPages,
+        hasNext: page < totalPages,
+        hasPrevious: page > 1
       };
     } catch (error: unknown) {
       throw new AppException(
