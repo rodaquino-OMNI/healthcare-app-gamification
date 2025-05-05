@@ -51,23 +51,27 @@ Key responsibilities include:
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone [repository-url]
    cd src/backend/auth-service
    ```markdown
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```markdown
 
 3. Set up environment variables:
+
    ```bash
    cp .env.example .env
    # Edit .env with appropriate values
    ```markdown
 
 4. Run the service:
+
    ```bash
    # Development mode
    npm run start:dev
@@ -78,6 +82,7 @@ Key responsibilities include:
    ```markdown
 
 5. With Docker:
+
    ```bash
    docker-compose up -d
    ```markdown

@@ -1,5 +1,5 @@
 import * as Joi from 'joi'; // joi 17.9.1
-import { ErrorType } from '../../shared/src/exceptions/exceptions.types';
+import { ErrorType } from '@app/shared/exceptions/exceptions.types';
 
 /**
  * Creates a Joi validation schema for the Plan Service configuration

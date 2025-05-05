@@ -1,17 +1,11 @@
 import { Module } from '@nestjs/common';
-import { CostSimulatorController } from './cost-simulator.controller';
 import { CostSimulatorService } from './cost-simulator.service';
-import { ConfigurationModule } from '../config/configuration';
-import { ExceptionsModule } from 'src/backend/shared/src/exceptions/exceptions.module';
-import { LoggerModule } from 'src/backend/shared/src/logging/logger.module';
-import { PlansModule } from '../plans/plans.module';
+import { CostSimulatorController } from './cost-simulator.controller';
 
-/**
- * Module that encapsulates the CostSimulatorController and CostSimulatorService.
- */
 @Module({
-  imports: [ConfigurationModule, ExceptionsModule, LoggerModule, PlansModule],
+  imports: [],
   controllers: [CostSimulatorController],
   providers: [CostSimulatorService],
+  exports: [CostSimulatorService]
 })
 export class CostSimulatorModule {}

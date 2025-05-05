@@ -1,67 +1,79 @@
-import { IsString, IsEnum, IsOptional, IsUUID, IsBoolean } from 'class-validator'; // version ^0.14.0
-import { ApiProperty } from '@nestjs/swagger'; // version ^6.0.0
+import { IsString, IsNotEmpty, IsOptional, IsEnum } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 /**
- * Enum defining the types of medical procedures for coverage verification
+ * Enum representing the types of medical procedures
  */
 export enum ProcedureType {
-  CONSULTATION = 'CONSULTATION',
-  DIAGNOSTIC = 'DIAGNOSTIC',
-  LABORATORY = 'LABORATORY',
-  IMAGING = 'IMAGING',
-  SURGERY = 'SURGERY',
-  THERAPY = 'THERAPY',
-  MEDICATION = 'MEDICATION',
-  OTHER = 'OTHER',
+  CONSULTATION = 'consultation',
+  EXAM = 'exam',
+  SURGERY = 'surgery',
+  THERAPY = 'therapy',
+  MEDICATION = 'medication',
+  PREVENTIVE = 'preventive',
+  EMERGENCY = 'emergency'
 }
 
 /**
- * Data transfer object for insurance coverage verification requests
- * Used in the My Plan & Benefits journey to verify if a procedure is covered
- * and calculate estimated costs based on the user's insurance plan
+ * Data transfer object for the verify coverage endpoint
  */
 export class VerifyCoverageDto {
+  /**
+   * The procedure code to check coverage for
+   * This can be a standardized code like CPT, CBHPM, or TUSS
+   */
   @ApiProperty({
-    description: 'The code for the medical procedure',
-    example: 'PROC-12345',
-    required: true,
+    description: 'Procedure code (CPT, CBHPM, or TUSS)',
+    example: '10060'
   })
   @IsString()
-  procedureCode: string;
+  @IsNotEmpty()
+  procedureCode!: string;
 
+  /**
+   * The type of medical procedure
+   */
   @ApiProperty({
-    description: 'The type of medical procedure',
+    description: 'Type of medical procedure',
     enum: ProcedureType,
-    example: ProcedureType.CONSULTATION,
-    required: true,
+    example: ProcedureType.CONSULTATION
   })
   @IsEnum(ProcedureType)
-  procedureType: ProcedureType;
+  @IsNotEmpty()
+  procedureType!: ProcedureType;
 
+  /**
+   * The plan ID to check coverage against
+   */
   @ApiProperty({
-    description: 'The ID of the insurance plan',
-    example: '123e4567-e89b-12d3-a456-426614174000',
-    required: true,
+    description: 'Plan ID to check coverage against',
+    example: 'a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6'
   })
-  @IsUUID(4)
-  planId: string;
+  @IsString()
+  @IsNotEmpty()
+  planId!: string;
 
+  /**
+   * Additional description of the procedure
+   */
   @ApiProperty({
-    description: 'The ID of the healthcare provider (optional)',
-    example: '123e4567-e89b-12d3-a456-426614174001',
-    required: false,
+    description: 'Additional procedure description',
+    example: 'General practitioner consultation',
+    required: false
   })
-  @IsUUID(4)
+  @IsString()
+  @IsOptional()
+  description?: string;
+
+  /**
+   * The healthcare provider ID
+   */
+  @ApiProperty({
+    description: 'Healthcare provider ID',
+    example: 'b5c6d7e8-f9g0-h1i2-j3k4-l5m6n7o8p9q0',
+    required: false
+  })
+  @IsString()
   @IsOptional()
   providerId?: string;
-
-  @ApiProperty({
-    description: 'Whether the provider is in-network (affects coverage amounts)',
-    example: true,
-    required: false,
-    default: true,
-  })
-  @IsBoolean()
-  @IsOptional()
-  isInNetwork?: boolean;
 }

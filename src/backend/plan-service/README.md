@@ -34,11 +34,11 @@ This service provides endpoints for managing user insurance plans, coverage deta
 
 ## Setup Instructions
 
-1.  Clone the repository.
-2.  Install dependencies using `npm install`.
-3.  Configure the database connection in `src/config/configuration.ts`.
-4.  Run database migrations using `prisma migrate deploy`.
-5.  Start the service using `npm run start:dev`.
+1. Clone the repository.
+2. Install dependencies using `npm install`.
+3. Configure the database connection in `src/config/configuration.ts`.
+4. Run database migrations using `prisma migrate deploy`.
+5. Start the service using `npm run start:dev`.
 
 ## Endpoints
 

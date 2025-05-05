@@ -1,17 +1,17 @@
-import { Module } from '@nestjs/common'; // @nestjs/common 10.0.0+
-import { ConfigModule } from '@nestjs/config'; // @nestjs/config 10.0.0+
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { planService } from './config/configuration';
 import { ClaimsModule } from './claims/claims.module';
 import { PlansModule } from './plans/plans.module';
 import { CostSimulatorModule } from './cost-simulator/cost-simulator.module';
 import { DocumentsModule } from './documents/documents.module';
 import { InsuranceModule } from './insurance/insurance.module';
-import { PrismaService } from '../../shared/src/database/prisma.service';
-import { KafkaModule } from '../../shared/src/kafka/kafka.module';
-import { LoggerModule } from '../../shared/src/logging/logger.module';
-import { ExceptionsModule } from '../../shared/src/exceptions/exceptions.module';
-import { RedisModule } from '../../shared/src/redis/redis.module';
-import { TracingModule } from '../../shared/src/tracing/tracing.module';
+import { PrismaService } from '@app/shared/database/prisma.service';
+import { KafkaModule } from '@app/shared/kafka/kafka.module';
+import { LoggerModule } from '@app/shared/logging/logger.module';
+import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
+import { RedisModule } from '@app/shared/redis/redis.module';
+import { TracingModule } from '@app/shared/tracing/tracing.module';
 
 /**
  * Root module for the Plan Service that configures and organizes all the necessary components.

@@ -4,10 +4,16 @@ import {
   PrimaryGeneratedColumn, 
   CreateDateColumn, 
   UpdateDateColumn, 
-  OneToMany 
+  OneToMany
 } from 'typeorm'; // v0.3.17
 import { Coverage } from './coverage.entity';
-import { JOURNEY_IDS } from '../../../shared/src/constants/journey.constants';
+
+// Define a constant for journey IDs as a temporary fix
+const JOURNEY_IDS = {
+  HEALTH: 'health',
+  CARE: 'care',
+  PLAN: 'plan'
+};
 
 /**
  * Represents an insurance plan in the database.
@@ -20,83 +26,81 @@ export class Plan {
    * Unique identifier for the plan
    */
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   /**
    * User ID associated with this plan
    */
   @Column()
-  userId: string;
+  userId!: string;
 
   /**
    * Insurance plan number or identifier
    */
   @Column()
-  planNumber: string;
+  planNumber!: string;
 
   /**
    * Type of insurance plan (e.g., individual, family, corporate)
    */
   @Column()
-  type: string;
+  type!: string;
 
   /**
    * Date when the plan becomes valid
    */
   @Column()
-  validityStart: Date;
+  validityStart!: Date;
 
   /**
    * Date when the plan validity ends
    */
   @Column()
-  validityEnd: Date;
+  validityEnd!: Date;
 
   /**
    * Detailed coverage information stored as JSON
    * Contains high-level overview of plan coverage that can be displayed on cards
    */
   @Column({ type: 'jsonb', nullable: true })
-  coverageDetails: object;
+  coverageDetails!: object;
 
   /**
    * Journey identifier, defaults to the PLAN journey
    */
   @Column({ default: JOURNEY_IDS.PLAN })
-  journey: string;
+  journey!: string;
 
   /**
    * Timestamp when the plan record was created
    */
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   /**
    * Timestamp when the plan record was last updated
    */
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 
   /**
    * Related coverage details
    * One plan can have multiple coverage types (medical, dental, vision, etc.)
    */
-  @OneToMany(() => Coverage, (coverage) => coverage.plan)
-  coverages: Coverage[];
+  @OneToMany(() => Coverage, (coverage) => coverage.planId)
+  coverages!: Coverage[];
 
   /**
    * Related benefits
-   * Note: Using string reference as Benefit entity might not be imported directly
-   * to avoid circular dependencies
+   * Using Type function for lazy-loading
    */
-  @OneToMany(() => 'Benefit', (benefit) => benefit.plan)
-  benefits: any[];
+  @OneToMany('Benefit', 'plan')
+  benefits!: any[];
 
   /**
    * Related claims
-   * Note: Using string reference as Claim entity might not be imported directly
-   * to avoid circular dependencies
+   * Using Type function for lazy-loading
    */
-  @OneToMany(() => 'Claim', (claim) => claim.plan)
-  claims: any[];
+  @OneToMany('Claim', 'plan')
+  claims!: any[];
 }

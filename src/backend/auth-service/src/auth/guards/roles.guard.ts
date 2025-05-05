@@ -55,7 +55,7 @@ export class RolesGuard implements CanActivate {
         'Insufficient permissions',
         ErrorType.VALIDATION,
         'AUTH_004',
-        { requiredRoles, userRoles: user.roles?.map(role => role.name) || [] }
+        { requiredRoles, userRoles: user.roles?.map((role: Role) => role.name) || [] }
       );
     }
 

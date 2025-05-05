@@ -8,6 +8,14 @@ import { LoggerService } from '@app/shared/logging/logger.service';
 import { PrismaService } from '@app/shared/database/prisma.service';
 
 /**
+ * Interface for role objects with a name property
+ */
+interface Role {
+  name: string;
+  [key: string]: any;
+}
+
+/**
  * Service responsible for authentication operations including user registration,
  * login, JWT token management, and authentication-related functionalities.
  */
@@ -86,7 +94,7 @@ export class AuthService {
       const payload = { 
         sub: user.id,
         email: user.email,
-        roles: user.roles?.map(role => role.name) || [] 
+        roles: user.roles?.map((role: Role) => role.name) || [] 
       };
       
       const token = this.jwtService.sign(payload, {

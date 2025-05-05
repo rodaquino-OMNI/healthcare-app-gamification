@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common'; // @nestjs/common 10.0.0+
+import { Module } from '@nestjs/common';
 import { ClaimsController } from './claims.controller';
 import { ClaimsService } from './claims.service';
-import { KafkaModule } from 'src/backend/shared/src/kafka/kafka.module';
-import { LoggerModule } from 'src/backend/shared/src/logging/logger.module';
-import { ExceptionsModule } from 'src/backend/shared/src/exceptions/exceptions.module';
+import { KafkaModule } from '@app/shared/kafka/kafka.module';
+import { LoggerModule } from '@app/shared/logging/logger.module';
+import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
 
 /**
  * Module that encapsulates the ClaimsController and ClaimsService.

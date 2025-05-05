@@ -1,66 +1,73 @@
-import { 
-  Column, 
-  Entity, 
-  PrimaryGeneratedColumn, 
-  CreateDateColumn, 
-  UpdateDateColumn, 
-  OneToMany, 
-  ManyToOne, 
-  JoinColumn 
-} from 'typeorm'; // v0.3.17
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn
+} from 'typeorm';
+import { Plan } from './plan.entity';
 
 /**
- * Represents insurance coverage details in the database.
- * This entity stores information about coverage types, details, limitations,
- * and co-payment for insurance plans in the AUSTA SuperApp.
+ * Represents specific coverage details for an insurance plan.
+ * This entity stores detailed information about what is covered by a plan,
+ * including coverage type, details, limitations, and co-payment requirements.
  */
 @Entity()
 export class Coverage {
   /**
-   * Unique identifier for the coverage
+   * Unique identifier for the coverage record
    */
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   /**
-   * Foreign key reference to the Plan entity
+   * ID of the plan this coverage is associated with
    */
   @Column()
-  planId: string;
+  planId!: string;
 
   /**
-   * Type of coverage (e.g., medical, dental, vision, etc.)
+   * Type of coverage (e.g., 'medical', 'dental', 'vision', 'prescription')
    */
   @Column()
-  type: string;
+  type!: string;
 
   /**
    * Detailed description of what is covered
    */
   @Column({ type: 'text' })
-  details: string;
+  details!: string;
 
   /**
-   * Description of any limitations or exclusions
+   * Limitations or exclusions for this coverage
    */
   @Column({ type: 'text', nullable: true })
-  limitations: string;
+  limitations!: string;
 
   /**
-   * Amount of co-payment required, if any
+   * Co-payment amount required for this coverage
    */
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-  coPayment: number;
+  @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
+  coPayment!: number;
 
   /**
    * Timestamp when the coverage record was created
    */
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   /**
    * Timestamp when the coverage record was last updated
    */
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
+
+  /**
+   * Relationship to the Plan entity
+   */
+  @ManyToOne(() => Plan)
+  @JoinColumn({ name: 'planId' })
+  plan!: Plan;
 }

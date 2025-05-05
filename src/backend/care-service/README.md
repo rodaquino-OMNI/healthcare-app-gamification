@@ -49,6 +49,7 @@ The Care Service handles the following key functionalities within the AUSTA Supe
 ## Installation
 
 1. Clone the repository
+
 ```bash
 git clone git@github.com:austa/superapp.git
 cd superapp/src/backend/care-service

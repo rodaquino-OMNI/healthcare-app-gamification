@@ -1,16 +1,16 @@
-import { 
-  Column, 
-  Entity, 
-  PrimaryGeneratedColumn, 
-  ManyToOne, 
-  JoinColumn 
-} from 'typeorm'; // v0.3.17
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn
+} from 'typeorm';
 import { Plan } from './plan.entity';
 
 /**
- * Represents a benefit available under an insurance plan.
- * This entity stores information about benefit types, descriptions,
- * limitations, and usage details in the AUSTA SuperApp.
+ * Represents a benefit associated with an insurance plan.
+ * This entity stores information about extra benefits provided by a plan,
+ * such as wellness programs, discounts, or special services.
  */
 @Entity()
 export class Benefit {
@@ -18,42 +18,42 @@ export class Benefit {
    * Unique identifier for the benefit
    */
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   /**
-   * Foreign key reference to the Plan entity
+   * ID of the plan this benefit is associated with
    */
   @Column()
-  planId: string;
+  planId!: string;
 
   /**
-   * Type of benefit (e.g., gym membership, wellness program, etc.)
+   * Type of benefit (e.g., 'wellness_program', 'discount', 'telemedicine')
    */
   @Column()
-  type: string;
+  type!: string;
 
   /**
    * Detailed description of the benefit
    */
-  @Column()
-  description: string;
+  @Column({ type: 'text' })
+  description!: string;
 
   /**
-   * Description of any limitations or restrictions on the benefit
+   * Limitations or conditions for using the benefit
+   */
+  @Column({ type: 'text', nullable: true })
+  limitations!: string;
+
+  /**
+   * Current usage status of the benefit (e.g., 'available', 'used')
    */
   @Column({ nullable: true })
-  limitations: string;
+  usage!: string;
 
   /**
-   * Information about how the benefit can be used or redeemed
+   * Relationship to the Plan entity
    */
-  @Column({ nullable: true })
-  usage: string;
-
-  /**
-   * Related plan that offers this benefit
-   */
-  @ManyToOne(() => Plan, (plan) => plan.benefits)
+  @ManyToOne(() => Plan)
   @JoinColumn({ name: 'planId' })
-  plan: Plan;
+  plan!: Plan;
 }

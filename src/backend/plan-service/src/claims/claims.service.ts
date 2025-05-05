@@ -1,19 +1,19 @@
-import { Injectable } from '@nestjs/common'; // @nestjs/common 10.0.0+
+import { Injectable } from '@nestjs/common'; 
 import { CreateClaimDto } from './dto/create-claim.dto';
 import { UpdateClaimDto } from './dto/update-claim.dto';
 import { Claim } from './entities/claim.entity';
 import { PlansService } from '../plans/plans.service';
 import { InsuranceService } from '../insurance/insurance.service';
-import { PrismaService } from 'src/backend/shared/src/database/prisma.service';
-import { Service } from 'src/backend/shared/src/interfaces/service.interface';
-import { FilterDto } from 'src/backend/shared/src/dto/filter.dto';
-import { PaginationDto } from 'src/backend/shared/src/dto/pagination.dto';
-import { AppException, ErrorType } from 'src/backend/shared/src/exceptions/exceptions.types';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { KafkaService } from 'src/backend/shared/src/kafka/kafka.service';
-import { ErrorCodes } from 'src/backend/shared/src/constants/error-codes.constants';
+import { PrismaService } from '@app/shared/database/prisma.service';
+import { Service } from '@app/shared/interfaces/service.interface';
+import { FilterDto } from '@app/shared/dto/filter.dto';
+import { PaginationDto } from '@app/shared/dto/pagination.dto';
+import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { KafkaService } from '@app/shared/kafka/kafka.service';
+import { PLAN_INVALID_CLAIM_DATA } from '@app/shared/constants/error-codes.constants';
 import { DocumentsService } from '../documents/documents.service';
-import { TracingService } from 'src/backend/shared/src/tracing/tracing.service';
+import { TracingService } from '@app/shared/tracing/tracing.service';
 
 /**
  * Handles the business logic for managing insurance claims.
@@ -51,10 +51,17 @@ export class ClaimsService {
   async create(userId: string, createClaimDto: CreateClaimDto): Promise<Claim> {
     return this.tracingService.createSpan('ClaimsService.create', async () => {
       this.logger.log(`Creating claim for user: ${userId}`, 'ClaimsService');
-
       try {
         // Verify the plan exists and belongs to the user
         const plan = await this.plansService.findOne(createClaimDto.planId);
+        if (!plan) {
+          throw new AppException(
+            `Plan not found: ${createClaimDto.planId}`,
+            ErrorType.BUSINESS,
+            'PLAN_NOT_FOUND',
+            { planId: createClaimDto.planId }
+          );
+        }
         if (plan.userId !== userId) {
           throw new AppException(
             'Cannot submit a claim for a plan that does not belong to you',
@@ -63,7 +70,6 @@ export class ClaimsService {
             { userId, planId: createClaimDto.planId }
           );
         }
-
         // Create the claim
         const claim = await this.prisma.claim.create({
           data: {
@@ -75,7 +81,6 @@ export class ClaimsService {
             procedureCode: createClaimDto.procedureCode || null,
           },
         });
-
         // Handle document attachments if provided
         if (createClaimDto.documentIds && createClaimDto.documentIds.length > 0) {
           for (const docId of createClaimDto.documentIds) {
@@ -96,7 +101,6 @@ export class ClaimsService {
             });
           }
         }
-
         // Publish claim creation event for gamification
         await this.kafkaService.produce(
           'claims-events',
@@ -110,24 +114,36 @@ export class ClaimsService {
           },
           claim.id
         );
-
         this.logger.log(`Claim created successfully: ${claim.id}`, 'ClaimsService');
         
         // Retrieve the complete claim with associated documents
         const fullClaim = await this.findOne(claim.id);
+        
+        // Since we just created the claim, we know it exists
+        if (!fullClaim) {
+          throw new AppException(
+            'Failed to retrieve created claim',
+            ErrorType.TECHNICAL,
+            'PLAN_CLAIM_UNEXPECTED_ERROR',
+            { claimId: claim.id }
+          );
+        }
+        
         return fullClaim;
-      } catch (error) {
+      } catch (error: unknown) {
         if (error instanceof AppException) {
           throw error;
         }
-
-        this.logger.error(`Failed to create claim: ${error.message}`, error.stack, 'ClaimsService');
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        const errorStack = error instanceof Error ? error.stack : undefined;
+        
+        this.logger.error(`Failed to create claim: ${errorMessage}`, errorStack, 'ClaimsService');
         throw new AppException(
           'Failed to create claim',
           ErrorType.TECHNICAL,
-          ErrorCodes.PLAN_INVALID_CLAIM_DATA,
+          PLAN_INVALID_CLAIM_DATA,
           { userId, dto: createClaimDto },
-          error
+          error instanceof Error ? error : undefined
         );
       }
     });
@@ -143,24 +159,19 @@ export class ClaimsService {
   async findAll(userId: string, filterDto?: FilterDto, paginationDto?: PaginationDto): Promise<Claim[]> {
     return this.tracingService.createSpan('ClaimsService.findAll', async () => {
       this.logger.log(`Finding claims for user: ${userId}`, 'ClaimsService');
-
       try {
         // Build query conditions
         const where: any = { userId };
-
         // Apply additional filters if provided
         if (filterDto?.where) {
           Object.assign(where, filterDto.where);
         }
-
         // Build ordering
         const orderBy: any = filterDto?.orderBy || { submittedAt: 'desc' };
-
         // Apply pagination
         const skip = paginationDto?.skip || 
           (paginationDto?.page ? (paginationDto.page - 1) * (paginationDto.limit || 10) : undefined);
         const take = paginationDto?.limit;
-
         // Query claims with documents
         const claims = await this.prisma.claim.findMany({
           where,
@@ -171,17 +182,19 @@ export class ClaimsService {
             documents: true,
           }
         });
-
         this.logger.log(`Found ${claims.length} claims for user: ${userId}`, 'ClaimsService');
         return claims;
-      } catch (error) {
-        this.logger.error(`Failed to fetch claims: ${error.message}`, error.stack, 'ClaimsService');
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        const errorStack = error instanceof Error ? error.stack : undefined;
+        
+        this.logger.error(`Failed to fetch claims: ${errorMessage}`, errorStack, 'ClaimsService');
         throw new AppException(
           'Failed to fetch claims',
           ErrorType.TECHNICAL,
           'PLAN_CLAIM_FETCH_FAILED',
           { userId, filterDto, paginationDto },
-          error
+          error instanceof Error ? error : undefined
         );
       }
     });
@@ -195,7 +208,6 @@ export class ClaimsService {
   async findOne(id: string): Promise<Claim | null> {
     return this.tracingService.createSpan('ClaimsService.findOne', async () => {
       this.logger.log(`Finding claim with ID: ${id}`, 'ClaimsService');
-
       try {
         const claim = await this.prisma.claim.findUnique({
           where: { id },
@@ -203,21 +215,22 @@ export class ClaimsService {
             documents: true,
           }
         });
-
         if (!claim) {
           this.logger.log(`Claim not found: ${id}`, 'ClaimsService');
           return null;
         }
-
         return claim;
-      } catch (error) {
-        this.logger.error(`Failed to fetch claim: ${error.message}`, error.stack, 'ClaimsService');
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        const errorStack = error instanceof Error ? error.stack : undefined;
+        
+        this.logger.error(`Failed to fetch claim: ${errorMessage}`, errorStack, 'ClaimsService');
         throw new AppException(
           'Failed to fetch claim details',
           ErrorType.TECHNICAL,
           'PLAN_CLAIM_FETCH_FAILED',
           { id },
-          error
+          error instanceof Error ? error : undefined
         );
       }
     });
@@ -232,7 +245,6 @@ export class ClaimsService {
   async update(id: string, updateClaimDto: UpdateClaimDto): Promise<Claim> {
     return this.tracingService.createSpan('ClaimsService.update', async () => {
       this.logger.log(`Updating claim with ID: ${id}`, 'ClaimsService');
-
       try {
         // Check if claim exists
         const existingClaim = await this.findOne(id);
@@ -244,12 +256,10 @@ export class ClaimsService {
             { id }
           );
         }
-
         // Validate status transitions if status is being updated
         if (updateClaimDto.status && updateClaimDto.status !== existingClaim.status) {
           this.validateStatusTransition(existingClaim.status, updateClaimDto.status);
         }
-
         // Update the claim
         const updatedClaim = await this.prisma.claim.update({
           where: { id },
@@ -258,7 +268,6 @@ export class ClaimsService {
             documents: true,
           }
         });
-
         // If status changed to APPROVED, publish event for gamification
         if (updateClaimDto.status === 'APPROVED' && existingClaim.status !== 'APPROVED') {
           await this.kafkaService.produce(
@@ -274,21 +283,22 @@ export class ClaimsService {
             updatedClaim.id
           );
         }
-
         this.logger.log(`Claim updated successfully: ${id}`, 'ClaimsService');
         return updatedClaim;
-      } catch (error) {
+      } catch (error: unknown) {
         if (error instanceof AppException) {
           throw error;
         }
-
-        this.logger.error(`Failed to update claim: ${error.message}`, error.stack, 'ClaimsService');
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        const errorStack = error instanceof Error ? error.stack : undefined;
+        
+        this.logger.error(`Failed to update claim: ${errorMessage}`, errorStack, 'ClaimsService');
         throw new AppException(
           'Failed to update claim',
           ErrorType.TECHNICAL,
           'PLAN_CLAIM_UPDATE_FAILED',
           { id, updateClaimDto },
-          error
+          error instanceof Error ? error : undefined
         );
       }
     });
@@ -301,7 +311,6 @@ export class ClaimsService {
   async delete(id: string): Promise<void> {
     return this.tracingService.createSpan('ClaimsService.delete', async () => {
       this.logger.log(`Deleting claim with ID: ${id}`, 'ClaimsService');
-
       try {
         // Check if claim exists
         const existingClaim = await this.findOne(id);
@@ -313,7 +322,6 @@ export class ClaimsService {
             { id }
           );
         }
-
         // Check if the claim can be deleted based on its status
         if (!['DRAFT', 'SUBMITTED'].includes(existingClaim.status)) {
           throw new AppException(
@@ -323,25 +331,25 @@ export class ClaimsService {
             { id, status: existingClaim.status }
           );
         }
-
         // Delete the claim
         await this.prisma.claim.delete({
           where: { id }
         });
-
         this.logger.log(`Claim deleted successfully: ${id}`, 'ClaimsService');
-      } catch (error) {
+      } catch (error: unknown) {
         if (error instanceof AppException) {
           throw error;
         }
-
-        this.logger.error(`Failed to delete claim: ${error.message}`, error.stack, 'ClaimsService');
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        const errorStack = error instanceof Error ? error.stack : undefined;
+        
+        this.logger.error(`Failed to delete claim: ${errorMessage}`, errorStack, 'ClaimsService');
         throw new AppException(
           'Failed to delete claim',
           ErrorType.TECHNICAL,
           'PLAN_CLAIM_DELETE_FAILED',
           { id },
-          error
+          error instanceof Error ? error : undefined
         );
       }
     });
@@ -366,7 +374,6 @@ export class ClaimsService {
       'DENIED': ['APPEALED'],
       'APPEALED': ['UNDER_REVIEW', 'FINAL_DENIAL'],
     };
-
     // Check if transition is allowed
     if (!allowedTransitions[currentStatus]?.includes(newStatus)) {
       throw new AppException(

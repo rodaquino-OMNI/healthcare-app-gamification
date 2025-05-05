@@ -69,11 +69,11 @@ async function bootstrap(): Promise<void> {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  // LD1: Get the port from configuration
-  const port = configService.get<number>('planService.server.port');
+  // LD1: Get the port from environment or use default
+  const port = process.env.PORT || 3004;
 
   // LD1: Start the HTTP server on the configured port
-  await app.listen(port);
+  await app.listen(port as number);
 
   // LD1: Log the application startup with the service URL
   logger.log(`Plan Service started on port ${port}`, 'Bootstrap');

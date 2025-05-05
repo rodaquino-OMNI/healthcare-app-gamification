@@ -21,25 +21,31 @@ export class Claim {
    * Unique identifier for the claim
    */
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
+
+  /**
+   * ID of the user who submitted the claim
+   */
+  @Column()
+  userId!: string;
 
   /**
    * ID of the plan this claim is associated with
    */
   @Column()
-  planId: string;
+  planId!: string;
 
   /**
    * Type of claim (e.g., 'medical_visit', 'procedure', 'medication', 'exam')
    */
   @Column()
-  type: string;
+  type!: string;
 
   /**
    * Claim amount in the local currency (BRL)
    */
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  amount: number;
+  amount!: number;
 
   /**
    * Current status of the claim 
@@ -47,33 +53,31 @@ export class Claim {
    * 'approved', 'denied', 'appealed', 'expired', 'processing', 'completed', 'cancelled'
    */
   @Column()
-  status: string;
+  status!: string;
 
   /**
    * Date when the claim was submitted
    */
   @CreateDateColumn()
-  submittedAt: Date;
+  submittedAt!: Date;
 
   /**
    * Date when the claim was last processed or updated
    */
   @UpdateDateColumn()
-  processedAt: Date;
+  processedAt!: Date;
 
   /**
    * Relationship with the Plan entity
    * Note: Plan entity is referenced as a string to avoid circular dependencies
    */
-  @ManyToOne(() => 'Plan', (plan) => plan.claims)
+  @ManyToOne('Plan')
   @JoinColumn({ name: 'planId' })
-  plan: any;
+  plan!: any;
 
   /**
    * Documents associated with this claim (e.g., receipts, prescriptions)
-   * Note: This relationship assumes the Document entity has a 'claim' property
-   * that references back to this entity
    */
-  @OneToMany(() => Document, (document) => document.claim)
-  documents: Document[];
+  @OneToMany(() => Document, (document) => document.entityId)
+  documents!: Document[];
 }

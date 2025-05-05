@@ -7,6 +7,7 @@ import { hash, compare } from 'bcrypt';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+import { Prisma } from '@prisma/client';
 
 /**
  * Service that handles user management operations
@@ -94,9 +95,9 @@ export class UsersService {
     this.logger.log('Finding all users', 'UsersService');
     
     // Build where condition based on filter
-    const where = {};
+    const where: Prisma.UserWhereInput = {};
     if (filterDto?.search) {
-      where['OR'] = [
+      where.OR = [
         { name: { contains: filterDto.search, mode: 'insensitive' } },
         { email: { contains: filterDto.search, mode: 'insensitive' } }
       ];
