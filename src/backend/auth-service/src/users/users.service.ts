@@ -95,7 +95,7 @@ export class UsersService {
     this.logger.log('Finding all users', 'UsersService');
     
     // Build where condition based on filter
-    const where: Prisma.UserWhereInput = {};
+    const where: any = {};
     if (filterDto?.search) {
       where.OR = [
         { name: { contains: filterDto.search, mode: 'insensitive' } },
