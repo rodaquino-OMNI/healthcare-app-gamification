@@ -4,6 +4,9 @@
     "outDir": "./dist",
     "strict": true,
     "baseUrl": ".",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false,
     "paths": {
       "@app/auth/*": ["../auth-service/src/*"],
       "@app/health/*": ["../health-service/src/*"],

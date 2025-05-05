@@ -1,4 +1,6 @@
 terraform {
+  required_version = ">= 1.5"
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -13,13 +15,11 @@ terraform {
       version = "~> 3.2"
     }
   }
-  required_version = ">= 1.5"
 }
 
 # Configure the AWS Provider for the primary region (Brazil)
 provider "aws" {
   region = var.aws_region
-  
   default_tags {
     tags = {
       Project     = "AUSTA SuperApp"
@@ -33,7 +33,6 @@ provider "aws" {
 provider "aws" {
   alias  = "dr"
   region = "us-east-1"
-  
   default_tags {
     tags = {
       Project     = "AUSTA SuperApp"

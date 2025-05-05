@@ -14,6 +14,8 @@ import {
   Max
 } from 'class-validator'; // class-validator 0.14.1
 import { Achievement } from './achievement.entity';
+// Import GameProfile type for better type safety
+import { GameProfile } from '../../profiles/entities/game-profile.entity';
 
 /**
  * Represents a user's progress and status for a specific achievement.
@@ -24,27 +26,27 @@ export class UserAchievement {
    * The ID of the user's game profile.
    */
   @PrimaryColumn()
-  profileId: string;
+  profileId!: string;
 
   /**
    * The ID of the achievement.
    */
   @PrimaryColumn()
-  achievementId: string;
+  achievementId!: string;
 
   /**
-   * The user's game profile. Uses string reference to avoid circular dependency.
+   * The user's game profile.
    */
-  @ManyToOne('GameProfile', undefined, { primary: true })
+  @ManyToOne(() => GameProfile, gameProfile => gameProfile.achievements)
   @JoinColumn({ name: 'profileId' })
-  profile: any;
+  profile!: GameProfile;
 
   /**
    * The achievement.
    */
-  @ManyToOne(() => Achievement, achievement => achievement.id, { primary: true })
+  @ManyToOne(() => Achievement, achievement => achievement.id)
   @JoinColumn({ name: 'achievementId' })
-  achievement: Achievement;
+  achievement!: Achievement;
 
   /**
    * The user's current progress towards unlocking the achievement.
@@ -53,30 +55,39 @@ export class UserAchievement {
   @IsInt()
   @Min(0)
   @Max(1000)
-  progress: number;
+  progress: number = 0;
 
   /**
    * Indicates whether the achievement has been unlocked by the user.
    */
   @Column({ default: false })
   @IsBoolean()
-  unlocked: boolean;
+  unlocked: boolean = false;
 
   /**
    * The date and time when the achievement was unlocked.
    */
   @Column({ nullable: true })
-  unlockedAt: Date;
+  unlockedAt?: Date;
 
   /**
    * The date and time when the user achievement was created.
    */
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   /**
    * The date and time when the user achievement was last updated.
    */
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
+
+  /**
+   * Creates a new UserAchievement instance
+   */
+  constructor(data?: Partial<UserAchievement>) {
+    if (data) {
+      Object.assign(this, data);
+    }
+  }
 }

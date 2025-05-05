@@ -89,14 +89,14 @@ services:
       context: src/backend/gamification-engine
       dockerfile: Dockerfile
     ports:
-      - "4005:4005"
+      - "3005:3005"
     volumes:
       - ../backend/gamification-engine:/app
       - node_modules:/app/node_modules
     environment:
       DATABASE_URL: postgresql://user:password@db:5432/gamification-engine
       REDIS_URL: redis://redis:6379
-      PORT: 4005
+      PORT: 3005
       KAFKA_BROKERS: kafka:9092
     depends_on:
       - kafka

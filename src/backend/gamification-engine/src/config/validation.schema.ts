@@ -1,6 +1,11 @@
 import * as Joi from 'joi';
 import { HttpStatus } from '@nestjs/common';
 
+/**
+ * Default port for the Gamification Engine service
+ */
+export const DEFAULT_PORT = 3005;
+
 export const validationSchema = Joi.object({
   // Environment
   NODE_ENV: Joi.string()
@@ -8,7 +13,7 @@ export const validationSchema = Joi.object({
     .default('development'),
   
   // Server settings
-  PORT: Joi.number().port().default(3000),
+  PORT: Joi.number().port().default(DEFAULT_PORT),
   HOST: Joi.string().default('0.0.0.0'),
   LOG_LEVEL: Joi.string()
     .valid('debug', 'info', 'warn', 'error')

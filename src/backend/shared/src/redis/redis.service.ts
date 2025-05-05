@@ -10,8 +10,30 @@ import { LoggerService } from '../logging/logger.service';
  */
 @Injectable()
 export class RedisService implements OnModuleInit, OnModuleDestroy {
-  private readonly client: Redis;
+  // Using definite assignment assertion to fix property initialization error
+  private readonly client!: Redis;
   private subscriptionClient: Redis | null = null;
+  private readonly configNamespace = 'gamificationEngine.redis'; // Match the namespace used in configuration.ts
+
+  /**
+   * Helper method to safely extract error message and stack trace from unknown errors
+   */
+  private formatError(error: unknown): { message: string; stack?: string } {
+    if (error instanceof Error) {
+      return {
+        message: error.message,
+        stack: error.stack,
+      };
+    } else if (typeof error === 'string') {
+      return {
+        message: error,
+      };
+    } else {
+      return {
+        message: 'Unknown error occurred',
+      };
+    }
+  }
 
   /**
    * Initializes the RedisService with dependencies and configuration.
@@ -22,19 +44,77 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     private readonly logger: LoggerService,
     private readonly configService: ConfigService,
   ) {
-    const redisConfig: RedisOptions = {
-      host: this.configService.get<string>('redis.host', 'localhost'),
-      port: this.configService.get<number>('redis.port', 6379),
-      password: this.configService.get<string>('redis.password', ''),
-      db: this.configService.get<number>('redis.db', 0),
+    // Always check if configuration exists before initialization
+    try {
+      const redisConfig: RedisOptions = this.getRedisConfig();
+      this.client = new Redis(redisConfig);
+      this.logger.log('Redis client initialized with config', 'RedisService');
+    } catch (error) {
+      const formattedError = this.formatError(error);
+      this.logger.error(
+        `Failed to initialize Redis client: ${formattedError.message}`, 
+        formattedError.stack, 
+        'RedisService'
+      );
+      // Don't throw here - let onModuleInit handle connection failures
+    }
+  }
+
+  /**
+   * Get Redis config from ConfigService with proper fallbacks
+   */
+  private getRedisConfig(): RedisOptions {
+    // Try to get config from the namespace first
+    const host = this.configService.get<string>(`${this.configNamespace}.host`) || 
+                 this.configService.get<string>('redis.host', 'localhost');
+                 
+    const port = this.configService.get<number>(`${this.configNamespace}.port`) || 
+                 this.configService.get<number>('redis.port', 6379);
+                 
+    const password = this.configService.get<string>(`${this.configNamespace}.password`) || 
+                     this.configService.get<string>('redis.password', '');
+                     
+    const db = this.configService.get<number>(`${this.configNamespace}.db`) || 
+               this.configService.get<number>('redis.db', 0);
+
+    const redisUrl = this.configService.get<string>(`${this.configNamespace}.url`) ||
+                     this.configService.get<string>('redis.url', '');
+               
+    if (redisUrl) {
+      try {
+        // Parse the Redis URL to extract components instead of using url property directly
+        const parsedUrl = new URL(redisUrl);
+        return {
+          host: parsedUrl.hostname,
+          port: parseInt(parsedUrl.port || '6379', 10),
+          username: parsedUrl.username || undefined,
+          password: parsedUrl.password || undefined,
+          db: parseInt(parsedUrl.pathname.substring(1) || '0', 10),
+          retryStrategy: (times) => {
+            const delay = Math.min(times * 100, 3000);
+            return delay;
+          },
+        };
+      } catch (error) {
+        const formattedError = this.formatError(error);
+        this.logger.error(
+          `Failed to parse Redis URL: ${formattedError.message}. Falling back to connection parameters.`, 
+          formattedError.stack, 
+          'RedisService'
+        );
+      }
+    }
+    
+    return {
+      host,
+      port,
+      password: password || undefined, // Use undefined instead of empty string
+      db,
       retryStrategy: (times) => {
         const delay = Math.min(times * 100, 3000);
         return delay;
       },
     };
-
-    this.client = new Redis(redisConfig);
-    this.logger.log('Redis client initialized', 'RedisService');
   }
 
   /**
@@ -43,17 +123,35 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
    */
   async onModuleInit(): Promise<void> {
     try {
+      // Check if client was successfully initialized in constructor
+      if (!this.client) {
+        // Create client now if it wasn't successful in constructor
+        const redisConfig = this.getRedisConfig();
+        (this as any).client = new Redis(redisConfig);
+      }
+
       // Ping Redis to verify connection
       await this.client.ping();
       this.logger.log('Successfully connected to Redis', 'RedisService');
 
       // Set up error event handler
       this.client.on('error', (error) => {
-        this.logger.error(`Redis client error: ${error.message}`, error.stack, 'RedisService');
+        const formattedError = this.formatError(error);
+        this.logger.error(
+          `Redis client error: ${formattedError.message}`, 
+          formattedError.stack, 
+          'RedisService'
+        );
       });
     } catch (error) {
-      this.logger.error(`Failed to connect to Redis: ${error.message}`, error.stack, 'RedisService');
-      throw error;
+      const formattedError = this.formatError(error);
+      this.logger.error(
+        `Failed to connect to Redis: ${formattedError.message}`,
+        formattedError.stack,
+        'RedisService'
+      );
+      // Don't throw error here as it would prevent the application from starting
+      // Instead, Redis operations will fail gracefully when used
     }
   }
 
@@ -67,13 +165,17 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         await this.client.quit();
         this.logger.log('Redis client disconnected', 'RedisService');
       }
-
       if (this.subscriptionClient) {
         await this.subscriptionClient.quit();
         this.logger.log('Redis subscription client disconnected', 'RedisService');
       }
     } catch (error) {
-      this.logger.error(`Error disconnecting Redis: ${error.message}`, error.stack, 'RedisService');
+      const formattedError = this.formatError(error);
+      this.logger.error(
+        `Error disconnecting Redis: ${formattedError.message}`, 
+        formattedError.stack, 
+        'RedisService'
+      );
     }
   }
 
@@ -88,7 +190,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       this.logger.debug(`Redis GET: ${key}`, 'RedisService');
       return value;
     } catch (error) {
-      this.logger.error(`Redis GET error for key ${key}: ${error.message}`, error.stack, 'RedisService');
+      const formattedError = this.formatError(error);
+      this.logger.error(
+        `Redis GET error for key ${key}: ${formattedError.message}`,
+        formattedError.stack,
+        'RedisService'
+      );
       throw error;
     }
   }
@@ -112,7 +219,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       }
       return result;
     } catch (error) {
-      this.logger.error(`Redis SET error for key ${key}: ${error.message}`, error.stack, 'RedisService');
+      const formattedError = this.formatError(error);
+      this.logger.error(
+        `Redis SET error for key ${key}: ${formattedError.message}`, 
+        formattedError.stack, 
+        'RedisService'
+      );
       throw error;
     }
   }
@@ -129,7 +241,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       this.logger.debug(`Redis DEL: ${Array.isArray(keys) ? keys.join(', ') : keys}`, 'RedisService');
       return count;
     } catch (error) {
-      this.logger.error(`Redis DEL error: ${error.message}`, error.stack, 'RedisService');
+      const formattedError = this.formatError(error);
+      this.logger.error(
+        `Redis DEL error: ${formattedError.message}`, 
+        formattedError.stack, 
+        'RedisService'
+      );
       throw error;
     }
   }
@@ -146,7 +263,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       this.logger.debug(`Redis EXISTS: ${Array.isArray(keys) ? keys.join(', ') : keys}`, 'RedisService');
       return count;
     } catch (error) {
-      this.logger.error(`Redis EXISTS error: ${error.message}`, error.stack, 'RedisService');
+      const formattedError = this.formatError(error);
+      this.logger.error(
+        `Redis EXISTS error: ${formattedError.message}`,
+        formattedError.stack, 
+        'RedisService'
+      );
       throw error;
     }
   }
@@ -163,7 +285,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       this.logger.debug(`Redis EXPIRE: ${key} (TTL: ${seconds}s)`, 'RedisService');
       return result;
     } catch (error) {
-      this.logger.error(`Redis EXPIRE error for key ${key}: ${error.message}`, error.stack, 'RedisService');
+      const formattedError = this.formatError(error);
+      this.logger.error(
+        `Redis EXPIRE error for key ${key}: ${formattedError.message}`,
+        formattedError.stack,
+        'RedisService'
+      );
       throw error;
     }
   }
@@ -179,7 +306,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       this.logger.debug(`Redis TTL: ${key}`, 'RedisService');
       return ttl;
     } catch (error) {
-      this.logger.error(`Redis TTL error for key ${key}: ${error.message}`, error.stack, 'RedisService');
+      const formattedError = this.formatError(error);
+      this.logger.error(
+        `Redis TTL error for key ${key}: ${formattedError.message}`,
+        formattedError.stack,
+        'RedisService'
+      );
       throw error;
     }
   }
@@ -196,7 +328,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       this.logger.debug(`Redis HGET: ${key}.${field}`, 'RedisService');
       return value;
     } catch (error) {
-      this.logger.error(`Redis HGET error for ${key}.${field}: ${error.message}`, error.stack, 'RedisService');
+      const formattedError = this.formatError(error);
+      this.logger.error(
+        `Redis HGET error for ${key}.${field}: ${formattedError.message}`,
+        formattedError.stack,
+        'RedisService'
+      );
       throw error;
     }
   }
@@ -214,7 +351,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       this.logger.debug(`Redis HSET: ${key}.${field}`, 'RedisService');
       return result;
     } catch (error) {
-      this.logger.error(`Redis HSET error for ${key}.${field}: ${error.message}`, error.stack, 'RedisService');
+      const formattedError = this.formatError(error);
+      this.logger.error(
+        `Redis HSET error for ${key}.${field}: ${formattedError.message}`,
+        formattedError.stack,
+        'RedisService'
+      );
       throw error;
     }
   }
@@ -231,7 +373,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       this.logger.debug(`Redis HMSET: ${key} (${Object.keys(fieldValues).length} fields)`, 'RedisService');
       return result;
     } catch (error) {
-      this.logger.error(`Redis HMSET error for ${key}: ${error.message}`, error.stack, 'RedisService');
+      const formattedError = this.formatError(error);
+      this.logger.error(
+        `Redis HMSET error for ${key}: ${formattedError.message}`,
+        formattedError.stack,
+        'RedisService'
+      );
       throw error;
     }
   }
@@ -247,7 +394,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       this.logger.debug(`Redis HGETALL: ${key}`, 'RedisService');
       return result;
     } catch (error) {
-      this.logger.error(`Redis HGETALL error for ${key}: ${error.message}`, error.stack, 'RedisService');
+      const formattedError = this.formatError(error);
+      this.logger.error(
+        `Redis HGETALL error for ${key}: ${formattedError.message}`,
+        formattedError.stack,
+        'RedisService'
+      );
       throw error;
     }
   }
@@ -265,7 +417,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       this.logger.debug(`Redis HDEL: ${key}.${Array.isArray(fields) ? fields.join(', ') : fields}`, 'RedisService');
       return count;
     } catch (error) {
-      this.logger.error(`Redis HDEL error for ${key}: ${error.message}`, error.stack, 'RedisService');
+      const formattedError = this.formatError(error);
+      this.logger.error(
+        `Redis HDEL error for ${key}: ${formattedError.message}`,
+        formattedError.stack,
+        'RedisService'
+      );
       throw error;
     }
   }
@@ -284,7 +441,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       this.logger.debug(`Redis ZADD: ${key} ${score} ${member}`, 'RedisService');
       return result;
     } catch (error) {
-      this.logger.error(`Redis ZADD error for ${key}: ${error.message}`, error.stack, 'RedisService');
+      const formattedError = this.formatError(error);
+      this.logger.error(
+        `Redis ZADD error for ${key}: ${formattedError.message}`,
+        formattedError.stack,
+        'RedisService'
+      );
       throw error;
     }
   }
@@ -305,7 +467,8 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   ): Promise<string[] | Array<[string, string]>> {
     try {
       const args = withScores ? ['WITHSCORES'] : [];
-      const result = await this.client.zrange(key, start, stop, ...args);
+      // Use type assertion to fix the typing issue
+      const result = await (this.client.zrange as any)(key, start, stop, ...args);
       this.logger.debug(`Redis ZRANGE: ${key} ${start} ${stop}${withScores ? ' WITHSCORES' : ''}`, 'RedisService');
       
       // Convert flat array to array of [member, score] pairs if withScores is true
@@ -319,7 +482,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       
       return result;
     } catch (error) {
-      this.logger.error(`Redis ZRANGE error for ${key}: ${error.message}`, error.stack, 'RedisService');
+      const formattedError = this.formatError(error);
+      this.logger.error(
+        `Redis ZRANGE error for ${key}: ${formattedError.message}`,
+        formattedError.stack,
+        'RedisService'
+      );
       throw error;
     }
   }
@@ -336,7 +504,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       this.logger.debug(`Redis PUBLISH: ${channel} (${recipients} recipients)`, 'RedisService');
       return recipients;
     } catch (error) {
-      this.logger.error(`Redis PUBLISH error for ${channel}: ${error.message}`, error.stack, 'RedisService');
+      const formattedError = this.formatError(error);
+      this.logger.error(
+        `Redis PUBLISH error for ${channel}: ${formattedError.message}`,
+        formattedError.stack,
+        'RedisService'
+      );
       throw error;
     }
   }
@@ -350,17 +523,8 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     try {
       // Create a separate client for subscription if it doesn't exist
       if (!this.subscriptionClient) {
-        const redisConfig: RedisOptions = {
-          host: this.configService.get<string>('redis.host', 'localhost'),
-          port: this.configService.get<number>('redis.port', 6379),
-          password: this.configService.get<string>('redis.password', ''),
-          db: this.configService.get<number>('redis.db', 0),
-          retryStrategy: (times) => {
-            const delay = Math.min(times * 100, 3000);
-            return delay;
-          },
-        };
-
+        // Use the same method to get configuration as the main client
+        const redisConfig = this.getRedisConfig();
         this.subscriptionClient = new Redis(redisConfig);
         
         // Set up message event handler
@@ -370,7 +534,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         
         // Set up error event handler
         this.subscriptionClient.on('error', (error) => {
-          this.logger.error(`Redis subscription client error: ${error.message}`, error.stack, 'RedisService');
+          const formattedError = this.formatError(error);
+          this.logger.error(
+            `Redis subscription client error: ${formattedError.message}`,
+            formattedError.stack,
+            'RedisService'
+          );
         });
       }
       
@@ -378,7 +547,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       await this.subscriptionClient.subscribe(channel);
       this.logger.log(`Subscribed to Redis channel: ${channel}`, 'RedisService');
     } catch (error) {
-      this.logger.error(`Redis SUBSCRIBE error for ${channel}: ${error.message}`, error.stack, 'RedisService');
+      const formattedError = this.formatError(error);
+      this.logger.error(
+        `Redis SUBSCRIBE error for ${channel}: ${formattedError.message}`,
+        formattedError.stack,
+        'RedisService'
+      );
       throw error;
     }
   }
@@ -394,7 +568,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         this.logger.log(`Unsubscribed from Redis channel: ${channel}`, 'RedisService');
       }
     } catch (error) {
-      this.logger.error(`Redis UNSUBSCRIBE error for ${channel}: ${error.message}`, error.stack, 'RedisService');
+      const formattedError = this.formatError(error);
+      this.logger.error(
+        `Redis UNSUBSCRIBE error for ${channel}: ${formattedError.message}`,
+        formattedError.stack,
+        'RedisService'
+      );
       throw error;
     }
   }

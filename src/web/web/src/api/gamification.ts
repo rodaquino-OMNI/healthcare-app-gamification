@@ -6,10 +6,9 @@
  * achievements, quests, and rewards.
  */
 
-import axios from 'axios'; // version 1.4.0
-import { GameProfile, Achievement, Quest, Reward } from 'src/web/shared/types/gamification.types';
-import { API_BASE_URL } from 'src/web/shared/constants/api';
-import { apiConfig } from 'src/web/shared/config/apiConfig';
+import axios from 'axios'; // version 1.6.8 with security enhancements
+import { GameProfile, Achievement, Quest, Reward } from '../../../shared/types/gamification.types';
+import { API_BASE_URL } from '../../../shared/constants/api';
 
 /**
  * Base URL for the gamification API endpoints

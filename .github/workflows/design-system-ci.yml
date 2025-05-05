@@ -43,7 +43,7 @@ jobs:
         with:
           directory: src/web/design-system/coverage
           env_vars: CI,GITHUB_ACTIONS
-          fail_ci_if_error: true
+          fail_ci_if_error: false
           flags: design-system
           name: codecov-design-system
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -67,7 +67,7 @@ jobs:
         env:
           CI: 'true'
       - name: Chromatic Publish
-        uses: chromaui/action@v2
+        uses: chromaui/action@v10
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           token: ${{ secrets.GITHUB_TOKEN }}

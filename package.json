@@ -1,4 +1,11 @@
 {
+  "name": "austa-superapp-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "src/backend/*",
+    "src/web/*"
+  ],
   "dependencies": {
     "glob": "^11.0.2"
   },
@@ -22,15 +29,30 @@
     "qs": "6.11.2"
   },
   "resolutions": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-native": "0.72.6",
+    "@types/react": "18.2.37",
+    "@types/react-dom": "18.2.15",
+    "typescript": "5.3.3",
+    "@nestjs/common": "10.0.0",
+    "@nestjs/core": "10.0.0",
+    "@nestjs/platform-express": "10.0.0",
+    "@prisma/client": "5.10.2",
+    "prisma": "5.10.2",
+    "rxjs": "7.8.1",
+    "graphql": "16.8.1",
     "axios": "1.6.8",
+    "follow-redirects": "1.15.4",
+    "@babel/traverse": "7.23.2",
     "semver": "7.5.4",
+    "react-native-webview": "13.13.5",
+    "react-native-agora": "4.5.2",
+    "@react-native/typescript-config": "0.73.1",
     "json5": "2.2.3",
-    "minimatch": "3.1.2",
     "word-wrap": "1.2.4",
     "tough-cookie": "4.1.3",
     "postcss": "8.4.31",
-    "@babel/traverse": "7.23.2",
-    "follow-redirects": "1.15.4",
     "webpack": "5.76.0",
     "node-fetch": "2.6.9",
     "glob-parent": "5.1.2",
@@ -41,12 +63,44 @@
     "qs": "6.11.2"
   },
   "scripts": {
+    "install:all": "yarn install && yarn setup:modules",
+    "setup:modules": "node scripts/setup-modules.js",
+    "deps:check": "yarn workspaces run outdated",
+    "deps:audit": "yarn workspaces run yarn audit",
+    "deps:fix-imports": "node scripts/fix-imports.js",
+    "deps:validate": "node scripts/validate-package-json.js",
+    "deps:fix-common": "node scripts/fix-common-dependencies.js",
+    "deps:fix-security": "node scripts/fix-security-vulnerabilities.js",
+    "deps:update": "npx npm-check-updates -i",
+    "security:check": "yarn audit --groups dependencies",
+    "security:report": "node scripts/generate-security-report.js",
+    "security:apply-patches": "node scripts/apply-security-patches.js",
+    "setup:path-aliases": "node scripts/setup-path-aliases.js",
+    "health:check": "node scripts/repo-health-check.js",
+    "health:fix": "yarn deps:fix-security && yarn deps:fix-common && yarn setup:path-aliases",
+    "build:all": "yarn workspace @austa/shared build && yarn workspaces run build",
+    "build:backend": "lerna run build --scope=\"@austa/*\" --ignore=\"@austa/design-system\" --ignore=\"@austa/web-*\"",
+    "build:frontend": "turbo run build --filter=\"./src/web/*\"",
+    "dev:backend": "lerna run start:dev --parallel --scope=\"@austa/*\" --ignore=\"@austa/design-system\" --ignore=\"@austa/web-*\"",
+    "dev:web": "yarn workspace @austa/web dev",
+    "dev:mobile": "yarn workspace @austa/mobile start",
+    "test:all": "yarn workspaces run test",
+    "verify:types": "yarn workspaces run tsc --noEmit",
     "postinstall": "node ./scripts/apply-security-patches.js",
     "fix-vulnerable-deps": "npm install --save-dev @babel/traverse@7.23.2 semver@7.5.4 json5@2.2.3 minimatch@3.1.2 word-wrap@1.2.4 tough-cookie@4.1.3 postcss@8.4.31 follow-redirects@1.15.4 webpack@5.76.0 node-fetch@2.6.9 glob-parent@5.1.2 terser@5.16.6 loader-utils@2.0.4 minimist@1.2.8 shelljs@0.8.5 qs@6.11.2 --force && node ./scripts/apply-security-patches.js"
   },
   "devDependencies": {
+    "lerna": "^8.0.0",
+    "turbo": "^2.0.0",
+    "rimraf": "^5.0.5",
+    "glob": "^10.3.10",
+    "typescript": "5.3.3",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.15.3",
     "@types/react-native": "^0.72.8"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "yarn": ">=1.22.0"
   }
 }

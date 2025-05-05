@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'; // v10.0.0+
-import { ConfigModule } from '@nestjs/config'; // v3.1.1
+import { ConfigModule, ConfigService } from '@nestjs/config'; // v3.1.1
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AchievementsModule } from './achievements/achievements.module';
 import { EventsModule } from './events/events.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
@@ -13,6 +14,9 @@ import { LoggerModule } from '@app/shared/logging/logger.module';
 import { TracingModule } from '@app/shared/tracing/tracing.module';
 import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
 import { gamificationEngine } from './config/configuration';
+import { databaseConfig } from './config/database.config';
+import { validationSchema } from './config/validation.schema';
+import { DatabaseErrorHandler } from './database/database-error.handler';
 
 /**
  * Root module for the Gamification Engine service.
@@ -22,29 +26,45 @@ import { gamificationEngine } from './config/configuration';
  */
 @Module({
   imports: [
+    // Load and validate configuration FIRST, before any other modules
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [gamificationEngine],
+      load: [gamificationEngine, databaseConfig], // Include databaseConfig
+      validationSchema: validationSchema,
+      validationOptions: {
+        abortEarly: false, // Show all validation errors at once
+      },
+      cache: true, // Important for preventing reload issues
     }),
+    
+    // Add TypeORM configuration with async factory to ensure config is loaded first
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: DatabaseErrorHandler.createTypeOrmOptions,
+    }),
+    
+    // Shared infrastructure modules
+    LoggerModule,
+    ExceptionsModule,
+    TracingModule,
+    
+    // Data storage modules 
+    RedisModule,
+    
+    // Messaging modules
+    KafkaModule,
+    
+    // Feature modules - order matters for proper initialization
+    ProfilesModule,    // Load first as other modules depend on profiles
     AchievementsModule,
-    EventsModule,
-    LeaderboardModule,
-    ProfilesModule,
+    RulesModule,
     QuestsModule,
     RewardsModule,
-    RulesModule,
-    KafkaModule,
-    RedisModule,
-    LoggerModule,
-    TracingModule,
-    ExceptionsModule,
+    LeaderboardModule,
+    EventsModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [DatabaseErrorHandler],
 })
-export class AppModule {
-  /**
-   * The constructor is empty as this is a module class.
-   */
-  constructor() {}
-}
+export class AppModule {}

@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@nestjs/common": "^10.3.0",
+    "@nestjs/common": "10.0.0",
     "@nestjs/config": "^3.1.1",
-    "@nestjs/core": "^10.3.0",
-    "@nestjs/platform-express": "^10.3.0",
-    "@prisma/client": "^5.10.2",
+    "@nestjs/core": "10.0.0",
+    "@nestjs/platform-express": "10.0.0",
+    "@prisma/client": "5.10.2",
     "@opentelemetry/api": "^1.4.1",
     "@opentelemetry/exporter-trace-otlp-grpc": "^0.41.2",
     "@opentelemetry/sdk-node": "^0.41.1",
@@ -94,7 +94,7 @@
     "lerna": "^8.0.2",
     "lint-staged": "^15.2.0",
     "prettier": "^3.2.5",
-    "prisma": "^5.10.2",
+    "prisma": "5.10.2",
     "rimraf": "^5.0.5",
     "source-map-support": "^0.5.21",
     "supertest": "^6.3.4",
@@ -102,7 +102,7 @@
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.3.3"
+    "typescript": "5.3.3"
   },
   "scripts": {
     "build": "nest build",
@@ -120,23 +120,62 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "ts-node prisma/seed.ts"
-  }
-  ,
+  },
   "overrides": {
-    "0": "8.4.31",
-    "0": "6.11.2",
-    "agora-rtc-sdk-ng": {      "axios": "1.6.8",      "follow-redirects": "1.15.4",      "@agora-js/media": {        "axios": "1.6.8",        "follow-redirects": "1.15.4"      },      "@agora-js/report": {        "axios": "1.6.8",        "follow-redirects": "1.15.4"      },      "@agora-js/shared": {        "axios": "1.6.8",        "follow-redirects": "1.15.4"      }    },
-    "agora-rtc-sdk": {      "axios": "1.6.8",      "follow-redirects": "1.15.4"    },
-    "agora-rtc-sdk-ng": {      "axios": "1.6.8",      "follow-redirects": "1.15.4",      "@agora-js/media": {        "axios": "1.6.8",        "follow-redirects": "1.15.4"      },      "@agora-js/report": {        "axios": "1.6.8",        "follow-redirects": "1.15.4"      },      "@agora-js/shared": {        "axios": "1.6.8",        "follow-redirects": "1.15.4"      }    },
-    "agora-rtc-sdk": {      "axios": "1.6.8",      "follow-redirects": "1.15.4"    },
-  }
-
-  ,
+    "postcss": "8.4.31",
+    "qs": "6.11.2",
+    "agora-rtc-sdk-ng": {
+      "axios": "1.6.8",
+      "follow-redirects": "1.15.4",
+      "@agora-js/media": {
+        "axios": "1.6.8",
+        "follow-redirects": "1.15.4"
+      },
+      "@agora-js/report": {
+        "axios": "1.6.8",
+        "follow-redirects": "1.15.4"
+      },
+      "@agora-js/shared": {
+        "axios": "1.6.8",
+        "follow-redirects": "1.15.4"
+      }
+    },
+    "agora-rtc-sdk": {
+      "axios": "1.6.8",
+      "follow-redirects": "1.15.4"
+    }
+  },
   "resolutions": {
-    "0": "8.4.31",
-    "0": "6.11.2",
-    "agora-rtc-sdk": {      "axios": "1.6.8",      "follow-redirects": "1.15.4"    },
-    "agora-rtc-sdk": {      "axios": "1.6.8",      "follow-redirects": "1.15.4"    },
+    "postcss": "8.4.31",
+    "qs": "6.11.2",
+    "agora-rtc-sdk": {
+      "axios": "1.6.8",
+      "follow-redirects": "1.15.4"
+    },
+    "axios": "1.6.8",
+    "follow-redirects": "1.15.4",
+    "@babel/traverse": "7.23.2",
+    "semver": "7.5.4",
+    "json5": "2.2.3",
+    "word-wrap": "1.2.4",
+    "tough-cookie": "4.1.3",
+    "webpack": "5.76.0",
+    "node-fetch": "2.6.9",
+    "glob-parent": "5.1.2",
+    "terser": "5.16.6",
+    "loader-utils": "2.0.4",
+    "minimist": "1.2.8",
+    "shelljs": "0.8.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-native": "0.72.6",
+    "@types/react": "18.2.37",
+    "@types/react-dom": "18.2.15",
+    "typescript": "5.3.3",
+    "@nestjs/common": "10.0.0",
+    "@nestjs/core": "10.0.0",
+    "@nestjs/platform-express": "10.0.0",
+    "@prisma/client": "5.10.2",
+    "prisma": "5.10.2"
   }
-
 }

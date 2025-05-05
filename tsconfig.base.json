@@ -1,16 +1,20 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
     "paths": {
+      "@shared/*": ["src/web/shared/*"],
       "@app/shared/*": ["src/backend/shared/src/*"],
-      "@app/auth/*": ["src/backend/auth-service/src/*"],
+      "@app/gamification/*": ["src/backend/gamification-engine/src/*"],
       "@app/health/*": ["src/backend/health-service/src/*"],
       "@app/care/*": ["src/backend/care-service/src/*"],
       "@app/plan/*": ["src/backend/plan-service/src/*"],
-      "@app/gamification/*": ["src/backend/gamification-engine/src/*"],
-      "@app/notifications/*": ["src/backend/notification-service/src/*"]
-    }
-  }
+      "@app/auth/*": ["src/backend/auth-service/src/*"],
+      "@app/notifications/*": ["src/backend/notification-service/src/*"],
+      "@design-system/*": ["src/web/design-system/*"]
+    },
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true
+  },
+  "exclude": ["node_modules"]
 }

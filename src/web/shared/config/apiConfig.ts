@@ -9,6 +9,7 @@
  */
 
 import { JOURNEY_IDS } from '../constants/journeys';
+import { env } from './env';
 
 /**
  * Journey configuration mapping for easy access to journey identifiers
@@ -29,7 +30,7 @@ export const apiConfig = {
    * Base URL for all API requests
    * Falls back to localhost in development environment
    */
-  baseURL: process.env.API_BASE_URL || 'http://localhost:3000/api',
+  baseURL: env.API_BASE_URL || 'http://localhost:3000/api',
 };
 
 /**

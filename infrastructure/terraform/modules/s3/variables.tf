@@ -49,7 +49,29 @@ variable "replication_destination" {
 }
 
 variable "lifecycle_rules" {
-  type        = list(any)
-  description = "Lifecycle rules for the bucket for cost optimization"
-  default     = []
+  description = "List of lifecycle rules for the S3 bucket"
+  type = list(object({
+    id      = optional(string)
+    prefix  = optional(string)
+    enabled = bool
+    expiration = optional(object({
+      days                         = optional(number)
+      date                         = optional(string)
+      expired_object_delete_marker = optional(bool)
+    }))
+    transitions = optional(list(object({
+      days          = optional(number)
+      date          = optional(string)
+      storage_class = string
+    })))
+    noncurrent_version_expiration = optional(object({
+      days = number
+    }))
+    noncurrent_version_transitions = optional(list(object({
+      days          = number
+      storage_class = string
+    })))
+    abort_incomplete_multipart_upload_days = optional(number)
+  }))
+  default = []
 }

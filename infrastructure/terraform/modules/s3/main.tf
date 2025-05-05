@@ -2,17 +2,18 @@
 # Implements secure S3 buckets with versioning, encryption, lifecycle rules, and
 # cross-region replication for document storage and disaster recovery
 
-# AWS Provider - should be configured in the root module
-provider "aws" {
-  # version ~> 5.0 - defined in calling module
-}
-
 # Main S3 bucket resource
 resource "aws_s3_bucket" "main" {
   bucket        = "${var.bucket_name}-${var.environment}"
-  acl           = var.acl
+  # Removed deprecated acl attribute
   tags          = var.tags
   force_destroy = false
+}
+
+# Separate ACL resource (new approach)
+resource "aws_s3_bucket_acl" "main" {
+  bucket = aws_s3_bucket.main.id
+  acl    = var.acl
 }
 
 # Bucket versioning configuration
@@ -39,7 +40,62 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "main" {
 resource "aws_s3_bucket_lifecycle_configuration" "main" {
   count  = length(var.lifecycle_rules) > 0 ? 1 : 0
   bucket = aws_s3_bucket.main.id
-  rule   = var.lifecycle_rules
+
+  dynamic "rule" {
+    for_each = var.lifecycle_rules
+    content {
+      id     = rule.value.id != null ? rule.value.id : "rule-${rule.key}"
+      status = rule.value.enabled ? "Enabled" : "Disabled"
+      
+      # Handle prefix if provided
+      prefix = lookup(rule.value, "prefix", null)
+      
+      # Handle expiration if provided
+      dynamic "expiration" {
+        for_each = lookup(rule.value, "expiration", null) != null ? [rule.value.expiration] : []
+        content {
+          days                         = lookup(expiration.value, "days", null)
+          date                         = lookup(expiration.value, "date", null)
+          expired_object_delete_marker = lookup(expiration.value, "expired_object_delete_marker", null)
+        }
+      }
+      
+      # Handle transitions if provided
+      dynamic "transition" {
+        for_each = lookup(rule.value, "transitions", [])
+        content {
+          days          = lookup(transition.value, "days", null)
+          date          = lookup(transition.value, "date", null)
+          storage_class = transition.value.storage_class
+        }
+      }
+      
+      # Handle noncurrent_version_expiration if provided
+      dynamic "noncurrent_version_expiration" {
+        for_each = lookup(rule.value, "noncurrent_version_expiration", null) != null ? [rule.value.noncurrent_version_expiration] : []
+        content {
+          noncurrent_days = noncurrent_version_expiration.value.days
+        }
+      }
+      
+      # Handle noncurrent_version_transition if provided
+      dynamic "noncurrent_version_transition" {
+        for_each = lookup(rule.value, "noncurrent_version_transitions", [])
+        content {
+          noncurrent_days = noncurrent_version_transition.value.days
+          storage_class   = noncurrent_version_transition.value.storage_class
+        }
+      }
+      
+      # Handle abort_incomplete_multipart_upload if provided
+      dynamic "abort_incomplete_multipart_upload" {
+        for_each = lookup(rule.value, "abort_incomplete_multipart_upload_days", null) != null ? [rule.value.abort_incomplete_multipart_upload_days] : []
+        content {
+          days_after_initiation = abort_incomplete_multipart_upload.value
+        }
+      }
+    }
+  }
 }
 
 # IAM role for S3 replication
