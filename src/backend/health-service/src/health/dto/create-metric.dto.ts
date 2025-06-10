@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsNumber, IsString, IsDate, IsEnum, IsOptional } from 'class-validator'; // v0.14.0+
-import { MetricType, MetricSource } from '@app/web-shared/types/health.types';
+import { MetricType, MetricSource } from '../types/health.types';
 
 /**
  * Data Transfer Object for creating a new health metric.

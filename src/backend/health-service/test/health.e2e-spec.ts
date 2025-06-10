@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'; // @nestjs/testing v10.0.0+
-import { INestApplication, HttpStatus } from '@nestjs/common'; // @nestjs/common v10.0.0+
+import { INestApplication, HttpStatus, Logger } from '@nestjs/common'; // @nestjs/common v10.0.0+
 import * as request from 'supertest'; // supertest v6.3.3
 import { SuperAgentTest } from 'supertest'; // supertest v6.3.3
 import { HealthController } from '../src/health/health.controller'; // Import HealthController for testing

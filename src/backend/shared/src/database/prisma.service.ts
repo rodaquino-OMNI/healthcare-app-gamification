@@ -16,6 +16,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   userRole: any;
   claim: any;
   document: any;
+  healthMetric: any;
+  healthGoal: any;
 
   /**
    * Constructor initializes the Prisma client with appropriate logging options
@@ -36,6 +38,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     this.userRole = mock.userRole;
     this.claim = mock.claim;
     this.document = mock.document;
+    this.healthMetric = mock.healthMetric || {};
+    this.healthGoal = mock.healthGoal || {};
   }
 
   /**
