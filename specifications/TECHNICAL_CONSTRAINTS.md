@@ -1,5 +1,7 @@
 # AUSTA SuperApp - Technical Constraints and Design Decisions
 
+> **Research Foundation**: These constraints are based on successful implementations at Netflix, Expedia, and Volvo for microservices, industry best practices for healthcare apps (44.7% CAGR growth), and compliance with Brazilian healthcare regulations.
+
 ## 1. Architecture Constraints
 
 ### 1.1 Microservices Architecture
@@ -28,9 +30,10 @@ Communication Patterns:
     - REST for legacy/file operations
     
   Asynchronous:
-    - Event streaming via Kafka
+    - Event streaming via Kafka (Research: Humana uses for health outcomes)
     - Message queuing for notifications
     - Pub/sub for real-time updates
+    - Event-driven patterns critical for healthcare real-time processing
 
 Data Management:
   - Database per service pattern
@@ -88,6 +91,8 @@ Cloud Platform:
     - MSK for Kafka
     - S3 for storage
     - CloudFront for CDN
+    - AWS HealthLake for FHIR (Research: Purpose-built for healthcare)
+    - 130+ HIPAA-eligible services available
     
   Prohibited Services:
     - Lambda (except edge)
@@ -156,10 +161,11 @@ Telemedicine Platform:
 ```yaml
 Wearable Devices:
   iOS Constraints:
-    - HealthKit only
+    - HealthKit only (Research: Standard for iOS health apps)
     - No direct Bluetooth
     - Background sync limited
     - User consent required
+    - Support for 801 FDA-approved AI/ML devices
     
   Android Constraints:
     - Health Connect API
@@ -239,10 +245,12 @@ Authorization Model:
 ```yaml
 Encryption Requirements:
   Algorithms:
-    - AES-256-GCM only
+    - AES-256-GCM only (Research: Healthcare standard, highest breach costs)
     - RSA-2048 minimum
     - ECDSA for signatures
     - SHA-256 for hashing
+    - NIST SP 800-111 compliance for data at rest
+    - NIST SP 800-52 compliance for data in transit
     
   Prohibited:
     - MD5 (any use)
@@ -305,7 +313,8 @@ Critical Path Optimization:
   - Health Dashboard: 500ms max
   - Appointment Booking: 1s max
   - Claim Submission: 2s max
-  - Gamification Event: 100ms max
+  - Gamification Event: 30ms max (Research: Critical for anti-gaming)
+  - AI/ML inference: 50ms max (Research: 36/50 top health companies use AI)
 ```
 
 ### 4.2 Throughput Constraints
@@ -506,8 +515,10 @@ LGPD Compliance:
   User Rights:
     - Access within 15 days
     - Deletion within 30 days
-    - Portability in FHIR
-    - Consent tracking
+    - Portability in FHIR (Research: Industry standard for interoperability)
+    - Consent tracking (Research: Explicit consent for medical data)
+    - Breach notification within 72 hours
+    - Fines up to 2% revenue (max 50M reals)
     
   Prohibited:
     - Profiling for marketing
@@ -551,10 +562,11 @@ Architecture Rules:
 
 ```yaml
 Coverage Requirements:
-  - Unit tests: 80% minimum
-  - Integration: 70% minimum
+  - Unit tests: 90% minimum (Research: Healthcare apps require higher coverage)
+  - Integration: 80% minimum
   - E2E: Critical paths only
   - Performance: Load tests
+  - Security: SAST/DAST required (Research: Healthcare highest breach costs 13 years)
 
 Test Constraints:
   - No production data

@@ -4,15 +4,19 @@
 
 ### 1.1 User Journey Requirements
 
+> **Research Insight**: Healthcare super apps are consolidating point solutions into comprehensive platforms. Our three-journey approach aligns with industry trends showing 44.7% CAGR in mHealth market growth.
+
 #### My Health Journey (Green - #0ACF83)
 - **Health Metrics Dashboard**
   - Real-time display of vital signs from wearables
   - Historical trend analysis with interactive charts
-  - Predictive health insights using ML models
+  - Predictive health insights using ML models (Research: 801 FDA-approved AI/ML devices)
   - Integration with Google Health Connect and Apple HealthKit
   - Anomaly detection with automated alerts
   - Exportable reports for healthcare providers
   - Comparative analysis against demographic averages
+  - Voice-enabled queries (Research: 30% of routine patient inquiries via voice by 2024)
+  - Blockchain-based data integrity verification
   
 - **Medical History Timeline**
   - Chronological view of medical events
@@ -101,6 +105,8 @@
 
 ### 1.2 Gamification Requirements
 
+> **Research Insight**: 59% of gamified interventions report positive health outcomes. Success requires addressing competence, autonomy, and social relatedness needs.
+
 #### Core Mechanics
 - **Experience Points (XP) System**
   - Journey-specific XP allocation
@@ -178,6 +184,8 @@
   - Pattern detection for fraudulent behavior
   - Cool-down periods between similar actions
   - Manual review triggers for anomalies
+  - Privacy-preserving design (Research: Key concern in healthcare gamification)
+  - Healthcare practitioner oversight for medical-related achievements
 
 ### 1.3 User Stories and Acceptance Criteria
 
@@ -224,6 +232,8 @@ Acceptance Criteria:
 ```
 
 ## 2. API Specifications
+
+> **Research Insight**: GraphQL federation pattern successfully implemented at Netflix, Expedia, and Volvo for microservices architecture.
 
 ### 2.1 GraphQL Schema
 
@@ -710,16 +720,22 @@ enum QuestType {
 - **API Scopes**: Fine-grained resource access
 
 ### 6.3 Data Protection
-- **Encryption at Rest**: AES-256
+- **Encryption at Rest**: AES-256 (Research: Healthcare standard, highest breach costs)
 - **Encryption in Transit**: TLS 1.3
 - **Key Management**: AWS KMS or HashiCorp Vault
 - **Data Masking**: PII redaction in logs
+- **NIST Compliance**: SP 800-111 (at rest) and SP 800-52 (in transit)
+- **Full Disk Encryption**: Required for all healthcare data storage
 
 ### 6.4 Compliance
-- **LGPD (Brazil)**: Data subject rights, consent management
-- **HIPAA (US Market)**: If expanding to US
+- **LGPD (Brazil)**: Data subject rights, consent management (Research: Medical data = sensitive, explicit consent required)
+- **Law 14,289/22**: Medical confidentiality compliance
+- **Data Protection Officer**: Mandatory appointment
+- **HIPAA (US Market)**: If expanding to US (130+ AWS HIPAA-eligible services)
 - **SOC 2 Type II**: Annual certification
 - **ISO 27001**: Information security management
+- **Breach Notification**: Within 72 hours per LGPD
+- **Data Retention**: Healthcare-specific retention periods
 
 ## 7. Usability Requirements
 
