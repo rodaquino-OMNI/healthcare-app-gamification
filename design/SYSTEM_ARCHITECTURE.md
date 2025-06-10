@@ -1,5 +1,7 @@
 # AUSTA SuperApp - System Architecture Design
 
+> **Architecture Foundation**: Based on successful microservices implementations at Netflix, Expedia, and Volvo, incorporating event-driven patterns from Humana's healthcare platform, and optimized for the 44.7% CAGR growth in mHealth market.
+
 ## 1. High-Level Architecture
 
 ### 1.1 System Overview
@@ -88,6 +90,8 @@ graph TB
 
 ### 1.2 Component Interactions
 
+> **Design Principle**: Journey-based microservices aligned with Domain-Driven Design, ensuring clear boundaries and single responsibilities per service.
+
 ```yaml
 Journey-Based Architecture:
   My Health Journey:
@@ -137,6 +141,9 @@ ALGORITHM: ProcessGamificationEvent
 INPUT: event (UserAction)
 OUTPUT: rewards (Achievements, XP, Rewards)
 
+// Research: 59% of gamified interventions show positive health outcomes
+// Anti-gaming measures critical for maintaining trust
+
 FUNCTION ProcessGamificationEvent(event):
     // Validate and enrich event
     IF NOT ValidateEvent(event) THEN
@@ -149,7 +156,18 @@ FUNCTION ProcessGamificationEvent(event):
     // Load user's game profile
     profile = LoadGameProfile(event.userId)
     
-    // Apply rules engine
+    // Apply rules engine with anti-gaming checks
+    // Research: Daily caps and pattern detection essential
+    IF ExceedsDailyCap(event, profile) THEN
+        LOG warning "Daily cap exceeded", event.userId
+        RETURN empty
+    END IF
+    
+    IF DetectGamingPattern(event, profile) THEN
+        FLAG_FOR_REVIEW(event.userId)
+        RETURN empty
+    END IF
+    
     applicableRules = FindApplicableRules(enrichedEvent, profile)
     results = []
     
@@ -207,6 +225,9 @@ END FUNCTION
 ALGORITHM: DetectHealthAnomalies
 INPUT: metric (HealthMetric), userHistory (MetricHistory)
 OUTPUT: anomaly (AnomalyAlert | null)
+
+// Research: AI/ML critical for healthcare - 801 FDA-approved AI/ML devices
+// Real-time anomaly detection can prevent emergency situations
 
 FUNCTION DetectHealthAnomalies(metric, userHistory):
     // Get baseline statistics
@@ -603,6 +624,13 @@ Security Layers:
     - Private subnets for services
     - NACLs and Security Groups
     - No direct internet access
+    - AWS WAF with healthcare-specific rules
+    
+  Compliance Security:
+    - LGPD compliance (Research: Medical data = sensitive)
+    - NIST SP 800-111 (data at rest)
+    - NIST SP 800-52 (data in transit)
+    - Healthcare highest breach costs 13 years running
     
   Service Mesh Security:
     - mTLS between services
@@ -767,10 +795,11 @@ Metrics Collection:
     - Journey-specific metrics
     
   SLI Definitions:
-    - Availability: Success rate
-    - Latency: p95 response time
-    - Quality: Error rate
-    - Freshness: Data lag
+    - Availability: Success rate (Target: 99.95%)
+    - Latency: p95 response time (Target: <200ms)
+    - Quality: Error rate (Target: <0.1%)
+    - Freshness: Data lag (Target: <5s)
+    - Gamification Processing: <30ms (Anti-gaming critical)
 
 Dashboards:
   Technical Dashboards:
