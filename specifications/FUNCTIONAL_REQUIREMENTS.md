@@ -10,18 +10,27 @@
   - Historical trend analysis with interactive charts
   - Predictive health insights using ML models
   - Integration with Google Health Connect and Apple HealthKit
+  - Anomaly detection with automated alerts
+  - Exportable reports for healthcare providers
+  - Comparative analysis against demographic averages
   
 - **Medical History Timeline**
   - Chronological view of medical events
   - FHIR-compliant data import/export
   - Document attachment support (PDF, images)
   - Search and filter capabilities
+  - Version tracking for medical records
+  - Tagging system for conditions and treatments
+  - Integration with provider EHR systems
 
 - **Health Goal Management**
   - SMART goal setting framework
   - Progress tracking with gamification rewards
   - Personalized recommendations based on user data
   - Social sharing options (opt-in)
+  - AI-powered goal suggestions
+  - Milestone celebration animations
+  - Integration with care team for goal review
 
 #### Care Now Journey (Orange - #FF8C42)
 - **Symptom Checker**
@@ -29,18 +38,32 @@
   - Triage recommendations with urgency levels
   - Integration with appointment booking
   - Medical history context awareness
+  - Multi-language symptom description support
+  - Visual body map for symptom location
+  - Emergency care routing for critical symptoms
+  - Follow-up tracking and outcome recording
 
 - **Appointment Management**
   - Real-time provider availability
   - Multi-channel booking (in-person, telemedicine)
   - Automated reminders and rescheduling
   - Insurance coverage verification
+  - Wait time estimates and queue management
+  - Provider ratings and reviews
+  - Appointment preparation checklists
+  - Integration with provider scheduling systems
+  - Cancellation and rescheduling policies
 
 - **Telemedicine Platform**
   - WebRTC-based video consultations
   - Screen sharing for medical images
   - Prescription management integration
   - Session recording with consent
+  - Virtual waiting room functionality
+  - Real-time language translation
+  - Digital stethoscope integration
+  - Post-consultation summary generation
+  - E-prescription routing to pharmacies
 
 #### My Plan & Benefits Journey (Blue - #3A86FF)
 - **Insurance Coverage**
@@ -48,18 +71,33 @@
   - Coverage details with co-pay calculations
   - Network provider search
   - Pre-authorization status tracking
+  - Benefits utilization dashboard
+  - Family coverage management
+  - Plan comparison tools
+  - Coverage gap analysis
+  - Annual benefits reset tracking
 
 - **Claims Management**
   - Digital claim submission with OCR
   - Real-time status tracking
   - Appeal process workflow
   - Payment history and statements
+  - Automated claim filing assistance
+  - Document requirement checklist
+  - Claim prediction analytics
+  - Multi-party claim coordination
+  - EOB (Explanation of Benefits) decoder
 
 - **Cost Estimation**
   - Procedure cost calculator
   - Out-of-pocket expense predictor
   - Alternative treatment cost comparison
   - Payment plan options
+  - Price transparency across providers
+  - Bundled procedure pricing
+  - Medication cost alternatives
+  - Financial assistance program finder
+  - HSA/FSA integration and tracking
 
 ### 1.2 Gamification Requirements
 
@@ -69,24 +107,40 @@
   - Bonus multipliers for streaks
   - Anti-gaming mechanisms
   - Real-time XP updates
+  - XP decay prevention for active users
+  - Double XP events and promotions
+  - XP boosters for premium members
+  - Team XP for family accounts
 
 - **Achievement System**
-  - Progressive achievement tiers (Bronze, Silver, Gold)
+  - Progressive achievement tiers (Bronze, Silver, Gold, Platinum)
   - Hidden achievements for discovery
   - Journey-specific and cross-journey achievements
   - Social proof elements
+  - Limited-time seasonal achievements
+  - Achievement rarity indicators
+  - Achievement combo bonuses
+  - Legacy achievements for long-term users
 
 - **Quest System**
   - Daily, weekly, and monthly quests
   - Personalized quest generation
   - Multi-step quest chains
   - Collaborative quests for family plans
+  - Story-driven quest narratives
+  - Bonus objectives for extra rewards
+  - Quest difficulty scaling
+  - Community challenge quests
 
 - **Leaderboards**
   - Privacy-first design with opt-in
   - Journey-specific and overall rankings
   - Friend groups and corporate challenges
-  - Reset cycles (weekly, monthly)
+  - Reset cycles (weekly, monthly, seasonal)
+  - Regional and demographic segmentation
+  - Achievement-based leaderboards
+  - Streak leaderboards
+  - Improvement-based rankings
 
 #### Reward System
 - **Digital Rewards**
@@ -94,12 +148,36 @@
   - Feature unlocks
   - Discount codes for partners
   - NFT-based collectibles (future)
+  - Virtual badges and titles
+  - Profile customization options
+  - Early access to new features
+  - Ad-free experience tokens
 
 - **Physical Rewards**
   - Partner merchant discounts
   - Health product samples
   - Gym membership discounts
   - Insurance premium reductions
+  - Wellness retreat vouchers
+  - Fitness equipment discounts
+  - Healthy meal delivery credits
+  - Preventive care service discounts
+
+#### Gamification Rules Engine
+- **Point Allocation Rules**
+  - Health metrics recording: 10-50 XP
+  - Appointment attendance: 100-200 XP
+  - Claim submission: 50-100 XP
+  - Goal achievement: 200-500 XP
+  - Streak maintenance: 50 XP/day
+  - Community participation: 25-75 XP
+  
+- **Anti-Gaming Measures**
+  - Daily XP caps per activity type
+  - Verification requirements for high-value actions
+  - Pattern detection for fraudulent behavior
+  - Cool-down periods between similar actions
+  - Manual review triggers for anomalies
 
 ### 1.3 User Stories and Acceptance Criteria
 
