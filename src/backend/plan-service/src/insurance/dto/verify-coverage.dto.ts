@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsEnum } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsEnum, IsBoolean } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 /**
@@ -76,4 +76,16 @@ export class VerifyCoverageDto {
   @IsString()
   @IsOptional()
   providerId?: string;
+
+  /**
+   * Whether the provider is in-network
+   */
+  @ApiProperty({
+    description: 'Whether the provider is in-network',
+    example: true,
+    required: false
+  })
+  @IsBoolean()
+  @IsOptional()
+  isInNetwork?: boolean;
 }

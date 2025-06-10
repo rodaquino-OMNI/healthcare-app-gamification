@@ -1,10 +1,10 @@
 import { registerAs, ConfigType } from '@nestjs/config';
 import { ApiGatewayConfigValidation } from '../config/validation.schema';
-import { LoggerModule } from 'src/backend/shared/src/logging/logger.module';
-import { TracingModule } from 'src/backend/shared/src/tracing/tracing.module';
-import { RedisModule } from 'src/backend/shared/src/redis/redis.module';
-import { JOURNEY_IDS } from 'src/backend/shared/src/constants/journey.constants';
-import { AUTH_INVALID_CREDENTIALS } from 'src/backend/shared/src/constants/error-codes.constants';
+import { LoggerModule } from '@app/shared/logging/logger.module';
+import { TracingModule } from '@app/shared/tracing/tracing.module';
+import { RedisModule } from '@app/shared/redis/redis.module';
+import { JOURNEY_IDS } from '@app/shared/constants/journey.constants';
+import { ErrorCodes } from '@app/shared/constants/error-codes.constants';
 
 /**
  * Configuration for the API Gateway.
@@ -25,7 +25,7 @@ export const configuration = registerAs('apiGateway', () => ({
     issuer: process.env.TOKEN_ISSUER || 'austa.com.br',
     audience: process.env.TOKEN_AUDIENCE || 'austa-users',
     errorCodes: {
-      invalidCredentials: AUTH_INVALID_CREDENTIALS,
+      invalidCredentials: ErrorCodes.AUTH_INVALID_CREDENTIALS,
     },
   },
   

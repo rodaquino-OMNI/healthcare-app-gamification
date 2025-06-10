@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { WebsocketsGateway } from './websockets.gateway';
 import { NotificationsService } from '../notifications/notifications.service';
-import { KafkaModule } from 'src/backend/shared/src/kafka/kafka.module';
-import { RedisModule } from 'src/backend/shared/src/redis/redis.module';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { TracingService } from 'src/backend/shared/src/tracing/tracing.service';
+import { KafkaModule } from '@app/shared/kafka/kafka.module';
+import { RedisModule } from '@app/shared/redis/redis.module';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { TracingService } from '@app/shared/tracing/tracing.service';
 
 @Module({
   imports: [KafkaModule, RedisModule],

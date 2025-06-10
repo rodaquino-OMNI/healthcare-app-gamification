@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventsService } from '../../events/events.service';
@@ -71,19 +72,19 @@ export class KafkaConsumerService implements OnModuleInit {
       
       for (const topic of topics) {
         try {
-          await this.kafkaService.consume(
+          await this.kafkaService.subscribe(
             topic,
             kafkaGroupId,
-            async (message: any, key?: string, headers?: Record<string, string>) => {
-              await this.processMessage(message);
+            async (message: any) => {
+              await this.processMessage(message.value);
             }
           );
           
           this.logger.log(`Successfully subscribed to Kafka topic: ${topic}`, 'KafkaConsumer');
         } catch (error) {
           this.logger.error(
-            `Failed to subscribe to Kafka topic ${topic}: ${error instanceof Error ? error.message : String(error)}`,
-            error instanceof Error ? error.stack : '',
+            `Failed to subscribe to Kafka topic ${topic}: ${error instanceof Error ? (error as any).message : String(error)}`,
+            error instanceof Error ? (error as any).stack : '',
             'KafkaConsumer'
           );
           // Continue with other topics even if one fails
@@ -91,8 +92,8 @@ export class KafkaConsumerService implements OnModuleInit {
       }
     } catch (error) {
       this.logger.error(
-        `Error initializing Kafka consumers: ${error instanceof Error ? error.message : String(error)}`,
-        error instanceof Error ? error.stack : '',
+        `Error initializing Kafka consumers: ${error instanceof Error ? (error as any).message : String(error)}`,
+        error instanceof Error ? (error as any).stack : '',
         'KafkaConsumer'
       );
       // Don't rethrow - let the application continue even if Kafka setup fails
@@ -128,8 +129,8 @@ export class KafkaConsumerService implements OnModuleInit {
     } catch (error) {
       if (error instanceof Error) {
         this.logger.error(
-          `Error processing Kafka message: ${error.message}`,
-          error.stack,
+          `Error processing Kafka message: ${(error as any).message}`,
+          (error as any).stack,
           'KafkaConsumer'
         );
       } else {

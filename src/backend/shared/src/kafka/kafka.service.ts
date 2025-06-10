@@ -1,428 +1,327 @@
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common'; // v10.0+
-import { ConfigService } from '@nestjs/config'; // *
-import { Kafka, Producer, Consumer, SASLOptions, KafkaMessage, IHeaders } from 'kafkajs'; // v2.0+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Consumer, Kafka, Producer, ProducerRecord, SASLOptions } from 'kafkajs';
 import { LoggerService } from '../logging/logger.service';
-import { TracingService } from '../tracing/tracing.service';
-import { AppException, ErrorType } from '../exceptions/exceptions.types';
+import { ErrorType } from '../exceptions/error.types';
+import { AppException } from '../exceptions/exceptions.types';
 
-/**
- * Provides Kafka integration for asynchronous communication between microservices.
- * Handles connection management, message serialization, and error handling.
- * Used primarily for event-driven architecture in the gamification engine.
- */
 @Injectable()
 export class KafkaService implements OnModuleInit, OnModuleDestroy {
-  private kafka!: Kafka;
-  private producer!: Producer;
-  private consumer!: Consumer;
-  private readonly configNamespace = 'gamificationEngine.kafka'; // Match the namespace used in configuration.ts
+  private kafka: Kafka;
+  private producer: Producer;
+  private consumer!: Consumer; // Using definite assignment assertion
+  private isProducerConnected = false;
+  private isConsumerConnected = false;
+  private readonly messageHandlers = new Map<string, Set<(message: any) => Promise<void>>>();
 
-  /**
-   * Helper method to safely format errors
-   * @private
-   */
-  private formatError(error: unknown): Error | undefined {
-    if (error instanceof Error) {
-      return error;
-    } else if (typeof error === 'string') {
-      return new Error(error);
-    } else if (error !== null && typeof error === 'object') {
-      return new Error(JSON.stringify(error));
-    }
-    return undefined;
-  }
-
-  /**
-   * Initializes the Kafka service with configuration and required dependencies.
-   * 
-   * @param configService - Service for accessing configuration variables
-   * @param logger - Logger service for operational logging
-   * @param tracingService - Service for distributed tracing
-   */
   constructor(
-    private readonly configService: ConfigService,
-    private readonly logger: LoggerService,
-    private readonly tracingService: TracingService
+    @Inject('KAFKA_OPTIONS')
+    private readonly options: {
+      clientId: string;
+      brokers: string[];
+      ssl?: boolean;
+      sasl?: {
+        mechanism: string;
+        username: string;
+        password: string;
+      };
+      groupId?: string;
+    },
+    private readonly logger: LoggerService
   ) {
-    try {
-      // Get configuration with fallbacks for compatibility
-      const brokers = this.getConfigValue('brokers', 'localhost:9092').split(',');
-      const clientId = this.getConfigValue('clientId', 'austa-service');
-      
-      this.kafka = new Kafka({
-        clientId,
-        brokers,
-        ssl: this.getConfigValue('ssl', false),
-        sasl: this.getSaslConfig() as SASLOptions,
-        retry: {
-          initialRetryTime: 300,
-          retries: 10
-        }
+    this.logger.setContext('KafkaService');
+    
+    // Initialize Kafka client with properly typed SASL options
+    const saslOptions: SASLOptions | undefined = this.options.sasl ? {
+      mechanism: this.options.sasl.mechanism as any, // Type assertion to avoid strict type checks
+      username: this.options.sasl.username,
+      password: this.options.sasl.password
+    } : undefined;
+    
+    this.kafka = new Kafka({
+      clientId: this.options.clientId,
+      brokers: this.options.brokers,
+      ssl: this.options.ssl || false,
+      sasl: saslOptions,
+    });
+    
+    // Initialize producer
+    this.producer = this.kafka.producer({
+      allowAutoTopicCreation: true,
+      idempotent: true,
+    });
+    
+    // Initialize consumer (if group ID is provided)
+    if (this.options.groupId) {
+      this.consumer = this.kafka.consumer({
+        groupId: this.options.groupId,
       });
-      
-      this.logger.log(`Initialized Kafka service with brokers: ${brokers.join(', ')}`, 'KafkaService');
-    } catch (error) {
-      this.logger.error('Failed to initialize Kafka service', this.formatError(error), 'KafkaService');
     }
   }
 
   /**
-   * Helper method to get config values with proper namespace handling
-   * @private
+   * Connect to Kafka on module initialization
    */
-  private getConfigValue<T>(key: string, defaultValue: T): T {
-    return this.configService.get<T>(`${this.configNamespace}.${key}`) ?? 
-           this.configService.get<T>(`kafka.${key}`) ?? 
-           defaultValue;
-  }
-
-  /**
-   * Initializes the Kafka producer and consumer when the module is initialized.
-   */
-  async onModuleInit(): Promise<void> {
+  async onModuleInit() {
     try {
-      if (!this.kafka) {
-        const brokers = this.getConfigValue('brokers', 'localhost:9092').split(',');
-        const clientId = this.getConfigValue('clientId', 'austa-service');
-        
-        this.kafka = new Kafka({
-          clientId,
-          brokers,
-          ssl: this.getConfigValue('ssl', false),
-          sasl: this.getSaslConfig() as SASLOptions,
-          retry: {
-            initialRetryTime: 300,
-            retries: 10
-          }
-        });
-      }
-      
       await this.connectProducer();
-      await this.connectConsumer();
-      this.logger.log('Kafka service initialized successfully', 'KafkaService');
-    } catch (error) {
-      this.logger.error('Failed to initialize Kafka service', this.formatError(error), 'KafkaService');
-    }
-  }
-
-  /**
-   * Disconnects the Kafka producer and consumer when the module is destroyed.
-   */
-  async onModuleDestroy(): Promise<void> {
-    try {
-      await this.disconnectProducer();
-      await this.disconnectConsumer();
-      this.logger.log('Kafka service destroyed successfully', 'KafkaService');
-    } catch (error) {
-      this.logger.error('Error during Kafka service shutdown', this.formatError(error), 'KafkaService');
-    }
-  }
-
-  /**
-   * Sends a message to a Kafka topic with tracing and error handling.
-   * 
-   * @param topic - The Kafka topic to send the message to
-   * @param message - The message object to be serialized and sent
-   * @param key - Optional message key for partitioning
-   * @param headers - Optional message headers
-   */
-  async produce(
-    topic: string, 
-    message: any, 
-    key?: string, 
-    headers?: Record<string, string>
-  ): Promise<void> {
-    return this.tracingService.createSpan(`kafka.produce.${topic}`, async () => {
-      try {
-        const serializedMessage = this.serializeMessage(message);
-        
-        const bufferHeaders: Record<string, Buffer> | undefined = headers ? 
-          Object.entries(headers).reduce((acc, [k, v]) => {
-            acc[k] = Buffer.from(String(v));
-            return acc;
-          }, {} as Record<string, Buffer>) : 
-          undefined;
-        
-        await this.producer.send({
-          topic,
-          messages: [
-            {
-              value: serializedMessage,
-              key: key || undefined,
-              headers: bufferHeaders
-            }
-          ]
-        });
-        
-        const messagePreview = serializedMessage.toString('utf8').substring(0, 100);
-        this.logger.debug(
-          `Message sent to topic ${topic}: ${messagePreview}${serializedMessage.length > 100 ? '...' : ''}`,
-          'KafkaService'
-        );
-      } catch (error) {
-        this.logger.error(`Failed to produce message to topic ${topic}`, this.formatError(error), 'KafkaService');
-        throw new AppException(
-          `Failed to produce message to topic ${topic}`,
-          ErrorType.EXTERNAL,
-          'KAFKA_001',
-          { topic },
-          this.formatError(error)
-        );
+      
+      if (this.consumer) {
+        await this.connectConsumer();
       }
+    } catch (error) {
+      this.logger.error('Failed to connect to Kafka', error instanceof Error ? (error as any).stack : undefined);
+      // Don't throw here to allow service to start even if Kafka is unavailable
+    }
+  }
+
+  /**
+   * Disconnect from Kafka on module destruction
+   */
+  async onModuleDestroy() {
+    try {
+      if (this.isProducerConnected) {
+        await this.producer.disconnect();
+      }
+      
+      if (this.isConsumerConnected) {
+        await this.consumer.disconnect();
+      }
+    } catch (error) {
+      this.logger.error('Error disconnecting from Kafka', error instanceof Error ? (error as any).stack : undefined);
+    }
+  }
+
+  /**
+   * Connect the Kafka producer
+   */
+  private async connectProducer(): Promise<void> {
+    try {
+      if (!this.isProducerConnected) {
+        await this.producer.connect();
+        this.isProducerConnected = true;
+        this.logger.log('Kafka producer connected');
+      }
+    } catch (error) {
+      this.logger.error('Failed to connect Kafka producer', error instanceof Error ? (error as any).stack : undefined);
+      this.isProducerConnected = false;
+      throw error as any;
+    }
+  }
+
+  /**
+   * Connect the Kafka consumer
+   */
+  private async connectConsumer(): Promise<void> {
+    try {
+      if (!this.isConsumerConnected && this.consumer) {
+        await this.consumer.connect();
+        this.isConsumerConnected = true;
+        this.logger.log('Kafka consumer connected');
+        
+        // Set up consumer event handlers
+        await this.setupConsumerEvents();
+      }
+    } catch (error) {
+      this.logger.error('Failed to connect Kafka consumer', error instanceof Error ? (error as any).stack : undefined);
+      this.isConsumerConnected = false;
+      throw error as any;
+    }
+  }
+
+  /**
+   * Set up consumer event handlers
+   */
+  private async setupConsumerEvents(): Promise<void> {
+    if (!this.consumer || !this.isConsumerConnected) return;
+    
+    // Handle messages
+    this.consumer.run({
+      eachMessage: async ({ topic, partition, message }) => {
+        const handlers = this.messageHandlers.get(topic);
+        
+        if (!handlers || handlers.size === 0) {
+          this.logger.debug(`No handlers for message from topic ${topic}`);
+          return;
+        }
+        
+        try {
+          // Parse the message
+          const parsedMessage = this.parseMessage(message.value);
+          const key = message.key ? message.key.toString() : undefined;
+          
+          this.logger.debug(`Processing message from topic ${topic}, partition ${partition}`, {
+            key,
+            offset: message.offset.toString()
+          });
+          
+          // Convert Set to Array to fix iteration issue
+          const handlersArray = Array.from(handlers);
+          for (const handler of handlersArray) {
+            try {
+              await handler({
+                key,
+                value: parsedMessage,
+                headers: message.headers,
+                topic,
+                partition,
+                offset: message.offset,
+                timestamp: message.timestamp,
+              });
+            } catch (handlerError) {
+              this.logger.error(
+                `Error in Kafka message handler for topic ${topic}`,
+                handlerError instanceof Error ? handlerError.stack : undefined
+              );
+              // Continue with next handler
+            }
+          }
+        } catch (error) {
+          this.logger.error(
+            `Error processing message from topic ${topic}`,
+            error instanceof Error ? (error as any).stack : undefined
+          );
+        }
+      },
     });
   }
 
   /**
-   * Subscribes to a Kafka topic and processes messages.
-   * 
-   * @param topic - The Kafka topic to subscribe to
-   * @param groupId - The consumer group ID
-   * @param callback - The function to process each message
+   * Subscribe to a Kafka topic
+   * @param topic The topic to subscribe to
+   * @param groupId Optional consumer group ID
+   * @param handler The message handler function
    */
-  async consume(
-    topic: string,
-    groupId: string,
-    callback: (message: any, key?: string, headers?: Record<string, string>) => Promise<void>
-  ): Promise<void> {
+  async subscribe(topic: string, groupId: string, handler: (message: any) => Promise<void>): Promise<void> {
     try {
-      const consumer = this.kafka.consumer({ groupId });
-      
-      await consumer.connect();
-      await consumer.subscribe({ topic, fromBeginning: false });
-      
-      await consumer.run({
-        eachMessage: async ({ topic, partition, message }) => {
-          const messageKey = message.key?.toString();
-          
-          const messageHeaders = message.headers ? 
-            this.parseHeaders(message.headers) : 
-            {};
-          
-          return this.tracingService.createSpan(`kafka.consume.${topic}`, async () => {
-            try {
-              const parsedMessage = this.deserializeMessage(message.value);
-              
-              this.logger.debug(
-                `Processing message from topic ${topic}, partition ${partition}`,
-                'KafkaService'
-              );
-              
-              await callback(parsedMessage, messageKey, messageHeaders);
-            } catch (error) {
-              this.logger.error(
-                `Error processing message from topic ${topic}, partition ${partition}`,
-                this.formatError(error),
-                'KafkaService'
-              );
-            }
-          });
-        }
-      });
-      
-      this.logger.log(`Subscribed to topic ${topic} with group ID ${groupId}`, 'KafkaService');
-    } catch (error) {
-      this.logger.error(`Failed to consume from topic ${topic}`, this.formatError(error), 'KafkaService');
-      throw new AppException(
-        `Failed to consume from topic ${topic}`,
-        ErrorType.EXTERNAL,
-        'KAFKA_002',
-        { topic, groupId },
-        this.formatError(error)
-      );
-    }
-  }
-
-  /**
-   * Connects to Kafka as a producer.
-   * @private
-   */
-  private async connectProducer(): Promise<void> {
-    try {
-      this.producer = this.kafka.producer({
-        allowAutoTopicCreation: this.getConfigValue('allowAutoTopicCreation', true),
-        transactionalId: this.getConfigValue('transactionalId', undefined)
-      });
-      
-      await this.producer.connect();
-      this.logger.log('Kafka producer connected successfully', 'KafkaService');
-    } catch (error) {
-      this.logger.error('Failed to connect Kafka producer', this.formatError(error), 'KafkaService');
-      throw new AppException(
-        'Failed to connect Kafka producer',
-        ErrorType.EXTERNAL,
-        'KAFKA_003',
-        {},
-        this.formatError(error)
-      );
-    }
-  }
-
-  /**
-   * Disconnects the Kafka producer.
-   * @private
-   */
-  private async disconnectProducer(): Promise<void> {
-    if (this.producer) {
-      try {
-        await this.producer.disconnect();
-        this.logger.log('Kafka producer disconnected successfully', 'KafkaService');
-      } catch (error) {
-        this.logger.error('Error disconnecting Kafka producer', this.formatError(error), 'KafkaService');
+      // Make sure consumer is connected
+      if (!this.consumer) {
+        throw new Error('Kafka consumer not initialized. Provide a groupId in module options.');
       }
-    }
-  }
-
-  /**
-   * Connects to Kafka as a consumer.
-   * @private
-   */
-  private async connectConsumer(): Promise<void> {
-    try {
-      const groupId = this.getConfigValue('groupId', 'austa-consumer-group');
       
-      this.consumer = this.kafka.consumer({ 
-        groupId,
-        sessionTimeout: this.getConfigValue('sessionTimeout', 30000),
-        heartbeatInterval: this.getConfigValue('heartbeatInterval', 3000)
-      });
-      
-      await this.consumer.connect();
-      this.logger.log(`Kafka consumer connected successfully with group ID ${groupId}`, 'KafkaService');
-    } catch (error) {
-      this.logger.error('Failed to connect Kafka consumer', this.formatError(error), 'KafkaService');
-      throw new AppException(
-        'Failed to connect Kafka consumer',
-        ErrorType.EXTERNAL,
-        'KAFKA_004',
-        {},
-        this.formatError(error)
-      );
-    }
-  }
-
-  /**
-   * Disconnects the Kafka consumer.
-   * @private
-   */
-  private async disconnectConsumer(): Promise<void> {
-    if (this.consumer) {
-      try {
-        await this.consumer.disconnect();
-        this.logger.log('Kafka consumer disconnected successfully', 'KafkaService');
-      } catch (error) {
-        this.logger.error('Error disconnecting Kafka consumer', this.formatError(error), 'KafkaService');
+      if (!this.isConsumerConnected) {
+        await this.connectConsumer();
       }
-    }
-  }
-
-  /**
-   * Serializes a message to JSON string.
-   * @private
-   */
-  private serializeMessage(message: any): Buffer {
-    try {
-      return Buffer.from(JSON.stringify(message));
+      
+      // Register the handler
+      if (!this.messageHandlers.has(topic)) {
+        this.messageHandlers.set(topic, new Set());
+        
+        // Subscribe to the topic
+        await this.consumer.subscribe({ topic, fromBeginning: false });
+        this.logger.log(`Subscribed to Kafka topic: ${topic}`);
+      }
+      
+      // Add this handler to the topic - ensure handlers set exists
+      const handlers = this.messageHandlers.get(topic);
+      if (handlers) {
+        handlers.add(handler);
+      }
+      
     } catch (error) {
-      this.logger.error('Failed to serialize message', this.formatError(error), 'KafkaService');
+      this.logger.error(`Failed to subscribe to topic ${topic}`, error instanceof Error ? (error as any).stack : undefined);
       throw new AppException(
-        'Failed to serialize message',
+        `Failed to subscribe to Kafka topic ${topic}`,
         ErrorType.TECHNICAL,
-        'KAFKA_005',
-        {},
-        this.formatError(error)
+        'KAFKA_SUBSCRIBE_ERROR',
+        { topic, groupId }
       );
     }
   }
 
   /**
-   * Deserializes a message from JSON string.
-   * @private
+   * Emit a message to a Kafka topic
+   * @param topic The topic to emit to
+   * @param message The message to emit
+   * @param key Optional message key
+   * @param headers Optional message headers
    */
-  private deserializeMessage(buffer: Buffer | null): any {
+  async emit(topic: string, message: any, key?: string, headers?: Record<string, string>): Promise<void> {
     try {
-      if (!buffer) {
-        return null;
+      // Ensure producer is connected
+      if (!this.isProducerConnected) {
+        await this.connectProducer();
       }
       
-      const message = buffer.toString();
+      // Prepare the record
+      const record: ProducerRecord = {
+        topic,
+        messages: [
+          {
+            key: key ? Buffer.from(key) : null,
+            value: this.serializeMessage(message),
+            headers: headers ? this.serializeHeaders(headers) : undefined,
+          },
+        ],
+      };
+      
+      // Send the message
+      await this.producer.send(record);
+      
+      this.logger.debug(`Message sent to topic ${topic}`, {
+        key: key || ''
+      });
+      
+    } catch (error) {
+      this.logger.error(`Failed to emit message to topic ${topic}`, error instanceof Error ? (error as any).stack : undefined);
+      throw new AppException(
+        `Failed to emit message to Kafka topic ${topic}`,
+        ErrorType.TECHNICAL,
+        'KAFKA_EMIT_ERROR',
+        { topic, key }
+      );
+    }
+  }
+  
+  /**
+   * Alias for emit() for compatibility with other services
+   */
+  async produce(topic: string, message: any, key?: string, headers?: Record<string, string>): Promise<void> {
+    return this.emit(topic, message, key, headers);
+  }
+
+  /**
+   * Parse a Kafka message value
+   * @param value The message value
+   * @returns The parsed message
+   */
+  private parseMessage(value: Buffer | null): any {
+    if (!value) return null;
+    
+    try {
+      const message = value.toString();
       return JSON.parse(message);
     } catch (error) {
-      this.logger.error('Failed to deserialize message', this.formatError(error), 'KafkaService');
-      throw new AppException(
-        'Failed to deserialize message',
-        ErrorType.TECHNICAL,
-        'KAFKA_006',
-        {},
-        this.formatError(error)
-      );
+      // If not JSON, return as string
+      return value.toString();
     }
   }
 
   /**
-   * Parses Kafka message headers from various formats to string key-value pairs.
-   * @private
+   * Serialize a message for Kafka
+   * @param message The message to serialize
+   * @returns The serialized message
    */
-  private parseHeaders(headers: IHeaders): Record<string, string> {
-    const result: Record<string, string> = {};
+  private serializeMessage(message: any): Buffer {
+    if (typeof message === 'string') {
+      return Buffer.from(message);
+    }
     
-    if (headers) {
-      Object.entries(headers).forEach(([key, value]) => {
-        if (Buffer.isBuffer(value)) {
-          result[key] = value.toString();
-        } else if (typeof value === 'string') {
-          result[key] = value;
-        } else if (Array.isArray(value)) {
-          result[key] = value.map(v => 
-            Buffer.isBuffer(v) ? v.toString() : String(v)
-          ).join(',');
-        } else {
-          result[key] = value !== undefined ? String(value) : '';
-        }
-      });
+    return Buffer.from(JSON.stringify(message));
+  }
+
+  /**
+   * Serialize headers for Kafka
+   * @param headers The headers to serialize
+   * @returns The serialized headers
+   */
+  private serializeHeaders(headers: Record<string, string>): Record<string, Buffer> {
+    const result: Record<string, Buffer> = {};
+    
+    for (const [key, value] of Object.entries(headers)) {
+      result[key] = Buffer.from(value);
     }
     
     return result;
-  }
-
-  /**
-   * Gets SASL configuration if enabled.
-   * @private
-   */
-  private getSaslConfig(): SASLOptions | undefined {
-    const saslEnabled = this.getConfigValue('sasl.enabled', false);
-    
-    if (!saslEnabled) {
-      return undefined;
-    }
-    
-    const mechanism = this.getConfigValue('sasl.mechanism', 'plain');
-    
-    switch (mechanism.toLowerCase()) {
-      case 'plain':
-        return {
-          mechanism: 'plain',
-          username: this.getConfigValue('sasl.username', ''),
-          password: this.getConfigValue('sasl.password', '')
-        };
-      case 'scram-sha-256':
-        return {
-          mechanism: 'scram-sha-256',
-          username: this.getConfigValue('sasl.username', ''),
-          password: this.getConfigValue('sasl.password', '')
-        };
-      case 'scram-sha-512':
-        return {
-          mechanism: 'scram-sha-512',
-          username: this.getConfigValue('sasl.username', ''),
-          password: this.getConfigValue('sasl.password', '')
-        };
-      default:
-        this.logger.warn(`Unsupported SASL mechanism: ${mechanism}. Using 'plain' instead.`, 'KafkaService');
-        return {
-          mechanism: 'plain',
-          username: this.getConfigValue('sasl.username', ''),
-          password: this.getConfigValue('sasl.password', '')
-        };
-    }
   }
 }

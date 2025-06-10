@@ -1,17 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Injectable } from '@nestjs/common'; // v10.0.0+
 import { Repository } from 'typeorm'; // latest
 import { InjectRepository } from '@nestjs/typeorm'; // latest
 
 import { CreateMedicationDto } from './dto/create-medication.dto';
 import { Medication } from './entities/medication.entity';
-import { Service } from 'src/backend/shared/src/interfaces/service.interface';
-import { FilterDto } from 'src/backend/shared/src/dto/filter.dto';
-import { PaginationDto } from 'src/backend/shared/src/dto/pagination.dto';
-import { AppException, ErrorType } from 'src/backend/shared/src/exceptions/exceptions.types';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { KafkaService } from 'src/backend/shared/src/kafka/kafka.service';
-import { Configuration } from 'src/backend/care-service/src/config/configuration';
-import { CurrentUser } from 'src/backend/auth-service/src/auth/decorators/current-user.decorator';
+import { Service } from '@app/shared/interfaces/service.interface';
+import { FilterDto } from '@app/shared/dto/filter.dto';
+import { PaginationDto } from '@app/shared/dto/pagination.dto';
+import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { KafkaService } from '@app/shared/kafka/kafka.service';
+import { Configuration } from '@app/care/config/configuration';
+import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 
 /**
  * Service class for managing medications.
@@ -164,7 +166,7 @@ export class MedicationsService {
       return medication;
     } catch (error) {
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
       
       this.logger.error(`Failed to fetch medication with ID ${id}`, error, 'MedicationsService');
@@ -211,7 +213,7 @@ export class MedicationsService {
       return updatedMedication;
     } catch (error) {
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
       
       this.logger.error(`Failed to update medication with ID ${id}`, error, 'MedicationsService');
@@ -240,7 +242,7 @@ export class MedicationsService {
       this.logger.log(`Medication deleted: ${id}`, 'MedicationsService');
     } catch (error) {
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
       
       this.logger.error(`Failed to delete medication with ID ${id}`, error, 'MedicationsService');

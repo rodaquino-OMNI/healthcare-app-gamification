@@ -1,14 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Injectable } from '@nestjs/common'; // @nestjs/common 10.0.0+
 import planService from '../config/configuration';
 import { PlansService } from '../plans/plans.service';
-import { Service } from 'src/backend/shared/src/interfaces/service.interface';
-import { AppException, ErrorType } from 'src/backend/shared/src/exceptions/exceptions.types';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { TracingService } from 'src/backend/shared/src/tracing/tracing.service';
+import { Service } from '@app/shared/interfaces/service.interface';
+import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { TracingService } from '@app/shared/tracing/tracing.service';
 import { VerifyCoverageDto, ProcedureType } from './dto/verify-coverage.dto';
 import { Plan } from '../plans/entities/plan.entity';
 import { Coverage } from '../plans/entities/coverage.entity';
-import { ErrorCodes } from 'src/backend/shared/src/constants/error-codes.constants';
+import * as ErrorCodes from '@app/shared/constants/error-codes.constants';
 
 /**
  * Handles the business logic for interacting with insurance systems.
@@ -28,7 +30,7 @@ export class InsuranceService {
   ) {
     this.logger.log('InsuranceService initialized', 'InsuranceService');
   }
-
+  
   /**
    * Verifies if a procedure is covered by the user's insurance plan.
    * Implements requirement F-103-RQ-001 - Display detailed insurance coverage information.
@@ -54,12 +56,12 @@ export class InsuranceService {
         
         switch (verifyCoverageDto.procedureType) {
           case ProcedureType.CONSULTATION:
-          case ProcedureType.DIAGNOSTIC:
-          case ProcedureType.LABORATORY:
+          case ProcedureType.EXAM:
+          case ProcedureType.PREVENTIVE:
             isCovered = true;
             break;
-          case ProcedureType.IMAGING:
           case ProcedureType.THERAPY:
+            // Ensure isInNetwork exists on the DTO or provide a default value
             isCovered = verifyCoverageDto.isInNetwork !== false;
             break;
           case ProcedureType.SURGERY:
@@ -69,6 +71,10 @@ export class InsuranceService {
           case ProcedureType.MEDICATION:
             // Medications have 60% chance of coverage
             isCovered = Math.random() > 0.4;
+            break;
+          case ProcedureType.EMERGENCY:
+            // Emergency procedures are always covered
+            isCovered = true;
             break;
           default:
             // Other procedures have 40% chance of coverage
@@ -81,14 +87,18 @@ export class InsuranceService {
         );
         
         return isCovered;
-      } catch (error) {
-        this.logger.error(`Error verifying coverage: ${error.message}`, error.stack, 'InsuranceService');
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+        const errorStack = error instanceof Error ? (error as any).stack : undefined;
+        
+        this.logger.error(`Error verifying coverage: ${errorMessage}`, errorStack, 'InsuranceService');
+        
         throw new AppException(
           'Failed to verify insurance coverage',
           ErrorType.EXTERNAL,
           'PLAN_COVERAGE_VERIFICATION_FAILED',
-          { dto: verifyCoverageDto, error: error.message },
-          error
+          { dto: verifyCoverageDto, error: errorMessage },
+          (error instanceof Error ? error : new Error(errorMessage)) as any
         );
       }
     });

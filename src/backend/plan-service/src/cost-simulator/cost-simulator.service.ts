@@ -1,3 +1,4 @@
+import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Injectable } from '@nestjs/common';
 import { SimulateCostDto, CodingStandard, ProcedureType } from './dto/simulate-cost.dto';
 

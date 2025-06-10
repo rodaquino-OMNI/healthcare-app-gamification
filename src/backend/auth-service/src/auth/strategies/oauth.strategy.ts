@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthService } from '../auth.service';
@@ -41,8 +42,8 @@ export class OAuthStrategy {
         provider
       };
     } catch (error: any) {
-      const errorMsg = error.message || 'Unknown OAuth validation error';
-      const errorStack = error.stack || '';
+      const errorMsg = (error as any).message || 'Unknown OAuth validation error';
+      const errorStack = (error as any).stack || '';
       
       this.logger.error(
         `Failed to validate ${provider} OAuth profile: ${errorMsg}`,

@@ -1,6 +1,6 @@
 import { IsOptional, IsString } from 'class-validator';
-import { FilterDto } from 'src/backend/shared/src/dto/filter.dto';
-import { PaginationDto } from 'src/backend/shared/src/dto/pagination.dto';
+import { FilterDto } from '@app/shared/dto/filter.dto';
+import { PaginationDto } from '@app/shared/dto/pagination.dto';
 
 /**
  * Data transfer object for searching healthcare providers.

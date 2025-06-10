@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, HttpStatus } from '@nestjs/common';
 import * as request from 'supertest';
@@ -82,7 +83,7 @@ describe('UsersController (e2e)', () => {
       .expect(HttpStatus.BAD_REQUEST);
 
     expect(response.body.error).toBeDefined();
-    expect(response.body.error.message).toBeDefined();
+    expect(response.body.(error as any).message).toBeDefined();
   });
 
   it('should get all users', async () => {

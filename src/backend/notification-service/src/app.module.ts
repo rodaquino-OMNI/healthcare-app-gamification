@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common'; // @nestjs/common v10.0.0+
-import { ConfigModule } from '@nestjs/config'; // @nestjs/config v10.0.0+
-import { TypeOrmModule } from '@nestjs/typeorm'; // @nestjs/typeorm v10.0.0+
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { NotificationsModule } from './notifications/notifications.module';
 import { PreferencesModule } from './preferences/preferences.module';
@@ -8,10 +8,10 @@ import { TemplatesModule } from './templates/templates.module';
 import { WebsocketsModule } from './websockets/websockets.module';
 import { notification } from './config/configuration';
 import { validationSchema } from './config/validation.schema';
-import { KafkaModule } from 'src/backend/shared/src/kafka/kafka.module';
-import { LoggerModule } from 'src/backend/shared/src/logging/logger.module';
-import { RedisModule } from 'src/backend/shared/src/redis/redis.module';
-import { TracingModule } from 'src/backend/shared/src/tracing/tracing.module';
+import { KafkaModule } from '@app/shared/kafka/kafka.module';
+import { LoggerModule } from '@app/shared/logging/logger.module';
+import { RedisModule } from '@app/shared/redis/redis.module';
+import { TracingModule } from '@app/shared/tracing/tracing.module';
 import { Notification } from './notifications/entities/notification.entity';
 
 /**
@@ -24,16 +24,20 @@ import { Notification } from './notifications/entities/notification.entity';
       validationSchema,
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DATABASE_HOST,
-      port: parseInt(process.env.DATABASE_PORT, 10) || 5432,
-      username: process.env.DATABASE_USERNAME,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME,
-      entities: [Notification],
-      synchronize: process.env.NODE_ENV !== 'production',
-      logging: process.env.NODE_ENV !== 'production',
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get<string>('DATABASE_HOST', 'localhost'),
+        port: configService.get<number>('DATABASE_PORT', 5432),
+        username: configService.get<string>('DATABASE_USERNAME', 'postgres'),
+        password: configService.get<string>('DATABASE_PASSWORD', 'postgres'),
+        database: configService.get<string>('DATABASE_NAME', 'notifications'),
+        entities: [Notification],
+        synchronize: configService.get<string>('NODE_ENV') !== 'production',
+        logging: configService.get<string>('NODE_ENV') !== 'production',
+      }),
     }),
     NotificationsModule,
     PreferencesModule,

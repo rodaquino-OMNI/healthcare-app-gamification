@@ -1,18 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Injectable, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-
 import planService from '../config/configuration';
 import { Plan } from './entities/plan.entity';
 import { Claim } from '../claims/entities/claim.entity';
-import { Service } from 'src/backend/shared/src/interfaces/service.interface';
-import { AppException, ErrorType } from 'src/backend/shared/src/exceptions/exceptions.types';
-import { FilterDto } from 'src/backend/shared/src/dto/filter.dto';
-import { PaginationDto } from 'src/backend/shared/src/dto/pagination.dto';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { TracingService } from 'src/backend/shared/src/tracing/tracing.service';
-import { User } from 'src/backend/auth-service/src/users/entities/user.entity';
-import { ErrorCodes } from 'src/backend/shared/src/constants/error-codes.constants';
+import { Service } from '@app/shared/interfaces/service.interface';
+import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+import { FilterDto } from '../dto/filter.dto';
+import { PaginationDto } from '@app/shared/dto/pagination.dto';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { TracingService } from '@app/shared/tracing/tracing.service';
+import { User } from '@app/auth/users/entities/user.entity';
 
 /**
  * Handles the business logic for managing insurance plans.
@@ -39,19 +39,24 @@ export class PlansService {
    * @returns The newly created plan
    */
   async create(plan: any): Promise<Plan> {
-    return this.tracingService.createSpan('PlansService.create', async () => {
+    // Explicitly create and then return the promise result to avoid type issues
+    return await this.tracingService.createSpan<Plan>('PlansService.create', async () => {
       this.logger.log(`Creating new plan`, 'PlansService');
       try {
         const newPlan = this.plansRepository.create(plan);
-        return await this.plansRepository.save(newPlan);
-      } catch (error) {
-        this.logger.error(`Error creating plan: ${error.message}`, error.stack, 'PlansService');
+        // Return the saved plan as a single entity, not an array
+        return await this.plansRepository.save(newPlan) as unknown as Plan;
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+        const errorStack = error instanceof Error ? (error as any).stack : undefined;
+        
+        this.logger.error(`Error creating plan: ${errorMessage}`, errorStack, 'PlansService');
         throw new AppException(
           'Failed to create insurance plan',
           ErrorType.TECHNICAL,
           'PLAN_CREATE_ERROR',
-          { originalError: error.message },
-          error
+          { originalError: errorMessage },
+          (error instanceof Error ? error : new Error(errorMessage)) as any
         );
       }
     });
@@ -101,14 +106,17 @@ export class PlansService {
         }
         
         return await this.plansRepository.find(queryOptions);
-      } catch (error) {
-        this.logger.error(`Error retrieving plans: ${error.message}`, error.stack, 'PlansService');
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+        const errorStack = error instanceof Error ? (error as any).stack : undefined;
+        
+        this.logger.error(`Error retrieving plans: ${errorMessage}`, errorStack, 'PlansService');
         throw new AppException(
           'Failed to retrieve insurance plans',
           ErrorType.TECHNICAL,
           'PLAN_QUERY_ERROR',
-          { originalError: error.message },
-          error
+          { originalError: errorMessage },
+          (error instanceof Error ? error : new Error(errorMessage)) as any
         );
       }
     });
@@ -136,18 +144,21 @@ export class PlansService {
         }
         
         return plan;
-      } catch (error) {
+      } catch (error: unknown) {
         if (error instanceof AppException) {
-          throw error;
+          throw error as any;
         }
         
-        this.logger.error(`Error retrieving plan ${id}: ${error.message}`, error.stack, 'PlansService');
+        const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+        const errorStack = error instanceof Error ? (error as any).stack : undefined;
+        
+        this.logger.error(`Error retrieving plan ${id}: ${errorMessage}`, errorStack, 'PlansService');
         throw new AppException(
           `Failed to retrieve insurance plan with ID ${id}`,
           ErrorType.TECHNICAL,
           'PLAN_QUERY_ERROR',
-          { planId: id, originalError: error.message },
-          error
+          { planId: id, originalError: errorMessage },
+          (error instanceof Error ? error : new Error(errorMessage)) as any
         );
       }
     });
@@ -172,18 +183,21 @@ export class PlansService {
         
         // Return the updated plan
         return this.findOne(id);
-      } catch (error) {
+      } catch (error: unknown) {
         if (error instanceof AppException) {
-          throw error;
+          throw error as any;
         }
         
-        this.logger.error(`Error updating plan ${id}: ${error.message}`, error.stack, 'PlansService');
+        const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+        const errorStack = error instanceof Error ? (error as any).stack : undefined;
+        
+        this.logger.error(`Error updating plan ${id}: ${errorMessage}`, errorStack, 'PlansService');
         throw new AppException(
           `Failed to update insurance plan with ID ${id}`,
           ErrorType.TECHNICAL,
           'PLAN_UPDATE_ERROR',
-          { planId: id, originalError: error.message },
-          error
+          { planId: id, originalError: errorMessage },
+          (error instanceof Error ? error : new Error(errorMessage)) as any
         );
       }
     });
@@ -203,18 +217,21 @@ export class PlansService {
         
         // Delete the plan
         await this.plansRepository.delete(id);
-      } catch (error) {
+      } catch (error: unknown) {
         if (error instanceof AppException) {
-          throw error;
+          throw error as any;
         }
         
-        this.logger.error(`Error removing plan ${id}: ${error.message}`, error.stack, 'PlansService');
+        const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+        const errorStack = error instanceof Error ? (error as any).stack : undefined;
+        
+        this.logger.error(`Error removing plan ${id}: ${errorMessage}`, errorStack, 'PlansService');
         throw new AppException(
           `Failed to delete insurance plan with ID ${id}`,
           ErrorType.TECHNICAL,
           'PLAN_DELETE_ERROR',
-          { planId: id, originalError: error.message },
-          error
+          { planId: id, originalError: errorMessage },
+          (error instanceof Error ? error : new Error(errorMessage)) as any
         );
       }
     });
@@ -256,18 +273,21 @@ export class PlansService {
         }
         
         return false;
-      } catch (error) {
+      } catch (error: unknown) {
         if (error instanceof AppException) {
-          throw error;
+          throw error as any;
         }
         
-        this.logger.error(`Error verifying coverage for plan ${planId} and procedure ${procedureCode}: ${error.message}`, error.stack, 'PlansService');
+        const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+        const errorStack = error instanceof Error ? (error as any).stack : undefined;
+        
+        this.logger.error(`Error verifying coverage for plan ${planId} and procedure ${procedureCode}: ${errorMessage}`, errorStack, 'PlansService');
         throw new AppException(
           `Failed to verify coverage for procedure ${procedureCode}`,
           ErrorType.TECHNICAL,
           'PLAN_COVERAGE_VERIFICATION_FAILED',
-          { planId, procedureCode, originalError: error.message },
-          error
+          { planId, procedureCode, originalError: errorMessage },
+          (error instanceof Error ? error : new Error(errorMessage)) as any
         );
       }
     });
@@ -348,18 +368,21 @@ export class PlansService {
         }
         
         return defaultResult;
-      } catch (error) {
+      } catch (error: unknown) {
         if (error instanceof AppException) {
-          throw error;
+          throw error as any;
         }
         
-        this.logger.error(`Error calculating coverage for plan ${planId} and procedure ${procedureCode}: ${error.message}`, error.stack, 'PlansService');
+        const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+        const errorStack = error instanceof Error ? (error as any).stack : undefined;
+        
+        this.logger.error(`Error calculating coverage for plan ${planId} and procedure ${procedureCode}: ${errorMessage}`, errorStack, 'PlansService');
         throw new AppException(
           `Failed to calculate coverage for procedure ${procedureCode}`,
           ErrorType.TECHNICAL,
           'PLAN_COVERAGE_VERIFICATION_FAILED',
-          { planId, procedureCode, totalAmount, originalError: error.message },
-          error
+          { planId, procedureCode, totalAmount, originalError: errorMessage },
+          (error instanceof Error ? error : new Error(errorMessage)) as any
         );
       }
     });

@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { AppException, ErrorType } from 'src/backend/shared/src/exceptions/exceptions.types';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 
 /**
  * Service responsible for sending email notifications.
@@ -65,8 +67,8 @@ export class EmailService {
       this.logger.log(`Email sent successfully to ${to}`, 'EmailService');
     } catch (error) {
       this.logger.error(
-        `Failed to send email to ${to}: ${error.message}`,
-        error.stack,
+        `Failed to send email to ${to}: ${(error as any).message}`,
+        (error as any).stack,
         'EmailService',
       );
       

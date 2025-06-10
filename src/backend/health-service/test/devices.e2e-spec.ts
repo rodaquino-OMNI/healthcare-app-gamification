@@ -9,10 +9,10 @@ import { DevicesController } from '../src/devices/devices.controller';
 import { DeviceConnection } from '../src/devices/entities/device-connection.entity';
 import { AppModule } from '../src/app.module';
 import { Configuration } from '../src/config/configuration';
-import { AllExceptionsFilter } from 'src/backend/shared/src/exceptions/exceptions.filter';
-import { PrismaService } from 'src/backend/shared/src/database/prisma.service';
+import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
+import { PrismaService } from '@app/shared/database/prisma.service';
 import { JwtAuthGuard } from '@nestjs/passport';
-import { CurrentUser } from 'src/backend/auth-service/src/auth/decorators/current-user.decorator';
+import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 
 /**
  * End-to-end tests for the DevicesController, verifying the correct behavior

@@ -1,65 +1,55 @@
 import { FilterDto } from '../dto/filter.dto';
-import { PaginationDto, PaginatedResponse } from '../dto/pagination.dto';
+import { PaginationDto } from '../dto/pagination.dto';
 
 /**
- * Generic Service interface to be implemented by all services across the AUSTA SuperApp.
- * Provides standard methods for CRUD operations and queries with consistent signatures.
- * 
- * This interface supports the journey-based microservices architecture by offering
- * a standardized way to interact with data across all journey contexts.
- * 
- * @typeParam T - The entity type the service manages
- * @typeParam CreateDto - The DTO type for creating entities
- * @typeParam UpdateDto - The DTO type for updating entities
+ * Generic service interface that defines standard CRUD operations
+ * @template T - Entity type
+ * @template CreateDto - Create DTO type
+ * @template UpdateDto - Update DTO type
+ * @template ID - Entity ID type (usually string or number)
  */
-export interface Service<T, CreateDto = any, UpdateDto = any> {
+export interface Service<T, CreateDto, UpdateDto, ID = string> {
   /**
-   * Find an entity by its ID
-   * 
-   * @param id - The unique identifier of the entity
-   * @returns A promise resolving to the found entity or null if not found
+   * Find all entities with optional filtering and pagination
+   * @param filter - Filter criteria
+   * @param pagination - Pagination options
+   * @returns Promise with array of entities and total count
    */
-  findById(id: string): Promise<T | null>;
+  findAll(filter?: FilterDto, pagination?: PaginationDto): Promise<{ items: T[], total: number }>;
   
   /**
-   * Find all entities matching the provided filter with pagination
-   * 
-   * @param pagination - Pagination parameters
-   * @param filter - Filter criteria
-   * @returns A promise resolving to a paginated response containing the entities
+   * Find a single entity by ID
+   * @param id - Entity ID
+   * @returns Promise with entity
    */
-  findAll(pagination?: PaginationDto, filter?: FilterDto): Promise<PaginatedResponse<T>>;
+  findById(id: ID): Promise<T>;
+  
+  /**
+   * Find a single entity by specified criteria
+   * @param criteria - Search criteria
+   * @returns Promise with entity or null if not found
+   */
+  findOne(criteria: Partial<T>): Promise<T | null>;
   
   /**
    * Create a new entity
-   * 
-   * @param data - The data for creating the entity
-   * @returns A promise resolving to the created entity
+   * @param data - Entity data
+   * @returns Promise with created entity
    */
   create(data: CreateDto): Promise<T>;
   
   /**
-   * Update an existing entity by its ID
-   * 
-   * @param id - The unique identifier of the entity to update
-   * @param data - The data for updating the entity
-   * @returns A promise resolving to the updated entity
+   * Update an existing entity
+   * @param id - Entity ID
+   * @param data - Updated entity data
+   * @returns Promise with updated entity
    */
-  update(id: string, data: UpdateDto): Promise<T>;
+  update(id: ID, data: UpdateDto): Promise<T>;
   
   /**
-   * Delete an entity by its ID
-   * 
-   * @param id - The unique identifier of the entity to delete
-   * @returns A promise resolving to true if deleted, false otherwise
+   * Delete an entity by ID
+   * @param id - Entity ID
+   * @returns Promise with boolean indicating success
    */
-  delete(id: string): Promise<boolean>;
-  
-  /**
-   * Count entities matching the provided filter
-   * 
-   * @param filter - Filter criteria
-   * @returns A promise resolving to the count of matching entities
-   */
-  count(filter?: FilterDto): Promise<number>;
+  delete(id: ID): Promise<boolean>;
 }

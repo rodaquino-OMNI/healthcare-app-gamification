@@ -1,4 +1,4 @@
-import { MetricType, MetricSource } from 'src/web/shared/types/health.types';
+import { MetricType, MetricSource } from '../types/health.types';
 
 /**
  * Represents a health metric recorded for a user.
@@ -12,57 +12,65 @@ export class HealthMetric {
   /**
    * Unique identifier for the health metric record
    */
-  id: string;
-
+  id!: string;
+  
   /**
    * ID of the user this metric belongs to
    */
-  userId: string;
-
+  userId!: string;
+  
   /**
    * Type of health metric (e.g., HEART_RATE, BLOOD_PRESSURE, etc.)
    */
-  type: MetricType;
-
+  type!: MetricType;
+  
   /**
    * Numerical value of the metric
    */
-  value: number;
-
+  value!: number;
+  
   /**
    * Unit of measurement (e.g., 'bpm', 'mg/dL', etc.)
    */
-  unit: string;
-
+  unit!: string;
+  
   /**
    * Timestamp when the metric was recorded
    */
-  timestamp: Date;
-
+  timestamp!: Date;
+  
   /**
    * Source of the metric data (e.g., MANUAL_ENTRY, WEARABLE_DEVICE, etc.)
    */
-  source: MetricSource;
-
+  source?: MetricSource;
+  
   /**
    * Optional additional information or comments
    */
-  notes: string | null;
-
+  notes?: string;
+  
   /**
    * Percentage change from previous measurement, if available
    */
-  trend: number | null;
-
+  trend?: number;
+  
   /**
    * Indicates if the value is outside normal/healthy range
    */
-  isAbnormal: boolean;
+  isAbnormal?: boolean;
 
   /**
-   * Constructor for the HealthMetric class
+   * Additional metadata for the metric
    */
-  constructor() {
-    // Default constructor
-  }
+  metadata?: Record<string, any>;
+  
+  /**
+   * Created timestamp
+   */
+  createdAt!: Date;
+  
+  /**
+   * Last updated timestamp
+   */
+  updatedAt!: Date;
 }

@@ -1,0 +1,6 @@
+module.exports = {
+  testEnvironment: 'node',
+  moduleFileExtensions: ['js', 'ts', 'json', 'node'],
+  testMatch: ['**/src/backend/test/**/*.test.(js|ts)'],
+  setupFilesAfterEnv: ['<rootDir>/src/backend/test/setup.js'],
+};

@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationDto, PaginatedResponse } from '@app/shared/dto/pagination.dto';
-import { FilterDto } from '@app/shared/dto/filter.dto';
+import { UserFilterDto } from './dto/user-filter.dto';
 import { hash, compare } from 'bcrypt';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
@@ -71,16 +72,16 @@ export class UsersService {
           });
         }
       } catch (error: any) {
-        const errorMsg = error.message || 'Unknown error';
-        const errorStack = error.stack || '';
+        const errorMsg = (error as any).message || 'Unknown error';
+        const errorStack = (error as any).stack || '';
         this.logger.error(`Failed to assign default roles to user ${user.id}`, errorStack, 'UsersService');
         // Don't fail the user creation if role assignment fails
       }
 
       return this.sanitizeUser(user);
     } catch (error) {
-      this.logger.error(`Failed to create user`, error instanceof Error ? error.stack : 'Unknown error', 'UsersService');
-      throw error;
+      this.logger.error(`Failed to create user`, error instanceof Error ? (error as any).stack : 'Unknown error', 'UsersService');
+      throw error as any;
     }
   }
 
@@ -91,7 +92,7 @@ export class UsersService {
    * @param filterDto Filter parameters
    * @returns Paginated list of users without sensitive information
    */
-  async findAll(paginationDto?: PaginationDto, filterDto?: FilterDto): Promise<PaginatedResponse<any>> {
+  async findAll(paginationDto?: PaginationDto, filterDto?: UserFilterDto): Promise<PaginatedResponse<any>> {
     this.logger.log('Finding all users', 'UsersService');
     
     // Build where condition based on filter
@@ -111,20 +112,22 @@ export class UsersService {
         roles: true
       }
     });
-
     const totalUsers = await this.prisma.user.count({ where });
     
     // Sanitize user data before returning
     return {
-      items: users.map((user: any) => {
+      data: users.map((user: any) => {
         return this.sanitizeUser(user);
       }),
-      total: totalUsers,
-      page: paginationDto?.page || 1,
-      limit: paginationDto?.limit || 10,
-      totalPages: Math.ceil(totalUsers / (paginationDto?.limit || 10)),
-      hasNext: (paginationDto?.page || 1) < Math.ceil(totalUsers / (paginationDto?.limit || 10)),
-      hasPrevious: (paginationDto?.page || 1) > 1
+      meta: {
+        total: totalUsers,
+        page: paginationDto?.page || 1,
+        limit: paginationDto?.limit || 10,
+        totalPages: Math.ceil(totalUsers / (paginationDto?.limit || 10)),
+        hasNext: (paginationDto?.page || 1) < Math.ceil(totalUsers / (paginationDto?.limit || 10)),
+        hasPrev: (paginationDto?.page || 1) > 1,
+        offset: paginationDto?.skip || (paginationDto?.page ? (paginationDto.page - 1) * (paginationDto.limit || 10) : 0)
+      }
     };
   }
 

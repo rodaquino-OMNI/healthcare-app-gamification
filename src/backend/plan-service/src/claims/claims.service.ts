@@ -1,387 +1,378 @@
-import { Injectable } from '@nestjs/common'; 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Injectable, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Claim } from './entities/claim.entity';
 import { CreateClaimDto } from './dto/create-claim.dto';
 import { UpdateClaimDto } from './dto/update-claim.dto';
-import { Claim } from './entities/claim.entity';
+import { AppException } from '@app/shared/exceptions/exceptions.types';
+import { ErrorType } from '@app/shared/exceptions/error.types';
+import { FilterDto, PaginationDto } from '../dto/filter.dto';
 import { PlansService } from '../plans/plans.service';
-import { InsuranceService } from '../insurance/insurance.service';
-import { PrismaService } from '@app/shared/database/prisma.service';
-import { Service } from '@app/shared/interfaces/service.interface';
-import { FilterDto } from '@app/shared/dto/filter.dto';
-import { PaginationDto } from '@app/shared/dto/pagination.dto';
-import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
-import { LoggerService } from '@app/shared/logging/logger.service';
-import { KafkaService } from '@app/shared/kafka/kafka.service';
-import { PLAN_INVALID_CLAIM_DATA } from '@app/shared/constants/error-codes.constants';
-import { DocumentsService } from '../documents/documents.service';
-import { TracingService } from '@app/shared/tracing/tracing.service';
+import { KafkaProducer } from '@app/shared/kafka/kafka.producer';
 
-/**
- * Handles the business logic for managing insurance claims.
- */
 @Injectable()
 export class ClaimsService {
-  /**
-   * Initializes the ClaimsService.
-   * @param prisma Inject PrismaService for claim data access.
-   * @param logger Initialize the logger.
-   * @param kafkaService Inject KafkaService for publishing claim events.
-   * @param plansService Inject PlansService for plan data access.
-   * @param insuranceService Inject InsuranceService for insurance verification.
-   * @param documentsService Inject DocumentsService for document management.
-   * @param tracingService Inject TracingService for tracing.
-   */
+  private readonly logger = new Logger(ClaimsService.name);
+
   constructor(
-    private prisma: PrismaService,
-    private readonly logger: LoggerService,
-    private readonly kafkaService: KafkaService,
+    @InjectRepository(Claim)
+    private readonly claimsRepository: Repository<Claim>,
     private readonly plansService: PlansService,
-    private readonly insuranceService: InsuranceService,
-    private readonly documentsService: DocumentsService,
-    private readonly tracingService: TracingService,
-  ) {
-    this.logger.log('ClaimsService initialized', 'ClaimsService');
-  }
+    private readonly kafkaProducer: KafkaProducer
+  ) {}
 
   /**
-   * Creates a new claim.
-   * @param userId Create a new claim entity.
-   * @param createClaimDto Set the claim properties from the DTO.
-   * @returns The newly created claim.
+   * Create a new insurance claim
+   * @param userId The ID of the user creating the claim
+   * @param createClaimDto The claim data
+   * @returns The created claim
    */
   async create(userId: string, createClaimDto: CreateClaimDto): Promise<Claim> {
-    return this.tracingService.createSpan('ClaimsService.create', async () => {
-      this.logger.log(`Creating claim for user: ${userId}`, 'ClaimsService');
-      try {
-        // Verify the plan exists and belongs to the user
-        const plan = await this.plansService.findOne(createClaimDto.planId);
-        if (!plan) {
-          throw new AppException(
-            `Plan not found: ${createClaimDto.planId}`,
-            ErrorType.BUSINESS,
-            'PLAN_NOT_FOUND',
-            { planId: createClaimDto.planId }
-          );
-        }
-        if (plan.userId !== userId) {
-          throw new AppException(
-            'Cannot submit a claim for a plan that does not belong to you',
-            ErrorType.BUSINESS,
-            'PLAN_CLAIM_UNAUTHORIZED',
-            { userId, planId: createClaimDto.planId }
-          );
-        }
-        // Create the claim
-        const claim = await this.prisma.claim.create({
-          data: {
-            userId,
-            planId: createClaimDto.planId,
-            type: createClaimDto.type,
-            amount: createClaimDto.amount,
-            status: 'SUBMITTED', // Initial status
-            procedureCode: createClaimDto.procedureCode || null,
-          },
-        });
-        // Handle document attachments if provided
-        if (createClaimDto.documentIds && createClaimDto.documentIds.length > 0) {
-          for (const docId of createClaimDto.documentIds) {
-            // Verify document exists and is accessible to the user
-            const document = await this.documentsService.findOne(docId);
-            if (!document) {
-              this.logger.warn(`Document not found: ${docId}`, 'ClaimsService');
-              continue;
-            }
-            
-            // Update document to associate with this claim
-            await this.prisma.document.update({
-              where: { id: docId },
-              data: {
-                entity_id: claim.id,
-                entity_type: 'claim',
-              }
-            });
-          }
-        }
-        // Publish claim creation event for gamification
-        await this.kafkaService.produce(
-          'claims-events',
-          {
-            eventType: 'CLAIM_SUBMITTED',
-            userId,
-            claimId: claim.id,
-            claimType: claim.type,
-            amount: claim.amount,
-            timestamp: new Date().toISOString()
-          },
-          claim.id
-        );
-        this.logger.log(`Claim created successfully: ${claim.id}`, 'ClaimsService');
-        
-        // Retrieve the complete claim with associated documents
-        const fullClaim = await this.findOne(claim.id);
-        
-        // Since we just created the claim, we know it exists
-        if (!fullClaim) {
-          throw new AppException(
-            'Failed to retrieve created claim',
-            ErrorType.TECHNICAL,
-            'PLAN_CLAIM_UNEXPECTED_ERROR',
-            { claimId: claim.id }
-          );
-        }
-        
-        return fullClaim;
-      } catch (error: unknown) {
-        if (error instanceof AppException) {
-          throw error;
-        }
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        const errorStack = error instanceof Error ? error.stack : undefined;
-        
-        this.logger.error(`Failed to create claim: ${errorMessage}`, errorStack, 'ClaimsService');
-        throw new AppException(
-          'Failed to create claim',
-          ErrorType.TECHNICAL,
-          PLAN_INVALID_CLAIM_DATA,
-          { userId, dto: createClaimDto },
-          error instanceof Error ? error : undefined
-        );
+    try {
+      // Validate the user has access to the plan
+      await this.validateUserPlanAccess(userId, createClaimDto.planId);
+      
+      // Create a new claim
+      const claim = this.claimsRepository.create({
+        userId,
+        planId: createClaimDto.planId,
+        type: createClaimDto.type,
+        amount: createClaimDto.amount,
+        procedureCode: createClaimDto.procedureCode || '',
+        status: 'submitted',
+        submittedAt: new Date()
+      });
+      
+      const savedClaim = await this.claimsRepository.save(claim);
+      
+      // Publish event to Kafka
+      await this.publishClaimEvent('claim.submitted', savedClaim);
+      
+      return savedClaim;
+    } catch (error: unknown) {
+      // If it's already an AppException, rethrow it
+      if (error instanceof AppException) {
+        throw error as any;
       }
-    });
+      
+      // Otherwise, wrap the error
+      const errorMessage = error instanceof Error ? (error as any).message : String(error);
+      const errorStack = error instanceof Error ? (error as any).stack : undefined;
+      
+      this.logger.error(`Failed to create claim: ${errorMessage}`, errorStack);
+      throw new AppException(ErrorType.PLAN_TECHNICAL_ERROR, { userId, dto: createClaimDto } as any,
+        ErrorType.TECHNICAL
+      );
+    }
   }
 
   /**
-   * Retrieves all claims for a user based on the provided filter and pagination.
-   * @param userId Retrieve all claims using the prisma.
-   * @param filterDto Filter parameters for claims query
-   * @param paginationDto Pagination parameters for claims query
-   * @returns A list of Claim entities.
+   * Get all claims with filtering and pagination
+   * @param userId The user ID
+   * @param filterDto Optional filter criteria
+   * @param paginationDto Optional pagination parameters
+   * @returns Paginated list of claims
    */
-  async findAll(userId: string, filterDto?: FilterDto, paginationDto?: PaginationDto): Promise<Claim[]> {
-    return this.tracingService.createSpan('ClaimsService.findAll', async () => {
-      this.logger.log(`Finding claims for user: ${userId}`, 'ClaimsService');
-      try {
-        // Build query conditions
-        const where: any = { userId };
-        // Apply additional filters if provided
-        if (filterDto?.where) {
-          Object.assign(where, filterDto.where);
-        }
-        // Build ordering
-        const orderBy: any = filterDto?.orderBy || { submittedAt: 'desc' };
-        // Apply pagination
-        const skip = paginationDto?.skip || 
-          (paginationDto?.page ? (paginationDto.page - 1) * (paginationDto.limit || 10) : undefined);
-        const take = paginationDto?.limit;
-        // Query claims with documents
-        const claims = await this.prisma.claim.findMany({
-          where,
-          orderBy,
-          skip,
-          take,
-          include: {
-            documents: true,
-          }
-        });
-        this.logger.log(`Found ${claims.length} claims for user: ${userId}`, 'ClaimsService');
-        return claims;
-      } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        const errorStack = error instanceof Error ? error.stack : undefined;
-        
-        this.logger.error(`Failed to fetch claims: ${errorMessage}`, errorStack, 'ClaimsService');
-        throw new AppException(
-          'Failed to fetch claims',
-          ErrorType.TECHNICAL,
-          'PLAN_CLAIM_FETCH_FAILED',
-          { userId, filterDto, paginationDto },
-          error instanceof Error ? error : undefined
-        );
+  async findAll(
+    userId: string,
+    filterDto?: FilterDto,
+    paginationDto?: PaginationDto
+  ): Promise<{ data: Claim[]; total: number; page: number; limit: number }> {
+    try {
+      // Build base query
+      const where: any = { userId };
+      
+      // Apply additional filters
+      if (filterDto?.where) {
+        Object.assign(where, filterDto.where);
       }
-    });
+      
+      // Define order
+      const orderBy: any = filterDto?.orderBy || { submittedAt: 'desc' };
+      
+      // Set up pagination
+      const skip = paginationDto?.skip ||
+        (paginationDto?.page ? (paginationDto.page - 1) * (paginationDto?.limit || 10) : 0);
+      const take = paginationDto?.limit || 10;
+      
+      // Get total count
+      const total = await this.claimsRepository.count({ where });
+      
+      // Get data with pagination
+      const claims = await this.claimsRepository.find({
+        where,
+        order: orderBy,
+        skip,
+        take
+      });
+      
+      return {
+        data: claims,
+        total,
+        page: paginationDto?.page || 1,
+        limit: take
+      };
+    } catch (error: unknown) {
+      // Log and wrap error
+      const errorMessage = error instanceof Error ? (error as any).message : String(error);
+      const errorStack = error instanceof Error ? (error as any).stack : undefined;
+      
+      this.logger.error(`Failed to retrieve claims: ${errorMessage}`, errorStack);
+      throw new AppException(ErrorType.PLAN_TECHNICAL_ERROR, { userId, filterDto, paginationDto } as any,
+        ErrorType.TECHNICAL
+      );
+    }
   }
 
   /**
-   * Retrieves a single claim by its ID.
-   * @param id Retrieve the claim using the prisma.
-   * @returns The Claim entity, if found.
+   * Get a specific claim by ID
+   * @param id The claim ID
+   * @returns The claim
    */
-  async findOne(id: string): Promise<Claim | null> {
-    return this.tracingService.createSpan('ClaimsService.findOne', async () => {
-      this.logger.log(`Finding claim with ID: ${id}`, 'ClaimsService');
-      try {
-        const claim = await this.prisma.claim.findUnique({
-          where: { id },
-          include: {
-            documents: true,
-          }
-        });
-        if (!claim) {
-          this.logger.log(`Claim not found: ${id}`, 'ClaimsService');
-          return null;
-        }
-        return claim;
-      } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        const errorStack = error instanceof Error ? error.stack : undefined;
-        
-        this.logger.error(`Failed to fetch claim: ${errorMessage}`, errorStack, 'ClaimsService');
-        throw new AppException(
-          'Failed to fetch claim details',
-          ErrorType.TECHNICAL,
-          'PLAN_CLAIM_FETCH_FAILED',
-          { id },
-          error instanceof Error ? error : undefined
+  async findOne(id: string): Promise<Claim> {
+    try {
+      const claim = await this.claimsRepository.findOne({ where: { id } });
+      
+      if (!claim) {
+        throw new AppException(ErrorType.PLAN_CLAIM_NOT_FOUND, { id } as any,
+          ErrorType.BUSINESS
         );
       }
-    });
+      
+      return claim;
+    } catch (error: unknown) {
+      // If it's already an AppException, rethrow it
+      if (error instanceof AppException) {
+        throw error as any;
+      }
+      
+      // Otherwise, wrap the error
+      const errorMessage = error instanceof Error ? (error as any).message : String(error);
+      const errorStack = error instanceof Error ? (error as any).stack : undefined;
+      
+      this.logger.error(`Failed to find claim: ${errorMessage}`, errorStack);
+      throw new AppException(ErrorType.PLAN_TECHNICAL_ERROR, { id } as any,
+        ErrorType.TECHNICAL
+      );
+    }
   }
 
   /**
-   * Updates an existing claim.
-   * @param id Retrieve the claim using the prisma.
-   * @param updateClaimDto Update the claim properties from the DTO.
-   * @returns The updated Claim entity.
+   * Update a claim
+   * @param id The claim ID
+   * @param updateClaimDto The updated claim data
+   * @returns The updated claim
    */
   async update(id: string, updateClaimDto: UpdateClaimDto): Promise<Claim> {
-    return this.tracingService.createSpan('ClaimsService.update', async () => {
-      this.logger.log(`Updating claim with ID: ${id}`, 'ClaimsService');
-      try {
-        // Check if claim exists
-        const existingClaim = await this.findOne(id);
-        if (!existingClaim) {
-          throw new AppException(
-            `Claim not found: ${id}`,
-            ErrorType.BUSINESS,
-            'PLAN_CLAIM_NOT_FOUND',
-            { id }
-          );
-        }
-        // Validate status transitions if status is being updated
-        if (updateClaimDto.status && updateClaimDto.status !== existingClaim.status) {
-          this.validateStatusTransition(existingClaim.status, updateClaimDto.status);
-        }
-        // Update the claim
-        const updatedClaim = await this.prisma.claim.update({
-          where: { id },
-          data: updateClaimDto,
-          include: {
-            documents: true,
-          }
-        });
-        // If status changed to APPROVED, publish event for gamification
-        if (updateClaimDto.status === 'APPROVED' && existingClaim.status !== 'APPROVED') {
-          await this.kafkaService.produce(
-            'claims-events',
-            {
-              eventType: 'CLAIM_APPROVED',
-              userId: updatedClaim.userId,
-              claimId: updatedClaim.id,
-              claimType: updatedClaim.type,
-              amount: updatedClaim.amount,
-              timestamp: new Date().toISOString()
-            },
-            updatedClaim.id
-          );
-        }
-        this.logger.log(`Claim updated successfully: ${id}`, 'ClaimsService');
-        return updatedClaim;
-      } catch (error: unknown) {
-        if (error instanceof AppException) {
-          throw error;
-        }
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        const errorStack = error instanceof Error ? error.stack : undefined;
-        
-        this.logger.error(`Failed to update claim: ${errorMessage}`, errorStack, 'ClaimsService');
-        throw new AppException(
-          'Failed to update claim',
-          ErrorType.TECHNICAL,
-          'PLAN_CLAIM_UPDATE_FAILED',
-          { id, updateClaimDto },
-          error instanceof Error ? error : undefined
+    try {
+      // Find the existing claim
+      const existingClaim = await this.findOne(id);
+      
+      // Check if claim is in a status that can be updated
+      if (!['submitted', 'information_required'].includes(existingClaim.status)) {
+        throw new AppException(ErrorType.PLAN_CLAIM_STATUS_INVALID, { id, status: existingClaim.status } as any,
+          ErrorType.BUSINESS
         );
       }
-    });
+      
+      // Update claim data
+      const updatedClaim = {
+        ...existingClaim,
+        ...updateClaimDto,
+        updatedAt: new Date()
+      } as Claim;
+      
+      // Add status update if needed
+      if (updateClaimDto.status && updateClaimDto.status !== existingClaim.status) {
+        this.validateStatusTransition(existingClaim.status, updateClaimDto.status);
+        
+        // Use notes instead of statusNote since it doesn't exist in UpdateClaimDto
+        const note = updateClaimDto.notes || `Status updated to ${updateClaimDto.status}`;
+        
+        // Handle statusHistory property which doesn't exist in the entity
+        // We'll pass it directly to save() without type checking
+        const statusUpdate = {
+          status: updateClaimDto.status,
+          timestamp: new Date(),
+          note
+        };
+        
+        // We'll use any type to add properties that might not exist on the entity
+        const dynamicClaim = updatedClaim as any;
+        
+        if (!dynamicClaim.statusHistory) {
+          dynamicClaim.statusHistory = [];
+        } else if (!Array.isArray(dynamicClaim.statusHistory)) {
+          dynamicClaim.statusHistory = [];
+        }
+        
+        dynamicClaim.statusHistory.push(statusUpdate);
+        
+        // Set status specific timestamps based on the new status
+        // These properties may not exist on the entity but will be stored in the DB
+        switch (updateClaimDto.status) {
+          case 'approved':
+            dynamicClaim.approvedAt = new Date();
+            break;
+          case 'rejected':
+            dynamicClaim.rejectedAt = new Date();
+            break;
+          case 'paid':
+            dynamicClaim.paidAt = new Date();
+            break;
+        }
+      }
+      
+      // Save the updated claim
+      const result = await this.claimsRepository.save(updatedClaim);
+      
+      // Publish event to Kafka
+      await this.publishClaimEvent('claim.updated', result);
+      
+      return result;
+    } catch (error: unknown) {
+      // If it's already an AppException, rethrow it
+      if (error instanceof AppException) {
+        throw error as any;
+      }
+      
+      // Otherwise, wrap the error
+      const errorMessage = error instanceof Error ? (error as any).message : String(error);
+      const errorStack = error instanceof Error ? (error as any).stack : undefined;
+      
+      this.logger.error(`Failed to update claim: ${errorMessage}`, errorStack);
+      throw new AppException(ErrorType.PLAN_TECHNICAL_ERROR, { id, updateClaimDto } as any,
+        ErrorType.TECHNICAL
+      );
+    }
   }
 
   /**
-   * Deletes a claim by its ID.
-   * @param id Delete the claim using the prisma.
+   * Delete a claim
+   * @param id The claim ID
+   * @returns True if the claim was deleted
    */
-  async delete(id: string): Promise<void> {
-    return this.tracingService.createSpan('ClaimsService.delete', async () => {
-      this.logger.log(`Deleting claim with ID: ${id}`, 'ClaimsService');
-      try {
-        // Check if claim exists
-        const existingClaim = await this.findOne(id);
-        if (!existingClaim) {
-          throw new AppException(
-            `Claim not found: ${id}`,
-            ErrorType.BUSINESS,
-            'PLAN_CLAIM_NOT_FOUND',
-            { id }
-          );
-        }
-        // Check if the claim can be deleted based on its status
-        if (!['DRAFT', 'SUBMITTED'].includes(existingClaim.status)) {
-          throw new AppException(
-            `Cannot delete claim in ${existingClaim.status} status`,
-            ErrorType.BUSINESS,
-            'PLAN_CLAIM_DELETE_INVALID_STATUS',
-            { id, status: existingClaim.status }
-          );
-        }
-        // Delete the claim
-        await this.prisma.claim.delete({
-          where: { id }
-        });
-        this.logger.log(`Claim deleted successfully: ${id}`, 'ClaimsService');
-      } catch (error: unknown) {
-        if (error instanceof AppException) {
-          throw error;
-        }
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        const errorStack = error instanceof Error ? error.stack : undefined;
-        
-        this.logger.error(`Failed to delete claim: ${errorMessage}`, errorStack, 'ClaimsService');
-        throw new AppException(
-          'Failed to delete claim',
-          ErrorType.TECHNICAL,
-          'PLAN_CLAIM_DELETE_FAILED',
-          { id },
-          error instanceof Error ? error : undefined
+  async remove(id: string): Promise<boolean> {
+    try {
+      // Find the existing claim
+      const existingClaim = await this.findOne(id);
+      
+      // Check if claim can be deleted (only in submitted status)
+      if (existingClaim.status !== 'submitted') {
+        throw new AppException(ErrorType.PLAN_CLAIM_STATUS_INVALID, { id } as any,
+          ErrorType.BUSINESS
         );
       }
-    });
+      
+      // Delete the claim
+      const result = await this.claimsRepository.delete(id);
+      
+      // Publish event to Kafka
+      await this.publishClaimEvent('claim.deleted', existingClaim);
+      
+      return result.affected !== null && result.affected !== undefined ? result.affected > 0 : false;
+    } catch (error: unknown) {
+      // If it's already an AppException, rethrow it
+      if (error instanceof AppException) {
+        throw error as any;
+      }
+      
+      // Otherwise, wrap the error
+      const errorMessage = error instanceof Error ? (error as any).message : String(error);
+      const errorStack = error instanceof Error ? (error as any).stack : undefined;
+      
+      this.logger.error(`Failed to delete claim: ${errorMessage}`, errorStack);
+      throw new AppException(ErrorType.PLAN_TECHNICAL_ERROR, { id } as any,
+        ErrorType.TECHNICAL
+      );
+    }
   }
 
   /**
-   * Validates if a status transition is allowed.
-   * @private
-   * @param currentStatus Current claim status
-   * @param newStatus Target claim status
+   * Validate that a user has access to a plan
+   * @param userId The user ID
+   * @param planId The plan ID
+   */
+  private async validateUserPlanAccess(userId: string, planId: string): Promise<void> {
+    try {
+      // Get the plan
+      const plan = await this.plansService.findOne(planId);
+      
+      // Check if the plan belongs to the user
+      if (plan.userId !== userId) {
+        throw new AppException(ErrorType.PLAN_UNAUTHORIZED_ACCESS, { userId, planId } as any,
+          ErrorType.BUSINESS
+        );
+      }
+    } catch (error: unknown) {
+      if (error instanceof AppException) {
+        throw error as any;
+      }
+      
+      const errorMessage = error instanceof Error ? (error as any).message : String(error);
+      const errorStack = error instanceof Error ? (error as any).stack : undefined;
+      
+      this.logger.error(`Failed to validate plan access: ${errorMessage}`, errorStack);
+      throw new AppException(ErrorType.PLAN_TECHNICAL_ERROR, { userId, planId: planId } as any,
+        ErrorType.TECHNICAL
+      );
+    }
+  }
+
+  /**
+   * Validate that the status transition is valid
+   * @param currentStatus The current status
+   * @param newStatus The new status
    */
   private validateStatusTransition(currentStatus: string, newStatus: string): void {
-    // Define allowed transitions
-    const allowedTransitions: Record<string, string[]> = {
-      'DRAFT': ['SUBMITTED', 'CANCELLED'],
-      'SUBMITTED': ['UNDER_REVIEW', 'REJECTED'],
-      'UNDER_REVIEW': ['ADDITIONAL_INFO_REQUIRED', 'APPROVED', 'DENIED'],
-      'ADDITIONAL_INFO_REQUIRED': ['UNDER_REVIEW', 'EXPIRED'],
-      'APPROVED': ['PROCESSING'],
-      'PROCESSING': ['COMPLETED', 'FAILED'],
-      'FAILED': ['PROCESSING'],
-      'DENIED': ['APPEALED'],
-      'APPEALED': ['UNDER_REVIEW', 'FINAL_DENIAL'],
+    // Define valid transitions
+    const validTransitions: Record<string, string[]> = {
+      submitted: ['under_review', 'information_required', 'approved', 'rejected'],
+      information_required: ['under_review', 'approved', 'rejected'],
+      under_review: ['information_required', 'approved', 'rejected'],
+      approved: ['paid'],
+      rejected: [],
+      paid: []
     };
-    // Check if transition is allowed
-    if (!allowedTransitions[currentStatus]?.includes(newStatus)) {
-      throw new AppException(
-        `Cannot transition claim from ${currentStatus} to ${newStatus}`,
-        ErrorType.BUSINESS,
-        'PLAN_CLAIM_INVALID_STATUS_TRANSITION',
-        { currentStatus, newStatus }
+    
+    // Check if transition is valid
+    if (!validTransitions[currentStatus]?.includes(newStatus)) {
+      throw new AppException(ErrorType.PLAN_CLAIM_STATUS_INVALID, { currentStatus, newStatus } as any,
+        ErrorType.BUSINESS
       );
+    }
+  }
+
+  /**
+   * Publish claim event to Kafka
+   * @param eventType The type of event
+   * @param claim The claim data
+   */
+  private async publishClaimEvent(eventType: string, claim: Claim): Promise<void> {
+    try {
+      // Use 'amount' instead of 'claimAmount' since that's the property name in the entity
+      await this.kafkaProducer.send('plan.claims', {
+        eventType,
+        timestamp: new Date().toISOString(),
+        claim: {
+          id: claim.id,
+          userId: claim.userId,
+          planId: claim.planId,
+          status: claim.status,
+          amount: claim.amount, // Use correct property name
+          procedureCode: claim.procedureCode,
+          submittedAt: claim.submittedAt
+        }
+      });
+      
+      this.logger.debug(`Published event ${eventType} for claim ${claim.id}`);
+    } catch (error: unknown) {
+      // Only log the error, don't throw
+      const errorMessage = error instanceof Error ? (error as any).message : String(error);
+      const errorStack = error instanceof Error ? (error as any).stack : undefined;
+      
+      this.logger.error(`Failed to publish claim event: ${errorMessage}`, errorStack);
     }
   }
 }

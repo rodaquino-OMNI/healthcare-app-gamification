@@ -1,297 +1,229 @@
-import { Injectable, Inject, BadRequestException, NotFoundException } from '@nestjs/common'; // @nestjs/common v9.0.0+
-import { GoogleFitAdapter } from '../adapters/googlefit.adapter';
-import { HealthKitAdapter } from '../adapters/healthkit.adapter';
-import { Configuration } from '../../../config/configuration';
-import { LoggerService } from '@shared/logging/logger.service';
-import { Service } from '@shared/interfaces/service.interface';
-import { DeviceConnection } from '../../../devices/entities/device-connection.entity';
-import { ErrorCodes } from '@shared/constants/error-codes.constants';
-import { HealthMetric } from '../../../health/entities/health-metric.entity';
-import { PrismaService } from '@shared/database/prisma.service';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ErrorType } from '@app/shared/exceptions/error.types';
+import { Injectable } from '@nestjs/common';
+import { GoogleFitAdapter } from './adapters/googlefit.adapter';
+import { HealthKitAdapter } from './adapters/healthkit.adapter';
+import { Configuration } from '../../config/configuration';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { Service } from '@app/shared/interfaces/service.interface';
+import { DeviceConnection } from '../../devices/entities/device-connection.entity';
+import * as ErrorCodes from '@app/shared/constants/error-codes.constants';
+import { HealthMetric } from '../../health/entities/health-metric.entity';
+import { PrismaService } from '@app/shared/database/prisma.service';
 
 /**
- * Abstract class defining the interface for wearable device adapters.
- * All wearable-specific adapters must extend this class and implement its methods.
+ * Abstract class for wearable device adapters
  */
 export abstract class WearableAdapter {
-  /**
-   * Initiates the connection to a wearable device.
-   * @param userId - The user ID to associate with the device connection
-   * @returns A promise resolving to a DeviceConnection entity
-   */
-  abstract connect(userId: string): Promise<DeviceConnection>;
-
-  /**
-   * Retrieves health metrics from a wearable device for a specific date range.
-   * @param userId - The user ID associated with the device connection
-   * @param startDate - The start date for retrieving metrics
-   * @param endDate - The end date for retrieving metrics
-   * @returns A promise resolving to an array of HealthMetric entities
-   */
-  abstract getHealthMetrics(userId: string, startDate: Date, endDate: Date): Promise<HealthMetric[]>;
-
-  /**
-   * Disconnects a wearable device from a user's profile.
-   * @param userId - The user ID associated with the device connection
-   * @returns A promise that resolves when the device has been disconnected
-   */
-  abstract disconnect(userId: string): Promise<void>;
+  abstract connect(userId: string, authToken: string, refreshToken?: string): Promise<DeviceConnection>;
+  abstract getHealthMetrics(userId: string, deviceConnection: DeviceConnection, startTime: Date, endTime: Date): Promise<HealthMetric[]>;
+  abstract disconnect(userId: string, deviceConnection: DeviceConnection): Promise<boolean>;
 }
 
 /**
- * Service for managing wearable device integrations.
- * Provides a unified interface for connecting to different wearable APIs and retrieving health metrics.
- * Abstracts the complexities of each wearable's specific API and provides consistent data formats.
+ * Service for integrating with wearable devices and health tracking platforms
  */
 @Injectable()
-export class WearablesService {
+export class WearablesService implements Service<any, any, any> {
   private readonly logger: LoggerService;
-  private googleFitAdapter: GoogleFitAdapter;
-  private healthKitAdapter: HealthKitAdapter;
-  private configService: Configuration;
-  private prisma: PrismaService;
+  private readonly adapters: Map<string, WearableAdapter> = new Map();
 
   /**
-   * Initializes the WearablesService.
-   * @param logger - The logger service for logging events
-   * @param configService - The configuration service for accessing app settings
-   * @param prisma - The Prisma service for database operations
+   * Constructs a new WearablesService instance
+   * @param googleFitAdapter The Google Fit adapter
+   * @param healthKitAdapter The Apple HealthKit adapter
+   * @param configService The configuration service
+   * @param logger The logger service
+   * @param prisma The Prisma service for database access
    */
   constructor(
-    private readonly loggerService: LoggerService,
+    private readonly googleFitAdapter: GoogleFitAdapter,
+    private readonly healthKitAdapter: HealthKitAdapter,
     private readonly configService: Configuration,
-    private readonly prismaService: PrismaService
+    loggerService: LoggerService,
+    private readonly prisma: PrismaService
   ) {
-    this.logger = loggerService.createLogger('WearablesService');
-    this.googleFitAdapter = new GoogleFitAdapter();
-    this.healthKitAdapter = new HealthKitAdapter();
-    this.configService = configService;
-    this.prisma = prismaService;
+    this.logger = loggerService.createLogger(WearablesService.name);
+    
+    // Register adapters
+    this.adapters.set('GOOGLE_FIT', googleFitAdapter);
+    this.adapters.set('HEALTH_KIT', healthKitAdapter);
   }
 
   /**
-   * Connects a new wearable device to a user's health profile.
-   * @param recordId - The health record ID to connect the device to
-   * @param deviceType - The type of wearable device to connect
-   * @returns A promise resolving to the newly created DeviceConnection entity
+   * Connects a wearable device to a user's health record
+   * @param userId User ID
+   * @param recordId Health record ID
+   * @param deviceType Type of device (e.g., 'GOOGLE_FIT', 'HEALTH_KIT')
+   * @param authToken Authentication token
+   * @param refreshToken Refresh token (optional)
    */
-  async connect(recordId: string, deviceType: string): Promise<DeviceConnection> {
-    this.logger.log(`Connecting device type ${deviceType} to record ${recordId}`);
-    
-    // Validate the device type
-    this.validateDeviceType(deviceType);
-    
-    try {
-      // Get the appropriate adapter for the device type
-      const adapter = this.getAdapter(deviceType);
-      
-      // Connect to the device using the adapter
-      const connection = await adapter.connect(recordId);
-      
-      // Save the connection in the database
-      const deviceConnection = await this.createDeviceConnection(
-        recordId,
-        deviceType,
-        connection.deviceId
-      );
-      
-      this.logger.log(`Successfully connected ${deviceType} to record ${recordId}`);
-      return deviceConnection;
-    } catch (error) {
-      this.logger.error(
-        `Failed to connect ${deviceType} to record ${recordId}: ${error.message}`,
-        error.stack
-      );
-      throw error;
-    }
-  }
-
-  /**
-   * Retrieves health metrics from a wearable device for a specific user and date range.
-   * @param recordId - The health record ID associated with the device
-   * @param startDate - The start date for the metrics query
-   * @param endDate - The end date for the metrics query
-   * @param deviceType - The type of wearable device to retrieve metrics from
-   * @returns A promise resolving to an array of HealthMetric entities
-   */
-  async getHealthMetrics(
-    recordId: string,
-    startDate: Date,
-    endDate: Date,
-    deviceType: string
-  ): Promise<HealthMetric[]> {
-    this.logger.log(
-      `Retrieving health metrics for record ${recordId} from ${deviceType} ` +
-      `between ${startDate.toISOString()} and ${endDate.toISOString()}`
-    );
-    
-    // Validate the device type
-    this.validateDeviceType(deviceType);
-    
-    try {
-      // Verify the device connection exists
-      const deviceConnection = await this.findDeviceConnection(recordId, deviceType);
-      
-      // Get the appropriate adapter for the device type
-      const adapter = this.getAdapter(deviceType);
-      
-      // Retrieve health metrics using the adapter
-      const metrics = await adapter.getHealthMetrics(recordId, startDate, endDate);
-      
-      // Update the last sync timestamp
-      await this.prisma.deviceConnection.update({
-        where: { 
-          id: deviceConnection.id 
-        },
-        data: { 
-          lastSync: new Date() 
-        }
-      });
-      
-      this.logger.log(`Successfully retrieved ${metrics.length} metrics for record ${recordId} from ${deviceType}`);
-      return metrics;
-    } catch (error) {
-      this.logger.error(
-        `Failed to retrieve metrics for record ${recordId} from ${deviceType}: ${error.message}`,
-        error.stack
-      );
-      throw error;
-    }
-  }
-
-  /**
-   * Disconnects a wearable device from a user's health profile.
-   * @param recordId - The health record ID associated with the device
-   * @param deviceType - The type of wearable device to disconnect
-   * @returns A promise that resolves when the device has been disconnected
-   */
-  async disconnect(recordId: string, deviceType: string): Promise<void> {
-    this.logger.log(`Disconnecting ${deviceType} from record ${recordId}`);
-    
-    // Validate the device type
-    this.validateDeviceType(deviceType);
-    
-    try {
-      // Verify the device connection exists
-      const deviceConnection = await this.findDeviceConnection(recordId, deviceType);
-      
-      // Get the appropriate adapter for the device type
-      const adapter = this.getAdapter(deviceType);
-      
-      // Disconnect the device using the adapter
-      await adapter.disconnect(recordId);
-      
-      // Remove the device connection from the database
-      await this.deleteDeviceConnection(recordId, deviceType);
-      
-      this.logger.log(`Successfully disconnected ${deviceType} from record ${recordId}`);
-    } catch (error) {
-      this.logger.error(
-        `Failed to disconnect ${deviceType} from record ${recordId}: ${error.message}`,
-        error.stack
-      );
-      throw error;
-    }
-  }
-
-  /**
-   * Validates the provided device type against the supported device types in the configuration.
-   * @param deviceType - The device type to validate
-   * @throws BadRequestException if the device type is not supported
-   */
-  validateDeviceType(deviceType: string): void {
-    // Get the list of supported device types from the configuration
-    const supportedDeviceTypes = this.configService.get('wearablesSupported')?.split(',') || [];
-    
-    if (!supportedDeviceTypes.includes(deviceType.toLowerCase())) {
-      this.logger.warn(`Unsupported device type: ${deviceType}`);
-      throw new BadRequestException(
-        `Unsupported device type: ${deviceType}. Supported types are: ${supportedDeviceTypes.join(', ')}.`
-      );
-    }
-  }
-
-  /**
-   * Returns the appropriate adapter for the given device type.
-   * @param deviceType - The device type to get the adapter for
-   * @returns The appropriate adapter for the given device type
-   * @throws BadRequestException if the device type is not supported
-   */
-  getAdapter(deviceType: string): GoogleFitAdapter | HealthKitAdapter {
-    const type = deviceType.toLowerCase();
-    
-    if (type === 'googlefit') {
-      return this.googleFitAdapter;
-    } else if (type === 'healthkit') {
-      return this.healthKitAdapter;
-    }
-    
-    throw new BadRequestException(`Unsupported device type: ${deviceType}`);
-  }
-
-  /**
-   * Finds a device connection for a specific user and device type.
-   * @param recordId - The health record ID to find the connection for
-   * @param deviceType - The device type to find the connection for
-   * @returns A promise resolving to the found DeviceConnection entity
-   * @throws NotFoundException if no connection is found
-   */
-  async findDeviceConnection(recordId: string, deviceType: string): Promise<DeviceConnection> {
-    const connection = await this.prisma.deviceConnection.findFirst({
-      where: {
-        recordId,
-        deviceType: deviceType.toLowerCase()
-      }
-    });
-    
-    if (!connection) {
-      throw new NotFoundException(
-        `No ${deviceType} connection found for record ${recordId}`
-      );
-    }
-    
-    return connection as DeviceConnection;
-  }
-
-  /**
-   * Creates a new device connection in the database.
-   * @param recordId - The health record ID to create the connection for
-   * @param deviceType - The device type to create the connection for
-   * @param deviceId - The device ID to associate with the connection
-   * @returns A promise resolving to the newly created DeviceConnection entity
-   */
-  async createDeviceConnection(
+  async connectDevice(
+    userId: string,
     recordId: string,
     deviceType: string,
-    deviceId: string
+    authToken: string,
+    refreshToken?: string
   ): Promise<DeviceConnection> {
-    const newConnection = await this.prisma.deviceConnection.create({
-      data: {
-        recordId,
-        deviceType: deviceType.toLowerCase(),
-        deviceId,
-        status: 'connected',
-        lastSync: new Date()
+    this.logger.log('info', `Connecting ${deviceType} to record ${recordId}`);
+
+    try {
+      const adapter = this.adapters.get(deviceType);
+      
+      if (!adapter) {
+        throw new Error(`${ErrorType.HEALTH_002}: Unsupported device type: ${deviceType}`);
       }
-    });
-    
-    return newConnection as DeviceConnection;
+
+      const deviceConnection = await adapter.connect(userId, authToken, refreshToken);
+      
+      // Persist the device connection in the database
+      const persistedConnection = await (this.prisma as any).deviceConnection.create({
+        data: {
+          recordId,
+          userId,
+          deviceType,
+          status: deviceConnection.status,
+          connectionData: (deviceConnection as any).connectionData,
+          lastSyncedAt: deviceConnection.lastSync
+        }
+      });
+
+      this.logger.log('info', `Connected ${deviceType} to record ${recordId}`);
+      
+      return persistedConnection;
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+      const errorStack = error instanceof Error ? (error as any).stack : undefined;
+      
+      this.logger.error(
+        `Failed to connect ${deviceType} to record ${recordId}: ${errorMessage}`,
+        errorStack
+      );
+      
+      throw error as any;
+    }
   }
 
   /**
-   * Deletes a device connection from the database.
-   * @param recordId - The health record ID associated with the connection
-   * @param deviceType - The device type associated with the connection
-   * @returns A promise that resolves when the device connection has been deleted
+   * Retrieves health metrics from a connected wearable device
+   * @param userId User ID
+   * @param recordId Health record ID
+   * @param deviceType Type of device (e.g., 'GOOGLE_FIT', 'HEALTH_KIT')
+   * @param startTime Start time for data retrieval
+   * @param endTime End time for data retrieval
    */
-  async deleteDeviceConnection(recordId: string, deviceType: string): Promise<void> {
-    await this.prisma.deviceConnection.deleteMany({
-      where: {
-        recordId,
-        deviceType: deviceType.toLowerCase()
-      }
-    });
+  async getHealthMetrics(
+    userId: string,
+    recordId: string,
+    deviceType: string,
+    startTime: Date,
+    endTime: Date
+  ): Promise<HealthMetric[]> {
+    this.logger.log('info', `Retrieving metrics from ${deviceType} for record ${recordId}`);
     
-    this.logger.log(`Deleted ${deviceType} connection for record ${recordId}`);
+    try {
+      const adapter = this.adapters.get(deviceType);
+      
+      if (!adapter) {
+        throw new Error(`${ErrorType.HEALTH_001}: Unsupported device type: ${deviceType}`);
+      }
+
+      // Retrieve the device connection from the database
+      const deviceConnection = await (this.prisma as any).deviceConnection.findFirst({
+        where: {
+          recordId,
+          userId,
+          deviceType,
+          status: 'CONNECTED'
+        }
+      });
+
+      if (!deviceConnection) {
+        throw new Error(`${ErrorType.HEALTH_001}: No active ${deviceType} connection found for record ${recordId}`);
+      }
+
+      const healthMetrics = await adapter.getHealthMetrics(userId, deviceConnection, startTime, endTime);
+      
+      // Update the last synced timestamp
+      await (this.prisma as any).deviceConnection.update({
+        where: { id: deviceConnection.id },
+        data: { lastSyncedAt: new Date() }
+      });
+
+      this.logger.log('info', `Retrieved ${healthMetrics.length} metrics from ${deviceType} for record ${recordId}`);
+      
+      return healthMetrics;
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+      const errorStack = error instanceof Error ? (error as any).stack : undefined;
+      
+      this.logger.error(
+        `Failed to retrieve metrics for record ${recordId} from ${deviceType}: ${errorMessage}`,
+        errorStack
+      );
+      
+      throw error as any;
+    }
+  }
+
+  /**
+   * Disconnects a wearable device from a user's health record
+   * @param userId User ID
+   * @param recordId Health record ID
+   * @param deviceType Type of device (e.g., 'GOOGLE_FIT', 'HEALTH_KIT')
+   */
+  async disconnectDevice(
+    userId: string,
+    recordId: string,
+    deviceType: string
+  ): Promise<boolean> {
+    this.logger.log('info', `Disconnecting ${deviceType} from record ${recordId}`);
+    
+    try {
+      const adapter = this.adapters.get(deviceType);
+      
+      if (!adapter) {
+        throw new Error(`${ErrorType.HEALTH_002}: Unsupported device type: ${deviceType}`);
+      }
+
+      // Retrieve the device connection from the database
+      const deviceConnection = await (this.prisma as any).deviceConnection.findFirst({
+        where: {
+          recordId,
+          userId,
+          deviceType,
+          status: 'CONNECTED'
+        }
+      });
+
+      if (!deviceConnection) {
+        this.logger.warn(`No active ${deviceType} connection found for record ${recordId}`);
+        return false;
+      }
+
+      const disconnected = await adapter.disconnect(userId, deviceConnection);
+      
+      if (disconnected) {
+        // Update the connection status in the database
+        await (this.prisma as any).deviceConnection.update({
+          where: { id: deviceConnection.id },
+          data: { status: 'DISCONNECTED' }
+        });
+      }
+
+      this.logger.log('info', `Disconnected ${deviceType} from record ${recordId}`);
+      
+      return disconnected;
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+      const errorStack = error instanceof Error ? (error as any).stack : undefined;
+      
+      this.logger.error(
+        `Failed to disconnect ${deviceType} from record ${recordId}: ${errorMessage}`,
+        errorStack
+      );
+      
+      throw error as any;
+    }
   }
 }

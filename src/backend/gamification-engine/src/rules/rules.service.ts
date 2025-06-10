@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 // Updated import paths to use the correct locations
@@ -80,8 +81,8 @@ export class RulesService implements OnModuleInit {
           await this.loadRules();
         } catch (error) {
           this.logger.error(
-            `Failed to refresh rules: ${error instanceof Error ? error.message : 'Unknown error'}`,
-            error instanceof Error ? error.stack : undefined,
+            `Failed to refresh rules: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
+            error instanceof Error ? (error as any).stack : undefined,
             'RulesService'
           );
         }
@@ -90,11 +91,11 @@ export class RulesService implements OnModuleInit {
       this.logger.log('RulesService initialized successfully', 'RulesService');
     } catch (error) {
       this.logger.error(
-        `Failed to initialize RulesService: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        error instanceof Error ? error.stack : undefined,
+        `Failed to initialize RulesService: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
+        error instanceof Error ? (error as any).stack : undefined,
         'RulesService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -125,7 +126,7 @@ export class RulesService implements OnModuleInit {
             this.logger.log(`Creating new profile for user: ${event.userId}`, 'RulesService');
             return this.profilesService.create(event.userId);
           }
-          throw error;
+          throw error as any;
         });
       
       // Evaluate each applicable rule
@@ -136,8 +137,8 @@ export class RulesService implements OnModuleInit {
       this.logger.log(`Completed processing event: ${event.type} for user ${event.userId}`, 'RulesService');
     } catch (error) {
       this.logger.error(
-        `Error processing event ${event.type} for user ${event.userId}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        error instanceof Error ? error.stack : undefined,
+        `Error processing event ${event.type} for user ${event.userId}: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
+        error instanceof Error ? (error as any).stack : undefined,
         'RulesService'
       );
     }
@@ -185,8 +186,8 @@ export class RulesService implements OnModuleInit {
       };
     } catch (error) {
       this.logger.error(
-        `Error processing rule ${ruleId}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        error instanceof Error ? error.stack : undefined,
+        `Error processing rule ${ruleId}: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
+        error instanceof Error ? (error as any).stack : undefined,
         'RulesService'
       );
       return { satisfied: false };
@@ -247,8 +248,8 @@ export class RulesService implements OnModuleInit {
       this.logger.log(`Rule ${rule.name} processed successfully`, 'RulesService');
     } catch (error) {
       this.logger.error(
-        `Error evaluating rule ${rule.name}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        error instanceof Error ? error.stack : undefined,
+        `Error evaluating rule ${rule.name}: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
+        error instanceof Error ? (error as any).stack : undefined,
         'RulesService'
       );
     }
@@ -277,8 +278,8 @@ export class RulesService implements OnModuleInit {
       return evaluateFunc(context) === true;
     } catch (error) {
       this.logger.error(
-        `Error evaluating condition: ${condition}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        error instanceof Error ? error.stack : undefined,
+        `Error evaluating condition: ${condition}: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
+        error instanceof Error ? (error as any).stack : undefined,
         'RulesService'
       );
       return false;
@@ -313,8 +314,8 @@ export class RulesService implements OnModuleInit {
       }
     } catch (error) {
       this.logger.error(
-        `Error executing action ${action.type}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        error instanceof Error ? error.stack : undefined,
+        `Error executing action ${action.type}: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
+        error instanceof Error ? (error as any).stack : undefined,
         'RulesService'
       );
     }
@@ -341,11 +342,11 @@ export class RulesService implements OnModuleInit {
       );
     } catch (error) {
       this.logger.error(
-        `Error awarding XP to user ${userId}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        error instanceof Error ? error.stack : undefined,
+        `Error awarding XP to user ${userId}: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
+        error instanceof Error ? (error as any).stack : undefined,
         'RulesService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -363,11 +364,11 @@ export class RulesService implements OnModuleInit {
       this.logger.log(`Successfully unlocked achievement ${achievementId} for user ${userId}`, 'RulesService');
     } catch (error) {
       this.logger.error(
-        `Error unlocking achievement ${achievementId} for user ${userId}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        error instanceof Error ? error.stack : undefined,
+        `Error unlocking achievement ${achievementId} for user ${userId}: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
+        error instanceof Error ? (error as any).stack : undefined,
         'RulesService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -454,11 +455,11 @@ export class RulesService implements OnModuleInit {
       this.logger.log(`Loaded ${this.rules.length} rules`, 'RulesService');
     } catch (error) {
       this.logger.error(
-        `Error loading rules: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        error instanceof Error ? error.stack : undefined,
+        `Error loading rules: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
+        error instanceof Error ? (error as any).stack : undefined,
         'RulesService'
       );
-      throw error;
+      throw error as any;
     }
   }
 }

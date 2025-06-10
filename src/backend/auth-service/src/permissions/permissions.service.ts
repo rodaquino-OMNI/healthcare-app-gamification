@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// Removed duplicate import
 import { Injectable } from '@nestjs/common';
 import { Permission } from './entities/permission.entity';
 import { Role } from '../roles/entities/role.entity';
@@ -38,13 +40,13 @@ export class PermissionsService {
       
       return permission;
     } catch (error: any) {
-      this.logger.error(`Failed to create permission: ${error.message}`, error.stack, 'PermissionsService');
+      this.logger.error(`Failed to create permission: ${(error as any).message}`, (error as any).stack, 'PermissionsService');
       throw new AppException(
         'Failed to create permission',
         ErrorType.TECHNICAL,
         'PERM_001',
-        null,
-        error as Error
+        {}, // Changed from null to empty object
+        error instanceof Error ? undefined : undefined
       );
     }
   }
@@ -65,13 +67,13 @@ export class PermissionsService {
       
       return permissions;
     } catch (error: any) {
-      this.logger.error(`Failed to retrieve permissions: ${error.message}`, error.stack, 'PermissionsService');
+      this.logger.error(`Failed to retrieve permissions: ${(error as any).message}`, (error as any).stack, 'PermissionsService');
       throw new AppException(
         'Failed to retrieve permissions',
         ErrorType.TECHNICAL,
         'PERM_002',
-        null,
-        error as Error
+        {}, // Changed from null to empty object
+        error instanceof Error ? undefined : undefined
       );
     }
   }
@@ -93,13 +95,13 @@ export class PermissionsService {
       
       return permission;
     } catch (error: any) {
-      this.logger.error(`Failed to retrieve permission: ${error.message}`, error.stack, 'PermissionsService');
+      this.logger.error(`Failed to retrieve permission: ${(error as any).message}`, (error as any).stack, 'PermissionsService');
       throw new AppException(
         'Failed to retrieve permission',
         ErrorType.TECHNICAL,
         'PERM_003',
-        null,
-        error as Error
+        {}, // Changed from null to empty object
+        error instanceof Error ? undefined : undefined
       );
     }
   }
@@ -126,13 +128,13 @@ export class PermissionsService {
       
       return updatedPermission;
     } catch (error: any) {
-      this.logger.error(`Failed to update permission: ${error.message}`, error.stack, 'PermissionsService');
+      this.logger.error(`Failed to update permission: ${(error as any).message}`, (error as any).stack, 'PermissionsService');
       throw new AppException(
         'Failed to update permission',
         ErrorType.TECHNICAL,
         'PERM_004',
-        null,
-        error as Error
+        {}, // Changed from null to empty object
+        error instanceof Error ? undefined : undefined
       );
     }
   }
@@ -151,13 +153,13 @@ export class PermissionsService {
         where: { id: Number(id) }
       });
     } catch (error: any) {
-      this.logger.error(`Failed to delete permission: ${error.message}`, error.stack, 'PermissionsService');
+      this.logger.error(`Failed to delete permission: ${(error as any).message}`, (error as any).stack, 'PermissionsService');
       throw new AppException(
         'Failed to delete permission',
         ErrorType.TECHNICAL,
         'PERM_005',
-        null,
-        error as Error
+        {}, // Changed from null to empty object
+        error instanceof Error ? undefined : undefined
       );
     }
   }

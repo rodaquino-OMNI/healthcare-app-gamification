@@ -26,8 +26,7 @@
       "@app/gamification/*": ["gamification-engine/src/*"],
       "@app/notifications": ["notification-service/src"],
       "@app/notifications/*": ["notification-service/src/*"],
-      "@prisma/*": ["shared/prisma/*"],
-      "@austa/*": ["packages/*"]
+      "@prisma/*": ["shared/prisma/*"]
     },
     "incremental": true,
     "skipLibCheck": true,
@@ -47,6 +46,7 @@
     "node_modules",
     "dist",
     "**/*.spec.ts",
-    "**/*.test.ts"
+    "**/*.test.ts",
+    "tools/generators/**/templates/**"
   ]
 }

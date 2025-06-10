@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
@@ -44,8 +45,8 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
       }
       return user;
     } catch (error: any) {
-      const errorMsg = error.message || 'Unknown authentication error';
-      const errorStack = error.stack || '';
+      const errorMsg = (error as any).message || 'Unknown authentication error';
+      const errorStack = (error as any).stack || '';
       this.logger.error(`Authentication failed for user ${email}: ${errorMsg}`, errorStack, 'LocalStrategy');
       
       throw new AppException(
@@ -53,7 +54,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
         ErrorType.VALIDATION,
         'AUTH_005',
         {},
-        error as Error
+        error instanceof Error ? undefined : undefined
       );
     }
   }

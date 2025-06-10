@@ -1,5 +1,5 @@
-import { User } from 'src/backend/auth-service/src/users/entities/user.entity';
-import { Provider } from 'src/backend/care-service/src/providers/entities/provider.entity';
+import { User } from '@app/auth/users/entities/user.entity';
+import { Provider } from '@app/care/providers/entities/provider.entity';
 
 /**
  * Enum defining the possible types of appointments.

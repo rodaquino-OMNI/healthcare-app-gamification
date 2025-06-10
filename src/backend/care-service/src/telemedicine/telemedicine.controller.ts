@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { TelemedicineService } from './telemedicine.service';
 import { CreateSessionDto } from './dto/create-session.dto';
-import { JwtAuthGuard } from 'src/backend/auth-service/src/auth/guards/jwt-auth.guard';
-import { CurrentUser } from 'src/backend/auth-service/src/auth/decorators/current-user.decorator';
-import { AppException, ErrorType } from 'src/backend/shared/src/exceptions/exceptions.types';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { CARE_TELEMEDICINE_CONNECTION_FAILED } from 'src/backend/shared/src/constants/error-codes.constants';
+import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
+import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
+import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { CARE_TELEMEDICINE_CONNECTION_FAILED } from '@app/shared/constants/error-codes.constants';
 
 /**
  * Controller for handling telemedicine session requests.
@@ -48,12 +50,12 @@ export class TelemedicineController {
     } catch (error) {
       // If it's already an AppException, just rethrow
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
       
       this.logger.error(
-        `Failed to start telemedicine session: ${error.message}`,
-        error.stack,
+        `Failed to start telemedicine session: ${(error as any).message}`,
+        (error as any).stack,
         'TelemedicineController'
       );
       

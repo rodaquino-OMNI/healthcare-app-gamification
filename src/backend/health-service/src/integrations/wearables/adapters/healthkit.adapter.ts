@@ -1,11 +1,12 @@
-import { Injectable, Logger } from '@nestjs/common'; // @nestjs/common v9.0.0
-import { ConfigService } from '@nestjs/config'; // @nestjs/config v2.3.1
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { WearableAdapter } from '../wearables.service';
-import { HealthMetric } from '../../health/entities/health-metric.entity';
-import { DeviceConnection } from '../../devices/entities/device-connection.entity';
-import { ErrorCodes } from 'src/backend/shared/src/constants/error-codes.constants';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { MetricType } from 'src/web/shared/types/health.types';
+import { HealthMetric } from '../../../health/entities/health-metric.entity';
+import { DeviceConnection } from '../../../devices/entities/device-connection.entity';
+import * as ErrorCodes from '@app/shared/constants/error-codes.constants';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { MetricType } from '../../../health/types/health.types';
 
 // HealthKit data type identifiers
 const HEALTHKIT_TYPES = {
@@ -36,16 +37,16 @@ const HEALTHKIT_UNITS = {
 
 // Error messages
 const ERROR_MESSAGES = {
-  CONNECTION_FAILED: 'Failed to connect to Apple HealthKit API',
-  RETRIEVE_METRICS_FAILED: 'Failed to retrieve health metrics from Apple HealthKit API',
-  DISCONNECT_FAILED: 'Failed to disconnect from Apple HealthKit API',
+  CONNECTION_FAILED: 'Failed to connect to HealthKit',
+  RETRIEVE_METRICS_FAILED: 'Failed to retrieve metrics from HealthKit',
+  DISCONNECT_FAILED: 'Failed to disconnect from HealthKit',
   INVALID_HEALTHKIT_TYPE: 'Invalid HealthKit data type',
   UNSUPPORTED_UNIT_CONVERSION: 'Unsupported unit conversion',
 };
 
 @Injectable()
 export class HealthKitAdapter extends WearableAdapter {
-  private readonly logger: Logger;
+  private readonly logger: LoggerService;
 
   constructor(
     private readonly configService: ConfigService,
@@ -58,11 +59,12 @@ export class HealthKitAdapter extends WearableAdapter {
   /**
    * Initiates the connection to Apple HealthKit API.
    * @param userId The user ID to connect the HealthKit account to
+   * @param authData Authentication data for the connection
    * @returns A promise that resolves to a DeviceConnection entity representing the successful connection
    */
-  async connect(userId: string): Promise<DeviceConnection> {
+  async connect(userId: string, authData: any): Promise<DeviceConnection> {
     try {
-      this.logger.log(`Connecting user ${userId} to Apple HealthKit`);
+      this.logger.log('info', `Connecting user ${userId} to Apple HealthKit`);
 
       // Retrieve Apple HealthKit API credentials from configuration
       const clientId = this.configService.get<string>('APPLE_HEALTHKIT_CLIENT_ID');
@@ -95,25 +97,28 @@ export class HealthKitAdapter extends WearableAdapter {
         updatedAt: new Date(),
       };
 
-      this.logger.log(`Successfully connected user ${userId} to Apple HealthKit`);
+      this.logger.log('info', `Successfully connected user ${userId} to Apple HealthKit`);
 
-      return connectionDetails as DeviceConnection;
-    } catch (error) {
-      this.logger.error(`${ERROR_MESSAGES.CONNECTION_FAILED}: ${error.message}`, error.stack);
-      throw new Error(`${ERROR_MESSAGES.CONNECTION_FAILED}: ${error.message}`);
+      return connectionDetails as unknown as DeviceConnection;
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+      const errorStack = error instanceof Error ? (error as any).stack : undefined;
+      this.logger.error(`${ERROR_MESSAGES.CONNECTION_FAILED}: ${errorMessage}`, errorStack);
+      throw new Error(`${ERROR_MESSAGES.CONNECTION_FAILED}: ${errorMessage}`);
     }
   }
 
   /**
    * Retrieves health metrics from the Apple HealthKit API for a specific user and date range.
    * @param userId The user ID to retrieve health metrics for
-   * @param startDate The start date of the date range to retrieve health metrics for
-   * @param endDate The end date of the date range to retrieve health metrics for
+   * @param deviceConnection The device connection details
+   * @param startTime The start date of the date range to retrieve health metrics for
+   * @param endTime The end date of the date range to retrieve health metrics for
    * @returns A promise that resolves to an array of HealthMetric entities
    */
-  async getHealthMetrics(userId: string, startDate: Date, endDate: Date): Promise<HealthMetric[]> {
+  async getHealthMetrics(userId: string, deviceConnection: DeviceConnection, startTime: Date, endTime: Date): Promise<HealthMetric[]> {
     try {
-      this.logger.log(`Retrieving health metrics for user ${userId} from ${startDate.toISOString()} to ${endDate.toISOString()}`);
+      this.logger.log('info', `Retrieving health metrics for user ${userId} from ${startTime.toISOString()} to ${endTime.toISOString()}`);
 
       // Retrieve Apple HealthKit API credentials from configuration
       const clientId = this.configService.get<string>('APPLE_HEALTHKIT_CLIENT_ID');
@@ -123,11 +128,6 @@ export class HealthKitAdapter extends WearableAdapter {
         throw new Error('HealthKit API credentials not configured');
       }
 
-      // In a real implementation, this would involve:
-      // 1. Retrieving the authentication token for the user from the database
-      // 2. Constructing the Apple HealthKit API URL for retrieving health metrics
-      // 3. Making a request to the Apple HealthKit API to retrieve health metrics
-
       // Simulate retrieving health metrics from HealthKit
       // This is mock data; in a real implementation, this would be data from the Apple HealthKit API
       const mockHealthKitResponse = [
@@ -135,42 +135,42 @@ export class HealthKitAdapter extends WearableAdapter {
           type: HEALTHKIT_TYPES.HEART_RATE,
           value: 72,
           unit: HEALTHKIT_UNITS.BEATS_PER_MINUTE,
-          timestamp: new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime())).toISOString(),
+          timestamp: new Date(startTime.getTime() + Math.random() * (endTime.getTime() - startTime.getTime())).toISOString(),
           source: 'Apple Watch',
         },
         {
           type: HEALTHKIT_TYPES.BLOOD_PRESSURE_SYSTOLIC,
           value: 120,
           unit: HEALTHKIT_UNITS.MILLIMETERS_OF_MERCURY,
-          timestamp: new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime())).toISOString(),
+          timestamp: new Date(startTime.getTime() + Math.random() * (endTime.getTime() - startTime.getTime())).toISOString(),
           source: 'Blood Pressure Monitor',
         },
         {
           type: HEALTHKIT_TYPES.BLOOD_PRESSURE_DIASTOLIC,
           value: 80,
           unit: HEALTHKIT_UNITS.MILLIMETERS_OF_MERCURY,
-          timestamp: new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime())).toISOString(),
+          timestamp: new Date(startTime.getTime() + Math.random() * (endTime.getTime() - startTime.getTime())).toISOString(),
           source: 'Blood Pressure Monitor',
         },
         {
           type: HEALTHKIT_TYPES.BLOOD_GLUCOSE,
           value: 100,
           unit: HEALTHKIT_UNITS.MILLIGRAMS_PER_DECILITER,
-          timestamp: new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime())).toISOString(),
+          timestamp: new Date(startTime.getTime() + Math.random() * (endTime.getTime() - startTime.getTime())).toISOString(),
           source: 'Glucose Monitor',
         },
         {
           type: HEALTHKIT_TYPES.STEPS,
           value: 8500,
           unit: HEALTHKIT_UNITS.COUNT,
-          timestamp: new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime())).toISOString(),
+          timestamp: new Date(startTime.getTime() + Math.random() * (endTime.getTime() - startTime.getTime())).toISOString(),
           source: 'iPhone',
         },
         {
           type: HEALTHKIT_TYPES.WEIGHT,
           value: 70.5,
           unit: HEALTHKIT_UNITS.KILOGRAMS,
-          timestamp: new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime())).toISOString(),
+          timestamp: new Date(startTime.getTime() + Math.random() * (endTime.getTime() - startTime.getTime())).toISOString(),
           source: 'Smart Scale',
         },
       ];
@@ -180,42 +180,45 @@ export class HealthKitAdapter extends WearableAdapter {
         const metricType = this.mapHealthKitTypeToMetricType(item.type);
         
         // Create a new HealthMetric entity
-        const metric: HealthMetric = {
-          id: `healthkit-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`,
-          userId,
-          type: metricType,
-          value: item.value,
-          unit: item.unit, // In a real implementation, you might need to convert units
-          timestamp: new Date(item.timestamp),
-          source: item.source,
-          metadata: {
-            originalType: item.type,
-            deviceType: 'Apple HealthKit',
-          },
-          createdAt: new Date(),
-          updatedAt: new Date(),
+        const metric = new HealthMetric();
+        metric.id = `healthkit-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+        metric.userId = userId;
+        metric.type = metricType as unknown as MetricType;
+        metric.value = item.value;
+        metric.unit = item.unit;
+        metric.timestamp = new Date(item.timestamp);
+        metric.source = 'HEALTH_KIT' as unknown as MetricSource;
+        metric.notes = `Source: ${item.source}`;
+        metric.metadata = {
+          originalType: item.type,
+          deviceType: 'Apple HealthKit',
         };
+        metric.createdAt = new Date();
+        metric.updatedAt = new Date();
 
         return metric;
       });
 
-      this.logger.log(`Successfully retrieved ${healthMetrics.length} health metrics for user ${userId}`);
+      this.logger.log('info', `Successfully retrieved ${healthMetrics.length} health metrics for user ${userId}`);
 
       return healthMetrics;
-    } catch (error) {
-      this.logger.error(`${ERROR_MESSAGES.RETRIEVE_METRICS_FAILED}: ${error.message}`, error.stack);
-      throw new Error(`${ERROR_MESSAGES.RETRIEVE_METRICS_FAILED}: ${error.message}`);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+      const errorStack = error instanceof Error ? (error as any).stack : undefined;
+      this.logger.error(`${ERROR_MESSAGES.RETRIEVE_METRICS_FAILED}: ${errorMessage}`, errorStack);
+      throw new Error(`${ERROR_MESSAGES.RETRIEVE_METRICS_FAILED}: ${errorMessage}`);
     }
   }
 
   /**
    * Disconnects the user's account from the Apple HealthKit API.
    * @param userId The user ID to disconnect from the Apple HealthKit API
+   * @param deviceConnection The device connection details
    * @returns A promise that resolves when the user's account has been disconnected
    */
-  async disconnect(userId: string): Promise<void> {
+  async disconnect(userId: string, deviceConnection: DeviceConnection): Promise<boolean> {
     try {
-      this.logger.log(`Disconnecting user ${userId} from Apple HealthKit`);
+      this.logger.log('info', `Disconnecting user ${userId} from Apple HealthKit`);
 
       // Retrieve Apple HealthKit API credentials from configuration
       const clientId = this.configService.get<string>('APPLE_HEALTHKIT_CLIENT_ID');
@@ -233,10 +236,13 @@ export class HealthKitAdapter extends WearableAdapter {
       // 5. Updating the device connection status to disconnected
 
       // Simulate a successful disconnection
-      this.logger.log(`Successfully disconnected user ${userId} from Apple HealthKit`);
-    } catch (error) {
-      this.logger.error(`${ERROR_MESSAGES.DISCONNECT_FAILED}: ${error.message}`, error.stack);
-      throw new Error(`${ERROR_MESSAGES.DISCONNECT_FAILED}: ${error.message}`);
+      this.logger.log('info', `Successfully disconnected user ${userId} from Apple HealthKit`);
+      return true;
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+      const errorStack = error instanceof Error ? (error as any).stack : undefined;
+      this.logger.error(`${ERROR_MESSAGES.DISCONNECT_FAILED}: ${errorMessage}`, errorStack);
+      throw new Error(`${ERROR_MESSAGES.DISCONNECT_FAILED}: ${errorMessage}`);
     }
   }
 
@@ -295,7 +301,7 @@ export class HealthKitAdapter extends WearableAdapter {
         'lb': (val: number) => val * 2.20462, // kg to lb conversion
       },
       [HEALTHKIT_UNITS.DEGREE_CELSIUS]: {
-        'degF': (val: number) => (val * 9/5) + 32, // °C to °F conversion
+        'degF': (val: number) => (val * 9 / 5) + 32, // °C to °F conversion
       },
     };
 

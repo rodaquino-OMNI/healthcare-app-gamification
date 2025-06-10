@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CheckSymptomsDto } from './dto/check-symptoms.dto';
@@ -100,10 +102,10 @@ export class SymptomCheckerService {
           return this.callExternalSymptomAPI(checkSymptomsDto.symptoms, symptomsCheckerConfig.externalApi);
         }
       } catch (error) {
-        this.logger.error(`Error checking symptoms: ${error.message}`, error.stack, 'SymptomCheckerService');
+        this.logger.error(`Error checking symptoms: ${(error as any).message}`, (error as any).stack, 'SymptomCheckerService');
         
         if (error instanceof AppException) {
-          throw error;
+          throw error as any;
         }
         
         throw new AppException(
@@ -258,7 +260,7 @@ export class SymptomCheckerService {
         externalProviderName: 'External Symptom Service'
       };
     } catch (error) {
-      this.logger.error(`Error calling external symptom API: ${error.message}`, error.stack, 'SymptomCheckerService');
+      this.logger.error(`Error calling external symptom API: ${(error as any).message}`, (error as any).stack, 'SymptomCheckerService');
       throw new AppException(
         'Failed to connect to symptom analysis service',
         ErrorType.EXTERNAL,

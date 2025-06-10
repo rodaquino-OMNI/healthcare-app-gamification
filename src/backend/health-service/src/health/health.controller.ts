@@ -15,13 +15,13 @@ import {
 import { HealthService } from './health.service'; // Import HealthService for health data management
 import { CreateMetricDto } from './dto/create-metric.dto'; // Import CreateMetricDto for creating new health metrics
 import { UpdateMetricDto } from './dto/update-metric.dto'; // Import UpdateMetricDto for updating existing health metrics
-import { CurrentUser } from 'src/backend/auth-service/src/auth/decorators/current-user.decorator'; // Import CurrentUser decorator to inject the current user
-import { AllExceptionsFilter } from 'src/backend/shared/src/exceptions/exceptions.filter'; // Import AllExceptionsFilter for global exception handling
-import { FilterDto } from 'src/backend/shared/src/dto/filter.dto'; // Import FilterDto for filtering health data
-import { PaginationDto } from 'src/backend/shared/src/dto/pagination.dto'; // Import PaginationDto for paginating health data
-import { AUTH_INSUFFICIENT_PERMISSIONS } from 'src/backend/shared/src/constants/error-codes.constants'; // Import AUTH_INSUFFICIENT_PERMISSIONS for error code
-import { JwtAuthGuard } from '@nestjs/jwt'; // NestJS JWT 10.0.0+
-import { RolesGuard } from '@nestjs/jwt'; // NestJS JWT 10.0.0+
+import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator'; // Import CurrentUser decorator to inject the current user
+import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter'; // Import AllExceptionsFilter for global exception handling
+import { FilterDto } from '@app/shared/dto/filter.dto'; // Import FilterDto for filtering health data
+import { PaginationDto } from '@app/shared/dto/pagination.dto'; // Import PaginationDto for paginating health data
+import { AUTH_INSUFFICIENT_PERMISSIONS } from '@app/shared/constants/error-codes.constants'; // Import AUTH_INSUFFICIENT_PERMISSIONS for error code
+import { JwtAuthGuard } from '@app/auth/guards/jwt-auth.guard'; // NestJS JWT 10.0.0+
+import { RolesGuard } from '@app/auth/guards/roles.guard'; // NestJS JWT 10.0.0+
 
 /**
  * Handles incoming HTTP requests related to health data.

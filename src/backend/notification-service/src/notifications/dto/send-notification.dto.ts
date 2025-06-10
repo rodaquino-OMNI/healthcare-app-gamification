@@ -1,61 +1,201 @@
-import { IsString, IsNotEmpty, IsOptional, IsObject, IsUUID } from 'class-validator'; // class-validator v0.14.0
+import { IsString, IsNotEmpty, IsEnum, IsObject, IsArray, IsOptional, IsBoolean, IsNumber } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 /**
- * Data transfer object for sending notifications.
- * This DTO defines the structure and validation rules for notification requests
- * throughout the AUSTA SuperApp.
+ * Data transfer object for sending a notification
  */
 export class SendNotificationDto {
   /**
-   * The ID of the user to receive the notification
+   * The ID of the user to send the notification to
+   * @example "550e8400-e29b-41d4-a716-446655440000"
    */
-  @IsUUID(4)
-  @IsNotEmpty()
-  userId: string;
-
-  /**
-   * Type of notification (e.g., 'achievement', 'appointment', 'reminder')
-   * Used for categorizing and routing notifications
-   */
+  @ApiProperty({
+    description: 'User ID to send notification to',
+    example: '550e8400-e29b-41d4-a716-446655440000'
+  })
   @IsString()
   @IsNotEmpty()
-  type: string;
+  userId!: string;
 
   /**
-   * Title displayed in the notification
+   * The type of notification
+   * @example "APPOINTMENT_REMINDER"
    */
+  @ApiProperty({
+    description: 'Type of notification',
+    example: 'APPOINTMENT_REMINDER'
+  })
   @IsString()
   @IsNotEmpty()
-  title: string;
+  type!: string;
 
   /**
-   * Main content of the notification
+   * The title of the notification
+   * @example "Appointment Reminder"
    */
+  @ApiProperty({
+    description: 'Notification title',
+    example: 'Appointment Reminder'
+  })
   @IsString()
   @IsNotEmpty()
-  body: string;
+  title!: string;
 
   /**
-   * Additional structured data for the notification
-   * Can include journey-specific context, actions, or metadata
+   * The body content of the notification
+   * @example "Your appointment with Dr. Smith is tomorrow at 2:00 PM"
    */
-  @IsObject()
-  @IsOptional()
-  data?: any;
+  @ApiProperty({
+    description: 'Notification body content',
+    example: 'Your appointment with Dr. Smith is tomorrow at 2:00 PM'
+  })
+  @IsString()
+  @IsNotEmpty()
+  body!: string;
 
   /**
-   * ID of the notification template to use (if applicable)
-   * References a pre-defined template in the notification service
+   * Optional template ID for dynamic content
+   * @example "appointment-reminder"
    */
+  @ApiProperty({
+    description: 'Template ID for dynamic content',
+    example: 'appointment-reminder',
+    required: false
+  })
   @IsString()
   @IsOptional()
   templateId?: string;
 
   /**
-   * Language code for the notification content
-   * Defaults to user's preferred language if not specified
+   * Optional dynamic data for template rendering
+   * @example { "doctorName": "Dr. Smith", "time": "2:00 PM", "date": "Tomorrow" }
    */
+  @ApiProperty({
+    description: 'Dynamic data for template rendering',
+    example: { doctorName: 'Dr. Smith', time: '2:00 PM', date: 'Tomorrow' },
+    required: false
+  })
+  @IsObject()
+  @IsOptional()
+  data?: Record<string, any>;
+
+  /**
+   * Optional notification delivery channels
+   * @example ["EMAIL", "PUSH", "SMS"]
+   */
+  @ApiProperty({
+    description: 'Notification delivery channels',
+    example: ['EMAIL', 'PUSH', 'SMS'],
+    required: false,
+    isArray: true
+  })
+  @IsArray()
+  @IsOptional()
+  channels?: string[];
+
+  /**
+   * Optional journey context for styling
+   * @example "health"
+   */
+  @ApiProperty({
+    description: 'Journey context for styling',
+    example: 'health',
+    enum: ['health', 'care', 'plan'],
+    required: false
+  })
   @IsString()
   @IsOptional()
-  language?: string;
+  journey?: string;
+
+  /**
+   * Whether this notification is related to gamification (achievements, levels, etc.)
+   * @example true
+   */
+  @ApiProperty({
+    description: 'Whether this is a gamification-related notification',
+    example: true,
+    required: false
+  })
+  @IsBoolean()
+  @IsOptional()
+  isGamification?: boolean;
+
+  /**
+   * Achievement details if this is an achievement notification
+   */
+  @ApiProperty({
+    description: 'Achievement details for gamification notifications',
+    example: {
+      id: 'first-appointment',
+      name: 'First Appointment',
+      description: 'Completed your first medical appointment',
+      iconUrl: 'https://assets.superapp.health/badges/first-appointment.png',
+      xpEarned: 100
+    },
+    required: false
+  })
+  @IsObject()
+  @IsOptional()
+  achievement?: {
+    id: string;
+    name: string;
+    description: string;
+    iconUrl: string;
+    xpEarned: number;
+  };
+
+  /**
+   * Level-up details if this is a level-up notification
+   */
+  @ApiProperty({
+    description: 'Level-up details for gamification notifications',
+    example: {
+      oldLevel: 1,
+      newLevel: 2,
+      xpEarned: 200,
+      rewards: ['New health quiz unlocked', 'Meditation content access']
+    },
+    required: false
+  })
+  @IsObject()
+  @IsOptional()
+  levelUp?: {
+    oldLevel: number;
+    newLevel: number;
+    xpEarned: number;
+    rewards?: string[];
+  };
+
+  /**
+   * Streak information for streak-related notifications
+   */
+  @ApiProperty({
+    description: 'Streak information for streak-related notifications',
+    example: {
+      current: 5,
+      milestone: 5,
+      type: 'daily-check-in'
+    },
+    required: false
+  })
+  @IsObject()
+  @IsOptional()
+  streak?: {
+    current: number;
+    milestone?: number;
+    type: string;
+  };
+
+  /**
+   * Priority level of notification, useful for controlling gamification notification frequency
+   * @example 2
+   */
+  @ApiProperty({
+    description: 'Priority level of notification (1-5, with 1 being highest)',
+    example: 2,
+    required: false
+  })
+  @IsNumber()
+  @IsOptional()
+  priority?: number;
 }

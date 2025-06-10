@@ -8,7 +8,7 @@ import {
   UpdateDateColumn 
 } from 'typeorm'; // latest
 import { Appointment } from '../appointments/entities/appointment.entity';
-import { User } from 'src/backend/auth-service/src/users/entities/user.entity';
+import { User } from '@app/auth/users/entities/user.entity';
 
 /**
  * Represents a telemedicine session entity in the database.

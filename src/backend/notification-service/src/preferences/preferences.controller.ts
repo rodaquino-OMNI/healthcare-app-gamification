@@ -1,10 +1,10 @@
 import { Controller, Get, Post, Patch, Query, Body, Param, UseGuards } from '@nestjs/common';
 import { PreferencesService } from './preferences.service';
 import { NotificationPreference } from './entities/notification-preference.entity';
-import { FilterDto } from 'src/backend/shared/src/dto/filter.dto';
-import { PaginationDto } from 'src/backend/shared/src/dto/pagination.dto';
-import { CurrentUser } from 'src/backend/auth-service/src/auth/decorators/current-user.decorator';
-import { JwtAuthGuard } from 'src/backend/auth-service/src/auth/guards/jwt-auth.guard';
+import { FilterDto } from '@app/shared/dto/filter.dto';
+import { PaginationDto } from '@app/shared/dto/pagination.dto';
+import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
+import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 
 /**
  * Controller for managing user notification preferences.

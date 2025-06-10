@@ -56,5 +56,35 @@ module.exports = {
   },
   verbose: true,
   testTimeout: 30000,
-  maxWorkers: '50%'
+  maxWorkers: '50%',
+  // Watch mode specific configuration
+  watchPlugins: [
+    'jest-watch-typeahead/filename',
+    'jest-watch-typeahead/testname'
+  ],
+  // This makes Jest use the selected test to run in watch mode
+  watchPathIgnorePatterns: [
+    '/node_modules/',
+    '/dist/',
+    'package-lock.json',
+    'yarn.lock'
+  ],
+  // Configure to handle watch mode properly
+  watchman: true,
+  // Configure the watch mode output
+  watchOptions: {
+    mode: 'watch'
+  },
+  // Add test results configuration
+  reporters: [
+    'default',
+    ['jest-junit', {
+      outputDirectory: './test-results',
+      outputName: 'junit.xml'
+    }]
+  ],
+  // Define the test environment clearly
+  testEnvironmentOptions: {
+    url: 'http://localhost'
+  }
 };

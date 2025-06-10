@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ErrorType } from '@app/shared/exceptions/error.types';
 import {
   Controller,
   Get,
@@ -144,10 +146,10 @@ export class ProvidersController {
       return { available };
     } catch (error) {
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
       
-      this.logger.error(`Error checking availability: ${error.message}`, error.stack);
+      this.logger.error(`Error checking availability: ${(error as any).message}`, (error as any).stack);
       throw new AppException(
         'Failed to check provider availability',
         ErrorType.TECHNICAL,
@@ -188,10 +190,10 @@ export class ProvidersController {
       return { timeSlots };
     } catch (error) {
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
       
-      this.logger.error(`Error getting time slots: ${error.message}`, error.stack);
+      this.logger.error(`Error getting time slots: ${(error as any).message}`, (error as any).stack);
       throw new AppException(
         'Failed to get provider time slots',
         ErrorType.TECHNICAL,

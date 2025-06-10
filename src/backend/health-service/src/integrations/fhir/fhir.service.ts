@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Injectable } from '@nestjs/common'; // NestJS Common 9.0.0+
 import { EventEmitter2 } from 'eventemitter2'; // EventEmitter2 6.4.0+
 
-import { Configuration } from 'src/backend/health-service/src/config/configuration';
-import { HealthMetric } from 'src/backend/health-service/src/health/entities/health-metric.entity';
-import { MedicalEvent } from 'src/backend/health-service/src/health/entities/medical-event.entity';
-import { Service } from 'src/backend/shared/src/interfaces/service.interface';
-import { AppException, ErrorType } from 'src/backend/shared/src/exceptions/exceptions.types';
-import { FHIRAdapter } from 'src/backend/health-service/src/integrations/fhir/fhir.adapter';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
+import { Configuration } from '@app/health/config/configuration';
+import { HealthMetric } from '@app/health/health/entities/health-metric.entity';
+import { MedicalEvent } from '@app/health/health/entities/medical-event.entity';
+import { Service } from '@app/shared/interfaces/service.interface';
+import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+import { FHIRAdapter } from '@app/health/integrations/fhir/fhir.adapter';
+import { LoggerService } from '@app/shared/logging/logger.service';
 
 /**
  * Handles the retrieval of patient data from FHIR-compliant systems and emits events when new data is available.
@@ -53,12 +55,12 @@ export class FhirService {
     } catch (error) {
       this.logger.error(
         `Failed to retrieve patient record for patient ID: ${patientId}`,
-        error.stack,
+        (error as any).stack,
         'FhirService'
       );
       
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
       
       throw new AppException(
@@ -98,12 +100,12 @@ export class FhirService {
     } catch (error) {
       this.logger.error(
         `Failed to retrieve medical history for patient ID: ${patientId}`,
-        error.stack,
+        (error as any).stack,
         'FhirService'
       );
       
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
       
       throw new AppException(
@@ -166,12 +168,12 @@ export class FhirService {
     } catch (error) {
       this.logger.error(
         `Failed to retrieve health metrics of type ${metricType} for patient ID: ${patientId}`,
-        error.stack,
+        (error as any).stack,
         'FhirService'
       );
       
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
       
       throw new AppException(

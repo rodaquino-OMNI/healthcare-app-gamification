@@ -1,78 +1,66 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm'; // typeorm@0.3.17
-
 /**
- * Represents a medical event in a user's health history.
- * 
- * This entity stores events such as doctor visits, diagnoses, procedures, and treatments,
- * providing a chronological view of a user's medical history as required by F-101-RQ-002.
+ * Represents a medical event recorded for a user.
+ * This entity stores information about medical events such as doctor visits,
+ * procedures, diagnoses, and other significant health occurrences.
  */
-@Entity('medical_events', {
-  indices: [
-    { columns: ['recordId', 'type'] }
-  ]
-})
 export class MedicalEvent {
   /**
-   * Unique identifier for the medical event.
+   * Unique identifier for the medical event
    */
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+  id!: string;
+  
   /**
-   * Reference to the health record this event belongs to.
+   * ID of the user this event belongs to
    */
-  @Column({ type: 'uuid', nullable: false })
-  recordId: string;
-
+  userId!: string;
+  
   /**
-   * The type of medical event (e.g., 'visit', 'diagnosis', 'procedure', 'medication').
+   * Type of medical event (e.g., 'DOCTOR_VISIT', 'DIAGNOSIS', etc.)
    */
-  @Column({ type: 'varchar', length: 255, nullable: false })
-  type: string;
-
+  type!: string;
+  
   /**
-   * Detailed description of the medical event.
+   * Title or brief description of the event
    */
-  @Column({ type: 'text', nullable: true })
-  description: string;
-
+  title!: string;
+  
   /**
-   * Date when the medical event occurred.
+   * Detailed description of the medical event
    */
-  @Column({ type: 'timestamp', nullable: false })
-  date: Date;
-
+  description!: string;
+  
   /**
-   * Healthcare provider associated with this medical event.
+   * Healthcare provider associated with the event
    */
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  provider: string;
-
+  provider?: string;
+  
   /**
-   * References to documents associated with this medical event (e.g., medical reports, images).
+   * Location where the event occurred
    */
-  @Column({ type: 'jsonb', nullable: true })
-  documents: string[];
-
+  location?: string;
+  
   /**
-   * Timestamp when the record was created.
+   * Date when the event occurred
    */
-  @Column({ type: 'timestamp', default: () => 'now()', nullable: false })
-  createdAt: Date;
-
+  date!: Date;
+  
   /**
-   * Timestamp when the record was last updated.
+   * List of related document IDs or URLs
    */
-  @Column({ type: 'timestamp', default: () => 'now()', onUpdate: 'now()', nullable: false })
-  updatedAt: Date;
-
+  documents?: string[];
+  
   /**
-   * Creates a new MedicalEvent instance.
-   * @param partial Optional partial properties to initialize the instance with.
+   * Custom tags for categorization
    */
-  constructor(partial?: Partial<MedicalEvent>) {
-    if (partial) {
-      Object.assign(this, partial);
-    }
-  }
+  tags?: string[];
+  
+  /**
+   * Created timestamp
+   */
+  createdAt!: Date;
+  
+  /**
+   * Last updated timestamp
+   */
+  updatedAt!: Date;
 }

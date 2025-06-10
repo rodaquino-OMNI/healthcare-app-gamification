@@ -1,84 +1,113 @@
-import {
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  Generated,
-} from 'typeorm'; // typeorm@0.3.17
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 /**
- * Represents a notification template entity in the database.
- * Templates define the structure and content of notifications sent to users
- * across different journeys and channels.
+ * Entity representing a notification template for dynamic content generation
  */
 @Entity('notification_templates')
 export class NotificationTemplate {
   /**
-   * The primary key of the notification template.
+   * Unique identifier for the template
+   * @example "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
    */
+  @ApiProperty({
+    description: 'Unique template ID',
+    example: '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'
+  })
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   /**
-   * A unique identifier for the template that can be referenced in code.
-   * Examples: 'appointment-reminder', 'achievement-unlocked', 'medication-reminder'
-   * Used when sending notifications to reference the appropriate template.
+   * Template identifier used for lookup
+   * @example "appointment-reminder"
    */
-  @Column({ name: 'template_id', unique: true })
-  templateId: string;
+  @ApiProperty({
+    description: 'Template identifier used for lookup',
+    example: 'appointment-reminder'
+  })
+  @Column({ name: 'template_id' })
+  templateId!: string;
 
   /**
-   * The language code of the template following ISO 639-1 with optional region.
-   * Examples: 'pt-BR' (Brazilian Portuguese), 'en-US' (English)
-   * Used for internationalization of notification content.
+   * Language code for the template
+   * @example "pt-BR"
    */
-  @Column({ length: 10, default: 'pt-BR' })
-  language: string;
+  @ApiProperty({
+    description: 'Language code for the template',
+    example: 'pt-BR'
+  })
+  @Column({ default: 'pt-BR' })
+  language!: string;
 
   /**
-   * The title of the notification. Can include variable placeholders
-   * in the format {{variableName}} that will be replaced with actual values
-   * when the notification is sent.
-   * 
-   * Example: "Lembrete de Consulta com {{providerName}}"
+   * Template for the notification title
+   * Can include variable placeholders like {{variable}}
+   * @example "Lembrete de Consulta"
    */
+  @ApiProperty({
+    description: 'Template for notification title (can include variable placeholders)',
+    example: 'Lembrete de Consulta com {{doctorName}}'
+  })
+  @Column()
+  title!: string;
+
+  /**
+   * Template for the notification body
+   * Can include variable placeholders like {{variable}}
+   * @example "Sua consulta com {{doctorName}} está agendada para {{date}} às {{time}}."
+   */
+  @ApiProperty({
+    description: 'Template for notification body (can include variable placeholders)',
+    example: 'Sua consulta com {{doctorName}} está agendada para {{date}} às {{time}}.'
+  })
   @Column({ type: 'text' })
-  title: string;
+  body!: string;
 
   /**
-   * The body content of the notification. Can include variable placeholders
-   * in the format {{variableName}} that will be replaced with actual values
-   * when the notification is sent.
-   * 
-   * Example: "Sua consulta está agendada para {{appointmentTime}} amanhã."
+   * Supported notification channels for this template
+   * Comma-separated list: "push,email,sms"
+   * @example "push,email,sms"
    */
-  @Column({ type: 'text' })
-  body: string;
+  @ApiProperty({
+    description: 'Supported notification channels (comma-separated)',
+    example: 'push,email,sms'
+  })
+  @Column()
+  channels!: string;
 
   /**
-   * The channels through which this notification can be delivered.
-   * Stored as a JSON array of strings in the database.
-   * 
-   * Examples: ["push", "email", "in-app", "sms"]
-   * 
-   * Note: While typed as string in TypeScript, this is stored as JSONB in PostgreSQL.
-   * Application code should handle serialization/deserialization appropriately.
+   * Timestamp of when the template was created
    */
-  @Column({ type: 'jsonb', default: '["in-app"]' })
-  channels: string;
-
-  /**
-   * The date and time when the template was created.
-   * Automatically set by TypeORM.
-   */
+  @ApiProperty({ description: 'Creation timestamp' })
   @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
+  createdAt!: Date;
 
   /**
-   * The date and time when the template was last updated.
-   * Automatically updated by TypeORM.
+   * Timestamp of when the template was last updated
    */
+  @ApiProperty({ description: 'Last update timestamp' })
   @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
+  updatedAt!: Date;
+
+  /**
+   * Associated journey for styling
+   * @example "care"
+   */
+  @ApiProperty({
+    description: 'Associated journey for styling',
+    enum: ['health', 'care', 'plan'],
+    required: false
+  })
+  @Column({ nullable: true })
+  journey?: string;
+
+  /**
+   * Additional template metadata
+   */
+  @ApiProperty({
+    description: 'Additional template metadata',
+    required: false
+  })
+  @Column({ type: 'json', nullable: true })
+  metadata?: Record<string, any>;
 }

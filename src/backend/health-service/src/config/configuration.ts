@@ -6,6 +6,56 @@ import * as Joi from 'joi'; // Joi 17.0.0+
  * Provides structured access to environment variables with sensible defaults
  * Registered with NestJS ConfigModule for centralized configuration management
  */
+
+/**
+ * Configuration interface for Health Service
+ */
+export interface Configuration {
+  nodeEnv: string;
+  port: number;
+  apiPrefix: string;
+  databaseUrl: string;
+  databaseSSL: boolean;
+  timescaleEnabled: boolean;
+  metricsRetentionDays: number;
+  metricsAggregationEnabled: boolean;
+  metricsAggregationIntervals: string;
+  fhirApiEnabled: boolean;
+  fhirApiUrl: string;
+  fhirApiAuthType: string;
+  fhirApiClientId: string;
+  fhirApiClientSecret: string;
+  fhirApiScope: string;
+  fhirApiTokenUrl: string;
+  fhirApiUsername: string;
+  fhirApiPassword: string;
+  fhirApiTimeout: number;
+  wearablesSyncEnabled: boolean;
+  wearablesSupported: string;
+  googlefitClientId: string;
+  googlefitClientSecret: string;
+  healthkitTeamId: string;
+  healthkitKeyId: string;
+  healthkitPrivateKey: string;
+  fitbitClientId: string;
+  fitbitClientSecret: string;
+  wearablesSyncInterval: number;
+  wearablesMaxSyncDays: number;
+  healthGoalsMaxActive: number;
+  healthInsightsEnabled: boolean;
+  healthInsightsGenerationInterval: number;
+  healthInsightsModelsPath: string;
+  eventsKafkaEnabled: boolean;
+  eventsKafkaBrokers: string;
+  eventsTopicPrefix: string;
+  redisUrl: string;
+  redisTtl: number;
+  medicalHistoryMaxEvents: number;
+  storageS3Bucket: string;
+  storageS3Region: string;
+  storageS3Prefix: string;
+}
+
 export const health = registerAs('health', () => ({
   nodeEnv: process.env.NODE_ENV || 'development',
   port: parseInt(process.env.PORT, 10) || 3001,

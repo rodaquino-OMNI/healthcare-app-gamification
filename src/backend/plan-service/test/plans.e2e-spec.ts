@@ -2,10 +2,10 @@ import { HttpStatus, INestApplication } from '@nestjs/common'; // v10.0.0+
 import { Test } from '@nestjs/testing'; // v10.0.0+
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals'; // v29.0.0+
 import * as request from 'supertest'; // v6.3.3
-import { PrismaService } from 'src/backend/shared/src/database/prisma.service';
-import { AppModule } from 'src/backend/plan-service/src/app.module';
+import { PrismaService } from '@app/shared/database/prisma.service';
+import { AppModule } from '@app/plan/app.module';
 import { AuthMiddleware } from 'src/backend/api-gateway/src/middleware/auth.middleware';
-import { RolesGuard } from 'src/backend/auth-service/src/auth/guards/roles.guard';
+import { RolesGuard } from '@app/auth/auth/guards/roles.guard';
 
 describe('Plans - E2E', () => {
   let app: INestApplication;

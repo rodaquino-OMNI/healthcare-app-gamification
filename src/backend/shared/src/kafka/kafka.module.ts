@@ -1,26 +1,77 @@
-import { Module, Global } from '@nestjs/common'; // v10.0+
-import { ConfigModule } from '@nestjs/config'; // v10.0+
+import { DynamicModule, Module, Provider, Global } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { KafkaService } from './kafka.service';
+import { KafkaProducer } from './kafka.producer';
 import { LoggerModule } from '../logging/logger.module';
 import { TracingModule } from '../tracing/tracing.module';
 
-/**
- * Global module that provides Kafka integration for event streaming and asynchronous communication.
- * 
- * This module makes the KafkaService available for dependency injection across all journey services,
- * enabling event-driven architecture particularly for the gamification engine and notifications.
- * 
- * Key capabilities supported:
- * - Publishing events from all journey services to appropriate topics
- * - Consuming events for processing in the gamification engine
- * - Reliable message delivery with error handling and retries
- * - Distributed tracing of message flow for observability
- * - Journey-specific event processing and routing
- */
+export interface KafkaModuleOptions {
+  /**
+   * Kafka connection options
+   */
+  clientId: string;
+  brokers: string[];
+  
+  /**
+   * Optional SSL configuration
+   */
+  ssl?: boolean;
+  sasl?: {
+    mechanism: 'plain' | 'scram-sha-256' | 'scram-sha-512';
+    username: string;
+    password: string;
+  };
+  
+  /**
+   * Consumer group configuration
+   */
+  groupId?: string;
+  
+  /**
+   * Default topic settings
+   */
+  defaultTopic?: string;
+  
+  /**
+   * Auto-commit configuration
+   */
+  autoCommit?: boolean;
+}
+
 @Global()
-@Module({
-  imports: [ConfigModule, LoggerModule, TracingModule],
-  providers: [KafkaService],
-  exports: [KafkaService],
-})
-export class KafkaModule {}
+@Module({})
+export class KafkaModule {
+  /**
+   * Configure Kafka module
+   */
+  static forRoot(options: KafkaModuleOptions): DynamicModule {
+    const optionsProvider = {
+      provide: 'KAFKA_OPTIONS',
+      useValue: options,
+    };
+    
+    const kafkaProviders: Provider[] = [
+      optionsProvider,
+      KafkaService,
+      KafkaProducer,
+    ];
+    
+    return {
+      global: true,
+      module: KafkaModule,
+      providers: kafkaProviders,
+      exports: [KafkaService, KafkaProducer],
+    };
+  }
+  
+  /**
+   * Register Kafka consumers
+   */
+  static forFeature(): DynamicModule {
+    return {
+      module: KafkaModule,
+      providers: [],
+      exports: [],
+    };
+  }
+}

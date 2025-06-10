@@ -1,72 +1,100 @@
+import { IsOptional, IsInt, Min, Max } from 'class-validator';
+import { Type } from 'class-transformer';
+
 /**
- * Pagination request data transfer object.
- * Used for paginating results in repository queries.
+ * DTO for pagination parameters in list operations
  */
 export class PaginationDto {
   /**
-   * The page number (1-based).
+   * Current page number (1-based)
    * @default 1
    */
-  page: number = 1;
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Type(() => Number)
+  page?: number = 1;
 
   /**
-   * The number of items per page.
+   * Number of items per page
    * @default 10
    */
-  limit: number = 10;
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(100)
+  @Type(() => Number)
+  limit?: number = 10;
 
   /**
-   * Number of items to skip (calculated from page and limit).
-   * This is a computed property used by database queries.
+   * Number of items to skip
+   * Used as an alternative to page/limit
    */
-  get skip(): number {
-    return (this.page - 1) * this.limit;
-  }
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  @Type(() => Number)
+  skip?: number;
 }
 
 /**
- * Paginated response data transfer object.
- * Used for returning paginated results.
+ * Standard pagination metadata returned with paginated results
  */
-export class PaginatedResponse<T> {
+export interface PaginationMeta {
   /**
-   * The items for the current page.
+   * Total number of items across all pages
+   * @example 100
    */
-  items: T[] = [];
+  total: number;
 
   /**
-   * The total number of items across all pages.
+   * Number of items per page
+   * @example 10
    */
-  total: number = 0;
+  limit: number;
 
   /**
-   * The current page number.
+   * Offset of the current page
+   * @example 20
    */
-  page: number = 1;
+  offset: number;
 
   /**
-   * The number of items per page.
+   * Current page number
+   * @example 3
    */
-  limit: number = 10;
+  page: number;
 
   /**
-   * The total number of pages.
+   * Total number of pages
+   * @example 10
    */
-  totalPages: number = 1;
+  totalPages: number;
 
   /**
-   * Whether there is a next page.
+   * Whether there is a next page
+   * @example true
    */
-  hasNext: boolean = false;
+  hasNext: boolean;
 
   /**
-   * Whether there is a previous page.
+   * Whether there is a previous page
+   * @example true
    */
-  hasPrevious: boolean = false;
+  hasPrev: boolean;
+}
 
-  constructor(partial?: Partial<PaginatedResponse<T>>) {
-    if (partial) {
-      Object.assign(this, partial);
-    }
-  }
+/**
+ * Generic paginated response wrapper
+ */
+export interface PaginatedResponse<T> {
+  /**
+   * The data items for the current page
+   */
+  data: T[];
+  
+  /**
+   * Pagination metadata
+   */
+  meta: PaginationMeta;
 }

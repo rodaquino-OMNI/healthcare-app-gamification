@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Test, TestingModule } from '@nestjs/testing';
 import { LeaderboardService } from './leaderboard.service';
 import { ProfilesService } from '../profiles/profiles.service';
-import { RedisService } from '@app/shared/redis/redis.service';
-import { LoggerService } from '@app/shared/logging/logger.service';
+import { RedisService } from '../../../shared/src/redis/redis.service';
+import { LoggerService } from '../../../shared/src/logging/logger.service';
 import { ConfigService } from '@nestjs/config';
 import { GameProfile } from '../profiles/entities/game-profile.entity';
 

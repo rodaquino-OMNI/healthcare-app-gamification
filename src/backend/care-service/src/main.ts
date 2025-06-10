@@ -6,8 +6,8 @@ import helmet from 'helmet'; // v7.0.0+
 import compression from 'compression'; // v1.7.4+
 
 import { AppModule } from './app.module';
-import { AllExceptionsFilter } from 'src/backend/shared/src/exceptions/exceptions.filter';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
+import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
+import { LoggerService } from '@app/shared/logging/logger.service';
 
 /**
  * Bootstraps the NestJS application for the Care Service.

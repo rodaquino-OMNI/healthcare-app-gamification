@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@nestjs/common';
 import { Document } from './entities/document.entity';
-import { PrismaService } from 'src/backend/shared/src/database/prisma.service';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { TracingService } from 'src/backend/shared/src/tracing/tracing.service';
+import { PrismaService } from '@app/shared/database/prisma.service';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { TracingService } from '@app/shared/tracing/tracing.service';
 
 /**
  * Service responsible for managing documents within the Plan service.
@@ -22,7 +23,7 @@ export class DocumentsService {
     private readonly logger: LoggerService,
     private readonly tracingService: TracingService
   ) {}
-
+  
   /**
    * Creates a new document record in the database.
    * 
@@ -54,13 +55,15 @@ export class DocumentsService {
         this.logger.log(`Document created with ID ${document.id}`, 'DocumentsService');
         
         return document as Document;
-      } catch (error) {
-        this.logger.error(`Failed to create document: ${error.message}`, error.stack, 'DocumentsService');
-        throw error;
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+        const errorStack = error instanceof Error ? (error as any).stack : undefined;
+        this.logger.error(`Failed to create document: ${errorMessage}`, errorStack, 'DocumentsService');
+        throw error as any;
       }
     });
   }
-
+  
   /**
    * Retrieves all documents associated with a specific entity.
    * 
@@ -83,13 +86,15 @@ export class DocumentsService {
         this.logger.log(`Found ${documents.length} documents`, 'DocumentsService');
         
         return documents as Document[];
-      } catch (error) {
-        this.logger.error(`Failed to find documents: ${error.message}`, error.stack, 'DocumentsService');
-        throw error;
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+        const errorStack = error instanceof Error ? (error as any).stack : undefined;
+        this.logger.error(`Failed to find documents: ${errorMessage}`, errorStack, 'DocumentsService');
+        throw error as any;
       }
     });
   }
-
+  
   /**
    * Retrieves a specific document by its ID.
    * 
@@ -111,13 +116,15 @@ export class DocumentsService {
         }
         
         return document as Document;
-      } catch (error) {
-        this.logger.error(`Failed to find document: ${error.message}`, error.stack, 'DocumentsService');
-        throw error;
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+        const errorStack = error instanceof Error ? (error as any).stack : undefined;
+        this.logger.error(`Failed to find document: ${errorMessage}`, errorStack, 'DocumentsService');
+        throw error as any;
       }
     });
   }
-
+  
   /**
    * Deletes a document from the database.
    * 
@@ -133,9 +140,11 @@ export class DocumentsService {
         });
         
         this.logger.log(`Document with ID ${id} deleted`, 'DocumentsService');
-      } catch (error) {
-        this.logger.error(`Failed to delete document: ${error.message}`, error.stack, 'DocumentsService');
-        throw error;
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+        const errorStack = error instanceof Error ? (error as any).stack : undefined;
+        this.logger.error(`Failed to delete document: ${errorMessage}`, errorStack, 'DocumentsService');
+        throw error as any;
       }
     });
   }

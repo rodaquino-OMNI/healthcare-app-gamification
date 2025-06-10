@@ -9,11 +9,11 @@ import { TelemedicineModule } from './telemedicine/telemedicine.module';
 import { TreatmentsModule } from './treatments/treatments.module';
 import { configuration } from './config/configuration';
 import { validationSchema } from './config/validation.schema';
-import { PrismaService } from 'src/backend/shared/src/database/prisma.service';
-import { ExceptionsModule } from 'src/backend/shared/src/exceptions/exceptions.module';
-import { KafkaModule } from 'src/backend/shared/src/kafka/kafka.module';
-import { LoggerModule } from 'src/backend/shared/src/logging/logger.module';
-import { RedisModule } from 'src/backend/shared/src/redis/redis.module';
+import { PrismaService } from '@app/shared/database/prisma.service';
+import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
+import { KafkaModule } from '@app/shared/kafka/kafka.module';
+import { LoggerModule } from '@app/shared/logging/logger.module';
+import { RedisModule } from '@app/shared/redis/redis.module';
 
 /**
  * Root module for the Care Service that configures and organizes all the necessary modules, controllers,

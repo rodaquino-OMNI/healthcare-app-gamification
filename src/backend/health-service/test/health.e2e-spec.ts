@@ -7,10 +7,10 @@ import { HealthService } from '../src/health/health.service'; // Import HealthSe
 import { HealthMetric } from '../src/health/entities/health-metric.entity'; // Import HealthMetric entity
 import { CreateMetricDto } from '../src/health/dto/create-metric.dto'; // Import CreateMetricDto
 import { DevicesService } from '../src/devices/devices.service'; // Import DevicesService
-import { AllExceptionsFilter } from 'src/backend/shared/src/exceptions/exceptions.filter'; // Import AllExceptionsFilter
-import { AUTH_INSUFFICIENT_PERMISSIONS } from 'src/backend/shared/src/constants/error-codes.constants'; // Import AUTH_INSUFFICIENT_PERMISSIONS
-import { KafkaService } from 'src/backend/shared/src/kafka/kafka.service'; // Import KafkaService
-import { PrismaService } from 'src/backend/shared/src/database/prisma.service'; // Import PrismaService
+import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter'; // Import AllExceptionsFilter
+import { AUTH_INSUFFICIENT_PERMISSIONS } from '@app/shared/constants/error-codes.constants'; // Import AUTH_INSUFFICIENT_PERMISSIONS
+import { KafkaService } from '@app/shared/kafka/kafka.service'; // Import KafkaService
+import { PrismaService } from '@app/shared/database/prisma.service'; // Import PrismaService
 import { jest } from '@jest/globals'; // Import jest
 
 /**

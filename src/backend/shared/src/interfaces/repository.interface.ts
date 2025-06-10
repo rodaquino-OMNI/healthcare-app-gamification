@@ -2,53 +2,59 @@ import { FilterDto } from '../dto/filter.dto';
 import { PaginationDto } from '../dto/pagination.dto';
 
 /**
- * Generic repository interface that provides standardized data access methods
- * across all journey services in the AUSTA SuperApp.
- * 
- * This interface abstracts the underlying data storage implementation details
- * and provides a consistent API for performing CRUD operations.
- * 
- * @typeParam T - The entity type this repository manages
+ * Generic repository interface that defines standard CRUD operations
+ * @template T - Entity type
+ * @template ID - Entity ID type (usually string or number)
  */
-export interface Repository<T> {
+export interface Repository<T, ID = string> {
   /**
-   * Finds an entity by its unique identifier
-   * 
-   * @param id - The unique identifier of the entity
-   * @returns A promise that resolves to the found entity or null if not found
+   * Find all entities with optional filtering and pagination
+   * @param filter - Filter criteria
+   * @param pagination - Pagination options
+   * @returns Promise with array of entities and total count
    */
-  findById(id: string): Promise<T | null>;
+  findAll(filter?: FilterDto, pagination?: PaginationDto): Promise<{ items: T[], total: number }>;
   
   /**
-   * Finds all entities that match the given filter
-   * 
-   * @param filter - Optional filtering criteria
-   * @returns A promise that resolves to an array of entities
+   * Find a single entity by ID
+   * @param id - Entity ID
+   * @returns Promise with entity or null if not found
    */
-  findAll(filter?: FilterDto): Promise<T[]>;
-
+  findById(id: ID): Promise<T | null>;
+  
   /**
-   * Creates a new entity
-   * 
-   * @param entity - The entity to create (without an ID)
-   * @returns A promise that resolves to the created entity with an assigned ID
+   * Find a single entity by specified criteria
+   * @param criteria - Search criteria
+   * @returns Promise with entity or null if not found
    */
-  create(entity: Omit<T, 'id'>): Promise<T>;
-
+  findOne(criteria: Partial<T>): Promise<T | null>;
+  
   /**
-   * Updates an existing entity
-   * 
-   * @param id - The unique identifier of the entity to update
-   * @param entity - The partial entity containing fields to update
-   * @returns A promise that resolves to the updated entity
+   * Create a new entity
+   * @param data - Entity data
+   * @returns Promise with created entity
    */
-  update(id: string, entity: Partial<T>): Promise<T>;
-
+  create(data: Partial<T>): Promise<T>;
+  
   /**
-   * Deletes an entity by its unique identifier
-   * 
-   * @param id - The unique identifier of the entity to delete
-   * @returns A promise that resolves to a boolean indicating success
+   * Update an existing entity
+   * @param id - Entity ID
+   * @param data - Updated entity data
+   * @returns Promise with updated entity
    */
-  delete(id: string): Promise<boolean>;
+  update(id: ID, data: Partial<T>): Promise<T>;
+  
+  /**
+   * Delete an entity by ID
+   * @param id - Entity ID
+   * @returns Promise with boolean indicating success
+   */
+  delete(id: ID): Promise<boolean>;
+  
+  /**
+   * Count entities matching the criteria
+   * @param criteria - Count criteria
+   * @returns Promise with count
+   */
+  count(criteria?: Partial<T>): Promise<number>;
 }

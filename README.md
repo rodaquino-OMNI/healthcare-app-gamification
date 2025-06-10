@@ -1,305 +1,278 @@
-# AUSTA SuperApp
+# AUSTA Healthcare Super App
 
-AUSTA SuperApp is a unified digital health platform designed to transform healthcare delivery through a journey-centered approach with gamification at its core. The platform consolidates multiple healthcare functions into three intuitive user journeys: "Minha Saúde" (My Health), "Cuidar-me Agora" (Care Now), and "Meu Plano & Benefícios" (My Plan & Benefits).
+A unified digital health platform that transforms healthcare delivery through a journey-centered approach with gamification at its core. The platform consolidates multiple healthcare functions into three intuitive user journeys, making healthcare management engaging and accessible.
 
-## Introduction
+## 🚀 Overview
 
-The AUSTA SuperApp addresses the fragmentation and complexity in current healthcare digital experiences by providing a cohesive platform that aligns with how users naturally think about their healthcare needs.
+The AUSTA SuperApp is designed to provide a comprehensive healthcare experience by integrating various health services into a single platform. It features:
 
-### Business Problems Addressed
+- **Journey-based navigation**: Three color-coded journeys for intuitive user experience
+- **Gamification engine**: Points, achievements, quests, and leaderboards to encourage healthy behaviors
+- **Microservices architecture**: Scalable, maintainable, and resilient system design
+- **Multi-platform support**: Web and mobile applications with offline capabilities
 
-- Fragmented healthcare digital experiences
+## 📋 Table of Contents
 
-- Low digital adoption and adherence
+- [Features](#features)
+- [Architecture](#architecture)
+- [Technology Stack](#technology-stack)
+- [Getting Started](#getting-started)
+- [Development](#development)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [License](#license)
 
-- Complex user interfaces causing friction
+## 🎯 Features
 
-- Disconnected health data
+### Three Main User Journeys
 
-### Solution Approach
+#### 1. 🏥 **Minha Saúde (My Health)**
+- Health metrics tracking and visualization
+- Wearable device integration (Google Fit, Apple HealthKit)
+- Medical history timeline
+- Health goal setting and progress tracking
+- FHIR-compliant EHR integration
 
-- Journey-centered design with gamification
+#### 2. 🩺 **Cuidar-me Agora (Care Now)**
+- Symptom checker and self-triage
+- Appointment booking system
+- Telemedicine/video consultations
+- Medication tracking and reminders
+- Treatment plan management
+- Healthcare provider search
 
-- Simplified architecture with consistent UX
+#### 3. 📋 **Meu Plano & Benefícios (My Plan & Benefits)**
+- Insurance coverage information
+- Digital insurance cards
+- Claims submission and tracking
+- Cost simulation for procedures
+- Benefits showcase
+- Document management
 
-- Unified design system with journey color-coding
+### 🎮 Gamification Features
+- User levels and experience points (XP)
+- Achievement system with collectible badges
+- Multi-step quests and challenges
+- Journey-specific and overall leaderboards
+- Reward management and redemption
+- Event-driven rules engine
 
-- Integrated data architecture
+## 🏗️ Architecture
 
-### Value Proposition
+The application follows a microservices architecture with the following key components:
 
-- Improved user engagement and health outcomes
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        Clients                              │
+│         (Web App, Mobile App, Third-party Apps)            │
+└─────────────────────────────────┬───────────────────────────┘
+                                  │
+┌─────────────────────────────────┴───────────────────────────┐
+│                      API Gateway                            │
+│                    (GraphQL + REST)                         │
+└─────────┬───────────────────────────────────────────────────┘
+          │
+┌─────────┴────────┬─────────────┬─────────────┬─────────────┐
+│   Auth Service   │ Health Svc  │  Care Svc   │  Plan Svc   │
+├──────────────────┼─────────────┼─────────────┼─────────────┤
+│ Gamification Eng │ Notification│    Shared   │   Redis     │
+├──────────────────┴─────────────┴─────────────┴─────────────┤
+│                     Apache Kafka                            │
+├─────────────────────────────────────────────────────────────┤
+│           PostgreSQL / TimescaleDB / Redis                  │
+└─────────────────────────────────────────────────────────────┘
+```
 
-- Reduced operational costs and improved efficiency
+### Key Services
 
-- Enhanced user satisfaction and retention
+- **API Gateway**: Unified entry point with GraphQL interface
+- **Auth Service**: OAuth 2.0, JWT, MFA, and biometric authentication
+- **Health Service**: Health metrics, goals, and device integrations
+- **Care Service**: Appointments, telemedicine, and treatment management
+- **Plan Service**: Insurance, claims, and coverage management
+- **Gamification Engine**: Achievement processing and reward distribution
+- **Notification Service**: Multi-channel notification delivery
 
-- Better clinical decision-making
+## 💻 Technology Stack
 
-The AUSTA SuperApp is built with a simplified technology stack centered around React Native, Next.js, Node.js, and PostgreSQL. The system architecture follows a modular microservices approach organized around the three core user journeys.
+### Backend
+- **Runtime**: Node.js v18+ LTS
+- **Framework**: NestJS v10.0+
+- **API**: GraphQL with Apollo Server
+- **Database**: PostgreSQL v14+, TimescaleDB, Redis v7.0+
+- **Message Queue**: Apache Kafka
+- **ORM**: Prisma v5.10.2
 
-## Technical Specifications
+### Frontend
+- **Web**: Next.js v14.2.25, React v18.2.0
+- **Mobile**: React Native v0.72.6
+- **State Management**: React Query/TanStack Query
+- **Styling**: Styled Components v6.0+
+- **Charts**: Victory Native, Recharts
 
-For comprehensive technical details, refer to the [Technical Specifications](./docs/technical-specifications.md) document, which includes:
+### Infrastructure
+- **Container**: Docker
+- **Orchestration**: Kubernetes (EKS/ECS)
+- **IaC**: Terraform
+- **Cloud**: AWS
+- **CI/CD**: GitHub Actions
+- **Monitoring**: Datadog, Sentry
 
-- Detailed system architecture
-
-- Feature catalog and functional requirements
-
-- API design and integration patterns
-
-- Database schema and data flow
-
-- Frontend component library
-
-- Security architecture and compliance considerations
-
-- Infrastructure and deployment strategy
-
-- Testing approach and quality metrics
-
-## Repository Structure
-
-This repository follows a dual-monorepo architecture:
-
-```markdown
-healthcare-super-app/
-├── src/
-│   ├── backend/       # Backend Lerna monorepo with NestJS microservices
-
-│   └── web/           # Frontend Turbo monorepo with Next.js and React Native
-
-├── infrastructure/    # Kubernetes and Terraform configurations
-
-└── docker-compose.dev.yml  # Development Docker Compose configuration
-
-```markdown
-
-### Backend Structure
-
-The backend is a Lerna monorepo with several NestJS microservices:
-
-```markdown
-src/backend/
-├── api-gateway/        # API Gateway service
-
-├── auth-service/       # Authentication service
-
-├── health-service/     # My Health journey service
-
-├── care-service/       # Care Now journey service
-
-├── plan-service/       # My Plan & Benefits journey service
-
-├── gamification-engine/ # Gamification Engine service
-
-├── notification-service/ # Notification service
-
-└── shared/             # Shared code, utilities, and Prisma schema
-
-```markdown
-
-### Frontend Structure
-
-The frontend is a Turbo monorepo with shared code between web and mobile:
-
-```markdown
-src/web/
-├── design-system/      # Shared component library
-
-├── shared/             # Shared utilities and types
-
-├── mobile/             # React Native mobile application
-
-└── web/                # Next.js web application
-
-```markdown
-
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js (v18.x or later)
-
-- Yarn package manager (v1.22.x or later)
-
+- Node.js v18+ LTS
+- Yarn v1.22.19+
 - Docker and Docker Compose
+- PostgreSQL v14+
+- Redis v7.0+
 
-- AWS CLI (for deployment)
+### Installation
 
-### Package Management
-
-This project uses Yarn as the official package manager. Please do not use npm to avoid dependency resolution issues.
-
+1. Clone the repository:
 ```bash
+git clone https://github.com/your-org/healthcare-super-app.git
+cd healthcare-super-app
+```
 
-# Install dependencies (correct)
-
+2. Install dependencies:
+```bash
+# Install root dependencies
 yarn install
 
-# DO NOT use npm (incorrect)
+# Install backend dependencies
+cd src/backend
+yarn install
 
-# npm install
+# Install frontend dependencies
+cd ../web
+yarn install
+```
 
-```markdown
+3. Set up environment variables:
+```bash
+# Copy example environment files
+cp .env.example .env
+# Edit .env with your configuration
+```
 
-For detailed guidance on dependency management, refer to the [Package Manager Standardization](./docs/package-manager-standardization.md) document.
+4. Start infrastructure services:
+```bash
+docker-compose up -d postgres redis kafka
+```
 
-### Development Environment Setup
+5. Run database migrations:
+```bash
+cd src/backend
+yarn prisma migrate dev
+```
 
-Each part of the application can be run independently. You can choose to start with either the backend services, the web application, or the mobile application depending on your development focus.
+## 🛠️ Development
 
-#### Starting the Infrastructure Services
-
-First, start the infrastructure services (database, Redis, Kafka):
+### Backend Development
 
 ```bash
-docker-compose -f docker-compose.dev.yml up -d db redis kafka zookeeper
-```markdown
+# Start all backend services
+cd src/backend
+yarn dev
 
-#### Running the Backend Services
+# Start specific service
+yarn workspace @healthcare/auth-service dev
 
-You can run all backend services or just specific ones:
+# Run database studio
+yarn prisma studio
+```
 
-1. Navigate to the backend directory:
-   ```bash
-   cd src/backend
-   ```markdown
+### Frontend Development
 
-2. Install dependencies:
-   ```bash
-   yarn install
-   ```markdown
+```bash
+# Start web application
+cd src/web/web
+yarn dev
 
-3. Start all backend services:
-   ```bash
-   yarn start:dev
-   ```markdown
+# Start mobile application
+cd src/web/mobile
+yarn start
+```
 
-4. Or start a specific service (e.g., gamification-engine):
-   ```bash
-   yarn start:gamification-engine
-   ```markdown
+### Code Quality
 
-#### Running the Web Application
+```bash
+# Run linting
+yarn lint
 
-1. Navigate to the web directory:
-   ```bash
-   cd src/web
-   ```markdown
+# Run type checking
+yarn typecheck
 
-2. Install dependencies:
-   ```bash
-   yarn install
-   ```markdown
+# Format code
+yarn format
+```
 
-3. Start the web application:
-   ```bash
-   yarn web:dev
-   ```markdown
+## 🧪 Testing
 
-4. Access the web application at <http://localhost:3000>
+```bash
+# Run all tests
+yarn test
 
-#### Running the Mobile Application
+# Run backend tests
+cd src/backend
+yarn test
 
-1. From the web directory:
-   ```bash
-   cd src/web
-   ```markdown
+# Run e2e tests
+yarn test:e2e
 
-2. Start the mobile application:
-   ```bash
-   yarn dev --filter=mobile
-   ```markdown
+# Run with coverage
+yarn test:cov
+```
 
-3. Follow the instructions to open the app in Expo or an emulator
+## 📦 Deployment
 
-### Working with the Gamification Engine
+### Local Deployment
 
-The gamification engine can be run independently for development and testing:
+```bash
+# Build and start with Docker Compose
+docker-compose -f docker-compose.yml up --build
+```
 
-1. Navigate to the gamification engine directory:
-   ```bash
-   cd src/backend/gamification-engine
-   ```markdown
+### Production Deployment
 
-2. Make sure you have set up the environment variables:
-   ```bash
-   cp .env.example .env
-   # Edit the .env file as needed
+```bash
+# Deploy infrastructure
+cd infrastructure/terraform
+terraform apply
 
-   ```markdown
+# Deploy services
+make deploy-all ENV=production
+```
 
-3. Start the gamification engine:
-   ```bash
-   yarn start:dev
-   ```markdown
+## 🤝 Contributing
 
-4. The gamification engine will be available at <http://localhost:3005>
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
-## Building for Production
+### Development Guidelines
 
-1. Build all components:
-   ```bash
-   # For backend
+1. Follow the established code style and conventions
+2. Write tests for new features
+3. Update documentation as needed
+4. Create feature branches from `main`
+5. Submit PR with clear description
 
-   cd src/backend
-   yarn build
-   
-   # For web and mobile
+## 📄 License
 
-   cd src/web
-   yarn build
-   ```markdown
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-2. Deploy using the provided infrastructure configurations:
-   ```bash
-   # Using the Makefile
+## 🔗 Links
 
-   make deploy-staging
-   # OR
+- [Technical Documentation](./blitzy/documentation/Technical%20Specifications_a4343085-92fd-4530-8868-0a0afbb37ab7.md)
+- [API Documentation](http://localhost:3000/api/docs)
+- [Design System Storybook](http://localhost:6006)
 
-   make deploy-production
-   ```markdown
+## 🏥 About AUSTA
 
-## Contributing
+AUSTA SuperApp is committed to making healthcare more accessible, engaging, and effective through innovative technology and user-centered design.
 
-We welcome contributions to the AUSTA SuperApp project! Please follow these guidelines:
+---
 
-### Code Style
-
-- Follow the project's coding standards
-
-- Use TypeScript for type safety
-
-- Follow the journey-centered architecture
-
-- Write tests for new features
-
-### Pull Request Process
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/my-feature`)
-3. Commit your changes (`git commit -am 'Add new feature'`)
-4. Push to the branch (`git push origin feature/my-feature`)
-5. Create a new Pull Request
-
-### Code of Conduct
-
-- Be respectful and inclusive
-
-- Provide constructive feedback
-
-- Focus on the user experience and journey-centered design
-
-- Consider security and privacy in all contributions
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
-## Dependency Management
-
-For information about how dependencies are managed and standardized in this project, please see the [Package Manager Standardization](./docs/package-manager-standardization.md) document.
-
-For details about dependency fixes and the scaling solution, see [Dependency Fixes](./DEPENDENCY_FIXES.md).
+Made with ❤️ by the AUSTA Team

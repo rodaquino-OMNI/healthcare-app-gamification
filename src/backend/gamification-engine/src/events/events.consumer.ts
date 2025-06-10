@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { KafkaService } from '@app/shared/kafka/kafka.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
@@ -26,7 +27,7 @@ export class EventsConsumer implements OnModuleInit {
       this.logger.log('Initializing Kafka event consumers', 'EventsConsumer');
       
       for (const topic of this.topics) {
-        await this.kafkaService.consume(
+        await this.kafkaService.subscribe(
           topic,
           this.consumerGroup,
           this.handleEvent.bind(this)
@@ -37,11 +38,11 @@ export class EventsConsumer implements OnModuleInit {
       this.logger.log('Kafka event consumers initialized successfully', 'EventsConsumer');
     } catch (error) {
       this.logger.error(
-        `Failed to initialize Kafka event consumers: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        error instanceof Error ? error.stack : undefined,
+        `Failed to initialize Kafka event consumers: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
+        error instanceof Error ? (error as any).stack : undefined,
         'EventsConsumer'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -51,31 +52,34 @@ export class EventsConsumer implements OnModuleInit {
    * @param key The message key
    * @param headers The message headers
    */
-  private async handleEvent(payload: any, key?: string, headers?: Record<string, string>): Promise<void> {
+  private async handleEvent(payload: any): Promise<void> {
     try {
       this.logger.log(`Processing event`, 'EventsConsumer');
       
+      // Extract message value from the payload object
+      const messageValue = payload.value;
+      
       // Validate the event structure
-      if (!this.isValidEvent(payload)) {
-        this.logger.warn(`Invalid event received: ${JSON.stringify(payload)}`, 'EventsConsumer');
+      if (!this.isValidEvent(messageValue)) {
+        this.logger.warn(`Invalid event received: ${JSON.stringify(messageValue)}`, 'EventsConsumer');
         return;
       }
       
       // Process the event through the rules engine
       await this.rulesService.processEvent({
-        type: payload.type,
-        userId: payload.userId,
-        timestamp: new Date(payload.timestamp),
-        journey: payload.journey,
-        data: payload.data,
-        metadata: payload.metadata || {}
+        type: messageValue.type,
+        userId: messageValue.userId,
+        timestamp: new Date(messageValue.timestamp),
+        journey: messageValue.journey,
+        data: messageValue.data,
+        metadata: messageValue.metadata || {}
       });
       
       this.logger.log(`Successfully processed event`, 'EventsConsumer');
     } catch (error) {
       this.logger.error(
-        `Error processing event: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        error instanceof Error ? error.stack : undefined,
+        `Error processing event: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
+        error instanceof Error ? (error as any).stack : undefined,
         'EventsConsumer'
       );
     }

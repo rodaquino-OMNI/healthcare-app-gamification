@@ -1,127 +1,209 @@
-import { Injectable, Logger } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { WearableAdapter } from '../wearables.service';
-import { HealthMetric } from '../../health/entities/health-metric.entity';
-import { DeviceConnection } from '../../devices/entities/device-connection.entity';
-import { ErrorCodes } from 'src/backend/shared/src/constants/error-codes.constants';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
+import { HealthMetric } from '../../../health/entities/health-metric.entity';
+import { DeviceConnection } from '../../../devices/entities/device-connection.entity';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { WearableAdapter } from '../interfaces/wearable-adapter.interface';
+import { MetricType, MetricSource } from '../../../health/types/health.types';
+import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+import { SYS_INTERNAL_SERVER_ERROR } from '@app/shared/constants/error-codes.constants';
 
+/**
+ * Interface for connection data that will be stored in DeviceConnection metadata
+ */
+interface GoogleFitConnectionData {
+  accessToken: string;
+  refreshToken: string;
+  expiresAt: string;
+  retryCount?: number;
+}
+
+/**
+ * Adapter for integrating with Google Fit API
+ * Provides functionality for connecting, syncing, and retrieving health data
+ * from Google Fit wearable devices and the Google Fit app.
+ */
 @Injectable()
-export class GoogleFitAdapter extends WearableAdapter {
-  private readonly logger: Logger;
-  private readonly baseUrl = 'https://www.googleapis.com/fitness/v1/users/me';
+export class GoogleFitAdapter implements WearableAdapter {
+  // Define max retries and backoff constants
+  private readonly MAX_RETRIES = 3;
+  private readonly INITIAL_BACKOFF_MS = 1000;
   
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
-    loggerService: LoggerService
-  ) {
-    super();
-    this.logger = loggerService.createLogger(GoogleFitAdapter.name);
-  }
-
+    private readonly logger: LoggerService
+  ) {}
+  
   /**
-   * Initiates the connection to Google Fit API using OAuth 2.0 flow.
-   * @param userId The ID of the user to connect
-   * @returns A promise that resolves to a DeviceConnection entity
+   * Connect to Google Fit API
    */
-  async connect(userId: string): Promise<DeviceConnection> {
+  async connect(userId: string, authToken: string, refreshToken?: string): Promise<DeviceConnection> {
     try {
       this.logger.log(`Initiating connection to Google Fit for user ${userId}`);
-      
       const clientId = this.configService.get<string>('GOOGLE_FIT_CLIENT_ID');
       const clientSecret = this.configService.get<string>('GOOGLE_FIT_CLIENT_SECRET');
       const redirectUri = this.configService.get<string>('GOOGLE_FIT_REDIRECT_URI');
       
       if (!clientId || !clientSecret || !redirectUri) {
-        this.logger.error(`Missing Google Fit API credentials`, null, { userId });
-        throw new Error(ErrorCodes.HEALTH_002);
+        this.logger.error(`Missing Google Fit API credentials`, null, 'GoogleFitAdapter');
+        throw new AppException(
+          'Missing Google Fit API credentials',
+          ErrorType.TECHNICAL,
+          'CONFIG_ERROR',
+          { service: 'GoogleFitAdapter' }
+        );
       }
       
-      // Note: In a real implementation, we would redirect the user to the Google OAuth consent screen
-      // and handle the callback with the authorization code
-      // For this example, we'll assume the authorization code has been obtained
-      
-      // This would be the URL to redirect the user to
-      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-        `client_id=${clientId}` +
-        `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-        `&response_type=code` +
-        `&scope=https://www.googleapis.com/auth/fitness.activity.read ` +
-        `https://www.googleapis.com/auth/fitness.blood_glucose.read ` +
-        `https://www.googleapis.com/auth/fitness.blood_pressure.read ` +
-        `https://www.googleapis.com/auth/fitness.body.read ` +
-        `https://www.googleapis.com/auth/fitness.heart_rate.read ` +
-        `https://www.googleapis.com/auth/fitness.sleep.read`;
-      
-      // In a real implementation, we would redirect the user to authUrl
-      // Then, in the callback handler, we would exchange the authorization code for tokens
-      
-      // For this example, we'll assume we have an authorization code
-      const authorizationCode = 'example_authorization_code';
-      
-      // Exchange authorization code for tokens
-      const tokenResponse = await firstValueFrom(
-        this.httpService.post('https://oauth2.googleapis.com/token', {
-          client_id: clientId,
-          client_secret: clientSecret,
-          code: authorizationCode,
-          grant_type: 'authorization_code',
-          redirect_uri: redirectUri
-        })
+      const tokenResponse = await this.makeRequestWithRetry(() => 
+        firstValueFrom(
+          this.httpService.post('https://oauth2.googleapis.com/token', {
+            client_id: clientId,
+            client_secret: clientSecret,
+            code: authToken,
+            grant_type: 'authorization_code',
+            redirect_uri: redirectUri
+          })
+        )
       );
       
       const { access_token, refresh_token, expires_in } = tokenResponse.data;
       
-      // Create a new device connection record
       const deviceConnection = new DeviceConnection();
-      deviceConnection.userId = userId;
-      deviceConnection.deviceType = 'GOOGLE_FIT';
-      deviceConnection.status = 'CONNECTED';
-      deviceConnection.connectionData = {
+      const connectionData: GoogleFitConnectionData = {
         accessToken: access_token,
-        refreshToken: refresh_token,
-        expiresAt: new Date(Date.now() + expires_in * 1000).toISOString()
+        refreshToken: refresh_token || refreshToken || '',
+        expiresAt: new Date(Date.now() + expires_in * 1000).toISOString(),
+        retryCount: 0
       };
-      deviceConnection.lastSyncedAt = new Date();
       
-      this.logger.log(`Successfully connected to Google Fit for user ${userId}`);
+      deviceConnection.deviceType = 'FITNESS_TRACKER';
+      deviceConnection.status = 'CONNECTED';
+      deviceConnection.deviceId = `google-fit-${userId}`;
+      deviceConnection.lastSync = new Date();
+      deviceConnection.userId = userId;
+      
+      deviceConnection.metadata = {
+        connectionType: 'GOOGLE_FIT',
+        connectionData: JSON.stringify(connectionData)
+      };
       
       return deviceConnection;
-      
-    } catch (error) {
-      this.logger.error(`Failed to connect to Google Fit for user ${userId}`, error.stack, { userId });
-      throw new Error(`${ErrorCodes.HEALTH_002}: ${error.message}`);
-    }
-  }
-
-  /**
-   * Retrieves health metrics from the Google Fit API for a specific user and date range.
-   * @param userId The ID of the user
-   * @param startDate The start date for the metrics query
-   * @param endDate The end date for the metrics query
-   * @returns A promise that resolves to an array of HealthMetric entities
-   */
-  async getHealthMetrics(userId: string, startDate: Date, endDate: Date): Promise<HealthMetric[]> {
-    try {
-      this.logger.log(`Retrieving health metrics from Google Fit for user ${userId}`);
-      
-      // Retrieve the device connection for the user
-      const deviceConnection = await this.getDeviceConnection(userId);
-      
-      if (!deviceConnection || deviceConnection.status !== 'CONNECTED') {
-        this.logger.warn(`No active Google Fit connection found for user ${userId}`, { userId });
-        throw new Error(ErrorCodes.HEALTH_002);
+    } catch (error: any) {
+      // Check for specific OAuth errors
+      if (error.response && error.response.data) {
+        const { error: errorType, error_description } = error.response.data;
+        
+        if (errorType === 'invalid_grant') {
+          throw new AppException(
+            'Invalid authorization code or refresh token',
+            ErrorType.BUSINESS,
+            'AUTH_ERROR',
+            { userId }
+          );
+        } else if (errorType === 'invalid_client') {
+          throw new AppException(
+            'Invalid client credentials',
+            ErrorType.TECHNICAL,
+            'CONFIG_ERROR',
+            { service: 'GoogleFitAdapter' }
+          );
+        }
       }
       
-      // Check if the access token is expired and refresh if needed
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Failed to connect to Google Fit: ${errorMessage}`, 
+        error instanceof Error ? error.stack : null, 'GoogleFitAdapter');
+      
+      throw new AppException(
+        `Failed to connect to Google Fit`,
+        ErrorType.TECHNICAL,
+        'API_INTEGRATION_ERROR',
+        { userId },
+        error
+      );
+    }
+  }
+  
+  /**
+   * Makes API requests with retry logic for transient failures
+   */
+  private async makeRequestWithRetry<T>(
+    requestFn: () => Promise<T>,
+    retryCount = 0,
+    maxRetries = this.MAX_RETRIES,
+  ): Promise<T> {
+    try {
+      return await requestFn();
+    } catch (error: any) {
+      // Don't retry for client errors (4xx except 429)
+      if (error.response && error.response.status >= 400 && 
+          error.response.status < 500 && error.response.status !== 429) {
+        throw error;
+      }
+      
+      if (retryCount >= maxRetries) {
+        this.logger.error(`Request failed after ${maxRetries} retries`, null, 'GoogleFitAdapter');
+        throw error;
+      }
+      
+      const delay = this.INITIAL_BACKOFF_MS * Math.pow(2, retryCount);
+      this.logger.log(`Retrying request after ${delay}ms (attempt ${retryCount + 1}/${maxRetries})`, 
+        'GoogleFitAdapter');
+      
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return this.makeRequestWithRetry(requestFn, retryCount + 1, maxRetries);
+    }
+  }
+  
+  /**
+   * Retrieves health metrics from the Google Fit API for a specific user and date range.
+   */
+  async getHealthMetrics(
+    userId: string, 
+    deviceConnection: DeviceConnection, 
+    startTime: Date, 
+    endTime: Date
+  ): Promise<HealthMetric[]> {
+    try {
+      if (!deviceConnection) {
+        this.logger.warn(`No active Google Fit connection found for user ${userId}`, 'GoogleFitAdapter');
+        return [];
+      }
+      
+      // Extract and validate connection data from metadata
+      let connectionData: GoogleFitConnectionData | null = null;
+      try {
+        connectionData = JSON.parse(deviceConnection.metadata?.connectionData || '{}') as GoogleFitConnectionData;
+      } catch (e) {
+        this.logger.error(`Invalid connection data format for user ${userId}`, null, 'GoogleFitAdapter');
+        throw new AppException(
+          'Invalid connection data format',
+          ErrorType.TECHNICAL,
+          'DATA_FORMAT_ERROR',
+          { userId }
+        );
+      }
+      
+      if (!connectionData || !connectionData.accessToken) {
+        this.logger.error(`Missing connection data for Google Fit user ${userId}`, null, 'GoogleFitAdapter');
+        throw new AppException(
+          'Missing connection data',
+          ErrorType.BUSINESS,
+          'INVALID_CONNECTION',
+          { userId }
+        );
+      }
+      
+      // Ensure token is valid
       await this.refreshTokenIfNeeded(deviceConnection);
+      // Get the updated connection data after refresh
+      connectionData = JSON.parse(deviceConnection.metadata?.connectionData || '{}') as GoogleFitConnectionData;
+      const accessToken = connectionData.accessToken;
       
-      const accessToken = deviceConnection.connectionData.accessToken;
-      
-      // Define the data sources to query
       const dataSources = [
         'derived:com.google.step_count.delta:com.google.android.gms:estimated_steps',
         'derived:com.google.heart_rate.bpm:com.google.android.gms:merge_heart_rate_bpm',
@@ -131,304 +213,425 @@ export class GoogleFitAdapter extends WearableAdapter {
         'derived:com.google.sleep.segment:com.google.android.gms:merged'
       ];
       
-      // Collect metrics from all data sources
       const healthMetrics: HealthMetric[] = [];
+      const baseUrl = 'https://www.googleapis.com/fitness/v1/users/me';
       
       for (const dataSource of dataSources) {
-        // Construct request payload for Google Fit Data Sets API
         const requestBody = {
           aggregateBy: [{
             dataTypeName: dataSource
           }],
           bucketByTime: {
-            durationMillis: 86400000 // 1 day in milliseconds
+            durationMillis: 86400000
           },
-          startTimeMillis: startDate.getTime(),
-          endTimeMillis: endDate.getTime()
+          startTimeMillis: startTime.getTime(),
+          endTimeMillis: endTime.getTime()
         };
         
-        // Make request to Google Fit API
-        const response = await firstValueFrom(
-          this.httpService.post(
-            `${this.baseUrl}/dataset:aggregate`,
-            requestBody,
-            {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-                'Content-Type': 'application/json'
-              }
-            }
-          )
-        );
-        
-        // Process the response and extract metrics
-        const buckets = response.data.bucket || [];
-        
-        for (const bucket of buckets) {
-          for (const dataset of bucket.dataset || []) {
-            for (const point of dataset.point || []) {
-              for (const value of point.value || []) {
-                const metricType = this.mapGoogleFitTypeToMetricType(dataset.dataSourceId);
-                
-                if (!metricType) {
-                  continue; // Skip unrecognized data types
+        try {
+          const response = await this.makeRequestWithRetry(() => 
+            firstValueFrom(
+              this.httpService.post(
+                `${baseUrl}/dataset:aggregate`,
+                requestBody,
+                {
+                  headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                  }
                 }
-                
-                // Create a new health metric
-                const metric = new HealthMetric();
-                metric.userId = userId;
-                metric.type = metricType;
-                metric.timestamp = new Date(point.startTimeNanos / 1000000); // Convert nanos to millis
-                
-                // Extract and convert the value based on the metric type
-                switch (metricType) {
-                  case 'STEPS':
-                    metric.value = value.intVal;
-                    metric.unit = 'steps';
-                    break;
-                  case 'HEART_RATE':
-                    metric.value = value.fpVal;
-                    metric.unit = 'bpm';
-                    break;
-                  case 'WEIGHT':
-                    // Google Fit stores weight in kg, convert if necessary
-                    metric.value = value.fpVal;
-                    metric.unit = 'kg';
-                    break;
-                  case 'BLOOD_PRESSURE':
-                    // Google Fit stores blood pressure as systolic/diastolic in mmHg
-                    metric.value = `${value.mapVal.find(m => m.key === 'systolic').value.fpVal}/${
-                      value.mapVal.find(m => m.key === 'diastolic').value.fpVal}`;
-                    metric.unit = 'mmHg';
-                    break;
-                  case 'BLOOD_GLUCOSE':
-                    // Google Fit stores blood glucose in mmol/L, convert to mg/dL if needed
-                    metric.value = this.convertUnit(value.fpVal, 'mmol/L', 'mg/dL');
-                    metric.unit = 'mg/dL';
-                    break;
-                  case 'SLEEP':
-                    // Sleep stages are encoded as integers in Google Fit
-                    metric.value = this.mapSleepStage(value.intVal);
-                    metric.unit = 'stage';
-                    break;
-                  default:
-                    metric.value = value.fpVal || value.intVal;
-                    metric.unit = 'unknown';
+              )
+            )
+          );
+          
+          const buckets = response.data.bucket || [];
+          
+          for (const bucket of buckets) {
+            for (const dataset of bucket.dataset || []) {
+              for (const point of dataset.point || []) {
+                for (const value of point.value || []) {
+                  const metricType = this.mapGoogleFitTypeToMetricType(dataset.dataSourceId);
+                  if (!metricType) {
+                    continue;
+                  }
+                  
+                  const metric = new HealthMetric();
+                  metric.userId = userId;
+                  metric.type = metricType;
+                  metric.timestamp = new Date(parseInt(point.startTimeNanos) / 1000000);
+                  metric.source = 'GOOGLE_FIT' as MetricSource;
+                  
+                  switch (metricType) {
+                    case 'STEPS':
+                      metric.value = value.intVal || 0;
+                      metric.unit = 'steps';
+                      break;
+                    case 'HEART_RATE':
+                      metric.value = value.fpVal || 0;
+                      metric.unit = 'bpm';
+                      break;
+                    case 'WEIGHT':
+                      metric.value = value.fpVal || 0;
+                      metric.unit = 'kg';
+                      break;
+                    case 'BLOOD_PRESSURE_SYSTOLIC':
+                      metric.value = this.extractSystolicBP(value);
+                      metric.unit = 'mmHg';
+                      break;
+                    case 'BLOOD_PRESSURE_DIASTOLIC':
+                      metric.value = this.extractDiastolicBP(value);
+                      metric.unit = 'mmHg';
+                      break;
+                    case 'BLOOD_GLUCOSE':
+                      metric.value = value.fpVal || 0;
+                      metric.unit = 'mg/dL';
+                      break;
+                    case 'SLEEP':
+                      metric.value = value.intVal || 0;
+                      metric.unit = 'stage';
+                      break;
+                    default:
+                      metric.value = value.fpVal || value.intVal || 0;
+                      metric.unit = 'unknown';
+                  }
+                  
+                  healthMetrics.push(metric);
                 }
-                
-                metric.source = 'GOOGLE_FIT';
-                
-                healthMetrics.push(metric);
               }
             }
           }
+        } catch (error: any) {
+          // Log error but continue with other data sources
+          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+          this.logger.error(`Failed to retrieve ${dataSource} data: ${errorMessage}`, error instanceof Error ? error.stack : null, 'GoogleFitAdapter');
         }
       }
       
-      // Update the last synced time for the device connection
-      deviceConnection.lastSyncedAt = new Date();
-      // In a real implementation, we would save this update to the database
-      
-      this.logger.log(`Retrieved ${healthMetrics.length} health metrics from Google Fit for user ${userId}`);
-      
+      deviceConnection.lastSync = new Date();
+      this.logger.log(`Retrieved ${healthMetrics.length} health metrics from Google Fit for user ${userId}`, 'GoogleFitAdapter');
       return healthMetrics;
+    } catch (error: any) {
+      // Enhanced error handling with AppException
+      if (error instanceof AppException) {
+        throw error;
+      }
       
-    } catch (error) {
-      this.logger.error(`Failed to retrieve health metrics from Google Fit for user ${userId}`, error.stack, { userId });
-      throw new Error(`${ErrorCodes.HEALTH_001}: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Failed to retrieve Google Fit metrics: ${errorMessage}`, 
+        error instanceof Error ? error.stack : null, 'GoogleFitAdapter');
+      
+      throw new AppException(
+        'Failed to retrieve health metrics',
+        ErrorType.TECHNICAL,
+        'API_INTEGRATION_ERROR',
+        { userId },
+        error
+      );
     }
   }
-
+  
   /**
-   * Disconnects the user's account from the Google Fit API.
-   * @param userId The ID of the user to disconnect
+   * Disconnect from Google Fit
    */
-  async disconnect(userId: string): Promise<void> {
+  async disconnect(userId: string, deviceConnection: DeviceConnection): Promise<boolean> {
     try {
-      this.logger.log(`Disconnecting from Google Fit for user ${userId}`);
-      
-      // Retrieve the device connection for the user
-      const deviceConnection = await this.getDeviceConnection(userId);
-      
-      if (!deviceConnection || deviceConnection.status !== 'CONNECTED') {
-        this.logger.warn(`No active Google Fit connection found for user ${userId}`, { userId });
-        return;
+      if (!deviceConnection) {
+        this.logger.warn(`No active Google Fit connection found for user ${userId}`, 'GoogleFitAdapter');
+        return false;
       }
       
       const clientId = this.configService.get<string>('GOOGLE_FIT_CLIENT_ID');
       const clientSecret = this.configService.get<string>('GOOGLE_FIT_CLIENT_SECRET');
       
       if (!clientId || !clientSecret) {
-        this.logger.error(`Missing Google Fit API credentials`, null, { userId });
-        throw new Error(ErrorCodes.HEALTH_002);
+        this.logger.error(`Missing Google Fit API credentials`, null, 'GoogleFitAdapter');
+        throw new AppException(
+          'Missing Google Fit API credentials',
+          ErrorType.TECHNICAL,
+          'CONFIG_ERROR',
+          { service: 'GoogleFitAdapter' }
+        );
       }
       
-      // Revoke the access token
-      await firstValueFrom(
-        this.httpService.post(
-          'https://oauth2.googleapis.com/revoke',
-          `token=${deviceConnection.connectionData.accessToken}`,
-          {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
+      // Extract connection data from metadata
+      let connectionData: GoogleFitConnectionData | null = null;
+      try {
+        connectionData = JSON.parse(deviceConnection.metadata?.connectionData || '{}') as GoogleFitConnectionData;
+      } catch (e) {
+        this.logger.error(`Invalid connection data format for user ${userId}`, null, 'GoogleFitAdapter');
+        throw new AppException(
+          'Invalid connection data format',
+          ErrorType.TECHNICAL,
+          'DATA_FORMAT_ERROR',
+          { userId }
+        );
+      }
+      
+      if (!connectionData || !connectionData.accessToken) {
+        this.logger.error(`Missing connection data for Google Fit user ${userId}`, null, 'GoogleFitAdapter');
+        throw new AppException(
+          'Missing connection data',
+          ErrorType.BUSINESS,
+          'INVALID_CONNECTION',
+          { userId }
+        );
+      }
+      
+      // Revoke token with retry logic
+      await this.makeRequestWithRetry(() => 
+        firstValueFrom(
+          this.httpService.post(
+            'https://oauth2.googleapis.com/revoke',
+            `token=${connectionData.accessToken}`,
+            {
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              }
             }
-          }
+          )
         )
       );
       
-      // Update the device connection status
+      // Update device connection status
       deviceConnection.status = 'DISCONNECTED';
-      deviceConnection.connectionData = null;
-      // In a real implementation, we would save this update to the database
+      deviceConnection.metadata = {
+        ...deviceConnection.metadata,
+        connectionData: null
+      };
       
-      this.logger.log(`Successfully disconnected from Google Fit for user ${userId}`);
+      this.logger.log(`Successfully disconnected from Google Fit for user ${userId}`, 'GoogleFitAdapter');
+      return true;
+    } catch (error: any) {
+      if (error instanceof AppException) {
+        throw error;
+      }
       
-    } catch (error) {
-      this.logger.error(`Failed to disconnect from Google Fit for user ${userId}`, error.stack, { userId });
-      throw new Error(`${ErrorCodes.HEALTH_002}: ${error.message}`);
-    }
-  }
-
-  /**
-   * Maps Google Fit data types to standardized metric types used in the application.
-   * @param googleFitType The Google Fit data type identifier
-   * @returns The standardized metric type
-   */
-  private mapGoogleFitTypeToMetricType(googleFitType: string): string {
-    if (googleFitType.includes('step_count')) {
-      return 'STEPS';
-    } else if (googleFitType.includes('heart_rate')) {
-      return 'HEART_RATE';
-    } else if (googleFitType.includes('weight')) {
-      return 'WEIGHT';
-    } else if (googleFitType.includes('blood_pressure')) {
-      return 'BLOOD_PRESSURE';
-    } else if (googleFitType.includes('blood_glucose')) {
-      return 'BLOOD_GLUCOSE';
-    } else if (googleFitType.includes('sleep')) {
-      return 'SLEEP';
-    }
-    
-    // If no mapping is found, return null
-    return null;
-  }
-
-  /**
-   * Converts a value from Google Fit's unit to the application's standard unit.
-   * @param value The value to convert
-   * @param fromUnit The source unit
-   * @param toUnit The target unit
-   * @returns The converted value
-   */
-  private convertUnit(value: number, fromUnit: string, toUnit: string): number {
-    // Handle various unit conversions
-    if (fromUnit === 'mmol/L' && toUnit === 'mg/dL') {
-      // Convert blood glucose from mmol/L to mg/dL
-      return value * 18.0182;
-    } else if (fromUnit === 'kg' && toUnit === 'lb') {
-      // Convert weight from kg to lb
-      return value * 2.20462;
-    } else if (fromUnit === 'lb' && toUnit === 'kg') {
-      // Convert weight from lb to kg
-      return value / 2.20462;
-    } else if (fromUnit === 'mg/dL' && toUnit === 'mmol/L') {
-      // Convert blood glucose from mg/dL to mmol/L
-      return value / 18.0182;
-    }
-    
-    // If no conversion is needed or supported, return the original value
-    return value;
-  }
-
-  /**
-   * Maps Google Fit sleep stage values to human-readable stage names.
-   * @param sleepStageValue The Google Fit sleep stage value
-   * @returns The human-readable sleep stage name
-   */
-  private mapSleepStage(sleepStageValue: number): string {
-    switch (sleepStageValue) {
-      case 1:
-        return 'AWAKE';
-      case 2:
-        return 'LIGHT';
-      case 3:
-        return 'DEEP';
-      case 4:
-        return 'REM';
-      default:
-        return 'UNKNOWN';
-    }
-  }
-
-  /**
-   * Helper method to get a device connection for a user.
-   * In a real implementation, this would query the database.
-   * @param userId The ID of the user
-   * @returns The device connection entity
-   */
-  private async getDeviceConnection(userId: string): Promise<DeviceConnection> {
-    // This is a mock implementation
-    // In a real application, this would query the database
-    
-    // For the purpose of this example, we'll return a mock device connection
-    const mockConnection = new DeviceConnection();
-    mockConnection.userId = userId;
-    mockConnection.deviceType = 'GOOGLE_FIT';
-    mockConnection.status = 'CONNECTED';
-    mockConnection.connectionData = {
-      accessToken: 'mock_access_token',
-      refreshToken: 'mock_refresh_token',
-      expiresAt: new Date(Date.now() + 3600 * 1000).toISOString() // 1 hour from now
-    };
-    mockConnection.lastSyncedAt = new Date(Date.now() - 86400 * 1000); // 1 day ago
-    
-    return mockConnection;
-  }
-
-  /**
-   * Refreshes the access token if it's expired or about to expire.
-   * @param deviceConnection The device connection containing the tokens
-   */
-  private async refreshTokenIfNeeded(deviceConnection: DeviceConnection): Promise<void> {
-    const expiresAt = new Date(deviceConnection.connectionData.expiresAt);
-    const now = new Date();
-    
-    // If the token expires in less than 5 minutes, refresh it
-    if (expiresAt.getTime() - now.getTime() < 5 * 60 * 1000) {
-      this.logger.log(`Refreshing access token for Google Fit connection`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Failed to disconnect from Google Fit: ${errorMessage}`, error instanceof Error ? error.stack : null, 'GoogleFitAdapter');
       
+      throw new AppException(
+        'Failed to disconnect from Google Fit',
+        ErrorType.TECHNICAL,
+        'API_INTEGRATION_ERROR',
+        { userId },
+        error
+      );
+    }
+  }
+  
+  /**
+   * Get auth URL for Google Fit
+   */
+  getAuthUrl(userId: string): string {
+    if (!userId) {
+      return '';
+    }
+    
+    const clientId = this.configService.get<string>('GOOGLE_FIT_CLIENT_ID');
+    const redirectUri = this.configService.get<string>('GOOGLE_FIT_REDIRECT_URI');
+    
+    if (!clientId || !redirectUri) {
+      this.logger.error(`Missing Google Fit API credentials`, null, 'GoogleFitAdapter');
+      return '';
+    }
+    
+    return `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${clientId}` +
+      `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+      `&response_type=code` +
+      `&scope=https://www.googleapis.com/auth/fitness.activity.read ` +
+      `https://www.googleapis.com/auth/fitness.blood_glucose.read ` +
+      `https://www.googleapis.com/auth/fitness.blood_pressure.read ` +
+      `https://www.googleapis.com/auth/fitness.body.read ` +
+      `https://www.googleapis.com/auth/fitness.heart_rate.read ` +
+      `https://www.googleapis.com/auth/fitness.sleep.read`;
+  }
+  
+  /**
+   * Refresh token for Google Fit connection
+   */
+  private async refreshToken(refreshToken: string): Promise<string> {
+    try {
       const clientId = this.configService.get<string>('GOOGLE_FIT_CLIENT_ID');
       const clientSecret = this.configService.get<string>('GOOGLE_FIT_CLIENT_SECRET');
       
       if (!clientId || !clientSecret) {
-        this.logger.error(`Missing Google Fit API credentials`);
-        throw new Error(ErrorCodes.HEALTH_002);
+        this.logger.error(`Missing Google Fit API credentials`, null, 'GoogleFitAdapter');
+        throw new AppException(
+          'Missing Google Fit API credentials',
+          ErrorType.TECHNICAL,
+          'CONFIG_ERROR',
+          { service: 'GoogleFitAdapter' }
+        );
       }
       
-      try {
-        const refreshResponse = await firstValueFrom(
+      const refreshResponse = await this.makeRequestWithRetry(() => 
+        firstValueFrom(
           this.httpService.post('https://oauth2.googleapis.com/token', {
             client_id: clientId,
             client_secret: clientSecret,
-            refresh_token: deviceConnection.connectionData.refreshToken,
+            refresh_token: refreshToken,
             grant_type: 'refresh_token'
           })
-        );
+        )
+      );
+      
+      return refreshResponse.data.access_token;
+    } catch (error: any) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Failed to refresh access token: ${errorMessage}`, error instanceof Error ? error.stack : null, 'GoogleFitAdapter');
+      
+      // Check for specific OAuth errors
+      if (error.response && error.response.data) {
+        const { error: errorType, error_description } = error.response.data;
         
-        const { access_token, expires_in } = refreshResponse.data;
-        
-        // Update the device connection with the new access token
-        deviceConnection.connectionData.accessToken = access_token;
-        deviceConnection.connectionData.expiresAt = new Date(Date.now() + expires_in * 1000).toISOString();
-        
-        // In a real implementation, we would save this update to the database
-        
-        this.logger.log(`Successfully refreshed access token for Google Fit connection`);
-        
-      } catch (error) {
-        this.logger.error(`Failed to refresh access token for Google Fit connection`, error.stack);
-        throw new Error(`${ErrorCodes.HEALTH_002}: Failed to refresh access token: ${error.message}`);
+        if (errorType === 'invalid_grant') {
+          throw new AppException(
+            'Invalid refresh token, reauthentication required',
+            ErrorType.BUSINESS,
+            'AUTH_ERROR',
+            { error: errorType, description: error_description }
+          );
+        }
       }
+      
+      throw new AppException(
+        'Failed to refresh access token',
+        ErrorType.TECHNICAL,
+        SYS_INTERNAL_SERVER_ERROR,
+        null,
+        error
+      );
+    }
+  }
+  
+  /**
+   * Maps Google Fit data types to standardized metric types used in the application.
+   */
+  private mapGoogleFitTypeToMetricType(googleFitType: string): MetricType | null {
+    if (googleFitType.includes('step_count')) {
+      return 'STEPS' as MetricType;
+    } else if (googleFitType.includes('heart_rate')) {
+      return 'HEART_RATE' as MetricType;
+    } else if (googleFitType.includes('weight')) {
+      return 'WEIGHT' as MetricType;
+    } else if (googleFitType.includes('blood_pressure')) {
+      // Return systolic by default, we'll handle diastolic in data processing
+      return 'BLOOD_PRESSURE_SYSTOLIC' as MetricType;
+    } else if (googleFitType.includes('blood_glucose')) {
+      return 'BLOOD_GLUCOSE' as MetricType;
+    } else if (googleFitType.includes('sleep')) {
+      return 'SLEEP' as MetricType;
+    }
+    return null;
+  }
+  
+  /**
+   * Extract systolic blood pressure from Google Fit data
+   */
+  private extractSystolicBP(value: any): number {
+    if (value?.mapVal && Array.isArray(value.mapVal)) {
+      const systolicEntry = value.mapVal.find((m: any) => m.key === 'systolic');
+      if (systolicEntry?.value?.fpVal) {
+        return systolicEntry.value.fpVal;
+      }
+    }
+    return 0;
+  }
+  
+  /**
+   * Extract diastolic blood pressure from Google Fit data
+   */
+  private extractDiastolicBP(value: any): number {
+    if (value?.mapVal && Array.isArray(value.mapVal)) {
+      const diastolicEntry = value.mapVal.find((m: any) => m.key === 'diastolic');
+      if (diastolicEntry?.value?.fpVal) {
+        return diastolicEntry.value.fpVal;
+      }
+    }
+    return 0;
+  }
+  
+  /**
+   * Refreshes the access token if it's expired or about to expire
+   */
+  private async refreshTokenIfNeeded(deviceConnection: DeviceConnection): Promise<void> {
+    try {
+      // Extract connection data from metadata
+      let connectionData: GoogleFitConnectionData | null = null;
+      try {
+        connectionData = JSON.parse(deviceConnection.metadata?.connectionData || '{}') as GoogleFitConnectionData;
+      } catch (e) {
+        this.logger.error('Invalid connection data format', null, 'GoogleFitAdapter');
+        throw new AppException(
+          'Invalid connection data format',
+          ErrorType.TECHNICAL,
+          'DATA_FORMAT_ERROR',
+          { userId: deviceConnection.userId }
+        );
+      }
+      
+      if (!connectionData || !connectionData.expiresAt || !connectionData.refreshToken) {
+        throw new AppException(
+          'Missing connection data',
+          ErrorType.BUSINESS,
+          'INVALID_CONNECTION',
+          { userId: deviceConnection.userId }
+        );
+      }
+      
+      const expiresAt = new Date(connectionData.expiresAt);
+      const now = new Date();
+      
+      // Refresh if token expires in less than 5 minutes
+      if (expiresAt.getTime() - now.getTime() < 5 * 60 * 1000) {
+        this.logger.log(`Refreshing access token for Google Fit connection`, 'GoogleFitAdapter');
+        
+        try {
+          const newAccessToken = await this.refreshToken(connectionData.refreshToken);
+          
+          // Update connection data with new access token (1 hour expiry)
+          const updatedConnectionData: GoogleFitConnectionData = {
+            ...connectionData,
+            accessToken: newAccessToken,
+            expiresAt: new Date(Date.now() + 3600 * 1000).toISOString(),
+            retryCount: 0 // Reset retry count on successful token refresh
+          };
+          
+          // Update metadata
+          deviceConnection.metadata = {
+            ...deviceConnection.metadata,
+            connectionData: JSON.stringify(updatedConnectionData)
+          };
+        } catch (error: any) {
+          // If token refresh fails, mark the connection as requiring reauthentication
+          deviceConnection.status = 'AUTHENTICATION_REQUIRED';
+          
+          // Update retry count
+          connectionData.retryCount = (connectionData.retryCount || 0) + 1;
+          deviceConnection.metadata = {
+            ...deviceConnection.metadata,
+            connectionData: JSON.stringify(connectionData)
+          };
+          
+          throw error;
+        }
+      }
+    } catch (error: any) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error(`Error refreshing token: ${errorMessage}`, error instanceof Error ? error.stack : null, 'GoogleFitAdapter');
+      
+      if (error instanceof AppException) {
+        throw error;
+      }
+      
+      throw new AppException(
+        'Token refresh failed, reauthentication required',
+        ErrorType.BUSINESS,
+        'AUTH_ERROR',
+        { userId: deviceConnection.userId },
+        error
+      );
     }
   }
 }

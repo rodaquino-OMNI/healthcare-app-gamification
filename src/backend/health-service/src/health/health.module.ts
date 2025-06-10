@@ -4,10 +4,10 @@ import { HealthService } from './health.service';
 import { HealthMetric } from './entities/health-metric.entity';
 import { HealthGoal } from './entities/health-goal.entity';
 import { DevicesModule } from '../devices/devices.module';
-import { ExceptionsModule } from 'src/backend/shared/src/exceptions/exceptions.module';
-import { LoggerModule } from 'src/backend/shared/src/logging/logger.module';
+import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
+import { LoggerModule } from '@app/shared/logging/logger.module';
 import { WearablesModule } from '../integrations/wearables/wearables.module';
-import { KafkaModule } from 'src/backend/shared/src/kafka/kafka.module';
+import { KafkaModule } from '@app/shared/kafka/kafka.module';
 
 /**
  * Configures the HealthModule, which aggregates the controller and service responsible for managing health data.

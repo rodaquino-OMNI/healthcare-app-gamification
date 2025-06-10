@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { CareActivity } from 'src/backend/care-service/src/appointments/entities/appointment.entity';
+import { CareActivity } from '../../care-activities/entities/care-activity.entity';
 
 /**
  * Represents a treatment plan for a patient.

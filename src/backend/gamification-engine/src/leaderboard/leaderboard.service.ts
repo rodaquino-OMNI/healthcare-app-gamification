@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ProfilesService } from '../profiles/profiles.service';
@@ -78,11 +79,11 @@ export class LeaderboardService {
       return leaderboardData;
     } catch (error) {
       this.logger.error(
-        `Failed to get leaderboard for ${journey}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        error instanceof Error ? error.stack : undefined,
+        `Failed to get leaderboard for ${journey}: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
+        error instanceof Error ? (error as any).stack : undefined,
         'LeaderboardService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -99,11 +100,11 @@ export class LeaderboardService {
       return profiles.sort((a, b) => b.xp - a.xp);
     } catch (error) {
       this.logger.error(
-        `Failed to calculate leaderboard: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        error instanceof Error ? error.stack : undefined,
+        `Failed to calculate leaderboard: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
+        error instanceof Error ? (error as any).stack : undefined,
         'LeaderboardService'
       );
-      throw error;
+      throw error as any;
     }
   }
 }

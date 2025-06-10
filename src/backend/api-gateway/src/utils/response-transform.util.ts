@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpStatus, Logger } from '@nestjs/common';
-import { JOURNEY_IDS } from '../../../shared/src/constants/journey.constants';
-import * as ErrorCodes from 'src/backend/shared/src/constants/error-codes.constants';
+import { JOURNEY_IDS } from '@app/shared/constants/journey.constants';
+import { ErrorCodes } from '@app/shared/constants/error-codes.constants';
 
 const logger = new Logger('ResponseTransformUtil');
 
@@ -41,13 +42,13 @@ export function transformErrorResponse(error: any): {
   let path: string | undefined;
   let journey: string | undefined;
 
-  logger.error(`Transforming error response: ${JSON.stringify(error)}`, error.stack);
+  logger.error(`Transforming error response: ${JSON.stringify(error)}`, (error as any).stack);
 
   // Extract status code and message from error response if available
   if (error.response) {
     // Handle Axios-like error objects
     statusCode = error.response.status || statusCode;
-    errorMessage = error.response.data?.message || error.message || errorMessage;
+    errorMessage = error.response.data?.message || (error as any).message || errorMessage;
     errorCode = error.response.data?.errorCode || errorCode;
     path = error.response.data?.path || error.config?.url;
     
@@ -62,13 +63,13 @@ export function transformErrorResponse(error: any): {
   } else if (error.status) {
     // Handle NestJS HttpException or similar error objects
     statusCode = error.status;
-    errorMessage = error.message || errorMessage;
+    errorMessage = (error as any).message || errorMessage;
     errorCode = error.errorCode || errorCode;
     path = error.path;
     journey = error.journey;
   } else if (error instanceof Error) {
     // Handle standard Error objects
-    errorMessage = error.message || errorMessage;
+    errorMessage = (error as any).message || errorMessage;
   }
 
   // Map specific error messages to appropriate error codes if not already set
@@ -81,14 +82,14 @@ export function transformErrorResponse(error: any): {
       errorCode = ErrorCodes.AUTH_INSUFFICIENT_PERMISSIONS;
       statusCode = HttpStatus.FORBIDDEN;
     } else if (errorMessage.toLowerCase().includes('token expired')) {
-      errorCode = ErrorCodes.AUTH_TOKEN_EXPIRED;
+      errorCode = ErrorCodes.AUTH_TOKEN_INVALID;
       statusCode = HttpStatus.UNAUTHORIZED;
     } else if (errorMessage.toLowerCase().includes('rate limit')) {
       errorCode = ErrorCodes.API_RATE_LIMIT_EXCEEDED;
       statusCode = HttpStatus.TOO_MANY_REQUESTS;
     } else if (errorMessage.toLowerCase().includes('invalid input') || 
                errorMessage.toLowerCase().includes('validation failed')) {
-      errorCode = ErrorCodes.API_INVALID_INPUT;
+      errorCode = ErrorCodes.API_INVALID_PARAMETER;
       statusCode = HttpStatus.BAD_REQUEST;
     }
   }

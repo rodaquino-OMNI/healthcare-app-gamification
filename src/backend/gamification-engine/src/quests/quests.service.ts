@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable, NotFoundException } from '@nestjs/common'; // @nestjs/common ^9.0.0
 import { InjectRepository } from '@nestjs/typeorm'; // @nestjs/typeorm 10.0.0
 import { Repository } from 'typeorm'; // typeorm 0.3.17
@@ -65,7 +66,7 @@ export class QuestsService {
       return quest;
     } catch (error: any) {
       if (error instanceof NotFoundException) {
-        throw error;
+        throw error as any;
       }
       
       this.logger.error(`Failed to retrieve quest with ID ${id}`, error?.stack, 'QuestsService');
@@ -127,7 +128,7 @@ export class QuestsService {
       return savedUserQuest;
     } catch (error: any) {
       if (error instanceof NotFoundException) {
-        throw error;
+        throw error as any;
       }
       
       this.logger.error(`Failed to start quest ${questId} for user ${userId}`, error?.stack, 'QuestsService');
@@ -198,7 +199,7 @@ export class QuestsService {
       return updatedUserQuest;
     } catch (error: any) {
       if (error instanceof NotFoundException) {
-        throw error;
+        throw error as any;
       }
       
       this.logger.error(`Failed to complete quest ${questId} for user ${userId}`, error?.stack, 'QuestsService');

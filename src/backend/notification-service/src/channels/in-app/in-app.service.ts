@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config'; // v10.0.0+
 import { LoggerService } from '../../../shared/src/logging/logger.service';
@@ -14,7 +15,7 @@ import { NotificationEntity } from '../../notifications/entities/notification.en
  * either delivering notifications via WebSockets or storing them for later delivery.
  */
 @Injectable()
-export class InAppService implements Service {
+export class InAppService implements Service<any, any, any> {
   /**
    * Initializes the InAppService with required dependencies.
    * 
@@ -69,8 +70,8 @@ export class InAppService implements Service {
       }
     } catch (error) {
       this.logger.error(
-        `Failed to send in-app notification to user ${userId}: ${error.message}`,
-        error.stack,
+        `Failed to send in-app notification to user ${userId}: ${(error as any).message}`,
+        (error as any).stack,
         'InAppService'
       );
       return false;
@@ -92,8 +93,8 @@ export class InAppService implements Service {
       return connectionExists > 0;
     } catch (error) {
       this.logger.error(
-        `Error checking connection status for user ${userId}: ${error.message}`,
-        error.stack,
+        `Error checking connection status for user ${userId}: ${(error as any).message}`,
+        (error as any).stack,
         'InAppService'
       );
       return false;
@@ -150,8 +151,8 @@ export class InAppService implements Service {
       return true;
     } catch (error) {
       this.logger.error(
-        `Error storing notification for later delivery for user ${userId}: ${error.message}`,
-        error.stack,
+        `Error storing notification for later delivery for user ${userId}: ${(error as any).message}`,
+        (error as any).stack,
         'InAppService'
       );
       return false;

@@ -1,6 +1,12 @@
 import { Module } from '@nestjs/common'; // ^9.0.0
 import { TreatmentsService } from './treatments.service';
 import { TreatmentsController } from './treatments.controller';
+import { SharedModule } from '@app/shared';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { TreatmentPlan } from './entities/treatment-plan.entity';
+import { PrismaService } from '@app/shared/database/prisma.service';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { TracingService } from '@app/shared/tracing/tracing.service';
 
 /**
  * Configures the TreatmentsModule in NestJS, which encapsulates the treatment plan-related features
@@ -11,8 +17,17 @@ import { TreatmentsController } from './treatments.controller';
  * allowing users to view and track progress of their prescribed treatment plans.
  */
 @Module({
+  imports: [
+    SharedModule,
+    TypeOrmModule.forFeature([TreatmentPlan])
+  ],
   controllers: [TreatmentsController],
-  providers: [TreatmentsService],
+  providers: [
+    TreatmentsService,
+    PrismaService,
+    LoggerService,
+    TracingService
+  ],
   exports: [TreatmentsService],
 })
 export class TreatmentsModule {}

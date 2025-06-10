@@ -13,10 +13,10 @@ import {
   Logger
 } from '@nestjs/common';
 import { DocumentsService } from './documents.service';
-import { FilterDto } from 'src/backend/shared/src/dto/filter.dto';
-import { PaginationDto } from 'src/backend/shared/src/dto/pagination.dto';
-import * as ErrorCodes from 'src/backend/shared/src/constants/error-codes.constants';
-import { AllExceptionsFilter } from 'src/backend/shared/src/exceptions/exceptions.filter';
+import { FilterDto } from '../dto/filter.dto';
+import { PaginationDto } from '@app/shared/dto/pagination.dto';
+import * as ErrorCodes from '@app/shared/constants/error-codes.constants';
+import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 
 /**
  * Handles document-related requests within the Plan service.

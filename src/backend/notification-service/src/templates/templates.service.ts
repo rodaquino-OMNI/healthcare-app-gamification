@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common'; // @nestjs/common@10.0.0+
 import { InjectRepository } from '@nestjs/typeorm'; // @nestjs/typeorm@10.0.0+
 import { Repository as TypeOrmRepository } from 'typeorm'; // typeorm@0.3.0+
 import { NotificationTemplate } from './entities/notification-template.entity';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { Repository } from 'src/backend/shared/src/interfaces/repository.interface';
-import { Service } from 'src/backend/shared/src/interfaces/service.interface';
-import { ErrorCodeDetails } from 'src/backend/shared/src/constants/error-codes.constants';
-import { JOURNEY_IDS } from 'src/backend/shared/src/constants/journey.constants';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { Repository } from '@app/shared/interfaces/repository.interface';
+import { Service } from '@app/shared/interfaces/service.interface';
+import { ErrorCodeDetails } from '@app/shared/constants/error-codes.constants';
+import { JOURNEY_IDS } from '@app/shared/constants/journey.constants';
 
 /**
  * Provides functionality for managing notification templates.
@@ -34,6 +34,17 @@ export class TemplatesService {
   async findById(id: string): Promise<NotificationTemplate | null> {
     this.logger.log(`Finding template by ID: ${id}`, 'TemplatesService');
     return this.templateRepository.findOne({ where: { id } });
+  }
+
+  /**
+   * Finds a template by its code/templateId.
+   * @param code The template code (same as templateId) to find
+   * @returns The found template or null if not found
+   */
+  async findByCode(code: string): Promise<NotificationTemplate | null> {
+    this.logger.log(`Finding template by code: ${code}`, 'TemplatesService');
+    const templates = await this.templateRepository.find({ where: { templateId: code }, take: 1 });
+    return templates.length > 0 ? templates[0] : null;
   }
 
   /**

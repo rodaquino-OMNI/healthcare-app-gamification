@@ -1,12 +1,15 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+// TODO: Create notifications.controller.ts
+// import { NotificationsController } from './notifications.controller';
 import { NotificationsService } from './notifications.service';
-import { NotificationsController } from './notifications.controller';
+import { Notification } from './entities/notification.entity';
 import { PreferencesModule } from '../preferences/preferences.module';
+import { KafkaModule } from '@app/shared/kafka/kafka.module';
+import { LoggerModule } from '@app/shared/logging/logger.module';
+import { TracingModule } from '@app/shared/tracing/tracing.module';
 import { TemplatesModule } from '../templates/templates.module';
 import { WebsocketsModule } from '../websockets/websockets.module';
-import { KafkaModule } from 'src/backend/shared/src/kafka/kafka.module';
-import { LoggerModule } from 'src/backend/shared/src/logging/logger.module';
-import { TracingModule } from 'src/backend/shared/src/tracing/tracing.module';
 
 /**
  * Module that configures and provides notification functionality for the AUSTA SuperApp.
@@ -14,7 +17,15 @@ import { TracingModule } from 'src/backend/shared/src/tracing/tracing.module';
  * and supports gamification-related notifications.
  */
 @Module({
-  imports: [PreferencesModule, TemplatesModule, WebsocketsModule, KafkaModule, LoggerModule, TracingModule],
+  imports: [
+    TypeOrmModule.forFeature([Notification]),
+    PreferencesModule,
+    TemplatesModule,
+    WebsocketsModule,
+    KafkaModule,
+    LoggerModule,
+    TracingModule
+  ],
   controllers: [NotificationsController],
   providers: [NotificationsService],
   exports: [NotificationsService],

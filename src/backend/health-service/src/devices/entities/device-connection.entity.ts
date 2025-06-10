@@ -3,37 +3,33 @@ import {
   Entity, 
   PrimaryGeneratedColumn, 
   CreateDateColumn, 
-  UpdateDateColumn, 
-  ManyToOne, 
-  JoinColumn 
-} from 'typeorm'; // v0.3.17
+  UpdateDateColumn 
+} from 'typeorm';
 
 /**
- * Enum representing possible device connection statuses
+ * Represents the connection status of a wearable device
  */
-export enum ConnectionStatus {
+export enum DeviceDeviceDeviceConnectionStatus {
   CONNECTED = 'connected',
   DISCONNECTED = 'disconnected',
-  PAIRING = 'pairing',
-  ERROR = 'error'
+  EXPIRED = 'expired',
+  PENDING = 'pending',
+  FAILED = 'failed'
 }
 
 /**
- * Enum representing supported device types
+ * Represents the type of wearable device
  */
 export enum DeviceType {
-  SMARTWATCH = 'smartwatch',
-  FITNESS_TRACKER = 'fitness_tracker',
-  SMART_SCALE = 'smart_scale',
-  BLOOD_PRESSURE_MONITOR = 'blood_pressure_monitor',
-  GLUCOSE_MONITOR = 'glucose_monitor',
-  SLEEP_TRACKER = 'sleep_tracker',
-  OTHER = 'other'
+  FITBIT = 'fitbit',
+  APPLE_HEALTH = 'apple_health',
+  GOOGLE_FIT = 'google_fit',
+  SAMSUNG_HEALTH = 'samsung_health',
+  GARMIN = 'garmin'
 }
 
 /**
- * Represents a connection between a user's health record and a wearable device.
- * This entity stores information about the device, its connection status, and synchronization details.
+ * Represents a connection to a wearable device in the database
  */
 @Entity('device_connections')
 export class DeviceConnection {
@@ -41,65 +37,85 @@ export class DeviceConnection {
    * Unique identifier for the device connection
    */
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   /**
-   * Reference to the health record this device is connected to
+   * ID of the user who owns this device connection
    */
-  @Column('uuid')
-  recordId: string;
+  @Column()
+  userId!: string;
 
   /**
-   * Type of wearable device (e.g., smartwatch, fitness tracker)
+   * ID of the health record this device is connected to
+   */
+  @Column()
+  recordId!: string;
+
+  /**
+   * Type of device (e.g., 'fitbit', 'apple_health')
    */
   @Column({
     type: 'enum',
     enum: DeviceType,
-    default: DeviceType.OTHER
+    default: DeviceType.FITBIT
   })
-  deviceType: DeviceType;
+  deviceType!: DeviceType;
 
   /**
-   * Unique identifier for the device (typically provided by the device itself)
+   * Unique identifier for the device on the provider's platform
    */
-  @Column({ length: 255 })
-  deviceId: string;
+  @Column({ nullable: true })
+  deviceId?: string;
 
   /**
-   * When the device data was last synchronized
-   */
-  @Column({ type: 'timestamp', nullable: true })
-  lastSync: Date;
-
-  /**
-   * Current connection status of the device
+   * Current connection status
    */
   @Column({
     type: 'enum',
-    enum: ConnectionStatus,
-    default: ConnectionStatus.DISCONNECTED
+    enum: DeviceDeviceDeviceConnectionStatus,
+    default: DeviceDeviceDeviceConnectionStatus.PENDING
   })
-  status: ConnectionStatus;
+  status!: DeviceDeviceDeviceConnectionStatus;
 
   /**
-   * When the device connection was created
+   * Last time data was synchronized from this device
+   */
+  @Column({ nullable: true })
+  lastSync!: Date;
+
+  /**
+   * Authentication token for the device connection
+   */
+  @Column({ nullable: true })
+  authToken?: string;
+
+  /**
+   * Refresh token for the device connection
+   */
+  @Column({ nullable: true })
+  refreshToken?: string;
+
+  /**
+   * Expiration timestamp for the auth token
+   */
+  @Column({ nullable: true })
+  tokenExpiry?: Date;
+
+  /**
+   * Additional metadata for the device connection (JSON)
+   */
+  @Column({ type: 'json', nullable: true })
+  metadata?: Record<string, any>;
+
+  /**
+   * Date when the connection was created
    */
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   /**
-   * When the device connection was last updated
+   * Date when the connection was last updated
    */
   @UpdateDateColumn()
-  updatedAt: Date;
-
-  /**
-   * Relationship with the HealthRecord entity
-   * Note: The HealthRecord entity would need to be imported in a real implementation
-   */
-  /*
-  @ManyToOne(() => HealthRecord, healthRecord => healthRecord.deviceConnections)
-  @JoinColumn({ name: 'recordId' })
-  healthRecord: HealthRecord;
-  */
+  updatedAt!: Date;
 }

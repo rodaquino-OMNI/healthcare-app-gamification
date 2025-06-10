@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import * as request from 'supertest';
-import { PrismaService } from 'src/backend/shared/src/database/prisma.service';
-import { AppExceptionFilter } from 'src/backend/shared/src/exceptions/exceptions.filter';
-import { JwtAuthGuard } from 'src/backend/shared/src/auth/guards/jwt-auth.guard';
-import { TelemedicineController } from 'src/backend/care-service/src/telemedicine/telemedicine.controller';
-import { TelemedicineService } from 'src/backend/care-service/src/telemedicine/telemedicine.service';
-import { CreateSessionDto } from 'src/backend/care-service/src/telemedicine/dto/create-session.dto';
+import { PrismaService } from '@app/shared/database/prisma.service';
+import { AppExceptionFilter } from '@app/shared/exceptions/exceptions.filter';
+import { JwtAuthGuard } from '@app/shared/auth/guards/jwt-auth.guard';
+import { TelemedicineController } from '@app/care/telemedicine/telemedicine.controller';
+import { TelemedicineService } from '@app/care/telemedicine/telemedicine.service';
+import { CreateSessionDto } from '@app/care/telemedicine/dto/create-session.dto';
 
 describe('Telemedicine E2E Tests', () => {
   let app: INestApplication;
@@ -117,7 +118,7 @@ describe('Telemedicine E2E Tests', () => {
       // Validate the response
       expect(response.body).toBeDefined();
       expect(response.body.id).toBeDefined();
-      expect(response.body.appointmentId).toEqual(createSessionDto.appointmentId);
+      expect(response.body.appointmentId).toEqual((createSessionDto as any).appointmentId);
       expect(response.body.providerId).toEqual(createSessionDto.providerId);
       expect(response.body.status).toEqual('CREATED');
     });

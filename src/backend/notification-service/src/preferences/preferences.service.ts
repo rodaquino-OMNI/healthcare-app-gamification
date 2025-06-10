@@ -1,10 +1,11 @@
+import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Injectable, Inject } from '@nestjs/common'; // @nestjs/common v9.0.0+
 import { NotificationPreference } from './entities/notification-preference.entity';
-import { Repository } from 'src/backend/shared/src/interfaces/repository.interface';
-import { AppException, ErrorType } from 'src/backend/shared/src/exceptions/exceptions.types';
-import { FilterDto } from 'src/backend/shared/src/dto/filter.dto';
-import { PaginationDto } from 'src/backend/shared/src/dto/pagination.dto';
-import { SYS_INTERNAL_SERVER_ERROR } from 'src/backend/shared/src/constants/error-codes.constants';
+import { Repository } from '@app/shared/interfaces/repository.interface';
+import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+import { FilterDto } from '@app/shared/dto/filter.dto';
+import { PaginationDto } from '@app/shared/dto/pagination.dto';
+import { SYS_INTERNAL_SERVER_ERROR } from '@app/shared/constants/error-codes.constants';
 
 @Injectable()
 export class PreferencesService {
@@ -27,7 +28,7 @@ export class PreferencesService {
     try {
       // Note: Currently, the Repository interface doesn't directly support pagination.
       // Only the filter parameter is used when calling the repository.
-      return this.notificationPreferenceRepository.findAll(filter);
+      return this.notificationPreferenceRepository.findAll(filter) as unknown as NotificationPreference[];
     } catch (error) {
       throw new AppException(
         'Failed to retrieve notification preferences',

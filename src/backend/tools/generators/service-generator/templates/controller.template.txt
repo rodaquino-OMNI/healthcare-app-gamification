@@ -1,13 +1,15 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Inject } from '@nestjs/common';
-import { JwtAuthGuard, RolesGuard } from '@nestjs/passport';
-import { Roles, Role } from '@nestjs/common';
-import { {{ pascalCase name }}Service } from '../services/{{ dashCase name }}.service';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../../../shared/src/auth/jwt-auth.guard';
+import { RolesGuard } from '../../../shared/src/auth/roles.guard';
+import { Roles } from '../../../shared/src/decorators/roles.decorator';
+import { Role } from '../../../shared/src/enums/role.enum';
+import { {{ pascalCase name }}Service } from './{{ kebabCase name }}.service';
 import { LoggerService } from '../../../shared/src/logging/logger.service';
 
 /**
  * Controller for managing {{ pascalCase name }} entities.
  */
-@Controller('{{ dashCase name }}s')
+@Controller('{{ kebabCase name }}s')
 export class {{ pascalCase name }}Controller {
   /**
    * Injects the {{ pascalCase name }} service and logger service.

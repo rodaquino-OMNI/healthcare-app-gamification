@@ -52,7 +52,7 @@ export enum GoalPeriod {
  * Maps to the 'health_goals' table in the database.
  */
 @Entity('health_goals', {
-  indices: [
+  indexes: [
     { columns: ['recordId', 'type'] },
     { columns: ['status'] },
     { columns: ['period'] }

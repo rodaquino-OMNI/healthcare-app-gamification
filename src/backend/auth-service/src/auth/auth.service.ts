@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -59,12 +60,12 @@ export class AuthService {
     } catch (error: any) {
       // If it's already our custom AppException, just rethrow it
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
       
       // Otherwise wrap in a new AppException
-      const errorMsg = error.message || 'Unknown error during registration';
-      const errorStack = error.stack || '';
+      const errorMsg = (error as any).message || 'Unknown error during registration';
+      const errorStack = (error as any).stack || '';
       this.logger.error(`Failed to register user: ${errorMsg}`, errorStack, 'AuthService');
       
       throw new AppException(
@@ -72,7 +73,7 @@ export class AuthService {
         ErrorType.TECHNICAL,
         'AUTH_003',
         { email: createUserDto.email },
-        error as Error
+        error instanceof Error ? undefined : undefined
       );
     }
   }
@@ -111,8 +112,8 @@ export class AuthService {
         }
       };
     } catch (error: any) {
-      const errorMsg = error.message || 'Unknown login error';
-      const errorStack = error.stack || '';
+      const errorMsg = (error as any).message || 'Unknown login error';
+      const errorStack = (error as any).stack || '';
       this.logger.error(`Login failed for user ${email}: ${errorMsg}`, errorStack, 'AuthService');
       
       // Use a generic error message to avoid revealing too much information
@@ -121,7 +122,7 @@ export class AuthService {
         ErrorType.VALIDATION,
         'AUTH_004',
         {},
-        error as Error
+        error instanceof Error ? undefined : undefined
       );
     }
   }
@@ -138,8 +139,8 @@ export class AuthService {
       const user = await this.usersService.findOne(payload.sub);
       return user;
     } catch (error: any) {
-      const errorMsg = error.message || 'Unknown token validation error';
-      const errorStack = error.stack || '';
+      const errorMsg = (error as any).message || 'Unknown token validation error';
+      const errorStack = (error as any).stack || '';
       this.logger.error(`Token validation failed: ${errorMsg}`, errorStack, 'AuthService');
       return null;
     }

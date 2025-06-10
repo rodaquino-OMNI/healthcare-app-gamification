@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PrismaClient } from '@prisma/client';
-import { PrismaService } from 'src/backend/shared/src/database/prisma.service';
-import { UsersService } from 'src/backend/auth-service/src/users/users.service';
+import { PrismaService } from '@app/shared/database/prisma.service';
+import { UsersService } from '@app/auth/users/users.service';
 import * as bcrypt from 'bcrypt';
 
 /**
@@ -40,7 +41,7 @@ async function seed(): Promise<void> {
     console.log('Database seeding completed successfully!');
   } catch (error) {
     console.error('Error seeding database:', error);
-    throw error;
+    throw error as any;
   } finally {
     // Close the database connection
     await prisma.$disconnect();
@@ -121,7 +122,7 @@ async function seedPermissions(prisma: PrismaClient): Promise<void> {
         console.log(`Permission ${permission.name} already exists, skipping...`);
       } else {
         // For other errors, re-throw
-        throw error;
+        throw error as any;
       }
     }
   }
@@ -267,8 +268,8 @@ async function seedRoles(prisma: PrismaClient): Promise<void> {
       
       console.log(`Created role: ${roleData.name} with ${permissionConnections.length} permissions`);
     } catch (error) {
-      console.error(`Error creating role: ${error.message}`);
-      throw error;
+      console.error(`Error creating role: ${(error as any).message}`);
+      throw error as any;
     }
   }
 }
@@ -340,8 +341,8 @@ async function seedUsers(prisma: PrismaClient): Promise<void> {
       console.log(`Created test user: ${testUser.email} with ${userRole.name} role`);
     }
   } catch (error) {
-    console.error(`Error creating users: ${error.message}`);
-    throw error;
+    console.error(`Error creating users: ${(error as any).message}`);
+    throw error as any;
   }
 }
 
@@ -391,7 +392,7 @@ async function seedJourneyData(prisma: PrismaClient): Promise<void> {
     
     console.log(`Created ${deviceTypes.length} device types`);
   } catch (error) {
-    console.error(`Error seeding health journey data: ${error.message}`);
+    console.error(`Error seeding health journey data: ${(error as any).message}`);
   }
   
   // Care Journey sample data
@@ -415,7 +416,7 @@ async function seedJourneyData(prisma: PrismaClient): Promise<void> {
     
     console.log(`Created ${specialties.length} provider specialties`);
   } catch (error) {
-    console.error(`Error seeding care journey data: ${error.message}`);
+    console.error(`Error seeding care journey data: ${(error as any).message}`);
   }
   
   // Plan Journey sample data
@@ -456,7 +457,7 @@ async function seedJourneyData(prisma: PrismaClient): Promise<void> {
     
     console.log(`Created ${claimTypes.length} claim types`);
   } catch (error) {
-    console.error(`Error seeding plan journey data: ${error.message}`);
+    console.error(`Error seeding plan journey data: ${(error as any).message}`);
   }
   
   // Gamification sample data
@@ -515,7 +516,7 @@ async function seedJourneyData(prisma: PrismaClient): Promise<void> {
     
     console.log(`Created ${achievementTypes.length} achievement types`);
   } catch (error) {
-    console.error(`Error seeding gamification data: ${error.message}`);
+    console.error(`Error seeding gamification data: ${(error as any).message}`);
   }
 }
 

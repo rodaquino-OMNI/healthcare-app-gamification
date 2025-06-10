@@ -2,9 +2,9 @@ import { HttpStatus, INestApplication } from '@nestjs/common'; // 10.0.0
 import { Test } from '@nestjs/testing'; // 10.0.0
 import { describe, it, beforeEach, afterEach, expect } from '@jest/globals'; // 29.0.0
 import * as request from 'supertest'; // 6.3.3
-import { AppModule } from 'src/backend/plan-service/src/app.module';
-import { PrismaService } from 'src/backend/shared/src/database/prisma.service';
-import { CreateClaimDto } from 'src/backend/plan-service/src/claims/dto/create-claim.dto';
+import { AppModule } from '@app/plan/app.module';
+import { PrismaService } from '@app/shared/database/prisma.service';
+import { CreateClaimDto } from '@app/plan/claims/dto/create-claim.dto';
 
 /**
  * Defines the end-to-end tests for the claims module.

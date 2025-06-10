@@ -1,108 +1,106 @@
 /**
- * Journey Constants
- * 
- * This file defines constants related to the AUSTA SuperApp's user journeys,
- * including journey identifiers, names, colors, icons and routes.
- * These constants are used throughout the application to ensure consistency and maintainability.
+ * Constants related to the journey-centered architecture of the AUSTA SuperApp.
+ * These constants define the available journeys and their properties.
  */
 
 /**
- * Unique identifiers for each journey
+ * Enum of available journeys in the AUSTA SuperApp
+ */
+export enum JourneyType {
+  HEALTH = 'health',
+  CARE = 'care',
+  PLAN = 'plan'
+}
+
+/**
+ * Journey IDs for the three main journeys in the AUSTA SuperApp
  */
 export const JOURNEY_IDS = {
+  /**
+   * Health Journey - "Minha Saúde"
+   */
   HEALTH: 'health',
+  
+  /**
+   * Care Journey - "Cuidar-me Agora"
+   */
   CARE: 'care',
-  PLAN: 'plan',
-} as const;
+  
+  /**
+   * Plan Journey - "Meu Plano & Benefícios"
+   */
+  PLAN: 'plan'
+};
 
 /**
- * Display names for each journey in Brazilian Portuguese
+ * Journey display names
  */
 export const JOURNEY_NAMES = {
-  HEALTH: 'Minha Saúde',
-  CARE: 'Cuidar-me Agora',
-  PLAN: 'Meu Plano & Benefícios',
-} as const;
+  [JOURNEY_IDS.HEALTH]: 'Minha Saúde',
+  [JOURNEY_IDS.CARE]: 'Cuidar-me Agora',
+  [JOURNEY_IDS.PLAN]: 'Meu Plano & Benefícios'
+};
 
 /**
- * Color schemes for each journey used for theming and visual differentiation
+ * Journey theme colors
  */
 export const JOURNEY_COLORS = {
-  HEALTH: {
-    primary: '#0ACF83',    // Green
-    secondary: '#05A66A',
-    accent: '#00875A',
-    background: '#F0FFF4',
-  },
-  CARE: {
-    primary: '#FF8C42',    // Orange
-    secondary: '#F17C3A',
-    accent: '#E55A00',
-    background: '#FFF8F0',
-  },
-  PLAN: {
-    primary: '#3A86FF',    // Blue
-    secondary: '#2D6FD9',
-    accent: '#0057E7',
-    background: '#F0F8FF',
-  },
-} as const;
+  [JOURNEY_IDS.HEALTH]: '#0ACF83',  // Green
+  [JOURNEY_IDS.CARE]: '#FF8C42',    // Orange
+  [JOURNEY_IDS.PLAN]: '#3A86FF'     // Blue
+};
 
 /**
- * Icon names for each journey used in navigation and UI elements
+ * Icon names for each journey
  */
 export const JOURNEY_ICONS = {
-  HEALTH: 'heart-pulse',   // Health icon
-  CARE: 'medical-bag',     // Care icon
-  PLAN: 'shield-account',  // Plan/insurance icon
-} as const;
+  [JOURNEY_IDS.HEALTH]: 'heart',
+  [JOURNEY_IDS.CARE]: 'medkit',
+  [JOURNEY_IDS.PLAN]: 'document'
+};
 
 /**
- * Base route paths for each journey used in navigation
+ * Interface for a journey configuration
  */
-export const JOURNEY_ROUTES = {
-  HEALTH: '/health',
-  CARE: '/care',
-  PLAN: '/plan',
-} as const;
+export interface JourneyConfig {
+  id: string;
+  name: string;
+  color: string;
+  icon: string;
+  description: string;
+  enabled: boolean;
+  order: number;
+}
 
 /**
- * Default journey ID to use when no journey is specified
+ * Complete configuration for all journeys
  */
-export const DEFAULT_JOURNEY = JOURNEY_IDS.HEALTH;
-
-/**
- * Preferred display order of journeys in navigation and dashboard
- */
-export const JOURNEY_ORDER = [
-  JOURNEY_IDS.HEALTH,
-  JOURNEY_IDS.CARE,
-  JOURNEY_IDS.PLAN,
-] as const;
-
-/**
- * Comprehensive configuration for each journey including all properties
- */
-export const JOURNEY_CONFIG = {
+export const JOURNEY_CONFIG: Record<string, JourneyConfig> = {
   [JOURNEY_IDS.HEALTH]: {
     id: JOURNEY_IDS.HEALTH,
-    name: JOURNEY_NAMES.HEALTH,
-    color: JOURNEY_COLORS.HEALTH,
-    icon: JOURNEY_ICONS.HEALTH,
-    route: JOURNEY_ROUTES.HEALTH,
+    name: JOURNEY_NAMES[JOURNEY_IDS.HEALTH],
+    color: JOURNEY_COLORS[JOURNEY_IDS.HEALTH],
+    icon: JOURNEY_ICONS[JOURNEY_IDS.HEALTH],
+    description: 'Monitor and track your health metrics',
+    enabled: true,
+    order: 1
   },
   [JOURNEY_IDS.CARE]: {
     id: JOURNEY_IDS.CARE,
-    name: JOURNEY_NAMES.CARE,
-    color: JOURNEY_COLORS.CARE,
-    icon: JOURNEY_ICONS.CARE,
-    route: JOURNEY_ROUTES.CARE,
+    name: JOURNEY_NAMES[JOURNEY_IDS.CARE],
+    color: JOURNEY_COLORS[JOURNEY_IDS.CARE],
+    icon: JOURNEY_ICONS[JOURNEY_IDS.CARE],
+    description: 'Access care when you need it',
+    enabled: true,
+    order: 2
   },
   [JOURNEY_IDS.PLAN]: {
     id: JOURNEY_IDS.PLAN,
-    name: JOURNEY_NAMES.PLAN,
-    color: JOURNEY_COLORS.PLAN,
-    icon: JOURNEY_ICONS.PLAN,
-    route: JOURNEY_ROUTES.PLAN,
-  },
-} as const;
+    name: JOURNEY_NAMES[JOURNEY_IDS.PLAN],
+    color: JOURNEY_COLORS[JOURNEY_IDS.PLAN],
+    icon: JOURNEY_ICONS[JOURNEY_IDS.PLAN],
+    description: 'Manage your insurance plan and benefits',
+    enabled: true,
+    order: 3
+  }
+};

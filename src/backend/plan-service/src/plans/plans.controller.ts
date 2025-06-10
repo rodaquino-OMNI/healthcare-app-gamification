@@ -12,14 +12,13 @@ import {
   ParseUUIDPipe,
   Put,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-
 import { PlansService } from './plans.service';
-import { PaginationDto } from 'src/backend/shared/src/dto/pagination.dto';
-import { FilterDto } from 'src/backend/shared/src/dto/filter.dto';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { Roles } from 'src/backend/auth-service/src/auth/decorators/roles.decorator';
+import { PaginationDto } from '@app/shared/dto/pagination.dto';
+import { FilterDto } from '../dto/filter.dto';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { Roles } from '@app/auth/auth/decorators/roles.decorator';
 
 /**
  * Handles HTTP requests related to insurance plans.

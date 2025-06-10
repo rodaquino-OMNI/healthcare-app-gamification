@@ -1,63 +1,86 @@
-import { 
-  Entity, 
-  PrimaryGeneratedColumn, 
-  Column, 
-  CreateDateColumn, 
-  UpdateDateColumn 
-} from 'typeorm'; // typeorm v0.3.0+
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 /**
- * Entity representing a user's notification preferences.
- * This stores the user's choices for receiving notifications across different channels.
- * Used by the notification service to determine how to deliver notifications to users.
+ * Entity representing a user's notification preferences
  */
-@Entity()
+@Entity('notification_preferences')
 export class NotificationPreference {
   /**
-   * Unique identifier for the notification preference record
+   * Unique identifier for the preference record
+   * @example 1
    */
+  @ApiProperty({ description: 'Unique preference record ID' })
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   /**
-   * The user ID associated with these notification preferences
-   * References the user in the authentication system
+   * ID of the user this preference belongs to
+   * @example "550e8400-e29b-41d4-a716-446655440000"
    */
-  @Column()
-  userId: string;
+  @ApiProperty({ description: 'User ID these preferences belong to' })
+  @Column({ name: 'user_id' })
+  userId!: string;
 
   /**
    * Whether push notifications are enabled for this user
-   * Default is true as push notifications are a primary notification channel
+   * @example true
    */
-  @Column({ default: true })
-  pushEnabled: boolean;
+  @ApiProperty({ description: 'Push notifications enabled flag' })
+  @Column({ name: 'push_enabled', default: true })
+  pushEnabled!: boolean;
 
   /**
    * Whether email notifications are enabled for this user
-   * Default is true for important communications
+   * @example true
    */
-  @Column({ default: true })
-  emailEnabled: boolean;
+  @ApiProperty({ description: 'Email notifications enabled flag' })
+  @Column({ name: 'email_enabled', default: true })
+  emailEnabled!: boolean;
 
   /**
    * Whether SMS notifications are enabled for this user
-   * Default is false due to potential costs associated with SMS
+   * @example false
    */
-  @Column({ default: false })
-  smsEnabled: boolean;
+  @ApiProperty({ description: 'SMS notifications enabled flag' })
+  @Column({ name: 'sms_enabled', default: false })
+  smsEnabled!: boolean;
 
   /**
-   * Timestamp when the preference record was created
-   * Automatically set by TypeORM
+   * Timestamp of when the preference record was created
    */
-  @CreateDateColumn()
-  createdAt: Date;
+  @ApiProperty({ description: 'Creation timestamp' })
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt!: Date;
 
   /**
-   * Timestamp when the preference record was last updated
-   * Automatically updated by TypeORM
+   * Timestamp of when the preference record was last updated
    */
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @ApiProperty({ description: 'Last update timestamp' })
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt!: Date;
+
+  /**
+   * Detailed notification type preferences (stored as JSON)
+   * Example: { "APPOINTMENT_REMINDER": { "push": true, "email": true, "sms": false } }
+   */
+  @ApiProperty({ 
+    description: 'Detailed notification type preferences', 
+    example: { "APPOINTMENT_REMINDER": { "push": true, "email": true, "sms": false } },
+    required: false
+  })
+  @Column({ type: 'json', nullable: true })
+  typePreferences?: Record<string, any>;
+
+  /**
+   * Journey-specific notification preferences (stored as JSON)
+   * Example: { "health": { "push": true, "email": true }, "care": { "push": true, "sms": true } }
+   */
+  @ApiProperty({
+    description: 'Journey-specific notification preferences',
+    example: { "health": { "push": true, "email": true }, "care": { "push": true, "sms": true } },
+    required: false
+  })
+  @Column({ type: 'json', nullable: true, name: 'journey_preferences' })
+  journeyPreferences?: Record<string, any>;
 }

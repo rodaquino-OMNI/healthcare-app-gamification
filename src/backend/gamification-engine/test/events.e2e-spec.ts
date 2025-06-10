@@ -2,19 +2,19 @@ import { HttpStatus, INestApplication } from '@nestjs/common'; // v10.0.0+
 import { Test } from '@nestjs/testing'; // v10.0.0+
 import { describe, it, beforeEach, afterEach, expect } from '@jest/globals'; // v29.0.0+
 import * as request from 'supertest'; // 6.3.3
-import { EventsModule } from 'src/backend/gamification-engine/src/events/events.module';
-import { EventsService } from 'src/backend/gamification-engine/src/events/events.service';
-import { AchievementsModule } from 'src/backend/gamification-engine/src/achievements/achievements.module';
-import { AchievementsService } from 'src/backend/gamification-engine/src/achievements/achievements.service';
-import { ProfilesModule } from 'src/backend/gamification-engine/src/profiles/profiles.module';
-import { ProfilesService } from 'src/backend/gamification-engine/src/profiles/profiles.service';
-import gamificationEngine from 'src/backend/gamification-engine/src/config/configuration';
-import { KafkaService } from 'src/backend/shared/src/kafka/kafka.service';
-import { PrismaService } from 'src/backend/shared/src/database/prisma.service';
-import { AUTH_INVALID_CREDENTIALS } from 'src/backend/shared/src/constants/error-codes.constants';
-import { RulesService } from 'src/backend/gamification-engine/src/rules/rules.service';
-import { QuestsService } from 'src/backend/gamification-engine/src/quests/quests.service';
-import { RewardsService } from 'src/backend/gamification-engine/src/rewards/rewards.service';
+import { EventsModule } from '@app/gamification/events/events.module';
+import { EventsService } from '@app/gamification/events/events.service';
+import { AchievementsModule } from '@app/gamification/achievements/achievements.module';
+import { AchievementsService } from '@app/gamification/achievements/achievements.service';
+import { ProfilesModule } from '@app/gamification/profiles/profiles.module';
+import { ProfilesService } from '@app/gamification/profiles/profiles.service';
+import gamificationEngine from '@app/gamification/config/configuration';
+import { KafkaService } from '@app/shared/kafka/kafka.service';
+import { PrismaService } from '@app/shared/database/prisma.service';
+import { AUTH_INVALID_CREDENTIALS } from '@app/shared/constants/error-codes.constants';
+import { RulesService } from '@app/gamification/rules/rules.service';
+import { QuestsService } from '@app/gamification/quests/quests.service';
+import { RewardsService } from '@app/gamification/rewards/rewards.service';
 
 /**
  * End-to-end tests for the Events module.

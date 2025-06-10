@@ -1,9 +1,9 @@
 import { Controller, Get, Query, UseGuards, UseFilters } from '@nestjs/common'; // @nestjs/common 10.0.0+
 import { InsuranceService } from '../insurance/insurance.service';
 import { VerifyCoverageDto } from './dto/verify-coverage.dto';
-import { AllExceptionsFilter } from 'src/backend/shared/src/exceptions/exceptions.filter';
-import { JwtAuthGuard } from 'src/backend/auth-service/src/auth/guards/jwt-auth.guard';
-import { Roles } from 'src/backend/auth-service/src/auth/decorators/roles.decorator';
+import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
+import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
+import { Roles } from '@app/auth/auth/decorators/roles.decorator';
 
 /**
  * Handles incoming HTTP requests related to insurance operations.

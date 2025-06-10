@@ -1,16 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Injectable, Logger } from '@nestjs/common'; // NestJS Common 9.0.0+
 import FhirClient from 'fhir-kit-client'; // FHIR Kit Client 4.0.0+
 import axios from 'axios'; // Axios 1.4+
 
-import { health } from 'src/backend/health-service/src/config/configuration';
-import { HealthMetric } from 'src/backend/health-service/src/health/entities/health-metric.entity';
-import { MedicalEvent } from 'src/backend/health-service/src/health/entities/medical-event.entity';
-import { Service } from 'src/backend/shared/src/interfaces/service.interface';
-import { AppException, ErrorType } from 'src/backend/shared/src/exceptions/exceptions.types';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { TracingService } from 'src/backend/shared/src/tracing/tracing.service';
-import { formatDate } from 'src/backend/shared/src/utils/date.util';
-import { truncate } from 'src/backend/shared/src/utils/string.util';
+import { health } from '@app/health/config/configuration';
+import { HealthMetric } from '@app/health/health/entities/health-metric.entity';
+import { MedicalEvent } from '@app/health/health/entities/medical-event.entity';
+import { Service } from '@app/shared/interfaces/service.interface';
+import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { TracingService } from '@app/shared/tracing/tracing.service';
+import { formatDate } from '@app/shared/utils/date.util';
+import { truncate } from '@app/shared/utils/string.util';
 
 /**
  * Adapts communication with FHIR-compliant systems to retrieve medical records and history.
@@ -61,7 +63,7 @@ export class FHIRAdapter {
 
       this.logger.log('FHIR adapter initialized successfully', 'FHIRAdapter');
     } catch (error) {
-      this.logger.error('Failed to initialize FHIR adapter', error.stack, 'FHIRAdapter');
+      this.logger.error('Failed to initialize FHIR adapter', (error as any).stack, 'FHIRAdapter');
       throw new AppException(
         'Failed to initialize FHIR adapter',
         ErrorType.TECHNICAL,
@@ -131,7 +133,7 @@ export class FHIRAdapter {
       return await fn();
     } catch (error) {
       if (retries <= 0 || !this.isRetryable(error)) {
-        throw error;
+        throw error as any;
       }
 
       const delay = Math.pow(2, 4 - retries) * 1000; // Exponential backoff: 1s, 2s, 4s
@@ -184,7 +186,7 @@ export class FHIRAdapter {
         } catch (error) {
           this.logger.error(
             `Failed to fetch patient record for patient ID: ${patientId}`,
-            error.stack,
+            (error as any).stack,
             'FHIRAdapter'
           );
           
@@ -199,7 +201,7 @@ export class FHIRAdapter {
       });
     } catch (error) {
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
       
       throw new AppException(
@@ -258,7 +260,7 @@ export class FHIRAdapter {
         } catch (error) {
           this.logger.error(
             `Failed to fetch medical history for patient ID: ${patientId}`,
-            error.stack,
+            (error as any).stack,
             'FHIRAdapter'
           );
           
@@ -273,7 +275,7 @@ export class FHIRAdapter {
       });
     } catch (error) {
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
       
       throw new AppException(
@@ -353,7 +355,7 @@ export class FHIRAdapter {
         }
       };
     } catch (error) {
-      this.logger.error('Failed to map FHIR patient to internal format', error.stack, 'FHIRAdapter');
+      this.logger.error('Failed to map FHIR patient to internal format', (error as any).stack, 'FHIRAdapter');
       throw new AppException(
         'Failed to process patient data',
         ErrorType.TECHNICAL,
@@ -422,7 +424,7 @@ export class FHIRAdapter {
           return medicalEvent;
         });
     } catch (error) {
-      this.logger.error('Failed to map FHIR conditions to medical events', error.stack, 'FHIRAdapter');
+      this.logger.error('Failed to map FHIR conditions to medical events', (error as any).stack, 'FHIRAdapter');
       throw new AppException(
         'Failed to process medical history data',
         ErrorType.TECHNICAL,

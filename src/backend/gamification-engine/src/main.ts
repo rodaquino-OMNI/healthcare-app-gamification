@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NestFactory } from '@nestjs/core'; // v10.0.0+
 import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
@@ -61,8 +62,8 @@ async function bootstrap(): Promise<void> {
     await app.listen(port);
     logger.log(`Gamification Engine successfully started on port ${port}`, 'Bootstrap');
   } catch (error) {
-    console.error('Failed to start Gamification Engine:', error instanceof Error ? error.message : 'Unknown error');
-    console.error(error instanceof Error ? error.stack : 'No stack trace available');
+    console.error('Failed to start Gamification Engine:', error instanceof Error ? (error as any).message : 'Unknown error');
+    console.error(error instanceof Error ? (error as any).stack : 'No stack trace available');
     
     // Attempt to close the app gracefully if it was created
     if (app) {

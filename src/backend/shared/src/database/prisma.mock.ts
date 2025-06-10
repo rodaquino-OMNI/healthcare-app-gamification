@@ -80,4 +80,88 @@ export class PrismaMock {
       return { count: 1 };
     },
   };
+
+  // Claim model operations
+  claim = {
+    findUnique: async (args: any) => {
+      return { 
+        id: '1', 
+        userId: 'user-1',
+        planId: 'plan-1',
+        type: 'MEDICAL',
+        amount: 100.0,
+        status: 'SUBMITTED',
+        procedureCode: 'CODE123',
+        documents: []
+      };
+    },
+    findMany: async (args: any) => {
+      return [{ 
+        id: '1', 
+        userId: 'user-1',
+        planId: 'plan-1',
+        type: 'MEDICAL',
+        amount: 100.0,
+        status: 'SUBMITTED',
+        procedureCode: 'CODE123',
+        documents: []
+      }];
+    },
+    create: async (args: any) => {
+      return { 
+        id: '1', 
+        ...args.data,
+        documents: [] 
+      };
+    },
+    update: async (args: any) => {
+      return { 
+        id: args.where.id, 
+        ...args.data,
+        documents: [] 
+      };
+    },
+    delete: async (args: any) => {
+      return { id: args.where.id };
+    },
+  };
+
+  // Document model operations
+  document = {
+    findUnique: async (args: any) => {
+      return { 
+        id: '1', 
+        userId: 'user-1',
+        type: 'MEDICAL_RECEIPT',
+        filename: 'receipt.pdf',
+        entity_id: null,
+        entity_type: null
+      };
+    },
+    findMany: async (args: any) => {
+      return [{ 
+        id: '1', 
+        userId: 'user-1',
+        type: 'MEDICAL_RECEIPT',
+        filename: 'receipt.pdf',
+        entity_id: null,
+        entity_type: null
+      }];
+    },
+    create: async (args: any) => {
+      return { 
+        id: '1', 
+        ...args.data 
+      };
+    },
+    update: async (args: any) => {
+      return { 
+        id: args.where.id, 
+        ...args.data 
+      };
+    },
+    delete: async (args: any) => {
+      return { id: args.where.id };
+    },
+  };
 }

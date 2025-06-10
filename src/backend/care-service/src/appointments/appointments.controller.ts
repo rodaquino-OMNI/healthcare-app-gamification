@@ -4,10 +4,10 @@ import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { JwtAuthGuard } from '@nestjs/passport'; // 10.0.0+
 import { RolesGuard } from '@nestjs/passport'; // 10.0.0+
-import { Roles } from 'src/backend/auth-service/src/auth/decorators/roles.decorator';
-import { AllExceptionsFilter } from 'src/backend/shared/src/exceptions/exceptions.filter';
+import { Roles } from '@app/auth/auth/decorators/roles.decorator';
+import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 import { AppointmentType, AppointmentStatus } from './entities/appointment.entity';
-import { AUTH_INSUFFICIENT_PERMISSIONS } from 'src/backend/shared/src/constants/error-codes.constants';
+import { AUTH_INSUFFICIENT_PERMISSIONS } from '@app/shared/constants/error-codes.constants';
 
 /**
  * Handles incoming requests related to appointments.

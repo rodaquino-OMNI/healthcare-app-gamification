@@ -1,11 +1,19 @@
 /**
- * Base filter data transfer object.
- * Used for filtering entities in repository queries.
+ * DTO for filtering entities in list operations
  */
 export class FilterDto {
   /**
-   * Optional filter conditions as key-value pairs.
-   * Each key represents a field name and the value represents the filter condition.
+   * WHERE clause for filtering results
    */
-  [key: string]: any;
+  where?: Record<string, any>;
+
+  /**
+   * ORDER BY clause for sorting results
+   */
+  orderBy?: Record<string, 'ASC' | 'DESC'>;
+
+  /**
+   * Relations to include in the results
+   */
+  include?: Record<string, boolean>;
 }

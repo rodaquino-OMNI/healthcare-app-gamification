@@ -1,17 +1,18 @@
-import { NestFactory } from '@nestjs/core'; // @nestjs/core v10.0.0+
+import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { notification } from './config/configuration';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { AllExceptionsFilter } from 'src/backend/shared/src/exceptions/exceptions.filter';
-import { TracingModule } from 'src/backend/shared/src/tracing/tracing.module';
+import { ConfigService } from '@nestjs/config';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const config = notification();
-  const logger = new LoggerService('Main');
+  const configService = app.get(ConfigService);
+  const logger = app.get(LoggerService);
+  
   app.useGlobalFilters(new AllExceptionsFilter(logger));
   
-  await app.listen(config.port);
-  logger.log(`Notification service running on port: ${config.port}`)
+  const port = configService.get<number>('notification.port', 3003);
+  await app.listen(port);
+  logger.log(`Notification service running on port: ${port}`);
 }
 bootstrap();

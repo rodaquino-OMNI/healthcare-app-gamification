@@ -1,18 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Injectable } from '@nestjs/common'; // v10.0.0+
 import { CreateAppointmentDto } from '../appointments/dto/create-appointment.dto';
 import { UpdateAppointmentDto } from '../appointments/dto/update-appointment.dto';
 import { Appointment, AppointmentStatus, AppointmentType } from '../appointments/entities/appointment.entity';
-import { Service } from 'src/backend/shared/src/interfaces/service.interface';
-import { FilterDto } from 'src/backend/shared/src/dto/filter.dto';
-import { PaginationDto, PaginatedResponse } from 'src/backend/shared/src/dto/pagination.dto';
-import { AppException, ErrorType } from 'src/backend/shared/src/exceptions/exceptions.types';
-import { Repository } from 'src/backend/shared/src/interfaces/repository.interface';
-import { ProvidersService } from 'src/backend/care-service/src/providers/providers.service';
-import { TelemedicineService } from 'src/backend/care-service/src/telemedicine/telemedicine.service';
-import { KafkaService } from 'src/backend/shared/src/kafka/kafka.service';
-import { AuthService } from 'src/backend/auth-service/src/auth/auth.service';
-import { PrismaService } from 'src/backend/shared/src/database/prisma.service';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
+import { Service } from '@app/shared/interfaces/service.interface';
+import { FilterDto } from '@app/shared/dto/filter.dto';
+import { PaginationDto, PaginatedResponse } from '@app/shared/dto/pagination.dto';
+import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+import { Repository } from '@app/shared/interfaces/repository.interface';
+import { ProvidersService } from '@app/care/providers/providers.service';
+import { TelemedicineService } from '@app/care/telemedicine/telemedicine.service';
+import { KafkaService } from '@app/shared/kafka/kafka.service';
+import { AuthService } from '@app/auth/auth/auth.service';
+import { PrismaService } from '@app/shared/database/prisma.service';
+import { LoggerService } from '@app/shared/logging/logger.service';
 import { configuration } from '../config/configuration';
 
 /**
@@ -52,7 +54,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
    */
   async findById(id: string): Promise<Appointment | null> {
     try {
-      const appointment = await this.prisma.appointment.findUnique({
+      const appointment = await (this.prisma as any).appointment.findUnique({
         where: { id },
         include: {
           provider: true,
@@ -69,7 +71,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
 
       return appointment;
     } catch (error) {
-      this.logger.error(`Failed to find appointment: ${error.message}`, error.stack, 'AppointmentsService');
+      this.logger.error(`Failed to find appointment: ${(error as any).message}`, (error as any).stack, 'AppointmentsService');
       throw new AppException(
         `Failed to retrieve appointment with ID ${id}`,
         ErrorType.TECHNICAL,
@@ -96,7 +98,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
       const where = filter?.where || {};
 
       // Get appointments with pagination
-      const appointments = await this.prisma.appointment.findMany({
+      const appointments = await (this.prisma as any).appointment.findMany({
         where,
         skip,
         take: limit,
@@ -130,7 +132,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
         }
       };
     } catch (error) {
-      this.logger.error(`Failed to find appointments: ${error.message}`, error.stack, 'AppointmentsService');
+      this.logger.error(`Failed to find appointments: ${(error as any).message}`, (error as any).stack, 'AppointmentsService');
       throw new AppException(
         'Failed to retrieve appointments',
         ErrorType.TECHNICAL,
@@ -204,7 +206,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
       }
 
       // Create appointment
-      const appointment = await this.prisma.appointment.create({
+      const appointment = await (this.prisma as any).appointment.create({
         data: {
           userId: data.userId,
           providerId: data.providerId,
@@ -245,10 +247,10 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
       return appointment;
     } catch (error) {
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
 
-      this.logger.error(`Failed to create appointment: ${error.message}`, error.stack, 'AppointmentsService');
+      this.logger.error(`Failed to create appointment: ${(error as any).message}`, (error as any).stack, 'AppointmentsService');
       throw new AppException(
         'Failed to create appointment',
         ErrorType.TECHNICAL,
@@ -372,7 +374,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
       }
 
       // Update appointment
-      const updatedAppointment = await this.prisma.appointment.update({
+      const updatedAppointment = await (this.prisma as any).appointment.update({
         where: { id },
         data: {
           dateTime: data.dateTime,
@@ -417,10 +419,10 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
       return updatedAppointment;
     } catch (error) {
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
 
-      this.logger.error(`Failed to update appointment: ${error.message}`, error.stack, 'AppointmentsService');
+      this.logger.error(`Failed to update appointment: ${(error as any).message}`, (error as any).stack, 'AppointmentsService');
       throw new AppException(
         `Failed to update appointment with ID ${id}`,
         ErrorType.TECHNICAL,
@@ -459,10 +461,10 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
       return true;
     } catch (error) {
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
 
-      this.logger.error(`Failed to delete appointment: ${error.message}`, error.stack, 'AppointmentsService');
+      this.logger.error(`Failed to delete appointment: ${(error as any).message}`, (error as any).stack, 'AppointmentsService');
       throw new AppException(
         `Failed to delete appointment with ID ${id}`,
         ErrorType.TECHNICAL,
@@ -482,9 +484,9 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
   async count(filter?: FilterDto): Promise<number> {
     try {
       const where = filter?.where || {};
-      return await this.prisma.appointment.count({ where });
+      return await (this.prisma as any).appointment.count({ where });
     } catch (error) {
-      this.logger.error(`Failed to count appointments: ${error.message}`, error.stack, 'AppointmentsService');
+      this.logger.error(`Failed to count appointments: ${(error as any).message}`, (error as any).stack, 'AppointmentsService');
       throw new AppException(
         'Failed to count appointments',
         ErrorType.TECHNICAL,
@@ -552,10 +554,10 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
       return completedAppointment;
     } catch (error) {
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
 
-      this.logger.error(`Failed to complete appointment: ${error.message}`, error.stack, 'AppointmentsService');
+      this.logger.error(`Failed to complete appointment: ${(error as any).message}`, (error as any).stack, 'AppointmentsService');
       throw new AppException(
         `Failed to complete appointment with ID ${id}`,
         ErrorType.TECHNICAL,
@@ -586,7 +588,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
         orderBy: { dateTime: 'asc' }
       });
     } catch (error) {
-      this.logger.error(`Failed to get upcoming appointments: ${error.message}`, error.stack, 'AppointmentsService');
+      this.logger.error(`Failed to get upcoming appointments: ${(error as any).message}`, (error as any).stack, 'AppointmentsService');
       throw new AppException(
         `Failed to retrieve upcoming appointments for user ${userId}`,
         ErrorType.TECHNICAL,
@@ -619,7 +621,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
         orderBy: { dateTime: 'desc' }
       });
     } catch (error) {
-      this.logger.error(`Failed to get past appointments: ${error.message}`, error.stack, 'AppointmentsService');
+      this.logger.error(`Failed to get past appointments: ${(error as any).message}`, (error as any).stack, 'AppointmentsService');
       throw new AppException(
         `Failed to retrieve past appointments for user ${userId}`,
         ErrorType.TECHNICAL,
@@ -682,10 +684,10 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
       return confirmedAppointment;
     } catch (error) {
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
 
-      this.logger.error(`Failed to confirm appointment: ${error.message}`, error.stack, 'AppointmentsService');
+      this.logger.error(`Failed to confirm appointment: ${(error as any).message}`, (error as any).stack, 'AppointmentsService');
       throw new AppException(
         `Failed to confirm appointment with ID ${id}`,
         ErrorType.TECHNICAL,
@@ -748,10 +750,10 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
       return session;
     } catch (error) {
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
 
-      this.logger.error(`Failed to start telemedicine session: ${error.message}`, error.stack, 'AppointmentsService');
+      this.logger.error(`Failed to start telemedicine session: ${(error as any).message}`, (error as any).stack, 'AppointmentsService');
       throw new AppException(
         `Failed to start telemedicine session for appointment ${appointmentId}`,
         ErrorType.TECHNICAL,
@@ -778,7 +780,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
       const startTime = new Date(proposedTime.getTime() - bufferMinutes * 60000);
       const endTime = new Date(proposedTime.getTime() + bufferMinutes * 60000);
       
-      const conflictingAppointments = await this.prisma.appointment.findMany({
+      const conflictingAppointments = await (this.prisma as any).appointment.findMany({
         where: {
           userId,
           dateTime: {
@@ -793,7 +795,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
       
       return conflictingAppointments.length > 0;
     } catch (error) {
-      this.logger.error(`Failed to check appointment conflict: ${error.message}`, error.stack, 'AppointmentsService');
+      this.logger.error(`Failed to check appointment conflict: ${(error as any).message}`, (error as any).stack, 'AppointmentsService');
       throw new AppException(
         `Failed to check appointment conflict for user ${userId}`,
         ErrorType.TECHNICAL,
@@ -828,7 +830,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
       
       return this.findAll(pagination, providerFilter);
     } catch (error) {
-      this.logger.error(`Failed to get provider appointments: ${error.message}`, error.stack, 'AppointmentsService');
+      this.logger.error(`Failed to get provider appointments: ${(error as any).message}`, (error as any).stack, 'AppointmentsService');
       throw new AppException(
         `Failed to retrieve appointments for provider ${providerId}`,
         ErrorType.TECHNICAL,
@@ -872,7 +874,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
       
       return result.data;
     } catch (error) {
-      this.logger.error(`Failed to get provider's today appointments: ${error.message}`, error.stack, 'AppointmentsService');
+      this.logger.error(`Failed to get provider's today appointments: ${(error as any).message}`, (error as any).stack, 'AppointmentsService');
       throw new AppException(
         `Failed to retrieve today's appointments for provider ${providerId}`,
         ErrorType.TECHNICAL,

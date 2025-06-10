@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
@@ -42,7 +43,7 @@ export class RewardsService {
       this.logger.log(`Creating new reward: ${reward.title}`, 'RewardsService');
       return await this.rewardRepository.save(reward);
     } catch (error: any) {
-      this.logger.error(`Failed to create reward: ${error.message}`, error?.stack, 'RewardsService');
+      this.logger.error(`Failed to create reward: ${(error as any).message}`, error?.stack, 'RewardsService');
       throw new AppException(
         'Failed to create reward',
         ErrorType.TECHNICAL,
@@ -62,7 +63,7 @@ export class RewardsService {
       this.logger.log('Retrieving all rewards', 'RewardsService');
       return await this.rewardRepository.find();
     } catch (error: any) {
-      this.logger.error(`Failed to retrieve rewards: ${error.message}`, error?.stack, 'RewardsService');
+      this.logger.error(`Failed to retrieve rewards: ${(error as any).message}`, error?.stack, 'RewardsService');
       throw new AppException(
         'Failed to retrieve rewards',
         ErrorType.TECHNICAL,
@@ -96,10 +97,10 @@ export class RewardsService {
       return reward;
     } catch (error: any) {
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
       
-      this.logger.error(`Failed to retrieve reward with ID ${id}: ${error.message}`, error?.stack, 'RewardsService');
+      this.logger.error(`Failed to retrieve reward with ID ${id}: ${(error as any).message}`, error?.stack, 'RewardsService');
       throw new AppException(
         `Failed to retrieve reward with ID ${id}`,
         ErrorType.TECHNICAL,
@@ -151,7 +152,7 @@ export class RewardsService {
       
       return userReward;
     } catch (error: any) {
-      this.logger.error(`Failed to grant reward ${rewardId} to user ${userId}: ${error.message}`, error?.stack, 'RewardsService');
+      this.logger.error(`Failed to grant reward ${rewardId} to user ${userId}: ${(error as any).message}`, error?.stack, 'RewardsService');
       throw new AppException(
         'Failed to grant reward',
         ErrorType.TECHNICAL,

@@ -1,67 +1,141 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm'; // typeorm v0.3.0+
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 /**
- * Notification entity - represents a notification record stored in the database
- * 
- * Stores information about notifications sent to users including:
- * - The recipient user ID
- * - Notification type and content
- * - Delivery channel and status
- * - Timestamps for creation and updates
+ * Represents a notification sent to a user through various channels
  */
-@Entity()
+@Entity('notifications')
 export class Notification {
   /**
    * Unique identifier for the notification
+   * @example 1
    */
+  @ApiProperty({ description: 'Unique notification ID' })
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   /**
-   * ID of the user who will receive this notification
+   * ID of the user the notification was sent to
+   * @example "550e8400-e29b-41d4-a716-446655440000"
    */
-  @Column()
-  userId: string;
+  @ApiProperty({ description: 'User ID the notification was sent to' })
+  @Column({ name: 'user_id' })
+  userId!: string;
 
   /**
-   * Type of notification (e.g., 'achievement', 'appointment-reminder', 'claim-status')
+   * Type of notification
+   * @example "APPOINTMENT_REMINDER"
    */
+  @ApiProperty({ description: 'Type of notification' })
   @Column()
-  type: string;
+  type!: string;
 
   /**
-   * Notification title/headline
+   * Notification title
+   * @example "Appointment Reminder"
    */
+  @ApiProperty({ description: 'Notification title' })
   @Column()
-  title: string;
+  title!: string;
 
   /**
    * Notification body content
+   * @example "Your appointment with Dr. Smith is tomorrow at 2:00 PM"
    */
-  @Column('text')
-  body: string;
+  @ApiProperty({ description: 'Notification body content' })
+  @Column({ type: 'text' })
+  body!: string;
 
   /**
-   * Delivery channel (e.g., 'push', 'email', 'sms', 'in-app')
+   * Channel through which the notification was delivered
+   * @example "EMAIL"
    */
+  @ApiProperty({ description: 'Delivery channel (EMAIL, PUSH, SMS, IN_APP)' })
   @Column()
-  channel: string;
+  channel!: string;
 
   /**
-   * Current status of the notification (e.g., 'pending', 'sent', 'delivered', 'failed')
+   * Notification delivery status
+   * @example "DELIVERED"
    */
+  @ApiProperty({ description: 'Delivery status (PENDING, DELIVERED, FAILED, READ)' })
   @Column()
-  status: string;
+  status!: string;
 
   /**
-   * Timestamp when the notification was created
+   * Timestamp of when the notification was created
    */
-  @CreateDateColumn()
-  createdAt: Date;
+  @ApiProperty({ description: 'Creation timestamp' })
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt!: Date;
 
   /**
-   * Timestamp when the notification was last updated
+   * Timestamp of when the notification was last updated
    */
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @ApiProperty({ description: 'Last update timestamp' })
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt!: Date;
+
+  /**
+   * Optional journey context for styling
+   * @example "health"
+   */
+  @ApiProperty({ 
+    description: 'Journey context for styling', 
+    enum: ['health', 'care', 'plan', 'gamification'],
+    required: false
+  })
+  @Column({ nullable: true })
+  journey?: string;
+
+  /**
+   * Optional metadata for additional information
+   */
+  @ApiProperty({ description: 'Additional metadata', required: false })
+  @Column({ type: 'json', nullable: true })
+  metadata?: Record<string, any>;
+
+  /**
+   * Optional achievement ID for gamification-related notifications
+   * @example "daily-steps-goal"
+   */
+  @ApiProperty({ 
+    description: 'Achievement ID for gamification notifications', 
+    required: false 
+  })
+  @Column({ nullable: true, name: 'achievement_id' })
+  achievementId?: string;
+
+  /**
+   * Optional points awarded in this notification
+   * @example 50
+   */
+  @ApiProperty({ 
+    description: 'Points awarded', 
+    required: false 
+  })
+  @Column({ nullable: true })
+  points?: number;
+
+  /**
+   * Optional badge ID unlocked with this notification
+   * @example "fitness-master"
+   */
+  @ApiProperty({ 
+    description: 'Badge ID unlocked', 
+    required: false 
+  })
+  @Column({ nullable: true, name: 'badge_id' })
+  badgeId?: string;
+
+  /**
+   * Optional level information for level-up notifications
+   * @example 5
+   */
+  @ApiProperty({ 
+    description: 'New level achieved', 
+    required: false 
+  })
+  @Column({ nullable: true })
+  level?: number;
 }

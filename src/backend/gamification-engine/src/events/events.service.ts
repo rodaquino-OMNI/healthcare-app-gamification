@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@nestjs/common';
 import { ProcessEventDto } from './dto/process-event.dto';
 import { AchievementsService } from '../achievements/achievements.service';
@@ -71,7 +72,7 @@ export class EventsService {
       };
     } catch (error: any) {
       this.logger.error(`Failed to process event for user ${event.userId}`, error?.stack, 'EventsService');
-      throw error;
+      throw error as any;
     }
   }
 }

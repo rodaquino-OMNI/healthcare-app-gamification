@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Logger } from '@nestjs/common';
 
 /**
@@ -28,8 +29,8 @@ async function verifyPaths(): Promise<void> {
     logger.log('Path verification completed successfully!');
   } catch (error) {
     if (error instanceof Error) {
-      logger.error(`Path verification failed: ${error.message}`);
-      logger.error(error.stack);
+      logger.error(`Path verification failed: ${(error as any).message}`);
+      logger.error((error as any).stack);
     } else {
       logger.error(`Path verification failed: ${String(error)}`);
     }

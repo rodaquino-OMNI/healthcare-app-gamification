@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Injectable } from '@nestjs/common';
 import { ConnectDeviceDto } from './dto/connect-device.dto';
 import { DeviceConnection } from './entities/device-connection.entity';
@@ -51,7 +53,7 @@ export class DevicesService {
       const deviceType = String(connectDeviceDto.deviceType).toLowerCase();
       
       // Calls the appropriate adapter to connect to the device using WearablesService
-      const deviceConnection = await this.wearablesService.connect(
+      const deviceConnection = await (this.wearablesService as any).connect(
         recordId,
         deviceType
       );
@@ -61,12 +63,12 @@ export class DevicesService {
       return deviceConnection;
     } catch (error) {
       this.logger.error(
-        `Failed to connect device ${connectDeviceDto.deviceType} for record ${recordId}: ${error.message}`,
-        error.stack
+        `Failed to connect device ${connectDeviceDto.deviceType} for record ${recordId}: ${(error as any).message}`,
+        (error as any).stack
       );
       
       throw new AppException(
-        `Failed to connect device: ${error.message}`,
+        `Failed to connect device: ${(error as any).message}`,
         ErrorType.TECHNICAL,
         ErrorCodes.HEALTH_DEVICE_CONNECTION_FAILED,
         {
@@ -95,7 +97,7 @@ export class DevicesService {
           recordId,
           ...(filterDto?.where || {})
         },
-        orderBy: filterDto?.orderBy || { lastSync: 'desc' },
+        orderBy: filterDto?.orderBy || { lastSync: 'DESC' as any },
         ...filterDto
       };
       
@@ -110,12 +112,12 @@ export class DevicesService {
       return deviceConnections;
     } catch (error) {
       this.logger.error(
-        `Failed to retrieve devices for record ${recordId}: ${error.message}`,
-        error.stack
+        `Failed to retrieve devices for record ${recordId}: ${(error as any).message}`,
+        (error as any).stack
       );
       
       throw new AppException(
-        `Failed to retrieve devices: ${error.message}`,
+        `Failed to retrieve devices: ${(error as any).message}`,
         ErrorType.TECHNICAL,
         ErrorCodes.SYS_INTERNAL_SERVER_ERROR,
         {

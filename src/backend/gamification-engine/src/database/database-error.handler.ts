@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // filepath: /Users/rodrigo/Git Repositories/Super-APP gamification/healthcare-super-app--w-gamification--tgfzl7/src/backend/gamification-engine/src/database/database-error.handler.ts
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { TypeOrmOptionsFactory, TypeOrmModuleOptions } from '@nestjs/typeorm';
@@ -38,8 +39,8 @@ export class DatabaseErrorHandler implements OnApplicationBootstrap {
       }
     } catch (error) {
       this.logger.error(
-        `Error validating database configuration: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        error instanceof Error ? error.stack : undefined,
+        `Error validating database configuration: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
+        error instanceof Error ? (error as any).stack : undefined,
         'DatabaseErrorHandler'
       );
     }

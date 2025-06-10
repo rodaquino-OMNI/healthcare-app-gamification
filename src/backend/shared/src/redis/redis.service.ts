@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Redis, { RedisOptions } from 'ioredis';
@@ -21,8 +22,8 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   private formatError(error: unknown): { message: string; stack?: string } {
     if (error instanceof Error) {
       return {
-        message: error.message,
-        stack: error.stack,
+        message: (error as any).message,
+        stack: (error as any).stack,
       };
     } else if (typeof error === 'string') {
       return {
@@ -196,7 +197,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         formattedError.stack,
         'RedisService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -225,7 +226,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         formattedError.stack, 
         'RedisService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -247,7 +248,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         formattedError.stack, 
         'RedisService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -269,7 +270,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         formattedError.stack, 
         'RedisService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -291,7 +292,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         formattedError.stack,
         'RedisService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -312,7 +313,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         formattedError.stack,
         'RedisService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -334,7 +335,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         formattedError.stack,
         'RedisService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -357,7 +358,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         formattedError.stack,
         'RedisService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -379,7 +380,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         formattedError.stack,
         'RedisService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -400,7 +401,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         formattedError.stack,
         'RedisService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -423,7 +424,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         formattedError.stack,
         'RedisService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -447,7 +448,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         formattedError.stack,
         'RedisService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -488,7 +489,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         formattedError.stack,
         'RedisService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -510,7 +511,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         formattedError.stack,
         'RedisService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -553,7 +554,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         formattedError.stack,
         'RedisService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -574,7 +575,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         formattedError.stack,
         'RedisService'
       );
-      throw error;
+      throw error as any;
     }
   }
 

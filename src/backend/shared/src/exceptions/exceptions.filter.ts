@@ -131,7 +131,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
    * Logs application-specific exceptions
    */
   private logAppException(exception: AppException, requestInfo: any): void {
-    const { message, type, code, details } = exception;
+    // Destructure using metadata property instead of details
+    const { message, type, code, metadata } = exception;
     const logContext = 'ExceptionsFilter';
     
     switch (type) {

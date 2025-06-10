@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common'; // v10.0+
 import { TelemedicineController } from './telemedicine.controller';
 import { TelemedicineService } from './telemedicine.service';
-import { KafkaModule } from 'src/backend/shared/src/kafka/kafka.module';
-import { LoggerModule } from 'src/backend/shared/src/logging/logger.module';
-import { ExceptionsModule } from 'src/backend/shared/src/exceptions/exceptions.module';
+import { KafkaModule } from '@app/shared/kafka/kafka.module';
+import { LoggerModule } from '@app/shared/logging/logger.module';
+import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
 
 /**
  * Configures the Telemedicine module, importing the necessary controllers and providers.

@@ -1,5 +1,5 @@
 import * as Joi from 'joi';
-import { ErrorType } from 'src/backend/shared/src/exceptions/exceptions.types';
+import { ErrorType } from '@app/shared/exceptions/exceptions.types';
 
 /**
  * Validation schema for the API Gateway configuration.

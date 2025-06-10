@@ -1,3 +1,4 @@
+import { ErrorType } from '@app/shared/exceptions/error.types';
 import { 
   Controller, 
   Get, 
@@ -16,13 +17,13 @@ import {
 import { MedicationsService } from './medications.service';
 import { CreateMedicationDto } from './dto/create-medication.dto';
 import { Medication } from './entities/medication.entity';
-import { JwtAuthGuard } from 'src/backend/auth-service/src/auth/guards/jwt-auth.guard';
-import { AllExceptionsFilter } from 'src/backend/shared/src/exceptions/exceptions.filter';
-import { AUTH_INSUFFICIENT_PERMISSIONS } from 'src/backend/shared/src/constants/error-codes.constants';
-import { Service } from 'src/backend/shared/src/interfaces/service.interface';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { CurrentUser } from 'src/backend/auth-service/src/auth/decorators/current-user.decorator';
-import { AppException, ErrorType } from 'src/backend/shared/src/exceptions/exceptions.types';
+import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
+import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
+import { AUTH_INSUFFICIENT_PERMISSIONS } from '@app/shared/constants/error-codes.constants';
+import { Service } from '@app/shared/interfaces/service.interface';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
+import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 
 /**
  * Controller class for managing medications.

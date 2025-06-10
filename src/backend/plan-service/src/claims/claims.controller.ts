@@ -20,7 +20,7 @@ import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 import { ClaimsService } from './claims.service';
 import { CreateClaimDto } from './dto/create-claim.dto';
 import { UpdateClaimDto } from './dto/update-claim.dto';
-import { FilterDto } from '@app/shared/dto/filter.dto';
+import { FilterDto } from '../dto/filter.dto';
 import { PaginationDto } from '@app/shared/dto/pagination.dto';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { TracingService } from '@app/shared/tracing/tracing.service';
@@ -192,7 +192,7 @@ export class ClaimsController {
       }
       
       // If ownership is verified, proceed with deletion
-      await this.claimsService.delete(id);
+      await this.claimsService.remove(id);
     });
   }
 }

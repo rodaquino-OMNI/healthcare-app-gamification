@@ -1,11 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@nestjs/common';
 import { NestMiddleware } from '@nestjs/common';
 import { HttpStatus, HttpException } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { ConfigService } from '@nestjs/config';
-import { RedisService } from 'src/backend/shared/src/redis/redis.service';
-import { apiGateway } from 'src/backend/api-gateway/src/config/configuration';
-import { AUTH_INVALID_CREDENTIALS } from 'src/backend/shared/src/constants/error-codes.constants';
+import { RedisService } from '@app/shared/redis/redis.service';
+import { configuration } from '../config/configuration';
+import { ErrorCodes } from '@app/shared/constants/error-codes.constants';
 
 /**
  * Middleware that applies rate limiting to API requests.
@@ -129,7 +130,7 @@ export class RateLimitMiddleware implements NestMiddleware {
       next();
     } catch (error) {
       if (error instanceof HttpException) {
-        throw error;
+        throw error as any;
       }
       
       // For unexpected errors, log and continue

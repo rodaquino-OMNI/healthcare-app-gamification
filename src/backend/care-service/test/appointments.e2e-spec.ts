@@ -4,7 +4,7 @@ import * as request from 'supertest'; // version 6.3.3
 import { AppointmentsController } from '../src/appointments/appointments.controller';
 import { AppointmentsService } from '../src/appointments/appointments.service';
 import { CreateAppointmentDto } from '../src/appointments/dto/create-appointment.dto';
-import { AUTH_INSUFFICIENT_PERMISSIONS } from 'src/backend/shared/src/constants/error-codes.constants';
+import { AUTH_INSUFFICIENT_PERMISSIONS } from '@app/shared/constants/error-codes.constants';
 import { SuperAgentTest } from 'supertest'; // version 6.3.3
 import { beforeEach, describe, expect, it, afterAll } from '@jest/globals'; // version 29.0.0+
 

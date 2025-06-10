@@ -19,9 +19,9 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { FilterDto } from '@app/shared/dto/filter.dto';
 import { PaginationDto, PaginatedResponse } from '@app/shared/dto/pagination.dto';
 import { User } from './entities/user.entity';
+import { UserFilterDto } from './dto/user-filter.dto';
 
 /**
  * Controller for managing users.
@@ -65,7 +65,7 @@ export class UsersController {
   @Roles('admin')
   findAll(
     @Query() paginationDto: PaginationDto, 
-    @Query() filterDto: FilterDto
+    @Query() filterDto: UserFilterDto
   ): Promise<PaginatedResponse<User>> {
     return this.usersService.findAll(paginationDto, filterDto);
   }

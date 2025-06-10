@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable, NestMiddleware, HttpStatus, HttpException } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { verify, JwtPayload } from 'jsonwebtoken';
-import { AuthService } from 'src/backend/auth-service/src/auth/auth.service';
-import { UsersService } from 'src/backend/auth-service/src/users/users.service';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { configuration } from 'src/backend/api-gateway/src/config/configuration';
+import { AuthService } from '@app/auth/auth/auth.service';
+import { UsersService } from '@app/auth/users/users.service';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { configuration } from '../config/configuration';
 
 /**
  * Middleware that authenticates incoming requests by verifying the JWT token in the Authorization header.
@@ -43,7 +44,7 @@ export class AuthMiddleware implements NestMiddleware {
       const authHeader = req.headers.authorization;
       if (!authHeader) {
         // If no token is provided, allow the request to proceed to public routes
-        this.loggerService.log('No authentication token provided');
+        this.loggerService.log('info', 'No authentication token provided');
         return next();
       }
 
@@ -60,13 +61,15 @@ export class AuthMiddleware implements NestMiddleware {
         
         // Verify the JWT token
         const decoded = verify(token, jwtSecret) as JwtPayload;
-        const userId = decoded.sub;
+        const userId = decoded.sub as string;
 
         // Validate that the user exists in the database
         try {
           await this.usersService.findOne(userId);
         } catch (error) {
-          this.loggerService.error(`User not found: ${userId}`, error.stack);
+          const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+          const errorStack = error instanceof Error ? (error as any).stack : 'No stack trace';
+          this.loggerService.error(`User not found: ${userId}`, errorStack);
           throw new HttpException('Invalid user', HttpStatus.UNAUTHORIZED);
         }
 
@@ -76,17 +79,21 @@ export class AuthMiddleware implements NestMiddleware {
           email: decoded.email
         };
 
-        this.loggerService.log(`Authenticated user: ${userId}`);
+        this.loggerService.log('info', `Authenticated user: ${userId}`);
         return next();
       } catch (error) {
-        this.loggerService.error(`Token verification failed: ${error.message}`, error.stack);
+        const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+        const errorStack = error instanceof Error ? (error as any).stack : 'No stack trace';
+        this.loggerService.error(`Token verification failed: ${errorMessage}`, errorStack);
         throw new HttpException('Invalid or expired token', HttpStatus.UNAUTHORIZED);
       }
     } catch (error) {
       if (error instanceof HttpException) {
-        throw error;
+        throw error as any;
       } else {
-        this.loggerService.error(`Authentication error: ${error.message}`, error.stack);
+        const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+        const errorStack = error instanceof Error ? (error as any).stack : 'No stack trace';
+        this.loggerService.error(`Authentication error: ${errorMessage}`, errorStack);
         throw new HttpException('Authentication failed', HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
@@ -112,7 +119,9 @@ export class AuthMiddleware implements NestMiddleware {
         return this.configuration.auth.jwtSecret;
       }
     } catch (error) {
-      this.loggerService.error(`Error getting JWT secret: ${error.message}`, error.stack);
+      const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
+      const errorStack = error instanceof Error ? (error as any).stack : 'No stack trace';
+      this.loggerService.error(`Error getting JWT secret: ${errorMessage}`, errorStack);
     }
     
     // Fallback to environment variable or default (should only be used in development)

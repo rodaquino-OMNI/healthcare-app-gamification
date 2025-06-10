@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@nestjs/common'; // v10.0.0+
 import { ConfigService } from '@nestjs/config'; // v10.0.0+
 import { Twilio } from 'twilio'; // v4.0.0+
@@ -50,11 +51,11 @@ export class SmsService {
       this.logger.log(`SMS sent to ${phoneNumber}`, 'SmsService');
     } catch (error) {
       this.logger.error(
-        `Failed to send SMS to ${phoneNumber}: ${error.message}`,
-        error.stack,
+        `Failed to send SMS to ${phoneNumber}: ${(error as any).message}`,
+        (error as any).stack,
         'SmsService'
       );
-      throw new Error(`${SYS_INTERNAL_SERVER_ERROR}: Failed to send SMS: ${error.message}`);
+      throw new Error(`${SYS_INTERNAL_SERVER_ERROR}: Failed to send SMS: ${(error as any).message}`);
     }
   }
 }

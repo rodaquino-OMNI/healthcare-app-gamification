@@ -31,7 +31,7 @@ export class AchievementsController {
     @Query() pagination: PaginationDto,
     @Query() filter: FilterDto
   ): Promise<any> {
-    return this.achievementsService.findAll(pagination, filter);
+    return this.achievementsService.findAll(filter, pagination);
   }
 
   /**

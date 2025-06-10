@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Injectable, Logger } from '@nestjs/common';
 import { Provider } from './entities/provider.entity';
 import { SearchProvidersDto } from './dto/search-providers.dto';
@@ -82,7 +84,7 @@ export class ProvidersService {
 
       return { providers, total };
     } catch (error) {
-      this.logger.error(`Failed to find providers: ${error.message}`, error.stack);
+      this.logger.error(`Failed to find providers: ${(error as any).message}`, (error as any).stack);
       throw new AppException(
         'Failed to retrieve providers',
         ErrorType.TECHNICAL,
@@ -117,10 +119,10 @@ export class ProvidersService {
       return provider;
     } catch (error) {
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
       
-      this.logger.error(`Failed to find provider: ${error.message}`, error.stack);
+      this.logger.error(`Failed to find provider: ${(error as any).message}`, (error as any).stack);
       throw new AppException(
         `Failed to retrieve provider with ID ${id}`,
         ErrorType.TECHNICAL,
@@ -151,10 +153,10 @@ export class ProvidersService {
       return provider;
     } catch (error) {
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
       
-      this.logger.error(`Failed to create provider: ${error.message}`, error.stack);
+      this.logger.error(`Failed to create provider: ${(error as any).message}`, (error as any).stack);
       throw new AppException(
         'Failed to create provider',
         ErrorType.TECHNICAL,
@@ -187,10 +189,10 @@ export class ProvidersService {
       return updatedProvider;
     } catch (error) {
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
       
-      this.logger.error(`Failed to update provider: ${error.message}`, error.stack);
+      this.logger.error(`Failed to update provider: ${(error as any).message}`, (error as any).stack);
       throw new AppException(
         `Failed to update provider with ID ${id}`,
         ErrorType.TECHNICAL,
@@ -213,7 +215,7 @@ export class ProvidersService {
       await this.findById(id);
       
       // Check if provider has any active appointments
-      const activeAppointments = await this.prisma.appointment.count({
+      const activeAppointments = await (this.prisma as any).appointment.count({
         where: {
           providerId: id,
           status: {
@@ -240,10 +242,10 @@ export class ProvidersService {
       return true;
     } catch (error) {
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
       
-      this.logger.error(`Failed to delete provider: ${error.message}`, error.stack);
+      this.logger.error(`Failed to delete provider: ${(error as any).message}`, (error as any).stack);
       throw new AppException(
         `Failed to delete provider with ID ${id}`,
         ErrorType.TECHNICAL,
@@ -267,7 +269,7 @@ export class ProvidersService {
       await this.findById(providerId);
       
       // Check for existing appointments at the requested time
-      const existingAppointment = await this.prisma.appointment.findFirst({
+      const existingAppointment = await (this.prisma as any).appointment.findFirst({
         where: {
           providerId,
           dateTime: {
@@ -286,10 +288,10 @@ export class ProvidersService {
       return !existingAppointment;
     } catch (error) {
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
       
-      this.logger.error(`Failed to check provider availability: ${error.message}`, error.stack);
+      this.logger.error(`Failed to check provider availability: ${(error as any).message}`, (error as any).stack);
       throw new AppException(
         `Failed to check availability for provider with ID ${providerId}`,
         ErrorType.TECHNICAL,
@@ -326,7 +328,7 @@ export class ProvidersService {
       dateEnd.setDate(dateEnd.getDate() + 1); // Next day
 
       // Get all appointments for the provider on the specified day
-      const appointments = await this.prisma.appointment.findMany({
+      const appointments = await (this.prisma as any).appointment.findMany({
         where: {
           providerId,
           dateTime: {
@@ -364,10 +366,10 @@ export class ProvidersService {
       return timeSlots;
     } catch (error) {
       if (error instanceof AppException) {
-        throw error;
+        throw error as any;
       }
       
-      this.logger.error(`Failed to get provider time slots: ${error.message}`, error.stack);
+      this.logger.error(`Failed to get provider time slots: ${(error as any).message}`, (error as any).stack);
       throw new AppException(
         `Failed to retrieve time slots for provider with ID ${providerId}`,
         ErrorType.TECHNICAL,
@@ -442,7 +444,7 @@ export class ProvidersService {
 
       return { providers, total };
     } catch (error) {
-      this.logger.error(`Failed to find telemedicine providers: ${error.message}`, error.stack);
+      this.logger.error(`Failed to find telemedicine providers: ${(error as any).message}`, (error as any).stack);
       throw new AppException(
         'Failed to retrieve telemedicine providers',
         ErrorType.TECHNICAL,

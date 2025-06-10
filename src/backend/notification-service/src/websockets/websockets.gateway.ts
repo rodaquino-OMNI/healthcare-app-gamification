@@ -1,259 +1,384 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { 
   WebSocketGateway, 
   WebSocketServer, 
   SubscribeMessage, 
-  OnGatewayConnection, 
-  OnGatewayDisconnect 
-} from '@nestjs/platform-socket.io'; // @nestjs/platform-socket.io v10.0.0+
-import { UseGuards, Inject, Logger } from '@nestjs/common'; // @nestjs/common v10.0.0+
-import { Server, Socket } from 'socket.io'; // socket.io v4.0.0+
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  OnGatewayInit,
+  ConnectedSocket,
+  MessageBody
+} from '@nestjs/websockets';
+import { Server, Socket } from 'socket.io';
+import { Logger, UseGuards } from '@nestjs/common';
+import { KafkaService } from '@app/shared/kafka/kafka.service';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { notification as notificationConfig } from '../config/configuration';
 
-import { notification } from '../config/configuration';
-import { SendNotificationDto } from '../notifications/dto/send-notification.dto';
-import { NotificationsService } from '../notifications/notifications.service';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
-import { TracingService } from 'src/backend/shared/src/tracing/tracing.service';
+interface NotificationPayload {
+  id: string;
+  userId: string;
+  title: string;
+  message: string;
+  type: string;
+  journey?: string;
+  data?: Record<string, any>;
+  timestamp: Date;
+}
 
-/**
- * WebSocket gateway for handling real-time communication in the AUSTA SuperApp.
- * Manages user connections, authentication, and notification delivery.
- */
-@WebSocketGateway({ cors: { origin: '*' } })
-export class WebsocketsGateway implements OnGatewayConnection, OnGatewayDisconnect {
+@WebSocketGateway({
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  },
+  namespace: 'notifications'
+})
+export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
-  private readonly logger: Logger;
-
-  /**
-   * Initializes the WebSocketGateway with required services.
-   * 
-   * @param notificationsService - Service for sending notifications
-   * @param logger - Service for logging events
-   * @param tracingService - Service for distributed tracing
-   */
+  
+  // Store connected clients by userId
+  private connectedUsers: Map<string, Set<string>> = new Map();
+  // Store socket connections by socket id
+  private connections: Map<string, { userId: string, journeys: string[] }> = new Map();
+  
   constructor(
-    private readonly notificationsService: NotificationsService,
-    private readonly logger: LoggerService,
-    private readonly tracingService: TracingService
+    private readonly kafkaService: KafkaService,
+    private readonly logger: LoggerService
   ) {
-    this.logger = new Logger('WebsocketsGateway');
+    this.logger.setContext('WebsocketsGateway');
   }
-
-  /**
-   * Handles new WebSocket connections.
-   * Authenticates the user and initializes their connection.
-   * 
-   * @param client - The connecting Socket.io client
-   */
-  handleConnection(client: Socket): void {
-    this.logger.log(`Client connected: ${client.id}`, 'WebsocketsGateway');
+  
+  afterInit(server: Server) {
+    this.logger.log('WebSocket Gateway initialized');
+    // Subscribe to Kafka notifications topic
+    this.setupKafkaListener();
+  }
+  
+  handleConnection(client: Socket, ...args: any[]) {
+    const userId = this.getUserIdFromClient(client);
     
-    try {
-      // Get authentication token from handshake
-      const token = client.handshake.auth.token;
-      
-      if (!token) {
-        this.logger.warn(`Client ${client.id} has no authentication token, disconnecting`, 'WebsocketsGateway');
-        client.disconnect();
-        return;
-      }
-      
-      // TODO: Implement JWT verification
-      // const userId = verifyAndDecodeToken(token);
-      
-      // For demonstration purposes
-      const userId = this.extractUserIdFromToken(token);
-      
-      if (!userId) {
-        this.logger.warn(`Invalid token for client ${client.id}, disconnecting`, 'WebsocketsGateway');
-        client.disconnect();
-        return;
-      }
-      
-      // Store userId in socket data for future reference
-      client.data.userId = userId;
-      
-      // Join user-specific room for targeted notifications
-      client.join(`user:${userId}`);
-      
-      this.logger.log(`Client ${client.id} authenticated as user ${userId}`, 'WebsocketsGateway');
-      
-      // Send connection confirmation
-      client.emit('connected', { userId });
-    } catch (error) {
-      this.logger.error(`Error authenticating client ${client.id}`, error.stack, 'WebsocketsGateway');
+    if (!userId) {
+      this.logger.warn(`Client connected without user ID: ${client.id}`);
       client.disconnect();
+      return;
     }
-  }
-
-  /**
-   * Handles WebSocket disconnections.
-   * Cleans up any resources associated with the connection.
-   * 
-   * @param client - The disconnecting Socket.io client
-   */
-  handleDisconnect(client: Socket): void {
-    this.logger.log(`Client disconnected: ${client.id}`, 'WebsocketsGateway');
     
-    // Additional cleanup if needed
+    this.logger.debug(`Client connected: ${client.id}, userId: ${userId}`);
+    
+    // Store connection in our maps
+    if (!this.connectedUsers.has(userId)) {
+      this.connectedUsers.set(userId, new Set());
+    }
+    this.connectedUsers.get(userId).add(client.id);
+    
+    // Default to all journeys if not specified
+    const journeys = client.handshake.query.journeys 
+      ? String(client.handshake.query.journeys).split(',')
+      : ['health', 'care', 'plan'];
+      
+    this.connections.set(client.id, { userId, journeys });
+    
+    // Join rooms for each journey
+    journeys.forEach(journey => {
+      client.join(`${userId}:${journey}`);
+    });
+    
+    // Join user room
+    client.join(userId);
   }
-
-  /**
-   * Handles subscription to journey-specific notifications.
-   * 
-   * @param client - The Socket.io client
-   * @param payload - The subscription payload containing journey ID
-   */
-  @SubscribeMessage('subscribe')
-  handleSubscribe(client: Socket, payload: { journey: string }): void {
-    try {
-      const { journey } = payload;
-      const userId = client.data.userId;
+  
+  handleDisconnect(client: Socket) {
+    const connectionInfo = this.connections.get(client.id);
+    
+    if (connectionInfo) {
+      const { userId } = connectionInfo;
       
-      if (!userId) {
-        this.logger.warn(`Unauthenticated client ${client.id} attempted to subscribe to ${journey}`, 'WebsocketsGateway');
-        return;
+      this.logger.debug(`Client disconnected: ${client.id}, userId: ${userId}`);
+      
+      // Remove from our maps
+      this.connections.delete(client.id);
+      
+      const userSockets = this.connectedUsers.get(userId);
+      if (userSockets) {
+        userSockets.delete(client.id);
+        if (userSockets.size === 0) {
+          this.connectedUsers.delete(userId);
+        }
       }
-      
-      // Join journey-specific room
-      client.join(`journey:${journey}`);
-      
-      // Also join combined user+journey room for targeted journey notifications
-      client.join(`user:${userId}:journey:${journey}`);
-      
-      this.logger.log(`User ${userId} subscribed to ${journey} notifications`, 'WebsocketsGateway');
-      
-      // Confirm subscription to client
-      client.emit('subscribed', { journey });
-    } catch (error) {
-      this.logger.error(`Error in subscription handling`, error.stack, 'WebsocketsGateway');
-      client.emit('error', { message: 'Failed to subscribe to notifications' });
+    } else {
+      this.logger.debug(`Unknown client disconnected: ${client.id}`);
     }
   }
-
+  
   /**
-   * Handles unsubscription from journey-specific notifications.
-   * 
-   * @param client - The Socket.io client
-   * @param payload - The unsubscription payload containing journey ID
+   * Send a notification to a specific user
    */
-  @SubscribeMessage('unsubscribe')
-  handleUnsubscribe(client: Socket, payload: { journey: string }): void {
+  sendToUser(userId: string, notification: NotificationPayload): void {
     try {
-      const { journey } = payload;
-      const userId = client.data.userId;
+      this.logger.debug(`Sending notification to user ${userId}`);
       
-      if (!userId) {
-        this.logger.warn(`Unauthenticated client ${client.id} attempted to unsubscribe from ${journey}`, 'WebsocketsGateway');
-        return;
+      // Emit to user's room
+      this.server.to(userId).emit('notification', notification);
+      
+      // If notification has a journey, also emit to journey-specific room
+      if (notification.journey) {
+        this.server.to(`${userId}:${notification.journey}`).emit('notification', {
+          ...notification,
+          journeySpecific: true
+        });
       }
-      
-      // Leave journey-specific rooms
-      client.leave(`journey:${journey}`);
-      client.leave(`user:${userId}:journey:${journey}`);
-      
-      this.logger.log(`User ${userId} unsubscribed from ${journey} notifications`, 'WebsocketsGateway');
-      
-      // Confirm unsubscription to client
-      client.emit('unsubscribed', { journey });
     } catch (error) {
-      this.logger.error(`Error in unsubscription handling`, error.stack, 'WebsocketsGateway');
-      client.emit('error', { message: 'Failed to unsubscribe from notifications' });
+      const errorStack = error instanceof Error ? (error as any).stack : undefined;
+      this.logger.error(
+        `Error sending notification to user ${userId}`,
+        errorStack
+      );
     }
   }
-
+  
   /**
-   * Handles marking notifications as read.
-   * 
-   * @param client - The Socket.io client
-   * @param payload - The notification ID to mark as read
+   * Send a notification to all users in a journey
    */
-  @SubscribeMessage('markAsRead')
-  async handleMarkAsRead(client: Socket, payload: { notificationId: number }): Promise<void> {
+  sendToJourney(journey: string, notification: NotificationPayload): void {
     try {
-      const { notificationId } = payload;
-      const userId = client.data.userId;
+      this.logger.debug(`Broadcasting notification to journey ${journey}`);
       
-      if (!userId) {
-        this.logger.warn(`Unauthenticated client ${client.id} attempted to mark notification as read`, 'WebsocketsGateway');
-        return;
+      // Create copies of the notification for each user
+      for (const [userId, _] of this.connectedUsers) {
+        const userNotification = {
+          ...notification,
+          broadcast: true
+        };
+        
+        this.server.to(`${userId}:${journey}`).emit('notification', userNotification);
       }
+    } catch (error) {
+      const errorStack = error instanceof Error ? (error as any).stack : undefined;
+      this.logger.error(
+        `Error broadcasting to journey ${journey}`,
+        errorStack
+      );
+    }
+  }
+  
+  /**
+   * Send a notification to all connected users
+   */
+  broadcastNotification(notification: NotificationPayload): void {
+    try {
+      this.logger.debug('Broadcasting notification to all users');
       
-      await this.tracingService.createSpan('websocket.markAsRead', async () => {
-        await this.notificationsService.markAsRead(notificationId);
-        
-        this.logger.log(`User ${userId} marked notification ${notificationId} as read`, 'WebsocketsGateway');
-        
-        // Confirm to client
-        client.emit('marked', { notificationId });
+      this.server.emit('notification', {
+        ...notification,
+        broadcast: true
       });
     } catch (error) {
-      this.logger.error(`Error marking notification as read`, error.stack, 'WebsocketsGateway');
+      const errorStack = error instanceof Error ? (error as any).stack : undefined;
+      this.logger.error(
+        'Error broadcasting notification to all users',
+        errorStack
+      );
+    }
+  }
+  
+  /**
+   * Get count of connected users
+   */
+  getConnectedUsersCount(): number {
+    return this.connectedUsers.size;
+  }
+  
+  /**
+   * Check if a user is connected
+   */
+  isUserConnected(userId: string): boolean {
+    return this.connectedUsers.has(userId) && this.connectedUsers.get(userId).size > 0;
+  }
+  
+  /**
+   * Handle mark as read events from clients
+   */
+  @SubscribeMessage('markAsRead')
+  handleMarkAsRead(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { id: string }
+  ): void {
+    try {
+      const connectionInfo = this.connections.get(client.id);
+      
+      if (!connectionInfo) {
+        this.logger.warn(`Unknown client tried to mark notification as read: ${client.id}`);
+        return;
+      }
+      
+      const { userId } = connectionInfo;
+      const notificationId = data.id;
+      
+      this.logger.debug(`Marking notification ${notificationId} as read for user ${userId}`);
+      
+      // Emit to kafka for persistence
+      this.kafkaService.emit('notifications.markAsRead', {
+        userId,
+        notificationId,
+        timestamp: new Date().toISOString()
+      });
+      
+      // Acknowledge to the client
+      client.emit('markAsReadAck', { id: notificationId, success: true });
+    } catch (error) {
+      const errorStack = error instanceof Error ? (error as any).stack : undefined;
+      this.logger.error(
+        'Error handling markAsRead event',
+        errorStack
+      );
+      
+      // Send error to client
       client.emit('error', { message: 'Failed to mark notification as read' });
     }
   }
-
+  
   /**
-   * Sends a notification to a specific user.
-   * Used by NotificationsService to dispatch real-time notifications.
-   * 
-   * @param userId - The user ID to send the notification to
-   * @param notification - The notification object to send
+   * Handle mark all as read events from clients
    */
-  sendToUser(userId: string, notification: any): void {
+  @SubscribeMessage('markAllAsRead')
+  handleMarkAllAsRead(@ConnectedSocket() client: Socket): void {
     try {
-      this.server.to(`user:${userId}`).emit('notification', notification);
-      this.logger.debug(`Sent notification to user ${userId}`, 'WebsocketsGateway');
+      const connectionInfo = this.connections.get(client.id);
+      
+      if (!connectionInfo) {
+        this.logger.warn(`Unknown client tried to mark all notifications as read: ${client.id}`);
+        return;
+      }
+      
+      const { userId } = connectionInfo;
+      
+      this.logger.debug(`Marking all notifications as read for user ${userId}`);
+      
+      // Emit to kafka for persistence
+      this.kafkaService.emit('notifications.markAllAsRead', {
+        userId,
+        timestamp: new Date().toISOString()
+      });
+      
+      // Acknowledge to the client
+      client.emit('markAllAsReadAck', { success: true });
     } catch (error) {
-      this.logger.error(`Error sending notification to user ${userId}`, error.stack, 'WebsocketsGateway');
+      const errorStack = error instanceof Error ? (error as any).stack : undefined;
+      this.logger.error(
+        'Error handling markAllAsRead event',
+        errorStack
+      );
+      
+      // Send error to client
+      client.emit('error', { message: 'Failed to mark all notifications as read' });
     }
   }
-
+  
   /**
-   * Sends a journey-specific notification to a user.
-   * 
-   * @param userId - The user ID to send the notification to
-   * @param journey - The journey context for the notification
-   * @param notification - The notification object to send
+   * Extract user ID from socket client
    */
-  sendJourneyNotificationToUser(userId: string, journey: string, notification: any): void {
+  private getUserIdFromClient(client: Socket): string | null {
+    // Get user ID from auth token or query parameter
+    const userId = client.handshake.auth.userId || client.handshake.query.userId;
+    
+    if (!userId || Array.isArray(userId)) {
+      return null;
+    }
+    
+    return String(userId);
+  }
+  
+  /**
+   * Send a journey-specific notification
+   */
+  sendJourneyNotification(
+    journey: string, 
+    userId: string, 
+    notification: NotificationPayload
+  ): void {
     try {
-      this.server.to(`user:${userId}:journey:${journey}`).emit('notification', notification);
-      this.logger.debug(`Sent ${journey} notification to user ${userId}`, 'WebsocketsGateway');
+      this.logger.debug(`Sending ${journey} notification to user ${userId}`);
+      
+      this.server.to(`${userId}:${journey}`).emit(journey, notification);
     } catch (error) {
-      this.logger.error(`Error sending ${journey} notification to user ${userId}`, error.stack, 'WebsocketsGateway');
+      const errorStack = error instanceof Error ? (error as any).stack : undefined;
+      this.logger.error(
+        `Error sending ${journey} notification to user ${userId}`,
+        errorStack
+      );
     }
   }
-
+  
   /**
-   * Broadcasts a notification to all users subscribed to a specific journey.
-   * 
-   * @param journey - The journey context for the notification
-   * @param notification - The notification object to broadcast
+   * Setup Kafka consumer for notifications
    */
-  broadcastToJourney(journey: string, notification: any): void {
-    try {
-      this.server.to(`journey:${journey}`).emit('notification', notification);
-      this.logger.debug(`Broadcast notification to journey ${journey}`, 'WebsocketsGateway');
-    } catch (error) {
-      this.logger.error(`Error broadcasting to journey ${journey}`, error.stack, 'WebsocketsGateway');
-    }
+  private setupKafkaListener(): void {
+    this.kafkaService.subscribe('notifications', 'websocket-gateway', async (message) => {
+      try {
+        this.logger.debug('Received notification from Kafka', { 
+          key: message.key,
+          topic: message.topic 
+        });
+        
+        const payload = this.parseKafkaMessage(message);
+        
+        if (!payload) {
+          return;
+        }
+        
+        if (payload.userId) {
+          // Single user notification
+          this.sendToUser(payload.userId, payload);
+        } else if (payload.journey) {
+          // Journey broadcast
+          this.sendToJourney(payload.journey, payload);
+        } else {
+          // Global broadcast
+          this.broadcastNotification(payload);
+        }
+      } catch (error) {
+        const errorStack = error instanceof Error ? (error as any).stack : undefined;
+        this.logger.error(
+          'Error processing Kafka notification',
+          errorStack
+        );
+      }
+    });
   }
-
+  
   /**
-   * Temporary method to extract user ID from token for demonstration.
-   * In production, this would be replaced with proper JWT verification.
-   * 
-   * @param token - The authentication token
-   * @returns The extracted user ID or null if invalid
-   * @private
+   * Parse Kafka message into notification payload
    */
-  private extractUserIdFromToken(token: string): string | null {
-    // This is a placeholder implementation for demonstration purposes
-    // In production, use a proper JWT library to decode and verify tokens
-    if (token && token.length > 10) {
-      // Simply return the token as user ID for demonstration
-      return token;
+  private parseKafkaMessage(message: any): NotificationPayload | null {
+    try {
+      // Parse message value
+      const value = typeof message.value === 'string' 
+        ? JSON.parse(message.value) 
+        : message.value;
+      
+      // Basic validation
+      if (!value || !value.title || !value.message) {
+        this.logger.warn('Received invalid notification payload');
+        return null;
+      }
+      
+      return {
+        id: value.id || `auto-${Date.now()}`,
+        userId: value.userId,
+        title: value.title,
+        message: value.message,
+        type: value.type || 'general',
+        journey: value.journey,
+        data: value.data,
+        timestamp: new Date()
+      };
+    } catch (error) {
+      const errorStack = error instanceof Error ? (error as any).stack : undefined;
+      this.logger.error(
+        'Error parsing Kafka message',
+        errorStack
+      );
+      return null;
     }
-    return null;
   }
 }

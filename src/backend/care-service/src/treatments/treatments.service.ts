@@ -1,15 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { TreatmentPlan } from './entities/treatment-plan.entity';
-import { Service } from '../../../shared/src/interfaces/service.interface';
-import { FilterDto } from '../../../shared/src/dto/filter.dto';
-import { PaginationDto } from '../../../shared/src/dto/pagination.dto';
-import { AppException } from '../../../shared/src/exceptions/exceptions.types';
-import { LoggerService } from '../../../shared/src/logging/logger.service';
-import { TracingService } from '../../../shared/src/tracing/tracing.service';
-import { PrismaService } from '../../../shared/src/database/prisma.service';
-import { CARE_TREATMENT_PLAN_NOT_FOUND } from '../../../shared/src/constants/error-codes.constants';
+import { Service } from '@app/shared/interfaces/service.interface';
+import { FilterDto } from '@app/shared/dto/filter.dto';
+import { PaginationDto } from '@app/shared/dto/pagination.dto';
+import { AppException } from '@app/shared/exceptions/exceptions.types';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { TracingService } from '@app/shared/tracing/tracing.service';
+import { PrismaService } from '@app/shared/database/prisma.service';
+import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Prisma } from '@prisma/client';
-import { CurrentUser } from '../../../auth-service/src/auth/decorators/current-user.decorator';
+import { CARE_TREATMENT_PLAN_NOT_FOUND } from '@app/shared/constants/error-codes.constants';
+import { CreateTreatmentPlanDto } from './dto/create-treatment-plan.dto';
+import { UpdateTreatmentPlanDto } from './dto/update-treatment-plan.dto';
 
 /**
  * Provides the core business logic for managing treatment plans.
@@ -33,12 +36,13 @@ export class TreatmentsService {
   /**
    * Creates a new treatment plan.
    * 
+   * @param userId - ID of the user creating the treatment plan
    * @param createTreatmentDto - Data for creating the treatment plan
    * @returns A promise resolving to the newly created treatment plan
    */
-  async create(createTreatmentDto: any): Promise<TreatmentPlan> {
+  async create(userId: string, createTreatmentDto: CreateTreatmentPlanDto): Promise<TreatmentPlan> {
     return this.tracing.createSpan('treatments.create', async () => {
-      this.logger.log('Creating new treatment plan', 'TreatmentsService');
+      this.logger.log(`Creating new treatment plan for user ${userId}`, 'TreatmentsService');
       
       try {
         // Create the treatment plan using Prisma
@@ -51,13 +55,15 @@ export class TreatmentsService {
             progress: createTreatmentDto.progress || 0,
             careActivity: {
               connect: { id: createTreatmentDto.careActivityId }
-            }
+            },
+            // Associate the treatment plan with the user
+            user: userId ? { connect: { id: userId } } : undefined
           }
         });
         
-        return treatmentPlan as unknown as TreatmentPlan;
+        return treatmentPlan as TreatmentPlan;
       } catch (error) {
-        this.logger.error(`Failed to create treatment plan: ${error.message}`, error.stack, 'TreatmentsService');
+        this.logger.error(`Failed to create treatment plan: ${(error as any).message}`, (error as any).stack, 'TreatmentsService');
         throw error;
       }
     });
@@ -66,22 +72,27 @@ export class TreatmentsService {
   /**
    * Retrieves all treatment plans based on the filter and pagination parameters.
    * 
+   * @param userId - ID of the user whose treatment plans to retrieve
    * @param filter - Filter criteria for the query
-   * @param pagination - Pagination parameters
    * @returns A promise resolving to a list of treatment plans
    */
-  async findAll(filter: FilterDto, pagination: PaginationDto): Promise<TreatmentPlan[]> {
+  async findAll(userId: string, filter: FilterDto): Promise<TreatmentPlan[]> {
     return this.tracing.createSpan('treatments.findAll', async () => {
-      this.logger.log('Retrieving treatment plans with filter and pagination', 'TreatmentsService');
+      this.logger.log(`Retrieving treatment plans for user ${userId} with filter and pagination`, 'TreatmentsService');
       
       try {
         // Calculate skip value from pagination parameters
+        const pagination = filter.pagination || {};
         const skip = pagination?.skip || 
           (pagination?.page && pagination?.limit ? (pagination.page - 1) * pagination.limit : undefined);
         
         // Get treatment plans with filtering and pagination
         const treatmentPlans = await this.prisma.treatmentPlan.findMany({
-          where: filter?.where,
+          where: {
+            ...(filter?.where || {}),
+            // Add userId filter when present
+            ...(userId ? { userId } : {})
+          },
           orderBy: filter?.orderBy,
           include: filter?.include,
           select: filter?.select,
@@ -89,9 +100,9 @@ export class TreatmentsService {
           take: pagination?.limit
         });
         
-        return treatmentPlans as unknown as TreatmentPlan[];
+        return treatmentPlans as TreatmentPlan[];
       } catch (error) {
-        this.logger.error(`Failed to retrieve treatment plans: ${error.message}`, error.stack, 'TreatmentsService');
+        this.logger.error(`Failed to retrieve treatment plans: ${(error as any).message}`, (error as any).stack, 'TreatmentsService');
         throw error;
       }
     });
@@ -119,19 +130,18 @@ export class TreatmentsService {
         if (!treatmentPlan) {
           const error = new AppException(
             `Treatment plan with ID ${id} not found`,
-            'business' as any,
+            ErrorType.NOT_FOUND,
             CARE_TREATMENT_PLAN_NOT_FOUND
           );
           throw error.toHttpException();
         }
         
-        return treatmentPlan as unknown as TreatmentPlan;
+        return treatmentPlan as TreatmentPlan;
       } catch (error) {
         if (error instanceof NotFoundException) {
           throw error;
         }
-        
-        this.logger.error(`Failed to retrieve treatment plan: ${error.message}`, error.stack, 'TreatmentsService');
+        this.logger.error(`Failed to retrieve treatment plan: ${(error as any).message}`, (error as any).stack, 'TreatmentsService');
         throw error;
       }
     });
@@ -145,7 +155,7 @@ export class TreatmentsService {
    * @returns A promise resolving to the updated treatment plan
    * @throws NotFoundException if the treatment plan is not found
    */
-  async update(id: string, updateTreatmentDto: any): Promise<TreatmentPlan> {
+  async update(id: string, updateTreatmentDto: UpdateTreatmentPlanDto): Promise<TreatmentPlan> {
     return this.tracing.createSpan('treatments.update', async () => {
       this.logger.log(`Updating treatment plan with ID: ${id}`, 'TreatmentsService');
       
@@ -165,19 +175,18 @@ export class TreatmentsService {
           include: { careActivity: true }
         });
         
-        return treatmentPlan as unknown as TreatmentPlan;
+        return treatmentPlan as TreatmentPlan;
       } catch (error) {
         // Handle Prisma's "not found" error
         if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
           const notFoundError = new AppException(
             `Treatment plan with ID ${id} not found`,
-            'business' as any,
+            ErrorType.NOT_FOUND,
             CARE_TREATMENT_PLAN_NOT_FOUND
           );
           throw notFoundError.toHttpException();
         }
-        
-        this.logger.error(`Failed to update treatment plan: ${error.message}`, error.stack, 'TreatmentsService');
+        this.logger.error(`Failed to update treatment plan: ${(error as any).message}`, (error as any).stack, 'TreatmentsService');
         throw error;
       }
     });
@@ -201,19 +210,18 @@ export class TreatmentsService {
           include: { careActivity: true }
         });
         
-        return treatmentPlan as unknown as TreatmentPlan;
+        return treatmentPlan as TreatmentPlan;
       } catch (error) {
         // Handle Prisma's "not found" error
         if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
           const notFoundError = new AppException(
             `Treatment plan with ID ${id} not found`,
-            'business' as any,
+            ErrorType.NOT_FOUND,
             CARE_TREATMENT_PLAN_NOT_FOUND
           );
           throw notFoundError.toHttpException();
         }
-        
-        this.logger.error(`Failed to delete treatment plan: ${error.message}`, error.stack, 'TreatmentsService');
+        this.logger.error(`Failed to delete treatment plan: ${(error as any).message}`, (error as any).stack, 'TreatmentsService');
         throw error;
       }
     });

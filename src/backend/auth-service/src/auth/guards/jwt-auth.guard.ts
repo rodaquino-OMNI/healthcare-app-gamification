@@ -1,7 +1,10 @@
 import { Injectable, ExecutionContext } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+import { AppException } from '@app/shared/exceptions/exceptions.types';
+import { ErrorType } from '@app/shared/exceptions/error.types'; // Import directly from error.types
 import { LoggerService } from '@app/shared/logging/logger.service';
+import { Reflector } from '@nestjs/core';
+import { GqlExecutionContext } from '@nestjs/graphql';
 
 /**
  * Guard that uses JWT authentication.
@@ -9,7 +12,7 @@ import { LoggerService } from '@app/shared/logging/logger.service';
  */
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
-  constructor(private logger: LoggerService) {
+  constructor(private reflector: Reflector, private logger: LoggerService) {
     super();
   }
 
@@ -23,7 +26,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   handleRequest(err: any, user: any, info: any, context: ExecutionContext): any {
     // If there was an error or no user was found, throw an exception
     if (err || !user) {
-      const request = context.switchToHttp().getRequest();
+      const request = this.getRequest(context);
       const errorMessage = err?.message || 'Unauthorized access';
       const errorDetails = {
         url: request.url,
@@ -35,10 +38,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       
       throw new AppException(
         'Authentication required',
-        ErrorType.VALIDATION,
+        ErrorType.UNAUTHORIZED, // Use UNAUTHORIZED instead of VALIDATION
         'AUTH_006',
-        errorDetails,
-        err
+        errorDetails
       );
     }
     

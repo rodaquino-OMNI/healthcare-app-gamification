@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { GameProfile } from './entities/game-profile.entity';
 // Updated import to use local PrismaService
@@ -51,10 +52,10 @@ export class ProfilesService {
     } catch (error) {
       this.logger.error(
         `Failed to create game profile for user: ${userId}`,
-        error instanceof Error ? error.stack : undefined,
+        error instanceof Error ? (error as any).stack : undefined,
         'ProfilesService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -83,15 +84,15 @@ export class ProfilesService {
       return mapToDomainGameProfile(profile);
     } catch (error) {
       if (error instanceof NotFoundException) {
-        throw error;
+        throw error as any;
       }
       
       this.logger.error(
         `Failed to find game profile for user: ${userId}`,
-        error instanceof Error ? error.stack : undefined,
+        error instanceof Error ? (error as any).stack : undefined,
         'ProfilesService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -128,15 +129,15 @@ export class ProfilesService {
       return mapToDomainGameProfile(updatedProfile);
     } catch (error) {
       if (error instanceof NotFoundException) {
-        throw error;
+        throw error as any;
       }
       
       this.logger.error(
         `Failed to update game profile for user: ${userId}`,
-        error instanceof Error ? error.stack : undefined,
+        error instanceof Error ? (error as any).stack : undefined,
         'ProfilesService'
       );
-      throw error;
+      throw error as any;
     }
   }
 
@@ -161,10 +162,10 @@ export class ProfilesService {
     } catch (error) {
       this.logger.error(
         'Failed to retrieve all game profiles',
-        error instanceof Error ? error.stack : undefined,
+        error instanceof Error ? (error as any).stack : undefined,
         'ProfilesService'
       );
-      throw error;
+      throw error as any;
     }
   }
 }

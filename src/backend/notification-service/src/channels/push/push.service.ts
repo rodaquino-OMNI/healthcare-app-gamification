@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@nestjs/common'; // v10.0.0+
 import { ConfigService } from '@nestjs/config'; // v10.0.0+
 import * as admin from 'firebase-admin'; // v11.0.0+
 import { notification } from '../../config/configuration';
-import { LoggerService } from 'src/backend/shared/src/logging/logger.service';
+import { LoggerService } from '@app/shared/logging/logger.service';
 
 /**
  * Service responsible for sending push notifications using Firebase Cloud Messaging (FCM).
@@ -62,7 +63,7 @@ export class PushService {
         
         this.logger.log('Firebase Cloud Messaging initialized successfully', 'PushService');
       } catch (error) {
-        this.logger.error(`Failed to initialize Firebase Cloud Messaging: ${error.message}`, error.stack, 'PushService');
+        this.logger.error(`Failed to initialize Firebase Cloud Messaging: ${(error as any).message}`, (error as any).stack, 'PushService');
       }
     }
   }
@@ -117,11 +118,11 @@ export class PushService {
     } catch (error) {
       // Handles any errors that occur during the push notification sending process
       this.logger.error(
-        `Failed to send push notification: ${error.message}`,
-        error.stack,
+        `Failed to send push notification: ${(error as any).message}`,
+        (error as any).stack,
         'PushService'
       );
-      throw error;
+      throw error as any;
     }
   }
 }
