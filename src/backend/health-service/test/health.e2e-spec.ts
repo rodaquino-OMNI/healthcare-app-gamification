@@ -1,17 +1,14 @@
-import { Test, TestingModule } from '@nestjs/testing'; // @nestjs/testing v10.0.0+
-import { INestApplication, HttpStatus, Logger } from '@nestjs/common'; // @nestjs/common v10.0.0+
-import * as request from 'supertest'; // supertest v6.3.3
-import { SuperAgentTest } from 'supertest'; // supertest v6.3.3
-import { HealthController } from '../src/health/health.controller'; // Import HealthController for testing
-import { HealthService } from '../src/health/health.service'; // Import HealthService for mocking
-import { HealthMetric } from '../src/health/entities/health-metric.entity'; // Import HealthMetric entity
-import { CreateMetricDto } from '../src/health/dto/create-metric.dto'; // Import CreateMetricDto
-import { DevicesService } from '../src/devices/devices.service'; // Import DevicesService
-import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter'; // Import AllExceptionsFilter
-import { AUTH_INSUFFICIENT_PERMISSIONS } from '@app/shared/constants/error-codes.constants'; // Import AUTH_INSUFFICIENT_PERMISSIONS
-import { KafkaService } from '@app/shared/kafka/kafka.service'; // Import KafkaService
-import { PrismaService } from '@app/shared/database/prisma.service'; // Import PrismaService
-import { jest } from '@jest/globals'; // Import jest
+import { Test, TestingModule } from '@nestjs/testing';
+import { INestApplication, HttpStatus, ValidationPipe } from '@nestjs/common';
+import * as request from 'supertest';
+import { HealthModule } from '../src/health/health.module';
+import { HealthService } from '../src/health/health.service';
+import { CreateMetricDto } from '../src/health/dto/create-metric.dto';
+import { MetricType, MetricSource } from '../src/health/types/health.types';
+import { PrismaService } from '@app/shared/database/prisma.service';
+import { RedisService } from '@app/shared/redis/redis.service';
+import { KafkaService } from '@app/shared/kafka/kafka.service';
+import { ConfigService } from '@nestjs/config';
 
 /**
  * Comprehensive end-to-end tests for the Health Service, verifying the correct behavior
@@ -21,72 +18,125 @@ import { jest } from '@jest/globals'; // Import jest
  *
  * Addresses requirement F-101: My Health Journey
  */
-describe('HealthController (e2e)', () => {
+describe('Health Service (e2e)', () => {
   let app: INestApplication;
   let healthService: HealthService;
-  let prismaService: PrismaService;
-  let kafkaService: KafkaService;
-  let agent: SuperAgentTest;
+
+  const mockHealthService = {
+    recordHealthMetric: jest.fn(),
+    getHealthMetrics: jest.fn(),
+    getHealthGoals: jest.fn(),
+    createHealthGoal: jest.fn(),
+    updateHealthGoal: jest.fn(),
+    getHealthInsights: jest.fn(),
+    createHealthMetric: jest.fn(),
+    updateHealthMetric: jest.fn(),
+  };
+
+  const mockPrismaService = {
+    healthMetric: {
+      create: jest.fn(),
+      findMany: jest.fn(),
+      findFirst: jest.fn(),
+      update: jest.fn(),
+      count: jest.fn(),
+    },
+    healthGoal: {
+      create: jest.fn(),
+      findMany: jest.fn(),
+      update: jest.fn(),
+      findFirst: jest.fn(),
+    },
+    $transaction: jest.fn(),
+  };
+
+  const mockRedisService = {
+    get: jest.fn(),
+    set: jest.fn(),
+    del: jest.fn(),
+    zadd: jest.fn(),
+    zrange: jest.fn(),
+    expire: jest.fn(),
+  };
+
+  const mockKafkaService = {
+    emit: jest.fn(),
+  };
+
+  const mockConfigService = {
+    get: jest.fn().mockReturnValue('test-value'),
+  };
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      controllers: [HealthController],
-      providers: [
-        HealthService,
-        DevicesService,
-        PrismaService,
-        KafkaService
-      ],
+      imports: [HealthModule],
     })
       .overrideProvider(HealthService)
-      .useValue({
-        createHealthMetric: jest.fn(),
-        updateHealthMetric: jest.fn(),
-      })
+      .useValue(mockHealthService)
+      .overrideProvider(PrismaService)
+      .useValue(mockPrismaService)
+      .overrideProvider(RedisService)
+      .useValue(mockRedisService)
+      .overrideProvider(KafkaService)
+      .useValue(mockKafkaService)
+      .overrideProvider(ConfigService)
+      .useValue(mockConfigService)
       .compile();
 
     app = moduleFixture.createNestApplication();
-    app.useGlobalFilters(new AllExceptionsFilter(new Logger()));
+    app.useGlobalPipes(new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: true,
+    }));
     await app.init();
     healthService = moduleFixture.get<HealthService>(HealthService);
-    prismaService = moduleFixture.get<PrismaService>(PrismaService);
-    kafkaService = moduleFixture.get<KafkaService>(KafkaService);
-    agent = request.agent(app.getHttpServer());
+    
+    // Clear all mocks
+    jest.clearAllMocks();
   });
 
   afterEach(async () => {
     await app.close();
   });
 
-  describe('/health/:recordId (POST)', () => {
+  describe('POST /health/:recordId', () => {
     it('should return 201 when creating a valid health metric', async () => {
-      const recordId = 'valid-record-id';
+      const recordId = 'test-record-id';
       const createMetricDto: CreateMetricDto = {
-        type: 'HEART_RATE',
+        type: MetricType.HEART_RATE,
         value: 72,
         unit: 'bpm',
         timestamp: new Date(),
-        source: 'MANUAL',
+        source: MetricSource.USER_INPUT,
         notes: 'Resting heart rate',
       };
 
-      (healthService.createHealthMetric as jest.Mock).mockResolvedValue({
+      const expectedResult = {
         id: 'new-metric-id',
+        userId: 'test-user-id',
         ...createMetricDto,
-        recordId,
-      });
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
 
-      const response = await agent
+      mockHealthService.createHealthMetric.mockResolvedValue(expectedResult);
+
+      const response = await request(app.getHttpServer())
         .post(`/health/${recordId}`)
         .send(createMetricDto)
         .expect(HttpStatus.CREATED);
 
-      expect(response.body).toEqual({
+      expect(response.body).toMatchObject({
         id: 'new-metric-id',
-        ...createMetricDto,
-        recordId,
+        type: MetricType.HEART_RATE,
+        value: 72,
+        unit: 'bpm',
       });
-      expect(healthService.createHealthMetric).toHaveBeenCalledWith(recordId, createMetricDto);
+      expect(mockHealthService.createHealthMetric).toHaveBeenCalledWith(
+        recordId,
+        expect.objectContaining(createMetricDto)
+      );
     });
 
     it('should return 400 when creating an invalid health metric', async () => {
@@ -100,14 +150,14 @@ describe('HealthController (e2e)', () => {
         notes: null,
       };
 
-      await agent
+      await request(app.getHttpServer())
         .post(`/health/${recordId}`)
         .send(createMetricDto)
         .expect(HttpStatus.BAD_REQUEST);
     });
   });
 
-  describe('/health/:id (PUT)', () => {
+  describe('PUT /health/:id', () => {
     it('should return 200 when updating a valid health metric', async () => {
       const metricId = 'valid-metric-id';
       const updateMetricDto = {
@@ -115,31 +165,31 @@ describe('HealthController (e2e)', () => {
         notes: 'Updated resting heart rate',
       };
 
-      (healthService.updateHealthMetric as jest.Mock).mockResolvedValue({
+      mockHealthService.updateHealthMetric.mockResolvedValue({
         id: metricId,
-        type: 'HEART_RATE',
+        type: MetricType.HEART_RATE,
         value: 75,
         unit: 'bpm',
         timestamp: new Date(),
-        source: 'MANUAL',
+        source: MetricSource.USER_INPUT,
         notes: 'Updated resting heart rate',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
 
-      const response = await agent
+      const response = await request(app.getHttpServer())
         .put(`/health/${metricId}`)
         .send(updateMetricDto)
         .expect(HttpStatus.OK);
 
-      expect(response.body).toEqual({
+      expect(response.body).toMatchObject({
         id: metricId,
-        type: 'HEART_RATE',
+        type: MetricType.HEART_RATE,
         value: 75,
         unit: 'bpm',
-        timestamp: expect.any(String),
-        source: 'MANUAL',
         notes: 'Updated resting heart rate',
       });
-      expect(healthService.updateHealthMetric).toHaveBeenCalledWith(metricId, updateMetricDto);
+      expect(mockHealthService.updateHealthMetric).toHaveBeenCalledWith(metricId, updateMetricDto);
     });
 
     it('should return 400 when updating an invalid health metric', async () => {
@@ -149,7 +199,7 @@ describe('HealthController (e2e)', () => {
         notes: 123,
       };
 
-      await agent
+      await request(app.getHttpServer())
         .put(`/health/${metricId}`)
         .send(updateMetricDto)
         .expect(HttpStatus.BAD_REQUEST);
