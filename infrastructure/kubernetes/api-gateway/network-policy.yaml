@@ -1,0 +1,102 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: api-gateway-network-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: api-gateway
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow traffic from ingress-controller (internet-facing)
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: ingress-nginx
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: ingress-nginx
+    ports:
+    - protocol: TCP
+      port: 4000
+  egress:
+  # Allow connections to auth-service
+  - to:
+    - podSelector:
+        matchLabels:
+          app: auth-service
+    ports:
+    - protocol: TCP
+      port: 3000
+  # Allow connections to health-journey
+  - to:
+    - podSelector:
+        matchLabels:
+          app: health-journey
+    ports:
+    - protocol: TCP
+      port: 3000
+  # Allow connections to care-service
+  - to:
+    - podSelector:
+        matchLabels:
+          app: care-service
+    ports:
+    - protocol: TCP
+      port: 3000
+  # Allow connections to plan-journey
+  - to:
+    - podSelector:
+        matchLabels:
+          app: plan-journey
+    ports:
+    - protocol: TCP
+      port: 3000
+  # Allow connections to gamification-engine
+  - to:
+    - podSelector:
+        matchLabels:
+          app: gamification-engine
+    ports:
+    - protocol: TCP
+      port: 3000
+  # Allow connections to notification-service
+  - to:
+    - podSelector:
+        matchLabels:
+          app: notification-service
+    ports:
+    - protocol: TCP
+      port: 3000
+    - protocol: TCP
+      port: 3001
+  # Allow connections to Redis
+  - to:
+    - podSelector:
+        matchLabels:
+          app: redis-master
+    ports:
+    - protocol: TCP
+      port: 6379
+  # Allow connections to Database
+  - to:
+    - podSelector:
+        matchLabels:
+          app: postgres
+    ports:
+    - protocol: TCP
+      port: 5432
+  # Allow DNS resolution
+  - to:
+    - namespaceSelector: {}
+      podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53

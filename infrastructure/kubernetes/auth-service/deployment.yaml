@@ -26,6 +26,9 @@ spec:
         ports:
         - containerPort: 3000
           name: http
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
         envFrom:
         - configMapRef:
             name: auth-service-config
@@ -54,5 +57,9 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 5
           failureThreshold: 3
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
       imagePullSecrets:
       - name: github-container-registry
