@@ -5,6 +5,7 @@ import { AppModule } from './app.module';
 import { LoggerService } from '../../shared/src/logging/logger.service';
 import { AllExceptionsFilter } from '../../shared/src/exceptions/exceptions.filter';
 import { configuration } from './config/configuration';
+import helmet from 'helmet';
 
 /**
  * Bootstrap function to initialize and configure the NestJS application
@@ -13,6 +14,9 @@ import { configuration } from './config/configuration';
 async function bootstrap() {
   // Create a NestJS application instance using NestFactory.create with AppModule
   const app = await NestFactory.create(AppModule);
+
+  // S1: Adds security HTTP headers via helmet middleware.
+  app.use(helmet());
 
   // Set up the LoggerService as the application logger
   const logger = app.get(LoggerService);

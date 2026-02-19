@@ -123,8 +123,12 @@ export class AuthMiddleware implements NestMiddleware {
       const errorStack = error instanceof Error ? (error as any).stack : 'No stack trace';
       this.loggerService.error(`Error getting JWT secret: ${errorMessage}`, errorStack);
     }
-    
-    // Fallback to environment variable or default (should only be used in development)
-    return process.env.JWT_SECRET || 'development-secret-change-in-production';
+
+    // Fallback to environment variable — no hardcoded default allowed
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      throw new Error('JWT_SECRET environment variable is required');
+    }
+    return jwtSecret;
   }
 }

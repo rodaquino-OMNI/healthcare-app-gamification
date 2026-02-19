@@ -4,6 +4,7 @@ import { health } from './config/configuration';
 import { LoggerModule } from '../../shared/src/logging/logger.module';
 import { AllExceptionsFilter } from '../../shared/src/exceptions/exceptions.filter';
 import { TracingModule } from '../../shared/src/tracing/tracing.module';
+import helmet from 'helmet';
 
 /**
  * Initializes and starts the NestJS application.
@@ -11,6 +12,9 @@ import { TracingModule } from '../../shared/src/tracing/tracing.module';
 async function bootstrap(): Promise<void> {
   // LD1: Create a NestJS application instance using AppModule.
   const app = await NestFactory.create(AppModule);
+
+  // S1: Adds security HTTP headers via helmet middleware.
+  app.use(helmet());
 
   // LD1: Get the configuration for the health service
   const config = health();

@@ -74,5 +74,8 @@ export const validationSchema = Joi.object({
   // Storage configuration
   STORAGE_S3_BUCKET: Joi.string(),
   STORAGE_S3_REGION: Joi.string(),
-  STORAGE_S3_PREFIX: Joi.string().default('health')
+  STORAGE_S3_PREFIX: Joi.string().default('health'),
+
+  // PHI encryption (LGPD Art.46 compliance)
+  ENCRYPTION_KEY: Joi.string().optional(),
 });

@@ -18,7 +18,7 @@ const configuration = registerAs('authService', () => ({
     apiPrefix: process.env.AUTH_SERVICE_API_PREFIX || 'api/v1',
   },
   jwt: {
-    secret: process.env.JWT_SECRET || 'supersecretkeythatshouldbechangedinproduction',
+    secret: process.env.JWT_SECRET,
     accessTokenExpiration: process.env.JWT_ACCESS_EXPIRATION || '1h', // 1 hour
     refreshTokenExpiration: process.env.JWT_REFRESH_EXPIRATION || '7d', // 7 days
     issuer: process.env.JWT_ISSUER || 'austa.com.br',
@@ -47,7 +47,7 @@ const configuration = registerAs('authService', () => ({
     },
   },
   mfa: {
-    enabled: process.env.MFA_ENABLED === 'true',
+    enabled: process.env.MFA_ENABLED !== 'false',
     issuer: process.env.MFA_ISSUER || 'AUSTA SuperApp',
     codeExpiration: parseInt(process.env.MFA_CODE_EXPIRATION || '300', 10), // 5 minutes in seconds
     windowSize: parseInt(process.env.MFA_WINDOW_SIZE || '1', 10), // Number of time steps to check

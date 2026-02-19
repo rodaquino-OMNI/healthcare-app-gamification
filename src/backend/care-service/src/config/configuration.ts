@@ -30,7 +30,7 @@ export const configuration = registerAs('care', () => ({
 
   // Authentication configuration
   auth: {
-    jwtSecret: process.env.CARE_SERVICE_JWT_SECRET || 'development-secret',
+    jwtSecret: process.env.CARE_SERVICE_JWT_SECRET,
     jwtExpiresIn: process.env.CARE_SERVICE_JWT_EXPIRES || '1h',
     oauth: {
       authority: process.env.CARE_SERVICE_OAUTH_AUTHORITY || 'https://auth.austa.com.br',

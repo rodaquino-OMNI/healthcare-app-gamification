@@ -96,6 +96,9 @@ export class AuthServiceConfigValidation {
     REQUIRE_EMAIL_VERIFICATION: Joi.boolean().default(true),
     EMAIL_VERIFICATION_EXPIRY_HOURS: Joi.number().default(24),
     REQUIRE_STRONG_PASSWORD: Joi.boolean().default(true),
+
+    // PHI encryption (LGPD Art.46 compliance)
+    ENCRYPTION_KEY: Joi.string().optional(),
   }).unknown();
 }
 

@@ -6,6 +6,7 @@ import { LoggingMiddleware } from './middleware/logging.middleware';
 import { RateLimitMiddleware } from './middleware/rate-limit.middleware';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
+import helmet from 'helmet';
 
 /**
  * Bootstraps the NestJS application, configures middleware, and starts the server.
@@ -13,6 +14,9 @@ import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 async function bootstrap() {
   // LD1: Creates a NestJS application instance.
   const app = await NestFactory.create(AppModule);
+
+  // S1: Adds security HTTP headers via helmet middleware.
+  app.use(helmet());
 
   // LD1: Retrieves the application configuration.
   const config = app.get(configuration);

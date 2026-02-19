@@ -19,7 +19,7 @@ export const configuration = registerAs('apiGateway', () => ({
   
   // Authentication configuration
   auth: {
-    jwtSecret: process.env.JWT_SECRET || 'development-secret-change-in-production',
+    jwtSecret: process.env.JWT_SECRET,
     tokenExpiration: process.env.TOKEN_EXPIRATION || '1h',
     refreshTokenExpiration: process.env.REFRESH_TOKEN_EXPIRATION || '7d',
     issuer: process.env.TOKEN_ISSUER || 'austa.com.br',
@@ -34,7 +34,7 @@ export const configuration = registerAs('apiGateway', () => ({
     origin: process.env.CORS_ORIGINS ? 
       process.env.CORS_ORIGINS.split(',') : 
       ['https://app.austa.com.br', /\.austa\.com\.br$/],
-    credentials: process.env.CORS_CREDENTIALS === 'true' || true,
+    credentials: process.env.CORS_CREDENTIALS !== 'false',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   },
