@@ -148,7 +148,7 @@
       "@babel/plugin-proposal-export-namespace-from": "@babel/plugin-transform-export-namespace-from",
       "@babel/plugin-proposal-logical-assignment-operators": "@babel/plugin-transform-logical-assignment-operators"
     },
-    "axios": "1.6.8",
+    "axios": "1.7.8",
     "glob": "7.2.3",
     "@react-navigation/native": "7.1.8",
     "@react-navigation/stack": "7.3.1",
@@ -174,7 +174,7 @@
     "minimist": "1.2.8",
     "shelljs": "0.8.5",
     "@rollup/plugin-terser": "^0.4.3",
-    "axios": "1.6.8",
+    "axios": "1.7.8",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.72.6",
@@ -211,7 +211,7 @@
     "metro": "0.76.8",
     "metro-react-native-babel-preset": "0.76.7",
     "@react-native-community/cli": "11.3.7",
-    "ws": "8.14.2",
+    "ws": "8.17.1",
     "lodash.set": "4.3.2",
     "lodash.get": "4.4.2",
     "cross-fetch": "4.0.0"

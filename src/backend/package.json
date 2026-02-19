@@ -103,7 +103,7 @@
     "@sendgrid/client": "^8.1.0",
     "@sendgrid/mail": "^8.1.0",
     "agora-rtc-sdk-ng": "4.23.2",
-    "axios": "1.6.8",
+    "axios": "1.7.8",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
@@ -159,20 +159,20 @@
     ]
   },
   "overrides": {
-    "axios": "1.6.8",
+    "axios": "1.7.8",
     "agora-rtc-sdk-ng": {
-      "axios": "1.6.8",
+      "axios": "1.7.8",
       "follow-redirects": "1.15.4",
       "@agora-js/media": {
-        "axios": "1.6.8",
+        "axios": "1.7.8",
         "follow-redirects": "1.15.4"
       },
       "@agora-js/report": {
-        "axios": "1.6.8",
+        "axios": "1.7.8",
         "follow-redirects": "1.15.4"
       },
       "@agora-js/shared": {
-        "axios": "1.6.8",
+        "axios": "1.7.8",
         "follow-redirects": "1.15.4"
       }
     },
@@ -261,7 +261,7 @@
     }
   },
   "resolutions": {
-    "axios": "1.6.8",
+    "axios": "1.7.8",
     "semver": "7.5.4",
     "json5": "2.2.3",
     "minimatch": "3.1.2",
@@ -316,7 +316,7 @@
     "metro": "0.76.8",
     "metro-react-native-babel-preset": "0.76.7",
     "@react-native-community/cli": "11.3.7",
-    "ws": "8.14.2",
+    "ws": "8.17.1",
     "lodash.set": "4.3.2",
     "lodash.get": "4.4.2",
     "cross-fetch": "4.0.0"
