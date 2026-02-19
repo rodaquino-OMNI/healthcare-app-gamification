@@ -93,3 +93,7 @@ src/backend/api-gateway/src/graphql/schema.generated.ts
 .cache/
 .eslintcache
 .stylelintcache
+# Claude Flow runtime state
+.claude-flow/
+.swarm/
+.claude/
