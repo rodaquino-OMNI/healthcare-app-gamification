@@ -363,6 +363,117 @@ npx @claude-flow/cli@latest hive-mind spawn ... &
 - Blocks agent-user dialog during execution
 - No user control over timing
 
+### ❌ ANTI-PATTERN: "Agent Introspection Loop" (NEW — 2026-02-19)
+
+**Definition**: Swarm workers executing tool introspection commands (e.g. `hooks statusline`, `memory list`, `hive-mind status`) in place of actual work — reading/writing files, running grep/find, storing memory keys. The agent *appears busy* but produces no deliverables.
+
+**Observed Failure (AUSTA analysis session 2026-02-19):**
+```
+# ❌ Workers repeatedly ran:
+npx @claude-flow/cli@latest hooks statusline
+# → Returned agent state, NOT file contents
+# → Memory keys dim1-purpose-summary, dim2-plan-quality-scores NEVER stored
+# → Worker-8 (Synthesizer) never received upstream data → REPOSITORY_DEEP_ANALYSIS.md NOT written
+```
+
+**Symptoms:**
+- Worker appears to "complete" but expected memory keys are missing
+- `memory list --namespace X` shows only scope keys, not data keys
+- Final synthesizer worker writes 0 or 1 of N expected reports
+- Agents loop on statusline/status commands without actual file reads
+
+**Root Cause:** Swarm objective lacked per-worker exit gates. Workers had no explicit instruction to verify their own memory key was stored before declaring completion.
+
+**Prevention — Mandatory Per-Worker Exit Gate:**
+
+Every worker in the objective MUST end with an explicit self-verification step:
+```
+Worker-N (ROLE-NAME):
+  READ: [exact file paths]
+  EXECUTE: [exact grep/find/wc commands]
+  STORE: memory key <key-name>, namespace <ns>
+  EXIT GATE ✅: npx @claude-flow/cli@latest memory retrieve -k <key-name> --namespace <ns> | wc -c
+              → must be > 500 (confirms key was written, not empty)
+              → IF GATE FAILS: re-execute READ+STORE steps before proceeding
+```
+
+**Why `hooks statusline` is NOT work:**
+- `hooks statusline` returns the agent's own runtime state — it is a diagnostic tool
+- Workers must use `read_file`, `grep_search`, `run_in_terminal` (find/grep/wc) for actual analysis
+- Every worker must produce at least 1 memory key with substantive content (>500 bytes)
+
+**✅ CORRECT per-worker pattern:**
+```
+Worker-1 (RECON-LEAD):
+  1. READ docs/specifications/FUNCTIONAL_REQUIREMENTS.md
+  2. READ docs/original documentation/Technical Specifications_*.md
+  3. EXTRACT: purpose statement, user personas, regulatory context
+  4. STORE: npx @claude-flow/cli@latest memory store -k dim1-purpose-summary --namespace austa-analysis --value "<extracted content>"
+  5. SELF-VERIFY: npx @claude-flow/cli@latest memory retrieve -k dim1-purpose-summary --namespace austa-analysis
+     → MUST return content > 500 chars, else REPEAT steps 1-4
+```
+
+---
+
+### ❌ ANTI-PATTERN: "Missing Upstream Gate in Synthesizer" (NEW — 2026-02-19)
+
+**Definition**: The synthesizer/report-writer worker starts writing output without first verifying all upstream memory keys exist and have substantive content.
+
+**Observed Failure:**
+```
+# ❌ Worker-8 ran without checking upstream keys
+# dim1-purpose-summary   → NOT STORED (Worker-1 never confirmed)
+# dim2-plan-quality-scores → NOT STORED (Worker-2 never confirmed)
+# dim3-adherence-gaps    → NOT STORED (Worker-3 never ran)
+# Result: REPOSITORY_DEEP_ANALYSIS.md → NOT WRITTEN
+```
+
+**Prevention — Mandatory Synthesizer Pre-Check:**
+```
+Worker-8 (REPORT-SYNTHESIZER) MUST execute this check FIRST:
+  REQUIRED_KEYS = [dim1-purpose-summary, dim2-plan-quality-scores,
+                   dim3-adherence-gaps, dim4-backend-scored, dim4-frontend-scored,
+                   dim5-security-checklist, dim5-deps-audit]
+  
+  FOR EACH key IN REQUIRED_KEYS:
+    result = npx @claude-flow/cli@latest memory retrieve -k <key> --namespace <ns>
+    IF result is empty or < 200 bytes:
+      ABORT and store error: "SYNTHESIZER-BLOCKED: missing key <key>"
+      DO NOT write any report — incomplete data produces misleading output
+  
+  ONLY IF ALL keys pass: proceed to write reports
+```
+
+**Why this matters:** A synthesizer writing from incomplete data produces a hallucinated report. It is better to fail loudly (abort + store error key) than silently produce a partial report.
+
+---
+
+### ❌ ANTI-PATTERN: "Batch Anti-Pattern — Single Swarm for Sequential Dimensions" (NEW — 2026-02-19)
+
+**Definition**: Launching a single monolithic swarm for tasks that have explicit dependency ordering (Dimension X depends on Dimension Y) instead of parallel swarms for independent dimensions + a final sequential synthesis swarm.
+
+**Observed Failure:**
+```
+# ❌ Single 8-worker swarm for all 5 dimensions
+# Workers 3-7 started in parallel but Worker-3 (TRACE) needed DIM-1 and DIM-2 output
+# DIM-1 and DIM-2 weren't stored yet when Worker-3 ran → Worker-3 produced empty findings
+```
+
+**Correct Pattern — Parallel Swarms for Independent Dims:**
+```
+SWARM-A (independent): DIM-1 + DIM-2  → stores dim1-purpose-summary, dim2-plan-quality-scores
+SWARM-B (independent): DIM-4 backend + frontend → stores dim4-backend-scored, dim4-frontend-scored
+SWARM-C (independent): DIM-5 security + deps    → stores dim5-security-checklist, dim5-deps-audit
+
+[GATE: wait for A+B+C memory keys to all exist with >500 bytes each]
+
+SWARM-D (depends on A+B+C): DIM-3 adherence + final synthesis → writes 3 reports
+```
+
+**Rule:** If Dimension X explicitly lists `depends_on: [DIM-Y]`, it MUST be in a separate later swarm. Independent dimensions CAN share a swarm if they have no dependencies.
+
+---
+
 ### ❌ ANTI-PATTERN: "Queen-as-Coder"
 
 **Definition**: Agent acting as primary code generator instead of delegating to swarm intelligence.
@@ -682,11 +793,16 @@ PRIMARY DELIVERABLES:
 1. [exact/file/path.py]
 2. [exact/file/path.py]
 
-ANTI-PATTERNS TO AVOID:
-❌AP5: Queen coding directly — DELEGATE
-❌ [domain-specific antipattern]
-
-━━━ EXISTING CODE (READ BEFORE WRITING) ━━━
+    ANTI-PATTERNS TO AVOID:
+    ❌AP1: Queen coding directly — DELEGATE to specialist agents
+    ❌AP2: Batch updates — each agent works on specific subset only
+    ❌AP3: Skip verification — MUST validate all changes
+    ❌AP4: Manual grep commands — use workspace tools and code analysis
+    ❌AP5: Agent introspection loop — do NOT run hooks statusline/hive-mind status in place of actual file reads
+    ❌AP6: Missing per-worker exit gate — MUST verify own memory key was stored (> 500 bytes) before declaring done
+    ❌AP7: Synthesizer starting without upstream gate — check ALL required memory keys exist BEFORE writing any report
+    ❌AP8: Monolithic swarm for dependent dimensions — split into parallel swarms (A, B, C) + dependent synthesis swarm (D)
+    ❌ [domain-specific antipattern]━━━ EXISTING CODE (READ BEFORE WRITING) ━━━
 [MODULE]: [path]
   [ClassName].[method](args) → return_type
   [key constants, mappings, patterns]

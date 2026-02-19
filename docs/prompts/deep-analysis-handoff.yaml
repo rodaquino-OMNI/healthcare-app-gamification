@@ -1007,11 +1007,15 @@ swarm_spawn:
     3. docs/analysis/BUILD_QUALITY_SCORECARD.md
 
     ANTI-PATTERNS TO AVOID:
-    ❌ Modifying any source file — READ ONLY analysis
-    ❌ Writing code — analysis and reporting only
-    ❌ Creating PROGRESS.md, STATUS.md — use memory store only
-    ❌ Vague findings without file:line evidence
-    ❌ Skipping compliance verification before starting
+    ❌AP1: Modifying any source file — READ ONLY analysis
+    ❌AP2: Writing code — analysis and reporting only
+    ❌AP3: Creating PROGRESS.md, STATUS.md — use memory store only
+    ❌AP4: Vague findings without file:line evidence
+    ❌AP5: Skipping compliance verification before starting
+    ❌AP6: Agent introspection loop — do NOT run 'hooks statusline' or 'hive-mind status' as a substitute for reading files. Each worker MUST read actual source/doc files and store substantive memory keys.
+    ❌AP7: Missing per-worker exit gate — every worker MUST self-verify its own memory key was stored with >500 bytes BEFORE declaring completion. Command: npx @claude-flow/cli@latest memory retrieve -k <key> --namespace austa-analysis | wc -c → must be > 500
+    ❌AP8: Synthesizer (Worker-8) starting without upstream gate — check ALL 7 upstream keys exist with >200 bytes each BEFORE writing any report. If any key is missing: store error key "synthesis-blocked-missing-<key>" and ABORT cleanly.
+    ❌AP9: Parallel dimension workers reading each other's dependencies — Workers 1-7 are independent; Worker-8 is the ONLY synthesizer. Do NOT have Worker-3 read DIM-1 results from memory before Worker-1 has stored them.
 
     ━━━ PHASE 1: RECON (Workers 1-2, parallel) ━━━
     Worker-1 (RECON-LEAD):
@@ -1019,6 +1023,7 @@ swarm_spawn:
       EXTRACT: purpose, user personas, regulatory context, NFR SLAs
       SEMANTIC SEARCH: use vector search with queries from DIM-1 in handoff YAML
       STORE: memory key dim1-purpose-summary, namespace austa-analysis
+      EXIT GATE ✅: npx @claude-flow/cli@latest memory retrieve -k dim1-purpose-summary --namespace austa-analysis | wc -c  → must be > 500. IF GATE FAILS: re-execute READ+STORE.
 
     Worker-2 (DOCS-ANALYST):
       READ: all docs/design/ files, docs/ADRs/ files
@@ -1026,14 +1031,17 @@ swarm_spawn:
       COUNT: user stories with complete acceptance criteria
       IDENTIFY: missing ADRs, vague NFRs, undocumented decisions
       STORE: memory key dim2-plan-quality-scores, namespace austa-analysis
+      EXIT GATE ✅: npx @claude-flow/cli@latest memory retrieve -k dim2-plan-quality-scores --namespace austa-analysis | wc -c  → must be > 500. IF GATE FAILS: re-execute READ+STORE.
 
     ━━━ PHASE 2: ANALYSIS (Workers 3-7, parallel after Phase 1) ━━━
     Worker-3 (TRACE-ANALYST):
       RETRIEVE: dim1-purpose-summary, dim2-plan-quality-scores
+      PRE-CHECK: both keys must have >200 bytes or ABORT with "trace-blocked-missing-upstream"
       BUILD: traceability matrix (user need → requirement → architecture → code)
       MEASURE: % complete, % partial, % broken, % orphaned chains
       IDENTIFY: over-engineered features, under-covered user needs
       STORE: memory key dim3-adherence-gaps, namespace austa-analysis
+      EXIT GATE ✅: npx @claude-flow/cli@latest memory retrieve -k dim3-adherence-gaps --namespace austa-analysis | wc -c  → must be > 500. IF GATE FAILS: re-execute BUILD+STORE.
 
     Worker-4 (CODE-AUDITOR-BACKEND):
       RUN: recon commands from DIM-4 (find, grep, wc — read only)
@@ -1041,6 +1049,7 @@ swarm_spawn:
       SCORE: all 10 backend rubric dimensions
       IDENTIFY: stub files, missing tests, ORM inconsistency, debt markers
       STORE: memory key dim4-backend-scored, namespace austa-analysis
+      EXIT GATE ✅: npx @claude-flow/cli@latest memory retrieve -k dim4-backend-scored --namespace austa-analysis | wc -c  → must be > 500. IF GATE FAILS: re-execute SCORE+STORE.
 
     Worker-5 (CODE-AUDITOR-FRONTEND):
       RUN: test ratio and coverage commands
@@ -1048,6 +1057,7 @@ swarm_spawn:
       SCORE: all 8 frontend rubric dimensions
       IDENTIFY: missing screens vs planned, design-system adoption gaps
       STORE: memory key dim4-frontend-scored, namespace austa-analysis
+      EXIT GATE ✅: npx @claude-flow/cli@latest memory retrieve -k dim4-frontend-scored --namespace austa-analysis | wc -c  → must be > 500. IF GATE FAILS: re-execute SCORE+STORE.
 
     Worker-6 (SECURITY-AUDITOR):
       RUN: all automated security commands from DIM-5
@@ -1055,6 +1065,7 @@ swarm_spawn:
       CHECK: HIPAA, LGPD, OWASP Top 10 compliance
       IDENTIFY: critical gaps requiring immediate remediation
       STORE: memory key dim5-security-checklist, namespace austa-analysis
+      EXIT GATE ✅: npx @claude-flow/cli@latest memory retrieve -k dim5-security-checklist --namespace austa-analysis | wc -c  → must be > 500. IF GATE FAILS: re-execute ASSESS+STORE.
 
     Worker-7 (DEPENDENCY-AUDITOR):
       EXTRACT: all dependencies from all package.json files
@@ -1062,9 +1073,16 @@ swarm_spawn:
       IDENTIFY: deprecated packages, outdated majors, CVE-flagged packages
       LIST: exact package@version for each finding
       STORE: memory key dim5-deps-audit, namespace austa-analysis
+      EXIT GATE ✅: npx @claude-flow/cli@latest memory retrieve -k dim5-deps-audit --namespace austa-analysis | wc -c  → must be > 500. IF GATE FAILS: re-execute CHECK+STORE.
 
-    ━━━ PHASE 3: SYNTHESIS (Worker-8, after all others complete) ━━━
+    ━━━ PHASE 3: SYNTHESIS (Worker-8, STRICTLY after Phase 2 complete) ━━━
     Worker-8 (REPORT-SYNTHESIZER):
+      UPSTREAM GATE (MANDATORY FIRST STEP — DO NOT SKIP):
+        FOR EACH key in [dim1-purpose-summary, dim2-plan-quality-scores, dim3-adherence-gaps,
+                         dim4-backend-scored, dim4-frontend-scored, dim5-security-checklist, dim5-deps-audit]:
+          result = npx @claude-flow/cli@latest memory retrieve -k <key> --namespace austa-analysis | wc -c
+          IF result < 200: ABORT — store "synthesis-blocked-missing-<key>" and STOP.
+          DO NOT write any report with incomplete upstream data.
       RETRIEVE ALL: dim1-purpose-summary, dim2-plan-quality-scores, dim3-adherence-gaps,
                     dim4-backend-scored, dim4-frontend-scored, dim5-security-checklist,
                     dim5-deps-audit from namespace austa-analysis
