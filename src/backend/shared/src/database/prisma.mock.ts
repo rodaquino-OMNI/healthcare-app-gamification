@@ -277,4 +277,21 @@ export class PrismaMock {
       return { id: args.where.id };
     },
   };
+
+  // AuditLog model operations
+  auditLog = {
+    create: async (args: any) => {
+      return {
+        id: '1',
+        ...args.data,
+        createdAt: new Date(),
+      };
+    },
+    findMany: async (args: any) => {
+      return [];
+    },
+    count: async (args: any) => {
+      return 0;
+    },
+  };
 }

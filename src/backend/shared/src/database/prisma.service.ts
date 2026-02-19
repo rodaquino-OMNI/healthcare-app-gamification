@@ -1,11 +1,13 @@
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { Injectable, OnModuleInit, OnModuleDestroy, Optional } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { PrismaMock } from './prisma.mock';
+import { EncryptionService, createEncryptionMiddleware } from '../encryption';
 
 /**
  * Service for handling Prisma database connections.
  * Manages the lifecycle of the Prisma client instance.
  * Enhanced with mock properties to support our service implementations.
+ * Attaches PHI encryption middleware when EncryptionService is available.
  */
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
@@ -18,15 +20,17 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   document: any;
   healthMetric: any;
   healthGoal: any;
+  auditLog: any;
 
   /**
    * Constructor initializes the Prisma client with appropriate logging options
-   * based on the environment.
+   * based on the environment. Optionally receives EncryptionService for PHI
+   * field-level encryption via Prisma middleware.
    */
-  constructor() {
+  constructor(@Optional() private encryptionService?: EncryptionService) {
     super({
-      log: process.env.NODE_ENV === 'development' 
-        ? ['query', 'info', 'warn', 'error'] 
+      log: process.env.NODE_ENV === 'development'
+        ? ['query', 'info', 'warn', 'error']
         : ['error'],
     });
 
@@ -40,12 +44,17 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     this.document = mock.document;
     this.healthMetric = mock.healthMetric || {};
     this.healthGoal = mock.healthGoal || {};
+    this.auditLog = mock.auditLog || {};
   }
 
   /**
    * Connects to the database when the module initializes.
+   * Attaches PHI encryption middleware if EncryptionService is available.
    */
   async onModuleInit() {
+    if (this.encryptionService) {
+      this.$use(createEncryptionMiddleware(this.encryptionService));
+    }
     await this.$connect();
   }
 
