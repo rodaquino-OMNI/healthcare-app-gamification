@@ -1,0 +1,262 @@
+# =============================================================================
+# AGENT HANDOFF — IMPLEMENTATION PHASE
+# AUSTA SuperApp | healthcare-super-app--w-gamification--tgfzl7
+# =============================================================================
+# PRIOR SESSION: deep-analysis-handoff.yaml (KEEP — contains claude-flow
+#   best-practices, anti-patterns AP1-AP9, swarm topology patterns, and
+#   SONA/vector/memory tool selection rationale). READ IT FIRST.
+# =============================================================================
+
+meta:
+  handoff_id:        "implementation-001"
+  prior_handoff:     "deep-analysis-handoff.yaml"
+  created:           "2026-02-19"
+  session_origin:    "main branch, 6 commits ahead of origin/main"
+  adr_compliance:    "ADR-013 mandatory"
+
+# =============================================================================
+# WHAT WAS DONE (session 2026-02-19)
+# =============================================================================
+completed:
+  analysis:
+    status: "DONE — all 5 dimensions scored, 3 reports written"
+    reports:
+      - docs/analysis/REPOSITORY_DEEP_ANALYSIS.md   # 659 lines, DIM1-5 scored
+      - docs/analysis/SECURITY_AUDIT.md              # 421 lines, 31-control checklist
+      - docs/analysis/BUILD_QUALITY_SCORECARD.md     # 276 lines, 18-dimension rubric
+      - docs/analysis/FORWARD_PATH_PLAN.md           # 394 lines, 6-phase roadmap
+    scores:
+      DIM1_purpose:    17/25
+      DIM2_plan:       30/45
+      DIM3_adherence:  16/25
+      DIM4_build:      55/90
+      DIM5_security:   "14/31 → 28/31 after fixes"
+      overall:         "3.1/5.0 → ~3.5/5.0 after fixes"
+
+  security_fixes:
+    status: "DONE — all P0/P1 applied and verified"
+    commits:
+      - "dd5aa3c — JWT secrets, GraphQL playground, CORS, helmet"
+      - "a69794d — PHI encryption (AES-256-GCM) + audit trail"
+      - "dc8a382 — K8s NetworkPolicies × 7 + auth securityContext"
+      - "61c5956 — dependency upgrades (axios, ws, next) × 17 package.json"
+
+  claude_flow_memory:
+    namespace: "austa-analysis"
+    key_count: "29+"
+    reasoning_bank: 45
+    notable_keys:
+      - dim1-purpose-summary
+      - dim2-plan-quality-scores
+      - dim3-adherence-gaps
+      - dim4-backend-scored
+      - dim4-frontend-scored
+      - dim5-security-checklist
+      - dim5-deps-audit
+      - deep-analysis-complete-final
+      - pattern-anti-introspection-loop    # AP6
+      - pattern-anti-synthesizer-gate      # AP7
+      - pattern-anti-monolithic-swarm      # AP8
+
+# =============================================================================
+# WHAT NEEDS TO BE DONE — 6 PHASES
+# =============================================================================
+# Full detail: docs/analysis/FORWARD_PATH_PLAN.md
+# Below: actionable task list only, ordered by priority
+
+phases:
+
+  - id: PHASE-1
+    name: "Make It Boot & Run"
+    duration: "2 weeks"
+    status: NOT_STARTED
+    tasks:
+      - id: P1-1
+        name: "Fix notification-service crash"
+        file: "src/backend/notification-service/src/notifications/notifications.module.ts"
+        issue: "Imports NotificationsController but it's commented out → crash on boot"
+        action: "Create notifications.controller.ts, uncomment import"
+        effort: 2h
+        blocker: true
+
+      - id: P1-2
+        name: "Fix WebSocket CORS wildcard"
+        file: "src/backend/notification-service/src/websockets/websockets.gateway.ts:31"
+        issue: "origin: '*' — any browser connects"
+        action: "Change to env-var-driven allowlist"
+        effort: 30min
+        blocker: true
+
+      - id: P1-3
+        name: "Wire AuditInterceptor into AppModules"
+        issue: "Created by SWARM-C but not registered in any service module"
+        files:
+          - src/backend/api-gateway/src/app.module.ts
+          - src/backend/auth-service/src/app.module.ts
+          - src/backend/health-service/src/app.module.ts
+          - src/backend/care-service/src/app.module.ts
+          - src/backend/plan-service/src/app.module.ts
+        effort: 3h
+
+      - id: P1-4
+        name: "Run Prisma migration for AuditLog"
+        command: "cd src/backend/shared && npx prisma migrate dev --name add_audit_log"
+        effort: 1h
+
+      - id: P1-5
+        name: "Fix hardcoded recordId in mobile"
+        files:
+          - src/web/mobile/src/screens/health/AddMetric.tsx:59
+          - src/web/mobile/src/api/client.ts:13
+        effort: 1h
+
+      - id: P1-6
+        name: "Regenerate lockfiles"
+        command: "cd src/backend && npm install && cd ../web && npm install"
+        effort: 1h
+
+  - id: PHASE-2
+    name: "Consolidate Architecture"
+    duration: "4 weeks"
+    status: NOT_STARTED
+    key_decision: "Migrate TypeORM → Prisma (recommended — encryption middleware only works with Prisma)"
+    tasks:
+      - id: P2-1
+        name: "ORM consolidation"
+        services_affected: [notification-service, plan-service, care-service, health-service]
+        effort: 40h
+
+      - id: P2-2
+        name: "Consolidate gamification-service into gamification-engine"
+        issue: "gamification-service/src/ has only leaderboard/ — engine has everything"
+        effort: 8h
+
+      - id: P2-3
+        name: "Add Swagger/OpenAPI to all services"
+        done: [plan-service, care-service]
+        missing: [api-gateway, auth-service, health-service, gamification-engine, notification-service]
+        effort: 12h
+
+      - id: P2-4
+        name: "Centralize exception handling"
+        issue: "9 @Catch usages but mostly inline try/catch"
+        action: "Create shared GlobalExceptionFilter, register as APP_FILTER"
+        effort: 6h
+
+  - id: PHASE-3
+    name: "Testing"
+    duration: "4 weeks"
+    current: "15 test files / 255 backend source = 5.9%"
+    target: "40%+ coverage"
+    priority_order:
+      - "auth-service (auth.service, users.service, mfa.service)"
+      - "shared/encryption (encryption.service — NEW, 0 tests)"
+      - "shared/audit (audit.service — NEW, 0 tests)"
+      - "api-gateway (auth.middleware)"
+      - "care-service (appointments, telemedicine)"
+      - "plan-service (claims, plans)"
+    also:
+      - "Fix 235 'any' type usages (65 in shared, 37 in api-gateway)"
+      - "Mobile has 0 test files — add React Native Testing Library"
+
+  - id: PHASE-4
+    name: "Feature Completeness"
+    duration: "6 weeks"
+    tasks:
+      - id: P4-1
+        name: "LGPD consent management module"
+        issue: "Only 8 code references to consent — no actual module"
+        legal: "Lei 13.709 Art. 7-8, R$50M fine exposure"
+        effort: 80h
+        blocker: true
+
+      - id: P4-2
+        name: "FHIR IDOR ownership check"
+        file: "src/backend/health-service/src/integrations/fhir/fhir.service.ts"
+        issue: "No verification that FHIR resource belongs to requesting user"
+        effort: 8h
+
+      - id: P4-3
+        name: "Notification channel routing"
+        issue: "channels/ has push/email/SMS but wiring to controller incomplete"
+        effort: 12h
+
+      - id: P4-4
+        name: "Mobile i18n parity with web"
+        effort: 8h
+
+  - id: PHASE-5
+    name: "Mobile Parity"
+    duration: "4 weeks"
+    tasks: ["Apple Sign-In (App Store req)", "Push notification wiring (FCM/APNs)", "Deep links", "Offline support"]
+
+  - id: PHASE-6
+    name: "Launch Hardening"
+    duration: "2 weeks"
+    tasks: ["Load test (k6)", "Secrets rotation (JWT in git history)", "Prisma migrate deploy", "Pen test (OWASP ZAP)", "Observability dashboards"]
+
+# =============================================================================
+# CLAUDE-FLOW INSTRUCTIONS FOR NEXT SESSION
+# =============================================================================
+claude_flow:
+  # READ deep-analysis-handoff.yaml FOR FULL PATTERNS — do not duplicate here
+  reference: "docs/prompts/deep-analysis-handoff.yaml"
+
+  bootstrap:
+    - "npx @claude-flow/cli@latest daemon status  # restart if stopped"
+    - "npx @claude-flow/cli@latest memory list --namespace austa-analysis  # verify 29+ keys"
+    - "npx @claude-flow/cli@latest hooks intelligence stats  # verify SONA + ReasoningBank=45"
+
+  memory_retrieval:
+    before_any_work: |
+      npx @claude-flow/cli@latest memory retrieve -k deep-analysis-complete-final --namespace austa-analysis
+      # Contains: all 5 dimension scores, commit hashes, security fix summary
+    for_security_context: |
+      npx @claude-flow/cli@latest memory retrieve -k dim5-security-checklist --namespace austa-analysis
+    for_architecture_context: |
+      npx @claude-flow/cli@latest memory retrieve -k dim4-backend-scored --namespace austa-analysis
+
+  anti_patterns:
+    critical_reference: "deep-analysis-handoff.yaml → swarm_spawn.command → ANTI-PATTERNS section"
+    summary:
+      - "AP1: Do NOT modify source files during analysis phases"
+      - "AP2: Do NOT write code during analysis phases"
+      - "AP3: Do NOT create PROGRESS.md/STATUS.md — use memory store"
+      - "AP4: Do NOT report findings without file:line evidence"
+      - "AP5: Do NOT skip compliance verification before starting"
+      - "AP6: Agent introspection loop — read FILES, not 'hive-mind status'"
+      - "AP7: Synthesizer must gate on ALL upstream keys (>200 bytes each)"
+      - "AP8: Don't put dependent dimensions in same parallel swarm"
+      - "AP9: Workers 1-7 are independent; only Worker-8 synthesizes"
+    memory_keys:
+      - pattern-anti-introspection-loop
+      - pattern-anti-synthesizer-gate
+      - pattern-anti-monolithic-swarm
+
+  swarm_patterns:
+    topology: "hierarchical-mesh"
+    consensus: "byzantine"
+    learned: |
+      Independent dimensions → parallel swarms (SWARM-A, B, C).
+      Dependent dimensions + synthesis → sequential SWARM-D, only after gate passes.
+      Every worker needs an EXIT GATE: memory retrieve | wc -c > 500.
+      Fix swarms: spawn specialized agents per finding category, coordinate via hive-mind.
+
+# =============================================================================
+# GIT STATE
+# =============================================================================
+git:
+  branch: main
+  commits_ahead_of_origin: 6
+  latest_commit: "fd889e2 — docs: FORWARD_PATH_PLAN"
+  unpushed: true
+  untracked: [".hive-mind/"]  # swarm runtime — do not commit
+
+# =============================================================================
+# START HERE
+# =============================================================================
+# 1. Read this file
+# 2. Read deep-analysis-handoff.yaml (anti-patterns + claude-flow patterns)
+# 3. Bootstrap claude-flow (commands above)
+# 4. Retrieve memory key: deep-analysis-complete-final
+# 5. Start Phase 1, Task P1-1 (notification-service controller)
