@@ -17,12 +17,14 @@ import { colors } from '@web/design-system/src/tokens/colors';
 import { spacingValues } from '@web/design-system/src/tokens/spacing';
 import { fontSizeValues } from '@web/design-system/src/tokens/typography';
 import { borderRadiusValues } from '@web/design-system/src/tokens/borderRadius';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Renders the main dashboard screen for the Plan journey, fetching and
  * displaying key information related to the user's insurance plan and benefits.
  */
 const PlanDashboard: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
 
   const { session, getUserFromToken } = useAuth();
@@ -90,7 +92,7 @@ const PlanDashboard: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <JourneyHeader title="Meu Plano & Beneficios" />
+      <JourneyHeader title={t('journeys.plan.title')} />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Insurance Card (RN-native, replaces web-only InsuranceCard) */}
         <View style={styles.insuranceCard}>
@@ -105,19 +107,19 @@ const PlanDashboard: React.FC = () => {
             </View>
           </View>
           <View style={styles.insuranceCardBody}>
-            <Text style={styles.insuranceCardLabel}>Titular</Text>
+            <Text style={styles.insuranceCardLabel}>{t('journeys.plan.digitalCard.holder')}</Text>
             <Text style={styles.insuranceCardValue}>
               {insuranceCardData.user.name}
             </Text>
             <View style={styles.insuranceCardRow}>
               <View style={styles.insuranceCardCol}>
-                <Text style={styles.insuranceCardLabel}>CPF</Text>
+                <Text style={styles.insuranceCardLabel}>{t('journeys.plan.digitalCard.cpf')}</Text>
                 <Text style={styles.insuranceCardValue}>
                   {insuranceCardData.user.cpf}
                 </Text>
               </View>
               <View style={styles.insuranceCardCol}>
-                <Text style={styles.insuranceCardLabel}>No. Plano</Text>
+                <Text style={styles.insuranceCardLabel}>{t('journeys.plan.digitalCard.planNumber')}</Text>
                 <Text style={styles.insuranceCardValue}>
                   {insuranceCardData.plan.planNumber}
                 </Text>
@@ -125,13 +127,13 @@ const PlanDashboard: React.FC = () => {
             </View>
             <View style={styles.insuranceCardRow}>
               <View style={styles.insuranceCardCol}>
-                <Text style={styles.insuranceCardLabel}>Inicio</Text>
+                <Text style={styles.insuranceCardLabel}>{t('journeys.plan.digitalCard.startDate')}</Text>
                 <Text style={styles.insuranceCardValue}>
                   {insuranceCardData.plan.validityStart}
                 </Text>
               </View>
               <View style={styles.insuranceCardCol}>
-                <Text style={styles.insuranceCardLabel}>Validade</Text>
+                <Text style={styles.insuranceCardLabel}>{t('journeys.plan.digitalCard.validity')}</Text>
                 <Text style={styles.insuranceCardValue}>
                   {insuranceCardData.plan.validityEnd}
                 </Text>
@@ -143,7 +145,7 @@ const PlanDashboard: React.FC = () => {
             onPress={handleShareCard}
             accessibilityLabel="Compartilhar carteirinha"
           >
-            <Text style={styles.shareButtonText}>Compartilhar</Text>
+            <Text style={styles.shareButtonText}>{t('journeys.plan.digitalCard.share')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -151,27 +153,27 @@ const PlanDashboard: React.FC = () => {
         <View style={styles.statsRow}>
           <View style={styles.statCard}>
             <Text style={styles.statValue}>{totalClaims}</Text>
-            <Text style={styles.statLabel}>Solicitacoes</Text>
+            <Text style={styles.statLabel}>{t('journeys.plan.claims.title')}</Text>
           </View>
           <View style={styles.statCard}>
             <Text style={styles.statValue}>{activeBenefits}</Text>
-            <Text style={styles.statLabel}>Beneficios</Text>
+            <Text style={styles.statLabel}>{t('journeys.plan.benefits.title')}</Text>
           </View>
           <View style={styles.statCard}>
             <Text style={styles.statValue}>{coveragePercent}%</Text>
-            <Text style={styles.statLabel}>Cobertura</Text>
+            <Text style={styles.statLabel}>{t('journeys.plan.coverage.title')}</Text>
           </View>
         </View>
 
         {/* Coverage Information */}
-        <Text style={styles.sectionTitle}>Cobertura</Text>
+        <Text style={styles.sectionTitle}>{t('journeys.plan.coverage.title')}</Text>
         {isCoverageLoading ? (
-          <LoadingIndicator label="Carregando Cobertura..." />
+          <LoadingIndicator label={t('journeys.plan.coverage.loading')} />
         ) : coverageError ? (
           <EmptyState
             icon="error"
-            title="Erro ao carregar cobertura"
-            description="Tente novamente mais tarde."
+            title={t('journeys.plan.coverage.error')}
+            description={t('common.errors.network')}
           />
         ) : coverage && coverage.length > 0 ? (
           coverage.map((item: any) => (
@@ -197,20 +199,20 @@ const PlanDashboard: React.FC = () => {
         ) : (
           <EmptyState
             icon="document"
-            title="Nenhuma cobertura encontrada"
-            description="Verifique os detalhes do seu plano."
+            title={t('journeys.plan.coverage.empty')}
+            description={t('journeys.plan.coverage.emptyHint')}
           />
         )}
 
         {/* Claims */}
-        <Text style={styles.sectionTitle}>Solicitacoes</Text>
+        <Text style={styles.sectionTitle}>{t('journeys.plan.claims.title')}</Text>
         {isClaimsLoading ? (
-          <LoadingIndicator label="Carregando Solicitacoes..." />
+          <LoadingIndicator label={t('journeys.plan.claims.loading')} />
         ) : claimsError ? (
           <EmptyState
             icon="error"
-            title="Erro ao carregar solicitacoes"
-            description="Tente novamente mais tarde."
+            title={t('journeys.plan.claims.error')}
+            description={t('common.errors.network')}
           />
         ) : claims && claims.length > 0 ? (
           claims.map((claim: any) => (
@@ -247,13 +249,13 @@ const PlanDashboard: React.FC = () => {
                   onPress={() => handleViewClaimDetails(claim.id)}
                   style={styles.claimActionBtn}
                 >
-                  <Text style={styles.claimActionText}>Detalhes</Text>
+                  <Text style={styles.claimActionText}>{t('journeys.plan.claims.details')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => handleTrackClaim(claim.id)}
                   style={styles.claimActionBtn}
                 >
-                  <Text style={styles.claimActionText}>Rastrear</Text>
+                  <Text style={styles.claimActionText}>{t('journeys.plan.claims.track')}</Text>
                 </TouchableOpacity>
               </View>
             </TouchableOpacity>
@@ -261,9 +263,9 @@ const PlanDashboard: React.FC = () => {
         ) : (
           <EmptyState
             icon="document"
-            title="Nenhuma solicitacao encontrada"
-            description="Submeta suas solicitacoes por aqui."
-            actionLabel="Nova Solicitacao"
+            title={t('journeys.plan.claims.empty')}
+            description={t('journeys.plan.claims.emptyHint')}
+            actionLabel={t('journeys.plan.claims.newClaim')}
             onAction={handleNewClaim}
           />
         )}

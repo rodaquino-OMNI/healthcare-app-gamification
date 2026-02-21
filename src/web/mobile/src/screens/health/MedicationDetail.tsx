@@ -17,6 +17,7 @@ import { Button } from '@austa/design-system/src/components/Button/Button';
 import { Badge } from '@austa/design-system/src/components/Badge/Badge';
 import { ProgressBar } from '@austa/design-system/src/components/ProgressBar/ProgressBar';
 import { Modal } from '@austa/design-system/src/components/Modal/Modal';
+import { useTranslation } from 'react-i18next';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 
@@ -78,6 +79,7 @@ const getStatusConfig = (status: string) => STATUS_MAP[status] ?? { label: statu
 
 /** MedicationDetail shows details about a single medication with dose history and actions. */
 const MedicationDetail: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const route = useRoute<RouteProp<MedicationDetailRouteParams, 'MedicationDetail'>>();
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
@@ -94,9 +96,9 @@ const MedicationDetail: React.FC = () => {
   }, [navigation, medication]);
 
   const handlePause = useCallback(() => {
-    Alert.alert('Pause Medication', `Are you sure you want to pause ${medication.name}?`, [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Pause', onPress: () => navigation.goBack() },
+    Alert.alert(t('journeys.care.medications.pause'), t('journeys.care.medications.pauseConfirm', { name: medication.name }), [
+      { text: t('common.buttons.cancel'), style: 'cancel' },
+      { text: t('journeys.care.medications.pause'), onPress: () => navigation.goBack() },
     ]);
   }, [medication.name, navigation]);
 
@@ -130,7 +132,7 @@ const MedicationDetail: React.FC = () => {
           status={item.taken ? 'success' : 'error'}
           accessibilityLabel={item.taken ? 'Taken' : 'Missed'}
         >
-          {item.taken ? 'Taken' : 'Missed'}
+          {item.taken ? t('journeys.care.medications.taken') : t('journeys.care.medications.missed')}
         </Badge>
       </View>
     ),
@@ -150,11 +152,11 @@ const MedicationDetail: React.FC = () => {
           testID="back-button"
         >
           <Text fontSize="lg" color={colors.journeys.health.primary}>
-            Back
+            {t('common.buttons.back')}
           </Text>
         </Touchable>
         <Text variant="heading" journey="health">
-          Medication Detail
+          {t('journeys.care.medications.detail')}
         </Text>
         <View style={styles.headerSpacer} />
       </View>
@@ -197,7 +199,7 @@ const MedicationDetail: React.FC = () => {
           {/* Adherence Summary */}
           <View style={styles.adherenceRow}>
             <Text fontSize="sm" color={colors.neutral.gray600}>
-              Adherence Rate
+              {t('journeys.care.medications.adherenceRate')}
             </Text>
             <Text
               fontSize="lg"
@@ -217,15 +219,15 @@ const MedicationDetail: React.FC = () => {
 
         {/* Schedule Section */}
         <View style={styles.sectionContainer}>
-          <Text fontSize="lg" fontWeight="semiBold" journey="health">Schedule</Text>
+          <Text fontSize="lg" fontWeight="semiBold" journey="health">{t('journeys.care.medications.schedule')}</Text>
           <Card journey="health" elevation="sm" padding="md">
             <View style={styles.scheduleRow}>
-              <Text fontSize="sm" color={colors.neutral.gray600}>Frequency</Text>
+              <Text fontSize="sm" color={colors.neutral.gray600}>{t('journeys.care.medications.frequency')}</Text>
               <Text fontSize="sm" fontWeight="medium">{medication.schedule}</Text>
             </View>
             <View style={styles.divider} />
             <View style={styles.scheduleRow}>
-              <Text fontSize="sm" color={colors.neutral.gray600}>Times</Text>
+              <Text fontSize="sm" color={colors.neutral.gray600}>{t('journeys.care.medications.times')}</Text>
               <View>
                 {medication.times.map((time, i) => (
                   <Text key={`t-${i}`} fontSize="sm" fontWeight="medium" textAlign="right">{time}</Text>
@@ -234,14 +236,14 @@ const MedicationDetail: React.FC = () => {
             </View>
             <View style={styles.divider} />
             <View style={styles.scheduleRow}>
-              <Text fontSize="sm" color={colors.neutral.gray600}>Start Date</Text>
+              <Text fontSize="sm" color={colors.neutral.gray600}>{t('journeys.care.medications.startDate')}</Text>
               <Text fontSize="sm" fontWeight="medium">{medication.startDate}</Text>
             </View>
             {medication.notes && (
               <>
                 <View style={styles.divider} />
                 <View style={styles.scheduleRow}>
-                  <Text fontSize="sm" color={colors.neutral.gray600}>Notes</Text>
+                  <Text fontSize="sm" color={colors.neutral.gray600}>{t('common.labels.notes')}</Text>
                   <Text fontSize="sm" fontWeight="medium" style={styles.notesText}>{medication.notes}</Text>
                 </View>
               </>
@@ -252,10 +254,10 @@ const MedicationDetail: React.FC = () => {
         {/* Refill Tracker */}
         {medication.refillDate && (
           <View style={styles.sectionContainer}>
-            <Text fontSize="lg" fontWeight="semiBold" journey="health">Refill Tracker</Text>
+            <Text fontSize="lg" fontWeight="semiBold" journey="health">{t('journeys.care.medications.refillTracker')}</Text>
             <Card journey="health" elevation="sm" padding="md">
               <View style={styles.refillRow}>
-                <Text fontSize="sm" color={colors.neutral.gray600}>Next Refill</Text>
+                <Text fontSize="sm" color={colors.neutral.gray600}>{t('journeys.care.medications.nextRefill')}</Text>
                 <Text fontSize="sm" fontWeight="medium">{medication.refillDate}</Text>
               </View>
               <View style={styles.progressContainer}>
@@ -268,7 +270,7 @@ const MedicationDetail: React.FC = () => {
                 />
               </View>
               <Text fontSize="xs" color={colors.neutral.gray500} textAlign="center">
-                {Math.round(medication.refillProgress * 100)}% supply remaining
+                {t('journeys.care.medications.supplyRemaining', { percent: Math.round(medication.refillProgress * 100) })}
               </Text>
             </Card>
           </View>
@@ -276,7 +278,7 @@ const MedicationDetail: React.FC = () => {
 
         {/* Dose History */}
         <View style={styles.sectionContainer}>
-          <Text fontSize="lg" fontWeight="semiBold" journey="health">Dose History</Text>
+          <Text fontSize="lg" fontWeight="semiBold" journey="health">{t('journeys.care.medications.doseHistory')}</Text>
           <Card journey="health" elevation="sm" padding="md">
             <FlatList
               data={doseHistory}
@@ -297,7 +299,7 @@ const MedicationDetail: React.FC = () => {
             onPress={handleEdit}
             accessibilityLabel="Edit medication"
           >
-            Edit
+            {t('common.buttons.edit')}
           </Button>
           <View style={styles.actionSpacer} />
           <Button
@@ -306,7 +308,7 @@ const MedicationDetail: React.FC = () => {
             onPress={handlePause}
             accessibilityLabel="Pause medication"
           >
-            Pause
+            {t('journeys.care.medications.pause')}
           </Button>
           <View style={styles.actionSpacer} />
           <Touchable
@@ -322,7 +324,7 @@ const MedicationDetail: React.FC = () => {
               color={colors.semantic.error}
               textAlign="center"
             >
-              Delete
+              {t('common.buttons.delete')}
             </Text>
           </Touchable>
         </View>
@@ -332,12 +334,11 @@ const MedicationDetail: React.FC = () => {
       <Modal
         visible={deleteModalVisible}
         onClose={() => setDeleteModalVisible(false)}
-        title="Delete Medication"
+        title={t('journeys.care.medications.deleteConfirm')}
         journey="health"
       >
         <Text fontSize="md" color={colors.neutral.gray700}>
-          Are you sure you want to delete {medication.name}? This action cannot
-          be undone.
+          {t('journeys.care.medications.deleteConfirmMessage', { name: medication.name })}
         </Text>
         <View style={styles.modalActions}>
           <Button
@@ -346,7 +347,7 @@ const MedicationDetail: React.FC = () => {
             onPress={() => setDeleteModalVisible(false)}
             accessibilityLabel="Cancel deletion"
           >
-            Cancel
+            {t('common.buttons.cancel')}
           </Button>
           <View style={styles.actionSpacer} />
           <Touchable
@@ -362,7 +363,7 @@ const MedicationDetail: React.FC = () => {
               color={colors.neutral.white}
               textAlign="center"
             >
-              Delete
+              {t('common.buttons.delete')}
             </Text>
           </Touchable>
         </View>

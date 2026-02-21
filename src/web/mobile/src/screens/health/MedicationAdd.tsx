@@ -19,6 +19,7 @@ import { Checkbox } from '@austa/design-system/src/components/Checkbox/Checkbox'
 import Input from '@austa/design-system/src/components/Input/Input';
 import { Select } from '@austa/design-system/src/components/Select/Select';
 import { DatePicker } from '@austa/design-system/src/components/DatePicker/DatePicker';
+import { useTranslation } from 'react-i18next';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 
@@ -47,40 +48,39 @@ type MedicationAddRouteParams = {
 };
 
 /**
- * Frequency options for the Select component
+ * Yup validation schema is created inside the component to access t().
  */
-const FREQUENCY_OPTIONS = [
-  { label: 'Once daily', value: 'once_daily' },
-  { label: 'Twice daily', value: 'twice_daily' },
-  { label: 'Three times daily', value: 'three_times_daily' },
-  { label: 'Every 8 hours', value: 'every_8_hours' },
-  { label: 'As needed', value: 'as_needed' },
-  { label: 'Weekly', value: 'weekly' },
-];
-
-/**
- * Yup validation schema for the medication form
- */
-const medicationSchema = yup.object({
-  name: yup.string().required('Medication name is required'),
-  dosage: yup.string().required('Dosage is required'),
-  frequency: yup.string().required('Frequency is required'),
-  startDate: yup
-    .date()
-    .nullable()
-    .required('Start date is required')
-    .typeError('Please select a valid date'),
-  endDate: yup.date().nullable().notRequired(),
-  notes: yup.string().default(''),
-  reminder: yup.boolean().default(true),
-});
 
 /**
  * MedicationAdd screen provides a form for adding or editing a medication.
  * Uses react-hook-form with yup validation, and design-system components.
  */
 const MedicationAdd: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation<any>();
+
+  const FREQUENCY_OPTIONS = [
+    { label: t('journeys.care.medications.frequency.onceDaily'), value: 'once_daily' },
+    { label: t('journeys.care.medications.frequency.twiceDaily'), value: 'twice_daily' },
+    { label: t('journeys.care.medications.frequency.threeTimesDaily'), value: 'three_times_daily' },
+    { label: t('journeys.care.medications.frequency.every8Hours'), value: 'every_8_hours' },
+    { label: t('journeys.care.medications.frequency.asNeeded'), value: 'as_needed' },
+    { label: t('journeys.care.medications.frequency.weekly'), value: 'weekly' },
+  ];
+
+  const medicationSchema = yup.object({
+    name: yup.string().required(t('common.validation.required')),
+    dosage: yup.string().required(t('common.validation.required')),
+    frequency: yup.string().required(t('common.validation.required')),
+    startDate: yup
+      .date()
+      .nullable()
+      .required(t('common.validation.required'))
+      .typeError(t('common.validation.required')),
+    endDate: yup.date().nullable().notRequired(),
+    notes: yup.string().default(''),
+    reminder: yup.boolean().default(true),
+  });
   const route = useRoute<RouteProp<MedicationAddRouteParams, 'MedicationAdd'>>();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -115,7 +115,7 @@ const MedicationAdd: React.FC = () => {
         await new Promise((resolve) => setTimeout(resolve, 500));
         navigation.goBack();
       } catch (error) {
-        Alert.alert('Error', 'Failed to save medication. Please try again.');
+        Alert.alert(t('common.errors.default'), t('common.errors.default'));
       } finally {
         setIsSubmitting(false);
       }
@@ -138,11 +138,11 @@ const MedicationAdd: React.FC = () => {
           testID="back-button"
         >
           <Text fontSize="lg" color={colors.journeys.health.primary}>
-            Back
+            {t('common.buttons.back')}
           </Text>
         </Touchable>
         <Text variant="heading" journey="health">
-          {isEditing ? 'Edit Medication' : 'Add Medication'}
+          {isEditing ? t('journeys.care.medications.edit') : t('journeys.care.medications.add')}
         </Text>
         <View style={styles.headerSpacer} />
       </View>
@@ -165,12 +165,12 @@ const MedicationAdd: React.FC = () => {
                   testID="medication-name-touchable"
                 >
                   <Input
-                    label="Medication Name"
+                    label={t('journeys.care.medications.name')}
                     value={value}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       onChange(e.target.value)
                     }
-                    placeholder="Tap to search medications..."
+                    placeholder={t('common.placeholders.search')}
                     journey="health"
                     aria-label="Medication name"
                     testID="medication-name-input"
@@ -188,7 +188,7 @@ const MedicationAdd: React.FC = () => {
               name="dosage"
               render={({ field: { value, onChange } }) => (
                 <Input
-                  label="Dosage"
+                  label={t('journeys.care.medications.dosage')}
                   value={value}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     onChange(e.target.value)
@@ -210,11 +210,11 @@ const MedicationAdd: React.FC = () => {
               name="frequency"
               render={({ field: { value, onChange } }) => (
                 <Select
-                  label="Frequency"
+                  label={t('journeys.care.medications.frequency')}
                   options={FREQUENCY_OPTIONS}
                   value={value}
                   onChange={(val) => onChange(val as string)}
-                  placeholder="Select frequency"
+                  placeholder={t('common.placeholders.select')}
                   journey="health"
                   testID="medication-frequency-select"
                 />
@@ -234,14 +234,14 @@ const MedicationAdd: React.FC = () => {
               color={colors.neutral.gray900}
               fontWeight="medium"
             >
-              Start Date
+              {t('journeys.care.medications.startDate')}
             </Text>
             <Controller
               control={control}
               name="startDate"
               render={({ field: { value, onChange } }) => (
                 <DatePicker
-                  label="Start Date"
+                  label={t('journeys.care.medications.startDate')}
                   value={value}
                   onChange={onChange}
                   journey="health"
@@ -260,14 +260,14 @@ const MedicationAdd: React.FC = () => {
               color={colors.neutral.gray900}
               fontWeight="medium"
             >
-              End Date (Optional)
+              {t('journeys.care.medications.endDate')}
             </Text>
             <Controller
               control={control}
               name="endDate"
               render={({ field: { value, onChange } }) => (
                 <DatePicker
-                  label="End Date"
+                  label={t('journeys.care.medications.endDate')}
                   value={value}
                   onChange={onChange}
                   journey="health"
@@ -285,12 +285,12 @@ const MedicationAdd: React.FC = () => {
               name="notes"
               render={({ field: { value, onChange } }) => (
                 <Input
-                  label="Notes"
+                  label={t('common.labels.notes')}
                   value={value}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     onChange(e.target.value)
                   }
-                  placeholder="Any additional notes..."
+                  placeholder={t('common.labels.notes')}
                   journey="health"
                   aria-label="Medication notes"
                   testID="medication-notes-input"
@@ -311,7 +311,7 @@ const MedicationAdd: React.FC = () => {
                   value="reminder"
                   checked={value}
                   onChange={() => onChange(!value)}
-                  label="Enable medication reminders"
+                  label={t('journeys.care.medications.reminder')}
                   journey="health"
                   testID="medication-reminder-checkbox"
                 />
@@ -332,7 +332,7 @@ const MedicationAdd: React.FC = () => {
               isEditing ? 'Save medication changes' : 'Save medication'
             }
           >
-            {isEditing ? 'Save Changes' : 'Save Medication'}
+            {isEditing ? t('common.buttons.save') : t('common.buttons.save')}
           </Button>
         </View>
       </ScrollView>

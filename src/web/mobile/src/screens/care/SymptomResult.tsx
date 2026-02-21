@@ -10,16 +10,7 @@ import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { ROUTES } from '../../../../constants/routes';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-
-const SYMPTOM_STEPS = [
-  { label: 'Symptoms' },
-  { label: 'Body Map' },
-  { label: 'Details' },
-  { label: 'Questions' },
-  { label: 'Severity' },
-  { label: 'Results' },
-  { label: 'Actions' },
-];
+import { useTranslation } from 'react-i18next';
 
 interface PossibleCondition {
   id: string;
@@ -89,29 +80,7 @@ const getSeverityBadgeStatus = (
   }
 };
 
-const getRiskLevel = (
-  overallSeverity: number
-): { label: string; color: string; badgeStatus: 'success' | 'warning' | 'error' } => {
-  if (overallSeverity <= 3) {
-    return {
-      label: 'Low Risk',
-      color: colors.semantic.success,
-      badgeStatus: 'success',
-    };
-  }
-  if (overallSeverity <= 6) {
-    return {
-      label: 'Moderate Risk',
-      color: colors.semantic.warning,
-      badgeStatus: 'warning',
-    };
-  }
-  return {
-    label: 'High Risk',
-    color: colors.semantic.error,
-    badgeStatus: 'error',
-  };
-};
+// getRiskLevel is now inside the component to access t()
 
 type SymptomResultRouteParams = {
   symptoms: Array<{ id: string; name: string }>;
@@ -138,6 +107,41 @@ const SymptomResult: React.FC = () => {
     answers = {},
     overallSeverity = 5,
   } = route.params || {};
+  const { t } = useTranslation();
+
+  const SYMPTOM_STEPS = [
+    { label: t('journeys.care.symptomChecker.steps.symptoms') },
+    { label: t('journeys.care.symptomChecker.steps.bodyMap') },
+    { label: t('journeys.care.symptomChecker.steps.details') },
+    { label: t('journeys.care.symptomChecker.steps.questions') },
+    { label: t('journeys.care.symptomChecker.steps.severity') },
+    { label: t('journeys.care.symptomChecker.steps.results') },
+    { label: t('journeys.care.symptomChecker.steps.actions') },
+  ];
+
+  const getRiskLevel = (
+    severity: number
+  ): { label: string; color: string; badgeStatus: 'success' | 'warning' | 'error' } => {
+    if (severity <= 3) {
+      return {
+        label: t('journeys.care.symptomChecker.results.lowRisk'),
+        color: colors.semantic.success,
+        badgeStatus: 'success',
+      };
+    }
+    if (severity <= 6) {
+      return {
+        label: t('journeys.care.symptomChecker.results.moderateRisk'),
+        color: colors.semantic.warning,
+        badgeStatus: 'warning',
+      };
+    }
+    return {
+      label: t('journeys.care.symptomChecker.results.highRisk'),
+      color: colors.semantic.error,
+      badgeStatus: 'error',
+    };
+  };
 
   const riskLevel = getRiskLevel(overallSeverity);
 
@@ -177,14 +181,14 @@ const SymptomResult: React.FC = () => {
         </View>
 
         <Text variant="heading" journey="care" testID="result-title">
-          Analysis Results
+          {t('journeys.care.symptomChecker.results.title')}
         </Text>
 
         {/* Overall risk card */}
         <Card journey="care" elevation="md">
           <View style={styles.riskHeader}>
             <Text variant="body" fontWeight="semiBold" journey="care">
-              Overall Risk Assessment
+              {t('journeys.care.symptomChecker.results.overallRiskAssessment')}
             </Text>
             <Badge
               variant="status"
@@ -196,15 +200,13 @@ const SymptomResult: React.FC = () => {
             </Badge>
           </View>
           <Text variant="body" journey="care">
-            Based on your reported symptoms, body areas, and severity rating of{' '}
-            {overallSeverity}/10, we have identified the following possible conditions.
+            {t('journeys.care.symptomChecker.results.riskDescription', { severity: overallSeverity })}
           </Text>
           <Text
             variant="caption"
             color={colors.neutral.gray600}
           >
-            Disclaimer: This is not a medical diagnosis. Please consult a healthcare
-            professional for an accurate assessment.
+            {t('journeys.care.symptomChecker.results.disclaimer')}
           </Text>
         </Card>
 
@@ -215,7 +217,7 @@ const SymptomResult: React.FC = () => {
           journey="care"
           testID="conditions-heading"
         >
-          Possible Conditions
+          {t('journeys.care.symptomChecker.results.possibleConditions')}
         </Text>
 
         {sortedConditions.map((condition, index) => (
@@ -250,7 +252,7 @@ const SymptomResult: React.FC = () => {
                 fontSize="text-sm"
                 color={colors.neutral.gray600}
               >
-                Match probability
+                {t('journeys.care.symptomChecker.results.matchProbability')}
               </Text>
               <Text
                 fontSize="text-sm"
@@ -287,7 +289,7 @@ const SymptomResult: React.FC = () => {
             accessibilityLabel="Start symptom check over"
             testID="start-over-button"
           >
-            Start Over
+            {t('journeys.care.symptomChecker.results.startOver')}
           </Button>
           <Button
             onPress={handleViewRecommendations}
@@ -295,7 +297,7 @@ const SymptomResult: React.FC = () => {
             accessibilityLabel="View recommendations"
             testID="recommendations-button"
           >
-            View Recommendations
+            {t('journeys.care.symptomChecker.results.viewRecommendations')}
           </Button>
         </View>
       </ScrollView>

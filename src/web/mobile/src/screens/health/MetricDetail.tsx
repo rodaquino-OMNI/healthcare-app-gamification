@@ -11,6 +11,7 @@ import { Card } from '../../../design-system/src/components/Card/Card';
 import { LineChart } from '../../../design-system/src/charts/LineChart/LineChart';
 import { formatDate, formatHealthMetric } from '../../utils/format';
 import { colors } from '../../../design-system/src/tokens/colors';
+import { useTranslation } from 'react-i18next';
 import { useJourney } from '../../context/JourneyContext';
 import { useAuth } from '../../hooks/useAuth';
 import { getHealthMetrics } from '../../api/health';
@@ -34,6 +35,7 @@ interface MetricDetailRouteParams {
  * Displays detailed information for a selected health metric.
  */
 export const MetricDetailScreen: React.FC = () => {
+  const { t } = useTranslation();
   // 1. Retrieves the route object using `useRoute` to access the `metricId` parameter.
   const route = useRoute<RouteProp<HealthStackParamList, 'HealthMetricDetail'>>();
   const { metricId } = (route.params ?? {}) as Partial<MetricDetailRouteParams>;
@@ -89,13 +91,13 @@ export const MetricDetailScreen: React.FC = () => {
     return (
       <View style={{ flex: 1, backgroundColor: colors.neutral.white }}>
         <JourneyHeader
-          title="Metrica"
+          title={t('journeys.health.metrics.title')}
           showBackButton
           onBackPress={() => navigation.goBack()}
         />
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Text style={{ color: colors.gray[50], fontSize: 16 }}>
-            Nenhuma metrica selecionada.
+            {t('journeys.health.metrics.noSelection')}
           </Text>
         </View>
       </View>
@@ -134,7 +136,7 @@ export const MetricDetailScreen: React.FC = () => {
   if (loading) {
     return (
       <View style={{ flex: 1, backgroundColor: colors.journeys[journey].background, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ color: colors.gray[50] }}>Carregando...</Text>
+        <Text style={{ color: colors.gray[50] }}>{t('journeys.health.metrics.loading')}</Text>
       </View>
     );
   }
@@ -142,7 +144,7 @@ export const MetricDetailScreen: React.FC = () => {
   // 14. If the selected metric is not found, renders an error message.
   return (
     <View style={{ flex: 1, backgroundColor: colors.neutral.white, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ color: colors.gray[50], fontSize: 16 }}>Metrica nao encontrada</Text>
+      <Text style={{ color: colors.gray[50], fontSize: 16 }}>{t('journeys.health.metrics.notFound')}</Text>
     </View>
   );
 };

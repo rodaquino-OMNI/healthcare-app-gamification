@@ -17,6 +17,7 @@ import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
 import { borderRadiusValues } from '../../../../design-system/src/tokens/borderRadius';
 import { ROUTES } from '../../constants/routes';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Tipos de filtro para notificacoes
@@ -92,6 +93,7 @@ const formatNotificationDate = (date: Date): string => {
  * estado vazio, e acao de marcar todas como lidas.
  */
 export const NotificationsScreen: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const { notifications, loading, error, refresh } = useNotifications();
   const notificationContext = useNotificationContext();
@@ -199,9 +201,9 @@ export const NotificationsScreen: React.FC = () => {
 
   // Abas de filtro
   const filters: { key: FilterType; label: string }[] = [
-    { key: 'all', label: 'Todas' },
-    { key: 'unread', label: 'Nao lidas' },
-    { key: 'read', label: 'Lidas' },
+    { key: 'all', label: t('notifications.filterAll') },
+    { key: 'unread', label: t('notifications.filterUnread') },
+    { key: 'read', label: t('notifications.filterRead') },
   ];
 
   // Estado de carregamento
@@ -210,7 +212,7 @@ export const NotificationsScreen: React.FC = () => {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.centerContainer}>
           <ActivityIndicator size="large" color={colors.brand.primary} />
-          <Text style={styles.loadingText}>Carregando notificacoes...</Text>
+          <Text style={styles.loadingText}>{t('notifications.loading')}</Text>
         </View>
       </SafeAreaView>
     );
@@ -221,9 +223,9 @@ export const NotificationsScreen: React.FC = () => {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.centerContainer}>
-          <Text style={styles.errorText}>Nao foi possivel carregar notificacoes</Text>
+          <Text style={styles.errorText}>{t('notifications.loadError')}</Text>
           <TouchableOpacity style={styles.retryButton} onPress={refresh}>
-            <Text style={styles.retryButtonText}>Tentar novamente</Text>
+            <Text style={styles.retryButtonText}>{t('common.buttons.retry')}</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -234,10 +236,10 @@ export const NotificationsScreen: React.FC = () => {
     <SafeAreaView style={styles.safeArea}>
       {/* Header com titulo e botao marcar todas como lidas */}
       <View style={styles.headerContainer}>
-        <Text style={styles.screenTitle}>Notificacoes</Text>
+        <Text style={styles.screenTitle}>{t('notifications.title')}</Text>
         {unreadCount > 0 && (
           <TouchableOpacity onPress={handleMarkAllRead} accessibilityRole="button">
-            <Text style={styles.markAllText}>Marcar todas como lidas</Text>
+            <Text style={styles.markAllText}>{t('notifications.markAllRead')}</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -268,9 +270,9 @@ export const NotificationsScreen: React.FC = () => {
           <View style={styles.emptyIconPlaceholder}>
             <Text style={styles.emptyIconText}>{'🔔'}</Text>
           </View>
-          <Text style={styles.emptyText}>Nenhuma notificacao</Text>
+          <Text style={styles.emptyText}>{t('notifications.empty')}</Text>
           <Text style={styles.emptySubtext}>
-            Voce sera notificado sobre atualizacoes importantes e atividades
+            {t('notifications.emptySubtext')}
           </Text>
         </View>
       ) : (

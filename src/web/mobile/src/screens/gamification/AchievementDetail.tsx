@@ -10,6 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 import { useAchievements } from '../../hooks/useGamification';
 import { Achievement } from '../../../../shared/types/gamification.types';
@@ -39,13 +40,13 @@ function getJourneyBackground(journey: string): string {
   return colors.journeys[key]?.background ?? colors.gray[5];
 }
 
-function getJourneyLabel(journey: string): string {
-  const labels: Record<string, string> = {
-    health: 'Saude',
-    care: 'Cuidado',
-    plan: 'Plano',
+function getJourneyLabelKey(journey: string): string {
+  const keys: Record<string, string> = {
+    health: 'gamification.achievementDetail.journeyHealth',
+    care: 'gamification.achievementDetail.journeyCare',
+    plan: 'gamification.achievementDetail.journeyPlan',
   };
-  return labels[journey.toLowerCase()] ?? journey;
+  return keys[journey.toLowerCase()] ?? 'gamification.achievementDetail.journeyDefault';
 }
 
 /** Generate mock requirements based on achievement progress. */
@@ -80,6 +81,7 @@ function getMockRequirements(achievement: Achievement): Requirement[] {
 
 /** Achievement detail: progress, requirements, reward preview, share. */
 const AchievementDetailScreen: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const route = useRoute<RouteProp<AchievementDetailParamList, 'GamificationAchievementDetail'>>();
   const { achievementId } = (route.params ?? {}) as Partial<{ achievementId: string }>;
@@ -99,7 +101,7 @@ const AchievementDetailScreen: React.FC = () => {
         title: achievement.title,
       });
     } catch (error) {
-      Alert.alert('Erro', 'Nao foi possivel compartilhar.');
+      Alert.alert(t('gamification.achievementDetail.shareError'), t('gamification.achievementDetail.shareErrorMessage'));
     }
   };
 
@@ -117,13 +119,13 @@ const AchievementDetailScreen: React.FC = () => {
             onPress={handleGoBack}
             style={styles.backButton}
             accessibilityRole="button"
-            accessibilityLabel="Voltar"
+            accessibilityLabel={t('common.buttons.back')}
           >
-            <Text style={styles.backButtonText}>{'<'} Voltar</Text>
+            <Text style={styles.backButtonText}>{'<'} {t('common.buttons.back')}</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.centeredMessage}>
-          <Text style={styles.errorText}>Conquista nao encontrada.</Text>
+          <Text style={styles.errorText}>{t('gamification.achievementDetail.notFound')}</Text>
         </View>
       </SafeAreaView>
     );
@@ -133,7 +135,7 @@ const AchievementDetailScreen: React.FC = () => {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.centeredMessage}>
-          <Text style={styles.loadingText}>Carregando...</Text>
+          <Text style={styles.loadingText}>{t('gamification.achievementDetail.loading')}</Text>
         </View>
       </SafeAreaView>
     );
@@ -147,13 +149,13 @@ const AchievementDetailScreen: React.FC = () => {
             onPress={handleGoBack}
             style={styles.backButton}
             accessibilityRole="button"
-            accessibilityLabel="Voltar"
+            accessibilityLabel={t('common.buttons.back')}
           >
-            <Text style={styles.backButtonText}>{'<'} Voltar</Text>
+            <Text style={styles.backButtonText}>{'<'} {t('common.buttons.back')}</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.centeredMessage}>
-          <Text style={styles.errorText}>Conquista nao encontrada.</Text>
+          <Text style={styles.errorText}>{t('gamification.achievementDetail.notFound')}</Text>
         </View>
       </SafeAreaView>
     );
@@ -161,7 +163,7 @@ const AchievementDetailScreen: React.FC = () => {
 
   const journeyColor = getJourneyColor(achievement.journey);
   const journeyBg = getJourneyBackground(achievement.journey);
-  const journeyLabel = getJourneyLabel(achievement.journey);
+  const journeyLabel = t(getJourneyLabelKey(achievement.journey));
   const progressPercent =
     achievement.total > 0
       ? Math.round((achievement.progress / achievement.total) * 100)
@@ -177,17 +179,17 @@ const AchievementDetailScreen: React.FC = () => {
           onPress={handleGoBack}
           style={styles.backButton}
           accessibilityRole="button"
-          accessibilityLabel="Voltar"
+          accessibilityLabel={t('common.buttons.back')}
         >
-          <Text style={styles.backButtonText}>{'<'} Voltar</Text>
+          <Text style={styles.backButtonText}>{'<'} {t('common.buttons.back')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={handleShare}
           style={styles.shareButton}
           accessibilityRole="button"
-          accessibilityLabel="Compartilhar conquista"
+          accessibilityLabel={t('gamification.achievementDetail.shareLabel')}
         >
-          <Text style={styles.shareButtonText}>Compartilhar</Text>
+          <Text style={styles.shareButtonText}>{t('gamification.achievementDetail.share')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -212,7 +214,7 @@ const AchievementDetailScreen: React.FC = () => {
         {achievement.unlocked && (
           <View style={[styles.statusBadge, { backgroundColor: colors.semantic.successBg }]}>
             <Text style={[styles.statusBadgeText, { color: colors.semantic.success }]}>
-              Desbloqueado
+              {t('gamification.achievementDetail.unlocked')}
             </Text>
           </View>
         )}
@@ -231,7 +233,7 @@ const AchievementDetailScreen: React.FC = () => {
 
         {/* Progress Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Progresso</Text>
+          <Text style={styles.sectionTitle}>{t('gamification.achievementDetail.progress')}</Text>
           <View style={styles.progressRow}>
             <Text style={styles.progressPercent}>{progressPercent}%</Text>
             <Text style={styles.progressFraction}>
@@ -253,7 +255,7 @@ const AchievementDetailScreen: React.FC = () => {
 
         {/* Requirements */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Requisitos</Text>
+          <Text style={styles.sectionTitle}>{t('gamification.achievementDetail.requirements')}</Text>
           {requirements.map((req) => (
             <View key={req.id} style={styles.requirementRow}>
               <View
@@ -280,11 +282,11 @@ const AchievementDetailScreen: React.FC = () => {
 
         {/* Reward Preview */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Recompensa</Text>
+          <Text style={styles.sectionTitle}>{t('gamification.achievementDetail.reward')}</Text>
           <View style={[styles.rewardCard, { borderColor: journeyColor }]}>
             <Text style={styles.rewardIcon}>{'⭐'}</Text>
             <View style={styles.rewardInfo}>
-              <Text style={styles.rewardTitle}>Bonus de XP</Text>
+              <Text style={styles.rewardTitle}>{t('gamification.achievementDetail.xpBonus')}</Text>
               <Text style={[styles.rewardXP, { color: journeyColor }]}>
                 +{mockXPReward} XP
               </Text>

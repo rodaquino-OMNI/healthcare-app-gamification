@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
+import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '../hooks/useAuth';
 import { MOBILE_AUTH_ROUTES } from 'src/web/shared/constants/routes';
@@ -25,17 +26,18 @@ const LoginScreen = () => {
   // Get navigation and auth hooks
   const navigation = useNavigation();
   const { signIn } = useAuth();
+  const { t } = useTranslation();
 
   // Form validation schema using yup
   const validationSchema = yup.object({
     email: yup
       .string()
-      .email('Please enter a valid email')
-      .required('Email is required'),
+      .email(t('common.validation.email'))
+      .required(t('common.validation.required')),
     password: yup
       .string()
-      .min(8, 'Password must be at least 8 characters')
-      .required('Password is required'),
+      .min(8, t('common.validation.minLength', { count: 8 }))
+      .required(t('common.validation.required')),
   });
 
   // Initialize form handling with formik
@@ -53,7 +55,7 @@ const LoginScreen = () => {
       } catch (error) {
         // Handle login error
         formik.setErrors({
-          email: 'Invalid email or password',
+          email: t('auth.login.invalidCredentials'),
         });
       }
     },
@@ -67,20 +69,20 @@ const LoginScreen = () => {
           AUSTA
         </Text>
         <Text fontSize="lg" marginTop="md">
-          Log in to your account
+          {t('auth.login.title')}
         </Text>
       </Box>
 
       {/* Email input field */}
       <Box marginBottom="md">
         <Text fontWeight="medium" marginBottom="xs">
-          Email
+          {t('common.labels.email')}
         </Text>
         <Input
           value={formik.values.email}
           onChange={formik.handleChange('email')}
-          placeholder="Enter your email"
-          aria-label="Email"
+          placeholder={t('auth.login.emailPlaceholder')}
+          aria-label={t('common.labels.email')}
           type="email"
         />
         {formik.touched.email && formik.errors.email && (
@@ -93,13 +95,13 @@ const LoginScreen = () => {
       {/* Password input field */}
       <Box marginBottom="lg">
         <Text fontWeight="medium" marginBottom="xs">
-          Password
+          {t('auth.login.password')}
         </Text>
         <Input
           value={formik.values.password}
           onChange={formik.handleChange('password')}
-          placeholder="Enter your password"
-          aria-label="Password"
+          placeholder={t('auth.login.passwordPlaceholder')}
+          aria-label={t('auth.login.password')}
           type="password"
         />
         {formik.touched.password && formik.errors.password && (
@@ -117,7 +119,7 @@ const LoginScreen = () => {
           loading={formik.isSubmitting}
           journey="health"
         >
-          Log In
+          {t('auth.login.submit')}
         </Button>
       </Box>
 
@@ -128,21 +130,21 @@ const LoginScreen = () => {
           variant="tertiary"
           journey="health"
         >
-          Forgot Password?
+          {t('auth.login.forgotPassword')}
         </Button>
       </Box>
 
       {/* Register account link */}
       <Box flexDirection="row" justifyContent="center" alignItems="center">
         <Text marginRight="sm">
-          Don't have an account?
+          {t('auth.login.noAccount')}
         </Text>
         <Button
           onPress={() => navigation.navigate(MOBILE_AUTH_ROUTES.REGISTER)}
           variant="tertiary"
           journey="health"
         >
-          Register
+          {t('auth.login.register')}
         </Button>
       </Box>
     </Box>

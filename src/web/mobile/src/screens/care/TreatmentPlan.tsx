@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'; // react v18.0.0
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useRoute } from '@react-navigation/native'; // @react-navigation/native v6.0.0
 import {
   TreatmentPlan as TreatmentPlanType, // TreatmentPlan interface
@@ -17,6 +18,7 @@ import { ErrorState } from 'src/web/mobile/src/components/shared/ErrorState'; //
  * Displays the details of a treatment plan and its associated medications.
  */
 export const TreatmentPlanScreen: React.FC = () => {
+  const { t } = useTranslation();
   // Access the route parameters to get the treatment plan ID.
   const route = useRoute<any>();
   const { treatmentPlanId } = route.params;
@@ -58,7 +60,7 @@ export const TreatmentPlanScreen: React.FC = () => {
 
   // If the treatment plan is loading, display a LoadingIndicator.
   if (loading) {
-    return <LoadingIndicator label="Loading treatment plan..." />;
+    return <LoadingIndicator label={t('journeys.care.treatmentPlan.loading')} />;
   }
 
   // If there is an error, display an ErrorState.
@@ -69,15 +71,15 @@ export const TreatmentPlanScreen: React.FC = () => {
   // Otherwise, display the treatment plan details in a Card component.
   return (
     <View>
-      <JourneyHeader title="Treatment Plan" showBackButton />
+      <JourneyHeader title={t('journeys.care.treatmentPlan.title')} showBackButton />
       {treatmentPlan && (
         <Card>
           {/* Display the treatment plan name, description, start date, end date, and progress. */}
           <View>
-            <Text>Name: {treatmentPlan.name}</Text>
-            <Text>Description: {treatmentPlan.description}</Text>
-            <Text>Start Date: {treatmentPlan.startDate}</Text>
-            <Text>End Date: {treatmentPlan.endDate}</Text>
+            <Text>{t('journeys.care.treatmentPlan.name')}: {treatmentPlan.name}</Text>
+            <Text>{t('journeys.care.treatmentPlan.description')}: {treatmentPlan.description}</Text>
+            <Text>{t('journeys.care.treatmentPlan.startDate')}: {treatmentPlan.startDate}</Text>
+            <Text>{t('journeys.care.treatmentPlan.endDate')}: {treatmentPlan.endDate}</Text>
             {/* Use the ProgressBar component to visualize the treatment plan progress. */}
             <ProgressBar current={treatmentPlan.progress} total={100} />
           </View>

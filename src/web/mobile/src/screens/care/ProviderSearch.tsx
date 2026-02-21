@@ -12,6 +12,7 @@ import { JourneyHeader, JourneyHeaderProps } from 'src/web/mobile/src/components
 import { useAuth } from 'src/web/mobile/src/hooks/useAuth';
 import { LoadingIndicator } from 'src/web/mobile/src/components/shared/LoadingIndicator';
 import { ErrorState } from 'src/web/mobile/src/components/shared/ErrorState';
+import { useTranslation } from 'react-i18next';
 
 /**
  * A screen component that allows users to search for healthcare providers.
@@ -19,6 +20,7 @@ import { ErrorState } from 'src/web/mobile/src/components/shared/ErrorState';
  * @returns {JSX.Element} The rendered ProviderSearchScreen component.
  */
 const ProviderSearchScreen: React.FC = () => {
+  const { t } = useTranslation();
   // LD1: Initialize state variables for location, providers, loading, and error.
   const [location, setLocation] = useState<string>('');
   const [providers, setProviders] = useState<Provider[]>([]);
@@ -41,7 +43,7 @@ const ProviderSearchScreen: React.FC = () => {
       setProviders(providerList);
     } catch (e: any) {
       // LD1: Set the error state if an error occurs during the provider search.
-      setError(e.message || 'Failed to fetch providers');
+      setError(e.message || t('journeys.care.providerSearch.fetchError'));
       setProviders([]);
     } finally {
       // LD1: Set the loading state to false after the provider search is complete.
@@ -59,11 +61,11 @@ const ProviderSearchScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       {/* LD1: Render a JourneyHeader with the title 'Find a Provider'. */}
-      <JourneyHeader title="Find a Provider" />
+      <JourneyHeader title={t('journeys.care.providerSearch.title')} />
 
       {/* LD1: Render an Input component for entering the location. */}
       <Input
-        placeholder="Enter location"
+        placeholder={t('journeys.care.providerSearch.enterLocation')}
         value={location}
         onChange={(e) => setLocation(e.target.value)}
         accessibilityLabel="Enter location to search for providers"
@@ -71,17 +73,17 @@ const ProviderSearchScreen: React.FC = () => {
 
       {/* LD1: Render a Button component to trigger the provider search. */}
       <Button
-        title="Search"
+        title={t('common.buttons.search')}
         onPress={handleSearch}
         disabled={loading}
         journey="care"
-        accessibilityLabel="Search for providers"
+        accessibilityLabel={t('journeys.care.providerSearch.searchAccessibility')}
       >
-        Search
+        {t('common.buttons.search')}
       </Button>
 
       {/* LD1: Conditionally render a LoadingIndicator while the providers are being fetched. */}
-      {loading && <LoadingIndicator journey="care" label="Searching for providers..." />}
+      {loading && <LoadingIndicator journey="care" label={t('journeys.care.providerSearch.searching')} />}
 
       {/* LD1: Conditionally render an ErrorState if an error occurs during the provider search. */}
       {error && <ErrorState message={error} />}

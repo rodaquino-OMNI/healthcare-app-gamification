@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { fontSizeValues } from '../../../../design-system/src/tokens/typography';
@@ -190,7 +191,9 @@ interface JourneysSectionProps {
 /**
  * Journey navigation cards section.
  */
-export const JourneysSection: React.FC<JourneysSectionProps> = ({ navigation, journeys }) => (
+export const JourneysSection: React.FC<JourneysSectionProps> = ({ navigation, journeys }) => {
+  const { t } = useTranslation();
+  return (
   <>
     {journeys.map((journey) => (
       <TouchableOpacity
@@ -198,7 +201,7 @@ export const JourneysSection: React.FC<JourneysSectionProps> = ({ navigation, jo
         style={styles.journeyCard}
         onPress={() => navigation.navigate(journey.route as never)}
         accessibilityRole="button"
-        accessibilityLabel={`Navegar para ${journey.title}`}
+        accessibilityLabel={t('home.navigateTo', { title: journey.title })}
       >
         <View
           style={[
@@ -215,7 +218,8 @@ export const JourneysSection: React.FC<JourneysSectionProps> = ({ navigation, jo
       </TouchableOpacity>
     ))}
   </>
-);
+  );
+};
 
 // ---------------------------------------------------------------------------
 // Styles

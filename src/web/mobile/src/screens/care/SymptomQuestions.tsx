@@ -11,16 +11,7 @@ import { Box } from '@austa/design-system/src/primitives/Box/Box';
 import { ROUTES } from '../../../../constants/routes';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-
-const SYMPTOM_STEPS = [
-  { label: 'Symptoms' },
-  { label: 'Body Map' },
-  { label: 'Details' },
-  { label: 'Questions' },
-  { label: 'Severity' },
-  { label: 'Results' },
-  { label: 'Actions' },
-];
+import { useTranslation } from 'react-i18next';
 
 /**
  * Question data structure for the AI-driven follow-up questions.
@@ -117,6 +108,17 @@ const SymptomQuestions: React.FC = () => {
   const navigation = useNavigation<any>();
   const route = useRoute<RouteProp<{ params: SymptomQuestionsRouteParams }, 'params'>>();
   const { symptoms = [], description = '', regions = [], details = [] } = route.params || {};
+  const { t } = useTranslation();
+
+  const SYMPTOM_STEPS = [
+    { label: t('journeys.care.symptomChecker.steps.symptoms') },
+    { label: t('journeys.care.symptomChecker.steps.bodyMap') },
+    { label: t('journeys.care.symptomChecker.steps.details') },
+    { label: t('journeys.care.symptomChecker.steps.questions') },
+    { label: t('journeys.care.symptomChecker.steps.severity') },
+    { label: t('journeys.care.symptomChecker.steps.results') },
+    { label: t('journeys.care.symptomChecker.steps.actions') },
+  ];
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
@@ -198,11 +200,11 @@ const SymptomQuestions: React.FC = () => {
         </View>
 
         <Text variant="heading" journey="care" testID="questions-title">
-          Follow-up Questions
+          {t('journeys.care.symptomChecker.questions.title')}
         </Text>
 
         <Text variant="body" journey="care">
-          Question {currentQuestionIndex + 1} of {MOCK_QUESTIONS.length}
+          {t('journeys.care.symptomChecker.questions.counter', { current: currentQuestionIndex + 1, total: MOCK_QUESTIONS.length })}
         </Text>
 
         <Card journey="care" elevation="md">
@@ -281,7 +283,7 @@ const SymptomQuestions: React.FC = () => {
               accessibilityLabel="Go back to symptom details"
               testID="back-button"
             >
-              Back
+              {t('common.buttons.back')}
             </Button>
           ) : (
             <Button
@@ -291,7 +293,7 @@ const SymptomQuestions: React.FC = () => {
               accessibilityLabel="Previous question"
               testID="previous-button"
             >
-              Previous
+              {t('journeys.care.symptomChecker.questions.previous')}
             </Button>
           )}
 
@@ -304,7 +306,7 @@ const SymptomQuestions: React.FC = () => {
             }
             testID="next-button"
           >
-            {isLastQuestion ? 'Continue' : 'Next'}
+            {isLastQuestion ? t('common.buttons.next') : t('journeys.care.symptomChecker.questions.next')}
           </Button>
         </View>
       </ScrollView>

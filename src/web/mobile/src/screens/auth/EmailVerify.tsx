@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { TextInput as RNTextInput } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
@@ -142,6 +143,7 @@ interface ToastState {
  */
 export const EmailVerifyScreen: React.FC = () => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
 
   // OTP digit state
   const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(''));
@@ -210,13 +212,13 @@ export const EmailVerifyScreen: React.FC = () => {
     try {
       // TODO: Call actual email verification API
       // await verifyEmail(otpCode);
-      showToast('success', 'Email verified successfully!');
+      showToast('success', t('auth.emailVerify.successMessage'));
       // Navigate after short delay for toast visibility
       setTimeout(() => {
         navigation.goBack();
       }, 1500);
     } catch (error: any) {
-      showToast('error', error?.message || 'Verification failed. Please try again.');
+      showToast('error', error?.message || t('auth.emailVerify.errorMessage'));
       setIsSubmitting(false);
     }
   }, [navigation, showToast]);
@@ -266,7 +268,7 @@ export const EmailVerifyScreen: React.FC = () => {
     setCanResend(false);
     setDigits(Array(OTP_LENGTH).fill(''));
     inputRefs.current[0]?.focus();
-    showToast('success', 'A new verification code has been sent.');
+    showToast('success', t('auth.emailVerify.resendSuccess'));
   }, [canResend, showToast]);
 
   /**
@@ -290,9 +292,9 @@ export const EmailVerifyScreen: React.FC = () => {
         </ToastContainer>
       )}
 
-      <Title>Verify your email</Title>
+      <Title>{t('auth.emailVerify.title')}</Title>
       <Description>
-        Enter the 6-digit code we sent to your email address.
+        {t('auth.emailVerify.description')}
       </Description>
 
       {/* OTP Input boxes */}
@@ -312,7 +314,7 @@ export const EmailVerifyScreen: React.FC = () => {
             maxLength={1}
             autoFocus={index === 0}
             selectTextOnFocus
-            accessibilityLabel={`Digit ${index + 1} of ${OTP_LENGTH}`}
+            accessibilityLabel={t('auth.emailVerify.digitLabel', { current: index + 1, total: OTP_LENGTH })}
             testID={`otp-input-${index}`}
             editable={!isSubmitting}
           />
@@ -323,7 +325,7 @@ export const EmailVerifyScreen: React.FC = () => {
       <TimerContainer>
         {!canResend && (
           <TimerText>
-            Resend in {formatCountdown(countdown)}
+            {t('auth.emailVerify.resendIn', { time: formatCountdown(countdown) })}
           </TimerText>
         )}
       </TimerContainer>
@@ -332,12 +334,12 @@ export const EmailVerifyScreen: React.FC = () => {
       <ResendButton
         onPress={handleResend}
         disabled={!canResend || isSubmitting}
-        accessibilityLabel="Resend verification code"
+        accessibilityLabel={t('auth.emailVerify.resendCode')}
         accessibilityRole="button"
         testID="resend-button"
       >
         <ResendText disabled={!canResend}>
-          Resend Code
+          {t('auth.emailVerify.resendCode')}
         </ResendText>
       </ResendButton>
 
@@ -345,12 +347,12 @@ export const EmailVerifyScreen: React.FC = () => {
       <VerifyButton
         onPress={handleVerifyPress}
         disabled={!isComplete || isSubmitting}
-        accessibilityLabel="Verify email"
+        accessibilityLabel={t('auth.emailVerify.verifyButton')}
         accessibilityRole="button"
         testID="verify-button"
       >
         <VerifyButtonText>
-          {isSubmitting ? 'Verifying...' : 'Verify'}
+          {isSubmitting ? t('auth.emailVerify.verifying') : t('auth.emailVerify.verify')}
         </VerifyButtonText>
       </VerifyButton>
     </Container>

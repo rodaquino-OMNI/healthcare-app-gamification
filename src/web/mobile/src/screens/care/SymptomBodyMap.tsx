@@ -9,16 +9,7 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { ROUTES } from '../../../../constants/routes';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-
-const SYMPTOM_STEPS = [
-  { label: 'Symptoms' },
-  { label: 'Body Map' },
-  { label: 'Details' },
-  { label: 'Questions' },
-  { label: 'Severity' },
-  { label: 'Results' },
-  { label: 'Actions' },
-];
+import { useTranslation } from 'react-i18next';
 
 /**
  * Anatomical body regions for symptom location selection.
@@ -34,17 +25,17 @@ interface BodyRegion {
   height: number;
 }
 
-const BODY_REGIONS: BodyRegion[] = [
-  { id: 'head', label: 'Head', top: 2, left: 35, width: 30, height: 10 },
-  { id: 'neck', label: 'Neck', top: 12, left: 38, width: 24, height: 5 },
-  { id: 'chest', label: 'Chest', top: 17, left: 28, width: 44, height: 12 },
-  { id: 'abdomen', label: 'Abdomen', top: 29, left: 30, width: 40, height: 12 },
-  { id: 'pelvis', label: 'Pelvis', top: 41, left: 32, width: 36, height: 8 },
-  { id: 'left_arm', label: 'Left Arm', top: 17, left: 5, width: 22, height: 28 },
-  { id: 'right_arm', label: 'Right Arm', top: 17, left: 73, width: 22, height: 28 },
-  { id: 'back', label: 'Back', top: 20, left: 35, width: 30, height: 20 },
-  { id: 'left_leg', label: 'Left Leg', top: 49, left: 20, width: 24, height: 48 },
-  { id: 'right_leg', label: 'Right Leg', top: 49, left: 56, width: 24, height: 48 },
+const BODY_REGIONS_BASE = [
+  { id: 'head', labelKey: 'journeys.care.symptomChecker.bodyMap.head', top: 2, left: 35, width: 30, height: 10 },
+  { id: 'neck', labelKey: 'journeys.care.symptomChecker.bodyMap.neck', top: 12, left: 38, width: 24, height: 5 },
+  { id: 'chest', labelKey: 'journeys.care.symptomChecker.bodyMap.chest', top: 17, left: 28, width: 44, height: 12 },
+  { id: 'abdomen', labelKey: 'journeys.care.symptomChecker.bodyMap.abdomen', top: 29, left: 30, width: 40, height: 12 },
+  { id: 'pelvis', labelKey: 'journeys.care.symptomChecker.bodyMap.pelvis', top: 41, left: 32, width: 36, height: 8 },
+  { id: 'left_arm', labelKey: 'journeys.care.symptomChecker.bodyMap.leftArm', top: 17, left: 5, width: 22, height: 28 },
+  { id: 'right_arm', labelKey: 'journeys.care.symptomChecker.bodyMap.rightArm', top: 17, left: 73, width: 22, height: 28 },
+  { id: 'back', labelKey: 'journeys.care.symptomChecker.bodyMap.back', top: 20, left: 35, width: 30, height: 20 },
+  { id: 'left_leg', labelKey: 'journeys.care.symptomChecker.bodyMap.leftLeg', top: 49, left: 20, width: 24, height: 48 },
+  { id: 'right_leg', labelKey: 'journeys.care.symptomChecker.bodyMap.rightLeg', top: 49, left: 56, width: 24, height: 48 },
 ];
 
 type SymptomBodyMapRouteParams = {
@@ -61,6 +52,26 @@ const SymptomBodyMap: React.FC = () => {
   const navigation = useNavigation<any>();
   const route = useRoute<RouteProp<{ params: SymptomBodyMapRouteParams }, 'params'>>();
   const { symptoms = [], description = '' } = route.params || {};
+  const { t } = useTranslation();
+
+  const SYMPTOM_STEPS = [
+    { label: t('journeys.care.symptomChecker.steps.symptoms') },
+    { label: t('journeys.care.symptomChecker.steps.bodyMap') },
+    { label: t('journeys.care.symptomChecker.steps.details') },
+    { label: t('journeys.care.symptomChecker.steps.questions') },
+    { label: t('journeys.care.symptomChecker.steps.severity') },
+    { label: t('journeys.care.symptomChecker.steps.results') },
+    { label: t('journeys.care.symptomChecker.steps.actions') },
+  ];
+
+  const BODY_REGIONS: BodyRegion[] = BODY_REGIONS_BASE.map((r) => ({
+    id: r.id,
+    label: t(r.labelKey),
+    top: r.top,
+    left: r.left,
+    width: r.width,
+    height: r.height,
+  }));
 
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
 
@@ -113,7 +124,7 @@ const SymptomBodyMap: React.FC = () => {
           journey="care"
           testID="body-map-title"
         >
-          Where do you feel symptoms?
+          {t('journeys.care.symptomChecker.bodyMap.title')}
         </Text>
 
         <Text
@@ -121,7 +132,7 @@ const SymptomBodyMap: React.FC = () => {
           journey="care"
           testID="body-map-subtitle"
         >
-          Tap on the body areas where you are experiencing symptoms. You can select multiple areas.
+          {t('journeys.care.symptomChecker.bodyMap.subtitle')}
         </Text>
 
         <View style={styles.bodyContainer}>
@@ -172,7 +183,7 @@ const SymptomBodyMap: React.FC = () => {
         {selectedRegions.length > 0 && (
           <View style={styles.selectedSummary}>
             <Text variant="body" fontWeight="semiBold" journey="care">
-              Selected areas ({selectedRegions.length}):
+              {t('journeys.care.symptomChecker.bodyMap.selectedAreas', { count: selectedRegions.length })}:
             </Text>
             <View style={styles.chipRow}>
               {selectedRegions.map((regionId) => {
@@ -200,7 +211,7 @@ const SymptomBodyMap: React.FC = () => {
             accessibilityLabel="Go back to symptom input"
             testID="back-button"
           >
-            Back
+            {t('common.buttons.back')}
           </Button>
           <Button
             onPress={handleContinue}
@@ -209,7 +220,7 @@ const SymptomBodyMap: React.FC = () => {
             accessibilityLabel="Continue to symptom details"
             testID="continue-button"
           >
-            Continue
+            {t('common.buttons.next')}
           </Button>
         </View>
       </ScrollView>

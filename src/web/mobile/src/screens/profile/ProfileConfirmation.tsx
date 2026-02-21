@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styled from 'styled-components/native';
+import { useTranslation } from 'react-i18next';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography } from '../../../../design-system/src/tokens/typography';
@@ -155,6 +156,7 @@ const CelebrationText = styled.Text`
  */
 const ProfileConfirmation: React.FC = () => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
 
   // TODO: Retrieve actual profile data from context/store
   const profileData = {
@@ -180,7 +182,7 @@ const ProfileConfirmation: React.FC = () => {
         <ContentWrapper>
           {/* Step Indicator */}
           <HeaderSection>
-            <StepIndicator>Step 7 of 7</StepIndicator>
+            <StepIndicator>{t('profileSetup.stepIndicator', { current: 7, total: 7 })}</StepIndicator>
             <StepBarContainer>
               {[1, 2, 3, 4, 5, 6, 7].map((step) => (
                 <StepDot key={step} active={step <= 7} />
@@ -196,16 +198,15 @@ const ProfileConfirmation: React.FC = () => {
           </SuccessIconContainer>
 
           {/* Title */}
-          <Title>Profile Complete!</Title>
+          <Title>{t('profileSetup.confirmation.title')}</Title>
           <SubtitleText>
-            Your profile has been set up successfully. You are ready to
-            start your health journey.
+            {t('profileSetup.confirmation.subtitle')}
           </SubtitleText>
 
           {/* Summary Card */}
           <SummaryCard>
             <SummaryRow>
-              <SummaryLabel>Name</SummaryLabel>
+              <SummaryLabel>{t('common.labels.name')}</SummaryLabel>
               <SummaryValue
                 numberOfLines={1}
                 testID="profile-confirm-name"
@@ -214,7 +215,7 @@ const ProfileConfirmation: React.FC = () => {
               </SummaryValue>
             </SummaryRow>
             <SummaryRow>
-              <SummaryLabel>Email</SummaryLabel>
+              <SummaryLabel>{t('common.labels.email')}</SummaryLabel>
               <SummaryValue
                 numberOfLines={1}
                 testID="profile-confirm-email"
@@ -223,7 +224,7 @@ const ProfileConfirmation: React.FC = () => {
               </SummaryValue>
             </SummaryRow>
             <SummaryRowLast>
-              <SummaryLabel>Phone</SummaryLabel>
+              <SummaryLabel>{t('common.labels.phone')}</SummaryLabel>
               <SummaryValue
                 numberOfLines={1}
                 testID="profile-confirm-phone"
@@ -237,14 +238,14 @@ const ProfileConfirmation: React.FC = () => {
           <PrimaryButton
             onPress={handleContinueToHome}
             accessibilityRole="button"
-            accessibilityLabel="Continue to home screen"
+            accessibilityLabel={t('profileSetup.confirmation.continueToHome')}
             testID="profile-confirm-continue"
           >
-            <PrimaryButtonText>Continue to Home</PrimaryButtonText>
+            <PrimaryButtonText>{t('profileSetup.confirmation.continueToHome')}</PrimaryButtonText>
           </PrimaryButton>
 
           <CelebrationText>
-            Welcome to AUSTA SuperApp
+            {t('profileSetup.confirmation.welcome')}
           </CelebrationText>
         </ContentWrapper>
       </ScrollView>

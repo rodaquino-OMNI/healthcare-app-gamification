@@ -9,6 +9,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 import { colors } from 'src/web/design-system/src/tokens/colors';
 import { spacingValues } from 'src/web/design-system/src/tokens/spacing';
@@ -25,10 +26,10 @@ interface CategorizedQuest extends Quest {
 
 type TabFilter = 'active' | 'available' | 'completed';
 
-const TABS: { key: TabFilter; label: string }[] = [
-  { key: 'active', label: 'Active' },
-  { key: 'available', label: 'Available' },
-  { key: 'completed', label: 'Completed' },
+const TABS: { key: TabFilter; labelKey: string }[] = [
+  { key: 'active', labelKey: 'gamification.quests.tabActive' },
+  { key: 'available', labelKey: 'gamification.quests.tabAvailable' },
+  { key: 'completed', labelKey: 'gamification.quests.tabCompleted' },
 ];
 
 /**
@@ -70,6 +71,7 @@ const getJourneyColor = (journey: string): string => {
  * with filter tabs for Active, Available, and Completed states.
  */
 const QuestList: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const [activeTab, setActiveTab] = useState<TabFilter>('active');
 
@@ -101,9 +103,9 @@ const QuestList: React.FC = () => {
     const special = filteredQuests.filter((q) => q.category === 'special');
 
     const result: { title: string; data: CategorizedQuest[] }[] = [];
-    if (daily.length > 0) result.push({ title: 'Daily Quests', data: daily });
-    if (weekly.length > 0) result.push({ title: 'Weekly Challenges', data: weekly });
-    if (special.length > 0) result.push({ title: 'Special Missions', data: special });
+    if (daily.length > 0) result.push({ title: t('gamification.quests.sectionDaily'), data: daily });
+    if (weekly.length > 0) result.push({ title: t('gamification.quests.sectionWeekly'), data: weekly });
+    if (special.length > 0) result.push({ title: t('gamification.quests.sectionSpecial'), data: special });
     return result;
   }, [filteredQuests]);
 
@@ -116,25 +118,25 @@ const QuestList: React.FC = () => {
 
   const renderSummaryCard = () => (
     <View style={styles.summaryCard}>
-      <Text style={styles.summaryTitle}>Quest Progress</Text>
+      <Text style={styles.summaryTitle}>{t('gamification.quests.summaryTitle')}</Text>
       <View style={styles.summaryRow}>
         <View style={styles.summaryItem}>
           <Text style={styles.summaryValue}>{stats.total}</Text>
-          <Text style={styles.summaryLabel}>Total</Text>
+          <Text style={styles.summaryLabel}>{t('gamification.quests.summaryTotal')}</Text>
         </View>
         <View style={styles.summaryDivider} />
         <View style={styles.summaryItem}>
           <Text style={[styles.summaryValue, { color: colors.journeys.health.primary }]}>
             {stats.active}
           </Text>
-          <Text style={styles.summaryLabel}>Active</Text>
+          <Text style={styles.summaryLabel}>{t('gamification.quests.summaryActive')}</Text>
         </View>
         <View style={styles.summaryDivider} />
         <View style={styles.summaryItem}>
           <Text style={[styles.summaryValue, { color: colors.semantic.success }]}>
             {stats.completed}
           </Text>
-          <Text style={styles.summaryLabel}>Completed</Text>
+          <Text style={styles.summaryLabel}>{t('gamification.quests.summaryCompleted')}</Text>
         </View>
       </View>
     </View>
@@ -154,11 +156,11 @@ const QuestList: React.FC = () => {
             key={tab.key}
             onPress={() => setActiveTab(tab.key)}
             style={[styles.tab, isActive && styles.tabActive]}
-            accessibilityLabel={`Filter by ${tab.label} quests`}
+            accessibilityLabel={t('gamification.quests.filterBy', { label: t(tab.labelKey) })}
             accessibilityState={{ selected: isActive }}
           >
             <Text style={[styles.tabText, isActive && styles.tabTextActive]}>
-              {tab.label}
+              {t(tab.labelKey)}
             </Text>
           </TouchableOpacity>
         );
@@ -174,8 +176,8 @@ const QuestList: React.FC = () => {
       <TouchableOpacity
         onPress={() => handleQuestPress(item.id)}
         style={styles.questItem}
-        accessibilityLabel={`${item.title}, ${item.journey} journey, ${Math.round(progressPercent)}% complete`}
-        accessibilityHint="Opens quest details"
+        accessibilityLabel={t('gamification.quests.questAccessibility', { title: item.title, journey: item.journey, percent: Math.round(progressPercent) })}
+        accessibilityHint={t('gamification.quests.questHint')}
       >
         <View style={styles.questIconContainer}>
           <Text style={styles.questIcon}>{item.icon}</Text>
@@ -225,13 +227,13 @@ const QuestList: React.FC = () => {
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
       <Text style={styles.emptyIcon}>{'\u{1F50D}'}</Text>
-      <Text style={styles.emptyTitle}>No quests found</Text>
+      <Text style={styles.emptyTitle}>{t('gamification.quests.emptyTitle')}</Text>
       <Text style={styles.emptySubtitle}>
         {activeTab === 'active'
-          ? 'Start a quest from the Available tab to see it here'
+          ? t('gamification.quests.emptyActive')
           : activeTab === 'available'
-          ? 'All quests are in progress or completed'
-          : 'Complete quests to see them here'}
+          ? t('gamification.quests.emptyAvailable')
+          : t('gamification.quests.emptyCompleted')}
       </Text>
     </View>
   );
@@ -242,11 +244,11 @@ const QuestList: React.FC = () => {
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.backButton}
-          accessibilityLabel="Go back"
+          accessibilityLabel={t('common.buttons.back')}
         >
           <Text style={styles.backArrow}>{'\u2190'}</Text>
         </TouchableOpacity>
-        <Text style={styles.screenTitle}>Quests</Text>
+        <Text style={styles.screenTitle}>{t('gamification.quests.screenTitle')}</Text>
         <View style={styles.headerSpacer} />
       </View>
 

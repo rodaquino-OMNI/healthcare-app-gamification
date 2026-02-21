@@ -6,6 +6,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { fontSizeValues } from '../../../../design-system/src/tokens/typography';
@@ -16,6 +17,7 @@ import { borderRadiusValues } from '../../../../design-system/src/tokens/borderR
  * Centered layout with 404 text, subtitle, and a button to navigate home.
  */
 export const Error404Screen: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
 
   const handleGoHome = () => {
@@ -26,17 +28,17 @@ export const Error404Screen: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.errorCode}>404</Text>
-      <Text style={styles.title}>Pagina nao encontrada</Text>
+      <Text style={styles.title}>{t('errorScreens.notFound.title')}</Text>
       <Text style={styles.message}>
-        A pagina que voce esta procurando nao existe ou foi movida.
+        {t('errorScreens.notFound.message')}
       </Text>
       <TouchableOpacity
         style={styles.primaryButton}
         onPress={handleGoHome}
         accessibilityRole="button"
-        accessibilityLabel="Voltar ao inicio"
+        accessibilityLabel={t('errorScreens.notFound.goHome')}
       >
-        <Text style={styles.primaryButtonText}>Voltar ao inicio</Text>
+        <Text style={styles.primaryButtonText}>{t('errorScreens.notFound.goHome')}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -47,21 +49,22 @@ export const Error404Screen: React.FC = () => {
  * Shows a timeout icon, descriptive message, and a retry button.
  */
 export const ErrorTimeoutScreen: React.FC<{ onRetry?: () => void }> = ({ onRetry }) => {
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
       <Text style={styles.icon}>{'⏱️'}</Text>
-      <Text style={styles.title}>Tempo esgotado</Text>
+      <Text style={styles.title}>{t('errorScreens.timeout.title')}</Text>
       <Text style={styles.message}>
-        Nao foi possivel conectar. Verifique sua conexao e tente novamente.
+        {t('errorScreens.timeout.message')}
       </Text>
       {onRetry && (
         <TouchableOpacity
           style={styles.primaryButton}
           onPress={onRetry}
           accessibilityRole="button"
-          accessibilityLabel="Tentar novamente"
+          accessibilityLabel={t('errorScreens.timeout.retry')}
         >
-          <Text style={styles.primaryButtonText}>Tentar novamente</Text>
+          <Text style={styles.primaryButtonText}>{t('errorScreens.timeout.retry')}</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -77,23 +80,26 @@ export const EmptyStateScreen: React.FC<{
   message?: string;
   onRetry?: () => void;
 }> = ({
-  title = 'Nada por aqui',
-  message = 'Nenhum conteudo disponivel no momento.',
+  title,
+  message,
   onRetry,
 }) => {
+  const { t } = useTranslation();
+  const displayTitle = title || t('errorScreens.empty.title');
+  const displayMessage = message || t('errorScreens.empty.message');
   return (
     <View style={styles.container}>
       <Text style={styles.icon}>{'📭'}</Text>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.message}>{message}</Text>
+      <Text style={styles.title}>{displayTitle}</Text>
+      <Text style={styles.message}>{displayMessage}</Text>
       {onRetry && (
         <TouchableOpacity
           style={styles.secondaryButton}
           onPress={onRetry}
           accessibilityRole="button"
-          accessibilityLabel="Tentar novamente"
+          accessibilityLabel={t('errorScreens.empty.retry')}
         >
-          <Text style={styles.secondaryButtonText}>Tentar novamente</Text>
+          <Text style={styles.secondaryButtonText}>{t('errorScreens.empty.retry')}</Text>
         </TouchableOpacity>
       )}
     </View>

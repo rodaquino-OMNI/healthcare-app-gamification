@@ -19,6 +19,7 @@ import {
   spacing,
   borderRadius,
 } from '@web/design-system/src/tokens';
+import { useTranslation } from 'react-i18next';
 
 const { plan } = colors.journeys;
 const sp = { xs: 8, sm: 12, md: 16, lg: 20, xl: 24, '2xl': 32 };
@@ -115,6 +116,7 @@ const MOCK_CLAIMS: Claim[] = [
  * Renders the claim history screen with filter tabs, claim list, and submit button.
  */
 const ClaimHistory: React.FC = () => {
+  const { t } = useTranslation();
   const { journey } = useJourney();
   const navigation = useNavigation<any>();
   const [activeFilter, setActiveFilter] = useState<FilterTab>('all');
@@ -142,7 +144,7 @@ const ClaimHistory: React.FC = () => {
     return (
       <View style={styles.centeredContainer}>
         <ActivityIndicator size="large" color={plan.primary} />
-        <Text style={styles.loadingText}>Carregando solicitacoes...</Text>
+        <Text style={styles.loadingText}>{t('journeys.plan.claims.loading')}</Text>
       </View>
     );
   }
@@ -150,7 +152,7 @@ const ClaimHistory: React.FC = () => {
   if (error) {
     return (
       <View style={styles.centeredContainer}>
-        <Text style={styles.errorText}>Erro ao carregar solicitacoes</Text>
+        <Text style={styles.errorText}>{t('journeys.plan.claims.error')}</Text>
         <Text style={styles.errorSubText}>{error.message}</Text>
       </View>
     );
@@ -189,11 +191,11 @@ const ClaimHistory: React.FC = () => {
   const renderEmptyState = () => (
     <View style={styles.emptyState}>
       <Text style={styles.emptyIcon}>{'\u{1F4CB}'}</Text>
-      <Text style={styles.emptyTitle}>Nenhuma solicitacao encontrada</Text>
+      <Text style={styles.emptyTitle}>{t('journeys.plan.claims.empty')}</Text>
       <Text style={styles.emptySubtitle}>
         {activeFilter === 'all'
-          ? 'Voce ainda nao possui solicitacoes.'
-          : `Nenhuma solicitacao com status "${STATUS_LABELS[activeFilter as ClaimStatus]}".`}
+          ? t('journeys.plan.claims.emptyHint')
+          : t('journeys.plan.claims.emptyFiltered', { status: STATUS_LABELS[activeFilter as ClaimStatus] })}
       </Text>
     </View>
   );
@@ -240,10 +242,10 @@ const ClaimHistory: React.FC = () => {
         style={styles.fab}
         onPress={() => navigation.navigate(MOBILE_PLAN_ROUTES.CLAIM_SUBMISSION)}
         accessibilityRole="button"
-        accessibilityLabel="Enviar nova solicitacao"
+        accessibilityLabel={t('journeys.plan.claims.newClaim')}
       >
         <Text style={styles.fabIcon}>+</Text>
-        <Text style={styles.fabText}>Nova Solicitacao</Text>
+        <Text style={styles.fabText}>{t('journeys.plan.claims.newClaim')}</Text>
       </TouchableOpacity>
     </View>
   );

@@ -5,6 +5,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import styled from 'styled-components/native';
+import { useTranslation } from 'react-i18next';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography } from '../../../../design-system/src/tokens/typography';
@@ -15,17 +16,17 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
 /**
  * Validation schema for address form.
  */
-const addressSchema = yup.object().shape({
+const createAddressSchema = (t: (key: string, options?: any) => string) => yup.object().shape({
   cep: yup
     .string()
-    .required('CEP is required')
-    .matches(/^\d{8}$/, 'CEP must be 8 digits'),
-  street: yup.string().required('Street is required'),
-  number: yup.string().required('Number is required'),
+    .required(t('common.validation.required'))
+    .matches(/^\d{8}$/, t('profileSetup.address.cepFormat')),
+  street: yup.string().required(t('common.validation.required')),
+  number: yup.string().required(t('common.validation.required')),
   complement: yup.string().default(''),
-  neighborhood: yup.string().required('Neighborhood is required'),
-  city: yup.string().required('City is required'),
-  state: yup.string().required('State is required'),
+  neighborhood: yup.string().required(t('common.validation.required')),
+  city: yup.string().required(t('common.validation.required')),
+  state: yup.string().required(t('common.validation.required')),
 });
 
 interface AddressFormData {
@@ -192,6 +193,7 @@ const PrimaryButtonText = styled.Text`
  */
 const ProfileAddress: React.FC = () => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
 
   const {
     control,
@@ -200,7 +202,7 @@ const ProfileAddress: React.FC = () => {
     watch,
     formState: { errors },
   } = useForm<AddressFormData>({
-    resolver: yupResolver(addressSchema),
+    resolver: yupResolver(createAddressSchema(t)),
     mode: 'onBlur',
     defaultValues: {
       cep: '',
@@ -263,9 +265,9 @@ const ProfileAddress: React.FC = () => {
           <ContentWrapper>
             {/* Header */}
             <HeaderSection>
-              <Title>Address</Title>
-              <Subtitle>Where should we send communications?</Subtitle>
-              <StepIndicator>Step 4 of 7</StepIndicator>
+              <Title>{t('profileSetup.address.title')}</Title>
+              <Subtitle>{t('profileSetup.address.subtitle')}</Subtitle>
+              <StepIndicator>{t('profileSetup.stepIndicator', { current: 4, total: 7 })}</StepIndicator>
               <StepBarContainer>
                 {[1, 2, 3, 4, 5, 6, 7].map((step) => (
                   <StepDot key={step} active={step <= 4} />
@@ -275,7 +277,7 @@ const ProfileAddress: React.FC = () => {
 
             {/* CEP */}
             <FieldContainer>
-              <Label>CEP (Postal Code)</Label>
+              <Label>{t('profileSetup.address.cep')}</Label>
               <Controller
                 control={control}
                 name="cep"
@@ -300,7 +302,7 @@ const ProfileAddress: React.FC = () => {
 
             {/* Street */}
             <FieldContainer>
-              <Label>Street</Label>
+              <Label>{t('profileSetup.address.street')}</Label>
               <Controller
                 control={control}
                 name="street"
@@ -309,7 +311,7 @@ const ProfileAddress: React.FC = () => {
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
-                    placeholder="Street name"
+                    placeholder={t('profileSetup.address.streetPlaceholder')}
                     placeholderTextColor={colors.gray[40]}
                     hasError={!!errors.street}
                     testID="profile-address-street"
@@ -324,7 +326,7 @@ const ProfileAddress: React.FC = () => {
             {/* Number + Complement */}
             <RowContainer>
               <FlexFieldContainer flex={1}>
-                <Label>Number</Label>
+                <Label>{t('profileSetup.address.number')}</Label>
                 <Controller
                   control={control}
                   name="number"
@@ -347,7 +349,7 @@ const ProfileAddress: React.FC = () => {
               </FlexFieldContainer>
 
               <FlexFieldContainer flex={2}>
-                <Label>Complement</Label>
+                <Label>{t('profileSetup.address.complement')}</Label>
                 <Controller
                   control={control}
                   name="complement"
@@ -356,7 +358,7 @@ const ProfileAddress: React.FC = () => {
                       value={value}
                       onChangeText={onChange}
                       onBlur={onBlur}
-                      placeholder="Apt, Suite, etc."
+                      placeholder={t('profileSetup.address.complementPlaceholder')}
                       placeholderTextColor={colors.gray[40]}
                       testID="profile-address-complement"
                     />
@@ -367,7 +369,7 @@ const ProfileAddress: React.FC = () => {
 
             {/* Neighborhood */}
             <FieldContainer>
-              <Label>Neighborhood</Label>
+              <Label>{t('profileSetup.address.neighborhood')}</Label>
               <Controller
                 control={control}
                 name="neighborhood"
@@ -376,7 +378,7 @@ const ProfileAddress: React.FC = () => {
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
-                    placeholder="Neighborhood"
+                    placeholder={t('profileSetup.address.neighborhoodPlaceholder')}
                     placeholderTextColor={colors.gray[40]}
                     hasError={!!errors.neighborhood}
                     testID="profile-address-neighborhood"
@@ -390,7 +392,7 @@ const ProfileAddress: React.FC = () => {
 
             {/* City */}
             <FieldContainer>
-              <Label>City</Label>
+              <Label>{t('profileSetup.address.city')}</Label>
               <Controller
                 control={control}
                 name="city"
@@ -399,7 +401,7 @@ const ProfileAddress: React.FC = () => {
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
-                    placeholder="City"
+                    placeholder={t('profileSetup.address.cityPlaceholder')}
                     placeholderTextColor={colors.gray[40]}
                     hasError={!!errors.city}
                     testID="profile-address-city"
@@ -411,7 +413,7 @@ const ProfileAddress: React.FC = () => {
 
             {/* State */}
             <FieldContainer>
-              <Label>State</Label>
+              <Label>{t('profileSetup.address.state')}</Label>
               <StateGrid>
                 {BRAZILIAN_STATES.map((st) => (
                   <StateChip
@@ -438,10 +440,10 @@ const ProfileAddress: React.FC = () => {
             <PrimaryButton
               onPress={handleSubmit(onSubmit)}
               accessibilityRole="button"
-              accessibilityLabel="Continue to documents"
+              accessibilityLabel={t('common.buttons.next')}
               testID="profile-address-continue"
             >
-              <PrimaryButtonText>Continue</PrimaryButtonText>
+              <PrimaryButtonText>{t('common.buttons.next')}</PrimaryButtonText>
             </PrimaryButton>
           </ContentWrapper>
         </ScrollView>

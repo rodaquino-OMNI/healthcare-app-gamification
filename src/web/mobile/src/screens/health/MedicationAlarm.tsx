@@ -5,6 +5,7 @@ import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { fontSizeValues } from '../../../../design-system/src/tokens/typography';
 import { borderRadiusValues } from '../../../../design-system/src/tokens/borderRadius';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Route params for MedicationAlarm screen.
@@ -26,6 +27,7 @@ interface MedicationAlarmParams {
  * - "Pular" (skip) - skip this dose
  */
 export const MedicationAlarmScreen: React.FC = () => {
+  const { t } = useTranslation();
   const route = useRoute<any>();
   const navigation = useNavigation();
 
@@ -103,7 +105,7 @@ export const MedicationAlarmScreen: React.FC = () => {
           {/* Tomar Agora - primary action */}
           <View style={[styles.actionButton, styles.takeNowButton, { backgroundColor: journeyColors.primary }]}>
             <Text style={styles.takeNowText} onPress={handleTakeNow}>
-              Tomar Agora
+              {t('journeys.health.medication.doseTaken.takeNow')}
             </Text>
           </View>
 
@@ -113,14 +115,14 @@ export const MedicationAlarmScreen: React.FC = () => {
               style={[styles.snoozeText, { color: journeyColors.secondary }]}
               onPress={handleSnooze}
             >
-              Soneca ({snoozeDuration} min)
+              {t('journeys.health.medication.doseTaken.snooze', { duration: snoozeDuration })}
             </Text>
           </View>
 
           {/* Pular - ghost action */}
           <View style={[styles.actionButton, styles.skipButton]}>
             <Text style={styles.skipText} onPress={handleSkip}>
-              Pular
+              {t('journeys.health.medication.doseTaken.skip')}
             </Text>
           </View>
         </View>
@@ -128,7 +130,7 @@ export const MedicationAlarmScreen: React.FC = () => {
         {/* Next dose countdown */}
         {nextDoseTime ? (
           <View style={styles.nextDoseContainer}>
-            <Text style={styles.nextDoseLabel}>Proxima dose:</Text>
+            <Text style={styles.nextDoseLabel}>{t('journeys.health.medication.doseTaken.nextDose')}</Text>
             <Text style={[styles.nextDoseTime, { color: journeyColors.primary }]}>
               {nextDoseTime}
             </Text>

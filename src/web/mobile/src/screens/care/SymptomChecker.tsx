@@ -13,16 +13,7 @@ import { checkSymptoms } from '../../../../api/care';
 import { useJourney } from '../../../../hooks/useJourney';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-
-const SYMPTOM_STEPS = [
-  { label: 'Symptoms' },
-  { label: 'Body Map' },
-  { label: 'Details' },
-  { label: 'Questions' },
-  { label: 'Severity' },
-  { label: 'Results' },
-  { label: 'Actions' },
-];
+import { useTranslation } from 'react-i18next';
 
 /**
  * A screen component that allows users to input their symptoms and receive a preliminary assessment.
@@ -37,6 +28,17 @@ const SymptomChecker: React.FC = () => {
 
   const navigation = useNavigation<any>();
   const { journey } = useJourney();
+  const { t } = useTranslation();
+
+  const SYMPTOM_STEPS = [
+    { label: t('journeys.care.symptomChecker.steps.symptoms') },
+    { label: t('journeys.care.symptomChecker.steps.bodyMap') },
+    { label: t('journeys.care.symptomChecker.steps.details') },
+    { label: t('journeys.care.symptomChecker.steps.questions') },
+    { label: t('journeys.care.symptomChecker.steps.severity') },
+    { label: t('journeys.care.symptomChecker.steps.results') },
+    { label: t('journeys.care.symptomChecker.steps.actions') },
+  ];
 
   /**
    * Handles the submission of symptoms for the symptom flow.
@@ -44,7 +46,7 @@ const SymptomChecker: React.FC = () => {
    */
   const handleContinue = () => {
     if (!symptoms.trim()) {
-      setError(new Error('Please describe your symptoms'));
+      setError(new Error(t('journeys.care.symptomChecker.describeSymptoms')));
       return;
     }
 
@@ -92,7 +94,7 @@ const SymptomChecker: React.FC = () => {
           journey="care"
           testID="symptom-checker-title"
         >
-          Symptom Checker
+          {t('journeys.care.symptomChecker.title')}
         </Text>
 
         <Text
@@ -100,16 +102,16 @@ const SymptomChecker: React.FC = () => {
           journey="care"
           testID="symptom-checker-subtitle"
         >
-          Describe your symptoms in detail to receive a preliminary assessment and guidance.
+          {t('journeys.care.symptomChecker.subtitle')}
         </Text>
 
         <View style={styles.inputContainer}>
           <Card journey="care" elevation="sm">
             <Input
-              label="Your Symptoms"
+              label={t('journeys.care.symptomChecker.yourSymptoms')}
               value={symptoms}
               onChange={(e: any) => setSymptoms(e.target?.value ?? e)}
-              placeholder="e.g. Headache, fever, cough..."
+              placeholder={t('journeys.care.symptomChecker.placeholder')}
               journey="care"
               testID="symptom-input"
               aria-label="Field to describe your symptoms"
@@ -134,7 +136,7 @@ const SymptomChecker: React.FC = () => {
                 accessibilityLabel="Continue to body map"
                 testID="continue-button"
               >
-                Continue
+                {t('common.buttons.next')}
               </Button>
             </View>
           </Card>
@@ -143,7 +145,7 @@ const SymptomChecker: React.FC = () => {
         <View style={styles.infoContainer}>
           <Card journey="care" elevation="sm">
             <Text variant="body" journey="care">
-              The Symptom Checker helps you understand your symptoms and suggests next steps. It is not a substitute for professional medical advice.
+              {t('journeys.care.symptomChecker.disclaimer')}
             </Text>
             <View style={styles.appointmentButton}>
               <Button
@@ -153,7 +155,7 @@ const SymptomChecker: React.FC = () => {
                 accessibilityLabel="Book appointment directly"
                 testID="book-appointment-button"
               >
-                Book Appointment Directly
+                {t('journeys.care.symptomChecker.bookAppointmentDirectly')}
               </Button>
             </View>
           </Card>

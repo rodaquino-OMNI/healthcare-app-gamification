@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '../../hooks/useAuth';
 import { colors } from '../../../../design-system/src/tokens/colors';
@@ -108,6 +109,7 @@ export const MFAScreen: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigation = useNavigation();
+  const { t } = useTranslation();
   const { handleMfaVerification } = useAuth();
 
   /**
@@ -135,20 +137,20 @@ export const MFAScreen: React.FC = () => {
 
   return (
     <Container>
-      <Title>Verification Required</Title>
+      <Title>{t('auth.mfa.title')}</Title>
       <Description>
-        Please enter the verification code sent to your device to complete the login process.
+        {t('auth.mfa.description')}
       </Description>
 
       <CodeInput
         value={code}
         onChangeText={setCode}
-        placeholder="Enter verification code"
+        placeholder={t('auth.mfa.codePlaceholder')}
         placeholderTextColor={colors.neutral.gray500}
         keyboardType="number-pad"
         autoFocus
         maxLength={6}
-        accessibilityLabel="Verification code"
+        accessibilityLabel={t('auth.mfa.codeLabel')}
         testID="mfa-code-input"
       />
 
@@ -158,16 +160,16 @@ export const MFAScreen: React.FC = () => {
             size="small"
             color={colors.brand.primary}
           />
-          <LoadingLabel>Verifying...</LoadingLabel>
+          <LoadingLabel>{t('auth.mfa.verifying')}</LoadingLabel>
         </LoadingContainer>
       ) : (
         <VerifyButton
           onPress={handleSubmit}
           disabled={isCodeEmpty}
-          accessibilityLabel="Verify code"
+          accessibilityLabel={t('auth.mfa.verifyButton')}
           accessibilityRole="button"
         >
-          <VerifyButtonText>Verify</VerifyButtonText>
+          <VerifyButtonText>{t('auth.mfa.verify')}</VerifyButtonText>
         </VerifyButton>
       )}
     </Container>

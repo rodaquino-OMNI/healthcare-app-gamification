@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '../../context/AuthContext';
 import { ROUTES } from '../../constants/routes';
@@ -20,9 +21,9 @@ import { sizingValues } from '../../../../design-system/src/tokens/sizing';
  */
 const getGreeting = (): string => {
   const hour = new Date().getHours();
-  if (hour < 12) return 'Bom dia,';
-  if (hour < 18) return 'Boa tarde,';
-  return 'Boa noite,';
+  if (hour < 12) return 'home.header.goodMorning';
+  if (hour < 18) return 'home.header.goodAfternoon';
+  return 'home.header.goodEvening';
 };
 
 /**
@@ -41,6 +42,7 @@ const getInitials = (name: string): string => {
  * Displays user avatar with initials, time-of-day greeting, and a notification bell.
  */
 export const HomeHeader: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const { session, getUserFromToken } = useAuth();
 
@@ -48,7 +50,7 @@ export const HomeHeader: React.FC = () => {
     ? getUserFromToken(session.accessToken)
     : null;
 
-  const userName = user?.name || 'Usuario';
+  const userName = user?.name || t('homeWidgets.defaultUser');
   const greeting = useMemo(() => getGreeting(), []);
   const initials = useMemo(() => getInitials(userName), [userName]);
 
@@ -64,7 +66,7 @@ export const HomeHeader: React.FC = () => {
 
       {/* Greeting */}
       <View style={styles.greetingColumn}>
-        <Text style={styles.greetingLabel}>{greeting}</Text>
+        <Text style={styles.greetingLabel}>{t(greeting)}</Text>
         <Text style={styles.userName} numberOfLines={1}>
           {userName}
         </Text>
@@ -78,7 +80,7 @@ export const HomeHeader: React.FC = () => {
         style={styles.bellButton}
         onPress={() => navigation.navigate(ROUTES.NOTIFICATIONS as never)}
         accessibilityRole="button"
-        accessibilityLabel="Ver notificacoes"
+        accessibilityLabel={t('home.header.viewNotifications')}
       >
         <Text style={styles.bellIcon}>{'🔔'}</Text>
         {unreadCount > 0 && (

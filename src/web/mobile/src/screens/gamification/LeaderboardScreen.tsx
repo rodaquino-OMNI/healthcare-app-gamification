@@ -8,6 +8,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
@@ -38,17 +39,17 @@ interface LeaderboardEntry {
 // Constants
 // ---------------------------------------------------------------------------
 
-const TIMEFRAME_TABS: { key: TimeframeFilter; label: string }[] = [
-  { key: 'week', label: 'Esta Semana' },
-  { key: 'month', label: 'Este Mes' },
-  { key: 'all', label: 'Geral' },
+const TIMEFRAME_TABS: { key: TimeframeFilter; labelKey: string }[] = [
+  { key: 'week', labelKey: 'gamification.leaderboard.thisWeek' },
+  { key: 'month', labelKey: 'gamification.leaderboard.thisMonth' },
+  { key: 'all', labelKey: 'gamification.leaderboard.allTime' },
 ];
 
-const JOURNEY_TABS: { key: JourneyFilter; label: string }[] = [
-  { key: 'all', label: 'Todos' },
-  { key: 'health', label: 'Saude' },
-  { key: 'care', label: 'Cuidado' },
-  { key: 'plan', label: 'Plano' },
+const JOURNEY_TABS: { key: JourneyFilter; labelKey: string }[] = [
+  { key: 'all', labelKey: 'gamification.leaderboard.filterAll' },
+  { key: 'health', labelKey: 'gamification.leaderboard.filterHealth' },
+  { key: 'care', labelKey: 'gamification.leaderboard.filterCare' },
+  { key: 'plan', labelKey: 'gamification.leaderboard.filterPlan' },
 ];
 
 const PODIUM_COLORS = {
@@ -83,6 +84,7 @@ function getJourneyColor(journey: string): string {
 
 /** Leaderboard screen with top-3 podium, timeframe and journey filters. */
 const LeaderboardScreen: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const [timeframe, setTimeframe] = useState<TimeframeFilter>('week');
   const [journeyFilter, setJourneyFilter] = useState<JourneyFilter>('all');
@@ -103,7 +105,7 @@ const LeaderboardScreen: React.FC = () => {
 
   const handleGoBack = () => { if (navigation.canGoBack()) navigation.goBack(); };
 
-  const renderTimeframeTab = (tab: { key: TimeframeFilter; label: string }) => {
+  const renderTimeframeTab = (tab: { key: TimeframeFilter; labelKey: string }) => {
     const isActive = timeframe === tab.key;
     return (
       <TouchableOpacity
@@ -111,17 +113,17 @@ const LeaderboardScreen: React.FC = () => {
         style={[styles.timeframeTab, isActive && styles.timeframeTabActive]}
         onPress={() => setTimeframe(tab.key)}
         accessibilityRole="button"
-        accessibilityLabel={`Periodo: ${tab.label}`}
+        accessibilityLabel={t('gamification.leaderboard.period', { period: t(tab.labelKey) })}
         accessibilityState={{ selected: isActive }}
       >
         <Text style={[styles.timeframeText, isActive && styles.timeframeTextActive]}>
-          {tab.label}
+          {t(tab.labelKey)}
         </Text>
       </TouchableOpacity>
     );
   };
 
-  const renderJourneyTab = (tab: { key: JourneyFilter; label: string }) => {
+  const renderJourneyTab = (tab: { key: JourneyFilter; labelKey: string }) => {
     const isActive = journeyFilter === tab.key;
     return (
       <TouchableOpacity
@@ -129,11 +131,11 @@ const LeaderboardScreen: React.FC = () => {
         style={[styles.journeyTab, isActive && styles.journeyTabActive]}
         onPress={() => setJourneyFilter(tab.key)}
         accessibilityRole="button"
-        accessibilityLabel={`Filtrar por ${tab.label}`}
+        accessibilityLabel={t('gamification.leaderboard.filterBy', { label: t(tab.labelKey) })}
         accessibilityState={{ selected: isActive }}
       >
         <Text style={[styles.journeyTabText, isActive && styles.journeyTabTextActive]}>
-          {tab.label}
+          {t(tab.labelKey)}
         </Text>
       </TouchableOpacity>
     );
@@ -202,9 +204,9 @@ const LeaderboardScreen: React.FC = () => {
         <View style={styles.listInfo}>
           <Text style={[styles.listName, item.isCurrentUser && styles.listNameHighlight]}>
             {item.username}
-            {item.isCurrentUser ? ' (Voce)' : ''}
+            {item.isCurrentUser ? ` (${t('gamification.leaderboard.you')})` : ''}
           </Text>
-          <Text style={styles.listLevel}>Nivel {item.level}</Text>
+          <Text style={styles.listLevel}>{t('gamification.leaderboard.level', { level: item.level })}</Text>
         </View>
 
         {/* XP + Badges */}
@@ -222,10 +224,10 @@ const LeaderboardScreen: React.FC = () => {
   const renderHeader = () => (
     <View>
       <View style={styles.headerRow}>
-        <TouchableOpacity onPress={handleGoBack} style={styles.backButton} accessibilityRole="button" accessibilityLabel="Voltar">
-          <Text style={styles.backButtonText}>{'<'} Voltar</Text>
+        <TouchableOpacity onPress={handleGoBack} style={styles.backButton} accessibilityRole="button" accessibilityLabel={t('common.buttons.back')}>
+          <Text style={styles.backButtonText}>{'<'} {t('common.buttons.back')}</Text>
         </TouchableOpacity>
-        <Text style={styles.screenTitle}>Ranking</Text>
+        <Text style={styles.screenTitle}>{t('gamification.leaderboard.title')}</Text>
         <View style={styles.headerSpacer} />
       </View>
       <View style={styles.timeframeRow}>{TIMEFRAME_TABS.map(renderTimeframeTab)}</View>
@@ -240,12 +242,12 @@ const LeaderboardScreen: React.FC = () => {
       {currentUser && currentUser.rank > 3 && (
         <View style={styles.currentUserBanner}>
           <Text style={styles.currentUserText}>
-            Sua posicao: {currentUser.rank} lugar com {currentUser.xp.toLocaleString('pt-BR')} XP
+            {t('gamification.leaderboard.yourPosition', { rank: currentUser.rank, xp: currentUser.xp.toLocaleString('pt-BR') })}
           </Text>
         </View>
       )}
       <View style={styles.listSectionHeader}>
-        <Text style={styles.listSectionTitle}>Classificacao Completa</Text>
+        <Text style={styles.listSectionTitle}>{t('gamification.leaderboard.fullRanking')}</Text>
       </View>
     </View>
   );
@@ -253,9 +255,9 @@ const LeaderboardScreen: React.FC = () => {
   const renderEmpty = () => (
     <View style={styles.emptyContainer}>
       <Text style={styles.emptyIcon}>{'🏆'}</Text>
-      <Text style={styles.emptyTitle}>Nenhum participante encontrado</Text>
+      <Text style={styles.emptyTitle}>{t('gamification.leaderboard.emptyTitle')}</Text>
       <Text style={styles.emptySubtitle}>
-        Nenhum usuario nessa categoria ainda.
+        {t('gamification.leaderboard.emptySubtitle')}
       </Text>
     </View>
   );
@@ -270,7 +272,7 @@ const LeaderboardScreen: React.FC = () => {
         ListEmptyComponent={renderEmpty}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
-        accessibilityLabel="Ranking de usuarios"
+        accessibilityLabel={t('gamification.leaderboard.listLabel')}
       />
     </SafeAreaView>
   );

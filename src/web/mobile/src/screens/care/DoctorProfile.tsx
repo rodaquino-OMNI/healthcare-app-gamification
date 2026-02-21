@@ -12,6 +12,7 @@ import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeade
 import { ROUTES } from 'src/web/mobile/src/constants/routes';
 import { colors } from 'src/web/design-system/src/tokens/colors';
 import { spacingValues } from 'src/web/design-system/src/tokens/spacing';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Route parameters expected by DoctorProfile.
@@ -132,6 +133,7 @@ const DoctorProfile: React.FC = () => {
   const navigation = useNavigation<any>();
   const route = useRoute<RouteProp<{ params: DoctorProfileRouteParams }, 'params'>>();
   const { doctorId } = route.params || { doctorId: 'doc-001' };
+  const { t } = useTranslation();
 
   // In a real app, fetch doctor details by doctorId
   const doctor = MOCK_DOCTOR;
@@ -145,7 +147,7 @@ const DoctorProfile: React.FC = () => {
 
   return (
     <View style={styles.root}>
-      <JourneyHeader title="Perfil do Medico" showBackButton />
+      <JourneyHeader title={t('journeys.care.doctorProfile.title')} showBackButton />
 
       <ScrollView
         style={styles.scrollView}
@@ -183,7 +185,7 @@ const DoctorProfile: React.FC = () => {
                 {doctor.yearsExperience}
               </Text>
               <Text fontSize="sm" color={colors.neutral.gray700}>
-                anos exp.
+                {t('journeys.care.doctorProfile.yearsExp')}
               </Text>
             </View>
           </Card>
@@ -193,7 +195,7 @@ const DoctorProfile: React.FC = () => {
                 {doctor.rating}
               </Text>
               <Text fontSize="sm" color={colors.neutral.gray700}>
-                avaliacao
+                {t('journeys.care.doctorProfile.rating')}
               </Text>
             </View>
           </Card>
@@ -203,7 +205,7 @@ const DoctorProfile: React.FC = () => {
                 {doctor.totalConsultations}
               </Text>
               <Text fontSize="sm" color={colors.neutral.gray700}>
-                consultas
+                {t('journeys.care.doctorProfile.consultations')}
               </Text>
             </View>
           </Card>
@@ -212,7 +214,7 @@ const DoctorProfile: React.FC = () => {
         {/* About section */}
         <View style={styles.section}>
           <Text fontWeight="medium" fontSize="lg" testID="about-heading">
-            Sobre
+            {t('journeys.care.doctorProfile.about')}
           </Text>
           <Text fontSize="md" color={colors.neutral.gray700} testID="doctor-bio">
             {doctor.bio}
@@ -222,7 +224,7 @@ const DoctorProfile: React.FC = () => {
         {/* Specializations */}
         <View style={styles.section}>
           <Text fontWeight="medium" fontSize="lg">
-            Especializacoes
+            {t('journeys.care.doctorProfile.specializations')}
           </Text>
           <View style={styles.badgeList}>
             {doctor.specializations.map((spec) => (
@@ -236,7 +238,7 @@ const DoctorProfile: React.FC = () => {
         {/* Reviews */}
         <View style={styles.section}>
           <Text fontWeight="medium" fontSize="lg">
-            Avaliacoes ({doctor.reviews.length})
+            {t('journeys.care.doctorProfile.reviews', { count: doctor.reviews.length })}
           </Text>
           {doctor.reviews.map((review) => (
             <Card
@@ -267,7 +269,7 @@ const DoctorProfile: React.FC = () => {
         {/* Education & Certifications */}
         <View style={styles.section}>
           <Text fontWeight="medium" fontSize="lg">
-            Formacao Academica
+            {t('journeys.care.doctorProfile.education')}
           </Text>
           {doctor.education.map((edu, index) => (
             <View key={index} style={styles.listItem}>
@@ -280,7 +282,7 @@ const DoctorProfile: React.FC = () => {
 
         <View style={styles.section}>
           <Text fontWeight="medium" fontSize="lg">
-            Certificacoes
+            {t('journeys.care.doctorProfile.certifications')}
           </Text>
           {doctor.certifications.map((cert, index) => (
             <View key={index} style={styles.listItem}>
@@ -294,7 +296,7 @@ const DoctorProfile: React.FC = () => {
         {/* Accepted Insurance */}
         <View style={styles.section}>
           <Text fontWeight="medium" fontSize="lg">
-            Convenios Aceitos
+            {t('journeys.care.doctorProfile.acceptedInsurance')}
           </Text>
           <View style={styles.badgeList}>
             {doctor.acceptedInsurance.map((insurance) => (
@@ -319,7 +321,7 @@ const DoctorProfile: React.FC = () => {
           accessibilityLabel="Agendar consulta com este medico"
           testID="book-appointment-cta"
         >
-          Agendar Consulta
+          {t('journeys.care.doctorProfile.bookAppointment')}
         </Button>
       </View>
     </View>

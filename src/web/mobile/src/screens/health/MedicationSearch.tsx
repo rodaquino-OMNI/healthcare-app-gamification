@@ -15,6 +15,7 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Button } from '@austa/design-system/src/components/Button/Button';
 import { Badge } from '@austa/design-system/src/components/Badge/Badge';
 import Input from '@austa/design-system/src/components/Input/Input';
+import { useTranslation } from 'react-i18next';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 
@@ -51,6 +52,7 @@ const MEDICATIONS_DB: MedicationDBEntry[] = [
  * Selecting a result navigates back to MedicationAdd with the name pre-filled.
  */
 const MedicationSearch: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const [searchQuery, setSearchQuery] = useState('');
   const [recentSearches, setRecentSearches] = useState<string[]>([
@@ -99,7 +101,7 @@ const MedicationSearch: React.FC = () => {
   );
 
   const handleScanBarcode = useCallback(() => {
-    Alert.alert('Coming Soon', 'Barcode scanning will be available in a future update.');
+    Alert.alert(t('journeys.care.medications.scanBarcode'), t('journeys.care.medications.scanBarcodeHint'));
   }, []);
 
   const renderSearchResult = useCallback(
@@ -152,11 +154,11 @@ const MedicationSearch: React.FC = () => {
           testID="back-button"
         >
           <Text fontSize="lg" color={colors.journeys.health.primary}>
-            Back
+            {t('common.buttons.back')}
           </Text>
         </Touchable>
         <Text variant="heading" journey="health">
-          Search Medications
+          {t('journeys.care.medications.search')}
         </Text>
         <View style={styles.headerSpacer} />
       </View>
@@ -166,7 +168,7 @@ const MedicationSearch: React.FC = () => {
         <Input
           value={searchQuery}
           onChange={handleSearchChange}
-          placeholder="Search by name or drug class..."
+          placeholder={t('common.placeholders.search')}
           journey="health"
           aria-label="Search medications"
           testID="medication-search-input"
@@ -183,7 +185,7 @@ const MedicationSearch: React.FC = () => {
           icon="camera"
           accessibilityLabel="Scan medication barcode"
         >
-          Scan Barcode
+          {t('journeys.care.medications.scanBarcode')}
         </Button>
       </View>
 
@@ -195,7 +197,7 @@ const MedicationSearch: React.FC = () => {
             fontWeight="semiBold"
             color={colors.neutral.gray600}
           >
-            Recent Searches
+            {t('journeys.care.medications.recentSearches')}
           </Text>
           <View style={styles.recentList}>
             {recentSearches.map((name, index) => (
@@ -232,14 +234,14 @@ const MedicationSearch: React.FC = () => {
                   color={colors.neutral.gray500}
                   textAlign="center"
                 >
-                  No medications found for "{searchQuery}"
+                  {t('journeys.care.medications.noResults', { query: searchQuery })}
                 </Text>
                 <Text
                   fontSize="sm"
                   color={colors.neutral.gray500}
                   textAlign="center"
                 >
-                  Try a different search term or add the medication manually
+                  {t('journeys.care.medications.noResultsHint')}
                 </Text>
               </View>
             ) : null

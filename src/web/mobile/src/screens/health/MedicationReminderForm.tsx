@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { fontSizeValues } from '../../../../design-system/src/tokens/typography';
@@ -67,7 +68,27 @@ export const FrequencyPicker: React.FC<FrequencyPickerProps> = ({
   intervalHours,
   onIntervalChange,
   journeyColors,
-}) => (
+}) => {
+  const { t } = useTranslation();
+
+  const frequencyLabels: Record<FrequencyType, string> = {
+    daily: t('journeys.health.medication.reminder.frequency.daily'),
+    weekly: t('journeys.health.medication.reminder.frequency.weekly'),
+    interval: t('journeys.health.medication.reminder.frequency.interval'),
+    custom: t('journeys.health.medication.reminder.frequency.custom'),
+  };
+
+  const dayLabels: Record<string, string> = {
+    sunday: t('common.days.sun'),
+    monday: t('common.days.mon'),
+    tuesday: t('common.days.tue'),
+    wednesday: t('common.days.wed'),
+    thursday: t('common.days.thu'),
+    friday: t('common.days.fri'),
+    saturday: t('common.days.sat'),
+  };
+
+  return (
   <>
     <View style={styles.frequencyOptions}>
       {FREQUENCY_OPTIONS.map((option) => (
@@ -88,7 +109,7 @@ export const FrequencyPicker: React.FC<FrequencyPickerProps> = ({
             ]}
             onPress={() => onFrequencyChange(option.value)}
           >
-            {option.label}
+            {frequencyLabels[option.value] || option.label}
           </Text>
         </View>
       ))}
@@ -114,7 +135,7 @@ export const FrequencyPicker: React.FC<FrequencyPickerProps> = ({
               ]}
               onPress={() => onToggleDay(day.value)}
             >
-              {day.label}
+              {dayLabels[day.value] || day.label}
             </Text>
           </View>
         ))}
@@ -124,20 +145,21 @@ export const FrequencyPicker: React.FC<FrequencyPickerProps> = ({
     {/* Interval input */}
     {frequency === 'interval' && (
       <View style={styles.intervalContainer}>
-        <Text style={styles.intervalLabel}>A cada</Text>
+        <Text style={styles.intervalLabel}>{t('journeys.health.medication.reminder.every')}</Text>
         <TextInput
           style={[styles.intervalInput, { borderColor: journeyColors.primary }]}
           value={intervalHours}
           onChangeText={onIntervalChange}
           keyboardType="numeric"
           maxLength={2}
-          accessibilityLabel="Intervalo em horas"
+          accessibilityLabel={t('journeys.health.medication.reminder.intervalHours')}
         />
-        <Text style={styles.intervalLabel}>horas</Text>
+        <Text style={styles.intervalLabel}>{t('journeys.health.medication.reminder.hours')}</Text>
       </View>
     )}
   </>
-);
+  );
+};
 
 // ---------------------------------------------------------------------------
 // Styles

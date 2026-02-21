@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography } from '../../../../design-system/src/tokens/typography';
 import { spacing } from '../../../../design-system/src/tokens/spacing';
@@ -126,6 +127,7 @@ const SecondaryButtonText = styled.Text`
  */
 export default function WelcomeCTAScreen() {
   const navigation = useNavigation<any>();
+  const { t } = useTranslation();
 
   const handleLogin = () => {
     navigation.navigate(ROUTES.AUTH_LOGIN);
@@ -142,30 +144,30 @@ export default function WelcomeCTAScreen() {
           <LogoLetter>A</LogoLetter>
         </LogoCircle>
         <BrandName>AUSTA</BrandName>
-        <Tagline>Your complete healthcare companion</Tagline>
+        <Tagline>{t('auth.welcome.tagline')}</Tagline>
       </TopSection>
 
       <IllustrationPlaceholder>
-        <IllustrationText>Illustration</IllustrationText>
+        <IllustrationText>{t('auth.welcome.illustration')}</IllustrationText>
       </IllustrationPlaceholder>
 
       <ButtonsSection>
         <PrimaryButton
           onPress={handleLogin}
-          accessibilityLabel="Login to your account"
+          accessibilityLabel={t('auth.welcome.loginButton')}
           accessibilityRole="button"
           testID="welcome-cta-login"
         >
-          <PrimaryButtonText>Login</PrimaryButtonText>
+          <PrimaryButtonText>{t('auth.welcome.loginButton')}</PrimaryButtonText>
         </PrimaryButton>
 
         <SecondaryButton
           onPress={handleCreateAccount}
-          accessibilityLabel="Create a new account"
+          accessibilityLabel={t('auth.welcome.createAccountButton')}
           accessibilityRole="button"
           testID="welcome-cta-register"
         >
-          <SecondaryButtonText>Create Account</SecondaryButtonText>
+          <SecondaryButtonText>{t('auth.welcome.createAccountButton')}</SecondaryButtonText>
         </SecondaryButton>
       </ButtonsSection>
     </Container>

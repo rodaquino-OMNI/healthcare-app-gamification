@@ -17,6 +17,7 @@ import { colors } from '@web/design-system/src/tokens/colors';
 import { spacingValues } from '@web/design-system/src/tokens/spacing';
 import { fontSizeValues } from '@web/design-system/src/tokens/typography';
 import { borderRadiusValues } from '@web/design-system/src/tokens/borderRadius';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Categories for filtering benefits.
@@ -40,6 +41,7 @@ const CATEGORY_TYPE_MAP: Record<BenefitCategory, string | null> = {
  * and empty states.
  */
 const BenefitsScreen: React.FC = () => {
+  const { t } = useTranslation();
   const [benefits, setBenefits] = useState<Benefit[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
@@ -74,7 +76,7 @@ const BenefitsScreen: React.FC = () => {
       <View style={styles.screen}>
         <JourneyHeader />
         <View style={styles.centered}>
-          <LoadingIndicator journey="plan" label="Carregando beneficios..." />
+          <LoadingIndicator journey="plan" label={t('journeys.plan.benefits.loading')} />
         </View>
       </View>
     );
@@ -87,9 +89,9 @@ const BenefitsScreen: React.FC = () => {
         <View style={styles.centered}>
           <ErrorState
             icon="error"
-            title="Erro ao carregar beneficios"
-            description="Houve um problema ao carregar seus beneficios. Tente novamente."
-            actionLabel="Tentar Novamente"
+            title={t('journeys.plan.benefits.error')}
+            description={t('common.errors.network')}
+            actionLabel={t('journeys.plan.benefits.retry')}
             onAction={fetchBenefits}
             journey="plan"
           />
@@ -133,8 +135,8 @@ const BenefitsScreen: React.FC = () => {
         <View style={styles.centered}>
           <EmptyState
             icon="card"
-            title="Nenhum beneficio disponivel"
-            description="Voce nao possui beneficios disponiveis no plano atual."
+            title={t('journeys.plan.benefits.empty')}
+            description={t('journeys.plan.benefits.emptyDescription')}
             journey="plan"
           />
         </View>
@@ -187,7 +189,7 @@ const BenefitsScreen: React.FC = () => {
               <Text style={styles.benefitDescription}>{item.description}</Text>
               {item.limitations && (
                 <View style={styles.benefitDetailRow}>
-                  <Text style={styles.benefitDetailLabel}>Limitacoes: </Text>
+                  <Text style={styles.benefitDetailLabel}>{t('journeys.plan.benefits.limitations')}: </Text>
                   <Text style={styles.benefitDetailValue}>
                     {item.limitations}
                   </Text>
@@ -195,7 +197,7 @@ const BenefitsScreen: React.FC = () => {
               )}
               {item.usage && (
                 <View style={styles.benefitDetailRow}>
-                  <Text style={styles.benefitDetailLabel}>Uso: </Text>
+                  <Text style={styles.benefitDetailLabel}>{t('journeys.plan.benefits.usage')}: </Text>
                   <Text style={styles.benefitDetailValue}>{item.usage}</Text>
                 </View>
               )}

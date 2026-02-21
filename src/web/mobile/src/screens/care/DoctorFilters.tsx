@@ -12,22 +12,9 @@ import { Touchable } from 'src/web/design-system/src/primitives/Touchable/Toucha
 import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader';
 import { colors } from 'src/web/design-system/src/tokens/colors';
 import { spacingValues } from 'src/web/design-system/src/tokens/spacing';
+import { useTranslation } from 'react-i18next';
 
-const SPECIALTY_OPTIONS = [
-  { label: 'Todas', value: 'todas' },
-  { label: 'Cardiologia', value: 'cardiologia' },
-  { label: 'Dermatologia', value: 'dermatologia' },
-  { label: 'Ortopedia', value: 'ortopedia' },
-  { label: 'Pediatria', value: 'pediatria' },
-  { label: 'Neurologia', value: 'neurologia' },
-  { label: 'Ginecologia', value: 'ginecologia' },
-];
-
-const GENDER_OPTIONS = [
-  { label: 'Sem preferencia', value: 'sem_preferencia' },
-  { label: 'Masculino', value: 'masculino' },
-  { label: 'Feminino', value: 'feminino' },
-];
+// Options are now inside the component to access t()
 
 /**
  * DoctorFilters screen provides filter options for refining doctor search results.
@@ -39,6 +26,23 @@ const GENDER_OPTIONS = [
  */
 const DoctorFilters: React.FC = () => {
   const navigation = useNavigation<any>();
+  const { t } = useTranslation();
+
+  const SPECIALTY_OPTIONS = [
+    { label: t('journeys.care.doctorFilters.specialties.all'), value: 'todas' },
+    { label: t('journeys.care.doctorFilters.specialties.cardiology'), value: 'cardiologia' },
+    { label: t('journeys.care.doctorFilters.specialties.dermatology'), value: 'dermatologia' },
+    { label: t('journeys.care.doctorFilters.specialties.orthopedics'), value: 'ortopedia' },
+    { label: t('journeys.care.doctorFilters.specialties.pediatrics'), value: 'pediatria' },
+    { label: t('journeys.care.doctorFilters.specialties.neurology'), value: 'neurologia' },
+    { label: t('journeys.care.doctorFilters.specialties.gynecology'), value: 'ginecologia' },
+  ];
+
+  const GENDER_OPTIONS = [
+    { label: t('journeys.care.doctorFilters.gender.noPreference'), value: 'sem_preferencia' },
+    { label: t('journeys.care.doctorFilters.gender.male'), value: 'masculino' },
+    { label: t('journeys.care.doctorFilters.gender.female'), value: 'feminino' },
+  ];
 
   // Filter state
   const [specialty, setSpecialty] = useState('todas');
@@ -106,7 +110,7 @@ const DoctorFilters: React.FC = () => {
         ))}
         {minRating > 0 && (
           <Text fontSize="sm" color={colors.neutral.gray700}>
-            {minRating}+ estrelas
+            {t('journeys.care.doctorFilters.starsPlus', { count: minRating })}
           </Text>
         )}
       </View>
@@ -115,7 +119,7 @@ const DoctorFilters: React.FC = () => {
 
   return (
     <View style={styles.root}>
-      <JourneyHeader title="Filtros" showBackButton />
+      <JourneyHeader title={t('journeys.care.doctorFilters.title')} showBackButton />
 
       <ScrollView
         style={styles.scrollView}
@@ -125,14 +129,14 @@ const DoctorFilters: React.FC = () => {
         {/* Specialty */}
         <View style={styles.section}>
           <Text fontWeight="medium" fontSize="md" testID="filter-specialty-label">
-            Especialidade
+            {t('journeys.care.doctorFilters.specialty')}
           </Text>
           <View style={styles.sectionContent}>
             <Select
               options={SPECIALTY_OPTIONS}
               value={specialty}
               onChange={(val) => setSpecialty(val as string)}
-              label="Selecionar especialidade"
+              label={t('journeys.care.doctorFilters.selectSpecialty')}
               journey="care"
               testID="filter-specialty-select"
             />
@@ -142,10 +146,10 @@ const DoctorFilters: React.FC = () => {
         {/* Distance */}
         <View style={styles.section}>
           <Text fontWeight="medium" fontSize="md">
-            Distancia
+            {t('journeys.care.doctorFilters.distance')}
           </Text>
           <Text fontSize="sm" color={colors.neutral.gray700}>
-            Ate {distance} km
+            {t('journeys.care.doctorFilters.upToKm', { distance })}
           </Text>
           <View style={styles.sectionContent}>
             <Slider
@@ -164,7 +168,7 @@ const DoctorFilters: React.FC = () => {
         {/* Rating */}
         <View style={styles.section}>
           <Text fontWeight="medium" fontSize="md">
-            Avaliacao Minima
+            {t('journeys.care.doctorFilters.minimumRating')}
           </Text>
           <View style={styles.sectionContent}>
             {renderRatingSelector()}
@@ -174,7 +178,7 @@ const DoctorFilters: React.FC = () => {
         {/* Availability */}
         <View style={styles.section}>
           <Text fontWeight="medium" fontSize="md">
-            Disponibilidade
+            {t('journeys.care.doctorFilters.availability')}
           </Text>
           <View style={styles.sectionContent}>
             <Checkbox
@@ -183,7 +187,7 @@ const DoctorFilters: React.FC = () => {
               value="today"
               checked={availableToday}
               onChange={() => setAvailableToday(!availableToday)}
-              label="Disponivel hoje"
+              label={t('journeys.care.doctorFilters.availableToday')}
               journey="care"
               testID="filter-available-today"
             />
@@ -194,7 +198,7 @@ const DoctorFilters: React.FC = () => {
               value="week"
               checked={availableWeek}
               onChange={() => setAvailableWeek(!availableWeek)}
-              label="Proximos 7 dias"
+              label={t('journeys.care.doctorFilters.next7Days')}
               journey="care"
               testID="filter-available-week"
             />
@@ -204,7 +208,7 @@ const DoctorFilters: React.FC = () => {
         {/* Insurance */}
         <View style={styles.section}>
           <Text fontWeight="medium" fontSize="md">
-            Convenio
+            {t('journeys.care.doctorFilters.insurance')}
           </Text>
           <View style={styles.sectionContent}>
             <Checkbox
@@ -213,7 +217,7 @@ const DoctorFilters: React.FC = () => {
               value="accepts"
               checked={acceptsInsurance}
               onChange={() => setAcceptsInsurance(!acceptsInsurance)}
-              label="Aceita meu plano"
+              label={t('journeys.care.doctorFilters.acceptsMyPlan')}
               journey="care"
               testID="filter-accepts-insurance"
             />
@@ -223,14 +227,14 @@ const DoctorFilters: React.FC = () => {
         {/* Gender preference */}
         <View style={styles.section}>
           <Text fontWeight="medium" fontSize="md">
-            Preferencia de Genero
+            {t('journeys.care.doctorFilters.genderPreference')}
           </Text>
           <View style={styles.sectionContent}>
             <Select
               options={GENDER_OPTIONS}
               value={genderPreference}
               onChange={(val) => setGenderPreference(val as string)}
-              label="Selecionar genero"
+              label={t('journeys.care.doctorFilters.selectGender')}
               journey="care"
               testID="filter-gender-select"
             />
@@ -240,14 +244,14 @@ const DoctorFilters: React.FC = () => {
         {/* Price range */}
         <View style={styles.section}>
           <Text fontWeight="medium" fontSize="md">
-            Faixa de Preco
+            {t('journeys.care.doctorFilters.priceRange')}
           </Text>
           <Text fontSize="sm" color={colors.neutral.gray700}>
             R$ {priceMin} - R$ {priceMax}
           </Text>
           <View style={styles.sectionContent}>
             <Text fontSize="sm" color={colors.neutral.gray700}>
-              Minimo: R$ {priceMin}
+              {t('journeys.care.doctorFilters.minimum')}: R$ {priceMin}
             </Text>
             <Slider
               min={50}
@@ -263,7 +267,7 @@ const DoctorFilters: React.FC = () => {
             />
             <View style={styles.sliderSpacer} />
             <Text fontSize="sm" color={colors.neutral.gray700}>
-              Maximo: R$ {priceMax}
+              {t('journeys.care.doctorFilters.maximum')}: R$ {priceMax}
             </Text>
             <Slider
               min={50}
@@ -290,7 +294,7 @@ const DoctorFilters: React.FC = () => {
               accessibilityLabel="Limpar todos os filtros"
               testID="clear-filters-button"
             >
-              Limpar Filtros
+              {t('journeys.care.doctorFilters.clearFilters')}
             </Button>
           </View>
           <View style={styles.buttonHalf}>
@@ -301,7 +305,7 @@ const DoctorFilters: React.FC = () => {
               accessibilityLabel="Aplicar filtros selecionados"
               testID="apply-filters-button"
             >
-              Aplicar
+              {t('journeys.care.doctorFilters.apply')}
             </Button>
           </View>
         </View>

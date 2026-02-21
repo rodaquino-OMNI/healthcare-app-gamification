@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Animated, ActivityIndicator, Dimensions } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography } from '../../../../design-system/src/tokens/typography';
 import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
@@ -95,6 +96,7 @@ const LoaderContainer = styled.View`
  */
 export default function WelcomeSplashScreen() {
   const navigation = useNavigation<any>();
+  const { t } = useTranslation();
   const [isFirstTime] = useState<boolean>(() => {
     // In a real implementation this would read from AsyncStorage.
     // Default to first-time for now.
@@ -162,7 +164,7 @@ export default function WelcomeSplashScreen() {
             <LogoText>A</LogoText>
           </LogoContainer>
           <TaglineText>AUSTA</TaglineText>
-          <SubtaglineText>Your health, simplified</SubtaglineText>
+          <SubtaglineText>{t('auth.welcome.subtagline')}</SubtaglineText>
         </ContentContainer>
       </Animated.View>
 

@@ -10,16 +10,7 @@ import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { ROUTES } from '../../../../constants/routes';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-
-const SYMPTOM_STEPS = [
-  { label: 'Symptoms' },
-  { label: 'Body Map' },
-  { label: 'Details' },
-  { label: 'Questions' },
-  { label: 'Severity' },
-  { label: 'Results' },
-  { label: 'Actions' },
-];
+import { useTranslation } from 'react-i18next';
 
 type SeverityLevel = 'mild' | 'moderate' | 'severe';
 
@@ -32,39 +23,7 @@ interface SeverityConfig {
   icon: string;
 }
 
-const getSeverityConfig = (value: number): SeverityConfig => {
-  if (value <= 3) {
-    return {
-      level: 'mild',
-      label: 'Mild',
-      description:
-        'Your symptoms are manageable. Monitor them and consider self-care measures. If they persist or worsen, consult a healthcare provider.',
-      color: colors.semantic.success,
-      badgeStatus: 'success',
-      icon: 'Low Severity',
-    };
-  }
-  if (value <= 6) {
-    return {
-      level: 'moderate',
-      label: 'Moderate',
-      description:
-        'Your symptoms require attention. We recommend scheduling an appointment with your healthcare provider within the next few days.',
-      color: colors.semantic.warning,
-      badgeStatus: 'warning',
-      icon: 'Medium Severity',
-    };
-  }
-  return {
-    level: 'severe',
-    label: 'Severe',
-    description:
-      'Your symptoms are significant. We strongly recommend seeking medical attention as soon as possible. If you experience an emergency, call 911 immediately.',
-    color: colors.semantic.error,
-    badgeStatus: 'error',
-    icon: 'High Severity',
-  };
-};
+// getSeverityConfig is now inside the component to access t()
 
 type SymptomSeverityRouteParams = {
   symptoms: Array<{ id: string; name: string }>;
@@ -89,6 +48,48 @@ const SymptomSeverity: React.FC = () => {
     details = [],
     answers = {},
   } = route.params || {};
+  const { t } = useTranslation();
+
+  const SYMPTOM_STEPS = [
+    { label: t('journeys.care.symptomChecker.steps.symptoms') },
+    { label: t('journeys.care.symptomChecker.steps.bodyMap') },
+    { label: t('journeys.care.symptomChecker.steps.details') },
+    { label: t('journeys.care.symptomChecker.steps.questions') },
+    { label: t('journeys.care.symptomChecker.steps.severity') },
+    { label: t('journeys.care.symptomChecker.steps.results') },
+    { label: t('journeys.care.symptomChecker.steps.actions') },
+  ];
+
+  const getSeverityConfig = (value: number): SeverityConfig => {
+    if (value <= 3) {
+      return {
+        level: 'mild',
+        label: t('journeys.care.symptomChecker.severity.mild'),
+        description: t('journeys.care.symptomChecker.severity.mildDescription'),
+        color: colors.semantic.success,
+        badgeStatus: 'success',
+        icon: t('journeys.care.symptomChecker.severity.lowSeverity'),
+      };
+    }
+    if (value <= 6) {
+      return {
+        level: 'moderate',
+        label: t('journeys.care.symptomChecker.severity.moderate'),
+        description: t('journeys.care.symptomChecker.severity.moderateDescription'),
+        color: colors.semantic.warning,
+        badgeStatus: 'warning',
+        icon: t('journeys.care.symptomChecker.severity.mediumSeverity'),
+      };
+    }
+    return {
+      level: 'severe',
+      label: t('journeys.care.symptomChecker.severity.severe'),
+      description: t('journeys.care.symptomChecker.severity.severeDescription'),
+      color: colors.semantic.error,
+      badgeStatus: 'error',
+      icon: t('journeys.care.symptomChecker.severity.highSeverity'),
+    };
+  };
 
   const [overallSeverity, setOverallSeverity] = useState(5);
 
@@ -125,11 +126,11 @@ const SymptomSeverity: React.FC = () => {
         </View>
 
         <Text variant="heading" journey="care" testID="severity-title">
-          Overall Severity
+          {t('journeys.care.symptomChecker.severity.overallTitle')}
         </Text>
 
         <Text variant="body" journey="care">
-          Considering all your symptoms together, how would you rate your overall discomfort?
+          {t('journeys.care.symptomChecker.severity.overallSubtitle')}
         </Text>
 
         <Card journey="care" elevation="md">
@@ -158,13 +159,13 @@ const SymptomSeverity: React.FC = () => {
           <View style={styles.sliderContainer}>
             <View style={styles.sliderLabels}>
               <Text fontSize="text-xs" color={colors.semantic.success}>
-                1 - Mild
+                1 - {t('journeys.care.symptomChecker.severity.mild')}
               </Text>
               <Text fontSize="text-xs" color={colors.semantic.warning}>
-                5 - Moderate
+                5 - {t('journeys.care.symptomChecker.severity.moderate')}
               </Text>
               <Text fontSize="text-xs" color={colors.semantic.error}>
-                10 - Severe
+                10 - {t('journeys.care.symptomChecker.severity.severe')}
               </Text>
             </View>
             <Slider
@@ -241,7 +242,7 @@ const SymptomSeverity: React.FC = () => {
             accessibilityLabel="Go back to questions"
             testID="back-button"
           >
-            Back
+            {t('common.buttons.back')}
           </Button>
           <Button
             onPress={handleAnalyze}
@@ -249,7 +250,7 @@ const SymptomSeverity: React.FC = () => {
             accessibilityLabel="Analyze symptoms"
             testID="analyze-button"
           >
-            Analyze Symptoms
+            {t('journeys.care.symptomChecker.severity.analyzeSymptoms')}
           </Button>
         </View>
       </ScrollView>

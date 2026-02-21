@@ -15,6 +15,7 @@ import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
 import { borderRadiusValues } from '../../../../design-system/src/tokens/borderRadius';
 import { ROUTES } from '../../constants/routes';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Tipos de filtro de busca
@@ -50,11 +51,11 @@ const SEARCH_SUGGESTIONS: string[] = [
 /**
  * Abas de filtro disponiveis
  */
-const FILTER_TABS: { key: SearchFilter; label: string }[] = [
-  { key: 'all', label: 'Todos' },
-  { key: 'doctors', label: 'Medicos' },
-  { key: 'medications', label: 'Medicamentos' },
-  { key: 'articles', label: 'Artigos' },
+const FILTER_TABS: { key: SearchFilter; labelKey: string }[] = [
+  { key: 'all', labelKey: 'searchScreens.filterAll' },
+  { key: 'doctors', labelKey: 'searchScreens.filterDoctors' },
+  { key: 'medications', labelKey: 'searchScreens.filterMedications' },
+  { key: 'articles', labelKey: 'searchScreens.filterArticles' },
 ];
 
 /**
@@ -63,6 +64,7 @@ const FILTER_TABS: { key: SearchFilter; label: string }[] = [
  * buscas recentes e sugestoes.
  */
 export const SearchScreen: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const [query, setQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<SearchFilter>('all');
@@ -124,7 +126,7 @@ export const SearchScreen: React.FC = () => {
             style={styles.searchInput}
             value={query}
             onChangeText={setQuery}
-            placeholder="Buscar medicos, medicamentos, artigos..."
+            placeholder={t('common.placeholders.search')}
             placeholderTextColor={colors.gray[40]}
             returnKeyType="search"
             onSubmitEditing={handleSearch}
@@ -135,7 +137,7 @@ export const SearchScreen: React.FC = () => {
             <TouchableOpacity
               onPress={() => setQuery('')}
               style={styles.clearButton}
-              accessibilityLabel="Limpar busca"
+              accessibilityLabel={t('searchScreens.clearSearch')}
             >
               <Text style={styles.clearButtonText}>X</Text>
             </TouchableOpacity>
@@ -156,7 +158,7 @@ export const SearchScreen: React.FC = () => {
               accessibilityState={{ selected: isActive }}
             >
               <Text style={[styles.filterTabText, isActive && styles.filterTabTextActive]}>
-                {tab.label}
+                {t(tab.labelKey)}
               </Text>
             </TouchableOpacity>
           );
@@ -172,9 +174,9 @@ export const SearchScreen: React.FC = () => {
         {recentSearches.length > 0 && (
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Buscas recentes</Text>
+              <Text style={styles.sectionTitle}>{t('searchScreens.recentSearches')}</Text>
               <TouchableOpacity onPress={handleClearRecent} accessibilityRole="button">
-                <Text style={styles.clearAllText}>Limpar tudo</Text>
+                <Text style={styles.clearAllText}>{t('searchScreens.clearAll')}</Text>
               </TouchableOpacity>
             </View>
             {recentSearches.map((item) => (
@@ -200,7 +202,7 @@ export const SearchScreen: React.FC = () => {
 
         {/* Sugestoes */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Sugestoes</Text>
+          <Text style={styles.sectionTitle}>{t('searchScreens.suggestions')}</Text>
           <View style={styles.suggestionsGrid}>
             {SEARCH_SUGGESTIONS.map((suggestion) => (
               <TouchableOpacity

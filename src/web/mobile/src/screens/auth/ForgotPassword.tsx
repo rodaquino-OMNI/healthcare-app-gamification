@@ -5,6 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components/native';
 
+import { useTranslation } from 'react-i18next';
 import { Button } from 'src/web/design-system/src/components/Button';
 import Input from 'src/web/design-system/src/components/Input';
 import { useAuth } from 'src/web/mobile/src/hooks/useAuth';
@@ -93,6 +94,7 @@ const SuccessMessage = styled.Text`
  * After successful submission, displays a success state with a "Back to Login" button.
  */
 export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProp> = ({ navigation }) => {
+  const { t } = useTranslation();
   const { control, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(validationSchema.email),
   });
@@ -110,12 +112,12 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProp> = ({ navig
       setIsSubmitted(true);
       showToast({
         type: 'success',
-        message: 'A password reset link has been sent to your email address.',
+        message: t('auth.forgotPassword.successMessage'),
       });
     } catch (error: any) {
       showToast({
         type: 'error',
-        message: error.message || 'Failed to send password reset email.',
+        message: error.message || t('auth.forgotPassword.errorMessage'),
       });
     } finally {
       setIsSubmitting(false);
@@ -129,10 +131,9 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProp> = ({ navig
           <SuccessIcon>
             {'\u2709'}
           </SuccessIcon>
-          <SuccessTitle>Check your email</SuccessTitle>
+          <SuccessTitle>{t('auth.forgotPassword.checkEmail')}</SuccessTitle>
           <SuccessMessage>
-            We sent a password reset link to {email}. Please check your inbox and follow the
-            instructions to reset your password.
+            {t('auth.forgotPassword.checkEmailDescription', { email })}
           </SuccessMessage>
           <ButtonWrapper style={{ width: '100%' }}>
             <Button
@@ -140,7 +141,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProp> = ({ navig
               journey="health"
               testID="back-to-login-button"
             >
-              Back to Login
+              {t('auth.forgotPassword.backToLogin')}
             </Button>
           </ButtonWrapper>
         </SuccessContainer>
@@ -150,17 +151,17 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProp> = ({ navig
 
   return (
     <Container>
-      <Title>Reset Password</Title>
+      <Title>{t('auth.forgotPassword.title')}</Title>
       <Description>
-        Enter your email address to receive a password reset link.
+        {t('auth.forgotPassword.description')}
       </Description>
 
       <InputWrapper>
         <Input
-          placeholder="Email Address"
+          placeholder={t('common.labels.email')}
           value={email}
           onChange={(text) => setEmail(text.nativeEvent.text)}
-          aria-label="Email Address"
+          aria-label={t('common.labels.email')}
           testID="email-input"
           type="email"
         />
@@ -175,7 +176,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProp> = ({ navig
           journey="health"
           testID="submit-button"
         >
-          Reset Password
+          {t('auth.forgotPassword.submit')}
         </Button>
       </ButtonWrapper>
 
@@ -186,7 +187,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProp> = ({ navig
           journey="health"
           testID="cancel-button"
         >
-          Back to Login
+          {t('auth.forgotPassword.backToLogin')}
         </Button>
       </ButtonWrapper>
     </Container>

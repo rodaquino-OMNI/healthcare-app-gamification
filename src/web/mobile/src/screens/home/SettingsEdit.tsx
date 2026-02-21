@@ -6,6 +6,7 @@ import {
   Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
 import { useAuth } from '../../hooks/useAuth';
@@ -165,6 +166,7 @@ interface FormErrors {
  * Actions: "Salvar alteracoes" (primary), "Cancelar" (secondary)
  */
 export const SettingsEditScreen: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const { session, getUserFromToken } = useAuth();
   const user = session?.accessToken ? getUserFromToken(session.accessToken) : null;
@@ -199,11 +201,11 @@ export const SettingsEditScreen: React.FC = () => {
     const newErrors: FormErrors = {};
 
     if (!form.fullName.trim() || form.fullName.trim().length < 3) {
-      newErrors.fullName = 'Nome deve ter pelo menos 3 caracteres';
+      newErrors.fullName = t('settings.edit.validation.nameMin');
     }
 
     if (form.phone && !/^\+?\d{10,14}$/.test(form.phone.replace(/[\s\-()]/g, ''))) {
-      newErrors.phone = 'Numero de telefone invalido';
+      newErrors.phone = t('settings.edit.validation.phoneInvalid');
     }
 
     setErrors(newErrors);
@@ -217,10 +219,10 @@ export const SettingsEditScreen: React.FC = () => {
     try {
       // TODO: call API to persist profile changes
       await new Promise((resolve) => setTimeout(resolve, 800));
-      Alert.alert('Sucesso', 'Suas alteracoes foram salvas.');
+      Alert.alert(t('settings.edit.alerts.successTitle'), t('settings.edit.alerts.successMessage'));
       navigation.goBack();
     } catch {
-      Alert.alert('Erro', 'Nao foi possivel salvar. Tente novamente.');
+      Alert.alert(t('settings.edit.alerts.errorTitle'), t('settings.edit.alerts.errorMessage'));
     } finally {
       setIsSaving(false);
     }
@@ -232,12 +234,12 @@ export const SettingsEditScreen: React.FC = () => {
 
   const handleChangePhoto = () => {
     Alert.alert(
-      'Alterar foto',
-      'Escolha uma opcao',
+      t('settings.edit.changePhoto'),
+      t('settings.edit.chooseOption'),
       [
-        { text: 'Camera', onPress: () => {/* TODO: open camera */} },
-        { text: 'Galeria', onPress: () => {/* TODO: open gallery */} },
-        { text: 'Cancelar', style: 'cancel' },
+        { text: t('settings.edit.camera'), onPress: () => {/* TODO: open camera */} },
+        { text: t('settings.edit.gallery'), onPress: () => {/* TODO: open gallery */} },
+        { text: t('common.buttons.cancel'), style: 'cancel' },
       ],
     );
   };
@@ -262,20 +264,20 @@ export const SettingsEditScreen: React.FC = () => {
               <ChangePhotoButton
                 onPress={handleChangePhoto}
                 accessibilityRole="button"
-                accessibilityLabel="Alterar foto de perfil"
+                accessibilityLabel={t('settings.edit.changePhotoA11y')}
                 testID="settings-edit-change-photo"
               >
-                <ChangePhotoText>Alterar foto</ChangePhotoText>
+                <ChangePhotoText>{t('settings.edit.changePhoto')}</ChangePhotoText>
               </ChangePhotoButton>
             </AvatarSection>
 
             {/* Nome completo */}
             <FieldContainer>
-              <Label>Nome completo</Label>
+              <Label>{t('settings.edit.fullName')}</Label>
               <StyledInput
                 value={form.fullName}
                 onChangeText={(val: string) => updateField('fullName', val)}
-                placeholder="Seu nome completo"
+                placeholder={t('settings.edit.fullNamePlaceholder')}
                 placeholderTextColor={colors.gray[40]}
                 hasError={!!errors.fullName}
                 autoCapitalize="words"
@@ -286,7 +288,7 @@ export const SettingsEditScreen: React.FC = () => {
 
             {/* Email (read-only) */}
             <FieldContainer>
-              <Label>Email</Label>
+              <Label>{t('settings.edit.email')}</Label>
               <StyledInput
                 value={form.email}
                 editable={false}
@@ -294,12 +296,12 @@ export const SettingsEditScreen: React.FC = () => {
                 placeholderTextColor={colors.gray[40]}
                 testID="settings-edit-email"
               />
-              <HelperText>O email nao pode ser alterado</HelperText>
+              <HelperText>{t('settings.edit.emailReadonly')}</HelperText>
             </FieldContainer>
 
             {/* Telefone */}
             <FieldContainer>
-              <Label>Telefone</Label>
+              <Label>{t('settings.edit.phone')}</Label>
               <StyledInput
                 value={form.phone}
                 onChangeText={(val: string) => updateField('phone', val)}
@@ -314,7 +316,7 @@ export const SettingsEditScreen: React.FC = () => {
 
             {/* Data de nascimento */}
             <FieldContainer>
-              <Label>Data de nascimento</Label>
+              <Label>{t('settings.edit.dateOfBirth')}</Label>
               <StyledInput
                 value={form.dateOfBirth}
                 onChangeText={(val: string) => updateField('dateOfBirth', val)}
@@ -328,7 +330,7 @@ export const SettingsEditScreen: React.FC = () => {
 
             {/* CPF (read-only) */}
             <FieldContainer>
-              <Label>CPF</Label>
+              <Label>{t('settings.edit.cpf')}</Label>
               <StyledInput
                 value={form.cpf}
                 editable={false}
@@ -337,7 +339,7 @@ export const SettingsEditScreen: React.FC = () => {
                 placeholderTextColor={colors.gray[40]}
                 testID="settings-edit-cpf"
               />
-              <HelperText>O CPF nao pode ser alterado</HelperText>
+              <HelperText>{t('settings.edit.cpfReadonly')}</HelperText>
             </FieldContainer>
 
             {/* Actions */}
@@ -345,21 +347,21 @@ export const SettingsEditScreen: React.FC = () => {
               onPress={handleSave}
               disabled={isSaving}
               accessibilityRole="button"
-              accessibilityLabel="Salvar alteracoes"
+              accessibilityLabel={t('settings.edit.save')}
               testID="settings-edit-save"
             >
               <PrimaryButtonText>
-                {isSaving ? 'Salvando...' : 'Salvar alteracoes'}
+                {isSaving ? t('settings.edit.saving') : t('settings.edit.save')}
               </PrimaryButtonText>
             </PrimaryButton>
 
             <SecondaryButton
               onPress={handleCancel}
               accessibilityRole="button"
-              accessibilityLabel="Cancelar"
+              accessibilityLabel={t('common.buttons.cancel')}
               testID="settings-edit-cancel"
             >
-              <SecondaryButtonText>Cancelar</SecondaryButtonText>
+              <SecondaryButtonText>{t('common.buttons.cancel')}</SecondaryButtonText>
             </SecondaryButton>
           </ContentWrapper>
         </ScrollView>

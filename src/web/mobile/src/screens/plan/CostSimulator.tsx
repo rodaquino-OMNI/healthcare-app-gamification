@@ -7,6 +7,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { MOBILE_PLAN_ROUTES } from 'src/web/shared/constants/routes';
 import Input from 'src/web/design-system/src/components/Input/Input';
 import { Select } from 'src/web/design-system/src/components/Select/Select';
@@ -27,17 +28,18 @@ const DEDUCTIBLE_OPTIONS = [0, 10, 20, 30, 40, 50];
  * selection, provider input, deductible slider, and a tokenized result card.
  */
 export const CostSimulatorScreen: React.FC = () => {
+  const { t } = useTranslation();
   const [procedureType, setProcedureType] = useState('');
   const [provider, setProvider] = useState('');
   const [estimatedCost, setEstimatedCost] = useState<number | null>(null);
   const [deductiblePercent, setDeductiblePercent] = useState(20);
 
   const procedureOptions = [
-    { label: 'Consulta medica', value: 'consultation' },
-    { label: 'Exame laboratorial', value: 'labTest' },
-    { label: 'Exame de imagem', value: 'imaging' },
-    { label: 'Cirurgia', value: 'surgery' },
-    { label: 'Fisioterapia', value: 'physicalTherapy' },
+    { label: t('journeys.plan.simulator.procedures.consultation'), value: 'consultation' },
+    { label: t('journeys.plan.simulator.procedures.labTest'), value: 'labTest' },
+    { label: t('journeys.plan.simulator.procedures.imaging'), value: 'imaging' },
+    { label: t('journeys.plan.simulator.procedures.surgery'), value: 'surgery' },
+    { label: t('journeys.plan.simulator.procedures.physicalTherapy'), value: 'physicalTherapy' },
   ];
 
   /**
@@ -47,8 +49,8 @@ export const CostSimulatorScreen: React.FC = () => {
   const handleSimulateCost = () => {
     if (!procedureType || !provider) {
       Alert.alert(
-        'Campos obrigatorios',
-        'Por favor, preencha todos os campos',
+        t('common.validation.requiredFields'),
+        t('common.validation.fillAllFields'),
       );
       return;
     }
@@ -84,16 +86,16 @@ export const CostSimulatorScreen: React.FC = () => {
       style={styles.container}
       contentContainerStyle={styles.scrollContent}
     >
-      <Text style={styles.title}>Simulador de Custos</Text>
+      <Text style={styles.title}>{t('journeys.plan.simulator.title')}</Text>
       <Text style={styles.subtitle}>
-        Simule quanto custara seu procedimento com base na sua cobertura
+        {t('journeys.plan.simulator.subtitle')}
       </Text>
 
       {/* Form Card */}
       <View style={styles.formCard}>
         <View style={styles.fieldContainer}>
           <Select
-            label="Tipo de Procedimento"
+            label={t('journeys.plan.simulator.procedureType')}
             options={procedureOptions}
             value={procedureType}
             onChange={(value) => setProcedureType(value as string)}
@@ -103,19 +105,19 @@ export const CostSimulatorScreen: React.FC = () => {
 
         <View style={styles.fieldContainer}>
           <Text style={styles.fieldLabel}>
-            Nome do Profissional ou Clinica
+            {t('journeys.plan.simulator.providerName')}
           </Text>
           <Input
             value={provider}
             onChangeText={(text: string) => setProvider(text)}
-            placeholder="Digite o nome do profissional ou clinica"
+            placeholder={t('journeys.plan.simulator.providerPlaceholder')}
             journey="plan"
           />
         </View>
 
         {/* Deductible Selector */}
         <View style={styles.fieldContainer}>
-          <Text style={styles.fieldLabel}>Franquia / Coparticipacao</Text>
+          <Text style={styles.fieldLabel}>{t('journeys.plan.simulator.deductible')}</Text>
           <View style={styles.sliderRow}>
             {DEDUCTIBLE_OPTIONS.map((val) => (
               <View
@@ -155,29 +157,29 @@ export const CostSimulatorScreen: React.FC = () => {
         </View>
 
         <Button onPress={handleSimulateCost} journey="plan">
-          Simular Custo
+          {t('journeys.plan.simulator.simulate')}
         </Button>
       </View>
 
       {/* Result Card */}
       {estimatedCost !== null && (
         <View style={styles.resultCard}>
-          <Text style={styles.resultTitle}>Custo Estimado</Text>
+          <Text style={styles.resultTitle}>{t('journeys.plan.simulator.estimatedCost')}</Text>
           <Text style={styles.resultValue}>
             R$ {estimatedCost.toFixed(2)}
           </Text>
           <Text style={styles.resultDescription}>
-            Este e o valor estimado que voce pagara apos a cobertura do seu plano.
+            {t('journeys.plan.simulator.resultDescription')}
           </Text>
           <View style={styles.resultDivider} />
           <View style={styles.resultMetaRow}>
-            <Text style={styles.resultMetaLabel}>Cobertura aplicada</Text>
+            <Text style={styles.resultMetaLabel}>{t('journeys.plan.simulator.coverageApplied')}</Text>
             <Text style={styles.resultMetaValue}>
               {100 - deductiblePercent}%
             </Text>
           </View>
           <View style={styles.resultMetaRow}>
-            <Text style={styles.resultMetaLabel}>Franquia</Text>
+            <Text style={styles.resultMetaLabel}>{t('journeys.plan.simulator.deductible')}</Text>
             <Text style={styles.resultMetaValue}>{deductiblePercent}%</Text>
           </View>
         </View>

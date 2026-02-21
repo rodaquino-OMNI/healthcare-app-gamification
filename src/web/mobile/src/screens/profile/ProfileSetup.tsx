@@ -5,6 +5,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import styled from 'styled-components/native';
+import { useTranslation } from 'react-i18next';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
@@ -15,25 +16,25 @@ import { sizing, sizingValues } from '../../../../design-system/src/tokens/sizin
 /**
  * Validation schema for the profile setup form.
  */
-const profileSetupSchema = yup.object().shape({
+const createProfileSetupSchema = (t: (key: string, options?: any) => string) => yup.object().shape({
   fullName: yup
     .string()
-    .required('Full name is required')
-    .min(3, 'Name must be at least 3 characters'),
+    .required(t('common.validation.required'))
+    .min(3, t('common.validation.minLength', { count: 3 })),
   email: yup
     .string()
-    .email('Please enter a valid email')
-    .required('Email is required'),
+    .email(t('common.validation.email'))
+    .required(t('common.validation.required')),
   phone: yup
     .string()
-    .required('Phone number is required')
-    .matches(/^\+?\d{10,14}$/, 'Please enter a valid phone number'),
+    .required(t('common.validation.required'))
+    .matches(/^\+?\d{10,14}$/, t('profileSetup.validation.phone')),
   dateOfBirth: yup
     .string()
-    .required('Date of birth is required')
+    .required(t('common.validation.required'))
     .matches(
       /^\d{2}\/\d{2}\/\d{4}$/,
-      'Please enter a valid date (DD/MM/YYYY)',
+      t('profileSetup.validation.dateOfBirth'),
     ),
 });
 
@@ -144,13 +145,14 @@ const PrimaryButtonText = styled.Text`
  */
 const ProfileSetup: React.FC = () => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
 
   const {
     control,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<ProfileSetupFormData>({
-    resolver: yupResolver(profileSetupSchema),
+    resolver: yupResolver(createProfileSetupSchema(t)),
     mode: 'onBlur',
     defaultValues: {
       fullName: '',
@@ -178,8 +180,8 @@ const ProfileSetup: React.FC = () => {
           <ContentWrapper>
             {/* Header */}
             <HeaderSection>
-              <Title>Complete Your Profile</Title>
-              <StepIndicator>Step 1 of 7</StepIndicator>
+              <Title>{t('profileSetup.title')}</Title>
+              <StepIndicator>{t('profileSetup.stepIndicator', { current: 1, total: 7 })}</StepIndicator>
               <StepBarContainer>
                 {[1, 2, 3, 4, 5, 6, 7].map((step) => (
                   <StepDot key={step} active={step <= 1} />
@@ -189,7 +191,7 @@ const ProfileSetup: React.FC = () => {
 
             {/* Full Name */}
             <FieldContainer>
-              <Label>Full Name</Label>
+              <Label>{t('common.labels.name')}</Label>
               <Controller
                 control={control}
                 name="fullName"
@@ -198,7 +200,7 @@ const ProfileSetup: React.FC = () => {
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
-                    placeholder="Enter your full name"
+                    placeholder={t('profileSetup.fullNamePlaceholder')}
                     placeholderTextColor={colors.gray[40]}
                     hasError={!!errors.fullName}
                     autoCapitalize="words"
@@ -213,7 +215,7 @@ const ProfileSetup: React.FC = () => {
 
             {/* Email (read-only) */}
             <FieldContainer>
-              <Label>Email</Label>
+              <Label>{t('common.labels.email')}</Label>
               <Controller
                 control={control}
                 name="email"
@@ -240,7 +242,7 @@ const ProfileSetup: React.FC = () => {
 
             {/* Phone */}
             <FieldContainer>
-              <Label>Phone Number</Label>
+              <Label>{t('common.labels.phone')}</Label>
               <Controller
                 control={control}
                 name="phone"
@@ -264,7 +266,7 @@ const ProfileSetup: React.FC = () => {
 
             {/* Date of Birth */}
             <FieldContainer>
-              <Label>Date of Birth</Label>
+              <Label>{t('profileSetup.dateOfBirth')}</Label>
               <Controller
                 control={control}
                 name="dateOfBirth"
@@ -292,10 +294,10 @@ const ProfileSetup: React.FC = () => {
               onPress={handleSubmit(onSubmit)}
               disabled={!isValid}
               accessibilityRole="button"
-              accessibilityLabel="Continue to health information"
+              accessibilityLabel={t('common.buttons.next')}
               testID="profile-setup-continue"
             >
-              <PrimaryButtonText>Continue</PrimaryButtonText>
+              <PrimaryButtonText>{t('common.buttons.next')}</PrimaryButtonText>
             </PrimaryButton>
           </ContentWrapper>
         </ScrollView>

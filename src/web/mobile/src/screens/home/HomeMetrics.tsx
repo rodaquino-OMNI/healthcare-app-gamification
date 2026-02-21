@@ -9,6 +9,7 @@ import {
   FlatList,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 import { ROUTES } from '../../constants/routes';
 import { colors } from '../../../../design-system/src/tokens/colors';
@@ -47,11 +48,11 @@ interface FilterTab {
   label: string;
 }
 
-const FILTER_TABS: FilterTab[] = [
-  { key: 'all', label: 'Todos' },
-  { key: 'vitals', label: 'Sinais Vitais' },
-  { key: 'activity', label: 'Atividade' },
-  { key: 'nutrition', label: 'Nutricao' },
+const FILTER_TABS: { key: MetricCategory; labelKey: string }[] = [
+  { key: 'all', labelKey: 'journeys.health.metrics.filterAll' },
+  { key: 'vitals', labelKey: 'journeys.health.metrics.filterVitals' },
+  { key: 'activity', labelKey: 'journeys.health.metrics.filterActivity' },
+  { key: 'nutrition', labelKey: 'journeys.health.metrics.filterNutrition' },
 ];
 
 /**
@@ -119,16 +120,16 @@ const MOCK_METRICS: HealthMetric[] = [
  */
 const getTrendInfo = (
   trend: TrendDirection,
-): { text: string; color: string } => {
+): { textKey: string; color: string } => {
   switch (trend) {
     case 'up':
-      return { text: 'Subindo', color: colors.semantic.success };
+      return { textKey: 'journeys.health.metrics.trendUp', color: colors.semantic.success };
     case 'down':
-      return { text: 'Descendo', color: colors.semantic.error };
+      return { textKey: 'journeys.health.metrics.trendDown', color: colors.semantic.error };
     case 'stable':
-      return { text: 'Estavel', color: colors.gray[50] };
+      return { textKey: 'journeys.health.metrics.trendStable', color: colors.gray[50] };
     default:
-      return { text: 'Estavel', color: colors.gray[50] };
+      return { textKey: 'journeys.health.metrics.trendStable', color: colors.gray[50] };
   }
 };
 
@@ -138,6 +139,7 @@ const getTrendInfo = (
  * to individual metric details.
  */
 export const HomeMetricsScreen: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const [activeFilter, setActiveFilter] = useState<MetricCategory>('all');
 
@@ -178,7 +180,7 @@ export const HomeMetricsScreen: React.FC = () => {
               <Text style={styles.metricUnit}> {item.unit}</Text>
             </View>
             <Text style={[styles.metricTrend, { color: trendInfo.color }]}>
-              {trendInfo.text}
+              {t(trendInfo.textKey)}
             </Text>
           </View>
         </TouchableOpacity>
@@ -196,12 +198,12 @@ export const HomeMetricsScreen: React.FC = () => {
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           accessibilityRole="button"
-          accessibilityLabel="Voltar"
+          accessibilityLabel={t('common.buttons.back')}
           style={styles.backButton}
         >
           <Text style={styles.backText}>{'<'}</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Minhas Metricas</Text>
+        <Text style={styles.headerTitle}>{t('journeys.health.metrics.title')}</Text>
         <View style={styles.headerSpacer} />
       </View>
 
@@ -224,7 +226,7 @@ export const HomeMetricsScreen: React.FC = () => {
                 onPress={() => setActiveFilter(tab.key)}
                 accessibilityRole="tab"
                 accessibilityState={{ selected: isActive }}
-                accessibilityLabel={tab.label}
+                accessibilityLabel={t(tab.labelKey)}
               >
                 <Text
                   style={[
@@ -232,7 +234,7 @@ export const HomeMetricsScreen: React.FC = () => {
                     isActive && styles.filterPillTextActive,
                   ]}
                 >
-                  {tab.label}
+                  {t(tab.labelKey)}
                 </Text>
               </TouchableOpacity>
             );
@@ -250,7 +252,7 @@ export const HomeMetricsScreen: React.FC = () => {
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>
-              Nenhuma metrica encontrada nesta categoria.
+              {t('journeys.health.metrics.emptyCategory')}
             </Text>
           </View>
         }
@@ -262,9 +264,9 @@ export const HomeMetricsScreen: React.FC = () => {
           style={styles.addButton}
           onPress={handleAddMetric}
           accessibilityRole="button"
-          accessibilityLabel="Adicionar metrica"
+          accessibilityLabel={t('journeys.health.metrics.addMetric')}
         >
-          <Text style={styles.addButtonText}>Adicionar Metrica</Text>
+          <Text style={styles.addButtonText}>{t('journeys.health.metrics.addMetric')}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

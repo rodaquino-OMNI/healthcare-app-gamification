@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 import { Claim, ClaimStatus } from 'src/web/shared/types/plan.types';
 import { useClaims } from 'src/web/mobile/src/hooks/useClaims';
@@ -65,6 +66,7 @@ function getTimelineProgress(status: ClaimStatus): number {
  * Renders the Claim Detail screen displaying information about a specific claim.
  */
 export const ClaimDetail: React.FC = () => {
+  const { t } = useTranslation();
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
 
@@ -78,7 +80,7 @@ export const ClaimDetail: React.FC = () => {
     return (
       <View style={styles.centeredContainer}>
         <ActivityIndicator size="large" color={plan.primary} />
-        <Text style={styles.loadingText}>Carregando detalhes da solicitacao...</Text>
+        <Text style={styles.loadingText}>{t('journeys.plan.claims.loading')}</Text>
       </View>
     );
   }
@@ -86,7 +88,7 @@ export const ClaimDetail: React.FC = () => {
   if (error) {
     return (
       <View style={styles.centeredContainer}>
-        <Text style={styles.errorText}>Erro ao carregar detalhes da solicitacao.</Text>
+        <Text style={styles.errorText}>{t('journeys.plan.claims.error')}</Text>
       </View>
     );
   }
@@ -95,12 +97,12 @@ export const ClaimDetail: React.FC = () => {
     return (
       <View style={styles.centeredContainer}>
         <Text style={styles.emptyIcon}>{'\u{1F50D}'}</Text>
-        <Text style={styles.errorText}>Solicitacao nao encontrada.</Text>
+        <Text style={styles.errorText}>{t('journeys.plan.claims.notFound')}</Text>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.navigate(MOBILE_PLAN_ROUTES.CLAIMS)}
         >
-          <Text style={styles.backButtonText}>Voltar ao Historico</Text>
+          <Text style={styles.backButtonText}>{t('journeys.plan.claims.backToHistory')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -126,12 +128,12 @@ export const ClaimDetail: React.FC = () => {
         <Text style={styles.amountValue}>
           R$ {claim.amount.toFixed(2).replace('.', ',')}
         </Text>
-        <Text style={styles.dateText}>Enviado em {formattedDate}</Text>
+        <Text style={styles.dateText}>{t('journeys.plan.claims.submittedOn', { date: formattedDate })}</Text>
       </View>
 
       {/* Progress Timeline */}
       <View style={styles.timelineCard}>
-        <Text style={styles.sectionTitle}>Andamento</Text>
+        <Text style={styles.sectionTitle}>{t('journeys.plan.claims.timeline')}</Text>
         {TIMELINE_STEPS.map((step, index) => {
           const isCompleted = index < timelineProgress;
           const isCurrent = index === timelineProgress - 1;
@@ -186,28 +188,28 @@ export const ClaimDetail: React.FC = () => {
 
       {/* Details Section */}
       <View style={styles.detailsCard}>
-        <Text style={styles.sectionTitle}>Detalhes</Text>
+        <Text style={styles.sectionTitle}>{t('journeys.plan.claims.details')}</Text>
         <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Tipo</Text>
+          <Text style={styles.detailLabel}>{t('journeys.plan.claims.type')}</Text>
           <Text style={styles.detailValue}>{TYPE_LABELS[claim.type] || claim.type}</Text>
         </View>
         <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Valor</Text>
+          <Text style={styles.detailLabel}>{t('journeys.plan.claims.amount')}</Text>
           <Text style={styles.detailValue}>R$ {claim.amount.toFixed(2).replace('.', ',')}</Text>
         </View>
         <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Data de Envio</Text>
+          <Text style={styles.detailLabel}>{t('journeys.plan.claims.submissionDate')}</Text>
           <Text style={styles.detailValue}>{formattedDate}</Text>
         </View>
         <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Plano</Text>
+          <Text style={styles.detailLabel}>{t('journeys.plan.claims.plan')}</Text>
           <Text style={styles.detailValue}>{claim.planId}</Text>
         </View>
 
         {/* Documents */}
         {claim.documents && claim.documents.length > 0 && (
           <>
-            <Text style={[styles.sectionTitle, { marginTop: sp.md }]}>Documentos</Text>
+            <Text style={[styles.sectionTitle, { marginTop: sp.md }]}>{t('journeys.plan.claims.documents')}</Text>
             {claim.documents.map((doc, idx) => (
               <View key={doc.id || idx} style={styles.documentRow}>
                 <Text style={styles.documentIcon}>{'\u{1F4C4}'}</Text>
@@ -227,9 +229,9 @@ export const ClaimDetail: React.FC = () => {
               // Appeal action placeholder
             }}
             accessibilityRole="button"
-            accessibilityLabel="Recorrer desta solicitacao"
+            accessibilityLabel={t('journeys.plan.claims.appeal')}
           >
-            <Text style={styles.appealButtonText}>Recorrer</Text>
+            <Text style={styles.appealButtonText}>{t('journeys.plan.claims.appeal')}</Text>
           </TouchableOpacity>
         )}
         {claim.status === 'pending' && (
@@ -239,18 +241,18 @@ export const ClaimDetail: React.FC = () => {
               // Cancel claim action placeholder
             }}
             accessibilityRole="button"
-            accessibilityLabel="Cancelar solicitacao"
+            accessibilityLabel={t('journeys.plan.claims.cancel')}
           >
-            <Text style={styles.cancelButtonText}>Cancelar Solicitacao</Text>
+            <Text style={styles.cancelButtonText}>{t('journeys.plan.claims.cancel')}</Text>
           </TouchableOpacity>
         )}
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.navigate(MOBILE_PLAN_ROUTES.CLAIMS)}
           accessibilityRole="button"
-          accessibilityLabel="Voltar ao historico de solicitacoes"
+          accessibilityLabel={t('journeys.plan.claims.backToHistory')}
         >
-          <Text style={styles.backButtonText}>Voltar ao Historico</Text>
+          <Text style={styles.backButtonText}>{t('journeys.plan.claims.backToHistory')}</Text>
         </TouchableOpacity>
       </View>
 

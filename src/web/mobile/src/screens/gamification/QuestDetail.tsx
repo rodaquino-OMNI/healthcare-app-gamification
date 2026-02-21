@@ -10,6 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 import { colors } from 'src/web/design-system/src/tokens/colors';
 import { spacingValues } from 'src/web/design-system/src/tokens/spacing';
@@ -55,10 +56,15 @@ const getRequirements = (quest: Quest): QuestRequirement[] => {
 const JOURNEY_COLORS: Record<string, string> = { health: colors.journeys.health.primary, care: colors.journeys.care.primary, plan: colors.journeys.plan.primary };
 const getJourneyColor = (journey: string): string => JOURNEY_COLORS[journey] || colors.brand.primary;
 
-const getTimeRemaining = (quest: Quest): string => {
-  if (quest.completed) return 'Completed';
-  if (quest.progress === 0) return 'No deadline';
-  const opts = ['2 days remaining', '5 hours remaining', '3 days remaining', '12 hours remaining'];
+const getTimeRemainingKey = (quest: Quest): { key: string; params?: Record<string, unknown> } => {
+  if (quest.completed) return { key: 'gamification.questDetail.timeCompleted' };
+  if (quest.progress === 0) return { key: 'gamification.questDetail.timeNoDeadline' };
+  const opts: { key: string; params: Record<string, unknown> }[] = [
+    { key: 'gamification.questDetail.timeRemaining', params: { time: '2 days' } },
+    { key: 'gamification.questDetail.timeRemaining', params: { time: '5 hours' } },
+    { key: 'gamification.questDetail.timeRemaining', params: { time: '3 days' } },
+    { key: 'gamification.questDetail.timeRemaining', params: { time: '12 hours' } },
+  ];
   return opts[quest.id.charCodeAt(quest.id.length - 1) % opts.length];
 };
 
@@ -67,6 +73,7 @@ const getTimeRemaining = (quest: Quest): string => {
  * including progress, requirements checklist, reward preview, and actions.
  */
 const QuestDetail: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
   const { questId } = route.params as QuestDetailRouteParams;
@@ -80,13 +87,13 @@ const QuestDetail: React.FC = () => {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>Quest not found</Text>
+          <Text style={styles.errorText}>{t('gamification.questDetail.notFound')}</Text>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.errorButton}
-            accessibilityLabel="Go back"
+            accessibilityLabel={t('common.buttons.back')}
           >
-            <Text style={styles.errorButtonText}>Go Back</Text>
+            <Text style={styles.errorButtonText}>{t('common.buttons.back')}</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -96,14 +103,15 @@ const QuestDetail: React.FC = () => {
   const journeyColor = getJourneyColor(quest.journey);
   const progressPercent = quest.total > 0 ? Math.round((quest.progress / quest.total) * 100) : 0;
   const requirements = getRequirements(quest);
-  const timeRemaining = getTimeRemaining(quest);
+  const timeRemainingInfo = getTimeRemainingKey(quest);
+  const timeRemaining = t(timeRemainingInfo.key, timeRemainingInfo.params);
   const rewardXP = quest.total * 25;
 
   const handleAction = useCallback(() => {
     if (quest.completed) {
-      Alert.alert('Reward Claimed', `You earned ${rewardXP} XP for completing this quest!`);
+      Alert.alert(t('gamification.questDetail.rewardClaimedTitle'), t('gamification.questDetail.rewardClaimedMessage', { xp: rewardXP }));
     } else {
-      Alert.alert('Quest Updated', quest.progress > 0 ? 'Quest in progress!' : 'Quest started!');
+      Alert.alert(t('gamification.questDetail.questUpdatedTitle'), quest.progress > 0 ? t('gamification.questDetail.questInProgress') : t('gamification.questDetail.questStarted'));
     }
   }, [quest, rewardXP]);
 
@@ -118,9 +126,9 @@ const QuestDetail: React.FC = () => {
   }, [quest, progressPercent]);
 
   const getActionLabel = (): string => {
-    if (quest.completed) return 'Claim Reward';
-    if (quest.progress > 0) return 'Continue';
-    return 'Start Quest';
+    if (quest.completed) return t('gamification.questDetail.claimReward');
+    if (quest.progress > 0) return t('gamification.questDetail.continue');
+    return t('gamification.questDetail.startQuest');
   };
 
   const getActionColor = (): string => {
@@ -135,11 +143,11 @@ const QuestDetail: React.FC = () => {
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.backButton}
-          accessibilityLabel="Go back"
+          accessibilityLabel={t('common.buttons.back')}
         >
           <Text style={styles.backArrow}>{'\u2190'}</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Quest Details</Text>
+        <Text style={styles.headerTitle}>{t('gamification.questDetail.screenTitle')}</Text>
         <View style={styles.headerSpacer} />
       </View>
 
@@ -164,13 +172,13 @@ const QuestDetail: React.FC = () => {
 
         {/* Description Card */}
         <View style={styles.card}>
-          <Text style={styles.cardLabel}>Description</Text>
+          <Text style={styles.cardLabel}>{t('gamification.questDetail.description')}</Text>
           <Text style={styles.descriptionText}>{quest.description}</Text>
         </View>
 
         {/* Progress Section */}
         <View style={styles.card}>
-          <Text style={styles.cardLabel}>Progress</Text>
+          <Text style={styles.cardLabel}>{t('gamification.questDetail.progress')}</Text>
           <View style={styles.progressBarContainer}>
             <View style={styles.progressBarBg}>
               <View
@@ -183,7 +191,7 @@ const QuestDetail: React.FC = () => {
           </View>
           <View style={styles.progressDetails}>
             <Text style={styles.progressNumbers}>
-              {quest.progress} of {quest.total} completed
+              {t('gamification.questDetail.progressOf', { progress: quest.progress, total: quest.total })}
             </Text>
             <Text style={[styles.progressPercent, { color: journeyColor }]}>
               {progressPercent}%
@@ -193,7 +201,7 @@ const QuestDetail: React.FC = () => {
 
         {/* Requirements Checklist */}
         <View style={styles.card}>
-          <Text style={styles.cardLabel}>Requirements</Text>
+          <Text style={styles.cardLabel}>{t('gamification.questDetail.requirements')}</Text>
           {requirements.map((req) => (
             <View key={req.id} style={styles.requirementRow}>
               <View
@@ -218,13 +226,13 @@ const QuestDetail: React.FC = () => {
 
         {/* Reward Preview */}
         <View style={[styles.card, styles.rewardCard]}>
-          <Text style={styles.cardLabel}>Reward</Text>
+          <Text style={styles.cardLabel}>{t('gamification.questDetail.reward')}</Text>
           <View style={styles.rewardContent}>
             <Text style={styles.rewardIcon}>{'\u{1F381}'}</Text>
             <View style={styles.rewardInfo}>
               <Text style={styles.rewardXP}>{rewardXP} XP</Text>
               <Text style={styles.rewardDescription}>
-                Complete this quest to earn experience points
+                {t('gamification.questDetail.rewardDescription')}
               </Text>
             </View>
           </View>
@@ -248,10 +256,10 @@ const QuestDetail: React.FC = () => {
         <TouchableOpacity
           onPress={handleShare}
           style={styles.shareButton}
-          accessibilityLabel="Share quest progress"
+          accessibilityLabel={t('gamification.questDetail.shareLabel')}
         >
           <Text style={[styles.shareButtonText, { color: journeyColor }]}>
-            Share Progress
+            {t('gamification.questDetail.shareProgress')}
           </Text>
         </TouchableOpacity>
       </ScrollView>

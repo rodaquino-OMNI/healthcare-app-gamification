@@ -10,16 +10,7 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { ROUTES } from '../../../../constants/routes';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-
-const SYMPTOM_STEPS = [
-  { label: 'Symptoms' },
-  { label: 'Body Map' },
-  { label: 'Details' },
-  { label: 'Questions' },
-  { label: 'Severity' },
-  { label: 'Results' },
-  { label: 'Actions' },
-];
+import { useTranslation } from 'react-i18next';
 
 interface RecommendationAction {
   id: string;
@@ -31,72 +22,7 @@ interface RecommendationAction {
   items?: string[];
 }
 
-const getRecommendations = (overallSeverity: number): RecommendationAction[] => {
-  const recommendations: RecommendationAction[] = [];
-
-  // Emergency recommendation for high severity
-  if (overallSeverity >= 8) {
-    recommendations.push({
-      id: 'emergency',
-      priority: 1,
-      title: 'Seek Emergency Care',
-      description:
-        'Your symptoms indicate a potentially serious condition. Please seek immediate medical attention.',
-      type: 'emergency',
-      actionLabel: 'Call Emergency Services',
-    });
-  }
-
-  // Doctor visit recommendation
-  recommendations.push({
-    id: 'doctor',
-    priority: overallSeverity >= 5 ? 2 : 3,
-    title: 'Schedule a Doctor Visit',
-    description:
-      overallSeverity >= 5
-        ? 'Based on your symptom severity, we recommend seeing a healthcare provider soon. Book an appointment through the app.'
-        : 'Consider scheduling a check-up to discuss your symptoms with a healthcare professional.',
-    type: 'doctor',
-    actionLabel: 'Book Appointment',
-  });
-
-  // Self-care tips
-  recommendations.push({
-    id: 'self_care',
-    priority: 4,
-    title: 'Self-Care Tips',
-    description:
-      'While monitoring your symptoms, these self-care measures may help provide relief:',
-    type: 'self_care',
-    items: [
-      'Stay well-hydrated with water and clear fluids',
-      'Get adequate rest (7-9 hours of sleep)',
-      'Maintain a balanced, nutritious diet',
-      'Practice stress-management techniques',
-      'Monitor your symptoms daily and note any changes',
-      'Avoid strenuous physical activity until symptoms improve',
-    ],
-  });
-
-  // Medication suggestions
-  recommendations.push({
-    id: 'medication',
-    priority: 5,
-    title: 'Suggested OTC Medications',
-    description:
-      'The following over-the-counter medications may help manage your symptoms. Always read labels and follow dosing instructions.',
-    type: 'medication',
-    items: [
-      'Acetaminophen (Tylenol) for pain and fever',
-      'Ibuprofen (Advil/Motrin) for inflammation and pain',
-      'Antihistamines for allergy-related symptoms',
-      'Decongestants for nasal congestion',
-      'Throat lozenges for sore throat',
-    ],
-  });
-
-  return recommendations.sort((a, b) => a.priority - b.priority);
-};
+// getRecommendations is now inside the component to access t()
 
 const getCardBorderColor = (type: string): string => {
   switch (type) {
@@ -113,22 +39,7 @@ const getCardBorderColor = (type: string): string => {
   }
 };
 
-const getTypeBadge = (
-  type: string
-): { status: 'success' | 'warning' | 'error' | 'info' | 'neutral'; label: string } => {
-  switch (type) {
-    case 'emergency':
-      return { status: 'error', label: 'Urgent' };
-    case 'doctor':
-      return { status: 'warning', label: 'Recommended' };
-    case 'self_care':
-      return { status: 'success', label: 'Self-Care' };
-    case 'medication':
-      return { status: 'info', label: 'OTC' };
-    default:
-      return { status: 'neutral', label: 'Info' };
-  }
-};
+// getTypeBadge is now inside the component to access t()
 
 type SymptomRecommendationRouteParams = {
   symptoms: Array<{ id: string; name: string }>;
@@ -151,6 +62,93 @@ const SymptomRecommendation: React.FC = () => {
   const {
     overallSeverity = 5,
   } = route.params || {};
+  const { t } = useTranslation();
+
+  const SYMPTOM_STEPS = [
+    { label: t('journeys.care.symptomChecker.steps.symptoms') },
+    { label: t('journeys.care.symptomChecker.steps.bodyMap') },
+    { label: t('journeys.care.symptomChecker.steps.details') },
+    { label: t('journeys.care.symptomChecker.steps.questions') },
+    { label: t('journeys.care.symptomChecker.steps.severity') },
+    { label: t('journeys.care.symptomChecker.steps.results') },
+    { label: t('journeys.care.symptomChecker.steps.actions') },
+  ];
+
+  const getRecommendations = (severity: number): RecommendationAction[] => {
+    const recs: RecommendationAction[] = [];
+
+    if (severity >= 8) {
+      recs.push({
+        id: 'emergency',
+        priority: 1,
+        title: t('journeys.care.symptomChecker.recommendations.emergency.title'),
+        description: t('journeys.care.symptomChecker.recommendations.emergency.description'),
+        type: 'emergency',
+        actionLabel: t('journeys.care.symptomChecker.recommendations.emergency.action'),
+      });
+    }
+
+    recs.push({
+      id: 'doctor',
+      priority: severity >= 5 ? 2 : 3,
+      title: t('journeys.care.symptomChecker.recommendations.doctor.title'),
+      description: severity >= 5
+        ? t('journeys.care.symptomChecker.recommendations.doctor.descriptionHigh')
+        : t('journeys.care.symptomChecker.recommendations.doctor.descriptionLow'),
+      type: 'doctor',
+      actionLabel: t('journeys.care.symptomChecker.recommendations.doctor.action'),
+    });
+
+    recs.push({
+      id: 'self_care',
+      priority: 4,
+      title: t('journeys.care.symptomChecker.recommendations.selfCare.title'),
+      description: t('journeys.care.symptomChecker.recommendations.selfCare.description'),
+      type: 'self_care',
+      items: [
+        t('journeys.care.symptomChecker.recommendations.selfCare.items.hydration'),
+        t('journeys.care.symptomChecker.recommendations.selfCare.items.rest'),
+        t('journeys.care.symptomChecker.recommendations.selfCare.items.diet'),
+        t('journeys.care.symptomChecker.recommendations.selfCare.items.stress'),
+        t('journeys.care.symptomChecker.recommendations.selfCare.items.monitor'),
+        t('journeys.care.symptomChecker.recommendations.selfCare.items.activity'),
+      ],
+    });
+
+    recs.push({
+      id: 'medication',
+      priority: 5,
+      title: t('journeys.care.symptomChecker.recommendations.medication.title'),
+      description: t('journeys.care.symptomChecker.recommendations.medication.description'),
+      type: 'medication',
+      items: [
+        t('journeys.care.symptomChecker.recommendations.medication.items.acetaminophen'),
+        t('journeys.care.symptomChecker.recommendations.medication.items.ibuprofen'),
+        t('journeys.care.symptomChecker.recommendations.medication.items.antihistamines'),
+        t('journeys.care.symptomChecker.recommendations.medication.items.decongestants'),
+        t('journeys.care.symptomChecker.recommendations.medication.items.lozenges'),
+      ],
+    });
+
+    return recs.sort((a, b) => a.priority - b.priority);
+  };
+
+  const getTypeBadge = (
+    type: string
+  ): { status: 'success' | 'warning' | 'error' | 'info' | 'neutral'; label: string } => {
+    switch (type) {
+      case 'emergency':
+        return { status: 'error', label: t('journeys.care.symptomChecker.recommendations.badges.urgent') };
+      case 'doctor':
+        return { status: 'warning', label: t('journeys.care.symptomChecker.recommendations.badges.recommended') };
+      case 'self_care':
+        return { status: 'success', label: t('journeys.care.symptomChecker.recommendations.badges.selfCare') };
+      case 'medication':
+        return { status: 'info', label: t('journeys.care.symptomChecker.recommendations.badges.otc') };
+      default:
+        return { status: 'neutral', label: t('journeys.care.symptomChecker.recommendations.badges.info') };
+    }
+  };
 
   const recommendations = getRecommendations(overallSeverity);
 
@@ -199,12 +197,11 @@ const SymptomRecommendation: React.FC = () => {
         </View>
 
         <Text variant="heading" journey="care" testID="recommendation-title">
-          Recommended Actions
+          {t('journeys.care.symptomChecker.recommendations.title')}
         </Text>
 
         <Text variant="body" journey="care">
-          Based on your symptoms and severity assessment, here are our recommended
-          next steps, listed by priority.
+          {t('journeys.care.symptomChecker.recommendations.subtitle')}
         </Text>
 
         {recommendations.map((rec, index) => {
@@ -301,12 +298,7 @@ const SymptomRecommendation: React.FC = () => {
             color={colors.neutral.gray600}
             testID="disclaimer"
           >
-            Important: This symptom checker is for informational purposes only and does
-            not constitute medical advice, diagnosis, or treatment. Always seek the
-            advice of your physician or other qualified health provider with any
-            questions you may have regarding a medical condition. Never disregard
-            professional medical advice or delay in seeking it because of information
-            provided by this tool.
+            {t('journeys.care.symptomChecker.recommendations.fullDisclaimer')}
           </Text>
         </Card>
 
@@ -319,7 +311,7 @@ const SymptomRecommendation: React.FC = () => {
             accessibilityLabel="Start new symptom check"
             testID="start-over-button"
           >
-            Start Over
+            {t('journeys.care.symptomChecker.results.startOver')}
           </Button>
           <Button
             onPress={handleDone}
@@ -327,7 +319,7 @@ const SymptomRecommendation: React.FC = () => {
             accessibilityLabel="Done, return to care dashboard"
             testID="done-button"
           >
-            Done
+            {t('journeys.care.symptomChecker.recommendations.done')}
           </Button>
         </View>
       </ScrollView>

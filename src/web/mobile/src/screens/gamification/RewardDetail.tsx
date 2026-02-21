@@ -10,6 +10,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 import { colors } from 'src/web/design-system/src/tokens/colors';
 import { spacingValues } from 'src/web/design-system/src/tokens/spacing';
@@ -33,13 +34,11 @@ const MOCK_REWARDS: Reward[] = [
 
 const MOCK_USER_XP = 1250;
 
-const REDEMPTION_INSTRUCTIONS: Record<string, string> = {
-  health: 'This reward will be applied to your health dashboard. You will receive a notification once activated.',
-  care: 'This reward will be applied to your next appointment. Proceed with booking and the benefit applies at checkout.',
-  plan: 'This reward will be reflected in your next billing cycle with an email confirmation.',
+const REDEMPTION_INSTRUCTION_KEYS: Record<string, string> = {
+  health: 'gamification.rewardDetail.instructionsHealth',
+  care: 'gamification.rewardDetail.instructionsCare',
+  plan: 'gamification.rewardDetail.instructionsPlan',
 };
-
-const TERMS_TEXT = 'Non-transferable. Must be redeemed within 90 days. XP spent cannot be refunded. Subject to availability. One redemption per user per cycle. Contact support for questions.';
 
 const JOURNEY_COLORS: Record<string, string> = { health: colors.journeys.health.primary, care: colors.journeys.care.primary, plan: colors.journeys.plan.primary };
 const getJourneyColor = (journey: string): string => JOURNEY_COLORS[journey] || colors.brand.primary;
@@ -49,6 +48,7 @@ const getJourneyColor = (journey: string): string => JOURNEY_COLORS[journey] || 
  * cost comparison with user balance, and a claim action with confirmation.
  */
 const RewardDetail: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
   const { rewardId } = route.params as RewardDetailRouteParams;
@@ -74,13 +74,13 @@ const RewardDetail: React.FC = () => {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>Reward not found</Text>
+          <Text style={styles.errorText}>{t('gamification.rewardDetail.notFound')}</Text>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.errorButton}
-            accessibilityLabel="Go back"
+            accessibilityLabel={t('common.buttons.back')}
           >
-            <Text style={styles.errorButtonText}>Go Back</Text>
+            <Text style={styles.errorButtonText}>{t('common.buttons.back')}</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -90,7 +90,8 @@ const RewardDetail: React.FC = () => {
   const journeyColor = getJourneyColor(reward.journey);
   const canAfford = userXP >= reward.xp;
   const deficit = reward.xp - userXP;
-  const redemptionInstructions = REDEMPTION_INSTRUCTIONS[reward.journey] || REDEMPTION_INSTRUCTIONS.health;
+  const redemptionInstructionKey = REDEMPTION_INSTRUCTION_KEYS[reward.journey] || REDEMPTION_INSTRUCTION_KEYS.health;
+  const redemptionInstructions = t(redemptionInstructionKey);
 
   const handleClaim = useCallback(() => {
     setShowConfirmModal(true);
@@ -135,11 +136,11 @@ const RewardDetail: React.FC = () => {
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.backButton}
-          accessibilityLabel="Go back"
+          accessibilityLabel={t('common.buttons.back')}
         >
           <Text style={styles.backArrow}>{'\u2190'}</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Reward Details</Text>
+        <Text style={styles.headerTitle}>{t('gamification.rewardDetail.screenTitle')}</Text>
         <View style={styles.headerSpacer} />
       </View>
 
@@ -163,18 +164,18 @@ const RewardDetail: React.FC = () => {
         <View style={styles.journeyBadge}>
           <View style={[styles.journeyDot, { backgroundColor: journeyColor }]} />
           <Text style={[styles.journeyLabel, { color: journeyColor }]}>
-            {reward.journey.charAt(0).toUpperCase() + reward.journey.slice(1)} Journey
+            {t('gamification.rewardDetail.journeyLabel', { journey: reward.journey.charAt(0).toUpperCase() + reward.journey.slice(1) })}
           </Text>
         </View>
 
         {/* Cost Section */}
         <View style={styles.costCard}>
-          <Text style={styles.costLabel}>Cost</Text>
+          <Text style={styles.costLabel}>{t('gamification.rewardDetail.cost')}</Text>
           <View style={styles.costRow}>
             <Text style={styles.costValue}>{reward.xp} XP</Text>
           </View>
           <View style={styles.balanceRow}>
-            <Text style={styles.balanceLabel}>Your balance:</Text>
+            <Text style={styles.balanceLabel}>{t('gamification.rewardDetail.yourBalance')}</Text>
             <Text style={styles.balanceValue}>{userXP.toLocaleString()} XP</Text>
           </View>
           <View style={styles.affordRow}>
@@ -182,14 +183,14 @@ const RewardDetail: React.FC = () => {
               <>
                 <View style={[styles.affordDot, { backgroundColor: colors.semantic.success }]} />
                 <Text style={[styles.affordText, { color: colors.semantic.success }]}>
-                  You have enough XP ({userXP - reward.xp} XP remaining after claim)
+                  {t('gamification.rewardDetail.enoughXP', { remaining: userXP - reward.xp })}
                 </Text>
               </>
             ) : (
               <>
                 <View style={[styles.affordDot, { backgroundColor: colors.semantic.error }]} />
                 <Text style={[styles.affordText, { color: colors.semantic.error }]}>
-                  Need {deficit} more XP to claim this reward
+                  {t('gamification.rewardDetail.needMoreXP', { xp: deficit })}
                 </Text>
               </>
             )}
@@ -198,7 +199,7 @@ const RewardDetail: React.FC = () => {
 
         {/* Redemption Instructions */}
         <View style={styles.card}>
-          <Text style={styles.cardLabel}>How it works</Text>
+          <Text style={styles.cardLabel}>{t('gamification.rewardDetail.howItWorks')}</Text>
           <Text style={styles.instructionsText}>{redemptionInstructions}</Text>
         </View>
 
@@ -206,14 +207,14 @@ const RewardDetail: React.FC = () => {
         <TouchableOpacity
           onPress={() => setShowTerms(!showTerms)}
           style={styles.termsHeader}
-          accessibilityLabel={showTerms ? 'Collapse terms and conditions' : 'Expand terms and conditions'}
+          accessibilityLabel={showTerms ? t('gamification.rewardDetail.collapseTerms') : t('gamification.rewardDetail.expandTerms')}
         >
-          <Text style={styles.termsHeaderText}>Terms & Conditions</Text>
+          <Text style={styles.termsHeaderText}>{t('gamification.rewardDetail.termsAndConditions')}</Text>
           <Text style={styles.termsChevron}>{showTerms ? '\u25B2' : '\u25BC'}</Text>
         </TouchableOpacity>
         {showTerms && (
           <View style={styles.termsContent}>
-            <Text style={styles.termsText}>{TERMS_TEXT}</Text>
+            <Text style={styles.termsText}>{t('gamification.rewardDetail.termsText')}</Text>
           </View>
         )}
 
@@ -227,17 +228,17 @@ const RewardDetail: React.FC = () => {
               : { backgroundColor: colors.neutral.gray400 },
           ]}
           disabled={!canAfford}
-          accessibilityLabel={canAfford ? `Claim ${reward.title} for ${reward.xp} XP` : 'Not enough XP to claim'}
+          accessibilityLabel={canAfford ? t('gamification.rewardDetail.claimAccessibility', { title: reward.title, xp: reward.xp }) : t('gamification.rewardDetail.notEnoughXPLabel')}
         >
           <Text style={styles.claimButtonText}>
-            {canAfford ? `Claim for ${reward.xp} XP` : 'Not Enough XP'}
+            {canAfford ? t('gamification.rewardDetail.claimFor', { xp: reward.xp }) : t('gamification.rewardDetail.notEnoughXP')}
           </Text>
         </TouchableOpacity>
 
         {/* Related Rewards */}
         {relatedRewards.length > 0 && (
           <View style={styles.relatedSection}>
-            <Text style={styles.relatedSectionTitle}>Related Rewards</Text>
+            <Text style={styles.relatedSectionTitle}>{t('gamification.rewardDetail.relatedRewards')}</Text>
             <FlatList
               data={relatedRewards}
               keyExtractor={(item) => item.id}
@@ -259,16 +260,16 @@ const RewardDetail: React.FC = () => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Confirm Redemption</Text>
+            <Text style={styles.modalTitle}>{t('gamification.rewardDetail.confirmTitle')}</Text>
             <Text style={styles.modalMessage}>
-              Are you sure you want to claim "{reward.title}"? This will cost {reward.xp} XP from your balance.
+              {t('gamification.rewardDetail.confirmMessage', { title: reward.title, xp: reward.xp })}
             </Text>
             <View style={styles.modalCostRow}>
-              <Text style={styles.modalCostLabel}>Current balance:</Text>
+              <Text style={styles.modalCostLabel}>{t('gamification.rewardDetail.currentBalance')}</Text>
               <Text style={styles.modalCostValue}>{userXP.toLocaleString()} XP</Text>
             </View>
             <View style={styles.modalCostRow}>
-              <Text style={styles.modalCostLabel}>After claim:</Text>
+              <Text style={styles.modalCostLabel}>{t('gamification.rewardDetail.afterClaim')}</Text>
               <Text style={[styles.modalCostValue, { color: colors.semantic.success }]}>
                 {(userXP - reward.xp).toLocaleString()} XP
               </Text>
@@ -277,16 +278,16 @@ const RewardDetail: React.FC = () => {
               <TouchableOpacity
                 onPress={() => setShowConfirmModal(false)}
                 style={styles.modalCancelButton}
-                accessibilityLabel="Cancel"
+                accessibilityLabel={t('common.buttons.cancel')}
               >
-                <Text style={styles.modalCancelText}>Cancel</Text>
+                <Text style={styles.modalCancelText}>{t('common.buttons.cancel')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleConfirm}
                 style={[styles.modalConfirmButton, { backgroundColor: journeyColor }]}
-                accessibilityLabel="Confirm claim"
+                accessibilityLabel={t('gamification.rewardDetail.confirmClaim')}
               >
-                <Text style={styles.modalConfirmText}>Confirm</Text>
+                <Text style={styles.modalConfirmText}>{t('gamification.rewardDetail.confirm')}</Text>
               </TouchableOpacity>
             </View>
           </View>

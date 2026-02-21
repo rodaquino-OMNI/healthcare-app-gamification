@@ -6,6 +6,7 @@ import {
   Alert,
 } from 'react-native';
 import styled from 'styled-components/native';
+import { useTranslation } from 'react-i18next';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography } from '../../../../design-system/src/tokens/typography';
@@ -267,6 +268,7 @@ interface SharingState {
  *  4. Danger Zone (account deletion with modal confirmation)
  */
 export const SettingsPrivacyScreen: React.FC = () => {
+  const { t } = useTranslation();
   const [consent, setConsent] = useState<ConsentState>({
     serviceImprovement: true,
     marketing: false,
@@ -291,15 +293,15 @@ export const SettingsPrivacyScreen: React.FC = () => {
 
   const handleExportData = () => {
     Alert.alert(
-      'Exportar dados',
-      'Sua solicitacao de exportacao foi registrada. Voce recebera um email com seus dados em ate 15 dias uteis.',
+      t('settings.privacy.exportTitle'),
+      t('settings.privacy.exportMessage'),
     );
   };
 
   const handleRequestDeletion = () => {
     Alert.alert(
-      'Solicitar exclusao',
-      'Sua solicitacao de exclusao de dados foi registrada. Voce recebera um email de confirmacao.',
+      t('settings.privacy.deletionRequestTitle'),
+      t('settings.privacy.deletionRequestMessage'),
     );
   };
 
@@ -307,8 +309,8 @@ export const SettingsPrivacyScreen: React.FC = () => {
     setShowDeleteModal(false);
     // TODO: call API to delete account
     Alert.alert(
-      'Conta excluida',
-      'Sua conta foi marcada para exclusao. Voce sera desconectado.',
+      t('settings.privacy.accountDeletedTitle'),
+      t('settings.privacy.accountDeletedMessage'),
     );
   };
 
@@ -325,130 +327,128 @@ export const SettingsPrivacyScreen: React.FC = () => {
       >
         {/* Consentimento LGPD */}
         <SectionHeader>
-          <SectionHeaderText>Consentimento LGPD</SectionHeaderText>
+          <SectionHeaderText>{t('settings.privacy.lgpdConsent')}</SectionHeaderText>
         </SectionHeader>
 
         <ToggleRow>
-          <ToggleLabel>Compartilhar dados para melhoria do servico</ToggleLabel>
+          <ToggleLabel>{t('settings.privacy.serviceImprovement')}</ToggleLabel>
           <Switch
             value={consent.serviceImprovement}
             onValueChange={() => toggleConsent('serviceImprovement')}
             trackColor={trackColor}
             thumbColor={colors.neutral.white}
-            accessibilityLabel="Compartilhar dados para melhoria do servico"
+            accessibilityLabel={t('settings.privacy.serviceImprovement')}
             testID="settings-privacy-service"
           />
         </ToggleRow>
 
         <ToggleRow>
-          <ToggleLabel>Permitir comunicacoes de marketing</ToggleLabel>
+          <ToggleLabel>{t('settings.privacy.marketing')}</ToggleLabel>
           <Switch
             value={consent.marketing}
             onValueChange={() => toggleConsent('marketing')}
             trackColor={trackColor}
             thumbColor={colors.neutral.white}
-            accessibilityLabel="Permitir comunicacoes de marketing"
+            accessibilityLabel={t('settings.privacy.marketing')}
             testID="settings-privacy-marketing"
           />
         </ToggleRow>
 
         <ToggleRow>
-          <ToggleLabel>Permitir analytics e rastreamento</ToggleLabel>
+          <ToggleLabel>{t('settings.privacy.analytics')}</ToggleLabel>
           <Switch
             value={consent.analytics}
             onValueChange={() => toggleConsent('analytics')}
             trackColor={trackColor}
             thumbColor={colors.neutral.white}
-            accessibilityLabel="Permitir analytics e rastreamento"
+            accessibilityLabel={t('settings.privacy.analytics')}
             testID="settings-privacy-analytics"
           />
         </ToggleRow>
 
         <InfoText>
-          De acordo com a Lei Geral de Protecao de Dados (LGPD), voce tem o direito
-          de controlar como seus dados pessoais sao coletados, utilizados e
-          compartilhados. Voce pode alterar suas preferencias a qualquer momento.
+          {t('settings.privacy.lgpdInfo')}
         </InfoText>
 
         {/* Compartilhamento de Dados */}
         <SectionHeader>
-          <SectionHeaderText>Compartilhamento de Dados</SectionHeaderText>
+          <SectionHeaderText>{t('settings.privacy.dataSharing')}</SectionHeaderText>
         </SectionHeader>
 
         <CheckboxRow
           onPress={() => toggleSharing('healthWithDoctors')}
           accessibilityRole="checkbox"
           accessibilityState={{ checked: sharing.healthWithDoctors }}
-          accessibilityLabel="Dados de saude com medicos"
+          accessibilityLabel={t('settings.privacy.healthWithDoctors')}
           testID="settings-privacy-share-doctors"
         >
           <CheckboxBox checked={sharing.healthWithDoctors}>
             {sharing.healthWithDoctors && <CheckmarkText>{'✓'}</CheckmarkText>}
           </CheckboxBox>
-          <CheckboxLabel>Dados de saude com medicos</CheckboxLabel>
+          <CheckboxLabel>{t('settings.privacy.healthWithDoctors')}</CheckboxLabel>
         </CheckboxRow>
 
         <CheckboxRow
           onPress={() => toggleSharing('usageWithPartners')}
           accessibilityRole="checkbox"
           accessibilityState={{ checked: sharing.usageWithPartners }}
-          accessibilityLabel="Dados de uso com parceiros"
+          accessibilityLabel={t('settings.privacy.usageWithPartners')}
           testID="settings-privacy-share-partners"
         >
           <CheckboxBox checked={sharing.usageWithPartners}>
             {sharing.usageWithPartners && <CheckmarkText>{'✓'}</CheckmarkText>}
           </CheckboxBox>
-          <CheckboxLabel>Dados de uso com parceiros</CheckboxLabel>
+          <CheckboxLabel>{t('settings.privacy.usageWithPartners')}</CheckboxLabel>
         </CheckboxRow>
 
         <CheckboxRow
           onPress={() => toggleSharing('anonymousResearch')}
           accessibilityRole="checkbox"
           accessibilityState={{ checked: sharing.anonymousResearch }}
-          accessibilityLabel="Dados anonimos para pesquisa"
+          accessibilityLabel={t('settings.privacy.anonymousResearch')}
           testID="settings-privacy-share-research"
         >
           <CheckboxBox checked={sharing.anonymousResearch}>
             {sharing.anonymousResearch && <CheckmarkText>{'✓'}</CheckmarkText>}
           </CheckboxBox>
-          <CheckboxLabel>Dados anonimos para pesquisa</CheckboxLabel>
+          <CheckboxLabel>{t('settings.privacy.anonymousResearch')}</CheckboxLabel>
         </CheckboxRow>
 
         {/* Seus Dados */}
         <SectionHeader>
-          <SectionHeaderText>Seus Dados</SectionHeaderText>
+          <SectionHeaderText>{t('settings.privacy.yourData')}</SectionHeaderText>
         </SectionHeader>
 
         <ActionButtonContainer>
           <OutlineButton
             onPress={handleExportData}
             accessibilityRole="button"
-            accessibilityLabel="Exportar meus dados"
+            accessibilityLabel={t('settings.privacy.exportData')}
             testID="settings-privacy-export"
           >
-            <OutlineButtonText>Exportar meus dados</OutlineButtonText>
+            <OutlineButtonText>{t('settings.privacy.exportData')}</OutlineButtonText>
           </OutlineButton>
 
           <DangerOutlineButton
             onPress={handleRequestDeletion}
             accessibilityRole="button"
-            accessibilityLabel="Solicitar exclusao de dados"
+            accessibilityLabel={t('settings.privacy.requestDeletion')}
             testID="settings-privacy-request-deletion"
           >
-            <DangerOutlineButtonText>Solicitar exclusao de dados</DangerOutlineButtonText>
+            <DangerOutlineButtonText>{t('settings.privacy.requestDeletion')}</DangerOutlineButtonText>
           </DangerOutlineButton>
         </ActionButtonContainer>
 
         {/* Danger Zone */}
         <DangerSection>
-          <DangerSectionTitle>Zona de Perigo</DangerSectionTitle>
+          <DangerSectionTitle>{t('settings.privacy.dangerZone')}</DangerSectionTitle>
           <DangerButton
             onPress={() => setShowDeleteModal(true)}
             accessibilityRole="button"
-            accessibilityLabel="Excluir conta"
+            accessibilityLabel={t('settings.privacy.deleteAccount')}
             testID="settings-privacy-delete-account"
           >
-            <DangerButtonText>Excluir conta</DangerButtonText>
+            <DangerButtonText>{t('settings.privacy.deleteAccount')}</DangerButtonText>
           </DangerButton>
         </DangerSection>
       </ScrollView>
@@ -462,27 +462,26 @@ export const SettingsPrivacyScreen: React.FC = () => {
       >
         <ModalOverlay>
           <ModalContent>
-            <ModalTitle>Excluir conta</ModalTitle>
+            <ModalTitle>{t('settings.privacy.deleteAccount')}</ModalTitle>
             <ModalBody>
-              Tem certeza? Esta acao e irreversivel. Todos os seus dados serao
-              permanentemente removidos e nao poderao ser recuperados.
+              {t('settings.privacy.deleteConfirmMessage')}
             </ModalBody>
             <ModalActions>
               <ModalCancelButton
                 onPress={() => setShowDeleteModal(false)}
                 accessibilityRole="button"
-                accessibilityLabel="Cancelar exclusao"
+                accessibilityLabel={t('settings.privacy.cancelDeletion')}
                 testID="settings-privacy-delete-cancel"
               >
-                <ModalCancelText>Cancelar</ModalCancelText>
+                <ModalCancelText>{t('common.buttons.cancel')}</ModalCancelText>
               </ModalCancelButton>
               <ModalConfirmButton
                 onPress={handleDeleteAccount}
                 accessibilityRole="button"
-                accessibilityLabel="Excluir permanentemente"
+                accessibilityLabel={t('settings.privacy.deletePermanently')}
                 testID="settings-privacy-delete-confirm"
               >
-                <ModalConfirmText>Excluir permanentemente</ModalConfirmText>
+                <ModalConfirmText>{t('settings.privacy.deletePermanently')}</ModalConfirmText>
               </ModalConfirmButton>
             </ModalActions>
           </ModalContent>

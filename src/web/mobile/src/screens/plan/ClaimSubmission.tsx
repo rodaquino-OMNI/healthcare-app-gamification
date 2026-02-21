@@ -11,6 +11,7 @@ import {
   Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 import { ClaimType } from 'src/web/shared/types/plan.types';
 import { MOBILE_PLAN_ROUTES } from 'src/web/shared/constants/routes';
@@ -48,6 +49,7 @@ const CLAIM_TYPE_OPTIONS: { value: ClaimType; label: string; icon: string }[] = 
  * review, and success confirmation screens.
  */
 const ClaimSubmissionScreen: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<FormData>({
@@ -139,8 +141,8 @@ const ClaimSubmissionScreen: React.FC = () => {
   // Step 0: Claim Type
   const renderTypeStep = () => (
     <View style={styles.stepContent}>
-      <Text style={styles.stepTitle}>Tipo de Solicitacao</Text>
-      <Text style={styles.stepSubtitle}>Selecione a categoria da sua solicitacao</Text>
+      <Text style={styles.stepTitle}>{t('journeys.plan.claims.submission.typeTitle')}</Text>
+      <Text style={styles.stepSubtitle}>{t('journeys.plan.claims.submission.typeSubtitle')}</Text>
       {CLAIM_TYPE_OPTIONS.map((option) => {
         const isSelected = formData.claimType === option.value;
         return (
@@ -167,19 +169,19 @@ const ClaimSubmissionScreen: React.FC = () => {
   // Step 1: Details
   const renderDetailsStep = () => (
     <View style={styles.stepContent}>
-      <Text style={styles.stepTitle}>Detalhes da Solicitacao</Text>
-      <Text style={styles.stepSubtitle}>Preencha as informacoes do atendimento</Text>
+      <Text style={styles.stepTitle}>{t('journeys.plan.claims.submission.detailsTitle')}</Text>
+      <Text style={styles.stepSubtitle}>{t('journeys.plan.claims.submission.detailsSubtitle')}</Text>
 
-      <Text style={styles.fieldLabel}>Nome do Profissional/Clinica *</Text>
+      <Text style={styles.fieldLabel}>{t('journeys.plan.claims.submission.providerName')} *</Text>
       <TextInput
         style={styles.input}
         value={formData.providerName}
         onChangeText={(t) => updateField('providerName', t)}
-        placeholder="Ex: Dr. Silva, Clinica Saude"
+        placeholder={t('journeys.plan.claims.submission.providerPlaceholder')}
         placeholderTextColor={colors.gray[40]}
       />
 
-      <Text style={styles.fieldLabel}>Data do Atendimento *</Text>
+      <Text style={styles.fieldLabel}>{t('journeys.plan.claims.submission.serviceDate')} *</Text>
       <TextInput
         style={styles.input}
         value={formData.serviceDate}
@@ -190,7 +192,7 @@ const ClaimSubmissionScreen: React.FC = () => {
         maxLength={10}
       />
 
-      <Text style={styles.fieldLabel}>Valor (R$) *</Text>
+      <Text style={styles.fieldLabel}>{t('journeys.plan.claims.submission.amount')} *</Text>
       <TextInput
         style={styles.input}
         value={formData.amount}
@@ -200,12 +202,12 @@ const ClaimSubmissionScreen: React.FC = () => {
         keyboardType="decimal-pad"
       />
 
-      <Text style={styles.fieldLabel}>Descricao</Text>
+      <Text style={styles.fieldLabel}>{t('journeys.plan.claims.submission.description')}</Text>
       <TextInput
         style={[styles.input, styles.textArea]}
         value={formData.description}
         onChangeText={(t) => updateField('description', t)}
-        placeholder="Descreva brevemente o atendimento realizado"
+        placeholder={t('journeys.plan.claims.submission.descriptionPlaceholder')}
         placeholderTextColor={colors.gray[40]}
         multiline
         numberOfLines={4}
@@ -217,20 +219,20 @@ const ClaimSubmissionScreen: React.FC = () => {
   // Step 2: Documents
   const renderDocumentsStep = () => (
     <View style={styles.stepContent}>
-      <Text style={styles.stepTitle}>Documentos</Text>
-      <Text style={styles.stepSubtitle}>Anexe recibos ou comprovantes (opcional)</Text>
+      <Text style={styles.stepTitle}>{t('journeys.plan.claims.submission.documentsTitle')}</Text>
+      <Text style={styles.stepSubtitle}>{t('journeys.plan.claims.submission.documentsSubtitle')}</Text>
 
       <TouchableOpacity
         style={styles.uploadArea}
         onPress={() => {
-          Alert.alert('Upload', 'Funcionalidade de upload sera implementada em breve.');
+          Alert.alert(t('journeys.plan.claims.submission.upload'), t('journeys.plan.claims.submission.uploadComingSoon'));
         }}
         accessibilityRole="button"
-        accessibilityLabel="Toque para fazer upload de recibo"
+        accessibilityLabel={t('journeys.plan.claims.submission.uploadAccessibility')}
       >
         <Text style={styles.uploadIcon}>{'\u{1F4CE}'}</Text>
-        <Text style={styles.uploadText}>Toque para fazer upload do recibo</Text>
-        <Text style={styles.uploadHint}>PDF, JPG ou PNG (max 10MB)</Text>
+        <Text style={styles.uploadText}>{t('journeys.plan.claims.submission.uploadText')}</Text>
+        <Text style={styles.uploadHint}>{t('journeys.plan.claims.submission.uploadHint')}</Text>
       </TouchableOpacity>
 
       {formData.documents.length > 0 && (
@@ -251,38 +253,38 @@ const ClaimSubmissionScreen: React.FC = () => {
     const typeOption = CLAIM_TYPE_OPTIONS.find((o) => o.value === formData.claimType);
     return (
       <View style={styles.stepContent}>
-        <Text style={styles.stepTitle}>Revisar Solicitacao</Text>
-        <Text style={styles.stepSubtitle}>Verifique as informacoes antes de enviar</Text>
+        <Text style={styles.stepTitle}>{t('journeys.plan.claims.submission.reviewTitle')}</Text>
+        <Text style={styles.stepSubtitle}>{t('journeys.plan.claims.submission.reviewSubtitle')}</Text>
 
         <View style={styles.reviewCard}>
           <View style={styles.reviewRow}>
-            <Text style={styles.reviewLabel}>Tipo</Text>
+            <Text style={styles.reviewLabel}>{t('journeys.plan.claims.type')}</Text>
             <Text style={styles.reviewValue}>{typeOption?.label || '-'}</Text>
           </View>
           <View style={styles.reviewRow}>
-            <Text style={styles.reviewLabel}>Profissional</Text>
+            <Text style={styles.reviewLabel}>{t('journeys.plan.claims.submission.providerName')}</Text>
             <Text style={styles.reviewValue}>{formData.providerName || '-'}</Text>
           </View>
           <View style={styles.reviewRow}>
-            <Text style={styles.reviewLabel}>Data</Text>
+            <Text style={styles.reviewLabel}>{t('journeys.plan.claims.submission.serviceDate')}</Text>
             <Text style={styles.reviewValue}>{formData.serviceDate || '-'}</Text>
           </View>
           <View style={styles.reviewRow}>
-            <Text style={styles.reviewLabel}>Valor</Text>
+            <Text style={styles.reviewLabel}>{t('journeys.plan.claims.amount')}</Text>
             <Text style={styles.reviewValueHighlight}>{formatCurrency(formData.amount)}</Text>
           </View>
           {formData.description !== '' && (
             <View style={styles.reviewRow}>
-              <Text style={styles.reviewLabel}>Descricao</Text>
+              <Text style={styles.reviewLabel}>{t('journeys.plan.claims.submission.description')}</Text>
               <Text style={styles.reviewValue}>{formData.description}</Text>
             </View>
           )}
           <View style={styles.reviewRow}>
-            <Text style={styles.reviewLabel}>Documentos</Text>
+            <Text style={styles.reviewLabel}>{t('journeys.plan.claims.documents')}</Text>
             <Text style={styles.reviewValue}>
               {formData.documents.length > 0
-                ? `${formData.documents.length} arquivo(s)`
-                : 'Nenhum'}
+                ? t('journeys.plan.claims.submission.filesCount', { count: formData.documents.length })
+                : t('journeys.plan.claims.submission.noDocuments')}
             </Text>
           </View>
         </View>
@@ -296,9 +298,9 @@ const ClaimSubmissionScreen: React.FC = () => {
       <View style={styles.successCircle}>
         <Text style={styles.successCheck}>{'\u2713'}</Text>
       </View>
-      <Text style={styles.successTitle}>Solicitacao Enviada!</Text>
+      <Text style={styles.successTitle}>{t('journeys.plan.claims.submission.successTitle')}</Text>
       <Text style={styles.successSubtitle}>
-        Sua solicitacao foi recebida e esta sendo processada.
+        {t('journeys.plan.claims.submission.successSubtitle')}
       </Text>
       <Text style={styles.successClaimId}>
         ID: CLM-{Date.now().toString().slice(-8)}
@@ -308,7 +310,7 @@ const ClaimSubmissionScreen: React.FC = () => {
         onPress={() => navigation.navigate(MOBILE_PLAN_ROUTES.CLAIMS)}
         accessibilityRole="button"
       >
-        <Text style={styles.successButtonText}>Ver Solicitacoes</Text>
+        <Text style={styles.successButtonText}>{t('journeys.plan.claims.submission.viewClaims')}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -345,7 +347,7 @@ const ClaimSubmissionScreen: React.FC = () => {
             onPress={handleBack}
             accessibilityRole="button"
           >
-            <Text style={styles.navBackText}>Voltar</Text>
+            <Text style={styles.navBackText}>{t('common.buttons.back')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.navNextButton, !isStepValid() && styles.navNextButtonDisabled]}
@@ -354,7 +356,7 @@ const ClaimSubmissionScreen: React.FC = () => {
             accessibilityRole="button"
           >
             <Text style={styles.navNextText}>
-              {currentStep === TOTAL_STEPS - 2 ? 'Enviar' : 'Proximo'}
+              {currentStep === TOTAL_STEPS - 2 ? t('common.buttons.submit') : t('common.buttons.next')}
             </Text>
           </TouchableOpacity>
         </View>

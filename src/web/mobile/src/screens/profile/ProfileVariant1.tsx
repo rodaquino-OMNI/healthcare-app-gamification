@@ -5,6 +5,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import styled from 'styled-components/native';
+import { useTranslation } from 'react-i18next';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography } from '../../../../design-system/src/tokens/typography';
@@ -15,8 +16,8 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
 /**
  * Validation schema for health information form.
  */
-const healthInfoSchema = yup.object().shape({
-  bloodType: yup.string().required('Blood type is required'),
+const createHealthInfoSchema = (t: (key: string, options?: any) => string) => yup.object().shape({
+  bloodType: yup.string().required(t('common.validation.required')),
   allergies: yup.string().default(''),
 });
 
@@ -30,11 +31,11 @@ const BLOOD_TYPE_OPTIONS = [
 ];
 
 const CHRONIC_CONDITIONS = [
-  { id: 'diabetes', label: 'Diabetes' },
-  { id: 'hypertension', label: 'Hypertension' },
-  { id: 'asthma', label: 'Asthma' },
-  { id: 'heart_disease', label: 'Heart Disease' },
-  { id: 'none', label: 'None of the above' },
+  { id: 'diabetes', labelKey: 'profile.healthInfo.conditions.diabetes' },
+  { id: 'hypertension', labelKey: 'profile.healthInfo.conditions.hypertension' },
+  { id: 'asthma', labelKey: 'profile.healthInfo.conditions.asthma' },
+  { id: 'heart_disease', labelKey: 'profile.healthInfo.conditions.heartDisease' },
+  { id: 'none', labelKey: 'profile.healthInfo.conditions.none' },
 ];
 
 // --- Styled Components ---
@@ -221,6 +222,7 @@ const SkipLinkText = styled.Text`
  */
 const ProfileVariant1: React.FC = () => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
   const [selectedConditions, setSelectedConditions] = useState<string[]>([]);
 
   const {
@@ -230,7 +232,7 @@ const ProfileVariant1: React.FC = () => {
     watch,
     formState: { errors },
   } = useForm<HealthInfoFormData>({
-    resolver: yupResolver(healthInfoSchema),
+    resolver: yupResolver(createHealthInfoSchema(t)),
     mode: 'onBlur',
     defaultValues: {
       bloodType: '',
@@ -275,11 +277,11 @@ const ProfileVariant1: React.FC = () => {
           <ContentWrapper>
             {/* Header */}
             <HeaderSection>
-              <Title>Health Information</Title>
+              <Title>{t('profile.healthInfo.title')}</Title>
               <Subtitle>
-                This helps us personalize your health journey
+                {t('profile.healthInfo.subtitle')}
               </Subtitle>
-              <StepIndicator>Step 2 of 7</StepIndicator>
+              <StepIndicator>{t('profileSetup.stepIndicator', { current: 2, total: 7 })}</StepIndicator>
               <StepBarContainer>
                 {[1, 2, 3, 4, 5, 6, 7].map((step) => (
                   <StepDot key={step} active={step <= 2} />
@@ -289,7 +291,7 @@ const ProfileVariant1: React.FC = () => {
 
             {/* Blood Type */}
             <FieldContainer>
-              <Label>Blood Type</Label>
+              <Label>{t('profile.healthInfo.bloodType')}</Label>
               <BloodTypeGrid>
                 {BLOOD_TYPE_OPTIONS.map((type) => (
                   <BloodTypeChip
@@ -314,7 +316,7 @@ const ProfileVariant1: React.FC = () => {
 
             {/* Allergies */}
             <FieldContainer>
-              <Label>Allergies</Label>
+              <Label>{t('profile.healthInfo.allergies')}</Label>
               <Controller
                 control={control}
                 name="allergies"
@@ -323,7 +325,7 @@ const ProfileVariant1: React.FC = () => {
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
-                    placeholder="List any allergies (medications, food, etc.)"
+                    placeholder={t('profile.healthInfo.allergiesPlaceholder')}
                     placeholderTextColor={colors.gray[40]}
                     multiline
                     numberOfLines={4}
@@ -335,7 +337,7 @@ const ProfileVariant1: React.FC = () => {
 
             {/* Chronic Conditions */}
             <FieldContainer>
-              <Label>Chronic Conditions</Label>
+              <Label>{t('profile.healthInfo.chronicConditions')}</Label>
               {CHRONIC_CONDITIONS.map((condition) => (
                 <ConditionRow
                   key={condition.id}
@@ -344,7 +346,7 @@ const ProfileVariant1: React.FC = () => {
                   accessibilityState={{
                     checked: selectedConditions.includes(condition.id),
                   }}
-                  accessibilityLabel={condition.label}
+                  accessibilityLabel={t(condition.labelKey)}
                   testID={`condition-${condition.id}`}
                 >
                   <CheckboxBox
@@ -354,7 +356,7 @@ const ProfileVariant1: React.FC = () => {
                       <CheckboxMark>&#10003;</CheckboxMark>
                     )}
                   </CheckboxBox>
-                  <ConditionLabel>{condition.label}</ConditionLabel>
+                  <ConditionLabel>{t(condition.labelKey)}</ConditionLabel>
                 </ConditionRow>
               ))}
             </FieldContainer>
@@ -363,20 +365,20 @@ const ProfileVariant1: React.FC = () => {
             <PrimaryButton
               onPress={handleSubmit(onSubmit)}
               accessibilityRole="button"
-              accessibilityLabel="Continue to insurance information"
+              accessibilityLabel={t('common.buttons.next')}
               testID="profile-health-continue"
             >
-              <PrimaryButtonText>Continue</PrimaryButtonText>
+              <PrimaryButtonText>{t('common.buttons.next')}</PrimaryButtonText>
             </PrimaryButton>
 
             {/* Skip Link */}
             <SkipLink
               onPress={handleSkip}
               accessibilityRole="link"
-              accessibilityLabel="Skip to address"
+              accessibilityLabel={t('onboarding.skip')}
               testID="profile-health-skip"
             >
-              <SkipLinkText>Skip</SkipLinkText>
+              <SkipLinkText>{t('onboarding.skip')}</SkipLinkText>
             </SkipLink>
           </ContentWrapper>
         </ScrollView>

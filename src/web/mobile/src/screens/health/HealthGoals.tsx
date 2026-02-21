@@ -18,6 +18,7 @@ import { useAuth } from 'src/web/mobile/src/hooks/useAuth';
 import { useHealthMetrics } from 'src/web/mobile/src/hooks/useHealthMetrics';
 import { useGamification } from 'src/web/mobile/src/hooks/useGamification';
 import { HealthGoal } from 'src/web/shared/types/health.types';
+import { useTranslation } from 'react-i18next';
 import { MOBILE_HEALTH_ROUTES } from 'src/web/shared/constants/routes';
 
 // Define the style for the component
@@ -43,6 +44,7 @@ const styles = StyleSheet.create({
  * Allows users to set and track health-related goals (F-101-RQ-005).
  */
 const HealthGoals: React.FC = () => {
+  const { t } = useTranslation();
   // Get the current user's ID from the authentication context
   const { userId } = useAuth();
 
@@ -78,7 +80,7 @@ const HealthGoals: React.FC = () => {
 
   // Render error state if there is an error fetching health metric types
   if (error) {
-    return <ErrorState message="Failed to load health goals." />;
+    return <ErrorState message={t('common.errors.default')} />;
   }
 
   // Render the main component
@@ -86,7 +88,7 @@ const HealthGoals: React.FC = () => {
     <View style={styles.container}>
       {/* Render the JourneyHeader component with the screen title and a button to add a new goal */}
       <JourneyHeader
-        title="Health Goals"
+        title={t('journeys.health.goals.title')}
         rightActions={(
           <View style={styles.addButtonContainer}>
             <Button
@@ -96,7 +98,7 @@ const HealthGoals: React.FC = () => {
               journey={journey}
               accessibilityLabel="Add new health goal"
             >
-              Add Goal
+              {t('journeys.health.goals.setGoal')}
             </Button>
           </View>
         )}

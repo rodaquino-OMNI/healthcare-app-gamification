@@ -15,6 +15,7 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Button } from '@austa/design-system/src/components/Button/Button';
 import { Badge } from '@austa/design-system/src/components/Badge/Badge';
 import Input from '@austa/design-system/src/components/Input/Input';
+import { useTranslation } from 'react-i18next';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 
@@ -118,6 +119,7 @@ type TabFilter = 'active' | 'completed';
  * searchable list grouped by Active and Completed tabs.
  */
 const MedicationList: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const [activeTab, setActiveTab] = useState<TabFilter>('active');
   const [searchQuery, setSearchQuery] = useState('');
@@ -170,19 +172,19 @@ const MedicationList: React.FC = () => {
       case 'active':
         return (
           <Badge variant="status" status="success" accessibilityLabel="Active">
-            Active
+            {t('journeys.care.medications.status.active')}
           </Badge>
         );
       case 'paused':
         return (
-          <Badge variant="status" status="warning" accessibilityLabel="Paused">
-            Paused
+          <Badge variant="status" status="warning" accessibilityLabel={t('journeys.care.medications.status.paused')}>
+            {t('journeys.care.medications.status.paused')}
           </Badge>
         );
       case 'completed':
         return (
-          <Badge variant="status" status="info" accessibilityLabel="Completed">
-            Completed
+          <Badge variant="status" status="info" accessibilityLabel={t('journeys.care.medications.status.completed')}>
+            {t('journeys.care.medications.status.completed')}
           </Badge>
         );
       default:
@@ -222,7 +224,7 @@ const MedicationList: React.FC = () => {
                       : colors.semantic.warning
                   }
                 >
-                  {item.adherence ? 'On track' : 'Missed'}
+                  {item.adherence ? t('journeys.care.medications.onTrack') : t('journeys.care.medications.missed')}
                 </Text>
               </View>
             </View>
@@ -236,7 +238,7 @@ const MedicationList: React.FC = () => {
   const renderEmptyState = () => (
     <View style={styles.emptyState}>
       <Text fontSize="xl" color={colors.neutral.gray500} textAlign="center">
-        No medications found
+        {t('journeys.care.medications.empty')}
       </Text>
       <Text
         fontSize="sm"
@@ -244,8 +246,8 @@ const MedicationList: React.FC = () => {
         textAlign="center"
       >
         {activeTab === 'active'
-          ? 'Tap the + button to add your first medication'
-          : 'No completed medications yet'}
+          ? t('journeys.care.medications.emptyActiveHint')
+          : t('journeys.care.medications.emptyCompletedHint')}
       </Text>
     </View>
   );
@@ -257,7 +259,7 @@ const MedicationList: React.FC = () => {
       {/* Header */}
       <View style={styles.header}>
         <Text variant="heading" journey="health">
-          Medications
+          {t('journeys.care.medications.title')}
         </Text>
       </View>
 
@@ -266,7 +268,7 @@ const MedicationList: React.FC = () => {
         <Input
           value={searchQuery}
           onChange={handleSearchChange}
-          placeholder="Search medications..."
+          placeholder={t('common.placeholders.search')}
           journey="health"
           aria-label="Search medications"
           testID="medication-search-input"
@@ -293,12 +295,12 @@ const MedicationList: React.FC = () => {
                 : colors.neutral.gray600
             }
           >
-            Active
+            {t('journeys.care.medications.status.active')}
           </Text>
         </Touchable>
         <Touchable
           onPress={() => setActiveTab('completed')}
-          accessibilityLabel="Show completed medications"
+          accessibilityLabel={t('journeys.care.medications.status.completed')}
           accessibilityRole="button"
           testID="tab-completed"
           style={[
@@ -314,7 +316,7 @@ const MedicationList: React.FC = () => {
                 : colors.neutral.gray600
             }
           >
-            Completed
+            {t('journeys.care.medications.status.completed')}
           </Text>
         </Touchable>
       </View>

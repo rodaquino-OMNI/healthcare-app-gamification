@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'; // ^18.0.0
 import { useNavigation } from '@react-navigation/native'; // 6.1.7
 import { View, Text } from 'react-native'; // 0.71.0
+import { useTranslation } from 'react-i18next';
 
 import { useTelemedicineSession } from 'src/web/mobile/src/hooks/useTelemedicine.ts';
 import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader.tsx';
@@ -15,6 +16,7 @@ import ErrorState from 'src/web/mobile/src/components/shared/ErrorState.tsx';
  * @returns The rendered Telemedicine component.
  */
 export const Telemedicine: React.FC = () => {
+  const { t } = useTranslation();
   // LD1: Uses the `useTelemedicineSession` hook to manage the state and logic for the telemedicine session.
   const { session: telemedicineSession, loading, error, createSession } = useTelemedicineSession();
 
@@ -35,12 +37,12 @@ export const Telemedicine: React.FC = () => {
   return (
     <View>
       <JourneyHeader
-        title="Telemedicine"
+        title={t('journeys.care.telemedicine.title')}
         showBackButton
       />
 
       {/* LD1: If `loading` is true, renders a `LoadingIndicator` component. */}
-      {loading && <LoadingIndicator label="Initializing Telemedicine Session..." />}
+      {loading && <LoadingIndicator label={t('journeys.care.telemedicine.initializing')} />}
 
       {/* LD1: If `error` is not null, renders an `ErrorState` component with the error message. */}
       {error && <ErrorState message={error.message} />}
@@ -49,16 +51,16 @@ export const Telemedicine: React.FC = () => {
       {!telemedicineSession && providerId && (
         <Button
           onPress={() => createSession(providerId)}
-          accessibilityLabel="Start Telemedicine Session"
+          accessibilityLabel={t('journeys.care.telemedicine.startSession')}
         >
-          Start Telemedicine Session
+          {t('journeys.care.telemedicine.startSession')}
         </Button>
       )}
 
       {/* LD1: If `telemedicineSession` is not null, renders a `Text` component with the telemedicine session details. */}
       {telemedicineSession && (
         <Text>
-          Telemedicine Session Details: {telemedicineSession.id}
+          {t('journeys.care.telemedicine.sessionDetails', { id: telemedicineSession.id })}
         </Text>
       )}
     </View>

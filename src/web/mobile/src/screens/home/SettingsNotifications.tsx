@@ -4,6 +4,7 @@ import {
   Switch,
 } from 'react-native';
 import styled from 'styled-components/native';
+import { useTranslation } from 'react-i18next';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography } from '../../../../design-system/src/tokens/typography';
@@ -120,6 +121,7 @@ interface NotificationPreferences {
  *  3. Horario Silencioso (toggle + time range)
  */
 export const SettingsNotificationsScreen: React.FC = () => {
+  const { t } = useTranslation();
   const [prefs, setPrefs] = useState<NotificationPreferences>({
     pushEnabled: true,
     emailEnabled: true,
@@ -157,111 +159,111 @@ export const SettingsNotificationsScreen: React.FC = () => {
       >
         {/* Canais de Notificacao */}
         <SectionHeader>
-          <SectionHeaderText>Canais de Notificacao</SectionHeaderText>
+          <SectionHeaderText>{t('settings.notifications.channels')}</SectionHeaderText>
         </SectionHeader>
 
         <ToggleRow>
-          <ToggleLabel>Notificacoes Push</ToggleLabel>
+          <ToggleLabel>{t('settings.notifications.push')}</ToggleLabel>
           <Switch
             value={prefs.pushEnabled}
             onValueChange={() => toggle('pushEnabled')}
             trackColor={trackColor}
             thumbColor={colors.neutral.white}
-            accessibilityLabel="Ativar notificacoes push"
+            accessibilityLabel={t('settings.notifications.pushA11y')}
             testID="settings-notif-push"
           />
         </ToggleRow>
 
         <ToggleRow>
-          <ToggleLabel>Email</ToggleLabel>
+          <ToggleLabel>{t('settings.notifications.email')}</ToggleLabel>
           <Switch
             value={prefs.emailEnabled}
             onValueChange={() => toggle('emailEnabled')}
             trackColor={trackColor}
             thumbColor={colors.neutral.white}
-            accessibilityLabel="Ativar notificacoes por email"
+            accessibilityLabel={t('settings.notifications.emailA11y')}
             testID="settings-notif-email"
           />
         </ToggleRow>
 
         <ToggleRow>
-          <ToggleLabel>SMS</ToggleLabel>
+          <ToggleLabel>{t('settings.notifications.sms')}</ToggleLabel>
           <Switch
             value={prefs.smsEnabled}
             onValueChange={() => toggle('smsEnabled')}
             trackColor={trackColor}
             thumbColor={colors.neutral.white}
-            accessibilityLabel="Ativar notificacoes por SMS"
+            accessibilityLabel={t('settings.notifications.smsA11y')}
             testID="settings-notif-sms"
           />
         </ToggleRow>
 
         {/* Por Jornada */}
         <SectionHeader>
-          <SectionHeaderText>Por Jornada</SectionHeaderText>
+          <SectionHeaderText>{t('settings.notifications.byJourney')}</SectionHeaderText>
         </SectionHeader>
 
         <ToggleRow>
-          <ToggleLabel>Saude</ToggleLabel>
+          <ToggleLabel>{t('settings.notifications.health')}</ToggleLabel>
           <Switch
             value={prefs.healthJourney}
             onValueChange={() => toggle('healthJourney')}
             trackColor={{ false: colors.gray[20], true: colors.journeys.health.primary }}
             thumbColor={colors.neutral.white}
-            accessibilityLabel="Notificacoes da jornada Saude"
+            accessibilityLabel={t('settings.notifications.healthA11y')}
             testID="settings-notif-health"
           />
         </ToggleRow>
 
         <ToggleRow>
-          <ToggleLabel>Cuidados</ToggleLabel>
+          <ToggleLabel>{t('settings.notifications.care')}</ToggleLabel>
           <Switch
             value={prefs.careJourney}
             onValueChange={() => toggle('careJourney')}
             trackColor={{ false: colors.gray[20], true: colors.journeys.care.primary }}
             thumbColor={colors.neutral.white}
-            accessibilityLabel="Notificacoes da jornada Cuidados"
+            accessibilityLabel={t('settings.notifications.careA11y')}
             testID="settings-notif-care"
           />
         </ToggleRow>
 
         <ToggleRow>
-          <ToggleLabel>Plano</ToggleLabel>
+          <ToggleLabel>{t('settings.notifications.plan')}</ToggleLabel>
           <Switch
             value={prefs.planJourney}
             onValueChange={() => toggle('planJourney')}
             trackColor={{ false: colors.gray[20], true: colors.journeys.plan.primary }}
             thumbColor={colors.neutral.white}
-            accessibilityLabel="Notificacoes da jornada Plano"
+            accessibilityLabel={t('settings.notifications.planA11y')}
             testID="settings-notif-plan"
           />
         </ToggleRow>
 
         <ToggleRow>
-          <ToggleLabel>Conquistas</ToggleLabel>
+          <ToggleLabel>{t('settings.notifications.achievements')}</ToggleLabel>
           <Switch
             value={prefs.achievementsJourney}
             onValueChange={() => toggle('achievementsJourney')}
             trackColor={{ false: colors.gray[20], true: colors.journeys.community.primary }}
             thumbColor={colors.neutral.white}
-            accessibilityLabel="Notificacoes de conquistas"
+            accessibilityLabel={t('settings.notifications.achievementsA11y')}
             testID="settings-notif-achievements"
           />
         </ToggleRow>
 
         {/* Horario Silencioso */}
         <SectionHeader>
-          <SectionHeaderText>Horario Silencioso</SectionHeaderText>
+          <SectionHeaderText>{t('settings.notifications.quietHours')}</SectionHeaderText>
         </SectionHeader>
 
         <ToggleRow>
-          <ToggleLabel>Ativar horario silencioso</ToggleLabel>
+          <ToggleLabel>{t('settings.notifications.enableQuietHours')}</ToggleLabel>
           <Switch
             value={prefs.quietHoursEnabled}
             onValueChange={() => toggle('quietHoursEnabled')}
             trackColor={trackColor}
             thumbColor={colors.neutral.white}
-            accessibilityLabel="Ativar horario silencioso"
+            accessibilityLabel={t('settings.notifications.enableQuietHoursA11y')}
             testID="settings-notif-quiet-toggle"
           />
         </ToggleRow>
@@ -269,7 +271,7 @@ export const SettingsNotificationsScreen: React.FC = () => {
         {prefs.quietHoursEnabled && (
           <>
             <TimeInputRow>
-              <TimeLabel>Inicio</TimeLabel>
+              <TimeLabel>{t('settings.notifications.start')}</TimeLabel>
               <TimeInput
                 value={prefs.quietHoursStart}
                 onChangeText={(val: string) => updateTime('quietHoursStart', val)}
@@ -277,13 +279,13 @@ export const SettingsNotificationsScreen: React.FC = () => {
                 placeholderTextColor={colors.gray[40]}
                 keyboardType="numeric"
                 maxLength={5}
-                accessibilityLabel="Horario de inicio do silencioso"
+                accessibilityLabel={t('settings.notifications.startA11y')}
                 testID="settings-notif-quiet-start"
               />
             </TimeInputRow>
 
             <TimeInputRow>
-              <TimeLabel>Fim</TimeLabel>
+              <TimeLabel>{t('settings.notifications.end')}</TimeLabel>
               <TimeInput
                 value={prefs.quietHoursEnd}
                 onChangeText={(val: string) => updateTime('quietHoursEnd', val)}
@@ -291,14 +293,13 @@ export const SettingsNotificationsScreen: React.FC = () => {
                 placeholderTextColor={colors.gray[40]}
                 keyboardType="numeric"
                 maxLength={5}
-                accessibilityLabel="Horario de fim do silencioso"
+                accessibilityLabel={t('settings.notifications.endA11y')}
                 testID="settings-notif-quiet-end"
               />
             </TimeInputRow>
 
             <InfoText>
-              Durante o horario silencioso, notificacoes push serao silenciadas.
-              Notificacoes por email e SMS nao sao afetadas.
+              {t('settings.notifications.quietHoursInfo')}
             </InfoText>
           </>
         )}

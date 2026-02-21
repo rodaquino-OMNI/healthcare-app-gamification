@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography } from '../../../../design-system/src/tokens/typography';
 import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
@@ -27,33 +28,28 @@ const TOTAL_STEPS = 5;
  */
 const STEPS = [
   {
-    title: 'Track Your Health',
-    description:
-      'Monitor vital signs, steps, sleep, and nutrition all in one place. Connect your wearable devices for real-time insights.',
+    titleKey: 'onboarding.steps.trackHealth.title',
+    descriptionKey: 'onboarding.steps.trackHealth.description',
     color: colors.journeys.health.primary,
   },
   {
-    title: 'Earn Rewards',
-    description:
-      'Complete health challenges, earn XP, and unlock achievements. Stay motivated with gamified wellness goals.',
+    titleKey: 'onboarding.steps.earnRewards.title',
+    descriptionKey: 'onboarding.steps.earnRewards.description',
     color: colors.brand.secondary,
   },
   {
-    title: 'Manage Your Plan',
-    description:
-      'View coverage details, submit claims, and simulate costs. Your insurance plan at your fingertips.',
+    titleKey: 'onboarding.steps.managePlan.title',
+    descriptionKey: 'onboarding.steps.managePlan.description',
     color: colors.journeys.plan.primary,
   },
   {
-    title: 'Virtual Care',
-    description:
-      'Book appointments and consult with healthcare providers via video. Quality care from anywhere.',
+    titleKey: 'onboarding.steps.virtualCare.title',
+    descriptionKey: 'onboarding.steps.virtualCare.description',
     color: colors.journeys.care.primary,
   },
   {
-    title: 'Join the Community',
-    description:
-      'Connect with others on similar health journeys. Share tips, celebrate milestones, and grow together.',
+    titleKey: 'onboarding.steps.joinCommunity.title',
+    descriptionKey: 'onboarding.steps.joinCommunity.description',
     color: colors.journeys.community.primary,
   },
 ] as const;
@@ -185,6 +181,7 @@ const NextButtonText = styled.Text`
  */
 export default function OnboardingScreen() {
   const navigation = useNavigation<any>();
+  const { t } = useTranslation();
   const scrollRef = useRef<ScrollView>(null);
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -234,11 +231,11 @@ export default function OnboardingScreen() {
       <HeaderRow>
         <SkipButton
           onPress={handleSkip}
-          accessibilityLabel="Skip onboarding"
+          accessibilityLabel={t('onboarding.skip')}
           accessibilityRole="button"
           testID="onboarding-skip"
         >
-          <SkipText>Skip</SkipText>
+          <SkipText>{t('onboarding.skip')}</SkipText>
         </SkipButton>
       </HeaderRow>
 
@@ -255,8 +252,8 @@ export default function OnboardingScreen() {
         {STEPS.map((step, index) => (
           <SlideContainer key={`step-${index}`}>
             <IllustrationBox bgColor={step.color} />
-            <StepTitle>{step.title}</StepTitle>
-            <StepDescription>{step.description}</StepDescription>
+            <StepTitle>{t(step.titleKey)}</StepTitle>
+            <StepDescription>{t(step.descriptionKey)}</StepDescription>
           </SlideContainer>
         ))}
       </ScrollView>
@@ -272,7 +269,7 @@ export default function OnboardingScreen() {
             <Dot
               key={`dot-${index}`}
               active={index === currentStep}
-              accessibilityLabel={`Step ${index + 1} of ${TOTAL_STEPS}`}
+              accessibilityLabel={t('onboarding.stepIndicator', { current: index + 1, total: TOTAL_STEPS })}
             />
           ))}
         </DotsRow>
@@ -280,12 +277,12 @@ export default function OnboardingScreen() {
         <NextButton
           bgColor={colors.brand.primary}
           onPress={handleNext}
-          accessibilityLabel={isLastStep ? 'Get Started' : 'Next step'}
+          accessibilityLabel={isLastStep ? t('onboarding.getStarted') : t('common.buttons.next')}
           accessibilityRole="button"
           testID="onboarding-next"
         >
           <NextButtonText>
-            {isLastStep ? 'Get Started' : 'Next'}
+            {isLastStep ? t('onboarding.getStarted') : t('common.buttons.next')}
           </NextButtonText>
         </NextButton>
       </BottomSection>

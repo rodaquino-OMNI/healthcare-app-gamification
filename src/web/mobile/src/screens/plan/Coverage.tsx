@@ -20,6 +20,7 @@ import {
   borderRadius,
   sizing,
 } from '@web/design-system/src/tokens';
+import { useTranslation } from 'react-i18next';
 
 const { plan } = colors.journeys;
 const sp = {
@@ -38,6 +39,7 @@ const sp = {
  * Addresses requirement F-103-RQ-001: Display detailed insurance coverage information.
  */
 const Coverage: React.FC = () => {
+  const { t } = useTranslation();
   const { setJourney } = useContext(JourneyContext);
 
   useEffect(() => {
@@ -64,7 +66,7 @@ const Coverage: React.FC = () => {
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={plan.primary} />
         <Text style={styles.loadingText}>
-          Carregando informacoes de cobertura...
+          {t('journeys.plan.coverage.loading')}
         </Text>
       </View>
     );
@@ -74,10 +76,10 @@ const Coverage: React.FC = () => {
     return (
       <View style={styles.errorContainer}>
         <Text style={styles.errorText}>
-          Nao foi possivel carregar as informacoes de cobertura.
+          {t('journeys.plan.coverage.error')}
         </Text>
         <Text style={styles.errorSubText}>
-          Por favor, tente novamente mais tarde.
+          {t('common.errors.network')}
         </Text>
       </View>
     );
@@ -87,7 +89,7 @@ const Coverage: React.FC = () => {
     return (
       <View style={styles.emptyContainer}>
         <Text style={styles.emptyText}>
-          Nenhuma informacao de cobertura disponivel para este plano.
+          {t('journeys.plan.coverage.empty')}
         </Text>
       </View>
     );
@@ -117,9 +119,9 @@ const Coverage: React.FC = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Informacoes de Cobertura</Text>
+      <Text style={styles.title}>{t('journeys.plan.coverage.title')}</Text>
       <Text style={styles.subtitle}>
-        Detalhes da sua cobertura atual incluindo limitacoes e valores de copagamento.
+        {t('journeys.plan.coverage.details')}
       </Text>
 
       {Object.entries(grouped).map(([type, items]) => {
@@ -148,13 +150,13 @@ const Coverage: React.FC = () => {
                     <Text style={styles.coverageDetails}>{item.details}</Text>
                     {item.limitations && (
                       <View style={styles.limitationRow}>
-                        <Text style={styles.limitationLabel}>Limitacoes:</Text>
+                        <Text style={styles.limitationLabel}>{t('journeys.plan.coverage.limitations')}:</Text>
                         <Text style={styles.limitationValue}>{item.limitations}</Text>
                       </View>
                     )}
                     {item.coPayment !== undefined && item.coPayment !== null && (
                       <View style={styles.copayRow}>
-                        <Text style={styles.copayLabel}>Copagamento:</Text>
+                        <Text style={styles.copayLabel}>{t('journeys.plan.coverage.copayment')}:</Text>
                         <Text style={styles.copayValue}>
                           R$ {item.coPayment.toFixed(2)}
                         </Text>

@@ -5,6 +5,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import styled from 'styled-components/native';
+import { useTranslation } from 'react-i18next';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography } from '../../../../design-system/src/tokens/typography';
@@ -36,12 +37,12 @@ const formatCPF = (value: string): string => {
 /**
  * Validation schema for document form.
  */
-const documentsSchema = yup.object().shape({
+const createDocumentsSchema = (t: (key: string, options?: any) => string) => yup.object().shape({
   cpf: yup
     .string()
-    .required('CPF is required')
-    .test('valid-cpf', 'CPF must have 11 digits', validateCPF),
-  rg: yup.string().required('RG is required'),
+    .required(t('common.validation.required'))
+    .test('valid-cpf', t('profile.documents.cpfFormat'), validateCPF),
+  rg: yup.string().required(t('common.validation.required')),
 });
 
 interface DocumentsFormData {
@@ -236,6 +237,7 @@ const PrimaryButtonText = styled.Text`
  */
 const ProfileDocuments: React.FC = () => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
   const [selectedDocType, setSelectedDocType] = useState<DocumentType>('CPF');
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
 
@@ -244,7 +246,7 @@ const ProfileDocuments: React.FC = () => {
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<DocumentsFormData>({
-    resolver: yupResolver(documentsSchema),
+    resolver: yupResolver(createDocumentsSchema(t)),
     mode: 'onBlur',
     defaultValues: {
       cpf: '',
@@ -271,7 +273,7 @@ const ProfileDocuments: React.FC = () => {
       // User cancelled the picker or an error occurred
       const error = err as { code?: string };
       if (error.code !== 'DOCUMENT_PICKER_CANCELED') {
-        Alert.alert('Error', 'Failed to pick document. Please try again.');
+        Alert.alert(t('common.errors.default'), t('profile.documents.uploadError'));
       }
     }
   };
@@ -294,11 +296,11 @@ const ProfileDocuments: React.FC = () => {
           <ContentWrapper>
             {/* Header */}
             <HeaderSection>
-              <Title>Documents</Title>
+              <Title>{t('profile.documents.title')}</Title>
               <Subtitle>
-                Verify your identity for secure access
+                {t('profile.documents.subtitle')}
               </Subtitle>
-              <StepIndicator>Step 5 of 7</StepIndicator>
+              <StepIndicator>{t('profileSetup.stepIndicator', { current: 5, total: 7 })}</StepIndicator>
               <StepBarContainer>
                 {[1, 2, 3, 4, 5, 6, 7].map((step) => (
                   <StepDot key={step} active={step <= 5} />
@@ -308,7 +310,7 @@ const ProfileDocuments: React.FC = () => {
 
             {/* CPF */}
             <FieldContainer>
-              <Label>CPF</Label>
+              <Label>{t('profile.documents.cpfLabel')}</Label>
               <Controller
                 control={control}
                 name="cpf"
@@ -331,7 +333,7 @@ const ProfileDocuments: React.FC = () => {
 
             {/* RG */}
             <FieldContainer>
-              <Label>RG</Label>
+              <Label>{t('profile.documents.rgLabel')}</Label>
               <Controller
                 control={control}
                 name="rg"
@@ -340,7 +342,7 @@ const ProfileDocuments: React.FC = () => {
                     value={value}
                     onChangeText={onChange}
                     onBlur={onBlur}
-                    placeholder="Enter your RG number"
+                    placeholder={t('profile.documents.rgPlaceholder')}
                     placeholderTextColor={colors.gray[40]}
                     hasError={!!errors.rg}
                     testID="profile-docs-rg"
@@ -352,7 +354,7 @@ const ProfileDocuments: React.FC = () => {
 
             {/* Document Type Selector */}
             <FieldContainer>
-              <Label>Document Type to Upload</Label>
+              <Label>{t('profile.documents.docTypeLabel')}</Label>
               <DocTypeRow>
                 {(['CPF', 'RG', 'CNH'] as DocumentType[]).map((type) => (
                   <DocTypeChip
@@ -384,10 +386,10 @@ const ProfileDocuments: React.FC = () => {
               >
                 <UploadIcon>&#128247;</UploadIcon>
                 <UploadText>
-                  Upload {selectedDocType} Document
+                  {t('profile.documents.uploadDocument', { type: selectedDocType })}
                 </UploadText>
                 <UploadHint>
-                  Tap to take a photo or choose a file
+                  {t('profile.documents.uploadHint')}
                 </UploadHint>
               </UploadArea>
             ) : (
@@ -403,10 +405,10 @@ const ProfileDocuments: React.FC = () => {
               onPress={handleSubmit(onSubmit)}
               disabled={!isValid}
               accessibilityRole="button"
-              accessibilityLabel="Continue to profile photo"
+              accessibilityLabel={t('common.buttons.next')}
               testID="profile-docs-continue"
             >
-              <PrimaryButtonText>Continue</PrimaryButtonText>
+              <PrimaryButtonText>{t('common.buttons.next')}</PrimaryButtonText>
             </PrimaryButton>
           </ContentWrapper>
         </ScrollView>

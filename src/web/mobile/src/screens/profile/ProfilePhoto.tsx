@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ScrollView, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styled from 'styled-components/native';
+import { useTranslation } from 'react-i18next';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography } from '../../../../design-system/src/tokens/typography';
@@ -155,6 +156,7 @@ const SkipLinkText = styled.Text`
  */
 const ProfilePhoto: React.FC = () => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
   const [photoUri, setPhotoUri] = useState<string | null>(null);
 
   /**
@@ -179,7 +181,7 @@ const ProfilePhoto: React.FC = () => {
       // Mock for development
       setPhotoUri('https://via.placeholder.com/150');
     } catch {
-      Alert.alert('Error', 'Failed to open camera. Please try again.');
+      Alert.alert(t('common.errors.default'), t('profile.photo.cameraError'));
     }
   };
 
@@ -204,7 +206,7 @@ const ProfilePhoto: React.FC = () => {
       // Mock for development
       setPhotoUri('https://via.placeholder.com/150');
     } catch {
-      Alert.alert('Error', 'Failed to open gallery. Please try again.');
+      Alert.alert(t('common.errors.default'), t('profile.photo.galleryError'));
     }
   };
 
@@ -226,9 +228,9 @@ const ProfilePhoto: React.FC = () => {
         <ContentWrapper>
           {/* Header */}
           <HeaderSection>
-            <Title>Profile Photo</Title>
-            <Subtitle>Add a photo so others can recognize you</Subtitle>
-            <StepIndicator>Step 6 of 7</StepIndicator>
+            <Title>{t('profile.photo.title')}</Title>
+            <Subtitle>{t('profile.photo.subtitle')}</Subtitle>
+            <StepIndicator>{t('profileSetup.stepIndicator', { current: 6, total: 7 })}</StepIndicator>
             <StepBarContainer>
               {[1, 2, 3, 4, 5, 6, 7].map((step) => (
                 <StepDot key={step} active={step <= 6} />
@@ -258,25 +260,25 @@ const ProfilePhoto: React.FC = () => {
             <ActionButton
               onPress={handleTakePhoto}
               accessibilityRole="button"
-              accessibilityLabel="Take photo with camera"
+              accessibilityLabel={t('profile.photo.takePhoto')}
               testID="profile-photo-camera"
             >
               <ActionButtonIcon>&#128247;</ActionButtonIcon>
-              <ActionButtonText>Take Photo</ActionButtonText>
+              <ActionButtonText>{t('profile.photo.takePhoto')}</ActionButtonText>
             </ActionButton>
 
             <ActionButton
               variant="secondary"
               onPress={handleChooseFromGallery}
               accessibilityRole="button"
-              accessibilityLabel="Choose photo from gallery"
+              accessibilityLabel={t('profile.photo.chooseFromGallery')}
               testID="profile-photo-gallery"
             >
               <ActionButtonIcon variant="secondary">
                 &#128444;
               </ActionButtonIcon>
               <ActionButtonText variant="secondary">
-                Choose from Gallery
+                {t('profile.photo.chooseFromGallery')}
               </ActionButtonText>
             </ActionButton>
           </ButtonsContainer>
@@ -285,20 +287,20 @@ const ProfilePhoto: React.FC = () => {
           <PrimaryButton
             onPress={handleContinue}
             accessibilityRole="button"
-            accessibilityLabel="Continue to confirmation"
+            accessibilityLabel={t('common.buttons.next')}
             testID="profile-photo-continue"
           >
-            <PrimaryButtonText>Continue</PrimaryButtonText>
+            <PrimaryButtonText>{t('common.buttons.next')}</PrimaryButtonText>
           </PrimaryButton>
 
           {/* Skip Link */}
           <SkipLink
             onPress={handleSkip}
             accessibilityRole="link"
-            accessibilityLabel="Skip photo"
+            accessibilityLabel={t('onboarding.skip')}
             testID="profile-photo-skip"
           >
-            <SkipLinkText>Skip</SkipLinkText>
+            <SkipLinkText>{t('onboarding.skip')}</SkipLinkText>
           </SkipLink>
         </ContentWrapper>
       </ScrollView>

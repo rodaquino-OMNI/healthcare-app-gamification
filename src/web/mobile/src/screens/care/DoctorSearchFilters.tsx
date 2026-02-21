@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { Select } from 'src/web/design-system/src/components/Select/Select';
 import { Text } from 'src/web/design-system/src/primitives/Text/Text';
 import { colors } from 'src/web/design-system/src/tokens/colors';
@@ -9,21 +10,21 @@ import { spacingValues } from 'src/web/design-system/src/tokens/spacing';
 // Constants
 // ---------------------------------------------------------------------------
 
-export const SPECIALTIES = [
-  'Todos',
-  'Cardiologia',
-  'Dermatologia',
-  'Ortopedia',
-  'Pediatria',
-  'Neurologia',
-  'Ginecologia',
+export const SPECIALTIES_KEYS = [
+  'journeys.care.doctorSearch.specialtyAll',
+  'journeys.care.doctorSearch.cardiology',
+  'journeys.care.doctorSearch.dermatology',
+  'journeys.care.doctorSearch.orthopedics',
+  'journeys.care.doctorSearch.pediatrics',
+  'journeys.care.doctorSearch.neurology',
+  'journeys.care.doctorSearch.gynecology',
 ];
 
-export const SORT_OPTIONS = [
-  { label: 'Relevancia', value: 'relevancia' },
-  { label: 'Avaliacao', value: 'avaliacao' },
-  { label: 'Distancia', value: 'distancia' },
-  { label: 'Preco', value: 'preco' },
+export const SORT_OPTION_KEYS = [
+  { labelKey: 'journeys.care.doctorSearch.sortRelevance', value: 'relevancia' },
+  { labelKey: 'journeys.care.doctorSearch.sortRating', value: 'avaliacao' },
+  { labelKey: 'journeys.care.doctorSearch.sortDistance', value: 'distancia' },
+  { labelKey: 'journeys.care.doctorSearch.sortPrice', value: 'preco' },
 ];
 
 // ---------------------------------------------------------------------------
@@ -38,39 +39,42 @@ interface SpecialtyTabsProps {
 /**
  * Horizontal scrollable specialty filter tabs.
  */
-export const SpecialtyTabs: React.FC<SpecialtyTabsProps> = ({ selectedSpecialty, onSelect }) => (
-  <ScrollView
-    horizontal
-    showsHorizontalScrollIndicator={false}
-    style={styles.tabsContainer}
-    contentContainerStyle={styles.tabsContent}
-  >
-    {SPECIALTIES.map((specialty, index) => (
-      <TouchableOpacity
-        key={specialty}
-        onPress={() => onSelect(index)}
-        style={[
-          styles.tab,
-          selectedSpecialty === index && styles.tabActive,
-        ]}
-        accessibilityLabel={`Filtrar por ${specialty}`}
-        accessibilityState={{ selected: selectedSpecialty === index }}
-      >
-        <Text
-          fontSize="sm"
-          fontWeight={selectedSpecialty === index ? 'medium' : 'regular'}
-          color={
-            selectedSpecialty === index
-              ? colors.neutral.white
-              : colors.journeys.care.primary
-          }
+export const SpecialtyTabs: React.FC<SpecialtyTabsProps> = ({ selectedSpecialty, onSelect }) => {
+  const { t } = useTranslation();
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      style={styles.tabsContainer}
+      contentContainerStyle={styles.tabsContent}
+    >
+      {SPECIALTIES_KEYS.map((key, index) => (
+        <TouchableOpacity
+          key={key}
+          onPress={() => onSelect(index)}
+          style={[
+            styles.tab,
+            selectedSpecialty === index && styles.tabActive,
+          ]}
+          accessibilityLabel={t('journeys.care.doctorSearch.filterBy', { specialty: t(key) })}
+          accessibilityState={{ selected: selectedSpecialty === index }}
         >
-          {specialty}
-        </Text>
-      </TouchableOpacity>
-    ))}
-  </ScrollView>
-);
+          <Text
+            fontSize="sm"
+            fontWeight={selectedSpecialty === index ? 'medium' : 'regular'}
+            color={
+              selectedSpecialty === index
+                ? colors.neutral.white
+                : colors.journeys.care.primary
+            }
+          >
+            {t(key)}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
+  );
+};
 
 // ---------------------------------------------------------------------------
 // ControlsRow
@@ -91,29 +95,33 @@ export const ControlsRow: React.FC<ControlsRowProps> = ({
   onSortChange,
   isMapView,
   onToggleView,
-}) => (
-  <View style={styles.controlsRow}>
-    <View style={styles.sortContainer}>
-      <Select
-        options={SORT_OPTIONS}
-        value={sortBy}
-        onChange={(val) => onSortChange(val as string)}
-        label="Ordenar"
-        journey="care"
-        testID="sort-select"
-      />
+}) => {
+  const { t } = useTranslation();
+  const sortOptions = SORT_OPTION_KEYS.map(opt => ({ label: t(opt.labelKey), value: opt.value }));
+  return (
+    <View style={styles.controlsRow}>
+      <View style={styles.sortContainer}>
+        <Select
+          options={sortOptions}
+          value={sortBy}
+          onChange={(val) => onSortChange(val as string)}
+          label={t('journeys.care.doctorSearch.sort')}
+          journey="care"
+          testID="sort-select"
+        />
+      </View>
+      <TouchableOpacity
+        onPress={onToggleView}
+        style={styles.viewToggle}
+        accessibilityLabel={isMapView ? t('journeys.care.doctorSearch.switchToList') : t('journeys.care.doctorSearch.switchToMap')}
+      >
+        <Text fontSize="sm" fontWeight="medium" color={colors.journeys.care.primary}>
+          {isMapView ? t('journeys.care.doctorSearch.list') : t('journeys.care.doctorSearch.map')}
+        </Text>
+      </TouchableOpacity>
     </View>
-    <TouchableOpacity
-      onPress={onToggleView}
-      style={styles.viewToggle}
-      accessibilityLabel={isMapView ? 'Mudar para lista' : 'Mudar para mapa'}
-    >
-      <Text fontSize="sm" fontWeight="medium" color={colors.journeys.care.primary}>
-        {isMapView ? 'Lista' : 'Mapa'}
-      </Text>
-    </TouchableOpacity>
-  </View>
-);
+  );
+};
 
 // ---------------------------------------------------------------------------
 // Styles

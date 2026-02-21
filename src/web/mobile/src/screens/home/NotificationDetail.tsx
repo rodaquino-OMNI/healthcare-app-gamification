@@ -17,6 +17,7 @@ import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
 import { borderRadiusValues } from '../../../../design-system/src/tokens/borderRadius';
 import { ROUTES } from '../../constants/routes';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Parametros da rota de detalhe de notificacao
@@ -108,6 +109,7 @@ const formatFullDate = (date: Date): string => {
  * baseadas no tipo (consulta, medicamento, alerta, plano).
  */
 export const NotificationDetailScreen: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const route = useRoute<RouteProp<NotificationDetailParams, 'NotificationDetail'>>();
   const { notificationId } = route.params;
@@ -175,17 +177,17 @@ export const NotificationDetailScreen: React.FC = () => {
     switch (type) {
       case 'appointment':
       case 'care':
-        return 'Ver Consulta';
+        return t('notificationScreens.viewAppointment');
       case 'medication':
       case 'health':
-        return 'Tomar Medicamento';
+        return t('notificationScreens.takeMedication');
       case 'alert':
       case 'error':
-        return 'Ver Detalhes';
+        return t('notificationScreens.viewDetails');
       case 'plan':
-        return 'Ver Plano';
+        return t('notificationScreens.viewPlan');
       default:
-        return 'Ver Detalhes';
+        return t('notificationScreens.viewDetails');
     }
   };
 
@@ -194,12 +196,12 @@ export const NotificationDetailScreen: React.FC = () => {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.centerContainer}>
-          <Text style={styles.errorText}>Notificacao nao encontrada</Text>
+          <Text style={styles.errorText}>{t('notificationScreens.notFound')}</Text>
           <TouchableOpacity
             style={styles.backButton}
             onPress={() => navigation.goBack()}
           >
-            <Text style={styles.backButtonText}>Voltar</Text>
+            <Text style={styles.backButtonText}>{t('common.buttons.back')}</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -219,7 +221,7 @@ export const NotificationDetailScreen: React.FC = () => {
           accessibilityRole="button"
           accessibilityLabel="Voltar"
         >
-          <Text style={styles.navBackText}>← Voltar</Text>
+          <Text style={styles.navBackText}>{t('notificationScreens.backNav')}</Text>
         </TouchableOpacity>
 
         {/* Card principal */}
@@ -269,7 +271,7 @@ export const NotificationDetailScreen: React.FC = () => {
               onPress={handleMarkAsRead}
               accessibilityRole="button"
             >
-              <Text style={styles.secondaryButtonText}>Marcar como lida</Text>
+              <Text style={styles.secondaryButtonText}>{t('notificationScreens.markAsRead')}</Text>
             </TouchableOpacity>
           )}
 
@@ -279,7 +281,7 @@ export const NotificationDetailScreen: React.FC = () => {
             onPress={handleShare}
             accessibilityRole="button"
           >
-            <Text style={styles.secondaryButtonText}>Compartilhar</Text>
+            <Text style={styles.secondaryButtonText}>{t('notificationScreens.share')}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

@@ -8,6 +8,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
@@ -97,6 +98,7 @@ const getSeverityLabel = (severity: AlertSeverity): string => {
  * Users can dismiss individual alerts and navigate to related screens.
  */
 export const HomeAlertScreen: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
 
@@ -126,19 +128,19 @@ export const HomeAlertScreen: React.FC = () => {
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           accessibilityRole="button"
-          accessibilityLabel="Voltar"
+          accessibilityLabel={t('common.buttons.back')}
           style={styles.backButton}
         >
           <Text style={styles.backText}>{'<'}</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Alertas de Saude</Text>
+        <Text style={styles.headerTitle}>{t('home.alert.title')}</Text>
         <View style={styles.headerSpacer} />
       </View>
 
       {visibleAlerts.length === 0 ? (
         /* Empty state */
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>Nenhum alerta ativo</Text>
+          <Text style={styles.emptyText}>{t('home.alert.empty')}</Text>
         </View>
       ) : (
         <ScrollView
@@ -180,7 +182,7 @@ export const HomeAlertScreen: React.FC = () => {
                 accessibilityLabel={`Ver detalhes de ${alert.title}`}
                 style={styles.actionButton}
               >
-                <Text style={styles.actionText}>Ver detalhes</Text>
+                <Text style={styles.actionText}>{t('home.alert.viewDetails')}</Text>
               </TouchableOpacity>
             </View>
           ))}

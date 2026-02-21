@@ -13,6 +13,7 @@ import Input from 'src/web/design-system/src/components/Input/Input.tsx';
 import Button from 'src/web/design-system/src/components/Button/Button.tsx';
 import { useJourney } from 'src/web/mobile/src/context/JourneyContext.tsx';
 import { userValidationSchema } from 'src/web/shared/utils/validation.ts';
+import { useTranslation } from 'react-i18next';
 import JourneyHeader from 'src/web/mobile/src/components/shared/JourneyHeader.tsx';
 import ErrorState from 'src/web/mobile/src/components/shared/ErrorState.tsx';
 import LoadingIndicator from 'src/web/mobile/src/components/shared/LoadingIndicator.tsx';
@@ -29,6 +30,7 @@ interface AddMetricScreenProps {
  * @returns The rendered AddMetricScreen component.
  */
 export const AddMetricScreen: React.FC<AddMetricScreenProps> = () => {
+  const { t } = useTranslation();
   // LD1: Uses the useJourney hook to get the current journey.
   const { journey } = useJourney();
   // LD1: Uses the useNavigation hook to get the navigation object.
@@ -38,9 +40,9 @@ export const AddMetricScreen: React.FC<AddMetricScreenProps> = () => {
 
   // LD1: Defines a form schema using Yup for validation.
   const schema = yup.object({
-    type: yup.string().required('Metric type is required'),
-    value: yup.number().required('Metric value is required'),
-    timestamp: yup.string().required('Timestamp is required'),
+    type: yup.string().required(t('common.validation.required')),
+    value: yup.number().required(t('common.validation.required')),
+    timestamp: yup.string().required(t('common.validation.required')),
   });
 
   // LD1: Uses the useForm hook to manage the form state and validation.
@@ -58,12 +60,12 @@ export const AddMetricScreen: React.FC<AddMetricScreenProps> = () => {
     try {
       // Get the user ID from the JWT token in the authentication session
       if (!session?.accessToken) {
-        throw new Error('User is not authenticated');
+        throw new Error(t('common.errors.default'));
       }
 
       const user = getUserFromToken(session.accessToken);
       if (!user?.id) {
-        throw new Error('Unable to retrieve user ID from authentication token');
+        throw new Error(t('common.errors.default'));
       }
 
       // Call the createHealthMetric API function with the user's ID
@@ -89,10 +91,10 @@ export const AddMetricScreen: React.FC<AddMetricScreenProps> = () => {
   return (
     <View>
       {/* LD1: Reusable header component with journey-specific styling. */}
-      <JourneyHeader title="Add Health Metric" showBackButton />
+      <JourneyHeader title={t('journeys.health.metrics.add')} showBackButton />
       {/* LD1: Reusable input component from the design system. */}
       <Input
-        placeholder="Metric Type"
+        placeholder={t('journeys.health.metrics.type')}
         // IE1: The Input component requires value and onChange props.
         //      These are provided using the register function from React Hook Form.
         //      The register function also handles validation and error display.
@@ -101,7 +103,7 @@ export const AddMetricScreen: React.FC<AddMetricScreenProps> = () => {
       />
       {/* LD1: Reusable input component from the design system. */}
       <Input
-        placeholder="Metric Value"
+        placeholder={t('journeys.health.metrics.value')}
         // IE1: The Input component requires value and onChange props.
         //      These are provided using the register function from React Hook Form.
         //      The register function also handles validation and error display.
@@ -110,7 +112,7 @@ export const AddMetricScreen: React.FC<AddMetricScreenProps> = () => {
       />
       {/* LD1: Reusable input component from the design system. */}
       <Input
-        placeholder="Timestamp"
+        placeholder={t('common.labels.time')}
         // IE1: The Input component requires value and onChange props.
         //      These are provided using the register function from React Hook Form.
         //      The register function also handles validation and error display.
@@ -118,7 +120,7 @@ export const AddMetricScreen: React.FC<AddMetricScreenProps> = () => {
         aria-label="Timestamp"
       />
       {/* LD1: Reusable button component from the design system. */}
-      <Button onPress={handleSubmit(onSubmit)}>Add Metric</Button>
+      <Button onPress={handleSubmit(onSubmit)}>{t('journeys.health.metrics.add')}</Button>
     </View>
   );
 };

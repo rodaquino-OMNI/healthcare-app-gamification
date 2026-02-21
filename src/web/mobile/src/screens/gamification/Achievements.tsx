@@ -8,6 +8,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 import { useGameProfile, useAchievements } from '../../hooks/useGamification';
 import { Achievement } from '../../../../shared/types/gamification.types';
@@ -19,31 +20,31 @@ import { sizingValues } from '../../../../design-system/src/tokens/sizing';
 
 type JourneyFilter = 'all' | 'health' | 'care' | 'plan';
 
-const FILTER_TABS: { key: JourneyFilter; label: string }[] = [
-  { key: 'all', label: 'Todos' },
-  { key: 'health', label: 'Saude' },
-  { key: 'care', label: 'Cuidado' },
-  { key: 'plan', label: 'Plano' },
+const FILTER_TABS: { key: JourneyFilter; labelKey: string }[] = [
+  { key: 'all', labelKey: 'gamification.achievements.filterAll' },
+  { key: 'health', labelKey: 'gamification.achievements.filterHealth' },
+  { key: 'care', labelKey: 'gamification.achievements.filterCare' },
+  { key: 'plan', labelKey: 'gamification.achievements.filterPlan' },
 ];
 
-const LEVEL_TITLES: { maxLevel: number; title: string }[] = [
-  { maxLevel: 5, title: 'Iniciante' },
-  { maxLevel: 10, title: 'Aventureiro' },
-  { maxLevel: 15, title: 'Explorador' },
-  { maxLevel: 20, title: 'Especialista' },
-  { maxLevel: 25, title: 'Mestre' },
+const LEVEL_TITLES: { maxLevel: number; titleKey: string }[] = [
+  { maxLevel: 5, titleKey: 'gamification.achievements.levelBeginner' },
+  { maxLevel: 10, titleKey: 'gamification.achievements.levelAdventurer' },
+  { maxLevel: 15, titleKey: 'gamification.achievements.levelExplorer' },
+  { maxLevel: 20, titleKey: 'gamification.achievements.levelSpecialist' },
+  { maxLevel: 25, titleKey: 'gamification.achievements.levelMaster' },
 ];
 
 const XP_PER_LEVEL = 1000;
 const NUM_COLUMNS = 3;
 
-function getLevelTitle(level: number): string {
+function getLevelTitleKey(level: number): string {
   for (const entry of LEVEL_TITLES) {
     if (level < entry.maxLevel) {
-      return entry.title;
+      return entry.titleKey;
     }
   }
-  return 'Lendario';
+  return 'gamification.achievements.levelLegendary';
 }
 
 function getJourneyColor(journey: string): string {
@@ -53,6 +54,7 @@ function getJourneyColor(journey: string): string {
 
 /** Achievements screen with level indicator, XP progress, and filterable grid. */
 const AchievementsScreen: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation();
   const profile = useGameProfile();
   const achievements: Achievement[] | undefined = useAchievements();
@@ -63,7 +65,7 @@ const AchievementsScreen: React.FC = () => {
   const currentXP = profile?.xp ?? 0;
   const xpForNextLevel = level * XP_PER_LEVEL;
   const xpProgress = Math.min(currentXP / xpForNextLevel, 1);
-  const levelTitle = getLevelTitle(level);
+  const levelTitle = t(getLevelTitleKey(level));
 
   const filteredAchievements = useMemo(() => {
     if (!achievements) return [];
@@ -97,7 +99,7 @@ const AchievementsScreen: React.FC = () => {
     navigation.navigate('GamificationRewards' as never);
   };
 
-  const renderFilterTab = (tab: { key: JourneyFilter; label: string }) => {
+  const renderFilterTab = (tab: { key: JourneyFilter; labelKey: string }) => {
     const isActive = activeFilter === tab.key;
     return (
       <TouchableOpacity
@@ -105,11 +107,11 @@ const AchievementsScreen: React.FC = () => {
         style={[styles.filterTab, isActive && styles.filterTabActive]}
         onPress={() => setActiveFilter(tab.key)}
         accessibilityRole="button"
-        accessibilityLabel={`Filtrar por ${tab.label}`}
+        accessibilityLabel={t('gamification.achievements.filterBy', { label: t(tab.labelKey) })}
         accessibilityState={{ selected: isActive }}
       >
         <Text style={[styles.filterTabText, isActive && styles.filterTabTextActive]}>
-          {tab.label}
+          {t(tab.labelKey)}
         </Text>
       </TouchableOpacity>
     );
@@ -124,7 +126,7 @@ const AchievementsScreen: React.FC = () => {
         style={[styles.achievementCard, !item.unlocked && styles.achievementCardLocked]}
         onPress={() => handleAchievementPress(item)}
         accessibilityRole="button"
-        accessibilityLabel={`${item.title}, ${item.unlocked ? 'Desbloqueado' : `${item.progress} de ${item.total}`}`}
+        accessibilityLabel={`${item.title}, ${item.unlocked ? t('gamification.achievements.unlocked') : `${item.progress} / ${item.total}`}`}
       >
         <View
           style={[
@@ -167,14 +169,14 @@ const AchievementsScreen: React.FC = () => {
         </View>
         <View style={styles.levelInfo}>
           <Text style={styles.levelTitle}>{levelTitle}</Text>
-          <Text style={styles.levelSubtitle}>Nivel {level}</Text>
+          <Text style={styles.levelSubtitle}>{t('gamification.achievements.level', { level })}</Text>
         </View>
       </View>
 
       {/* XP Progress */}
       <View style={styles.xpSection}>
         <View style={styles.xpHeader}>
-          <Text style={styles.xpLabel}>Experiencia</Text>
+          <Text style={styles.xpLabel}>{t('gamification.achievements.experience')}</Text>
           <Text style={styles.xpValue}>
             {currentXP.toLocaleString('pt-BR')} / {xpForNextLevel.toLocaleString('pt-BR')} XP
           </Text>
@@ -188,14 +190,14 @@ const AchievementsScreen: React.FC = () => {
           />
         </View>
         <Text style={styles.xpNextLevel}>
-          {(xpForNextLevel - currentXP).toLocaleString('pt-BR')} XP para o proximo nivel
+          {t('gamification.achievements.xpToNextLevel', { xp: (xpForNextLevel - currentXP).toLocaleString('pt-BR') })}
         </Text>
       </View>
 
       {/* Unlocked Count */}
       <View style={styles.unlockedBadge}>
         <Text style={styles.unlockedBadgeText}>
-          {unlockedCount} de {totalCount} desbloqueados
+          {t('gamification.achievements.unlockedCount', { unlocked: unlockedCount, total: totalCount })}
         </Text>
       </View>
 
@@ -205,28 +207,28 @@ const AchievementsScreen: React.FC = () => {
           style={styles.quickNavButton}
           onPress={handleLeaderboardPress}
           accessibilityRole="button"
-          accessibilityLabel="Ver ranking"
+          accessibilityLabel={t('gamification.achievements.viewRanking')}
         >
           <Text style={styles.quickNavIcon}>{'🏆'}</Text>
-          <Text style={styles.quickNavLabel}>Ranking</Text>
+          <Text style={styles.quickNavLabel}>{t('gamification.achievements.ranking')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.quickNavButton}
           onPress={handleQuestsPress}
           accessibilityRole="button"
-          accessibilityLabel="Ver missoes"
+          accessibilityLabel={t('gamification.achievements.viewQuests')}
         >
           <Text style={styles.quickNavIcon}>{'⚔️'}</Text>
-          <Text style={styles.quickNavLabel}>Missoes</Text>
+          <Text style={styles.quickNavLabel}>{t('gamification.achievements.quests')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.quickNavButton}
           onPress={handleRewardsPress}
           accessibilityRole="button"
-          accessibilityLabel="Ver recompensas"
+          accessibilityLabel={t('gamification.achievements.viewRewards')}
         >
           <Text style={styles.quickNavIcon}>{'🎁'}</Text>
-          <Text style={styles.quickNavLabel}>Recompensas</Text>
+          <Text style={styles.quickNavLabel}>{t('gamification.achievements.rewards')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -238,11 +240,11 @@ const AchievementsScreen: React.FC = () => {
   const renderEmpty = () => (
     <View style={styles.emptyContainer}>
       <Text style={styles.emptyIcon}>{'🏅'}</Text>
-      <Text style={styles.emptyTitle}>Nenhuma conquista encontrada</Text>
+      <Text style={styles.emptyTitle}>{t('gamification.achievements.emptyTitle')}</Text>
       <Text style={styles.emptySubtitle}>
         {activeFilter === 'all'
-          ? 'Complete atividades para desbloquear conquistas.'
-          : `Nenhuma conquista na jornada "${FILTER_TABS.find((t) => t.key === activeFilter)?.label ?? activeFilter}".`}
+          ? t('gamification.achievements.emptySubtitleAll')
+          : t('gamification.achievements.emptySubtitleFiltered', { journey: t(FILTER_TABS.find((f) => f.key === activeFilter)?.labelKey ?? '') })}
       </Text>
     </View>
   );
@@ -251,7 +253,7 @@ const AchievementsScreen: React.FC = () => {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>Carregando conquistas...</Text>
+          <Text style={styles.loadingText}>{t('gamification.achievements.loading')}</Text>
         </View>
       </SafeAreaView>
     );
@@ -269,7 +271,7 @@ const AchievementsScreen: React.FC = () => {
         contentContainerStyle={styles.listContent}
         columnWrapperStyle={styles.columnWrapper}
         showsVerticalScrollIndicator={false}
-        accessibilityLabel="Lista de conquistas"
+        accessibilityLabel={t('gamification.achievements.listLabel')}
       />
     </SafeAreaView>
   );

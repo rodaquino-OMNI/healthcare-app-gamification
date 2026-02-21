@@ -5,6 +5,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import styled from 'styled-components/native';
+import { useTranslation } from 'react-i18next';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography } from '../../../../design-system/src/tokens/typography';
@@ -16,21 +17,21 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
  * Validation schema for insurance information form.
  * Fields are optional when the user toggles "I don't have insurance".
  */
-const insuranceSchema = yup.object().shape({
+const createInsuranceSchema = (t: (key: string, options?: any) => string) => yup.object().shape({
   provider: yup.string().when('$hasInsurance', {
     is: true,
-    then: (schema) => schema.required('Insurance provider is required'),
+    then: (schema) => schema.required(t('common.validation.required')),
     otherwise: (schema) => schema.default(''),
   }),
   planNumber: yup.string().when('$hasInsurance', {
     is: true,
-    then: (schema) => schema.required('Plan number is required'),
+    then: (schema) => schema.required(t('common.validation.required')),
     otherwise: (schema) => schema.default(''),
   }),
   groupNumber: yup.string().default(''),
   planType: yup.string().when('$hasInsurance', {
     is: true,
-    then: (schema) => schema.required('Plan type is required'),
+    then: (schema) => schema.required(t('common.validation.required')),
     otherwise: (schema) => schema.default(''),
   }),
 });
@@ -43,9 +44,9 @@ interface InsuranceFormData {
 }
 
 const PLAN_TYPES = [
-  { value: 'basic', label: 'Basic' },
-  { value: 'standard', label: 'Standard' },
-  { value: 'premium', label: 'Premium' },
+  { value: 'basic', labelKey: 'profile.insurance.planTypes.basic' },
+  { value: 'standard', labelKey: 'profile.insurance.planTypes.standard' },
+  { value: 'premium', labelKey: 'profile.insurance.planTypes.premium' },
 ];
 
 // --- Styled Components ---
@@ -218,6 +219,7 @@ const PrimaryButtonText = styled.Text`
  */
 const ProfileVariant2: React.FC = () => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
   const [hasInsurance, setHasInsurance] = useState(true);
 
   const {
@@ -227,7 +229,7 @@ const ProfileVariant2: React.FC = () => {
     watch,
     formState: { errors },
   } = useForm<InsuranceFormData>({
-    resolver: yupResolver(insuranceSchema),
+    resolver: yupResolver(createInsuranceSchema(t)),
     context: { hasInsurance },
     mode: 'onBlur',
     defaultValues: {
@@ -262,11 +264,11 @@ const ProfileVariant2: React.FC = () => {
           <ContentWrapper>
             {/* Header */}
             <HeaderSection>
-              <Title>Insurance Information</Title>
+              <Title>{t('profile.insurance.title')}</Title>
               <Subtitle>
-                Add your insurance details for easier claims
+                {t('profile.insurance.subtitle')}
               </Subtitle>
-              <StepIndicator>Step 3 of 7</StepIndicator>
+              <StepIndicator>{t('profileSetup.stepIndicator', { current: 3, total: 7 })}</StepIndicator>
               <StepBarContainer>
                 {[1, 2, 3, 4, 5, 6, 7].map((step) => (
                   <StepDot key={step} active={step <= 3} />
@@ -279,20 +281,20 @@ const ProfileVariant2: React.FC = () => {
               onPress={toggleInsurance}
               accessibilityRole="checkbox"
               accessibilityState={{ checked: !hasInsurance }}
-              accessibilityLabel="I don't have insurance"
+              accessibilityLabel={t('profile.insurance.noInsurance')}
               testID="profile-insurance-toggle"
             >
               <ToggleBox active={!hasInsurance}>
                 {!hasInsurance && <ToggleMark>&#10003;</ToggleMark>}
               </ToggleBox>
-              <ToggleLabel>I don't have insurance</ToggleLabel>
+              <ToggleLabel>{t('profile.insurance.noInsurance')}</ToggleLabel>
             </ToggleRow>
 
             {hasInsurance && (
               <>
                 {/* Insurance Provider */}
                 <FieldContainer>
-                  <Label>Insurance Provider</Label>
+                  <Label>{t('profile.insurance.provider')}</Label>
                   <Controller
                     control={control}
                     name="provider"
@@ -301,7 +303,7 @@ const ProfileVariant2: React.FC = () => {
                         value={value}
                         onChangeText={onChange}
                         onBlur={onBlur}
-                        placeholder="e.g. Unimed, Bradesco Saude"
+                        placeholder={t('profile.insurance.providerPlaceholder')}
                         placeholderTextColor={colors.gray[40]}
                         hasError={!!errors.provider}
                         autoCapitalize="words"
@@ -316,7 +318,7 @@ const ProfileVariant2: React.FC = () => {
 
                 {/* Plan Number */}
                 <FieldContainer>
-                  <Label>Plan Number</Label>
+                  <Label>{t('profile.insurance.planNumber')}</Label>
                   <Controller
                     control={control}
                     name="planNumber"
@@ -325,7 +327,7 @@ const ProfileVariant2: React.FC = () => {
                         value={value}
                         onChangeText={onChange}
                         onBlur={onBlur}
-                        placeholder="Enter your plan number"
+                        placeholder={t('profile.insurance.planNumberPlaceholder')}
                         placeholderTextColor={colors.gray[40]}
                         hasError={!!errors.planNumber}
                         testID="profile-insurance-plan-number"
@@ -339,7 +341,7 @@ const ProfileVariant2: React.FC = () => {
 
                 {/* Group Number */}
                 <FieldContainer>
-                  <Label>Group Number (Optional)</Label>
+                  <Label>{t('profile.insurance.groupNumber')}</Label>
                   <Controller
                     control={control}
                     name="groupNumber"
@@ -348,7 +350,7 @@ const ProfileVariant2: React.FC = () => {
                         value={value}
                         onChangeText={onChange}
                         onBlur={onBlur}
-                        placeholder="Enter your group number"
+                        placeholder={t('profile.insurance.groupNumberPlaceholder')}
                         placeholderTextColor={colors.gray[40]}
                         testID="profile-insurance-group-number"
                       />
@@ -358,7 +360,7 @@ const ProfileVariant2: React.FC = () => {
 
                 {/* Plan Type */}
                 <FieldContainer>
-                  <Label>Plan Type</Label>
+                  <Label>{t('profile.insurance.planType')}</Label>
                   <PlanTypeGrid>
                     {PLAN_TYPES.map((type) => (
                       <PlanTypeChip
@@ -373,11 +375,11 @@ const ProfileVariant2: React.FC = () => {
                         accessibilityState={{
                           selected: planType === type.value,
                         }}
-                        accessibilityLabel={`Plan type ${type.label}`}
+                        accessibilityLabel={t(type.labelKey)}
                         testID={`plan-type-${type.value}`}
                       >
                         <PlanTypeText selected={planType === type.value}>
-                          {type.label}
+                          {t(type.labelKey)}
                         </PlanTypeText>
                       </PlanTypeChip>
                     ))}
@@ -393,10 +395,10 @@ const ProfileVariant2: React.FC = () => {
             <PrimaryButton
               onPress={handleSubmit(onSubmit)}
               accessibilityRole="button"
-              accessibilityLabel="Continue to address"
+              accessibilityLabel={t('common.buttons.next')}
               testID="profile-insurance-continue"
             >
-              <PrimaryButtonText>Continue</PrimaryButtonText>
+              <PrimaryButtonText>{t('common.buttons.next')}</PrimaryButtonText>
             </PrimaryButton>
           </ContentWrapper>
         </ScrollView>

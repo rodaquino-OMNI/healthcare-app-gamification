@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { Button } from 'src/web/design-system/src/components/Button/Button';
 import { Card } from 'src/web/design-system/src/components/Card/Card';
 import { Badge } from 'src/web/design-system/src/components/Badge/Badge';
@@ -125,64 +126,67 @@ interface DoctorItemProps {
 /**
  * Renders a single doctor result card with avatar, details, and action button.
  */
-export const DoctorItem: React.FC<DoctorItemProps> = ({ item, onViewProfile }) => (
-  <Card
-    journey="care"
-    elevation="sm"
-    padding="md"
-    accessibilityLabel={`${item.name}, ${item.specialty}, avaliacao ${item.rating}`}
-  >
-    <View style={styles.doctorRow}>
-      <Avatar
-        name={item.name}
-        journey="care"
-        size="56px"
-        fallbackType="initials"
-      />
-      <View style={styles.doctorInfo}>
-        <Text fontWeight="medium" fontSize="md">
-          {item.name}
-        </Text>
-        <View style={styles.specialtyRow}>
-          <Badge journey="care" size="sm">
-            {item.specialty}
-          </Badge>
-          {item.available ? (
-            <Badge variant="status" status="success" size="sm">
-              Disponivel
+export const DoctorItem: React.FC<DoctorItemProps> = ({ item, onViewProfile }) => {
+  const { t } = useTranslation();
+  return (
+    <Card
+      journey="care"
+      elevation="sm"
+      padding="md"
+      accessibilityLabel={`${item.name}, ${item.specialty}, ${t('journeys.care.doctorSearch.rating')} ${item.rating}`}
+    >
+      <View style={styles.doctorRow}>
+        <Avatar
+          name={item.name}
+          journey="care"
+          size="56px"
+          fallbackType="initials"
+        />
+        <View style={styles.doctorInfo}>
+          <Text fontWeight="medium" fontSize="md">
+            {item.name}
+          </Text>
+          <View style={styles.specialtyRow}>
+            <Badge journey="care" size="sm">
+              {item.specialty}
             </Badge>
-          ) : (
-            <Badge variant="status" status="neutral" size="sm">
-              Indisponivel
-            </Badge>
-          )}
-        </View>
-        <View style={styles.detailsRow}>
-          <Text fontSize="sm" color={colors.journeys.care.primary}>
-            {renderStars(item.rating)} {item.rating}
-          </Text>
-          <Text fontSize="sm" color={colors.neutral.gray700}>
-            {item.distance}
-          </Text>
-          <Text fontSize="sm" fontWeight="medium" color={colors.journeys.care.accent}>
-            {item.price}
-          </Text>
-        </View>
-        <View style={styles.actionRow}>
-          <Button
-            variant="primary"
-            size="sm"
-            journey="care"
-            onPress={() => onViewProfile(item.id)}
-            accessibilityLabel={`Ver perfil de ${item.name}`}
-          >
-            Ver Perfil
-          </Button>
+            {item.available ? (
+              <Badge variant="status" status="success" size="sm">
+                {t('journeys.care.doctorSearch.available')}
+              </Badge>
+            ) : (
+              <Badge variant="status" status="neutral" size="sm">
+                {t('journeys.care.doctorSearch.unavailable')}
+              </Badge>
+            )}
+          </View>
+          <View style={styles.detailsRow}>
+            <Text fontSize="sm" color={colors.journeys.care.primary}>
+              {renderStars(item.rating)} {item.rating}
+            </Text>
+            <Text fontSize="sm" color={colors.neutral.gray700}>
+              {item.distance}
+            </Text>
+            <Text fontSize="sm" fontWeight="medium" color={colors.journeys.care.accent}>
+              {item.price}
+            </Text>
+          </View>
+          <View style={styles.actionRow}>
+            <Button
+              variant="primary"
+              size="sm"
+              journey="care"
+              onPress={() => onViewProfile(item.id)}
+              accessibilityLabel={t('journeys.care.doctorSearch.viewProfileOf', { name: item.name })}
+            >
+              {t('journeys.care.doctorSearch.viewProfile')}
+            </Button>
+          </View>
         </View>
       </View>
-    </View>
-  </Card>
-);
+    </Card>
+  );
+};
 
 // ---------------------------------------------------------------------------
 // MapPlaceholder
@@ -191,16 +195,19 @@ export const DoctorItem: React.FC<DoctorItemProps> = ({ item, onViewProfile }) =
 /**
  * Placeholder view for the upcoming map feature.
  */
-export const MapPlaceholder: React.FC = () => (
-  <View style={styles.mapPlaceholder}>
-    <Text fontSize="lg" color={colors.neutral.gray500} textAlign="center">
-      Mapa em breve
-    </Text>
-    <Text fontSize="sm" color={colors.neutral.gray500} textAlign="center">
-      Visualizacao no mapa sera disponibilizada em uma atualizacao futura.
-    </Text>
-  </View>
-);
+export const MapPlaceholder: React.FC = () => {
+  const { t } = useTranslation();
+  return (
+    <View style={styles.mapPlaceholder}>
+      <Text fontSize="lg" color={colors.neutral.gray500} textAlign="center">
+        {t('journeys.care.doctorSearch.mapComingSoon')}
+      </Text>
+      <Text fontSize="sm" color={colors.neutral.gray500} textAlign="center">
+        {t('journeys.care.doctorSearch.mapComingSoonDesc')}
+      </Text>
+    </View>
+  );
+};
 
 // ---------------------------------------------------------------------------
 // Styles

@@ -12,26 +12,7 @@ import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { ROUTES } from '../../../../constants/routes';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-
-const SYMPTOM_STEPS = [
-  { label: 'Symptoms' },
-  { label: 'Body Map' },
-  { label: 'Details' },
-  { label: 'Questions' },
-  { label: 'Severity' },
-  { label: 'Results' },
-  { label: 'Actions' },
-];
-
-const DURATION_OPTIONS = [
-  { label: 'Less than 1 hour', value: 'less_than_hour' },
-  { label: 'A few hours', value: 'hours' },
-  { label: '1-3 days', value: 'days_1_3' },
-  { label: '4-7 days', value: 'days_4_7' },
-  { label: '1-2 weeks', value: 'weeks_1_2' },
-  { label: '2-4 weeks', value: 'weeks_2_4' },
-  { label: 'More than a month', value: 'months' },
-];
+import { useTranslation } from 'react-i18next';
 
 interface RegionDetail {
   regionId: string;
@@ -57,6 +38,27 @@ const SymptomDetail: React.FC = () => {
   const navigation = useNavigation<any>();
   const route = useRoute<RouteProp<{ params: SymptomDetailRouteParams }, 'params'>>();
   const { symptoms = [], description = '', regions = [] } = route.params || {};
+  const { t } = useTranslation();
+
+  const SYMPTOM_STEPS = [
+    { label: t('journeys.care.symptomChecker.steps.symptoms') },
+    { label: t('journeys.care.symptomChecker.steps.bodyMap') },
+    { label: t('journeys.care.symptomChecker.steps.details') },
+    { label: t('journeys.care.symptomChecker.steps.questions') },
+    { label: t('journeys.care.symptomChecker.steps.severity') },
+    { label: t('journeys.care.symptomChecker.steps.results') },
+    { label: t('journeys.care.symptomChecker.steps.actions') },
+  ];
+
+  const DURATION_OPTIONS = [
+    { label: t('journeys.care.symptomChecker.duration.lessThanHour'), value: 'less_than_hour' },
+    { label: t('journeys.care.symptomChecker.duration.hours'), value: 'hours' },
+    { label: t('journeys.care.symptomChecker.duration.days1to3'), value: 'days_1_3' },
+    { label: t('journeys.care.symptomChecker.duration.days4to7'), value: 'days_4_7' },
+    { label: t('journeys.care.symptomChecker.duration.weeks1to2'), value: 'weeks_1_2' },
+    { label: t('journeys.care.symptomChecker.duration.weeks2to4'), value: 'weeks_2_4' },
+    { label: t('journeys.care.symptomChecker.duration.months'), value: 'months' },
+  ];
 
   const [details, setDetails] = useState<RegionDetail[]>(
     regions.map((region) => ({
@@ -113,19 +115,19 @@ const SymptomDetail: React.FC = () => {
   };
 
   const getSeverityLabel = (value: number): string => {
-    if (value <= 3) return 'Mild';
-    if (value <= 6) return 'Moderate';
-    return 'Severe';
+    if (value <= 3) return t('journeys.care.symptomChecker.severity.mild');
+    if (value <= 6) return t('journeys.care.symptomChecker.severity.moderate');
+    return t('journeys.care.symptomChecker.severity.severe');
   };
 
   if (!currentDetail) {
     return (
       <View style={styles.root}>
         <Text variant="body" journey="care">
-          No regions selected. Please go back and select body areas.
+          {t('journeys.care.symptomChecker.noRegionsSelected')}
         </Text>
         <Button onPress={handleBack} journey="care" accessibilityLabel="Go back">
-          Go Back
+          {t('common.buttons.back')}
         </Button>
       </View>
     );
@@ -148,7 +150,7 @@ const SymptomDetail: React.FC = () => {
         </View>
 
         <Text variant="heading" journey="care" testID="detail-title">
-          Symptom Details
+          {t('journeys.care.symptomChecker.details.title')}
         </Text>
 
         {details.length > 1 && (
@@ -157,7 +159,7 @@ const SymptomDetail: React.FC = () => {
             journey="care"
             testID="detail-region-counter"
           >
-            Region {currentIndex + 1} of {details.length}
+            {t('journeys.care.symptomChecker.details.regionCounter', { current: currentIndex + 1, total: details.length })}
           </Text>
         )}
 
@@ -174,7 +176,7 @@ const SymptomDetail: React.FC = () => {
           {/* Severity Slider */}
           <View style={styles.fieldGroup}>
             <Text variant="body" fontWeight="semiBold" journey="care">
-              Severity
+              {t('journeys.care.symptomChecker.severity.label')}
             </Text>
             <View style={styles.severityRow}>
               <Text
@@ -206,11 +208,11 @@ const SymptomDetail: React.FC = () => {
           {/* Duration Select */}
           <View style={styles.fieldGroup}>
             <Select
-              label="Duration"
+              label={t('journeys.care.symptomChecker.details.duration')}
               options={DURATION_OPTIONS}
               value={currentDetail.duration}
               onChange={(value) => updateDetail('duration', value as string)}
-              placeholder="How long have you had this symptom?"
+              placeholder={t('journeys.care.symptomChecker.details.durationPlaceholder')}
               journey="care"
               testID="duration-select"
             />
@@ -219,13 +221,13 @@ const SymptomDetail: React.FC = () => {
           {/* Onset DatePicker */}
           <View style={styles.fieldGroup}>
             <Text variant="body" fontWeight="semiBold" journey="care">
-              When did it start?
+              {t('journeys.care.symptomChecker.details.whenDidItStart')}
             </Text>
             <DatePicker
               value={currentDetail.onset}
               onChange={(date) => updateDetail('onset', date)}
-              placeholder="Select onset date"
-              label="Onset date"
+              placeholder={t('journeys.care.symptomChecker.details.selectOnsetDate')}
+              label={t('journeys.care.symptomChecker.details.onsetDate')}
               journey="care"
               maxDate={new Date()}
               accessibilityLabel={`Onset date for ${currentDetail.regionLabel}`}
@@ -236,10 +238,10 @@ const SymptomDetail: React.FC = () => {
           {/* Notes Input */}
           <View style={styles.fieldGroup}>
             <Input
-              label="Additional Notes"
+              label={t('journeys.care.symptomChecker.details.additionalNotes')}
               value={currentDetail.notes}
               onChange={(e: any) => updateDetail('notes', e.target?.value ?? e)}
-              placeholder="Any additional details about this symptom..."
+              placeholder={t('journeys.care.symptomChecker.details.notesPlaceholder')}
               journey="care"
               aria-label={`Additional notes for ${currentDetail.regionLabel}`}
               testID="notes-input"
@@ -257,7 +259,7 @@ const SymptomDetail: React.FC = () => {
               accessibilityLabel="Go back to body map"
               testID="back-button"
             >
-              Back
+              {t('common.buttons.back')}
             </Button>
           ) : (
             <Button
@@ -267,7 +269,7 @@ const SymptomDetail: React.FC = () => {
               accessibilityLabel="Previous region"
               testID="previous-button"
             >
-              Previous
+              {t('journeys.care.symptomChecker.details.previous')}
             </Button>
           )}
 
@@ -281,7 +283,7 @@ const SymptomDetail: React.FC = () => {
             }
             testID="next-button"
           >
-            {currentIndex < details.length - 1 ? 'Next Region' : 'Continue'}
+            {currentIndex < details.length - 1 ? t('journeys.care.symptomChecker.details.nextRegion') : t('common.buttons.next')}
           </Button>
         </View>
       </ScrollView>

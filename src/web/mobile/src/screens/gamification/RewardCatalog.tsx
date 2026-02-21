@@ -10,6 +10,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 import { colors } from 'src/web/design-system/src/tokens/colors';
 import { spacingValues } from 'src/web/design-system/src/tokens/spacing';
@@ -20,17 +21,17 @@ import { Reward } from 'src/web/shared/types/gamification.types';
 type JourneyFilter = 'all' | 'health' | 'care' | 'plan';
 type SortOption = 'low-high' | 'high-low' | 'popular';
 
-const JOURNEY_TABS: { key: JourneyFilter; label: string }[] = [
-  { key: 'all', label: 'All' },
-  { key: 'health', label: 'Health' },
-  { key: 'care', label: 'Care' },
-  { key: 'plan', label: 'Plan' },
+const JOURNEY_TABS: { key: JourneyFilter; labelKey: string }[] = [
+  { key: 'all', labelKey: 'gamification.rewards.filterAll' },
+  { key: 'health', labelKey: 'gamification.rewards.filterHealth' },
+  { key: 'care', labelKey: 'gamification.rewards.filterCare' },
+  { key: 'plan', labelKey: 'gamification.rewards.filterPlan' },
 ];
 
-const SORT_OPTIONS: { key: SortOption; label: string }[] = [
-  { key: 'low-high', label: 'Cost: Low\u2192High' },
-  { key: 'high-low', label: 'Cost: High\u2192Low' },
-  { key: 'popular', label: 'Popular' },
+const SORT_OPTIONS: { key: SortOption; labelKey: string }[] = [
+  { key: 'low-high', labelKey: 'gamification.rewards.sortLowHigh' },
+  { key: 'high-low', labelKey: 'gamification.rewards.sortHighLow' },
+  { key: 'popular', labelKey: 'gamification.rewards.sortPopular' },
 ];
 
 /** Mock reward data for development and immediate rendering. */
@@ -63,6 +64,7 @@ const POPULARITY: Record<string, number> = {
  * with journey filters, sort options, and search functionality.
  */
 const RewardCatalog: React.FC = () => {
+  const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const [journeyFilter, setJourneyFilter] = useState<JourneyFilter>('all');
   const [sortOption, setSortOption] = useState<SortOption>('popular');
@@ -113,10 +115,10 @@ const RewardCatalog: React.FC = () => {
     <View style={styles.xpHeader}>
       <View style={styles.xpMain}>
         <Text style={styles.xpValue}>{userXP.toLocaleString()}</Text>
-        <Text style={styles.xpLabel}>XP available to spend</Text>
+        <Text style={styles.xpLabel}>{t('gamification.rewards.xpAvailable')}</Text>
       </View>
       <View style={styles.levelRow}>
-        <Text style={styles.levelText}>Level {MOCK_USER_LEVEL}</Text>
+        <Text style={styles.levelText}>{t('gamification.rewards.level', { level: MOCK_USER_LEVEL })}</Text>
         <View style={styles.levelBarBg}>
           <View
             style={[
@@ -125,10 +127,10 @@ const RewardCatalog: React.FC = () => {
             ]}
           />
         </View>
-        <Text style={styles.levelText}>Level {MOCK_USER_LEVEL + 1}</Text>
+        <Text style={styles.levelText}>{t('gamification.rewards.level', { level: MOCK_USER_LEVEL + 1 })}</Text>
       </View>
       <Text style={styles.xpToNext}>
-        {MOCK_XP_NEXT_LEVEL - userXP} XP to next level
+        {t('gamification.rewards.xpToNextLevel', { xp: MOCK_XP_NEXT_LEVEL - userXP })}
       </Text>
     </View>
   );
@@ -152,7 +154,7 @@ const RewardCatalog: React.FC = () => {
               { borderColor: tabColor },
               isActive && { backgroundColor: tabColor },
             ]}
-            accessibilityLabel={`Filter by ${tab.label}`}
+            accessibilityLabel={t('gamification.rewards.filterBy', { label: t(tab.labelKey) })}
             accessibilityState={{ selected: isActive }}
           >
             <Text
@@ -162,7 +164,7 @@ const RewardCatalog: React.FC = () => {
                 isActive && styles.tabTextActive,
               ]}
             >
-              {tab.label}
+              {t(tab.labelKey)}
             </Text>
           </TouchableOpacity>
         );
@@ -184,11 +186,11 @@ const RewardCatalog: React.FC = () => {
             key={option.key}
             onPress={() => setSortOption(option.key)}
             style={[styles.sortChip, isActive && styles.sortChipActive]}
-            accessibilityLabel={`Sort by ${option.label}`}
+            accessibilityLabel={t('gamification.rewards.sortBy', { label: t(option.labelKey) })}
             accessibilityState={{ selected: isActive }}
           >
             <Text style={[styles.sortChipText, isActive && styles.sortChipTextActive]}>
-              {option.label}
+              {t(option.labelKey)}
             </Text>
           </TouchableOpacity>
         );
@@ -205,8 +207,8 @@ const RewardCatalog: React.FC = () => {
       <TouchableOpacity
         onPress={() => handleRewardPress(item.id)}
         style={[styles.rewardCard, !canAfford && styles.rewardCardDisabled]}
-        accessibilityLabel={`${item.title}, costs ${item.xp} XP${!canAfford ? `, need ${deficit} more XP` : ''}`}
-        accessibilityHint="Opens reward details"
+        accessibilityLabel={canAfford ? t('gamification.rewards.rewardAccessibility', { title: item.title, xp: item.xp }) : t('gamification.rewards.rewardAccessibilityDeficit', { title: item.title, xp: item.xp, deficit })}
+        accessibilityHint={t('gamification.rewards.rewardHint')}
       >
         <View style={styles.rewardIconContainer}>
           <Text style={styles.rewardIcon}>{item.icon}</Text>
@@ -226,7 +228,7 @@ const RewardCatalog: React.FC = () => {
           </Text>
         </View>
         {!canAfford && (
-          <Text style={styles.deficitText}>Need {deficit} more XP</Text>
+          <Text style={styles.deficitText}>{t('gamification.rewards.needMoreXP', { xp: deficit })}</Text>
         )}
       </TouchableOpacity>
     );
@@ -235,9 +237,9 @@ const RewardCatalog: React.FC = () => {
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
       <Text style={styles.emptyIcon}>{'\u{1F50D}'}</Text>
-      <Text style={styles.emptyTitle}>No rewards found</Text>
+      <Text style={styles.emptyTitle}>{t('gamification.rewards.emptyTitle')}</Text>
       <Text style={styles.emptySubtitle}>
-        Try changing your filters or search query
+        {t('gamification.rewards.emptySubtitle')}
       </Text>
     </View>
   );
@@ -248,11 +250,11 @@ const RewardCatalog: React.FC = () => {
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.backButton}
-          accessibilityLabel="Go back"
+          accessibilityLabel={t('common.buttons.back')}
         >
           <Text style={styles.backArrow}>{'\u2190'}</Text>
         </TouchableOpacity>
-        <Text style={styles.screenTitle}>Rewards</Text>
+        <Text style={styles.screenTitle}>{t('gamification.rewards.screenTitle')}</Text>
         <View style={styles.headerSpacer} />
       </View>
 
@@ -269,11 +271,11 @@ const RewardCatalog: React.FC = () => {
             <View style={styles.searchContainer}>
               <TextInput
                 style={styles.searchInput}
-                placeholder="Search rewards..."
+                placeholder={t('gamification.rewards.searchPlaceholder')}
                 placeholderTextColor={colors.neutral.gray500}
                 value={searchQuery}
                 onChangeText={setSearchQuery}
-                accessibilityLabel="Search rewards"
+                accessibilityLabel={t('gamification.rewards.searchLabel')}
               />
             </View>
             {renderJourneyTabs()}

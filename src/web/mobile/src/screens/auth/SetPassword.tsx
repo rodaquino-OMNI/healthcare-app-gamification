@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { useTranslation } from 'react-i18next';
 
 import { MOBILE_AUTH_ROUTES } from 'src/web/shared/constants/routes';
 import { colors } from '../../../../design-system/src/tokens/colors';
@@ -18,11 +19,11 @@ import { sizing, sizingValues } from '../../../../design-system/src/tokens/sizin
  * Password strength levels with corresponding colors and labels
  */
 const STRENGTH_LEVELS = {
-  none: { label: '', color: colors.neutral.gray300, progress: 0 },
-  weak: { label: 'Weak', color: colors.semantic.error, progress: 25 },
-  fair: { label: 'Fair', color: colors.semantic.warning, progress: 50 },
-  good: { label: 'Good', color: colors.semantic.success, progress: 75 },
-  strong: { label: 'Strong', color: colors.semantic.success, progress: 100 },
+  none: { labelKey: '', color: colors.neutral.gray300, progress: 0 },
+  weak: { labelKey: 'auth.setPassword.strength.weak', color: colors.semantic.error, progress: 25 },
+  fair: { labelKey: 'auth.setPassword.strength.fair', color: colors.semantic.warning, progress: 50 },
+  good: { labelKey: 'auth.setPassword.strength.good', color: colors.semantic.success, progress: 75 },
+  strong: { labelKey: 'auth.setPassword.strength.strong', color: colors.semantic.success, progress: 100 },
 } as const;
 
 type StrengthLevel = keyof typeof STRENGTH_LEVELS;
@@ -40,18 +41,21 @@ interface PasswordCriteria {
 
 // --- Validation Schema ---
 
-const setPasswordSchema = yup.object({
+const setPasswordSchema = (t: (key: string, options?: any) => string) => yup.object({
   password: yup
     .string()
-    .required('Password is required')
-    .min(8, 'Password must be at least 8 characters'),
+    .required(t('common.validation.required'))
+    .min(8, t('common.validation.minLength', { count: 8 })),
   confirmPassword: yup
     .string()
-    .required('Confirm password is required')
-    .oneOf([yup.ref('password')], 'Passwords must match'),
+    .required(t('common.validation.required'))
+    .oneOf([yup.ref('password')], t('auth.setPassword.passwordsMustMatch')),
 });
 
-type SetPasswordFormData = yup.InferType<typeof setPasswordSchema>;
+type SetPasswordFormData = {
+  password: string;
+  confirmPassword: string;
+};
 
 // --- Styled Components ---
 
@@ -214,10 +218,11 @@ const calculateStrength = (criteria: PasswordCriteria): StrengthLevel => {
  */
 export const SetPasswordScreen: React.FC = () => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { control, handleSubmit, watch, formState: { errors } } = useForm<SetPasswordFormData>({
-    resolver: yupResolver(setPasswordSchema),
+    resolver: yupResolver(setPasswordSchema(t)),
     mode: 'onChange',
     defaultValues: {
       password: '',
@@ -258,23 +263,23 @@ export const SetPasswordScreen: React.FC = () => {
    * Criteria display configuration
    */
   const criteriaItems = [
-    { key: 'minLength', label: 'At least 8 characters', met: criteria.minLength },
-    { key: 'hasUppercase', label: 'One uppercase letter', met: criteria.hasUppercase },
-    { key: 'hasLowercase', label: 'One lowercase letter', met: criteria.hasLowercase },
-    { key: 'hasNumber', label: 'One number', met: criteria.hasNumber },
-    { key: 'hasSpecialChar', label: 'One special character', met: criteria.hasSpecialChar },
+    { key: 'minLength', label: t('auth.setPassword.criteria.minLength'), met: criteria.minLength },
+    { key: 'hasUppercase', label: t('auth.setPassword.criteria.uppercase'), met: criteria.hasUppercase },
+    { key: 'hasLowercase', label: t('auth.setPassword.criteria.lowercase'), met: criteria.hasLowercase },
+    { key: 'hasNumber', label: t('auth.setPassword.criteria.number'), met: criteria.hasNumber },
+    { key: 'hasSpecialChar', label: t('auth.setPassword.criteria.specialChar'), met: criteria.hasSpecialChar },
   ];
 
   return (
     <Container>
-      <Title>Set New Password</Title>
+      <Title>{t('auth.setPassword.title')}</Title>
       <Description>
-        Create a strong password for your account.
+        {t('auth.setPassword.description')}
       </Description>
 
       {/* Password field */}
       <InputWrapper>
-        <InputLabel>Password</InputLabel>
+        <InputLabel>{t('auth.setPassword.passwordLabel')}</InputLabel>
         <Controller
           control={control}
           name="password"
@@ -283,11 +288,11 @@ export const SetPasswordScreen: React.FC = () => {
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
-              placeholder="Enter your new password"
+              placeholder={t('auth.setPassword.passwordPlaceholder')}
               placeholderTextColor={colors.neutral.gray500}
               secureTextEntry
               hasError={!!errors.password}
-              accessibilityLabel="New password"
+              accessibilityLabel={t('auth.setPassword.passwordLabel')}
               testID="password-input"
             />
           )}
@@ -304,9 +309,9 @@ export const SetPasswordScreen: React.FC = () => {
               fillColor={strengthConfig.color}
             />
           </StrengthBarBackground>
-          {strengthConfig.label !== '' && (
+          {strengthConfig.labelKey !== '' && (
             <StrengthLabel labelColor={strengthConfig.color}>
-              {strengthConfig.label}
+              {t(strengthConfig.labelKey)}
             </StrengthLabel>
           )}
         </StrengthContainer>
@@ -328,7 +333,7 @@ export const SetPasswordScreen: React.FC = () => {
 
       {/* Confirm password field */}
       <InputWrapper>
-        <InputLabel>Confirm Password</InputLabel>
+        <InputLabel>{t('auth.setPassword.confirmPasswordLabel')}</InputLabel>
         <Controller
           control={control}
           name="confirmPassword"
@@ -337,11 +342,11 @@ export const SetPasswordScreen: React.FC = () => {
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
-              placeholder="Confirm your new password"
+              placeholder={t('auth.setPassword.confirmPasswordPlaceholder')}
               placeholderTextColor={colors.neutral.gray500}
               secureTextEntry
               hasError={!!errors.confirmPassword}
-              accessibilityLabel="Confirm new password"
+              accessibilityLabel={t('auth.setPassword.confirmPasswordLabel')}
               testID="confirm-password-input"
             />
           )}
@@ -355,12 +360,12 @@ export const SetPasswordScreen: React.FC = () => {
       <SubmitButton
         onPress={handleSubmit(onSubmit)}
         disabled={!canSubmit}
-        accessibilityLabel="Set password"
+        accessibilityLabel={t('auth.setPassword.submit')}
         accessibilityRole="button"
         testID="set-password-button"
       >
         <SubmitButtonText>
-          {isSubmitting ? 'Setting Password...' : 'Set Password'}
+          {isSubmitting ? t('auth.setPassword.submitting') : t('auth.setPassword.submit')}
         </SubmitButtonText>
       </SubmitButton>
     </Container>

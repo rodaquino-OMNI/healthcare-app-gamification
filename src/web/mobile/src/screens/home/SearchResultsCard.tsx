@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
@@ -173,7 +174,9 @@ interface ArticleCardProps {
 /**
  * Renders a single article search result card.
  */
-export const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => (
+export const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
+  const { t } = useTranslation();
+  return (
   <TouchableOpacity
     style={styles.resultCard}
     accessibilityRole="button"
@@ -195,11 +198,12 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => (
         <Text style={styles.articleSummary} numberOfLines={2}>
           {article.summary}
         </Text>
-        <Text style={styles.readTime}>{article.readTime} de leitura</Text>
+        <Text style={styles.readTime}>{t('searchScreens.readTime', { time: article.readTime })}</Text>
       </View>
     </View>
   </TouchableOpacity>
-);
+  );
+};
 
 // ---------------------------------------------------------------------------
 // Styles

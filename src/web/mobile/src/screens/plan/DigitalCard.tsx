@@ -9,6 +9,7 @@ import {
   Share,
 } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from 'src/web/mobile/src/hooks/useAuth';
 import { getDigitalCard } from 'src/web/mobile/src/api/plan';
 import { colors } from '@web/design-system/src/tokens/colors';
@@ -46,6 +47,7 @@ interface CardData {
  * card with plan details and action buttons for sharing and saving.
  */
 export const DigitalCardScreen: React.FC = () => {
+  const { t } = useTranslation();
   const { params } = useRoute<DigitalCardScreenRouteProp>();
   const { planId } = params;
   const { isAuthenticated } = useAuth();
@@ -90,7 +92,7 @@ export const DigitalCardScreen: React.FC = () => {
             color={colors.journeys.plan.primary}
           />
           <Text style={styles.loadingText}>
-            Carregando carteirinha digital...
+            {t('journeys.plan.digitalCard.loading')}
           </Text>
         </View>
       </View>
@@ -126,7 +128,7 @@ export const DigitalCardScreen: React.FC = () => {
         {/* Card Body */}
         <View style={styles.cardBody}>
           <View style={styles.fieldRow}>
-            <Text style={styles.fieldLabel}>Titular</Text>
+            <Text style={styles.fieldLabel}>{t('journeys.plan.digitalCard.holder')}</Text>
             <Text style={styles.fieldValue}>
               {card.memberName ?? '---'}
             </Text>
@@ -134,11 +136,11 @@ export const DigitalCardScreen: React.FC = () => {
 
           <View style={styles.fieldColumns}>
             <View style={styles.fieldCol}>
-              <Text style={styles.fieldLabel}>CPF</Text>
+              <Text style={styles.fieldLabel}>{t('journeys.plan.digitalCard.cpf')}</Text>
               <Text style={styles.fieldValue}>{card.cpf ?? '---'}</Text>
             </View>
             <View style={styles.fieldCol}>
-              <Text style={styles.fieldLabel}>No. Plano</Text>
+              <Text style={styles.fieldLabel}>{t('journeys.plan.digitalCard.planNumber')}</Text>
               <Text style={styles.fieldValue}>
                 {card.planNumber ?? '---'}
               </Text>
@@ -147,13 +149,13 @@ export const DigitalCardScreen: React.FC = () => {
 
           <View style={styles.fieldColumns}>
             <View style={styles.fieldCol}>
-              <Text style={styles.fieldLabel}>Inicio</Text>
+              <Text style={styles.fieldLabel}>{t('journeys.plan.digitalCard.startDate')}</Text>
               <Text style={styles.fieldValue}>
                 {card.validityStart ?? '---'}
               </Text>
             </View>
             <View style={styles.fieldCol}>
-              <Text style={styles.fieldLabel}>Validade</Text>
+              <Text style={styles.fieldLabel}>{t('journeys.plan.digitalCard.validity')}</Text>
               <Text style={styles.fieldValue}>
                 {card.validityEnd ?? '---'}
               </Text>
@@ -168,7 +170,7 @@ export const DigitalCardScreen: React.FC = () => {
           <Text style={styles.qrText}>QR Code</Text>
         </View>
         <Text style={styles.qrHint}>
-          Apresente este codigo na recepcao
+          {t('journeys.plan.digitalCard.qrHint')}
         </Text>
       </View>
 
@@ -177,16 +179,16 @@ export const DigitalCardScreen: React.FC = () => {
         <TouchableOpacity
           style={styles.primaryButton}
           onPress={handleShareCard}
-          accessibilityLabel="Compartilhar carteirinha"
+          accessibilityLabel={t('journeys.plan.digitalCard.share')}
         >
-          <Text style={styles.primaryButtonText}>Compartilhar Carteirinha</Text>
+          <Text style={styles.primaryButtonText}>{t('journeys.plan.digitalCard.share')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.secondaryButton}
           onPress={handleSaveToWallet}
-          accessibilityLabel="Salvar na carteira"
+          accessibilityLabel={t('journeys.plan.digitalCard.saveToWallet')}
         >
-          <Text style={styles.secondaryButtonText}>Salvar na Carteira</Text>
+          <Text style={styles.secondaryButtonText}>{t('journeys.plan.digitalCard.saveToWallet')}</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

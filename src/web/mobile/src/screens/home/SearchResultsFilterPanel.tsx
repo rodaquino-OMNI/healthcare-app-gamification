@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
@@ -13,11 +14,11 @@ export type SearchFilter = 'all' | 'doctors' | 'medications' | 'articles';
 /**
  * Abas de filtro
  */
-const FILTER_TABS: { key: SearchFilter; label: string }[] = [
-  { key: 'all', label: 'Todos' },
-  { key: 'doctors', label: 'Medicos' },
-  { key: 'medications', label: 'Medicamentos' },
-  { key: 'articles', label: 'Artigos' },
+const FILTER_TABS: { key: SearchFilter; labelKey: string }[] = [
+  { key: 'all', labelKey: 'searchScreens.filterAll' },
+  { key: 'doctors', labelKey: 'searchScreens.filterDoctors' },
+  { key: 'medications', labelKey: 'searchScreens.filterMedications' },
+  { key: 'articles', labelKey: 'searchScreens.filterArticles' },
 ];
 
 interface FilterPanelProps {
@@ -29,26 +30,29 @@ interface FilterPanelProps {
  * Filter tabs panel for search results.
  * Renders horizontal filter tabs for toggling between result categories.
  */
-export const FilterPanel: React.FC<FilterPanelProps> = ({ activeFilter, onFilterChange }) => (
-  <View style={styles.filterContainer}>
-    {FILTER_TABS.map((tab) => {
-      const isActive = activeFilter === tab.key;
-      return (
-        <TouchableOpacity
-          key={tab.key}
-          style={[styles.filterTab, isActive && styles.filterTabActive]}
-          onPress={() => onFilterChange(tab.key)}
-          accessibilityRole="tab"
-          accessibilityState={{ selected: isActive }}
-        >
-          <Text style={[styles.filterTabText, isActive && styles.filterTabTextActive]}>
-            {tab.label}
-          </Text>
-        </TouchableOpacity>
-      );
-    })}
-  </View>
-);
+export const FilterPanel: React.FC<FilterPanelProps> = ({ activeFilter, onFilterChange }) => {
+  const { t } = useTranslation();
+  return (
+    <View style={styles.filterContainer}>
+      {FILTER_TABS.map((tab) => {
+        const isActive = activeFilter === tab.key;
+        return (
+          <TouchableOpacity
+            key={tab.key}
+            style={[styles.filterTab, isActive && styles.filterTabActive]}
+            onPress={() => onFilterChange(tab.key)}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: isActive }}
+          >
+            <Text style={[styles.filterTabText, isActive && styles.filterTabTextActive]}>
+              {t(tab.labelKey)}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   filterContainer: {

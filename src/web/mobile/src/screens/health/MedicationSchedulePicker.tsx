@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Switch, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { fontSizeValues } from '../../../../design-system/src/tokens/typography';
@@ -40,21 +41,23 @@ export const SnoozePicker: React.FC<SnoozePickerProps> = ({
   snoozeDuration,
   onSnoozeDurationChange,
   journeyColors,
-}) => (
+}) => {
+  const { t } = useTranslation();
+  return (
   <>
     <View style={styles.snoozeToggleRow}>
-      <Text style={styles.snoozeLabel}>Permitir soneca</Text>
+      <Text style={styles.snoozeLabel}>{t('journeys.health.medication.reminder.allowSnooze')}</Text>
       <Switch
         value={snoozeEnabled}
         onValueChange={onSnoozeToggle}
         trackColor={{ false: colors.gray[30], true: journeyColors.primary }}
         thumbColor={colors.neutral.white}
-        accessibilityLabel="Permitir soneca"
+        accessibilityLabel={t('journeys.health.medication.reminder.allowSnooze')}
       />
     </View>
     {snoozeEnabled && (
       <View style={styles.snoozeOptionsRow}>
-        <Text style={styles.snoozeOptionLabel}>Tempo de soneca:</Text>
+        <Text style={styles.snoozeOptionLabel}>{t('journeys.health.medication.reminder.snoozeDuration')}:</Text>
         <View style={styles.snoozeChips}>
           {SNOOZE_OPTIONS.map((option) => (
             <View
@@ -81,7 +84,8 @@ export const SnoozePicker: React.FC<SnoozePickerProps> = ({
       </View>
     )}
   </>
-);
+  );
+};
 
 // ---------------------------------------------------------------------------
 // ReminderPreview
@@ -104,9 +108,11 @@ export const ReminderPreview: React.FC<ReminderPreviewProps> = ({
   time,
   frequencyLabel,
   journeyColors,
-}) => (
+}) => {
+  const { t } = useTranslation();
+  return (
   <View style={[styles.previewCard, { borderLeftColor: journeyColors.primary }]}>
-    <Text style={styles.previewTitle}>Lembrete de Medicamento</Text>
+    <Text style={styles.previewTitle}>{t('journeys.health.medication.reminder.preview')}</Text>
     <Text style={styles.previewMedName}>{medicationName}</Text>
     {medicationDosage ? (
       <Text style={styles.previewDosage}>{medicationDosage}</Text>
@@ -118,7 +124,8 @@ export const ReminderPreview: React.FC<ReminderPreviewProps> = ({
       <Text style={styles.previewFrequency}>{frequencyLabel}</Text>
     </View>
   </View>
-);
+  );
+};
 
 // ---------------------------------------------------------------------------
 // Styles
