@@ -97,3 +97,9 @@ src/backend/api-gateway/src/graphql/schema.generated.ts
 .claude-flow/
 .swarm/
 .claude/
+.hive-mind/
+.ruvector/
+.mcp.json
+
+# TypeScript build info
+*.tsbuildinfo

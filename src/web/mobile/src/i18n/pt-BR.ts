@@ -420,6 +420,384 @@ const translations = {
           conclusion: 'Conclusão'
         }
       },
+      telemedicineDeep: {
+        connecting: {
+          title: 'Conectando',
+          status: 'Conectando ao seu médico...',
+          elapsedTime: 'Tempo decorrido',
+          cancel: 'Cancelar',
+          retry: 'Tentar Novamente',
+          timeout: 'A conexão está demorando mais que o esperado.',
+          doctorJoining: '{{doctorName}} está entrando...'
+        },
+        controls: {
+          title: 'Videochamada',
+          mute: 'Mudo',
+          unmute: 'Ativar Áudio',
+          cameraOn: 'Câmera Ligada',
+          cameraOff: 'Câmera Desligada',
+          speaker: 'Alto-Falante',
+          earpiece: 'Fone',
+          chat: 'Chat',
+          endCall: 'Encerrar Chamada',
+          callDuration: 'Duração da Chamada',
+          connectionQuality: 'Qualidade da Conexão',
+          you: 'Você'
+        },
+        chat: {
+          title: 'Chat na Chamada',
+          sendMessage: 'Enviar Mensagem',
+          placeholder: 'Digite sua mensagem...',
+          quickReplyYes: 'Sim',
+          quickReplyNo: 'Não',
+          quickReplyUnderstand: 'Entendi',
+          quickReplyRepeat: 'Pode repetir?',
+          close: 'Fechar'
+        },
+        screenShare: {
+          title: 'Compartilhamento de Tela',
+          doctorSharing: '{{doctorName}} está compartilhando a tela',
+          pinchToZoom: 'Aperte para ampliar',
+          returnToVideo: 'Voltar ao Vídeo',
+          stopSharing: 'Parar Compartilhamento'
+        },
+        endScreen: {
+          title: 'Chamada Encerrada',
+          callEnded: 'Sua consulta por vídeo terminou',
+          duration: 'Duração',
+          rateCall: 'Avalie sua consulta',
+          feedbackPlaceholder: 'Compartilhe seu feedback (opcional)...',
+          submitRating: 'Enviar Avaliação',
+          viewSummary: 'Ver Resumo da Consulta',
+          bookFollowUp: 'Agendar Retorno',
+          returnDashboard: 'Voltar ao Início',
+          thankYou: 'Obrigado pelo feedback!'
+        }
+      },
+      visit: {
+        summary: {
+          title: 'Resumo da Consulta',
+          doctorInfo: 'Informações do Médico',
+          diagnosis: 'Diagnóstico',
+          clinicalNotes: 'Notas Clínicas',
+          recommendations: 'Recomendações',
+          viewPrescriptions: 'Ver Receitas',
+          scheduleFollowUp: 'Agendar Retorno',
+          viewLabOrders: 'Ver Exames',
+          shareSummary: 'Compartilhar Resumo',
+          downloadSummary: 'Baixar Resumo'
+        },
+        prescriptions: {
+          title: 'Receitas',
+          medication: 'Medicamento',
+          dosage: 'Dosagem',
+          frequency: 'Frequência',
+          duration: 'Duração',
+          instructions: 'Instruções',
+          sendToPharmacy: 'Enviar para Farmácia',
+          sendAllToPharmacy: 'Enviar Todas para Farmácia',
+          addToMedications: 'Adicionar aos Meus Medicamentos',
+          interactionWarning: 'Alerta de Interação',
+          sentSuccess: 'Enviado para farmácia com sucesso'
+        },
+        followUp: {
+          title: 'Agendar Retorno',
+          recommendation: '{{doctorName}} recomenda retorno em {{weeks}} semanas',
+          recommendedDate: 'Data Recomendada',
+          selectDate: 'Selecione uma Data',
+          morning: 'Manhã',
+          afternoon: 'Tarde',
+          evening: 'Noite',
+          bookFollowUp: 'Agendar Retorno',
+          remindLater: 'Lembrar Depois',
+          skip: 'Pular'
+        },
+        labOrders: {
+          title: 'Pedidos de Exames',
+          testName: 'Nome do Exame',
+          urgency: 'Urgência',
+          preparation: 'Preparo',
+          fastingRequired: 'Jejum Necessário',
+          nearbyLabs: 'Laboratórios Próximos',
+          distance: '{{distance}} km',
+          scheduleVisit: 'Agendar Coleta',
+          viewAllLabs: 'Ver Todos os Laboratórios',
+          routine: 'Rotina',
+          urgent: 'Urgente'
+        },
+        referral: {
+          title: 'Encaminhamento',
+          referredBy: 'Encaminhado por',
+          specialist: 'Especialista',
+          specialty: 'Especialidade',
+          clinic: 'Clínica',
+          reason: 'Motivo do Encaminhamento',
+          urgencyLevel: 'Nível de Urgência',
+          bookWithSpecialist: 'Agendar com Especialista',
+          viewProfile: 'Ver Perfil',
+          validityPeriod: 'Este encaminhamento é válido por {{days}} dias',
+          routine: 'Rotina',
+          urgentLevel: 'Urgente',
+          emergent: 'Emergencial'
+        }
+      },
+      payment: {
+        summary: {
+          title: 'Resumo do Pagamento',
+          consultationFee: 'Consulta',
+          insuranceCoverage: 'Cobertura do Plano',
+          copay: 'Copagamento',
+          additionalFees: 'Taxas Adicionais',
+          total: 'Total',
+          paymentMethod: 'Método de Pagamento',
+          addPaymentMethod: 'Adicionar Método de Pagamento',
+          payNow: 'Pagar Agora',
+          payLater: 'Pagar Depois',
+          securityNotice: 'Pagamento criptografado e protegido pela LGPD',
+          cardEnding: 'Cartão final ****{{last4}}'
+        },
+        receipt: {
+          title: 'Comprovante de Pagamento',
+          paymentConfirmed: 'Pagamento Confirmado',
+          transactionId: 'ID da Transação',
+          dateTime: 'Data e Hora',
+          amountPaid: 'Valor Pago',
+          paymentMethod: 'Método de Pagamento',
+          status: 'Status',
+          paid: 'Pago',
+          pending: 'Pendente',
+          failed: 'Falhou',
+          serviceDetails: 'Detalhes do Serviço',
+          downloadPDF: 'Baixar PDF',
+          emailReceipt: 'Enviar por Email',
+          printReceipt: 'Imprimir',
+          returnDashboard: 'Voltar ao Início'
+        }
+      },
+      asyncChat: {
+        title: 'Chat com Médico',
+        doctorInfo: 'Informações do Médico',
+        online: 'Online',
+        offline: 'Offline',
+        responseTime: '{{doctorName}} geralmente responde em 24 horas',
+        placeholder: 'Digite sua mensagem...',
+        send: 'Enviar',
+        attachFile: 'Anexar Arquivo',
+        takePhoto: 'Tirar Foto',
+        consultationEnded: 'Consulta encerrada há {{hours}} horas',
+        you: 'Você'
+      },
+      medicalRecords: {
+        title: 'Prontuário Médico',
+        filterAll: 'Todos',
+        filterVisitNotes: 'Notas de Consulta',
+        filterLabResults: 'Resultados de Exames',
+        filterPrescriptions: 'Receitas',
+        filterImaging: 'Imagens',
+        download: 'Baixar',
+        share: 'Compartilhar',
+        sendToDoctor: 'Enviar ao Médico',
+        downloadAll: 'Baixar Todos',
+        shareSelected: 'Compartilhar Selecionados',
+        requestRecords: 'Solicitar Prontuários',
+        fhirNotice: 'Dados em conformidade com o padrão FHIR HL7',
+        recordDate: 'Data',
+        recordType: 'Tipo',
+        recordSize: 'Tamanho'
+      },
+      consultation: {
+        doctorReviews: {
+          title: 'Avaliações do Médico',
+          averageRating: 'Nota Média',
+          reviews: 'Avaliações',
+          helpful: 'Útil',
+          sortBy: 'Ordenar por',
+          mostRecent: 'Mais Recente',
+          highest: 'Maior Nota',
+          lowest: 'Menor Nota',
+          writeReview: 'Escrever Avaliação',
+          of5: 'de 5',
+          helpfulCount: '{{count}} acharam útil',
+        },
+        appointmentType: {
+          title: 'Tipo de Consulta',
+          inPerson: 'Presencial',
+          telemedicine: 'Telemedicina',
+          homeVisit: 'Visita Domiciliar',
+          inPersonDesc: 'Consulta na clínica ou hospital',
+          telemedicineDesc: 'Consulta por videochamada',
+          homeVisitDesc: 'Médico vai até você',
+          continue: 'Continuar',
+          estimatedPrice: 'Valor estimado',
+          available: 'Disponível',
+        },
+        reasonForVisit: {
+          title: 'Motivo da Consulta',
+          placeholder: 'Descreva o motivo da sua consulta...',
+          commonReasons: 'Motivos Comuns',
+          checkup: 'Check-up',
+          followUp: 'Retorno',
+          newSymptoms: 'Novos Sintomas',
+          secondOpinion: 'Segunda Opinião',
+          prescriptionRenewal: 'Renovação de Receita',
+          examResults: 'Resultados de Exames',
+          attachFile: 'Anexar Arquivo',
+          characters: '{{count}} caracteres',
+          continue: 'Continuar',
+          attachedFiles: 'Arquivos Anexados',
+          removeFile: 'Remover',
+        },
+        documents: {
+          title: 'Documentos Necessários',
+          idDocument: 'Documento de Identidade (RG/CPF)',
+          insuranceCard: 'Carteira do Convênio',
+          medicalReferral: 'Guia de Encaminhamento',
+          examResults: 'Resultados de Exames Recentes',
+          optional: 'Opcional',
+          upload: 'Enviar',
+          uploaded: 'Enviado',
+          pending: 'Pendente',
+          continue: 'Continuar',
+        },
+        insurance: {
+          title: 'Verificação de Convênio',
+          selectPlan: 'Selecione seu Convênio',
+          particular: 'Particular',
+          verifying: 'Verificando cobertura...',
+          covered: 'Coberto pelo Convênio',
+          notCovered: 'Não Coberto',
+          copay: 'Copagamento',
+          coverage: 'Cobertura',
+          authorization: 'Autorização',
+          authorized: 'Autorizado',
+          pendingAuth: 'Aguardando Autorização',
+          warning: 'Este procedimento pode não ser coberto pelo seu plano.',
+          continue: 'Continuar',
+        },
+        bookingSuccess: {
+          title: 'Consulta Agendada!',
+          subtitle: 'Sua consulta foi agendada com sucesso.',
+          doctor: 'Médico(a)',
+          specialty: 'Especialidade',
+          date: 'Data',
+          time: 'Horário',
+          type: 'Tipo',
+          location: 'Local',
+          addToCalendar: 'Adicionar ao Calendário',
+          viewAppointment: 'Ver Consulta',
+          backToHome: 'Voltar ao Início',
+        },
+        appointmentsList: {
+          title: 'Minhas Consultas',
+          upcoming: 'Próximas',
+          past: 'Anteriores',
+          cancelled: 'Canceladas',
+          empty: 'Nenhuma consulta encontrada.',
+          newAppointment: 'Nova Consulta',
+          confirmed: 'Confirmada',
+          pending: 'Pendente',
+          inPerson: 'Presencial',
+          telemedicine: 'Telemedicina',
+        },
+        reschedule: {
+          title: 'Reagendar Consulta',
+          currentAppointment: 'Consulta Atual',
+          selectDate: 'Selecione a Nova Data',
+          selectTime: 'Selecione o Horário',
+          reason: 'Motivo do Reagendamento',
+          scheduleConflict: 'Conflito de Agenda',
+          feelingBetter: 'Melhorei',
+          differentTime: 'Preciso de Outro Horário',
+          other: 'Outro',
+          notes: 'Observações',
+          confirm: 'Confirmar Reagendamento',
+          policyWarning: 'Máximo de 2 reagendamentos por consulta.',
+        },
+        cancel: {
+          title: 'Cancelar Consulta',
+          policy: 'Política de Cancelamento',
+          fullRefund: 'Mais de 24h antes: reembolso total',
+          halfRefund: '12-24h antes: 50% de reembolso',
+          noRefund: 'Menos de 12h: sem reembolso',
+          reason: 'Motivo do Cancelamento',
+          scheduleConflict: 'Conflito de Agenda',
+          anotherDoctor: 'Encontrei Outro Médico',
+          feelingBetter: 'Melhorei',
+          financial: 'Motivos Financeiros',
+          other: 'Outro',
+          details: 'Detalhes adicionais',
+          understand: 'Entendo a política de cancelamento',
+          cancelAppointment: 'Cancelar Consulta',
+          keepAppointment: 'Manter Consulta',
+        },
+        cancelled: {
+          title: 'Consulta Cancelada',
+          details: 'Detalhes do Cancelamento',
+          refundInfo: 'Informações de Reembolso',
+          refundAmount: 'Valor do Reembolso',
+          processingTime: 'Prazo: 5-10 dias úteis',
+          bookNew: 'Agendar Nova Consulta',
+          backToAppointments: 'Voltar às Consultas',
+        },
+        noShow: {
+          title: 'Consulta Perdida',
+          warning: 'Você não compareceu à sua consulta.',
+          feeWarning: 'Uma taxa de não comparecimento pode ser aplicada.',
+          feeAmount: 'Taxa: R$ 50,00',
+          policyInfo: '3 faltas em 6 meses podem resultar em restrição da conta.',
+          rescheduleNow: 'Reagendar Agora',
+          contactSupport: 'Contatar Suporte',
+          backToAppointments: 'Voltar às Consultas',
+        },
+        preVisitChecklist: {
+          title: 'Checklist Pré-Consulta',
+          progress: '{{completed}} de {{total}} itens',
+          documents: 'Documentos',
+          health: 'Saúde',
+          logistics: 'Logística',
+          idCard: 'Documento de identidade',
+          insuranceCard: 'Carteira do convênio',
+          referral: 'Guia de encaminhamento',
+          fasting: 'Jejum conforme orientação',
+          medications: 'Lista de medicamentos atuais',
+          examResults: 'Resultados de exames recentes',
+          transportation: 'Transporte planejado',
+          address: 'Endereço confirmado',
+          arriveEarly: 'Chegar 15 min antes',
+          internet: 'Conexão de internet estável',
+          camera: 'Câmera e microfone funcionando',
+          quietRoom: 'Ambiente silencioso',
+          allSet: 'Tudo pronto para sua consulta!',
+          viewAppointment: 'Ver Consulta',
+        },
+        rateVisit: {
+          title: 'Avaliar Consulta',
+          ratingLabel: 'Sua avaliação',
+          terrible: 'Péssimo',
+          poor: 'Ruim',
+          average: 'Regular',
+          good: 'Bom',
+          excellent: 'Excelente',
+          punctuality: 'Pontualidade',
+          communication: 'Comunicação',
+          expertise: 'Competência',
+          facility: 'Infraestrutura',
+          review: 'Comentário',
+          reviewPlaceholder: 'Compartilhe sua experiência...',
+          wouldRecommend: 'Recomendaria este médico?',
+          submit: 'Enviar Avaliação',
+          skip: 'Pular',
+        },
+        savedDoctors: {
+          title: 'Médicos Favoritos',
+          empty: 'Nenhum médico favorito ainda.',
+          findDoctors: 'Buscar Médicos',
+          bookNow: 'Agendar Agora',
+          nextAvailable: 'Próximo disponível',
+          searchPlaceholder: 'Buscar por nome...',
+          unsave: 'Remover dos favoritos',
+        },
+      },
       treatmentPlans: {
         title: 'Planos de Tratamento',
         empty: 'Nenhum plano de tratamento ativo.',
@@ -543,6 +921,25 @@ const translations = {
       title: 'Verificação de Segurança',
       code: 'Código de Verificação',
       resendCode: 'Reenviar Código'
+    },
+    socialAuth: {
+      title: 'Bem-vindo ao AUSTA',
+      subtitle: 'Entre para continuar sua jornada de saude',
+      googleButton: 'Continuar com Google',
+      appleButton: 'Continuar com Apple',
+      facebookButton: 'Continuar com Facebook',
+      divider: 'ou continue com email',
+      emailLogin: 'Entrar com Email',
+      noAccount: 'Nao tem uma conta?',
+      register: 'Criar Conta',
+      lgpdConsent: 'Eu concordo com o tratamento dos meus dados pessoais conforme a',
+      privacyPolicy: 'Politica de Privacidade',
+      and: 'e',
+      termsOfService: 'Termos de Servico',
+      consentRequired: 'Consentimento Necessario',
+      consentMessage: 'Por favor, aceite os termos de privacidade antes de continuar com o login social.',
+      comingSoon: 'Integracao com autenticacao social em breve.',
+      disclaimer: 'Ao entrar, voce concorda com nossos Termos de Servico e Politica de Privacidade. Seus dados sao protegidos pela LGPD (Lei Geral de Protecao de Dados).'
     }
   },
 
@@ -861,6 +1258,205 @@ const translations = {
     title: 'Notificações',
     empty: 'Nenhuma notificação.',
     markAllRead: 'Marcar Todas como Lidas'
+  },
+  onboarding: {
+    personalizationIntro: {
+      title: 'Personalize Sua Experiencia',
+      subtitle: 'Conte-nos sobre seus objetivos de saude para personalizar sua experiencia',
+      benefit1: 'Melhores recomendacoes de saude',
+      benefit2: 'Dicas de saude personalizadas',
+      benefit3: 'Planos de bem-estar sob medida',
+      getStarted: 'Comecar',
+      skip: 'Pular por enquanto'
+    },
+    goalSelection: {
+      title: 'Selecione Seus Objetivos de Saude',
+      subtitle: 'Escolha as areas em que deseja focar',
+      weightManagement: 'Controle de Peso',
+      chronicDisease: 'Gerenciamento de Doencas Cronicas',
+      fitness: 'Fitness e Exercicios',
+      mentalHealth: 'Saude Mental e Bem-estar',
+      nutrition: 'Nutricao e Dieta',
+      sleep: 'Qualidade do Sono',
+      continue: 'Continuar',
+      selectAtLeastOne: 'Selecione pelo menos um objetivo'
+    },
+    confirmation: {
+      title: 'Tudo Pronto!',
+      subtitle: 'Sua experiencia foi personalizada com base nas suas selecoes',
+      selectedGoals: 'Seus Objetivos Selecionados',
+      startUsing: 'Comecar a Usar o AUSTA'
+    }
+  },
+  profileSetup: {
+    emergencyContact: {
+      title: 'Contato de Emergencia',
+      subtitle: 'Adicione alguem que possamos contactar em caso de emergencia',
+      contactName: 'Nome do Contato',
+      phoneNumber: 'Numero de Telefone',
+      relationship: 'Parentesco',
+      relationships: {
+        spouse: 'Conjuge',
+        parent: 'Pai/Mae',
+        sibling: 'Irmao/Irma',
+        child: 'Filho(a)',
+        friend: 'Amigo(a)',
+        other: 'Outro'
+      },
+      isPrimary: 'Definir como contato principal',
+      save: 'Salvar Contato'
+    },
+    notificationPrefs: {
+      title: 'Preferencias de Notificacao',
+      subtitle: 'Escolha quais notificacoes deseja receber',
+      appointments: 'Lembretes de Consulta',
+      medications: 'Alertas de Medicamento',
+      healthTips: 'Dicas de Saude',
+      promotions: 'Promocoes e Ofertas',
+      save: 'Salvar Preferencias'
+    },
+    biometricSetup: {
+      title: 'Proteja Sua Conta',
+      subtitle: 'Ative a autenticacao biometrica para acesso mais rapido e seguro',
+      benefit1: 'Login mais rapido',
+      benefit2: 'Acesso seguro',
+      benefit3: 'Sem necessidade de senhas',
+      enable: 'Ativar Face ID / Touch ID',
+      skip: 'Pular por Enquanto'
+    }
+  },
+  homeWidgets: {
+    weeklySummary: {
+      title: 'Resumo Semanal',
+      steps: 'Passos',
+      calories: 'Calorias',
+      sleep: 'Sono',
+      heartRate: 'Freq. Cardiaca',
+      trendUp: 'subiu',
+      trendDown: 'desceu',
+      trendStable: 'estavel',
+      average: 'media'
+    },
+    bottomSheet: {
+      title: 'Acoes Rapidas',
+      addMetric: 'Adicionar Metrica de Saude',
+      bookAppointment: 'Agendar Consulta',
+      checkSymptoms: 'Verificar Sintomas',
+      medicationLog: 'Registrar Medicamento'
+    },
+    medicationReminders: {
+      title: 'Lembretes de Medicamento',
+      nextDose: 'Proxima Dose',
+      takeNow: 'Tomar Agora',
+      skip: 'Pular',
+      noReminders: 'Sem lembretes pendentes',
+      viewAll: 'Ver Todos'
+    },
+    appointmentWidget: {
+      title: 'Proximas Consultas',
+      joinTelemedicine: 'Entrar',
+      noAppointments: 'Sem consultas agendadas',
+      seeAll: 'Ver Todas',
+      telemedicine: 'Telemedicina'
+    },
+    healthTips: {
+      title: 'Dicas de Saude',
+      readMore: 'Ler Mais'
+    },
+    empty: {
+      title: 'Bem-vindo ao AUSTA!',
+      subtitle: 'Sua jornada de saude comeca aqui. Complete estes passos para comecar.',
+      completeProfile: 'Complete seu perfil',
+      addGoals: 'Adicione objetivos de saude',
+      connectDevice: 'Conecte um dispositivo',
+      scheduleAppointment: 'Agende sua primeira consulta',
+      getStarted: 'Comecar'
+    }
+  },
+  notificationScreens: {
+    unread: {
+      title: 'Notificacoes Nao Lidas',
+      noUnread: 'Tudo em dia!',
+      markAllRead: 'Marcar Todas como Lidas'
+    },
+    categoryFilter: {
+      all: 'Todas',
+      health: 'Saude',
+      care: 'Consultas',
+      plan: 'Plano',
+      system: 'Sistema'
+    },
+    empty: {
+      title: 'Sem Notificacoes',
+      description: 'Voce ainda nao tem notificacoes. Avisaremos sobre atualizacoes importantes.'
+    },
+    settings: {
+      title: 'Configuracoes de Notificacao',
+      healthUpdates: 'Atualizacoes de Saude',
+      careReminders: 'Lembretes de Consulta',
+      planNotifications: 'Notificacoes do Plano',
+      systemAlerts: 'Alertas do Sistema',
+      quietHours: 'Horario Silencioso',
+      quietHoursEnabled: 'Ativar Horario Silencioso',
+      from: 'De',
+      to: 'Ate',
+      save: 'Salvar Configuracoes'
+    }
+  },
+  searchScreens: {
+    doctorResults: {
+      title: 'Resultados de Medicos',
+      book: 'Agendar',
+      rating: 'Avaliacao',
+      specialty: 'Especialidade'
+    },
+    articleResults: {
+      title: 'Resultados de Artigos',
+      readTime: '{{minutes}} min de leitura',
+      source: 'Fonte'
+    },
+    medicationResults: {
+      title: 'Resultados de Medicamentos',
+      generic: 'Generico',
+      interactions: 'Interacoes',
+      hasInteractions: 'Possui interacoes'
+    },
+    noResults: {
+      title: 'Nenhum Resultado Encontrado',
+      description: 'Nao encontramos nada correspondente a sua busca.',
+      suggestions: 'Sugestoes',
+      checkSpelling: 'Verifique a ortografia',
+      tryDifferent: 'Tente palavras diferentes',
+      browseCategories: 'Explore categorias',
+      tryAgain: 'Tentar Novamente'
+    }
+  },
+  errorScreens: {
+    noInternet: {
+      title: 'Sem Conexao com a Internet',
+      description: 'Verifique sua conexao e tente novamente.',
+      retry: 'Tentar Novamente',
+      cachedData: 'Alguns dados em cache podem estar disponiveis'
+    },
+    server: {
+      title: 'Algo Deu Errado',
+      description: 'Nossos servidores estao com problemas. Tente novamente em alguns minutos.',
+      retry: 'Tentar Novamente',
+      contactSupport: 'Falar com Suporte'
+    },
+    maintenance: {
+      title: 'Em Manutencao',
+      description: 'Estamos fazendo melhorias. Voltaremos em breve.',
+      scheduledTime: 'Previsao de retorno as {{time}}',
+      notifyMe: 'Avisar quando voltar'
+    },
+    forceUpdate: {
+      title: 'Atualizacao Necessaria',
+      description: 'Uma nova versao do AUSTA esta disponivel. Atualize para continuar.',
+      currentVersion: 'Versao Atual',
+      requiredVersion: 'Versao Necessaria',
+      updateNow: 'Atualizar Agora'
+    }
   }
 };
 

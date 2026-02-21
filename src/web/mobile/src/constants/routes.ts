@@ -17,6 +17,12 @@ export const ROUTES = {
   HOME_METRICS: 'HomeMetrics',
   HOME_ALERT: 'HomeAlert',
   HOME_HEADER: 'HomeHeader',
+  HOME_WEEKLY_SUMMARY: 'HomeWeeklySummary',
+  HOME_BOTTOM_SHEET: 'HomeBottomSheet',
+  HOME_MEDICATION_REMINDERS: 'HomeMedicationReminders',
+  HOME_APPOINTMENT_WIDGET: 'HomeAppointmentWidget',
+  HOME_HEALTH_TIPS: 'HomeHealthTips',
+  HOME_EMPTY: 'HomeEmpty',
 
   // Authentication Routes - Welcome & Onboarding
   AUTH_WELCOME: 'AuthWelcome',
@@ -31,6 +37,14 @@ export const ROUTES = {
   AUTH_EMAIL_VERIFY: 'AuthEmailVerify',
   AUTH_SET_PASSWORD: 'AuthSetPassword',
 
+  // Authentication Routes - Social
+  AUTH_SOCIAL: 'AuthSocial',
+
+  // Authentication — Personalization Routes
+  AUTH_PERSONALIZATION_INTRO: 'AuthPersonalizationIntro',
+  AUTH_GOAL_SELECTION: 'AuthGoalSelection',
+  AUTH_ONBOARDING_CONFIRMATION: 'AuthOnboardingConfirmation',
+
   // Profile Routes
   PROFILE_SETUP: 'ProfileSetup',
   PROFILE_HEALTH: 'ProfileHealth',
@@ -39,7 +53,12 @@ export const ROUTES = {
   PROFILE_DOCUMENTS: 'ProfileDocuments',
   PROFILE_PHOTO: 'ProfilePhoto',
   PROFILE_CONFIRMATION: 'ProfileConfirmation',
-  
+
+  // Profile — Additional Setup Routes
+  PROFILE_EMERGENCY_CONTACT: 'ProfileEmergencyContact',
+  PROFILE_NOTIFICATION_PREFS: 'ProfileNotificationPrefs',
+  PROFILE_BIOMETRIC_SETUP: 'ProfileBiometricSetup',
+
   // My Health Journey Routes (Green)
   HEALTH_DASHBOARD: 'HealthDashboard',
   HEALTH_MEDICAL_HISTORY: 'HealthMedicalHistory',
@@ -77,8 +96,16 @@ export const ROUTES = {
 
   // Cross-Journey / Global
   NOTIFICATION_DETAIL: 'NotificationDetail',
+  NOTIFICATION_UNREAD: 'NotificationUnread',
+  NOTIFICATION_CATEGORY_FILTER: 'NotificationCategoryFilter',
+  NOTIFICATION_EMPTY: 'NotificationEmpty',
+  NOTIFICATION_SETTINGS: 'NotificationSettings',
   SEARCH: 'Search',
   SEARCH_RESULTS: 'SearchResults',
+  SEARCH_DOCTOR_RESULTS: 'SearchDoctorResults',
+  SEARCH_ARTICLE_RESULTS: 'SearchArticleResults',
+  SEARCH_MEDICATION_RESULTS: 'SearchMedicationResults',
+  SEARCH_NO_RESULTS: 'SearchNoResults',
   SETTINGS_EDIT: 'SettingsEdit',
   SETTINGS_NOTIFICATIONS: 'SettingsNotifications',
   SETTINGS_PRIVACY: 'SettingsPrivacy',
@@ -129,6 +156,44 @@ export const ROUTES = {
   CARE_BOOKING_CONFIRMATION: 'CareBookingConfirmation',
   CARE_WAITING_ROOM: 'CareWaitingRoom',
 
+  // Care Now — Consultation Deep Routes (Orange)
+  CARE_DOCTOR_REVIEWS: 'CareDoctorReviews',
+  CARE_APPOINTMENT_TYPE: 'CareAppointmentType',
+  CARE_BOOKING_REASON: 'CareBookingReason',
+  CARE_BOOKING_DOCUMENTS: 'CareBookingDocuments',
+  CARE_BOOKING_INSURANCE: 'CareBookingInsurance',
+  CARE_BOOKING_SUCCESS: 'CareBookingSuccess',
+  CARE_APPOINTMENTS_LIST: 'CareAppointmentsList',
+  CARE_APPOINTMENT_RESCHEDULE: 'CareAppointmentReschedule',
+  CARE_APPOINTMENT_CANCEL: 'CareAppointmentCancel',
+  CARE_APPOINTMENT_CANCELLED: 'CareAppointmentCancelled',
+  CARE_APPOINTMENT_NO_SHOW: 'CareAppointmentNoShow',
+  CARE_PRE_VISIT_CHECKLIST: 'CarePreVisitChecklist',
+  CARE_RATE_VISIT: 'CareRateVisit',
+  CARE_SAVED_DOCTORS: 'CareSavedDoctors',
+
+  // Care Now — Telemedicine Deep Routes (Orange)
+  CARE_TELEMEDICINE_CONNECTING: 'CareTelemedicineConnecting',
+  CARE_TELEMEDICINE_CONTROLS: 'CareTelemedicineControls',
+  CARE_TELEMEDICINE_CHAT: 'CareTelemedicineChat',
+  CARE_TELEMEDICINE_SCREEN_SHARE: 'CareTelemedicineScreenShare',
+  CARE_TELEMEDICINE_END: 'CareTelemedicineEnd',
+
+  // Care Now — Post-Visit Routes (Orange)
+  CARE_VISIT_SUMMARY: 'CareVisitSummary',
+  CARE_VISIT_PRESCRIPTIONS: 'CareVisitPrescriptions',
+  CARE_VISIT_FOLLOW_UP: 'CareVisitFollowUp',
+  CARE_VISIT_LAB_ORDERS: 'CareVisitLabOrders',
+  CARE_VISIT_REFERRAL: 'CareVisitReferral',
+
+  // Care Now — Payment Routes (Orange)
+  CARE_PAYMENT_SUMMARY: 'CarePaymentSummary',
+  CARE_PAYMENT_RECEIPT: 'CarePaymentReceipt',
+
+  // Care Now — Records Routes (Orange)
+  CARE_ASYNC_DOCTOR_CHAT: 'CareAsyncDoctorChat',
+  CARE_MEDICAL_RECORDS: 'CareMedicalRecords',
+
   // My Plan & Benefits Journey Routes (Blue)
   PLAN_DASHBOARD: 'PlanDashboard',
   PLAN_COVERAGE: 'PlanCoverage',
@@ -177,4 +242,10 @@ export const ROUTES = {
   HELP_CONTACT: 'HelpContact',
   HELP_CHAT: 'HelpChat',
   HELP_REPORT: 'HelpReport',
+
+  // Error Routes (programmatic use, not registered in navigator)
+  ERROR_NO_INTERNET: 'ErrorNoInternet',
+  ERROR_SERVER: 'ErrorServer',
+  ERROR_MAINTENANCE: 'ErrorMaintenance',
+  ERROR_FORCE_UPDATE: 'ErrorForceUpdate',
 };

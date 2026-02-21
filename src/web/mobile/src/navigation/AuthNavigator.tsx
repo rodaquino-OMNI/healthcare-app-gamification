@@ -10,6 +10,10 @@ import OnboardingScreen from '../screens/auth/Onboarding';
 import WelcomeCTAScreen from '../screens/auth/WelcomeCTA';
 import EmailVerifyScreen from '../screens/auth/EmailVerify';
 import SetPasswordScreen from '../screens/auth/SetPassword';
+import SocialAuth from '../screens/auth/SocialAuth';
+import PersonalizationIntroScreen from '../screens/auth/PersonalizationIntro';
+import GoalSelectionScreen from '../screens/auth/GoalSelection';
+import OnboardingConfirmationScreen from '../screens/auth/OnboardingConfirmation';
 import ProfileSetupScreen from '../screens/profile/ProfileSetup';
 import ProfileVariant1Screen from '../screens/profile/ProfileVariant1';
 import ProfileVariant2Screen from '../screens/profile/ProfileVariant2';
@@ -47,6 +51,14 @@ const AuthStack = () => {
       {/* Verification */}
       <Stack.Screen name={MOBILE_AUTH_ROUTES.EMAIL_VERIFY} component={EmailVerifyScreen} />
       <Stack.Screen name={MOBILE_AUTH_ROUTES.SET_PASSWORD} component={SetPasswordScreen} />
+
+      {/* Social Authentication */}
+      <Stack.Screen name={ROUTES.AUTH_SOCIAL} component={SocialAuth} />
+
+      {/* Personalization */}
+      <Stack.Screen name={ROUTES.AUTH_PERSONALIZATION_INTRO} component={PersonalizationIntroScreen} />
+      <Stack.Screen name={ROUTES.AUTH_GOAL_SELECTION} component={GoalSelectionScreen} />
+      <Stack.Screen name={ROUTES.AUTH_ONBOARDING_CONFIRMATION} component={OnboardingConfirmationScreen} />
 
       {/* Profile Setup */}
       <Stack.Screen name={MOBILE_PROFILE_ROUTES.SETUP} component={ProfileSetupScreen} />

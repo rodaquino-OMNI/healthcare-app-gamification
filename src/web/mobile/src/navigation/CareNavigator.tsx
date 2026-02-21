@@ -41,6 +41,34 @@ import DoctorAvailabilityScreen from '../screens/care/DoctorAvailability';
 import BookingScheduleScreen from '../screens/care/BookingSchedule';
 import BookingConfirmationScreen from '../screens/care/BookingConfirmation';
 import WaitingRoomScreen from '../screens/care/WaitingRoom';
+import DoctorReviewsScreen from '../screens/care/DoctorReviews';
+import AppointmentTypeScreen from '../screens/care/AppointmentType';
+import BookingReasonForVisitScreen from '../screens/care/BookingReasonForVisit';
+import BookingDocumentsScreen from '../screens/care/BookingDocuments';
+import BookingInsuranceScreen from '../screens/care/BookingInsurance';
+import BookingSuccessScreen from '../screens/care/BookingSuccess';
+import AppointmentsListScreen from '../screens/care/AppointmentsList';
+import AppointmentRescheduleScreen from '../screens/care/AppointmentReschedule';
+import AppointmentCancelScreen from '../screens/care/AppointmentCancel';
+import AppointmentCancelledScreen from '../screens/care/AppointmentCancelled';
+import AppointmentNoShowScreen from '../screens/care/AppointmentNoShow';
+import PreVisitChecklistScreen from '../screens/care/PreVisitChecklist';
+import RateVisitScreen from '../screens/care/RateVisit';
+import SavedDoctorsScreen from '../screens/care/SavedDoctors';
+import TelemedicineConnectingScreen from '../screens/care/TelemedicineConnecting';
+import TelemedicineControlsScreen from '../screens/care/TelemedicineControls';
+import TelemedicineChatOverlayScreen from '../screens/care/TelemedicineChatOverlay';
+import TelemedicineScreenShareScreen from '../screens/care/TelemedicineScreenShare';
+import TelemedicineEndScreen from '../screens/care/TelemedicineEndScreen';
+import VisitSummaryScreen from '../screens/care/VisitSummary';
+import VisitPrescriptionsScreen from '../screens/care/VisitPrescriptions';
+import VisitFollowUpScreen from '../screens/care/VisitFollowUp';
+import VisitLabOrdersScreen from '../screens/care/VisitLabOrders';
+import VisitReferralScreen from '../screens/care/VisitReferral';
+import PaymentSummaryScreen from '../screens/care/PaymentSummary';
+import PaymentReceiptScreen from '../screens/care/PaymentReceipt';
+import AsyncDoctorChatScreen from '../screens/care/AsyncDoctorChat';
+import MedicalRecordsAccessScreen from '../screens/care/MedicalRecordsAccess';
 import { ROUTES } from '../constants/routes';
 import { JOURNEY_COLORS } from '../constants/journeys';
 
@@ -99,6 +127,38 @@ export default function CareNavigator() {
       <Stack.Screen name={ROUTES.CARE_BOOKING_SCHEDULE} component={BookingScheduleScreen} />
       <Stack.Screen name={ROUTES.CARE_BOOKING_CONFIRMATION} component={BookingConfirmationScreen} />
       <Stack.Screen name={ROUTES.CARE_WAITING_ROOM} component={WaitingRoomScreen} />
+      {/* W11 — Consultation Deep */}
+      <Stack.Screen name={ROUTES.CARE_DOCTOR_REVIEWS} component={DoctorReviewsScreen} />
+      <Stack.Screen name={ROUTES.CARE_APPOINTMENT_TYPE} component={AppointmentTypeScreen} />
+      <Stack.Screen name={ROUTES.CARE_BOOKING_REASON} component={BookingReasonForVisitScreen} />
+      <Stack.Screen name={ROUTES.CARE_BOOKING_DOCUMENTS} component={BookingDocumentsScreen} />
+      <Stack.Screen name={ROUTES.CARE_BOOKING_INSURANCE} component={BookingInsuranceScreen} />
+      <Stack.Screen name={ROUTES.CARE_BOOKING_SUCCESS} component={BookingSuccessScreen} />
+      <Stack.Screen name={ROUTES.CARE_APPOINTMENTS_LIST} component={AppointmentsListScreen} />
+      <Stack.Screen name={ROUTES.CARE_APPOINTMENT_RESCHEDULE} component={AppointmentRescheduleScreen} />
+      <Stack.Screen name={ROUTES.CARE_APPOINTMENT_CANCEL} component={AppointmentCancelScreen} />
+      <Stack.Screen name={ROUTES.CARE_APPOINTMENT_CANCELLED} component={AppointmentCancelledScreen} />
+      <Stack.Screen name={ROUTES.CARE_APPOINTMENT_NO_SHOW} component={AppointmentNoShowScreen} />
+      <Stack.Screen name={ROUTES.CARE_PRE_VISIT_CHECKLIST} component={PreVisitChecklistScreen} />
+      <Stack.Screen name={ROUTES.CARE_RATE_VISIT} component={RateVisitScreen} />
+      <Stack.Screen name={ROUTES.CARE_SAVED_DOCTORS} component={SavedDoctorsScreen} />
+      {/* W12 — Telemedicine Deep */}
+      <Stack.Screen name={ROUTES.CARE_TELEMEDICINE_CONNECTING} component={TelemedicineConnectingScreen} />
+      <Stack.Screen name={ROUTES.CARE_TELEMEDICINE_CONTROLS} component={TelemedicineControlsScreen} />
+      <Stack.Screen name={ROUTES.CARE_TELEMEDICINE_CHAT} component={TelemedicineChatOverlayScreen} />
+      <Stack.Screen name={ROUTES.CARE_TELEMEDICINE_SCREEN_SHARE} component={TelemedicineScreenShareScreen} />
+      <Stack.Screen name={ROUTES.CARE_TELEMEDICINE_END} component={TelemedicineEndScreen} />
+      {/* W12 — Post-Visit */}
+      <Stack.Screen name={ROUTES.CARE_VISIT_SUMMARY} component={VisitSummaryScreen} />
+      <Stack.Screen name={ROUTES.CARE_VISIT_PRESCRIPTIONS} component={VisitPrescriptionsScreen} />
+      <Stack.Screen name={ROUTES.CARE_VISIT_FOLLOW_UP} component={VisitFollowUpScreen} />
+      <Stack.Screen name={ROUTES.CARE_VISIT_LAB_ORDERS} component={VisitLabOrdersScreen} />
+      <Stack.Screen name={ROUTES.CARE_VISIT_REFERRAL} component={VisitReferralScreen} />
+      {/* W12 — Payment + Records */}
+      <Stack.Screen name={ROUTES.CARE_PAYMENT_SUMMARY} component={PaymentSummaryScreen} />
+      <Stack.Screen name={ROUTES.CARE_PAYMENT_RECEIPT} component={PaymentReceiptScreen} />
+      <Stack.Screen name={ROUTES.CARE_ASYNC_DOCTOR_CHAT} component={AsyncDoctorChatScreen} />
+      <Stack.Screen name={ROUTES.CARE_MEDICAL_RECORDS} component={MedicalRecordsAccessScreen} />
     </Stack.Navigator>
   );
 }

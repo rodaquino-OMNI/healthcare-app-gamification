@@ -411,6 +411,384 @@ const translations = {
           conclusion: 'Conclusion'
         }
       },
+      telemedicineDeep: {
+        connecting: {
+          title: 'Connecting',
+          status: 'Connecting to your doctor...',
+          elapsedTime: 'Elapsed time',
+          cancel: 'Cancel',
+          retry: 'Retry',
+          timeout: 'Connection is taking longer than expected.',
+          doctorJoining: '{{doctorName}} is joining...'
+        },
+        controls: {
+          title: 'Video Call',
+          mute: 'Mute',
+          unmute: 'Unmute',
+          cameraOn: 'Camera On',
+          cameraOff: 'Camera Off',
+          speaker: 'Speaker',
+          earpiece: 'Earpiece',
+          chat: 'Chat',
+          endCall: 'End Call',
+          callDuration: 'Call Duration',
+          connectionQuality: 'Connection Quality',
+          you: 'You'
+        },
+        chat: {
+          title: 'In-Call Chat',
+          sendMessage: 'Send Message',
+          placeholder: 'Type your message...',
+          quickReplyYes: 'Yes',
+          quickReplyNo: 'No',
+          quickReplyUnderstand: 'I understand',
+          quickReplyRepeat: 'Can you repeat?',
+          close: 'Close'
+        },
+        screenShare: {
+          title: 'Screen Share',
+          doctorSharing: '{{doctorName}} is sharing their screen',
+          pinchToZoom: 'Pinch to zoom',
+          returnToVideo: 'Return to Video',
+          stopSharing: 'Stop Sharing'
+        },
+        endScreen: {
+          title: 'Call Ended',
+          callEnded: 'Your video consultation has ended',
+          duration: 'Duration',
+          rateCall: 'Rate your consultation',
+          feedbackPlaceholder: 'Share your feedback (optional)...',
+          submitRating: 'Submit Rating',
+          viewSummary: 'View Visit Summary',
+          bookFollowUp: 'Book Follow-Up',
+          returnDashboard: 'Return to Dashboard',
+          thankYou: 'Thank you for your feedback!'
+        }
+      },
+      visit: {
+        summary: {
+          title: 'Visit Summary',
+          doctorInfo: 'Doctor Information',
+          diagnosis: 'Diagnosis',
+          clinicalNotes: 'Clinical Notes',
+          recommendations: 'Recommendations',
+          viewPrescriptions: 'View Prescriptions',
+          scheduleFollowUp: 'Schedule Follow-Up',
+          viewLabOrders: 'View Lab Orders',
+          shareSummary: 'Share Summary',
+          downloadSummary: 'Download Summary'
+        },
+        prescriptions: {
+          title: 'Prescriptions',
+          medication: 'Medication',
+          dosage: 'Dosage',
+          frequency: 'Frequency',
+          duration: 'Duration',
+          instructions: 'Instructions',
+          sendToPharmacy: 'Send to Pharmacy',
+          sendAllToPharmacy: 'Send All to Pharmacy',
+          addToMedications: 'Add to My Medications',
+          interactionWarning: 'Interaction Warning',
+          sentSuccess: 'Sent to pharmacy successfully'
+        },
+        followUp: {
+          title: 'Schedule Follow-Up',
+          recommendation: '{{doctorName}} recommends a follow-up in {{weeks}} weeks',
+          recommendedDate: 'Recommended Date',
+          selectDate: 'Select a Date',
+          morning: 'Morning',
+          afternoon: 'Afternoon',
+          evening: 'Evening',
+          bookFollowUp: 'Book Follow-Up',
+          remindLater: 'Remind Me Later',
+          skip: 'Skip'
+        },
+        labOrders: {
+          title: 'Lab Orders',
+          testName: 'Test Name',
+          urgency: 'Urgency',
+          preparation: 'Preparation',
+          fastingRequired: 'Fasting Required',
+          nearbyLabs: 'Nearby Labs',
+          distance: '{{distance}} km',
+          scheduleVisit: 'Schedule Lab Visit',
+          viewAllLabs: 'View All Labs',
+          routine: 'Routine',
+          urgent: 'Urgent'
+        },
+        referral: {
+          title: 'Referral',
+          referredBy: 'Referred by',
+          specialist: 'Specialist',
+          specialty: 'Specialty',
+          clinic: 'Clinic',
+          reason: 'Referral Reason',
+          urgencyLevel: 'Urgency Level',
+          bookWithSpecialist: 'Book with Specialist',
+          viewProfile: 'View Profile',
+          validityPeriod: 'This referral is valid for {{days}} days',
+          routine: 'Routine',
+          urgentLevel: 'Urgent',
+          emergent: 'Emergent'
+        }
+      },
+      payment: {
+        summary: {
+          title: 'Payment Summary',
+          consultationFee: 'Consultation Fee',
+          insuranceCoverage: 'Insurance Coverage',
+          copay: 'Copay',
+          additionalFees: 'Additional Fees',
+          total: 'Total',
+          paymentMethod: 'Payment Method',
+          addPaymentMethod: 'Add Payment Method',
+          payNow: 'Pay Now',
+          payLater: 'Pay Later',
+          securityNotice: 'Payment encrypted and LGPD compliant',
+          cardEnding: 'Card ending ****{{last4}}'
+        },
+        receipt: {
+          title: 'Payment Receipt',
+          paymentConfirmed: 'Payment Confirmed',
+          transactionId: 'Transaction ID',
+          dateTime: 'Date & Time',
+          amountPaid: 'Amount Paid',
+          paymentMethod: 'Payment Method',
+          status: 'Status',
+          paid: 'Paid',
+          pending: 'Pending',
+          failed: 'Failed',
+          serviceDetails: 'Service Details',
+          downloadPDF: 'Download PDF',
+          emailReceipt: 'Email Receipt',
+          printReceipt: 'Print',
+          returnDashboard: 'Return to Dashboard'
+        }
+      },
+      asyncChat: {
+        title: 'Doctor Chat',
+        doctorInfo: 'Doctor Information',
+        online: 'Online',
+        offline: 'Offline',
+        responseTime: '{{doctorName}} typically responds within 24 hours',
+        placeholder: 'Type your message...',
+        send: 'Send',
+        attachFile: 'Attach File',
+        takePhoto: 'Take Photo',
+        consultationEnded: 'Consultation ended {{hours}} hours ago',
+        you: 'You'
+      },
+      medicalRecords: {
+        title: 'Medical Records',
+        filterAll: 'All',
+        filterVisitNotes: 'Visit Notes',
+        filterLabResults: 'Lab Results',
+        filterPrescriptions: 'Prescriptions',
+        filterImaging: 'Imaging',
+        download: 'Download',
+        share: 'Share',
+        sendToDoctor: 'Send to Doctor',
+        downloadAll: 'Download All',
+        shareSelected: 'Share Selected',
+        requestRecords: 'Request Records',
+        fhirNotice: 'Data compliant with FHIR HL7 standard',
+        recordDate: 'Date',
+        recordType: 'Type',
+        recordSize: 'Size'
+      },
+      consultation: {
+        doctorReviews: {
+          title: 'Doctor Reviews',
+          averageRating: 'Average Rating',
+          reviews: 'Reviews',
+          helpful: 'Helpful',
+          sortBy: 'Sort by',
+          mostRecent: 'Most Recent',
+          highest: 'Highest Rated',
+          lowest: 'Lowest Rated',
+          writeReview: 'Write a Review',
+          of5: 'of 5',
+          helpfulCount: '{{count}} found helpful',
+        },
+        appointmentType: {
+          title: 'Appointment Type',
+          inPerson: 'In-Person',
+          telemedicine: 'Telemedicine',
+          homeVisit: 'Home Visit',
+          inPersonDesc: 'Visit at the clinic or hospital',
+          telemedicineDesc: 'Video call consultation',
+          homeVisitDesc: 'Doctor comes to you',
+          continue: 'Continue',
+          estimatedPrice: 'Estimated price',
+          available: 'Available',
+        },
+        reasonForVisit: {
+          title: 'Reason for Visit',
+          placeholder: 'Describe the reason for your visit...',
+          commonReasons: 'Common Reasons',
+          checkup: 'Check-up',
+          followUp: 'Follow-up',
+          newSymptoms: 'New Symptoms',
+          secondOpinion: 'Second Opinion',
+          prescriptionRenewal: 'Prescription Renewal',
+          examResults: 'Exam Results',
+          attachFile: 'Attach File',
+          characters: '{{count}} characters',
+          continue: 'Continue',
+          attachedFiles: 'Attached Files',
+          removeFile: 'Remove',
+        },
+        documents: {
+          title: 'Required Documents',
+          idDocument: 'ID Document (RG/CPF)',
+          insuranceCard: 'Insurance Card',
+          medicalReferral: 'Medical Referral',
+          examResults: 'Recent Exam Results',
+          optional: 'Optional',
+          upload: 'Upload',
+          uploaded: 'Uploaded',
+          pending: 'Pending',
+          continue: 'Continue',
+        },
+        insurance: {
+          title: 'Insurance Verification',
+          selectPlan: 'Select Your Insurance Plan',
+          particular: 'Private',
+          verifying: 'Verifying coverage...',
+          covered: 'Covered by Insurance',
+          notCovered: 'Not Covered',
+          copay: 'Copay',
+          coverage: 'Coverage',
+          authorization: 'Authorization',
+          authorized: 'Authorized',
+          pendingAuth: 'Pending Authorization',
+          warning: 'This procedure may not be covered by your plan.',
+          continue: 'Continue',
+        },
+        bookingSuccess: {
+          title: 'Appointment Booked!',
+          subtitle: 'Your appointment has been successfully scheduled.',
+          doctor: 'Doctor',
+          specialty: 'Specialty',
+          date: 'Date',
+          time: 'Time',
+          type: 'Type',
+          location: 'Location',
+          addToCalendar: 'Add to Calendar',
+          viewAppointment: 'View Appointment',
+          backToHome: 'Back to Home',
+        },
+        appointmentsList: {
+          title: 'My Appointments',
+          upcoming: 'Upcoming',
+          past: 'Past',
+          cancelled: 'Cancelled',
+          empty: 'No appointments found.',
+          newAppointment: 'New Appointment',
+          confirmed: 'Confirmed',
+          pending: 'Pending',
+          inPerson: 'In-Person',
+          telemedicine: 'Telemedicine',
+        },
+        reschedule: {
+          title: 'Reschedule Appointment',
+          currentAppointment: 'Current Appointment',
+          selectDate: 'Select New Date',
+          selectTime: 'Select Time',
+          reason: 'Reason for Rescheduling',
+          scheduleConflict: 'Schedule Conflict',
+          feelingBetter: 'Feeling Better',
+          differentTime: 'Need Different Time',
+          other: 'Other',
+          notes: 'Notes',
+          confirm: 'Confirm Reschedule',
+          policyWarning: 'Maximum of 2 reschedules per appointment.',
+        },
+        cancel: {
+          title: 'Cancel Appointment',
+          policy: 'Cancellation Policy',
+          fullRefund: 'More than 24h before: full refund',
+          halfRefund: '12-24h before: 50% refund',
+          noRefund: 'Less than 12h: no refund',
+          reason: 'Reason for Cancellation',
+          scheduleConflict: 'Schedule Conflict',
+          anotherDoctor: 'Found Another Doctor',
+          feelingBetter: 'Feeling Better',
+          financial: 'Financial Reasons',
+          other: 'Other',
+          details: 'Additional details',
+          understand: 'I understand the cancellation policy',
+          cancelAppointment: 'Cancel Appointment',
+          keepAppointment: 'Keep Appointment',
+        },
+        cancelled: {
+          title: 'Appointment Cancelled',
+          details: 'Cancellation Details',
+          refundInfo: 'Refund Information',
+          refundAmount: 'Refund Amount',
+          processingTime: 'Processing: 5-10 business days',
+          bookNew: 'Book New Appointment',
+          backToAppointments: 'Back to Appointments',
+        },
+        noShow: {
+          title: 'Missed Appointment',
+          warning: 'You did not attend your appointment.',
+          feeWarning: 'A no-show fee may apply.',
+          feeAmount: 'Fee: R$ 50.00',
+          policyInfo: '3 no-shows in 6 months may result in account restriction.',
+          rescheduleNow: 'Reschedule Now',
+          contactSupport: 'Contact Support',
+          backToAppointments: 'Back to Appointments',
+        },
+        preVisitChecklist: {
+          title: 'Pre-Visit Checklist',
+          progress: '{{completed}} of {{total}} items',
+          documents: 'Documents',
+          health: 'Health',
+          logistics: 'Logistics',
+          idCard: 'ID document',
+          insuranceCard: 'Insurance card',
+          referral: 'Medical referral',
+          fasting: 'Fasting as instructed',
+          medications: 'Current medications list',
+          examResults: 'Recent exam results',
+          transportation: 'Transportation planned',
+          address: 'Address confirmed',
+          arriveEarly: 'Arrive 15 min early',
+          internet: 'Stable internet connection',
+          camera: 'Camera and microphone working',
+          quietRoom: 'Quiet environment',
+          allSet: 'All set for your appointment!',
+          viewAppointment: 'View Appointment',
+        },
+        rateVisit: {
+          title: 'Rate Your Visit',
+          ratingLabel: 'Your rating',
+          terrible: 'Terrible',
+          poor: 'Poor',
+          average: 'Average',
+          good: 'Good',
+          excellent: 'Excellent',
+          punctuality: 'Punctuality',
+          communication: 'Communication',
+          expertise: 'Expertise',
+          facility: 'Facility',
+          review: 'Review',
+          reviewPlaceholder: 'Share your experience...',
+          wouldRecommend: 'Would you recommend this doctor?',
+          submit: 'Submit Review',
+          skip: 'Skip',
+        },
+        savedDoctors: {
+          title: 'Saved Doctors',
+          empty: 'No saved doctors yet.',
+          findDoctors: 'Find Doctors',
+          bookNow: 'Book Now',
+          nextAvailable: 'Next available',
+          searchPlaceholder: 'Search by name...',
+          unsave: 'Remove from saved',
+        },
+      },
       treatmentPlans: {
         title: 'Treatment Plans',
         empty: 'No active treatment plans.',
@@ -527,6 +905,25 @@ const translations = {
         title: 'Security Verification',
         code: 'Verification Code',
         resendCode: 'Resend Code'
+      },
+      socialAuth: {
+        title: 'Welcome to AUSTA',
+        subtitle: 'Sign in to continue to your health journey',
+        googleButton: 'Continue with Google',
+        appleButton: 'Continue with Apple',
+        facebookButton: 'Continue with Facebook',
+        divider: 'or continue with email',
+        emailLogin: 'Sign in with Email',
+        noAccount: "Don't have an account?",
+        register: 'Create Account',
+        lgpdConsent: 'I agree to the processing of my personal data in accordance with the',
+        privacyPolicy: 'Privacy Policy',
+        and: 'and',
+        termsOfService: 'Terms of Service',
+        consentRequired: 'Consent Required',
+        consentMessage: 'Please accept the privacy terms before continuing with social login.',
+        comingSoon: 'Social authentication integration coming soon.',
+        disclaimer: 'By signing in, you agree to our Terms of Service and Privacy Policy. Your data is protected under LGPD (Lei Geral de Protecao de Dados).'
       }
     },
     profile: {
@@ -840,6 +1237,205 @@ const translations = {
       title: 'Notifications',
       empty: 'No notifications.',
       markAllRead: 'Mark All as Read'
+    }
+  },
+  onboarding: {
+    personalizationIntro: {
+      title: 'Personalize Your Experience',
+      subtitle: 'Tell us about your health goals so we can customize your experience',
+      benefit1: 'Better health recommendations',
+      benefit2: 'Personalized health tips',
+      benefit3: 'Tailored wellness plans',
+      getStarted: 'Get Started',
+      skip: 'Skip for now'
+    },
+    goalSelection: {
+      title: 'Select Your Health Goals',
+      subtitle: 'Choose the areas you want to focus on',
+      weightManagement: 'Weight Management',
+      chronicDisease: 'Chronic Disease Management',
+      fitness: 'Fitness & Exercise',
+      mentalHealth: 'Mental Health & Wellness',
+      nutrition: 'Nutrition & Diet',
+      sleep: 'Sleep Quality',
+      continue: 'Continue',
+      selectAtLeastOne: 'Select at least one goal'
+    },
+    confirmation: {
+      title: 'You\'re All Set!',
+      subtitle: 'Your experience has been personalized based on your selections',
+      selectedGoals: 'Your Selected Goals',
+      startUsing: 'Start Using AUSTA'
+    }
+  },
+  profileSetup: {
+    emergencyContact: {
+      title: 'Emergency Contact',
+      subtitle: 'Add someone we can contact in case of emergency',
+      contactName: 'Contact Name',
+      phoneNumber: 'Phone Number',
+      relationship: 'Relationship',
+      relationships: {
+        spouse: 'Spouse',
+        parent: 'Parent',
+        sibling: 'Sibling',
+        child: 'Child',
+        friend: 'Friend',
+        other: 'Other'
+      },
+      isPrimary: 'Set as primary contact',
+      save: 'Save Contact'
+    },
+    notificationPrefs: {
+      title: 'Notification Preferences',
+      subtitle: 'Choose which notifications you\'d like to receive',
+      appointments: 'Appointment Reminders',
+      medications: 'Medication Alerts',
+      healthTips: 'Health Tips & Insights',
+      promotions: 'Promotions & Offers',
+      save: 'Save Preferences'
+    },
+    biometricSetup: {
+      title: 'Secure Your Account',
+      subtitle: 'Enable biometric authentication for faster, safer access',
+      benefit1: 'Faster login',
+      benefit2: 'Secure access',
+      benefit3: 'No passwords needed',
+      enable: 'Enable Face ID / Touch ID',
+      skip: 'Skip for Now'
+    }
+  },
+  homeWidgets: {
+    weeklySummary: {
+      title: 'Weekly Summary',
+      steps: 'Steps',
+      calories: 'Calories',
+      sleep: 'Sleep',
+      heartRate: 'Heart Rate',
+      trendUp: 'up',
+      trendDown: 'down',
+      trendStable: 'stable',
+      average: 'avg'
+    },
+    bottomSheet: {
+      title: 'Quick Actions',
+      addMetric: 'Add Health Metric',
+      bookAppointment: 'Book Appointment',
+      checkSymptoms: 'Check Symptoms',
+      medicationLog: 'Log Medication'
+    },
+    medicationReminders: {
+      title: 'Medication Reminders',
+      nextDose: 'Next Dose',
+      takeNow: 'Take Now',
+      skip: 'Skip',
+      noReminders: 'No upcoming reminders',
+      viewAll: 'View All'
+    },
+    appointmentWidget: {
+      title: 'Upcoming Appointments',
+      joinTelemedicine: 'Join',
+      noAppointments: 'No upcoming appointments',
+      seeAll: 'See All',
+      telemedicine: 'Telemedicine'
+    },
+    healthTips: {
+      title: 'Health Tips',
+      readMore: 'Read More'
+    },
+    empty: {
+      title: 'Welcome to AUSTA!',
+      subtitle: 'Your health journey starts here. Complete these steps to get started.',
+      completeProfile: 'Complete your profile',
+      addGoals: 'Add health goals',
+      connectDevice: 'Connect a device',
+      scheduleAppointment: 'Schedule first appointment',
+      getStarted: 'Get Started'
+    }
+  },
+  notificationScreens: {
+    unread: {
+      title: 'Unread Notifications',
+      noUnread: 'All caught up!',
+      markAllRead: 'Mark All as Read'
+    },
+    categoryFilter: {
+      all: 'All',
+      health: 'Health',
+      care: 'Care',
+      plan: 'Plan',
+      system: 'System'
+    },
+    empty: {
+      title: 'No Notifications',
+      description: 'You don\'t have any notifications yet. We\'ll notify you about important updates.'
+    },
+    settings: {
+      title: 'Notification Settings',
+      healthUpdates: 'Health Updates',
+      careReminders: 'Care Reminders',
+      planNotifications: 'Plan Notifications',
+      systemAlerts: 'System Alerts',
+      quietHours: 'Quiet Hours',
+      quietHoursEnabled: 'Enable Quiet Hours',
+      from: 'From',
+      to: 'To',
+      save: 'Save Settings'
+    }
+  },
+  searchScreens: {
+    doctorResults: {
+      title: 'Doctor Results',
+      book: 'Book',
+      rating: 'Rating',
+      specialty: 'Specialty'
+    },
+    articleResults: {
+      title: 'Article Results',
+      readTime: '{{minutes}} min read',
+      source: 'Source'
+    },
+    medicationResults: {
+      title: 'Medication Results',
+      generic: 'Generic',
+      interactions: 'Interactions',
+      hasInteractions: 'Has interactions'
+    },
+    noResults: {
+      title: 'No Results Found',
+      description: 'We couldn\'t find anything matching your search.',
+      suggestions: 'Suggestions',
+      checkSpelling: 'Check your spelling',
+      tryDifferent: 'Try different keywords',
+      browseCategories: 'Browse categories',
+      tryAgain: 'Try Again'
+    }
+  },
+  errorScreens: {
+    noInternet: {
+      title: 'No Internet Connection',
+      description: 'Please check your connection and try again.',
+      retry: 'Retry',
+      cachedData: 'Some cached data may be available'
+    },
+    server: {
+      title: 'Something Went Wrong',
+      description: 'Our servers are having trouble. Please try again in a few minutes.',
+      retry: 'Try Again',
+      contactSupport: 'Contact Support'
+    },
+    maintenance: {
+      title: 'Under Maintenance',
+      description: 'We\'re making improvements. We\'ll be back shortly.',
+      scheduledTime: 'Expected back at {{time}}',
+      notifyMe: 'Notify me when ready'
+    },
+    forceUpdate: {
+      title: 'Update Required',
+      description: 'A new version of AUSTA is available. Please update to continue.',
+      currentVersion: 'Current Version',
+      requiredVersion: 'Required Version',
+      updateNow: 'Update Now'
     }
   }
 };

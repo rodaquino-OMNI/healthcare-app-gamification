@@ -66,6 +66,20 @@ export const WEB_CARE_ROUTES = {
   DOCTOR_AVAILABILITY: '/care/appointments/doctor/availability',
   BOOKING_CONFIRMATION: '/care/appointments/confirm',
   WAITING_ROOM: '/care/appointments/waiting-room',
+  DOCTOR_REVIEWS: '/care/appointments/reviews',
+  APPOINTMENT_TYPE: '/care/appointments/appointment-type',
+  BOOKING_REASON: '/care/appointments/reason-for-visit',
+  BOOKING_DOCUMENTS: '/care/appointments/documents',
+  BOOKING_INSURANCE: '/care/appointments/insurance',
+  BOOKING_SUCCESS: '/care/appointments/success',
+  APPOINTMENTS_LIST: '/care/appointments/list',
+  APPOINTMENT_RESCHEDULE: '/care/appointments/reschedule',
+  APPOINTMENT_CANCEL: '/care/appointments/cancel',
+  APPOINTMENT_CANCELLED: '/care/appointments/cancelled',
+  APPOINTMENT_NO_SHOW: '/care/appointments/no-show',
+  PRE_VISIT_CHECKLIST: '/care/appointments/pre-visit',
+  RATE_VISIT: '/care/appointments/rate-visit',
+  SAVED_DOCTORS: '/care/appointments/saved-doctors',
 };
 
 /**

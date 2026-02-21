@@ -1,6 +1,7 @@
 import React from 'react'; // React v18.2.0
 import { AuthNavigator } from './AuthNavigator'; // src/web/mobile/src/navigation/AuthNavigator.tsx
 import CareNavigator from './CareNavigator'; // src/web/mobile/src/navigation/CareNavigator.tsx
+import GamificationNavigator from './GamificationNavigator'; // src/web/mobile/src/navigation/GamificationNavigator.tsx
 import HealthNavigator from './HealthNavigator'; // src/web/mobile/src/navigation/HealthNavigator.tsx
 import { MainNavigator } from './MainNavigator'; // src/web/mobile/src/navigation/MainNavigator.tsx
 import { PlanNavigator } from './PlanNavigator'; // src/web/mobile/src/navigation/PlanNavigator.tsx
@@ -10,6 +11,7 @@ import { RootNavigator } from './RootNavigator'; // src/web/mobile/src/navigatio
 export {
   AuthNavigator, // Navigation component for authentication flow.
   CareNavigator, // Navigation component for the Care Now journey.
+  GamificationNavigator, // Navigation component for the Gamification journey.
   HealthNavigator, // Navigation component for the My Health journey.
   MainNavigator, // Navigation component for the main app flow (after authentication).
   PlanNavigator, // Navigation component for the My Plan & Benefits journey.

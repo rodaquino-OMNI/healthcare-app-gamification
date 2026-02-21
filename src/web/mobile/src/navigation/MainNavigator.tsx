@@ -24,6 +24,20 @@ let HomeAlertScreen: React.FC = () => null;
 let NotificationDetailScreen: React.FC = () => null;
 let SearchScreen: React.FC = () => null;
 let SearchResultsScreen: React.FC = () => null;
+let WeeklySummaryScreen: React.FC = () => null;
+let HomeBottomSheetScreen: React.FC = () => null;
+let HomeMedicationRemindersScreen: React.FC = () => null;
+let HomeAppointmentWidgetScreen: React.FC = () => null;
+let HomeHealthTipsScreen: React.FC = () => null;
+let HomeEmptyScreen: React.FC = () => null;
+let NotificationUnreadScreen: React.FC = () => null;
+let NotificationCategoryFilterScreen: React.FC = () => null;
+let NotificationEmptyScreen: React.FC = () => null;
+let NotificationSettingsScreen: React.FC = () => null;
+let SearchDoctorResultsScreen: React.FC = () => null;
+let SearchArticleResultsScreen: React.FC = () => null;
+let SearchMedicationResultsScreen: React.FC = () => null;
+let SearchNoResultsScreen: React.FC = () => null;
 
 try {
   // Attempt to import screens if they exist (created by another worker)
@@ -66,6 +80,76 @@ try {
   // SearchResults screen not yet available - placeholder will be used
 }
 
+try {
+  const mod = require('../screens/home/WeeklySummary');
+  WeeklySummaryScreen = mod.WeeklySummaryScreen || mod.default || WeeklySummaryScreen;
+} catch {}
+
+try {
+  const mod = require('../screens/home/HomeBottomSheet');
+  HomeBottomSheetScreen = mod.HomeBottomSheetScreen || mod.default || HomeBottomSheetScreen;
+} catch {}
+
+try {
+  const mod = require('../screens/home/HomeMedicationReminders');
+  HomeMedicationRemindersScreen = mod.HomeMedicationRemindersScreen || mod.default || HomeMedicationRemindersScreen;
+} catch {}
+
+try {
+  const mod = require('../screens/home/HomeAppointmentWidget');
+  HomeAppointmentWidgetScreen = mod.HomeAppointmentWidgetScreen || mod.default || HomeAppointmentWidgetScreen;
+} catch {}
+
+try {
+  const mod = require('../screens/home/HomeHealthTips');
+  HomeHealthTipsScreen = mod.HomeHealthTipsScreen || mod.default || HomeHealthTipsScreen;
+} catch {}
+
+try {
+  const mod = require('../screens/home/HomeEmpty');
+  HomeEmptyScreen = mod.HomeEmptyScreen || mod.default || HomeEmptyScreen;
+} catch {}
+
+try {
+  const mod = require('../screens/home/NotificationUnreadFilter');
+  NotificationUnreadScreen = mod.NotificationUnreadFilterScreen || mod.default || NotificationUnreadScreen;
+} catch {}
+
+try {
+  const mod = require('../screens/home/NotificationCategoryFilter');
+  NotificationCategoryFilterScreen = mod.NotificationCategoryFilterScreen || mod.default || NotificationCategoryFilterScreen;
+} catch {}
+
+try {
+  const mod = require('../screens/home/NotificationEmpty');
+  NotificationEmptyScreen = mod.NotificationEmptyScreen || mod.default || NotificationEmptyScreen;
+} catch {}
+
+try {
+  const mod = require('../screens/home/NotificationSettings');
+  NotificationSettingsScreen = mod.NotificationSettingsScreen || mod.default || NotificationSettingsScreen;
+} catch {}
+
+try {
+  const mod = require('../screens/home/SearchDoctorResults');
+  SearchDoctorResultsScreen = mod.SearchDoctorResultsScreen || mod.default || SearchDoctorResultsScreen;
+} catch {}
+
+try {
+  const mod = require('../screens/home/SearchArticleResults');
+  SearchArticleResultsScreen = mod.SearchArticleResultsScreen || mod.default || SearchArticleResultsScreen;
+} catch {}
+
+try {
+  const mod = require('../screens/home/SearchMedicationResults');
+  SearchMedicationResultsScreen = mod.SearchMedicationResultsScreen || mod.default || SearchMedicationResultsScreen;
+} catch {}
+
+try {
+  const mod = require('../screens/home/SearchNoResults');
+  SearchNoResultsScreen = mod.SearchNoResultsScreen || mod.default || SearchNoResultsScreen;
+} catch {}
+
 // Creates a native stack navigator for the Home tab.
 // This allows HomeMetrics and HomeAlert to be pushed on top of the Home screen.
 const HomeStackNav = createNativeStackNavigator();
@@ -78,6 +162,20 @@ const HomeStack: React.FC = () => (
     <HomeStackNav.Screen name={ROUTES.NOTIFICATION_DETAIL} component={NotificationDetailScreen} />
     <HomeStackNav.Screen name={ROUTES.SEARCH} component={SearchScreen} />
     <HomeStackNav.Screen name={ROUTES.SEARCH_RESULTS} component={SearchResultsScreen} />
+    <HomeStackNav.Screen name={ROUTES.HOME_WEEKLY_SUMMARY} component={WeeklySummaryScreen} />
+    <HomeStackNav.Screen name={ROUTES.HOME_BOTTOM_SHEET} component={HomeBottomSheetScreen} />
+    <HomeStackNav.Screen name={ROUTES.HOME_MEDICATION_REMINDERS} component={HomeMedicationRemindersScreen} />
+    <HomeStackNav.Screen name={ROUTES.HOME_APPOINTMENT_WIDGET} component={HomeAppointmentWidgetScreen} />
+    <HomeStackNav.Screen name={ROUTES.HOME_HEALTH_TIPS} component={HomeHealthTipsScreen} />
+    <HomeStackNav.Screen name={ROUTES.HOME_EMPTY} component={HomeEmptyScreen} />
+    <HomeStackNav.Screen name={ROUTES.NOTIFICATION_UNREAD} component={NotificationUnreadScreen} />
+    <HomeStackNav.Screen name={ROUTES.NOTIFICATION_CATEGORY_FILTER} component={NotificationCategoryFilterScreen} />
+    <HomeStackNav.Screen name={ROUTES.NOTIFICATION_EMPTY} component={NotificationEmptyScreen} />
+    <HomeStackNav.Screen name={ROUTES.NOTIFICATION_SETTINGS} component={NotificationSettingsScreen} />
+    <HomeStackNav.Screen name={ROUTES.SEARCH_DOCTOR_RESULTS} component={SearchDoctorResultsScreen} />
+    <HomeStackNav.Screen name={ROUTES.SEARCH_ARTICLE_RESULTS} component={SearchArticleResultsScreen} />
+    <HomeStackNav.Screen name={ROUTES.SEARCH_MEDICATION_RESULTS} component={SearchMedicationResultsScreen} />
+    <HomeStackNav.Screen name={ROUTES.SEARCH_NO_RESULTS} component={SearchNoResultsScreen} />
   </HomeStackNav.Navigator>
 );
 
