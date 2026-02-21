@@ -7,6 +7,8 @@ import { Badge } from 'src/web/design-system/src/components/Badge/Badge';
 import { Text } from 'src/web/design-system/src/primitives/Text/Text';
 import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader';
 import { ROUTES } from 'src/web/mobile/src/constants/routes';
+import { colors } from 'src/web/design-system/src/tokens/colors';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Route params expected by the DoctorAvailability screen.
@@ -123,6 +125,7 @@ const DoctorAvailability: React.FC = () => {
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
   const { doctorId } = route.params as DoctorAvailabilityRouteParams;
+  const { t } = useTranslation();
 
   const today = new Date();
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
@@ -204,18 +207,18 @@ const DoctorAvailability: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <JourneyHeader title="Horarios Disponiveis" showBackButton />
+      <JourneyHeader title={t('journeys.care.doctorAvailability.title')} showBackButton />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         {/* Calendar navigation */}
         <View style={styles.calendarNav}>
           <TouchableOpacity onPress={handlePrevMonth} style={styles.navButton} accessibilityLabel="Mes anterior">
-            <Text fontSize="lg" fontWeight="bold" color="#333">{'<'}</Text>
+            <Text fontSize="lg" fontWeight="bold" color={colors.gray[70]}>{'<'}</Text>
           </TouchableOpacity>
-          <Text fontSize="lg" fontWeight="bold" color="#333" textAlign="center">
+          <Text fontSize="lg" fontWeight="bold" color={colors.gray[70]} textAlign="center">
             {monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1)}
           </Text>
           <TouchableOpacity onPress={handleNextMonth} style={styles.navButton} accessibilityLabel="Proximo mes">
-            <Text fontSize="lg" fontWeight="bold" color="#333">{'>'}</Text>
+            <Text fontSize="lg" fontWeight="bold" color={colors.gray[70]}>{'>'}</Text>
           </TouchableOpacity>
         </View>
 
@@ -223,7 +226,7 @@ const DoctorAvailability: React.FC = () => {
         <View style={styles.weekRow}>
           {WEEKDAY_LABELS.map((label) => (
             <View key={label} style={styles.weekDayCell}>
-              <Text fontSize="xs" fontWeight="medium" color="#666" textAlign="center">
+              <Text fontSize="xs" fontWeight="medium" color={colors.gray[50]} textAlign="center">
                 {label}
               </Text>
             </View>
@@ -255,7 +258,7 @@ const DoctorAvailability: React.FC = () => {
                   <Text
                     fontSize="sm"
                     fontWeight={isSelected ? 'bold' : 'regular'}
-                    color={isSelected ? '#FFFFFF' : isAvailable ? '#333' : '#CCC'}
+                    color={isSelected ? colors.neutral.white : isAvailable ? colors.gray[70] : colors.gray[30]}
                     textAlign="center"
                   >
                     {String(day)}
@@ -272,8 +275,8 @@ const DoctorAvailability: React.FC = () => {
         {/* Time slots */}
         {selectedDay && timeSlots.length > 0 && (
           <View style={styles.slotsSection}>
-            <Text fontSize="md" fontWeight="bold" color="#333">
-              Horarios para dia {selectedDay}
+            <Text fontSize="md" fontWeight="bold" color={colors.gray[70]}>
+              {t('journeys.care.doctorAvailability.slotsForDay', { day: selectedDay })}
             </Text>
 
             {timeSlots.map((period) => (
@@ -300,10 +303,10 @@ const DoctorAvailability: React.FC = () => {
                           fontSize="sm"
                           color={
                             isSlotSelected
-                              ? '#FFFFFF'
+                              ? colors.neutral.white
                               : slot.available
-                                ? '#333'
-                                : '#BBB'
+                                ? colors.gray[70]
+                                : colors.gray[30]
                           }
                           textAlign="center"
                         >
@@ -327,7 +330,7 @@ const DoctorAvailability: React.FC = () => {
             disabled={!selectedDay || !selectedSlot}
             accessibilityLabel="Continuar para agendamento"
           >
-            Continuar
+            {t('common.buttons.next')}
           </Button>
         </View>
       </ScrollView>
@@ -338,7 +341,7 @@ const DoctorAvailability: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF8F0',
+    backgroundColor: colors.journeys.care.background,
   },
   scrollView: {
     flex: 1,
@@ -375,7 +378,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
   },
   dayCellSelected: {
-    backgroundColor: '#FF8C42',
+    backgroundColor: colors.journeys.care.primary,
   },
   dayCellUnavailable: {
     opacity: 0.4,
@@ -384,7 +387,7 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.semantic.success,
     position: 'absolute',
     bottom: 4,
   },
@@ -404,19 +407,19 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 8,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.neutral.white,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: colors.gray[20],
     minWidth: 72,
     alignItems: 'center',
   },
   slotChipSelected: {
-    backgroundColor: '#FF8C42',
-    borderColor: '#FF8C42',
+    backgroundColor: colors.journeys.care.primary,
+    borderColor: colors.journeys.care.primary,
   },
   slotChipDisabled: {
-    backgroundColor: '#F5F5F5',
-    borderColor: '#EEEEEE',
+    backgroundColor: colors.gray[10],
+    borderColor: colors.gray[20],
   },
   bottomAction: {
     marginTop: 32,

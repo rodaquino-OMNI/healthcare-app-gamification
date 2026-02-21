@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
+import { colors } from '../../../../design-system/src/tokens/colors';
 import { useAuth } from '../../hooks/useAuth';
 import ProfileForm from '../../components/forms/ProfileForm';
 import Avatar from '../../../design-system/src/components/Avatar/Avatar';
@@ -12,6 +14,7 @@ import { ROUTES } from '../../constants/routes';
  * It integrates with the authentication context to retrieve and update user data.
  */
 export const ProfileScreen: React.FC = () => {
+  const { t } = useTranslation();
   const { session, getUserFromToken } = useAuth();
   const navigation = useNavigation();
   const [isEditing, setIsEditing] = useState(false);
@@ -32,7 +35,7 @@ export const ProfileScreen: React.FC = () => {
       <View style={styles.container}>
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>
-            User information not available. Please login again.
+            {t('profile.errorNotAvailable')}
           </Text>
         </View>
       </View>
@@ -44,7 +47,7 @@ export const ProfileScreen: React.FC = () => {
       <View style={styles.header}>
         <Avatar 
           src={user.avatar} 
-          name={user.name || 'User'}
+          name={user.name || t('profile.defaultUser')}
           size="80px"
           journey="health" // Default to health journey
           fallbackType={user.name ? 'initials' : 'icon'}
@@ -52,7 +55,7 @@ export const ProfileScreen: React.FC = () => {
         
         {!isEditing && (
           <View style={styles.userInfo}>
-            <Text style={styles.userName}>{user.name || 'User'}</Text>
+            <Text style={styles.userName}>{user.name || t('profile.defaultUser')}</Text>
             <Text style={styles.userEmail}>{user.email}</Text>
           </View>
         )}
@@ -65,7 +68,7 @@ export const ProfileScreen: React.FC = () => {
             style={styles.cancelButton}
             onPress={handleEditToggle}
           >
-            <Text style={styles.cancelButtonText}>Cancel</Text>
+            <Text style={styles.cancelButtonText}>{t('common.buttons.cancel')}</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -74,14 +77,14 @@ export const ProfileScreen: React.FC = () => {
             style={styles.actionButton}
             onPress={handleEditToggle}
           >
-            <Text style={styles.actionButtonText}>Edit Profile</Text>
+            <Text style={styles.actionButtonText}>{t('profile.editProfile')}</Text>
           </TouchableOpacity>
           
           <TouchableOpacity
             style={styles.actionButton}
             onPress={navigateToSettings}
           >
-            <Text style={styles.actionButtonText}>Settings</Text>
+            <Text style={styles.actionButtonText}>{t('profile.settings')}</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -93,7 +96,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.neutral.white,
   },
   header: {
     alignItems: 'center',
@@ -110,20 +113,20 @@ const styles = StyleSheet.create({
   },
   userEmail: {
     fontSize: 16,
-    color: '#757575',
+    color: colors.gray[50],
   },
   actionsContainer: {
     marginTop: 20,
   },
   actionButton: {
-    backgroundColor: '#0066CC',
+    backgroundColor: colors.brand.primary,
     borderRadius: 8,
     padding: 15,
     alignItems: 'center',
     marginBottom: 10,
   },
   actionButtonText: {
-    color: '#FFFFFF',
+    color: colors.neutral.white,
     fontSize: 16,
     fontWeight: '500',
   },
@@ -136,20 +139,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cancelButtonText: {
-    color: '#0066CC',
+    color: colors.brand.primary,
     fontSize: 16,
   },
   errorContainer: {
     padding: 20,
     borderRadius: 8,
-    backgroundColor: '#FFF3F2',
-    borderColor: '#FFCDD2',
+    backgroundColor: colors.semantic.errorBg,
+    borderColor: colors.semantic.errorBg,
     borderWidth: 1,
     marginTop: 20,
   },
   errorText: {
     fontSize: 16,
     textAlign: 'center',
-    color: '#FF3B30',
+    color: colors.semantic.error,
   },
 });

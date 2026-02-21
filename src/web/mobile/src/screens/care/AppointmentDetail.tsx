@@ -4,6 +4,7 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import { Appointment } from 'src/web/shared/types/care.types';
 import { useAppointments } from 'src/web/mobile/src/hooks/useAppointments';
 import { ROUTES } from 'src/web/mobile/src/constants/routes';
+import { colors } from 'src/web/design-system/src/tokens/colors';
 import { Button } from 'src/web/design-system/src/components/Button/Button';
 import { Card } from 'src/web/design-system/src/components/Card/Card';
 import { Badge } from 'src/web/design-system/src/components/Badge/Badge';
@@ -11,6 +12,7 @@ import { Text } from 'src/web/design-system/src/primitives/Text/Text';
 import { formatDate } from 'src/web/mobile/src/utils/format';
 import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader';
 import { LoadingIndicator } from 'src/web/mobile/src/components/shared/LoadingIndicator';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Route parameters expected by the AppointmentDetail screen.
@@ -20,15 +22,6 @@ interface AppointmentDetailRouteParams {
 }
 
 /**
- * Maps appointment status values to Badge status prop values.
- */
-const STATUS_MAP: Record<string, { label: string; status: 'success' | 'warning' | 'error' }> = {
-  confirmed: { label: 'Confirmada', status: 'success' },
-  pending: { label: 'Pendente', status: 'warning' },
-  cancelled: { label: 'Cancelada', status: 'error' },
-};
-
-/**
  * Displays the details of a specific appointment with actions
  * to reschedule or cancel. Uses care journey theming (#FFF8F0 / #FF8C42).
  */
@@ -36,6 +29,16 @@ const AppointmentDetail: React.FC = () => {
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
   const { id } = route.params as AppointmentDetailRouteParams;
+  const { t } = useTranslation();
+
+  /**
+   * Maps appointment status values to Badge status prop values.
+   */
+  const STATUS_MAP: Record<string, { label: string; status: 'success' | 'warning' | 'error' }> = {
+    confirmed: { label: t('journeys.care.appointments.statusConfirmed'), status: 'success' },
+    pending: { label: t('journeys.care.appointments.statusPending'), status: 'warning' },
+    cancelled: { label: t('journeys.care.appointments.statusCancelled'), status: 'error' },
+  };
 
   const { appointments, loading, error, cancel } = useAppointments();
   const appointment: Appointment | undefined = appointments.find((appt) => appt.id === id);
@@ -59,9 +62,9 @@ const AppointmentDetail: React.FC = () => {
   if (loading) {
     return (
       <View style={styles.container}>
-        <JourneyHeader title="Detalhes da Consulta" showBackButton />
+        <JourneyHeader title={t('journeys.care.appointments.detail')} showBackButton />
         <View style={styles.centerContent}>
-          <LoadingIndicator journey="care" label="Carregando detalhes..." />
+          <LoadingIndicator journey="care" label={t('journeys.care.appointments.loadingDetails')} />
         </View>
       </View>
     );
@@ -71,10 +74,10 @@ const AppointmentDetail: React.FC = () => {
   if (error) {
     return (
       <View style={styles.container}>
-        <JourneyHeader title="Detalhes da Consulta" showBackButton />
+        <JourneyHeader title={t('journeys.care.appointments.detail')} showBackButton />
         <View style={styles.centerContent}>
-          <Text fontSize="md" color="#D32F2F" textAlign="center">
-            Erro ao carregar detalhes: {error.message}
+          <Text fontSize="md" color={colors.semantic.error} textAlign="center">
+            {t('journeys.care.appointments.errorLoadingDetails', { message: error.message })}
           </Text>
         </View>
       </View>
@@ -85,10 +88,10 @@ const AppointmentDetail: React.FC = () => {
   if (!appointment) {
     return (
       <View style={styles.container}>
-        <JourneyHeader title="Detalhes da Consulta" showBackButton />
+        <JourneyHeader title={t('journeys.care.appointments.detail')} showBackButton />
         <View style={styles.centerContent}>
-          <Text fontSize="md" color="#666" textAlign="center">
-            Consulta nao encontrada.
+          <Text fontSize="md" color={colors.gray[50]} textAlign="center">
+            {t('journeys.care.appointments.notFound')}
           </Text>
         </View>
       </View>
@@ -101,11 +104,11 @@ const AppointmentDetail: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <JourneyHeader title="Detalhes da Consulta" showBackButton />
+      <JourneyHeader title={t('journeys.care.appointments.detail')} showBackButton />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         {/* Status badge */}
         <View style={styles.statusRow}>
-          <Text fontSize="sm" color="#666">Status:</Text>
+          <Text fontSize="sm" color={colors.gray[50]}>{t('common.labels.status')}:</Text>
           <Badge journey="care" size="sm" status={statusInfo.status}>
             {statusInfo.label}
           </Badge>
@@ -114,27 +117,27 @@ const AppointmentDetail: React.FC = () => {
         {/* Appointment details card */}
         <Card journey="care" elevation="md">
           <Text variant="heading" journey="care">
-            Consulta
+            {t('journeys.care.appointments.consultation')}
           </Text>
 
           <View style={styles.detailRow}>
-            <Text fontSize="sm" color="#666">Medico(a):</Text>
-            <Text fontSize="sm" fontWeight="bold" color="#333">
+            <Text fontSize="sm" color={colors.gray[50]}>{t('journeys.care.appointments.provider')}:</Text>
+            <Text fontSize="sm" fontWeight="bold" color={colors.gray[70]}>
               {appointment.providerId}
             </Text>
           </View>
 
           <View style={styles.detailRow}>
-            <Text fontSize="sm" color="#666">Data e Horario:</Text>
-            <Text fontSize="sm" fontWeight="bold" color="#333">
+            <Text fontSize="sm" color={colors.gray[50]}>{t('journeys.care.appointments.dateTime')}:</Text>
+            <Text fontSize="sm" fontWeight="bold" color={colors.gray[70]}>
               {formattedDateTime}
             </Text>
           </View>
 
           {appointment.reason && (
             <View style={styles.detailRow}>
-              <Text fontSize="sm" color="#666">Motivo:</Text>
-              <Text fontSize="sm" color="#333">
+              <Text fontSize="sm" color={colors.gray[50]}>{t('journeys.care.appointments.reason')}:</Text>
+              <Text fontSize="sm" color={colors.gray[70]}>
                 {appointment.reason}
               </Text>
             </View>
@@ -149,7 +152,7 @@ const AppointmentDetail: React.FC = () => {
             onPress={handleReschedule}
             accessibilityLabel="Reagendar esta consulta"
           >
-            Reagendar Consulta
+            {t('journeys.care.appointments.reschedule')}
           </Button>
 
           <View style={styles.actionGap} />
@@ -160,7 +163,7 @@ const AppointmentDetail: React.FC = () => {
             onPress={handleCancel}
             accessibilityLabel="Cancelar esta consulta"
           >
-            Cancelar Consulta
+            {t('journeys.care.appointments.cancel')}
           </Button>
         </View>
       </ScrollView>
@@ -171,7 +174,7 @@ const AppointmentDetail: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF8F0',
+    backgroundColor: colors.journeys.care.background,
   },
   scrollView: {
     flex: 1,

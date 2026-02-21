@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Switch, TextInput } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TextInput } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { fontSizeValues } from '../../../../design-system/src/tokens/typography';
 import { borderRadiusValues } from '../../../../design-system/src/tokens/borderRadius';
+import { useTranslation } from 'react-i18next';
 import { useJourney } from '../../context/JourneyContext';
+
+import { FrequencyType, FrequencyPicker, DAYS_OF_WEEK } from './MedicationReminderForm';
+import { SnoozePicker, ReminderPreview } from './MedicationSchedulePicker';
 
 /**
  * Route params for MedicationReminder screen.
@@ -16,48 +20,11 @@ interface MedicationReminderParams {
 }
 
 /**
- * Frequency options for the reminder.
- */
-type FrequencyType = 'daily' | 'weekly' | 'interval' | 'custom';
-
-/**
- * Snooze duration options in minutes.
- */
-const SNOOZE_OPTIONS = [
-  { label: '5 min', value: 5 },
-  { label: '10 min', value: 10 },
-  { label: '15 min', value: 15 },
-  { label: '30 min', value: 30 },
-];
-
-/**
- * Days of the week for weekly frequency selection.
- */
-const DAYS_OF_WEEK = [
-  { label: 'Dom', value: 'sunday' },
-  { label: 'Seg', value: 'monday' },
-  { label: 'Ter', value: 'tuesday' },
-  { label: 'Qua', value: 'wednesday' },
-  { label: 'Qui', value: 'thursday' },
-  { label: 'Sex', value: 'friday' },
-  { label: 'Sab', value: 'saturday' },
-];
-
-/**
- * Frequency options for the dropdown.
- */
-const FREQUENCY_OPTIONS: Array<{ label: string; value: FrequencyType }> = [
-  { label: 'Diariamente', value: 'daily' },
-  { label: 'Semanalmente', value: 'weekly' },
-  { label: 'A cada X horas', value: 'interval' },
-  { label: 'Personalizado', value: 'custom' },
-];
-
-/**
  * MedicationReminderScreen allows users to configure reminders for their medications,
  * including time, frequency, and snooze options.
  */
 export const MedicationReminderScreen: React.FC = () => {
+  const { t } = useTranslation();
   const route = useRoute<any>();
   const navigation = useNavigation();
   const { journey } = useJourney();
@@ -119,15 +86,15 @@ export const MedicationReminderScreen: React.FC = () => {
   const getFrequencyLabel = (): string => {
     switch (frequency) {
       case 'daily':
-        return 'Todos os dias';
+        return t('journeys.health.medication.frequency.daily');
       case 'weekly':
         return selectedDays.length > 0
           ? DAYS_OF_WEEK.filter(d => selectedDays.includes(d.value)).map(d => d.label).join(', ')
-          : 'Selecione os dias';
+          : t('journeys.health.medication.frequency.selectDays');
       case 'interval':
-        return `A cada ${intervalHours} horas`;
+        return t('journeys.health.medication.frequency.everyXHours', { hours: intervalHours });
       case 'custom':
-        return 'Personalizado';
+        return t('journeys.health.medication.frequency.custom');
       default:
         return '';
     }
@@ -148,7 +115,7 @@ export const MedicationReminderScreen: React.FC = () => {
       {/* Section: Horario do Lembrete */}
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: journeyColors.accent }]}>
-          Horario do Lembrete
+          {t('journeys.health.medication.reminderTime')}
         </Text>
         <View style={styles.timeInputContainer}>
           <TextInput
@@ -161,154 +128,59 @@ export const MedicationReminderScreen: React.FC = () => {
             maxLength={5}
             accessibilityLabel="Horario do lembrete"
           />
-          <Text style={styles.timeHint}>Formato 24h (ex: 08:00, 14:30)</Text>
+          <Text style={styles.timeHint}>{t('journeys.health.medication.timeHint')}</Text>
         </View>
       </View>
 
       {/* Section: Frequencia */}
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: journeyColors.accent }]}>
-          Frequencia
+          {t('journeys.care.medications.frequency')}
         </Text>
-        <View style={styles.frequencyOptions}>
-          {FREQUENCY_OPTIONS.map(option => (
-            <View
-              key={option.value}
-              style={[
-                styles.frequencyOption,
-                frequency === option.value && {
-                  backgroundColor: journeyColors.background,
-                  borderColor: journeyColors.primary,
-                },
-              ]}
-            >
-              <Text
-                style={[
-                  styles.frequencyOptionText,
-                  frequency === option.value && { color: journeyColors.primary, fontWeight: '600' as const },
-                ]}
-                onPress={() => setFrequency(option.value)}
-              >
-                {option.label}
-              </Text>
-            </View>
-          ))}
-        </View>
-
-        {/* Weekly day selector */}
-        {frequency === 'weekly' && (
-          <View style={styles.daysContainer}>
-            {DAYS_OF_WEEK.map(day => (
-              <View
-                key={day.value}
-                style={[
-                  styles.dayChip,
-                  selectedDays.includes(day.value) && {
-                    backgroundColor: journeyColors.primary,
-                  },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.dayChipText,
-                    selectedDays.includes(day.value) && { color: colors.neutral.white },
-                  ]}
-                  onPress={() => toggleDay(day.value)}
-                >
-                  {day.label}
-                </Text>
-              </View>
-            ))}
-          </View>
-        )}
-
-        {/* Interval input */}
-        {frequency === 'interval' && (
-          <View style={styles.intervalContainer}>
-            <Text style={styles.intervalLabel}>A cada</Text>
-            <TextInput
-              style={[styles.intervalInput, { borderColor: journeyColors.primary }]}
-              value={intervalHours}
-              onChangeText={setIntervalHours}
-              keyboardType="numeric"
-              maxLength={2}
-              accessibilityLabel="Intervalo em horas"
-            />
-            <Text style={styles.intervalLabel}>horas</Text>
-          </View>
-        )}
+        <FrequencyPicker
+          frequency={frequency}
+          onFrequencyChange={setFrequency}
+          selectedDays={selectedDays}
+          onToggleDay={toggleDay}
+          intervalHours={intervalHours}
+          onIntervalChange={setIntervalHours}
+          journeyColors={journeyColors}
+        />
       </View>
 
       {/* Section: Opcoes de Soneca */}
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: journeyColors.accent }]}>
-          Opcoes de Soneca
+          {t('journeys.health.medication.snoozeOptions')}
         </Text>
-        <View style={styles.snoozeToggleRow}>
-          <Text style={styles.snoozeLabel}>Permitir soneca</Text>
-          <Switch
-            value={snoozeEnabled}
-            onValueChange={setSnoozeEnabled}
-            trackColor={{ false: colors.gray[30], true: journeyColors.primary }}
-            thumbColor={colors.neutral.white}
-            accessibilityLabel="Permitir soneca"
-          />
-        </View>
-        {snoozeEnabled && (
-          <View style={styles.snoozeOptionsRow}>
-            <Text style={styles.snoozeOptionLabel}>Tempo de soneca:</Text>
-            <View style={styles.snoozeChips}>
-              {SNOOZE_OPTIONS.map(option => (
-                <View
-                  key={option.value}
-                  style={[
-                    styles.snoozeChip,
-                    snoozeDuration === option.value && {
-                      backgroundColor: journeyColors.primary,
-                    },
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.snoozeChipText,
-                      snoozeDuration === option.value && { color: colors.neutral.white },
-                    ]}
-                    onPress={() => setSnoozeDuration(option.value)}
-                  >
-                    {option.label}
-                  </Text>
-                </View>
-              ))}
-            </View>
-          </View>
-        )}
+        <SnoozePicker
+          snoozeEnabled={snoozeEnabled}
+          onSnoozeToggle={setSnoozeEnabled}
+          snoozeDuration={snoozeDuration}
+          onSnoozeDurationChange={setSnoozeDuration}
+          journeyColors={journeyColors}
+        />
       </View>
 
       {/* Section: Pre-visualizacao */}
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: journeyColors.accent }]}>
-          Pre-visualizacao
+          {t('journeys.health.medication.preview')}
         </Text>
-        <View style={[styles.previewCard, { borderLeftColor: journeyColors.primary }]}>
-          <Text style={styles.previewTitle}>Lembrete de Medicamento</Text>
-          <Text style={styles.previewMedName}>{medicationName}</Text>
-          {medicationDosage ? (
-            <Text style={styles.previewDosage}>{medicationDosage}</Text>
-          ) : null}
-          <View style={styles.previewTimeRow}>
-            <Text style={[styles.previewTime, { color: journeyColors.primary }]}>
-              {time}
-            </Text>
-            <Text style={styles.previewFrequency}>{getFrequencyLabel()}</Text>
-          </View>
-        </View>
+        <ReminderPreview
+          medicationName={medicationName}
+          medicationDosage={medicationDosage}
+          time={time}
+          frequencyLabel={getFrequencyLabel()}
+          journeyColors={journeyColors}
+        />
       </View>
 
       {/* Action buttons */}
       <View style={styles.buttonContainer}>
         <View style={[styles.primaryButton, { backgroundColor: journeyColors.primary }]}>
           <Text style={styles.primaryButtonText} onPress={handleSave}>
-            Salvar Lembrete
+            {t('journeys.health.medication.saveReminder')}
           </Text>
         </View>
         <View style={[styles.secondaryButton, { borderColor: journeyColors.primary }]}>
@@ -316,7 +188,7 @@ export const MedicationReminderScreen: React.FC = () => {
             style={[styles.secondaryButtonText, { color: journeyColors.primary }]}
             onPress={handleCancel}
           >
-            Cancelar
+            {t('common.buttons.cancel')}
           </Text>
         </View>
       </View>
@@ -372,133 +244,6 @@ const styles = StyleSheet.create({
     fontSize: fontSizeValues.xs,
     color: colors.gray[40],
     marginTop: spacingValues['3xs'],
-  },
-  frequencyOptions: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacingValues.xs,
-  },
-  frequencyOption: {
-    borderWidth: 1,
-    borderColor: colors.gray[20],
-    borderRadius: borderRadiusValues.md,
-    paddingHorizontal: spacingValues.md,
-    paddingVertical: spacingValues.xs,
-  },
-  frequencyOptionText: {
-    fontSize: fontSizeValues.sm,
-    color: colors.gray[60],
-  },
-  daysContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacingValues.xs,
-    marginTop: spacingValues.sm,
-  },
-  dayChip: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    borderWidth: 1,
-    borderColor: colors.gray[20],
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  dayChipText: {
-    fontSize: fontSizeValues.xs,
-    color: colors.gray[60],
-    textAlign: 'center',
-  },
-  intervalContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacingValues.xs,
-    marginTop: spacingValues.sm,
-  },
-  intervalLabel: {
-    fontSize: fontSizeValues.sm,
-    color: colors.gray[60],
-  },
-  intervalInput: {
-    fontSize: fontSizeValues.lg,
-    fontWeight: 'bold',
-    borderWidth: 2,
-    borderRadius: borderRadiusValues.md,
-    paddingHorizontal: spacingValues.sm,
-    paddingVertical: spacingValues['3xs'],
-    textAlign: 'center',
-    width: 60,
-    color: colors.gray[70],
-  },
-  snoozeToggleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacingValues.sm,
-  },
-  snoozeLabel: {
-    fontSize: fontSizeValues.md,
-    color: colors.gray[60],
-  },
-  snoozeOptionsRow: {
-    marginTop: spacingValues['3xs'],
-  },
-  snoozeOptionLabel: {
-    fontSize: fontSizeValues.sm,
-    color: colors.gray[50],
-    marginBottom: spacingValues.xs,
-  },
-  snoozeChips: {
-    flexDirection: 'row',
-    gap: spacingValues.xs,
-  },
-  snoozeChip: {
-    borderWidth: 1,
-    borderColor: colors.gray[20],
-    borderRadius: borderRadiusValues.md,
-    paddingHorizontal: spacingValues.sm,
-    paddingVertical: spacingValues['3xs'],
-  },
-  snoozeChipText: {
-    fontSize: fontSizeValues.sm,
-    color: colors.gray[60],
-  },
-  previewCard: {
-    backgroundColor: colors.gray[5],
-    borderRadius: borderRadiusValues.md,
-    borderLeftWidth: 4,
-    padding: spacingValues.md,
-  },
-  previewTitle: {
-    fontSize: fontSizeValues.xs,
-    color: colors.gray[40],
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    marginBottom: spacingValues['3xs'],
-  },
-  previewMedName: {
-    fontSize: fontSizeValues.lg,
-    fontWeight: 'bold',
-    color: colors.gray[70],
-  },
-  previewDosage: {
-    fontSize: fontSizeValues.sm,
-    color: colors.gray[50],
-    marginTop: spacingValues['4xs'],
-  },
-  previewTimeRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: spacingValues.sm,
-  },
-  previewTime: {
-    fontSize: fontSizeValues.xl,
-    fontWeight: 'bold',
-  },
-  previewFrequency: {
-    fontSize: fontSizeValues.sm,
-    color: colors.gray[50],
   },
   buttonContainer: {
     marginTop: spacingValues.lg,

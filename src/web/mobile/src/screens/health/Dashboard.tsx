@@ -29,9 +29,11 @@ import {
   AchievementBadge,
   AchievementBadgeProps,
 } from 'src/web/design-system/src/gamification/AchievementBadge/AchievementBadge.tsx';
+import { useTranslation } from 'react-i18next';
 import { useJourney } from '../context/JourneyContext';
 import { JOURNEY_IDS } from '../../shared/constants/journeys';
 import { JourneyHeader, JourneyHeaderProps } from '../components/shared/JourneyHeader';
+import { colors } from 'src/web/design-system/src/tokens/colors';
 
 /**
  * Displays the main dashboard for the My Health journey.
@@ -39,6 +41,7 @@ import { JourneyHeader, JourneyHeaderProps } from '../components/shared/JourneyH
  * @returns The rendered dashboard component.
  */
 export const Dashboard: React.FC = () => {
+  const { t } = useTranslation();
   // Access the navigation object
   const navigation = useNavigation();
 
@@ -66,7 +69,7 @@ export const Dashboard: React.FC = () => {
 
   // Handle error state
   if (healthMetricsError) {
-    return <ErrorState message="Failed to load health metrics." />;
+    return <ErrorState message={t('common.errors.default')} />;
   }
 
   // Extract health metrics from the fetched data
@@ -76,7 +79,7 @@ export const Dashboard: React.FC = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#F0FFF4', // Light green background
+      backgroundColor: colors.journeys.health.background, // Light green background
       paddingBottom: insets.bottom,
     },
     contentContainer: {
@@ -91,7 +94,7 @@ export const Dashboard: React.FC = () => {
   // Render the dashboard
   return (
     <View style={styles.container}>
-      <JourneyHeader title="Minha Saúde" showBackButton={false} />
+      <JourneyHeader title={t('journeys.health.title')} showBackButton={false} />
       <ScrollView contentContainerStyle={styles.contentContainer}>
         {healthMetrics.map((metric, index) => (
           <MetricCard

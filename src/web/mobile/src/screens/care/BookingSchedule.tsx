@@ -10,6 +10,8 @@ import { Badge } from 'src/web/design-system/src/components/Badge/Badge';
 import { Text } from 'src/web/design-system/src/primitives/Text/Text';
 import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader';
 import { ROUTES } from 'src/web/mobile/src/constants/routes';
+import { colors } from 'src/web/design-system/src/tokens/colors';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Route params expected by BookingSchedule.
@@ -56,6 +58,7 @@ const BookingSchedule: React.FC = () => {
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
   const { doctorId, date, time } = route.params as BookingScheduleRouteParams;
+  const { t } = useTranslation();
 
   const doctor = MOCK_DOCTORS[doctorId] || { name: 'Medico', specialty: 'Especialidade' };
 
@@ -78,38 +81,38 @@ const BookingSchedule: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <JourneyHeader title="Agendar Consulta" showBackButton />
+      <JourneyHeader title={t('journeys.care.appointments.book')} showBackButton />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         {/* Summary card */}
         <Card journey="care" elevation="sm">
           <Text variant="heading" journey="care">
-            Resumo da Consulta
+            {t('journeys.care.appointments.summary')}
           </Text>
           <View style={styles.summaryRow}>
-            <Text fontSize="sm" color="#666">Medico(a):</Text>
-            <Text fontSize="sm" fontWeight="bold" color="#333">{doctor.name}</Text>
+            <Text fontSize="sm" color={colors.gray[50]}>{t('journeys.care.appointments.provider')}:</Text>
+            <Text fontSize="sm" fontWeight="bold" color={colors.gray[70]}>{doctor.name}</Text>
           </View>
           <View style={styles.summaryRow}>
-            <Text fontSize="sm" color="#666">Especialidade:</Text>
+            <Text fontSize="sm" color={colors.gray[50]}>{t('journeys.care.appointments.type')}:</Text>
             <Badge journey="care" size="sm">{doctor.specialty}</Badge>
           </View>
           <View style={styles.summaryRow}>
-            <Text fontSize="sm" color="#666">Data:</Text>
-            <Text fontSize="sm" fontWeight="bold" color="#333">{formatDateBR(date)}</Text>
+            <Text fontSize="sm" color={colors.gray[50]}>{t('journeys.care.appointments.date')}:</Text>
+            <Text fontSize="sm" fontWeight="bold" color={colors.gray[70]}>{formatDateBR(date)}</Text>
           </View>
           <View style={styles.summaryRow}>
-            <Text fontSize="sm" color="#666">Horario:</Text>
-            <Text fontSize="sm" fontWeight="bold" color="#333">{time}</Text>
+            <Text fontSize="sm" color={colors.gray[50]}>{t('journeys.care.appointments.time')}:</Text>
+            <Text fontSize="sm" fontWeight="bold" color={colors.gray[70]}>{time}</Text>
           </View>
         </Card>
 
         {/* Patient section */}
         <View style={styles.section}>
           <Text variant="heading" journey="care" fontSize="md">
-            Paciente
+            {t('journeys.care.appointments.patient')}
           </Text>
           <Input
-            label="Nome do paciente"
+            label={t('journeys.care.appointments.patientName')}
             value={patientName}
             onChange={(e: any) => setPatientName(e.target?.value ?? e)}
             journey="care"
@@ -117,7 +120,7 @@ const BookingSchedule: React.FC = () => {
           />
           <View style={styles.fieldGap} />
           <Input
-            label="Data de nascimento"
+            label={t('journeys.care.appointments.dateOfBirth')}
             value={patientDob}
             onChange={(e: any) => setPatientDob(e.target?.value ?? e)}
             journey="care"
@@ -129,10 +132,10 @@ const BookingSchedule: React.FC = () => {
         {/* Reason section */}
         <View style={styles.section}>
           <Text variant="heading" journey="care" fontSize="md">
-            Motivo da Consulta
+            {t('journeys.care.appointments.reason')}
           </Text>
           <Input
-            label="Descreva o motivo ou sintomas"
+            label={t('journeys.care.appointments.describeReason')}
             value={reason}
             onChange={(e: any) => setReason(e.target?.value ?? e)}
             journey="care"
@@ -144,10 +147,10 @@ const BookingSchedule: React.FC = () => {
         {/* Appointment type */}
         <View style={styles.section}>
           <Text variant="heading" journey="care" fontSize="md">
-            Tipo de Consulta
+            {t('journeys.care.appointments.appointmentType')}
           </Text>
           <Select
-            label="Selecione o tipo"
+            label={t('journeys.care.appointments.selectType')}
             options={APPOINTMENT_TYPE_OPTIONS}
             value={appointmentType}
             onChange={(val) => setAppointmentType(val as string)}
@@ -158,10 +161,10 @@ const BookingSchedule: React.FC = () => {
         {/* Insurance */}
         <View style={styles.section}>
           <Text variant="heading" journey="care" fontSize="md">
-            Convenio
+            {t('journeys.care.appointments.insurance')}
           </Text>
           <Select
-            label="Selecione o convenio"
+            label={t('journeys.care.appointments.selectInsurance')}
             options={INSURANCE_OPTIONS}
             value={insurance}
             onChange={(val) => setInsurance(val as string)}
@@ -177,7 +180,7 @@ const BookingSchedule: React.FC = () => {
             value="accepted"
             checked={termsAccepted}
             onChange={() => setTermsAccepted(!termsAccepted)}
-            label="Li e aceito os termos de atendimento"
+            label={t('journeys.care.appointments.acceptTerms')}
             journey="care"
           />
         </View>
@@ -191,7 +194,7 @@ const BookingSchedule: React.FC = () => {
             disabled={!termsAccepted}
             accessibilityLabel="Confirmar agendamento da consulta"
           >
-            Confirmar Agendamento
+            {t('journeys.care.appointments.confirm')}
           </Button>
         </View>
       </ScrollView>
@@ -202,7 +205,7 @@ const BookingSchedule: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF8F0',
+    backgroundColor: colors.journeys.care.background,
   },
   scrollView: {
     flex: 1,

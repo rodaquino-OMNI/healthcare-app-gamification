@@ -8,6 +8,8 @@ import { Badge } from 'src/web/design-system/src/components/Badge/Badge';
 import { Text } from 'src/web/design-system/src/primitives/Text/Text';
 import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader';
 import { ROUTES } from 'src/web/mobile/src/constants/routes';
+import { colors } from 'src/web/design-system/src/tokens/colors';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Route params expected by BookingConfirmation.
@@ -47,6 +49,7 @@ const formatDateBR = (dateStr: string): string => {
 const BookingConfirmation: React.FC = () => {
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
+  const { t } = useTranslation();
   const { appointmentId, doctorId, date, time, type } =
     route.params as BookingConfirmationRouteParams;
 
@@ -73,40 +76,40 @@ const BookingConfirmation: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <JourneyHeader title="Confirmacao" />
+      <JourneyHeader title={t('journeys.care.appointments.confirmation')} />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         {/* Success icon and heading */}
         <View style={styles.successSection}>
           <View style={styles.successCircle}>
-            <Text fontSize="xl" fontWeight="bold" color="#FFFFFF" textAlign="center">
+            <Text fontSize="xl" fontWeight="bold" color={colors.neutral.white} textAlign="center">
               {'✓'}
             </Text>
           </View>
           <Text variant="heading" journey="care" textAlign="center">
-            Consulta Agendada com Sucesso!
+            {t('journeys.care.appointments.bookingSuccess')}
           </Text>
         </View>
 
         {/* Appointment summary card */}
         <Card journey="care" elevation="md">
           <View style={styles.summaryRow}>
-            <Text fontSize="sm" color="#666">Medico(a):</Text>
-            <Text fontSize="sm" fontWeight="bold" color="#333">{doctor.name}</Text>
+            <Text fontSize="sm" color={colors.gray[50]}>{t('journeys.care.appointments.provider')}:</Text>
+            <Text fontSize="sm" fontWeight="bold" color={colors.gray[70]}>{doctor.name}</Text>
           </View>
           <View style={styles.summaryRow}>
-            <Text fontSize="sm" color="#666">Especialidade:</Text>
+            <Text fontSize="sm" color={colors.gray[50]}>{t('journeys.care.appointments.type')}:</Text>
             <Badge journey="care" size="sm">{doctor.specialty}</Badge>
           </View>
           <View style={styles.summaryRow}>
-            <Text fontSize="sm" color="#666">Data:</Text>
-            <Text fontSize="sm" fontWeight="bold" color="#333">{formatDateBR(date)}</Text>
+            <Text fontSize="sm" color={colors.gray[50]}>{t('journeys.care.appointments.date')}:</Text>
+            <Text fontSize="sm" fontWeight="bold" color={colors.gray[70]}>{formatDateBR(date)}</Text>
           </View>
           <View style={styles.summaryRow}>
-            <Text fontSize="sm" color="#666">Horario:</Text>
-            <Text fontSize="sm" fontWeight="bold" color="#333">{time}</Text>
+            <Text fontSize="sm" color={colors.gray[50]}>{t('journeys.care.appointments.time')}:</Text>
+            <Text fontSize="sm" fontWeight="bold" color={colors.gray[70]}>{time}</Text>
           </View>
           <View style={styles.summaryRow}>
-            <Text fontSize="sm" color="#666">Tipo:</Text>
+            <Text fontSize="sm" color={colors.gray[50]}>{t('journeys.care.appointments.appointmentType')}:</Text>
             <Badge
               journey="care"
               size="sm"
@@ -116,8 +119,8 @@ const BookingConfirmation: React.FC = () => {
             </Badge>
           </View>
           <View style={styles.summaryRow}>
-            <Text fontSize="sm" color="#666">Local:</Text>
-            <Text fontSize="sm" color="#333">
+            <Text fontSize="sm" color={colors.gray[50]}>{t('journeys.care.appointments.location')}:</Text>
+            <Text fontSize="sm" color={colors.gray[70]}>
               {isTeleconsulta ? 'Online' : doctor.location}
             </Text>
           </View>
@@ -131,7 +134,7 @@ const BookingConfirmation: React.FC = () => {
             onPress={handleAddToCalendar}
             accessibilityLabel="Adicionar consulta ao calendario"
           >
-            Adicionar ao Calendario
+            {t('journeys.care.appointments.addToCalendar')}
           </Button>
 
           <View style={styles.reminderRow}>
@@ -141,7 +144,7 @@ const BookingConfirmation: React.FC = () => {
               value="30min"
               checked={reminderEnabled}
               onChange={() => setReminderEnabled(!reminderEnabled)}
-              label="Lembrete 30 min antes"
+              label={t('journeys.care.appointments.reminder30min')}
               journey="care"
             />
           </View>
@@ -154,7 +157,7 @@ const BookingConfirmation: React.FC = () => {
                 onPress={handleWaitingRoom}
                 accessibilityLabel="Ir para sala de espera da teleconsulta"
               >
-                Sala de Espera
+                {t('journeys.care.telemedicine.waiting')}
               </Button>
             </View>
           )}
@@ -168,7 +171,7 @@ const BookingConfirmation: React.FC = () => {
             onPress={handleGoHome}
             accessibilityLabel="Voltar ao inicio"
           >
-            Voltar ao Inicio
+            {t('journeys.care.appointments.backToHome')}
           </Button>
         </View>
       </ScrollView>
@@ -179,7 +182,7 @@ const BookingConfirmation: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF8F0',
+    backgroundColor: colors.journeys.care.background,
   },
   scrollView: {
     flex: 1,
@@ -197,7 +200,7 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: '#4CAF50',
+    backgroundColor: colors.semantic.success,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,

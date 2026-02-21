@@ -8,6 +8,8 @@ import { ProgressBar } from 'src/web/design-system/src/components/ProgressBar/Pr
 import { Text } from 'src/web/design-system/src/primitives/Text/Text';
 import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader';
 import { ROUTES } from 'src/web/mobile/src/constants/routes';
+import { colors } from 'src/web/design-system/src/tokens/colors';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Route params expected by WaitingRoom.
@@ -49,6 +51,7 @@ const WaitingRoom: React.FC = () => {
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
   const { appointmentId } = route.params as WaitingRoomRouteParams;
+  const { t } = useTranslation();
 
   const [countdown, setCountdown] = useState(INITIAL_COUNTDOWN);
   const [equipmentChecks, setEquipmentChecks] = useState<EquipmentCheck[]>([
@@ -88,30 +91,30 @@ const WaitingRoom: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <JourneyHeader title="Sala de Espera" showBackButton />
+      <JourneyHeader title={t('journeys.care.telemedicine.waiting')} showBackButton />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         {/* Appointment info */}
         <Card journey="care" elevation="sm">
           <Text variant="heading" journey="care" fontSize="md">
-            Teleconsulta
+            {t('journeys.care.telemedicine.teleconsultation')}
           </Text>
           <View style={styles.infoRow}>
-            <Text fontSize="sm" color="#666">Consulta:</Text>
-            <Text fontSize="sm" fontWeight="bold" color="#333">#{appointmentId}</Text>
+            <Text fontSize="sm" color={colors.gray[50]}>{t('journeys.care.telemedicine.consultation')}:</Text>
+            <Text fontSize="sm" fontWeight="bold" color={colors.gray[70]}>#{appointmentId}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text fontSize="sm" color="#666">Status:</Text>
-            <Badge journey="care" size="sm" status="info">Aguardando</Badge>
+            <Text fontSize="sm" color={colors.gray[50]}>Status:</Text>
+            <Badge journey="care" size="sm" status="info">{t('journeys.care.telemedicine.waitingStatus')}</Badge>
           </View>
         </Card>
 
         {/* Countdown timer */}
         <View style={styles.countdownSection}>
-          <Text fontSize="sm" color="#666" textAlign="center">
-            Sua consulta comeca em:
+          <Text fontSize="sm" color={colors.gray[50]} textAlign="center">
+            {t('journeys.care.telemedicine.startsIn')}
           </Text>
           <View style={styles.countdownDisplay}>
-            <Text fontSize="xl" fontWeight="bold" color="#FF8C42" textAlign="center">
+            <Text fontSize="xl" fontWeight="bold" color={colors.journeys.care.primary} textAlign="center">
               {formatCountdown(countdown)}
             </Text>
           </View>
@@ -120,7 +123,7 @@ const WaitingRoom: React.FC = () => {
         {/* Equipment checks */}
         <View style={styles.checksSection}>
           <Text variant="heading" journey="care" fontSize="md">
-            Verificacao de Equipamentos
+            {t('journeys.care.telemedicine.equipmentCheck')}
           </Text>
 
           {equipmentChecks.map((check, index) => (
@@ -134,7 +137,7 @@ const WaitingRoom: React.FC = () => {
             >
               <View style={styles.checkRow}>
                 <Text fontSize="lg">{check.icon}</Text>
-                <Text fontSize="sm" fontWeight="medium" color="#333">
+                <Text fontSize="sm" fontWeight="medium" color={colors.gray[70]}>
                   {check.label}
                 </Text>
                 <Badge
@@ -142,7 +145,7 @@ const WaitingRoom: React.FC = () => {
                   size="sm"
                   status={check.passed ? 'success' : 'error'}
                 >
-                  {check.passed ? 'OK' : 'Falha'}
+                  {check.passed ? 'OK' : t('journeys.care.telemedicine.failed')}
                 </Badge>
               </View>
             </Card>
@@ -151,8 +154,8 @@ const WaitingRoom: React.FC = () => {
 
         {/* Connection quality */}
         <View style={styles.connectionSection}>
-          <Text fontSize="sm" fontWeight="medium" color="#333">
-            Qualidade da Conexao
+          <Text fontSize="sm" fontWeight="medium" color={colors.gray[70]}>
+            {t('journeys.care.telemedicine.connectionQuality')}
           </Text>
           <View style={styles.progressBarWrapper}>
             <ProgressBar
@@ -163,34 +166,34 @@ const WaitingRoom: React.FC = () => {
               ariaLabel="Qualidade da conexao com a internet"
             />
           </View>
-          <Text fontSize="xs" color="#666" textAlign="center">
-            {CONNECTION_QUALITY}% - Conexao estavel
+          <Text fontSize="xs" color={colors.gray[50]} textAlign="center">
+            {CONNECTION_QUALITY}% - {t('journeys.care.telemedicine.stableConnection')}
           </Text>
         </View>
 
         {/* Tips */}
         <Card journey="care" elevation="sm">
           <Text variant="heading" journey="care" fontSize="md">
-            Dicas para sua consulta
+            {t('journeys.care.telemedicine.tips.title')}
           </Text>
           <View style={styles.tipItem}>
-            <Text fontSize="sm" color="#555">
-              Escolha um local silencioso e bem iluminado
+            <Text fontSize="sm" color={colors.gray[50]}>
+              {t('journeys.care.telemedicine.tips.quietPlace')}
             </Text>
           </View>
           <View style={styles.tipItem}>
-            <Text fontSize="sm" color="#555">
-              Verifique sua iluminacao antes de iniciar
+            <Text fontSize="sm" color={colors.gray[50]}>
+              {t('journeys.care.telemedicine.tips.checkLighting')}
             </Text>
           </View>
           <View style={styles.tipItem}>
-            <Text fontSize="sm" color="#555">
-              Tenha em maos documentos e exames recentes
+            <Text fontSize="sm" color={colors.gray[50]}>
+              {t('journeys.care.telemedicine.tips.haveDocuments')}
             </Text>
           </View>
           <View style={styles.tipItem}>
-            <Text fontSize="sm" color="#555">
-              Use fones de ouvido para melhor privacidade
+            <Text fontSize="sm" color={colors.gray[50]}>
+              {t('journeys.care.telemedicine.tips.useHeadphones')}
             </Text>
           </View>
         </Card>
@@ -204,11 +207,11 @@ const WaitingRoom: React.FC = () => {
             disabled={!allChecksPassed}
             accessibilityLabel="Entrar na consulta por teleconsulta"
           >
-            Entrar na Consulta
+            {t('journeys.care.telemedicine.joinConsultation')}
           </Button>
           {!allChecksPassed && (
-            <Text fontSize="xs" color="#D32F2F" textAlign="center">
-              Resolva todos os problemas de equipamento antes de entrar
+            <Text fontSize="xs" color={colors.semantic.error} textAlign="center">
+              {t('journeys.care.telemedicine.resolveEquipmentIssues')}
             </Text>
           )}
         </View>
@@ -220,7 +223,7 @@ const WaitingRoom: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF8F0',
+    backgroundColor: colors.journeys.care.background,
   },
   scrollView: {
     flex: 1,
@@ -243,10 +246,10 @@ const styles = StyleSheet.create({
     marginTop: 8,
     paddingVertical: 16,
     paddingHorizontal: 32,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.neutral.white,
     borderRadius: 16,
     borderWidth: 2,
-    borderColor: '#FF8C42',
+    borderColor: colors.journeys.care.primary,
   },
   checksSection: {
     marginTop: 24,

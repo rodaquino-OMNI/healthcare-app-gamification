@@ -7,8 +7,10 @@ import { useHealthMetrics } from 'src/web/mobile/src/hooks/useHealthMetrics';
 import { getMedicalHistory } from 'src/web/mobile/src/api/health';
 import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader';
 import { Card, CardProps } from 'src/web/design-system/src/components/Card/Card';
+import { useTranslation } from 'react-i18next';
 import { useJourney } from 'src/web/mobile/src/context/JourneyContext';
 import { formatDate } from 'src/web/mobile/src/utils/date';
+import { colors } from 'src/web/design-system/src/tokens/colors';
 
 /**
  * MedicalHistory Component:
@@ -16,6 +18,7 @@ import { formatDate } from 'src/web/mobile/src/utils/date';
  * It includes filtering options and handles empty state scenarios.
  */
 const MedicalHistory = () => {
+  const { t } = useTranslation();
   // State variables for managing medical history data and loading state
   const [medicalHistory, setMedicalHistory] = useState<MedicalEvent[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -63,9 +66,9 @@ const MedicalHistory = () => {
   // Render the component
   return (
     <View style={styles.container}>
-      <JourneyHeader title="Medical History" showBackButton={true} />
+      <JourneyHeader title={t('journeys.health.history.title')} showBackButton={true} />
       {loading ? (
-        <Text>Loading medical history...</Text>
+        <Text>{t('journeys.health.history.loading')}</Text>
       ) : medicalHistory.length > 0 ? (
         <FlatList
           data={medicalHistory}
@@ -73,7 +76,7 @@ const MedicalHistory = () => {
           keyExtractor={keyExtractor}
         />
       ) : (
-        <Text>No medical history available.</Text>
+        <Text>{t('journeys.health.history.empty')}</Text>
       )}
     </View>
   );
@@ -83,7 +86,7 @@ const MedicalHistory = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5FCFF',
+    backgroundColor: colors.journeys.health.background,
   },
   card: {
     padding: 10,
