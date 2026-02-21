@@ -1,67 +1,153 @@
-import React, { useEffect, useState } from 'react'; // React v18.0+
-import { useRouter } from 'next/router'; // Next.js v13.0+
-import { GameProfile } from 'src/web/shared/types/gamification.types.ts';
-import { useGameProfile } from 'src/web/web/src/hooks/useGamification.ts';
-import AchievementBadge from 'src/web/design-system/src/gamification/AchievementBadge/index.ts';
-import { Stack } from 'src/web/design-system/src/primitives/Stack';
-import { Text } from 'src/web/design-system/src/components/index.ts';
-import { Card } from 'src/web/design-system/src/components/Card';
-import { JourneyContext, useJourney } from 'src/web/web/src/context/JourneyContext.tsx';
-import { WEB_HEALTH_ROUTES, WEB_CARE_ROUTES, WEB_PLAN_ROUTES } from 'src/web/shared/constants/routes.ts';
+import React from 'react';
+import Link from 'next/link';
+import { Text } from 'src/web/design-system/src/primitives/Text/Text';
+import { Box } from 'src/web/design-system/src/primitives/Box/Box';
+import { Card } from 'src/web/design-system/src/components/Card/Card';
+import { AchievementBadge } from 'src/web/design-system/src/gamification/AchievementBadge';
+import { LevelIndicator } from 'src/web/design-system/src/gamification/LevelIndicator';
+import { XPCounter } from 'src/web/design-system/src/gamification/XPCounter';
+import { useGameProfile } from 'src/web/web/src/hooks/useGamification';
+import { colors } from 'src/web/design-system/src/tokens/colors';
+import { spacing } from 'src/web/design-system/src/tokens/spacing';
+import type { Achievement } from 'src/web/shared/types/gamification.types';
+
+const JOURNEY_LABELS: Record<string, string> = {
+  health: 'My Health',
+  care: 'Care Now',
+  plan: 'My Plan',
+};
 
 /**
- * Achievements: Renders a gallery of achievements, grouped by journey.
- *
- * @returns A React component displaying the achievements.
+ * Achievements hub page displaying the user's gamification profile,
+ * achievements grouped by journey, and quick links to leaderboard/quests/rewards.
  */
-const Achievements: React.FC = () => {
-  // LD1: Retrieves the user ID from the authentication context.
-  const userId = 'user-123'; // Replace with actual user ID from auth context
+const AchievementsPage: React.FC = () => {
+  const userId = 'user-123'; // Replace with actual auth context
+  const { data, loading, error } = useGameProfile(userId);
 
-  // LD1: Fetches the user's game profile using the `useGameProfile` hook.
-  const { data: gameProfileData, isLoading, error } = useGameProfile(userId);
-
-  // LD1: If the game profile is loading, renders a loading indicator.
-  if (isLoading) {
-    return <Text>Loading achievements...</Text>;
+  if (loading) {
+    return (
+      <div style={{ maxWidth: '960px', margin: '0 auto', padding: spacing.xl }}>
+        <Text fontSize="lg">Loading achievements...</Text>
+      </div>
+    );
   }
 
-  // LD1: If there is an error fetching the game profile, renders an error message.
   if (error) {
-    return <Text>Error loading achievements.</Text>;
+    return (
+      <div style={{ maxWidth: '960px', margin: '0 auto', padding: spacing.xl }}>
+        <Text fontSize="lg" color={colors.semantic.error}>
+          Error loading achievements. Please try again later.
+        </Text>
+      </div>
+    );
   }
 
-  // LD1: If the game profile data is available, groups the achievements by journey.
-  const achievementsByJourney = gameProfileData?.gameProfile?.achievements.reduce((acc: { [key: string]: any }, achievement) => {
-    if (!acc[achievement.journey]) {
-      acc[achievement.journey] = [];
-    }
-    acc[achievement.journey].push(achievement);
-    return acc;
-  }, {});
+  const profile = data?.gameProfile;
+  const achievements = profile?.achievements ?? [];
 
-  // LD1: Renders a `Stack` component to layout the achievements.
+  const achievementsByJourney = achievements.reduce<Record<string, Achievement[]>>(
+    (acc, achievement) => {
+      const key = achievement.journey;
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(achievement);
+      return acc;
+    },
+    {},
+  );
+
+  const xpForNextLevel = (profile?.level ?? 1) * 1000;
+
   return (
-    <Stack direction="column" gap="md">
-      {/* LD1: For each journey, renders a `Card` component with the journey title and a list of `AchievementBadge` components. */}
-      {Object.entries(achievementsByJourney || {}).map(([journey, achievements]: [string, any]) => (
-        <Card key={journey} journey={journey}>
-          <Text fontWeight="bold" fontSize="xl">{journey.toUpperCase()} Achievements</Text>
-          <Stack direction="row" gap="md" flexWrap="wrap">
-            {achievements.map((achievement: any) => (
-              <AchievementBadge key={achievement.id} achievement={achievement} />
+    <div style={{ maxWidth: '960px', margin: '0 auto', padding: spacing.xl }}>
+      {/* Page header */}
+      <Text fontSize="2xl" fontWeight="bold" style={{ marginBottom: spacing.lg }}>
+        Achievements
+      </Text>
+
+      {/* Level and XP section */}
+      <Card elevation="md" padding="lg" style={{ marginBottom: spacing['2xl'] }}>
+        <Box display="flex" alignItems="center" style={{ gap: spacing.xl, flexWrap: 'wrap' }}>
+          <LevelIndicator
+            level={profile?.level ?? 1}
+            currentXp={profile?.xp ?? 0}
+            nextLevelXp={xpForNextLevel}
+          />
+          <Box>
+            <Text fontSize="lg" fontWeight="bold">
+              Level {profile?.level ?? 1}
+            </Text>
+            <XPCounter value={profile?.xp ?? 0} size="md" />
+            <Text fontSize="sm" color={colors.gray[50]} style={{ marginTop: spacing.xs }}>
+              {xpForNextLevel - (profile?.xp ?? 0)} XP to next level
+            </Text>
+          </Box>
+        </Box>
+      </Card>
+
+      {/* Quick links */}
+      <Box
+        display="flex"
+        style={{ gap: spacing.md, marginBottom: spacing['2xl'], flexWrap: 'wrap' }}
+      >
+        <Link href="/achievements/leaderboard" passHref>
+          <Card padding="md" style={{ flex: 1, minWidth: '200px', cursor: 'pointer', textDecoration: 'none' }}>
+            <Text fontWeight="bold" fontSize="md">Leaderboard</Text>
+            <Text fontSize="sm" color={colors.gray[50]}>See how you rank</Text>
+          </Card>
+        </Link>
+        <Link href="/achievements/quests" passHref>
+          <Card padding="md" style={{ flex: 1, minWidth: '200px', cursor: 'pointer', textDecoration: 'none' }}>
+            <Text fontWeight="bold" fontSize="md">Quests</Text>
+            <Text fontSize="sm" color={colors.gray[50]}>
+              {profile?.quests?.filter((q) => !q.completed).length ?? 0} active quests
+            </Text>
+          </Card>
+        </Link>
+        <Link href="/achievements/rewards" passHref>
+          <Card padding="md" style={{ flex: 1, minWidth: '200px', cursor: 'pointer', textDecoration: 'none' }}>
+            <Text fontWeight="bold" fontSize="md">Rewards</Text>
+            <Text fontSize="sm" color={colors.gray[50]}>Redeem your XP</Text>
+          </Card>
+        </Link>
+      </Box>
+
+      {/* Achievements by journey */}
+      {Object.entries(achievementsByJourney).map(([journey, journeyAchievements]) => (
+        <div key={journey} style={{ marginBottom: spacing['2xl'] }}>
+          <Text fontWeight="bold" fontSize="xl" style={{ marginBottom: spacing.md }}>
+            {JOURNEY_LABELS[journey] ?? journey} Achievements
+          </Text>
+          <Box
+            display="flex"
+            style={{ gap: spacing.md, flexWrap: 'wrap' }}
+          >
+            {journeyAchievements.map((achievement) => (
+              <Link key={achievement.id} href={`/achievements/${achievement.id}`} passHref>
+                <div style={{ cursor: 'pointer' }}>
+                  <AchievementBadge
+                    achievement={achievement}
+                    size="md"
+                    showProgress
+                  />
+                </div>
+              </Link>
             ))}
-          </Stack>
-        </Card>
+          </Box>
+        </div>
       ))}
 
-      {/* LD1: If there are no achievements for a journey, renders a message indicating that no achievements have been earned yet. */}
-      {achievementsByJourney && Object.keys(achievementsByJourney).length === 0 && (
-        <Text>No achievements earned yet.</Text>
+      {achievements.length === 0 && (
+        <Card padding="lg" style={{ textAlign: 'center' }}>
+          <Text fontSize="lg" color={colors.gray[50]}>
+            No achievements earned yet. Start completing quests to unlock achievements!
+          </Text>
+        </Card>
       )}
-    </Stack>
+    </div>
   );
 };
 
-// LD1: Exports the Achievements component as the default export.
-export default Achievements;
+export default AchievementsPage;

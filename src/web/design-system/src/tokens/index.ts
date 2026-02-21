@@ -20,20 +20,24 @@
  */
 
 // Import all token categories
-import { colors } from './colors';
-import { typography, fontSizeValues } from './typography';
-import { spacing, spacingValues } from './spacing';
+import { colors, brandPalette } from './colors';
+import { typography, fontSizeValues, fontSize } from './typography';
+import { spacing, spacingValues, spacingCompat } from './spacing';
 import { breakpoints, breakpointValues, mediaQueries } from './breakpoints';
 import { shadows } from './shadows';
 import { animation } from './animation';
+import { borderRadius, borderRadiusValues } from './borderRadius';
+import { sizing, sizingValues } from './sizing';
 
 // Export individual token categories for granular imports
-export { colors };
-export { typography, fontSizeValues };
-export { spacing, spacingValues };
+export { colors, brandPalette };
+export { typography, fontSizeValues, fontSize };
+export { spacing, spacingValues, spacingCompat };
 export { breakpoints, breakpointValues, mediaQueries };
 export { shadows };
 export { animation };
+export { borderRadius, borderRadiusValues };
+export { sizing, sizingValues };
 
 /**
  * Consolidated tokens object containing all design token categories.
@@ -52,10 +56,13 @@ export { animation };
  */
 export const tokens = {
   colors,
+  brandPalette,
   typography,
   spacing,
   breakpoints,
   mediaQueries,
   shadows,
   animation,
+  borderRadius,
+  sizing,
 };

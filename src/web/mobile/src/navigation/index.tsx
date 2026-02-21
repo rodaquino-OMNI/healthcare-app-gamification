@@ -1,7 +1,7 @@
 import React from 'react'; // React v18.2.0
 import { AuthNavigator } from './AuthNavigator'; // src/web/mobile/src/navigation/AuthNavigator.tsx
-import { CareNavigator } from './CareNavigator'; // src/web/mobile/src/navigation/CareNavigator.tsx
-import { HealthNavigator } from './HealthNavigator'; // src/web/mobile/src/navigation/HealthNavigator.tsx
+import CareNavigator from './CareNavigator'; // src/web/mobile/src/navigation/CareNavigator.tsx
+import HealthNavigator from './HealthNavigator'; // src/web/mobile/src/navigation/HealthNavigator.tsx
 import { MainNavigator } from './MainNavigator'; // src/web/mobile/src/navigation/MainNavigator.tsx
 import { PlanNavigator } from './PlanNavigator'; // src/web/mobile/src/navigation/PlanNavigator.tsx
 import { RootNavigator } from './RootNavigator'; // src/web/mobile/src/navigation/RootNavigator.tsx

@@ -1,6 +1,5 @@
 import React from 'react'; // React, v18.2.0
 import { createNativeStackNavigator } from '@react-navigation/stack'; // @react-navigation/stack, v6.3.17
-import { NavigationContainer } from '@react-navigation/native'; // @react-navigation/native, v6.1.7
 
 import PlanDashboard from '../screens/plan/Dashboard'; // The main dashboard screen for the Plan journey.
 import Coverage from '../screens/plan/Coverage'; // Screen to display insurance coverage details.
@@ -28,8 +27,8 @@ const PlanNavigator: React.FC = () => {
     headerShown: false,
   };
 
-  // LD1: Returns a `NavigationContainer` component that wraps the `Stack.Navigator` component.
-  // LD2: The `Stack.Navigator` component defines the navigation stack for the Plan journey, with each `Stack.Screen` component representing a screen in the journey.
+  // LD1: Returns the `Stack.Navigator` component defining the navigation stack for the Plan journey.
+  // LD2: Each `Stack.Screen` component represents a screen in the journey.
   return (
     <Stack.Navigator initialRouteName={routes.PLAN_DASHBOARD} screenOptions={screenOptions}>
       {/* LD1: Defines the `PlanDashboard` screen, which is the main dashboard for the Plan journey. */}
@@ -42,7 +41,7 @@ const PlanNavigator: React.FC = () => {
       <Stack.Screen name={routes.CLAIMS} component={ClaimHistory} />
 
       {/* LD1: Defines the `ClaimDetail` screen, which displays details of a specific claim. */}
-      <Stack.Screen name={routes.CLAIM_SUBMISSION} component={ClaimSubmission} />
+      <Stack.Screen name={routes.CLAIM_DETAIL} component={ClaimDetail} />
 
       {/* LD1: Defines the `ClaimSubmission` screen, which allows users to submit new claims. */}
       <Stack.Screen name={routes.CLAIM_SUBMISSION} component={ClaimSubmission} />

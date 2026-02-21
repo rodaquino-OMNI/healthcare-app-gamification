@@ -1,181 +1,336 @@
-import React, { useContext, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useContext, useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  ActivityIndicator,
+  TouchableOpacity,
+} from 'react-native';
+import { useRoute } from '@react-navigation/native';
 
-import { CoverageInfoCard } from 'src/web/design-system/src/plan/CoverageInfoCard/CoverageInfoCard';
 import { useCoverage } from 'src/web/mobile/src/hooks/useCoverage';
 import { JOURNEY_IDS } from 'src/web/shared/constants/journeys';
 import { JourneyContext } from 'src/web/mobile/src/context/JourneyContext';
+import { Coverage as CoverageType } from 'src/web/shared/types/plan.types';
+import {
+  colors,
+  typography,
+  spacing,
+  borderRadius,
+  sizing,
+} from '@web/design-system/src/tokens';
 
-// Styled components for the Coverage screen
-const Container = styled.div`
-  padding: 16px;
-  background-color: ${props => props.theme.colors.journeys.plan.background};
-`;
-
-const Title = styled.h1`
-  font-size: 24px;
-  font-weight: ${props => props.theme.typography.fontWeight.bold};
-  color: ${props => props.theme.colors.journeys.plan.primary};
-  margin-bottom: 8px;
-  font-family: ${props => props.theme.typography.fontFamily.heading};
-`;
-
-const Subtitle = styled.p`
-  font-size: 16px;
-  color: ${props => props.theme.colors.neutral.gray800};
-  margin-bottom: 24px;
-  font-family: ${props => props.theme.typography.fontFamily.base};
-  line-height: ${props => props.theme.typography.lineHeight.base};
-`;
-
-const CardsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-bottom: 24px;
-`;
-
-const LoadingContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 300px;
-`;
-
-const LoadingSpinner = styled.div`
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
-  border-top: 4px solid ${props => props.theme.colors.journeys.plan.primary};
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-`;
-
-const LoadingText = styled.p`
-  margin-top: 16px;
-  font-size: 16px;
-  color: ${props => props.theme.colors.neutral.gray700};
-  font-family: ${props => props.theme.typography.fontFamily.base};
-`;
-
-const ErrorContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 300px;
-  padding: 24px;
-`;
-
-const ErrorText = styled.p`
-  font-size: 18px;
-  font-weight: ${props => props.theme.typography.fontWeight.bold};
-  color: ${props => props.theme.colors.semantic.error};
-  text-align: center;
-  margin-bottom: 8px;
-  font-family: ${props => props.theme.typography.fontFamily.base};
-`;
-
-const ErrorSubText = styled.p`
-  font-size: 16px;
-  color: ${props => props.theme.colors.neutral.gray700};
-  text-align: center;
-  font-family: ${props => props.theme.typography.fontFamily.base};
-`;
-
-const EmptyContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 300px;
-  padding: 24px;
-`;
-
-const EmptyText = styled.p`
-  font-size: 16px;
-  color: ${props => props.theme.colors.neutral.gray700};
-  text-align: center;
-  font-family: ${props => props.theme.typography.fontFamily.base};
-`;
+const { plan } = colors.journeys;
+const sp = {
+  xs: 8,
+  sm: 12,
+  md: 16,
+  lg: 20,
+  xl: 24,
+  '2xl': 32,
+};
 
 /**
  * Coverage component displays insurance coverage information for a user's plan
  * within the 'My Plan & Benefits' journey.
- * 
+ *
  * Addresses requirement F-103-RQ-001: Display detailed insurance coverage information.
  */
 const Coverage: React.FC = () => {
-  // Get the journey context
   const { setJourney } = useContext(JourneyContext);
-  
-  // Set the current journey to Plan when component mounts
+
   useEffect(() => {
     setJourney(JOURNEY_IDS.PLAN);
   }, [setJourney]);
-  
-  // Get planId from the URL params
-  const urlParams = new URLSearchParams(window.location.search);
-  const planId = urlParams.get('planId') || '';
-  
-  // Fetch coverage data using the useCoverage hook
+
+  const route = useRoute<any>();
+  const planId = route.params?.planId || '';
+
   const { coverage, isLoading, error } = useCoverage(planId);
-  
-  // Handle loading state
+
+  // Track expanded sections by coverage type
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+
+  const toggleSection = (type: string) => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [type]: !prev[type],
+    }));
+  };
+
   if (isLoading) {
     return (
-      <LoadingContainer>
-        <LoadingSpinner />
-        <LoadingText>Carregando informações de cobertura...</LoadingText>
-      </LoadingContainer>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={plan.primary} />
+        <Text style={styles.loadingText}>
+          Carregando informacoes de cobertura...
+        </Text>
+      </View>
     );
   }
-  
-  // Handle error state
+
   if (error) {
     return (
-      <ErrorContainer>
-        <ErrorText>
-          Não foi possível carregar as informações de cobertura.
-        </ErrorText>
-        <ErrorSubText>
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>
+          Nao foi possivel carregar as informacoes de cobertura.
+        </Text>
+        <Text style={styles.errorSubText}>
           Por favor, tente novamente mais tarde.
-        </ErrorSubText>
-      </ErrorContainer>
+        </Text>
+      </View>
     );
   }
-  
-  // Handle empty data state
+
   if (!coverage || coverage.length === 0) {
     return (
-      <EmptyContainer>
-        <EmptyText>
-          Nenhuma informação de cobertura disponível para este plano.
-        </EmptyText>
-      </EmptyContainer>
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>
+          Nenhuma informacao de cobertura disponivel para este plano.
+        </Text>
+      </View>
     );
   }
-  
-  // Render coverage information
+
+  // Group coverage items by type
+  const grouped = coverage.reduce<Record<string, CoverageType[]>>((acc, item) => {
+    const key = item.type || 'other';
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(item);
+    return acc;
+  }, {});
+
+  const typeLabels: Record<string, string> = {
+    medical_visit: 'Consultas Medicas',
+    specialist_visit: 'Consultas com Especialistas',
+    emergency_care: 'Atendimento de Emergencia',
+    preventive_care: 'Cuidados Preventivos',
+    prescription_drugs: 'Medicamentos',
+    mental_health: 'Saude Mental',
+    rehabilitation: 'Reabilitacao',
+    durable_medical_equipment: 'Equipamentos Medicos',
+    lab_tests: 'Exames Laboratoriais',
+    imaging: 'Exames de Imagem',
+    other: 'Outros',
+  };
+
   return (
-    <Container>
-      <Title>Informações de Cobertura</Title>
-      <Subtitle>
-        Detalhes da sua cobertura atual incluindo limitações e valores de copagamento.
-      </Subtitle>
-      
-      <CardsContainer>
-        {coverage.map((item) => (
-          <CoverageInfoCard key={item.id} coverage={item} />
-        ))}
-      </CardsContainer>
-    </Container>
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>Informacoes de Cobertura</Text>
+      <Text style={styles.subtitle}>
+        Detalhes da sua cobertura atual incluindo limitacoes e valores de copagamento.
+      </Text>
+
+      {Object.entries(grouped).map(([type, items]) => {
+        const isExpanded = expandedSections[type] ?? true;
+        return (
+          <View key={type} style={styles.sectionCard}>
+            <TouchableOpacity
+              style={styles.sectionHeader}
+              onPress={() => toggleSection(type)}
+              accessibilityRole="button"
+              accessibilityLabel={`${isExpanded ? 'Recolher' : 'Expandir'} ${typeLabels[type] || type}`}
+            >
+              <View style={styles.sectionHeaderAccent} />
+              <Text style={styles.sectionHeaderText}>
+                {typeLabels[type] || type}
+              </Text>
+              <Text style={styles.chevron}>
+                {isExpanded ? '\u25B2' : '\u25BC'}
+              </Text>
+            </TouchableOpacity>
+
+            {isExpanded && (
+              <View style={styles.sectionContent}>
+                {items.map((item) => (
+                  <View key={item.id} style={styles.coverageItem}>
+                    <Text style={styles.coverageDetails}>{item.details}</Text>
+                    {item.limitations && (
+                      <View style={styles.limitationRow}>
+                        <Text style={styles.limitationLabel}>Limitacoes:</Text>
+                        <Text style={styles.limitationValue}>{item.limitations}</Text>
+                      </View>
+                    )}
+                    {item.coPayment !== undefined && item.coPayment !== null && (
+                      <View style={styles.copayRow}>
+                        <Text style={styles.copayLabel}>Copagamento:</Text>
+                        <Text style={styles.copayValue}>
+                          R$ {item.coPayment.toFixed(2)}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                ))}
+              </View>
+            )}
+          </View>
+        );
+      })}
+
+      <View style={styles.bottomSpacer} />
+    </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: sp.md,
+    backgroundColor: plan.background,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: typography.fontWeight.bold as any,
+    fontFamily: typography.fontFamily.heading,
+    color: plan.primary,
+    marginBottom: sp.xs,
+  },
+  subtitle: {
+    fontSize: 16,
+    fontWeight: typography.fontWeight.regular as any,
+    fontFamily: typography.fontFamily.body,
+    color: colors.neutral.gray700,
+    marginBottom: sp.xl,
+    lineHeight: 22,
+  },
+  sectionCard: {
+    backgroundColor: colors.neutral.white,
+    borderRadius: 8,
+    marginBottom: sp.md,
+    shadowColor: colors.neutral.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+    overflow: 'hidden',
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: sp.sm,
+    paddingHorizontal: sp.md,
+  },
+  sectionHeaderAccent: {
+    width: 4,
+    height: 24,
+    backgroundColor: plan.primary,
+    borderRadius: 2,
+    marginRight: sp.sm,
+  },
+  sectionHeaderText: {
+    flex: 1,
+    fontSize: 18,
+    fontWeight: typography.fontWeight.semiBold as any,
+    fontFamily: typography.fontFamily.heading,
+    color: plan.text,
+  },
+  chevron: {
+    fontSize: 12,
+    color: colors.gray[50],
+    marginLeft: sp.xs,
+  },
+  sectionContent: {
+    paddingHorizontal: sp.md,
+    paddingBottom: sp.md,
+  },
+  coverageItem: {
+    paddingVertical: sp.sm,
+    borderTopWidth: 1,
+    borderTopColor: colors.gray[20],
+  },
+  coverageDetails: {
+    fontSize: 14,
+    fontWeight: typography.fontWeight.regular as any,
+    fontFamily: typography.fontFamily.body,
+    color: plan.text,
+    lineHeight: 20,
+    marginBottom: sp.xs,
+  },
+  limitationRow: {
+    flexDirection: 'row',
+    marginTop: 4,
+  },
+  limitationLabel: {
+    fontSize: 12,
+    fontWeight: typography.fontWeight.medium as any,
+    color: colors.gray[50],
+    marginRight: 4,
+  },
+  limitationValue: {
+    fontSize: 12,
+    fontWeight: typography.fontWeight.regular as any,
+    color: colors.gray[50],
+    flex: 1,
+  },
+  copayRow: {
+    flexDirection: 'row',
+    marginTop: 4,
+    alignItems: 'center',
+  },
+  copayLabel: {
+    fontSize: 12,
+    fontWeight: typography.fontWeight.medium as any,
+    color: colors.gray[50],
+    marginRight: 4,
+  },
+  copayValue: {
+    fontSize: 14,
+    fontWeight: typography.fontWeight.semiBold as any,
+    color: plan.primary,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: 300,
+    backgroundColor: plan.background,
+  },
+  loadingText: {
+    marginTop: sp.md,
+    fontSize: 16,
+    fontFamily: typography.fontFamily.body,
+    color: colors.gray[50],
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: 300,
+    padding: sp.xl,
+    backgroundColor: plan.background,
+  },
+  errorText: {
+    fontSize: 18,
+    fontWeight: typography.fontWeight.bold as any,
+    fontFamily: typography.fontFamily.heading,
+    color: colors.semantic.error,
+    textAlign: 'center',
+    marginBottom: sp.xs,
+  },
+  errorSubText: {
+    fontSize: 16,
+    fontFamily: typography.fontFamily.body,
+    color: colors.gray[50],
+    textAlign: 'center',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: 300,
+    padding: sp.xl,
+    backgroundColor: plan.background,
+  },
+  emptyText: {
+    fontSize: 16,
+    fontFamily: typography.fontFamily.body,
+    color: colors.gray[50],
+    textAlign: 'center',
+  },
+  bottomSpacer: {
+    height: sp['2xl'],
+  },
+});
 
 export default Coverage;

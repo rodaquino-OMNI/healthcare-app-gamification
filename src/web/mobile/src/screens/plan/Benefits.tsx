@@ -1,48 +1,80 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, View } from 'react-native';
+import {
+  FlatList,
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import { Benefit } from 'src/web/shared/types/plan.types';
 import EmptyState from '../components/shared/EmptyState';
 import ErrorState from '../components/shared/ErrorState';
 import LoadingIndicator from '../components/shared/LoadingIndicator';
 import JourneyHeader from '../components/shared/JourneyHeader';
 import { JOURNEY_IDS } from 'src/web/shared/constants/journeys';
+import { colors } from '@web/design-system/src/tokens/colors';
+import { spacingValues } from '@web/design-system/src/tokens/spacing';
+import { fontSizeValues } from '@web/design-system/src/tokens/typography';
+import { borderRadiusValues } from '@web/design-system/src/tokens/borderRadius';
+
+/**
+ * Categories for filtering benefits.
+ */
+const BENEFIT_CATEGORIES = ['Todos', 'Medico', 'Dental', 'Visao'] as const;
+type BenefitCategory = (typeof BENEFIT_CATEGORIES)[number];
+
+/**
+ * Maps category filter labels to benefit type values for filtering.
+ */
+const CATEGORY_TYPE_MAP: Record<BenefitCategory, string | null> = {
+  Todos: null,
+  Medico: 'medical',
+  Dental: 'dental',
+  Visao: 'vision',
+};
 
 /**
  * BenefitsScreen component displays a list of benefits available to the user
- * under their insurance plan. It handles loading, error, and empty states.
+ * under their insurance plan. Includes category filter tabs, loading, error,
+ * and empty states.
  */
 const BenefitsScreen: React.FC = () => {
   const [benefits, setBenefits] = useState<Benefit[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
+  const [activeFilter, setActiveFilter] = useState<BenefitCategory>('Todos');
+
+  const fetchBenefits = async () => {
+    try {
+      setLoading(true);
+      setError(false);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setBenefits([]);
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching benefits:', err);
+      setError(true);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // In a real app, this would be an API call to fetch benefits data
-    const fetchBenefits = async () => {
-      try {
-        // Simulate API call with timeout
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // In a real app, this would be the API response
-        // For demonstration, using an empty array to show the empty state
-        setBenefits([]);
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching benefits:', err);
-        setError(true);
-        setLoading(false);
-      }
-    };
-
     fetchBenefits();
   }, []);
 
+  const filteredBenefits = benefits.filter((b) => {
+    const typeFilter = CATEGORY_TYPE_MAP[activeFilter];
+    if (!typeFilter) return true;
+    return b.type === typeFilter;
+  });
+
   if (loading) {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.screen}>
         <JourneyHeader />
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <LoadingIndicator journey="plan" label="Loading benefits..." />
+        <View style={styles.centered}>
+          <LoadingIndicator journey="plan" label="Carregando beneficios..." />
         </View>
       </View>
     );
@@ -50,20 +82,15 @@ const BenefitsScreen: React.FC = () => {
 
   if (error) {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.screen}>
         <JourneyHeader />
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={styles.centered}>
           <ErrorState
             icon="error"
-            title="Unable to load benefits"
-            description="There was a problem loading your benefits. Please try again later."
-            actionLabel="Try Again"
-            onAction={() => {
-              setLoading(true);
-              setError(false);
-              // In a real app, this would retry the API call
-              fetchBenefits();
-            }}
+            title="Erro ao carregar beneficios"
+            description="Houve um problema ao carregar seus beneficios. Tente novamente."
+            actionLabel="Tentar Novamente"
+            onAction={fetchBenefits}
             journey="plan"
           />
         </View>
@@ -71,15 +98,43 @@ const BenefitsScreen: React.FC = () => {
     );
   }
 
-  if (benefits.length === 0) {
+  if (filteredBenefits.length === 0 && !loading) {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.screen}>
         <JourneyHeader />
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={styles.filterContainer}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.filterScroll}
+          >
+            {BENEFIT_CATEGORIES.map((cat) => (
+              <TouchableOpacity
+                key={cat}
+                style={[
+                  styles.filterTab,
+                  activeFilter === cat && styles.filterTabActive,
+                ]}
+                onPress={() => setActiveFilter(cat)}
+                accessibilityLabel={`Filtrar por ${cat}`}
+              >
+                <Text
+                  style={[
+                    styles.filterTabText,
+                    activeFilter === cat && styles.filterTabTextActive,
+                  ]}
+                >
+                  {cat}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+        <View style={styles.centered}>
           <EmptyState
             icon="card"
-            title="No benefits available"
-            description="You don't have any benefits available under your current plan."
+            title="Nenhum beneficio disponivel"
+            description="Voce nao possui beneficios disponiveis no plano atual."
             journey="plan"
           />
         </View>
@@ -87,43 +142,61 @@ const BenefitsScreen: React.FC = () => {
     );
   }
 
-  // Render the benefits list
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.screen}>
       <JourneyHeader />
+      {/* Filter Tabs */}
+      <View style={styles.filterContainer}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filterScroll}
+        >
+          {BENEFIT_CATEGORIES.map((cat) => (
+            <TouchableOpacity
+              key={cat}
+              style={[
+                styles.filterTab,
+                activeFilter === cat && styles.filterTabActive,
+              ]}
+              onPress={() => setActiveFilter(cat)}
+              accessibilityLabel={`Filtrar por ${cat}`}
+            >
+              <Text
+                style={[
+                  styles.filterTabText,
+                  activeFilter === cat && styles.filterTabTextActive,
+                ]}
+              >
+                {cat}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* Benefits List */}
       <FlatList
-        data={benefits}
+        data={filteredBenefits}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={{ padding: 16 }}
+        contentContainerStyle={styles.listContent}
         renderItem={({ item }) => (
-          <View 
-            style={{
-              backgroundColor: 'white',
-              borderRadius: 8,
-              padding: 16,
-              marginBottom: 16,
-              borderLeftWidth: 4,
-              borderLeftColor: '#3A86FF', // Plan journey color
-              shadowColor: '#000',
-              shadowOpacity: 0.1,
-              shadowOffset: { width: 0, height: 2 },
-              shadowRadius: 4,
-              elevation: 2,
-            }}
-          >
-            <View style={{ marginBottom: 8 }}>
-              <View style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 4 }}>{item.type}</View>
-              <View style={{ marginBottom: 8 }}>{item.description}</View>
+          <View style={styles.benefitCard}>
+            <View style={styles.benefitContent}>
+              <Text style={styles.benefitType}>{item.type}</Text>
+              <Text style={styles.benefitDescription}>{item.description}</Text>
               {item.limitations && (
-                <View style={{ fontSize: 14, color: '#666' }}>
-                  <View style={{ fontWeight: '500' }}>Limitations: </View>
-                  {item.limitations}
+                <View style={styles.benefitDetailRow}>
+                  <Text style={styles.benefitDetailLabel}>Limitacoes: </Text>
+                  <Text style={styles.benefitDetailValue}>
+                    {item.limitations}
+                  </Text>
                 </View>
               )}
               {item.usage && (
-                <View style={{ fontSize: 14, color: '#666', marginTop: 4 }}>
-                  <View style={{ fontWeight: '500' }}>Usage: </View>
-                  {item.usage}
+                <View style={styles.benefitDetailRow}>
+                  <Text style={styles.benefitDetailLabel}>Uso: </Text>
+                  <Text style={styles.benefitDetailValue}>{item.usage}</Text>
                 </View>
               )}
             </View>
@@ -133,5 +206,92 @@ const BenefitsScreen: React.FC = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: colors.journeys.plan.background,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  /* Filter Tabs */
+  filterContainer: {
+    paddingVertical: spacingValues.sm,
+    paddingHorizontal: spacingValues.md,
+    backgroundColor: colors.neutral.white,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.gray[20],
+  },
+  filterScroll: {
+    gap: spacingValues.xs,
+  },
+  filterTab: {
+    paddingVertical: spacingValues.xs,
+    paddingHorizontal: spacingValues.md,
+    borderRadius: borderRadiusValues.full,
+    backgroundColor: colors.gray[10],
+  },
+  filterTabActive: {
+    backgroundColor: colors.journeys.plan.primary,
+  },
+  filterTabText: {
+    fontSize: fontSizeValues.sm,
+    fontWeight: String(500) as any,
+    color: colors.gray[50],
+  },
+  filterTabTextActive: {
+    color: colors.neutral.white,
+    fontWeight: String(600) as any,
+  },
+
+  /* Benefits List */
+  listContent: {
+    padding: spacingValues.md,
+    gap: spacingValues.sm,
+  },
+  benefitCard: {
+    backgroundColor: colors.neutral.white,
+    borderRadius: borderRadiusValues.md,
+    padding: spacingValues.md,
+    borderLeftWidth: 4,
+    borderLeftColor: colors.journeys.plan.primary,
+    shadowColor: colors.neutral.black,
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  benefitContent: {
+    gap: spacingValues.xs,
+  },
+  benefitType: {
+    fontWeight: String(700) as any,
+    fontSize: fontSizeValues.lg,
+    color: colors.journeys.plan.text,
+  },
+  benefitDescription: {
+    fontSize: fontSizeValues.sm,
+    color: colors.gray[50],
+    lineHeight: fontSizeValues.sm * 1.5,
+  },
+  benefitDetailRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  benefitDetailLabel: {
+    fontSize: fontSizeValues.sm,
+    fontWeight: String(500) as any,
+    color: colors.gray[60],
+  },
+  benefitDetailValue: {
+    fontSize: fontSizeValues.sm,
+    color: colors.gray[50],
+    flex: 1,
+  },
+});
 
 export default BenefitsScreen;

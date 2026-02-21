@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ErrorType } from '@app/shared/exceptions/error.types';
-import { Injectable } from '@nestjs/common'; // NestJS Common 9.0.0+
+import { ForbiddenException, Injectable } from '@nestjs/common'; // NestJS Common 9.0.0+
 import { EventEmitter2 } from 'eventemitter2'; // EventEmitter2 6.4.0+
 
 import { Configuration } from '@app/health/config/configuration';
@@ -35,7 +34,11 @@ export class FhirService {
    * @param patientId - The unique identifier of the patient
    * @returns A promise that resolves to the patient record
    */
-  async getPatientRecord(patientId: string): Promise<any> {
+  async getPatientRecord(patientId: string, requestingUserId: string): Promise<any> {
+    if (patientId !== requestingUserId) {
+      throw new ForbiddenException('Access denied: cannot access another patient\'s records');
+    }
+
     // Log the retrieval attempt
     this.logger.log(`Retrieving patient record for patient ID: ${patientId}`, 'FhirService');
     
@@ -79,7 +82,11 @@ export class FhirService {
    * @param patientId - The unique identifier of the patient
    * @returns A promise that resolves to an array of medical events
    */
-  async getMedicalHistory(patientId: string): Promise<any[]> {
+  async getMedicalHistory(patientId: string, requestingUserId: string): Promise<any[]> {
+    if (patientId !== requestingUserId) {
+      throw new ForbiddenException('Access denied: cannot access another patient\'s records');
+    }
+
     // Log the medical history retrieval attempt
     this.logger.log(`Retrieving medical history for patient ID: ${patientId}`, 'FhirService');
     
@@ -129,8 +136,13 @@ export class FhirService {
   async getHealthMetricsFromFhir(
     patientId: string,
     metricType: string,
+    requestingUserId: string,
     dateRange?: object
   ): Promise<any[]> {
+    if (patientId !== requestingUserId) {
+      throw new ForbiddenException('Access denied: cannot access another patient\'s records');
+    }
+
     // Log the health metrics retrieval attempt
     this.logger.log(
       `Retrieving health metrics of type ${metricType} for patient ID: ${patientId}`,

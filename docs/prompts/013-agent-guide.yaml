@@ -1,0 +1,954 @@
+# ============================================================================
+# ADR-013 AGENT GUIDE — Machine-Readable Claude-Flow Intelligence Reference
+# ============================================================================
+# Source: docs/ADRs/013-claude-flow-swarm-intelligence.md
+# Version: 3.1.0-alpha.44 (ruflo)
+# Updated: 2026-02-20
+# Purpose: AI agent operational guide — patterns, anti-patterns, workflows
+# Consumption: AI agents, swarm workers, coordinators, hook handlers
+# Format: YAML (structured for LLM context injection and semantic parsing)
+# ============================================================================
+
+meta:
+  adr: "013"
+  title: "Claude-Flow Swarm Intelligence Agent Guide"
+  cli_version: "3.1.0-alpha.44"
+  packages: ["claude-flow", "ruflo", "@claude-flow/cli"]
+  license: "MIT"
+  project_namespace: "healthcare-platform"
+  pattern_namespace: "patterns"
+
+# ============================================================================
+# SECTION 1: EXECUTION MODELS
+# ============================================================================
+# Two execution models exist. Selection depends on agent count and context.
+
+execution_models:
+  task_tool:
+    label: "In-Session Task Tool (PREFERRED)"
+    when: "interactive work, <= 8 agents, within Claude Code session"
+    how: "Claude's native Task tool spawns parallel agents in same message"
+    max_agents: 8
+    benefits:
+      - "no terminal context-switching"
+      - "Claude controls agent lifecycle directly"
+      - "parallel execution guaranteed (same message)"
+      - "Agent Teams hooks fire automatically (TeammateIdle, TaskCompleted)"
+      - "results available in-session for immediate validation"
+    spawn_pattern: |
+      mcp__claude-flow__swarm_init({ topology: "hierarchical-mesh", maxAgents: 8, strategy: "specialized" })
+      Task("Coordinator", "Initialize session, coordinate via memory namespace.", "hierarchical-coordinator")
+      Task("Researcher", "Analyze requirements. Store findings in memory.", "researcher")
+      Task("Architect", "Design implementation based on research.", "system-architect")
+      Task("Coder", "Implement following architect's design.", "coder")
+      Task("Tester", "Write tests for implementation.", "tester")
+      Task("Reviewer", "Review code quality and security.", "reviewer")
+    critical_rule: "ALL Task calls MUST be in the SAME message for parallel execution"
+
+  hive_mind_cli:
+    label: "Hive-Mind Spawn CLI (Large Swarms)"
+    when: "> 8 agents, detached execution, large parallel workloads"
+    how: "display command in code block for user to copy-paste into separate terminal"
+    max_agents: 100+
+    command_template: |
+      npx @claude-flow/cli@latest hive-mind spawn \
+        --workers {N} \
+        --topology hierarchical-mesh \
+        --consensus byzantine \
+        --claude \
+        --model-routing intelligent \
+        --namespace healthcare-platform \
+        --use-memory \
+        --use-patterns \
+        --use-vectors \
+        --use-learning \
+        --objective "{DETAILED_OBJECTIVE}"
+    flags_required:
+      "--claude": "enables native Claude coordination, agents spawn automatically"
+      "--model-routing intelligent": "cost-efficient tier routing (Haiku for simple, Sonnet for complex)"
+      "--use-memory": "access to claude-flow memory system"
+      "--use-patterns": "access to pattern library"
+      "--use-vectors": "semantic search via RuVector HNSW"
+      "--use-learning": "neural learning and pattern extraction"
+    agent_behavior_after_display: "STOP. Do NOT spawn Task tool agents. Do NOT poll status. Wait for user notification."
+
+# ============================================================================
+# SECTION 2: MODEL ROUTING (3-Tier — ADR-026)
+# ============================================================================
+
+model_routing:
+  description: "Automatic model selection based on task complexity"
+  cost_reduction: "40-60%"
+  tiers:
+    - tier: 1
+      handler: "Agent Booster (WASM)"
+      latency: "<1ms"
+      cost: "$0"
+      use_cases: "simple transforms (var→const, add types, rename variable)"
+      models: null  # no LLM — pure WASM execution
+      complexity_threshold: "<10%"
+      detection: "check for [AGENT_BOOSTER_AVAILABLE] signal"
+      action: "use Edit tool directly, skip LLM entirely"
+
+    - tier: 2
+      handler: "Haiku"
+      latency: "~500ms"
+      cost: "$0.0002"
+      use_cases: "simple tasks, boilerplate, formatting, low complexity"
+      models: ["claude-haiku-4-5"]
+      complexity_threshold: "<30%"
+
+    - tier: 3
+      handler: "Sonnet/Opus"
+      latency: "2-5s"
+      cost: "$0.003-$0.015"
+      use_cases: "complex reasoning, architecture, security, business logic"
+      models: ["claude-sonnet-4-5", "claude-opus-4-6"]
+      complexity_threshold: ">30%"
+
+  routing_signal: "[TASK_MODEL_RECOMMENDATION]"
+  rule: "always check for routing signals before spawning agents"
+
+# ============================================================================
+# SECTION 3: HOOKS SYSTEM (v3.1.0 — Local Handlers)
+# ============================================================================
+
+hooks:
+  architecture: "local Node.js handlers in .claude/helpers/"
+  installation: "npx @claude-flow/cli@latest init --force"
+  cold_start_savings: "~2-5s per hook invocation vs old npx-based hooks"
+
+  events:
+    - event: "PreToolUse"
+      matcher: "Bash"
+      handler: "node .claude/helpers/hook-handler.cjs pre-bash"
+      purpose: "command risk assessment before bash execution"
+      timeout_ms: 5000
+
+    - event: "PostToolUse"
+      matcher: "Write|Edit|MultiEdit"
+      handler: "node .claude/helpers/hook-handler.cjs post-edit"
+      purpose: "edit outcome recording, co-edit pattern learning"
+      timeout_ms: 10000
+
+    - event: "UserPromptSubmit"
+      matcher: null  # fires on all prompts
+      handler: "node .claude/helpers/hook-handler.cjs route"
+      purpose: "task routing to optimal agent/model tier"
+      timeout_ms: 10000
+
+    - event: "SessionStart"
+      matcher: null
+      handlers:
+        - "node .claude/helpers/hook-handler.cjs session-restore"
+        - "node .claude/helpers/auto-memory-hook.mjs import"
+      purpose: "session state recovery, memory import"
+      timeout_ms: 15000
+
+    - event: "SessionEnd"
+      matcher: null
+      handler: "node .claude/helpers/hook-handler.cjs session-end"
+      purpose: "state persistence, session snapshot"
+
+    - event: "Stop"
+      matcher: null
+      handler: "node .claude/helpers/auto-memory-hook.mjs sync"
+      purpose: "memory sync on exit"
+
+    - event: "PreCompact"
+      matchers: ["manual", "auto"]
+      handlers:
+        - "node .claude/helpers/hook-handler.cjs compact-manual"
+        - "node .claude/helpers/hook-handler.cjs compact-auto"
+        - "node .claude/helpers/hook-handler.cjs session-end"
+      purpose: "context compaction, state preservation before context window reset"
+
+    - event: "SubagentStart"
+      matcher: null
+      handler: "node .claude/helpers/hook-handler.cjs status"
+      purpose: "agent spawn tracking"
+      version_added: "3.1.0"
+
+    - event: "TeammateIdle"
+      matcher: null
+      handler: "node .claude/helpers/hook-handler.cjs post-task"
+      purpose: "idle agent task assignment via Agent Teams"
+      version_added: "3.1.0"
+
+    - event: "TaskCompleted"
+      matcher: null
+      handler: "node .claude/helpers/hook-handler.cjs post-task"
+      purpose: "completion pattern training, coordinator notification"
+      version_added: "3.1.0"
+
+  cli_hooks_for_explicit_lifecycle:
+    pre_task: >
+      npx @claude-flow/cli@latest hooks pre-task
+      --description "{task_description}"
+      --task-id "{unique_id}"
+      --namespace healthcare-platform
+    post_task_success: >
+      npx @claude-flow/cli@latest hooks post-task
+      --task-id "{unique_id}"
+      --status success
+      --output "{results_summary}"
+    post_task_failure: >
+      npx @claude-flow/cli@latest hooks post-task
+      --task-id "{unique_id}"
+      --status failure
+      --error "{error_details}"
+
+# ============================================================================
+# SECTION 4: AGENT TEAMS (v3.1.0+)
+# ============================================================================
+
+agent_teams:
+  enabled: true
+  env_flag: "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1"
+  capabilities:
+    teammate_mode: "auto"  # automatic agent coordination
+    task_list: true         # shared task list across agents
+    mailbox: true           # inter-agent message passing
+    auto_assign_on_idle: true   # idle agents pick up queued tasks
+    train_patterns_on_complete: true  # neural training on task completion
+    notify_lead_on_complete: true     # coordinator notified on any agent finish
+    shared_memory_namespace: "agent-teams"
+
+# ============================================================================
+# SECTION 5: MEMORY SYSTEM
+# ============================================================================
+
+memory:
+  backend: "hybrid"
+  rule: "use claude-flow memory for ALL temporary state. NEVER create PROGRESS.md, STATUS.md, TODO.md"
+
+  subsystems:
+    hnsw:
+      enabled: true
+      metric: "cosine"
+      params: { M: 16, efConstruction: 200, efSearch: 100 }
+      dimensions: 384
+
+    learning_bridge:
+      enabled: true
+      purpose: "cross-session pattern transfer"
+
+    memory_graph:
+      enabled: true
+      purpose: "relationship tracking between memory entries"
+
+    agent_scopes:
+      enabled: true
+      purpose: "per-agent isolated memory namespaces"
+
+  operations:
+    store: >
+      npx @claude-flow/cli@latest memory store
+      --key "{key}" --value "{value}" --namespace {namespace}
+    search: >
+      npx @claude-flow/cli@latest memory search
+      --query "{query}" --namespace {namespace} --limit {n}
+    retrieve: >
+      npx @claude-flow/cli@latest memory retrieve
+      --key "{key}" --namespace {namespace}
+    list: >
+      npx @claude-flow/cli@latest memory list
+      --namespace {namespace} --limit {n}
+
+  key_conventions:
+    progress: "progress-{phase}"
+    patterns: "pattern-{name}"
+    phase_scope: "phase-{X}-scope"
+    phase_complete: "phase-{X}-complete"
+    dimension_output: "dim{N}-{label}"
+
+# ============================================================================
+# SECTION 6: NEURAL LEARNING
+# ============================================================================
+
+neural:
+  purpose: "train models on generated code to improve pattern recognition"
+  model_types:
+    moe:
+      description: "Mixture of Experts — multi-domain routing"
+      use_for: "generated workers, BPMN, DMN after code generation sprints"
+      command: >
+        npx @claude-flow/cli@latest neural train
+        --modelType moe --data-source "{path}" --epochs 10 --namespace healthcare-platform
+
+    classifier:
+      description: "classification — routing, prioritization"
+      use_for: "task complexity classification, agent routing decisions"
+      command: >
+        npx @claude-flow/cli@latest neural train
+        --modelType classifier --training-data .claude-flow/training-data.jsonl --epochs 15
+
+    transformer:
+      description: "complex pattern synthesis"
+      use_for: "deep code patterns, architecture learning"
+      command: >
+        npx @claude-flow/cli@latest neural train
+        --modelType transformer --data-source "{path}" --epochs 20
+
+  wasm_fallback:
+    description: "WASM path activates when native modules unavailable"
+    capabilities:
+      - "MicroLoRA (256-dim, <1μs adaptation)"
+      - "ScopedLoRA (17 operators)"
+      - "TrajectoryBuffer"
+      - "FlashAttention"
+      - "AdamW Optimizer"
+      - "InfoNCE Loss"
+      - "SONA (256-dim, rank-4, 624k learn/s)"
+    embedding_model: "all-MiniLM-L6-v2 (384-dim ONNX)"
+    note: "native modules provide ~2-3x speedup but WASM is fully functional"
+
+# ============================================================================
+# SECTION 7: SONA (Self-Organizing Neural Architecture)
+# ============================================================================
+
+sona:
+  description: "Reinforcement learning engine for continuous agent improvement"
+  dimensions: 256
+  rank: 4
+  throughput: "624,000 learn/s"
+
+  trajectory_workflow:
+    begin: >
+      npx @claude-flow/cli@latest hooks intelligence trajectory-start
+      --task "{task_description}" --agent "{agent_type}"
+    step: >
+      npx @claude-flow/cli@latest hooks intelligence trajectory-step
+      --trajectoryId "{id}" --action "{action}" --result "{result}" --quality {0-1}
+    end: >
+      npx @claude-flow/cli@latest hooks intelligence trajectory-end
+      --trajectoryId "{id}" --success {true|false}
+
+  learning_algorithms:
+    - "q-learning"
+    - "sarsa"
+    - "double-q"
+    - "actor-critic"
+    - "ppo"
+    - "decision-transformer"
+    - "monte-carlo"
+    - "td-lambda"
+    - "dqn"
+
+  task_types_for_learning:
+    - "agent-routing"
+    - "error-avoidance"
+    - "confidence-scoring"
+    - "trajectory-learning"
+    - "context-ranking"
+    - "memory-recall"
+
+  ewc_plus_plus:
+    description: "Elastic Weight Consolidation — prevents catastrophic forgetting"
+    trigger: "trajectory-end automatically runs EWC++ consolidation"
+
+# ============================================================================
+# SECTION 8: VECTOR SEARCH (RuVector / HNSW)
+# ============================================================================
+
+vectors:
+  engine: "RuVector with HNSW indexing"
+  speed: "150x-12,500x faster than keyword search"
+  embedding_model: "all-MiniLM-L6-v2"
+  embedding_dimensions: 384
+
+  operations:
+    index: >
+      npx @claude-flow/cli@latest vector index
+      --source "{directory}" --namespace {namespace} --algorithm hnsw --dimensions 768
+    search: >
+      npx @claude-flow/cli@latest vector search
+      --query "{semantic_query}" --namespace {namespace} --top-k 5
+    status: "npx @claude-flow/cli@latest vector status"
+
+  rvf_format:
+    description: "RuVector File format — native binary vector store"
+    operations:
+      create: "rvf_create --path {file}.rvf --dimension {N} --metric cosine"
+      ingest: "rvf_ingest --path {file}.rvf --entries [{id, vector, metadata}]"
+      query: "rvf_query --path {file}.rvf --vector [...] --k 10"
+      derive: "rvf_derive --parent {parent}.rvf --child {child}.rvf"
+
+  hyperbolic_embeddings:
+    description: "Poincaré ball embeddings for hierarchical data"
+    curvature: -1
+    operations: ["convert", "distance", "midpoint"]
+
+# ============================================================================
+# SECTION 9: SWARM TOPOLOGY
+# ============================================================================
+
+swarm:
+  topology: "hierarchical-mesh"
+  consensus: "byzantine"
+  max_agents: 15
+  fault_tolerance: "33% agent failure tolerance"
+
+  topology_comparison:
+    hierarchical:
+      best_for: "simple tasks, clear decomposition"
+      max_agents: 50
+      fault_tolerance: "low"
+    mesh:
+      best_for: "collaborative tasks, peer review"
+      max_agents: 20
+      fault_tolerance: "medium"
+    hierarchical_mesh:
+      best_for: "complex multi-domain projects"
+      max_agents: "100+"
+      fault_tolerance: "high (Byzantine)"
+
+  initialization: >
+    npx @claude-flow/cli@latest hive-mind init
+    --topology hierarchical-mesh --max-agents 15 --consensus byzantine
+
+# ============================================================================
+# SECTION 10: PATTERNS (CORRECT BEHAVIORS)
+# ============================================================================
+
+patterns:
+
+  memory_first:
+    id: "pattern-memory-first"
+    rule: "use claude-flow memory for ALL temporary state"
+    correct:
+      - "npx @claude-flow/cli@latest memory store --key 'progress-phase-1' --value '...' --namespace healthcare-platform"
+      - "npx @claude-flow/cli@latest memory search --query 'authentication patterns' --namespace patterns"
+    incorrect:
+      - "creating PROGRESS.md, STATUS.md, TODO.md"
+      - "echo 'status: done' > /tmp/status.txt"
+      - "writing status to any markdown file"
+
+  complete_swarm_workflow:
+    id: "pattern-complete-swarm-workflow"
+    steps:
+      pre_spawn:
+        - "hooks pre-task — register task, get routing recommendation"
+        - "memory store scope — store task scope for swarm agents"
+        - "hive-mind init — initialize coordination (hierarchical-mesh)"
+        - "hive-mind status — verify initialization"
+        - "choose execution model: Task tool (in-session) or CLI (large swarm)"
+      spawn:
+        in_session: "Task tool spawns agents directly (parallel, same message)"
+        cli: "user copies command to separate terminal, monitors, notifies agent"
+      post_task:
+        - "memory store — store completion with results summary"
+        - "hooks post-task — record completion status"
+        - "neural train — only if significant new code patterns"
+        - "pattern store — only if reusable pattern discovered"
+
+  per_worker_exit_gate:
+    id: "pattern-per-worker-exit-gate"
+    rule: "every worker MUST verify its own memory key was stored before declaring completion"
+    template: |
+      Worker-N (ROLE-NAME):
+        READ: [exact file paths]
+        EXECUTE: [exact grep/find/wc commands]
+        STORE: memory key <key-name>, namespace <ns>
+        EXIT GATE: npx @claude-flow/cli@latest memory retrieve -k <key-name> --namespace <ns> | wc -c
+                   → must be > 500 (confirms key was written, not empty)
+                   → IF GATE FAILS: re-execute READ+STORE steps before proceeding
+
+  synthesizer_upstream_gate:
+    id: "pattern-synthesizer-upstream-gate"
+    rule: "synthesizer MUST verify ALL upstream memory keys exist and have >200 bytes BEFORE writing any report"
+    template: |
+      Worker-N (REPORT-SYNTHESIZER) MUST execute this check FIRST:
+        REQUIRED_KEYS = [dim1-..., dim2-..., dim3-..., ...]
+        FOR EACH key IN REQUIRED_KEYS:
+          result = memory retrieve -k <key> --namespace <ns>
+          IF result is empty or < 200 bytes:
+            ABORT and store error: "SYNTHESIZER-BLOCKED: missing key <key>"
+            DO NOT write any report — incomplete data produces misleading output
+        ONLY IF ALL keys pass: proceed to write reports
+
+  parallel_swarms_for_dependencies:
+    id: "pattern-parallel-swarms-for-dependencies"
+    rule: "if Dimension X depends on Dimension Y, they MUST be in separate sequential swarms"
+    template: |
+      SWARM-A (independent): DIM-1 + DIM-2
+      SWARM-B (independent): DIM-4 backend + frontend
+      SWARM-C (independent): DIM-5 security + deps
+      [GATE: wait for A+B+C memory keys to all exist with >500 bytes each]
+      SWARM-D (depends on A+B+C): DIM-3 adherence + final synthesis
+
+  prompt_structure:
+    id: "pattern-prompt-structure-benchmark"
+    rule: "all swarm objectives MUST follow this structure"
+    template: |
+      SWARM [NAME]: [SCOPE SUMMARY] | [metrics] | [file count] | [key metric]
+
+      MEMORY: [key1], [key2], [key3]
+      WORKSPACE: [absolute path]
+
+      PRIMARY DELIVERABLES:
+      1. [exact/file/path.py]
+      2. [exact/file/path.py]
+
+      ANTI-PATTERNS TO AVOID:
+      {include all anti-patterns from anti_patterns section below}
+
+      ━━━ EXISTING CODE (READ BEFORE WRITING) ━━━
+      [MODULE]: [path]
+        [ClassName].[method](args) → return_type
+
+      ━━━ PHASE 1: RECON (1 agent) ━━━
+      READ: [exact files]
+      MAP: [what to extract]
+      OUTPUT: internal report for Phase 2
+
+      ━━━ PHASE 2: CODER (N agents, parallel) ━━━
+      CREATE/MODIFY: [exact file paths]
+      VALIDATE: [command]
+
+      ━━━ PHASE 3: VERIFIER (1 agent) ━━━
+      V1: [command] → [expected result]
+      V2: [command] → [expected result]
+
+      ━━━ EXIT CRITERIA ━━━
+      ✅ [criterion with measurable check]
+
+      ROLLBACK: [recovery command if fails]
+    key_rules:
+      - "3-tier minimum: RECON → CODER → VERIFIER"
+      - "exact file paths — no ambiguity"
+      - "exact function signatures — agents don't guess APIs"
+      - "explicit validation commands with expected output"
+      - "anti-patterns list with ❌ prefix"
+      - "exit criteria with ✅ checkmarks and grep/wc/pytest commands"
+      - "rollback procedure if pass rate drops"
+
+  delegation_threshold:
+    id: "pattern-delegation-threshold"
+    rules:
+      - files: "1-2"
+        action: "agent can edit manually (with permission)"
+      - files: "3-10"
+        action: "suggest swarm, offer manual as fallback"
+      - files: "11+"
+        action: "MANDATORY swarm delegation"
+      - condition: "pattern replication (even 2 files)"
+        action: "ALWAYS use swarm"
+
+  task_complexity_auto_swarm:
+    id: "pattern-task-complexity-auto-swarm"
+    triggers_swarm:
+      - "multiple files (3+)"
+      - "new feature implementation"
+      - "refactoring across modules"
+      - "API changes with tests"
+      - "security-related changes"
+    skip_swarm:
+      - "single file edits"
+      - "simple bugs"
+      - "config changes"
+
+# ============================================================================
+# SECTION 11: ANTI-PATTERNS (FORBIDDEN BEHAVIORS)
+# ============================================================================
+
+anti_patterns:
+
+  agent_introspection_loop:
+    id: "AP1"
+    severity: "critical"
+    definition: "swarm workers executing tool introspection commands (hooks statusline, memory list, hive-mind status) in place of actual work"
+    symptoms:
+      - "worker appears to complete but expected memory keys are missing"
+      - "memory list shows only scope keys, not data keys"
+      - "final synthesizer writes 0 or 1 of N expected reports"
+      - "agents loop on statusline/status commands without file reads"
+    root_cause: "swarm objective lacked per-worker exit gates"
+    prevention: "every worker MUST have EXIT GATE that verifies memory key > 500 bytes"
+    incorrect_commands:
+      - "npx @claude-flow/cli@latest hooks statusline"
+      - "npx @claude-flow/cli@latest hive-mind status"
+    correct_commands:
+      - "read_file, grep_search, run_in_terminal (find/grep/wc)"
+      - "memory store with substantive content (>500 bytes)"
+      - "memory retrieve + wc -c to self-verify"
+
+  missing_upstream_gate:
+    id: "AP2"
+    severity: "critical"
+    definition: "synthesizer starts writing output without verifying all upstream memory keys exist"
+    consequence: "hallucinated report from incomplete data"
+    prevention: "synthesizer MUST check ALL required keys have >200 bytes BEFORE writing"
+    correct_behavior: "ABORT and store error key if any upstream key missing"
+
+  batch_anti_pattern:
+    id: "AP3"
+    severity: "high"
+    definition: "launching single monolithic swarm for tasks with explicit dependency ordering"
+    consequence: "dependent workers get empty input, produce empty findings"
+    prevention: "split into parallel swarms for independent dims + dependent synthesis swarm"
+    rule: "if Dimension X lists depends_on [DIM-Y], it MUST be in a separate later swarm"
+
+  queen_as_coder:
+    id: "AP4"
+    severity: "high"
+    definition: "agent acting as primary code generator instead of delegating to swarm"
+    symptoms:
+      - "agent writes code directly using replace_string_in_file"
+      - "agent generates code in chat asking user to copy-paste"
+      - "agent creates files sequentially over hours"
+    consequences:
+      - "inefficient: manual edits take 10-20x longer than swarm"
+      - "error-prone: introduces inconsistencies"
+      - "no learning: patterns not captured in neural system"
+      - "context limit: runs out of tokens after 20-30 manual edits"
+    correct_behavior: "prepare swarm command, execute hooks, validate results"
+    agent_role: "architect + planner + coordinator, NOT coder"
+
+  markdown_state_files:
+    id: "AP5"
+    severity: "medium"
+    definition: "creating PROGRESS.md, STATUS.md, TODO.md for tracking work"
+    correct: "use claude-flow memory system"
+    reason: "memory is semantic-searchable, versioned, namespaced, auto-cleaned"
+
+  automated_cli_execution:
+    id: "AP6"
+    severity: "medium"
+    definition: "agent executing hive-mind spawn command directly in terminal"
+    incorrect:
+      - "running spawn in agent's bash (blocks dialog)"
+      - "heredoc to file then cat (extra steps)"
+      - "background execution with &"
+    correct: "display command in code block for user to copy-paste"
+    reason: "terminal conflicts, escaping issues, lost output, blocked dialog"
+
+  npx_hooks:
+    id: "AP7"
+    severity: "medium"
+    definition: "using npx-based hook commands instead of local handlers"
+    deprecated: "npx claude-flow@version hooks pre-command"
+    current: "node .claude/helpers/hook-handler.cjs pre-bash"
+    reason: "2-5s cold-start savings per invocation, no version fragmentation"
+
+# ============================================================================
+# SECTION 12: ADVANCED FEATURES
+# ============================================================================
+
+advanced_features:
+
+  agent_booster_wasm:
+    description: "Ultra-fast code editing (352x faster than cloud APIs, $0 cost)"
+    latency: "<1ms"
+    use_cases: "simple transforms, variable renames, type additions"
+    detection_signal: "[AGENT_BOOSTER_AVAILABLE]"
+    action: "use Edit tool directly, skip LLM"
+    capabilities:
+      - "precise code edits using '// ... existing code ...' markers"
+      - "batch edits across multiple files"
+      - "markdown parsing for multi-file refactoring"
+
+  flash_attention:
+    description: "Optimized attention computation for large context"
+    speedup: "2.49x-7.47x"
+    mode: "flash"
+    command: >
+      npx @claude-flow/cli@latest hooks intelligence attention
+      --query "{query}" --mode flash --topK {n}
+
+  mixture_of_experts:
+    description: "MoE routing for specialized task distribution"
+    mode: "moe"
+    command: >
+      npx @claude-flow/cli@latest hooks intelligence attention
+      --query "{query}" --mode moe --topK {n}
+
+  hyperbolic_attention:
+    description: "Poincaré ball attention for hierarchical relationships"
+    mode: "hyperbolic"
+    command: >
+      npx @claude-flow/cli@latest hooks intelligence attention
+      --query "{query}" --mode hyperbolic --topK {n}
+
+  reasoning_bank:
+    description: "stores successful problem-solving approaches for retrieval"
+    operations:
+      store: >
+        agentdb_pattern_store --sessionId "{id}" --task "{task}"
+        --reward {0-1} --success {bool} --input "{context}" --output "{solution}"
+      search: >
+        agentdb_pattern_search --task "{task}" --k 5 --onlySuccesses true
+      stats: >
+        agentdb_pattern_stats --task "{task}" --k 5
+
+  tensor_compress:
+    description: "up to 10x memory savings for pattern storage"
+    levels: ["none", "half", "pq8", "pq4", "binary"]
+    command: "npx @claude-flow/cli@latest hooks compress"
+
+  claims_system:
+    description: "work authorization and issue ownership for multi-agent coordination"
+    operations:
+      claim: "claims_claim --issueId {id} --claimant {agent}"
+      release: "claims_release --issueId {id} --claimant {agent}"
+      handoff: "claims_handoff --issueId {id} --from {agent1} --to {agent2}"
+      steal: "claims_steal --issueId {id} --stealer {agent}"
+      board: "claims_board"
+      rebalance: "claims_rebalance --dryRun true"
+
+  diff_analysis:
+    description: "git diff risk assessment, classification, reviewer suggestion"
+    operations:
+      analyze: "analyze_diff --ref HEAD --includeFileRisks true"
+      risk: "analyze_diff-risk --ref HEAD"
+      classify: "analyze_diff-classify --ref HEAD"
+      reviewers: "analyze_diff-reviewers --ref HEAD --limit 5"
+
+  co_edit_patterns:
+    description: "learn which files are commonly edited together"
+    record: "hooks coedit_record --primary_file {file} --related_files [{files}]"
+    suggest: "hooks coedit_suggest --file {file} --top_k 5"
+
+  error_learning:
+    description: "record errors and fixes for future suggestions"
+    record: "hooks error_record --error '{msg}' --fix '{fix}' --file {file}"
+    suggest: "hooks error_suggest --error '{msg}'"
+
+  security_scanning:
+    description: "parallel vulnerability scan"
+    command: "hooks security_scan --files [{file_list}]"
+
+  ast_analysis:
+    description: "parse file AST, extract symbols, imports, complexity"
+    analyze: "hooks ast_analyze --file {path}"
+    complexity: "hooks ast_complexity --files [{paths}] --threshold 10"
+
+  graph_analysis:
+    description: "code boundary and community detection"
+    mincut: "hooks graph_mincut --files [{paths}]"
+    cluster: "hooks graph_cluster --files [{paths}] --method louvain"
+
+  rag_context:
+    description: "retrieval-augmented generation with optional reranking"
+    command: "hooks rag_context --query '{query}' --rerank true --top_k 5"
+
+  git_churn:
+    description: "find hot spots by analyzing git change frequency"
+    command: "hooks git_churn --days 30 --top 10"
+
+  enhanced_routing:
+    description: "routing using AST complexity + coverage + diff signals"
+    command: "hooks route_enhanced --task '{task}' --file {path}"
+
+# ============================================================================
+# SECTION 13: WORKER DAEMON SYSTEM
+# ============================================================================
+
+workers:
+  description: "background analysis workers dispatched via hooks"
+  triggers:
+    ultralearn: "deep knowledge acquisition and learning"
+    optimize: "performance optimization analysis"
+    consolidate: "memory consolidation"
+    predict: "predictive analysis"
+    audit: "code audit"
+    map: "codebase mapping and architecture analysis"
+    preload: "context preloading"
+    deepdive: "deep code analysis and examination"
+    document: "documentation generation"
+    refactor: "refactoring opportunities"
+    benchmark: "performance benchmarking"
+    testgaps: "test coverage gap analysis"
+
+  dispatch_command: >
+    npx @claude-flow/cli@latest hooks worker dispatch --trigger {trigger}
+
+  presets: ["quick-scan", "deep-analysis", "security-scan", "learning", "api-docs", "test-analysis"]
+
+# ============================================================================
+# SECTION 14: BOOTSTRAP PROTOCOL
+# ============================================================================
+
+bootstrap:
+  description: "mandatory initialization sequence for every new session"
+
+  phase_a_system_init:
+    steps:
+      - "npx @claude-flow/cli@latest init --force"
+      - "npx @claude-flow/cli@latest --version  # expect >= 3.1.0-alpha.44"
+      - "npx @claude-flow/cli@latest daemon start"
+      - "npx @claude-flow/cli@latest doctor --verbose"
+      - "npx @claude-flow/cli@latest memory init --force --verbose"
+      - "npx @claude-flow/cli@latest hooks pretrain --verbose"
+      - "npx @claude-flow/cli@latest hooks build-agents --verbose"
+    note: "init --force generates 115 files (10 hooks, 30 skills, 23 agents, 41 helpers)"
+    warning: "init --force OVERWRITES .claude/settings.json and CLAUDE.md — backup first"
+
+  phase_b_daemon_workers:
+    steps:
+      - "npx @claude-flow/cli@latest hooks worker dispatch --trigger map"
+      - "npx @claude-flow/cli@latest hooks worker dispatch --trigger deepdive"
+      - "npx @claude-flow/cli@latest hooks worker dispatch --trigger ultralearn"
+
+  phase_c_neural_training:
+    steps:
+      - "npx @claude-flow/cli@latest neural train --modelType moe --epochs 10"
+      - "npx @claude-flow/cli@latest neural train --modelType transformer --epochs 10"
+      - "npx @claude-flow/cli@latest neural train --modelType classifier --epochs 10"
+    verify:
+      - "npx @claude-flow/cli@latest neural status"
+      - "npx @claude-flow/cli@latest hooks intelligence stats"
+      - "npx @claude-flow/cli@latest memory search --query 'test query'"
+
+  phase_d_hive_mind: >
+    npx @claude-flow/cli@latest hive-mind init
+    --topology hierarchical-mesh --max-agents 15 --consensus byzantine
+
+# ============================================================================
+# SECTION 15: PHASE WORKFLOW (Standard Execution Cycle)
+# ============================================================================
+
+phase_workflow:
+  description: "standard phase execution cycle for all swarm tasks"
+  steps:
+    1_pre_task: "hooks pre-task --task-id 'phase-X'"
+    2_store_scope: "memory store --key 'phase-X-scope' --value '...'"
+    3a_in_session: "Task('Role', 'Instructions', 'agent-type') × N  (all in same message)"
+    3b_cli_swarm: "display hive-mind spawn command for user copy-paste"
+    4_completion: "in-session: receive Task results | CLI: wait for user notification"
+    5_verify: "find, wc, grep commands to validate output files"
+    6_post_task: "hooks post-task --task-id 'phase-X' --success"
+    7_neural_train: "neural train --data-source '...' (only if significant new patterns)"
+    8_store_complete: "memory store --key 'phase-X-complete'"
+    9_next_phase: "repeat cycle"
+
+# ============================================================================
+# SECTION 16: TOOL CHECKLIST (ALL must be used)
+# ============================================================================
+
+tool_checklist:
+  - tool: "memory"
+    purpose: "store/search context, patterns, progress"
+    mandatory: true
+  - tool: "neural"
+    purpose: "train models on generated code"
+    mandatory: true
+  - tool: "vector"
+    purpose: "semantic search across documentation"
+    mandatory: true
+  - tool: "hive-mind"
+    purpose: "swarm coordination"
+    mandatory: true
+  - tool: "hooks"
+    purpose: "lifecycle tracking (10 hook types with local handlers)"
+    mandatory: true
+  - tool: "patterns"
+    purpose: "pattern library management"
+    mandatory: true
+  - tool: "learn"
+    purpose: "extract patterns from existing code"
+    mandatory: true
+  - tool: "validate"
+    purpose: "quality checks on generated code"
+    mandatory: true
+  - tool: "analyze"
+    purpose: "gap analysis vs requirements"
+    mandatory: true
+  - tool: "agent-teams"
+    purpose: "automatic task coordination"
+    mandatory: true
+    version: "3.1.0+"
+  - tool: "embeddings"
+    purpose: "vector embeddings (75x faster with agentic-flow)"
+    mandatory: true
+    version: "3.1.0+"
+  - tool: "claims"
+    purpose: "claims-based work authorization"
+    mandatory: true
+    version: "3.1.0+"
+
+# ============================================================================
+# SECTION 17: CONFIGURATION FILES
+# ============================================================================
+
+configuration:
+  project_level:
+    - file: ".claude/settings.json"
+      purpose: "hooks, permissions, Agent Teams, claudeFlow config"
+      init_force_overwrites: true
+
+    - file: ".claude/settings.local.json"
+      purpose: "project-specific permissions, enabled MCP servers"
+      init_force_overwrites: false
+
+    - file: ".mcp.json"
+      purpose: "MCP server definitions"
+      init_force_overwrites: false
+
+    - file: "CLAUDE.md"
+      purpose: "agent behavioral instructions"
+      init_force_overwrites: true
+
+    - file: ".claude/helpers/"
+      purpose: "local hook handlers (41 files)"
+      init_force_overwrites: true
+
+    - file: ".claude/agents/"
+      purpose: "agent type definitions (23 agents)"
+      init_force_overwrites: true
+
+    - file: ".claude-flow/"
+      purpose: "runtime data (config, logs, sessions)"
+      init_force_overwrites: true
+
+  global_level:
+    - file: "~/.claude/settings.json"
+      purpose: "global hooks, permissions, effortLevel"
+    - file: "~/.mcp.json"
+      purpose: "global MCP servers (must include claude-flow)"
+
+# ============================================================================
+# SECTION 18: AGENT ROLE DEFINITIONS
+# ============================================================================
+
+agent_roles:
+  coordinator:
+    role: "architect + planner + coordinator"
+    responsibilities:
+      - "design solutions, define scope, plan execution"
+      - "break down tasks, estimate effort, sequence dependencies"
+      - "prepare swarm commands, execute hooks, validate results"
+    does_not: "write production code manually (swarms do this)"
+
+  available_agent_types:
+    core: ["coder", "reviewer", "tester", "planner", "researcher"]
+    specialized: ["security-architect", "security-auditor", "memory-specialist", "performance-engineer"]
+    swarm: ["hierarchical-coordinator", "mesh-coordinator", "adaptive-coordinator"]
+    github: ["pr-manager", "code-review-swarm", "issue-tracker", "release-manager"]
+    sparc: ["sparc-coord", "sparc-coder", "specification", "pseudocode", "architecture"]
+
+# ============================================================================
+# SECTION 19: COMPLIANCE VERIFICATION COMMANDS
+# ============================================================================
+
+compliance:
+  description: "run these before any code generation sprint"
+  checks:
+    - command: "npx @claude-flow/cli@latest --version"
+      expected: ">= 3.1.0-alpha.44"
+    - command: "ls .claude/helpers/hook-handler.cjs .claude/helpers/auto-memory-hook.mjs"
+      expected: "both files must exist"
+    - command: "grep 'CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS' .claude/settings.json"
+      expected: "must show '1'"
+    - command: "npx @claude-flow/cli@latest vector status"
+      expected: "RuVector available"
+    - command: "npx @claude-flow/cli@latest memory list --namespace healthcare-platform"
+      expected: "memory operational"
+    - command: "npx @claude-flow/cli@latest neural list"
+      expected: "models trained"
+    - command: "npx @claude-flow/cli@latest hive-mind status"
+      expected: "hive-mind initialized"
+
+# ============================================================================
+# END OF AGENT GUIDE
+# ============================================================================

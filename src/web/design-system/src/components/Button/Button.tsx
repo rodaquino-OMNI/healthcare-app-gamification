@@ -5,6 +5,8 @@ import { colors } from '../../tokens/colors';
 import { typography } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
 import { shadows } from '../../tokens/shadows';
+import { borderRadius } from '../../tokens/borderRadius';
+import { sizing } from '../../tokens/sizing';
 import { Touchable } from '../../primitives/Touchable/Touchable';
 import { Text } from '../../primitives/Text/Text';
 import { Icon } from '../../primitives/Icon/Icon';
@@ -62,6 +64,13 @@ export interface ButtonProps {
    * @default 'health'
    */
   journey?: 'health' | 'care' | 'plan';
+
+  /**
+   * Whether the button displays only an icon (no text content).
+   * Applies equal padding on all sides for a square/circle button.
+   * @default false
+   */
+  iconOnly?: boolean;
 }
 
 /**
@@ -84,7 +93,7 @@ const StyledButton = styled(Touchable)<{
       default: return `${spacing.sm} ${spacing.md}`;
     }
   }};
-  border-radius: ${props => props.theme.borderRadius.md};
+  border-radius: ${borderRadius.md};
   font-weight: ${typography.fontWeight.medium};
   font-size: ${typography.fontSize.md};
   box-shadow: ${shadows.md};
@@ -148,16 +157,17 @@ export const Button: React.FC<ButtonProps> = ({
   accessibilityLabel,
   children,
   journey = 'health',
+  iconOnly = false,
 }) => {
   // Determine if there's content other than just an icon
   const hasContent = React.Children.count(children) > 0;
   
-  // Determine icon size based on button size
+  // Determine icon size based on button size using sizing tokens
   const getIconSize = () => {
     switch (size) {
-      case 'sm': return '16px';
-      case 'lg': return '24px';
-      default: return '20px';
+      case 'sm': return sizing.icon.xs;   // 16px
+      case 'lg': return sizing.icon.md;   // 24px
+      default: return sizing.icon.sm;     // 20px
     }
   };
   

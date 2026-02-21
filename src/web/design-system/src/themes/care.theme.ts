@@ -1,5 +1,6 @@
-import { baseTheme } from '../base.theme';
-import { colors } from '../../tokens/colors';
+import { baseTheme, Theme } from './base.theme';
+import { colors } from '../tokens/colors';
+import { borderRadius } from '../tokens/borderRadius';
 
 /**
  * Care Now journey theme
@@ -11,24 +12,34 @@ export const careTheme = {
   ...baseTheme,
   name: 'Care Theme',
   journeyKey: 'care',
-  
+
   // Override specific properties for Care journey
   colors: {
     ...baseTheme.colors,
     primary: colors.journeys.care.primary,
     secondary: colors.journeys.care.secondary,
     accent: colors.journeys.care.accent,
-    background: colors.journeys.care.background,
-    text: colors.journeys.care.text,
-    border: colors.journeys.care.secondary,
+    background: {
+      ...baseTheme.colors.background,
+      default: colors.journeys.care.background,
+    },
+    text: {
+      ...baseTheme.colors.text,
+      default: colors.journeys.care.text,
+    },
+    border: {
+      ...baseTheme.colors.border,
+      default: colors.journeys.care.secondary,
+      accent: colors.journeys.care.primary,
+    },
     focus: colors.journeys.care.primary,
   },
-  
+
   shadows: {
     ...baseTheme.shadows,
     focus: `0 0 0 2px ${colors.journeys.care.primary}`,
   },
-  
+
   // Component-specific styling for Care journey
   components: {
     button: {
@@ -46,37 +57,37 @@ export const careTheme = {
         activeBackground: colors.journeys.care.background,
       },
     },
-    
+
     card: {
       background: colors.neutral.white,
       border: `1px solid ${colors.neutral.gray300}`,
       borderLeft: `4px solid ${colors.journeys.care.primary}`,
-      borderRadius: '8px',
+      borderRadius: borderRadius.md,
       shadow: baseTheme.shadows.sm,
     },
-    
+
     input: {
       border: `1px solid ${colors.neutral.gray400}`,
       focusBorder: `1px solid ${colors.journeys.care.primary}`,
       background: colors.neutral.white,
       placeholderColor: colors.neutral.gray500,
     },
-    
+
     progressBar: {
       background: colors.neutral.gray200,
       fill: colors.journeys.care.primary,
-      borderRadius: '4px',
+      borderRadius: borderRadius.xs,
     },
-    
+
     metricCard: {
       background: colors.neutral.white,
       border: `1px solid ${colors.neutral.gray300}`,
       borderTop: `4px solid ${colors.journeys.care.primary}`,
-      borderRadius: '8px',
+      borderRadius: borderRadius.md,
       shadow: baseTheme.shadows.sm,
       iconColor: colors.journeys.care.primary,
     },
-    
+
     healthChart: {
       lineColor: colors.journeys.care.primary,
       gridColor: colors.neutral.gray300,

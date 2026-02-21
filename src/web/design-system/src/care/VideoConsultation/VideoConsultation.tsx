@@ -16,6 +16,8 @@ import {
 import { Box } from '../../primitives/Box/Box';
 import { Text } from '../../primitives/Text/Text';
 import { Icon } from '../../primitives/Icon/Icon';
+import { colors } from '../../tokens/colors';
+import { sizing } from '../../tokens/sizing';
 
 /**
  * VideoConsultation component for the Care Now journey
@@ -202,7 +204,7 @@ const VideoConsultation: React.FC = () => {
             width="100%"
             height="100%"
           >
-            <Icon name="doctor" size="64px" color="#ffffff" />
+            <Icon name="doctor" size={sizing.component.xl} color={colors.neutral.white} />
             <Text color="white" fontSize="lg" marginTop="md">
               {callStatus === 'connecting' 
                 ? 'Aguardando médico...' 
@@ -251,7 +253,7 @@ const VideoConsultation: React.FC = () => {
           <Icon
             name={audioMuted ? 'error' : 'info'} // These would be proper mic icons in production
             color="white"
-            size="24px"
+            size={sizing.icon.md}
             aria-hidden={true}
           />
         </CallButton>
@@ -265,7 +267,7 @@ const VideoConsultation: React.FC = () => {
           <Icon
             name={localVideoEnabled ? 'video' : 'error'} // These would be proper camera icons in production
             color="white"
-            size="24px"
+            size={sizing.icon.md}
             aria-hidden={true}
           />
         </CallButton>
@@ -279,7 +281,7 @@ const VideoConsultation: React.FC = () => {
           <Icon
             name="close"
             color="white"
-            size="24px"
+            size={sizing.icon.md}
             aria-hidden={true}
           />
         </CallButton>

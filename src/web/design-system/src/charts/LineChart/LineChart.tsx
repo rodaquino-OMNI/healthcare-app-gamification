@@ -12,7 +12,7 @@ import {
 
 import Box from '../../primitives/Box/Box';
 import Text from '../../primitives/Text/Text';
-import { colors } from '../../tokens/index';
+import { colors, typography } from '../../tokens/index';
 import { ChartContainer, ChartWrapper } from './LineChart.styles';
 import { useJourneyColor } from '@web/shared';
 
@@ -156,7 +156,7 @@ export const LineChart: React.FC<LineChartProps> = ({
                     stroke: colors.neutral.gray300,
                     strokeWidth: 1,
                   }}
-                  style={{ fontSize: 12, fill: colors.neutral.gray900 }}
+                  style={{ fontSize: 12, fontFamily: typography.fontFamily.body, fill: colors.neutral.gray900 }}
                 />
               }
             />
@@ -167,9 +167,10 @@ export const LineChart: React.FC<LineChartProps> = ({
             dependentAxis
             style={{
               axis: { stroke: colors.neutral.gray300 },
-              tickLabels: { 
+              tickLabels: {
                 fill: colors.neutral.gray700,
                 fontSize: 12,
+                fontFamily: typography.fontFamily.body,
                 padding: 5
               },
               grid: { 
@@ -186,9 +187,10 @@ export const LineChart: React.FC<LineChartProps> = ({
           <VictoryAxis
             style={{
               axis: { stroke: colors.neutral.gray300 },
-              tickLabels: { 
+              tickLabels: {
                 fill: colors.neutral.gray700,
                 fontSize: 12,
+                fontFamily: typography.fontFamily.body,
                 padding: 5
               },
               grid: { 

@@ -1,10 +1,9 @@
 import styled from 'styled-components';
 import { colors } from '../../tokens/colors';
-import { spacing } from '../../tokens/spacing';
-import { typography } from '../../tokens/typography';
+import { sizing } from '../../tokens/sizing';
 
 interface IconProps {
-  size?: keyof typeof spacing;
+  size?: keyof typeof sizing.icon;
   color?: string;
   journey?: keyof typeof colors.journeys;
   interactive?: boolean;
@@ -18,8 +17,8 @@ export const IconContainer = styled.svg.attrs({
   vertical-align: middle;
   
   /* Sizing based on design tokens */
-  width: ${({ size = 'md' }) => spacing[size]};
-  height: ${({ size = 'md' }) => spacing[size]};
+  width: ${({ size = 'md' }) => sizing.icon[size]};
+  height: ${({ size = 'md' }) => sizing.icon[size]};
   
   /* Coloring with support for custom colors and journey-specific theming */
   fill: ${({ color, journey }) => {

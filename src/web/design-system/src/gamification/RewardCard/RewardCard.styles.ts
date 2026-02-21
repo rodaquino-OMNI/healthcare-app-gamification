@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { colors, spacing, shadows, animation, typography } from '../../tokens';
+import { colors, spacing, shadows, animation, typography, borderRadius, sizing } from '../../tokens';
 import Card from '../../components/Card';
 import Text from '../../primitives/Text';
 import Icon from '../../primitives/Icon';
@@ -48,8 +48,8 @@ export const RewardCardContainer = styled(Card)`
  */
 export const RewardIcon = styled(Icon)`
   flex-shrink: 0;
-  width: 48px;
-  height: 48px;
+  width: ${sizing.component.lg};
+  height: ${sizing.component.lg};
   margin-right: ${spacing.md};
 `;
 
@@ -89,7 +89,7 @@ export const XPBadge = styled.div<{ color?: string; textColor?: string }>`
   background-color: ${props => props.color || colors.neutral.gray200};
   color: ${props => props.textColor || colors.neutral.gray900};
   padding: ${spacing.xs} ${spacing.sm};
-  border-radius: ${spacing.sm};
+  border-radius: ${borderRadius.sm};
   font-size: ${typography.fontSize.sm};
   font-weight: ${typography.fontWeight.medium};
   align-self: flex-start;

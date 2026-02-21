@@ -1,35 +1,39 @@
 import styled from 'styled-components';
-import { ThemeProps } from 'styled-components';
+import type { ThemeProps } from 'styled-components';
+import { colors } from '../../tokens/colors';
+import { spacing } from '../../tokens/spacing';
+import { borderRadius } from '../../tokens/borderRadius';
+import { typography } from '../../tokens/typography';
 
 export const MedicationCardContainer = styled.div`
-  background-color: #FFFFFF;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 16px;
+  background-color: ${colors.neutral.white};
+  border-radius: ${borderRadius.md};
+  padding: ${spacing.md};
+  margin-bottom: ${spacing.md};
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: ${spacing.xs};
 `;
 
 export const MedicationName = styled.h3`
-  font-size: 18px;
+  font-size: ${typography.fontSize.lg};
   font-weight: 500;
-  color: #333;
+  color: ${colors.neutral.gray800};
 `;
 
 export const MedicationDosage = styled.p`
-  font-size: 14px;
-  color: #666;
+  font-size: ${typography.fontSize.sm};
+  color: ${colors.neutral.gray600};
 `;
 
 export const MedicationSchedule = styled.p`
-  font-size: 14px;
-  color: #666;
+  font-size: ${typography.fontSize.sm};
+  color: ${colors.neutral.gray600};
 `;
 
 export const MedicationStatus = styled.p`
-  font-size: 14px;
-  color: #666;
-  margin-top: 8px;
+  font-size: ${typography.fontSize.sm};
+  color: ${colors.neutral.gray600};
+  margin-top: ${spacing.xs};
 `;

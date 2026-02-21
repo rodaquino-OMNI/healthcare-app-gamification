@@ -7,6 +7,12 @@ import { HealthGoalsScreen } from '../screens/health/HealthGoals';
 import { DeviceConnectionScreen } from '../screens/health/DeviceConnection';
 import { MetricDetail } from '../screens/health/MetricDetail';
 import { AddMetricScreen } from '../screens/health/AddMetric';
+import MedicationList from '../screens/health/MedicationList';
+import MedicationAdd from '../screens/health/MedicationAdd';
+import MedicationDetail from '../screens/health/MedicationDetail';
+import MedicationSearch from '../screens/health/MedicationSearch';
+import { MedicationReminderScreen } from '../screens/health/MedicationReminder';
+import { MedicationAlarmScreen } from '../screens/health/MedicationAlarm';
 import { ROUTES } from '../constants/routes';
 import { JOURNEY_COLORS } from '../constants/journeys';
 
@@ -30,7 +36,13 @@ export default function HealthNavigator() {
       <Stack.Screen name={ROUTES.HEALTH_HEALTH_GOALS} component={HealthGoalsScreen} />
       <Stack.Screen name={ROUTES.HEALTH_DEVICE_CONNECTION} component={DeviceConnectionScreen} />
       <Stack.Screen name={ROUTES.HEALTH_METRIC_DETAIL} component={MetricDetail} />
-      <Stack.Screen name={ROUTES.HEALTH_METRIC_DETAIL} component={AddMetricScreen} />
+      <Stack.Screen name={ROUTES.HEALTH_ADD_METRIC} component={AddMetricScreen} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_LIST} component={MedicationList} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_ADD} component={MedicationAdd} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_DETAIL} component={MedicationDetail} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_SEARCH} component={MedicationSearch} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_REMINDER} component={MedicationReminderScreen} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_ALARM} component={MedicationAlarmScreen} />
     </Stack.Navigator>
   );
 }

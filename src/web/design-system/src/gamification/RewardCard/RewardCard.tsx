@@ -8,6 +8,7 @@ import {
   XPBadge,
   useJourneyColor
 } from './RewardCard.styles';
+import { colors } from '../../tokens/colors';
 
 /**
  * Interface for reward data
@@ -89,7 +90,7 @@ export const RewardCard: React.FC<RewardCardProps> = ({
       <RewardContent>
         <RewardTitle>{title}</RewardTitle>
         <RewardDescription>{description}</RewardDescription>
-        <XPBadge color={journeyColor.primary} textColor="#FFFFFF">
+        <XPBadge color={journeyColor.primary} textColor={colors.neutral.white}>
           +{xp} XP
         </XPBadge>
       </RewardContent>

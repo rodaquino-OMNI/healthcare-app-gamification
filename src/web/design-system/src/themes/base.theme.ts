@@ -16,18 +16,21 @@ export interface Theme {
         secondary: string;
         accent: string;
         background: string;
+        text: string;
       };
       care: {
         primary: string;
         secondary: string;
         accent: string;
         background: string;
+        text: string;
       };
       plan: {
         primary: string;
         secondary: string;
         accent: string;
         background: string;
+        text: string;
       };
     };
     semantic: {
@@ -49,11 +52,28 @@ export interface Theme {
       gray900: string;
       black: string;
     };
+    background: {
+      default: string;
+      muted: string;
+      subtle: string;
+    };
+    text: {
+      default: string;
+      muted: string;
+      subtle: string;
+      onBrand: string;
+    };
+    border: {
+      default: string;
+      muted: string;
+      accent: string;
+    };
   };
   typography: {
     fontFamily: {
       base: string;
       heading: string;
+      logo: string;
       mono: string;
     };
     fontWeight: {
@@ -76,8 +96,17 @@ export interface Theme {
       base: number;
       relaxed: number;
     };
+    letterSpacing: {
+      tight: string;
+      normal: string;
+      wide: string;
+      wider: string;
+    };
   };
   spacing: {
+    '4xs': string;
+    '3xs': string;
+    '2xs': string;
     xs: string;
     sm: string;
     md: string;
@@ -86,12 +115,34 @@ export interface Theme {
     '2xl': string;
     '3xl': string;
     '4xl': string;
+    '5xl': string;
+    '6xl': string;
+  };
+  sizing: {
+    component: {
+      '2xs': string;
+      xs: string;
+      sm: string;
+      md: string;
+      lg: string;
+      xl: string;
+    };
+    icon: {
+      '2xs': string;
+      xs: string;
+      sm: string;
+      md: string;
+      lg: string;
+    };
   };
   borderRadius: {
+    none: string;
+    xs: string;
     sm: string;
     md: string;
     lg: string;
     xl: string;
+    '2xl': string;
     full: string;
   };
   shadows: {
@@ -121,8 +172,8 @@ export interface Theme {
 export const baseTheme: Theme = {
   colors: {
     brand: {
-      primary: tokens.colors.brand.primary,
-      secondary: tokens.colors.brand.secondary,
+      primary: '#00c3f7',
+      secondary: '#00dbbb',
       tertiary: tokens.colors.brand.tertiary,
     },
     journeys: {
@@ -131,25 +182,28 @@ export const baseTheme: Theme = {
         secondary: tokens.colors.journeys.health.secondary,
         accent: tokens.colors.journeys.health.accent,
         background: tokens.colors.journeys.health.background,
+        text: tokens.colors.journeys.health.text,
       },
       care: {
         primary: tokens.colors.journeys.care.primary,
         secondary: tokens.colors.journeys.care.secondary,
         accent: tokens.colors.journeys.care.accent,
         background: tokens.colors.journeys.care.background,
+        text: tokens.colors.journeys.care.text,
       },
       plan: {
         primary: tokens.colors.journeys.plan.primary,
         secondary: tokens.colors.journeys.plan.secondary,
         accent: tokens.colors.journeys.plan.accent,
         background: tokens.colors.journeys.plan.background,
+        text: tokens.colors.journeys.plan.text,
       },
     },
     semantic: {
-      success: tokens.colors.semantic.success,
-      warning: tokens.colors.semantic.warning,
-      error: tokens.colors.semantic.error,
-      info: tokens.colors.semantic.info,
+      success: '#7ab765',
+      warning: '#f59e0b',
+      error: '#e11d48',
+      info: '#3b82f6',
     },
     neutral: {
       white: tokens.colors.neutral.white,
@@ -164,11 +218,29 @@ export const baseTheme: Theme = {
       gray900: tokens.colors.neutral.gray900,
       black: tokens.colors.neutral.black,
     },
+    // Light mode semantic surface/text/border colors
+    background: {
+      default: '#ffffff',
+      muted: '#f8fafc',
+      subtle: '#f1f5f9',
+    },
+    text: {
+      default: '#334155',
+      muted: '#4b5563',
+      subtle: '#94a3b8',
+      onBrand: '#ffffff',
+    },
+    border: {
+      default: '#e2e8f0',
+      muted: '#f1f5f9',
+      accent: '#00c3f7',
+    },
   },
   typography: {
     fontFamily: {
-      base: tokens.typography.fontFamily.base,
-      heading: tokens.typography.fontFamily.heading,
+      base: 'Plus Jakarta Sans, sans-serif',
+      heading: 'Plus Jakarta Sans, sans-serif',
+      logo: 'Nunito, sans-serif',
       mono: tokens.typography.fontFamily.mono,
     },
     fontWeight: {
@@ -191,22 +263,53 @@ export const baseTheme: Theme = {
       base: tokens.typography.lineHeight.base,
       relaxed: tokens.typography.lineHeight.relaxed,
     },
+    letterSpacing: {
+      tight: '-0.025em',
+      normal: '0',
+      wide: '0.025em',
+      wider: '0.05em',
+    },
   },
   spacing: {
-    xs: tokens.spacing.xs,
-    sm: tokens.spacing.sm,
-    md: tokens.spacing.md,
-    lg: tokens.spacing.lg,
-    xl: tokens.spacing.xl,
-    '2xl': tokens.spacing['2xl'],
-    '3xl': tokens.spacing['3xl'],
-    '4xl': tokens.spacing['4xl'],
+    '4xs': '2px',
+    '3xs': '4px',
+    '2xs': '6px',
+    xs: '8px',
+    sm: '12px',
+    md: '16px',
+    lg: '20px',
+    xl: '24px',
+    '2xl': '32px',
+    '3xl': '40px',
+    '4xl': '48px',
+    '5xl': '64px',
+    '6xl': '80px',
+  },
+  sizing: {
+    component: {
+      '2xs': '16px',
+      xs: '24px',
+      sm: '32px',
+      md: '40px',
+      lg: '48px',
+      xl: '64px',
+    },
+    icon: {
+      '2xs': '12px',
+      xs: '16px',
+      sm: '20px',
+      md: '24px',
+      lg: '32px',
+    },
   },
   borderRadius: {
-    sm: tokens.borderRadius.sm,
+    none: tokens.borderRadius.none,
+    xs: tokens.borderRadius['2xs'],
+    sm: tokens.borderRadius.xs,
     md: tokens.borderRadius.md,
     lg: tokens.borderRadius.lg,
     xl: tokens.borderRadius.xl,
+    '2xl': tokens.borderRadius['2xl'],
     full: tokens.borderRadius.full,
   },
   shadows: {

@@ -5,8 +5,10 @@ import { Icon } from '../../primitives/Icon/Icon';
 import { HealthChart } from '../HealthChart/HealthChart';
 import { AchievementBadge } from '../../gamification/AchievementBadge/AchievementBadge';
 import { colors } from '../../tokens/colors';
-import { fontSize } from '../../tokens/typography';
+import { typography } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
+import { borderRadius } from '../../tokens/borderRadius';
+import { sizing } from '../../tokens/sizing';
 
 /**
  * Props for the MetricCard component
@@ -156,7 +158,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
           <Icon 
             name={metricIcon} 
             color={journeyColor.primary}
-            size="24px"
+            size={sizing.icon.md}
             aria-hidden="true"
           />
           <Text 
@@ -208,7 +210,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
             <Icon 
               name={trendInfo.icon} 
               color={trendInfo.color}
-              size="16px"
+              size={sizing.icon.xs}
               aria-hidden="true"
             />
           )}

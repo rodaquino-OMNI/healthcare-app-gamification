@@ -1,0 +1,188 @@
+{
+  "$schema": "https://schemas.tokens.studio/0.1/schema.json",
+  "_metadata": {
+    "source": "Figma API extraction",
+    "fileKey": "OcG9oRNdUEskvAPUcKiKMe",
+    "fileName": "Austa app",
+    "uiKit": "asklepios",
+    "extractedAt": "2026-02-20",
+    "note": "Tokens extraídos via Figma Developer MCP. Para tokens mais granulares, use Tokens Studio plugin no Figma."
+  },
+  "color": {
+    "brand": {
+      "5": { "value": "#EBFBFF", "type": "color", "description": "Background mais claro da marca" },
+      "20": { "value": "#BDF1FF", "type": "color", "description": "Destaque leve / hover" },
+      "primary": { "value": "#00C3F7", "type": "color", "description": "Cor principal — botões, links, CTAs" },
+      "accent": { "value": "#00DBBB", "type": "color", "description": "Verde-teal — ícones, badges, destaques" }
+    },
+    "gray": {
+      "0": { "value": "#FFFFFF", "type": "color", "description": "White — fundo principal" },
+      "5": { "value": "#F8FAFC", "type": "color", "description": "Fundo de cards e seções" },
+      "20": { "value": "#E2E8F0", "type": "color", "description": "Bordas e separadores" },
+      "30": { "value": "#CBD5E1", "type": "color", "description": "Overlays leves / Dark mode cards" },
+      "40": { "value": "#94A3B8", "type": "color", "description": "Texto secundário / placeholder" },
+      "60": { "value": "#4B5563", "type": "color", "description": "Texto principal / Dark mode background" },
+      "70": { "value": "#334155", "type": "color", "description": "Dark mode alternativo" }
+    },
+    "semantic": {
+      "destructive": { "value": "#E11D48", "type": "color", "description": "Alertas, erros, ações destrutivas" },
+      "critical": { "value": "#FF0000", "type": "color", "description": "Indicadores críticos de saúde" },
+      "success": { "value": "#7AB765", "type": "color", "description": "Sucesso, positivo, meta atingida" },
+      "profileSetup": { "value": "rgba(111, 36, 216, 0.35)", "type": "color", "description": "Overlay roxo — setup de perfil" },
+      "utilityOverlay": { "value": "rgba(0, 219, 187, 0.3)", "type": "color", "description": "Overlay teal — utilidades" }
+    }
+  },
+  "typography": {
+    "fontFamily": {
+      "primary": { "value": "Plus Jakarta Sans", "type": "fontFamily", "description": "Família tipográfica principal do app" },
+      "logo": { "value": "Nunito", "type": "fontFamily", "description": "Família tipográfica do logo AUSTA" }
+    },
+    "display": {
+      "sm": {
+        "bold": {
+          "value": {
+            "fontFamily": "Plus Jakarta Sans",
+            "fontWeight": 700,
+            "fontSize": 96,
+            "lineHeight": "1.08em",
+            "letterSpacing": "-3%"
+          },
+          "type": "typography",
+          "description": "Títulos de seção no Figma (Display sm/Bold)"
+        }
+      }
+    },
+    "text": {
+      "md": {
+        "regular": {
+          "value": {
+            "fontFamily": "Plus Jakarta Sans",
+            "fontWeight": 400,
+            "fontSize": 16,
+            "lineHeight": "1.375em",
+            "letterSpacing": "-0.7%"
+          },
+          "type": "typography",
+          "description": "Corpo de texto padrão (Text md/Regular)"
+        }
+      }
+    },
+    "logo": {
+      "primary": {
+        "value": {
+          "fontFamily": "Nunito",
+          "fontWeight": 700,
+          "fontSize": 35.15,
+          "lineHeight": "1.36em"
+        },
+        "type": "typography",
+        "description": "Logo AUSTA principal"
+      },
+      "secondary": {
+        "value": {
+          "fontFamily": "Nunito",
+          "fontWeight": 700,
+          "fontSize": 17.8,
+          "lineHeight": "1.36em"
+        },
+        "type": "typography",
+        "description": "Logo AUSTA subtítulo (SUPER-APP)"
+      }
+    }
+  },
+  "spacing": {
+    "component": {
+      "gap": {
+        "xs": { "value": "10", "type": "spacing" },
+        "sm": { "value": "24", "type": "spacing" },
+        "md": { "value": "32", "type": "spacing" },
+        "lg": { "value": "64", "type": "spacing" },
+        "xl": { "value": "96", "type": "spacing" },
+        "2xl": { "value": "128", "type": "spacing" },
+        "3xl": { "value": "256", "type": "spacing" },
+        "4xl": { "value": "512", "type": "spacing" }
+      },
+      "padding": {
+        "xs": { "value": "16", "type": "spacing" },
+        "sm": { "value": "24", "type": "spacing" },
+        "md": { "value": "40", "type": "spacing" },
+        "lg": { "value": "128", "type": "spacing" }
+      }
+    }
+  },
+  "borderRadius": {
+    "sm": { "value": "5", "type": "borderRadius", "description": "Component sets, dashed borders" },
+    "md": { "value": "40", "type": "borderRadius", "description": "Headers, footers do Design System" },
+    "lg": { "value": "64", "type": "borderRadius", "description": "Cards e containers principais" },
+    "full": { "value": "9999", "type": "borderRadius", "description": "Botões circulares (pill)" }
+  },
+  "border": {
+    "default": {
+      "value": {
+        "color": "#E2E8F0",
+        "width": "1px",
+        "style": "solid"
+      },
+      "type": "border",
+      "description": "Borda padrão Gray/20"
+    },
+    "componentSet": {
+      "value": {
+        "color": "#9747FF",
+        "width": "1px",
+        "style": "dashed",
+        "dashPattern": [10, 5]
+      },
+      "type": "border",
+      "description": "Borda de component sets (Figma only)"
+    }
+  },
+  "sizing": {
+    "screen": {
+      "mobile": {
+        "width": { "value": "375", "type": "sizing", "description": "Largura padrão mobile" },
+        "height": { "value": "812", "type": "sizing", "description": "Altura padrão mobile (iPhone X+)" }
+      },
+      "dashboard": {
+        "width": { "value": "1600", "type": "sizing", "description": "Largura padrão dashboard admin" },
+        "height": { "value": "1200", "type": "sizing", "description": "Altura padrão dashboard admin" }
+      }
+    },
+    "component": {
+      "buttonIcon": {
+        "width": { "value": "40", "type": "sizing" },
+        "height": { "value": "40", "type": "sizing" }
+      }
+    }
+  },
+  "components": {
+    "_list": [
+      "Notifications",
+      "Accordions",
+      "Badge/Tag",
+      "Button (Hierarchy × Size × Color × State)",
+      "Button Icon (Hierarchy × Size × Color × State)",
+      "Breadcrumb",
+      "Chat System",
+      "Charts (Line, Bar, Donut)",
+      "Date Picker",
+      "Modal",
+      "Dropdown",
+      "File Upload Dropzone",
+      "File Upload Status",
+      "Form Controls (Checkbox, Radio, Switch, Toggle)",
+      "Input (Text, Password, Search, Number, Phone, OTP)",
+      "Loader Base",
+      "Misc & Helper (Avatar, Divider, Skeleton)",
+      "Pagination",
+      "Progress & Indicator",
+      "Slider",
+      "Step",
+      "Table",
+      "Tab",
+      "Tooltip",
+      "Navigations (Header, Tab Bar, Bottom Nav)",
+      "Mobile App Components (12+ componentes)"
+    ]
+  }
+}

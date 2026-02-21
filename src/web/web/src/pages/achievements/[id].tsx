@@ -1,0 +1,140 @@
+import React from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { Text } from 'src/web/design-system/src/primitives/Text/Text';
+import { Box } from 'src/web/design-system/src/primitives/Box/Box';
+import { Card } from 'src/web/design-system/src/components/Card/Card';
+import { Button } from 'src/web/design-system/src/components/Button/Button';
+import { AchievementBadge } from 'src/web/design-system/src/gamification/AchievementBadge';
+import { ProgressBar } from 'src/web/design-system/src/components/ProgressBar/ProgressBar';
+import { useGameProfile } from 'src/web/web/src/hooks/useGamification';
+import { colors } from 'src/web/design-system/src/tokens/colors';
+import { spacing } from 'src/web/design-system/src/tokens/spacing';
+
+const JOURNEY_COLORS: Record<string, string> = {
+  health: colors.journeys?.health?.primary ?? '#0ACF83',
+  care: colors.journeys?.care?.primary ?? '#FF8C42',
+  plan: colors.journeys?.plan?.primary ?? '#3A86FF',
+};
+
+const JOURNEY_LABELS: Record<string, string> = {
+  health: 'My Health',
+  care: 'Care Now',
+  plan: 'My Plan',
+};
+
+/**
+ * Achievement detail page displaying the full info for a single achievement,
+ * including progress, requirements, and journey context.
+ */
+const AchievementDetailPage: React.FC = () => {
+  const router = useRouter();
+  const { id } = router.query;
+  const userId = 'user-123';
+  const { data, loading, error } = useGameProfile(userId);
+
+  if (loading) {
+    return (
+      <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+        <Text fontSize="lg">Loading achievement...</Text>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+        <Text fontSize="lg" color={colors.semantic.error}>
+          Error loading achievement details.
+        </Text>
+      </div>
+    );
+  }
+
+  const achievement = data?.gameProfile?.achievements?.find((a) => a.id === id);
+
+  if (!achievement) {
+    return (
+      <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+        <Text fontSize="lg" color={colors.gray[50]}>Achievement not found.</Text>
+        <Link href="/achievements">
+          <Button variant="secondary" onPress={() => router.push('/achievements')}>
+            Back to Achievements
+          </Button>
+        </Link>
+      </div>
+    );
+  }
+
+  const progressPercent = achievement.total > 0
+    ? Math.round((achievement.progress / achievement.total) * 100)
+    : 0;
+
+  const journeyColor = JOURNEY_COLORS[achievement.journey] ?? colors.gray[50];
+
+  return (
+    <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+      <Button
+        variant="secondary"
+        onPress={() => router.push('/achievements')}
+        accessibilityLabel="Back to achievements"
+        style={{ marginBottom: spacing.lg }}
+      >
+        Back to Achievements
+      </Button>
+
+      <Card elevation="md" padding="lg" style={{ textAlign: 'center', marginBottom: spacing.xl }}>
+        <Box display="flex" justifyContent="center" style={{ marginBottom: spacing.lg }}>
+          <AchievementBadge achievement={achievement} size="lg" showProgress />
+        </Box>
+        <Text fontSize="2xl" fontWeight="bold" style={{ marginBottom: spacing.sm }}>
+          {achievement.title}
+        </Text>
+        <span
+          style={{
+            display: 'inline-block',
+            backgroundColor: journeyColor,
+            color: '#fff',
+            padding: `${spacing.xs} ${spacing.sm}`,
+            borderRadius: '12px',
+            fontSize: '12px',
+            fontWeight: 600,
+            marginBottom: spacing.md,
+          }}
+        >
+          {JOURNEY_LABELS[achievement.journey] ?? achievement.journey}
+        </span>
+        <Text fontSize="md" color={colors.gray[50]} style={{ marginBottom: spacing.lg }}>
+          {achievement.description}
+        </Text>
+      </Card>
+
+      <Card elevation="sm" padding="lg" style={{ marginBottom: spacing.xl }}>
+        <Text fontWeight="bold" fontSize="lg" style={{ marginBottom: spacing.md }}>
+          Progress
+        </Text>
+        <ProgressBar
+          progress={progressPercent}
+          journey={achievement.journey}
+          showLabel
+        />
+        <Text fontSize="sm" color={colors.gray[50]} style={{ marginTop: spacing.sm }}>
+          {achievement.progress} / {achievement.total} completed ({progressPercent}%)
+        </Text>
+      </Card>
+
+      <Card elevation="sm" padding="lg">
+        <Text fontWeight="bold" fontSize="lg" style={{ marginBottom: spacing.md }}>
+          Status
+        </Text>
+        <Text fontSize="md">
+          {achievement.unlocked
+            ? 'You have unlocked this achievement!'
+            : 'Keep going to unlock this achievement.'}
+        </Text>
+      </Card>
+    </div>
+  );
+};
+
+export default AchievementDetailPage;

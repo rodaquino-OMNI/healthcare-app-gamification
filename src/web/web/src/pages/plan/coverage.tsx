@@ -1,5 +1,5 @@
-import React from 'react';
-import { NextSeo } from 'next-seo'; // next-seo@^5.0.0
+import React, { useState } from 'react';
+import { NextSeo } from 'next-seo';
 import PlanLayout from '../../layouts/PlanLayout';
 import CoverageInfoCard from 'src/web/design-system/src/plan/CoverageInfoCard';
 import LoadingIndicator from '../../components/shared/LoadingIndicator';
@@ -8,66 +8,120 @@ import { useCoverage } from '../../hooks/useCoverage';
 import { useAuth } from '../../hooks/useAuth';
 import { Box, Text } from 'src/web/design-system/src/primitives';
 import { Coverage } from 'src/web/shared/types/plan.types';
+import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+
+const { plan } = colors.journeys;
 
 /**
  * The main component for the coverage page that displays insurance coverage information.
- * @returns {JSX.Element} The rendered coverage page
  */
 const CoveragePage: React.FC = () => {
-  // LD1: Use the useAuth hook to get the current user and authentication state
   const { session } = useAuth();
-
-  // LD1: Get the user's active plan ID from the user object
   const planId = session?.accessToken;
-
-  // LD1: Use the useCoverage hook to fetch coverage data for the active plan
   const { data: coverageData, isLoading, isError, refetch } = useCoverage(planId);
 
-  // LD1: Handle loading state by displaying a LoadingIndicator
+  // Track expanded sections
+  const [expandedTypes, setExpandedTypes] = useState<Record<string, boolean>>({});
+
+  const toggleType = (type: string) => {
+    setExpandedTypes((prev) => ({ ...prev, [type]: !prev[type] }));
+  };
+
   if (isLoading) {
     return (
       <PlanLayout>
-        <LoadingIndicator text="Carregando informa\u00e7\u00f5es de cobertura..." />
+        <LoadingIndicator text="Carregando informacoes de cobertura..." />
       </PlanLayout>
     );
   }
 
-  // LD1: Handle error state by displaying an ErrorState with retry functionality
   if (isError) {
     return (
       <PlanLayout>
-        <ErrorState message="Erro ao carregar informa\u00e7\u00f5es de cobertura. Tente novamente." onRetry={() => refetch()} />
+        <ErrorState
+          message="Erro ao carregar informacoes de cobertura. Tente novamente."
+          onRetry={() => refetch()}
+        />
       </PlanLayout>
     );
   }
 
-  // LD1: Render the page title and description
+  const grouped = coverageData ? groupCoverageByType(coverageData) : {};
+
   return (
     <PlanLayout>
       <NextSeo
         title="Cobertura do Plano - AUSTA"
-        description="Visualize os detalhes da sua cobertura do plano de sa\u00fade."
+        description="Visualize os detalhes da sua cobertura do plano de saude."
       />
       <Box padding="md">
         <Text as="h1" fontSize="2xl" fontWeight="medium" marginBottom="md">
-          Informa\u00e7\u00f5es de Cobertura
+          Informacoes de Cobertura
         </Text>
         <Text>
-          Visualize os detalhes da sua cobertura do plano de sa\u00fade.
+          Visualize os detalhes da sua cobertura do plano de saude.
         </Text>
 
-        {/* LD1: Group coverage items by type for better organization */}
-        {coverageData && Object.entries(groupCoverageByType(coverageData)).map(([type, coverages]) => (
-          <Box key={type} marginTop="lg">
-            <Text as="h2" fontSize="xl" fontWeight="medium" marginBottom="sm">
-              {type}
-            </Text>
-            {/* LD1: Map through the coverage data and render CoverageInfoCard components for each item */}
-            {coverages.map((coverage) => (
-              <CoverageInfoCard key={coverage.id} coverage={coverage} />
-            ))}
-          </Box>
-        ))}
+        {Object.entries(grouped).map(([type, coverages]) => {
+          const isExpanded = expandedTypes[type] !== false; // default expanded
+          return (
+            <div
+              key={type}
+              style={{
+                marginTop: spacing.lg,
+                backgroundColor: '#ffffff',
+                borderRadius: borderRadius.md,
+                overflow: 'hidden',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+              }}
+            >
+              <button
+                onClick={() => toggleType(type)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  width: '100%',
+                  padding: `${spacing.md} ${spacing.lg}`,
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                }}
+              >
+                <div style={{
+                  width: '4px',
+                  height: '24px',
+                  backgroundColor: plan.primary,
+                  borderRadius: '2px',
+                  marginRight: spacing.sm,
+                }} />
+                <span style={{
+                  flex: 1,
+                  fontSize: typography.fontSize['heading-md'],
+                  fontWeight: typography.fontWeight.semiBold,
+                  color: plan.text,
+                  fontFamily: typography.fontFamily.heading,
+                }}>
+                  {type}
+                </span>
+                <span style={{
+                  fontSize: typography.fontSize['text-xs'],
+                  color: colors.gray[50],
+                }}>
+                  {isExpanded ? '\u25B2' : '\u25BC'}
+                </span>
+              </button>
+
+              {isExpanded && (
+                <div style={{ padding: `0 ${spacing.lg} ${spacing.md}` }}>
+                  {coverages.map((coverage) => (
+                    <CoverageInfoCard key={coverage.id} coverage={coverage} />
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </Box>
     </PlanLayout>
   );
@@ -75,15 +129,11 @@ const CoveragePage: React.FC = () => {
 
 /**
  * Next.js server-side function to handle authentication and redirect if needed.
- * @param {object} context
- * @returns {Promise<object>} Props or redirect object
  */
 export async function getServerSideProps(context: any): Promise<object> {
-  // LD1: Check if the user is authenticated by verifying the session
-  const { req, res } = context;
+  const { req } = context;
   const session = req.cookies['next-auth.session-token'] || req.cookies['__Secure-next-auth.session-token'];
 
-  // LD1: If not authenticated, redirect to the login page
   if (!session) {
     return {
       redirect: {
@@ -93,7 +143,6 @@ export async function getServerSideProps(context: any): Promise<object> {
     };
   }
 
-  // LD1: Return an empty props object if authentication is successful
   return {
     props: {},
   };
@@ -101,23 +150,17 @@ export async function getServerSideProps(context: any): Promise<object> {
 
 /**
  * Helper function to group coverage items by their type for better organization.
- * @param {Coverage[]} coverages
- * @returns {Record<string, Coverage[]>} Coverage items grouped by type
  */
 function groupCoverageByType(coverages: Coverage[]): Record<string, Coverage[]> {
-  // LD1: Initialize an empty object to store grouped coverage items
   const groupedCoverages: Record<string, Coverage[]> = {};
 
-  // LD1: Iterate through the coverage array
   coverages.forEach((coverage) => {
-    // LD1: Group items by their type property
     if (!groupedCoverages[coverage.type]) {
       groupedCoverages[coverage.type] = [];
     }
     groupedCoverages[coverage.type].push(coverage);
   });
 
-  // LD1: Return the grouped object
   return groupedCoverages;
 }
 

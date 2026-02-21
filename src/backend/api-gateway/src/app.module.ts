@@ -1,4 +1,6 @@
 import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common'; // @nestjs/common v10.0.0+
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { AuditModule, AuditInterceptor } from '@app/shared/audit';
 import { GraphQLModule } from '@nestjs/graphql'; // @nestjs/graphql v12.0.0+
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'; // @nestjs/apollo v12.0.0+
 import { ConfigModule } from '@nestjs/config'; // @nestjs/config v10.0.0+
@@ -27,9 +29,9 @@ import { NotificationsModule } from '@app/notifications/notifications/notificati
       playground: process.env.NODE_ENV !== 'production',
       debug: process.env.NODE_ENV !== 'production',
       resolvers: resolvers,
-    }), ExceptionsModule, TracingModule, AuthModule, HealthModule, CareAppModule, ClaimsModule, AchievementsModule, NotificationsModule],
+    }), ExceptionsModule, TracingModule, AuditModule, AuthModule, HealthModule, CareAppModule, ClaimsModule, AchievementsModule, NotificationsModule],
   controllers: [],
-  providers: [],
+  providers: [{ provide: APP_INTERCEPTOR, useClass: AuditInterceptor }],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

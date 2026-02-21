@@ -81,6 +81,50 @@ export class PrismaMock {
     },
   };
 
+  // Plan model operations
+  plan = {
+    findUnique: async (args: any) => {
+      return {
+        id: '1',
+        userId: 'user-1',
+        planNumber: 'PLAN-001',
+        type: 'individual',
+        validityStart: new Date(),
+        validityEnd: new Date(),
+        coverageDetails: {},
+        journey: 'plan',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+    },
+    findMany: async (args: any) => {
+      return [{
+        id: '1',
+        userId: 'user-1',
+        planNumber: 'PLAN-001',
+        type: 'individual',
+        validityStart: new Date(),
+        validityEnd: new Date(),
+        coverageDetails: {},
+        journey: 'plan',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }];
+    },
+    create: async (args: any) => {
+      return { id: '1', ...args.data, createdAt: new Date(), updatedAt: new Date() };
+    },
+    update: async (args: any) => {
+      return { id: args.where.id, ...args.data, updatedAt: new Date() };
+    },
+    delete: async (args: any) => {
+      return { id: args.where.id };
+    },
+    count: async (args: any) => {
+      return 1;
+    },
+  };
+
   // Claim model operations
   claim = {
     findUnique: async (args: any) => {

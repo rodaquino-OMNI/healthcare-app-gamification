@@ -1,12 +1,20 @@
-import React, { useState, useEffect } from 'react'; // v18.0.0
-import { useNavigation, RouteProp, useRoute } from '@react-navigation/native'; // v6.0.0
-import { StackNavigationProp } from '@react-navigation/stack';
-import { Card, Button } from 'src/web/design-system/src/components/Card/Card';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text';
-import { useJourney } from 'src/web/mobile/src/context/JourneyContext';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+  Share,
+} from 'react-native';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import { useAuth } from 'src/web/mobile/src/hooks/useAuth';
 import { getDigitalCard } from 'src/web/mobile/src/api/plan';
-import { MOBILE_PLAN_ROUTES } from 'src/web/shared/constants/routes';
+import { colors } from '@web/design-system/src/tokens/colors';
+import { spacingValues } from '@web/design-system/src/tokens/spacing';
+import { fontSizeValues } from '@web/design-system/src/tokens/typography';
+import { borderRadiusValues } from '@web/design-system/src/tokens/borderRadius';
 
 /**
  * Type definition for the route parameters.
@@ -15,82 +23,325 @@ type RootStackParamList = {
   DigitalCard: { planId: string };
 };
 
-/**
- * Type definition for the navigation props.
- */
-type DigitalCardScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  'DigitalCard'
->;
-
-/**
- * Type definition for the route props.
- */
 type DigitalCardScreenRouteProp = RouteProp<RootStackParamList, 'DigitalCard'>;
 
 /**
- * Renders the Digital Insurance Card screen.
- *
- * @returns The rendered DigitalCardScreen component.
+ * Shape of the card data returned from the API.
+ */
+interface CardData {
+  cardImageUrl: string;
+  cardData: {
+    planName?: string;
+    planType?: string;
+    memberName?: string;
+    cpf?: string;
+    planNumber?: string;
+    validityStart?: string;
+    validityEnd?: string;
+  };
+}
+
+/**
+ * Renders the Digital Insurance Card screen, displaying the user's insurance
+ * card with plan details and action buttons for sharing and saving.
  */
 export const DigitalCardScreen: React.FC = () => {
-  // Retrieves the planId from the route parameters.
   const { params } = useRoute<DigitalCardScreenRouteProp>();
   const { planId } = params;
-
-  // Uses the useAuth hook to check if the user is authenticated.
   const { isAuthenticated } = useAuth();
 
-  // Uses the useNavigation hook to get the navigation object.
-  const navigation = useNavigation<DigitalCardScreenNavigationProp>();
-
-  // Uses useState to manage the cardData state.
-  const [cardData, setCardData] = useState<{ cardImageUrl: string; cardData: object } | null>(null);
+  const [cardData, setCardData] = useState<CardData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Uses the useJourney hook to apply journey-specific theming.
-  const { journey } = useJourney();
-
-  // Uses useEffect to fetch the digital card data when the component mounts.
   useEffect(() => {
     if (isAuthenticated && planId) {
       setLoading(true);
       getDigitalCard(planId)
-        .then(data => setCardData(data))
-        .catch(error => console.error('Failed to load digital card:', error))
+        .then((data: any) => setCardData(data))
+        .catch((error: Error) =>
+          console.error('Failed to load digital card:', error),
+        )
         .finally(() => setLoading(false));
-    } else {
-      // If not authenticated, navigate to the login screen.
-      navigation.navigate(MOBILE_PLAN_ROUTES.DASHBOARD);
     }
-  }, [isAuthenticated, planId, navigation]);
+  }, [isAuthenticated, planId]);
 
-  // Displays a loading indicator while fetching data.
+  const handleShareCard = async () => {
+    try {
+      await Share.share({
+        message: `Carteirinha Digital - Plano: ${
+          cardData?.cardData?.planName ?? planId
+        }`,
+      });
+    } catch (err) {
+      console.error('Error sharing card:', err);
+    }
+  };
+
+  const handleSaveToWallet = () => {
+    console.log('Save to wallet pressed');
+  };
+
   if (loading) {
     return (
-      <Card journey={journey}>
-        <Text>Loading digital card...</Text>
-      </Card>
+      <View style={styles.screen}>
+        <View style={styles.centered}>
+          <ActivityIndicator
+            size="large"
+            color={colors.journeys.plan.primary}
+          />
+          <Text style={styles.loadingText}>
+            Carregando carteirinha digital...
+          </Text>
+        </View>
+      </View>
     );
   }
 
-  // Renders the Card component with the digital card image and details.
+  const card = cardData?.cardData ?? {};
+
   return (
-    <Card journey={journey} accessibilityLabel="Digital Insurance Card">
-      {cardData && (
-        <>
-          <Text>Digital Insurance Card</Text>
-          <Text>Image URL: {cardData.cardImageUrl}</Text>
-          <Text>Card Data: {JSON.stringify(cardData.cardData)}</Text>
-          {/* Provides buttons for sharing and downloading the card. */}
-          <Button onPress={() => {}} journey={journey}>
-            Share Card
-          </Button>
-          <Button onPress={() => {}} journey={journey}>
-            Download Card
-          </Button>
-        </>
-      )}
-    </Card>
+    <ScrollView
+      style={styles.screen}
+      contentContainerStyle={styles.scrollContent}
+    >
+      {/* Card Container */}
+      <View style={styles.cardContainer}>
+        {/* Blue Header */}
+        <View style={styles.cardHeader}>
+          <View style={styles.cardHeaderTop}>
+            <View style={styles.logoPlaceholder}>
+              <Text style={styles.logoText}>AUSTA</Text>
+            </View>
+            <View style={styles.planTypeBadge}>
+              <Text style={styles.planTypeText}>
+                {card.planType ?? 'HMO'}
+              </Text>
+            </View>
+          </View>
+          <Text style={styles.planName}>
+            {card.planName ?? 'AUSTA Care Plan'}
+          </Text>
+        </View>
+
+        {/* Card Body */}
+        <View style={styles.cardBody}>
+          <View style={styles.fieldRow}>
+            <Text style={styles.fieldLabel}>Titular</Text>
+            <Text style={styles.fieldValue}>
+              {card.memberName ?? '---'}
+            </Text>
+          </View>
+
+          <View style={styles.fieldColumns}>
+            <View style={styles.fieldCol}>
+              <Text style={styles.fieldLabel}>CPF</Text>
+              <Text style={styles.fieldValue}>{card.cpf ?? '---'}</Text>
+            </View>
+            <View style={styles.fieldCol}>
+              <Text style={styles.fieldLabel}>No. Plano</Text>
+              <Text style={styles.fieldValue}>
+                {card.planNumber ?? '---'}
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.fieldColumns}>
+            <View style={styles.fieldCol}>
+              <Text style={styles.fieldLabel}>Inicio</Text>
+              <Text style={styles.fieldValue}>
+                {card.validityStart ?? '---'}
+              </Text>
+            </View>
+            <View style={styles.fieldCol}>
+              <Text style={styles.fieldLabel}>Validade</Text>
+              <Text style={styles.fieldValue}>
+                {card.validityEnd ?? '---'}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+
+      {/* QR Code Placeholder */}
+      <View style={styles.qrContainer}>
+        <View style={styles.qrBox}>
+          <Text style={styles.qrText}>QR Code</Text>
+        </View>
+        <Text style={styles.qrHint}>
+          Apresente este codigo na recepcao
+        </Text>
+      </View>
+
+      {/* Action Buttons */}
+      <View style={styles.actions}>
+        <TouchableOpacity
+          style={styles.primaryButton}
+          onPress={handleShareCard}
+          accessibilityLabel="Compartilhar carteirinha"
+        >
+          <Text style={styles.primaryButtonText}>Compartilhar Carteirinha</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.secondaryButton}
+          onPress={handleSaveToWallet}
+          accessibilityLabel="Salvar na carteira"
+        >
+          <Text style={styles.secondaryButtonText}>Salvar na Carteira</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: colors.journeys.plan.background,
+  },
+  scrollContent: {
+    padding: spacingValues.md,
+    gap: spacingValues.lg,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: spacingValues.sm,
+    fontSize: fontSizeValues.md,
+    color: colors.gray[50],
+  },
+
+  /* Card */
+  cardContainer: {
+    backgroundColor: colors.neutral.white,
+    borderRadius: borderRadiusValues.lg,
+    overflow: 'hidden',
+    shadowColor: colors.neutral.black,
+    shadowOpacity: 0.12,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  cardHeader: {
+    backgroundColor: colors.journeys.plan.primary,
+    paddingVertical: spacingValues.lg,
+    paddingHorizontal: spacingValues.lg,
+  },
+  cardHeaderTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacingValues.xs,
+  },
+  logoPlaceholder: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingVertical: spacingValues['3xs'],
+    paddingHorizontal: spacingValues.sm,
+    borderRadius: borderRadiusValues.sm,
+  },
+  logoText: {
+    color: colors.neutral.white,
+    fontSize: fontSizeValues.md,
+    fontWeight: String(700) as any,
+    letterSpacing: 1,
+  },
+  planTypeBadge: {
+    backgroundColor: 'rgba(255,255,255,0.25)',
+    paddingVertical: spacingValues['4xs'],
+    paddingHorizontal: spacingValues.xs,
+    borderRadius: borderRadiusValues.full,
+  },
+  planTypeText: {
+    color: colors.neutral.white,
+    fontSize: fontSizeValues.xs,
+    fontWeight: String(600) as any,
+  },
+  planName: {
+    color: colors.neutral.white,
+    fontSize: fontSizeValues.xl,
+    fontWeight: String(700) as any,
+  },
+  cardBody: {
+    padding: spacingValues.lg,
+    gap: spacingValues.sm,
+  },
+  fieldRow: {
+    marginBottom: spacingValues['3xs'],
+  },
+  fieldColumns: {
+    flexDirection: 'row',
+  },
+  fieldCol: {
+    flex: 1,
+  },
+  fieldLabel: {
+    fontSize: fontSizeValues.xs,
+    fontWeight: String(500) as any,
+    color: colors.gray[40],
+    marginBottom: spacingValues['4xs'],
+  },
+  fieldValue: {
+    fontSize: fontSizeValues.sm,
+    fontWeight: String(600) as any,
+    color: colors.journeys.plan.text,
+  },
+
+  /* QR Code */
+  qrContainer: {
+    alignItems: 'center',
+  },
+  qrBox: {
+    width: 160,
+    height: 160,
+    borderWidth: 2,
+    borderColor: colors.gray[20],
+    borderStyle: 'dashed',
+    borderRadius: borderRadiusValues.md,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.neutral.white,
+  },
+  qrText: {
+    fontSize: fontSizeValues.sm,
+    fontWeight: String(500) as any,
+    color: colors.gray[40],
+  },
+  qrHint: {
+    marginTop: spacingValues.xs,
+    fontSize: fontSizeValues.xs,
+    color: colors.gray[50],
+  },
+
+  /* Actions */
+  actions: {
+    gap: spacingValues.sm,
+  },
+  primaryButton: {
+    backgroundColor: colors.journeys.plan.primary,
+    paddingVertical: spacingValues.sm,
+    borderRadius: borderRadiusValues.md,
+    alignItems: 'center',
+  },
+  primaryButtonText: {
+    color: colors.neutral.white,
+    fontSize: fontSizeValues.md,
+    fontWeight: String(600) as any,
+  },
+  secondaryButton: {
+    backgroundColor: colors.neutral.white,
+    paddingVertical: spacingValues.sm,
+    borderRadius: borderRadiusValues.md,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.journeys.plan.primary,
+  },
+  secondaryButtonText: {
+    color: colors.journeys.plan.primary,
+    fontSize: fontSizeValues.md,
+    fontWeight: String(600) as any,
+  },
+});
+
+export default DigitalCardScreen;

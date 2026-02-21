@@ -1,6 +1,8 @@
 import React from 'react';
 import { Box } from '../../primitives/Box';
 import { Text } from '../../primitives/Text';
+import { colors } from '../../tokens/colors';
+import { sizing } from '../../tokens/sizing';
 
 export interface ProgressCircleProps {
   /**
@@ -34,6 +36,13 @@ export interface ProgressCircleProps {
    * Accessibility label
    */
   ariaLabel?: string;
+
+  /**
+   * Predefined size preset mapped to sizing tokens
+   * 'sm' = 32px, 'md' = 48px, 'lg' = 64px
+   * When provided, overrides the `size` prop
+   */
+  sizePreset?: 'sm' | 'md' | 'lg';
 }
 
 /**
@@ -63,12 +72,21 @@ export const ProgressCircle: React.FC<ProgressCircleProps> = ({
   showLabel = false,
   journey,
   ariaLabel,
+  sizePreset,
 }) => {
   // Ensure progress is between 0 and 100
   const normalizedProgress = Math.max(0, Math.min(100, progress));
-  
-  // Set default color based on journey if provided, otherwise use brand.primary
-  const progressColor = color || (journey ? `journeys.${journey}.primary` : 'brand.primary');
+
+  // Resolve size from preset if provided, otherwise use the size prop
+  const resolvedSize = sizePreset ? sizing.component[sizePreset] : size;
+
+  // Resolve color to an actual hex value instead of a token path string
+  const getProgressColor = (): string => {
+    if (color) return color;
+    if (journey && colors.journeys[journey]) return colors.journeys[journey].primary;
+    return colors.brand.primary;
+  };
+  const progressColor = getProgressColor();
   
   // Calculate SVG parameters
   const viewBoxSize = 36; // viewBox size
@@ -83,8 +101,8 @@ export const ProgressCircle: React.FC<ProgressCircleProps> = ({
   return (
     <Box
       position="relative"
-      width={size}
-      height={size}
+      width={resolvedSize}
+      height={resolvedSize}
       display="inline-flex"
       alignItems="center"
       justifyContent="center"
@@ -108,7 +126,7 @@ export const ProgressCircle: React.FC<ProgressCircleProps> = ({
           cx={center}
           cy={center}
           r={radius}
-          stroke="neutral.gray300"
+          stroke={colors.gray[20]}
           strokeWidth={strokeWidth}
           fill="transparent"
         />

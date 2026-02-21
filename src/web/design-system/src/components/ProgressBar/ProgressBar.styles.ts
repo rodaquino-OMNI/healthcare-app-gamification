@@ -1,12 +1,14 @@
 import styled from 'styled-components';
 import { ThemeProps } from 'styled-components';
+import { borderRadius } from '../../tokens/borderRadius';
+import { colors } from '../../tokens/colors';
 
 export const ProgressBarContainer = styled.div`
   position: relative;
   width: 100%;
   height: ${({ theme }) => theme.spacing.sm};
   background-color: ${({ theme }) => theme.colors.neutral.gray200};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
+  border-radius: ${borderRadius.full};
   overflow: hidden;
 `;
 
@@ -21,6 +23,6 @@ export const ProgressBarFill = styled.div<{ progress: number; journey?: string }
       ? theme.colors.journeys[journey].primary 
       : theme.colors.brand.primary
   };
-  border-radius: ${({ theme }) => theme.borderRadius.md};
+  border-radius: ${borderRadius.full};
   transition: width 0.3s ease-in-out;
 `;

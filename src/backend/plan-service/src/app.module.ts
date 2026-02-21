@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
+import { AuditModule, AuditInterceptor } from '@app/shared/audit';
 import { planService } from './config/configuration';
 import { ClaimsModule } from './claims/claims.module';
 import { PlansModule } from './plans/plans.module';
 import { CostSimulatorModule } from './cost-simulator/cost-simulator.module';
 import { DocumentsModule } from './documents/documents.module';
 import { InsuranceModule } from './insurance/insurance.module';
-import { PrismaService } from '@app/shared/database/prisma.service';
+import { DatabaseModule } from '@app/shared/database/database.module';
 import { KafkaModule } from '@app/shared/kafka/kafka.module';
 import { LoggerModule } from '@app/shared/logging/logger.module';
 import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
@@ -34,9 +36,11 @@ import { TracingModule } from '@app/shared/tracing/tracing.module';
     CostSimulatorModule,
     DocumentsModule,
     InsuranceModule,
+    AuditModule,
+    DatabaseModule,
   ],
   controllers: [],
-  providers: [PrismaService],
+  providers: [{ provide: APP_INTERCEPTOR, useClass: AuditInterceptor }],
 })
 export class AppModule {
   /**

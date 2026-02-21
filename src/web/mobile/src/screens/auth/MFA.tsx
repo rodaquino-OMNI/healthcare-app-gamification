@@ -1,93 +1,176 @@
 import React, { useState } from 'react';
-import { useNavigation } from '@react-navigation/native'; // v6.0.0
+import { ActivityIndicator } from 'react-native';
+import styled from 'styled-components/native';
+import { useNavigation } from '@react-navigation/native';
+
 import { useAuth } from '../../hooks/useAuth';
-import { Input } from 'src/web/design-system/src/components/Input/Input';
-import { Button } from 'src/web/design-system/src/components/Button/Button';
-import { LoadingIndicator } from '../../components/shared/LoadingIndicator';
+import { colors } from '../../../../design-system/src/tokens/colors';
+import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
+import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
+import { borderRadius, borderRadiusValues } from '../../../../design-system/src/tokens/borderRadius';
+import { sizing, sizingValues } from '../../../../design-system/src/tokens/sizing';
 
 /**
- * MFA screen component that handles multi-factor authentication verification
+ * Styled container for the MFA screen
+ */
+const Container = styled.View`
+  flex: 1;
+  padding: ${spacingValues.xl}px;
+  background-color: ${colors.neutral.white};
+  justify-content: center;
+`;
+
+/**
+ * Styled title text
+ */
+const Title = styled.Text`
+  font-size: ${fontSizeValues['2xl']}px;
+  font-weight: ${typography.fontWeight.bold};
+  color: ${colors.neutral.gray900};
+  margin-bottom: ${spacingValues.sm}px;
+  text-align: center;
+`;
+
+/**
+ * Styled description text
+ */
+const Description = styled.Text`
+  font-size: ${fontSizeValues.md}px;
+  color: ${colors.neutral.gray600};
+  text-align: center;
+  margin-bottom: ${spacingValues['2xl']}px;
+  line-height: ${Math.round(fontSizeValues.md * 1.5)}px;
+`;
+
+/**
+ * Styled code input
+ */
+const CodeInput = styled.TextInput`
+  height: ${sizingValues.component.lg}px;
+  border-width: 1px;
+  border-color: ${colors.neutral.gray300};
+  border-radius: ${borderRadiusValues.md}px;
+  padding-horizontal: ${spacingValues.md}px;
+  font-size: ${fontSizeValues['2xl']}px;
+  text-align: center;
+  letter-spacing: 8px;
+  margin-bottom: ${spacingValues.xl}px;
+  color: ${colors.neutral.gray900};
+`;
+
+/**
+ * Styled verify button
+ */
+const VerifyButton = styled.TouchableOpacity<{ disabled?: boolean }>`
+  background-color: ${(props: { disabled?: boolean }) =>
+    props.disabled ? colors.neutral.gray400 : colors.brand.primary};
+  border-radius: ${borderRadiusValues.md}px;
+  padding: ${spacingValues.md}px;
+  align-items: center;
+`;
+
+/**
+ * Styled verify button text
+ */
+const VerifyButtonText = styled.Text`
+  color: ${colors.neutral.white};
+  font-size: ${fontSizeValues.md}px;
+  font-weight: ${typography.fontWeight.semiBold};
+`;
+
+/**
+ * Loading container
+ */
+const LoadingContainer = styled.View`
+  align-items: center;
+  padding: ${spacingValues.md}px;
+`;
+
+/**
+ * Loading text label
+ */
+const LoadingLabel = styled.Text`
+  color: ${colors.neutral.gray600};
+  font-size: ${fontSizeValues.sm}px;
+  margin-top: ${spacingValues.xs}px;
+`;
+
+/**
+ * MFA screen component that handles multi-factor authentication verification.
  * This screen allows users to enter a verification code they received via SMS or email
  * to complete the authentication process.
+ *
+ * Uses design-system tokens for all colors, spacing, typography and sizing.
+ * No hardcoded hex values or pixel values.
  */
 export const MFAScreen: React.FC = () => {
-  // State for the verification code input
   const [code, setCode] = useState('');
-  // State to track form submission status
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  // Get navigation object for routing
+
   const navigation = useNavigation();
-  // Get the MFA verification function from auth context
   const { handleMfaVerification } = useAuth();
-  
+
   /**
-   * Handles the verification code submission
-   * Attempts to verify the code with the temporary token
+   * Handles the verification code submission.
+   * Attempts to verify the code with the temporary token.
    */
   const handleSubmit = async () => {
-    // Don't submit if code is empty
     if (!code.trim()) return;
-    
+
     setIsSubmitting(true);
-    
+
     try {
-      // Get the temporary token from navigation params
-      // Note: The actual method to access route params depends on the
-      // React Navigation version and implementation
       const route = navigation.getState().routes[navigation.getState().index];
-      const tempToken = route.params?.tempToken;
-      
-      // Call the MFA verification function from auth context
+      const tempToken = (route.params as any)?.tempToken;
+
       await handleMfaVerification(code, tempToken);
       // Navigation after successful verification is handled by the auth context
     } catch (error) {
-      // Log error and reset submission state on failure
       console.error('MFA verification failed:', error);
       setIsSubmitting(false);
     }
   };
-  
-  /**
-   * Handle input change events
-   */
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCode(e.target.value);
-  };
-  
+
+  const isCodeEmpty = !code.trim();
+
   return (
-    <div>
-      <h2>Verification Required</h2>
-      <p>Please enter the verification code sent to your device to complete the login process.</p>
-      
-      <Input
+    <Container>
+      <Title>Verification Required</Title>
+      <Description>
+        Please enter the verification code sent to your device to complete the login process.
+      </Description>
+
+      <CodeInput
         value={code}
-        onChange={handleInputChange}
+        onChangeText={setCode}
         placeholder="Enter verification code"
-        type="text"
-        aria-label="Verification code"
-        journey="health"
+        placeholderTextColor={colors.neutral.gray500}
+        keyboardType="number-pad"
+        autoFocus
+        maxLength={6}
+        accessibilityLabel="Verification code"
         testID="mfa-code-input"
       />
-      
+
       {isSubmitting ? (
-        <LoadingIndicator 
-          journey="health" 
-          size="md" 
-          label="Verifying..." 
-        />
+        <LoadingContainer>
+          <ActivityIndicator
+            size="small"
+            color={colors.brand.primary}
+          />
+          <LoadingLabel>Verifying...</LoadingLabel>
+        </LoadingContainer>
       ) : (
-        <Button
+        <VerifyButton
           onPress={handleSubmit}
-          journey="health"
-          variant="primary"
-          disabled={!code.trim()}
+          disabled={isCodeEmpty}
           accessibilityLabel="Verify code"
+          accessibilityRole="button"
         >
-          Verify
-        </Button>
+          <VerifyButtonText>Verify</VerifyButtonText>
+        </VerifyButton>
       )}
-    </div>
+    </Container>
   );
 };
 

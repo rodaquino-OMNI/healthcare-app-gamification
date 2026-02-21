@@ -8,6 +8,7 @@ import axios from 'axios';
 import { createSecureAxios } from '@app/shared/utils/secure-axios';
 import helmet from 'helmet';
 import { DEFAULT_PORT } from './config/validation.schema';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 /**
  * Initializes and starts the NestJS application, configures the Kafka consumer, and sets up global exception handling.
@@ -58,6 +59,16 @@ async function bootstrap(): Promise<void> {
       // Continue application startup even if Kafka fails - we don't want to prevent the API from working
     }
     
+    // Swagger setup
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle('AUSTA Gamification Engine API')
+      .setDescription('Gamification, achievements, and rewards service')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+    const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup('api/docs', app, swaggerDocument);
+
     // Starts listening for incoming requests.
     await app.listen(port);
     logger.log(`Gamification Engine successfully started on port ${port}`, 'Bootstrap');

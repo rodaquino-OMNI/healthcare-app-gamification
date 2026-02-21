@@ -3,6 +3,8 @@ import { spacing } from '../../tokens/spacing';
 import { colors } from '../../tokens/colors';
 import { shadows } from '../../tokens/shadows';
 import { breakpoints } from '../../tokens/breakpoints';
+import { borderRadius as borderRadiusTokens } from '../../tokens/borderRadius';
+import { sizing } from '../../tokens/sizing';
 import { BoxContainer } from './Box.styles';
 
 /**
@@ -14,7 +16,12 @@ export interface BoxProps extends React.ComponentPropsWithoutRef<typeof BoxConta
    * Journey context for automatic theming
    */
   journey?: 'health' | 'care' | 'plan';
-  
+
+  /**
+   * Component size from sizing tokens
+   */
+  size?: keyof typeof sizing.component;
+
   /**
    * React children
    */
@@ -65,6 +72,7 @@ export const Box = React.forwardRef<HTMLDivElement, BoxProps>(({
   marginLeft,
   boxShadow,
   borderRadius,
+  size,
   children,
   ...rest
 }, ref) => {
@@ -102,7 +110,10 @@ export const Box = React.forwardRef<HTMLDivElement, BoxProps>(({
     
     // Visual properties
     boxShadow: boxShadow ? resolveToken(boxShadow, shadows) : undefined,
-    borderRadius: borderRadius ? resolveToken(borderRadius, spacing) : undefined,
+    borderRadius: borderRadius ? resolveToken(borderRadius, borderRadiusTokens) : undefined,
+
+    // Sizing
+    ...(size ? { width: sizing.component[size], height: sizing.component[size] } : {}),
   };
   
   return (

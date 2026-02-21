@@ -159,23 +159,6 @@
     ]
   },
   "overrides": {
-    "axios": "1.7.8",
-    "agora-rtc-sdk-ng": {
-      "axios": "1.7.8",
-      "follow-redirects": "1.15.4",
-      "@agora-js/media": {
-        "axios": "1.7.8",
-        "follow-redirects": "1.15.4"
-      },
-      "@agora-js/report": {
-        "axios": "1.7.8",
-        "follow-redirects": "1.15.4"
-      },
-      "@agora-js/shared": {
-        "axios": "1.7.8",
-        "follow-redirects": "1.15.4"
-      }
-    },
     "semver": "7.5.4",
     "json5": "2.2.3",
     "minimatch": "3.1.2",
@@ -193,8 +176,6 @@
     "shelljs": "0.8.5",
     "qs": "6.11.2",
     "ua-parser-js": "1.0.35",
-    "helmet": "7.1.0",
-    "glob": "^11.0.2",
     "@babel/plugin-proposal-class-properties": "@babel/plugin-transform-class-properties",
     "@babel/plugin-proposal-nullish-coalescing-operator": "@babel/plugin-transform-nullish-coalescing-operator",
     "@babel/plugin-proposal-optional-chaining": "@babel/plugin-transform-optional-chaining",
@@ -213,7 +194,6 @@
     "@apollo/federation": "@apollo/subgraph",
     "@humanwhocodes/config-array": "@eslint/config-array",
     "@humanwhocodes/object-schema": "@eslint/object-schema",
-    "eslint": "8.57.0",
     "metro-minify-uglify": "metro-minify-terser",
     "uglify-es": "uglify-js@^3.13.0",
     "@babel/plugin-proposal-unicode-property-regex": "@babel/plugin-transform-unicode-property-regex",

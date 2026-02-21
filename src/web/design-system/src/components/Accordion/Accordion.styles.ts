@@ -1,5 +1,9 @@
 import styled, { keyframes, css } from 'styled-components';
 import { Icon } from '@some-ui-library/icons'; // v1.0.0
+import { spacing } from '../../tokens/spacing';
+import { borderRadius } from '../../tokens/borderRadius';
+import { typography } from '../../tokens/typography';
+import { colors } from '../../tokens/colors';
 
 // Animation for expanding and collapsing accordion content
 const expandAnimation = keyframes`
@@ -28,47 +32,47 @@ export const AccordionHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: ${({ theme }) => theme.spacing.md};
-  background-color: ${({ theme }) => theme.colors.neutral.gray100};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  font-weight: ${({ theme }) => theme.typography.fontWeight.medium};
+  padding: ${spacing.md};
+  background-color: ${colors.neutral.gray100};
+  border-radius: ${borderRadius.md};
+  font-weight: ${typography.fontWeight.medium};
   cursor: pointer;
   user-select: none;
   transition: background-color 0.2s ease;
-  
+
   /* Journey-specific styling - safely access journey colors with fallbacks */
   border-left: 3px solid ${({ theme, journey }) => {
-    if (journey && theme.colors.journeys && theme.colors.journeys[journey]) {
-      return theme.colors.journeys[journey].primary;
+    if (journey && colors.journeys[journey]) {
+      return colors.journeys[journey].primary;
     }
-    return theme.colors.brand.primary;
+    return colors.brand.primary;
   }};
-  
+
   /* Hover state with journey-specific colors */
   &:hover {
-    background-color: ${({ theme, journey }) => {
-      if (journey && theme.colors.journeys && theme.colors.journeys[journey]) {
-        return theme.colors.journeys[journey].background || theme.colors.neutral.gray200;
+    background-color: ${({ journey }) => {
+      if (journey && colors.journeys[journey]) {
+        return colors.journeys[journey].background || colors.neutral.gray200;
       }
-      return theme.colors.neutral.gray200;
+      return colors.neutral.gray200;
     }};
   }
-  
+
   /* Expanded state styling */
-  ${({ isExpanded, theme, journey }) => isExpanded && css`
+  ${({ isExpanded, journey }) => isExpanded && css`
     background-color: ${(() => {
-      if (journey && theme.colors.journeys && theme.colors.journeys[journey]) {
-        return theme.colors.journeys[journey].background || theme.colors.neutral.gray200;
+      if (journey && colors.journeys[journey]) {
+        return colors.journeys[journey].background || colors.neutral.gray200;
       }
-      return theme.colors.neutral.gray200;
+      return colors.neutral.gray200;
     })()};
-    font-weight: ${theme.typography.fontWeight.bold};
+    font-weight: ${typography.fontWeight.bold};
   `}
-  
+
   /* Accessibility focus styles */
   &:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.brand.primary};
+    box-shadow: 0 0 0 2px ${colors.brand.primary};
   }
 `;
 
@@ -77,16 +81,16 @@ export const AccordionContent = styled.div`
   animation: ${({ isExpanded }) => isExpanded ? expandAnimation : collapseAnimation} 0.3s ease forwards;
   max-height: ${({ isExpanded }) => isExpanded ? '1000px' : '0'};
   opacity: ${({ isExpanded }) => isExpanded ? 1 : 0};
-  padding: ${({ isExpanded, theme }) => isExpanded ? theme.spacing.md : '0'};
+  padding: ${({ isExpanded }) => isExpanded ? spacing.md : '0'};
   transition: all 0.3s ease;
-  
+
   /* Journey-specific styling with safety checks */
-  ${({ theme, journey, isExpanded }) => {
-    if (journey && isExpanded && theme.colors.journeys && theme.colors.journeys[journey]) {
+  ${({ journey, isExpanded }) => {
+    if (journey && isExpanded && colors.journeys[journey]) {
       return css`
-        border-left: 3px solid ${theme.colors.journeys[journey].secondary || 'transparent'};
-        margin-left: ${theme.spacing.xs};
-        padding-left: ${theme.spacing.md};
+        border-left: 3px solid ${colors.journeys[journey].secondary || 'transparent'};
+        margin-left: ${spacing.xs};
+        padding-left: ${spacing.md};
       `;
     }
     return '';
@@ -96,15 +100,15 @@ export const AccordionContent = styled.div`
 export const AccordionIcon = styled(Icon)`
   transition: transform 0.3s ease;
   transform: ${({ isExpanded }) => isExpanded ? 'rotate(180deg)' : 'rotate(0deg)'};
-  
+
   /* Journey-specific styling with safety checks */
-  color: ${({ theme, journey }) => {
-    if (journey && theme.colors.journeys && theme.colors.journeys[journey]) {
-      return theme.colors.journeys[journey].primary;
+  color: ${({ journey }) => {
+    if (journey && colors.journeys[journey]) {
+      return colors.journeys[journey].primary;
     }
-    return theme.colors.brand.primary;
+    return colors.brand.primary;
   }};
-  
-  margin-left: ${({ theme }) => theme.spacing.sm};
+
+  margin-left: ${spacing.sm};
   flex-shrink: 0;
 `;

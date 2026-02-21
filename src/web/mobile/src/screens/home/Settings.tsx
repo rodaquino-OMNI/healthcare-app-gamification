@@ -1,162 +1,252 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // v6.x
+import {
+  ScrollView,
+  Platform,
+  Alert,
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import styled from 'styled-components/native';
+
 import { useAuth } from '../../hooks/useAuth';
 import { useJourney } from '../../hooks/useJourney';
 import { ROUTES } from '../../constants/routes';
+import { colors } from '../../../../design-system/src/tokens/colors';
+import { typography } from '../../../../design-system/src/tokens/typography';
+import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
+import { borderRadius } from '../../../../design-system/src/tokens/borderRadius';
+
+// --- Styled Components ---
+
+const Container = styled.SafeAreaView`
+  flex: 1;
+  background-color: ${colors.neutral.white};
+`;
+
+const SectionHeader = styled.View`
+  background-color: ${colors.gray[10]};
+  padding-horizontal: ${spacing.xl};
+  padding-vertical: ${spacing.sm};
+`;
+
+const SectionHeaderText = styled.Text`
+  font-family: ${typography.fontFamily.body};
+  font-size: ${typography.fontSize['text-xs']};
+  font-weight: ${typography.fontWeight.semiBold};
+  color: ${colors.gray[50]};
+  text-transform: uppercase;
+  letter-spacing: ${typography.letterSpacing.wide};
+`;
+
+const SettingRow = styled.TouchableOpacity`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding-horizontal: ${spacing.xl};
+  padding-vertical: ${spacing.md};
+  background-color: ${colors.neutral.white};
+  border-bottom-width: 1px;
+  border-bottom-color: ${colors.gray[10]};
+`;
+
+const SettingLabel = styled.Text`
+  font-family: ${typography.fontFamily.body};
+  font-size: ${typography.fontSize['text-md']};
+  font-weight: ${typography.fontWeight.regular};
+  color: ${colors.neutral.gray900};
+  flex: 1;
+`;
+
+const ChevronText = styled.Text`
+  font-size: ${typography.fontSize['text-md']};
+  color: ${colors.gray[40]};
+`;
+
+const LogoutRow = styled.TouchableOpacity`
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding-horizontal: ${spacing.xl};
+  padding-vertical: ${spacing.md};
+  background-color: ${colors.neutral.white};
+  margin-top: ${spacing.xl};
+  border-top-width: 1px;
+  border-top-color: ${colors.gray[20]};
+`;
+
+const LogoutText = styled.Text`
+  font-family: ${typography.fontFamily.body};
+  font-size: ${typography.fontSize['text-md']};
+  font-weight: ${typography.fontWeight.medium};
+  color: ${colors.semantic.error};
+`;
+
+const AppVersionText = styled.Text`
+  font-family: ${typography.fontFamily.body};
+  font-size: ${typography.fontSize['text-xs']};
+  color: ${colors.gray[40]};
+  text-align: center;
+  margin-top: ${spacing.xl};
+  margin-bottom: ${spacing['2xl']};
+`;
+
+// --- Types ---
+
+interface SettingItem {
+  label: string;
+  onPress: () => void;
+  showChevron?: boolean;
+}
+
+interface SettingSection {
+  title: string;
+  items: SettingItem[];
+}
 
 /**
- * Displays the settings screen with options to manage profile and app settings.
+ * Settings screen with grouped sections.
  * Implements the "Preferences & Settings" requirement from User Management Features.
+ *
+ * Sections:
+ *  1. Conta (Account)
+ *  2. Notificacoes (Notifications)
+ *  3. Privacidade (Privacy)
+ *  4. App
+ *  5. Sair (Logout)
  */
 export const SettingsScreen: React.FC = () => {
   const navigation = useNavigation();
   const { signOut } = useAuth();
   const { journey } = useJourney();
 
-  // Get journey-specific color for theming
-  const getJourneyColor = () => {
-    switch(journey) {
-      case 'health':
-        return '#0ACF83'; // Green for Health journey
-      case 'care':
-        return '#FF8C42'; // Orange for Care journey
-      case 'plan':
-        return '#3A86FF'; // Blue for Plan journey
-      default:
-        return '#0066CC'; // Default brand color
-    }
-  };
-
-  // Function to handle sign out
   const handleSignOut = async () => {
     try {
       await signOut();
-      // Navigation to login screen is handled by the auth state change
     } catch (error) {
-      console.error('Error signing out:', error);
-      // Show error message to user
+      Alert.alert('Erro', 'Nao foi possivel sair da conta. Tente novamente.');
     }
   };
 
+  const confirmSignOut = () => {
+    Alert.alert(
+      'Sair da conta',
+      'Tem certeza que deseja sair?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        { text: 'Sair', style: 'destructive', onPress: handleSignOut },
+      ],
+    );
+  };
+
+  const sections: SettingSection[] = [
+    {
+      title: 'Conta',
+      items: [
+        {
+          label: 'Editar Perfil',
+          onPress: () => navigation.navigate('SettingsEdit' as never),
+          showChevron: true,
+        },
+        {
+          label: 'Alterar Senha',
+          onPress: () => navigation.navigate(ROUTES.AUTH_MFA as never),
+          showChevron: true,
+        },
+      ],
+    },
+    {
+      title: 'Notificacoes',
+      items: [
+        {
+          label: 'Preferencias de Notificacao',
+          onPress: () => navigation.navigate('SettingsNotifications' as never),
+          showChevron: true,
+        },
+      ],
+    },
+    {
+      title: 'Privacidade',
+      items: [
+        {
+          label: 'Privacidade e Dados',
+          onPress: () => navigation.navigate('SettingsPrivacy' as never),
+          showChevron: true,
+        },
+        {
+          label: 'Termos de Uso',
+          onPress: () => {/* TODO: navigate to Terms */},
+          showChevron: true,
+        },
+        {
+          label: 'Politica de Privacidade',
+          onPress: () => {/* TODO: navigate to Privacy Policy */},
+          showChevron: true,
+        },
+      ],
+    },
+    {
+      title: 'App',
+      items: [
+        {
+          label: 'Idioma',
+          onPress: () => {/* TODO: navigate to Language */},
+          showChevron: true,
+        },
+        {
+          label: 'Sobre',
+          onPress: () => {/* TODO: navigate to About */},
+          showChevron: true,
+        },
+        {
+          label: 'Avaliar App',
+          onPress: () => {/* TODO: open app store rating */},
+          showChevron: true,
+        },
+      ],
+    },
+  ];
+
   return (
-    <View style={styles.container}>
-      <Text style={[styles.sectionTitle, { color: getJourneyColor() }]}>Conta</Text>
-      
-      <TouchableOpacity 
-        style={styles.settingItem}
-        onPress={() => navigation.navigate(ROUTES.PROFILE)}
+    <Container>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: spacingValues['4xl'] }}
       >
-        <Text style={styles.settingText}>Perfil Pessoal</Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity 
-        style={styles.settingItem}
-        onPress={() => navigation.navigate(ROUTES.AUTH_MFA)}
-      >
-        <Text style={styles.settingText}>Autenticação de Dois Fatores</Text>
-      </TouchableOpacity>
-      
-      <Text style={[styles.sectionTitle, { color: getJourneyColor() }]}>Preferências</Text>
-      
-      <TouchableOpacity 
-        style={styles.settingItem}
-        onPress={() => navigation.navigate(ROUTES.NOTIFICATIONS)}
-      >
-        <Text style={styles.settingText}>Notificações</Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity 
-        style={styles.settingItem}
-        onPress={() => {/* Will navigate to language settings */}}
-      >
-        <Text style={styles.settingText}>Idioma</Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity 
-        style={styles.settingItem}
-        onPress={() => {/* Will navigate to privacy settings */}}
-      >
-        <Text style={styles.settingText}>Privacidade</Text>
-      </TouchableOpacity>
-      
-      <Text style={[styles.sectionTitle, { color: getJourneyColor() }]}>Jornadas</Text>
-      
-      <TouchableOpacity 
-        style={styles.settingItem}
-        onPress={() => navigation.navigate(ROUTES.HEALTH_DASHBOARD)}
-      >
-        <Text style={styles.settingText}>Minha Saúde</Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity 
-        style={styles.settingItem}
-        onPress={() => navigation.navigate(ROUTES.CARE_DASHBOARD)}
-      >
-        <Text style={styles.settingText}>Cuidar-me Agora</Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity 
-        style={styles.settingItem}
-        onPress={() => navigation.navigate(ROUTES.PLAN_DASHBOARD)}
-      >
-        <Text style={styles.settingText}>Meu Plano & Benefícios</Text>
-      </TouchableOpacity>
-      
-      <Text style={[styles.sectionTitle, { color: getJourneyColor() }]}>Suporte</Text>
-      
-      <TouchableOpacity 
-        style={styles.settingItem}
-        onPress={() => {/* Will navigate to help center */}}
-      >
-        <Text style={styles.settingText}>Central de Ajuda</Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity 
-        style={styles.settingItem}
-        onPress={() => {/* Will navigate to terms and conditions */}}
-      >
-        <Text style={styles.settingText}>Termos e Condições</Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity 
-        style={styles.settingItem}
-        onPress={() => {/* Will navigate to about app */}}
-      >
-        <Text style={styles.settingText}>Sobre o App</Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity 
-        style={[styles.settingItem, { marginTop: 30, borderTopWidth: 1, borderTopColor: '#eee' }]}
-        onPress={handleSignOut}
-      >
-        <Text style={[styles.settingText, { color: '#FF3B30' }]}>Sair</Text>
-      </TouchableOpacity>
-    </View>
+        {sections.map((section) => (
+          <React.Fragment key={section.title}>
+            <SectionHeader>
+              <SectionHeaderText>{section.title}</SectionHeaderText>
+            </SectionHeader>
+            {section.items.map((item) => (
+              <SettingRow
+                key={item.label}
+                onPress={item.onPress}
+                accessibilityRole="button"
+                accessibilityLabel={item.label}
+                testID={`settings-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+              >
+                <SettingLabel>{item.label}</SettingLabel>
+                {item.showChevron && (
+                  <ChevronText accessibilityElementsHidden>{'>'}</ChevronText>
+                )}
+              </SettingRow>
+            ))}
+          </React.Fragment>
+        ))}
+
+        {/* Logout section */}
+        <LogoutRow
+          onPress={confirmSignOut}
+          accessibilityRole="button"
+          accessibilityLabel="Sair da conta"
+          testID="settings-logout"
+        >
+          <LogoutText>Sair da conta</LogoutText>
+        </LogoutRow>
+
+        <AppVersionText>AUSTA SuperApp v1.0.0</AppVersionText>
+      </ScrollView>
+    </Container>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 20,
-    marginBottom: 10,
-  },
-  settingItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  settingText: {
-    fontSize: 16,
-  },
-});
+export default SettingsScreen;

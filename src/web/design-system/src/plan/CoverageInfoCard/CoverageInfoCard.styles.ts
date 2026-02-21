@@ -1,25 +1,22 @@
 import styled from 'styled-components';
-import { themeGet } from 'styled-system';
+import { colors } from '../../tokens/colors';
+import { spacing } from '../../tokens/spacing';
+import { typography } from '../../tokens/typography';
+import { borderRadius } from '../../tokens/borderRadius';
 
 export const CoverageInfoCardContainer = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: ${props => props.theme.colors.journeys.plan.background || '#F0F8FF'};
-  border-radius: ${props => themeGet('borderRadius.lg')(props)};
-  box-shadow: ${props => themeGet('shadows.md')(props)};
+  background-color: ${colors.journeys.plan.background};
+  border-radius: ${borderRadius.lg};
   overflow: hidden;
-  margin-bottom: ${props => themeGet('spacing.md')(props)};
-  border-left: 4px solid ${props => props.theme.colors.journeys.plan.primary || '#3A86FF'};
+  margin-bottom: ${spacing.md};
+  border-left: 4px solid ${colors.journeys.plan.primary};
   width: 100%;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: ${props => themeGet('shadows.lg')(props)};
-  }
-
-  @media (min-width: ${props => themeGet('breakpoints.md')(props)}) {
-    flex-direction: column;
   }
 `;
 
@@ -27,16 +24,16 @@ export const CoverageInfoCardHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: ${props => themeGet('spacing.md')(props)};
-  border-bottom: 1px solid ${props => props.theme.colors.neutral.gray300};
-  background-color: ${props => props.theme.colors.journeys.plan.background || '#F0F8FF'};
+  padding: ${spacing.md};
+  border-bottom: 1px solid ${colors.neutral.gray300};
+  background-color: ${colors.journeys.plan.background};
 `;
 
 export const CoverageInfoCardTitle = styled.h3`
-  font-family: ${props => themeGet('typography.fontFamily.heading')(props)};
-  font-size: ${props => themeGet('typography.fontSize.lg')(props)};
-  font-weight: ${props => themeGet('typography.fontWeight.bold')(props)};
-  color: ${props => props.theme.colors.journeys.plan.primary || '#3A86FF'};
+  font-family: ${typography.fontFamily.heading};
+  font-size: ${typography.fontSize.lg};
+  font-weight: ${typography.fontWeight.bold};
+  color: ${colors.journeys.plan.primary};
   margin: 0;
   padding: 0;
 `;
@@ -44,8 +41,8 @@ export const CoverageInfoCardTitle = styled.h3`
 export const CoverageInfoCardContent = styled.div`
   display: flex;
   flex-direction: column;
-  padding: ${props => themeGet('spacing.md')(props)};
-  gap: ${props => themeGet('spacing.sm')(props)};
+  padding: ${spacing.md};
+  gap: ${spacing.sm};
 `;
 
 export const CoverageInfoCardItem = styled.div`
@@ -53,46 +50,40 @@ export const CoverageInfoCardItem = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: ${props => themeGet('spacing.sm')(props)} 0;
-  border-bottom: 1px solid ${props => props.theme.colors.neutral.gray200};
-  
+  padding: ${spacing.sm} 0;
+  border-bottom: 1px solid ${colors.neutral.gray200};
+
   &:last-child {
     border-bottom: none;
-  }
-
-  @media (max-width: ${props => themeGet('breakpoints.sm')(props)}) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: ${props => themeGet('spacing.xs')(props)};
   }
 `;
 
 export const CoverageInfoCardLabel = styled.span`
-  font-family: ${props => themeGet('typography.fontFamily.base')(props)};
-  font-size: ${props => themeGet('typography.fontSize.sm')(props)};
-  color: ${props => props.theme.colors.neutral.gray700};
-  font-weight: ${props => themeGet('typography.fontWeight.medium')(props)};
+  font-family: ${typography.fontFamily.base};
+  font-size: ${typography.fontSize.sm};
+  color: ${colors.neutral.gray700};
+  font-weight: ${typography.fontWeight.medium};
 `;
 
 export const CoverageInfoCardValue = styled.span`
-  font-family: ${props => themeGet('typography.fontFamily.base')(props)};
-  font-size: ${props => themeGet('typography.fontSize.md')(props)};
-  color: ${props => props.theme.colors.neutral.gray900};
-  font-weight: ${props => themeGet('typography.fontWeight.bold')(props)};
-  
+  font-family: ${typography.fontFamily.base};
+  font-size: ${typography.fontSize.md};
+  color: ${colors.neutral.gray900};
+  font-weight: ${typography.fontWeight.bold};
+
   &.highlighted {
-    color: ${props => props.theme.colors.journeys.plan.secondary || '#2D6FD9'};
+    color: ${colors.journeys.plan.secondary};
   }
-  
+
   &.covered {
-    color: ${props => props.theme.colors.semantic.success || '#00C853'};
+    color: ${colors.semantic.success};
   }
-  
+
   &.not-covered {
-    color: ${props => props.theme.colors.semantic.error || '#FF3B30'};
+    color: ${colors.semantic.error};
   }
-  
+
   &.partially-covered {
-    color: ${props => props.theme.colors.semantic.warning || '#FFD600'};
+    color: ${colors.semantic.warning};
   }
 `;

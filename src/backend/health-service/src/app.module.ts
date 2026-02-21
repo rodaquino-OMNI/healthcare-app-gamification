@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common'; // NestJS Common 10.0.0+
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { AuditModule, AuditInterceptor } from '@app/shared/audit';
 import { ConfigModule } from '@nestjs/config'; // NestJS Config 2.3.1+
 import { HealthModule } from './health/health.module'; // Core module for managing health metrics, goals, and medical history
 import { DevicesModule } from './devices/devices.module'; // Manages device connections for health data synchronization
@@ -36,9 +38,10 @@ import { validationSchema } from './config/validation.schema'; // Validation sch
     InsightsModule, // Imports the InsightsModule for generating health insights.
     FhirModule, // Imports the FhirModule for integrating with external health record systems.
     WearablesModule, // Imports the WearablesModule for integrating with wearable devices.
+    AuditModule,
   ],
   controllers: [], // No controllers are defined directly in the AppModule.
-  providers: [PrismaService], // Provides the PrismaService for database access.
+  providers: [PrismaService, { provide: APP_INTERCEPTOR, useClass: AuditInterceptor }], // Provides the PrismaService for database access.
 })
 export class AppModule {
   /**

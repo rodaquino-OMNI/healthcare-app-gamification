@@ -8,6 +8,10 @@ import { Checkbox } from '../../components/Checkbox/Checkbox';
 import { RadioButton } from '../../components/RadioButton/RadioButton';
 import { Input } from '../../components/Input/Input';
 import { tokens } from '../../tokens';
+import { colors } from '../../tokens/colors';
+import { spacing, spacingValues } from '../../tokens/spacing';
+import { typography } from '../../tokens/typography';
+import { borderRadius, borderRadiusValues } from '../../tokens/borderRadius';
 
 /**
  * Interface defining the props for the Select component.
@@ -280,53 +284,53 @@ export const Select = forwardRef<any, SelectProps>((props, ref) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    marginBottom: 16
+    marginBottom: spacingValues.md,
   },
   label: {
     fontSize: 16,
-    color: '#212121',
-    marginBottom: 8
+    color: colors.neutral.gray900,
+    marginBottom: spacingValues.xs,
   },
   touchable: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 4,
+    paddingVertical: spacingValues.sm,
+    paddingHorizontal: spacingValues.md,
+    borderRadius: borderRadiusValues.xs,
     borderWidth: 1,
-    borderColor: '#9E9E9E'
+    borderColor: colors.neutral.gray500,
   },
   text: {
     fontSize: 16,
-    color: '#212121'
+    color: colors.neutral.gray900,
   },
   icon: {
-    marginLeft: 8
+    marginLeft: spacingValues.xs,
   },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)'
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
     width: '80%',
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 16
+    backgroundColor: colors.neutral.white,
+    borderRadius: borderRadiusValues.md,
+    padding: spacingValues.md,
   },
   modalHeader: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 16
+    marginBottom: spacingValues.md,
   },
   option: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: spacingValues.sm,
+    paddingHorizontal: spacingValues.md,
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0'
-  }
+    borderBottomColor: colors.neutral.gray300,
+  },
 });
 
 // Set display name for better debugging

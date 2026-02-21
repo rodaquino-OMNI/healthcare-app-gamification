@@ -9,9 +9,24 @@
  * Web authentication routes
  */
 export const WEB_AUTH_ROUTES = {
+  WELCOME: '/auth/welcome',
+  ONBOARDING: '/auth/onboarding',
   LOGIN: '/auth/login',
   REGISTER: '/auth/register',
-  FORGOT_PASSWORD: '/auth/forgot-password'
+  FORGOT_PASSWORD: '/auth/forgot-password',
+  EMAIL_VERIFY: '/auth/email-verify',
+  SET_PASSWORD: '/auth/set-password',
+};
+
+/**
+ * Web profile routes
+ */
+export const WEB_PROFILE_ROUTES = {
+  SETUP: '/profile/setup',
+  ADDRESS: '/profile/address',
+  DOCUMENTS: '/profile/documents',
+  PHOTO: '/profile/photo',
+  CONFIRMATION: '/profile/confirmation',
 };
 
 /**
@@ -22,7 +37,11 @@ export const WEB_HEALTH_ROUTES = {
   METRICS: '/health/metrics',
   GOALS: '/health/goals',
   DEVICES: '/health/devices',
-  HISTORY: '/health/history'
+  HISTORY: '/health/history',
+  MEDICATIONS: '/health/medications',
+  MEDICATION_ADD: '/health/medications/add',
+  MEDICATION_DETAIL: '/health/medications/:id',
+  MEDICATION_REMINDER: '/health/medications/reminder',
 };
 
 /**
@@ -33,8 +52,20 @@ export const WEB_CARE_ROUTES = {
   BOOK_APPOINTMENT: '/care/appointments/book',
   TELEMEDICINE: '/care/telemedicine',
   SYMPTOM_CHECKER: '/care/symptom-checker',
+  SYMPTOM_BODY_MAP: '/care/symptom-checker/body-map',
+  SYMPTOM_DETAIL: '/care/symptom-checker/detail',
+  SYMPTOM_SEVERITY: '/care/symptom-checker/severity',
+  SYMPTOM_QUESTIONS: '/care/symptom-checker/questions',
+  SYMPTOM_RESULT: '/care/symptom-checker/result',
+  SYMPTOM_RECOMMENDATION: '/care/symptom-checker/recommendation',
   MEDICATIONS: '/care/medications',
-  TREATMENT_PLANS: '/care/treatment-plans'
+  TREATMENT_PLANS: '/care/treatment-plans',
+  DOCTOR_SEARCH: '/care/appointments/search',
+  DOCTOR_FILTERS: '/care/appointments/filters',
+  DOCTOR_PROFILE: '/care/appointments/doctor/:id',
+  DOCTOR_AVAILABILITY: '/care/appointments/doctor/availability',
+  BOOKING_CONFIRMATION: '/care/appointments/confirm',
+  WAITING_ROOM: '/care/appointments/waiting-room',
 };
 
 /**
@@ -55,10 +86,28 @@ export const WEB_PLAN_ROUTES = {
  * Note: Mobile routes use screen names for navigation rather than paths
  */
 export const MOBILE_AUTH_ROUTES = {
+  WELCOME: 'WelcomeSplash',
+  ONBOARDING: 'Onboarding',
+  WELCOME_CTA: 'WelcomeCTA',
   LOGIN: 'Login',
   REGISTER: 'Register',
   FORGOT_PASSWORD: 'ForgotPassword',
-  MFA: 'MFA'
+  MFA: 'MFA',
+  EMAIL_VERIFY: 'EmailVerify',
+  SET_PASSWORD: 'SetPassword',
+};
+
+/**
+ * Mobile profile routes
+ */
+export const MOBILE_PROFILE_ROUTES = {
+  SETUP: 'ProfileSetup',
+  HEALTH: 'ProfileHealth',
+  INSURANCE: 'ProfileInsurance',
+  ADDRESS: 'ProfileAddress',
+  DOCUMENTS: 'ProfileDocuments',
+  PHOTO: 'ProfilePhoto',
+  CONFIRMATION: 'ProfileConfirmation',
 };
 
 /**
@@ -71,7 +120,13 @@ export const MOBILE_HEALTH_ROUTES = {
   DEVICES: 'DeviceConnection',
   HISTORY: 'MedicalHistory',
   ADD_METRIC: 'AddMetric',
-  METRIC_DETAIL: 'MetricDetail'
+  METRIC_DETAIL: 'MetricDetail',
+  MEDICATION_LIST: 'HealthMedicationList',
+  MEDICATION_ADD: 'HealthMedicationAdd',
+  MEDICATION_DETAIL: 'HealthMedicationDetail',
+  MEDICATION_SEARCH: 'HealthMedicationSearch',
+  MEDICATION_REMINDER: 'HealthMedicationReminder',
+  MEDICATION_ALARM: 'HealthMedicationAlarm',
 };
 
 /**
@@ -82,8 +137,49 @@ export const MOBILE_CARE_ROUTES = {
   BOOK_APPOINTMENT: 'AppointmentBooking',
   TELEMEDICINE: 'Telemedicine',
   SYMPTOM_CHECKER: 'SymptomChecker',
+  SYMPTOM_BODY_MAP: 'CareSymptomBodyMap',
+  SYMPTOM_DETAIL: 'CareSymptomDetail',
+  SYMPTOM_SEVERITY: 'CareSymptomSeverity',
+  SYMPTOM_QUESTIONS: 'CareSymptomQuestions',
+  SYMPTOM_RESULT: 'CareSymptomResult',
+  SYMPTOM_RECOMMENDATION: 'CareSymptomRecommendation',
   MEDICATIONS: 'MedicationTracking',
-  TREATMENT_PLANS: 'TreatmentPlan'
+  TREATMENT_PLANS: 'TreatmentPlan',
+  DOCTOR_SEARCH: 'CareDoctorSearch',
+  DOCTOR_FILTERS: 'CareDoctorFilters',
+  DOCTOR_PROFILE: 'CareDoctorProfile',
+  DOCTOR_AVAILABILITY: 'CareDoctorAvailability',
+  BOOKING_SCHEDULE: 'CareBookingSchedule',
+  BOOKING_CONFIRMATION: 'CareBookingConfirmation',
+  WAITING_ROOM: 'CareWaitingRoom',
+};
+
+/**
+ * Mobile plan journey routes
+ */
+/**
+ * Mobile cross-journey / global routes
+ */
+export const MOBILE_GLOBAL_ROUTES = {
+  NOTIFICATION_DETAIL: 'NotificationDetail',
+  SEARCH: 'Search',
+  SEARCH_RESULTS: 'SearchResults',
+  SETTINGS: 'Settings',
+  SETTINGS_EDIT: 'SettingsEdit',
+  SETTINGS_NOTIFICATIONS: 'SettingsNotifications',
+  SETTINGS_PRIVACY: 'SettingsPrivacy',
+};
+
+/**
+ * Web cross-journey / global routes
+ */
+export const WEB_GLOBAL_ROUTES = {
+  NOTIFICATION_DETAIL: '/notifications/detail',
+  SEARCH: '/search',
+  SEARCH_RESULTS: '/search/results',
+  SETTINGS_EDIT: '/profile/edit',
+  SETTINGS_NOTIFICATIONS: '/profile/notifications',
+  SETTINGS_PRIVACY: '/profile/privacy',
 };
 
 /**

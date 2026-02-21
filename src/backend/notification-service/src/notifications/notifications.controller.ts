@@ -2,8 +2,8 @@ import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards } f
 import { NotificationsService } from './notifications.service';
 import { SendNotificationDto } from './dto/send-notification.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { JwtAuthGuard } from '@app/auth/guards/jwt-auth.guard';
-import { CurrentUser } from '@app/auth/decorators/current-user.decorator';
+import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
+import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 
 @ApiTags('notifications')
 @Controller('notifications')

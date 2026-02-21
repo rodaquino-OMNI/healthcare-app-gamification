@@ -1,36 +1,132 @@
 import React from 'react'; // v18.2.0
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; // v6.5.8
+import { createNativeStackNavigator } from '@react-navigation/native-stack'; // v6.9.13
 import { useNavigation } from '@react-navigation/native'; // v6.1.7
 
 import { AuthNavigator } from './AuthNavigator';
 import HealthNavigator from './HealthNavigator';
 import CareNavigator from './CareNavigator';
 import PlanNavigator from './PlanNavigator';
-import { Home } from '../screens/home/Home';
+import GamificationNavigator from './GamificationNavigator';
+import HomeScreen from '../screens/home/Home';
 import { useAuth } from '../hooks/useAuth';
 import { MOBILE_AUTH_ROUTES } from 'src/web/shared/constants/routes';
 import { NotificationsScreen } from '../screens/home/Notifications';
 import { ProfileScreen } from '../screens/home/Profile';
-import Achievements from '../screens/home/Achievements';
+import { SettingsScreen } from '../screens/home/Settings';
 import { JOURNEY_IDS } from 'src/web/shared/constants/journeys';
+import { ROUTES } from '../constants/routes';
 
-// LD1: Creates a Bottom Tab Navigator using createBottomTabNavigator from React Navigation.
+// Lazy-loaded screens for the Home stack.
+// These screens are pushed on top of the Home tab.
+let HomeMetricsScreen: React.FC = () => null;
+let HomeAlertScreen: React.FC = () => null;
+let NotificationDetailScreen: React.FC = () => null;
+let SearchScreen: React.FC = () => null;
+let SearchResultsScreen: React.FC = () => null;
+let SettingsEditScreen: React.FC = () => null;
+let SettingsNotificationsScreen: React.FC = () => null;
+let SettingsPrivacyScreen: React.FC = () => null;
+
+try {
+  // Attempt to import screens if they exist (created by another worker)
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const metricsModule = require('../screens/home/HomeMetrics');
+  HomeMetricsScreen = metricsModule.HomeMetricsScreen || metricsModule.default || HomeMetricsScreen;
+} catch {
+  // HomeMetrics screen not yet available - placeholder will be used
+}
+
+try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const alertModule = require('../screens/home/HomeAlert');
+  HomeAlertScreen = alertModule.HomeAlertScreen || alertModule.default || HomeAlertScreen;
+} catch {
+  // HomeAlert screen not yet available - placeholder will be used
+}
+
+try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const ndModule = require('../screens/home/NotificationDetail');
+  NotificationDetailScreen = ndModule.NotificationDetailScreen || ndModule.default || NotificationDetailScreen;
+} catch {
+  // NotificationDetail screen not yet available - placeholder will be used
+}
+
+try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const searchModule = require('../screens/home/Search');
+  SearchScreen = searchModule.SearchScreen || searchModule.default || SearchScreen;
+} catch {
+  // Search screen not yet available - placeholder will be used
+}
+
+try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const srModule = require('../screens/home/SearchResults');
+  SearchResultsScreen = srModule.SearchResultsScreen || srModule.default || SearchResultsScreen;
+} catch {
+  // SearchResults screen not yet available - placeholder will be used
+}
+
+try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const seModule = require('../screens/home/SettingsEdit');
+  SettingsEditScreen = seModule.SettingsEditScreen || seModule.default || SettingsEditScreen;
+} catch {
+  // SettingsEdit screen not yet available - placeholder will be used
+}
+
+try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const snModule = require('../screens/home/SettingsNotifications');
+  SettingsNotificationsScreen = snModule.SettingsNotificationsScreen || snModule.default || SettingsNotificationsScreen;
+} catch {
+  // SettingsNotifications screen not yet available - placeholder will be used
+}
+
+try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const spModule = require('../screens/home/SettingsPrivacy');
+  SettingsPrivacyScreen = spModule.SettingsPrivacyScreen || spModule.default || SettingsPrivacyScreen;
+} catch {
+  // SettingsPrivacy screen not yet available - placeholder will be used
+}
+
+// Creates a native stack navigator for the Home tab.
+// This allows HomeMetrics and HomeAlert to be pushed on top of the Home screen.
+const HomeStackNav = createNativeStackNavigator();
+
+const HomeStack: React.FC = () => (
+  <HomeStackNav.Navigator screenOptions={{ headerShown: false }}>
+    <HomeStackNav.Screen name="HomeMain" component={HomeScreen} />
+    <HomeStackNav.Screen name="HomeMetrics" component={HomeMetricsScreen} />
+    <HomeStackNav.Screen name="HomeAlert" component={HomeAlertScreen} />
+    <HomeStackNav.Screen name={ROUTES.NOTIFICATION_DETAIL} component={NotificationDetailScreen} />
+    <HomeStackNav.Screen name={ROUTES.SEARCH} component={SearchScreen} />
+    <HomeStackNav.Screen name={ROUTES.SEARCH_RESULTS} component={SearchResultsScreen} />
+    <HomeStackNav.Screen name={ROUTES.SETTINGS_EDIT} component={SettingsEditScreen} />
+    <HomeStackNav.Screen name={ROUTES.SETTINGS_NOTIFICATIONS} component={SettingsNotificationsScreen} />
+    <HomeStackNav.Screen name={ROUTES.SETTINGS_PRIVACY} component={SettingsPrivacyScreen} />
+  </HomeStackNav.Navigator>
+);
+
+// Creates a Bottom Tab Navigator using createBottomTabNavigator from React Navigation.
 const Tab = createBottomTabNavigator();
 
-// LD1: Defines the main tab navigator for the app.
+// Defines the main tab navigator for the app.
 export const MainNavigator: React.FC = () => {
-  // LD1: Retrieves the authentication status using the `useAuth` hook.
+  // Retrieves the authentication status using the `useAuth` hook.
   const { isAuthenticated } = useAuth();
-  // LD1: Retrieves the navigation object using the `useNavigation` hook.
+  // Retrieves the navigation object using the `useNavigation` hook.
   const navigation = useNavigation();
 
-  // LD1: If the user is not authenticated, renders the AuthNavigator.
+  // If the user is not authenticated, renders the AuthNavigator.
   if (!isAuthenticated) {
-    // IE1: The AuthNavigator component handles the authentication flow.
     return <AuthNavigator />;
   }
 
-  // LD1: If the user is authenticated, renders the Tab Navigator with the defined screens.
+  // If the user is authenticated, renders the Tab Navigator with the defined screens.
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -38,14 +134,14 @@ export const MainNavigator: React.FC = () => {
         headerShown: false,
       }}
     >
-      {/* LD1: Defines the screens within the main app flow, associating each screen component with a route name. */}
-      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name={JOURNEY_IDS.HEALTH} component={HealthNavigator} />
       <Tab.Screen name={JOURNEY_IDS.CARE} component={CareNavigator} />
       <Tab.Screen name={JOURNEY_IDS.PLAN} component={PlanNavigator} />
       <Tab.Screen name="Notifications" component={NotificationsScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
-      <Tab.Screen name="Achievements" component={Achievements} />
+      <Tab.Screen name="Achievements" component={GamificationNavigator} />
+      <Tab.Screen name={ROUTES.SETTINGS} component={SettingsScreen} />
     </Tab.Navigator>
   );
 };

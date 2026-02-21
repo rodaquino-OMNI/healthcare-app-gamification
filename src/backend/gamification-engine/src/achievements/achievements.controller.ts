@@ -1,4 +1,5 @@
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common'; // @nestjs/common 10.0.0
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { AchievementsService } from './achievements.service';
 import { FilterDto } from '@app/shared/dto/filter.dto'; // @app/shared ^1.0.0
@@ -8,6 +9,7 @@ import { PaginationDto } from '@app/shared/dto/pagination.dto'; // @app/shared ^
  * Controller for managing achievements.
  * Provides endpoints for retrieving achievement data.
  */
+@ApiTags('achievements')
 @Controller('achievements')
 export class AchievementsController {
   /**
@@ -27,6 +29,8 @@ export class AchievementsController {
    */
   @Get()
   @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'List all achievements' })
+  @ApiResponse({ status: 200, description: 'Returns paginated list of achievements' })
   async findAll(
     @Query() pagination: PaginationDto,
     @Query() filter: FilterDto
@@ -42,6 +46,8 @@ export class AchievementsController {
    */
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Get achievement by ID' })
+  @ApiResponse({ status: 200, description: 'Returns the achievement' })
   async findOne(@Param('id') id: string): Promise<any> {
     return this.achievementsService.findById(id);
   }

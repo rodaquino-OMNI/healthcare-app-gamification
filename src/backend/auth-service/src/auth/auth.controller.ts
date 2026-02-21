@@ -1,14 +1,15 @@
-import { 
-  Controller, 
-  Post, 
-  Body, 
-  UseGuards, 
-  Request, 
-  Get, 
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+  Get,
   UseFilters,
   HttpCode,
   HttpStatus
 } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
@@ -19,6 +20,7 @@ import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 /**
  * Controller class for handling authentication-related requests.
  */
+@ApiTags('auth')
 @Controller('auth')
 @UseFilters(AllExceptionsFilter)
 export class AuthController {
@@ -34,6 +36,8 @@ export class AuthController {
    * @returns The newly created user.
    */
   @Post('register')
+  @ApiOperation({ summary: 'Register a new user' })
+  @ApiResponse({ status: 201, description: 'User registered successfully' })
   async register(@Body() createUserDto: CreateUserDto): Promise<any> {
     return this.authService.register(createUserDto);
   }
@@ -48,6 +52,8 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Log in an existing user' })
+  @ApiResponse({ status: 200, description: 'Login successful, returns JWT token' })
   async login(@Request() req: any): Promise<any> {
     return this.authService.login(req.body.email, req.body.password);
   }
@@ -60,6 +66,8 @@ export class AuthController {
    */
   @UseGuards(JwtAuthGuard)
   @Get('profile')
+  @ApiOperation({ summary: 'Get current user profile' })
+  @ApiResponse({ status: 200, description: 'Returns the authenticated user profile' })
   getProfile(@CurrentUser() user: any): any {
     return user;
   }

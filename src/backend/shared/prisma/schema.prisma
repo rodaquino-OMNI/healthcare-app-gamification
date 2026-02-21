@@ -24,3 +24,52 @@ model AuditLog {
   @@index([createdAt])
   @@map("audit_logs")
 }
+
+model Plan {
+  id              String   @id @default(uuid())
+  userId          String
+  planNumber      String
+  type            String
+  validityStart   DateTime
+  validityEnd     DateTime
+  coverageDetails Json?
+  journey         String   @default("plan")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  claims          Claim[]
+
+  @@index([userId])
+  @@map("plans")
+}
+
+model Claim {
+  id                   String   @id @default(uuid())
+  userId               String
+  planId               String
+  type                 String
+  amount               Decimal  @db.Decimal(10, 2)
+  status               String   @default("submitted")
+  submittedAt          DateTime @default(now())
+  approvedAt           DateTime?
+  rejectedAt           DateTime?
+  paidAt               DateTime?
+  processedAt          DateTime @updatedAt
+  procedureCode        String?
+  diagnosisCode        String?
+  serviceDate          DateTime?
+  providerName         String?
+  providerTaxId        String?
+  procedureDescription String?
+  receiptUrl           String?
+  additionalDocumentUrls String[]
+  statusHistory        Json?
+  notes                String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  plan                 Plan     @relation(fields: [planId], references: [id])
+
+  @@index([userId])
+  @@index([planId])
+  @@index([status])
+  @@map("claims")
+}

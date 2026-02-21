@@ -1,4 +1,5 @@
 import { Controller, Get, Param, UseGuards, UseFilters, ParseEnumPipe } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { LeaderboardService } from './leaderboard.service';
 import { JOURNEY_IDS } from '@app/shared/constants/journey.constants';
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
@@ -8,6 +9,7 @@ import { TracingService } from '@app/shared/tracing/tracing.service';
 /**
  * Controller for handling leaderboard-related requests.
  */
+@ApiTags('leaderboard')
 @Controller('leaderboard')
 export class LeaderboardController {
   /**
@@ -28,6 +30,8 @@ export class LeaderboardController {
    */
   @Get(':journey')
   @UseFilters(AllExceptionsFilter)
+  @ApiOperation({ summary: 'Get leaderboard for a specific journey' })
+  @ApiResponse({ status: 200, description: 'Returns leaderboard data for the journey' })
   async getLeaderboard(@Param('journey') journey: string): Promise<any> {
     this.logger.log(`Request to retrieve leaderboard for journey: ${journey}`, 'LeaderboardController');
     

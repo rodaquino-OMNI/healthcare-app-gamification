@@ -1,0 +1,124 @@
+{
+  "fg": {
+    "default": {
+      "$type": "color",
+      "$value": "{colors.white}",
+      "$description": "Primary text on dark"
+    },
+    "muted": {
+      "$type": "color",
+      "$value": "{colors.gray.30}",
+      "$description": "Secondary text on dark"
+    },
+    "subtle": {
+      "$type": "color",
+      "$value": "{colors.gray.40}",
+      "$description": "Placeholder on dark"
+    },
+    "onBrand": {
+      "$type": "color",
+      "$value": "{colors.white}"
+    }
+  },
+  "bg": {
+    "default": {
+      "$type": "color",
+      "$value": "{colors.gray.70}",
+      "$description": "Dark page background #334155"
+    },
+    "muted": {
+      "$type": "color",
+      "$value": "{colors.gray.60}",
+      "$description": "Dark card background #4B5563"
+    },
+    "subtle": {
+      "$type": "color",
+      "$value": "{colors.gray.50}",
+      "$description": "Dark subtle sections"
+    }
+  },
+  "accent": {
+    "default": {
+      "$type": "color",
+      "$value": "{colors.brand.300}",
+      "$description": "AUSTA Blue stays same in dark"
+    },
+    "hover": {
+      "$type": "color",
+      "$value": "{colors.brand.200}",
+      "$description": "Lighter hover in dark mode"
+    },
+    "dark": {
+      "$type": "color",
+      "$value": "{colors.brand.400}"
+    },
+    "light": {
+      "$type": "color",
+      "$value": "{colors.brand.100}"
+    },
+    "lightest": {
+      "$type": "color",
+      "$value": "{colors.brand.50}"
+    },
+    "onAccent": {
+      "$type": "color",
+      "$value": "{colors.white}"
+    },
+    "bg": {
+      "$type": "color",
+      "$value": "rgba(0, 195, 247, 0.15)",
+      "$description": "Translucent brand on dark bg"
+    },
+    "secondary": {
+      "$type": "color",
+      "$value": "{colors.accent.300}",
+      "$description": "Verde AUSTA #00DBBB"
+    }
+  },
+  "border": {
+    "default": {
+      "$type": "color",
+      "$value": "{colors.gray.50}"
+    },
+    "muted": {
+      "$type": "color",
+      "$value": "{colors.gray.60}"
+    },
+    "accent": {
+      "$type": "color",
+      "$value": "{colors.brand.300}"
+    }
+  },
+  "semantic": {
+    "destructive": {
+      "$type": "color",
+      "$value": "{colors.destructive.500}"
+    },
+    "destructiveBg": {
+      "$type": "color",
+      "$value": "rgba(244, 63, 94, 0.15)"
+    },
+    "warning": {
+      "$type": "color",
+      "$value": "{colors.warning.500}"
+    },
+    "warningBg": {
+      "$type": "color",
+      "$value": "rgba(245, 158, 11, 0.15)"
+    },
+    "success": {
+      "$type": "color",
+      "$value": "{colors.success.500}"
+    },
+    "successBg": {
+      "$type": "color",
+      "$value": "rgba(122, 183, 101, 0.15)"
+    }
+  },
+  "shadows": {
+    "default": {
+      "$type": "color",
+      "$value": "rgba({colors.black}, 0.4)"
+    }
+  }
+}

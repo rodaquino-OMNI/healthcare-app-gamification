@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import { Box } from '../Box/Box';
-import { spacing } from '../../tokens/spacing';
+import { spacing, spacingValues } from '../../tokens/spacing';
 import { breakpoints } from '../../tokens/breakpoints';
 
 /**

@@ -46,7 +46,13 @@ export interface TextProps {
    * Journey identifier for journey-specific theming
    */
   journey?: 'health' | 'care' | 'plan';
-  
+
+  /**
+   * Typography variant — maps to predefined font configurations from design tokens.
+   * When set, overrides individual fontFamily/fontSize/fontWeight/lineHeight props.
+   */
+  variant?: 'display' | 'heading' | 'body' | 'caption';
+
   /**
    * Determines if text should be truncated with ellipsis when overflowing
    */
@@ -68,6 +74,37 @@ export interface TextProps {
    */
   children: React.ReactNode;
 }
+
+/**
+ * Variant presets mapping to typography tokens.
+ * All variants use Plus Jakarta Sans via typography.fontFamily.heading / .body tokens.
+ */
+const variantConfig = {
+  display: {
+    fontFamily: typography.fontFamily.heading,
+    fontSize: typography.fontSize['display-lg'],
+    fontWeight: typography.fontWeight.bold,
+    lineHeight: typography.lineHeight.tight,
+  },
+  heading: {
+    fontFamily: typography.fontFamily.heading,
+    fontSize: typography.fontSize['heading-xl'],
+    fontWeight: typography.fontWeight.semiBold,
+    lineHeight: typography.lineHeight.heading,
+  },
+  body: {
+    fontFamily: typography.fontFamily.body,
+    fontSize: typography.fontSize['text-md'],
+    fontWeight: typography.fontWeight.regular,
+    lineHeight: typography.lineHeight.base,
+  },
+  caption: {
+    fontFamily: typography.fontFamily.body,
+    fontSize: typography.fontSize['text-xs'],
+    fontWeight: typography.fontWeight.regular,
+    lineHeight: typography.lineHeight.relaxed,
+  },
+} as const;
 
 /**
  * Resolves typography token values based on provided token name
@@ -106,10 +143,18 @@ const getTextColor = (props: Pick<TextProps, 'color' | 'journey'>): string => {
 // Create the styled component
 const StyledText = styled.span<TextProps>`
   /* Font styles */
-  font-family: ${props => getTypographyToken(typography.fontFamily, props.fontFamily, 'base')};
-  font-size: ${props => getTypographyToken(typography.fontSize, props.fontSize, 'md')};
-  font-weight: ${props => getTypographyToken(typography.fontWeight, props.fontWeight, 'regular')};
-  line-height: ${props => getTypographyToken(typography.lineHeight, props.lineHeight, 'base')};
+  font-family: ${props => props.variant
+    ? variantConfig[props.variant].fontFamily
+    : getTypographyToken(typography.fontFamily, props.fontFamily, 'body')};
+  font-size: ${props => props.variant
+    ? variantConfig[props.variant].fontSize
+    : getTypographyToken(typography.fontSize, props.fontSize, 'md')};
+  font-weight: ${props => props.variant
+    ? variantConfig[props.variant].fontWeight
+    : getTypographyToken(typography.fontWeight, props.fontWeight, 'regular')};
+  line-height: ${props => props.variant
+    ? variantConfig[props.variant].lineHeight
+    : getTypographyToken(typography.lineHeight, props.lineHeight, 'base')};
   
   /* Text color */
   color: ${props => getTextColor(props)};
@@ -153,7 +198,7 @@ export const Text: React.FC<TextProps> = ({
 // Default props
 Text.defaultProps = {
   as: 'span',
-  fontFamily: 'base',
+  fontFamily: 'body',
   fontSize: 'md',
   fontWeight: 'regular',
   lineHeight: 'base',

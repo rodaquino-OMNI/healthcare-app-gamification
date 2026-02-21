@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ErrorType } from '@app/shared/exceptions/error.types';
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Configuration } from '../config/configuration';
 import { HealthMetric } from '../health/entities/health-metric.entity';
@@ -75,7 +74,11 @@ export class InsightsService {
    * @param userId - The ID of the user to generate insights for.
    * @returns A promise that resolves with the generated insights for the user.
    */
-  async generateUserInsights(userId: string): Promise<any> {
+  async generateUserInsights(userId: string, requestingUserId?: string): Promise<any> {
+    if (requestingUserId && userId !== requestingUserId) {
+      throw new ForbiddenException('Access denied: cannot access another user\'s data');
+    }
+
     this.logger.log(`Generating health insights for user ${userId}`); // Logs the start of the process
 
     try {
@@ -116,7 +119,11 @@ export class InsightsService {
    * @param endDate - The end date for the metrics query.
    * @returns A promise that resolves with an array of health metrics.
    */
-  async getUserHealthMetrics(userId: string, startDate: Date, endDate: Date): Promise<HealthMetric[]> {
+  async getUserHealthMetrics(userId: string, startDate: Date, endDate: Date, requestingUserId?: string): Promise<HealthMetric[]> {
+    if (requestingUserId && userId !== requestingUserId) {
+      throw new ForbiddenException('Access denied: cannot access another user\'s data');
+    }
+
     this.logger.log(`Retrieving health metrics for user ${userId}`); // Logs the start of the process
 
     try {
@@ -154,7 +161,11 @@ export class InsightsService {
    * @param userId - The ID of the user to retrieve goals for.
    * @returns A promise that resolves with an array of health goals.
    */
-  async getUserHealthGoals(userId: string): Promise<HealthGoal[]> {
+  async getUserHealthGoals(userId: string, requestingUserId?: string): Promise<HealthGoal[]> {
+    if (requestingUserId && userId !== requestingUserId) {
+      throw new ForbiddenException('Access denied: cannot access another user\'s data');
+    }
+
     this.logger.log(`Retrieving health goals for user ${userId}`); // Logs the start of the process
 
     try {

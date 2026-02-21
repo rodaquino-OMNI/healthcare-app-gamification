@@ -4,6 +4,7 @@ import { Card } from '../components/Card/Card';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
 import { typography } from '../../tokens/typography';
+import { borderRadius } from '../../tokens/borderRadius';
 import { Coverage } from 'src/web/shared/types/plan.types';
 
 /**
@@ -33,7 +34,7 @@ const CoverageDetails = styled.p`
 const CoverageLimitations = styled.div`
   padding: ${spacing.sm};
   background-color: ${colors.neutral.gray100};
-  border-radius: ${spacing.xs};
+  border-radius: ${borderRadius.xs};
   margin: ${spacing.sm} 0;
   font-size: ${typography.fontSize.sm};
   color: ${colors.neutral.gray700};
@@ -44,7 +45,7 @@ const CoPaymentBadge = styled.div`
   padding: ${spacing.xs} ${spacing.sm};
   background-color: ${colors.journeys.plan.secondary};
   color: ${colors.neutral.white};
-  border-radius: ${spacing.xs};
+  border-radius: ${borderRadius.xs};
   font-size: ${typography.fontSize.sm};
   font-weight: ${typography.fontWeight.medium};
   margin-top: ${spacing.sm};

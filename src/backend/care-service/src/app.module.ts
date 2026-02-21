@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common'; // v10.0.0+
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config'; // v10.0.0+
+import { AuditModule, AuditInterceptor } from '@app/shared/audit';
 
 import { AppointmentsModule } from './appointments/appointments.module';
 import { MedicationsModule } from './medications/medications.module';
@@ -56,9 +58,10 @@ import { RedisModule } from '@app/shared/redis/redis.module';
     KafkaModule,
     // RedisModule: Provides Redis integration for caching and real-time features.
     RedisModule,
+    AuditModule,
   ],
   // PrismaService: Provides database access through Prisma ORM.
-  providers: [PrismaService],
+  providers: [PrismaService, { provide: APP_INTERCEPTOR, useClass: AuditInterceptor }],
 })
 export class AppModule {
   /**

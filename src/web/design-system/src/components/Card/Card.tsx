@@ -1,6 +1,8 @@
 import React from 'react';
 import { Box } from '../primitives/Box/Box';
 import { CardContainer } from './Card.styles';
+import { borderRadius as borderRadiusTokens } from '../../tokens/borderRadius';
+import { shadows } from '../../tokens/shadows';
 
 /**
  * Interface defining the props for the Card component
@@ -32,6 +34,14 @@ export interface CardProps {
   height?: string;
   /** Accessibility label for screen readers */
   accessibilityLabel?: string;
+
+  /**
+   * Shorthand for applying a medium elevation shadow (shadows.md).
+   * When true and no explicit boxShadow is set, applies the standard elevated shadow.
+   * The existing `elevation` prop is preserved for granular control.
+   * @default false
+   */
+  elevated?: boolean;
 }
 
 /**
@@ -71,23 +81,27 @@ export const Card: React.FC<CardProps> = ({
   width,
   height,
   accessibilityLabel,
+  elevated = false,
   ...rest
 }) => {
   // Determine if card should be interactive based on props
   const isInteractive = interactive || !!onPress;
-  
+
+  // Resolve elevation: `elevated` shorthand applies shadows.md when no explicit elevation override
+  const resolvedElevation = elevated ? 'md' : elevation;
+
   // Style object to override CardContainer defaults when needed
   const style = {
     cursor: isInteractive ? 'pointer' : 'default',
     transition: 'all 0.2s ease-in-out',
   };
-  
+
   return (
     <Box
       as={CardContainer}
       display="flex"
       flexDirection="column"
-      boxShadow={elevation}
+      boxShadow={resolvedElevation}
       backgroundColor={backgroundColor}
       borderRadius={borderRadius}
       padding={padding}

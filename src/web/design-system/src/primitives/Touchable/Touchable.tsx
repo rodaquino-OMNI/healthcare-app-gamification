@@ -2,6 +2,7 @@ import React, { forwardRef } from 'react';
 import { GestureResponderEvent, TouchableOpacity } from 'react-native';
 import { StyledTouchableOpacity } from './Touchable.styles';
 import { colors } from '../../tokens/colors';
+import { borderRadius as borderRadiusTokens } from '../../tokens/borderRadius';
 
 /**
  * Props interface for the Touchable component
@@ -75,6 +76,11 @@ export interface TouchableProps {
    * @default false
    */
   fullWidth?: boolean;
+
+  /**
+   * Border radius from design tokens
+   */
+  borderRadius?: keyof typeof borderRadiusTokens;
 }
 
 /**
@@ -121,6 +127,7 @@ export const Touchable = forwardRef<TouchableOpacity, TouchableProps>((props, re
     children,
     style,
     fullWidth = false,
+    borderRadius,
     ...rest
   } = props;
 
@@ -136,6 +143,11 @@ export const Touchable = forwardRef<TouchableOpacity, TouchableProps>((props, re
       } 
     : {};
 
+  // Resolve borderRadius token
+  const borderRadiusStyle = borderRadius
+    ? { borderRadius: borderRadiusTokens[borderRadius] }
+    : {};
+
   return (
     <StyledTouchableOpacity
       ref={ref}
@@ -145,7 +157,7 @@ export const Touchable = forwardRef<TouchableOpacity, TouchableProps>((props, re
       activeOpacity={activeOpacity}
       testID={testID}
       fullWidth={fullWidth}
-      style={[journeyStyle, style]}
+      style={[journeyStyle, borderRadiusStyle, style]}
       {...accessibilityProps}
       {...rest}
     >

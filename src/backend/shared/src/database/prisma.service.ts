@@ -16,6 +16,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   role: any;
   permission: any;
   userRole: any;
+  plan: any;
   claim: any;
   document: any;
   healthMetric: any;
@@ -40,6 +41,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     this.role = mock.role;
     this.permission = mock.permission;
     this.userRole = mock.userRole;
+    this.plan = mock.plan;
     this.claim = mock.claim;
     this.document = mock.document;
     this.healthMetric = mock.healthMetric || {};

@@ -18,12 +18,12 @@ The AUSTA SuperApp is a **well-architected, 60–70% complete platform** that wa
 
 ## The 4 Hard Blockers (must fix before any production traffic)
 
-| # | Blocker | Evidence | Fix size |
-|---|---------|----------|----------|
-| B1 | `notifications.module.ts` imports `NotificationsController` but the variable is not in scope (commented-out import = runtime crash at boot) | `src/backend/notification-service/src/notifications/notifications.module.ts:3` | 2h |
-| B2 | `gamification-service/src/` contains only a `leaderboard/` subfolder — the service listed in docker-compose is a hollow stub | `src/backend/gamification-service/src/` | — (consolidate with engine, see Phase 2) |
-| B3 | WebSocket gateway `cors: { origin: '*' }` — any browser can connect to real-time notification stream | `src/backend/notification-service/src/websockets/websockets.gateway.ts:31` | 30min |
-| B4 | LGPD consent: only 8 code references, no consent-management module, no data-subject request (DSR) flows — violates Lei 13.709 Art. 7-8 | `grep -rn consent src/ → 8 matches` | 80h |
+| # | Blocker | Evidence | Fix size | Status |
+|---|---------|----------|----------|--------|
+| B1 | `notifications.module.ts` imports `NotificationsController` but the variable is not in scope (commented-out import = runtime crash at boot) | `src/backend/notification-service/src/notifications/notifications.module.ts:3` | 2h | **FIXED** — controller created, imports corrected |
+| B2 | `gamification-service/src/` contains only a `leaderboard/` subfolder — the service listed in docker-compose is a hollow stub | `src/backend/gamification-service/src/` | — (consolidate with engine, see Phase 2) | Phase 2 |
+| B3 | WebSocket gateway `cors: { origin: '*' }` — any browser can connect to real-time notification stream | `src/backend/notification-service/src/websockets/websockets.gateway.ts:31` | 30min | **FIXED** — env-var allowlist + credentials:true |
+| B4 | LGPD consent: only 8 code references, no consent-management module, no data-subject request (DSR) flows — violates Lei 13.709 Art. 7-8 | `grep -rn consent src/ → 8 matches` | 80h | Phase 4 |
 
 ---
 
@@ -38,11 +38,11 @@ NOW ──► Phase 1 ──► Phase 2 ──► Phase 3 ──► Phase 4 ─�
 
 ---
 
-## Phase 1 — Make It Boot & Run Correctly  _(~2 weeks, 1–2 engineers)_
+## Phase 1 — Make It Boot & Run Correctly  _(~2 weeks, 1–2 engineers)_ — IN PROGRESS
 
 **Goal:** Every service starts, docker-compose up works end-to-end, no crash-on-boot.
 
-### 1.1 Fix notification-service controller gap _(2h)_
+### 1.1 [DONE] Fix notification-service controller gap _(2h)_
 ```
 src/backend/notification-service/src/notifications/notifications.module.ts
 ```
@@ -50,7 +50,7 @@ src/backend/notification-service/src/notifications/notifications.module.ts
 - Uncomment the import in `notifications.module.ts`
 - Register it in the `controllers:[]` array (currently references undefined symbol)
 
-### 1.2 Fix WebSocket CORS _(30min)_
+### 1.2 [DONE] Fix WebSocket CORS _(30min)_
 ```
 src/backend/notification-service/src/websockets/websockets.gateway.ts:31
 ```
@@ -90,7 +90,7 @@ cd src/web && npm install
 
 ---
 
-## Phase 2 — Consolidate the Architecture  _(~4 weeks, 2 engineers)_
+## Phase 2 — Consolidate the Architecture  _(~4 weeks, 2 engineers)_ — IN PROGRESS (1/4 done)
 
 **Goal:** Eliminate the dual ORM, consolidate the duplicate gamification service, add OpenAPI everywhere.
 
@@ -123,20 +123,9 @@ cd src/web && npm install
 3. If unique code: merge into `gamification-engine/src/leaderboard/`
 4. Update all internal service references to point to `gamification-engine`
 
-### 2.3 Add Swagger/OpenAPI to all services _(12h)_
+### 2.3 [DONE] Add Swagger/OpenAPI to all services _(12h)_
 
-Only `plan-service` and `care-service` have Swagger today. Standardize:
-```typescript
-// In every service's main.ts (copy the plan-service pattern):
-const config = new DocumentBuilder()
-  .setTitle('AUSTA [Service Name] API')
-  .setVersion('1.0')
-  .addBearerAuth()
-  .build();
-const document = SwaggerModule.createDocument(app, config);
-SwaggerModule.setup('api/docs', app, document);
-```
-Add `@ApiTags`, `@ApiOperation`, `@ApiResponse` to all controllers. This unblocks the frontend team.
+**Completed:** All 7 services now have `SwaggerModule.setup` in main.ts. 16 controllers decorated with `@ApiTags`, `@ApiOperation`, `@ApiResponse`. Frontend team unblocked for API discovery at `/api/docs`.
 
 ### 2.4 Centralize exception handling _(6h)_
 
@@ -148,7 +137,7 @@ Currently 9 `@Catch`/`ExceptionFilter` references but most error handling is inl
 
 ## Phase 3 — Test It Properly  _(~4 weeks, 2 engineers)_
 
-**Goal:** Raise test coverage from 7.2% to 40%+. Current: 15 backend test files / 255 source files = 5.9%.
+**Goal:** Raise test coverage from 7.2% to 40%+. Current: 22 backend test files / 255 source files = 8.6%. _(+7 spec files added: auth.service, users.service, jwt-auth.guard, auth.middleware, audit.interceptor, audit.service, encryption.service)_
 
 **The testing gap is the single biggest quality risk.** With 0 unit tests for auth-service, care-service, plan-service, api-gateway, and shared — regressions are invisible.
 
@@ -322,36 +311,27 @@ Before launch, run OWASP ZAP against staging. Focus: JWT, WebSocket auth, FHIR e
 
 ## Where to Begin RIGHT NOW
 
-The answer is clear from the blocker analysis:
+### Completed (sessions 1–3, 2026-02-19):
+- **P1-1** [DONE]: notification-service controller created, imports fixed (`@app/auth/guards` → `@app/auth/auth/guards`)
+- **P1-2** [DONE]: WebSocket CORS hardened (`process.env.CORS_ALLOWED_ORIGINS` + `credentials: true`)
+- **P2-3** [DONE]: Swagger/OpenAPI added to all 7 services (16 controllers decorated)
+- **Security** [DONE]: JWT secrets, PHI encryption (AES-256-GCM), K8s NetworkPolicies, dep upgrades
+- **Tests** [DONE]: 7 spec files created (auth.service, users.service, jwt-auth.guard, auth.middleware, audit.interceptor, audit.service, encryption.service)
 
-### Day 1 (Today) — 3 tasks, ~6 hours total
+### Next actions (in order):
 
-**Task 1 (2h): Fix the notification-service crash**
-```
-src/backend/notification-service/src/notifications/notifications.module.ts
-```
-Create `notifications.controller.ts`, uncomment the import. This is blocking ALL local development with docker-compose.
+**Day 1 — Wire audit + run migration (~4h)**
+1. **P1-3**: Wire `AuditInterceptor` as global interceptor in 5 AppModules (api-gateway, auth-service, health-service, care-service, plan-service)
+2. **P1-4**: Run `cd src/backend/shared && npx prisma migrate dev --name add_audit_log`
 
-**Task 2 (30min): Fix WebSocket CORS wildcard**
-```
-src/backend/notification-service/src/websockets/websockets.gateway.ts:31
-```
-`origin: '*'` → env-var-driven allowlist.
+**Day 2 — Mobile fix + lockfiles (~2h)**
+3. **P1-5**: Replace hardcoded `recordId` in `AddMetric.tsx:59` with auth context `userId`
+4. **P1-6**: Regenerate lockfiles (`cd src/backend && npm install && cd ../web && npm install`)
 
-**Task 3 (3h): Wire AuditInterceptor into AppModules**
-The HIPAA audit trail exists on disk but is completely inert — not registered in any module. 5 services need it added.
-
-### Day 2 — Run Prisma migration + lockfile regeneration
-```bash
-cd src/backend/shared && npx prisma migrate dev --name add_audit_log
-cd src/backend && npm install   # regenerate lockfiles for upgraded deps
-```
-
-### Week 1–2 — Phase 1 completion
-Complete all remaining Phase 1 items in the order listed above.
-
-### Month 1 — Phase 2 (ORM consolidation)
-The ORM dual-usage is the dominant architectural debt. Every day it stays split is a day TypeORM and Prisma schemas can drift from each other. Start with `notification-service` (smallest, most isolated).
+**Week 2 — Phase 2 remaining (~54h)**
+5. **P2-2**: Consolidate `gamification-service` into `gamification-engine` (8h)
+6. **P2-4**: Centralize exception handling with `GlobalExceptionFilter` (6h)
+7. **P2-1**: ORM consolidation TypeORM → Prisma (40h, start with notification-service)
 
 ---
 

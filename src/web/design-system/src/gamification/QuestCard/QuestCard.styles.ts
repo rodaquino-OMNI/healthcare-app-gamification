@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
 import { typography } from '../../tokens/typography';
+import { borderRadius } from '../../tokens/borderRadius';
+import { sizing } from '../../tokens/sizing';
 import Card from '../../components/Card';
 import ProgressBar from '../../components/ProgressBar';
 
@@ -85,20 +87,20 @@ export const QuestIcon = styled.div<{ journey?: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-color: ${({ journey, theme }) => journey ? 
+  width: ${sizing.component.sm};
+  height: ${sizing.component.sm};
+  border-radius: ${borderRadius.full};
+  background-color: ${({ journey, theme }) => journey ?
     `${theme.colors.journeys[journey].primary}20` : // Using 20 as hex opacity (12.5%)
     theme.colors.neutral.gray200
   };
   margin-bottom: ${props => props.theme.spacing.sm};
 
   svg {
-    color: ${({ journey, theme }) => 
+    color: ${({ journey, theme }) =>
       journey ? theme.colors.journeys[journey].primary : theme.colors.neutral.gray700
     };
-    width: 16px;
-    height: 16px;
+    width: ${sizing.icon.xs};
+    height: ${sizing.icon.xs};
   }
 `;

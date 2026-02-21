@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common'; // v10.0.0+
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config'; // v3.1.1
+import { AuditModule, AuditInterceptor } from '@app/shared/audit';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AchievementsModule } from './achievements/achievements.module';
 import { EventsModule } from './events/events.module';
@@ -63,8 +65,9 @@ import { DatabaseErrorHandler } from './database/database-error.handler';
     RewardsModule,
     LeaderboardModule,
     EventsModule,
+    AuditModule,
   ],
   controllers: [],
-  providers: [DatabaseErrorHandler],
+  providers: [DatabaseErrorHandler, { provide: APP_INTERCEPTOR, useClass: AuditInterceptor }],
 })
 export class AppModule {}

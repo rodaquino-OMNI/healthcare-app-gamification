@@ -3,7 +3,7 @@ import { ComposedChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveCon
 import { useMediaQuery } from '@mui/material';
 import { Box } from '../../primitives/Box/Box';
 import { Text } from '../../primitives/Text/Text';
-import { breakpoints } from '../../tokens';
+import { breakpoints, colors, typography } from '../../tokens';
 
 export interface BarChartProps {
   /**
@@ -67,10 +67,9 @@ export const BarChart: React.FC<BarChartProps> = ({
   const safeData = data.slice(0, minLength);
   const safeLabels = labels.slice(0, minLength);
   
-  // Default color based on journey
-  const defaultColor = journey === 'health' ? '#0ACF83' : 
-                      journey === 'care' ? '#FF8C42' : 
-                      journey === 'plan' ? '#3A86FF' : '#0ACF83';
+  // Default color based on journey — uses design tokens
+  const journeyKey = journey as keyof typeof colors.journeys;
+  const defaultColor = colors.journeys[journeyKey]?.primary || colors.journeys.health.primary;
   
   // If no colors provided, use the default journey color
   const chartColor = colors && colors.length > 0 ? colors[0] : defaultColor;
@@ -130,17 +129,17 @@ export const BarChart: React.FC<BarChartProps> = ({
           }}
         >
           <CartesianGrid strokeDasharray="3 3" vertical={false} />
-          <XAxis 
-            dataKey="name" 
-            tick={{ fontSize: isTabletOrLarger ? 14 : 12 }}
+          <XAxis
+            dataKey="name"
+            tick={{ fontSize: isTabletOrLarger ? 14 : 12, fontFamily: typography.fontFamily.body }}
             tickMargin={10}
             interval={chartData.length <= 6 ? 0 : 'auto'}
             angle={labelAngle}
             textAnchor={labelAnchor}
             height={labelHeight}
           />
-          <YAxis 
-            tick={{ fontSize: isTabletOrLarger ? 14 : 12 }}
+          <YAxis
+            tick={{ fontSize: isTabletOrLarger ? 14 : 12, fontFamily: typography.fontFamily.body }}
             tickMargin={10}
             axisLine={false}
             tickLine={false}
@@ -148,7 +147,7 @@ export const BarChart: React.FC<BarChartProps> = ({
           />
           <Tooltip 
             formatter={(value: number) => [`${value.toLocaleString()}`, '']}
-            labelStyle={{ color: '#212121' }}
+            labelStyle={{ color: colors.neutral.gray900 }}
             contentStyle={{ 
               borderRadius: '8px', 
               border: 'none', 

@@ -2,6 +2,9 @@ import React from 'react';
 import { useTheme } from 'styled-components';
 import { XPContainer, XPLabel, XPRemaining } from './XPCounter.styles';
 import { ProgressBar } from '../../components/ProgressBar';
+import { colors } from '../../tokens/colors';
+import { typography } from '../../tokens/typography';
+import { spacing } from '../../tokens/spacing';
 
 /**
  * Props for the XPCounter component

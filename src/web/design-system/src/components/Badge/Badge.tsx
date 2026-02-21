@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
 import { typography } from '../../tokens/typography';
+import { borderRadius } from '../../tokens/borderRadius';
+import { sizing } from '../../tokens/sizing';
 import { Text, TextProps } from '../../primitives/Text/Text';
 import { Touchable, TouchableProps } from '../../primitives/Touchable/Touchable';
 import { Icon, IconProps } from '../../primitives/Icon/Icon';
@@ -48,6 +50,27 @@ export interface BadgeProps {
    * Test ID for testing purposes
    */
   testID?: string;
+
+  /**
+   * Status indicator type for status badge variant.
+   * Maps to semantic colors (success, warning, error, info, neutral).
+   */
+  status?: 'success' | 'warning' | 'error' | 'info' | 'neutral';
+
+  /**
+   * When true, renders as a small dot indicator instead of a label badge.
+   * Only applicable when variant is 'status'.
+   * @default false
+   */
+  dot?: boolean;
+
+  /**
+   * Badge variant type.
+   * - 'achievement': The original achievement badge (default for backward compatibility)
+   * - 'status': A status indicator badge using semantic colors
+   * @default 'achievement'
+   */
+  variant?: 'achievement' | 'status';
 }
 
 /**
@@ -102,6 +125,60 @@ export const BadgeIcon = styled(Icon)<{
 `;
 
 /**
+ * Returns the appropriate semantic color for a given status.
+ */
+const getStatusColor = (status: 'success' | 'warning' | 'error' | 'info' | 'neutral'): string => {
+  switch (status) {
+    case 'success': return colors.semantic.success;
+    case 'warning': return colors.semantic.warning;
+    case 'error': return colors.semantic.error;
+    case 'info': return colors.semantic.info;
+    case 'neutral': return colors.neutral.gray500;
+    default: return colors.neutral.gray500;
+  }
+};
+
+/**
+ * Returns the appropriate semantic background color for a given status.
+ */
+const getStatusBgColor = (status: 'success' | 'warning' | 'error' | 'info' | 'neutral'): string => {
+  switch (status) {
+    case 'success': return colors.semantic.successBg;
+    case 'warning': return colors.semantic.warningBg;
+    case 'error': return colors.semantic.errorBg;
+    case 'info': return '#eff6ff';
+    case 'neutral': return colors.neutral.gray200;
+    default: return colors.neutral.gray200;
+  }
+};
+
+/**
+ * Status badge styled component for the 'status' variant.
+ * Renders as a dot indicator or label badge with semantic colors.
+ */
+export const StatusBadge = styled.span<{
+  status: string;
+  dot: boolean;
+}>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: ${(props) => props.dot ? borderRadius.full : borderRadius.sm};
+  width: ${(props) => props.dot ? sizing.component['2xs'] : 'auto'};
+  height: ${(props) => props.dot ? sizing.component['2xs'] : 'auto'};
+  min-width: ${(props) => props.dot ? 'auto' : sizing.component['2xs']};
+  padding: ${(props) => props.dot ? '0' : `${spacing['3xs']} ${spacing.xs}`};
+  background-color: ${(props) => props.dot
+    ? getStatusColor(props.status as any)
+    : getStatusBgColor(props.status as any)};
+  color: ${(props) => getStatusColor(props.status as any)};
+  font-family: ${typography.fontFamily.base};
+  font-size: ${typography.fontSize.xs};
+  font-weight: ${typography.fontWeight.medium};
+  line-height: ${typography.lineHeight.base};
+`;
+
+/**
  * A versatile Badge component for displaying status, notifications, or achievements.
  * It supports different sizes, styles, and theming based on the AUSTA SuperApp's design system.
  */
@@ -113,9 +190,27 @@ export const Badge: React.FC<BadgeProps> = ({
   onPress,
   accessibilityLabel,
   testID,
+  status,
+  dot = false,
+  variant = 'achievement',
 }) => {
   const badgeSize = getBadgeSize(size);
 
+  // Render status variant when explicitly set
+  if (variant === 'status' && status) {
+    return (
+      <StatusBadge
+        status={status}
+        dot={dot}
+        data-testid={testID}
+        aria-label={accessibilityLabel || `${status} status`}
+      >
+        {!dot && children}
+      </StatusBadge>
+    );
+  }
+
+  // Default: render the original achievement badge
   return (
     <BadgeContainer
       size={size}

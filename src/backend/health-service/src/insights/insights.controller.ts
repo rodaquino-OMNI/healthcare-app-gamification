@@ -1,4 +1,5 @@
 import { Controller, Get, UseGuards, Request, Inject } from '@nestjs/common'; // @nestjs/common v10.0.0+
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@nestjs/passport'; // @nestjs/passport v10.0.0+
 import { InsightsService } from '@app/health/insights/insights.service.ts';
 import { LoggerService } from '@app/shared/logging/logger.service.ts';
@@ -7,6 +8,7 @@ import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator.ts
 /**
  * Handles incoming requests related to health insights.
  */
+@ApiTags('insights')
 @Controller('insights')
 export class InsightsController {
   /**
@@ -29,6 +31,8 @@ export class InsightsController {
    */
   @Get()
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get health insights for the current user' })
+  @ApiResponse({ status: 200, description: 'Returns generated health insights' })
   async getInsights(@Request() req: any, @CurrentUser() user: any): Promise<any> {
     this.logger.log(`Request to retrieve insights for user ${user.id}`); // Logs the request to retrieve insights.
     const insights = await this.insightsService.generateUserInsights(user.id); // Calls the insightsService to generate user insights.

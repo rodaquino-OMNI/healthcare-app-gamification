@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
+import { sizing, sizingValues } from '../../tokens/sizing';
+import { borderRadius } from '../../tokens/borderRadius';
 
 /**
  * Determines the size of the badge based on the provided size prop.
@@ -10,13 +12,13 @@ import { spacing } from '../../tokens/spacing';
 export function getBadgeSize(size: 'sm' | 'md' | 'lg'): number {
   switch (size) {
     case 'sm':
-      return 24;
+      return sizingValues.component.xs;  // 24px
     case 'md':
-      return 32;
+      return sizingValues.component.sm;  // 32px
     case 'lg':
-      return 40;
+      return sizingValues.component.md;  // 40px
     default:
-      return 32;
+      return sizingValues.component.sm;  // 32px
   }
 }
 

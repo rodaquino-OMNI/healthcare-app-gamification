@@ -2,6 +2,8 @@ import React, { useState, useEffect, createContext, useContext, useCallback } fr
 import styled from 'styled-components';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
+import { typography } from '../../tokens/typography';
+import { borderRadius } from '../../tokens/borderRadius';
 import { Box } from '../../primitives/Box/Box';
 import { Text } from '../../primitives/Text/Text';
 import { Button } from '../../components/Button/Button';
@@ -83,6 +85,12 @@ export interface TabsProps {
    * @default 0
    */
   defaultTab?: number;
+
+  /**
+   * Whether the tab list should be horizontally scrollable
+   * @default false
+   */
+  scrollable?: boolean;
 }
 
 // Props for the TabList component
@@ -180,12 +188,12 @@ const StyledTab = styled.button<{
       ? colors.journeys[props.journey].primary 
       : colors.neutral.gray700
   };
-  font-weight: ${props => props.active ? '500' : '400'};
+  font-weight: ${props => props.active ? typography.fontWeight.medium : typography.fontWeight.regular};
   font-size: ${props => {
     switch (props.size) {
-      case 'sm': return '14px';
-      case 'lg': return '18px';
-      default: return '16px';
+      case 'sm': return typography.fontSize.sm;
+      case 'lg': return typography.fontSize.lg;
+      default: return typography.fontSize.md;
     }
   }};
   opacity: ${props => props.disabled ? 0.5 : 1};

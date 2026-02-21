@@ -1,7 +1,9 @@
 import React from 'react';
-import { journeys } from '../../tokens/colors';
-import { fontSize } from '../../tokens/typography';
+import { colors } from '../../tokens/colors';
+import { typography } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
+import { borderRadius } from '../../tokens/borderRadius';
+import { sizing } from '../../tokens/sizing';
 import Box from '../../primitives/Box/Box';
 import Text from '../../primitives/Text/Text';
 import LineChartComponent from '../../charts/LineChart/LineChart';
@@ -120,7 +122,7 @@ export const HealthChart: React.FC<HealthChartProps> = ({
       // Transform data for BarChart
       const values = data.map(item => Number(item[yAxisKey]));
       const labels = data.map(item => String(item[xAxisKey]));
-      const journeyColor = journeys[journey].primary;
+      const journeyColor = colors.journeys[journey].primary;
       
       return (
         <BarChart

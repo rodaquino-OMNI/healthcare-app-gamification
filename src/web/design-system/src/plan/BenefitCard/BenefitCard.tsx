@@ -1,6 +1,5 @@
 import React from 'react';
 import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
 import { Card } from '../../components/Card/Card';
 import Text from '../../primitives/Text/Text';
 import { Stack } from '../../primitives/Stack/Stack';

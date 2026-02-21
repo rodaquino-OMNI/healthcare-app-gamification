@@ -6,6 +6,7 @@ import { LoggerService } from '../../shared/src/logging/logger.service';
 import { AllExceptionsFilter } from '../../shared/src/exceptions/exceptions.filter';
 import { configuration } from './config/configuration';
 import helmet from 'helmet';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 /**
  * Bootstrap function to initialize and configure the NestJS application
@@ -64,6 +65,16 @@ async function bootstrap() {
   const apiPrefix = configService.get<string>('authService.server.apiPrefix', 'api/auth');
   app.setGlobalPrefix(apiPrefix);
   
+  // Swagger setup
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('AUSTA Auth Service API')
+    .setDescription('Authentication and authorization service')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+  const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('api/docs', app, swaggerDocument);
+
   // Start the application listening on the configured port
   await app.listen(port);
   

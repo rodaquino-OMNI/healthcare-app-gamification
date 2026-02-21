@@ -1,19 +1,23 @@
 import React from 'react';
 import styled from 'styled-components';
+import { colors } from '../../tokens/colors';
+import { typography } from '../../tokens/typography';
+import { spacing } from '../../tokens/spacing';
+import { borderRadius } from '../../tokens/borderRadius';
 
 // Styled components for the GoalCard
 const Card = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 16px;
-  border-radius: 8px;
+  padding: ${spacing.md};
+  border-radius: ${borderRadius.md};
   background-color: ${props => props.theme.colors.neutral.white};
   box-shadow: ${props => props.theme.shadows.sm};
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border-left: 4px solid ${props => props.completed 
-    ? props.theme.colors.semantic.success 
+  border-left: 4px solid ${props => props.completed
+    ? props.theme.colors.semantic.success
     : props.theme.colors.journeys.health.primary};
-  
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: ${props => props.theme.shadows.md};
@@ -21,14 +25,14 @@ const Card = styled.div`
 `;
 
 const Title = styled.h3`
-  margin: 0 0 8px 0;
+  margin: 0 0 ${spacing.xs} 0;
   font-size: ${props => props.theme.typography.fontSize.lg};
   font-weight: ${props => props.theme.typography.fontWeight.bold};
   color: ${props => props.theme.colors.neutral.gray900};
 `;
 
 const Description = styled.p`
-  margin: 0 0 16px 0;
+  margin: 0 0 ${spacing.md} 0;
   font-size: ${props => props.theme.typography.fontSize.md};
   color: ${props => props.theme.colors.neutral.gray700};
   display: ${props => props.children ? 'block' : 'none'};
@@ -38,16 +42,16 @@ const ProgressContainer = styled.div`
   width: 100%;
   height: 8px;
   background-color: ${props => props.theme.colors.neutral.gray200};
-  border-radius: 4px;
+  border-radius: ${borderRadius.xs};
   overflow: hidden;
   margin-top: auto;
 `;
 
 const ProgressBar = styled.div`
   height: 100%;
-  border-radius: 4px;
-  background-color: ${props => props.completed 
-    ? props.theme.colors.semantic.success 
+  border-radius: ${borderRadius.xs};
+  background-color: ${props => props.completed
+    ? props.theme.colors.semantic.success
     : props.theme.colors.journeys.health.primary};
   width: ${props => props.progress}%;
   transition: width 0.3s ease;
@@ -56,23 +60,23 @@ const ProgressBar = styled.div`
 const StatusIndicator = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: ${spacing.sm};
 `;
 
 const CompletedBadge = styled.span`
   display: inline-flex;
   align-items: center;
-  padding: 4px 8px;
+  padding: ${spacing['3xs']} ${spacing.xs};
   background-color: ${props => props.theme.colors.semantic.success};
   color: ${props => props.theme.colors.neutral.white};
-  border-radius: 16px;
+  border-radius: ${borderRadius.lg};
   font-size: ${props => props.theme.typography.fontSize.sm};
   font-weight: ${props => props.theme.typography.fontWeight.medium};
-  margin-right: 8px;
+  margin-right: ${spacing.xs};
 
   &::before {
     content: '✓';
-    margin-right: 4px;
+    margin-right: ${spacing['3xs']};
   }
 `;
 

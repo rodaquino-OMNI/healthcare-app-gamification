@@ -1,173 +1,196 @@
 import React, { useState } from 'react';
-import { useNavigation } from '@react-navigation/native'; // v6.1.7
-import { 
-  Input, 
-  Button, 
-  Card, 
-  LoadingIndicator, 
-  ErrorState, 
-  JourneyHeader, 
-  EmptyState,
-  Text
-} from '@austa/design-system'; // v1.0.0
-import { MOBILE_CARE_ROUTES } from 'src/web/shared/constants/routes';
-import { checkSymptoms } from 'src/web/mobile/src/api/care';
-import { useJourney } from 'src/web/mobile/src/hooks/useJourney';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import {
+  Input,
+  Button,
+  Card,
+  Text,
+} from '@austa/design-system';
+import { Stepper } from '@austa/design-system/src/components/Stepper/Stepper';
+import { ROUTES } from '../../../../constants/routes';
+import { checkSymptoms } from '../../../../api/care';
+import { useJourney } from '../../../../hooks/useJourney';
+import { colors } from '@austa/design-system/src/tokens/colors';
+import { spacingValues } from '@austa/design-system/src/tokens/spacing';
+
+const SYMPTOM_STEPS = [
+  { label: 'Symptoms' },
+  { label: 'Body Map' },
+  { label: 'Details' },
+  { label: 'Questions' },
+  { label: 'Severity' },
+  { label: 'Results' },
+  { label: 'Actions' },
+];
 
 /**
  * A screen component that allows users to input their symptoms and receive a preliminary assessment.
  * This implements requirement F-102-RQ-001: Allow users to input symptoms and receive preliminary guidance.
+ * Step 1 of the symptom checker flow.
  */
 const SymptomChecker: React.FC = () => {
-  // State for symptom input, results, loading and error states
   const [symptoms, setSymptoms] = useState('');
-  const [results, setResults] = useState<any | null>(null);
+  const [selectedSymptoms, setSelectedSymptoms] = useState<Array<{ id: string; name: string }>>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  
-  // Get navigation and journey context
-  const navigation = useNavigation();
+
+  const navigation = useNavigation<any>();
   const { journey } = useJourney();
-  
+
   /**
-   * Handles the submission of symptoms for checking
+   * Handles the submission of symptoms for the symptom flow.
+   * Navigates to the body map screen with the entered symptoms.
    */
-  const handleCheckSymptoms = async () => {
-    // Validate input
+  const handleContinue = () => {
     if (!symptoms.trim()) {
-      setError(new Error('Por favor, descreva seus sintomas'));
+      setError(new Error('Please describe your symptoms'));
       return;
     }
-    
-    try {
-      // Start loading and clear previous errors
-      setIsLoading(true);
-      setError(null);
-      
-      // Call the API to check symptoms
-      const response = await checkSymptoms({ description: symptoms });
-      
-      // Update results
-      setResults(response);
-    } catch (err) {
-      // Handle error
-      setError(err instanceof Error ? err : new Error('Erro ao verificar sintomas'));
-    } finally {
-      // End loading state
-      setIsLoading(false);
-    }
+
+    setError(null);
+
+    const symptomList = symptoms
+      .split(',')
+      .map((s, index) => ({
+        id: `symptom-${index}`,
+        name: s.trim(),
+      }))
+      .filter((s) => s.name.length > 0);
+
+    navigation.navigate(ROUTES.CARE_SYMPTOM_BODY_MAP, {
+      symptoms: symptomList,
+      description: symptoms,
+    });
   };
-  
+
   /**
    * Navigates to the appointment booking screen
    */
   const handleBookAppointment = () => {
-    navigation.navigate(MOBILE_CARE_ROUTES.BOOK_APPOINTMENT);
+    navigation.navigate(ROUTES.CARE_APPOINTMENT_BOOKING);
   };
-  
+
   return (
-    <>
-      {/* Header */}
-      <JourneyHeader 
-        title="Verificador de Sintomas" 
-        journey="care" 
-        showBackButton 
-      />
-      
-      {/* Symptom input card */}
-      <Card>
-        <Text variant="h6">Descreva seus sintomas em detalhes para obter uma avaliação preliminar</Text>
-        
-        <Input
-          label="Sintomas"
-          value={symptoms}
-          onChangeText={setSymptoms}
-          placeholder="Ex: Dor de cabeça, febre, tosse..."
-          multiline
-          numberOfLines={4}
-          testID="symptom-input"
-          accessibilityLabel="Campo para descrever seus sintomas"
-        />
-        
-        <Button
-          title="Verificar Sintomas"
-          onPress={handleCheckSymptoms}
+    <View style={styles.root}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.stepperContainer}>
+          <Stepper
+            steps={SYMPTOM_STEPS}
+            activeStep={0}
+            journey="care"
+            accessibilityLabel="Symptom checker progress"
+          />
+        </View>
+
+        <Text
+          variant="heading"
           journey="care"
-          disabled={isLoading || !symptoms.trim()}
-          loading={isLoading}
-          testID="check-symptoms-button"
-        />
-      </Card>
-      
-      {/* Loading state */}
-      {isLoading && (
-        <LoadingIndicator size="large" journey="care" />
-      )}
-      
-      {/* Error state */}
-      {error && (
-        <ErrorState
-          message={error.message}
+          testID="symptom-checker-title"
+        >
+          Symptom Checker
+        </Text>
+
+        <Text
+          variant="body"
           journey="care"
-          onRetry={handleCheckSymptoms}
-        />
-      )}
-      
-      {/* Results display */}
-      {results && !isLoading && (
-        <Card testID="results-card">
-          <Text variant="h5">Resultado da Avaliação</Text>
-          
-          {results.possibleCauses && (
-            <>
-              <Text variant="subtitle1">Possíveis Causas</Text>
-              {results.possibleCauses.map((cause: string, index: number) => (
-                <Text key={index}>• {cause}</Text>
-              ))}
-            </>
-          )}
-          
-          {results.recommendation && (
-            <>
-              <Text variant="subtitle1">Recomendação</Text>
-              <Text>{results.recommendation}</Text>
-            </>
-          )}
-          
-          {results.severityLevel && (
-            <>
-              <Text variant="subtitle1">Nível de Urgência</Text>
-              <Text>
-                {results.severityLevel === 'high' && '🔴 Alto - Busque atendimento médico imediatamente'}
-                {results.severityLevel === 'medium' && '🟠 Médio - Consulte um médico em breve'}
-                {results.severityLevel === 'low' && '🟢 Baixo - Monitore seus sintomas'}
-              </Text>
-            </>
-          )}
-          
-          {/* Show appointment button for medium/high severity */}
-          {results.severityLevel && ['medium', 'high'].includes(results.severityLevel) && (
-            <Button
-              title="Agendar Consulta"
-              onPress={handleBookAppointment}
+          testID="symptom-checker-subtitle"
+        >
+          Describe your symptoms in detail to receive a preliminary assessment and guidance.
+        </Text>
+
+        <View style={styles.inputContainer}>
+          <Card journey="care" elevation="sm">
+            <Input
+              label="Your Symptoms"
+              value={symptoms}
+              onChange={(e: any) => setSymptoms(e.target?.value ?? e)}
+              placeholder="e.g. Headache, fever, cough..."
               journey="care"
-              testID="book-appointment-button"
+              testID="symptom-input"
+              aria-label="Field to describe your symptoms"
             />
-          )}
-        </Card>
-      )}
-      
-      {/* Empty state when no input or results yet */}
-      {!results && !isLoading && !error && (
-        <EmptyState
-          icon="medical-bag"
-          title="Verificador de Sintomas"
-          description="Descreva seus sintomas para receber uma avaliação preliminar e orientações."
-          journey="care"
-        />
-      )}
-    </>
+
+            {error && (
+              <Text
+                fontSize="sm"
+                color={colors.semantic.error}
+                testID="symptom-error"
+              >
+                {error.message}
+              </Text>
+            )}
+
+            <View style={styles.buttonRow}>
+              <Button
+                onPress={handleContinue}
+                journey="care"
+                disabled={isLoading || !symptoms.trim()}
+                loading={isLoading}
+                accessibilityLabel="Continue to body map"
+                testID="continue-button"
+              >
+                Continue
+              </Button>
+            </View>
+          </Card>
+        </View>
+
+        <View style={styles.infoContainer}>
+          <Card journey="care" elevation="sm">
+            <Text variant="body" journey="care">
+              The Symptom Checker helps you understand your symptoms and suggests next steps. It is not a substitute for professional medical advice.
+            </Text>
+            <View style={styles.appointmentButton}>
+              <Button
+                variant="secondary"
+                onPress={handleBookAppointment}
+                journey="care"
+                accessibilityLabel="Book appointment directly"
+                testID="book-appointment-button"
+              >
+                Book Appointment Directly
+              </Button>
+            </View>
+          </Card>
+        </View>
+      </ScrollView>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: colors.journeys.care.background,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: spacingValues.md,
+    paddingBottom: spacingValues['3xl'],
+  },
+  stepperContainer: {
+    marginBottom: spacingValues.xl,
+  },
+  inputContainer: {
+    marginTop: spacingValues.md,
+  },
+  buttonRow: {
+    marginTop: spacingValues.md,
+    alignItems: 'flex-end',
+  },
+  infoContainer: {
+    marginTop: spacingValues.xl,
+  },
+  appointmentButton: {
+    marginTop: spacingValues.md,
+  },
+});
 
 export default SymptomChecker;

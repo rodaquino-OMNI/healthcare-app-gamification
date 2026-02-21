@@ -4,8 +4,9 @@ import { Text } from '../../primitives/Text/Text';
 import { Touchable } from '../../primitives/Touchable/Touchable';
 import { useTheme } from '../../themes';
 import { colors } from '../../tokens/colors';
-import { spacing } from '../../tokens/spacing';
+import { spacing, spacingValues } from '../../tokens/spacing';
 import { typography } from '../../tokens/typography';
+import { borderRadiusValues } from '../../tokens/borderRadius';
 
 /**
  * Interface defining the props for the RadioButton component.
@@ -132,14 +133,14 @@ export const RadioButton = forwardRef<any, RadioButtonProps>((props, ref) => {
           disabled={disabled}
           onChange={handleChange}
           style={{
-            width: 20,
-            height: 20,
-            borderRadius: 10,
+            width: spacingValues.lg,
+            height: spacingValues.lg,
+            borderRadius: borderRadiusValues.full,
             borderWidth: 2,
-            borderColor: checked 
+            borderColor: checked
               ? (disabled ? colors.neutral.gray400 : accentColor)
               : colors.neutral.gray500,
-            marginRight: 8,
+            marginRight: spacingValues.xs,
             WebkitAppearance: 'none',
             outline: 'none',
             cursor: disabled ? 'not-allowed' : 'pointer',
@@ -168,12 +169,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: spacingValues.lg,
+    height: spacingValues.lg,
+    borderRadius: borderRadiusValues.full,
     borderWidth: 2,
     borderColor: colors.neutral.gray500,
-    marginRight: 8,
+    marginRight: spacingValues.xs,
     WebkitAppearance: 'none',
     outline: 'none',
     cursor: 'pointer',

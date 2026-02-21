@@ -12,6 +12,7 @@ import {
   HttpCode,
   Inject,
 } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ProfilesService } from './profiles.service';
 import { GameProfile } from './entities/game-profile.entity';
 import { AppException } from '@app/shared/exceptions/exceptions.types';
@@ -24,6 +25,7 @@ import { LoggerService } from '@app/shared/logging/logger.service';
 /**
  * Controller for managing user game profiles.
  */
+@ApiTags('profiles')
 @Controller('profiles')
 @UseFilters(AllExceptionsFilter)
 export class ProfilesController {
@@ -41,6 +43,8 @@ export class ProfilesController {
    * @returns The user's game profile
    */
   @Get(':userId')
+  @ApiOperation({ summary: 'Get game profile by user ID' })
+  @ApiResponse({ status: 200, description: 'Returns the user game profile' })
   async getProfile(@Param('userId') userId: string): Promise<GameProfile> {
     return this.profilesService.findById(userId);
   }
@@ -52,6 +56,8 @@ export class ProfilesController {
    */
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Create a new game profile for a user' })
+  @ApiResponse({ status: 201, description: 'Game profile created successfully' })
   async createProfile(@Body() data: { userId: string }): Promise<GameProfile> {
     return this.profilesService.create(data.userId);
   }
@@ -63,6 +69,8 @@ export class ProfilesController {
    * @returns The updated game profile
    */
   @Patch(':userId')
+  @ApiOperation({ summary: 'Update an existing game profile' })
+  @ApiResponse({ status: 200, description: 'Game profile updated successfully' })
   async updateProfile(
     @Param('userId') userId: string,
     @Body() updateData: Partial<GameProfile>,

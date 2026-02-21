@@ -1,4 +1,5 @@
 import { Controller, Post, Get, Body, Param, UseGuards, Query, Inject } from '@nestjs/common'; // NestJS Common 9.0.0+
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { DevicesService } from './devices.service';
 import { ConnectDeviceDto } from './dto/connect-device.dto';
 import { FilterDto } from '../../../shared/src/dto/filter.dto';
@@ -8,6 +9,7 @@ import { FilterDto } from '../../../shared/src/dto/filter.dto';
  * providing endpoints for connecting new devices and retrieving
  * existing device connections for a user.
  */
+@ApiTags('devices')
 @Controller('records/:recordId/devices')
 export class DevicesController {
   /**
@@ -26,6 +28,8 @@ export class DevicesController {
    * @returns The newly created DeviceConnection entity.
    */
   @Post()
+  @ApiOperation({ summary: 'Connect a wearable device to a health record' })
+  @ApiResponse({ status: 201, description: 'Device connected successfully' })
   async connectDevice(
     @Param('recordId') recordId: string,
     @Body() connectDeviceDto: ConnectDeviceDto
@@ -42,6 +46,8 @@ export class DevicesController {
    * @returns A promise that resolves to an array of DeviceConnection entities.
    */
   @Get()
+  @ApiOperation({ summary: 'Get all connected devices for a health record' })
+  @ApiResponse({ status: 200, description: 'Returns list of connected devices' })
   async getDevices(
     @Param('recordId') recordId: string,
     @Query() filterDto: FilterDto

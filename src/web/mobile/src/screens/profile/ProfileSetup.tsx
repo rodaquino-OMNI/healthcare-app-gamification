@@ -1,0 +1,307 @@
+import React from 'react';
+import { ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import styled from 'styled-components/native';
+
+import { colors } from '../../../../design-system/src/tokens/colors';
+import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
+import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
+import { borderRadius, borderRadiusValues } from '../../../../design-system/src/tokens/borderRadius';
+import { sizing, sizingValues } from '../../../../design-system/src/tokens/sizing';
+
+/**
+ * Validation schema for the profile setup form.
+ */
+const profileSetupSchema = yup.object().shape({
+  fullName: yup
+    .string()
+    .required('Full name is required')
+    .min(3, 'Name must be at least 3 characters'),
+  email: yup
+    .string()
+    .email('Please enter a valid email')
+    .required('Email is required'),
+  phone: yup
+    .string()
+    .required('Phone number is required')
+    .matches(/^\+?\d{10,14}$/, 'Please enter a valid phone number'),
+  dateOfBirth: yup
+    .string()
+    .required('Date of birth is required')
+    .matches(
+      /^\d{2}\/\d{2}\/\d{4}$/,
+      'Please enter a valid date (DD/MM/YYYY)',
+    ),
+});
+
+interface ProfileSetupFormData {
+  fullName: string;
+  email: string;
+  phone: string;
+  dateOfBirth: string;
+}
+
+// --- Styled Components ---
+
+const Container = styled.SafeAreaView`
+  flex: 1;
+  background-color: ${colors.neutral.white};
+`;
+
+const ContentWrapper = styled.View`
+  padding-horizontal: ${spacing.xl};
+  padding-top: ${spacing['2xl']};
+  padding-bottom: ${spacing['4xl']};
+`;
+
+const HeaderSection = styled.View`
+  margin-bottom: ${spacing['2xl']};
+`;
+
+const Title = styled.Text`
+  font-family: ${typography.fontFamily.heading};
+  font-size: ${typography.fontSize['heading-xl']};
+  font-weight: ${typography.fontWeight.bold};
+  color: ${colors.neutral.gray900};
+  margin-bottom: ${spacing.xs};
+`;
+
+const StepIndicator = styled.Text`
+  font-family: ${typography.fontFamily.body};
+  font-size: ${typography.fontSize['text-sm']};
+  color: ${colors.gray[50]};
+`;
+
+const StepBarContainer = styled.View`
+  flex-direction: row;
+  margin-top: ${spacing.sm};
+  gap: ${spacing['3xs']};
+`;
+
+const StepDot = styled.View<{ active: boolean }>`
+  flex: 1;
+  height: 4px;
+  border-radius: ${borderRadius.full};
+  background-color: ${(props) =>
+    props.active ? colors.brand.primary : colors.gray[20]};
+`;
+
+const FieldContainer = styled.View`
+  margin-bottom: ${spacing.lg};
+`;
+
+const Label = styled.Text`
+  font-family: ${typography.fontFamily.body};
+  font-size: ${typography.fontSize['text-sm']};
+  font-weight: ${typography.fontWeight.medium};
+  color: ${colors.neutral.gray700};
+  margin-bottom: ${spacing.xs};
+`;
+
+const StyledInput = styled.TextInput<{ hasError?: boolean }>`
+  height: ${sizing.component.md};
+  border-width: 1px;
+  border-color: ${(props) =>
+    props.hasError ? colors.semantic.error : colors.gray[20]};
+  border-radius: ${borderRadius.md};
+  padding-horizontal: ${spacing.md};
+  font-family: ${typography.fontFamily.body};
+  font-size: ${typography.fontSize['text-md']};
+  color: ${colors.neutral.gray900};
+  background-color: ${colors.neutral.white};
+`;
+
+const ErrorText = styled.Text`
+  font-family: ${typography.fontFamily.body};
+  font-size: ${typography.fontSize['text-xs']};
+  color: ${colors.semantic.error};
+  margin-top: ${spacing['3xs']};
+`;
+
+const PrimaryButton = styled.TouchableOpacity<{ disabled?: boolean }>`
+  background-color: ${(props) =>
+    props.disabled ? colors.gray[30] : colors.brand.primary};
+  border-radius: ${borderRadius.md};
+  height: ${sizing.component.lg};
+  align-items: center;
+  justify-content: center;
+  margin-top: ${spacing.xl};
+`;
+
+const PrimaryButtonText = styled.Text`
+  font-family: ${typography.fontFamily.body};
+  font-size: ${typography.fontSize['text-md']};
+  font-weight: ${typography.fontWeight.semiBold};
+  color: ${colors.neutral.white};
+`;
+
+/**
+ * ProfileSetup screen -- Step 1/7 of the profile onboarding flow.
+ * Collects: full name, email (read-only), phone, date of birth.
+ */
+const ProfileSetup: React.FC = () => {
+  const navigation = useNavigation();
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<ProfileSetupFormData>({
+    resolver: yupResolver(profileSetupSchema),
+    mode: 'onBlur',
+    defaultValues: {
+      fullName: '',
+      email: '',
+      phone: '',
+      dateOfBirth: '',
+    },
+  });
+
+  const onSubmit = (data: ProfileSetupFormData) => {
+    // TODO: persist to profile context/store
+    navigation.navigate('ProfileVariant1' as never);
+  };
+
+  return (
+    <Container>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <ContentWrapper>
+            {/* Header */}
+            <HeaderSection>
+              <Title>Complete Your Profile</Title>
+              <StepIndicator>Step 1 of 7</StepIndicator>
+              <StepBarContainer>
+                {[1, 2, 3, 4, 5, 6, 7].map((step) => (
+                  <StepDot key={step} active={step <= 1} />
+                ))}
+              </StepBarContainer>
+            </HeaderSection>
+
+            {/* Full Name */}
+            <FieldContainer>
+              <Label>Full Name</Label>
+              <Controller
+                control={control}
+                name="fullName"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <StyledInput
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    placeholder="Enter your full name"
+                    placeholderTextColor={colors.gray[40]}
+                    hasError={!!errors.fullName}
+                    autoCapitalize="words"
+                    testID="profile-setup-fullname"
+                  />
+                )}
+              />
+              {errors.fullName && (
+                <ErrorText>{errors.fullName.message}</ErrorText>
+              )}
+            </FieldContainer>
+
+            {/* Email (read-only) */}
+            <FieldContainer>
+              <Label>Email</Label>
+              <Controller
+                control={control}
+                name="email"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <StyledInput
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    placeholder="your@email.com"
+                    placeholderTextColor={colors.gray[40]}
+                    hasError={!!errors.email}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    editable={false}
+                    style={{ backgroundColor: colors.gray[10] }}
+                    testID="profile-setup-email"
+                  />
+                )}
+              />
+              {errors.email && (
+                <ErrorText>{errors.email.message}</ErrorText>
+              )}
+            </FieldContainer>
+
+            {/* Phone */}
+            <FieldContainer>
+              <Label>Phone Number</Label>
+              <Controller
+                control={control}
+                name="phone"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <StyledInput
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    placeholder="+55 11 99999-9999"
+                    placeholderTextColor={colors.gray[40]}
+                    hasError={!!errors.phone}
+                    keyboardType="phone-pad"
+                    testID="profile-setup-phone"
+                  />
+                )}
+              />
+              {errors.phone && (
+                <ErrorText>{errors.phone.message}</ErrorText>
+              )}
+            </FieldContainer>
+
+            {/* Date of Birth */}
+            <FieldContainer>
+              <Label>Date of Birth</Label>
+              <Controller
+                control={control}
+                name="dateOfBirth"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <StyledInput
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    placeholder="DD/MM/YYYY"
+                    placeholderTextColor={colors.gray[40]}
+                    hasError={!!errors.dateOfBirth}
+                    keyboardType="numeric"
+                    maxLength={10}
+                    testID="profile-setup-dob"
+                  />
+                )}
+              />
+              {errors.dateOfBirth && (
+                <ErrorText>{errors.dateOfBirth.message}</ErrorText>
+              )}
+            </FieldContainer>
+
+            {/* Continue Button */}
+            <PrimaryButton
+              onPress={handleSubmit(onSubmit)}
+              disabled={!isValid}
+              accessibilityRole="button"
+              accessibilityLabel="Continue to health information"
+              testID="profile-setup-continue"
+            >
+              <PrimaryButtonText>Continue</PrimaryButtonText>
+            </PrimaryButton>
+          </ContentWrapper>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </Container>
+  );
+};
+
+export default ProfileSetup;

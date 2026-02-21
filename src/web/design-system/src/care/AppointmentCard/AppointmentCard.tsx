@@ -13,6 +13,7 @@ import { Button } from '../../components/Button/Button';
 import { Card } from '../../components/Card/Card';
 import { Icon } from '../../primitives/Icon/Icon';
 import { Text } from '../../primitives/Text/Text';
+import { sizing } from '../../tokens/sizing';
 
 /**
  * Interface for appointment data
@@ -170,10 +171,10 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
             </Text>
           </div>
         </ProviderInfo>
-        <Icon 
-          name={typeIcon} 
-          size="24px" 
-          color="journeys.care.primary" 
+        <Icon
+          name={typeIcon}
+          size={sizing.icon.md}
+          color="journeys.care.primary"
           aria-hidden="true"
         />
       </AppointmentCardHeader>
@@ -181,23 +182,23 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
       <AppointmentCardBody>
         <AppointmentDetails>
           <div>
-            <Icon name="calendar" size="16px" aria-hidden="true" />
+            <Icon name="calendar" size={sizing.icon.xs} aria-hidden="true" />
             <Text fontSize="sm">{formattedDate}</Text>
           </div>
-          
+
           <div>
-            <Icon 
-              name={appointment.type === 'telemedicine' ? 'video' : 'clinic'} 
-              size="16px" 
-              aria-hidden="true" 
+            <Icon
+              name={appointment.type === 'telemedicine' ? 'video' : 'clinic'}
+              size={sizing.icon.xs}
+              aria-hidden="true"
             />
             <Text fontSize="sm">
               {appointment.type === 'telemedicine' ? 'Telemedicina' : 'Consulta presencial'}
             </Text>
           </div>
-          
+
           <div>
-            <Icon name="info" size="16px" color={statusColor} aria-hidden="true" />
+            <Icon name="info" size={sizing.icon.xs} color={statusColor} aria-hidden="true" />
             <Text fontSize="sm" color={statusColor} fontWeight="medium">
               {getStatusText()}
             </Text>

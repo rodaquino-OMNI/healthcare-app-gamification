@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native'; // @react-navigation/n
 import { HealthMetricType } from 'src/web/shared/types/health.types.ts';
 import { createHealthMetric } from 'src/web/mobile/src/api/health.ts';
 import { useHealthMetrics } from 'src/web/mobile/src/hooks/useHealthMetrics.ts';
+import { useAuth } from 'src/web/mobile/src/hooks/useAuth.ts';
 import Input from 'src/web/design-system/src/components/Input/Input.tsx';
 import Button from 'src/web/design-system/src/components/Button/Button.tsx';
 import { useJourney } from 'src/web/mobile/src/context/JourneyContext.tsx';
@@ -32,6 +33,8 @@ export const AddMetricScreen: React.FC<AddMetricScreenProps> = () => {
   const { journey } = useJourney();
   // LD1: Uses the useNavigation hook to get the navigation object.
   const navigation = useNavigation();
+  // LD1: Uses the useAuth hook to get the authenticated user information.
+  const { session, getUserFromToken } = useAuth();
 
   // LD1: Defines a form schema using Yup for validation.
   const schema = yup.object({
@@ -53,12 +56,22 @@ export const AddMetricScreen: React.FC<AddMetricScreenProps> = () => {
   // LD1: Defines a submit handler that calls the createHealthMetric API function.
   const onSubmit = async (data: any) => {
     try {
-      // Call the createHealthMetric API function
+      // Get the user ID from the JWT token in the authentication session
+      if (!session?.accessToken) {
+        throw new Error('User is not authenticated');
+      }
+
+      const user = getUserFromToken(session.accessToken);
+      if (!user?.id) {
+        throw new Error('Unable to retrieve user ID from authentication token');
+      }
+
+      // Call the createHealthMetric API function with the user's ID
       // LD1: API integration with createHealthMetric
-      // IE1: The createHealthMetric function requires recordId and createMetricDto as input.
-      //      The recordId is hardcoded for now, but should be dynamically fetched from the user's health record.
+      // IE1: The createHealthMetric function requires recordId (userId) and createMetricDto as input.
+      //      The recordId is now dynamically fetched from the user's JWT token.
       //      The createMetricDto is constructed from the form data.
-      await createHealthMetric('user-health-record-id', data);
+      await createHealthMetric(user.id, data);
 
       // Reset the form
       reset();

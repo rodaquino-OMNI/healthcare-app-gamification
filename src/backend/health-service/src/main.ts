@@ -5,6 +5,7 @@ import { LoggerModule } from '../../shared/src/logging/logger.module';
 import { AllExceptionsFilter } from '../../shared/src/exceptions/exceptions.filter';
 import { TracingModule } from '../../shared/src/tracing/tracing.module';
 import helmet from 'helmet';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 /**
  * Initializes and starts the NestJS application.
@@ -27,6 +28,16 @@ async function bootstrap(): Promise<void> {
   // LD1: Set the global prefix for the API endpoints.
   // IE1: The health function is imported from the configuration file and is used to get the API prefix.
   app.setGlobalPrefix(config.apiPrefix);
+
+  // Swagger setup
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('AUSTA Health Service API')
+    .setDescription('Health monitoring and insights service')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+  const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('api/docs', app, swaggerDocument);
 
   // LD1: Start the application, listening on the configured port.
   // IE1: The health function is imported from the configuration file and is used to get the port.

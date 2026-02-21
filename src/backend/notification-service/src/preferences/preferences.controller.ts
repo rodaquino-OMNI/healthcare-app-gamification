@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Patch, Query, Body, Param, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { PreferencesService } from './preferences.service';
 import { NotificationPreference } from './entities/notification-preference.entity';
 import { FilterDto } from '@app/shared/dto/filter.dto';
@@ -10,6 +11,7 @@ import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
  * Controller for managing user notification preferences.
  * Provides endpoints for retrieving, creating, and updating notification preferences.
  */
+@ApiTags('preferences')
 @Controller('preferences')
 export class PreferencesController {
   constructor(private readonly preferencesService: PreferencesService) {}
@@ -25,6 +27,8 @@ export class PreferencesController {
    */
   @Get()
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get notification preferences for the current user' })
+  @ApiResponse({ status: 200, description: 'Returns list of notification preferences' })
   async getPreferences(
     @Query() filter: FilterDto,
     @Query() pagination: PaginationDto,
@@ -54,6 +58,8 @@ export class PreferencesController {
    */
   @Post()
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Create a new notification preference for the current user' })
+  @ApiResponse({ status: 201, description: 'Notification preference created successfully' })
   async createPreference(
     @CurrentUser('id') user: string,
   ): Promise<NotificationPreference> {
@@ -71,6 +77,8 @@ export class PreferencesController {
    */
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Update a notification preference' })
+  @ApiResponse({ status: 200, description: 'Notification preference updated successfully' })
   async updatePreference(
     @Param('id') id: string,
     @Body() data: Partial<NotificationPreference>,

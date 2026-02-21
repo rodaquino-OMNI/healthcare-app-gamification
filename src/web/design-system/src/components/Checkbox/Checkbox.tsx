@@ -4,6 +4,9 @@ import { Box } from '../../primitives/Box';
 import { Text } from '../../primitives/Text';
 import { Touchable } from '../../primitives/Touchable';
 import { useTheme } from '../../themes';
+import { colors } from '../../tokens/colors';
+import { borderRadiusValues } from '../../tokens/borderRadius';
+import { spacingValues } from '../../tokens/spacing';
 
 /**
  * Interface defining the props for the Checkbox component.
@@ -205,36 +208,36 @@ const styles = StyleSheet.create({
   input: {
     width: 20,
     height: 20,
-    borderRadius: 4,
+    borderRadius: borderRadiusValues.sm,
     borderWidth: 2,
-    borderColor: '#9E9E9E',
-    marginRight: 8,
+    borderColor: colors.neutral.gray500,
+    marginRight: spacingValues.xs,
     WebkitAppearance: 'none',
     outline: 'none',
-    cursor: 'pointer'
+    cursor: 'pointer',
   },
   inputChecked: {
-    backgroundColor: '#3A86FF',
-    borderColor: '#3A86FF',
+    backgroundColor: colors.brand.primary,
+    borderColor: colors.brand.primary,
   },
   inputDisabled: {
-    backgroundColor: '#EEEEEE',
-    borderColor: '#BDBDBD',
+    backgroundColor: colors.neutral.gray200,
+    borderColor: colors.neutral.gray400,
   },
   checkmark: {
-    color: '#FFFFFF',
+    color: colors.neutral.white,
     fontSize: 14,
     textAlign: 'center',
     lineHeight: 20,
   },
   label: {
     fontSize: 16,
-    color: '#212121',
-    userSelect: 'none'
+    color: colors.neutral.gray900,
+    userSelect: 'none',
   },
   labelDisabled: {
-    color: '#BDBDBD',
-  }
+    color: colors.neutral.gray400,
+  },
 });
 
 // Set display name for better debugging

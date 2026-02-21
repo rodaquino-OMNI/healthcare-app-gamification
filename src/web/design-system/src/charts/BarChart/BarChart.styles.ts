@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { colors, typography } from '../../tokens';
 
 /**
  * Main container for the BarChart component
@@ -12,7 +13,7 @@ export const BarChartContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  font-family: ${props => props.theme.typography?.fontFamily?.base || "'Roboto', sans-serif"};
+  font-family: ${props => props.theme.typography?.fontFamily?.base || typography.fontFamily.body};
 `;
 
 /**
@@ -44,8 +45,7 @@ export const Bar = styled.div<{
     if (props.journey && props.theme.colors?.journeys?.[props.journey]?.primary) {
       return props.theme.colors.journeys[props.journey].primary;
     }
-    // Default to health journey green if no color is specified
-    return '#0ACF83';
+    return colors.journeys.health.primary;
   }};
   margin: 0 5px;
   border-radius: 4px 4px 0 0;
@@ -63,7 +63,7 @@ export const Bar = styled.div<{
  */
 export const XAxisLabel = styled.div`
   font-size: 12px;
-  color: ${props => props.theme.colors?.text?.secondary || '#666666'};
+  color: ${props => props.theme.colors?.text?.secondary || colors.neutral.gray600};
   text-align: center;
   margin-top: 8px;
   white-space: nowrap;
@@ -81,7 +81,7 @@ export const XAxisLabel = styled.div`
  */
 export const YAxisLabel = styled.div`
   font-size: 12px;
-  color: ${props => props.theme.colors?.text?.secondary || '#666666'};
+  color: ${props => props.theme.colors?.text?.secondary || colors.neutral.gray600};
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   margin-right: 8px;

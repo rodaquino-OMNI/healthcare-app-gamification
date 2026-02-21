@@ -28,8 +28,9 @@ interface NotificationPayload {
 
 @WebSocketGateway({
   cors: {
-    origin: '*',
-    methods: ['GET', 'POST']
+    origin: process.env.CORS_ALLOWED_ORIGINS?.split(',') ?? ['http://localhost:3000'],
+    methods: ['GET', 'POST'],
+    credentials: true
   },
   namespace: 'notifications'
 })

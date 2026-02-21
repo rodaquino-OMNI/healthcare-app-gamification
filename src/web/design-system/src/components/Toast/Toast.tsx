@@ -5,6 +5,9 @@ import { Text } from '../../primitives/Text/Text';
 import { Touchable } from '../../primitives/Touchable/Touchable';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
+import { borderRadius } from '../../tokens/borderRadius';
+import { typography } from '../../tokens/typography';
+import { shadows } from '../../tokens/shadows';
 import { baseTheme } from '../../themes';
 
 /**
@@ -30,6 +33,17 @@ export interface ToastProps {
    * Function called when the toast is dismissed
    */
   onDismiss?: () => void;
+
+  /**
+   * Optional action button to display in the toast
+   */
+  action?: { label: string; onPress: () => void };
+
+  /**
+   * Duration in milliseconds before the toast auto-dismisses
+   * @default 3000
+   */
+  duration?: number;
 }
 
 const ToastContainer = styled(Box)<{ toastType: string }>`
@@ -85,14 +99,16 @@ export const Toast: React.FC<ToastProps> = ({
   message,
   visible,
   onDismiss,
+  action,
+  duration = 3000,
 }) => {
-  // Auto-dismiss after 3 seconds if onDismiss is provided
+  // Auto-dismiss after the specified duration if onDismiss is provided
   useEffect(() => {
     if (visible && onDismiss) {
-      const timer = setTimeout(onDismiss, 3000);
+      const timer = setTimeout(onDismiss, duration);
       return () => clearTimeout(timer);
     }
-  }, [visible, onDismiss]);
+  }, [visible, onDismiss, duration]);
   
   if (!visible) return null;
   
@@ -124,12 +140,27 @@ export const Toast: React.FC<ToastProps> = ({
   };
   
   const { color, icon } = getToastProperties();
-  
+
+  // Get semantic background color based on toast type
+  const getBackgroundColor = () => {
+    switch (type) {
+      case 'success':
+        return colors.semantic.successBg;
+      case 'error':
+        return colors.semantic.errorBg;
+      case 'warning':
+        return colors.semantic.warningBg;
+      case 'info':
+      default:
+        return colors.neutral.white;
+    }
+  };
+
   return (
     <ToastContainer
       toastType={type}
       padding={spacing.md}
-      backgroundColor={colors.neutral.white}
+      backgroundColor={getBackgroundColor()}
       borderRadius="md"
       boxShadow="sm"
       display="flex"
@@ -148,6 +179,13 @@ export const Toast: React.FC<ToastProps> = ({
           {message}
         </Text>
       </MessageContainer>
+      {action && (
+        <Touchable onPress={action.onPress} style={{ marginLeft: spacing.sm }}>
+          <Text color={color} fontWeight="medium" fontSize="sm">
+            {action.label}
+          </Text>
+        </Touchable>
+      )}
       {onDismiss && (
         <CloseButton
           onPress={onDismiss}

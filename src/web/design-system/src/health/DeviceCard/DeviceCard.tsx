@@ -5,6 +5,11 @@ import { Text } from '../../primitives/Text';
 import { Touchable } from '../../primitives/Touchable';
 import { Icon } from '../../primitives/Icon';
 import { useJourneyTheme } from '../../themes';
+import { colors } from '../../tokens/colors';
+import { typography } from '../../tokens/typography';
+import { spacing } from '../../tokens/spacing';
+import { borderRadius } from '../../tokens/borderRadius';
+import { sizing } from '../../tokens/sizing';
 
 /**
  * Container for the device card
@@ -112,7 +117,7 @@ export const DeviceCard: React.FC<DeviceCardProps> = ({
           <Box marginRight="md">
             <Icon 
               name={deviceIconName} 
-              size="24px" 
+              size={sizing.icon.md}
               color={isConnected ? "semantic.success" : "neutral.gray400"} 
               aria-hidden={true}
             />

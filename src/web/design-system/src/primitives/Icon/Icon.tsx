@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors } from '../../tokens/colors';
-import { spacing } from '../../tokens/spacing';
-import { typography } from '../../tokens/typography';
+import { sizing } from '../../tokens/sizing';
 
 /**
  * Props for the Icon component
@@ -10,8 +9,8 @@ import { typography } from '../../tokens/typography';
 export interface IconProps {
   /** The name of the icon to display (e.g., 'heart', 'calendar'). */
   name: string;
-  /** The size of the icon in pixels or a CSS unit (e.g., '16px', '2em'). */
-  size?: string | number;
+  /** The size of the icon — either a sizing.icon token key or a custom CSS value. */
+  size?: keyof typeof sizing.icon | string | number;
   /** The color of the icon, using a color token from the design system. */
   color?: string;
   /** A boolean indicating whether the icon should be hidden from screen readers. */
@@ -21,16 +20,25 @@ export interface IconProps {
 }
 
 /**
+ * Resolves icon size from sizing.icon tokens or passes through custom values
+ */
+const resolveIconSize = (size: keyof typeof sizing.icon | string | number): string => {
+  if (typeof size === 'number') return `${size}px`;
+  if (size in sizing.icon) return sizing.icon[size as keyof typeof sizing.icon];
+  return String(size);
+};
+
+/**
  * Styled container for the SVG icon
  */
 const IconContainer = styled.span<{ size?: string | number, color?: string }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: ${props => props.size || '1em'};
-  height: ${props => props.size || '1em'};
+  width: ${props => resolveIconSize(props.size || 'md')};
+  height: ${props => resolveIconSize(props.size || 'md')};
   color: ${props => props.color || colors.neutral.gray700};
-  font-size: ${props => props.size || '1em'};
+  font-size: ${props => resolveIconSize(props.size || 'md')};
   line-height: 0;
 `;
 
@@ -207,7 +215,7 @@ const iconPaths: Record<string, { path: string, viewBox?: string }> = {
  */
 export const Icon: React.FC<IconProps> = ({ 
   name, 
-  size = '1em', 
+  size = 'md',
   color, 
   'aria-hidden': ariaHidden = true,
   'aria-label': ariaLabel,

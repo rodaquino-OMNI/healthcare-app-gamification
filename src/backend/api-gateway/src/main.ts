@@ -7,6 +7,7 @@ import { RateLimitMiddleware } from './middleware/rate-limit.middleware';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 import helmet from 'helmet';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 /**
  * Bootstraps the NestJS application, configures middleware, and starts the server.
@@ -33,6 +34,16 @@ async function bootstrap() {
 
   // LD1, IE1: Applies the rate limiting middleware to protect against abuse.
   app.use(app.get(RateLimitMiddleware).use.bind(app.get(RateLimitMiddleware)));
+
+  // Swagger setup
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('AUSTA API Gateway')
+    .setDescription('Central API Gateway for AUSTA SuperApp')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+  const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('api/docs', app, swaggerDocument);
 
   // LD1: Starts the server and listens for incoming requests on the configured port.
   const port = config.port || 4000;

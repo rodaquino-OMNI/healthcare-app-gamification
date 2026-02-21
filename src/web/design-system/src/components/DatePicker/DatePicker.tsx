@@ -7,6 +7,8 @@ import { format, parse } from 'date-fns';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
 import { typography } from '../../tokens/typography';
+import { borderRadius } from '../../tokens/borderRadius';
+import { shadows } from '../../tokens/shadows';
 import Box from '../../primitives/Box/Box';
 import Text from '../../primitives/Text/Text';
 import { Touchable } from '../../primitives/Touchable/Touchable';
@@ -92,11 +94,11 @@ const DateInputContainer = styled(Box)<{ hasError?: boolean; journey?: string }>
   align-items: center;
   justify-content: space-between;
   padding: ${spacing.sm} ${spacing.md};
-  border-radius: 8px;
-  border: 1px solid ${props => props.hasError 
-    ? colors.semantic.error 
-    : props.journey 
-      ? colors.journeys[props.journey].primary 
+  border-radius: ${borderRadius.md};
+  border: 1px solid ${props => props.hasError
+    ? colors.semantic.error
+    : props.journey
+      ? colors.journeys[props.journey].primary
       : colors.neutral.gray300};
   background-color: ${colors.neutral.white};
   
@@ -112,21 +114,21 @@ const DateInputContainer = styled(Box)<{ hasError?: boolean; journey?: string }>
 
 // Styled container for the calendar
 const CalendarContainer = styled.div<{ journey?: string }>`
-  font-family: ${typography.fontFamily.base};
+  font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize.md};
-  
+
   .react-datepicker {
-    border-radius: 8px;
+    border-radius: ${borderRadius.md};
     border: 1px solid ${colors.neutral.gray300};
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: ${shadows.md};
     font-family: inherit;
   }
-  
+
   .react-datepicker__header {
     background-color: ${colors.neutral.gray100};
     border-bottom: 1px solid ${colors.neutral.gray300};
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+    border-top-left-radius: ${borderRadius.md};
+    border-top-right-radius: ${borderRadius.md};
   }
   
   .react-datepicker__current-month {
@@ -139,7 +141,7 @@ const CalendarContainer = styled.div<{ journey?: string }>`
   }
   
   .react-datepicker__day {
-    border-radius: 4px;
+    border-radius: ${borderRadius.xs};
     
     &:hover {
       background-color: ${colors.neutral.gray200};

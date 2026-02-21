@@ -1,77 +1,178 @@
 /**
- * Raw numeric font size values in pixels, providing a scale from extra small to extra-extra-extra large.
- * These values can be used for programmatic calculations when raw numbers are needed.
+ * Typography tokens for the AUSTA SuperApp design system.
+ * Values updated from Figma DTCG source (core.json).
+ *
+ * Font families: Plus Jakarta Sans (heading + body), Nunito (logo).
+ * Font sizes: Full Figma scale from display-lg (48px) through text-2xs (10px).
+ * Line heights: As ratios (1.1 = 110%, 1.2 = 120%, 1.5 = 150%, 1.6 = 160%).
+ * Letter spacing: em values matching Figma letterSpacing tokens.
  */
-export const fontSizeValues = {
-  xs: 12,  // Extra small text (captions, footnotes)
-  sm: 14,  // Small text (secondary text, labels)
-  md: 16,  // Medium text (body text - default)
-  lg: 18,  // Large text (emphasized body text)
-  xl: 20,  // Extra large text (subheadings, card titles)
-  '2xl': 24, // 2x Extra large (section headers)
-  '3xl': 30, // 3x Extra large (page titles)
-  '4xl': 36, // 4x Extra large (hero text, major headings)
-};
 
 /**
- * Typography values defining font families, weights, sizes, line heights, and letter spacing 
+ * Raw numeric font size values in pixels.
+ * Sourced from Figma core.json fontSizes.
+ * Used for programmatic calculations when raw numbers are needed.
+ */
+export const fontSizeValues = {
+  // Legacy scale — kept for backward compatibility
+  /** @deprecated Use display.lg (48) or heading.h1 (40) */
+  xs: 12,
+  /** @deprecated Use text.sm (14) */
+  sm: 14,
+  /** @deprecated Use text.md (16) */
+  md: 16,
+  /** @deprecated Use text.lg (18) */
+  lg: 18,
+  /** @deprecated Use text.xl (20) */
+  xl: 20,
+  /** @deprecated Use heading['2xl'] (24) */
+  '2xl': 24,
+  /** @deprecated Use display.sm (30) */
+  '3xl': 30,
+  /** @deprecated Use display.md (36) */
+  '4xl': 36,
+} as const;
+
+/**
+ * Typography values defining font families, weights, sizes, line heights, and letter spacing
  * for consistent text styling across all journeys of the AUSTA SuperApp.
- * 
- * These values support both Brazilian Portuguese and English content while maintaining
- * optimal readability and accessibility compliance.
+ *
+ * Updated from Figma DTCG core.json — primary font is Plus Jakarta Sans.
  */
 export const typography = {
   /**
-   * Font families used throughout the application
+   * Font families used throughout the application.
+   * Updated from Figma core.json fontFamilies.
    */
   fontFamily: {
-    base: 'Roboto, sans-serif',     // Base text for all general content
-    heading: 'Roboto, sans-serif',  // Headings and titles
-    mono: 'Roboto Mono, monospace', // Monospaced text for code, metrics, etc.
+    /** 'Plus Jakarta Sans, sans-serif' — heading text (was Roboto) */
+    heading: 'Plus Jakarta Sans, sans-serif',
+    /** 'Plus Jakarta Sans, sans-serif' — body/base text (was Roboto) */
+    body: 'Plus Jakarta Sans, sans-serif',
+    /**
+     * Alias for body — kept for backward compatibility.
+     * @deprecated Use fontFamily.body
+     */
+    base: 'Plus Jakarta Sans, sans-serif',
+    /** 'Nunito, sans-serif' — AUSTA logo font (from Figma) */
+    logo: 'Nunito, sans-serif',
+    /** 'Roboto Mono, monospace' — code, metrics (code-only extension) */
+    mono: 'Roboto Mono, monospace',
   },
-  
+
   /**
-   * Font weights for different text styles
-   * Following the Roboto font weight system
+   * Font weights for different text styles.
+   * Sourced from Figma core.json fontWeights.
    */
   fontWeight: {
-    regular: 400, // Regular weight for most text
-    medium: 500,  // Medium weight for semi-emphasis and subheadings
-    bold: 700,    // Bold weight for strong emphasis and headings
+    /** 400 — Regular weight for most text */
+    regular: 400,
+    /** 500 — Medium weight for semi-emphasis */
+    medium: 500,
+    /** 600 — SemiBold weight (from Figma headingSemiBold / bodySemiBold) */
+    semiBold: 600,
+    /** 700 — Bold weight for headings and strong emphasis */
+    bold: 700,
   },
-  
+
   /**
-   * Font sizes with pixel units
-   * Follows a typographic scale for consistent visual hierarchy
+   * Font sizes with pixel units.
+   * Full Figma scale from core.json fontSizes.
    */
   fontSize: {
-    xs: `${fontSizeValues.xs}px`,     // Extra small: 12px
-    sm: `${fontSizeValues.sm}px`,     // Small: 14px
-    md: `${fontSizeValues.md}px`,     // Medium: 16px (base)
-    lg: `${fontSizeValues.lg}px`,     // Large: 18px
-    xl: `${fontSizeValues.xl}px`,     // Extra large: 20px
-    '2xl': `${fontSizeValues['2xl']}px`, // 2x Extra large: 24px
-    '3xl': `${fontSizeValues['3xl']}px`, // 3x Extra large: 30px
-    '4xl': `${fontSizeValues['4xl']}px`, // 4x Extra large: 36px
+    // Display scale (from Figma)
+    'display-lg': '48px',  // display-lg
+    'display-md': '36px',  // display-md
+    'display-sm': '30px',  // display-sm
+
+    // Heading scale (from Figma)
+    'heading-2xl': '28px', // heading-2xl
+    'heading-xl': '24px',  // heading-xl
+    'heading-lg': '20px',  // heading-lg
+    'heading-md': '18px',  // heading-md
+    'heading-sm': '16px',  // heading-sm
+    'heading-xs': '14px',  // heading-xs
+
+    // Text / body scale (from Figma)
+    'text-2xl': '22px',    // text-2xl
+    'text-xl': '20px',     // text-xl
+    'text-lg': '18px',     // text-lg
+    'text-md': '16px',     // text-md (default body)
+    'text-sm': '14px',     // text-sm
+    'text-xs': '12px',     // text-xs
+    'text-2xs': '10px',    // text-2xs
+
+    // Label and paragraph (from Figma)
+    label: '12px',
+    paragraph: '16px',
+
+    // Legacy short-name aliases — backward compatible
+    /** @deprecated Use 'text-xs' (12px) */
+    xs: '12px',
+    /** @deprecated Use 'text-sm' (14px) */
+    sm: '14px',
+    /** @deprecated Use 'text-md' (16px) */
+    md: '16px',
+    /** @deprecated Use 'text-lg' (18px) */
+    lg: '18px',
+    /** @deprecated Use 'text-xl' (20px) */
+    xl: '20px',
+    /** @deprecated Use 'heading-xl' (24px) */
+    '2xl': '24px',
+    /** @deprecated Use 'display-sm' (30px) */
+    '3xl': '30px',
+    /** @deprecated Use 'display-md' (36px) */
+    '4xl': '36px',
   },
-  
+
   /**
-   * Line heights for different text densities
-   * Ensures proper readability and accessibility
+   * Named heading size aliases for convenience.
+   * Matches h1–h6 convention from Figma core.json fontSizes.
+   * Note: Figma h1=48, h2=36, h3=30, h4=24, h5=20, h6=16 (legacy numeric aliases).
+   */
+  heading: {
+    h1: '48px',  // fontSizes.h1 from Figma
+    h2: '36px',  // fontSizes.h2 from Figma
+    h3: '30px',  // fontSizes.h3 from Figma
+    h4: '24px',  // fontSizes.h4 from Figma
+    h5: '20px',  // fontSizes.h5 from Figma
+    h6: '16px',  // fontSizes.h6 from Figma
+  },
+
+  /**
+   * Line heights as unitless ratios.
+   * Converted from Figma core.json lineHeights (% -> decimal).
    */
   lineHeight: {
-    tight: 1.2,    // Tight spacing, good for headings and short text
-    base: 1.5,     // Base spacing, optimal for body text and readability
-    relaxed: 1.75, // Relaxed spacing, good for larger text and better readability
+    /** 1.1 — 110% tight, for display text */
+    tight: 1.1,
+    /** 1.2 — 120% heading line height */
+    heading: 1.2,
+    /** 1.5 — 150% body line height */
+    base: 1.5,
+    /** 1.6 — 160% relaxed (was 1.75, updated to match Figma lineHeights.relaxed=160%) */
+    relaxed: 1.6,
   },
-  
+
   /**
-   * Letter spacing for different text styles
-   * Improves readability based on text size and purpose
+   * Letter spacing values.
+   * Sourced from Figma core.json letterSpacing (using em equivalents).
    */
   letterSpacing: {
-    tight: '-0.025em', // Tight letter spacing for headings and display text
-    normal: '0',       // Normal letter spacing for body text
-    wide: '0.025em',   // Wide letter spacing for improved legibility in small text
+    /** '-0.025em' — tight, for headings and display text */
+    tight: '-0.025em',
+    /** '0' — normal, for body text */
+    normal: '0',
+    /** '0.025em' — wide, for improved legibility in small text */
+    wide: '0.025em',
+    /** '0.05em' — wider, for all-caps labels (code-only extension) */
+    wider: '0.05em',
   },
-};
+} as const;
+
+/**
+ * Backward-compatible named export for font sizes.
+ * Allows `import { fontSize } from './tokens/typography'` in existing components.
+ * @deprecated Use `typography.fontSize` instead.
+ */
+export const fontSize = typography.fontSize;

@@ -1,0 +1,296 @@
+{
+  "button": {
+    "primary": {
+      "background": {
+        "$type": "color",
+        "$value": "{accent.default}"
+      },
+      "text": {
+        "$type": "color",
+        "$value": "{accent.onAccent}"
+      }
+    },
+    "secondary": {
+      "background": {
+        "$type": "color",
+        "$value": "{accent.secondary}",
+        "$description": "Verde AUSTA"
+      },
+      "text": {
+        "$type": "color",
+        "$value": "{colors.white}"
+      }
+    },
+    "borderRadius": {
+      "$type": "borderRadius",
+      "$value": "{borderRadius.md}"
+    },
+    "borderWidth": {
+      "$type": "borderWidth",
+      "$value": "1"
+    }
+  },
+  "card": {
+    "borderRadius": {
+      "$type": "borderRadius",
+      "$value": "{borderRadius.lg}"
+    },
+    "background": {
+      "$type": "color",
+      "$value": "{bg.muted}"
+    },
+    "padding": {
+      "$type": "dimension",
+      "$value": "{spacing.md}"
+    },
+    "border": {
+      "$type": "color",
+      "$value": "{border.default}"
+    }
+  },
+  "input": {
+    "borderRadius": {
+      "$type": "borderRadius",
+      "$value": "{borderRadius.md}"
+    },
+    "background": {
+      "$type": "color",
+      "$value": "{bg.default}"
+    },
+    "border": {
+      "$type": "color",
+      "$value": "{border.default}"
+    },
+    "borderFocus": {
+      "$type": "color",
+      "$value": "{accent.default}"
+    },
+    "padding": {
+      "$type": "dimension",
+      "$value": "{spacing.sm} {spacing.md}"
+    },
+    "text": {
+      "$type": "color",
+      "$value": "{fg.default}"
+    },
+    "placeholder": {
+      "$type": "color",
+      "$value": "{fg.subtle}"
+    }
+  },
+  "boxShadow": {
+    "sm": {
+      "$type": "boxShadow",
+      "$value": [
+        {
+          "x": 0,
+          "y": 1,
+          "spread": 0,
+          "color": "rgba(0,0,0,0.05)",
+          "blur": 2,
+          "$type": "dropShadow"
+        }
+      ]
+    },
+    "default": {
+      "$type": "boxShadow",
+      "$value": [
+        {
+          "x": 0,
+          "y": 4,
+          "spread": -1,
+          "color": "rgba(0,0,0,0.1)",
+          "blur": 6,
+          "$type": "dropShadow"
+        }
+      ]
+    },
+    "lg": {
+      "$type": "boxShadow",
+      "$value": [
+        {
+          "x": 0,
+          "y": 10,
+          "spread": -3,
+          "color": "rgba(0,0,0,0.1)",
+          "blur": 15,
+          "$type": "dropShadow"
+        }
+      ]
+    }
+  },
+  "typography": {
+    "display-lg": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamilies.heading}",
+        "fontWeight": "{fontWeights.headingBold}",
+        "lineHeight": "{lineHeights.tight}",
+        "fontSize": "{fontSizes.display-lg}",
+        "letterSpacing": "{letterSpacing.decreased}"
+      },
+      "$description": "From Figma — Display lg"
+    },
+    "display-md": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamilies.heading}",
+        "fontWeight": "{fontWeights.headingBold}",
+        "lineHeight": "{lineHeights.tight}",
+        "fontSize": "{fontSizes.display-md}",
+        "letterSpacing": "{letterSpacing.decreased}"
+      },
+      "$description": "From Figma — Display md"
+    },
+    "display-sm": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamilies.heading}",
+        "fontWeight": "{fontWeights.headingSemiBold}",
+        "lineHeight": "{lineHeights.heading}",
+        "fontSize": "{fontSizes.display-sm}",
+        "letterSpacing": "{letterSpacing.decreased}"
+      },
+      "$description": "From Figma — Display sm"
+    },
+    "heading-2xl": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamilies.heading}",
+        "fontWeight": "{fontWeights.headingSemiBold}",
+        "lineHeight": "{lineHeights.heading}",
+        "fontSize": "{fontSizes.heading-2xl}"
+      },
+      "$description": "From Figma — Heading 2xl"
+    },
+    "heading-xl": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamilies.heading}",
+        "fontWeight": "{fontWeights.headingSemiBold}",
+        "lineHeight": "{lineHeights.heading}",
+        "fontSize": "{fontSizes.heading-xl}"
+      },
+      "$description": "From Figma — Heading xl"
+    },
+    "heading-lg": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamilies.heading}",
+        "fontWeight": "{fontWeights.headingSemiBold}",
+        "lineHeight": "{lineHeights.heading}",
+        "fontSize": "{fontSizes.heading-lg}"
+      }
+    },
+    "heading-md": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamilies.heading}",
+        "fontWeight": "{fontWeights.headingMedium}",
+        "lineHeight": "{lineHeights.heading}",
+        "fontSize": "{fontSizes.heading-md}"
+      }
+    },
+    "heading-sm": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamilies.heading}",
+        "fontWeight": "{fontWeights.headingMedium}",
+        "lineHeight": "{lineHeights.heading}",
+        "fontSize": "{fontSizes.heading-sm}"
+      }
+    },
+    "heading-xs": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamilies.heading}",
+        "fontWeight": "{fontWeights.headingMedium}",
+        "lineHeight": "{lineHeights.heading}",
+        "fontSize": "{fontSizes.heading-xs}"
+      }
+    },
+    "text-2xl": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamilies.body}",
+        "fontWeight": "{fontWeights.bodyRegular}",
+        "lineHeight": "{lineHeights.body}",
+        "fontSize": "{fontSizes.text-2xl}"
+      }
+    },
+    "text-xl": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamilies.body}",
+        "fontWeight": "{fontWeights.bodyRegular}",
+        "lineHeight": "{lineHeights.body}",
+        "fontSize": "{fontSizes.text-xl}"
+      }
+    },
+    "text-lg": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamilies.body}",
+        "fontWeight": "{fontWeights.bodyRegular}",
+        "lineHeight": "{lineHeights.body}",
+        "fontSize": "{fontSizes.text-lg}"
+      }
+    },
+    "text-md": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamilies.body}",
+        "fontWeight": "{fontWeights.bodyRegular}",
+        "lineHeight": "{lineHeights.body}",
+        "fontSize": "{fontSizes.text-md}"
+      },
+      "$description": "Default body text"
+    },
+    "text-sm": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamilies.body}",
+        "fontWeight": "{fontWeights.bodyRegular}",
+        "lineHeight": "{lineHeights.body}",
+        "fontSize": "{fontSizes.text-sm}"
+      }
+    },
+    "text-xs": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamilies.body}",
+        "fontWeight": "{fontWeights.bodyRegular}",
+        "lineHeight": "{lineHeights.body}",
+        "fontSize": "{fontSizes.text-xs}"
+      }
+    },
+    "text-2xs": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamilies.body}",
+        "fontWeight": "{fontWeights.bodyRegular}",
+        "lineHeight": "{lineHeights.body}",
+        "fontSize": "{fontSizes.text-2xs}"
+      }
+    },
+    "label": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamilies.body}",
+        "fontWeight": "{fontWeights.bodyMedium}",
+        "lineHeight": "{lineHeights.heading}",
+        "fontSize": "{fontSizes.label}"
+      }
+    },
+    "paragraph": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{fontFamilies.body}",
+        "fontWeight": "{fontWeights.bodyRegular}",
+        "lineHeight": "{lineHeights.relaxed}",
+        "fontSize": "{fontSizes.paragraph}",
+        "paragraphSpacing": "{paragraphSpacing.default}"
+      }
+    }
+  }
+}

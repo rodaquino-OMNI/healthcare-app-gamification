@@ -2,6 +2,9 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Modal as RNModal } from 'react-native';
 import { tokens } from '../../tokens';
+import { borderRadius } from '../../tokens/borderRadius';
+import { colors } from '../../tokens/colors';
+import { shadows } from '../../tokens/shadows';
 import { Box } from '../../primitives/Box/Box';
 import { Text } from '../../primitives/Text/Text';
 import { Touchable } from '../../primitives/Touchable/Touchable';
@@ -36,26 +39,52 @@ export interface ModalProps {
    * @default 'health'
    */
   journey?: 'health' | 'care' | 'plan';
+
+  /**
+   * Modal display variant
+   * 'center' renders a centered modal dialog, 'bottomSheet' renders a bottom-aligned sheet
+   * @default 'center'
+   */
+  variant?: 'center' | 'bottomSheet';
 }
 
 /**
  * Styled container for the modal overlay
  */
-const ModalContainer = styled.div`
+const ModalContainer = styled.div<{ variant?: 'center' | 'bottomSheet' }>`
   flex: 1;
+  display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: ${({ variant }) => variant === 'bottomSheet' ? 'flex-end' : 'center'};
   background-color: rgba(0, 0, 0, 0.5);
 `;
 
 /**
- * Styled container for the modal content
+ * Styled container for the centered modal content
  */
 const ModalContent = styled.div`
   width: 80%;
-  background-color: #fff;
-  border-radius: 8px;
+  background-color: ${colors.neutral.white};
+  border-radius: ${borderRadius['2xl']};
   padding: ${tokens.spacing.md};
+  box-shadow: ${shadows.xl};
+`;
+
+/**
+ * Styled container for bottom sheet modal content
+ */
+const BottomSheetContent = styled.div`
+  width: 100%;
+  background-color: ${colors.neutral.white};
+  border-top-left-radius: ${borderRadius.xl};
+  border-top-right-radius: ${borderRadius.xl};
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  padding: ${tokens.spacing.md};
+  box-shadow: ${shadows.xl};
+  position: absolute;
+  bottom: 0;
+  max-height: 80%;
 `;
 
 /**
@@ -94,6 +123,7 @@ export const Modal: React.FC<ModalProps> = ({
   title,
   children,
   journey = 'health',
+  variant = 'center',
 }) => {
   // Handle escape key for accessibility
   useEffect(() => {
@@ -131,7 +161,8 @@ export const Modal: React.FC<ModalProps> = ({
       aria-modal="true"
       role="dialog"
     >
-      <ModalContainer 
+      <ModalContainer
+        variant={variant}
         onClick={(e) => {
           // Close modal when clicking outside content
           if (e.target === e.currentTarget) {
@@ -140,34 +171,65 @@ export const Modal: React.FC<ModalProps> = ({
         }}
         aria-labelledby={title ? "modal-title" : undefined}
       >
-        <ModalContent onClick={(e) => e.stopPropagation()}>
-          <ModalHeader>
-            {title && (
-              <Text
-                fontSize="lg"
-                fontWeight="medium"
-                id="modal-title"
+        {variant === 'bottomSheet' ? (
+          <BottomSheetContent onClick={(e) => e.stopPropagation()}>
+            <ModalHeader>
+              {title && (
+                <Text
+                  fontSize="lg"
+                  fontWeight="medium"
+                  id="modal-title"
+                  journey={journey}
+                >
+                  {title}
+                </Text>
+              )}
+              <Touchable
+                onPress={onClose}
+                accessibilityLabel="Close modal"
+                accessibilityRole="button"
                 journey={journey}
               >
-                {title}
-              </Text>
-            )}
-            <Touchable
-              onPress={onClose}
-              accessibilityLabel="Close modal"
-              accessibilityRole="button"
-              journey={journey}
-            >
-              <Box padding="xs">
-                <Text fontSize="xl">×</Text>
-              </Box>
-            </Touchable>
-          </ModalHeader>
-          
-          <Box>
-            {children}
-          </Box>
-        </ModalContent>
+                <Box padding="xs">
+                  <Text fontSize="xl">x</Text>
+                </Box>
+              </Touchable>
+            </ModalHeader>
+
+            <Box>
+              {children}
+            </Box>
+          </BottomSheetContent>
+        ) : (
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalHeader>
+              {title && (
+                <Text
+                  fontSize="lg"
+                  fontWeight="medium"
+                  id="modal-title"
+                  journey={journey}
+                >
+                  {title}
+                </Text>
+              )}
+              <Touchable
+                onPress={onClose}
+                accessibilityLabel="Close modal"
+                accessibilityRole="button"
+                journey={journey}
+              >
+                <Box padding="xs">
+                  <Text fontSize="xl">x</Text>
+                </Box>
+              </Touchable>
+            </ModalHeader>
+
+            <Box>
+              {children}
+            </Box>
+          </ModalContent>
+        )}
       </ModalContainer>
     </RNModal>
   );

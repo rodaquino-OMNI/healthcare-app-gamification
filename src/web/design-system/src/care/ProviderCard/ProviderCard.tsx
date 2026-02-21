@@ -5,6 +5,7 @@ import { Text } from '../../primitives/Text';
 import { Icon } from '../../primitives/Icon';
 import { Button } from '../../components/Button';
 import { useTheme } from '../../themes';
+import { sizing } from '../../tokens/sizing';
 
 /**
  * Props for the ProviderCard component
@@ -56,7 +57,7 @@ export const ProviderCard: React.FC<ProviderCardProps> = ({ provider, onPress })
     const stars = [];
     for (let i = 0; i < 5; i++) {
       const starColor = i < provider.rating ? careColors.primary : theme.colors.neutral.gray400;
-      stars.push(<Icon key={i} name="star" color={starColor} size="16px" aria-hidden="true" />);
+      stars.push(<Icon key={i} name="star" color={starColor} size={sizing.icon.xs} aria-hidden="true" />);
     }
     
     return (
@@ -106,7 +107,7 @@ export const ProviderCard: React.FC<ProviderCardProps> = ({ provider, onPress })
               <Icon 
                 name="clinic" 
                 color={careColors.primary} 
-                size="20px"
+                size={sizing.icon.sm}
                 aria-hidden="true" 
               />
               <Text>
@@ -122,7 +123,7 @@ export const ProviderCard: React.FC<ProviderCardProps> = ({ provider, onPress })
               <Icon 
                 name="calendar" 
                 color={careColors.primary} 
-                size="20px"
+                size={sizing.icon.sm}
                 aria-hidden="true" 
               />
               <Text>
@@ -137,7 +138,7 @@ export const ProviderCard: React.FC<ProviderCardProps> = ({ provider, onPress })
               <Icon 
                 name="video" 
                 color={careColors.primary} 
-                size="20px"
+                size={sizing.icon.sm}
                 aria-hidden="true" 
               />
               <Text>Telemedicina disponível</Text>
@@ -150,7 +151,7 @@ export const ProviderCard: React.FC<ProviderCardProps> = ({ provider, onPress })
               <Icon 
                 name="money" 
                 color={careColors.primary} 
-                size="20px"
+                size={sizing.icon.sm}
                 aria-hidden="true" 
               />
               <Text>

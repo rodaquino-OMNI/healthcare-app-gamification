@@ -1,0 +1,138 @@
+{
+  "fg": {
+    "default": {
+      "$type": "color",
+      "$value": "{colors.gray.70}",
+      "$description": "Primary text — darkest gray"
+    },
+    "muted": {
+      "$type": "color",
+      "$value": "{colors.gray.60}",
+      "$description": "Secondary text"
+    },
+    "subtle": {
+      "$type": "color",
+      "$value": "{colors.gray.40}",
+      "$description": "Placeholder, disabled text"
+    },
+    "onBrand": {
+      "$type": "color",
+      "$value": "{colors.white}",
+      "$description": "Text on brand-colored backgrounds"
+    }
+  },
+  "bg": {
+    "default": {
+      "$type": "color",
+      "$value": "{colors.white}",
+      "$description": "Page background"
+    },
+    "muted": {
+      "$type": "color",
+      "$value": "{colors.gray.5}",
+      "$description": "Card backgrounds, sections"
+    },
+    "subtle": {
+      "$type": "color",
+      "$value": "{colors.gray.10}",
+      "$description": "Subtle sections, alternating rows"
+    }
+  },
+  "accent": {
+    "default": {
+      "$type": "color",
+      "$value": "{colors.brand.300}",
+      "$description": "AUSTA Blue #00C3F7 — primary actions"
+    },
+    "hover": {
+      "$type": "color",
+      "$value": "{colors.brand.400}",
+      "$description": "AUSTA Blue hover #02B7E8"
+    },
+    "dark": {
+      "$type": "color",
+      "$value": "{colors.brand.500}",
+      "$description": "AUSTA Blue dark #00A8D5"
+    },
+    "light": {
+      "$type": "color",
+      "$value": "{colors.brand.200}",
+      "$description": "AUSTA Blue light #A7E2F2"
+    },
+    "lightest": {
+      "$type": "color",
+      "$value": "{colors.brand.50}",
+      "$description": "AUSTA Blue lightest #EDFBFF"
+    },
+    "onAccent": {
+      "$type": "color",
+      "$value": "{colors.white}",
+      "$description": "Text on accent background"
+    },
+    "bg": {
+      "$type": "color",
+      "$value": "{colors.brand.100}",
+      "$description": "Accent background #CCF4FF"
+    },
+    "secondary": {
+      "$type": "color",
+      "$value": "{colors.accent.300}",
+      "$description": "Verde AUSTA #00DBBB"
+    }
+  },
+  "border": {
+    "default": {
+      "$type": "color",
+      "$value": "{colors.gray.20}",
+      "$description": "Default borders"
+    },
+    "muted": {
+      "$type": "color",
+      "$value": "{colors.gray.10}",
+      "$description": "Subtle borders"
+    },
+    "accent": {
+      "$type": "color",
+      "$value": "{colors.brand.300}",
+      "$description": "Focused/active borders"
+    }
+  },
+  "semantic": {
+    "destructive": {
+      "$type": "color",
+      "$value": "{colors.destructive.600}",
+      "$description": "Error, delete — #E11D48"
+    },
+    "destructiveBg": {
+      "$type": "color",
+      "$value": "{colors.destructive.50}",
+      "$description": "Error background"
+    },
+    "warning": {
+      "$type": "color",
+      "$value": "{colors.warning.500}",
+      "$description": "Warning states"
+    },
+    "warningBg": {
+      "$type": "color",
+      "$value": "{colors.warning.50}",
+      "$description": "Warning background"
+    },
+    "success": {
+      "$type": "color",
+      "$value": "{colors.success.500}",
+      "$description": "Success — #7AB765"
+    },
+    "successBg": {
+      "$type": "color",
+      "$value": "{colors.success.50}",
+      "$description": "Success background"
+    }
+  },
+  "shadows": {
+    "default": {
+      "$type": "color",
+      "$value": "{colors.gray.900}"
+    }
+  }
+}

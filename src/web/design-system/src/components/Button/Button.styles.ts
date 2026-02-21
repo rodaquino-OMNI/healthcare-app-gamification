@@ -4,6 +4,8 @@ import { typography } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
 import { shadows } from '../../tokens/shadows';
 import { breakpoints } from '../../tokens/breakpoints';
+import { borderRadius } from '../../tokens/borderRadius';
+import { sizing } from '../../tokens/sizing';
 import { baseTheme } from '../../themes/base.theme';
 import { healthTheme } from '../../themes/health.theme';
 import { careTheme } from '../../themes/care.theme';
@@ -41,7 +43,7 @@ export const PrimaryButton = styled.button<ButtonProps>`
   font-size: ${typography.fontSize.md};
   line-height: ${typography.lineHeight.base};
   padding: ${spacing.sm} ${spacing.md};
-  border-radius: 8px;
+  border-radius: ${borderRadius.md};
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   display: inline-flex;
@@ -108,7 +110,7 @@ export const SecondaryButton = styled.button<ButtonProps>`
   font-size: ${typography.fontSize.md};
   line-height: ${typography.lineHeight.base};
   padding: ${spacing.sm} ${spacing.md};
-  border-radius: 8px;
+  border-radius: ${borderRadius.md};
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   display: inline-flex;
@@ -174,7 +176,7 @@ export const TertiaryButton = styled.button<ButtonProps>`
   font-size: ${typography.fontSize.md};
   line-height: ${typography.lineHeight.base};
   padding: ${spacing.xs} ${spacing.sm};
-  border-radius: 8px;
+  border-radius: ${borderRadius.md};
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   display: inline-flex;

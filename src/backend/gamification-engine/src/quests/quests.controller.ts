@@ -1,15 +1,16 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Param, 
-  Query, 
-  UseGuards, 
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Query,
+  UseGuards,
   NotFoundException,
   Logger,
   createParamDecorator,
   ExecutionContext
 } from '@nestjs/common'; // @nestjs/common ^9.0.0
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { QuestsService } from './quests.service';
 
@@ -37,6 +38,7 @@ export const CurrentUser = createParamDecorator(
 /**
  * Controller for managing quests.
  */
+@ApiTags('quests')
 @Controller('quests')
 export class QuestsController {
   private logger = new Logger(QuestsController.name);
@@ -53,6 +55,8 @@ export class QuestsController {
    */
   @Get()
   @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'List all quests' })
+  @ApiResponse({ status: 200, description: 'Returns list of all quests' })
   async findAll(
     @Query() pagination: PaginationDto,
     @Query() filter: FilterDto
@@ -68,6 +72,8 @@ export class QuestsController {
    */
   @Get(':id')
   @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Get quest by ID' })
+  @ApiResponse({ status: 200, description: 'Returns the quest' })
   async findOne(@Param('id') id: string): Promise<any> {
     this.logger.log(`Finding quest with ID: ${id}`);
     const quest = await this.questsService.findOne(id);
@@ -85,6 +91,8 @@ export class QuestsController {
    */
   @Post(':id/start')
   @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Start a quest for the current user' })
+  @ApiResponse({ status: 201, description: 'Quest started successfully' })
   async startQuest(
     @Param('id') id: string,
     @CurrentUser() user: any
@@ -100,6 +108,8 @@ export class QuestsController {
    */
   @Post(':id/complete')
   @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Complete a quest for the current user' })
+  @ApiResponse({ status: 201, description: 'Quest completed successfully' })
   async completeQuest(
     @Param('id') id: string,
     @CurrentUser() user: any

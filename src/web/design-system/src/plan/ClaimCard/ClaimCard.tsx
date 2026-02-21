@@ -6,6 +6,10 @@ import { Card } from '../../components/Card';
 import { Text } from '../../primitives/Text/Text';
 import { Icon } from '../../primitives/Icon/Icon';
 import { Button } from '../../components/Button';
+import { colors } from '../../tokens/colors';
+import { typography } from '../../tokens/typography';
+import { spacing } from '../../tokens/spacing';
+import { borderRadius } from '../../tokens/borderRadius';
 import {
   ClaimCardContainer,
   ClaimCardHeader,
@@ -159,9 +163,9 @@ export const ClaimCard: React.FC<ClaimCardProps> = ({
       
       <ClaimCardFooter>
         <ClaimStatusText status={mappedStatus}>
-          <Icon 
-            name={statusIcon} 
-            size="16px" 
+          <Icon
+            name={statusIcon}
+            size={spacing.md}
             aria-hidden="true"
           />
           <Text marginLeft="xs">

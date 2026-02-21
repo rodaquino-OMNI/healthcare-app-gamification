@@ -1,6 +1,9 @@
 import React from 'react';
 import { useTheme } from 'styled-components';
 import { ProgressBarContainer, ProgressBarFill } from './ProgressBar.styles';
+import { colors } from '../../tokens/colors';
+import { spacing } from '../../tokens/spacing';
+import { borderRadius } from '../../tokens/borderRadius';
 
 /**
  * Props for the ProgressBar component
@@ -24,6 +27,8 @@ export interface ProgressBarProps {
   size?: 'sm' | 'md' | 'lg';
   /** Test ID for testing */
   testId?: string;
+  /** Whether to animate the progress bar fill transitions */
+  animated?: boolean;
 }
 
 /**
@@ -51,6 +56,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   levelMarkers = [],
   size = 'md',
   testId,
+  animated = true,
 }) => {
   const theme = useTheme();
   const progressPercentage = calculatePercentage(current, total);

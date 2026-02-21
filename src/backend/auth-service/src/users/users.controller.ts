@@ -12,6 +12,7 @@ import {
   HttpCode,
   HttpStatus
 } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -26,6 +27,7 @@ import { UserFilterDto } from './dto/user-filter.dto';
 /**
  * Controller for managing users.
  */
+@ApiTags('users')
 @Controller('users')
 @UseFilters(AllExceptionsFilter)
 export class UsersController {
@@ -41,6 +43,8 @@ export class UsersController {
    * @returns The newly created user.
    */
   @Post()
+  @ApiOperation({ summary: 'Create a new user' })
+  @ApiResponse({ status: 201, description: 'User created successfully' })
   create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.usersService.create(createUserDto);
   }
@@ -50,6 +54,8 @@ export class UsersController {
    * @returns The current user's profile.
    */
   @Get('me')
+  @ApiOperation({ summary: 'Get current user profile' })
+  @ApiResponse({ status: 200, description: 'Returns the current user' })
   getMe(@CurrentUser() user: User): Promise<User> {
     return Promise.resolve(user);
   }
@@ -63,6 +69,8 @@ export class UsersController {
   @Get()
   @UseGuards(RolesGuard)
   @Roles('admin')
+  @ApiOperation({ summary: 'List all users (admin only)' })
+  @ApiResponse({ status: 200, description: 'Returns paginated list of users' })
   findAll(
     @Query() paginationDto: PaginationDto, 
     @Query() filterDto: UserFilterDto
@@ -78,6 +86,8 @@ export class UsersController {
   @Get(':id')
   @UseGuards(RolesGuard)
   @Roles('admin')
+  @ApiOperation({ summary: 'Get user by ID (admin only)' })
+  @ApiResponse({ status: 200, description: 'Returns the user' })
   findOne(@Param('id') id: string): Promise<User> {
     return this.usersService.findOne(id);
   }
@@ -89,6 +99,8 @@ export class UsersController {
    * @returns The updated user.
    */
   @Patch(':id')
+  @ApiOperation({ summary: 'Update a user' })
+  @ApiResponse({ status: 200, description: 'User updated successfully' })
   update(
     @Param('id') id: string, 
     @Body() updateUserDto: UpdateUserDto
@@ -102,6 +114,8 @@ export class UsersController {
    */
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Delete a user' })
+  @ApiResponse({ status: 204, description: 'User deleted successfully' })
   remove(@Param('id') id: string): Promise<void> {
     return this.usersService.remove(id);
   }

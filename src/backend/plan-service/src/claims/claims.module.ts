@@ -4,6 +4,7 @@ import { ClaimsService } from './claims.service';
 import { KafkaModule } from '@app/shared/kafka/kafka.module';
 import { LoggerModule } from '@app/shared/logging/logger.module';
 import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
+import { PlansModule } from '../plans/plans.module';
 
 /**
  * Module that encapsulates the ClaimsController and ClaimsService.
@@ -11,7 +12,7 @@ import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
  * addressing requirements for Claims Submission and Claims Tracking in the My Plan & Benefits journey.
  */
 @Module({
-  imports: [KafkaModule, LoggerModule, ExceptionsModule],
+  imports: [KafkaModule, LoggerModule, ExceptionsModule, PlansModule],
   controllers: [ClaimsController],
   providers: [ClaimsService],
   exports: [ClaimsService],

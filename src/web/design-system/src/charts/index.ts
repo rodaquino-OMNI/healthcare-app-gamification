@@ -18,3 +18,4 @@ export { LineChart };
 
 // Export RadialChart and its props
 export { RadialChart, RadialChartProps } from './RadialChart';
+export { DonutChart, DonutChartProps } from './DonutChart';

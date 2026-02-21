@@ -2,6 +2,9 @@ import styled from 'styled-components';
 import { spacing } from '../../tokens/spacing';
 import { colors } from '../../tokens/colors';
 import { breakpoints } from '../../tokens/breakpoints';
+import { borderRadius } from '../../tokens/borderRadius';
+import { sizing } from '../../tokens/sizing';
+import { typography } from '../../tokens/typography';
 
 type JourneyType = 'health' | 'care' | 'plan';
 
@@ -13,7 +16,7 @@ export const LeaderboardContainer = styled.div<{ journey?: JourneyType }>`
   flex-direction: column;
   width: 100%;
   background-color: ${colors.neutral.white};
-  border-radius: 8px;
+  border-radius: ${borderRadius.md};
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   overflow: hidden;
   padding: ${spacing.md};
@@ -38,8 +41,8 @@ export const LeaderboardHeader = styled.div`
  * The title of the leaderboard
  */
 export const LeaderboardTitle = styled.h3<{ journey?: JourneyType }>`
-  font-size: 18px;
-  font-weight: 600;
+  font-size: ${typography.fontSize.lg};
+  font-weight: ${typography.fontWeight.semiBold};
   color: ${({ journey }) => 
     journey 
       ? colors.journeys[journey].primary 
@@ -66,7 +69,7 @@ export const LeaderboardItem = styled.li<{ isCurrentUser?: boolean; rank: number
   display: flex;
   align-items: center;
   padding: ${spacing.sm} ${spacing.md};
-  border-radius: 4px;
+  border-radius: ${borderRadius.xs};
   margin-bottom: ${spacing.xs};
   background-color: ${({ isCurrentUser }) => 
     isCurrentUser 
@@ -100,11 +103,11 @@ export const Rank = styled.div<{ rank: number }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  font-weight: 700;
-  font-size: 14px;
+  min-width: ${sizing.component.sm};
+  height: ${sizing.component.sm};
+  border-radius: ${borderRadius.full};
+  font-weight: ${typography.fontWeight.bold};
+  font-size: ${typography.fontSize.sm};
   margin-right: ${spacing.md};
   
   ${({ rank }) => {
@@ -131,9 +134,9 @@ export const Rank = styled.div<{ rank: number }>`
   }}
   
   @media (min-width: ${breakpoints.md}) {
-    min-width: 40px;
-    height: 40px;
-    font-size: 16px;
+    min-width: ${sizing.component.md};
+    height: ${sizing.component.md};
+    font-size: ${typography.fontSize.md};
   }
 `;
 
@@ -151,7 +154,7 @@ export const UserInfo = styled.div`
  * The username of a leaderboard item
  */
 export const Username = styled.span`
-  font-weight: 600;
+  font-weight: ${typography.fontWeight.semiBold};
   color: ${colors.neutral.gray900};
   margin-bottom: ${spacing.xs};
   white-space: nowrap;
@@ -165,10 +168,10 @@ export const Username = styled.span`
 export const Score = styled.span<{ journey?: JourneyType }>`
   display: flex;
   align-items: center;
-  font-weight: 700;
-  color: ${({ journey }) => 
-    journey 
-      ? colors.journeys[journey].primary 
+  font-weight: ${typography.fontWeight.bold};
+  color: ${({ journey }) =>
+    journey
+      ? colors.journeys[journey].primary
       : colors.brand.primary
   };
   margin-left: auto;

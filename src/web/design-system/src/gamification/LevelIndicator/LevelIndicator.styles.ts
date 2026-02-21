@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { colors } from '../../tokens/colors';
 import { typography } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
+import { borderRadius } from '../../tokens/borderRadius';
+import { sizing } from '../../tokens/sizing';
 
 /**
  * Container for the entire LevelIndicator component.
@@ -11,8 +13,8 @@ export const LevelContainer = styled.div<{ journey?: 'health' | 'care' | 'plan' 
   display: flex;
   flex-direction: column;
   padding: ${spacing.md};
-  border-radius: 8px;
-  background-color: ${props => 
+  border-radius: ${borderRadius.md};
+  background-color: ${props =>
     props.journey ? colors.journeys[props.journey].background : colors.neutral.white};
   border-left: 4px solid ${props => 
     props.journey ? colors.journeys[props.journey].primary : colors.neutral.gray400};
@@ -50,9 +52,9 @@ export const LevelBadge = styled.div<{ journey?: 'health' | 'care' | 'plan' }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  width: ${sizing.component.md};
+  height: ${sizing.component.md};
+  border-radius: ${borderRadius.full};
   background-color: ${props => 
     props.journey ? colors.journeys[props.journey].primary : colors.neutral.gray400};
   color: ${colors.neutral.white};

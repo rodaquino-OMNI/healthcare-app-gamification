@@ -1,45 +1,59 @@
 import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  ScrollView,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { MOBILE_PLAN_ROUTES } from 'src/web/shared/constants/routes';
 import Input from 'src/web/design-system/src/components/Input/Input';
 import { Select } from 'src/web/design-system/src/components/Select/Select';
 import Button from 'src/web/design-system/src/components/Button/Button';
-import Card from 'src/web/design-system/src/components/Card/Card';
+import { colors } from '@web/design-system/src/tokens/colors';
+import { spacingValues } from '@web/design-system/src/tokens/spacing';
+import { fontSizeValues } from '@web/design-system/src/tokens/typography';
+import { borderRadiusValues } from '@web/design-system/src/tokens/borderRadius';
 
 /**
- * A screen component that allows users to simulate healthcare costs 
- * based on insurance coverage within the Plan journey.
+ * Deductible percentage options for the slider-style selector.
+ */
+const DEDUCTIBLE_OPTIONS = [0, 10, 20, 30, 40, 50];
+
+/**
+ * A screen component that allows users to simulate healthcare costs
+ * based on insurance coverage within the Plan journey. Includes procedure
+ * selection, provider input, deductible slider, and a tokenized result card.
  */
 export const CostSimulatorScreen: React.FC = () => {
-  // State for input fields and result
   const [procedureType, setProcedureType] = useState('');
   const [provider, setProvider] = useState('');
   const [estimatedCost, setEstimatedCost] = useState<number | null>(null);
-  
-  // Procedure type options for the dropdown
+  const [deductiblePercent, setDeductiblePercent] = useState(20);
+
   const procedureOptions = [
-    { label: 'Consulta médica', value: 'consultation' },
+    { label: 'Consulta medica', value: 'consultation' },
     { label: 'Exame laboratorial', value: 'labTest' },
     { label: 'Exame de imagem', value: 'imaging' },
     { label: 'Cirurgia', value: 'surgery' },
     { label: 'Fisioterapia', value: 'physicalTherapy' },
   ];
-  
+
   /**
-   * Simulates the cost based on procedure type and provider.
-   * In a real implementation, this would call an API to get accurate estimates.
+   * Simulates the cost based on procedure type, provider, and deductible.
+   * In production this would call an API for accurate estimates.
    */
   const handleSimulateCost = () => {
-    // Basic validation
     if (!procedureType || !provider) {
-      alert('Por favor, preencha todos os campos');
+      Alert.alert(
+        'Campos obrigatorios',
+        'Por favor, preencha todos os campos',
+      );
       return;
     }
-    
-    // This is a simplified mock implementation
-    // In a real app, we would call the backend API to calculate the actual cost
+
     let baseCost = 0;
-    
     switch (procedureType) {
       case 'consultation':
         baseCost = 150;
@@ -59,22 +73,25 @@ export const CostSimulatorScreen: React.FC = () => {
       default:
         baseCost = 0;
     }
-    
-    // Mock coverage calculation (80% coverage)
-    const coverage = 0.8;
-    const outOfPocket = baseCost * (1 - coverage);
-    
-    // Round to 2 decimal places
+
+    const coverageRate = (100 - deductiblePercent) / 100;
+    const outOfPocket = baseCost * (1 - coverageRate);
     setEstimatedCost(Math.round(outOfPocket * 100) / 100);
   };
-  
+
   return (
-    <div>
-      <h1>Simulador de Custos</h1>
-      <p>Simule quanto custará seu procedimento com base na sua cobertura</p>
-      
-      <Card journey="plan">
-        <div style={{ marginBottom: '16px' }}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.scrollContent}
+    >
+      <Text style={styles.title}>Simulador de Custos</Text>
+      <Text style={styles.subtitle}>
+        Simule quanto custara seu procedimento com base na sua cobertura
+      </Text>
+
+      {/* Form Card */}
+      <View style={styles.formCard}>
+        <View style={styles.fieldContainer}>
           <Select
             label="Tipo de Procedimento"
             options={procedureOptions}
@@ -82,42 +99,218 @@ export const CostSimulatorScreen: React.FC = () => {
             onChange={(value) => setProcedureType(value as string)}
             journey="plan"
           />
-        </div>
-        
-        <div style={{ marginBottom: '16px' }}>
-          <label htmlFor="provider" style={{ display: 'block', marginBottom: '8px' }}>
-            Nome do Profissional ou Clínica
-          </label>
+        </View>
+
+        <View style={styles.fieldContainer}>
+          <Text style={styles.fieldLabel}>
+            Nome do Profissional ou Clinica
+          </Text>
           <Input
             value={provider}
-            onChange={(e) => setProvider(e.target.value)}
-            placeholder="Digite o nome do profissional ou clínica"
+            onChangeText={(text: string) => setProvider(text)}
+            placeholder="Digite o nome do profissional ou clinica"
             journey="plan"
           />
-        </div>
-        
-        <Button 
-          onPress={handleSimulateCost}
-          journey="plan"
-        >
+        </View>
+
+        {/* Deductible Selector */}
+        <View style={styles.fieldContainer}>
+          <Text style={styles.fieldLabel}>Franquia / Coparticipacao</Text>
+          <View style={styles.sliderRow}>
+            {DEDUCTIBLE_OPTIONS.map((val) => (
+              <View
+                key={val}
+                style={[
+                  styles.sliderStep,
+                  deductiblePercent === val && styles.sliderStepActive,
+                ]}
+                onTouchEnd={() => setDeductiblePercent(val)}
+                accessible
+                accessibilityLabel={`Franquia ${val}%`}
+                accessibilityRole="button"
+              >
+                <Text
+                  style={[
+                    styles.sliderStepText,
+                    deductiblePercent === val && styles.sliderStepTextActive,
+                  ]}
+                >
+                  {val}%
+                </Text>
+              </View>
+            ))}
+          </View>
+          <View style={styles.sliderTrack}>
+            <View
+              style={[
+                styles.sliderFill,
+                {
+                  width: `${(DEDUCTIBLE_OPTIONS.indexOf(deductiblePercent) /
+                    (DEDUCTIBLE_OPTIONS.length - 1)) *
+                    100}%`,
+                },
+              ]}
+            />
+          </View>
+        </View>
+
+        <Button onPress={handleSimulateCost} journey="plan">
           Simular Custo
         </Button>
-        
-        {estimatedCost !== null && (
-          <div style={{ marginTop: '24px', textAlign: 'center' }}>
-            <h2>Custo Estimado</h2>
-            <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#3A86FF' }}>
-              R$ {estimatedCost.toFixed(2)}
-            </p>
-            <p>
-              Este é o valor estimado que você pagará após a cobertura do seu plano.
-            </p>
-            <p style={{ fontSize: '14px', color: '#757575', marginTop: '8px' }}>
-              Cobertura aplicada: 80%
-            </p>
-          </div>
-        )}
-      </Card>
-    </div>
+      </View>
+
+      {/* Result Card */}
+      {estimatedCost !== null && (
+        <View style={styles.resultCard}>
+          <Text style={styles.resultTitle}>Custo Estimado</Text>
+          <Text style={styles.resultValue}>
+            R$ {estimatedCost.toFixed(2)}
+          </Text>
+          <Text style={styles.resultDescription}>
+            Este e o valor estimado que voce pagara apos a cobertura do seu plano.
+          </Text>
+          <View style={styles.resultDivider} />
+          <View style={styles.resultMetaRow}>
+            <Text style={styles.resultMetaLabel}>Cobertura aplicada</Text>
+            <Text style={styles.resultMetaValue}>
+              {100 - deductiblePercent}%
+            </Text>
+          </View>
+          <View style={styles.resultMetaRow}>
+            <Text style={styles.resultMetaLabel}>Franquia</Text>
+            <Text style={styles.resultMetaValue}>{deductiblePercent}%</Text>
+          </View>
+        </View>
+      )}
+    </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.journeys.plan.background,
+  },
+  scrollContent: {
+    padding: spacingValues.md,
+    gap: spacingValues.md,
+  },
+  title: {
+    fontSize: fontSizeValues['2xl'],
+    fontWeight: String(700) as any,
+    color: colors.journeys.plan.text,
+  },
+  subtitle: {
+    fontSize: fontSizeValues.md,
+    color: colors.gray[50],
+    lineHeight: fontSizeValues.md * 1.5,
+  },
+
+  /* Form Card */
+  formCard: {
+    backgroundColor: colors.neutral.white,
+    borderRadius: borderRadiusValues.lg,
+    padding: spacingValues.md,
+    gap: spacingValues.md,
+    shadowColor: colors.neutral.black,
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  fieldContainer: {
+    gap: spacingValues.xs,
+  },
+  fieldLabel: {
+    fontSize: fontSizeValues.sm,
+    fontWeight: String(500) as any,
+    color: colors.gray[60],
+  },
+
+  /* Deductible Slider */
+  sliderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  sliderStep: {
+    paddingVertical: spacingValues.xs,
+    paddingHorizontal: spacingValues.sm,
+    borderRadius: borderRadiusValues.full,
+    backgroundColor: colors.gray[10],
+  },
+  sliderStepActive: {
+    backgroundColor: colors.journeys.plan.primary,
+  },
+  sliderStepText: {
+    fontSize: fontSizeValues.xs,
+    fontWeight: String(600) as any,
+    color: colors.gray[50],
+  },
+  sliderStepTextActive: {
+    color: colors.neutral.white,
+  },
+  sliderTrack: {
+    height: 4,
+    backgroundColor: colors.gray[20],
+    borderRadius: borderRadiusValues.full,
+    overflow: 'hidden',
+  },
+  sliderFill: {
+    height: 4,
+    backgroundColor: colors.journeys.plan.primary,
+    borderRadius: borderRadiusValues.full,
+  },
+
+  /* Result Card */
+  resultCard: {
+    backgroundColor: colors.neutral.white,
+    borderRadius: borderRadiusValues.lg,
+    padding: spacingValues.lg,
+    alignItems: 'center',
+    shadowColor: colors.neutral.black,
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  resultTitle: {
+    fontSize: fontSizeValues.lg,
+    fontWeight: String(700) as any,
+    color: colors.journeys.plan.text,
+    marginBottom: spacingValues.xs,
+  },
+  resultValue: {
+    fontSize: 28,
+    fontWeight: String(700) as any,
+    color: colors.journeys.plan.primary,
+    marginBottom: spacingValues.xs,
+  },
+  resultDescription: {
+    fontSize: fontSizeValues.sm,
+    color: colors.gray[50],
+    textAlign: 'center',
+  },
+  resultDivider: {
+    height: 1,
+    backgroundColor: colors.gray[20],
+    alignSelf: 'stretch',
+    marginVertical: spacingValues.sm,
+  },
+  resultMetaRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignSelf: 'stretch',
+    paddingVertical: spacingValues['3xs'],
+  },
+  resultMetaLabel: {
+    fontSize: fontSizeValues.sm,
+    color: colors.gray[50],
+  },
+  resultMetaValue: {
+    fontSize: fontSizeValues.sm,
+    fontWeight: String(600) as any,
+    color: colors.journeys.plan.text,
+  },
+});
+
+export default CostSimulatorScreen;

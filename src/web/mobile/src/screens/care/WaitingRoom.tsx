@@ -1,0 +1,279 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { Button } from 'src/web/design-system/src/components/Button/Button';
+import { Card } from 'src/web/design-system/src/components/Card/Card';
+import { Badge } from 'src/web/design-system/src/components/Badge/Badge';
+import { ProgressBar } from 'src/web/design-system/src/components/ProgressBar/ProgressBar';
+import { Text } from 'src/web/design-system/src/primitives/Text/Text';
+import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader';
+import { ROUTES } from 'src/web/mobile/src/constants/routes';
+
+/**
+ * Route params expected by WaitingRoom.
+ */
+interface WaitingRoomRouteParams {
+  appointmentId: string;
+}
+
+/**
+ * Represents the status of a single equipment check.
+ */
+interface EquipmentCheck {
+  label: string;
+  icon: string;
+  passed: boolean;
+}
+
+/**
+ * Formats remaining seconds into MM:SS display.
+ */
+const formatCountdown = (totalSeconds: number): string => {
+  const mins = Math.floor(totalSeconds / 60);
+  const secs = totalSeconds % 60;
+  return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+};
+
+/** Initial countdown in seconds (15 minutes). */
+const INITIAL_COUNTDOWN = 15 * 60;
+
+/** Mock connection quality percentage. */
+const CONNECTION_QUALITY = 85;
+
+/**
+ * WaitingRoom screen provides a pre-consultation holding area
+ * with equipment checks (camera, microphone, internet),
+ * a countdown timer, and tips before joining the teleconsultation.
+ */
+const WaitingRoom: React.FC = () => {
+  const navigation = useNavigation<any>();
+  const route = useRoute<any>();
+  const { appointmentId } = route.params as WaitingRoomRouteParams;
+
+  const [countdown, setCountdown] = useState(INITIAL_COUNTDOWN);
+  const [equipmentChecks, setEquipmentChecks] = useState<EquipmentCheck[]>([
+    { label: 'Camera', icon: '📷', passed: true },
+    { label: 'Microfone', icon: '🎙', passed: true },
+    { label: 'Conexao', icon: '📶', passed: true },
+  ]);
+
+  // Countdown timer
+  useEffect(() => {
+    if (countdown <= 0) return;
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [countdown]);
+
+  const allChecksPassed = equipmentChecks.every((check) => check.passed);
+
+  const toggleCheck = useCallback((index: number) => {
+    setEquipmentChecks((prev) =>
+      prev.map((check, i) =>
+        i === index ? { ...check, passed: !check.passed } : check,
+      ),
+    );
+  }, []);
+
+  const handleJoinConsultation = useCallback(() => {
+    navigation.navigate(ROUTES.CARE_TELEMEDICINE, { appointmentId });
+  }, [navigation, appointmentId]);
+
+  return (
+    <View style={styles.container}>
+      <JourneyHeader title="Sala de Espera" showBackButton />
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        {/* Appointment info */}
+        <Card journey="care" elevation="sm">
+          <Text variant="heading" journey="care" fontSize="md">
+            Teleconsulta
+          </Text>
+          <View style={styles.infoRow}>
+            <Text fontSize="sm" color="#666">Consulta:</Text>
+            <Text fontSize="sm" fontWeight="bold" color="#333">#{appointmentId}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text fontSize="sm" color="#666">Status:</Text>
+            <Badge journey="care" size="sm" status="info">Aguardando</Badge>
+          </View>
+        </Card>
+
+        {/* Countdown timer */}
+        <View style={styles.countdownSection}>
+          <Text fontSize="sm" color="#666" textAlign="center">
+            Sua consulta comeca em:
+          </Text>
+          <View style={styles.countdownDisplay}>
+            <Text fontSize="xl" fontWeight="bold" color="#FF8C42" textAlign="center">
+              {formatCountdown(countdown)}
+            </Text>
+          </View>
+        </View>
+
+        {/* Equipment checks */}
+        <View style={styles.checksSection}>
+          <Text variant="heading" journey="care" fontSize="md">
+            Verificacao de Equipamentos
+          </Text>
+
+          {equipmentChecks.map((check, index) => (
+            <Card
+              key={check.label}
+              journey="care"
+              elevation="sm"
+              onPress={() => toggleCheck(index)}
+              interactive
+              accessibilityLabel={`${check.label}: ${check.passed ? 'verificado' : 'nao verificado'}`}
+            >
+              <View style={styles.checkRow}>
+                <Text fontSize="lg">{check.icon}</Text>
+                <Text fontSize="sm" fontWeight="medium" color="#333">
+                  {check.label}
+                </Text>
+                <Badge
+                  journey="care"
+                  size="sm"
+                  status={check.passed ? 'success' : 'error'}
+                >
+                  {check.passed ? 'OK' : 'Falha'}
+                </Badge>
+              </View>
+            </Card>
+          ))}
+        </View>
+
+        {/* Connection quality */}
+        <View style={styles.connectionSection}>
+          <Text fontSize="sm" fontWeight="medium" color="#333">
+            Qualidade da Conexao
+          </Text>
+          <View style={styles.progressBarWrapper}>
+            <ProgressBar
+              current={CONNECTION_QUALITY}
+              total={100}
+              journey="care"
+              size="md"
+              ariaLabel="Qualidade da conexao com a internet"
+            />
+          </View>
+          <Text fontSize="xs" color="#666" textAlign="center">
+            {CONNECTION_QUALITY}% - Conexao estavel
+          </Text>
+        </View>
+
+        {/* Tips */}
+        <Card journey="care" elevation="sm">
+          <Text variant="heading" journey="care" fontSize="md">
+            Dicas para sua consulta
+          </Text>
+          <View style={styles.tipItem}>
+            <Text fontSize="sm" color="#555">
+              Escolha um local silencioso e bem iluminado
+            </Text>
+          </View>
+          <View style={styles.tipItem}>
+            <Text fontSize="sm" color="#555">
+              Verifique sua iluminacao antes de iniciar
+            </Text>
+          </View>
+          <View style={styles.tipItem}>
+            <Text fontSize="sm" color="#555">
+              Tenha em maos documentos e exames recentes
+            </Text>
+          </View>
+          <View style={styles.tipItem}>
+            <Text fontSize="sm" color="#555">
+              Use fones de ouvido para melhor privacidade
+            </Text>
+          </View>
+        </Card>
+
+        {/* Join button */}
+        <View style={styles.bottomAction}>
+          <Button
+            journey="care"
+            variant="primary"
+            onPress={handleJoinConsultation}
+            disabled={!allChecksPassed}
+            accessibilityLabel="Entrar na consulta por teleconsulta"
+          >
+            Entrar na Consulta
+          </Button>
+          {!allChecksPassed && (
+            <Text fontSize="xs" color="#D32F2F" textAlign="center">
+              Resolva todos os problemas de equipamento antes de entrar
+            </Text>
+          )}
+        </View>
+      </ScrollView>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFF8F0',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: 16,
+    paddingBottom: 40,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  countdownSection: {
+    marginTop: 24,
+    alignItems: 'center',
+  },
+  countdownDisplay: {
+    marginTop: 8,
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: '#FF8C42',
+  },
+  checksSection: {
+    marginTop: 24,
+    gap: 8,
+  },
+  checkRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  connectionSection: {
+    marginTop: 24,
+    marginBottom: 16,
+  },
+  progressBarWrapper: {
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  tipItem: {
+    marginTop: 8,
+    paddingLeft: 8,
+  },
+  bottomAction: {
+    marginTop: 32,
+    paddingHorizontal: 8,
+    gap: 8,
+  },
+});
+
+export default WaitingRoom;

@@ -4,6 +4,7 @@ import { Card } from '../../components/Card/Card';
 import { Text } from '../../primitives/Text/Text';
 import { Icon } from '../../primitives/Icon/Icon';
 import { colors } from '../../tokens/colors';
+import { sizing } from '../../tokens/sizing';
 
 /**
  * Interface defining the props for the MedicationCard component
@@ -67,11 +68,11 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
       accessibilityLabel={accessibilityLabel}
     >
       <Container>
-        <Icon 
-          name="pill" 
-          size="24px" 
-          color={colors.journeys.care.primary} 
-          aria-hidden={true} 
+        <Icon
+          name="pill"
+          size={sizing.icon.md}
+          color={colors.journeys.care.primary}
+          aria-hidden={true}
         />
         <MedicationDetails>
           <Text 
@@ -88,11 +89,11 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({
           </Text>
         </MedicationDetails>
         <AdherenceStatus>
-          <Icon 
-            name={adherenceIcon} 
-            size="24px" 
+          <Icon
+            name={adherenceIcon}
+            size={sizing.icon.md}
             color={adherenceColor}
-            aria-hidden={true} 
+            aria-hidden={true}
           />
         </AdherenceStatus>
       </Container>

@@ -16,60 +16,292 @@ import {
   RecentActivityWidget,
   AchievementsWidget,
 } from 'src/web/web/src/components/index';
+import { colors } from 'src/web/design-system/src/tokens/colors';
+import { spacing } from 'src/web/design-system/src/tokens/spacing';
+import { typography } from 'src/web/design-system/src/tokens/typography';
+import { borderRadius } from 'src/web/design-system/src/tokens/borderRadius';
+import { shadows } from 'src/web/design-system/src/tokens/shadows';
 
 /**
- * Renders the home page with journey cards and summary widgets.
- * @returns {JSX.Element} The rendered home page.
+ * Journey configuration for the three core journeys displayed on the dashboard.
+ */
+const JOURNEYS = [
+  {
+    id: 'health',
+    title: 'Minha Saude',
+    description: 'Acompanhe suas metricas de saude, metas e integracoes.',
+    color: colors.journeys.health.primary,
+    background: colors.journeys.health.background,
+    href: '/health',
+  },
+  {
+    id: 'care',
+    title: 'Cuidado Agora',
+    description: 'Encontre profissionais, agende consultas e telemedicina.',
+    color: colors.journeys.care.primary,
+    background: colors.journeys.care.background,
+    href: '/care',
+  },
+  {
+    id: 'plan',
+    title: 'Meu Plano',
+    description: 'Veja cobertura, envie sinistros e simule custos.',
+    color: colors.journeys.plan.primary,
+    background: colors.journeys.plan.background,
+    href: '/plan',
+  },
+] as const;
+
+/**
+ * Quick action items displayed at the bottom of the dashboard.
+ */
+const QUICK_ACTIONS = [
+  { label: 'Adicionar Metrica', href: '/home/metrics', icon: '📊' },
+  { label: 'Agendar Consulta', href: '/care/appointments', icon: '📅' },
+  { label: 'Ver Alertas', href: '/home/alert', icon: '🔔' },
+  { label: 'Meu Perfil', href: '/profile', icon: '👤' },
+] as const;
+
+/**
+ * Renders the home page dashboard with journey cards, health metrics,
+ * appointments, claims, recent activity, and achievements widgets.
  */
 const Home: React.FC = () => {
-  // Call the useAuth hook to get the authentication status and user information.
+  const router = useRouter();
   const { isAuthenticated } = useAuth();
-
-  // Call the useHealthMetrics hook to get the health metrics data.
   const { metrics } = useHealthMetrics('user-123', []);
-
-  // Call the useAppointments hook to get the appointments data.
   const { appointments } = useAppointments();
-
-  // Call the useClaims hook to get the claims data.
   const { claims } = useClaims();
-
-  // Call the useGamification hook to get the gamification data.
   const { gameProfile } = useGamification('user-123');
-
-  // Call the useJourney hook to get the journey theming.
   const { journey } = useJourney();
 
-  // Render the MainLayout component.
   return (
     <MainLayout>
-      {/* Render the JourneyCard components for each journey. */}
-      <JourneyCard journey="health" title="Minha Saúde">
-        {/* Add content for the Health Journey card here */}
-      </JourneyCard>
-      <JourneyCard journey="care" title="Cuidar-me Agora">
-        {/* Add content for the Care Now Journey card here */}
-      </JourneyCard>
-      <JourneyCard journey="plan" title="Meu Plano & Benefícios">
-        {/* Add content for the My Plan & Benefits Journey card here */}
-      </JourneyCard>
+      {/* Welcome Header */}
+      <div style={pageStyles.welcomeSection}>
+        <div>
+          <h1 style={pageStyles.welcomeTitle}>Bem-vindo de volta!</h1>
+          <p style={pageStyles.welcomeSubtitle}>
+            Acompanhe sua saude e bem-estar em um so lugar.
+          </p>
+        </div>
+        {gameProfile && (
+          <div style={pageStyles.levelBadge}>
+            <span style={pageStyles.levelText}>Level {gameProfile.level ?? 1}</span>
+            <span style={pageStyles.xpText}>{gameProfile.xp ?? 0} XP</span>
+          </div>
+        )}
+      </div>
 
-      {/* Render the MetricsWidget component to display summarized health metrics. */}
-      <MetricsWidget metrics={metrics} />
+      {/* Journey Cards */}
+      <section style={pageStyles.section}>
+        <h2 style={pageStyles.sectionTitle}>Suas Jornadas</h2>
+        <div style={pageStyles.journeyGrid}>
+          {JOURNEYS.map((j) => (
+            <div
+              key={j.id}
+              style={{
+                ...pageStyles.journeyCard,
+                borderLeft: `4px solid ${j.color}`,
+                backgroundColor: j.background,
+              }}
+              onClick={() => router.push(j.href)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && router.push(j.href)}
+            >
+              <h3 style={{ ...pageStyles.journeyTitle, color: j.color }}>
+                {j.title}
+              </h3>
+              <p style={pageStyles.journeyDescription}>{j.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
-      {/* Render the AppointmentsWidget component to display upcoming appointments. */}
-      <AppointmentsWidget appointments={appointments} />
+      {/* Health Metrics Summary */}
+      <section style={pageStyles.section}>
+        <div style={pageStyles.sectionHeader}>
+          <h2 style={pageStyles.sectionTitle}>Metricas de Saude</h2>
+          <a
+            href="/home/metrics"
+            style={pageStyles.viewAllLink}
+            onClick={(e) => {
+              e.preventDefault();
+              router.push('/home/metrics');
+            }}
+          >
+            Ver todas
+          </a>
+        </div>
+        <MetricsWidget metrics={metrics} />
+      </section>
 
-      {/* Render the ClaimsWidget component to display recent claims. */}
-      <ClaimsWidget claims={claims} />
+      {/* Appointments */}
+      <section style={pageStyles.section}>
+        <h2 style={pageStyles.sectionTitle}>Proximas Consultas</h2>
+        <AppointmentsWidget appointments={appointments} />
+      </section>
 
-      {/* Render the RecentActivityWidget component to display recent user activity. */}
-      <RecentActivityWidget />
+      {/* Claims */}
+      <section style={pageStyles.section}>
+        <h2 style={pageStyles.sectionTitle}>Sinistros Recentes</h2>
+        <ClaimsWidget claims={claims} />
+      </section>
 
-      {/* Render the AchievementsWidget component to display recent achievements. */}
-      <AchievementsWidget achievements={gameProfile?.achievements} />
+      {/* Quick Actions */}
+      <section style={pageStyles.section}>
+        <h2 style={pageStyles.sectionTitle}>Acoes Rapidas</h2>
+        <div style={pageStyles.quickActionsGrid}>
+          {QUICK_ACTIONS.map((action) => (
+            <div
+              key={action.label}
+              style={pageStyles.quickActionCard}
+              onClick={() => router.push(action.href)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && router.push(action.href)}
+            >
+              <span style={pageStyles.quickActionIcon}>{action.icon}</span>
+              <span style={pageStyles.quickActionLabel}>{action.label}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Recent Activity */}
+      <section style={pageStyles.section}>
+        <h2 style={pageStyles.sectionTitle}>Atividade Recente</h2>
+        <RecentActivityWidget />
+      </section>
+
+      {/* Achievements */}
+      <section style={pageStyles.section}>
+        <h2 style={pageStyles.sectionTitle}>Conquistas</h2>
+        <AchievementsWidget achievements={gameProfile?.achievements} />
+      </section>
     </MainLayout>
   );
+};
+
+/**
+ * Page-level styles using design system tokens.
+ * All colors, spacing, typography, and border radius values reference tokens.
+ */
+const pageStyles: Record<string, React.CSSProperties> = {
+  welcomeSection: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: `${spacing.xl} 0`,
+    marginBottom: spacing.md,
+  },
+  welcomeTitle: {
+    fontSize: typography.fontSize['heading-xl'],
+    fontWeight: typography.fontWeight.bold,
+    color: colors.neutral.gray900,
+    margin: 0,
+    fontFamily: typography.fontFamily.heading,
+  },
+  welcomeSubtitle: {
+    fontSize: typography.fontSize['text-md'],
+    color: colors.neutral.gray600,
+    margin: `${spacing.xs} 0 0 0`,
+    fontFamily: typography.fontFamily.body,
+  },
+  levelBadge: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    backgroundColor: colors.journeys.community.background,
+    borderRadius: borderRadius.md,
+    padding: `${spacing.xs} ${spacing.sm}`,
+  },
+  levelText: {
+    fontSize: typography.fontSize['text-sm'],
+    fontWeight: typography.fontWeight.bold,
+    color: colors.journeys.community.primary,
+  },
+  xpText: {
+    fontSize: typography.fontSize['text-xs'],
+    color: colors.journeys.community.secondary,
+    marginTop: spacing['4xs'],
+  },
+  section: {
+    marginBottom: spacing['2xl'],
+  },
+  sectionHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.sm,
+  },
+  sectionTitle: {
+    fontSize: typography.fontSize['heading-md'],
+    fontWeight: typography.fontWeight.semiBold,
+    color: colors.neutral.gray900,
+    margin: `0 0 ${spacing.sm} 0`,
+    fontFamily: typography.fontFamily.heading,
+  },
+  viewAllLink: {
+    fontSize: typography.fontSize['text-sm'],
+    color: colors.brand.primary,
+    textDecoration: 'none',
+    fontWeight: typography.fontWeight.medium,
+    cursor: 'pointer',
+  },
+  journeyGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+    gap: spacing.md,
+  },
+  journeyCard: {
+    padding: spacing.lg,
+    borderRadius: borderRadius.md,
+    cursor: 'pointer',
+    transition: 'box-shadow 0.2s ease, transform 0.2s ease',
+    boxShadow: shadows.sm,
+  },
+  journeyTitle: {
+    fontSize: typography.fontSize['heading-sm'],
+    fontWeight: typography.fontWeight.semiBold,
+    margin: `0 0 ${spacing.xs} 0`,
+    fontFamily: typography.fontFamily.heading,
+  },
+  journeyDescription: {
+    fontSize: typography.fontSize['text-sm'],
+    color: colors.neutral.gray600,
+    margin: 0,
+    lineHeight: typography.lineHeight.base,
+    fontFamily: typography.fontFamily.body,
+  },
+  quickActionsGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+    gap: spacing.sm,
+  },
+  quickActionCard: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: spacing.lg,
+    backgroundColor: colors.neutral.gray100,
+    borderRadius: borderRadius.md,
+    cursor: 'pointer',
+    transition: 'background-color 0.2s ease',
+    gap: spacing.xs,
+  },
+  quickActionIcon: {
+    fontSize: typography.fontSize['heading-xl'],
+  },
+  quickActionLabel: {
+    fontSize: typography.fontSize['text-sm'],
+    fontWeight: typography.fontWeight.medium,
+    color: colors.neutral.gray700,
+    textAlign: 'center' as const,
+    fontFamily: typography.fontFamily.body,
+  },
 };
 
 export default Home;

@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config'; // 10.0.0+
+import { AuditModule, AuditInterceptor } from '@app/shared/audit';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
@@ -33,7 +35,8 @@ import { RedisModule } from '@app/shared/redis/redis.module';
     TracingModule,
     KafkaModule,
     RedisModule,
+    AuditModule,
   ],
-  providers: [PrismaService],
+  providers: [PrismaService, { provide: APP_INTERCEPTOR, useClass: AuditInterceptor }],
 })
 export class AppModule {}

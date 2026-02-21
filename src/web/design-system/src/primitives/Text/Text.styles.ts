@@ -57,6 +57,11 @@ export interface TextStyleProps {
    * Whether to apply responsive font sizing
    */
   responsive?: boolean;
+
+  /**
+   * Typography variant for predefined configurations
+   */
+  variant?: 'display' | 'heading' | 'body' | 'caption';
 }
 
 /**
@@ -94,16 +99,60 @@ const calculateResponsiveSize = (size: string, breakpoint: string): string => {
 };
 
 /**
+ * Variant presets for consistent typography styles
+ */
+const variantStyles = {
+  display: {
+    fontFamily: typography.fontFamily.heading,
+    fontSize: typography.fontSize['display-lg'],
+    fontWeight: typography.fontWeight.bold,
+    lineHeight: typography.lineHeight.tight,
+    letterSpacing: typography.letterSpacing.tight,
+  },
+  heading: {
+    fontFamily: typography.fontFamily.heading,
+    fontSize: typography.fontSize['heading-xl'],
+    fontWeight: typography.fontWeight.semiBold,
+    lineHeight: typography.lineHeight.heading,
+    letterSpacing: typography.letterSpacing.tight,
+  },
+  body: {
+    fontFamily: typography.fontFamily.body,
+    fontSize: typography.fontSize['text-md'],
+    fontWeight: typography.fontWeight.regular,
+    lineHeight: typography.lineHeight.base,
+    letterSpacing: typography.letterSpacing.normal,
+  },
+  caption: {
+    fontFamily: typography.fontFamily.body,
+    fontSize: typography.fontSize['text-xs'],
+    fontWeight: typography.fontWeight.regular,
+    lineHeight: typography.lineHeight.relaxed,
+    letterSpacing: typography.letterSpacing.wide,
+  },
+} as const;
+
+/**
  * Styled component for the Text primitive with configurable typography styling
  * This component provides all necessary typography styling with support for
  * journey-specific theming and accessibility features.
  */
 export const StyledText = styled.span<TextStyleProps>`
-  font-family: ${props => props.fontFamily || typography.fontFamily.base};
-  font-weight: ${props => props.fontWeight || typography.fontWeight.regular};
-  font-size: ${props => props.fontSize || typography.fontSize.md};
-  line-height: ${props => props.lineHeight || typography.lineHeight.base};
-  letter-spacing: ${props => props.letterSpacing || typography.letterSpacing.normal};
+  font-family: ${props => props.variant
+    ? variantStyles[props.variant].fontFamily
+    : props.fontFamily || typography.fontFamily.body};
+  font-weight: ${props => props.variant
+    ? variantStyles[props.variant].fontWeight
+    : props.fontWeight || typography.fontWeight.regular};
+  font-size: ${props => props.variant
+    ? variantStyles[props.variant].fontSize
+    : props.fontSize || typography.fontSize.md};
+  line-height: ${props => props.variant
+    ? variantStyles[props.variant].lineHeight
+    : props.lineHeight || typography.lineHeight.base};
+  letter-spacing: ${props => props.variant
+    ? variantStyles[props.variant].letterSpacing
+    : props.letterSpacing || typography.letterSpacing.normal};
   
   color: ${props => {
     if (props.color && props.journey) {

@@ -12,6 +12,7 @@ import {
   HttpStatus,
   Inject,
 } from '@nestjs/common'; // NestJS Common 10.0.0+
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { HealthService } from './health.service'; // Import HealthService for health data management
 import { CreateMetricDto } from './dto/create-metric.dto'; // Import CreateMetricDto for creating new health metrics
 import { UpdateMetricDto } from './dto/update-metric.dto'; // Import UpdateMetricDto for updating existing health metrics
@@ -26,6 +27,7 @@ import { RolesGuard } from '@app/auth/guards/roles.guard'; // NestJS JWT 10.0.0+
 /**
  * Handles incoming HTTP requests related to health data.
  */
+@ApiTags('health')
 @Controller('health')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UseFilters(AllExceptionsFilter)
@@ -47,6 +49,8 @@ export class HealthController {
    */
   @Post(':recordId')
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Create a new health metric' })
+  @ApiResponse({ status: 201, description: 'Health metric created successfully' })
   async createHealthMetric(
     @Param('recordId') recordId: string,
     @Body() createMetricDto: CreateMetricDto,
@@ -63,6 +67,8 @@ export class HealthController {
    */
   @Put(':id')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Update an existing health metric' })
+  @ApiResponse({ status: 200, description: 'Health metric updated successfully' })
   async updateHealthMetric(
     @Param('id') id: string,
     @Body() updateMetricDto: UpdateMetricDto,
