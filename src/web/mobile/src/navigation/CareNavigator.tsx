@@ -13,6 +13,27 @@ import SymptomSeverity from '../screens/care/SymptomSeverity';
 import SymptomQuestions from '../screens/care/SymptomQuestions';
 import SymptomResult from '../screens/care/SymptomResult';
 import SymptomRecommendation from '../screens/care/SymptomRecommendation';
+import SymptomBodyMapBack from '../screens/care/SymptomBodyMapBack';
+import SymptomHeadDetail from '../screens/care/SymptomHeadDetail';
+import SymptomPhotoUpload from '../screens/care/SymptomPhotoUpload';
+import SymptomMedicalHistory from '../screens/care/SymptomMedicalHistory';
+import SymptomMedicationContext from '../screens/care/SymptomMedicationContext';
+import SymptomVitals from '../screens/care/SymptomVitals';
+import SymptomAnalyzing from '../screens/care/SymptomAnalyzing';
+import SymptomConditionsList from '../screens/care/SymptomConditionsList';
+import SymptomConditionDetail from '../screens/care/SymptomConditionDetail';
+import SymptomSelfCare from '../screens/care/SymptomSelfCare';
+import SymptomEmergencyWarning from '../screens/care/SymptomEmergencyWarning';
+import SymptomBookAppointment from '../screens/care/SymptomBookAppointment';
+import SymptomERLocator from '../screens/care/SymptomERLocator';
+import SymptomSaveReport from '../screens/care/SymptomSaveReport';
+import SymptomShareReport from '../screens/care/SymptomShareReport';
+import SymptomHistory from '../screens/care/SymptomHistory';
+import SymptomHistoryDetail from '../screens/care/SymptomHistoryDetail';
+import SymptomAccuracyRating from '../screens/care/SymptomAccuracyRating';
+import SymptomFollowUp from '../screens/care/SymptomFollowUp';
+import SymptomDiary from '../screens/care/SymptomDiary';
+import SymptomComparison from '../screens/care/SymptomComparison';
 import DoctorSearchScreen from '../screens/care/DoctorSearch';
 import DoctorFiltersScreen from '../screens/care/DoctorFilters';
 import DoctorProfileScreen from '../screens/care/DoctorProfile';
@@ -50,6 +71,27 @@ export default function CareNavigator() {
       <Stack.Screen name={ROUTES.CARE_SYMPTOM_QUESTIONS} component={SymptomQuestions} />
       <Stack.Screen name={ROUTES.CARE_SYMPTOM_RESULT} component={SymptomResult} />
       <Stack.Screen name={ROUTES.CARE_SYMPTOM_RECOMMENDATION} component={SymptomRecommendation} />
+      <Stack.Screen name={ROUTES.CARE_SYMPTOM_BODY_MAP_BACK} component={SymptomBodyMapBack} />
+      <Stack.Screen name={ROUTES.CARE_SYMPTOM_HEAD_DETAIL} component={SymptomHeadDetail} />
+      <Stack.Screen name={ROUTES.CARE_SYMPTOM_PHOTO_UPLOAD} component={SymptomPhotoUpload} />
+      <Stack.Screen name={ROUTES.CARE_SYMPTOM_MEDICAL_HISTORY} component={SymptomMedicalHistory} />
+      <Stack.Screen name={ROUTES.CARE_SYMPTOM_MEDICATION_CONTEXT} component={SymptomMedicationContext} />
+      <Stack.Screen name={ROUTES.CARE_SYMPTOM_VITALS} component={SymptomVitals} />
+      <Stack.Screen name={ROUTES.CARE_SYMPTOM_ANALYZING} component={SymptomAnalyzing} />
+      <Stack.Screen name={ROUTES.CARE_SYMPTOM_CONDITIONS_LIST} component={SymptomConditionsList} />
+      <Stack.Screen name={ROUTES.CARE_SYMPTOM_CONDITION_DETAIL} component={SymptomConditionDetail} />
+      <Stack.Screen name={ROUTES.CARE_SYMPTOM_SELF_CARE} component={SymptomSelfCare} />
+      <Stack.Screen name={ROUTES.CARE_SYMPTOM_EMERGENCY_WARNING} component={SymptomEmergencyWarning} />
+      <Stack.Screen name={ROUTES.CARE_SYMPTOM_BOOK_APPOINTMENT} component={SymptomBookAppointment} />
+      <Stack.Screen name={ROUTES.CARE_SYMPTOM_ER_LOCATOR} component={SymptomERLocator} />
+      <Stack.Screen name={ROUTES.CARE_SYMPTOM_SAVE_REPORT} component={SymptomSaveReport} />
+      <Stack.Screen name={ROUTES.CARE_SYMPTOM_SHARE_REPORT} component={SymptomShareReport} />
+      <Stack.Screen name={ROUTES.CARE_SYMPTOM_HISTORY} component={SymptomHistory} />
+      <Stack.Screen name={ROUTES.CARE_SYMPTOM_HISTORY_DETAIL} component={SymptomHistoryDetail} />
+      <Stack.Screen name={ROUTES.CARE_SYMPTOM_ACCURACY_RATING} component={SymptomAccuracyRating} />
+      <Stack.Screen name={ROUTES.CARE_SYMPTOM_FOLLOW_UP} component={SymptomFollowUp} />
+      <Stack.Screen name={ROUTES.CARE_SYMPTOM_DIARY} component={SymptomDiary} />
+      <Stack.Screen name={ROUTES.CARE_SYMPTOM_COMPARISON} component={SymptomComparison} />
       <Stack.Screen name={ROUTES.CARE_DOCTOR_SEARCH} component={DoctorSearchScreen} />
       <Stack.Screen name={ROUTES.CARE_DOCTOR_FILTERS} component={DoctorFiltersScreen} />
       <Stack.Screen name={ROUTES.CARE_DOCTOR_PROFILE} component={DoctorProfileScreen} />

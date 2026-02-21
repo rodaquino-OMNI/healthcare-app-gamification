@@ -8,12 +8,12 @@ import HealthNavigator from './HealthNavigator';
 import CareNavigator from './CareNavigator';
 import PlanNavigator from './PlanNavigator';
 import GamificationNavigator from './GamificationNavigator';
+import SettingsNavigator from './SettingsNavigator';
 import HomeScreen from '../screens/home/Home';
 import { useAuth } from '../hooks/useAuth';
 import { MOBILE_AUTH_ROUTES } from 'src/web/shared/constants/routes';
 import { NotificationsScreen } from '../screens/home/Notifications';
 import { ProfileScreen } from '../screens/home/Profile';
-import { SettingsScreen } from '../screens/home/Settings';
 import { JOURNEY_IDS } from 'src/web/shared/constants/journeys';
 import { ROUTES } from '../constants/routes';
 
@@ -24,9 +24,6 @@ let HomeAlertScreen: React.FC = () => null;
 let NotificationDetailScreen: React.FC = () => null;
 let SearchScreen: React.FC = () => null;
 let SearchResultsScreen: React.FC = () => null;
-let SettingsEditScreen: React.FC = () => null;
-let SettingsNotificationsScreen: React.FC = () => null;
-let SettingsPrivacyScreen: React.FC = () => null;
 
 try {
   // Attempt to import screens if they exist (created by another worker)
@@ -69,30 +66,6 @@ try {
   // SearchResults screen not yet available - placeholder will be used
 }
 
-try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const seModule = require('../screens/home/SettingsEdit');
-  SettingsEditScreen = seModule.SettingsEditScreen || seModule.default || SettingsEditScreen;
-} catch {
-  // SettingsEdit screen not yet available - placeholder will be used
-}
-
-try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const snModule = require('../screens/home/SettingsNotifications');
-  SettingsNotificationsScreen = snModule.SettingsNotificationsScreen || snModule.default || SettingsNotificationsScreen;
-} catch {
-  // SettingsNotifications screen not yet available - placeholder will be used
-}
-
-try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const spModule = require('../screens/home/SettingsPrivacy');
-  SettingsPrivacyScreen = spModule.SettingsPrivacyScreen || spModule.default || SettingsPrivacyScreen;
-} catch {
-  // SettingsPrivacy screen not yet available - placeholder will be used
-}
-
 // Creates a native stack navigator for the Home tab.
 // This allows HomeMetrics and HomeAlert to be pushed on top of the Home screen.
 const HomeStackNav = createNativeStackNavigator();
@@ -105,9 +78,6 @@ const HomeStack: React.FC = () => (
     <HomeStackNav.Screen name={ROUTES.NOTIFICATION_DETAIL} component={NotificationDetailScreen} />
     <HomeStackNav.Screen name={ROUTES.SEARCH} component={SearchScreen} />
     <HomeStackNav.Screen name={ROUTES.SEARCH_RESULTS} component={SearchResultsScreen} />
-    <HomeStackNav.Screen name={ROUTES.SETTINGS_EDIT} component={SettingsEditScreen} />
-    <HomeStackNav.Screen name={ROUTES.SETTINGS_NOTIFICATIONS} component={SettingsNotificationsScreen} />
-    <HomeStackNav.Screen name={ROUTES.SETTINGS_PRIVACY} component={SettingsPrivacyScreen} />
   </HomeStackNav.Navigator>
 );
 
@@ -141,7 +111,7 @@ export const MainNavigator: React.FC = () => {
       <Tab.Screen name="Notifications" component={NotificationsScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
       <Tab.Screen name="Achievements" component={GamificationNavigator} />
-      <Tab.Screen name={ROUTES.SETTINGS} component={SettingsScreen} />
+      <Tab.Screen name={ROUTES.SETTINGS} component={SettingsNavigator} />
     </Tab.Navigator>
   );
 };

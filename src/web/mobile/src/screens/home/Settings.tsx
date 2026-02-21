@@ -5,6 +5,7 @@ import {
   Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
 import { useAuth } from '../../hooks/useAuth';
@@ -108,97 +109,178 @@ interface SettingSection {
  *
  * Sections:
  *  1. Conta (Account)
- *  2. Notificacoes (Notifications)
- *  3. Privacidade (Privacy)
- *  4. App
- *  5. Sair (Logout)
+ *  2. Seguranca (Security)
+ *  3. Notificacoes (Notifications)
+ *  4. Privacidade (Privacy)
+ *  5. Plano de Saude (Health Plan)
+ *  6. Dispositivos (Devices)
+ *  7. Preferencias (Preferences)
+ *  8. Ajuda (Help)
+ *  9. Dados (Data)
+ *  10. App
  */
 export const SettingsScreen: React.FC = () => {
   const navigation = useNavigation();
   const { signOut } = useAuth();
   const { journey } = useJourney();
+  const { t } = useTranslation();
 
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-    } catch (error) {
-      Alert.alert('Erro', 'Nao foi possivel sair da conta. Tente novamente.');
-    }
-  };
-
-  const confirmSignOut = () => {
-    Alert.alert(
-      'Sair da conta',
-      'Tem certeza que deseja sair?',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        { text: 'Sair', style: 'destructive', onPress: handleSignOut },
-      ],
-    );
+  const handleLogout = () => {
+    navigation.navigate(ROUTES.SETTINGS_LOGOUT as never);
   };
 
   const sections: SettingSection[] = [
     {
-      title: 'Conta',
+      title: t('settings.sections.account'),
       items: [
         {
-          label: 'Editar Perfil',
-          onPress: () => navigation.navigate('SettingsEdit' as never),
-          showChevron: true,
-        },
-        {
-          label: 'Alterar Senha',
-          onPress: () => navigation.navigate(ROUTES.AUTH_MFA as never),
+          label: t('settings.editProfile'),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_EDIT as never),
           showChevron: true,
         },
       ],
     },
     {
-      title: 'Notificacoes',
+      title: t('settings.sections.security'),
       items: [
         {
-          label: 'Preferencias de Notificacao',
-          onPress: () => navigation.navigate('SettingsNotifications' as never),
+          label: t('settings.personalInfo.title'),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_PERSONAL_INFO as never),
+          showChevron: true,
+        },
+        {
+          label: t('settings.changePassword.title'),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_CHANGE_PASSWORD as never),
+          showChevron: true,
+        },
+        {
+          label: t('settings.twoFactor.title'),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_TWO_FACTOR as never),
+          showChevron: true,
+        },
+        {
+          label: t('settings.biometric.title'),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_BIOMETRIC as never),
           showChevron: true,
         },
       ],
     },
     {
-      title: 'Privacidade',
+      title: t('settings.sections.notifications'),
       items: [
         {
-          label: 'Privacidade e Dados',
-          onPress: () => navigation.navigate('SettingsPrivacy' as never),
-          showChevron: true,
-        },
-        {
-          label: 'Termos de Uso',
-          onPress: () => {/* TODO: navigate to Terms */},
-          showChevron: true,
-        },
-        {
-          label: 'Politica de Privacidade',
-          onPress: () => {/* TODO: navigate to Privacy Policy */},
+          label: t('settings.notifications'),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_NOTIFICATIONS as never),
           showChevron: true,
         },
       ],
     },
     {
-      title: 'App',
+      title: t('settings.sections.privacy'),
       items: [
         {
-          label: 'Idioma',
-          onPress: () => {/* TODO: navigate to Language */},
+          label: t('settings.privacy'),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_PRIVACY as never),
           showChevron: true,
         },
         {
-          label: 'Sobre',
-          onPress: () => {/* TODO: navigate to About */},
+          label: t('settings.terms.title'),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_TERMS as never),
           showChevron: true,
         },
         {
-          label: 'Avaliar App',
-          onPress: () => {/* TODO: open app store rating */},
+          label: t('settings.privacyPolicy.title'),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_PRIVACY_POLICY as never),
+          showChevron: true,
+        },
+      ],
+    },
+    {
+      title: t('settings.sections.healthPlan'),
+      items: [
+        {
+          label: t('settings.healthPlan.title'),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_HEALTH_PLAN as never),
+          showChevron: true,
+        },
+        {
+          label: t('settings.insuranceDocs.title'),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_INSURANCE_DOCS as never),
+          showChevron: true,
+        },
+        {
+          label: t('settings.dependents.title'),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_DEPENDENTS as never),
+          showChevron: true,
+        },
+      ],
+    },
+    {
+      title: t('settings.sections.devices'),
+      items: [
+        {
+          label: t('settings.connectedDevices.title'),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_CONNECTED_DEVICES as never),
+          showChevron: true,
+        },
+      ],
+    },
+    {
+      title: t('settings.sections.preferences'),
+      items: [
+        {
+          label: t('settings.languageSelect.title'),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_LANGUAGE as never),
+          showChevron: true,
+        },
+        {
+          label: t('settings.themeSelect.title'),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_THEME as never),
+          showChevron: true,
+        },
+        {
+          label: t('settings.accessibility.title'),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_ACCESSIBILITY as never),
+          showChevron: true,
+        },
+      ],
+    },
+    {
+      title: t('settings.sections.help'),
+      items: [
+        {
+          label: t('help.home.title'),
+          onPress: () => navigation.navigate(ROUTES.HELP_HOME as never),
+          showChevron: true,
+        },
+      ],
+    },
+    {
+      title: t('settings.sections.data'),
+      items: [
+        {
+          label: t('settings.dataExport.title'),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_DATA_EXPORT as never),
+          showChevron: true,
+        },
+        {
+          label: t('settings.deleteAccount.title'),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_DELETE_ACCOUNT as never),
+          showChevron: true,
+        },
+      ],
+    },
+    {
+      title: t('settings.sections.app'),
+      items: [
+        {
+          label: t('settings.aboutApp.title'),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_ABOUT as never),
+          showChevron: true,
+        },
+        {
+          label: t('settings.feedback.title'),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_FEEDBACK as never),
           showChevron: true,
         },
       ],
@@ -235,12 +317,12 @@ export const SettingsScreen: React.FC = () => {
 
         {/* Logout section */}
         <LogoutRow
-          onPress={confirmSignOut}
+          onPress={handleLogout}
           accessibilityRole="button"
-          accessibilityLabel="Sair da conta"
+          accessibilityLabel={t('settings.logout.signOut')}
           testID="settings-logout"
         >
-          <LogoutText>Sair da conta</LogoutText>
+          <LogoutText>{t('settings.logout.signOut')}</LogoutText>
         </LogoutRow>
 
         <AppVersionText>AUSTA SuperApp v1.0.0</AppVersionText>

@@ -13,6 +13,25 @@ import MedicationDetail from '../screens/health/MedicationDetail';
 import MedicationSearch from '../screens/health/MedicationSearch';
 import { MedicationReminderScreen } from '../screens/health/MedicationReminder';
 import { MedicationAlarmScreen } from '../screens/health/MedicationAlarm';
+import { MedicationCalendar } from '../screens/health/MedicationCalendar';
+import { MedicationEmpty } from '../screens/health/MedicationEmpty';
+import { MedicationAddConfirmation } from '../screens/health/MedicationAddConfirmation';
+import { MedicationDoseTaken } from '../screens/health/MedicationDoseTaken';
+import { MedicationDoseMissed } from '../screens/health/MedicationDoseMissed';
+import { MedicationEdit } from '../screens/health/MedicationEdit';
+import { MedicationDeleteConfirm } from '../screens/health/MedicationDeleteConfirm';
+import { MedicationAdherence } from '../screens/health/MedicationAdherence';
+import { MedicationMonthlyReport } from '../screens/health/MedicationMonthlyReport';
+import { MedicationRefillReminder } from '../screens/health/MedicationRefillReminder';
+import { MedicationDrugInteraction } from '../screens/health/MedicationDrugInteraction';
+import { MedicationSideEffectsLog } from '../screens/health/MedicationSideEffectsLog';
+import { MedicationSideEffectForm } from '../screens/health/MedicationSideEffectForm';
+import { MedicationPharmacyLocator } from '../screens/health/MedicationPharmacyLocator';
+import { MedicationPrescriptionPhoto } from '../screens/health/MedicationPrescriptionPhoto';
+import { MedicationOCRReview } from '../screens/health/MedicationOCRReview';
+import { MedicationShareCaregiver } from '../screens/health/MedicationShareCaregiver';
+import { MedicationCaregiverAccess } from '../screens/health/MedicationCaregiverAccess';
+import { MedicationExport } from '../screens/health/MedicationExport';
 import { ROUTES } from '../constants/routes';
 import { JOURNEY_COLORS } from '../constants/journeys';
 
@@ -43,6 +62,25 @@ export default function HealthNavigator() {
       <Stack.Screen name={ROUTES.HEALTH_MEDICATION_SEARCH} component={MedicationSearch} />
       <Stack.Screen name={ROUTES.HEALTH_MEDICATION_REMINDER} component={MedicationReminderScreen} />
       <Stack.Screen name={ROUTES.HEALTH_MEDICATION_ALARM} component={MedicationAlarmScreen} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_CALENDAR} component={MedicationCalendar} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_EMPTY} component={MedicationEmpty} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_ADD_CONFIRMATION} component={MedicationAddConfirmation} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_DOSE_TAKEN} component={MedicationDoseTaken} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_DOSE_MISSED} component={MedicationDoseMissed} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_EDIT} component={MedicationEdit} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_DELETE_CONFIRM} component={MedicationDeleteConfirm} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_ADHERENCE} component={MedicationAdherence} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_MONTHLY_REPORT} component={MedicationMonthlyReport} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_REFILL_REMINDER} component={MedicationRefillReminder} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_DRUG_INTERACTION} component={MedicationDrugInteraction} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_SIDE_EFFECTS_LOG} component={MedicationSideEffectsLog} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_SIDE_EFFECT_FORM} component={MedicationSideEffectForm} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_PHARMACY_LOCATOR} component={MedicationPharmacyLocator} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_PRESCRIPTION_PHOTO} component={MedicationPrescriptionPhoto} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_OCR_REVIEW} component={MedicationOCRReview} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_SHARE_CAREGIVER} component={MedicationShareCaregiver} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_CAREGIVER_ACCESS} component={MedicationCaregiverAccess} />
+      <Stack.Screen name={ROUTES.HEALTH_MEDICATION_EXPORT} component={MedicationExport} />
     </Stack.Navigator>
   );
 }
