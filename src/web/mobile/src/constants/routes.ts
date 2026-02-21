@@ -94,6 +94,9 @@ export const ROUTES = {
   HEALTH_MEDICATION_CAREGIVER_ACCESS: 'HealthMedicationCaregiverAccess',
   HEALTH_MEDICATION_EXPORT: 'HealthMedicationExport',
 
+  // Health Assessment Wizard
+  HEALTH_ASSESSMENT_WIZARD: 'HealthAssessmentWizard',
+
   // Cross-Journey / Global
   NOTIFICATION_DETAIL: 'NotificationDetail',
   NOTIFICATION_UNREAD: 'NotificationUnread',

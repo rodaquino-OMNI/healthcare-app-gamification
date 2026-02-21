@@ -1431,6 +1431,546 @@ const translations = {
       tryAgain: 'Tentar Novamente'
     }
   },
+  healthAssessment: {
+    wizard: {
+      title: 'Avaliacao de Saude',
+      subtitle: 'Responda as perguntas para uma avaliacao completa',
+      next: 'Proximo',
+      back: 'Voltar',
+      submit: 'Enviar Avaliacao',
+      step: 'Passo {{current}} de {{total}}',
+      progress: 'Progresso',
+      complete: 'Avaliacao Concluida',
+      completeMessage: 'Sua avaliacao de saude foi enviada com sucesso.',
+      returnHome: 'Voltar ao Inicio'
+    },
+    introduction: {
+      title: 'Avaliacao de Saude',
+      description: 'Esta avaliacao nos ajuda a entender melhor sua saude e criar recomendacoes personalizadas.',
+      benefits: {
+        personalized: 'Recomendacoes personalizadas de saude',
+        tracking: 'Acompanhamento de metas de saude',
+        insights: 'Insights baseados em seus dados',
+        prevention: 'Sugestoes de prevencao'
+      },
+      estimatedTime: 'Tempo estimado: 10 minutos',
+      start: 'Iniciar Avaliacao'
+    },
+    personalInfo: {
+      title: 'Informacoes Pessoais',
+      fullName: 'Nome Completo',
+      dateOfBirth: 'Data de Nascimento',
+      gender: 'Genero',
+      genderOptions: {
+        male: 'Masculino',
+        female: 'Feminino',
+        other: 'Outro'
+      },
+      bloodType: 'Tipo Sanguineo'
+    },
+    heightWeight: {
+      title: 'Altura e Peso',
+      height: 'Altura',
+      weight: 'Peso',
+      heightUnit: 'cm',
+      weightUnit: 'kg',
+      bmi: 'IMC',
+      bmiCategory: {
+        underweight: 'Abaixo do Peso',
+        normal: 'Normal',
+        overweight: 'Sobrepeso',
+        obese: 'Obesidade'
+      },
+      metric: 'Metrico',
+      imperial: 'Imperial'
+    },
+    conditions: {
+      title: 'Condicoes Existentes',
+      subtitle: 'Selecione as condicoes que voce possui',
+      diabetes: 'Diabetes',
+      hypertension: 'Hipertensao',
+      asthma: 'Asma',
+      heartDisease: 'Doenca Cardiaca',
+      arthritis: 'Artrite',
+      depression: 'Depressao',
+      anxiety: 'Ansiedade',
+      thyroid: 'Tireoide',
+      migraine: 'Enxaqueca',
+      backPain: 'Dor nas Costas',
+      none: 'Nenhuma',
+      other: 'Outra',
+      otherPlaceholder: 'Descreva sua condicao'
+    },
+    medications: {
+      title: 'Medicamentos',
+      question: 'Voce toma medicamentos regularmente?',
+      yes: 'Sim',
+      no: 'Nao',
+      medicationName: 'Nome do Medicamento',
+      dosage: 'Dosagem',
+      frequency: 'Frequencia',
+      frequencyOptions: {
+        daily: 'Diario',
+        weekly: 'Semanal',
+        monthly: 'Mensal'
+      },
+      addMedication: 'Adicionar Medicamento',
+      removeMedication: 'Remover'
+    },
+    allergies: {
+      title: 'Alergias',
+      subtitle: 'Selecione suas alergias conhecidas',
+      penicillin: 'Penicilina',
+      sulfa: 'Sulfa',
+      latex: 'Latex',
+      peanuts: 'Amendoim',
+      shellfish: 'Frutos do Mar',
+      eggs: 'Ovos',
+      milk: 'Leite',
+      soy: 'Soja',
+      none: 'Nenhuma',
+      other: 'Outra',
+      otherPlaceholder: 'Descreva sua alergia',
+      severity: 'Gravidade',
+      severityOptions: {
+        mild: 'Leve',
+        moderate: 'Moderada',
+        severe: 'Grave'
+      }
+    },
+    familyHistory: {
+      title: 'Historico Familiar',
+      subtitle: 'Selecione condicoes presentes em sua familia',
+      heartDisease: 'Doenca Cardiaca',
+      diabetes: 'Diabetes',
+      cancer: 'Cancer',
+      stroke: 'AVC',
+      hypertension: 'Hipertensao',
+      mentalHealth: 'Saude Mental',
+      relation: 'Parentesco',
+      relationOptions: {
+        parent: 'Pai/Mae',
+        sibling: 'Irmao/Irma',
+        grandparent: 'Avo/Avo'
+      }
+    },
+    exercise: {
+      title: 'Exercicios',
+      frequency: 'Com que frequencia voce se exercita?',
+      frequencyOptions: {
+        never: 'Nunca',
+        light: '1-2x por semana',
+        moderate: '3-4x por semana',
+        active: '5+ por semana'
+      },
+      type: 'Tipos de Exercicio',
+      typeOptions: {
+        walking: 'Caminhada',
+        running: 'Corrida',
+        swimming: 'Natacao',
+        cycling: 'Ciclismo',
+        gym: 'Academia',
+        yoga: 'Yoga',
+        dance: 'Danca',
+        sports: 'Esportes'
+      },
+      duration: 'Duracao por Sessao',
+      durationOptions: {
+        short: '15 min',
+        medium: '30 min',
+        long: '45 min',
+        extended: '60+ min'
+      }
+    },
+    diet: {
+      title: 'Alimentacao',
+      dietType: 'Tipo de Dieta',
+      dietOptions: {
+        omnivore: 'Onivoro',
+        vegetarian: 'Vegetariano',
+        vegan: 'Vegano',
+        pescatarian: 'Pescetariano',
+        keto: 'Cetogenica',
+        other: 'Outra'
+      },
+      mealFrequency: 'Refeicoes por Dia',
+      mealOptions: {
+        few: '1-2',
+        normal: '3',
+        frequent: '4-5',
+        many: '6+'
+      },
+      fruitVegetable: 'Consumo de Frutas e Vegetais',
+      fruitOptions: {
+        rarely: 'Raramente',
+        low: '1-2 porcoes',
+        moderate: '3-4 porcoes',
+        high: '5+ porcoes'
+      },
+      fastFood: 'Frequencia de Fast Food',
+      fastFoodOptions: {
+        never: 'Nunca',
+        rarely: 'Raramente',
+        weekly: 'Semanalmente',
+        daily: 'Diariamente'
+      }
+    },
+    sleep: {
+      title: 'Sono',
+      hours: 'Horas de Sono por Noite',
+      quality: 'Qualidade do Sono',
+      qualityOptions: {
+        poor: 'Ruim',
+        fair: 'Regular',
+        good: 'Bom',
+        excellent: 'Excelente'
+      },
+      issues: 'Problemas de Sono',
+      issueOptions: {
+        insomnia: 'Insonia',
+        snoring: 'Ronco',
+        apnea: 'Apneia do Sono',
+        restlessLegs: 'Pernas Inquietas',
+        nightmares: 'Pesadelos'
+      },
+      regularSchedule: 'Horario Regular de Sono?',
+      yes: 'Sim',
+      no: 'Nao'
+    },
+    stress: {
+      title: 'Estresse',
+      level: 'Nivel de Estresse',
+      levelOptions: {
+        veryLow: 'Muito Baixo',
+        low: 'Baixo',
+        moderate: 'Moderado',
+        high: 'Alto',
+        veryHigh: 'Muito Alto'
+      },
+      sources: 'Fontes de Estresse',
+      sourceOptions: {
+        work: 'Trabalho',
+        finances: 'Financas',
+        relationships: 'Relacionamentos',
+        health: 'Saude',
+        family: 'Familia',
+        other: 'Outro'
+      },
+      coping: 'Mecanismos de Enfrentamento',
+      copingOptions: {
+        exercise: 'Exercicio',
+        meditation: 'Meditacao',
+        therapy: 'Terapia',
+        hobbies: 'Hobbies',
+        socialSupport: 'Apoio Social'
+      },
+      mentalHealth: 'Voce se sentiu ansioso ou deprimido recentemente?',
+      mentalHealthOptions: {
+        no: 'Nao',
+        sometimes: 'As vezes',
+        yes: 'Sim'
+      }
+    },
+    alcoholTobacco: {
+      title: 'Alcool e Tabaco',
+      smoking: 'Status de Tabagismo',
+      smokingOptions: {
+        never: 'Nunca',
+        former: 'Ex-fumante',
+        current: 'Fumante Atual'
+      },
+      cigarettesPerDay: 'Cigarros por Dia',
+      yearsSmoking: 'Anos Fumando',
+      alcohol: 'Consumo de Alcool',
+      alcoholOptions: {
+        never: 'Nunca',
+        occasionally: 'Ocasionalmente',
+        weekly: 'Semanalmente',
+        daily: 'Diariamente'
+      },
+      drinksPerWeek: 'Doses por Semana',
+      drinkOptions: {
+        light: '1-3',
+        moderate: '4-7',
+        heavy: '8-14',
+        excessive: '15+'
+      },
+      substances: 'Uso de Substancias',
+      substanceOptions: {
+        preferNotToAnswer: 'Prefiro nao responder',
+        no: 'Nao',
+        yes: 'Sim'
+      },
+      healthImpact: 'Fumar e beber em excesso aumentam significativamente os riscos a saude.'
+    },
+    waterIntake: {
+      title: 'Hidratacao',
+      dailyWater: 'Consumo Diario de Agua',
+      waterOptions: {
+        low: 'Menos de 1L',
+        moderate: '1-2L',
+        good: '2-3L',
+        excellent: '3L+'
+      },
+      caffeine: 'Consumo de Cafeina',
+      caffeineOptions: {
+        none: 'Nenhum',
+        low: '1-2 xicaras',
+        moderate: '3-4 xicaras',
+        high: '5+ xicaras'
+      },
+      sugaryDrinks: 'Bebidas Acucaradas',
+      sugaryOptions: {
+        never: 'Nunca',
+        rarely: 'Raramente',
+        daily: 'Diariamente',
+        multiple: 'Varias vezes ao dia'
+      },
+      tip: 'Beber pelo menos 2 litros de agua por dia ajuda na saude geral.'
+    },
+    healthGoals: {
+      title: 'Objetivos de Saude',
+      subtitle: 'Selecione seus principais objetivos',
+      selectPriorities: 'Selecione ate 3 prioridades',
+      goals: {
+        weightLoss: 'Perda de Peso',
+        fitness: 'Condicionamento Fisico',
+        sleepImprovement: 'Melhorar o Sono',
+        stressManagement: 'Gerenciar Estresse',
+        nutrition: 'Nutricao',
+        diseasePrevention: 'Prevencao de Doencas',
+        mentalHealth: 'Saude Mental',
+        energy: 'Mais Energia',
+        flexibility: 'Flexibilidade'
+      }
+    },
+    mentalScreening: {
+      title: 'Triagem de Saude Mental',
+      subtitle: 'Responda com base nas ultimas 2 semanas',
+      question1: 'Pouco interesse ou prazer em fazer as coisas',
+      question2: 'Sentir-se para baixo, deprimido ou sem esperanca',
+      options: {
+        notAtAll: 'De jeito nenhum',
+        severalDays: 'Varios dias',
+        moreThanHalf: 'Mais da metade dos dias',
+        nearlyEvery: 'Quase todos os dias'
+      },
+      note: 'Suas respostas sao confidenciais e ajudam seu medico.'
+    },
+    moodAssessment: {
+      title: 'Avaliacao de Humor',
+      overallMood: 'Como voce descreveria seu humor geral?',
+      moodLevels: {
+        veryHappy: 'Muito Feliz',
+        happy: 'Feliz',
+        neutral: 'Neutro',
+        sad: 'Triste',
+        verySad: 'Muito Triste'
+      },
+      moodFrequency: 'Com que frequencia voce se sente assim?',
+      frequencyOptions: {
+        always: 'Sempre',
+        often: 'Frequentemente',
+        sometimes: 'As vezes',
+        rarely: 'Raramente'
+      },
+      recentChanges: 'Mudancas recentes de humor?',
+      sleepImpact: 'O sono afeta seu humor?',
+      yes: 'Sim',
+      sometimes: 'As vezes',
+      no: 'Nao'
+    },
+    anxietyScale: {
+      title: 'Escala de Ansiedade',
+      subtitle: 'Responda com base nas ultimas 2 semanas',
+      question1: 'Sentir-se nervoso, ansioso ou no limite',
+      question2: 'Nao conseguir parar ou controlar a preocupacao',
+      options: {
+        notAtAll: 'De jeito nenhum',
+        severalDays: 'Varios dias',
+        moreThanHalf: 'Mais da metade dos dias',
+        nearlyEvery: 'Quase todos os dias'
+      },
+      triggersTitle: 'Gatilhos de Ansiedade',
+      triggers: {
+        work: 'Trabalho',
+        social: 'Social',
+        health: 'Saude',
+        finances: 'Financas',
+        relationships: 'Relacionamentos'
+      }
+    },
+    reproductiveHealth: {
+      title: 'Saude Reprodutiva',
+      subtitle: 'Secao opcional — pode pular',
+      skip: 'Pular esta secao',
+      pregnancy: 'Status de Gravidez',
+      pregnancyOptions: {
+        notApplicable: 'Nao se aplica',
+        notPregnant: 'Nao gravida',
+        pregnant: 'Gravida',
+        trying: 'Tentando engravidar'
+      },
+      lastCheckup: 'Ultimo Exame',
+      checkupOptions: {
+        lessThan1: 'Menos de 1 ano',
+        oneToTwo: '1-2 anos',
+        twoToThree: '2-3 anos',
+        moreThan3: '3+ anos'
+      },
+      contraception: 'Usa Contraceptivo?',
+      menstrualRegularity: 'Regularidade Menstrual',
+      regularityOptions: {
+        regular: 'Regular',
+        irregular: 'Irregular',
+        notApplicable: 'Nao se aplica'
+      },
+      yes: 'Sim',
+      no: 'Nao',
+      notApplicable: 'Nao se aplica'
+    },
+    chronicPain: {
+      title: 'Dor Cronica',
+      hasPain: 'Voce tem dor cronica?',
+      yes: 'Sim',
+      no: 'Nao',
+      locationTitle: 'Localizacao da Dor',
+      locations: {
+        head: 'Cabeca',
+        neck: 'Pescoco',
+        back: 'Costas',
+        shoulders: 'Ombros',
+        knees: 'Joelhos',
+        hips: 'Quadril',
+        hands: 'Maos',
+        feet: 'Pes'
+      },
+      severityTitle: 'Intensidade da Dor',
+      frequencyTitle: 'Frequencia da Dor',
+      frequencyOptions: {
+        daily: 'Diaria',
+        weekly: 'Semanal',
+        monthly: 'Mensal',
+        rarely: 'Raramente'
+      },
+      impactTitle: 'Impacto no Dia a Dia',
+      impactOptions: {
+        none: 'Nenhum',
+        mild: 'Leve',
+        moderate: 'Moderado',
+        severe: 'Severo'
+      }
+    },
+    vaccination: {
+      title: 'Vacinacao',
+      covidTitle: 'COVID-19',
+      covidOptions: {
+        notVaccinated: 'Nao Vacinado',
+        partial: 'Parcial',
+        fully: 'Totalmente',
+        boosted: 'Com Reforco'
+      },
+      fluTitle: 'Vacina da Gripe este ano?',
+      otherVaccines: 'Outras vacinas em dia?',
+      vaccinationCard: 'Carteira de vacinacao disponivel?',
+      yes: 'Sim',
+      no: 'Nao',
+      unsure: 'Nao tenho certeza'
+    },
+    insuranceInfo: {
+      title: 'Informacoes do Plano',
+      hasInsurance: 'Possui plano de saude?',
+      yes: 'Sim',
+      no: 'Nao',
+      providerName: 'Nome da Operadora',
+      providerPlaceholder: 'Ex: Unimed, Bradesco Saude',
+      planType: 'Tipo de Plano',
+      planOptions: {
+        basic: 'Basico',
+        standard: 'Padrao',
+        premium: 'Premium'
+      },
+      memberId: 'Numero da Carteirinha',
+      memberPlaceholder: 'Numero do plano',
+      coverageTitle: 'Cobertura',
+      coverage: {
+        medical: 'Medica',
+        dental: 'Odontologica',
+        vision: 'Oftalmologica'
+      }
+    },
+    emergencyContacts: {
+      title: 'Contatos de Emergencia',
+      subtitle: 'Adicione pelo menos um contato',
+      contactName: 'Nome do Contato',
+      namePlaceholder: 'Nome completo',
+      relationship: 'Parentesco',
+      relationshipOptions: {
+        spouse: 'Conjuge',
+        parent: 'Pai/Mae',
+        sibling: 'Irmao/Irma',
+        child: 'Filho/Filha',
+        friend: 'Amigo/Amiga',
+        other: 'Outro'
+      },
+      phone: 'Telefone',
+      phonePlaceholder: '(11) 99999-9999',
+      addSecondary: 'Adicionar Contato Secundario',
+      secondaryContact: 'Contato Secundario'
+    },
+    consentPrivacy: {
+      title: 'Consentimento e Privacidade',
+      subtitle: 'Seus dados estao protegidos',
+      consent1: 'Concordo em compartilhar meus dados de saude com minha equipe medica',
+      consent2: 'Aceito receber insights e recomendacoes de saude',
+      consent3: 'Entendo que meus dados sao protegidos pela LGPD',
+      dataUsage: 'Como seus dados serao usados',
+      dataUsageText: 'Seus dados de saude sao criptografados e usados apenas para gerar recomendacoes personalizadas.',
+      privacyPolicy: 'Ver Politica de Privacidade'
+    },
+    reviewSummary: {
+      title: 'Revisao da Avaliacao',
+      subtitle: 'Revise suas respostas antes de enviar',
+      sections: {
+        personalInfo: 'Informacoes Pessoais',
+        healthConditions: 'Condicoes de Saude',
+        lifestyle: 'Estilo de Vida',
+        mentalHealth: 'Saude Mental',
+        goals: 'Objetivos'
+      },
+      edit: 'Editar',
+      confirmData: 'Confirmo que as informacoes estao corretas'
+    },
+    submissionConfirm: {
+      title: 'Avaliacao Enviada',
+      successMessage: 'Sua avaliacao de saude foi enviada com sucesso!',
+      processingTime: 'Tempo estimado de processamento: 24-48 horas',
+      nextSteps: 'Proximos Passos',
+      step1: 'Seu medico revisara os resultados',
+      step2: 'Um plano personalizado sera criado',
+      step3: 'Voce recebera notificacoes com atualizacoes',
+      viewResults: 'Ver Meus Resultados'
+    },
+    resultsHealthScore: {
+      title: 'Sua Pontuacao de Saude',
+      overallScore: 'Pontuacao Geral',
+      breakdown: 'Detalhamento',
+      categories: {
+        physical: 'Fisico',
+        nutrition: 'Nutricao',
+        mental: 'Mental',
+        lifestyle: 'Estilo de Vida'
+      },
+      scoreLabels: {
+        excellent: 'Excelente',
+        good: 'Bom',
+        fair: 'Regular',
+        needsAttention: 'Precisa de Atencao'
+      },
+      viewRecommendations: 'Ver Recomendacoes',
+      shareWithDoctor: 'Compartilhar com Medico'
+    }
+  },
   errorScreens: {
     noInternet: {
       title: 'Sem Conexao com a Internet',

@@ -32,6 +32,7 @@ import { MedicationOCRReview } from '../screens/health/MedicationOCRReview';
 import { MedicationShareCaregiver } from '../screens/health/MedicationShareCaregiver';
 import { MedicationCaregiverAccess } from '../screens/health/MedicationCaregiverAccess';
 import { MedicationExport } from '../screens/health/MedicationExport';
+import { AssessmentWizard } from '../screens/health/assessment';
 import { ROUTES } from '../constants/routes';
 import { JOURNEY_COLORS } from '../constants/journeys';
 
@@ -81,6 +82,7 @@ export default function HealthNavigator() {
       <Stack.Screen name={ROUTES.HEALTH_MEDICATION_SHARE_CAREGIVER} component={MedicationShareCaregiver} />
       <Stack.Screen name={ROUTES.HEALTH_MEDICATION_CAREGIVER_ACCESS} component={MedicationCaregiverAccess} />
       <Stack.Screen name={ROUTES.HEALTH_MEDICATION_EXPORT} component={MedicationExport} />
+      <Stack.Screen name={ROUTES.HEALTH_ASSESSMENT_WIZARD} component={AssessmentWizard} />
     </Stack.Navigator>
   );
 }

@@ -1411,6 +1411,546 @@ const translations = {
       tryAgain: 'Try Again'
     }
   },
+  healthAssessment: {
+    wizard: {
+      title: 'Health Assessment',
+      subtitle: 'Answer the questions for a complete health evaluation',
+      next: 'Next',
+      back: 'Back',
+      submit: 'Submit Assessment',
+      step: 'Step {{current}} of {{total}}',
+      progress: 'Progress',
+      complete: 'Assessment Complete',
+      completeMessage: 'Your health assessment has been submitted successfully.',
+      returnHome: 'Return Home'
+    },
+    introduction: {
+      title: 'Health Assessment',
+      description: 'This assessment helps us better understand your health and create personalized recommendations.',
+      benefits: {
+        personalized: 'Personalized health recommendations',
+        tracking: 'Health goal tracking',
+        insights: 'Data-driven health insights',
+        prevention: 'Prevention suggestions'
+      },
+      estimatedTime: 'Estimated time: 10 minutes',
+      start: 'Start Assessment'
+    },
+    personalInfo: {
+      title: 'Personal Information',
+      fullName: 'Full Name',
+      dateOfBirth: 'Date of Birth',
+      gender: 'Gender',
+      genderOptions: {
+        male: 'Male',
+        female: 'Female',
+        other: 'Other'
+      },
+      bloodType: 'Blood Type'
+    },
+    heightWeight: {
+      title: 'Height and Weight',
+      height: 'Height',
+      weight: 'Weight',
+      heightUnit: 'cm',
+      weightUnit: 'kg',
+      bmi: 'BMI',
+      bmiCategory: {
+        underweight: 'Underweight',
+        normal: 'Normal',
+        overweight: 'Overweight',
+        obese: 'Obese'
+      },
+      metric: 'Metric',
+      imperial: 'Imperial'
+    },
+    conditions: {
+      title: 'Existing Conditions',
+      subtitle: 'Select the conditions you have',
+      diabetes: 'Diabetes',
+      hypertension: 'Hypertension',
+      asthma: 'Asthma',
+      heartDisease: 'Heart Disease',
+      arthritis: 'Arthritis',
+      depression: 'Depression',
+      anxiety: 'Anxiety',
+      thyroid: 'Thyroid',
+      migraine: 'Migraine',
+      backPain: 'Back Pain',
+      none: 'None',
+      other: 'Other',
+      otherPlaceholder: 'Describe your condition'
+    },
+    medications: {
+      title: 'Medications',
+      question: 'Do you take medications regularly?',
+      yes: 'Yes',
+      no: 'No',
+      medicationName: 'Medication Name',
+      dosage: 'Dosage',
+      frequency: 'Frequency',
+      frequencyOptions: {
+        daily: 'Daily',
+        weekly: 'Weekly',
+        monthly: 'Monthly'
+      },
+      addMedication: 'Add Medication',
+      removeMedication: 'Remove'
+    },
+    allergies: {
+      title: 'Allergies',
+      subtitle: 'Select your known allergies',
+      penicillin: 'Penicillin',
+      sulfa: 'Sulfa',
+      latex: 'Latex',
+      peanuts: 'Peanuts',
+      shellfish: 'Shellfish',
+      eggs: 'Eggs',
+      milk: 'Milk',
+      soy: 'Soy',
+      none: 'None',
+      other: 'Other',
+      otherPlaceholder: 'Describe your allergy',
+      severity: 'Severity',
+      severityOptions: {
+        mild: 'Mild',
+        moderate: 'Moderate',
+        severe: 'Severe'
+      }
+    },
+    familyHistory: {
+      title: 'Family History',
+      subtitle: 'Select conditions present in your family',
+      heartDisease: 'Heart Disease',
+      diabetes: 'Diabetes',
+      cancer: 'Cancer',
+      stroke: 'Stroke',
+      hypertension: 'Hypertension',
+      mentalHealth: 'Mental Health',
+      relation: 'Relation',
+      relationOptions: {
+        parent: 'Parent',
+        sibling: 'Sibling',
+        grandparent: 'Grandparent'
+      }
+    },
+    exercise: {
+      title: 'Exercise',
+      frequency: 'How often do you exercise?',
+      frequencyOptions: {
+        never: 'Never',
+        light: '1-2x per week',
+        moderate: '3-4x per week',
+        active: '5+ per week'
+      },
+      type: 'Exercise Types',
+      typeOptions: {
+        walking: 'Walking',
+        running: 'Running',
+        swimming: 'Swimming',
+        cycling: 'Cycling',
+        gym: 'Gym',
+        yoga: 'Yoga',
+        dance: 'Dance',
+        sports: 'Sports'
+      },
+      duration: 'Duration per Session',
+      durationOptions: {
+        short: '15 min',
+        medium: '30 min',
+        long: '45 min',
+        extended: '60+ min'
+      }
+    },
+    diet: {
+      title: 'Diet',
+      dietType: 'Diet Type',
+      dietOptions: {
+        omnivore: 'Omnivore',
+        vegetarian: 'Vegetarian',
+        vegan: 'Vegan',
+        pescatarian: 'Pescatarian',
+        keto: 'Keto',
+        other: 'Other'
+      },
+      mealFrequency: 'Meals per Day',
+      mealOptions: {
+        few: '1-2',
+        normal: '3',
+        frequent: '4-5',
+        many: '6+'
+      },
+      fruitVegetable: 'Fruit and Vegetable Intake',
+      fruitOptions: {
+        rarely: 'Rarely',
+        low: '1-2 servings',
+        moderate: '3-4 servings',
+        high: '5+ servings'
+      },
+      fastFood: 'Fast Food Frequency',
+      fastFoodOptions: {
+        never: 'Never',
+        rarely: 'Rarely',
+        weekly: 'Weekly',
+        daily: 'Daily'
+      }
+    },
+    sleep: {
+      title: 'Sleep',
+      hours: 'Hours of Sleep per Night',
+      quality: 'Sleep Quality',
+      qualityOptions: {
+        poor: 'Poor',
+        fair: 'Fair',
+        good: 'Good',
+        excellent: 'Excellent'
+      },
+      issues: 'Sleep Issues',
+      issueOptions: {
+        insomnia: 'Insomnia',
+        snoring: 'Snoring',
+        apnea: 'Sleep Apnea',
+        restlessLegs: 'Restless Legs',
+        nightmares: 'Nightmares'
+      },
+      regularSchedule: 'Regular Sleep Schedule?',
+      yes: 'Yes',
+      no: 'No'
+    },
+    stress: {
+      title: 'Stress',
+      level: 'Stress Level',
+      levelOptions: {
+        veryLow: 'Very Low',
+        low: 'Low',
+        moderate: 'Moderate',
+        high: 'High',
+        veryHigh: 'Very High'
+      },
+      sources: 'Stress Sources',
+      sourceOptions: {
+        work: 'Work',
+        finances: 'Finances',
+        relationships: 'Relationships',
+        health: 'Health',
+        family: 'Family',
+        other: 'Other'
+      },
+      coping: 'Coping Mechanisms',
+      copingOptions: {
+        exercise: 'Exercise',
+        meditation: 'Meditation',
+        therapy: 'Therapy',
+        hobbies: 'Hobbies',
+        socialSupport: 'Social Support'
+      },
+      mentalHealth: 'Have you felt anxious or depressed recently?',
+      mentalHealthOptions: {
+        no: 'No',
+        sometimes: 'Sometimes',
+        yes: 'Yes'
+      }
+    },
+    alcoholTobacco: {
+      title: 'Alcohol and Tobacco',
+      smoking: 'Smoking Status',
+      smokingOptions: {
+        never: 'Never',
+        former: 'Former Smoker',
+        current: 'Current Smoker'
+      },
+      cigarettesPerDay: 'Cigarettes per Day',
+      yearsSmoking: 'Years Smoking',
+      alcohol: 'Alcohol Consumption',
+      alcoholOptions: {
+        never: 'Never',
+        occasionally: 'Occasionally',
+        weekly: 'Weekly',
+        daily: 'Daily'
+      },
+      drinksPerWeek: 'Drinks per Week',
+      drinkOptions: {
+        light: '1-3',
+        moderate: '4-7',
+        heavy: '8-14',
+        excessive: '15+'
+      },
+      substances: 'Substance Use',
+      substanceOptions: {
+        preferNotToAnswer: 'Prefer not to answer',
+        no: 'No',
+        yes: 'Yes'
+      },
+      healthImpact: 'Smoking and excessive drinking significantly increase health risks.'
+    },
+    waterIntake: {
+      title: 'Hydration',
+      dailyWater: 'Daily Water Intake',
+      waterOptions: {
+        low: 'Less than 1L',
+        moderate: '1-2L',
+        good: '2-3L',
+        excellent: '3L+'
+      },
+      caffeine: 'Caffeine Consumption',
+      caffeineOptions: {
+        none: 'None',
+        low: '1-2 cups',
+        moderate: '3-4 cups',
+        high: '5+ cups'
+      },
+      sugaryDrinks: 'Sugary Drinks',
+      sugaryOptions: {
+        never: 'Never',
+        rarely: 'Rarely',
+        daily: 'Daily',
+        multiple: 'Multiple times daily'
+      },
+      tip: 'Drinking at least 2 liters of water per day supports overall health.'
+    },
+    healthGoals: {
+      title: 'Health Goals',
+      subtitle: 'Select your main health goals',
+      selectPriorities: 'Select up to 3 priorities',
+      goals: {
+        weightLoss: 'Weight Loss',
+        fitness: 'Physical Fitness',
+        sleepImprovement: 'Sleep Improvement',
+        stressManagement: 'Stress Management',
+        nutrition: 'Better Nutrition',
+        diseasePrevention: 'Disease Prevention',
+        mentalHealth: 'Mental Health',
+        energy: 'More Energy',
+        flexibility: 'Flexibility'
+      }
+    },
+    mentalScreening: {
+      title: 'Mental Health Screening',
+      subtitle: 'Answer based on the past 2 weeks',
+      question1: 'Little interest or pleasure in doing things',
+      question2: 'Feeling down, depressed, or hopeless',
+      options: {
+        notAtAll: 'Not at all',
+        severalDays: 'Several days',
+        moreThanHalf: 'More than half the days',
+        nearlyEvery: 'Nearly every day'
+      },
+      note: 'Your answers are confidential and help your doctor.'
+    },
+    moodAssessment: {
+      title: 'Mood Assessment',
+      overallMood: 'How would you describe your overall mood?',
+      moodLevels: {
+        veryHappy: 'Very Happy',
+        happy: 'Happy',
+        neutral: 'Neutral',
+        sad: 'Sad',
+        verySad: 'Very Sad'
+      },
+      moodFrequency: 'How often do you feel this way?',
+      frequencyOptions: {
+        always: 'Always',
+        often: 'Often',
+        sometimes: 'Sometimes',
+        rarely: 'Rarely'
+      },
+      recentChanges: 'Recent mood changes?',
+      sleepImpact: 'Does sleep affect your mood?',
+      yes: 'Yes',
+      sometimes: 'Sometimes',
+      no: 'No'
+    },
+    anxietyScale: {
+      title: 'Anxiety Scale',
+      subtitle: 'Answer based on the past 2 weeks',
+      question1: 'Feeling nervous, anxious, or on edge',
+      question2: 'Not being able to stop or control worrying',
+      options: {
+        notAtAll: 'Not at all',
+        severalDays: 'Several days',
+        moreThanHalf: 'More than half the days',
+        nearlyEvery: 'Nearly every day'
+      },
+      triggersTitle: 'Anxiety Triggers',
+      triggers: {
+        work: 'Work',
+        social: 'Social',
+        health: 'Health',
+        finances: 'Finances',
+        relationships: 'Relationships'
+      }
+    },
+    reproductiveHealth: {
+      title: 'Reproductive Health',
+      subtitle: 'Optional section — you can skip',
+      skip: 'Skip this section',
+      pregnancy: 'Pregnancy Status',
+      pregnancyOptions: {
+        notApplicable: 'Not Applicable',
+        notPregnant: 'Not Pregnant',
+        pregnant: 'Pregnant',
+        trying: 'Trying to Conceive'
+      },
+      lastCheckup: 'Last Checkup',
+      checkupOptions: {
+        lessThan1: 'Less than 1 year',
+        oneToTwo: '1-2 years',
+        twoToThree: '2-3 years',
+        moreThan3: '3+ years'
+      },
+      contraception: 'Use Contraception?',
+      menstrualRegularity: 'Menstrual Regularity',
+      regularityOptions: {
+        regular: 'Regular',
+        irregular: 'Irregular',
+        notApplicable: 'Not Applicable'
+      },
+      yes: 'Yes',
+      no: 'No',
+      notApplicable: 'Not Applicable'
+    },
+    chronicPain: {
+      title: 'Chronic Pain',
+      hasPain: 'Do you have chronic pain?',
+      yes: 'Yes',
+      no: 'No',
+      locationTitle: 'Pain Location',
+      locations: {
+        head: 'Head',
+        neck: 'Neck',
+        back: 'Back',
+        shoulders: 'Shoulders',
+        knees: 'Knees',
+        hips: 'Hips',
+        hands: 'Hands',
+        feet: 'Feet'
+      },
+      severityTitle: 'Pain Severity',
+      frequencyTitle: 'Pain Frequency',
+      frequencyOptions: {
+        daily: 'Daily',
+        weekly: 'Weekly',
+        monthly: 'Monthly',
+        rarely: 'Rarely'
+      },
+      impactTitle: 'Impact on Daily Life',
+      impactOptions: {
+        none: 'None',
+        mild: 'Mild',
+        moderate: 'Moderate',
+        severe: 'Severe'
+      }
+    },
+    vaccination: {
+      title: 'Vaccination',
+      covidTitle: 'COVID-19',
+      covidOptions: {
+        notVaccinated: 'Not Vaccinated',
+        partial: 'Partially',
+        fully: 'Fully Vaccinated',
+        boosted: 'Boosted'
+      },
+      fluTitle: 'Flu vaccine this year?',
+      otherVaccines: 'Other vaccines up to date?',
+      vaccinationCard: 'Vaccination card available?',
+      yes: 'Yes',
+      no: 'No',
+      unsure: 'Not sure'
+    },
+    insuranceInfo: {
+      title: 'Insurance Information',
+      hasInsurance: 'Do you have health insurance?',
+      yes: 'Yes',
+      no: 'No',
+      providerName: 'Provider Name',
+      providerPlaceholder: 'e.g., Aetna, Blue Cross',
+      planType: 'Plan Type',
+      planOptions: {
+        basic: 'Basic',
+        standard: 'Standard',
+        premium: 'Premium'
+      },
+      memberId: 'Member ID',
+      memberPlaceholder: 'Plan number',
+      coverageTitle: 'Coverage',
+      coverage: {
+        medical: 'Medical',
+        dental: 'Dental',
+        vision: 'Vision'
+      }
+    },
+    emergencyContacts: {
+      title: 'Emergency Contacts',
+      subtitle: 'Add at least one contact',
+      contactName: 'Contact Name',
+      namePlaceholder: 'Full name',
+      relationship: 'Relationship',
+      relationshipOptions: {
+        spouse: 'Spouse',
+        parent: 'Parent',
+        sibling: 'Sibling',
+        child: 'Child',
+        friend: 'Friend',
+        other: 'Other'
+      },
+      phone: 'Phone',
+      phonePlaceholder: '(555) 123-4567',
+      addSecondary: 'Add Secondary Contact',
+      secondaryContact: 'Secondary Contact'
+    },
+    consentPrivacy: {
+      title: 'Consent and Privacy',
+      subtitle: 'Your data is protected',
+      consent1: 'I consent to share my health data with my healthcare team',
+      consent2: 'I agree to receive health insights and recommendations',
+      consent3: 'I understand my data is protected under LGPD/HIPAA',
+      dataUsage: 'How your data will be used',
+      dataUsageText: 'Your health data is encrypted and used only to generate personalized recommendations.',
+      privacyPolicy: 'View Privacy Policy'
+    },
+    reviewSummary: {
+      title: 'Assessment Review',
+      subtitle: 'Review your answers before submitting',
+      sections: {
+        personalInfo: 'Personal Information',
+        healthConditions: 'Health Conditions',
+        lifestyle: 'Lifestyle',
+        mentalHealth: 'Mental Health',
+        goals: 'Goals'
+      },
+      edit: 'Edit',
+      confirmData: 'I confirm the information is correct'
+    },
+    submissionConfirm: {
+      title: 'Assessment Submitted',
+      successMessage: 'Your health assessment has been submitted successfully!',
+      processingTime: 'Estimated processing time: 24-48 hours',
+      nextSteps: 'Next Steps',
+      step1: 'Your doctor will review the results',
+      step2: 'A personalized plan will be created',
+      step3: 'You will receive update notifications',
+      viewResults: 'View My Results'
+    },
+    resultsHealthScore: {
+      title: 'Your Health Score',
+      overallScore: 'Overall Score',
+      breakdown: 'Breakdown',
+      categories: {
+        physical: 'Physical',
+        nutrition: 'Nutrition',
+        mental: 'Mental',
+        lifestyle: 'Lifestyle'
+      },
+      scoreLabels: {
+        excellent: 'Excellent',
+        good: 'Good',
+        fair: 'Fair',
+        needsAttention: 'Needs Attention'
+      },
+      viewRecommendations: 'View Recommendations',
+      shareWithDoctor: 'Share with Doctor'
+    }
+  },
   errorScreens: {
     noInternet: {
       title: 'No Internet Connection',
