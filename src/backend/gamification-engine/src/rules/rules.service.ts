@@ -3,7 +3,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 // Updated import paths to use the correct locations
 import { LoggerService } from '../../../shared/src/logging/logger.service';
-import { PrismaService } from '../database/prisma.service';
+import { PrismaService } from '@app/shared/database/prisma.service';
 import { ProfilesService } from '../profiles/profiles.service';
 import { AchievementsService } from '../achievements/achievements.service';
 

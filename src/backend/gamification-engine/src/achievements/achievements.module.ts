@@ -1,9 +1,6 @@
 import { Module } from '@nestjs/common'; // @nestjs/common 10.0.0
-import { TypeOrmModule } from '@nestjs/typeorm'; // @nestjs/typeorm 10.0.0
 import { AchievementsService } from './achievements.service';
 import { AchievementsController } from './achievements.controller';
-import { Achievement } from './entities/achievement.entity';
-import { UserAchievement } from './entities/user-achievement.entity';
 import { KafkaModule } from '@app/shared/kafka/kafka.module'; // @app/shared ^1.0.0
 import { LoggerModule } from '@app/shared/logging/logger.module'; // @app/shared ^1.0.0
 import { RedisModule } from '@app/shared/redis/redis.module'; // @app/shared ^1.0.0
@@ -17,10 +14,9 @@ import { ProfilesModule } from '../profiles/profiles.module';
  */
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Achievement, UserAchievement]), 
-    KafkaModule, 
-    RedisModule, 
-    LoggerModule, 
+    KafkaModule,
+    RedisModule,
+    LoggerModule,
     TracingModule,
     ProfilesModule // Add ProfilesModule to give AchievementsService access to ProfilesService
   ],

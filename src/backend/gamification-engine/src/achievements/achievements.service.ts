@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Injectable, HttpStatus } from '@nestjs/common'; 
-import { InjectRepository } from '@nestjs/typeorm'; 
-import { Repository } from 'typeorm'; 
+import { Injectable, HttpStatus } from '@nestjs/common';
+import { PrismaService } from '@app/shared/database/prisma.service';
 import { Achievement } from './entities/achievement.entity';
-import { Service } from '@app/shared/interfaces/service.interface'; 
-import { AppException } from '@app/shared/exceptions/exceptions.types'; 
-import { PaginatedResponse, PaginationDto, PaginationMeta } from '@app/shared/dto/pagination.dto'; 
-import { FilterDto } from '@app/shared/dto/filter.dto'; 
-import { ErrorType } from '@app/shared/exceptions/exceptions.types'; 
+import { Service } from '@app/shared/interfaces/service.interface';
+import { AppException } from '@app/shared/exceptions/exceptions.types';
+import { PaginatedResponse, PaginationDto, PaginationMeta } from '@app/shared/dto/pagination.dto';
+import { FilterDto } from '@app/shared/dto/filter.dto';
+import { ErrorType } from '@app/shared/exceptions/exceptions.types';
 import { UserAchievement } from './entities/user-achievement.entity';
 import { ProfilesService } from '../profiles/profiles.service';
 
@@ -28,19 +27,15 @@ interface AchievementFilterDto extends FilterDto {
 export class AchievementsService implements Service<Achievement, CreateAchievementDto, UpdateAchievementDto> {
   /**
    * Creates an instance of the AchievementsService.
-   * 
-   * @param achievementRepository - Repository for interacting with achievements in the database
-   * @param userAchievementRepository - Repository for interacting with user achievements
+   *
+   * @param prisma - PrismaService for database access
    * @param profilesService - Service for managing user game profiles
    */
   constructor(
-    @InjectRepository(Achievement)
-    private readonly achievementRepository: Repository<Achievement>,
-    @InjectRepository(UserAchievement)
-    private readonly userAchievementRepository: Repository<UserAchievement>,
+    private readonly prisma: PrismaService,
     private readonly profilesService: ProfilesService
   ) {}
-  
+
   /**
    * Finds a single achievement by specified criteria
    * @param criteria - Search criteria
@@ -48,7 +43,7 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
    */
   async findOne(criteria: Partial<Achievement>): Promise<Achievement | null> {
     try {
-      return await this.achievementRepository.findOne({ where: criteria });
+      return await this.prisma.achievement.findFirst({ where: criteria });
     } catch (error: unknown) {
       throw new AppException(
         'Failed to find achievement',
@@ -61,7 +56,7 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
 
   /**
    * Retrieves all achievements with optional filtering and pagination.
-   * 
+   *
    * @param filter - Optional filtering criteria
    * @param pagination - Optional pagination parameters
    * @returns A promise resolving to an object containing items array and total count
@@ -75,39 +70,43 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
       const page = pagination?.page || 1;
       const limit = pagination?.limit || 20;
       const skip = (page - 1) * limit;
-      // Build the query with filters
-      const queryBuilder = this.achievementRepository.createQueryBuilder('achievement');
-      
+
+      // Build the where clause with filters
+      const where: any = {};
+
       // Apply journey filter if provided
       if (filter?.journey) {
-        queryBuilder.where('achievement.journey = :journey', { journey: filter.journey });
+        where.journey = filter.journey;
       }
+
       // Apply where conditions if provided
       if (filter?.where) {
-        Object.entries(filter.where).forEach(([key, value]) => {
-          queryBuilder.andWhere(`achievement.${key} = :${key}`, { [key]: value });
-        });
+        Object.assign(where, filter.where);
       }
-      // Apply order by if provided
+
+      // Build orderBy clause
+      let orderBy: any = { title: 'asc' };
       if (filter?.orderBy) {
-        Object.entries(filter.orderBy).forEach(([key, direction]) => {
-          // Fix: Add type assertion for direction to ensure it has toUpperCase method
-          const sortDirection = (direction as string).toUpperCase() as 'ASC' | 'DESC';
-          queryBuilder.addOrderBy(`achievement.${key}`, sortDirection);
-        });
-      } else {
-        // Default sorting
-        queryBuilder.orderBy('achievement.title', 'ASC');
+        const entries = Object.entries(filter.orderBy);
+        if (entries.length > 0) {
+          orderBy = {};
+          entries.forEach(([key, direction]) => {
+            orderBy[key] = (direction as string).toLowerCase();
+          });
+        }
       }
+
       // Get total count for pagination
-      const totalItems = await queryBuilder.getCount();
-      
-      // Apply pagination
-      queryBuilder.skip(skip).take(limit);
-      
-      // Execute query
-      const achievements = await queryBuilder.getMany();
-      
+      const totalItems = await this.prisma.achievement.count({ where });
+
+      // Execute query with pagination
+      const achievements = await this.prisma.achievement.findMany({
+        where,
+        orderBy,
+        skip,
+        take: limit,
+      });
+
       // Return standardized response with expected properties for the Service interface
       return {
         items: achievements,
@@ -122,10 +121,10 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
       );
     }
   }
-  
+
   /**
    * Creates a paginated response for achievements
-   * 
+   *
    * @param achievements - The list of achievements
    * @param total - Total number of achievements
    * @param page - Current page number
@@ -139,7 +138,7 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
     limit: number
   ): PaginatedResponse<Achievement> {
     const totalPages = Math.ceil(total / limit);
-    
+
     const meta: PaginationMeta = {
       total,
       limit,
@@ -149,16 +148,16 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
       hasNext: page < totalPages,
       hasPrev: page > 1
     };
-    
+
     return {
       data: achievements,
       meta
     };
   }
-  
+
   /**
    * Gets paginated achievements with proper response structure
-   * 
+   *
    * @param filter - Optional filtering criteria
    * @param pagination - Optional pagination parameters
    * @returns A properly structured paginated response
@@ -169,23 +168,23 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
   ): Promise<PaginatedResponse<Achievement>> {
     const page = pagination?.page || 1;
     const limit = pagination?.limit || 20;
-    
+
     const { items: achievements, total } = await this.findAll(filter, pagination);
-    
+
     return this.createPaginatedResponse(achievements, total, page, limit);
   }
-  
+
   /**
    * Retrieves a single achievement by its ID.
-   * 
+   *
    * @param id - The unique identifier of the achievement
    * @returns A promise resolving to the found achievement
    * @throws AppException if the achievement is not found
    */
   async findById(id: string): Promise<Achievement> {
     try {
-      const achievement = await this.achievementRepository.findOneBy({ id });
-      
+      const achievement = await this.prisma.achievement.findUnique({ where: { id } });
+
       if (!achievement) {
         throw new AppException(
           `Achievement with ID ${id} not found`,
@@ -195,13 +194,13 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
           HttpStatus.NOT_FOUND
         );
       }
-      
+
       return achievement;
     } catch (error: unknown) {
       if (error instanceof AppException) {
         throw error as any;
       }
-      
+
       throw new AppException(
         `Failed to retrieve achievement with ID ${id}`,
         ErrorType.TECHNICAL,
@@ -210,18 +209,17 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
       );
     }
   }
-  
+
   /**
    * Creates a new achievement.
-   * 
+   *
    * @param achievementData - The data for the new achievement
    * @returns A promise resolving to the created achievement
    * @throws AppException if creation fails
    */
   async create(achievementData: CreateAchievementDto): Promise<Achievement> {
     try {
-      const achievement = this.achievementRepository.create(achievementData);
-      return await this.achievementRepository.save(achievement);
+      return await this.prisma.achievement.create({ data: achievementData as any });
     } catch (error: unknown) {
       throw new AppException(
         'Failed to create achievement',
@@ -231,10 +229,10 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
       );
     }
   }
-  
+
   /**
    * Updates an existing achievement by its ID.
-   * 
+   *
    * @param id - The unique identifier of the achievement to update
    * @param achievementData - The data to update the achievement with
    * @returns A promise resolving to the updated achievement
@@ -243,16 +241,18 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
   async update(id: string, achievementData: UpdateAchievementDto): Promise<Achievement> {
     try {
       // First, verify the achievement exists
-      const existingAchievement = await this.findById(id);
-      
+      await this.findById(id);
+
       // Update the achievement
-      const updated = { ...existingAchievement, ...achievementData };
-      return await this.achievementRepository.save(updated);
+      return await this.prisma.achievement.update({
+        where: { id },
+        data: achievementData as any,
+      });
     } catch (error: unknown) {
       if (error instanceof AppException) {
         throw error as any;
       }
-      
+
       throw new AppException(
         `Failed to update achievement with ID ${id}`,
         ErrorType.TECHNICAL,
@@ -261,10 +261,10 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
       );
     }
   }
-  
+
   /**
    * Deletes an achievement by its ID.
-   * 
+   *
    * @param id - The unique identifier of the achievement to delete
    * @returns A promise resolving to true if deleted, false otherwise
    * @throws AppException if the achievement is not found or deletion fails
@@ -273,15 +273,15 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
     try {
       // First, verify the achievement exists
       await this.findById(id);
-      
+
       // Delete the achievement
-      const result = await this.achievementRepository.delete(id);
-      return result.affected ? result.affected > 0 : false;
+      await this.prisma.achievement.delete({ where: { id } });
+      return true;
     } catch (error: unknown) {
       if (error instanceof AppException) {
         throw error as any;
       }
-      
+
       throw new AppException(
         `Failed to delete achievement with ID ${id}`,
         ErrorType.TECHNICAL,
@@ -290,29 +290,28 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
       );
     }
   }
-  
+
   /**
    * Counts achievements matching the provided filter.
-   * 
+   *
    * @param filter - Optional filtering criteria
    * @returns A promise resolving to the count of matching achievements
    */
   async count(filter?: AchievementFilterDto): Promise<number> {
     try {
-      const queryBuilder = this.achievementRepository.createQueryBuilder('achievement');
-      
+      const where: any = {};
+
       // Apply journey filter if provided
       if (filter?.journey) {
-        queryBuilder.where('achievement.journey = :journey', { journey: filter.journey });
+        where.journey = filter.journey;
       }
+
       // Apply where conditions if provided
       if (filter?.where) {
-        Object.entries(filter.where).forEach(([key, value]) => {
-          queryBuilder.andWhere(`achievement.${key} = :${key}`, { [key]: value });
-        });
+        Object.assign(where, filter.where);
       }
-      
-      return await queryBuilder.getCount();
+
+      return await this.prisma.achievement.count({ where });
     } catch (error: unknown) {
       throw new AppException(
         'Failed to count achievements',
@@ -322,10 +321,10 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
       );
     }
   }
-  
+
   /**
    * Unlocks an achievement for a user.
-   * 
+   *
    * @param userId - The ID of the user
    * @param achievementId - The ID of the achievement to unlock
    * @returns A promise resolving to the user achievement
@@ -335,63 +334,71 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
     try {
       // Find the achievement
       const achievement = await this.findById(achievementId);
-      
+
       // Get the user's game profile
       const userProfile = await this.profilesService.findById(userId);
-      
+
       // Check if the user already has this achievement
-      const existingUserAchievement = await this.userAchievementRepository.findOne({
+      const existingUserAchievement = await this.prisma.userAchievement.findUnique({
         where: {
-          profileId: userProfile.id,
-          achievementId: achievement.id
+          profileId_achievementId: {
+            profileId: userProfile.id,
+            achievementId: achievement.id
+          }
         }
       });
-      
+
       // If user already has this achievement unlocked, return it
       if (existingUserAchievement && existingUserAchievement.unlocked) {
         return existingUserAchievement;
       }
-      
+
       // If user has progress on this achievement but hasn't unlocked it yet
       if (existingUserAchievement) {
-        existingUserAchievement.unlocked = true;
-        existingUserAchievement.unlockedAt = new Date();
-        existingUserAchievement.progress = 100;
-        
-        // Save the updated user achievement
-        const savedAchievement = await this.userAchievementRepository.save(existingUserAchievement);
-        
+        const updatedAchievement = await this.prisma.userAchievement.update({
+          where: {
+            profileId_achievementId: {
+              profileId: userProfile.id,
+              achievementId: achievement.id
+            }
+          },
+          data: {
+            unlocked: true,
+            unlockedAt: new Date(),
+            progress: 100
+          }
+        });
+
         // Award XP for unlocking the achievement
         await this.profilesService.update(userId, {
           xp: userProfile.xp + achievement.xpReward
         });
-        
-        return savedAchievement;
+
+        return updatedAchievement;
       }
-      
+
       // Create a new user achievement record
-      const userAchievement = this.userAchievementRepository.create({
-        profileId: userProfile.id,
-        achievementId: achievement.id,
-        unlocked: true,
-        unlockedAt: new Date(),
-        progress: 100
+      const savedAchievement = await this.prisma.userAchievement.create({
+        data: {
+          profileId: userProfile.id,
+          achievementId: achievement.id,
+          unlocked: true,
+          unlockedAt: new Date(),
+          progress: 100
+        }
       });
-      
-      // Save the new user achievement
-      const savedAchievement = await this.userAchievementRepository.save(userAchievement);
-      
+
       // Award XP for unlocking the achievement
       await this.profilesService.update(userId, {
         xp: userProfile.xp + achievement.xpReward
       });
-      
+
       return savedAchievement;
     } catch (error: unknown) {
       if (error instanceof AppException) {
         throw error as any;
       }
-      
+
       throw new AppException(
         `Failed to unlock achievement ${achievementId} for user ${userId}`,
         ErrorType.TECHNICAL,
@@ -400,10 +407,10 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
       );
     }
   }
-  
+
   /**
    * Finds achievements by journey type.
-   * 
+   *
    * @param journey - The journey identifier ('health', 'care', 'plan')
    * @param pagination - Optional pagination parameters
    * @returns A promise resolving to a paginated response of achievements
@@ -415,13 +422,13 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
     const { items, total } = await this.findAll({ journey, where: {} }, pagination);
     const page = pagination?.page || 1;
     const limit = pagination?.limit || 20;
-    
+
     return this.createPaginatedResponse(items, total, page, limit);
   }
-  
+
   /**
    * Finds achievements by their XP reward value.
-   * 
+   *
    * @param xpReward - The XP value to search for
    * @param pagination - Optional pagination parameters
    * @returns A promise resolving to a paginated response of achievements
@@ -433,13 +440,13 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
     const { items, total } = await this.findAll({ where: { xpReward } }, pagination);
     const page = pagination?.page || 1;
     const limit = pagination?.limit || 20;
-    
+
     return this.createPaginatedResponse(items, total, page, limit);
   }
-  
+
   /**
    * Searches achievements by title or description.
-   * 
+   *
    * @param searchTerm - The text to search for
    * @param pagination - Optional pagination parameters
    * @returns A promise resolving to a paginated response of matching achievements
@@ -452,21 +459,23 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
       const page = pagination?.page || 1;
       const limit = pagination?.limit || 20;
       const skip = (page - 1) * limit;
-      const queryBuilder = this.achievementRepository.createQueryBuilder('achievement');
-      
-      queryBuilder
-        .where('achievement.title ILIKE :searchTerm', { searchTerm: `%${searchTerm}%` })
-        .orWhere('achievement.description ILIKE :searchTerm', { searchTerm: `%${searchTerm}%` });
-      
-      const totalItems = await queryBuilder.getCount();
-      
-      queryBuilder
-        .skip(skip)
-        .take(limit)
-        .orderBy('achievement.title', 'ASC');
-      
-      const achievements = await queryBuilder.getMany();
-      
+
+      const where = {
+        OR: [
+          { title: { contains: searchTerm, mode: 'insensitive' as const } },
+          { description: { contains: searchTerm, mode: 'insensitive' as const } }
+        ]
+      };
+
+      const totalItems = await this.prisma.achievement.count({ where });
+
+      const achievements = await this.prisma.achievement.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { title: 'asc' },
+      });
+
       return this.createPaginatedResponse(achievements, totalItems, page, limit);
     } catch (error: unknown) {
       throw new AppException(

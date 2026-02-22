@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Injectable } from '@nestjs/common'; // v10.0.0+
-import { Repository } from 'typeorm'; // latest
-import { InjectRepository } from '@nestjs/typeorm'; // latest
+import { PrismaService } from '@app/shared/database/prisma.service';
 
 import { CreateMedicationDto } from './dto/create-medication.dto';
 import { Medication } from './entities/medication.entity';
@@ -24,14 +23,13 @@ import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 export class MedicationsService {
   /**
    * Constructor for MedicationsService.
-   * @param medicationsRepository The TypeORM repository for medications
+   * @param prisma The Prisma database service
    * @param logger The logging service
    * @param kafkaService The Kafka service for event publishing
    * @param configService The configuration service
    */
   constructor(
-    @InjectRepository(Medication)
-    private readonly medicationsRepository: Repository<Medication>,
+    private readonly prisma: PrismaService,
     private readonly logger: LoggerService,
     private readonly kafkaService: KafkaService,
     private readonly configService: Configuration
@@ -48,17 +46,16 @@ export class MedicationsService {
    */
   async create(createMedicationDto: CreateMedicationDto, userId: string): Promise<Medication> {
     try {
-      // Creates a new medication entity
-      const medication = this.medicationsRepository.create({
-        ...createMedicationDto,
-        userId,
-        startDate: new Date(createMedicationDto.startDate),
-        endDate: createMedicationDto.endDate ? new Date(createMedicationDto.endDate) : null
+      // Creates a new medication record via Prisma
+      const savedMedication = await this.prisma.medication.create({
+        data: {
+          ...createMedicationDto,
+          userId,
+          startDate: new Date(createMedicationDto.startDate),
+          endDate: createMedicationDto.endDate ? new Date(createMedicationDto.endDate) : null,
+        },
       });
 
-      // Saves the medication to the database
-      const savedMedication = await this.medicationsRepository.save(medication);
-      
       // Publish event for gamification if enabled
       if (this.configService.gamification?.enabled) {
         try {
@@ -78,9 +75,9 @@ export class MedicationsService {
       }
 
       this.logger.log(`Medication created: ${savedMedication.id} for user ${userId}`, 'MedicationsService');
-      
+
       // Returns the created medication
-      return savedMedication;
+      return savedMedication as Medication;
     } catch (error) {
       this.logger.error('Failed to create medication', error, 'MedicationsService');
       throw new AppException(
@@ -101,36 +98,39 @@ export class MedicationsService {
    */
   async findAll(filterDto: FilterDto, paginationDto: PaginationDto): Promise<Medication[]> {
     try {
-      // Retrieves all medications from the database based on the filter and pagination parameters
-      const queryBuilder = this.medicationsRepository.createQueryBuilder('medication');
-      
-      // Apply filters
+      // Build where clause from filter
+      const where: Record<string, any> = {};
       if (filterDto?.where) {
-        Object.entries(filterDto.where).forEach(([key, value]) => {
-          queryBuilder.andWhere(`medication.${key} = :${key}`, { [key]: value });
-        });
+        Object.assign(where, filterDto.where);
       }
-      
-      // Apply sorting
+
+      // Build orderBy from filter
+      let orderBy: any = { createdAt: 'desc' };
       if (filterDto?.orderBy) {
+        orderBy = {};
         Object.entries(filterDto.orderBy).forEach(([key, value]) => {
-          queryBuilder.orderBy(`medication.${key}`, value.toUpperCase());
+          orderBy[key] = (value as string).toLowerCase();
         });
-      } else {
-        queryBuilder.orderBy('medication.createdAt', 'DESC');
       }
-      
-      // Apply pagination
+
+      // Calculate pagination
+      let skip: number | undefined;
+      let take: number | undefined;
       if (paginationDto) {
-        const skip = paginationDto.skip || 
+        skip = paginationDto.skip ||
           (paginationDto.page && paginationDto.limit ? (paginationDto.page - 1) * paginationDto.limit : 0);
-        const take = paginationDto.limit || 10;
-        
-        queryBuilder.skip(skip).take(take);
+        take = paginationDto.limit || 10;
       }
-      
-      // Returns the list of medications
-      return await queryBuilder.getMany();
+
+      // Retrieves all medications from the database
+      const medications = await this.prisma.medication.findMany({
+        where,
+        orderBy,
+        skip,
+        take,
+      });
+
+      return medications as Medication[];
     } catch (error) {
       this.logger.error('Failed to fetch medications', error, 'MedicationsService');
       throw new AppException(
@@ -151,8 +151,8 @@ export class MedicationsService {
   async findOne(id: string): Promise<Medication> {
     try {
       // Retrieves the medication from the database by ID
-      const medication = await this.medicationsRepository.findOne({ where: { id } });
-      
+      const medication = await this.prisma.medication.findUnique({ where: { id } });
+
       if (!medication) {
         throw new AppException(
           `Medication with ID ${id} not found`,
@@ -161,14 +161,14 @@ export class MedicationsService {
           { id }
         );
       }
-      
+
       // Returns the medication, if found
-      return medication;
+      return medication as Medication;
     } catch (error) {
       if (error instanceof AppException) {
         throw error as any;
       }
-      
+
       this.logger.error(`Failed to fetch medication with ID ${id}`, error, 'MedicationsService');
       throw new AppException(
         `Failed to retrieve medication`,
@@ -188,34 +188,33 @@ export class MedicationsService {
    */
   async update(id: string, updateMedicationData: Record<string, any>): Promise<Medication> {
     try {
-      // Retrieves the medication from the database by ID
-      const medication = await this.findOne(id);
-      
+      // Verify the medication exists
+      await this.findOne(id);
+
       // Handle date conversions
-      if (updateMedicationData.startDate) {
-        updateMedicationData.startDate = new Date(updateMedicationData.startDate);
+      const data = { ...updateMedicationData };
+      if (data.startDate) {
+        data.startDate = new Date(data.startDate);
       }
-      
-      if (updateMedicationData.endDate) {
-        updateMedicationData.endDate = updateMedicationData.endDate ? 
-          new Date(updateMedicationData.endDate) : null;
+      if (data.endDate) {
+        data.endDate = data.endDate ? new Date(data.endDate) : null;
       }
-      
+
       // Updates the medication with the new data
-      Object.assign(medication, updateMedicationData);
-      
-      // Saves the updated medication to the database
-      const updatedMedication = await this.medicationsRepository.save(medication);
-      
+      const updatedMedication = await this.prisma.medication.update({
+        where: { id },
+        data,
+      });
+
       this.logger.log(`Medication updated: ${id}`, 'MedicationsService');
-      
+
       // Returns the updated medication
-      return updatedMedication;
+      return updatedMedication as Medication;
     } catch (error) {
       if (error instanceof AppException) {
         throw error as any;
       }
-      
+
       this.logger.error(`Failed to update medication with ID ${id}`, error, 'MedicationsService');
       throw new AppException(
         `Failed to update medication`,
@@ -235,16 +234,16 @@ export class MedicationsService {
     try {
       // Verify the medication exists before deletion
       await this.findOne(id);
-      
+
       // Deletes the medication from the database by ID
-      await this.medicationsRepository.delete(id);
-      
+      await this.prisma.medication.delete({ where: { id } });
+
       this.logger.log(`Medication deleted: ${id}`, 'MedicationsService');
     } catch (error) {
       if (error instanceof AppException) {
         throw error as any;
       }
-      
+
       this.logger.error(`Failed to delete medication with ID ${id}`, error, 'MedicationsService');
       throw new AppException(
         `Failed to delete medication`,

@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { GameProfile } from './entities/game-profile.entity';
-// Updated import to use local PrismaService
-import { PrismaService } from '../database/prisma.service';
+import { PrismaService } from '@app/shared/database/prisma.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { mapToDomainGameProfile } from '../utils/entity-mappers';
 

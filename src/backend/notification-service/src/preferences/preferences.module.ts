@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { PreferencesController } from './preferences.controller';
 import { PreferencesService } from './preferences.service';
-import { NotificationPreference } from './entities/notification-preference.entity';
 
 /**
  * Module that encapsulates the functionality for managing user notification preferences.

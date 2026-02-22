@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common'; // v10.0.0+
-import { TypeOrmModule } from '@nestjs/typeorm'; // v10.0.0
 import { RewardsService } from './rewards.service';
 import { RewardsController } from './rewards.controller';
-import { Reward } from './entities/reward.entity';
 import { AchievementsModule } from '../achievements/achievements.module';
 import { EventsModule } from '../events/events.module';
 import { ProfilesModule } from '../profiles/profiles.module';
@@ -19,7 +17,6 @@ import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
  */
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Reward]),
     AchievementsModule,
     EventsModule,
     ProfilesModule,

@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
-import { Repository } from 'typeorm';
+import { PrismaService } from '@app/shared/database/prisma.service';
 import { Reward } from './entities/reward.entity';
 import { UserReward } from './entities/user-reward.entity';
 import { ProfilesService } from '../profiles/profiles.service';
@@ -21,18 +20,17 @@ import { FilterDto } from '@app/shared/dto/filter.dto';
 @Injectable()
 export class RewardsService {
   /**
-   * Injects the Reward repository and other services.
+   * Injects PrismaService and other services.
    */
   constructor(
-    @InjectRepository(Reward)
-    private readonly rewardRepository: Repository<Reward>,
+    private readonly prisma: PrismaService,
     private readonly profilesService: ProfilesService,
     private readonly kafkaService: KafkaService,
     private readonly logger: LoggerService,
     private readonly achievementsService: AchievementsService,
     private readonly configService: ConfigService
   ) {}
-  
+
   /**
    * Creates a new reward.
    * @param reward The reward data to create
@@ -41,7 +39,15 @@ export class RewardsService {
   async create(reward: Reward): Promise<Reward> {
     try {
       this.logger.log(`Creating new reward: ${reward.title}`, 'RewardsService');
-      return await this.rewardRepository.save(reward);
+      return await this.prisma.reward.create({
+        data: {
+          title: reward.title,
+          description: reward.description,
+          xpReward: reward.xpReward,
+          icon: reward.icon,
+          journey: reward.journey,
+        }
+      });
     } catch (error: any) {
       this.logger.error(`Failed to create reward: ${(error as any).message}`, error?.stack, 'RewardsService');
       throw new AppException(
@@ -53,7 +59,7 @@ export class RewardsService {
       );
     }
   }
-  
+
   /**
    * Retrieves all rewards.
    * @returns A promise that resolves to an array of rewards.
@@ -61,7 +67,7 @@ export class RewardsService {
   async findAll(): Promise<Reward[]> {
     try {
       this.logger.log('Retrieving all rewards', 'RewardsService');
-      return await this.rewardRepository.find();
+      return await this.prisma.reward.findMany();
     } catch (error: any) {
       this.logger.error(`Failed to retrieve rewards: ${(error as any).message}`, error?.stack, 'RewardsService');
       throw new AppException(
@@ -73,7 +79,7 @@ export class RewardsService {
       );
     }
   }
-  
+
   /**
    * Retrieves a single reward by its ID.
    * @param id The reward ID to find
@@ -82,8 +88,8 @@ export class RewardsService {
   async findOne(id: string): Promise<Reward> {
     try {
       this.logger.log(`Retrieving reward with ID: ${id}`, 'RewardsService');
-      const reward = await this.rewardRepository.findOneBy({ id });
-      
+      const reward = await this.prisma.reward.findUnique({ where: { id } });
+
       if (!reward) {
         this.logger.warn(`Reward with ID ${id} not found`, 'RewardsService');
         throw new AppException(
@@ -93,13 +99,13 @@ export class RewardsService {
           { id }
         );
       }
-      
+
       return reward;
     } catch (error: any) {
       if (error instanceof AppException) {
         throw error as any;
       }
-      
+
       this.logger.error(`Failed to retrieve reward with ID ${id}: ${(error as any).message}`, error?.stack, 'RewardsService');
       throw new AppException(
         `Failed to retrieve reward with ID ${id}`,
@@ -110,7 +116,7 @@ export class RewardsService {
       );
     }
   }
-  
+
   /**
    * Grants a reward to a user.
    * @param userId The ID of the user to grant the reward to
@@ -120,19 +126,19 @@ export class RewardsService {
   async grantReward(userId: string, rewardId: string): Promise<UserReward> {
     try {
       this.logger.log(`Granting reward ${rewardId} to user ${userId}`, 'RewardsService');
-      
+
       // Get user profile
       const profile = await this.profilesService.findById(userId);
-      
+
       // Get reward
       const reward = await this.findOne(rewardId);
-      
+
       // Create user reward
       const userReward = new UserReward();
       userReward.profile = profile;
       userReward.reward = reward;
       userReward.earnedAt = new Date();
-      
+
       // Publish event to Kafka for notification and other systems
       await this.kafkaService.produce(
         'reward-events',
@@ -147,9 +153,9 @@ export class RewardsService {
         },
         userId
       );
-      
+
       this.logger.log(`Successfully granted reward ${reward.title} to user ${userId}`, 'RewardsService');
-      
+
       return userReward;
     } catch (error: any) {
       this.logger.error(`Failed to grant reward ${rewardId} to user ${userId}: ${(error as any).message}`, error?.stack, 'RewardsService');

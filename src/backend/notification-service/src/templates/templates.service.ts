@@ -1,6 +1,5 @@
-import { Injectable } from '@nestjs/common'; // @nestjs/common@10.0.0+
-import { InjectRepository } from '@nestjs/typeorm'; // @nestjs/typeorm@10.0.0+
-import { Repository as TypeOrmRepository } from 'typeorm'; // typeorm@0.3.0+
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@app/shared/database/prisma.service';
 import { NotificationTemplate } from './entities/notification-template.entity';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Repository } from '@app/shared/interfaces/repository.interface';
@@ -17,12 +16,11 @@ import { JOURNEY_IDS } from '@app/shared/constants/journey.constants';
 export class TemplatesService {
   /**
    * Initializes the TemplatesService with required dependencies.
-   * @param templateRepository Repository for NotificationTemplate entities
+   * @param prisma PrismaService for database operations
    * @param logger Logger service for logging operations
    */
   constructor(
-    @InjectRepository(NotificationTemplate)
-    private readonly templateRepository: TypeOrmRepository<NotificationTemplate>,
+    private readonly prisma: PrismaService,
     private readonly logger: LoggerService,
   ) {}
 
@@ -33,7 +31,7 @@ export class TemplatesService {
    */
   async findById(id: string): Promise<NotificationTemplate | null> {
     this.logger.log(`Finding template by ID: ${id}`, 'TemplatesService');
-    return this.templateRepository.findOne({ where: { id } });
+    return this.prisma.notificationTemplate.findUnique({ where: { id } });
   }
 
   /**
@@ -43,8 +41,7 @@ export class TemplatesService {
    */
   async findByCode(code: string): Promise<NotificationTemplate | null> {
     this.logger.log(`Finding template by code: ${code}`, 'TemplatesService');
-    const templates = await this.templateRepository.find({ where: { templateId: code }, take: 1 });
-    return templates.length > 0 ? templates[0] : null;
+    return this.prisma.notificationTemplate.findFirst({ where: { templateId: code } });
   }
 
   /**
@@ -61,20 +58,20 @@ export class TemplatesService {
       `Finding templates by templateId: ${templateId}, language: ${language || 'any'}`,
       'TemplatesService',
     );
-    
+
     const filter: Record<string, any> = { templateId };
-    
+
     if (language) {
       filter.language = language;
     }
-    
-    return this.templateRepository.find({ where: filter });
+
+    return this.prisma.notificationTemplate.findMany({ where: filter });
   }
 
   /**
    * Finds templates associated with a specific journey.
    * Assumes templates follow a naming convention that indicates journey association.
-   * 
+   *
    * @param journey The journey identifier (health, care, plan)
    * @param language Optional language filter
    * @returns Array of templates for the specified journey
@@ -87,27 +84,27 @@ export class TemplatesService {
       `Finding templates by journey: ${journey}, language: ${language || 'any'}`,
       'TemplatesService',
     );
-    
+
     // Validate that the journey is a valid journey type
     if (!Object.values(JOURNEY_IDS).includes(journey)) {
       this.logger.error(`Invalid journey type: ${journey}`, null, 'TemplatesService');
       throw new Error(`Invalid journey type: ${journey}`);
     }
-    
+
     // Get all templates
     const allTemplates = await this.findAll();
-    
+
     // Filter templates by journey
     // Assumption: Templates follow a naming convention that includes the journey
     const journeyTemplates = allTemplates.filter(template => {
       return template.templateId.toLowerCase().includes(journey.toLowerCase());
     });
-    
+
     // Apply language filter if specified
     if (language) {
       return journeyTemplates.filter(template => template.language === language);
     }
-    
+
     return journeyTemplates;
   }
 
@@ -121,8 +118,8 @@ export class TemplatesService {
       `Finding all templates with filter: ${filter ? JSON.stringify(filter) : 'none'}`,
       'TemplatesService',
     );
-    
-    return this.templateRepository.find({ where: filter });
+
+    return this.prisma.notificationTemplate.findMany({ where: filter });
   }
 
   /**
@@ -137,9 +134,8 @@ export class TemplatesService {
       `Creating template with templateId: ${template.templateId}`,
       'TemplatesService',
     );
-    
-    const newTemplate = this.templateRepository.create(template);
-    return this.templateRepository.save(newTemplate);
+
+    return this.prisma.notificationTemplate.create({ data: template as any });
   }
 
   /**
@@ -153,16 +149,11 @@ export class TemplatesService {
     template: Partial<NotificationTemplate>,
   ): Promise<NotificationTemplate> {
     this.logger.log(`Updating template with ID: ${id}`, 'TemplatesService');
-    
-    await this.templateRepository.update(id, template);
-    
-    const updatedTemplate = await this.findById(id);
-    if (!updatedTemplate) {
-      this.logger.error(`Template with ID ${id} not found after update`, null, 'TemplatesService');
-      throw new Error(`Template with ID ${id} not found after update`);
-    }
-    
-    return updatedTemplate;
+
+    return this.prisma.notificationTemplate.update({
+      where: { id },
+      data: template as any,
+    });
   }
 
   /**
@@ -172,15 +163,19 @@ export class TemplatesService {
    */
   async delete(id: string): Promise<boolean> {
     this.logger.log(`Deleting template with ID: ${id}`, 'TemplatesService');
-    
-    const result = await this.templateRepository.delete(id);
-    return result.affected > 0;
+
+    try {
+      await this.prisma.notificationTemplate.delete({ where: { id } });
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   /**
    * Gets the appropriate template for a notification based on templateId, language, and journey.
    * Uses a fallback strategy to find the best matching template.
-   * 
+   *
    * @param templateId The template identifier
    * @param language The preferred language
    * @param journey The journey context (optional)
@@ -195,52 +190,52 @@ export class TemplatesService {
       `Getting template for notification - templateId: ${templateId}, language: ${language}, journey: ${journey || 'any'}`,
       'TemplatesService',
     );
-    
+
     let template: NotificationTemplate = null;
-    
+
     // Try to find a template matching all criteria
     if (journey) {
       const journeyTemplates = await this.findByJourney(journey, language);
       const matchingTemplates = journeyTemplates.filter(
         t => t.templateId === templateId
       );
-      
+
       if (matchingTemplates.length > 0) {
         template = matchingTemplates[0];
       }
     }
-    
+
     // If no journey-specific template found, try to find one with language match
     if (!template) {
       const languageTemplates = await this.findByTemplateId(templateId, language);
-      
+
       if (languageTemplates.length > 0) {
         template = languageTemplates[0];
       }
     }
-    
+
     // If still no template found, try to find any template with matching templateId
     if (!template) {
       const anyTemplates = await this.findByTemplateId(templateId);
-      
+
       if (anyTemplates.length > 0) {
         template = anyTemplates[0];
       }
     }
-    
+
     // If no template found at all, throw an error
     if (!template) {
       this.logger.error(`No template found for templateId: ${templateId}`, null, 'TemplatesService');
       throw new Error(`No template found for templateId: ${templateId}`);
     }
-    
+
     return template;
   }
 
   /**
    * Formats a template by replacing placeholders with actual data.
    * Handles placeholders in the format {{variableName}} in both title and body.
-   * 
+   *
    * @param template The template to format
    * @param data The data to use for placeholder replacement
    * @returns Formatted template with placeholders replaced by actual data
@@ -253,14 +248,14 @@ export class TemplatesService {
       `Formatting template ${template.templateId} with data`,
       'TemplatesService',
     );
-    
+
     // Create a copy of the template to avoid modifying the original
     const formattedTemplate = { ...template };
-    
+
     // Replace placeholders in title and body
     formattedTemplate.title = this.replacePlaceholders(template.title, data);
     formattedTemplate.body = this.replacePlaceholders(template.body, data);
-    
+
     return formattedTemplate;
   }
 

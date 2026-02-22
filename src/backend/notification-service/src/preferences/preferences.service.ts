@@ -1,7 +1,6 @@
-import { ErrorType } from '@app/shared/exceptions/error.types';
-import { Injectable, Inject } from '@nestjs/common'; // @nestjs/common v9.0.0+
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@app/shared/database/prisma.service';
 import { NotificationPreference } from './entities/notification-preference.entity';
-import { Repository } from '@app/shared/interfaces/repository.interface';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 import { FilterDto } from '@app/shared/dto/filter.dto';
 import { PaginationDto } from '@app/shared/dto/pagination.dto';
@@ -10,13 +9,12 @@ import { SYS_INTERNAL_SERVER_ERROR } from '@app/shared/constants/error-codes.con
 @Injectable()
 export class PreferencesService {
   constructor(
-    @Inject('NOTIFICATION_PREFERENCE_REPOSITORY')
-    private readonly notificationPreferenceRepository: Repository<NotificationPreference>,
+    private readonly prisma: PrismaService,
   ) {}
 
   /**
    * Retrieves all notification preferences based on the provided filter and pagination parameters.
-   * 
+   *
    * @param filter - Optional filtering criteria
    * @param pagination - Optional pagination parameters
    * @returns A promise that resolves to an array of NotificationPreference entities
@@ -26,9 +24,9 @@ export class PreferencesService {
     pagination?: PaginationDto,
   ): Promise<NotificationPreference[]> {
     try {
-      // Note: Currently, the Repository interface doesn't directly support pagination.
-      // Only the filter parameter is used when calling the repository.
-      return this.notificationPreferenceRepository.findAll(filter) as unknown as NotificationPreference[];
+      return this.prisma.notificationPreference.findMany({
+        where: (filter as any)?.where,
+      }) as unknown as NotificationPreference[];
     } catch (error) {
       throw new AppException(
         'Failed to retrieve notification preferences',
@@ -41,19 +39,26 @@ export class PreferencesService {
   }
 
   /**
+   * Finds a single notification preference matching the given criteria.
+   *
+   * @param where - Filter criteria for finding a preference
+   * @returns A promise that resolves to a NotificationPreference or null
+   */
+  async findOne(where: any): Promise<NotificationPreference | null> {
+    return this.prisma.notificationPreference.findFirst({ where });
+  }
+
+  /**
    * Creates a new notification preference record for a user with default settings.
-   * 
+   *
    * @param userId - The ID of the user
    * @returns A promise that resolves to the newly created NotificationPreference entity
    */
   async create(userId: string): Promise<NotificationPreference> {
     try {
-      // Only need to specify the userId. The rest will use default values from the entity definition
-      const newPreference = {
-        userId,
-      };
-      
-      return this.notificationPreferenceRepository.create(newPreference);
+      return this.prisma.notificationPreference.create({
+        data: { userId },
+      });
     } catch (error) {
       throw new AppException(
         'Failed to create notification preferences',
@@ -67,7 +72,7 @@ export class PreferencesService {
 
   /**
    * Updates an existing notification preference record.
-   * 
+   *
    * @param id - The ID of the notification preference record (as string)
    * @param data - Partial notification preference data to update
    * @returns A promise that resolves to the updated NotificationPreference entity
@@ -77,10 +82,10 @@ export class PreferencesService {
     data: Partial<NotificationPreference>,
   ): Promise<NotificationPreference> {
     try {
-      // Note: The NotificationPreference entity uses a numeric ID, but
-      // the Repository interface expects a string ID. Conversion may be
-      // handled by the repository implementation.
-      return this.notificationPreferenceRepository.update(id, data);
+      return this.prisma.notificationPreference.update({
+        where: { id: parseInt(id) },
+        data,
+      });
     } catch (error) {
       throw new AppException(
         'Failed to update notification preferences',

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable, NotFoundException } from '@nestjs/common'; // @nestjs/common ^9.0.0
-import { InjectRepository } from '@nestjs/typeorm'; // @nestjs/typeorm 10.0.0
-import { Repository } from 'typeorm'; // typeorm 0.3.17
+import { PrismaService } from '@app/shared/database/prisma.service';
 import { Quest } from './entities/quest.entity';
 import { UserQuest } from './entities/user-quest.entity';
 import { ProfilesService } from '../profiles/profiles.service';
@@ -18,13 +17,10 @@ import { PaginationDto } from '@app/shared/dto/pagination.dto';
 @Injectable()
 export class QuestsService {
   /**
-   * Injects the Quest and UserQuest repositories, ProfilesService, AchievementsService, KafkaService and LoggerService.
+   * Injects PrismaService, ProfilesService, AchievementsService, KafkaService and LoggerService.
    */
   constructor(
-    @InjectRepository(Quest)
-    private readonly questRepository: Repository<Quest>,
-    @InjectRepository(UserQuest)
-    private readonly userQuestRepository: Repository<UserQuest>,
+    private readonly prisma: PrismaService,
     private readonly profilesService: ProfilesService,
     private readonly achievementsService: AchievementsService,
     private readonly kafkaService: KafkaService,
@@ -37,7 +33,7 @@ export class QuestsService {
    */
   async findAll(): Promise<Quest[]> {
     try {
-      return await this.questRepository.find();
+      return await this.prisma.quest.findMany();
     } catch (error: any) {
       this.logger.error('Failed to retrieve quests', error?.stack, 'QuestsService');
       throw new AppException(
@@ -57,18 +53,18 @@ export class QuestsService {
    */
   async findOne(id: string): Promise<Quest> {
     try {
-      const quest = await this.questRepository.findOneBy({ id });
-      
+      const quest = await this.prisma.quest.findUnique({ where: { id } });
+
       if (!quest) {
         throw new NotFoundException(`Quest with ID ${id} not found`);
       }
-      
+
       return quest;
     } catch (error: any) {
       if (error instanceof NotFoundException) {
         throw error as any;
       }
-      
+
       this.logger.error(`Failed to retrieve quest with ID ${id}`, error?.stack, 'QuestsService');
       throw new AppException(
         `Failed to retrieve quest with ID ${id}`,
@@ -90,33 +86,35 @@ export class QuestsService {
     try {
       // Get the user's game profile
       const profile = await this.profilesService.findById(userId);
-      
+
       // Get the quest
       const quest = await this.findOne(questId);
-      
+
       // Check if the user already has this quest in progress
-      const existingUserQuest = await this.userQuestRepository.findOne({
+      const existingUserQuest = await this.prisma.userQuest.findFirst({
         where: {
-          profile: { id: profile.id },
-          quest: { id: questId }
+          profileId: profile.id,
+          questId: questId
         }
       });
-      
+
       if (existingUserQuest) {
         return existingUserQuest;
       }
-      
+
       // Create a new UserQuest instance
-      const userQuest = this.userQuestRepository.create({
-        profile,
-        quest,
-        progress: 0,
-        completed: false
+      const savedUserQuest = await this.prisma.userQuest.create({
+        data: {
+          profileId: profile.id,
+          questId: quest.id,
+          progress: 0,
+          completed: false
+        },
+        include: {
+          quest: true
+        }
       });
-      
-      // Save to database
-      const savedUserQuest = await this.userQuestRepository.save(userQuest);
-      
+
       // Log and publish event
       this.logger.log(`User ${userId} started quest ${questId}`, 'QuestsService');
       await this.kafkaService.produce('quest.started', {
@@ -124,13 +122,13 @@ export class QuestsService {
         questId,
         timestamp: new Date().toISOString()
       });
-      
+
       return savedUserQuest;
     } catch (error: any) {
       if (error instanceof NotFoundException) {
         throw error as any;
       }
-      
+
       this.logger.error(`Failed to start quest ${questId} for user ${userId}`, error?.stack, 'QuestsService');
       throw new AppException(
         `Failed to start quest ${questId} for user ${userId}`,
@@ -152,41 +150,48 @@ export class QuestsService {
     try {
       // Get the user's game profile
       const profile = await this.profilesService.findById(userId);
-      
+
       // Get the user quest
-      const userQuest = await this.userQuestRepository.findOne({
+      const userQuest = await this.prisma.userQuest.findFirst({
         where: {
-          profile: { id: profile.id },
-          quest: { id: questId }
+          profileId: profile.id,
+          questId: questId
         },
-        relations: ['quest']
+        include: {
+          quest: true
+        }
       });
-      
+
       if (!userQuest) {
         throw new NotFoundException(`User ${userId} has not started quest ${questId}`);
       }
-      
+
       if (userQuest.completed) {
         return userQuest; // Already completed
       }
-      
+
       // Update the UserQuest to mark it as completed
-      userQuest.progress = 100;
-      userQuest.completed = true;
-      
-      // Save the updated UserQuest
-      const updatedUserQuest = await this.userQuestRepository.save(userQuest);
-      
+      const updatedUserQuest = await this.prisma.userQuest.update({
+        where: { id: userQuest.id },
+        data: {
+          progress: 100,
+          completed: true
+        },
+        include: {
+          quest: true
+        }
+      });
+
       // Award XP to the user
       await this.profilesService.update(userId, {
         xp: profile.xp + userQuest.quest.xpReward
       });
-      
+
       // Check if completing this quest unlocks any achievements
       // This is a placeholder for actual achievement checking logic
       // which would likely be implemented in the AchievementsService
       const unlockedAchievements = await this.achievementsService.findByJourney(userQuest.quest.journey);
-      
+
       // Log and publish event
       this.logger.log(`User ${userId} completed quest ${questId} and earned ${userQuest.quest.xpReward} XP`, 'QuestsService');
       await this.kafkaService.produce('quest.completed', {
@@ -195,13 +200,13 @@ export class QuestsService {
         xpAwarded: userQuest.quest.xpReward,
         timestamp: new Date().toISOString()
       });
-      
+
       return updatedUserQuest;
     } catch (error: any) {
       if (error instanceof NotFoundException) {
         throw error as any;
       }
-      
+
       this.logger.error(`Failed to complete quest ${questId} for user ${userId}`, error?.stack, 'QuestsService');
       throw new AppException(
         `Failed to complete quest ${questId} for user ${userId}`,

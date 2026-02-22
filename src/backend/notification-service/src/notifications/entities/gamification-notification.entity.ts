@@ -1,11 +1,9 @@
-import { Entity, Column } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Notification } from './notification.entity';
 
 /**
  * Extends the base notification entity with gamification-specific fields
  */
-@Entity('gamification_notifications')
 export class GamificationNotification extends Notification {
   /**
    * The achievement or badge ID related to this notification
@@ -15,7 +13,6 @@ export class GamificationNotification extends Notification {
     description: 'Unique identifier of the achievement or badge',
     example: 'daily_login_streak'
   })
-  @Column({ name: 'achievement_id', nullable: true })
   achievementId?: string;
 
   /**
@@ -27,7 +24,6 @@ export class GamificationNotification extends Notification {
     enum: ['ACHIEVEMENT_UNLOCKED', 'LEVEL_UP', 'STREAK_MILESTONE', 'POINTS_EARNED', 'CHALLENGE_COMPLETED'],
     example: 'ACHIEVEMENT_UNLOCKED'
   })
-  @Column({ name: 'gamification_event_type' })
   gamificationEventType!: string;
 
   /**
@@ -39,7 +35,6 @@ export class GamificationNotification extends Notification {
     example: 100,
     required: false
   })
-  @Column({ name: 'points_earned', nullable: true })
   pointsEarned?: number;
 
   /**
@@ -51,7 +46,6 @@ export class GamificationNotification extends Notification {
     example: 5,
     required: false
   })
-  @Column({ name: 'new_level', nullable: true })
   newLevel?: number;
 
   /**
@@ -63,6 +57,5 @@ export class GamificationNotification extends Notification {
     example: true,
     default: false
   })
-  @Column({ name: 'show_celebration', default: false })
   showCelebration!: boolean;
 }

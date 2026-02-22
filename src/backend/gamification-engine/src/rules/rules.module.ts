@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { RulesService } from './rules.service';
-import { Rule } from './entities/rule.entity';
 import { KafkaModule } from '@app/shared/kafka/kafka.module';
 import { LoggerModule } from '@app/shared/logging/logger.module';
 import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
@@ -16,9 +14,8 @@ import { ConfigModule } from '@nestjs/config';
  */
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Rule]), 
-    KafkaModule, 
-    LoggerModule, 
+    KafkaModule,
+    LoggerModule,
     ExceptionsModule,
     ProfilesModule,
     AchievementsModule,

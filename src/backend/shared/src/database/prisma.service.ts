@@ -22,6 +22,33 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   healthMetric: any;
   healthGoal: any;
   auditLog: any;
+  // Care-service models
+  appointment: any;
+  provider: any;
+  medication: any;
+  telemedicineSession: any;
+  treatmentPlan: any;
+  // Gamification-engine models
+  achievement: any;
+  userAchievement: any;
+  gameProfile: any;
+  quest: any;
+  userQuest: any;
+  reward: any;
+  userReward: any;
+  rule: any;
+  // Health-service models
+  deviceConnection: any;
+  medicalEvent: any;
+  // Notification-service models
+  notification: any;
+  notificationPreference: any;
+  notificationTemplate: any;
+  // Plan-service models
+  benefit: any;
+  coverage: any;
+  // Consent models (LGPD)
+  consentRecord: any;
 
   /**
    * Constructor initializes the Prisma client with appropriate logging options
@@ -47,6 +74,33 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     this.healthMetric = mock.healthMetric || {};
     this.healthGoal = mock.healthGoal || {};
     this.auditLog = mock.auditLog || {};
+    // Care-service models
+    this.appointment = mock.appointment || {};
+    this.provider = mock.provider || {};
+    this.medication = mock.medication || {};
+    this.telemedicineSession = mock.telemedicineSession || {};
+    this.treatmentPlan = mock.treatmentPlan || {};
+    // Gamification-engine models
+    this.achievement = mock.achievement || {};
+    this.userAchievement = mock.userAchievement || {};
+    this.gameProfile = mock.gameProfile || {};
+    this.quest = mock.quest || {};
+    this.userQuest = mock.userQuest || {};
+    this.reward = mock.reward || {};
+    this.userReward = mock.userReward || {};
+    this.rule = mock.rule || {};
+    // Health-service models
+    this.deviceConnection = mock.deviceConnection || {};
+    this.medicalEvent = mock.medicalEvent || {};
+    // Notification-service models
+    this.notification = mock.notification || {};
+    this.notificationPreference = mock.notificationPreference || {};
+    this.notificationTemplate = mock.notificationTemplate || {};
+    // Plan-service models
+    this.benefit = mock.benefit || {};
+    this.coverage = mock.coverage || {};
+    // Consent models (LGPD)
+    this.consentRecord = mock.consentRecord || {};
   }
 
   /**
