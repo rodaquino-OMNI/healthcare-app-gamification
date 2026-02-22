@@ -3,7 +3,7 @@ name: Deploy to Staging
 on:
   push:
     branches:
-      - main
+      - staging
   workflow_dispatch:
 
 jobs:
@@ -11,169 +11,234 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-        
+        uses: actions/checkout@v4
+
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'yarn'
-          
+
       - name: Install validation dependencies
         run: npm install glob
-          
+
       - name: Validate package.json files
         run: node scripts/validate-package-json.js
-  
+
   audit:
     runs-on: ubuntu-latest
     needs: validate-dependencies
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-        
+        uses: actions/checkout@v4
+
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'yarn'
-          
+
       - name: Audit backend dependencies
         working-directory: src/backend
         run: |
-          # Install dependencies using Yarn
           yarn install
-          # Run audit 
           yarn audit || true
-          
+
       - name: Audit web dependencies
         working-directory: src/web
         run: |
           yarn install
           yarn audit || true
-          
+
   build-and-push:
     runs-on: ubuntu-latest
     needs: audit
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-        
+        uses: actions/checkout@v4
+
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'yarn'
-          
+
       - name: Install backend dependencies
         working-directory: src/backend
         run: yarn install
-          
+
       - name: Install web dependencies
         working-directory: src/web
         run: yarn install
-        
+
       - name: Run backend linters
         working-directory: src/backend
         run: yarn lint || true
-        
+
       - name: Run web linters
         working-directory: src/web
         run: yarn lint || true
-        
+
       - name: Run backend tests
         working-directory: src/backend
         run: yarn test || true
-        
+
       - name: Run web tests
         working-directory: src/web
         run: yarn test || true
-        
+
       - name: Build backend
         working-directory: src/backend
         run: yarn build
-        
+
       - name: Build web
         working-directory: src/web
         run: yarn build
-        
+
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-        
+        uses: docker/setup-buildx-action@v3
+
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: Build and push gamification-engine container
-        uses: docker/build-push-action@v2
+
+      - name: Build and push api-gateway
+        uses: docker/build-push-action@v5
         with:
-          context: ./src/backend/gamification-engine
+          context: ./src/backend
+          file: ./src/backend/api-gateway/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/austa-gamification-engine:${{ github.sha }},ghcr.io/${{ github.repository_owner }}/austa-gamification-engine:latest
-          
-      - name: Build and push api-gateway container
-        uses: docker/build-push-action@v2
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/austa-api-gateway:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner }}/austa-api-gateway:latest
+
+      - name: Build and push auth-service
+        uses: docker/build-push-action@v5
         with:
-          context: ./src/backend/api-gateway
+          context: ./src/backend
+          file: ./src/backend/auth-service/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/austa-api-gateway:${{ github.sha }},ghcr.io/${{ github.repository_owner }}/austa-api-gateway:latest
-          
-      - name: Build and push auth-service container
-        uses: docker/build-push-action@v2
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/austa-auth-service:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner }}/austa-auth-service:latest
+
+      - name: Build and push gamification-engine
+        uses: docker/build-push-action@v5
         with:
-          context: ./src/backend/auth-service
+          context: ./src/backend
+          file: ./src/backend/gamification-engine/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/austa-auth-service:${{ github.sha }},ghcr.io/${{ github.repository_owner }}/austa-auth-service:latest
-          
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/austa-gamification-engine:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner }}/austa-gamification-engine:latest
+
+      - name: Build and push health-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./src/backend
+          file: ./src/backend/health-service/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/austa-health-service:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner }}/austa-health-service:latest
+
+      - name: Build and push care-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./src/backend
+          file: ./src/backend/care-service/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/austa-care-service:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner }}/austa-care-service:latest
+
+      - name: Build and push plan-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./src/backend
+          file: ./src/backend/plan-service/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/austa-plan-service:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner }}/austa-plan-service:latest
+
+      - name: Build and push notification-service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./src/backend
+          file: ./src/backend/notification-service/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/austa-notification-service:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner }}/austa-notification-service:latest
+
   deploy:
     runs-on: ubuntu-latest
     needs: build-and-push
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-        
+        uses: actions/checkout@v4
+
       - name: Set up Kubernetes CLI
-        uses: azure/setup-kubectl@v1
-        
+        uses: azure/setup-kubectl@v3
+
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: sa-east-1
-          
+
       - name: Update kubeconfig
         run: aws eks update-kubeconfig --name austa-staging-cluster --region sa-east-1
-        
-      - name: Update deployment image tags
+
+      - name: Update image tags
         run: |
-          # Update image tags in deployment files
-          sed -i "s|ghcr.io/${{ github.repository_owner }}/austa-gamification-engine:latest|ghcr.io/${{ github.repository_owner }}/austa-gamification-engine:${{ github.sha }}|g" infrastructure/kubernetes/gamification/deployment.yaml
-          sed -i "s|ghcr.io/${{ github.repository_owner }}/austa-api-gateway:latest|ghcr.io/${{ github.repository_owner }}/austa-api-gateway:${{ github.sha }}|g" infrastructure/kubernetes/api-gateway/deployment.yaml
-          sed -i "s|ghcr.io/${{ github.repository_owner }}/austa-auth-service:latest|ghcr.io/${{ github.repository_owner }}/austa-auth-service:${{ github.sha }}|g" infrastructure/kubernetes/auth-service/deployment.yaml
-        
-      - name: Deploy to Kubernetes
+          sed -i 's|image:.*austa-api-gateway.*|image: ghcr.io/${{ github.repository_owner }}/austa-api-gateway:${{ github.sha }}|' infrastructure/kubernetes/api-gateway/deployment.yaml
+          sed -i 's|image:.*austa-auth-service.*|image: ghcr.io/${{ github.repository_owner }}/austa-auth-service:${{ github.sha }}|' infrastructure/kubernetes/auth-service/deployment.yaml
+          sed -i 's|image:.*austa-gamification-engine.*|image: ghcr.io/${{ github.repository_owner }}/austa-gamification-engine:${{ github.sha }}|' infrastructure/kubernetes/gamification/deployment.yaml
+          sed -i 's|image:.*austa-health-service.*|image: ghcr.io/${{ github.repository_owner }}/austa-health-service:${{ github.sha }}|' infrastructure/kubernetes/health-journey/deployment.yaml
+          sed -i 's|image:.*austa-care-service.*|image: ghcr.io/${{ github.repository_owner }}/austa-care-service:${{ github.sha }}|' infrastructure/kubernetes/care-journey/deployment.yaml
+          sed -i 's|image:.*austa-plan-service.*|image: ghcr.io/${{ github.repository_owner }}/austa-plan-service:${{ github.sha }}|' infrastructure/kubernetes/plan-journey/deployment.yaml
+          sed -i 's|image:.*austa-notification-service.*|image: ghcr.io/${{ github.repository_owner }}/austa-notification-service:${{ github.sha }}|' infrastructure/kubernetes/notification-service/deployment.yaml
+
+      - name: Apply network policies
         run: |
-          # Apply network policies first
+          kubectl apply -f infrastructure/kubernetes/api-gateway/network-policy.yaml
+          kubectl apply -f infrastructure/kubernetes/auth-service/network-policy.yaml
           kubectl apply -f infrastructure/kubernetes/gamification/network-policy.yaml
-          
-          # Deploy services
-          kubectl apply -f infrastructure/kubernetes/gamification/deployment.yaml
-          kubectl apply -f infrastructure/kubernetes/api-gateway/deployment.yaml
-          kubectl apply -f infrastructure/kubernetes/auth-service/deployment.yaml
-          
-          # Apply service configurations
-          kubectl apply -f infrastructure/kubernetes/gamification/service.yaml
-          kubectl apply -f infrastructure/kubernetes/api-gateway/service.yaml
-          
-          # Apply ingress configurations
-          kubectl apply -f infrastructure/kubernetes/api-gateway/ingress.yaml
-          
-      - name: Wait for deployments to be ready
+          kubectl apply -f infrastructure/kubernetes/health-journey/network-policy.yaml
+          kubectl apply -f infrastructure/kubernetes/care-journey/network-policy.yaml
+          kubectl apply -f infrastructure/kubernetes/plan-journey/network-policy.yaml
+          kubectl apply -f infrastructure/kubernetes/notification-service/network-policy.yaml
+
+      - name: Apply Kubernetes manifests
         run: |
-          kubectl rollout status deployment/gamification-engine
-          kubectl rollout status deployment/api-gateway
-          kubectl rollout status deployment/auth-service
+          kubectl apply -f infrastructure/kubernetes/api-gateway/deployment.yaml
+          kubectl apply -f infrastructure/kubernetes/api-gateway/service.yaml
+          kubectl apply -f infrastructure/kubernetes/auth-service/deployment.yaml
+          kubectl apply -f infrastructure/kubernetes/auth-service/service.yaml
+          kubectl apply -f infrastructure/kubernetes/gamification/deployment.yaml
+          kubectl apply -f infrastructure/kubernetes/gamification/service.yaml
+          kubectl apply -f infrastructure/kubernetes/health-journey/deployment.yaml
+          kubectl apply -f infrastructure/kubernetes/health-journey/service.yaml
+          kubectl apply -f infrastructure/kubernetes/care-journey/deployment.yaml
+          kubectl apply -f infrastructure/kubernetes/care-journey/service.yaml
+          kubectl apply -f infrastructure/kubernetes/plan-journey/deployment.yaml
+          kubectl apply -f infrastructure/kubernetes/plan-journey/service.yaml
+          kubectl apply -f infrastructure/kubernetes/notification-service/deployment.yaml
+          kubectl apply -f infrastructure/kubernetes/notification-service/service.yaml
+          kubectl apply -f infrastructure/kubernetes/api-gateway/ingress.yaml
+
+      - name: Wait for rollouts
+        run: |
+          kubectl rollout status deployment/api-gateway --timeout=300s
+          kubectl rollout status deployment/auth-service --timeout=300s
+          kubectl rollout status deployment/gamification-engine --timeout=300s
+          kubectl rollout status deployment/health-journey --timeout=300s
+          kubectl rollout status deployment/care-service --timeout=300s
+          kubectl rollout status deployment/plan-journey --timeout=300s
+          kubectl rollout status deployment/notification-service --timeout=300s

@@ -1,14 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth-service
+  name: notification-service
   labels:
-    app: auth-service
+    app: notification-service
+    tier: backend
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: auth-service
+      app: notification-service
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -17,26 +18,35 @@ spec:
   template:
     metadata:
       labels:
-        app: auth-service
+        app: notification-service
+        tier: backend
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
-      - name: auth-service
-        image: ghcr.io/austa-superapp/auth-service:latest
+      - name: notification-service
+        image: ghcr.io/austa-superapp/notification-service:latest
         imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 3000
-          name: http
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+              - ALL
+        ports:
+        - containerPort: 3006
+          name: http
         envFrom:
         - configMapRef:
-            name: auth-service-config
+            name: notification-service-config
         - secretRef:
-            name: auth-service-secrets
+            name: notification-service-secrets
         resources:
           requests:
-            cpu: "500m"
+            cpu: "250m"
             memory: "512Mi"
           limits:
             cpu: "1000m"
@@ -53,13 +63,15 @@ spec:
           httpGet:
             path: /health/ready
             port: http
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 5
+          initialDelaySeconds: 15
+          periodSeconds: 5
+          timeoutSeconds: 3
           failureThreshold: 3
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
+        volumeMounts:
+        - name: tmp-volume
+          mountPath: /tmp
+      volumes:
+      - name: tmp-volume
+        emptyDir: {}
       imagePullSecrets:
       - name: github-container-registry

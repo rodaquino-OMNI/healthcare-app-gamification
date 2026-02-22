@@ -18,6 +18,7 @@ services:
       CARE_SERVICE_URL: http://care-service:3003
       PLAN_SERVICE_URL: http://plan-service:3004
       GAMIFICATION_ENGINE_URL: http://gamification-engine:3005
+      NOTIFICATION_SERVICE_URL: http://notification-service:3006
       REDIS_HOST: redis
       REDIS_PORT: 6379
     depends_on:
@@ -29,6 +30,12 @@ services:
       - redis
     networks:
       - austa-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   auth-service:
     image: austa-auth-service:latest
@@ -50,6 +57,12 @@ services:
       - redis
     networks:
       - austa-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   health-service:
     image: austa-health-service:latest
@@ -72,6 +85,12 @@ services:
       - kafka
     networks:
       - austa-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   care-service:
     image: austa-care-service:latest
@@ -94,6 +113,12 @@ services:
       - kafka
     networks:
       - austa-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   plan-service:
     image: austa-plan-service:latest
@@ -116,6 +141,12 @@ services:
       - kafka
     networks:
       - austa-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3004/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   gamification-engine:
     image: austa-gamification-engine:latest
@@ -138,6 +169,12 @@ services:
       - kafka
     networks:
       - austa-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3005/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   notification-service:
     image: austa-notification-service:latest
@@ -160,6 +197,12 @@ services:
       - kafka
     networks:
       - austa-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3006/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   postgres:
     image: postgres:14

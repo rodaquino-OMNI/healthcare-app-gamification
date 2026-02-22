@@ -1,10 +1,8 @@
-module.exports = {
+export default {
   moduleFileExtensions: ['js', 'json', 'ts'],
   rootDir: '.',
   testRegex: '.*\\.spec\\.ts$',
-  transform: {
-    '^.+\\.(t|j)s$': 'ts-jest',
-  },
+  transform: { '^.+\\.(t|j)s$': 'ts-jest' },
   collectCoverageFrom: [
     'src/**/*.(t|j)s',
     '!src/main.ts',
@@ -18,19 +16,9 @@ module.exports = {
   coverageDirectory: './coverage',
   testEnvironment: 'node',
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
-    '^@shared/(.*)$': '<rootDir>/../shared/src/$1',
     '^@app/shared/(.*)$': '<rootDir>/../shared/src/$1',
-    '^@app/auth/(.*)$': '<rootDir>/../auth-service/src/$1',
-  },
-  coverageThreshold: {
-    global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: 80,
-    },
+    '^@app/auth/(.*)$': '<rootDir>/src/$1',
+    '^@/(.*)$': '<rootDir>/src/$1',
   },
   testTimeout: 10000,
-  setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
 };

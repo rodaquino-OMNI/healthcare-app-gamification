@@ -9,7 +9,8 @@ module.exports = {
 
   // Setup files to run after the test environment is set up
   setupFilesAfterEnv: [
-    '@testing-library/jest-native/extend-expect'
+    '@testing-library/jest-native/extend-expect',
+    '<rootDir>/jest.setup.js'
   ],
 
   // Transform files using babel-jest
@@ -49,8 +50,8 @@ module.exports = {
     '/e2e/'
   ],
 
-  // Test environment
-  testEnvironment: 'node',
+  // Test environment (jsdom needed for React Testing Library)
+  testEnvironment: 'jest-environment-jsdom',
 
   // Files to collect coverage from
   collectCoverageFrom: [
