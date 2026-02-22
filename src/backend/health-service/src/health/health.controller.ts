@@ -23,6 +23,8 @@ import { PaginationDto } from '@app/shared/dto/pagination.dto'; // Import Pagina
 import { AUTH_INSUFFICIENT_PERMISSIONS } from '@app/shared/constants/error-codes.constants'; // Import AUTH_INSUFFICIENT_PERMISSIONS for error code
 import { JwtAuthGuard } from '@app/auth/guards/jwt-auth.guard'; // NestJS JWT 10.0.0+
 import { RolesGuard } from '@app/auth/guards/roles.guard'; // NestJS JWT 10.0.0+
+import { ConsentGuard, RequireConsent } from '@app/shared/consent'; // LGPD consent guard
+import { ConsentType } from '@app/shared/consent'; // Consent type enum
 
 /**
  * Handles incoming HTTP requests related to health data.
@@ -48,9 +50,12 @@ export class HealthController {
    * @returns The newly created HealthMetric entity.
    */
   @Post(':recordId')
+  @UseGuards(ConsentGuard)
+  @RequireConsent(ConsentType.HEALTH_DATA_SHARING)
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new health metric' })
   @ApiResponse({ status: 201, description: 'Health metric created successfully' })
+  @ApiResponse({ status: 403, description: 'Consent not granted for health data sharing' })
   async createHealthMetric(
     @Param('recordId') recordId: string,
     @Body() createMetricDto: CreateMetricDto,
@@ -66,9 +71,12 @@ export class HealthController {
    * @returns The updated HealthMetric entity.
    */
   @Put(':id')
+  @UseGuards(ConsentGuard)
+  @RequireConsent(ConsentType.HEALTH_DATA_SHARING)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Update an existing health metric' })
   @ApiResponse({ status: 200, description: 'Health metric updated successfully' })
+  @ApiResponse({ status: 403, description: 'Consent not granted for health data sharing' })
   async updateHealthMetric(
     @Param('id') id: string,
     @Body() updateMetricDto: UpdateMetricDto,

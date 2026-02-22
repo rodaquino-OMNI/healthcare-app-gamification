@@ -12,6 +12,11 @@ const PHI_FIELDS: Record<string, string[]> = {
   HealthGoal: ['targetValue', 'currentValue'],
   Claim: ['procedureCode', 'amount'],
   Document: ['filename'],
+  User: ['cpf', 'phone', 'email'],
+  Medication: ['name', 'notes'],
+  Notification: ['body'],
+  Appointment: ['notes'],
+  DeviceConnection: ['authToken', 'refreshToken'],
 };
 
 /** Prisma actions that write data to the database. */

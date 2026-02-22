@@ -11,6 +11,7 @@ import { WearablesModule } from '../integrations/wearables/wearables.module';
 import { KafkaModule } from '@app/shared/kafka/kafka.module';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { RedisModule } from '@app/shared/redis/redis.module';
+import { ConsentModule } from '@app/shared/consent';
 
 /**
  * Configures the HealthModule, which aggregates the controller and service responsible for managing health data.
@@ -18,6 +19,7 @@ import { RedisModule } from '@app/shared/redis/redis.module';
 @Module({
   imports: [
     ConfigModule,
+    ConsentModule,
     DevicesModule,
     ExceptionsModule,
     LoggerModule,
