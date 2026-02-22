@@ -14,6 +14,7 @@ import { LoggerModule } from '@app/shared/logging/logger.module';
 import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
 import { RedisModule } from '@app/shared/redis/redis.module';
 import { TracingModule } from '@app/shared/tracing/tracing.module';
+import { HealthModule } from './health/health.module';
 
 /**
  * Root module for the Plan Service that configures and organizes all the necessary components.
@@ -38,6 +39,7 @@ import { TracingModule } from '@app/shared/tracing/tracing.module';
     InsuranceModule,
     AuditModule,
     DatabaseModule,
+    HealthModule,
   ],
   controllers: [],
   providers: [{ provide: APP_INTERCEPTOR, useClass: AuditInterceptor }],

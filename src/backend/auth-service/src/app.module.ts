@@ -13,6 +13,7 @@ import { TracingModule } from '@app/shared/tracing/tracing.module';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { KafkaModule } from '@app/shared/kafka/kafka.module';
 import { RedisModule } from '@app/shared/redis/redis.module';
+import { HealthModule } from './health/health.module';
 
 /**
  * Root module for the Auth Service that configures all necessary components.
@@ -36,6 +37,7 @@ import { RedisModule } from '@app/shared/redis/redis.module';
     KafkaModule,
     RedisModule,
     AuditModule,
+    HealthModule,
   ],
   providers: [PrismaService, { provide: APP_INTERCEPTOR, useClass: AuditInterceptor }],
 })

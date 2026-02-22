@@ -15,6 +15,7 @@ import { RedisModule } from '../../shared/src/redis/redis.module'; // Provides c
 import { TracingModule } from '../../shared/src/tracing/tracing.module'; // Enables distributed tracing for monitoring and debugging
 import { health } from './config/configuration'; // Configuration function for the Health Service
 import { validationSchema } from './config/validation.schema'; // Validation schema for environment variables
+import { HealthCheckModule } from './healthcheck/healthcheck.module'; // Health check endpoint for service liveness/readiness
 
 /**
  * Root module for the Health Service that orchestrates all components required for the My Health Journey.
@@ -39,6 +40,7 @@ import { validationSchema } from './config/validation.schema'; // Validation sch
     FhirModule, // Imports the FhirModule for integrating with external health record systems.
     WearablesModule, // Imports the WearablesModule for integrating with wearable devices.
     AuditModule,
+    HealthCheckModule, // Health check endpoint for service liveness/readiness probes.
   ],
   controllers: [], // No controllers are defined directly in the AppModule.
   providers: [PrismaService, { provide: APP_INTERCEPTOR, useClass: AuditInterceptor }], // Provides the PrismaService for database access.

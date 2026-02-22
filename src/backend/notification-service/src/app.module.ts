@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 import { AuditModule, AuditInterceptor } from '@app/shared/audit';
+import { DatabaseModule } from '@app/shared/database/database.module';
 
 import { NotificationsModule } from './notifications/notifications.module';
 import { PreferencesModule } from './preferences/preferences.module';
@@ -14,7 +14,7 @@ import { KafkaModule } from '@app/shared/kafka/kafka.module';
 import { LoggerModule } from '@app/shared/logging/logger.module';
 import { RedisModule } from '@app/shared/redis/redis.module';
 import { TracingModule } from '@app/shared/tracing/tracing.module';
-import { Notification } from './notifications/entities/notification.entity';
+import { HealthModule } from './health/health.module';
 
 /**
  * Main module for the Notification Service that configures all required components.
@@ -26,21 +26,7 @@ import { Notification } from './notifications/entities/notification.entity';
       validationSchema,
       isGlobal: true,
     }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('DATABASE_HOST', 'localhost'),
-        port: configService.get<number>('DATABASE_PORT', 5432),
-        username: configService.get<string>('DATABASE_USERNAME', 'postgres'),
-        password: configService.get<string>('DATABASE_PASSWORD', 'postgres'),
-        database: configService.get<string>('DATABASE_NAME', 'notifications'),
-        entities: [Notification],
-        synchronize: configService.get<string>('NODE_ENV') !== 'production',
-        logging: configService.get<string>('NODE_ENV') !== 'production',
-      }),
-    }),
+    DatabaseModule,
     NotificationsModule,
     PreferencesModule,
     TemplatesModule,
@@ -50,6 +36,7 @@ import { Notification } from './notifications/entities/notification.entity';
     RedisModule,
     TracingModule,
     AuditModule,
+    HealthModule,
   ],
   providers: [{ provide: APP_INTERCEPTOR, useClass: AuditInterceptor }],
 })

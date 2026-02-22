@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core'; // NestJS Core 10.0.0+
+import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { health } from './config/configuration';
 import { LoggerModule } from '../../shared/src/logging/logger.module';
@@ -41,6 +42,33 @@ async function bootstrap(): Promise<void> {
 
   // LD1: Start the application, listening on the configured port.
   // IE1: The health function is imported from the configuration file and is used to get the port.
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+      validationError: {
+        target: false,
+        value: true,
+      },
+    }),
+  );
+
+  app.enableCors({
+    origin: [
+      "https://app.austa.com.br",
+      /\.austa\.com\.br$/
+    ],
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+    credentials: true
+  });
+
   await app.listen(config.port);
 }
 

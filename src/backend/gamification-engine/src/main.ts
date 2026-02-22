@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NestFactory } from '@nestjs/core'; // v10.0.0+
+import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 import { KafkaConsumerService } from './events/kafka/kafka.consumer';
@@ -68,6 +69,32 @@ async function bootstrap(): Promise<void> {
       .build();
     const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
     SwaggerModule.setup('api/docs', app, swaggerDocument);
+
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        transform: true,
+        forbidNonWhitelisted: true,
+        transformOptions: {
+          enableImplicitConversion: true,
+        },
+        validationError: {
+          target: false,
+          value: true,
+        },
+      }),
+    );
+
+    app.enableCors({
+      origin: [
+        "https://app.austa.com.br",
+        /\.austa\.com\.br$/
+      ],
+      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+      preflightContinue: false,
+      optionsSuccessStatus: 204,
+      credentials: true
+    });
 
     // Starts listening for incoming requests.
     await app.listen(port);

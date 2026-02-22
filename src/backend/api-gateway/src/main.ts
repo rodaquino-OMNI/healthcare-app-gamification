@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core'; // @nestjs/core v10.0.0+
+import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { configuration } from './config/configuration';
 import { AuthMiddleware } from './middleware/auth.middleware';
@@ -47,6 +48,33 @@ async function bootstrap() {
 
   // LD1: Starts the server and listens for incoming requests on the configured port.
   const port = config.port || 4000;
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+      validationError: {
+        target: false,
+        value: true,
+      },
+    }),
+  );
+
+  app.enableCors({
+    origin: [
+      "https://app.austa.com.br",
+      /\.austa\.com\.br$/
+    ],
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+    credentials: true
+  });
+
   await app.listen(port);
 
   // LD1, S1: Logs a message indicating that the server has started successfully.

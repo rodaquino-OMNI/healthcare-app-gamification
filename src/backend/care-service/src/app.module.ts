@@ -16,6 +16,7 @@ import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
 import { KafkaModule } from '@app/shared/kafka/kafka.module';
 import { LoggerModule } from '@app/shared/logging/logger.module';
 import { RedisModule } from '@app/shared/redis/redis.module';
+import { HealthModule } from './health/health.module';
 
 /**
  * Root module for the Care Service that configures and organizes all the necessary modules, controllers,
@@ -59,6 +60,7 @@ import { RedisModule } from '@app/shared/redis/redis.module';
     // RedisModule: Provides Redis integration for caching and real-time features.
     RedisModule,
     AuditModule,
+    HealthModule,
   ],
   // PrismaService: Provides database access through Prisma ORM.
   providers: [PrismaService, { provide: APP_INTERCEPTOR, useClass: AuditInterceptor }],

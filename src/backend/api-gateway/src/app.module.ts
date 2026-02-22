@@ -17,6 +17,7 @@ import { AppModule as CareAppModule } from '@app/care/app.module';
 import { ClaimsModule } from '@app/plan/claims/claims.module';
 import { AchievementsModule } from '@app/gamification/achievements/achievements.module';
 import { NotificationsModule } from '@app/notifications/notifications/notifications.module';
+import { GatewayHealthModule } from './health/health.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -29,7 +30,7 @@ import { NotificationsModule } from '@app/notifications/notifications/notificati
       playground: process.env.NODE_ENV !== 'production',
       debug: process.env.NODE_ENV !== 'production',
       resolvers: resolvers,
-    }), ExceptionsModule, TracingModule, AuditModule, AuthModule, HealthModule, CareAppModule, ClaimsModule, AchievementsModule, NotificationsModule],
+    }), ExceptionsModule, TracingModule, AuditModule, AuthModule, HealthModule, CareAppModule, ClaimsModule, AchievementsModule, NotificationsModule, GatewayHealthModule],
   controllers: [],
   providers: [{ provide: APP_INTERCEPTOR, useClass: AuditInterceptor }],
 })

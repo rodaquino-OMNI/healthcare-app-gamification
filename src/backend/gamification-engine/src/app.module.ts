@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common'; // v10.0.0+
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { ConfigModule, ConfigService } from '@nestjs/config'; // v3.1.1
+import { ConfigModule } from '@nestjs/config'; // v3.1.1
 import { AuditModule, AuditInterceptor } from '@app/shared/audit';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { DatabaseModule } from '@app/shared/database/database.module';
 import { AchievementsModule } from './achievements/achievements.module';
 import { EventsModule } from './events/events.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
@@ -18,7 +18,7 @@ import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
 import { gamificationEngine } from './config/configuration';
 import { databaseConfig } from './config/database.config';
 import { validationSchema } from './config/validation.schema';
-import { DatabaseErrorHandler } from './database/database-error.handler';
+import { HealthModule } from './health/health.module';
 
 /**
  * Root module for the Gamification Engine service.
@@ -38,25 +38,21 @@ import { DatabaseErrorHandler } from './database/database-error.handler';
       },
       cache: true, // Important for preventing reload issues
     }),
-    
-    // Add TypeORM configuration with async factory to ensure config is loaded first
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: DatabaseErrorHandler.createTypeOrmOptions,
-    }),
-    
+
+    // Global database module providing PrismaService
+    DatabaseModule,
+
     // Shared infrastructure modules
     LoggerModule,
     ExceptionsModule,
     TracingModule,
-    
-    // Data storage modules 
+
+    // Data storage modules
     RedisModule,
-    
+
     // Messaging modules
     KafkaModule,
-    
+
     // Feature modules - order matters for proper initialization
     ProfilesModule,    // Load first as other modules depend on profiles
     AchievementsModule,
@@ -66,8 +62,9 @@ import { DatabaseErrorHandler } from './database/database-error.handler';
     LeaderboardModule,
     EventsModule,
     AuditModule,
+    HealthModule,
   ],
   controllers: [],
-  providers: [DatabaseErrorHandler, { provide: APP_INTERCEPTOR, useClass: AuditInterceptor }],
+  providers: [{ provide: APP_INTERCEPTOR, useClass: AuditInterceptor }],
 })
 export class AppModule {}
