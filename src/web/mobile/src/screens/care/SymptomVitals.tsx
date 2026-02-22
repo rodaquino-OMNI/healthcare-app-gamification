@@ -6,6 +6,8 @@ import { Button } from '@austa/design-system/src/components/Button/Button';
 import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { ROUTES } from '../../../../constants/routes';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 
@@ -81,6 +83,8 @@ const validateVital = (
  */
 const SymptomVitals: React.FC = () => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const navigation = useNavigation<any>();
   const route = useRoute<RouteProp<{ params: SymptomVitalsRouteParams }, 'params'>>();
   const {
@@ -350,7 +354,7 @@ const SymptomVitals: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: colors.journeys.care.background,
@@ -384,13 +388,13 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
+    borderColor: theme.colors.border.default,
     borderRadius: spacingValues.xs,
     paddingVertical: spacingValues.sm,
     paddingHorizontal: spacingValues.sm,
     fontSize: 16,
     color: colors.journeys.care.text,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
   },
   textInputError: {
     borderColor: colors.semantic.error,

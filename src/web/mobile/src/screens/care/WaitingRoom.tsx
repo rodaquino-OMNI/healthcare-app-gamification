@@ -9,6 +9,8 @@ import { Text } from 'src/web/design-system/src/primitives/Text/Text';
 import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader';
 import { ROUTES } from 'src/web/mobile/src/constants/routes';
 import { colors } from 'src/web/design-system/src/tokens/colors';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from 'src/web/design-system/src/themes/base.theme';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -52,6 +54,8 @@ const WaitingRoom: React.FC = () => {
   const route = useRoute<any>();
   const { appointmentId } = route.params as WaitingRoomRouteParams;
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
 
   const [countdown, setCountdown] = useState(INITIAL_COUNTDOWN);
   const [equipmentChecks, setEquipmentChecks] = useState<EquipmentCheck[]>([
@@ -220,7 +224,7 @@ const WaitingRoom: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.journeys.care.background,
@@ -246,7 +250,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     paddingVertical: 16,
     paddingHorizontal: 32,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: 16,
     borderWidth: 2,
     borderColor: colors.journeys.care.primary,

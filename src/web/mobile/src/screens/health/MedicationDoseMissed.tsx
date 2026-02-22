@@ -7,6 +7,8 @@ import {
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 
 import { ROUTES } from '../../constants/routes';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
@@ -52,6 +54,8 @@ const MISSED_REASONS: MissedReason[] = [
 export const MedicationDoseMissed: React.FC = () => {
   const navigation = useNavigation<any>();
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const route = useRoute<RouteProp<DoseMissedRouteParams, 'MedicationDoseMissed'>>();
 
   const medicationName = route.params?.medicationName ?? t('medication.doseMissed.defaultName');
@@ -233,7 +237,7 @@ export const MedicationDoseMissed: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.journeys.health.background,
@@ -270,8 +274,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacingValues.md,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
   },
   reasonItemSelected: {
     borderColor: colors.journeys.health.primary,
@@ -310,10 +314,10 @@ const styles = StyleSheet.create({
   timeInput: {
     fontSize: 18,
     fontWeight: '600',
-    color: colors.neutral.gray900,
+    color: theme.colors.text.default,
     paddingVertical: spacingValues.xs,
     borderBottomWidth: 1,
-    borderBottomColor: colors.neutral.gray300,
+    borderBottomColor: theme.colors.border.default,
   },
   actionsContainer: {
     marginTop: spacingValues['2xl'],

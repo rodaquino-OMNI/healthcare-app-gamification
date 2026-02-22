@@ -72,14 +72,14 @@ const MOCK_DOCUMENTS: InsuranceDocument[] = [
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const Title = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-lg']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   padding-horizontal: ${spacing.xl};
   padding-top: ${spacing['2xl']};
   padding-bottom: ${spacing.md};
@@ -117,10 +117,10 @@ const DocumentCard = styled.View`
   margin-horizontal: ${spacing.xl};
   margin-top: ${spacing.sm};
   padding: ${spacing.md};
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   border-radius: ${borderRadius.lg};
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
 `;
 
 const DocIconContainer = styled.View`
@@ -148,7 +148,7 @@ const DocName = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing['3xs']};
 `;
 
@@ -161,13 +161,13 @@ const DocDate = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
 `;
 
 const DocSeparator = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
-  color: ${colors.gray[30]};
+  color: ${({ theme }) => theme.colors.text.muted};
   margin-horizontal: ${spacing['3xs']};
 `;
 
@@ -175,14 +175,14 @@ const DocSize = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
 `;
 
 const DownloadButton = styled.TouchableOpacity`
   width: ${sizing.component.sm};
   height: ${sizing.component.sm};
   border-radius: ${borderRadius.md};
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   align-items: center;
   justify-content: center;
 `;
@@ -206,7 +206,7 @@ const EmptyText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-align: center;
 `;
 

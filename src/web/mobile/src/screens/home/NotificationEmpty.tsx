@@ -14,7 +14,7 @@ import { ROUTES } from '../../constants/routes';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const Header = styled.View`
@@ -23,7 +23,7 @@ const Header = styled.View`
   padding-horizontal: ${spacing.md};
   padding-vertical: ${spacing.sm};
   border-bottom-width: 1px;
-  border-bottom-color: ${colors.gray[20]};
+  border-bottom-color: ${({ theme }) => theme.colors.border.default};
 `;
 
 const BackButton = styled.TouchableOpacity`
@@ -36,7 +36,7 @@ const BackButton = styled.TouchableOpacity`
 const BackText = styled.Text`
   font-size: ${typography.fontSize['text-xl']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const HeaderTitle = styled.Text`
@@ -44,7 +44,7 @@ const HeaderTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['text-lg']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   text-align: center;
 `;
 
@@ -63,7 +63,7 @@ const EmptyIconContainer = styled.View`
   width: 96px;
   height: 96px;
   border-radius: ${borderRadius.full};
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   align-items: center;
   justify-content: center;
   margin-bottom: ${spacing.xl};
@@ -77,7 +77,7 @@ const EmptyTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['text-xl']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   text-align: center;
   margin-bottom: ${spacing.sm};
 `;
@@ -85,7 +85,7 @@ const EmptyTitle = styled.Text`
 const EmptyDescription = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-align: center;
   line-height: 24px;
   margin-bottom: ${spacing['2xl']};
@@ -102,7 +102,7 @@ const GoHomeText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 // --- Component ---

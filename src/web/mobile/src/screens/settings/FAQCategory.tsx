@@ -14,7 +14,7 @@ import { borderRadius } from '../../../../design-system/src/tokens/borderRadius'
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const Header = styled.View`
@@ -27,7 +27,7 @@ const Title = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['text-2xl']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const FAQList = styled.View`
@@ -39,7 +39,7 @@ const FAQItem = styled.View`
   margin-bottom: ${spacing.sm};
   border-radius: ${borderRadius.md};
   border-width: 1px;
-  border-color: ${colors.gray[10]};
+  border-color: ${({ theme }) => theme.colors.border.muted};
   overflow: hidden;
 `;
 
@@ -49,28 +49,28 @@ const QuestionRow = styled.TouchableOpacity`
   justify-content: space-between;
   padding-horizontal: ${spacing.lg};
   padding-vertical: ${spacing.md};
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const QuestionText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   flex: 1;
   margin-right: ${spacing.sm};
 `;
 
 const ExpandIcon = styled.Text<{ expanded: boolean }>`
   font-size: ${typography.fontSize['text-lg']};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
   transform: ${(props) => (props.expanded ? 'rotate(90deg)' : 'rotate(0deg)')};
 `;
 
 const AnswerContainer = styled.View`
   padding-horizontal: ${spacing.lg};
   padding-bottom: ${spacing.md};
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
 `;
 
 const AnswerText = styled.Text`
@@ -95,7 +95,7 @@ const ViewDetailText = styled.Text`
 const EmptyText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-align: center;
   margin-top: ${spacing['2xl']};
 `;

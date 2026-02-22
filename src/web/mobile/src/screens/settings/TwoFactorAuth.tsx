@@ -19,7 +19,7 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const ContentWrapper = styled.View`
@@ -36,14 +36,14 @@ const SectionTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-md']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.xs};
 `;
 
 const SectionDescription = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   line-height: 20px;
 `;
 
@@ -53,7 +53,7 @@ const MasterToggleRow = styled.View`
   justify-content: space-between;
   padding-vertical: ${spacing.md};
   padding-horizontal: ${spacing.md};
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   border-radius: ${borderRadius.md};
   margin-bottom: ${spacing.xl};
 `;
@@ -62,7 +62,7 @@ const MasterToggleLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   flex: 1;
   margin-right: ${spacing.md};
 `;
@@ -80,14 +80,14 @@ const StatusBadgeText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const MethodLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray700};
+  color: ${({ theme }) => theme.colors.text.default};
   text-transform: uppercase;
   letter-spacing: ${typography.letterSpacing.wide};
   margin-bottom: ${spacing.sm};
@@ -133,20 +133,20 @@ const MethodCardTitle = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const MethodCardDescription = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   margin-top: ${spacing['3xs']};
 `;
 
 const DetailSection = styled.View`
   margin-top: ${spacing.lg};
   padding: ${spacing.md};
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   border-radius: ${borderRadius.md};
 `;
 
@@ -159,7 +159,7 @@ const PhoneRow = styled.View`
 const PhoneText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const LinkButton = styled.TouchableOpacity`
@@ -177,25 +177,25 @@ const QRPlaceholder = styled.View`
   width: 200px;
   height: 200px;
   border-width: 2px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
   border-radius: ${borderRadius.md};
   align-items: center;
   justify-content: center;
   align-self: center;
   margin-vertical: ${spacing.md};
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const QRText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
 `;
 
 const InstructionsText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   line-height: 20px;
   text-align: center;
 `;
@@ -213,7 +213,7 @@ const DangerButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 // --- Types ---

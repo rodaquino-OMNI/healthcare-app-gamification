@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
@@ -106,7 +108,10 @@ interface DoctorCardProps {
 /**
  * Renders a single doctor search result card.
  */
-export const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onPress }) => (
+export const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onPress }) => {
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
+  return (
   <TouchableOpacity
     style={styles.resultCard}
     onPress={onPress}
@@ -132,7 +137,8 @@ export const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onPress }) => (
       </View>
     </View>
   </TouchableOpacity>
-);
+  );
+};
 
 interface MedicationCardProps {
   medication: MedicationResult;
@@ -142,7 +148,10 @@ interface MedicationCardProps {
 /**
  * Renders a single medication search result card.
  */
-export const MedicationCard: React.FC<MedicationCardProps> = ({ medication, onPress }) => (
+export const MedicationCard: React.FC<MedicationCardProps> = ({ medication, onPress }) => {
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
+  return (
   <TouchableOpacity
     style={styles.resultCard}
     onPress={onPress}
@@ -165,7 +174,8 @@ export const MedicationCard: React.FC<MedicationCardProps> = ({ medication, onPr
       </View>
     </View>
   </TouchableOpacity>
-);
+  );
+};
 
 interface ArticleCardProps {
   article: ArticleResult;
@@ -175,6 +185,8 @@ interface ArticleCardProps {
  * Renders a single article search result card.
  */
 export const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const { t } = useTranslation();
   return (
   <TouchableOpacity
@@ -209,9 +221,9 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
 // Styles
 // ---------------------------------------------------------------------------
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   resultCard: {
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: borderRadiusValues.md,
     padding: spacingValues.md,
     marginBottom: spacingValues.sm,
@@ -221,7 +233,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 1,
     borderWidth: 1,
-    borderColor: colors.gray[20],
+    borderColor: theme.colors.border.default,
   },
   // Doctor card styles
   doctorRow: {
@@ -246,12 +258,12 @@ const styles = StyleSheet.create({
   doctorName: {
     fontSize: fontSizeValues.md,
     fontWeight: String(typography.fontWeight.semiBold) as '600',
-    color: colors.gray[70],
+    color: theme.colors.text.default,
     marginBottom: spacingValues['4xs'],
   },
   doctorSpecialty: {
     fontSize: fontSizeValues.sm,
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
     marginBottom: spacingValues['3xs'],
   },
   ratingRow: {
@@ -266,7 +278,7 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     fontSize: fontSizeValues.xs,
-    color: colors.gray[40],
+    color: theme.colors.text.subtle,
   },
   availableText: {
     fontSize: fontSizeValues.xs,
@@ -295,17 +307,17 @@ const styles = StyleSheet.create({
   medicationName: {
     fontSize: fontSizeValues.md,
     fontWeight: String(typography.fontWeight.semiBold) as '600',
-    color: colors.gray[70],
+    color: theme.colors.text.default,
     marginBottom: spacingValues['4xs'],
   },
   medicationDosage: {
     fontSize: fontSizeValues.sm,
-    color: colors.gray[60],
+    color: theme.colors.text.default,
     marginBottom: spacingValues['4xs'],
   },
   medicationFrequency: {
     fontSize: fontSizeValues.xs,
-    color: colors.gray[40],
+    color: theme.colors.text.subtle,
     marginBottom: spacingValues['3xs'],
   },
   categoryBadge: {
@@ -327,7 +339,7 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: borderRadiusValues.md,
-    backgroundColor: colors.gray[10],
+    backgroundColor: theme.colors.background.subtle,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: spacingValues.sm,
@@ -341,18 +353,18 @@ const styles = StyleSheet.create({
   articleTitle: {
     fontSize: fontSizeValues.md,
     fontWeight: String(typography.fontWeight.semiBold) as '600',
-    color: colors.gray[70],
+    color: theme.colors.text.default,
     marginTop: spacingValues['3xs'],
     marginBottom: spacingValues['3xs'],
   },
   articleSummary: {
     fontSize: fontSizeValues.sm,
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
     lineHeight: fontSizeValues.sm * typography.lineHeight.base,
     marginBottom: spacingValues['3xs'],
   },
   readTime: {
     fontSize: fontSizeValues.xs,
-    color: colors.gray[40],
+    color: theme.colors.text.subtle,
   },
 });

@@ -8,6 +8,8 @@ import { Badge } from '@austa/design-system/src/components/Badge/Badge';
 import { ProgressBar } from '@austa/design-system/src/components/ProgressBar/ProgressBar';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { ROUTES } from '../../../../constants/routes';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 
@@ -63,6 +65,8 @@ export const PreVisitChecklist: React.FC = () => {
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const { appointmentId, appointmentType } = route.params as RouteParams;
 
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
@@ -196,7 +200,7 @@ export const PreVisitChecklist: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.journeys.care.background },
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
@@ -209,11 +213,11 @@ const styles = StyleSheet.create({
   checklistItem: {
     flexDirection: 'row', alignItems: 'center', gap: spacingValues.sm,
     paddingVertical: spacingValues.xs, paddingHorizontal: spacingValues.sm,
-    borderRadius: spacingValues.xs, backgroundColor: colors.neutral.white,
+    borderRadius: spacingValues.xs, backgroundColor: theme.colors.background.default,
   },
   checkbox: {
     width: 22, height: 22, borderRadius: 4,
-    borderWidth: 2, borderColor: colors.neutral.gray300, alignItems: 'center', justifyContent: 'center',
+    borderWidth: 2, borderColor: theme.colors.border.default, alignItems: 'center', justifyContent: 'center',
   },
   checkboxChecked: { backgroundColor: colors.journeys.care.primary, borderColor: colors.journeys.care.primary },
   textStrikethrough: { textDecorationLine: 'line-through' },

@@ -14,7 +14,7 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const Header = styled.View`
@@ -23,7 +23,7 @@ const Header = styled.View`
   padding-horizontal: ${spacing.md};
   padding-vertical: ${spacing.sm};
   border-bottom-width: 1px;
-  border-bottom-color: ${colors.gray[20]};
+  border-bottom-color: ${({ theme }) => theme.colors.border.default};
 `;
 
 const BackButton = styled.TouchableOpacity`
@@ -36,7 +36,7 @@ const BackButton = styled.TouchableOpacity`
 const BackText = styled.Text`
   font-size: ${typography.fontSize['text-xl']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const HeaderTitle = styled.Text`
@@ -44,7 +44,7 @@ const HeaderTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['text-lg']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   text-align: center;
 `;
 
@@ -56,7 +56,7 @@ const SectionLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-transform: uppercase;
   letter-spacing: ${typography.letterSpacing.wide};
   padding-horizontal: ${spacing.md};
@@ -82,7 +82,7 @@ const TipTitle = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
   margin-top: ${spacing.sm};
 `;
 
@@ -90,7 +90,7 @@ const ReadMoreText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
   opacity: 0.8;
 `;
 
@@ -103,12 +103,12 @@ const FeaturedTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['text-lg']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.sm};
 `;
 
 const FeaturedCard = styled.TouchableOpacity`
-  background-color: ${colors.gray[5]};
+  background-color: ${({ theme }) => theme.colors.background.muted};
   border-radius: ${borderRadius.md};
   padding: ${spacing.md};
   margin-bottom: ${spacing.sm};
@@ -129,14 +129,14 @@ const FeaturedCardTitle = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing['4xs']};
 `;
 
 const FeaturedCardDescription = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
 `;
 
 // --- Types ---

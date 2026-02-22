@@ -39,14 +39,14 @@ const LOCALE_FORMATS: Record<LanguageCode, { date: string; time: string }> = {
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const Title = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-lg']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   padding-horizontal: ${spacing.xl};
   padding-top: ${spacing['2xl']};
   padding-bottom: ${spacing.lg};
@@ -86,12 +86,12 @@ const OptionLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   flex: 1;
 `;
 
 const SectionHeader = styled.View`
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   padding-horizontal: ${spacing.xl};
   padding-vertical: ${spacing.sm};
   margin-top: ${spacing.xl};
@@ -101,7 +101,7 @@ const SectionHeaderText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-transform: uppercase;
   letter-spacing: ${typography.letterSpacing.wide};
 `;
@@ -110,10 +110,10 @@ const PreviewCard = styled.View`
   margin-horizontal: ${spacing.xl};
   margin-top: ${spacing.md};
   padding: ${spacing.lg};
-  background-color: ${colors.gray[5]};
+  background-color: ${({ theme }) => theme.colors.background.muted};
   border-radius: ${borderRadius.lg};
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
 `;
 
 const PreviewRow = styled.View`
@@ -126,14 +126,14 @@ const PreviewLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
 `;
 
 const PreviewValue = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const SaveButton = styled.TouchableOpacity`
@@ -150,7 +150,7 @@ const SaveButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 /**

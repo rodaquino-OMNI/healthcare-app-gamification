@@ -16,6 +16,8 @@ import { colors } from '@web/design-system/src/tokens/colors';
 import { spacingValues } from '@web/design-system/src/tokens/spacing';
 import { fontSizeValues } from '@web/design-system/src/tokens/typography';
 import { borderRadiusValues } from '@web/design-system/src/tokens/borderRadius';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '@web/design-system/src/themes/base.theme';
 
 /**
  * Type definition for the route parameters.
@@ -48,6 +50,8 @@ interface CardData {
  */
 export const DigitalCardScreen: React.FC = () => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const { params } = useRoute<DigitalCardScreenRouteProp>();
   const { planId } = params;
   const { isAuthenticated } = useAuth();
@@ -195,7 +199,7 @@ export const DigitalCardScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.journeys.plan.background,
@@ -217,7 +221,7 @@ const styles = StyleSheet.create({
 
   /* Card */
   cardContainer: {
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: borderRadiusValues.lg,
     overflow: 'hidden',
     shadowColor: colors.neutral.black,
@@ -298,12 +302,12 @@ const styles = StyleSheet.create({
     width: 160,
     height: 160,
     borderWidth: 2,
-    borderColor: colors.gray[20],
+    borderColor: theme.colors.border.default,
     borderStyle: 'dashed',
     borderRadius: borderRadiusValues.md,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
   },
   qrText: {
     fontSize: fontSizeValues.sm,
@@ -332,7 +336,7 @@ const styles = StyleSheet.create({
     fontWeight: String(600) as any,
   },
   secondaryButton: {
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     paddingVertical: spacingValues.sm,
     borderRadius: borderRadiusValues.md,
     alignItems: 'center',

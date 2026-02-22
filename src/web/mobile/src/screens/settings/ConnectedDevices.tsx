@@ -51,14 +51,14 @@ const INITIAL_DEVICES: ConnectedDevice[] = [
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const Title = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-lg']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   padding-horizontal: ${spacing.xl};
   padding-top: ${spacing['2xl']};
   padding-bottom: ${spacing.lg};
@@ -68,10 +68,10 @@ const DeviceCard = styled.View`
   margin-horizontal: ${spacing.xl};
   margin-bottom: ${spacing.sm};
   padding: ${spacing.md};
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   border-radius: ${borderRadius.lg};
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
 `;
 
 const DeviceHeader = styled.View`
@@ -93,7 +93,7 @@ const DeviceName = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   flex: 1;
 `;
 
@@ -101,7 +101,7 @@ const DeviceType = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   margin-bottom: ${spacing['2xs']};
 `;
 
@@ -116,7 +116,7 @@ const LastSyncText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
 `;
 
 const StatusText = styled.Text<{ isConnected: boolean }>`
@@ -157,7 +157,7 @@ const PairButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const EmptyContainer = styled.View`
@@ -169,7 +169,7 @@ const EmptyContainer = styled.View`
 
 const EmptyIcon = styled.Text`
   font-size: ${typography.fontSize['display-md']};
-  color: ${colors.gray[30]};
+  color: ${({ theme }) => theme.colors.text.muted};
   margin-bottom: ${spacing.md};
 `;
 
@@ -177,7 +177,7 @@ const EmptyText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-align: center;
 `;
 

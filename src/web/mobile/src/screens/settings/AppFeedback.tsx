@@ -13,7 +13,7 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const ContentWrapper = styled.View`
@@ -26,7 +26,7 @@ const Title = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-xl']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing['2xl']};
 `;
 
@@ -34,7 +34,7 @@ const SectionLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.md};
 `;
 
@@ -63,7 +63,7 @@ const RatingLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-align: center;
   margin-bottom: ${spacing['2xl']};
 `;
@@ -98,12 +98,12 @@ const CategoryText = styled.Text<{ selected: boolean }>`
 // Comment
 const CommentInput = styled.TextInput`
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
   border-radius: ${borderRadius.md};
   padding: ${spacing.md};
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   min-height: 120px;
   text-align-vertical: top;
 `;
@@ -112,7 +112,7 @@ const CharCount = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
   text-align: right;
   margin-top: ${spacing['3xs']};
   margin-bottom: ${spacing.xl};
@@ -132,7 +132,7 @@ const PrimaryButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const StoreLinkButton = styled.TouchableOpacity`

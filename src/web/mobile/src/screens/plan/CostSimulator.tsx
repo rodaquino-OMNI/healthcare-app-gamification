@@ -16,6 +16,8 @@ import { colors } from '@web/design-system/src/tokens/colors';
 import { spacingValues } from '@web/design-system/src/tokens/spacing';
 import { fontSizeValues } from '@web/design-system/src/tokens/typography';
 import { borderRadiusValues } from '@web/design-system/src/tokens/borderRadius';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '@web/design-system/src/themes/base.theme';
 
 /**
  * Deductible percentage options for the slider-style selector.
@@ -29,6 +31,8 @@ const DEDUCTIBLE_OPTIONS = [0, 10, 20, 30, 40, 50];
  */
 export const CostSimulatorScreen: React.FC = () => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const [procedureType, setProcedureType] = useState('');
   const [provider, setProvider] = useState('');
   const [estimatedCost, setEstimatedCost] = useState<number | null>(null);
@@ -188,7 +192,7 @@ export const CostSimulatorScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.journeys.plan.background,
@@ -210,7 +214,7 @@ const styles = StyleSheet.create({
 
   /* Form Card */
   formCard: {
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: borderRadiusValues.lg,
     padding: spacingValues.md,
     gap: spacingValues.md,
@@ -238,7 +242,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacingValues.xs,
     paddingHorizontal: spacingValues.sm,
     borderRadius: borderRadiusValues.full,
-    backgroundColor: colors.gray[10],
+    backgroundColor: theme.colors.background.subtle,
   },
   sliderStepActive: {
     backgroundColor: colors.journeys.plan.primary,
@@ -253,7 +257,7 @@ const styles = StyleSheet.create({
   },
   sliderTrack: {
     height: 4,
-    backgroundColor: colors.gray[20],
+    backgroundColor: theme.colors.border.default,
     borderRadius: borderRadiusValues.full,
     overflow: 'hidden',
   },
@@ -265,7 +269,7 @@ const styles = StyleSheet.create({
 
   /* Result Card */
   resultCard: {
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: borderRadiusValues.lg,
     padding: spacingValues.lg,
     alignItems: 'center',
@@ -294,7 +298,7 @@ const styles = StyleSheet.create({
   },
   resultDivider: {
     height: 1,
-    backgroundColor: colors.gray[20],
+    backgroundColor: theme.colors.border.default,
     alignSelf: 'stretch',
     marginVertical: spacingValues.sm,
   },

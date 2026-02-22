@@ -18,7 +18,7 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const ContentWrapper = styled.View`
@@ -31,13 +31,13 @@ const PageTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-md']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.sm};
 `;
 
 const InfoBox = styled.View`
   padding: ${spacing.md};
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   border-radius: ${borderRadius.md};
   margin-bottom: ${spacing.xl};
 `;
@@ -45,7 +45,7 @@ const InfoBox = styled.View`
 const InfoText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   line-height: 20px;
 `;
 
@@ -53,7 +53,7 @@ const SectionLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray700};
+  color: ${({ theme }) => theme.colors.text.default};
   text-transform: uppercase;
   letter-spacing: ${typography.letterSpacing.wide};
   margin-bottom: ${spacing.sm};
@@ -64,7 +64,7 @@ const CheckboxRow = styled.TouchableOpacity`
   align-items: center;
   padding-vertical: ${spacing.sm};
   padding-horizontal: ${spacing.md};
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   border-bottom-width: 1px;
   border-bottom-color: ${colors.gray[10]};
 `;
@@ -85,7 +85,7 @@ const CheckboxBox = styled.View<{ checked: boolean }>`
 
 const CheckmarkText = styled.Text`
   font-size: 14px;
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
   line-height: 20px;
 `;
 
@@ -93,7 +93,7 @@ const CheckboxLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   flex: 1;
 `;
 
@@ -162,13 +162,13 @@ const PrimaryButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const StatusSection = styled.View`
   margin-top: ${spacing['2xl']};
   padding: ${spacing.md};
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   border-radius: ${borderRadius.md};
 `;
 
@@ -176,7 +176,7 @@ const StatusTitle = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.xs};
 `;
 
@@ -189,7 +189,7 @@ const StatusRow = styled.View`
 const StatusDate = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
 `;
 
 const StatusBadge = styled.View<{ status: string }>`
@@ -209,7 +209,7 @@ const StatusBadgeText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 // --- Types ---

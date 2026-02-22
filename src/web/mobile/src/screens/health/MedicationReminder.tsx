@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TextInput } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { fontSizeValues } from '../../../../design-system/src/tokens/typography';
@@ -25,6 +27,8 @@ interface MedicationReminderParams {
  */
 export const MedicationReminderScreen: React.FC = () => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const route = useRoute<any>();
   const navigation = useNavigation();
   const { journey } = useJourney();
@@ -196,10 +200,10 @@ export const MedicationReminderScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
   },
   contentContainer: {
     padding: spacingValues.md,
@@ -215,7 +219,7 @@ const styles = StyleSheet.create({
   },
   medicationDosage: {
     fontSize: fontSizeValues.sm,
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
     marginTop: spacingValues['3xs'],
   },
   section: {
@@ -242,7 +246,7 @@ const styles = StyleSheet.create({
   },
   timeHint: {
     fontSize: fontSizeValues.xs,
-    color: colors.gray[40],
+    color: theme.colors.text.subtle,
     marginTop: spacingValues['3xs'],
   },
   buttonContainer: {
@@ -255,7 +259,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   primaryButtonText: {
-    color: colors.neutral.white,
+    color: theme.colors.text.onBrand,
     fontSize: fontSizeValues.md,
     fontWeight: '600',
   },

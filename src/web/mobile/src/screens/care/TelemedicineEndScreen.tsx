@@ -6,6 +6,8 @@ import { Button } from '@austa/design-system/src/components/Button/Button';
 import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { ROUTES } from '../../../../constants/routes';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 
@@ -35,6 +37,8 @@ const TelemedicineEndScreen: React.FC = () => {
   const navigation = useNavigation<any>();
   const route = useRoute<RouteProp<{ params: TelemedicineEndScreenRouteParams }, 'params'>>();
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
 
   const {
     appointmentId,
@@ -277,7 +281,7 @@ const TelemedicineEndScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: colors.journeys.care.background,
@@ -322,14 +326,14 @@ const styles = StyleSheet.create({
   },
   feedbackInput: {
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
+    borderColor: theme.colors.border.default,
     borderRadius: spacingValues.xs,
     paddingHorizontal: spacingValues.sm,
     paddingVertical: spacingValues.xs,
     minHeight: 80,
     fontSize: 14,
     color: colors.journeys.care.text,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
   },
   thankYouContainer: {
     alignItems: 'center',

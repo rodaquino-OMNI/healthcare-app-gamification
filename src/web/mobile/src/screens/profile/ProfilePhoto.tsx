@@ -14,7 +14,7 @@ import { sizing, sizingValues } from '../../../../design-system/src/tokens/sizin
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const ContentWrapper = styled.View`
@@ -33,21 +33,21 @@ const Title = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-xl']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.xs};
 `;
 
 const Subtitle = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   margin-bottom: ${spacing.xs};
 `;
 
 const StepIndicator = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
 `;
 
 const StepBarContainer = styled.View`
@@ -68,13 +68,13 @@ const AvatarContainer = styled.View`
   width: 150px;
   height: 150px;
   border-radius: 75px;
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   align-items: center;
   justify-content: center;
   margin-bottom: ${spacing['2xl']};
   overflow: hidden;
   border-width: 3px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
 `;
 
 const AvatarPlaceholder = styled.Text`
@@ -134,7 +134,7 @@ const PrimaryButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const SkipLink = styled.TouchableOpacity`
@@ -146,7 +146,7 @@ const SkipLink = styled.TouchableOpacity`
 const SkipLinkText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-decoration-line: underline;
 `;
 

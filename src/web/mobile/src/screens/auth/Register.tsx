@@ -23,14 +23,14 @@ const Container = styled.View`
   justify-content: center;
   align-items: center;
   padding: ${spacingValues.lg}px;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const Title = styled.Text`
   font-size: ${typography.fontSize['heading-xl']};
   font-weight: ${typography.fontWeight.bold};
   margin-bottom: ${spacingValues.lg}px;
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const InputContainer = styled.View`
@@ -62,7 +62,7 @@ const LinkContainer = styled.View`
 `;
 
 const LinkText = styled.Text`
-  color: ${colors.neutral.gray600};
+  color: ${({ theme }) => theme.colors.text.muted};
   font-size: ${typography.fontSize['text-md']};
 `;
 

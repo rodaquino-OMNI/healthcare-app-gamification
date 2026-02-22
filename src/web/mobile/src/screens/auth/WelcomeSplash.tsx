@@ -48,7 +48,7 @@ const LogoContainer = styled.View`
   width: 120px;
   height: 120px;
   border-radius: 60px;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   align-items: center;
   justify-content: center;
   margin-bottom: ${spacing['2xl']};
@@ -65,7 +65,7 @@ const TaglineText = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-lg']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
   text-align: center;
   margin-bottom: ${spacing.xs};
 `;
@@ -74,7 +74,7 @@ const SubtaglineText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
   opacity: 0.85;
   text-align: center;
 `;

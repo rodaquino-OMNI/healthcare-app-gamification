@@ -15,7 +15,7 @@ import { ROUTES } from '../../constants/routes';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const HeaderRow = styled.View`
@@ -33,14 +33,14 @@ const BackButton = styled.TouchableOpacity`
 
 const BackIcon = styled.Text`
   font-size: 24px;
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const HeaderTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-lg']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   flex: 1;
 `;
 
@@ -53,14 +53,14 @@ const Title = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-xl']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.xs};
 `;
 
 const Subtitle = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   margin-bottom: ${spacing['2xl']};
   line-height: 22px;
 `;
@@ -105,14 +105,14 @@ const GoalTitle = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing['3xs']};
 `;
 
 const GoalDescription = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
 `;
 
 const CheckmarkContainer = styled.View<{ selected: boolean }>`
@@ -130,7 +130,7 @@ const CheckmarkContainer = styled.View<{ selected: boolean }>`
 
 const CheckmarkText = styled.Text`
   font-size: 14px;
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const BottomSection = styled.View`
@@ -153,13 +153,13 @@ const ContinueButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const SelectionCount = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-align: center;
   margin-top: ${spacing.sm};
 `;

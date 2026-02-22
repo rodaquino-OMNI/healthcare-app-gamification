@@ -21,7 +21,7 @@ interface ServerErrorProps {
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const ContentContainer = styled.View`
@@ -49,7 +49,7 @@ const Title = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-xl']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   text-align: center;
   margin-bottom: ${spacing.xs};
 `;
@@ -57,7 +57,7 @@ const Title = styled.Text`
 const Description = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-align: center;
   line-height: 24px;
   margin-bottom: ${spacing['2xl']};
@@ -67,7 +67,7 @@ const Description = styled.Text`
 const ErrorCode = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
-  color: ${colors.gray[30]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-align: center;
   margin-bottom: ${spacing.xl};
 `;
@@ -87,14 +87,14 @@ const PrimaryButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const SecondaryButton = styled.TouchableOpacity`
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   border-radius: ${borderRadius.md};
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
   height: ${sizing.component.lg};
   width: 100%;
   max-width: 280px;

@@ -20,7 +20,7 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const ContentWrapper = styled.View`
@@ -40,7 +40,7 @@ const Title = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-xl']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   text-align: center;
   margin-bottom: ${spacing.xs};
 `;
@@ -48,7 +48,7 @@ const Title = styled.Text`
 const Subtitle = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-align: center;
   line-height: 22px;
 `;
@@ -97,7 +97,7 @@ const DividerLine = styled.View`
 const DividerText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
   padding-horizontal: ${spacing.md};
 `;
 
@@ -139,14 +139,14 @@ const Checkbox = styled.TouchableOpacity<{ checked: boolean }>`
 
 const CheckmarkText = styled.Text`
   font-size: 12px;
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
   font-weight: ${typography.fontWeight.bold};
 `;
 
 const ConsentText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   flex: 1;
   line-height: 18px;
 `;
@@ -169,7 +169,7 @@ const FooterRow = styled.View`
 const FooterText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
 `;
 
 const FooterLink = styled.Text`
@@ -182,7 +182,7 @@ const FooterLink = styled.Text`
 const DisclaimerText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-2xs']};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
   text-align: center;
   margin-top: ${spacing.xl};
   line-height: 16px;

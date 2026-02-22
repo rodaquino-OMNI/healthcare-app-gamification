@@ -19,7 +19,7 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const ContentWrapper = styled.View`
@@ -32,14 +32,14 @@ const PageTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-md']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.xl};
 `;
 
 const BiometricSection = styled.View`
   margin-bottom: ${spacing.xl};
   padding: ${spacing.md};
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   border-radius: ${borderRadius.md};
 `;
 
@@ -58,7 +58,7 @@ const BiometricTitle = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const BiometricStatus = styled.Text<{ isAvailable: boolean }>`
@@ -72,7 +72,7 @@ const BiometricStatus = styled.Text<{ isAvailable: boolean }>`
 const InfoSection = styled.View`
   margin-top: ${spacing.lg};
   padding: ${spacing.md};
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   border-radius: ${borderRadius.md};
 `;
 
@@ -80,14 +80,14 @@ const InfoTitle = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.xs};
 `;
 
 const InfoText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   line-height: 20px;
 `;
 

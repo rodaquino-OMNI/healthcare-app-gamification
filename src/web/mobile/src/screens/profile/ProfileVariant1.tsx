@@ -42,7 +42,7 @@ const CHRONIC_CONDITIONS = [
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const ContentWrapper = styled.View`
@@ -59,21 +59,21 @@ const Title = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-xl']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.xs};
 `;
 
 const Subtitle = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   margin-bottom: ${spacing.xs};
 `;
 
 const StepIndicator = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
 `;
 
 const StepBarContainer = styled.View`
@@ -98,7 +98,7 @@ const Label = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.neutral.gray700};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.xs};
 `;
 
@@ -118,8 +118,8 @@ const StyledInput = styled.TextInput<{ hasError?: boolean }>`
   padding-vertical: ${spacing.sm};
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.neutral.gray900};
-  background-color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.default};
+  background-color: ${({ theme }) => theme.colors.background.default};
   min-height: 100px;
   text-align-vertical: top;
 `;
@@ -176,14 +176,14 @@ const CheckboxBox = styled.View<{ checked: boolean }>`
 
 const CheckboxMark = styled.Text`
   font-size: 12px;
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
   font-weight: ${typography.fontWeight.bold};
 `;
 
 const ConditionLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const PrimaryButton = styled.TouchableOpacity<{ disabled?: boolean }>`
@@ -200,7 +200,7 @@ const PrimaryButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const SkipLink = styled.TouchableOpacity`
@@ -212,7 +212,7 @@ const SkipLink = styled.TouchableOpacity`
 const SkipLinkText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-decoration-line: underline;
 `;
 

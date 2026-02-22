@@ -8,6 +8,8 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { borderRadiusValues } from '@austa/design-system/src/tokens/borderRadius';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../../design-system/src/themes/base.theme';
 
 interface StepProps {
   data: Record<string, any>;
@@ -41,6 +43,8 @@ const CIRCLE_BORDER = 10;
  */
 export const StepResultsHealthScore: React.FC<StepProps> = ({ data, onUpdate }) => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
 
   const overallScore: number = data.overallScore ?? 0;
   const categoryScores: Record<string, number> = data.categoryScores ?? {};
@@ -190,7 +194,7 @@ export const StepResultsHealthScore: React.FC<StepProps> = ({ data, onUpdate }) 
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   scrollContent: {
     paddingHorizontal: spacingValues.md,
     paddingBottom: spacingValues['3xl'],
@@ -210,7 +214,7 @@ const styles = StyleSheet.create({
     borderWidth: CIRCLE_BORDER,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
   },
   circleInner: {
     alignItems: 'center',
@@ -234,7 +238,7 @@ const styles = StyleSheet.create({
   progressTrack: {
     height: 8,
     borderRadius: borderRadiusValues.full,
-    backgroundColor: colors.neutral.gray200,
+    backgroundColor: theme.colors.background.muted,
     overflow: 'hidden',
   },
   progressFill: {
@@ -261,7 +265,7 @@ const styles = StyleSheet.create({
     borderRadius: borderRadiusValues.md,
     borderWidth: 1,
     borderColor: colors.journeys.health.primary,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     alignItems: 'center',
   },
 });

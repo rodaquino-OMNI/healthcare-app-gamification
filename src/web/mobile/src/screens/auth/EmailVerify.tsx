@@ -25,21 +25,21 @@ const COUNTDOWN_DURATION = 60;
 const Container = styled.View`
   flex: 1;
   padding: ${spacingValues.xl}px;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   justify-content: center;
 `;
 
 const Title = styled.Text`
   font-size: ${fontSizeValues['2xl']}px;
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacingValues.xs}px;
   text-align: center;
 `;
 
 const Description = styled.Text`
   font-size: ${fontSizeValues.md}px;
-  color: ${colors.neutral.gray600};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-align: center;
   margin-bottom: ${spacingValues['2xl']}px;
   line-height: ${Math.round(fontSizeValues.md * 1.5)}px;
@@ -61,7 +61,7 @@ const OtpInput = styled.TextInput<{ isFocused: boolean }>`
   text-align: center;
   font-size: ${fontSizeValues['2xl']}px;
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-horizontal: ${spacingValues['3xs']}px;
 `;
 
@@ -72,7 +72,7 @@ const TimerContainer = styled.View`
 
 const TimerText = styled.Text`
   font-size: ${fontSizeValues.sm}px;
-  color: ${colors.neutral.gray600};
+  color: ${({ theme }) => theme.colors.text.muted};
 `;
 
 const ResendButton = styled.TouchableOpacity<{ disabled?: boolean }>`
@@ -97,7 +97,7 @@ const VerifyButton = styled.TouchableOpacity<{ disabled?: boolean }>`
 `;
 
 const VerifyButtonText = styled.Text`
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
   font-size: ${fontSizeValues.md}px;
   font-weight: ${typography.fontWeight.semiBold};
 `;

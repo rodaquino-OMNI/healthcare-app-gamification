@@ -2,6 +2,8 @@ import React, { useCallback } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 
 import { ROUTES } from '../../constants/routes';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
@@ -28,6 +30,8 @@ type DeleteConfirmRouteParams = {
 export const MedicationDeleteConfirm: React.FC = () => {
   const navigation = useNavigation<any>();
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const route = useRoute<RouteProp<DeleteConfirmRouteParams, 'MedicationDeleteConfirm'>>();
 
   const medicationName = route.params?.medicationName ?? t('medication.deleteConfirm.defaultName');
@@ -123,7 +127,7 @@ export const MedicationDeleteConfirm: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.journeys.health.background,
@@ -152,7 +156,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderWidth: 3,
     borderColor: colors.semantic.error,
     alignItems: 'center',

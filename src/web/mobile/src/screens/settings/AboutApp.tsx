@@ -14,7 +14,7 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const ContentWrapper = styled.View`
@@ -45,7 +45,7 @@ const AppName = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-lg']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.xs};
 `;
 
@@ -53,7 +53,7 @@ const VersionText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   margin-bottom: ${spacing['3xs']};
 `;
 
@@ -61,7 +61,7 @@ const BuildText = styled.Text`
   font-family: ${typography.fontFamily.mono};
   font-size: ${typography.fontSize['text-xs']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
   margin-bottom: ${spacing['3xs']};
 `;
 
@@ -69,14 +69,14 @@ const EnvironmentText = styled.Text`
   font-family: ${typography.fontFamily.mono};
   font-size: ${typography.fontSize['text-xs']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
   margin-bottom: ${spacing['3xl']};
 `;
 
 const Divider = styled.View`
   width: 100%;
   height: 1px;
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   margin-bottom: ${spacing.xl};
 `;
 
@@ -84,7 +84,7 @@ const CreditsText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing['2xl']};
 `;
 
@@ -102,12 +102,12 @@ const MenuLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const ChevronText = styled.Text`
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
 `;
 
 const RateButton = styled.TouchableOpacity`
@@ -124,14 +124,14 @@ const RateButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const CopyrightText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
   text-align: center;
   margin-top: ${spacing['3xl']};
 `;

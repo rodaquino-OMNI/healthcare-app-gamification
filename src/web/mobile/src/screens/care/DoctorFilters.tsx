@@ -12,6 +12,8 @@ import { Touchable } from 'src/web/design-system/src/primitives/Touchable/Toucha
 import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader';
 import { colors } from 'src/web/design-system/src/tokens/colors';
 import { spacingValues } from 'src/web/design-system/src/tokens/spacing';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from 'src/web/design-system/src/themes/base.theme';
 import { useTranslation } from 'react-i18next';
 
 // Options are now inside the component to access t()
@@ -27,6 +29,8 @@ import { useTranslation } from 'react-i18next';
 const DoctorFilters: React.FC = () => {
   const navigation = useNavigation<any>();
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
 
   const SPECIALTY_OPTIONS = [
     { label: t('journeys.care.doctorFilters.specialties.all'), value: 'todas' },
@@ -314,7 +318,7 @@ const DoctorFilters: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: colors.journeys.care.background,
@@ -344,8 +348,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: spacingValues.xs,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
   },
   starButtonActive: {
     borderColor: colors.journeys.care.primary,

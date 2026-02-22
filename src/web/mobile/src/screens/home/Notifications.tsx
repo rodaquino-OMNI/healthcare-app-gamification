@@ -9,6 +9,8 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { Notification, NotificationStatus } from 'src/web/shared/types/notification.types';
 import { useNotifications } from 'src/web/mobile/src/hooks/useNotifications';
 import { useNotificationContext } from 'src/web/mobile/src/context/NotificationContext';
@@ -93,6 +95,8 @@ const formatNotificationDate = (date: Date): string => {
  * estado vazio, e acao de marcar todas como lidas.
  */
 export const NotificationsScreen: React.FC = () => {
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const { t } = useTranslation();
   const navigation = useNavigation();
   const { notifications, loading, error, refresh } = useNotifications();
@@ -290,10 +294,10 @@ export const NotificationsScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -302,12 +306,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacingValues.md,
     paddingVertical: spacingValues.sm,
     borderBottomWidth: 1,
-    borderBottomColor: colors.gray[20],
+    borderBottomColor: theme.colors.border.default,
   },
   screenTitle: {
     fontSize: fontSizeValues.xl,
     fontWeight: String(typography.fontWeight.bold) as '700',
-    color: colors.gray[70],
+    color: theme.colors.text.default,
   },
   markAllText: {
     fontSize: fontSizeValues.sm,
@@ -319,7 +323,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacingValues.md,
     paddingVertical: spacingValues.xs,
     borderBottomWidth: 1,
-    borderBottomColor: colors.gray[20],
+    borderBottomColor: theme.colors.border.default,
   },
   filterTab: {
     paddingHorizontal: spacingValues.md,
@@ -333,7 +337,7 @@ const styles = StyleSheet.create({
   filterTabText: {
     fontSize: fontSizeValues.sm,
     fontWeight: String(typography.fontWeight.medium) as '500',
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
   },
   filterTabTextActive: {
     color: colors.brand.primary,
@@ -349,7 +353,7 @@ const styles = StyleSheet.create({
     padding: spacingValues.md,
   },
   notificationItem: {
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: borderRadiusValues.md,
     marginBottom: spacingValues.sm,
     padding: spacingValues.md,
@@ -361,7 +365,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   readNotification: {
-    backgroundColor: colors.gray[5],
+    backgroundColor: theme.colors.background.muted,
     shadowOpacity: 0.03,
   },
   notificationRow: {
@@ -397,20 +401,20 @@ const styles = StyleSheet.create({
     fontSize: fontSizeValues.md,
     fontWeight: String(typography.fontWeight.bold) as '700',
     marginBottom: spacingValues['3xs'],
-    color: colors.gray[70],
+    color: theme.colors.text.default,
   },
   notificationBody: {
     fontSize: fontSizeValues.sm,
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
     marginBottom: spacingValues.xs,
     lineHeight: fontSizeValues.sm * typography.lineHeight.base,
   },
   notificationTime: {
     fontSize: fontSizeValues.xs,
-    color: colors.gray[40],
+    color: theme.colors.text.subtle,
   },
   readText: {
-    color: colors.gray[40],
+    color: theme.colors.text.subtle,
   },
   errorText: {
     fontSize: fontSizeValues.md,
@@ -420,14 +424,14 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: fontSizeValues.sm,
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
     marginTop: spacingValues.sm,
   },
   emptyIconPlaceholder: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: colors.gray[10],
+    backgroundColor: theme.colors.background.subtle,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: spacingValues.md,
@@ -438,12 +442,12 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: fontSizeValues.lg,
     fontWeight: String(typography.fontWeight.bold) as '700',
-    color: colors.gray[60],
+    color: theme.colors.text.default,
     marginBottom: spacingValues.xs,
   },
   emptySubtext: {
     fontSize: fontSizeValues.sm,
-    color: colors.gray[40],
+    color: theme.colors.text.subtle,
     textAlign: 'center',
     lineHeight: fontSizeValues.sm * typography.lineHeight.base,
   },
@@ -454,7 +458,7 @@ const styles = StyleSheet.create({
     borderRadius: borderRadiusValues.sm,
   },
   retryButtonText: {
-    color: colors.neutral.white,
+    color: theme.colors.text.onBrand,
     fontWeight: String(typography.fontWeight.bold) as '700',
     fontSize: fontSizeValues.sm,
   },

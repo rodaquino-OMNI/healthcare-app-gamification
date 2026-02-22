@@ -17,7 +17,7 @@ import { sizing, sizingValues } from '../../../../design-system/src/tokens/sizin
 const Container = styled.View`
   flex: 1;
   padding: ${spacingValues.xl}px;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   justify-content: center;
 `;
 
@@ -27,7 +27,7 @@ const Container = styled.View`
 const Title = styled.Text`
   font-size: ${fontSizeValues['2xl']}px;
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacingValues.sm}px;
   text-align: center;
 `;
@@ -37,7 +37,7 @@ const Title = styled.Text`
  */
 const Description = styled.Text`
   font-size: ${fontSizeValues.md}px;
-  color: ${colors.neutral.gray600};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-align: center;
   margin-bottom: ${spacingValues['2xl']}px;
   line-height: ${Math.round(fontSizeValues.md * 1.5)}px;
@@ -49,14 +49,14 @@ const Description = styled.Text`
 const CodeInput = styled.TextInput`
   height: ${sizingValues.component.lg}px;
   border-width: 1px;
-  border-color: ${colors.neutral.gray300};
+  border-color: ${({ theme }) => theme.colors.border.default};
   border-radius: ${borderRadiusValues.md}px;
   padding-horizontal: ${spacingValues.md}px;
   font-size: ${fontSizeValues['2xl']}px;
   text-align: center;
   letter-spacing: 8px;
   margin-bottom: ${spacingValues.xl}px;
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 /**
@@ -74,7 +74,7 @@ const VerifyButton = styled.TouchableOpacity<{ disabled?: boolean }>`
  * Styled verify button text
  */
 const VerifyButtonText = styled.Text`
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
   font-size: ${fontSizeValues.md}px;
   font-weight: ${typography.fontWeight.semiBold};
 `;
@@ -91,7 +91,7 @@ const LoadingContainer = styled.View`
  * Loading text label
  */
 const LoadingLabel = styled.Text`
-  color: ${colors.neutral.gray600};
+  color: ${({ theme }) => theme.colors.text.muted};
   font-size: ${fontSizeValues.sm}px;
   margin-top: ${spacingValues.xs}px;
 `;

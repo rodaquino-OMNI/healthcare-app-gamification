@@ -7,6 +7,8 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { borderRadiusValues } from '@austa/design-system/src/tokens/borderRadius';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../../design-system/src/themes/base.theme';
 
 interface StepProps {
   data: Record<string, any>;
@@ -34,6 +36,8 @@ const QUALITY_COLORS: Record<string, string> = {
 
 export const StepSleep: React.FC<StepProps> = ({ data, onUpdate }) => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
 
   const selectedIssues: string[] = data.sleepIssues ?? [];
 
@@ -190,7 +194,7 @@ export const StepSleep: React.FC<StepProps> = ({ data, onUpdate }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   scrollContent: {
     paddingHorizontal: spacingValues.md,
     paddingBottom: spacingValues['3xl'],
@@ -210,8 +214,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacingValues.sm,
     borderRadius: borderRadiusValues.md,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
   },
   hourChipSelected: {
     backgroundColor: colors.journeys.health.primary,
@@ -227,8 +231,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacingValues.sm,
     borderRadius: borderRadiusValues.md,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
   },
   qualityIndicator: {
     width: 8,
@@ -244,8 +248,8 @@ const styles = StyleSheet.create({
     marginBottom: spacingValues.xs,
     borderRadius: borderRadiusValues.md,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
   },
   issueRowSelected: {
     borderColor: colors.journeys.health.primary,
@@ -256,7 +260,7 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: borderRadiusValues.xs,
     borderWidth: 1,
-    borderColor: colors.neutral.gray400,
+    borderColor: theme.colors.border.default,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -278,8 +282,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacingValues.sm,
     borderRadius: borderRadiusValues.full,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
   },
   toggleChipSelected: {
     backgroundColor: colors.journeys.health.primary,

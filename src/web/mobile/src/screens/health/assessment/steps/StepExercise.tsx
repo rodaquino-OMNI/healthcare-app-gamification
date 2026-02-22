@@ -7,6 +7,8 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { borderRadiusValues } from '@austa/design-system/src/tokens/borderRadius';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../../design-system/src/themes/base.theme';
 
 interface StepProps {
   data: Record<string, any>;
@@ -30,6 +32,8 @@ const DURATION_OPTIONS = ['15min', '30min', '45min', '60min+'] as const;
 
 export const StepExercise: React.FC<StepProps> = ({ data, onUpdate }) => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
 
   const selectedTypes: string[] = data.exerciseTypes ?? [];
 
@@ -147,7 +151,7 @@ export const StepExercise: React.FC<StepProps> = ({ data, onUpdate }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   scrollContent: {
     paddingHorizontal: spacingValues.md,
     paddingBottom: spacingValues['3xl'],
@@ -166,8 +170,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacingValues.md,
     borderRadius: borderRadiusValues.full,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
   },
   optionChipSelected: {
     backgroundColor: colors.journeys.health.primary,
@@ -185,8 +189,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacingValues['3xs'],
     borderRadius: borderRadiusValues.md,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
   },
   typeCardSelected: {
     backgroundColor: colors.journeys.health.primary,

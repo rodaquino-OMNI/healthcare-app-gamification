@@ -9,6 +9,8 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { ROUTES } from '../../../../constants/routes';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -53,6 +55,8 @@ const SymptomBodyMap: React.FC = () => {
   const route = useRoute<RouteProp<{ params: SymptomBodyMapRouteParams }, 'params'>>();
   const { symptoms = [], description = '' } = route.params || {};
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
 
   const SYMPTOM_STEPS = [
     { label: t('journeys.care.symptomChecker.steps.symptoms') },
@@ -228,7 +232,7 @@ const SymptomBodyMap: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: colors.journeys.care.background,
@@ -249,10 +253,10 @@ const styles = StyleSheet.create({
     aspectRatio: 0.5,
     marginTop: spacingValues.xl,
     marginBottom: spacingValues.xl,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: spacingValues.xs,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
+    borderColor: theme.colors.border.default,
     overflow: 'hidden',
   },
   bodySilhouette: {

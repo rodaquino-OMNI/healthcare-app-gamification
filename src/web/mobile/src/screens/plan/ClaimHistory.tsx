@@ -20,6 +20,8 @@ import {
   borderRadius,
 } from '@web/design-system/src/tokens';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '@web/design-system/src/themes/base.theme';
 
 const { plan } = colors.journeys;
 const sp = { xs: 8, sm: 12, md: 16, lg: 20, xl: 24, '2xl': 32 };
@@ -119,6 +121,8 @@ const ClaimHistory: React.FC = () => {
   const { t } = useTranslation();
   const { journey } = useJourney();
   const navigation = useNavigation<any>();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const [activeFilter, setActiveFilter] = useState<FilterTab>('all');
 
   // In a real app, replace with API call: const { claims, isLoading, error } = useClaims(planId);
@@ -251,7 +255,7 @@ const ClaimHistory: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.journeys.plan.background,
@@ -297,9 +301,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: sp.md,
     paddingVertical: sp.xs,
     borderRadius: 9999,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderWidth: 1,
-    borderColor: colors.gray[20],
+    borderColor: theme.colors.border.default,
     marginRight: sp.xs,
   },
   filterTabActive: {
@@ -322,7 +326,7 @@ const styles = StyleSheet.create({
   },
   // Claim card
   claimCard: {
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: 8,
     padding: sp.md,
     marginBottom: sp.sm,

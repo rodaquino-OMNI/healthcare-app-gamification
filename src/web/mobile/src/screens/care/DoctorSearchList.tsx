@@ -6,6 +6,8 @@ import { Card } from 'src/web/design-system/src/components/Card/Card';
 import { Badge } from 'src/web/design-system/src/components/Badge/Badge';
 import { Avatar } from 'src/web/design-system/src/components/Avatar/Avatar';
 import { Text } from 'src/web/design-system/src/primitives/Text/Text';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from 'src/web/design-system/src/themes/base.theme';
 import { colors } from 'src/web/design-system/src/tokens/colors';
 import { spacingValues } from 'src/web/design-system/src/tokens/spacing';
 
@@ -213,7 +215,7 @@ export const MapPlaceholder: React.FC = () => {
 // Styles
 // ---------------------------------------------------------------------------
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   doctorRow: {
     flexDirection: 'row',
     gap: spacingValues.sm,
@@ -241,11 +243,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     margin: spacingValues.md,
     borderRadius: spacingValues.sm,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
+    borderColor: theme.colors.border.default,
     padding: spacingValues['3xl'],
     gap: spacingValues.xs,
   },

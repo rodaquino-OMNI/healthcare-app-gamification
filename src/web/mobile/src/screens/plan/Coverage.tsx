@@ -21,6 +21,8 @@ import {
   sizing,
 } from '@web/design-system/src/tokens';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '@web/design-system/src/themes/base.theme';
 
 const { plan } = colors.journeys;
 const sp = {
@@ -40,6 +42,8 @@ const sp = {
  */
 const Coverage: React.FC = () => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const { setJourney } = useContext(JourneyContext);
 
   useEffect(() => {
@@ -175,7 +179,7 @@ const Coverage: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
     padding: sp.md,
@@ -197,7 +201,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   sectionCard: {
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: 8,
     marginBottom: sp.md,
     shadowColor: colors.neutral.black,
@@ -239,7 +243,7 @@ const styles = StyleSheet.create({
   coverageItem: {
     paddingVertical: sp.sm,
     borderTopWidth: 1,
-    borderTopColor: colors.gray[20],
+    borderTopColor: theme.colors.border.default,
   },
   coverageDetails: {
     fontSize: 14,

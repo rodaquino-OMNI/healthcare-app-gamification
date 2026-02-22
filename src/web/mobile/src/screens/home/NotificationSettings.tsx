@@ -14,7 +14,7 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const Header = styled.View`
@@ -23,7 +23,7 @@ const Header = styled.View`
   padding-horizontal: ${spacing.md};
   padding-vertical: ${spacing.sm};
   border-bottom-width: 1px;
-  border-bottom-color: ${colors.gray[20]};
+  border-bottom-color: ${({ theme }) => theme.colors.border.default};
 `;
 
 const BackButton = styled.TouchableOpacity`
@@ -36,7 +36,7 @@ const BackButton = styled.TouchableOpacity`
 const BackText = styled.Text`
   font-size: ${typography.fontSize['text-xl']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const HeaderTitle = styled.Text`
@@ -44,7 +44,7 @@ const HeaderTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['text-lg']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   text-align: center;
 `;
 
@@ -56,7 +56,7 @@ const SectionLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-transform: uppercase;
   letter-spacing: ${typography.letterSpacing.wide};
   padding-horizontal: ${spacing.xl};
@@ -78,14 +78,14 @@ const ToggleLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   flex: 1;
 `;
 
 const ToggleDescription = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
   margin-top: ${spacing['4xs']};
 `;
 
@@ -108,7 +108,7 @@ const TimeLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const TimeValue = styled.Text`
@@ -122,7 +122,7 @@ const SaveButtonContainer = styled.View`
   padding-horizontal: ${spacing.xl};
   padding-vertical: ${spacing.lg};
   border-top-width: 1px;
-  border-top-color: ${colors.gray[20]};
+  border-top-color: ${({ theme }) => theme.colors.border.default};
 `;
 
 const SaveButton = styled.TouchableOpacity`
@@ -136,7 +136,7 @@ const SaveButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 // --- Types ---

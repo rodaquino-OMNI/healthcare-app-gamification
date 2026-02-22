@@ -7,6 +7,8 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { borderRadiusValues } from '@austa/design-system/src/tokens/borderRadius';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../../design-system/src/themes/base.theme';
 
 interface StepProps {
   data: Record<string, any>;
@@ -34,6 +36,8 @@ const CONDITION_KEYS = [
  */
 export const StepExistingConditions: React.FC<StepProps> = ({ data, onUpdate }) => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
 
   const selected: string[] = data.selected || [];
 
@@ -161,7 +165,7 @@ export const StepExistingConditions: React.FC<StepProps> = ({ data, onUpdate }) 
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     paddingTop: spacingValues.xl,
   },
@@ -177,8 +181,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacingValues.md,
     borderRadius: borderRadiusValues.md,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
   },
   conditionChipActive: {
     borderColor: colors.journeys.health.primary,
@@ -193,7 +197,7 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: borderRadiusValues.xs,
     borderWidth: 2,
-    borderColor: colors.neutral.gray400,
+    borderColor: theme.colors.border.default,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: spacingValues.sm,
@@ -232,13 +236,13 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
+    borderColor: theme.colors.border.default,
     borderRadius: borderRadiusValues.md,
     paddingHorizontal: spacingValues.md,
     paddingVertical: spacingValues.sm,
     fontSize: 16,
-    color: colors.neutral.gray900,
-    backgroundColor: colors.neutral.white,
+    color: theme.colors.text.default,
+    backgroundColor: theme.colors.background.default,
     minHeight: 60,
     textAlignVertical: 'top',
   },

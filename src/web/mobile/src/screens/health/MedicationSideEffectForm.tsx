@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchable';
@@ -53,6 +55,8 @@ const formatDate = (date: Date): string => {
 export const MedicationSideEffectForm: React.FC = () => {
   const navigation = useNavigation<any>();
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
 
   const [selectedEffect, setSelectedEffect] = useState<string | null>(null);
   const [severity, setSeverity] = useState<SeverityLevel | null>(null);
@@ -236,7 +240,7 @@ export const MedicationSideEffectForm: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.journeys.health.background,
@@ -270,8 +274,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacingValues.md,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
   },
   effectChipSelected: {
     borderColor: colors.journeys.health.primary,
@@ -288,19 +292,19 @@ const styles = StyleSheet.create({
     paddingVertical: spacingValues.md,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
   },
   notesInput: {
     marginTop: spacingValues.sm,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
+    borderColor: theme.colors.border.default,
     borderRadius: 8,
     padding: spacingValues.md,
     minHeight: 100,
     fontSize: 14,
-    color: colors.neutral.gray800,
-    backgroundColor: colors.neutral.white,
+    color: theme.colors.text.default,
+    backgroundColor: theme.colors.background.default,
   },
   actionsContainer: {
     marginTop: spacingValues['2xl'],

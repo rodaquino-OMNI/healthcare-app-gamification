@@ -8,6 +8,8 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { borderRadiusValues } from '@austa/design-system/src/tokens/borderRadius';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../../design-system/src/themes/base.theme';
 
 interface StepProps {
   data: Record<string, any>;
@@ -29,6 +31,8 @@ const RELATIONSHIP_OPTIONS = [
  */
 export const StepEmergencyContacts: React.FC<StepProps> = ({ data, onUpdate }) => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
 
   const handleShowSecondary = useCallback(() => {
     onUpdate('showSecondary', !data.showSecondary);
@@ -202,7 +206,7 @@ export const StepEmergencyContacts: React.FC<StepProps> = ({ data, onUpdate }) =
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   scrollContent: {
     paddingHorizontal: spacingValues.md,
     paddingBottom: spacingValues['3xl'],
@@ -226,13 +230,13 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
+    borderColor: theme.colors.border.default,
     borderRadius: borderRadiusValues.md,
     paddingHorizontal: spacingValues.md,
     paddingVertical: spacingValues.sm,
     fontSize: 16,
-    color: colors.neutral.gray900,
-    backgroundColor: colors.neutral.white,
+    color: theme.colors.text.default,
+    backgroundColor: theme.colors.background.default,
   },
   chipRow: {
     flexDirection: 'row',
@@ -244,8 +248,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacingValues.md,
     borderRadius: borderRadiusValues.full,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
   },
   chipSelected: {
     backgroundColor: colors.journeys.health.primary,

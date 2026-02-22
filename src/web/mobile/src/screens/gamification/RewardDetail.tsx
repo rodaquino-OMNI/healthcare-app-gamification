@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 
 import { colors } from 'src/web/design-system/src/tokens/colors';
 import { spacingValues } from 'src/web/design-system/src/tokens/spacing';
@@ -50,6 +52,8 @@ const getJourneyColor = (journey: string): string => JOURNEY_COLORS[journey] || 
 const RewardDetail: React.FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation<any>();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const route = useRoute<any>();
   const { rewardId } = route.params as RewardDetailRouteParams;
 
@@ -297,71 +301,73 @@ const RewardDetail: React.FC = () => {
   );
 };
 
-const cardBase = { backgroundColor: colors.neutral.white, borderRadius: borderRadiusValues.lg, padding: spacingValues.md, marginBottom: spacingValues.sm, shadowColor: colors.neutral.black, shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 2, elevation: 2 } as const;
-const labelBase = { fontSize: 14, fontWeight: '600' as const, color: colors.neutral.gray600, textTransform: 'uppercase' as const, letterSpacing: 0.5, marginBottom: spacingValues.xs };
-const btnBase = { flex: 1, borderRadius: borderRadiusValues.md, paddingVertical: spacingValues.sm, alignItems: 'center' as const };
+const createStyles = (theme: Theme) => {
+  const cardBase = { backgroundColor: theme.colors.background.default, borderRadius: borderRadiusValues.lg, padding: spacingValues.md, marginBottom: spacingValues.sm, shadowColor: colors.neutral.black, shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 2, elevation: 2 } as const;
+  const labelBase = { fontSize: 14, fontWeight: '600' as const, color: theme.colors.text.muted, textTransform: 'uppercase' as const, letterSpacing: 0.5, marginBottom: spacingValues.xs };
+  const btnBase = { flex: 1, borderRadius: borderRadiusValues.md, paddingVertical: spacingValues.sm, alignItems: 'center' as const };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.neutral.gray100 },
-  headerBar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacingValues.md, paddingVertical: spacingValues.sm },
-  backButton: { width: sizingValues.component.sm, height: sizingValues.component.sm, alignItems: 'center', justifyContent: 'center' },
-  backArrow: { fontSize: 20, color: colors.neutral.white, fontWeight: '600' },
-  headerTitle: { flex: 1, fontSize: 18, fontWeight: '700', color: colors.neutral.white, textAlign: 'center' },
-  headerSpacer: { width: sizingValues.component.sm },
-  scrollView: { flex: 1 },
-  scrollContent: { padding: spacingValues.md, paddingBottom: spacingValues['5xl'] },
-  heroSection: { alignItems: 'center', marginBottom: spacingValues.md },
-  iconCircle: { width: 96, height: 96, borderRadius: 48, alignItems: 'center', justifyContent: 'center' },
-  heroIcon: { fontSize: 48 },
-  rewardTitle: { fontSize: 24, fontWeight: '700', color: colors.neutral.gray800, textAlign: 'center', marginBottom: spacingValues.xs },
-  rewardDescription: { fontSize: 15, color: colors.neutral.gray600, textAlign: 'center', lineHeight: 22, marginBottom: spacingValues.sm },
-  journeyBadge: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: spacingValues.lg },
-  journeyDot: { width: 8, height: 8, borderRadius: 4, marginRight: spacingValues['3xs'] },
-  journeyLabel: { fontSize: 14, fontWeight: '500' },
-  costCard: { ...cardBase },
-  costLabel: { ...labelBase },
-  costRow: { flexDirection: 'row', alignItems: 'center', marginBottom: spacingValues.xs },
-  costValue: { fontSize: 28, fontWeight: '700', color: colors.neutral.gray800 },
-  balanceRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacingValues.xs },
-  balanceLabel: { fontSize: 14, color: colors.neutral.gray600 },
-  balanceValue: { fontSize: 16, fontWeight: '600', color: colors.neutral.gray800 },
-  affordRow: { flexDirection: 'row', alignItems: 'center', marginTop: spacingValues['3xs'] },
-  affordDot: { width: 8, height: 8, borderRadius: 4, marginRight: spacingValues.xs },
-  affordText: { fontSize: 13, fontWeight: '500', flex: 1 },
-  card: { ...cardBase },
-  cardLabel: { ...labelBase },
-  instructionsText: { fontSize: 14, color: colors.neutral.gray700, lineHeight: 21 },
-  termsHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: colors.neutral.white, borderRadius: borderRadiusValues.lg, padding: spacingValues.md, marginBottom: spacingValues['4xs'] },
-  termsHeaderText: { fontSize: 14, fontWeight: '600', color: colors.neutral.gray600 },
-  termsChevron: { fontSize: 12, color: colors.neutral.gray500 },
-  termsContent: { backgroundColor: colors.neutral.white, borderBottomLeftRadius: borderRadiusValues.lg, borderBottomRightRadius: borderRadiusValues.lg, paddingHorizontal: spacingValues.md, paddingBottom: spacingValues.md, marginBottom: spacingValues.sm },
-  termsText: { fontSize: 13, color: colors.neutral.gray500, lineHeight: 20 },
-  claimButton: { borderRadius: borderRadiusValues.md, paddingVertical: spacingValues.sm, alignItems: 'center', marginTop: spacingValues.sm, marginBottom: spacingValues.lg },
-  claimButtonText: { fontSize: 16, fontWeight: '700', color: colors.neutral.white },
-  relatedSection: { marginTop: spacingValues.xs },
-  relatedSectionTitle: { fontSize: 16, fontWeight: '600', color: colors.neutral.gray700, marginBottom: spacingValues.sm },
-  relatedList: { gap: spacingValues.sm },
-  relatedCard: { width: 120, backgroundColor: colors.neutral.white, borderRadius: borderRadiusValues.md, padding: spacingValues.sm, alignItems: 'center', shadowColor: colors.neutral.black, shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 2, elevation: 2 },
-  relatedIconContainer: { width: sizingValues.component.lg, height: sizingValues.component.lg, borderRadius: borderRadiusValues.md, backgroundColor: colors.neutral.gray200, alignItems: 'center', justifyContent: 'center', marginBottom: spacingValues.xs },
-  relatedIcon: { fontSize: 22 },
-  relatedTitle: { fontSize: 12, fontWeight: '500', color: colors.neutral.gray700, textAlign: 'center', marginBottom: spacingValues['4xs'] },
-  relatedXP: { fontSize: 12, fontWeight: '700' },
-  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center', padding: spacingValues['2xl'] },
-  modalContent: { backgroundColor: colors.neutral.white, borderRadius: borderRadiusValues.lg, padding: spacingValues.xl, width: '100%' },
-  modalTitle: { fontSize: 20, fontWeight: '700', color: colors.neutral.gray800, marginBottom: spacingValues.sm, textAlign: 'center' },
-  modalMessage: { fontSize: 14, color: colors.neutral.gray600, lineHeight: 21, marginBottom: spacingValues.md, textAlign: 'center' },
-  modalCostRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacingValues.xs },
-  modalCostLabel: { fontSize: 14, color: colors.neutral.gray600 },
-  modalCostValue: { fontSize: 16, fontWeight: '600', color: colors.neutral.gray800 },
-  modalActions: { flexDirection: 'row', gap: spacingValues.sm, marginTop: spacingValues.lg },
-  modalCancelButton: { ...btnBase, borderWidth: 1, borderColor: colors.neutral.gray300 },
-  modalCancelText: { fontSize: 16, fontWeight: '600', color: colors.neutral.gray700 },
-  modalConfirmButton: { ...btnBase },
-  modalConfirmText: { fontSize: 16, fontWeight: '700', color: colors.neutral.white },
-  errorContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacingValues['2xl'] },
-  errorText: { fontSize: 18, fontWeight: '600', color: colors.neutral.gray700, marginBottom: spacingValues.md },
-  errorButton: { backgroundColor: colors.brand.primary, borderRadius: borderRadiusValues.md, paddingVertical: spacingValues.sm, paddingHorizontal: spacingValues['2xl'] },
-  errorButtonText: { fontSize: 16, fontWeight: '600', color: colors.neutral.white },
-});
+  return StyleSheet.create({
+    container: { flex: 1, backgroundColor: theme.colors.background.subtle },
+    headerBar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacingValues.md, paddingVertical: spacingValues.sm },
+    backButton: { width: sizingValues.component.sm, height: sizingValues.component.sm, alignItems: 'center', justifyContent: 'center' },
+    backArrow: { fontSize: 20, color: theme.colors.text.onBrand, fontWeight: '600' },
+    headerTitle: { flex: 1, fontSize: 18, fontWeight: '700', color: theme.colors.text.onBrand, textAlign: 'center' },
+    headerSpacer: { width: sizingValues.component.sm },
+    scrollView: { flex: 1 },
+    scrollContent: { padding: spacingValues.md, paddingBottom: spacingValues['5xl'] },
+    heroSection: { alignItems: 'center', marginBottom: spacingValues.md },
+    iconCircle: { width: 96, height: 96, borderRadius: 48, alignItems: 'center', justifyContent: 'center' },
+    heroIcon: { fontSize: 48 },
+    rewardTitle: { fontSize: 24, fontWeight: '700', color: theme.colors.text.default, textAlign: 'center', marginBottom: spacingValues.xs },
+    rewardDescription: { fontSize: 15, color: theme.colors.text.muted, textAlign: 'center', lineHeight: 22, marginBottom: spacingValues.sm },
+    journeyBadge: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: spacingValues.lg },
+    journeyDot: { width: 8, height: 8, borderRadius: 4, marginRight: spacingValues['3xs'] },
+    journeyLabel: { fontSize: 14, fontWeight: '500' },
+    costCard: { ...cardBase },
+    costLabel: { ...labelBase },
+    costRow: { flexDirection: 'row', alignItems: 'center', marginBottom: spacingValues.xs },
+    costValue: { fontSize: 28, fontWeight: '700', color: theme.colors.text.default },
+    balanceRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacingValues.xs },
+    balanceLabel: { fontSize: 14, color: theme.colors.text.muted },
+    balanceValue: { fontSize: 16, fontWeight: '600', color: theme.colors.text.default },
+    affordRow: { flexDirection: 'row', alignItems: 'center', marginTop: spacingValues['3xs'] },
+    affordDot: { width: 8, height: 8, borderRadius: 4, marginRight: spacingValues.xs },
+    affordText: { fontSize: 13, fontWeight: '500', flex: 1 },
+    card: { ...cardBase },
+    cardLabel: { ...labelBase },
+    instructionsText: { fontSize: 14, color: theme.colors.text.default, lineHeight: 21 },
+    termsHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: theme.colors.background.default, borderRadius: borderRadiusValues.lg, padding: spacingValues.md, marginBottom: spacingValues['4xs'] },
+    termsHeaderText: { fontSize: 14, fontWeight: '600', color: theme.colors.text.muted },
+    termsChevron: { fontSize: 12, color: theme.colors.text.muted },
+    termsContent: { backgroundColor: theme.colors.background.default, borderBottomLeftRadius: borderRadiusValues.lg, borderBottomRightRadius: borderRadiusValues.lg, paddingHorizontal: spacingValues.md, paddingBottom: spacingValues.md, marginBottom: spacingValues.sm },
+    termsText: { fontSize: 13, color: theme.colors.text.muted, lineHeight: 20 },
+    claimButton: { borderRadius: borderRadiusValues.md, paddingVertical: spacingValues.sm, alignItems: 'center', marginTop: spacingValues.sm, marginBottom: spacingValues.lg },
+    claimButtonText: { fontSize: 16, fontWeight: '700', color: theme.colors.text.onBrand },
+    relatedSection: { marginTop: spacingValues.xs },
+    relatedSectionTitle: { fontSize: 16, fontWeight: '600', color: theme.colors.text.default, marginBottom: spacingValues.sm },
+    relatedList: { gap: spacingValues.sm },
+    relatedCard: { width: 120, backgroundColor: theme.colors.background.default, borderRadius: borderRadiusValues.md, padding: spacingValues.sm, alignItems: 'center', shadowColor: colors.neutral.black, shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 2, elevation: 2 },
+    relatedIconContainer: { width: sizingValues.component.lg, height: sizingValues.component.lg, borderRadius: borderRadiusValues.md, backgroundColor: theme.colors.background.subtle, alignItems: 'center', justifyContent: 'center', marginBottom: spacingValues.xs },
+    relatedIcon: { fontSize: 22 },
+    relatedTitle: { fontSize: 12, fontWeight: '500', color: theme.colors.text.default, textAlign: 'center', marginBottom: spacingValues['4xs'] },
+    relatedXP: { fontSize: 12, fontWeight: '700' },
+    modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center', padding: spacingValues['2xl'] },
+    modalContent: { backgroundColor: theme.colors.background.default, borderRadius: borderRadiusValues.lg, padding: spacingValues.xl, width: '100%' },
+    modalTitle: { fontSize: 20, fontWeight: '700', color: theme.colors.text.default, marginBottom: spacingValues.sm, textAlign: 'center' },
+    modalMessage: { fontSize: 14, color: theme.colors.text.muted, lineHeight: 21, marginBottom: spacingValues.md, textAlign: 'center' },
+    modalCostRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacingValues.xs },
+    modalCostLabel: { fontSize: 14, color: theme.colors.text.muted },
+    modalCostValue: { fontSize: 16, fontWeight: '600', color: theme.colors.text.default },
+    modalActions: { flexDirection: 'row', gap: spacingValues.sm, marginTop: spacingValues.lg },
+    modalCancelButton: { ...btnBase, borderWidth: 1, borderColor: theme.colors.border.default },
+    modalCancelText: { fontSize: 16, fontWeight: '600', color: theme.colors.text.default },
+    modalConfirmButton: { ...btnBase },
+    modalConfirmText: { fontSize: 16, fontWeight: '700', color: theme.colors.text.onBrand },
+    errorContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacingValues['2xl'] },
+    errorText: { fontSize: 18, fontWeight: '600', color: theme.colors.text.default, marginBottom: spacingValues.md },
+    errorButton: { backgroundColor: colors.brand.primary, borderRadius: borderRadiusValues.md, paddingVertical: spacingValues.sm, paddingHorizontal: spacingValues['2xl'] },
+    errorButtonText: { fontSize: 16, fontWeight: '600', color: theme.colors.text.onBrand },
+  });
+};
 
 export default RewardDetail;

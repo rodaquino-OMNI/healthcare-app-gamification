@@ -7,6 +7,8 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Badge } from '@austa/design-system/src/components/Badge/Badge';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { ROUTES } from '../../../../constants/routes';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 
@@ -36,6 +38,8 @@ export const BookingInsurance: React.FC = () => {
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const { doctorId, appointmentType } = route.params || {
     doctorId: 'doc-001',
     appointmentType: 'in-person',
@@ -223,7 +227,7 @@ export const BookingInsurance: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: colors.journeys.care.background,
@@ -235,7 +239,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacingValues.md,
     paddingVertical: spacingValues.sm,
     borderBottomWidth: 1,
-    borderBottomColor: colors.neutral.gray300,
+    borderBottomColor: theme.colors.border.default,
   },
   scrollView: {
     flex: 1,
@@ -252,8 +256,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacingValues.md,
     borderRadius: spacingValues.xs,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
     gap: spacingValues.sm,
   },
   planOptionSelected: {
@@ -314,7 +318,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.journeys.care.background,
     padding: spacingValues.md,
     borderTopWidth: 1,
-    borderTopColor: colors.neutral.gray300,
+    borderTopColor: theme.colors.border.default,
   },
 });
 

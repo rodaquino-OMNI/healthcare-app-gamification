@@ -6,6 +6,8 @@ import { Button } from '@austa/design-system/src/components/Button/Button';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchable';
 import { ROUTES } from '../../../../constants/routes';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 
@@ -47,6 +49,8 @@ type SymptomHeadDetailRouteParams = {
  */
 const SymptomHeadDetail: React.FC = () => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const navigation = useNavigation<any>();
   const route = useRoute<RouteProp<{ params: SymptomHeadDetailRouteParams }, 'params'>>();
   const { symptoms = [], description = '', bodyRegions = [] } = route.params || {};
@@ -188,7 +192,7 @@ const SymptomHeadDetail: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: colors.journeys.care.background,
@@ -206,10 +210,10 @@ const styles = StyleSheet.create({
     aspectRatio: 0.75,
     marginTop: spacingValues.xl,
     marginBottom: spacingValues.xl,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: spacingValues.xs,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
+    borderColor: theme.colors.border.default,
     overflow: 'hidden',
   },
   headSilhouette: {

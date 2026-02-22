@@ -10,6 +10,8 @@ import {
   FlatList,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
@@ -64,6 +66,8 @@ const FILTER_TABS: { key: SearchFilter; labelKey: string }[] = [
  * buscas recentes e sugestoes.
  */
 export const SearchScreen: React.FC = () => {
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const { t } = useTranslation();
   const navigation = useNavigation();
   const [query, setQuery] = useState('');
@@ -221,21 +225,21 @@ export const SearchScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
   },
   searchContainer: {
     paddingHorizontal: spacingValues.md,
     paddingVertical: spacingValues.sm,
     borderBottomWidth: 1,
-    borderBottomColor: colors.gray[20],
+    borderBottomColor: theme.colors.border.default,
   },
   searchInputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.gray[10],
+    backgroundColor: theme.colors.background.subtle,
     borderRadius: borderRadiusValues.md,
     paddingHorizontal: spacingValues.sm,
     height: 44,
@@ -247,7 +251,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: fontSizeValues.md,
-    color: colors.gray[70],
+    color: theme.colors.text.default,
     fontFamily: typography.fontFamily.body,
     paddingVertical: 0,
   },
@@ -255,21 +259,21 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: colors.gray[30],
+    backgroundColor: theme.colors.border.muted,
     justifyContent: 'center',
     alignItems: 'center',
   },
   clearButtonText: {
     fontSize: fontSizeValues.xs,
     fontWeight: String(typography.fontWeight.bold) as '700',
-    color: colors.neutral.white,
+    color: theme.colors.text.onBrand,
   },
   filterContainer: {
     flexDirection: 'row',
     paddingHorizontal: spacingValues.md,
     paddingVertical: spacingValues.xs,
     borderBottomWidth: 1,
-    borderBottomColor: colors.gray[20],
+    borderBottomColor: theme.colors.border.default,
   },
   filterTab: {
     paddingHorizontal: spacingValues.md,
@@ -283,7 +287,7 @@ const styles = StyleSheet.create({
   filterTabText: {
     fontSize: fontSizeValues.sm,
     fontWeight: String(typography.fontWeight.medium) as '500',
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
   },
   filterTabTextActive: {
     color: colors.brand.primary,
@@ -305,7 +309,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: fontSizeValues.md,
     fontWeight: String(typography.fontWeight.semiBold) as '600',
-    color: colors.gray[70],
+    color: theme.colors.text.default,
   },
   clearAllText: {
     fontSize: fontSizeValues.sm,
@@ -317,7 +321,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: spacingValues.sm,
     borderBottomWidth: 1,
-    borderBottomColor: colors.gray[10],
+    borderBottomColor: theme.colors.background.subtle,
   },
   recentIcon: {
     fontSize: 14,
@@ -326,20 +330,20 @@ const styles = StyleSheet.create({
   recentText: {
     flex: 1,
     fontSize: fontSizeValues.sm,
-    color: colors.gray[60],
+    color: theme.colors.text.default,
   },
   removeButton: {
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: colors.gray[20],
+    backgroundColor: theme.colors.border.default,
     justifyContent: 'center',
     alignItems: 'center',
   },
   removeButtonText: {
     fontSize: 10,
     fontWeight: String(typography.fontWeight.bold) as '700',
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
   },
   suggestionsGrid: {
     flexDirection: 'row',
@@ -348,16 +352,16 @@ const styles = StyleSheet.create({
     marginTop: spacingValues.xs,
   },
   suggestionChip: {
-    backgroundColor: colors.gray[10],
+    backgroundColor: theme.colors.background.subtle,
     paddingHorizontal: spacingValues.sm,
     paddingVertical: spacingValues.xs,
     borderRadius: borderRadiusValues.full,
     borderWidth: 1,
-    borderColor: colors.gray[20],
+    borderColor: theme.colors.border.default,
   },
   suggestionText: {
     fontSize: fontSizeValues.sm,
-    color: colors.gray[60],
+    color: theme.colors.text.default,
     fontWeight: String(typography.fontWeight.medium) as '500',
   },
 });

@@ -15,7 +15,7 @@ import { ROUTES } from '../../constants/routes';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const Header = styled.View`
@@ -24,7 +24,7 @@ const Header = styled.View`
   padding-horizontal: ${spacing.md};
   padding-vertical: ${spacing.sm};
   border-bottom-width: 1px;
-  border-bottom-color: ${colors.gray[20]};
+  border-bottom-color: ${({ theme }) => theme.colors.border.default};
 `;
 
 const BackButton = styled.TouchableOpacity`
@@ -37,7 +37,7 @@ const BackButton = styled.TouchableOpacity`
 const BackText = styled.Text`
   font-size: ${typography.fontSize['text-xl']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const HeaderTitle = styled.Text`
@@ -45,7 +45,7 @@ const HeaderTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['text-lg']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   text-align: center;
 `;
 
@@ -66,7 +66,7 @@ const SectionTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['text-lg']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const SeeAllButton = styled.TouchableOpacity`
@@ -82,7 +82,7 @@ const SeeAllText = styled.Text`
 `;
 
 const AppointmentCard = styled.View`
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   border-radius: ${borderRadius.md};
   padding: ${spacing.md};
   margin-horizontal: ${spacing.md};
@@ -107,7 +107,7 @@ const DoctorName = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const TelemedicineBadge = styled.View`
@@ -127,7 +127,7 @@ const BadgeText = styled.Text`
 const Specialty = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   margin-bottom: ${spacing['3xs']};
 `;
 
@@ -150,7 +150,7 @@ const JoinButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const EmptyContainer = styled.View`
@@ -169,14 +169,14 @@ const EmptyTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['text-lg']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   margin-bottom: ${spacing.xs};
 `;
 
 const EmptyDescription = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
   text-align: center;
 `;
 

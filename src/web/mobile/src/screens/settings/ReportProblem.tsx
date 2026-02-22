@@ -13,7 +13,7 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const Header = styled.View`
@@ -26,7 +26,7 @@ const Title = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['text-2xl']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const FormSection = styled.View`
@@ -38,7 +38,7 @@ const FieldLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.xs};
   margin-top: ${spacing.lg};
 `;
@@ -70,26 +70,26 @@ const CategoryChipText = styled.Text<{ isSelected: boolean }>`
 
 const TextArea = styled.TextInput`
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
   border-radius: ${borderRadius.md};
   padding-horizontal: ${spacing.md};
   padding-vertical: ${spacing.sm};
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   min-height: 100px;
   text-align-vertical: top;
 `;
 
 const StepsArea = styled.TextInput`
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
   border-radius: ${borderRadius.md};
   padding-horizontal: ${spacing.md};
   padding-vertical: ${spacing.sm};
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   min-height: 80px;
   text-align-vertical: top;
 `;
@@ -100,7 +100,7 @@ const AttachButton = styled.TouchableOpacity`
   padding-vertical: ${spacing.md};
   padding-horizontal: ${spacing.md};
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
   border-radius: ${borderRadius.md};
   border-style: dashed;
   justify-content: center;
@@ -115,7 +115,7 @@ const AttachButtonText = styled.Text`
 `;
 
 const DeviceInfoSection = styled.View`
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   border-radius: ${borderRadius.md};
   padding: ${spacing.md};
   margin-top: ${spacing.sm};
@@ -130,14 +130,14 @@ const DeviceInfoRow = styled.View`
 const DeviceInfoLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
 `;
 
 const DeviceInfoValue = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const SubmitButton = styled.TouchableOpacity<{ disabled: boolean }>`
@@ -155,7 +155,7 @@ const SubmitButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 // --- Types ---

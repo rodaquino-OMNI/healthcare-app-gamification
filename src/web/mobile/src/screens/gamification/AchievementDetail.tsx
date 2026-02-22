@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 
 import { useAchievements } from '../../hooks/useGamification';
 import { Achievement } from '../../../../shared/types/gamification.types';
@@ -83,6 +85,8 @@ function getMockRequirements(achievement: Achievement): Requirement[] {
 const AchievementDetailScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const route = useRoute<RouteProp<AchievementDetailParamList, 'GamificationAchievementDetail'>>();
   const { achievementId } = (route.params ?? {}) as Partial<{ achievementId: string }>;
 
@@ -298,12 +302,12 @@ const AchievementDetailScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.neutral.white },
+const createStyles = (theme: Theme) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: theme.colors.background.default },
   centeredMessage: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  loadingText: { fontSize: fontSizeValues.md, color: colors.gray[50] },
-  errorText: { fontSize: fontSizeValues.md, color: colors.gray[50] },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: spacingValues.md, paddingVertical: spacingValues.sm, borderBottomWidth: 1, borderBottomColor: colors.gray[10] },
+  loadingText: { fontSize: fontSizeValues.md, color: theme.colors.text.muted },
+  errorText: { fontSize: fontSizeValues.md, color: theme.colors.text.muted },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: spacingValues.md, paddingVertical: spacingValues.sm, borderBottomWidth: 1, borderBottomColor: theme.colors.border.default },
   backButton: { paddingVertical: spacingValues.xs, paddingRight: spacingValues.md },
   backButtonText: { fontSize: fontSizeValues.md, fontWeight: '600', color: colors.brand.primary },
   shareButton: { paddingVertical: spacingValues.xs, paddingLeft: spacingValues.md },
@@ -313,27 +317,27 @@ const styles = StyleSheet.create({
   iconText: { fontSize: 44 },
   statusBadge: { borderRadius: borderRadiusValues.full, paddingHorizontal: spacingValues.sm, paddingVertical: spacingValues['3xs'], marginBottom: spacingValues.md },
   statusBadgeText: { fontSize: fontSizeValues.xs, fontWeight: '600' },
-  title: { fontSize: fontSizeValues.xl, fontWeight: '700', color: colors.neutral.gray900, textAlign: 'center', marginBottom: spacingValues.xs },
-  description: { fontSize: fontSizeValues.sm, color: colors.gray[50], textAlign: 'center', lineHeight: fontSizeValues.sm * 1.5, marginBottom: spacingValues.md },
+  title: { fontSize: fontSizeValues.xl, fontWeight: '700', color: theme.colors.text.default, textAlign: 'center', marginBottom: spacingValues.xs },
+  description: { fontSize: fontSizeValues.sm, color: theme.colors.text.muted, textAlign: 'center', lineHeight: fontSizeValues.sm * 1.5, marginBottom: spacingValues.md },
   journeyBadge: { flexDirection: 'row', alignItems: 'center', borderRadius: borderRadiusValues.full, paddingHorizontal: spacingValues.sm, paddingVertical: spacingValues['3xs'], marginBottom: spacingValues.xl },
   journeyDot: { width: 8, height: 8, borderRadius: 4, marginRight: spacingValues['2xs'] },
   journeyBadgeText: { fontSize: fontSizeValues.xs, fontWeight: '600' },
   section: { width: '100%', marginBottom: spacingValues.xl },
-  sectionTitle: { fontSize: fontSizeValues.md, fontWeight: '700', color: colors.neutral.gray900, marginBottom: spacingValues.sm },
+  sectionTitle: { fontSize: fontSizeValues.md, fontWeight: '700', color: theme.colors.text.default, marginBottom: spacingValues.sm },
   progressRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: spacingValues.xs },
-  progressPercent: { fontSize: fontSizeValues['2xl'], fontWeight: '700', color: colors.neutral.gray900 },
-  progressFraction: { fontSize: fontSizeValues.sm, color: colors.gray[50] },
-  progressTrack: { height: 10, backgroundColor: colors.gray[10], borderRadius: borderRadiusValues.sm, overflow: 'hidden' },
+  progressPercent: { fontSize: fontSizeValues['2xl'], fontWeight: '700', color: theme.colors.text.default },
+  progressFraction: { fontSize: fontSizeValues.sm, color: theme.colors.text.muted },
+  progressTrack: { height: 10, backgroundColor: theme.colors.background.subtle, borderRadius: borderRadiusValues.sm, overflow: 'hidden' },
   progressFill: { height: 10, borderRadius: borderRadiusValues.sm },
-  requirementRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: spacingValues.xs, borderBottomWidth: 1, borderBottomColor: colors.gray[10] },
+  requirementRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: spacingValues.xs, borderBottomWidth: 1, borderBottomColor: theme.colors.border.default },
   checkCircle: { width: sizingValues.component.xs, height: sizingValues.component.xs, borderRadius: sizingValues.component.xs / 2, borderWidth: 2, borderColor: colors.gray[30], justifyContent: 'center', alignItems: 'center', marginRight: spacingValues.sm },
-  checkMark: { fontSize: fontSizeValues.xs, color: colors.neutral.white, fontWeight: '700' },
-  requirementLabel: { fontSize: fontSizeValues.sm, color: colors.neutral.gray900, flex: 1 },
-  requirementLabelDone: { color: colors.gray[40], textDecorationLine: 'line-through' },
-  rewardCard: { flexDirection: 'row', alignItems: 'center', padding: spacingValues.md, backgroundColor: colors.gray[5], borderRadius: borderRadiusValues.lg, borderWidth: 1 },
+  checkMark: { fontSize: fontSizeValues.xs, color: theme.colors.text.onBrand, fontWeight: '700' },
+  requirementLabel: { fontSize: fontSizeValues.sm, color: theme.colors.text.default, flex: 1 },
+  requirementLabelDone: { color: theme.colors.text.subtle, textDecorationLine: 'line-through' },
+  rewardCard: { flexDirection: 'row', alignItems: 'center', padding: spacingValues.md, backgroundColor: theme.colors.background.muted, borderRadius: borderRadiusValues.lg, borderWidth: 1 },
   rewardIcon: { fontSize: 28, marginRight: spacingValues.sm },
   rewardInfo: { flex: 1 },
-  rewardTitle: { fontSize: fontSizeValues.sm, fontWeight: '600', color: colors.neutral.gray900 },
+  rewardTitle: { fontSize: fontSizeValues.sm, fontWeight: '600', color: theme.colors.text.default },
   rewardXP: { fontSize: fontSizeValues.lg, fontWeight: '700', marginTop: spacingValues['4xs'] },
 });
 

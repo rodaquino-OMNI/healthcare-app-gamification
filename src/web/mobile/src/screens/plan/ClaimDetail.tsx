@@ -20,6 +20,8 @@ import {
   spacing,
   borderRadius,
 } from '@web/design-system/src/tokens';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '@web/design-system/src/themes/base.theme';
 
 const { plan } = colors.journeys;
 const sp = { xs: 8, sm: 12, md: 16, lg: 20, xl: 24, '2xl': 32 };
@@ -69,6 +71,8 @@ export const ClaimDetail: React.FC = () => {
   const { t } = useTranslation();
   const route = useRoute<any>();
   const navigation = useNavigation<any>();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
 
   const claimId = route.params?.claimId;
   const planId = route.params?.planId || '';
@@ -261,7 +265,7 @@ export const ClaimDetail: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: plan.background,
@@ -293,7 +297,7 @@ const styles = StyleSheet.create({
   },
   // Header card
   headerCard: {
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     margin: sp.md,
     borderRadius: 8,
     padding: sp.lg,
@@ -339,7 +343,7 @@ const styles = StyleSheet.create({
   },
   // Timeline
   timelineCard: {
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     marginHorizontal: sp.md,
     marginBottom: sp.md,
     borderRadius: 8,
@@ -412,7 +416,7 @@ const styles = StyleSheet.create({
   },
   // Details
   detailsCard: {
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     marginHorizontal: sp.md,
     marginBottom: sp.md,
     borderRadius: 8,
@@ -428,7 +432,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: sp.xs,
     borderBottomWidth: 1,
-    borderBottomColor: colors.gray[10],
+    borderBottomColor: theme.colors.border.default,
   },
   detailLabel: {
     fontSize: 14,
@@ -487,7 +491,7 @@ const styles = StyleSheet.create({
     color: colors.semantic.error,
   },
   backButton: {
-    backgroundColor: colors.gray[10],
+    backgroundColor: theme.colors.background.subtle,
     borderRadius: 8,
     paddingVertical: sp.sm,
     alignItems: 'center',

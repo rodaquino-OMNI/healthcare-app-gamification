@@ -15,7 +15,7 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const Header = styled.View`
@@ -28,7 +28,7 @@ const Title = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['text-2xl']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const CardsContainer = styled.View`
@@ -37,10 +37,10 @@ const CardsContainer = styled.View`
 `;
 
 const ChannelCard = styled.View`
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   border-radius: ${borderRadius.lg};
   border-width: 1px;
-  border-color: ${colors.gray[10]};
+  border-color: ${({ theme }) => theme.colors.border.muted};
   padding: ${spacing.xl};
   margin-bottom: ${spacing.lg};
   shadow-color: ${colors.neutral.black};
@@ -68,7 +68,7 @@ const ChannelIconContainer = styled.View<{ bgColor: string }>`
 
 const ChannelIconText = styled.Text`
   font-size: 22px;
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const ChannelTitleContainer = styled.View`
@@ -79,7 +79,7 @@ const ChannelTitle = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-lg']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const OnlineBadge = styled.View`
@@ -106,7 +106,7 @@ const OnlineText = styled.Text`
 const ChannelDescription = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   margin-bottom: ${spacing.sm};
 `;
 
@@ -114,14 +114,14 @@ const ChannelInfo = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.xs};
 `;
 
 const ChannelSubInfo = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   margin-bottom: ${spacing.md};
 `;
 
@@ -138,7 +138,7 @@ const ActionButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const OperatingHoursSection = styled.View`
@@ -151,7 +151,7 @@ const OperatingHoursTitle = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-transform: uppercase;
   letter-spacing: ${typography.letterSpacing.wide};
   margin-bottom: ${spacing.sm};
@@ -166,13 +166,13 @@ const OperatingHoursRow = styled.View`
 const DayText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const HoursText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
 `;
 
 // --- Component ---

@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { fontSizeValues } from '../../../../design-system/src/tokens/typography';
@@ -64,7 +66,10 @@ export const ChartPreview: React.FC<ChartPreviewProps> = ({
   viewDetailsLabel,
   viewDetailsAccessibilityLabel,
   healthDashboardRoute,
-}) => (
+}) => {
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
+  return (
   <View style={styles.chartCard}>
     <View style={styles.chartArea}>
       {bars.map((bar) => (
@@ -129,7 +134,8 @@ export const ChartPreview: React.FC<ChartPreviewProps> = ({
       <Text style={styles.viewDetailsLink}>{viewDetailsLabel}</Text>
     </TouchableOpacity>
   </View>
-);
+  );
+};
 
 // ---------------------------------------------------------------------------
 // GoalsSection
@@ -143,7 +149,10 @@ interface GoalsSectionProps {
 /**
  * Goal progress cards section.
  */
-export const GoalsSection: React.FC<GoalsSectionProps> = ({ goals, completedLabel }) => (
+export const GoalsSection: React.FC<GoalsSectionProps> = ({ goals, completedLabel }) => {
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
+  return (
   <>
     {goals.map((goal) => (
       <View key={goal.id} style={styles.goalCard}>
@@ -177,7 +186,8 @@ export const GoalsSection: React.FC<GoalsSectionProps> = ({ goals, completedLabe
       </View>
     ))}
   </>
-);
+  );
+};
 
 // ---------------------------------------------------------------------------
 // JourneysSection
@@ -193,6 +203,8 @@ interface JourneysSectionProps {
  */
 export const JourneysSection: React.FC<JourneysSectionProps> = ({ navigation, journeys }) => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   return (
   <>
     {journeys.map((journey) => (
@@ -225,10 +237,10 @@ export const JourneysSection: React.FC<JourneysSectionProps> = ({ navigation, jo
 // Styles
 // ---------------------------------------------------------------------------
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   // Chart preview
   chartCard: {
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: borderRadiusValues.md,
     padding: spacingValues.md,
     shadowColor: colors.neutral.black,
@@ -259,7 +271,7 @@ const styles = StyleSheet.create({
   },
   chartDayLabel: {
     fontSize: 10,
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
     marginTop: spacingValues['3xs'],
   },
   chartLegend: {
@@ -280,7 +292,7 @@ const styles = StyleSheet.create({
   },
   legendText: {
     fontSize: fontSizeValues.xs,
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
   },
   viewDetailsLink: {
     fontSize: fontSizeValues.sm,
@@ -291,7 +303,7 @@ const styles = StyleSheet.create({
 
   // Goals
   goalCard: {
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: borderRadiusValues.md,
     padding: spacingValues.md,
     marginBottom: spacingValues.sm,
@@ -310,7 +322,7 @@ const styles = StyleSheet.create({
   goalTitle: {
     fontSize: fontSizeValues.sm,
     fontWeight: '600',
-    color: colors.neutral.gray900,
+    color: theme.colors.text.default,
   },
   goalPercentage: {
     fontSize: fontSizeValues.sm,
@@ -322,7 +334,7 @@ const styles = StyleSheet.create({
   },
   progressBarTrack: {
     height: spacingValues.xs,
-    backgroundColor: colors.gray[10],
+    backgroundColor: theme.colors.background.subtle,
     borderRadius: borderRadiusValues.full,
     overflow: 'hidden',
   },
@@ -340,7 +352,7 @@ const styles = StyleSheet.create({
   // Journey cards
   journeyCard: {
     flexDirection: 'row',
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: borderRadiusValues.md,
     marginBottom: spacingValues.sm,
     shadowColor: colors.neutral.black,
@@ -360,12 +372,12 @@ const styles = StyleSheet.create({
   journeyTitle: {
     fontSize: fontSizeValues.md,
     fontWeight: '600',
-    color: colors.neutral.gray900,
+    color: theme.colors.text.default,
     marginBottom: spacingValues['3xs'],
   },
   journeyDescription: {
     fontSize: fontSizeValues.sm,
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
     lineHeight: fontSizeValues.sm * 1.5,
   },
 });

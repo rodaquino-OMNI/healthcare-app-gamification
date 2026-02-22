@@ -13,7 +13,7 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const ContentContainer = styled.View`
@@ -41,7 +41,7 @@ const Title = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-xl']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   text-align: center;
   margin-bottom: ${spacing.xs};
 `;
@@ -49,7 +49,7 @@ const Title = styled.Text`
 const Description = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-align: center;
   line-height: 24px;
   margin-bottom: ${spacing.xl};
@@ -59,7 +59,7 @@ const Description = styled.Text`
 const ScheduleCard = styled.View`
   width: 100%;
   max-width: 280px;
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   border-radius: ${borderRadius.md};
   padding: ${spacing.md};
   align-items: center;
@@ -70,7 +70,7 @@ const ScheduleLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: ${spacing['3xs']};
@@ -80,7 +80,7 @@ const ScheduleTime = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-md']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const NotifyRow = styled.View`
@@ -89,9 +89,9 @@ const NotifyRow = styled.View`
   justify-content: space-between;
   width: 100%;
   max-width: 280px;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
   border-radius: ${borderRadius.md};
   padding-horizontal: ${spacing.md};
   padding-vertical: ${spacing.sm};
@@ -102,7 +102,7 @@ const NotifyLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   flex: 1;
 `;
 
@@ -120,7 +120,7 @@ const ToggleKnob = styled.View<{ active: boolean }>`
   width: 24px;
   height: 24px;
   border-radius: 12px;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   align-self: ${(props) => (props.active ? 'flex-end' : 'flex-start')};
 `;
 
@@ -142,7 +142,7 @@ const ProgressDot = styled.View<{ active: boolean }>`
 const ProgressLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
   margin-left: ${spacing.xs};
 `;
 

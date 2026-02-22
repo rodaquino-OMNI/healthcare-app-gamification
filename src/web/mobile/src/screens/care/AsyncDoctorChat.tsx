@@ -14,6 +14,8 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Badge } from '@austa/design-system/src/components/Badge/Badge';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { ROUTES } from '../../../../constants/routes';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 
@@ -87,6 +89,8 @@ const AsyncDoctorChat: React.FC = () => {
   const navigation = useNavigation<any>();
   const route = useRoute<RouteProp<{ params: AsyncDoctorChatRouteParams }, 'params'>>();
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const flatListRef = useRef<FlatList>(null);
 
   const { appointmentId, doctorName, doctorSpecialty } = route.params || {
@@ -333,16 +337,16 @@ const AsyncDoctorChat: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: colors.journeys.care.background,
   },
   headerContainer: {
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     padding: spacingValues.md,
     borderBottomWidth: 1,
-    borderBottomColor: colors.neutral.gray300,
+    borderBottomColor: theme.colors.border.default,
   },
   doctorHeaderInfo: {
     flexDirection: 'row',
@@ -411,7 +415,7 @@ const styles = StyleSheet.create({
     gap: spacingValues['4xs'],
   },
   doctorBubble: {
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderTopLeftRadius: spacingValues['4xs'],
   },
   patientBubble: {
@@ -424,8 +428,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacingValues.xs,
     gap: spacingValues.md,
     borderTopWidth: 1,
-    borderTopColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderTopColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
   },
   attachButton: {
     paddingVertical: spacingValues['3xs'],
@@ -434,9 +438,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     padding: spacingValues.sm,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderTopWidth: 1,
-    borderTopColor: colors.neutral.gray300,
+    borderTopColor: theme.colors.border.default,
     gap: spacingValues.xs,
   },
   textInput: {
@@ -444,13 +448,13 @@ const styles = StyleSheet.create({
     minHeight: 40,
     maxHeight: 120,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
+    borderColor: theme.colors.border.default,
     borderRadius: spacingValues.lg,
     paddingHorizontal: spacingValues.md,
     paddingVertical: spacingValues.xs,
     fontSize: 14,
     color: colors.journeys.care.text,
-    backgroundColor: colors.neutral.gray100,
+    backgroundColor: theme.colors.background.subtle,
   },
   sendButton: {
     width: 56,

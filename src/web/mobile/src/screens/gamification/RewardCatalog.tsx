@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 
 import { colors } from 'src/web/design-system/src/tokens/colors';
 import { spacingValues } from 'src/web/design-system/src/tokens/spacing';
@@ -66,6 +68,8 @@ const POPULARITY: Record<string, number> = {
 const RewardCatalog: React.FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation<any>();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const [journeyFilter, setJourneyFilter] = useState<JourneyFilter>('all');
   const [sortOption, setSortOption] = useState<SortOption>('popular');
   const [searchQuery, setSearchQuery] = useState('');
@@ -289,52 +293,52 @@ const RewardCatalog: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.neutral.gray100 },
+const createStyles = (theme: Theme) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: theme.colors.background.subtle },
   headerBar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacingValues.md, paddingVertical: spacingValues.sm, backgroundColor: colors.brand.primary },
   backButton: { width: sizingValues.component.sm, height: sizingValues.component.sm, alignItems: 'center', justifyContent: 'center' },
-  backArrow: { fontSize: 20, color: colors.neutral.white, fontWeight: '600' },
-  screenTitle: { flex: 1, fontSize: 20, fontWeight: '700', color: colors.neutral.white, textAlign: 'center' },
+  backArrow: { fontSize: 20, color: theme.colors.text.onBrand, fontWeight: '600' },
+  screenTitle: { flex: 1, fontSize: 20, fontWeight: '700', color: theme.colors.text.onBrand, textAlign: 'center' },
   headerSpacer: { width: sizingValues.component.sm },
-  xpHeader: { backgroundColor: colors.neutral.white, marginHorizontal: spacingValues.md, marginTop: spacingValues.md, borderRadius: borderRadiusValues.lg, padding: spacingValues.md, alignItems: 'center', shadowColor: colors.neutral.black, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 4, elevation: 3 },
+  xpHeader: { backgroundColor: theme.colors.background.default, marginHorizontal: spacingValues.md, marginTop: spacingValues.md, borderRadius: borderRadiusValues.lg, padding: spacingValues.md, alignItems: 'center', shadowColor: colors.neutral.black, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 4, elevation: 3 },
   xpMain: { alignItems: 'center', marginBottom: spacingValues.sm },
   xpValue: { fontSize: 36, fontWeight: '700', color: colors.brand.primary },
-  xpLabel: { fontSize: 14, color: colors.neutral.gray500, marginTop: spacingValues['4xs'] },
+  xpLabel: { fontSize: 14, color: theme.colors.text.muted, marginTop: spacingValues['4xs'] },
   levelRow: { flexDirection: 'row', alignItems: 'center', width: '100%', gap: spacingValues.xs },
-  levelBarBg: { flex: 1, height: 8, backgroundColor: colors.neutral.gray300, borderRadius: borderRadiusValues.full, overflow: 'hidden' },
+  levelBarBg: { flex: 1, height: 8, backgroundColor: theme.colors.background.subtle, borderRadius: borderRadiusValues.full, overflow: 'hidden' },
   levelBarFill: { height: 8, backgroundColor: colors.brand.primary, borderRadius: borderRadiusValues.full },
-  levelText: { fontSize: 11, fontWeight: '600', color: colors.neutral.gray600, minWidth: 44 },
-  xpToNext: { fontSize: 12, color: colors.neutral.gray500, marginTop: spacingValues.xs },
+  levelText: { fontSize: 11, fontWeight: '600', color: theme.colors.text.muted, minWidth: 44 },
+  xpToNext: { fontSize: 12, color: theme.colors.text.muted, marginTop: spacingValues.xs },
   searchContainer: { paddingHorizontal: spacingValues.md, marginTop: spacingValues.md },
-  searchInput: { backgroundColor: colors.neutral.white, borderRadius: borderRadiusValues.md, paddingHorizontal: spacingValues.md, paddingVertical: spacingValues.sm, fontSize: 15, color: colors.neutral.gray800, borderWidth: 1, borderColor: colors.neutral.gray300 },
+  searchInput: { backgroundColor: theme.colors.background.default, borderRadius: borderRadiusValues.md, paddingHorizontal: spacingValues.md, paddingVertical: spacingValues.sm, fontSize: 15, color: theme.colors.text.default, borderWidth: 1, borderColor: theme.colors.border.default },
   tabsContainer: { maxHeight: 48, marginTop: spacingValues.md },
   tabsContent: { paddingHorizontal: spacingValues.md, gap: spacingValues.xs, alignItems: 'center' },
   tab: { paddingVertical: spacingValues.xs, paddingHorizontal: spacingValues.lg, borderRadius: borderRadiusValues.full, borderWidth: 1, backgroundColor: 'transparent' },
   tabText: { fontSize: 14, fontWeight: '500' },
-  tabTextActive: { color: colors.neutral.white },
+  tabTextActive: { color: theme.colors.text.onBrand },
   sortContainer: { maxHeight: 40, marginTop: spacingValues.sm, marginBottom: spacingValues.sm },
   sortContent: { paddingHorizontal: spacingValues.md, gap: spacingValues.xs, alignItems: 'center' },
-  sortChip: { paddingVertical: spacingValues['3xs'], paddingHorizontal: spacingValues.sm, borderRadius: borderRadiusValues.full, backgroundColor: colors.neutral.gray200 },
+  sortChip: { paddingVertical: spacingValues['3xs'], paddingHorizontal: spacingValues.sm, borderRadius: borderRadiusValues.full, backgroundColor: theme.colors.background.subtle },
   sortChipActive: { backgroundColor: colors.neutral.gray700 },
-  sortChipText: { fontSize: 12, fontWeight: '500', color: colors.neutral.gray600 },
-  sortChipTextActive: { color: colors.neutral.white },
+  sortChipText: { fontSize: 12, fontWeight: '500', color: theme.colors.text.muted },
+  sortChipTextActive: { color: theme.colors.text.onBrand },
   listContent: { paddingBottom: spacingValues['5xl'] },
   gridRow: { paddingHorizontal: spacingValues.md, gap: spacingValues.sm, marginBottom: spacingValues.sm },
-  rewardCard: { flex: 1, backgroundColor: colors.neutral.white, borderRadius: borderRadiusValues.lg, padding: spacingValues.sm, alignItems: 'center', shadowColor: colors.neutral.black, shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 2, elevation: 2 },
+  rewardCard: { flex: 1, backgroundColor: theme.colors.background.default, borderRadius: borderRadiusValues.lg, padding: spacingValues.sm, alignItems: 'center', shadowColor: colors.neutral.black, shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 2, elevation: 2 },
   rewardCardDisabled: { opacity: 0.55 },
-  rewardIconContainer: { width: sizingValues.component.xl, height: sizingValues.component.xl, borderRadius: borderRadiusValues.lg, backgroundColor: colors.neutral.gray200, alignItems: 'center', justifyContent: 'center', marginBottom: spacingValues.xs },
+  rewardIconContainer: { width: sizingValues.component.xl, height: sizingValues.component.xl, borderRadius: borderRadiusValues.lg, backgroundColor: theme.colors.background.subtle, alignItems: 'center', justifyContent: 'center', marginBottom: spacingValues.xs },
   rewardIcon: { fontSize: 28 },
-  rewardTitle: { fontSize: 14, fontWeight: '600', color: colors.neutral.gray800, textAlign: 'center', marginBottom: spacingValues.xs, minHeight: 36 },
+  rewardTitle: { fontSize: 14, fontWeight: '600', color: theme.colors.text.default, textAlign: 'center', marginBottom: spacingValues.xs, minHeight: 36 },
   rewardXPBadge: { paddingVertical: spacingValues['4xs'], paddingHorizontal: spacingValues.xs, borderRadius: borderRadiusValues.full, marginBottom: spacingValues['3xs'] },
   rewardXPText: { fontSize: 12, fontWeight: '700' },
   rewardJourneyRow: { flexDirection: 'row', alignItems: 'center' },
   journeyDot: { width: 6, height: 6, borderRadius: 3, marginRight: spacingValues['4xs'] },
-  rewardJourneyText: { fontSize: 11, color: colors.neutral.gray500 },
+  rewardJourneyText: { fontSize: 11, color: theme.colors.text.muted },
   deficitText: { fontSize: 11, fontWeight: '500', color: colors.semantic.error, marginTop: spacingValues['3xs'] },
   emptyContainer: { paddingTop: spacingValues['5xl'], alignItems: 'center', gap: spacingValues.xs },
   emptyIcon: { fontSize: 48 },
-  emptyTitle: { fontSize: 18, fontWeight: '600', color: colors.neutral.gray700 },
-  emptySubtitle: { fontSize: 14, color: colors.neutral.gray500, textAlign: 'center', paddingHorizontal: spacingValues['2xl'] },
+  emptyTitle: { fontSize: 18, fontWeight: '600', color: theme.colors.text.default },
+  emptySubtitle: { fontSize: 14, color: theme.colors.text.muted, textAlign: 'center', paddingHorizontal: spacingValues['2xl'] },
 });
 
 export default RewardCatalog;

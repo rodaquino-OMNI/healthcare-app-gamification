@@ -17,3 +17,7 @@ export { JourneyProvider, useJourney } from './JourneyContext';
 
 // Notification Context - Handles communication and notifications across the application
 export { NotificationProvider, useNotificationContext } from './NotificationContext';
+
+// Theme Context - Manages light/dark/system theme preferences with persistence
+export { AppThemeProvider, useAppTheme, ThemeContext } from './ThemeContext';
+export type { ThemeMode } from './ThemeContext';

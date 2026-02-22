@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 
 import { HomeHeader } from './HomeHeader';
 import { ChartPreview, GoalsSection, JourneysSection } from './HomeWidgets';
@@ -49,6 +51,8 @@ const CHART_MAX_HEIGHT = 80;
  * goal progress, journey navigation cards, and quick action buttons.
  */
 const HomeScreen: React.FC = () => {
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const { t } = useTranslation();
   const navigation = useNavigation();
   const { session, getUserFromToken } = useAuth();
@@ -201,10 +205,10 @@ const HomeScreen: React.FC = () => {
 // Styles
 // ---------------------------------------------------------------------------
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
   },
   scrollContent: {
     paddingHorizontal: spacingValues.md,
@@ -218,7 +222,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacingValues.xs,
   },
   levelBadge: {
-    backgroundColor: colors.gray[10],
+    backgroundColor: theme.colors.background.subtle,
     borderRadius: borderRadiusValues.lg,
     paddingHorizontal: spacingValues.sm,
     paddingVertical: spacingValues['3xs'],
@@ -231,7 +235,7 @@ const styles = StyleSheet.create({
   },
   xpText: {
     fontSize: fontSizeValues.xs,
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
     marginTop: 1,
   },
 
@@ -239,7 +243,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: fontSizeValues.lg,
     fontWeight: '600',
-    color: colors.neutral.gray900,
+    color: theme.colors.text.default,
     marginTop: spacingValues.md,
     marginBottom: spacingValues.sm,
   },
@@ -252,7 +256,7 @@ const styles = StyleSheet.create({
   },
   metricCard: {
     width: '48%',
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: borderRadiusValues.md,
     marginBottom: spacingValues.sm,
     overflow: 'hidden',
@@ -277,7 +281,7 @@ const styles = StyleSheet.create({
   },
   metricName: {
     fontSize: fontSizeValues.xs,
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
     marginBottom: spacingValues['3xs'],
   },
   metricValueRow: {
@@ -287,15 +291,15 @@ const styles = StyleSheet.create({
   metricValue: {
     fontSize: fontSizeValues.xl,
     fontWeight: '700',
-    color: colors.neutral.gray900,
+    color: theme.colors.text.default,
   },
   metricUnit: {
     fontSize: fontSizeValues.xs,
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
   },
   metricTrend: {
     fontSize: fontSizeValues.xs,
-    color: colors.gray[40],
+    color: theme.colors.text.subtle,
     marginTop: spacingValues['3xs'],
   },
 });

@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
@@ -86,6 +88,8 @@ function getJourneyColor(journey: string): string {
 const LeaderboardScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const [timeframe, setTimeframe] = useState<TimeframeFilter>('week');
   const [journeyFilter, setJourneyFilter] = useState<JourneyFilter>('all');
 
@@ -278,58 +282,58 @@ const LeaderboardScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.neutral.white },
+const createStyles = (theme: Theme) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: theme.colors.background.default },
   listContent: { paddingBottom: spacingValues['4xl'] },
-  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacingValues.md, paddingVertical: spacingValues.sm, borderBottomWidth: 1, borderBottomColor: colors.gray[10] },
+  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacingValues.md, paddingVertical: spacingValues.sm, borderBottomWidth: 1, borderBottomColor: theme.colors.border.default },
   backButton: { paddingVertical: spacingValues.xs, paddingRight: spacingValues.md },
   backButtonText: { fontSize: fontSizeValues.md, fontWeight: '600', color: colors.brand.primary },
-  screenTitle: { fontSize: fontSizeValues.lg, fontWeight: '700', color: colors.neutral.gray900 },
+  screenTitle: { fontSize: fontSizeValues.lg, fontWeight: '700', color: theme.colors.text.default },
   headerSpacer: { width: 80 },
-  timeframeRow: { flexDirection: 'row', justifyContent: 'center', paddingVertical: spacingValues.sm, paddingHorizontal: spacingValues.md, borderBottomWidth: 1, borderBottomColor: colors.gray[10] },
+  timeframeRow: { flexDirection: 'row', justifyContent: 'center', paddingVertical: spacingValues.sm, paddingHorizontal: spacingValues.md, borderBottomWidth: 1, borderBottomColor: theme.colors.border.default },
   timeframeTab: { paddingHorizontal: spacingValues.md, paddingVertical: spacingValues.xs, borderRadius: borderRadiusValues.full, marginHorizontal: spacingValues['3xs'] },
   timeframeTabActive: { backgroundColor: colors.brand.primary },
-  timeframeText: { fontSize: fontSizeValues.sm, fontWeight: '500', color: colors.gray[50] },
-  timeframeTextActive: { color: colors.neutral.white, fontWeight: '600' },
+  timeframeText: { fontSize: fontSizeValues.sm, fontWeight: '500', color: theme.colors.text.muted },
+  timeframeTextActive: { color: theme.colors.text.onBrand, fontWeight: '600' },
   journeyRow: { flexDirection: 'row', paddingVertical: spacingValues.xs, paddingHorizontal: spacingValues.md },
-  journeyTab: { paddingHorizontal: spacingValues.sm, paddingVertical: spacingValues['2xs'], borderRadius: borderRadiusValues.full, backgroundColor: colors.gray[10], marginRight: spacingValues.xs },
+  journeyTab: { paddingHorizontal: spacingValues.sm, paddingVertical: spacingValues['2xs'], borderRadius: borderRadiusValues.full, backgroundColor: theme.colors.background.subtle, marginRight: spacingValues.xs },
   journeyTabActive: { backgroundColor: colors.brand.secondary },
-  journeyTabText: { fontSize: fontSizeValues.xs, fontWeight: '500', color: colors.gray[50] },
-  journeyTabTextActive: { color: colors.neutral.white, fontWeight: '600' },
+  journeyTabText: { fontSize: fontSizeValues.xs, fontWeight: '500', color: theme.colors.text.muted },
+  journeyTabTextActive: { color: theme.colors.text.onBrand, fontWeight: '600' },
   podiumContainer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end', paddingVertical: spacingValues.xl, paddingHorizontal: spacingValues.md },
   podiumItem: { alignItems: 'center', flex: 1, paddingHorizontal: spacingValues['3xs'] },
   podiumItemFirst: { marginBottom: spacingValues.md },
-  podiumAvatar: { borderWidth: 3, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.gray[5], marginBottom: spacingValues['3xs'] },
-  podiumAvatarText: { fontWeight: '700', color: colors.gray[60] },
+  podiumAvatar: { borderWidth: 3, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background.muted, marginBottom: spacingValues['3xs'] },
+  podiumAvatarText: { fontWeight: '700', color: theme.colors.text.default },
   rankBadge: { width: sizingValues.component.xs, height: sizingValues.component.xs, borderRadius: sizingValues.component.xs / 2, justifyContent: 'center', alignItems: 'center', marginTop: -spacingValues.sm, marginBottom: spacingValues['3xs'] },
-  rankBadgeText: { fontSize: fontSizeValues.xs, fontWeight: '700', color: colors.neutral.white },
-  podiumName: { fontSize: fontSizeValues.xs, fontWeight: '600', color: colors.neutral.gray900, textAlign: 'center', marginBottom: spacingValues['4xs'] },
-  podiumXP: { fontSize: fontSizeValues.xs, color: colors.gray[50], marginBottom: spacingValues['4xs'] },
+  rankBadgeText: { fontSize: fontSizeValues.xs, fontWeight: '700', color: theme.colors.text.onBrand },
+  podiumName: { fontSize: fontSizeValues.xs, fontWeight: '600', color: theme.colors.text.default, textAlign: 'center', marginBottom: spacingValues['4xs'] },
+  podiumXP: { fontSize: fontSizeValues.xs, color: theme.colors.text.muted, marginBottom: spacingValues['4xs'] },
   podiumBadges: { flexDirection: 'row', alignItems: 'center' },
   podiumBadgeIcon: { fontSize: 12, marginRight: spacingValues['4xs'] },
-  podiumBadgeCount: { fontSize: 10, fontWeight: '600', color: colors.gray[50] },
+  podiumBadgeCount: { fontSize: 10, fontWeight: '600', color: theme.colors.text.muted },
   currentUserBanner: { backgroundColor: colors.brand.primary + '15', paddingVertical: spacingValues.xs, paddingHorizontal: spacingValues.md, marginHorizontal: spacingValues.md, borderRadius: borderRadiusValues.md, marginBottom: spacingValues.sm },
   currentUserText: { fontSize: fontSizeValues.sm, fontWeight: '600', color: colors.brand.primary, textAlign: 'center' },
-  listSectionHeader: { paddingHorizontal: spacingValues.md, paddingVertical: spacingValues.xs, backgroundColor: colors.gray[5], borderTopWidth: 1, borderBottomWidth: 1, borderColor: colors.gray[10] },
-  listSectionTitle: { fontSize: fontSizeValues.xs, fontWeight: '600', color: colors.gray[50], textTransform: 'uppercase', letterSpacing: 0.5 },
-  listRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: spacingValues.sm, paddingHorizontal: spacingValues.md, borderBottomWidth: 1, borderBottomColor: colors.gray[10] },
+  listSectionHeader: { paddingHorizontal: spacingValues.md, paddingVertical: spacingValues.xs, backgroundColor: theme.colors.background.muted, borderTopWidth: 1, borderBottomWidth: 1, borderColor: theme.colors.border.default },
+  listSectionTitle: { fontSize: fontSizeValues.xs, fontWeight: '600', color: theme.colors.text.muted, textTransform: 'uppercase', letterSpacing: 0.5 },
+  listRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: spacingValues.sm, paddingHorizontal: spacingValues.md, borderBottomWidth: 1, borderBottomColor: theme.colors.border.default },
   listRowHighlight: { backgroundColor: colors.brand.primary + '10' },
-  listRank: { fontSize: fontSizeValues.md, fontWeight: '700', color: colors.gray[50], width: 28, textAlign: 'center' },
-  listAvatar: { width: sizingValues.component.md, height: sizingValues.component.md, borderRadius: sizingValues.component.md / 2, borderWidth: 2, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.gray[5], marginLeft: spacingValues.xs },
-  listAvatarText: { fontSize: fontSizeValues.sm, fontWeight: '600', color: colors.gray[60] },
+  listRank: { fontSize: fontSizeValues.md, fontWeight: '700', color: theme.colors.text.muted, width: 28, textAlign: 'center' },
+  listAvatar: { width: sizingValues.component.md, height: sizingValues.component.md, borderRadius: sizingValues.component.md / 2, borderWidth: 2, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background.muted, marginLeft: spacingValues.xs },
+  listAvatarText: { fontSize: fontSizeValues.sm, fontWeight: '600', color: theme.colors.text.default },
   listInfo: { flex: 1, marginLeft: spacingValues.sm },
-  listName: { fontSize: fontSizeValues.sm, fontWeight: '500', color: colors.neutral.gray900 },
+  listName: { fontSize: fontSizeValues.sm, fontWeight: '500', color: theme.colors.text.default },
   listNameHighlight: { fontWeight: '700', color: colors.brand.primary },
-  listLevel: { fontSize: fontSizeValues.xs, color: colors.gray[40], marginTop: spacingValues['4xs'] },
+  listLevel: { fontSize: fontSizeValues.xs, color: theme.colors.text.subtle, marginTop: spacingValues['4xs'] },
   listStats: { alignItems: 'flex-end' },
-  listXP: { fontSize: fontSizeValues.sm, fontWeight: '600', color: colors.neutral.gray900 },
+  listXP: { fontSize: fontSizeValues.sm, fontWeight: '600', color: theme.colors.text.default },
   listBadgesRow: { flexDirection: 'row', alignItems: 'center', marginTop: spacingValues['4xs'] },
   listBadgeIcon: { fontSize: 10, marginRight: spacingValues['4xs'] },
-  listBadgeCount: { fontSize: 10, fontWeight: '600', color: colors.gray[50] },
+  listBadgeCount: { fontSize: 10, fontWeight: '600', color: theme.colors.text.muted },
   emptyContainer: { alignItems: 'center', paddingVertical: spacingValues['5xl'] },
   emptyIcon: { fontSize: 48, marginBottom: spacingValues.md },
-  emptyTitle: { fontSize: fontSizeValues.lg, fontWeight: '600', color: colors.neutral.gray900, marginBottom: spacingValues.xs },
-  emptySubtitle: { fontSize: fontSizeValues.sm, color: colors.gray[50], textAlign: 'center', paddingHorizontal: spacingValues['2xl'] },
+  emptyTitle: { fontSize: fontSizeValues.lg, fontWeight: '600', color: theme.colors.text.default, marginBottom: spacingValues.xs },
+  emptySubtitle: { fontSize: fontSizeValues.sm, color: theme.colors.text.muted, textAlign: 'center', paddingHorizontal: spacingValues['2xl'] },
 });
 
 export default LeaderboardScreen;

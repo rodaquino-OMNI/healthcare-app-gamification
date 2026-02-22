@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 
 import { useGameProfile, useAchievements } from '../../hooks/useGamification';
 import { Achievement } from '../../../../shared/types/gamification.types';
@@ -56,6 +58,8 @@ function getJourneyColor(journey: string): string {
 const AchievementsScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const profile = useGameProfile();
   const achievements: Achievement[] | undefined = useAchievements();
 
@@ -277,49 +281,49 @@ const AchievementsScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.neutral.white },
+const createStyles = (theme: Theme) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: theme.colors.background.default },
   loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  loadingText: { fontSize: fontSizeValues.md, color: colors.gray[50] },
+  loadingText: { fontSize: fontSizeValues.md, color: theme.colors.text.muted },
   listContent: { paddingHorizontal: spacingValues.md, paddingBottom: spacingValues['4xl'] },
   columnWrapper: { justifyContent: 'space-between', marginBottom: spacingValues.sm },
   levelSection: { flexDirection: 'row', alignItems: 'center', paddingVertical: spacingValues.xl, paddingHorizontal: spacingValues.xs },
   levelBadge: { width: sizingValues.component.xl, height: sizingValues.component.xl, borderRadius: sizingValues.component.xl / 2, backgroundColor: colors.brand.primary, justifyContent: 'center', alignItems: 'center' },
-  levelNumber: { fontSize: fontSizeValues['2xl'], fontWeight: '700', color: colors.neutral.white },
+  levelNumber: { fontSize: fontSizeValues['2xl'], fontWeight: '700', color: theme.colors.text.onBrand },
   levelInfo: { marginLeft: spacingValues.md, flex: 1 },
-  levelTitle: { fontSize: fontSizeValues.xl, fontWeight: '700', color: colors.neutral.gray900 },
-  levelSubtitle: { fontSize: fontSizeValues.sm, color: colors.gray[50], marginTop: spacingValues['4xs'] },
+  levelTitle: { fontSize: fontSizeValues.xl, fontWeight: '700', color: theme.colors.text.default },
+  levelSubtitle: { fontSize: fontSizeValues.sm, color: theme.colors.text.muted, marginTop: spacingValues['4xs'] },
   xpSection: { paddingHorizontal: spacingValues.xs, marginBottom: spacingValues.md },
   xpHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacingValues.xs },
-  xpLabel: { fontSize: fontSizeValues.sm, fontWeight: '600', color: colors.neutral.gray900 },
-  xpValue: { fontSize: fontSizeValues.sm, color: colors.gray[50] },
-  xpBarTrack: { height: 8, backgroundColor: colors.gray[10], borderRadius: borderRadiusValues.sm, overflow: 'hidden' },
+  xpLabel: { fontSize: fontSizeValues.sm, fontWeight: '600', color: theme.colors.text.default },
+  xpValue: { fontSize: fontSizeValues.sm, color: theme.colors.text.muted },
+  xpBarTrack: { height: 8, backgroundColor: theme.colors.background.subtle, borderRadius: borderRadiusValues.sm, overflow: 'hidden' },
   xpBarFill: { height: 8, backgroundColor: colors.brand.primary, borderRadius: borderRadiusValues.sm },
-  xpNextLevel: { fontSize: fontSizeValues.xs, color: colors.gray[40], marginTop: spacingValues['3xs'], textAlign: 'right' },
+  xpNextLevel: { fontSize: fontSizeValues.xs, color: theme.colors.text.subtle, marginTop: spacingValues['3xs'], textAlign: 'right' },
   unlockedBadge: { alignSelf: 'flex-start', backgroundColor: colors.semantic.successBg, borderRadius: borderRadiusValues.full, paddingHorizontal: spacingValues.sm, paddingVertical: spacingValues['3xs'], marginLeft: spacingValues.xs, marginBottom: spacingValues.md },
   unlockedBadgeText: { fontSize: fontSizeValues.xs, fontWeight: '600', color: colors.semantic.success },
-  quickNav: { flexDirection: 'row', justifyContent: 'space-around', paddingVertical: spacingValues.md, marginBottom: spacingValues.xs, borderTopWidth: 1, borderBottomWidth: 1, borderColor: colors.gray[10] },
+  quickNav: { flexDirection: 'row', justifyContent: 'space-around', paddingVertical: spacingValues.md, marginBottom: spacingValues.xs, borderTopWidth: 1, borderBottomWidth: 1, borderColor: theme.colors.border.default },
   quickNavButton: { alignItems: 'center', paddingHorizontal: spacingValues.md },
   quickNavIcon: { fontSize: fontSizeValues['2xl'], marginBottom: spacingValues['3xs'] },
-  quickNavLabel: { fontSize: fontSizeValues.xs, fontWeight: '600', color: colors.gray[60] },
+  quickNavLabel: { fontSize: fontSizeValues.xs, fontWeight: '600', color: theme.colors.text.default },
   filterRow: { flexDirection: 'row', paddingVertical: spacingValues.sm, marginBottom: spacingValues.sm },
-  filterTab: { paddingHorizontal: spacingValues.md, paddingVertical: spacingValues.xs, borderRadius: borderRadiusValues.full, backgroundColor: colors.gray[10], marginRight: spacingValues.xs },
+  filterTab: { paddingHorizontal: spacingValues.md, paddingVertical: spacingValues.xs, borderRadius: borderRadiusValues.full, backgroundColor: theme.colors.background.subtle, marginRight: spacingValues.xs },
   filterTabActive: { backgroundColor: colors.brand.primary },
-  filterTabText: { fontSize: fontSizeValues.sm, fontWeight: '500', color: colors.gray[50] },
-  filterTabTextActive: { color: colors.neutral.white },
-  achievementCard: { flex: 1, maxWidth: '31%', alignItems: 'center', backgroundColor: colors.gray[5], borderRadius: borderRadiusValues.lg, padding: spacingValues.sm, marginHorizontal: spacingValues['4xs'] },
+  filterTabText: { fontSize: fontSizeValues.sm, fontWeight: '500', color: theme.colors.text.muted },
+  filterTabTextActive: { color: theme.colors.text.onBrand },
+  achievementCard: { flex: 1, maxWidth: '31%', alignItems: 'center', backgroundColor: theme.colors.background.muted, borderRadius: borderRadiusValues.lg, padding: spacingValues.sm, marginHorizontal: spacingValues['4xs'] },
   achievementCardLocked: { opacity: 0.55 },
-  achievementIcon: { width: sizingValues.component.lg, height: sizingValues.component.lg, borderRadius: sizingValues.component.lg / 2, borderWidth: 2, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.neutral.white, marginBottom: spacingValues.xs },
+  achievementIcon: { width: sizingValues.component.lg, height: sizingValues.component.lg, borderRadius: sizingValues.component.lg / 2, borderWidth: 2, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.background.default, marginBottom: spacingValues.xs },
   achievementIconText: { fontSize: fontSizeValues.xl },
-  achievementTitle: { fontSize: fontSizeValues.xs, fontWeight: '600', color: colors.neutral.gray900, textAlign: 'center', marginBottom: spacingValues['3xs'], minHeight: fontSizeValues.xs * 2.5 },
+  achievementTitle: { fontSize: fontSizeValues.xs, fontWeight: '600', color: theme.colors.text.default, textAlign: 'center', marginBottom: spacingValues['3xs'], minHeight: fontSizeValues.xs * 2.5 },
   achievementProgressContainer: { width: '100%', alignItems: 'center' },
-  achievementProgressTrack: { width: '100%', height: 4, backgroundColor: colors.gray[20], borderRadius: borderRadiusValues.xs, overflow: 'hidden', marginBottom: spacingValues['4xs'] },
+  achievementProgressTrack: { width: '100%', height: 4, backgroundColor: theme.colors.border.default, borderRadius: borderRadiusValues.xs, overflow: 'hidden', marginBottom: spacingValues['4xs'] },
   achievementProgressFill: { height: 4, borderRadius: borderRadiusValues.xs },
-  achievementProgressText: { fontSize: 10, color: colors.gray[40] },
+  achievementProgressText: { fontSize: 10, color: theme.colors.text.subtle },
   emptyContainer: { alignItems: 'center', paddingVertical: spacingValues['5xl'] },
   emptyIcon: { fontSize: 48, marginBottom: spacingValues.md },
-  emptyTitle: { fontSize: fontSizeValues.lg, fontWeight: '600', color: colors.neutral.gray900, marginBottom: spacingValues.xs },
-  emptySubtitle: { fontSize: fontSizeValues.sm, color: colors.gray[50], textAlign: 'center', paddingHorizontal: spacingValues['2xl'] },
+  emptyTitle: { fontSize: fontSizeValues.lg, fontWeight: '600', color: theme.colors.text.default, marginBottom: spacingValues.xs },
+  emptySubtitle: { fontSize: fontSizeValues.sm, color: theme.colors.text.muted, textAlign: 'center', paddingHorizontal: spacingValues['2xl'] },
 });
 
 export default AchievementsScreen;

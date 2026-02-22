@@ -16,11 +16,11 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const SectionHeader = styled.View`
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   padding-horizontal: ${spacing.xl};
   padding-vertical: ${spacing.sm};
 `;
@@ -29,7 +29,7 @@ const SectionHeaderText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-transform: uppercase;
   letter-spacing: ${typography.letterSpacing.wide};
 `;
@@ -40,7 +40,7 @@ const ToggleRow = styled.View`
   justify-content: space-between;
   padding-horizontal: ${spacing.xl};
   padding-vertical: ${spacing.md};
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   border-bottom-width: 1px;
   border-bottom-color: ${colors.gray[10]};
 `;
@@ -49,7 +49,7 @@ const ToggleLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   flex: 1;
   margin-right: ${spacing.md};
 `;
@@ -59,7 +59,7 @@ const TimeInputRow = styled.View`
   align-items: center;
   padding-horizontal: ${spacing.xl};
   padding-vertical: ${spacing.md};
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   border-bottom-width: 1px;
   border-bottom-color: ${colors.gray[10]};
 `;
@@ -68,7 +68,7 @@ const TimeLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   flex: 1;
 `;
 
@@ -76,12 +76,12 @@ const TimeInput = styled.TextInput`
   width: 72px;
   height: ${sizing.component.sm};
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
   border-radius: ${borderRadius.md};
   text-align: center;
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const DisabledOverlay = styled.View`
@@ -91,7 +91,7 @@ const DisabledOverlay = styled.View`
 const InfoText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   padding-horizontal: ${spacing.xl};
   padding-vertical: ${spacing.sm};
   line-height: 18px;

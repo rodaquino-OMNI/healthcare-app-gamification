@@ -31,7 +31,7 @@ type Relationship = typeof RELATIONSHIPS[number];
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const HeaderRow = styled.View`
@@ -49,14 +49,14 @@ const BackButton = styled.TouchableOpacity`
 
 const BackIcon = styled.Text`
   font-size: 24px;
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const HeaderTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-lg']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   flex: 1;
 `;
 
@@ -72,7 +72,7 @@ const StepSection = styled.View`
 const StepIndicator = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
 `;
 
 const StepBarContainer = styled.View`
@@ -93,7 +93,7 @@ const Label = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.xs};
   margin-top: ${spacing.lg};
 `;
@@ -101,10 +101,10 @@ const Label = styled.Text`
 const StyledInput = styled.TextInput`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.neutral.gray900};
-  background-color: ${colors.gray[5]};
+  color: ${({ theme }) => theme.colors.text.default};
+  background-color: ${({ theme }) => theme.colors.background.muted};
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
   border-radius: ${borderRadius.md};
   padding-horizontal: ${spacing.md};
   height: ${sizing.component.lg};
@@ -114,7 +114,7 @@ const SectionLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.sm};
   margin-top: ${spacing.lg};
 `;
@@ -157,7 +157,7 @@ const ToggleRow = styled.View`
 const ToggleLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const BottomSection = styled.View`
@@ -179,7 +179,7 @@ const SaveButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 // --- Component ---

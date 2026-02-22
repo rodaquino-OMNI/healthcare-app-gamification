@@ -58,7 +58,7 @@ const STEPS = [
 
 const Container = styled.View`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const HeaderRow = styled.View`
@@ -77,7 +77,7 @@ const SkipText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
 `;
 
 const SlideContainer = styled.View`
@@ -109,7 +109,7 @@ const StepDescription = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-align: center;
   line-height: ${spacingValues.xl}px;
 `;
@@ -123,7 +123,7 @@ const BottomSection = styled.View`
 const ProgressBarTrack = styled.View`
   width: 100%;
   height: 4px;
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   border-radius: ${borderRadius.full};
   margin-bottom: ${spacing.lg};
   overflow: hidden;
@@ -164,7 +164,7 @@ const NextButtonText = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['text-lg']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 // --- Component ---

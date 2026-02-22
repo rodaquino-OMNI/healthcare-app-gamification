@@ -7,6 +7,8 @@ import { Provider } from 'src/web/shared/types/care.types';
 import { Card, CardProps } from 'src/web/design-system/src/components/Card/Card';
 import { Input, InputProps } from 'src/web/design-system/src/components/Input/Input';
 import { Button, ButtonProps } from 'src/web/design-system/src/components/Button/Button';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from 'src/web/design-system/src/themes/base.theme';
 import { JOURNEY_COLORS } from 'src/web/mobile/src/constants/journeys';
 import { JourneyHeader, JourneyHeaderProps } from 'src/web/mobile/src/components/shared/JourneyHeader';
 import { useAuth } from 'src/web/mobile/src/hooks/useAuth';
@@ -21,6 +23,8 @@ import { useTranslation } from 'react-i18next';
  */
 const ProviderSearchScreen: React.FC = () => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   // LD1: Initialize state variables for location, providers, loading, and error.
   const [location, setLocation] = useState<string>('');
   const [providers, setProviders] = useState<Provider[]>([]);
@@ -99,11 +103,11 @@ const ProviderSearchScreen: React.FC = () => {
 };
 
 // LD1: Define the styles for the ProviderSearchScreen component.
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.background.default,
   },
 });
 

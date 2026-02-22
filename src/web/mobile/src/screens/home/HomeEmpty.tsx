@@ -15,7 +15,7 @@ import { ROUTES } from '../../constants/routes';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const ContentContainer = styled.View`
@@ -34,7 +34,7 @@ const WelcomeTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-xl']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   text-align: center;
   margin-bottom: ${spacing.sm};
 `;
@@ -42,7 +42,7 @@ const WelcomeTitle = styled.Text`
 const WelcomeSubtitle = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-align: center;
   line-height: 24px;
   margin-bottom: ${spacing['2xl']};
@@ -57,14 +57,14 @@ const ChecklistTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['text-lg']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.md};
 `;
 
 const ChecklistItem = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
-  background-color: ${colors.gray[5]};
+  background-color: ${({ theme }) => theme.colors.background.muted};
   border-radius: ${borderRadius.md};
   padding: ${spacing.md};
   margin-bottom: ${spacing.xs};
@@ -87,7 +87,7 @@ const CheckCircle = styled.View<{ completed: boolean }>`
 const CheckMark = styled.Text`
   font-size: ${typography.fontSize['text-xs']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const ChecklistLabel = styled.Text<{ completed: boolean }>`
@@ -103,7 +103,7 @@ const ChecklistLabel = styled.Text<{ completed: boolean }>`
 
 const ChevronText = styled.Text`
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.gray[30]};
+  color: ${({ theme }) => theme.colors.text.muted};
 `;
 
 const CTASection = styled.View`
@@ -123,11 +123,11 @@ const PrimaryButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const SecondaryButton = styled.TouchableOpacity`
-  background-color: ${colors.gray[5]};
+  background-color: ${({ theme }) => theme.colors.background.muted};
   border-radius: ${borderRadius.md};
   padding-vertical: ${spacing.md};
   align-items: center;

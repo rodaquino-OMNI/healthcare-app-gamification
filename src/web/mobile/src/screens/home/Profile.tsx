@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { useAuth } from '../../hooks/useAuth';
@@ -14,6 +16,8 @@ import { ROUTES } from '../../constants/routes';
  * It integrates with the authentication context to retrieve and update user data.
  */
 export const ProfileScreen: React.FC = () => {
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const { t } = useTranslation();
   const { session, getUserFromToken } = useAuth();
   const navigation = useNavigation();
@@ -92,11 +96,11 @@ export const ProfileScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
   },
   header: {
     alignItems: 'center',
@@ -113,7 +117,7 @@ const styles = StyleSheet.create({
   },
   userEmail: {
     fontSize: 16,
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
   },
   actionsContainer: {
     marginTop: 20,
@@ -126,7 +130,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   actionButtonText: {
-    color: colors.neutral.white,
+    color: theme.colors.text.onBrand,
     fontSize: 16,
     fontWeight: '500',
   },

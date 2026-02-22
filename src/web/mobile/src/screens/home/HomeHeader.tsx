@@ -7,6 +7,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 
 import { useAuth } from '../../context/AuthContext';
 import { ROUTES } from '../../constants/routes';
@@ -42,6 +44,8 @@ const getInitials = (name: string): string => {
  * Displays user avatar with initials, time-of-day greeting, and a notification bell.
  */
 export const HomeHeader: React.FC = () => {
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const { t } = useTranslation();
   const navigation = useNavigation();
   const { session, getUserFromToken } = useAuth();
@@ -97,13 +101,13 @@ export const HomeHeader: React.FC = () => {
 
 const AVATAR_SIZE = sizingValues.component.md; // 40
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: spacingValues.md,
     paddingVertical: spacingValues.sm,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
   },
   avatar: {
     width: AVATAR_SIZE,
@@ -116,7 +120,7 @@ const styles = StyleSheet.create({
   avatarText: {
     fontSize: fontSizeValues.md,
     fontWeight: '700',
-    color: colors.neutral.white,
+    color: theme.colors.text.onBrand,
   },
   greetingColumn: {
     marginLeft: spacingValues.sm,
@@ -124,12 +128,12 @@ const styles = StyleSheet.create({
   },
   greetingLabel: {
     fontSize: fontSizeValues.sm,
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
   },
   userName: {
     fontSize: fontSizeValues.lg,
     fontWeight: '700',
-    color: colors.neutral.gray900,
+    color: theme.colors.text.default,
   },
   spacer: {
     flex: 1,
@@ -158,7 +162,7 @@ const styles = StyleSheet.create({
   badgeText: {
     fontSize: 10,
     fontWeight: '700',
-    color: colors.neutral.white,
+    color: theme.colors.text.onBrand,
   },
 });
 

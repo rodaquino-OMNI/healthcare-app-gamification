@@ -1,6 +1,8 @@
 import React, { useCallback } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../../design-system/src/themes/base.theme';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchable';
 import { Card } from '@austa/design-system/src/components/Card/Card';
@@ -42,6 +44,8 @@ const MENTAL_HEALTH_OPTIONS = ['yes', 'sometimes', 'no'] as const;
 
 export const StepStress: React.FC<StepProps> = ({ data, onUpdate }) => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
 
   const selectedSources: string[] = data.stressSources ?? [];
   const selectedCoping: string[] = data.copingMechanisms ?? [];
@@ -198,7 +202,7 @@ export const StepStress: React.FC<StepProps> = ({ data, onUpdate }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   scrollContent: {
     paddingHorizontal: spacingValues.md,
     paddingBottom: spacingValues['3xl'],
@@ -218,8 +222,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacingValues.sm,
     borderRadius: borderRadiusValues.md,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
   },
   chipGrid: {
     flexDirection: 'row',
@@ -231,8 +235,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacingValues.md,
     borderRadius: borderRadiusValues.full,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
   },
   chipSelected: {
     backgroundColor: colors.journeys.health.primary,
@@ -251,8 +255,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacingValues.xs,
     borderRadius: borderRadiusValues.full,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
   },
   mentalHealthChipSelected: {
     backgroundColor: colors.journeys.health.primary,

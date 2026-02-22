@@ -10,6 +10,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
@@ -46,6 +48,8 @@ type SearchResultsParams = {
  * com dados mock e estados de vazio/carregamento.
  */
 export const SearchResultsScreen: React.FC = () => {
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const { t } = useTranslation();
   const navigation = useNavigation();
   const route = useRoute<RouteProp<SearchResultsParams, 'SearchResults'>>();
@@ -225,10 +229,10 @@ export const SearchResultsScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
   },
   searchContainer: {
     flexDirection: 'row',
@@ -236,7 +240,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacingValues.md,
     paddingVertical: spacingValues.sm,
     borderBottomWidth: 1,
-    borderBottomColor: colors.gray[20],
+    borderBottomColor: theme.colors.border.default,
   },
   backArrow: {
     marginRight: spacingValues.sm,
@@ -244,13 +248,13 @@ const styles = StyleSheet.create({
   },
   backArrowText: {
     fontSize: fontSizeValues.xl,
-    color: colors.gray[60],
+    color: theme.colors.text.default,
   },
   searchInputWrapper: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.gray[10],
+    backgroundColor: theme.colors.background.subtle,
     borderRadius: borderRadiusValues.md,
     paddingHorizontal: spacingValues.sm,
     height: 44,
@@ -262,7 +266,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: fontSizeValues.md,
-    color: colors.gray[70],
+    color: theme.colors.text.default,
     fontFamily: typography.fontFamily.body,
     paddingVertical: 0,
   },
@@ -270,14 +274,14 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: colors.gray[30],
+    backgroundColor: theme.colors.border.muted,
     justifyContent: 'center',
     alignItems: 'center',
   },
   clearButtonText: {
     fontSize: fontSizeValues.xs,
     fontWeight: String(typography.fontWeight.bold) as '700',
-    color: colors.neutral.white,
+    color: theme.colors.text.onBrand,
   },
   centerContainer: {
     flex: 1,
@@ -287,14 +291,14 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: fontSizeValues.sm,
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
     marginTop: spacingValues.sm,
   },
   emptyIconPlaceholder: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: colors.gray[10],
+    backgroundColor: theme.colors.background.subtle,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: spacingValues.md,
@@ -305,13 +309,13 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: fontSizeValues.lg,
     fontWeight: String(typography.fontWeight.bold) as '700',
-    color: colors.gray[60],
+    color: theme.colors.text.default,
     marginBottom: spacingValues.xs,
     textAlign: 'center',
   },
   emptySubtext: {
     fontSize: fontSizeValues.sm,
-    color: colors.gray[40],
+    color: theme.colors.text.subtle,
     textAlign: 'center',
     lineHeight: fontSizeValues.sm * typography.lineHeight.base,
   },
@@ -331,11 +335,11 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: fontSizeValues.md,
     fontWeight: String(typography.fontWeight.semiBold) as '600',
-    color: colors.gray[70],
+    color: theme.colors.text.default,
   },
   resultCount: {
     fontSize: fontSizeValues.xs,
-    color: colors.gray[40],
+    color: theme.colors.text.subtle,
   },
 });
 

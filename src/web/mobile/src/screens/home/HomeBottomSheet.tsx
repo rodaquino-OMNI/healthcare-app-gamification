@@ -19,7 +19,7 @@ const Overlay = styled.TouchableOpacity`
 `;
 
 const SheetContainer = styled.View`
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   border-top-left-radius: ${borderRadius.xl};
   border-top-right-radius: ${borderRadius.xl};
   padding-top: ${spacing.sm};
@@ -40,7 +40,7 @@ const SheetTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['text-xl']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.lg};
 `;
 
@@ -71,12 +71,12 @@ const ActionLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const ChevronText = styled.Text`
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
 `;
 
 // --- Types ---

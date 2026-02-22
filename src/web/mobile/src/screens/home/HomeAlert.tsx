@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
@@ -98,6 +100,8 @@ const getSeverityLabel = (severity: AlertSeverity): string => {
  * Users can dismiss individual alerts and navigate to related screens.
  */
 export const HomeAlertScreen: React.FC = () => {
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const { t } = useTranslation();
   const navigation = useNavigation();
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
@@ -192,10 +196,10 @@ export const HomeAlertScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
   },
   header: {
     flexDirection: 'row',
@@ -203,7 +207,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacingValues.md,
     paddingVertical: spacingValues.sm,
     borderBottomWidth: 1,
-    borderBottomColor: colors.gray[20],
+    borderBottomColor: theme.colors.border.default,
   },
   backButton: {
     width: spacingValues['2xl'],
@@ -214,13 +218,13 @@ const styles = StyleSheet.create({
   backText: {
     fontSize: fontSizeValues.xl,
     fontWeight: '600',
-    color: colors.neutral.gray900,
+    color: theme.colors.text.default,
   },
   headerTitle: {
     flex: 1,
     fontSize: fontSizeValues.lg,
     fontWeight: '700',
-    color: colors.neutral.gray900,
+    color: theme.colors.text.default,
     textAlign: 'center',
   },
   headerSpacer: {
@@ -231,7 +235,7 @@ const styles = StyleSheet.create({
     paddingBottom: spacingValues['3xl'],
   },
   alertCard: {
-    backgroundColor: colors.gray[5],
+    backgroundColor: theme.colors.background.muted,
     borderRadius: borderRadiusValues.md,
     padding: spacingValues.md,
     marginBottom: spacingValues.sm,
@@ -255,7 +259,7 @@ const styles = StyleSheet.create({
   severityText: {
     fontSize: fontSizeValues.xs,
     fontWeight: '700',
-    color: colors.neutral.white,
+    color: theme.colors.text.onBrand,
   },
   dismissButton: {
     width: spacingValues.xl,
@@ -263,22 +267,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: borderRadiusValues.full,
-    backgroundColor: colors.gray[20],
+    backgroundColor: theme.colors.border.default,
   },
   dismissText: {
     fontSize: fontSizeValues.xs,
     fontWeight: '700',
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
   },
   alertTitle: {
     fontSize: fontSizeValues.md,
     fontWeight: '600',
-    color: colors.neutral.gray900,
+    color: theme.colors.text.default,
     marginBottom: spacingValues['3xs'],
   },
   alertDescription: {
     fontSize: fontSizeValues.sm,
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
     lineHeight: fontSizeValues.sm * 1.5,
     marginBottom: spacingValues.sm,
   },
@@ -298,7 +302,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: fontSizeValues.md,
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
   },
 });
 

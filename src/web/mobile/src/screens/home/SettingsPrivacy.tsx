@@ -18,11 +18,11 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const SectionHeader = styled.View`
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   padding-horizontal: ${spacing.xl};
   padding-vertical: ${spacing.sm};
 `;
@@ -31,7 +31,7 @@ const SectionHeaderText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-transform: uppercase;
   letter-spacing: ${typography.letterSpacing.wide};
 `;
@@ -42,7 +42,7 @@ const ToggleRow = styled.View`
   justify-content: space-between;
   padding-horizontal: ${spacing.xl};
   padding-vertical: ${spacing.md};
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   border-bottom-width: 1px;
   border-bottom-color: ${colors.gray[10]};
 `;
@@ -51,7 +51,7 @@ const ToggleLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   flex: 1;
   margin-right: ${spacing.md};
 `;
@@ -61,7 +61,7 @@ const CheckboxRow = styled.TouchableOpacity`
   align-items: center;
   padding-horizontal: ${spacing.xl};
   padding-vertical: ${spacing.md};
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   border-bottom-width: 1px;
   border-bottom-color: ${colors.gray[10]};
 `;
@@ -82,7 +82,7 @@ const CheckboxBox = styled.View<{ checked: boolean }>`
 
 const CheckmarkText = styled.Text`
   font-size: 14px;
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
   line-height: 20px;
 `;
 
@@ -90,14 +90,14 @@ const CheckboxLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   flex: 1;
 `;
 
 const InfoText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   padding-horizontal: ${spacing.xl};
   padding-vertical: ${spacing.sm};
   line-height: 18px;
@@ -110,7 +110,7 @@ const ActionButtonContainer = styled.View`
 
 const OutlineButton = styled.TouchableOpacity`
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
   border-radius: ${borderRadius.md};
   height: ${sizing.component.md};
   align-items: center;
@@ -122,7 +122,7 @@ const OutlineButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.gray[60]};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const DangerOutlineButton = styled.TouchableOpacity`
@@ -147,7 +147,7 @@ const DangerSection = styled.View`
   padding-horizontal: ${spacing.xl};
   padding-vertical: ${spacing.lg};
   border-top-width: 1px;
-  border-top-color: ${colors.gray[20]};
+  border-top-color: ${({ theme }) => theme.colors.border.default};
 `;
 
 const DangerSectionTitle = styled.Text`
@@ -172,7 +172,7 @@ const DangerButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 // --- Modal Styled Components ---
@@ -186,7 +186,7 @@ const ModalOverlay = styled.View`
 
 const ModalContent = styled.View`
   width: 85%;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   border-radius: ${borderRadius.lg};
   padding: ${spacing.xl};
 `;
@@ -195,7 +195,7 @@ const ModalTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-md']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.sm};
 `;
 
@@ -203,7 +203,7 @@ const ModalBody = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.gray[60]};
+  color: ${({ theme }) => theme.colors.text.default};
   line-height: 24px;
   margin-bottom: ${spacing.xl};
 `;
@@ -219,14 +219,14 @@ const ModalCancelButton = styled.TouchableOpacity`
   padding-horizontal: ${spacing.lg};
   border-radius: ${borderRadius.md};
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
 `;
 
 const ModalCancelText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.gray[60]};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const ModalConfirmButton = styled.TouchableOpacity`
@@ -240,7 +240,7 @@ const ModalConfirmText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 // --- Types ---

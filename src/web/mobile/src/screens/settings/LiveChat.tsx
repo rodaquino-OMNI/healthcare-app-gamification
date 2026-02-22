@@ -17,7 +17,7 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const Header = styled.View`
@@ -37,7 +37,7 @@ const HeaderTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['text-lg']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const HeaderStatus = styled.View`
@@ -106,14 +106,14 @@ const TypingDot = styled.View`
   width: 6px;
   height: 6px;
   border-radius: 3px;
-  background-color: ${colors.gray[40]};
+  background-color: ${({ theme }) => theme.colors.text.subtle};
   margin-right: 4px;
 `;
 
 const TypingText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
   font-style: italic;
   margin-left: ${spacing.xs};
 `;
@@ -125,20 +125,20 @@ const InputContainer = styled.View`
   padding-vertical: ${spacing.sm};
   border-top-width: 1px;
   border-top-color: ${colors.gray[10]};
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const TextInputStyled = styled.TextInput`
   flex: 1;
   min-height: ${sizing.component.sm};
   max-height: 100px;
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   border-radius: ${borderRadius.lg};
   padding-horizontal: ${spacing.md};
   padding-vertical: ${spacing.sm};
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-right: ${spacing.sm};
 `;
 
@@ -154,7 +154,7 @@ const SendButton = styled.TouchableOpacity<{ disabled: boolean }>`
 
 const SendButtonText = styled.Text`
   font-size: 18px;
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 // --- Types ---

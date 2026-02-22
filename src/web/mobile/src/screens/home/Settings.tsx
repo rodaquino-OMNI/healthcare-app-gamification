@@ -20,11 +20,11 @@ import { borderRadius } from '../../../../design-system/src/tokens/borderRadius'
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const SectionHeader = styled.View`
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   padding-horizontal: ${spacing.xl};
   padding-vertical: ${spacing.sm};
 `;
@@ -33,7 +33,7 @@ const SectionHeaderText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-transform: uppercase;
   letter-spacing: ${typography.letterSpacing.wide};
 `;
@@ -44,7 +44,7 @@ const SettingRow = styled.TouchableOpacity`
   justify-content: space-between;
   padding-horizontal: ${spacing.xl};
   padding-vertical: ${spacing.md};
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   border-bottom-width: 1px;
   border-bottom-color: ${colors.gray[10]};
 `;
@@ -53,13 +53,13 @@ const SettingLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   flex: 1;
 `;
 
 const ChevronText = styled.Text`
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
 `;
 
 const LogoutRow = styled.TouchableOpacity`
@@ -68,10 +68,10 @@ const LogoutRow = styled.TouchableOpacity`
   justify-content: center;
   padding-horizontal: ${spacing.xl};
   padding-vertical: ${spacing.md};
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   margin-top: ${spacing.xl};
   border-top-width: 1px;
-  border-top-color: ${colors.gray[20]};
+  border-top-color: ${({ theme }) => theme.colors.border.default};
 `;
 
 const LogoutText = styled.Text`
@@ -84,7 +84,7 @@ const LogoutText = styled.Text`
 const AppVersionText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
   text-align: center;
   margin-top: ${spacing.xl};
   margin-bottom: ${spacing['2xl']};

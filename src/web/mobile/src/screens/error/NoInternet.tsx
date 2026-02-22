@@ -19,7 +19,7 @@ interface NoInternetProps {
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const ContentContainer = styled.View`
@@ -33,7 +33,7 @@ const IconCircle = styled.View`
   width: 96px;
   height: 96px;
   border-radius: 48px;
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   align-items: center;
   justify-content: center;
   margin-bottom: ${spacing.xl};
@@ -47,7 +47,7 @@ const Title = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-xl']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   text-align: center;
   margin-bottom: ${spacing.xs};
 `;
@@ -55,7 +55,7 @@ const Title = styled.Text`
 const Description = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-align: center;
   line-height: 24px;
   margin-bottom: ${spacing['2xl']};
@@ -77,7 +77,7 @@ const RetryButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const CachedNotice = styled.View`
@@ -91,7 +91,7 @@ const CachedNotice = styled.View`
 const CachedNoticeText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
   text-align: center;
   line-height: 18px;
 `;

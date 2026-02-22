@@ -7,6 +7,8 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { borderRadiusValues } from '@austa/design-system/src/tokens/borderRadius';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../../design-system/src/themes/base.theme';
 
 interface StepProps {
   data: Record<string, any>;
@@ -26,6 +28,8 @@ const getSeverityColor = (level: number): string => {
 
 export const StepChronicPain: React.FC<StepProps> = ({ data, onUpdate }) => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const hasPain = data.hasPain;
   const selectedLocations: string[] = data.painLocations ?? [];
 
@@ -145,22 +149,22 @@ export const StepChronicPain: React.FC<StepProps> = ({ data, onUpdate }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   scrollContent: { paddingHorizontal: spacingValues.md, paddingBottom: spacingValues['3xl'] },
   sectionTitle: { marginTop: spacingValues.xl, marginBottom: spacingValues.xs },
   subtitle: { marginBottom: spacingValues.md },
   subTitle: { marginTop: spacingValues.lg, marginBottom: spacingValues.sm },
   chipRow: { flexDirection: 'row', gap: spacingValues.xs },
   chipGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacingValues.xs },
-  chipWide: { flex: 1, alignItems: 'center', paddingVertical: spacingValues.sm, borderRadius: borderRadiusValues.md, borderWidth: 1, borderColor: colors.neutral.gray300, backgroundColor: colors.neutral.white },
-  chip: { paddingVertical: spacingValues.xs, paddingHorizontal: spacingValues.md, borderRadius: borderRadiusValues.full, borderWidth: 1, borderColor: colors.neutral.gray300, backgroundColor: colors.neutral.white },
+  chipWide: { flex: 1, alignItems: 'center', paddingVertical: spacingValues.sm, borderRadius: borderRadiusValues.md, borderWidth: 1, borderColor: theme.colors.border.default, backgroundColor: theme.colors.background.default },
+  chip: { paddingVertical: spacingValues.xs, paddingHorizontal: spacingValues.md, borderRadius: borderRadiusValues.full, borderWidth: 1, borderColor: theme.colors.border.default, backgroundColor: theme.colors.background.default },
   chipSelected: { backgroundColor: colors.journeys.health.primary, borderColor: colors.journeys.health.primary },
   severityRow: { flexDirection: 'row', gap: spacingValues.xs },
-  severityCell: { flex: 1, alignItems: 'center', paddingVertical: spacingValues.xs, borderRadius: borderRadiusValues.sm, borderWidth: 1, borderColor: colors.neutral.gray300, backgroundColor: colors.neutral.white },
+  severityCell: { flex: 1, alignItems: 'center', paddingVertical: spacingValues.xs, borderRadius: borderRadiusValues.sm, borderWidth: 1, borderColor: theme.colors.border.default, backgroundColor: theme.colors.background.default },
   optionList: { gap: spacingValues.xs },
-  radioCard: { flexDirection: 'row', alignItems: 'center', paddingVertical: spacingValues.sm, paddingHorizontal: spacingValues.md, borderRadius: borderRadiusValues.md, borderWidth: 1, borderColor: colors.neutral.gray300, backgroundColor: colors.neutral.white },
+  radioCard: { flexDirection: 'row', alignItems: 'center', paddingVertical: spacingValues.sm, paddingHorizontal: spacingValues.md, borderRadius: borderRadiusValues.md, borderWidth: 1, borderColor: theme.colors.border.default, backgroundColor: theme.colors.background.default },
   radioCardSelected: { borderColor: colors.journeys.health.primary, backgroundColor: colors.journeys.health.background },
-  radioCircle: { width: 20, height: 20, borderRadius: borderRadiusValues.full, borderWidth: 2, borderColor: colors.neutral.gray400, alignItems: 'center', justifyContent: 'center' },
+  radioCircle: { width: 20, height: 20, borderRadius: borderRadiusValues.full, borderWidth: 2, borderColor: theme.colors.border.default, alignItems: 'center', justifyContent: 'center' },
   radioCircleActive: { borderColor: colors.journeys.health.primary },
   radioInner: { width: 10, height: 10, borderRadius: borderRadiusValues.full, backgroundColor: colors.journeys.health.primary },
   radioLabel: { marginLeft: spacingValues.sm, flex: 1 },

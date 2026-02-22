@@ -62,7 +62,7 @@ const LoginScreen = () => {
   });
 
   return (
-    <Box padding="lg" backgroundColor="neutral.white" flex={1} justifyContent="center">
+    <Box padding="lg" backgroundColor="background.default" flex={1} justifyContent="center">
       {/* Header section */}
       <Box marginBottom="xl" alignItems="center">
         <Text fontSize="3xl" fontWeight="bold">

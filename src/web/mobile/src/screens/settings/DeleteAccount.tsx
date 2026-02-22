@@ -17,7 +17,7 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const ContentWrapper = styled.View`
@@ -41,7 +41,7 @@ const WarningIconText = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: 40px;
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const Title = styled.Text`
@@ -56,7 +56,7 @@ const Title = styled.Text`
 const WarningText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.gray[60]};
+  color: ${({ theme }) => theme.colors.text.default};
   text-align: center;
   line-height: 24px;
   margin-bottom: ${spacing.xl};
@@ -71,7 +71,7 @@ const ConsequencesTitle = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray700};
+  color: ${({ theme }) => theme.colors.text.default};
   text-transform: uppercase;
   letter-spacing: ${typography.letterSpacing.wide};
   margin-bottom: ${spacing.sm};
@@ -95,7 +95,7 @@ const BulletDot = styled.View`
 const ConsequenceText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   flex: 1;
   line-height: 22px;
 `;
@@ -106,7 +106,7 @@ const CheckboxRow = styled.TouchableOpacity`
   width: 100%;
   padding-vertical: ${spacing.md};
   padding-horizontal: ${spacing.md};
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   border-radius: ${borderRadius.md};
   margin-bottom: ${spacing.xl};
 `;
@@ -127,7 +127,7 @@ const CheckboxBox = styled.View<{ checked: boolean }>`
 
 const CheckmarkText = styled.Text`
   font-size: 14px;
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
   line-height: 20px;
 `;
 
@@ -135,7 +135,7 @@ const CheckboxLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   flex: 1;
 `;
 
@@ -153,13 +153,13 @@ const DangerButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const SecondaryButton = styled.TouchableOpacity`
   width: 100%;
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
   border-radius: ${borderRadius.md};
   height: ${sizing.component.lg};
   align-items: center;
@@ -171,7 +171,7 @@ const SecondaryButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.gray[60]};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 // --- Constants ---

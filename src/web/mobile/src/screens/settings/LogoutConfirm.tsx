@@ -15,7 +15,7 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const ContentWrapper = styled.View`
@@ -28,12 +28,12 @@ const Title = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-xl']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing['2xl']};
 `;
 
 const UserCard = styled.View`
-  background-color: ${colors.gray[5]};
+  background-color: ${({ theme }) => theme.colors.background.muted};
   border-radius: ${borderRadius.lg};
   padding: ${spacing.xl};
   margin-bottom: ${spacing['2xl']};
@@ -44,7 +44,7 @@ const AvatarPlaceholder = styled.View`
   width: 72px;
   height: 72px;
   border-radius: 36px;
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   align-items: center;
   justify-content: center;
   margin-bottom: ${spacing.md};
@@ -61,7 +61,7 @@ const UserName = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-lg']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing['3xs']};
 `;
 
@@ -69,13 +69,13 @@ const UserEmail = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
 `;
 
 const InfoSection = styled.View`
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
   border-radius: ${borderRadius.lg};
   padding: ${spacing.lg};
   margin-bottom: ${spacing['2xl']};
@@ -91,14 +91,14 @@ const InfoLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
 `;
 
 const InfoValue = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const WarningCard = styled.View`
@@ -112,7 +112,7 @@ const WarningTitle = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.xs};
 `;
 
@@ -120,7 +120,7 @@ const WarningText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.gray[60]};
+  color: ${({ theme }) => theme.colors.text.default};
   line-height: 20px;
 `;
 
@@ -132,7 +132,7 @@ const BulletItem = styled.View`
 const Bullet = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[60]};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-right: ${spacing.xs};
 `;
 
@@ -140,7 +140,7 @@ const BulletText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.gray[60]};
+  color: ${({ theme }) => theme.colors.text.default};
   flex: 1;
 `;
 
@@ -156,12 +156,12 @@ const DangerButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const SecondaryButton = styled.TouchableOpacity`
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
   border-radius: ${borderRadius.md};
   height: ${sizing.component.lg};
   align-items: center;
@@ -173,7 +173,7 @@ const SecondaryButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.gray[60]};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 /**

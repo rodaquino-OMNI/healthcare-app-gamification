@@ -21,7 +21,7 @@ const REQUIRED_VERSION = '3.0.0';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const ContentContainer = styled.View`
@@ -49,7 +49,7 @@ const Title = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-xl']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   text-align: center;
   margin-bottom: ${spacing.xs};
 `;
@@ -57,7 +57,7 @@ const Title = styled.Text`
 const Description = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-align: center;
   line-height: 24px;
   margin-bottom: ${spacing.xl};
@@ -67,7 +67,7 @@ const Description = styled.Text`
 const VersionCard = styled.View`
   width: 100%;
   max-width: 280px;
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   border-radius: ${borderRadius.md};
   padding: ${spacing.md};
   margin-bottom: ${spacing['2xl']};
@@ -83,7 +83,7 @@ const VersionRow = styled.View`
 const VersionLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
 `;
 
 const VersionValue = styled.Text<{ isOld?: boolean }>`
@@ -115,13 +115,13 @@ const UpdateButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const StoreHint = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
   text-align: center;
   margin-top: ${spacing.xs};
 `;
@@ -136,7 +136,7 @@ const WhatsNewTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.sm};
 `;
 
@@ -157,7 +157,7 @@ const FeatureText = styled.Text`
   flex: 1;
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[60]};
+  color: ${({ theme }) => theme.colors.text.default};
   line-height: 22px;
 `;
 

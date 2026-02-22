@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 
 import { colors } from 'src/web/design-system/src/tokens/colors';
 import { spacingValues } from 'src/web/design-system/src/tokens/spacing';
@@ -73,6 +75,8 @@ const getJourneyColor = (journey: string): string => {
 const QuestList: React.FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation<any>();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const [activeTab, setActiveTab] = useState<TabFilter>('active');
 
   const quests = MOCK_QUESTS;
@@ -270,10 +274,10 @@ const QuestList: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral.gray100,
+    backgroundColor: theme.colors.background.subtle,
   },
   headerBar: {
     flexDirection: 'row',
@@ -290,14 +294,14 @@ const styles = StyleSheet.create({
   },
   backArrow: {
     fontSize: 20,
-    color: colors.neutral.white,
+    color: theme.colors.text.onBrand,
     fontWeight: '600',
   },
   screenTitle: {
     flex: 1,
     fontSize: 20,
     fontWeight: '700',
-    color: colors.neutral.white,
+    color: theme.colors.text.onBrand,
     textAlign: 'center',
   },
   headerSpacer: {
@@ -306,7 +310,7 @@ const styles = StyleSheet.create({
   summaryCard: {
     marginHorizontal: spacingValues.md,
     marginTop: spacingValues.md,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: borderRadiusValues.lg,
     padding: spacingValues.md,
     shadowColor: colors.neutral.black,
@@ -318,7 +322,7 @@ const styles = StyleSheet.create({
   summaryTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: colors.neutral.gray800,
+    color: theme.colors.text.default,
     marginBottom: spacingValues.sm,
     textAlign: 'center',
   },
@@ -334,17 +338,17 @@ const styles = StyleSheet.create({
   summaryValue: {
     fontSize: 24,
     fontWeight: '700',
-    color: colors.neutral.gray800,
+    color: theme.colors.text.default,
   },
   summaryLabel: {
     fontSize: 12,
-    color: colors.neutral.gray500,
+    color: theme.colors.text.muted,
     marginTop: spacingValues['4xs'],
   },
   summaryDivider: {
     width: 1,
     height: 32,
-    backgroundColor: colors.neutral.gray300,
+    backgroundColor: theme.colors.border.default,
   },
   tabsContainer: {
     maxHeight: 48,
@@ -372,7 +376,7 @@ const styles = StyleSheet.create({
     color: colors.brand.primary,
   },
   tabTextActive: {
-    color: colors.neutral.white,
+    color: theme.colors.text.onBrand,
   },
   listContent: {
     paddingHorizontal: spacingValues.md,
@@ -385,11 +389,11 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: colors.neutral.gray700,
+    color: theme.colors.text.default,
   },
   questItem: {
     flexDirection: 'row',
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: borderRadiusValues.md,
     padding: spacingValues.sm,
     shadowColor: colors.neutral.black,
@@ -402,7 +406,7 @@ const styles = StyleSheet.create({
     width: sizingValues.component.lg,
     height: sizingValues.component.lg,
     borderRadius: borderRadiusValues.md,
-    backgroundColor: colors.neutral.gray200,
+    backgroundColor: theme.colors.background.subtle,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: spacingValues.sm,
@@ -421,7 +425,7 @@ const styles = StyleSheet.create({
   questTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: colors.neutral.gray800,
+    color: theme.colors.text.default,
     flex: 1,
   },
   checkmark: {
@@ -432,7 +436,7 @@ const styles = StyleSheet.create({
   },
   questDescription: {
     fontSize: 13,
-    color: colors.neutral.gray500,
+    color: theme.colors.text.muted,
     marginTop: spacingValues['4xs'],
   },
   questMeta: {
@@ -458,7 +462,7 @@ const styles = StyleSheet.create({
   progressBarBg: {
     flex: 1,
     height: 6,
-    backgroundColor: colors.neutral.gray300,
+    backgroundColor: theme.colors.background.subtle,
     borderRadius: borderRadiusValues.full,
     overflow: 'hidden',
     marginRight: spacingValues.xs,
@@ -470,7 +474,7 @@ const styles = StyleSheet.create({
   progressText: {
     fontSize: 11,
     fontWeight: '500',
-    color: colors.neutral.gray500,
+    color: theme.colors.text.muted,
     minWidth: 36,
     textAlign: 'right',
   },
@@ -488,11 +492,11 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: colors.neutral.gray700,
+    color: theme.colors.text.default,
   },
   emptySubtitle: {
     fontSize: 14,
-    color: colors.neutral.gray500,
+    color: theme.colors.text.muted,
     textAlign: 'center',
     paddingHorizontal: spacingValues['2xl'],
   },

@@ -13,7 +13,7 @@ import { ROUTES } from '../../constants/routes';
 
 const Container = styled.View`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   align-items: center;
   justify-content: center;
   padding-horizontal: ${spacing['2xl']};
@@ -38,14 +38,14 @@ const LogoLetter = styled.Text`
   font-family: ${typography.fontFamily.logo};
   font-size: ${typography.fontSize['display-sm']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const BrandName = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['display-sm']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.gray[70]};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.xs};
 `;
 
@@ -53,7 +53,7 @@ const Tagline = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-lg']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-align: center;
 `;
 
@@ -71,7 +71,7 @@ const IllustrationText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
 `;
 
 const ButtonsSection = styled.View`
@@ -92,7 +92,7 @@ const PrimaryButtonText = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['text-lg']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const SecondaryButton = styled.TouchableOpacity`

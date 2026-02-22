@@ -15,7 +15,7 @@ import { ROUTES } from '../../constants/routes';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const Header = styled.View`
@@ -24,7 +24,7 @@ const Header = styled.View`
   padding-horizontal: ${spacing.md};
   padding-vertical: ${spacing.sm};
   border-bottom-width: 1px;
-  border-bottom-color: ${colors.gray[20]};
+  border-bottom-color: ${({ theme }) => theme.colors.border.default};
 `;
 
 const BackButton = styled.TouchableOpacity`
@@ -37,7 +37,7 @@ const BackButton = styled.TouchableOpacity`
 const BackText = styled.Text`
   font-size: ${typography.fontSize['text-xl']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const HeaderTitle = styled.Text`
@@ -45,7 +45,7 @@ const HeaderTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['text-lg']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   text-align: center;
 `;
 
@@ -62,7 +62,7 @@ const MarkAllText = styled.Text`
 `;
 
 const NotificationCard = styled.TouchableOpacity`
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   border-radius: ${borderRadius.md};
   padding: ${spacing.md};
   margin-horizontal: ${spacing.md};
@@ -117,21 +117,21 @@ const TypeBadgeText = styled.Text<{ textColor: string }>`
 const TimestampText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
 `;
 
 const NotificationTitle = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing['4xs']};
 `;
 
 const PreviewText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   line-height: 20px;
 `;
 
@@ -151,14 +151,14 @@ const EmptyTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['text-lg']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   margin-bottom: ${spacing.xs};
 `;
 
 const EmptyDescription = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
   text-align: center;
 `;
 

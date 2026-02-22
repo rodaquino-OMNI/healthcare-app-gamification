@@ -9,6 +9,8 @@ import {
   Share,
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { Notification, NotificationStatus } from 'src/web/shared/types/notification.types';
 import { useNotifications } from 'src/web/mobile/src/hooks/useNotifications';
 import { useNotificationContext } from 'src/web/mobile/src/context/NotificationContext';
@@ -109,6 +111,8 @@ const formatFullDate = (date: Date): string => {
  * baseadas no tipo (consulta, medicamento, alerta, plano).
  */
 export const NotificationDetailScreen: React.FC = () => {
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const { t } = useTranslation();
   const navigation = useNavigation();
   const route = useRoute<RouteProp<NotificationDetailParams, 'NotificationDetail'>>();
@@ -289,10 +293,10 @@ export const NotificationDetailScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.gray[5],
+    backgroundColor: theme.colors.background.muted,
   },
   scrollContent: {
     padding: spacingValues.md,
@@ -314,7 +318,7 @@ const styles = StyleSheet.create({
     color: colors.brand.primary,
   },
   card: {
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: borderRadiusValues.lg,
     borderTopWidth: 4,
     padding: spacingValues.lg,
@@ -334,7 +338,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: borderRadiusValues.md,
-    backgroundColor: colors.gray[10],
+    backgroundColor: theme.colors.background.subtle,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: spacingValues.sm,
@@ -360,23 +364,23 @@ const styles = StyleSheet.create({
   title: {
     fontSize: fontSizeValues.xl,
     fontWeight: String(typography.fontWeight.bold) as '700',
-    color: colors.gray[70],
+    color: theme.colors.text.default,
     marginBottom: spacingValues.xs,
     lineHeight: fontSizeValues.xl * typography.lineHeight.heading,
   },
   timestamp: {
     fontSize: fontSizeValues.xs,
-    color: colors.gray[40],
+    color: theme.colors.text.subtle,
     marginBottom: spacingValues.md,
   },
   bodyContainer: {
     paddingTop: spacingValues.sm,
     borderTopWidth: 1,
-    borderTopColor: colors.gray[20],
+    borderTopColor: theme.colors.border.default,
   },
   bodyText: {
     fontSize: fontSizeValues.md,
-    color: colors.gray[60],
+    color: theme.colors.text.default,
     lineHeight: fontSizeValues.md * typography.lineHeight.base,
   },
   actionsContainer: {
@@ -391,21 +395,21 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     fontSize: fontSizeValues.md,
     fontWeight: String(typography.fontWeight.bold) as '700',
-    color: colors.neutral.white,
+    color: theme.colors.text.onBrand,
   },
   secondaryButton: {
     paddingVertical: spacingValues.sm,
     paddingHorizontal: spacingValues.lg,
     borderRadius: borderRadiusValues.md,
     borderWidth: 1,
-    borderColor: colors.gray[20],
-    backgroundColor: colors.neutral.white,
+    borderColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
     alignItems: 'center',
   },
   secondaryButtonText: {
     fontSize: fontSizeValues.md,
     fontWeight: String(typography.fontWeight.medium) as '500',
-    color: colors.gray[60],
+    color: theme.colors.text.default,
   },
   errorText: {
     fontSize: fontSizeValues.md,
@@ -420,7 +424,7 @@ const styles = StyleSheet.create({
     borderRadius: borderRadiusValues.sm,
   },
   backButtonText: {
-    color: colors.neutral.white,
+    color: theme.colors.text.onBrand,
     fontWeight: String(typography.fontWeight.bold) as '700',
     fontSize: fontSizeValues.sm,
   },

@@ -8,6 +8,8 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { borderRadiusValues } from '@austa/design-system/src/tokens/borderRadius';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../../design-system/src/themes/base.theme';
 
 interface StepProps {
   data: Record<string, any>;
@@ -40,6 +42,8 @@ interface FamilyCondition {
  */
 export const StepFamilyHistory: React.FC<StepProps> = ({ data, onUpdate }) => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
 
   const conditions: Record<string, FamilyCondition> = data.conditions || {};
 
@@ -186,7 +190,7 @@ export const StepFamilyHistory: React.FC<StepProps> = ({ data, onUpdate }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     paddingTop: spacingValues.xl,
   },
@@ -206,7 +210,7 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: borderRadiusValues.xs,
     borderWidth: 2,
-    borderColor: colors.neutral.gray400,
+    borderColor: theme.colors.border.default,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: spacingValues.sm,
@@ -219,7 +223,7 @@ const styles = StyleSheet.create({
     marginTop: spacingValues.sm,
     paddingTop: spacingValues.sm,
     borderTopWidth: 1,
-    borderTopColor: colors.neutral.gray200,
+    borderTopColor: theme.colors.border.default,
   },
   relationLabel: {
     marginBottom: spacingValues.xs,
@@ -233,9 +237,9 @@ const styles = StyleSheet.create({
     paddingVertical: spacingValues.xs,
     borderRadius: borderRadiusValues.full,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
+    borderColor: theme.colors.border.default,
     alignItems: 'center',
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
   },
   relationPillActive: {
     backgroundColor: colors.journeys.health.secondary,

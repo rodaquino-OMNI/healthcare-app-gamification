@@ -12,6 +12,8 @@ import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@austa/design-system/src/components/Button/Button';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 
@@ -88,6 +90,8 @@ const TelemedicineChatOverlay: React.FC = () => {
   const navigation = useNavigation<any>();
   const route = useRoute<RouteProp<{ params: TelemedicineChatOverlayRouteParams }, 'params'>>();
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
 
   const { doctorName = '' } = route.params || {};
 
@@ -266,7 +270,7 @@ const TelemedicineChatOverlay: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: colors.journeys.care.background,
@@ -278,7 +282,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacingValues.md,
     paddingVertical: spacingValues.sm,
     borderBottomWidth: 1,
-    borderBottomColor: colors.neutral.gray300,
+    borderBottomColor: theme.colors.border.default,
   },
   closeButton: {
     width: 36,
@@ -326,7 +330,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacingValues.xs,
     gap: spacingValues.xs,
     borderTopWidth: 1,
-    borderTopColor: colors.neutral.gray300,
+    borderTopColor: theme.colors.border.default,
   },
   quickReplyChip: {
     paddingHorizontal: spacingValues.sm,
@@ -334,7 +338,7 @@ const styles = StyleSheet.create({
     borderRadius: spacingValues.md,
     borderWidth: 1,
     borderColor: colors.journeys.care.primary,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
   },
   inputBar: {
     flexDirection: 'row',
@@ -343,21 +347,21 @@ const styles = StyleSheet.create({
     paddingVertical: spacingValues.xs,
     gap: spacingValues.xs,
     borderTopWidth: 1,
-    borderTopColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderTopColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
   },
   textInput: {
     flex: 1,
     minHeight: 40,
     maxHeight: 100,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
+    borderColor: theme.colors.border.default,
     borderRadius: spacingValues.lg,
     paddingHorizontal: spacingValues.sm,
     paddingVertical: spacingValues.xs,
     fontSize: 14,
     color: colors.journeys.care.text,
-    backgroundColor: colors.neutral.gray100,
+    backgroundColor: theme.colors.background.subtle,
   },
 });
 

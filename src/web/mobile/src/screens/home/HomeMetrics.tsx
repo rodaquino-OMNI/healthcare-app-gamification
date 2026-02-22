@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 
 import { ROUTES } from '../../constants/routes';
 import { colors } from '../../../../design-system/src/tokens/colors';
@@ -139,6 +141,8 @@ const getTrendInfo = (
  * to individual metric details.
  */
 export const HomeMetricsScreen: React.FC = () => {
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const { t } = useTranslation();
   const navigation = useNavigation();
   const [activeFilter, setActiveFilter] = useState<MetricCategory>('all');
@@ -273,10 +277,10 @@ export const HomeMetricsScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
   },
   header: {
     flexDirection: 'row',
@@ -284,7 +288,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacingValues.md,
     paddingVertical: spacingValues.sm,
     borderBottomWidth: 1,
-    borderBottomColor: colors.gray[20],
+    borderBottomColor: theme.colors.border.default,
   },
   backButton: {
     width: spacingValues['2xl'],
@@ -295,13 +299,13 @@ const styles = StyleSheet.create({
   backText: {
     fontSize: fontSizeValues.xl,
     fontWeight: '600',
-    color: colors.neutral.gray900,
+    color: theme.colors.text.default,
   },
   headerTitle: {
     flex: 1,
     fontSize: fontSizeValues.lg,
     fontWeight: '700',
-    color: colors.neutral.gray900,
+    color: theme.colors.text.default,
     textAlign: 'center',
   },
   headerSpacer: {
@@ -310,7 +314,7 @@ const styles = StyleSheet.create({
   filterContainer: {
     paddingVertical: spacingValues.sm,
     borderBottomWidth: 1,
-    borderBottomColor: colors.gray[20],
+    borderBottomColor: theme.colors.border.default,
   },
   filterScrollContent: {
     paddingHorizontal: spacingValues.md,
@@ -320,7 +324,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacingValues.md,
     paddingVertical: spacingValues.xs,
     borderRadius: borderRadiusValues.full,
-    backgroundColor: colors.gray[10],
+    backgroundColor: theme.colors.background.subtle,
     marginRight: spacingValues.xs,
   },
   filterPillActive: {
@@ -329,10 +333,10 @@ const styles = StyleSheet.create({
   filterPillText: {
     fontSize: fontSizeValues.sm,
     fontWeight: '600',
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
   },
   filterPillTextActive: {
-    color: colors.neutral.white,
+    color: theme.colors.text.onBrand,
   },
   listContent: {
     padding: spacingValues.md,
@@ -341,7 +345,7 @@ const styles = StyleSheet.create({
   metricCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: borderRadiusValues.md,
     marginBottom: spacingValues.sm,
     shadowColor: colors.neutral.black,
@@ -372,7 +376,7 @@ const styles = StyleSheet.create({
   },
   metricName: {
     fontSize: fontSizeValues.sm,
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
     marginBottom: spacingValues['3xs'],
   },
   metricValueRow: {
@@ -382,11 +386,11 @@ const styles = StyleSheet.create({
   metricValue: {
     fontSize: fontSizeValues.xl,
     fontWeight: '700',
-    color: colors.neutral.gray900,
+    color: theme.colors.text.default,
   },
   metricUnit: {
     fontSize: fontSizeValues.xs,
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
   },
   metricTrend: {
     fontSize: fontSizeValues.xs,
@@ -400,13 +404,13 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: fontSizeValues.md,
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
   },
   addButtonContainer: {
     paddingHorizontal: spacingValues.md,
     paddingVertical: spacingValues.sm,
     borderTopWidth: 1,
-    borderTopColor: colors.gray[20],
+    borderTopColor: theme.colors.border.default,
   },
   addButton: {
     backgroundColor: colors.journeys.health.primary,
@@ -417,7 +421,7 @@ const styles = StyleSheet.create({
   addButtonText: {
     fontSize: fontSizeValues.md,
     fontWeight: '700',
-    color: colors.neutral.white,
+    color: theme.colors.text.onBrand,
   },
 });
 

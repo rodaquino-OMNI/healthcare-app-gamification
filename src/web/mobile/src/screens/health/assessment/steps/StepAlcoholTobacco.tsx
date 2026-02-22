@@ -7,6 +7,8 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { borderRadiusValues } from '@austa/design-system/src/tokens/borderRadius';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../../design-system/src/themes/base.theme';
 
 interface StepProps {
   data: Record<string, any>;
@@ -33,6 +35,8 @@ const showAlcoholDetails = (frequency: string | undefined): boolean =>
 
 export const StepAlcoholTobacco: React.FC<StepProps> = ({ data, onUpdate }) => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
 
   return (
     <ScrollView
@@ -241,7 +245,7 @@ export const StepAlcoholTobacco: React.FC<StepProps> = ({ data, onUpdate }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   scrollContent: {
     paddingHorizontal: spacingValues.md,
     paddingBottom: spacingValues['3xl'],
@@ -264,8 +268,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacingValues.md,
     borderRadius: borderRadiusValues.md,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
   },
   radioCardSelected: {
     borderColor: colors.journeys.health.primary,
@@ -276,7 +280,7 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: borderRadiusValues.full,
     borderWidth: 2,
-    borderColor: colors.neutral.gray400,
+    borderColor: theme.colors.border.default,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -303,8 +307,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacingValues.md,
     borderRadius: borderRadiusValues.full,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
   },
   chipSelected: {
     backgroundColor: colors.journeys.health.primary,

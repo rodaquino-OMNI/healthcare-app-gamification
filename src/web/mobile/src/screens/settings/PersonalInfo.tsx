@@ -21,7 +21,7 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const ContentWrapper = styled.View`
@@ -39,7 +39,7 @@ const AvatarPlaceholder = styled.View`
   width: 96px;
   height: 96px;
   border-radius: 48px;
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   align-items: center;
   justify-content: center;
   margin-bottom: ${spacing.sm};
@@ -72,7 +72,7 @@ const Label = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.neutral.gray700};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.xs};
 `;
 
@@ -100,7 +100,7 @@ const ErrorText = styled.Text`
 const HelperText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   margin-top: ${spacing['3xs']};
 `;
 
@@ -112,7 +112,7 @@ const SelectorButton = styled.TouchableOpacity<{ isActive?: boolean }>`
   border-radius: ${borderRadius.md};
   padding-horizontal: ${spacing.md};
   justify-content: center;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const SelectorText = styled.Text<{ isPlaceholder?: boolean }>`
@@ -124,7 +124,7 @@ const SelectorText = styled.Text<{ isPlaceholder?: boolean }>`
 const OptionsContainer = styled.View`
   margin-top: ${spacing.xs};
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
   border-radius: ${borderRadius.md};
   overflow: hidden;
 `;
@@ -161,12 +161,12 @@ const PrimaryButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const SecondaryButton = styled.TouchableOpacity`
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
   border-radius: ${borderRadius.md};
   height: ${sizing.component.lg};
   align-items: center;
@@ -178,7 +178,7 @@ const SecondaryButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.gray[60]};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 // --- Types ---

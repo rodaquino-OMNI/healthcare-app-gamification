@@ -13,7 +13,7 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const Header = styled.View`
@@ -26,15 +26,15 @@ const Title = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-xl']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const Card = styled.View`
   flex-direction: row;
   align-items: center;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
   border-radius: ${borderRadius.lg};
   padding: ${spacing.lg};
   margin-horizontal: ${spacing.xl};
@@ -55,7 +55,7 @@ const PriorityText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const ContactInfo = styled.View`
@@ -66,14 +66,14 @@ const ContactName = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const ContactPhone = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   margin-top: ${spacing['4xs']};
 `;
 
@@ -81,7 +81,7 @@ const ContactRelationship = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
   margin-top: ${spacing['4xs']};
 `;
 
@@ -97,12 +97,12 @@ const IconButton = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
 `;
 
 const IconText = styled.Text`
   font-size: ${typography.fontSize['text-sm']};
-  color: ${colors.gray[60]};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const DeleteIconText = styled.Text`
@@ -124,13 +124,13 @@ const AddContactButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const InlineForm = styled.View`
-  background-color: ${colors.gray[5]};
+  background-color: ${({ theme }) => theme.colors.background.muted};
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
   border-radius: ${borderRadius.lg};
   padding: ${spacing.lg};
   margin-horizontal: ${spacing.xl};
@@ -141,20 +141,20 @@ const FormLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.neutral.gray700};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.xs};
 `;
 
 const FormInput = styled.TextInput`
   height: ${sizing.component.md};
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
   border-radius: ${borderRadius.md};
   padding-horizontal: ${spacing.md};
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.neutral.gray900};
-  background-color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.default};
+  background-color: ${({ theme }) => theme.colors.background.default};
   margin-bottom: ${spacing.sm};
 `;
 
@@ -177,13 +177,13 @@ const FormSaveText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const FormCancelButton = styled.TouchableOpacity`
   flex: 1;
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
   border-radius: ${borderRadius.md};
   height: ${sizing.component.md};
   align-items: center;
@@ -194,7 +194,7 @@ const FormCancelText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.gray[60]};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const EmptyContainer = styled.View`
@@ -208,7 +208,7 @@ const EmptyText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-align: center;
 `;
 

@@ -29,14 +29,14 @@ const PLAN_DATA = {
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const Title = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-lg']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   padding-horizontal: ${spacing.xl};
   padding-top: ${spacing['2xl']};
   padding-bottom: ${spacing.lg};
@@ -46,10 +46,10 @@ const PlanCard = styled.View`
   margin-horizontal: ${spacing.xl};
   margin-bottom: ${spacing.lg};
   padding: ${spacing.lg};
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   border-radius: ${borderRadius.lg};
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
   shadow-color: ${colors.neutral.black};
   shadow-offset: 0px 2px;
   shadow-opacity: 0.08;
@@ -77,7 +77,7 @@ const PlanName = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-md']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.sm};
 `;
 
@@ -92,18 +92,18 @@ const InfoLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
 `;
 
 const InfoValue = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const SectionHeader = styled.View`
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   padding-horizontal: ${spacing.xl};
   padding-vertical: ${spacing.sm};
 `;
@@ -112,7 +112,7 @@ const SectionHeaderText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-transform: uppercase;
   letter-spacing: ${typography.letterSpacing.wide};
 `;
@@ -123,7 +123,7 @@ const DetailRow = styled.View`
   justify-content: space-between;
   padding-horizontal: ${spacing.xl};
   padding-vertical: ${spacing.md};
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   border-bottom-width: 1px;
   border-bottom-color: ${colors.gray[10]};
 `;
@@ -132,14 +132,14 @@ const DetailLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
 `;
 
 const DetailValue = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.regular};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   text-align: right;
   flex-shrink: 1;
   margin-left: ${spacing.md};
@@ -149,7 +149,7 @@ const OperatorCard = styled.View`
   margin-horizontal: ${spacing.xl};
   margin-top: ${spacing.md};
   padding: ${spacing.md};
-  background-color: ${colors.gray[5]};
+  background-color: ${({ theme }) => theme.colors.background.muted};
   border-radius: ${borderRadius.lg};
   flex-direction: row;
   align-items: center;
@@ -169,14 +169,14 @@ const LogoText = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const OperatorName = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const ActionButton = styled.TouchableOpacity<{ variant?: 'primary' | 'outline' }>`

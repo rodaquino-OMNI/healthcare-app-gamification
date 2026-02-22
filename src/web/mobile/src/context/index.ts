@@ -17,3 +17,7 @@ export { JourneyContext, JourneyProvider } from './JourneyContext';
 
 // Notification context exports
 export { NotificationContext, NotificationProvider, useNotificationContext } from './NotificationContext';
+
+// Theme context exports
+export { AppThemeProvider, useAppTheme, ThemeContext } from './ThemeContext';
+export type { ThemeMode } from './ThemeContext';

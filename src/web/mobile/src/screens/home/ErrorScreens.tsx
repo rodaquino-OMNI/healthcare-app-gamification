@@ -7,6 +7,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { fontSizeValues } from '../../../../design-system/src/tokens/typography';
@@ -17,6 +19,8 @@ import { borderRadiusValues } from '../../../../design-system/src/tokens/borderR
  * Centered layout with 404 text, subtitle, and a button to navigate home.
  */
 export const Error404Screen: React.FC = () => {
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const { t } = useTranslation();
   const navigation = useNavigation();
 
@@ -49,6 +53,8 @@ export const Error404Screen: React.FC = () => {
  * Shows a timeout icon, descriptive message, and a retry button.
  */
 export const ErrorTimeoutScreen: React.FC<{ onRetry?: () => void }> = ({ onRetry }) => {
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const { t } = useTranslation();
   return (
     <View style={styles.container}>
@@ -84,6 +90,8 @@ export const EmptyStateScreen: React.FC<{
   message,
   onRetry,
 }) => {
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const { t } = useTranslation();
   const displayTitle = title || t('errorScreens.empty.title');
   const displayMessage = message || t('errorScreens.empty.message');
@@ -106,13 +114,13 @@ export const EmptyStateScreen: React.FC<{
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: spacingValues.xl,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
   },
   icon: {
     fontSize: 56,
@@ -121,19 +129,19 @@ const styles = StyleSheet.create({
   errorCode: {
     fontSize: fontSizeValues['2xl'],
     fontWeight: 'bold',
-    color: colors.neutral.gray900,
+    color: theme.colors.text.default,
     marginBottom: spacingValues.xs,
   },
   title: {
     fontSize: fontSizeValues.lg,
     fontWeight: '600',
-    color: colors.neutral.gray900,
+    color: theme.colors.text.default,
     marginBottom: spacingValues.xs,
     textAlign: 'center',
   },
   message: {
     fontSize: fontSizeValues.sm,
-    color: colors.neutral.gray600,
+    color: theme.colors.text.muted,
     textAlign: 'center',
     marginBottom: spacingValues.xl,
     paddingHorizontal: spacingValues['2xl'],
@@ -148,12 +156,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   primaryButtonText: {
-    color: colors.neutral.white,
+    color: theme.colors.text.onBrand,
     fontSize: fontSizeValues.md,
     fontWeight: '600',
   },
   secondaryButton: {
-    backgroundColor: colors.neutral.gray200,
+    backgroundColor: theme.colors.background.subtle,
     paddingHorizontal: spacingValues.xl,
     paddingVertical: spacingValues.sm,
     borderRadius: borderRadiusValues.md,
@@ -161,7 +169,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   secondaryButtonText: {
-    color: colors.neutral.gray900,
+    color: theme.colors.text.default,
     fontSize: fontSizeValues.md,
     fontWeight: '600',
   },

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { fontSizeValues } from '../../../../design-system/src/tokens/typography';
@@ -28,6 +30,8 @@ interface MedicationAlarmParams {
  */
 export const MedicationAlarmScreen: React.FC = () => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const route = useRoute<any>();
   const navigation = useNavigation();
 
@@ -141,10 +145,10 @@ export const MedicationAlarmScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
   },
   content: {
     flex: 1,
@@ -172,7 +176,7 @@ const styles = StyleSheet.create({
   },
   dosageText: {
     fontSize: fontSizeValues.md,
-    color: colors.gray[50],
+    color: theme.colors.text.muted,
     textAlign: 'center',
     marginBottom: spacingValues.xl,
   },
@@ -197,7 +201,7 @@ const styles = StyleSheet.create({
     // backgroundColor set dynamically
   },
   takeNowText: {
-    color: colors.neutral.white,
+    color: theme.colors.text.onBrand,
     fontSize: fontSizeValues.lg,
     fontWeight: 'bold',
   },
@@ -214,7 +218,7 @@ const styles = StyleSheet.create({
   },
   skipText: {
     fontSize: fontSizeValues.md,
-    color: colors.gray[40],
+    color: theme.colors.text.subtle,
     fontWeight: '500',
   },
   nextDoseContainer: {
@@ -223,7 +227,7 @@ const styles = StyleSheet.create({
   },
   nextDoseLabel: {
     fontSize: fontSizeValues.sm,
-    color: colors.gray[40],
+    color: theme.colors.text.subtle,
     marginBottom: spacingValues['3xs'],
   },
   nextDoseTime: {

@@ -18,6 +18,8 @@ import { spacingValues } from '@web/design-system/src/tokens/spacing';
 import { fontSizeValues } from '@web/design-system/src/tokens/typography';
 import { borderRadiusValues } from '@web/design-system/src/tokens/borderRadius';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '@web/design-system/src/themes/base.theme';
 
 /**
  * Renders the main dashboard screen for the Plan journey, fetching and
@@ -26,6 +28,8 @@ import { useTranslation } from 'react-i18next';
 const PlanDashboard: React.FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
 
   const { session, getUserFromToken } = useAuth();
 
@@ -274,7 +278,7 @@ const PlanDashboard: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.journeys.plan.background,
@@ -286,7 +290,7 @@ const styles = StyleSheet.create({
 
   /* Insurance Card */
   insuranceCard: {
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: borderRadiusValues.lg,
     overflow: 'hidden',
     shadowColor: colors.neutral.black,
@@ -343,7 +347,7 @@ const styles = StyleSheet.create({
   },
   shareButton: {
     borderTopWidth: 1,
-    borderTopColor: colors.gray[20],
+    borderTopColor: theme.colors.border.default,
     paddingVertical: spacingValues.sm,
     alignItems: 'center',
   },
@@ -360,7 +364,7 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: borderRadiusValues.md,
     padding: spacingValues.sm,
     alignItems: 'center',
@@ -392,7 +396,7 @@ const styles = StyleSheet.create({
 
   /* Coverage Items */
   coverageItem: {
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: borderRadiusValues.md,
     padding: spacingValues.md,
     flexDirection: 'row',
@@ -424,7 +428,7 @@ const styles = StyleSheet.create({
 
   /* Claim Items */
   claimItem: {
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: borderRadiusValues.md,
     padding: spacingValues.md,
     shadowColor: colors.neutral.black,
@@ -447,7 +451,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacingValues['4xs'],
     paddingHorizontal: spacingValues.xs,
     borderRadius: borderRadiusValues.full,
-    backgroundColor: colors.gray[10],
+    backgroundColor: theme.colors.background.subtle,
   },
   claimStatusApproved: {
     backgroundColor: colors.semantic.successBg,

@@ -1,19 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
 
-import { ROUTES } from '../../constants/routes';
-import { colors } from '../../../../design-system/src/tokens/colors';
+import { useAppTheme } from '../../context/ThemeContext';
+import type { ThemeMode } from '../../context/ThemeContext';
 import { typography } from '../../../../design-system/src/tokens/typography';
 import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { borderRadius } from '../../../../design-system/src/tokens/borderRadius';
 import { sizing } from '../../../../design-system/src/tokens/sizing';
+import { darkTheme } from '../../../../design-system/src/themes';
 
 // --- Types ---
-
-type ThemeMode = 'light' | 'dark' | 'system';
 
 interface ThemeOption {
   mode: ThemeMode;
@@ -31,18 +29,18 @@ const THEMES: ThemeOption[] = [
 
 const PREVIEW_COLORS = {
   light: {
-    bg: colors.neutral.white,
-    card: colors.gray[5],
-    text: colors.neutral.gray900,
-    subtext: colors.gray[50],
-    border: colors.gray[20],
+    bg: '#ffffff',
+    card: '#f8fafc',
+    text: '#334155',
+    subtext: '#94a3b8',
+    border: '#e2e8f0',
   },
   dark: {
-    bg: colors.neutral.gray900,
-    card: colors.gray[70],
-    text: colors.neutral.white,
-    subtext: colors.gray[30],
-    border: colors.gray[60],
+    bg: darkTheme.colors.background.default,
+    card: darkTheme.colors.background.muted,
+    text: darkTheme.colors.text.default,
+    subtext: darkTheme.colors.text.subtle,
+    border: darkTheme.colors.border.default,
   },
 };
 
@@ -50,14 +48,14 @@ const PREVIEW_COLORS = {
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const Title = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-lg']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   padding-horizontal: ${spacing.xl};
   padding-top: ${spacing['2xl']};
   padding-bottom: ${spacing.lg};
@@ -69,19 +67,19 @@ const ThemeCard = styled.TouchableOpacity<{ isSelected: boolean }>`
   margin-horizontal: ${spacing.xl};
   margin-bottom: ${spacing.sm};
   padding: ${spacing.md};
-  background-color: ${({ isSelected }) =>
-    isSelected ? colors.gray[5] : colors.neutral.white};
+  background-color: ${({ isSelected, theme }) =>
+    isSelected ? theme.colors.background.subtle : theme.colors.background.default};
   border-radius: ${borderRadius.lg};
   border-width: 2px;
-  border-color: ${({ isSelected }) =>
-    isSelected ? colors.brand.primary : colors.gray[20]};
+  border-color: ${({ isSelected, theme }) =>
+    isSelected ? theme.colors.brand.primary : theme.colors.border.default};
 `;
 
 const IconContainer = styled.View`
   width: ${sizing.component.md};
   height: ${sizing.component.md};
   border-radius: ${borderRadius.md};
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   align-items: center;
   justify-content: center;
   margin-right: ${spacing.md};
@@ -91,14 +89,14 @@ const IconText = styled.Text`
   font-family: ${typography.fontFamily.mono};
   font-size: ${typography.fontSize['text-xs']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.gray[60]};
+  color: ${({ theme }) => theme.colors.text.subtle};
 `;
 
 const ThemeLabel = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   flex: 1;
 `;
 
@@ -107,8 +105,8 @@ const RadioOuter = styled.View<{ isSelected: boolean }>`
   height: ${sizing.icon.md};
   border-radius: ${borderRadius.full};
   border-width: 2px;
-  border-color: ${({ isSelected }) =>
-    isSelected ? colors.brand.primary : colors.gray[30]};
+  border-color: ${({ isSelected, theme }) =>
+    isSelected ? theme.colors.brand.primary : theme.colors.border.default};
   align-items: center;
   justify-content: center;
 `;
@@ -117,11 +115,11 @@ const RadioInner = styled.View`
   width: 12px;
   height: 12px;
   border-radius: ${borderRadius.full};
-  background-color: ${colors.brand.primary};
+  background-color: ${({ theme }) => theme.colors.brand.primary};
 `;
 
 const SectionHeader = styled.View`
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   padding-horizontal: ${spacing.xl};
   padding-vertical: ${spacing.sm};
   margin-top: ${spacing.xl};
@@ -131,7 +129,7 @@ const SectionHeaderText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.subtle};
   text-transform: uppercase;
   letter-spacing: ${typography.letterSpacing.wide};
 `;
@@ -143,7 +141,7 @@ const PreviewContainer = styled.View<{ bgColor: string }>`
   background-color: ${({ bgColor }) => bgColor};
   border-radius: ${borderRadius.lg};
   border-width: 1px;
-  border-color: ${colors.gray[20]};
+  border-color: ${({ theme }) => theme.colors.border.default};
 `;
 
 const PreviewCardInner = styled.View<{ cardColor: string; borderColor: string }>`
@@ -172,7 +170,7 @@ const PreviewSubtext = styled.Text<{ textColor: string }>`
 const PreviewButton = styled.View`
   margin-top: ${spacing.sm};
   height: ${sizing.component.sm};
-  background-color: ${colors.brand.primary};
+  background-color: ${({ theme }) => theme.colors.brand.primary};
   border-radius: ${borderRadius.md};
   align-items: center;
   justify-content: center;
@@ -182,7 +180,7 @@ const PreviewButtonText = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 /**
@@ -191,10 +189,10 @@ const PreviewButtonText = styled.Text`
  */
 export const ThemeSelectScreen: React.FC = () => {
   const { t } = useTranslation();
-  const [selectedTheme, setSelectedTheme] = useState<ThemeMode>('light');
+  const { themeMode, setThemeMode } = useAppTheme();
 
   const previewTheme =
-    selectedTheme === 'system' ? 'light' : selectedTheme;
+    themeMode === 'system' ? 'light' : themeMode;
   const preview = PREVIEW_COLORS[previewTheme];
 
   return (
@@ -205,22 +203,22 @@ export const ThemeSelectScreen: React.FC = () => {
       >
         <Title>{t('settings.themeSelect.title')}</Title>
 
-        {THEMES.map((theme) => {
-          const isSelected = selectedTheme === theme.mode;
+        {THEMES.map((option) => {
+          const isSelected = themeMode === option.mode;
           return (
             <ThemeCard
-              key={theme.mode}
+              key={option.mode}
               isSelected={isSelected}
-              onPress={() => setSelectedTheme(theme.mode)}
+              onPress={() => setThemeMode(option.mode)}
               accessibilityRole="radio"
-              accessibilityLabel={t(theme.labelKey)}
+              accessibilityLabel={t(option.labelKey)}
               accessibilityState={{ checked: isSelected }}
-              testID={`theme-option-${theme.mode}`}
+              testID={`theme-option-${option.mode}`}
             >
               <IconContainer>
-                <IconText>{theme.icon}</IconText>
+                <IconText>{option.icon}</IconText>
               </IconContainer>
-              <ThemeLabel>{t(theme.labelKey)}</ThemeLabel>
+              <ThemeLabel>{t(option.labelKey)}</ThemeLabel>
               <RadioOuter isSelected={isSelected}>
                 {isSelected && <RadioInner />}
               </RadioOuter>
@@ -242,7 +240,7 @@ export const ThemeSelectScreen: React.FC = () => {
             </PreviewTitle>
             <PreviewSubtext textColor={preview.subtext}>
               {t('settings.themeSelect.preview')} - {t(
-                `settings.themeSelect.${selectedTheme}`,
+                `settings.themeSelect.${themeMode}`,
               )}
             </PreviewSubtext>
             <PreviewButton>

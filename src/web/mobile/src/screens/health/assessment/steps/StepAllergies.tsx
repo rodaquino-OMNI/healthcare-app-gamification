@@ -7,6 +7,8 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { borderRadiusValues } from '@austa/design-system/src/tokens/borderRadius';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../../design-system/src/themes/base.theme';
 
 interface StepProps {
   data: Record<string, any>;
@@ -42,6 +44,8 @@ const SEVERITY_COLORS: Record<Severity, string> = {
  */
 export const StepAllergies: React.FC<StepProps> = ({ data, onUpdate }) => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
 
   const selected: string[] = data.selected || [];
   const severities: Record<string, Severity> = data.severities || {};
@@ -193,7 +197,7 @@ export const StepAllergies: React.FC<StepProps> = ({ data, onUpdate }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     paddingTop: spacingValues.xl,
   },
@@ -211,8 +215,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacingValues.md,
     borderRadius: borderRadiusValues.full,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
   },
   allergenChipActive: {
     backgroundColor: colors.journeys.health.primary,
@@ -230,7 +234,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: spacingValues.sm,
     borderBottomWidth: 1,
-    borderBottomColor: colors.neutral.gray200,
+    borderBottomColor: theme.colors.border.default,
   },
   severityLabel: {
     flex: 1,
@@ -252,13 +256,13 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
+    borderColor: theme.colors.border.default,
     borderRadius: borderRadiusValues.md,
     paddingHorizontal: spacingValues.md,
     paddingVertical: spacingValues.sm,
     fontSize: 16,
-    color: colors.neutral.gray900,
-    backgroundColor: colors.neutral.white,
+    color: theme.colors.text.default,
+    backgroundColor: theme.colors.background.default,
     minHeight: 60,
     textAlignVertical: 'top',
   },

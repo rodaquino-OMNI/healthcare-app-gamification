@@ -62,21 +62,21 @@ type SetPasswordFormData = {
 const Container = styled.View`
   flex: 1;
   padding: ${spacingValues.xl}px;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   justify-content: center;
 `;
 
 const Title = styled.Text`
   font-size: ${fontSizeValues['2xl']}px;
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacingValues.xs}px;
   text-align: center;
 `;
 
 const Description = styled.Text`
   font-size: ${fontSizeValues.md}px;
-  color: ${colors.neutral.gray600};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-align: center;
   margin-bottom: ${spacingValues['2xl']}px;
   line-height: ${Math.round(fontSizeValues.md * 1.5)}px;
@@ -89,7 +89,7 @@ const InputWrapper = styled.View`
 const InputLabel = styled.Text`
   font-size: ${fontSizeValues.sm}px;
   font-weight: ${typography.fontWeight.medium};
-  color: ${colors.neutral.gray800};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacingValues['3xs']}px;
 `;
 
@@ -101,8 +101,8 @@ const StyledInput = styled.TextInput<{ hasError?: boolean }>`
   border-radius: ${borderRadiusValues.md}px;
   padding-horizontal: ${spacingValues.md}px;
   font-size: ${fontSizeValues.md}px;
-  color: ${colors.neutral.gray900};
-  background-color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.default};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const ErrorText = styled.Text`
@@ -117,7 +117,7 @@ const StrengthContainer = styled.View`
 
 const StrengthBarBackground = styled.View`
   height: ${spacingValues['3xs']}px;
-  background-color: ${colors.neutral.gray200};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   border-radius: ${borderRadiusValues.full}px;
   overflow: hidden;
   margin-bottom: ${spacingValues.xs}px;
@@ -172,7 +172,7 @@ const SubmitButton = styled.TouchableOpacity<{ disabled?: boolean }>`
 `;
 
 const SubmitButtonText = styled.Text`
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
   font-size: ${fontSizeValues.md}px;
   font-weight: ${typography.fontWeight.semiBold};
 `;

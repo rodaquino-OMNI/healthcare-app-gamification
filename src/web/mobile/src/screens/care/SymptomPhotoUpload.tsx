@@ -7,6 +7,8 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchable';
 import { ROUTES } from '../../../../constants/routes';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 
@@ -31,6 +33,8 @@ type SymptomPhotoUploadRouteParams = {
  */
 const SymptomPhotoUpload: React.FC = () => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const navigation = useNavigation<any>();
   const route = useRoute<RouteProp<{ params: SymptomPhotoUploadRouteParams }, 'params'>>();
   const { symptoms = [], description = '', regions = [] } = route.params || {};
@@ -234,7 +238,7 @@ const SymptomPhotoUpload: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: colors.journeys.care.background,
@@ -264,7 +268,7 @@ const styles = StyleSheet.create({
     borderRadius: spacingValues.xs,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
+    borderColor: theme.colors.border.default,
   },
   photoPlaceholder: {
     flex: 1,
@@ -273,11 +277,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.neutral.gray200,
   },
   removeButton: {
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     paddingVertical: spacingValues['3xs'],
     alignItems: 'center',
     borderTopWidth: 1,
-    borderTopColor: colors.neutral.gray300,
+    borderTopColor: theme.colors.border.default,
   },
   buttonRow: {
     flexDirection: 'row',

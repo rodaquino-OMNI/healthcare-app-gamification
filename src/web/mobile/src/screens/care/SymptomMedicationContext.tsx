@@ -7,6 +7,8 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchable';
 import { ROUTES } from '../../../../constants/routes';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 
@@ -46,6 +48,8 @@ type SymptomMedicationContextRouteParams = {
  */
 const SymptomMedicationContext: React.FC = () => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const navigation = useNavigation<any>();
   const route = useRoute<RouteProp<{ params: SymptomMedicationContextRouteParams }, 'params'>>();
   const {
@@ -234,7 +238,7 @@ const SymptomMedicationContext: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: colors.journeys.care.background,
@@ -252,8 +256,8 @@ const styles = StyleSheet.create({
     marginTop: spacingValues.xs,
     borderRadius: spacingValues.xs,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
-    backgroundColor: colors.neutral.white,
+    borderColor: theme.colors.border.default,
+    backgroundColor: theme.colors.background.default,
   },
   medicationItemActive: {
     backgroundColor: colors.journeys.care.primary,
@@ -272,7 +276,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 24,
     borderRadius: 12,
-    backgroundColor: colors.neutral.gray300,
+    backgroundColor: theme.colors.border.default,
     justifyContent: 'center',
     paddingHorizontal: 2,
   },
@@ -283,7 +287,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
   },
   toggleThumbActive: {
     alignSelf: 'flex-end',
@@ -297,13 +301,13 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
+    borderColor: theme.colors.border.default,
     borderRadius: spacingValues.xs,
     paddingVertical: spacingValues.sm,
     paddingHorizontal: spacingValues.sm,
     fontSize: 14,
     color: colors.journeys.care.text,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
   },
   buttonRow: {
     flexDirection: 'row',

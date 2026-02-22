@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'; // react v18.0+
 import { View, Text } from 'react-native'; // react-native version 0.71.0
 import { useRoute, useNavigation } from '@react-navigation/native'; // @react-navigation/native version 6.0+
 import { RouteProp } from '@react-navigation/native';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../design-system/src/themes/base.theme';
 
 import { ROUTES } from '../../constants/routes';
 import { JourneyHeader } from '../../components/shared/JourneyHeader';
@@ -36,6 +38,7 @@ interface MetricDetailRouteParams {
  */
 export const MetricDetailScreen: React.FC = () => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
   // 1. Retrieves the route object using `useRoute` to access the `metricId` parameter.
   const route = useRoute<RouteProp<HealthStackParamList, 'HealthMetricDetail'>>();
   const { metricId } = (route.params ?? {}) as Partial<MetricDetailRouteParams>;
@@ -89,14 +92,14 @@ export const MetricDetailScreen: React.FC = () => {
   // 10. Guard: if no metricId was provided via route params, show an error.
   if (!metricId) {
     return (
-      <View style={{ flex: 1, backgroundColor: colors.neutral.white }}>
+      <View style={{ flex: 1, backgroundColor: theme.colors.background.default }}>
         <JourneyHeader
           title={t('journeys.health.metrics.title')}
           showBackButton
           onBackPress={() => navigation.goBack()}
         />
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ color: colors.gray[50], fontSize: 16 }}>
+          <Text style={{ color: theme.colors.text.muted, fontSize: 16 }}>
             {t('journeys.health.metrics.noSelection')}
           </Text>
         </View>
@@ -136,15 +139,15 @@ export const MetricDetailScreen: React.FC = () => {
   if (loading) {
     return (
       <View style={{ flex: 1, backgroundColor: colors.journeys[journey].background, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ color: colors.gray[50] }}>{t('journeys.health.metrics.loading')}</Text>
+        <Text style={{ color: theme.colors.text.muted }}>{t('journeys.health.metrics.loading')}</Text>
       </View>
     );
   }
 
   // 14. If the selected metric is not found, renders an error message.
   return (
-    <View style={{ flex: 1, backgroundColor: colors.neutral.white, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ color: colors.gray[50], fontSize: 16 }}>{t('journeys.health.metrics.notFound')}</Text>
+    <View style={{ flex: 1, backgroundColor: theme.colors.background.default, justifyContent: 'center', alignItems: 'center' }}>
+      <Text style={{ color: theme.colors.text.muted, fontSize: 16 }}>{t('journeys.health.metrics.notFound')}</Text>
     </View>
   );
 };

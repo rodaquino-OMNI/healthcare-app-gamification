@@ -8,6 +8,8 @@ import { Text } from 'src/web/design-system/src/primitives/Text/Text';
 import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader';
 import { ROUTES } from 'src/web/mobile/src/constants/routes';
 import { colors } from 'src/web/design-system/src/tokens/colors';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from 'src/web/design-system/src/themes/base.theme';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -126,6 +128,8 @@ const DoctorAvailability: React.FC = () => {
   const route = useRoute<any>();
   const { doctorId } = route.params as DoctorAvailabilityRouteParams;
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
 
   const today = new Date();
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
@@ -338,7 +342,7 @@ const DoctorAvailability: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.journeys.care.background,
@@ -407,9 +411,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 8,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderWidth: 1,
-    borderColor: colors.gray[20],
+    borderColor: theme.colors.border.default,
     minWidth: 72,
     alignItems: 'center',
   },
@@ -418,8 +422,8 @@ const styles = StyleSheet.create({
     borderColor: colors.journeys.care.primary,
   },
   slotChipDisabled: {
-    backgroundColor: colors.gray[10],
-    borderColor: colors.gray[20],
+    backgroundColor: theme.colors.background.subtle,
+    borderColor: theme.colors.border.default,
   },
   bottomAction: {
     marginTop: 32,

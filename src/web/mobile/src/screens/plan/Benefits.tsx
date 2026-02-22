@@ -18,6 +18,8 @@ import { spacingValues } from '@web/design-system/src/tokens/spacing';
 import { fontSizeValues } from '@web/design-system/src/tokens/typography';
 import { borderRadiusValues } from '@web/design-system/src/tokens/borderRadius';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '@web/design-system/src/themes/base.theme';
 
 /**
  * Categories for filtering benefits.
@@ -42,6 +44,8 @@ const CATEGORY_TYPE_MAP: Record<BenefitCategory, string | null> = {
  */
 const BenefitsScreen: React.FC = () => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const [benefits, setBenefits] = useState<Benefit[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
@@ -209,7 +213,7 @@ const BenefitsScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.journeys.plan.background,
@@ -224,9 +228,9 @@ const styles = StyleSheet.create({
   filterContainer: {
     paddingVertical: spacingValues.sm,
     paddingHorizontal: spacingValues.md,
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderBottomWidth: 1,
-    borderBottomColor: colors.gray[20],
+    borderBottomColor: theme.colors.border.default,
   },
   filterScroll: {
     gap: spacingValues.xs,
@@ -235,7 +239,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacingValues.xs,
     paddingHorizontal: spacingValues.md,
     borderRadius: borderRadiusValues.full,
-    backgroundColor: colors.gray[10],
+    backgroundColor: theme.colors.background.subtle,
   },
   filterTabActive: {
     backgroundColor: colors.journeys.plan.primary,
@@ -256,7 +260,7 @@ const styles = StyleSheet.create({
     gap: spacingValues.sm,
   },
   benefitCard: {
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
     borderRadius: borderRadiusValues.md,
     padding: spacingValues.md,
     borderLeftWidth: 4,

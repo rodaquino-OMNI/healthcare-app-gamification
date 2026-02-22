@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../design-system/src/themes/base.theme';
 
 import { colors } from 'src/web/design-system/src/tokens/colors';
 import { spacingValues } from 'src/web/design-system/src/tokens/spacing';
@@ -75,6 +77,8 @@ const getTimeRemainingKey = (quest: Quest): { key: string; params?: Record<strin
 const QuestDetail: React.FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation<any>();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const route = useRoute<any>();
   const { questId } = route.params as QuestDetailRouteParams;
 
@@ -267,55 +271,57 @@ const QuestDetail: React.FC = () => {
   );
 };
 
-const cardBase = { backgroundColor: colors.neutral.white, borderRadius: borderRadiusValues.lg, padding: spacingValues.md, marginBottom: spacingValues.sm, shadowColor: colors.neutral.black, shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 2, elevation: 2 } as const;
+const createStyles = (theme: Theme) => {
+  const cardBase = { backgroundColor: theme.colors.background.default, borderRadius: borderRadiusValues.lg, padding: spacingValues.md, marginBottom: spacingValues.sm, shadowColor: colors.neutral.black, shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 2, elevation: 2 } as const;
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.neutral.gray100 },
-  headerBar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacingValues.md, paddingVertical: spacingValues.sm },
-  backButton: { width: sizingValues.component.sm, height: sizingValues.component.sm, alignItems: 'center', justifyContent: 'center' },
-  backArrow: { fontSize: 20, color: colors.neutral.white, fontWeight: '600' },
-  headerTitle: { flex: 1, fontSize: 18, fontWeight: '700', color: colors.neutral.white, textAlign: 'center' },
-  headerSpacer: { width: sizingValues.component.sm },
-  scrollView: { flex: 1 },
-  scrollContent: { padding: spacingValues.md, paddingBottom: spacingValues['5xl'] },
-  heroSection: { alignItems: 'center', marginBottom: spacingValues.lg },
-  iconCircle: { width: 80, height: 80, borderRadius: 40, alignItems: 'center', justifyContent: 'center', marginBottom: spacingValues.sm },
-  heroIcon: { fontSize: 40 },
-  heroTitle: { fontSize: 22, fontWeight: '700', color: colors.neutral.gray800, textAlign: 'center' },
-  journeyBadge: { flexDirection: 'row', alignItems: 'center', marginTop: spacingValues.xs },
-  journeyDot: { width: 8, height: 8, borderRadius: 4, marginRight: spacingValues['3xs'] },
-  journeyLabel: { fontSize: 14, fontWeight: '500' },
-  card: { ...cardBase },
-  cardLabel: { fontSize: 14, fontWeight: '600', color: colors.neutral.gray600, marginBottom: spacingValues.xs, textTransform: 'uppercase', letterSpacing: 0.5 },
-  descriptionText: { fontSize: 15, color: colors.neutral.gray700, lineHeight: 22 },
-  progressBarContainer: { marginBottom: spacingValues.xs },
-  progressBarBg: { height: 10, backgroundColor: colors.neutral.gray300, borderRadius: borderRadiusValues.full, overflow: 'hidden' },
-  progressBarFill: { height: 10, borderRadius: borderRadiusValues.full },
-  progressDetails: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  progressNumbers: { fontSize: 14, color: colors.neutral.gray600 },
-  progressPercent: { fontSize: 16, fontWeight: '700' },
-  requirementRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: spacingValues.xs },
-  requirementCircle: { width: 22, height: 22, borderRadius: 11, borderWidth: 2, borderColor: colors.neutral.gray400, alignItems: 'center', justifyContent: 'center', marginRight: spacingValues.sm },
-  requirementCheck: { fontSize: 12, fontWeight: '700', color: colors.neutral.white },
-  requirementLabel: { fontSize: 14, color: colors.neutral.gray700, flex: 1 },
-  requirementCompleted: { textDecorationLine: 'line-through', color: colors.neutral.gray500 },
-  rewardCard: { borderLeftWidth: 3, borderLeftColor: colors.semantic.success },
-  rewardContent: { flexDirection: 'row', alignItems: 'center' },
-  rewardIcon: { fontSize: 32, marginRight: spacingValues.sm },
-  rewardInfo: { flex: 1 },
-  rewardXP: { fontSize: 20, fontWeight: '700', color: colors.neutral.gray800 },
-  rewardDescription: { fontSize: 13, color: colors.neutral.gray500, marginTop: spacingValues['4xs'] },
-  timeContainer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: spacingValues.sm, marginBottom: spacingValues.sm },
-  timeIcon: { fontSize: 16, marginRight: spacingValues.xs },
-  timeText: { fontSize: 14, fontWeight: '500', color: colors.neutral.gray600 },
-  actionButton: { borderRadius: borderRadiusValues.md, paddingVertical: spacingValues.sm, alignItems: 'center', marginBottom: spacingValues.sm },
-  actionButtonText: { fontSize: 16, fontWeight: '700', color: colors.neutral.white },
-  shareButton: { borderRadius: borderRadiusValues.md, paddingVertical: spacingValues.sm, alignItems: 'center', borderWidth: 1, borderColor: colors.neutral.gray300, marginBottom: spacingValues.md },
-  shareButtonText: { fontSize: 16, fontWeight: '600' },
-  errorContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacingValues['2xl'] },
-  errorText: { fontSize: 18, fontWeight: '600', color: colors.neutral.gray700, marginBottom: spacingValues.md },
-  errorButton: { backgroundColor: colors.brand.primary, borderRadius: borderRadiusValues.md, paddingVertical: spacingValues.sm, paddingHorizontal: spacingValues['2xl'] },
-  errorButtonText: { fontSize: 16, fontWeight: '600', color: colors.neutral.white },
-});
+  return StyleSheet.create({
+    container: { flex: 1, backgroundColor: theme.colors.background.subtle },
+    headerBar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacingValues.md, paddingVertical: spacingValues.sm },
+    backButton: { width: sizingValues.component.sm, height: sizingValues.component.sm, alignItems: 'center', justifyContent: 'center' },
+    backArrow: { fontSize: 20, color: theme.colors.text.onBrand, fontWeight: '600' },
+    headerTitle: { flex: 1, fontSize: 18, fontWeight: '700', color: theme.colors.text.onBrand, textAlign: 'center' },
+    headerSpacer: { width: sizingValues.component.sm },
+    scrollView: { flex: 1 },
+    scrollContent: { padding: spacingValues.md, paddingBottom: spacingValues['5xl'] },
+    heroSection: { alignItems: 'center', marginBottom: spacingValues.lg },
+    iconCircle: { width: 80, height: 80, borderRadius: 40, alignItems: 'center', justifyContent: 'center', marginBottom: spacingValues.sm },
+    heroIcon: { fontSize: 40 },
+    heroTitle: { fontSize: 22, fontWeight: '700', color: theme.colors.text.default, textAlign: 'center' },
+    journeyBadge: { flexDirection: 'row', alignItems: 'center', marginTop: spacingValues.xs },
+    journeyDot: { width: 8, height: 8, borderRadius: 4, marginRight: spacingValues['3xs'] },
+    journeyLabel: { fontSize: 14, fontWeight: '500' },
+    card: { ...cardBase },
+    cardLabel: { fontSize: 14, fontWeight: '600', color: theme.colors.text.muted, marginBottom: spacingValues.xs, textTransform: 'uppercase', letterSpacing: 0.5 },
+    descriptionText: { fontSize: 15, color: theme.colors.text.default, lineHeight: 22 },
+    progressBarContainer: { marginBottom: spacingValues.xs },
+    progressBarBg: { height: 10, backgroundColor: theme.colors.background.subtle, borderRadius: borderRadiusValues.full, overflow: 'hidden' },
+    progressBarFill: { height: 10, borderRadius: borderRadiusValues.full },
+    progressDetails: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+    progressNumbers: { fontSize: 14, color: theme.colors.text.muted },
+    progressPercent: { fontSize: 16, fontWeight: '700' },
+    requirementRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: spacingValues.xs },
+    requirementCircle: { width: 22, height: 22, borderRadius: 11, borderWidth: 2, borderColor: colors.neutral.gray400, alignItems: 'center', justifyContent: 'center', marginRight: spacingValues.sm },
+    requirementCheck: { fontSize: 12, fontWeight: '700', color: theme.colors.text.onBrand },
+    requirementLabel: { fontSize: 14, color: theme.colors.text.default, flex: 1 },
+    requirementCompleted: { textDecorationLine: 'line-through', color: theme.colors.text.muted },
+    rewardCard: { borderLeftWidth: 3, borderLeftColor: colors.semantic.success },
+    rewardContent: { flexDirection: 'row', alignItems: 'center' },
+    rewardIcon: { fontSize: 32, marginRight: spacingValues.sm },
+    rewardInfo: { flex: 1 },
+    rewardXP: { fontSize: 20, fontWeight: '700', color: theme.colors.text.default },
+    rewardDescription: { fontSize: 13, color: theme.colors.text.muted, marginTop: spacingValues['4xs'] },
+    timeContainer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: spacingValues.sm, marginBottom: spacingValues.sm },
+    timeIcon: { fontSize: 16, marginRight: spacingValues.xs },
+    timeText: { fontSize: 14, fontWeight: '500', color: theme.colors.text.muted },
+    actionButton: { borderRadius: borderRadiusValues.md, paddingVertical: spacingValues.sm, alignItems: 'center', marginBottom: spacingValues.sm },
+    actionButtonText: { fontSize: 16, fontWeight: '700', color: theme.colors.text.onBrand },
+    shareButton: { borderRadius: borderRadiusValues.md, paddingVertical: spacingValues.sm, alignItems: 'center', borderWidth: 1, borderColor: theme.colors.border.default, marginBottom: spacingValues.md },
+    shareButtonText: { fontSize: 16, fontWeight: '600' },
+    errorContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacingValues['2xl'] },
+    errorText: { fontSize: 18, fontWeight: '600', color: theme.colors.text.default, marginBottom: spacingValues.md },
+    errorButton: { backgroundColor: colors.brand.primary, borderRadius: borderRadiusValues.md, paddingVertical: spacingValues.sm, paddingHorizontal: spacingValues['2xl'] },
+    errorButtonText: { fontSize: 16, fontWeight: '600', color: theme.colors.text.onBrand },
+  });
+};
 
 export default QuestDetail;

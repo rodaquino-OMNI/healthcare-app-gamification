@@ -9,6 +9,8 @@ import { Button } from '@austa/design-system/src/components/Button/Button';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { borderRadiusValues } from '@austa/design-system/src/tokens/borderRadius';
+import { useTheme } from 'styled-components/native';
+import type { Theme } from '../../../../../design-system/src/themes/base.theme';
 
 interface StepProps {
   data: Record<string, any>;
@@ -30,6 +32,8 @@ const createEmptyEntry = (): MedicationEntry => ({ name: '', dosage: '', frequen
  */
 export const StepMedications: React.FC<StepProps> = ({ data, onUpdate }) => {
   const { t } = useTranslation();
+  const theme = useTheme() as Theme;
+  const styles = createStyles(theme);
   const takesMedications: boolean = data.takesMedications || false;
   const medicationList: MedicationEntry[] = data.list || [];
 
@@ -177,7 +181,7 @@ export const StepMedications: React.FC<StepProps> = ({ data, onUpdate }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     paddingTop: spacingValues.xl,
   },
@@ -195,9 +199,9 @@ const styles = StyleSheet.create({
     paddingVertical: spacingValues.md,
     borderRadius: borderRadiusValues.md,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
+    borderColor: theme.colors.border.default,
     alignItems: 'center',
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
   },
   toggleOptionActive: {
     backgroundColor: colors.journeys.health.primary,
@@ -217,13 +221,13 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
+    borderColor: theme.colors.border.default,
     borderRadius: borderRadiusValues.md,
     paddingHorizontal: spacingValues.md,
     paddingVertical: spacingValues.sm,
     fontSize: 16,
-    color: colors.neutral.gray900,
-    backgroundColor: colors.neutral.white,
+    color: theme.colors.text.default,
+    backgroundColor: theme.colors.background.default,
   },
   frequencyRow: {
     flexDirection: 'row',
@@ -234,9 +238,9 @@ const styles = StyleSheet.create({
     paddingVertical: spacingValues.xs,
     borderRadius: borderRadiusValues.full,
     borderWidth: 1,
-    borderColor: colors.neutral.gray300,
+    borderColor: theme.colors.border.default,
     alignItems: 'center',
-    backgroundColor: colors.neutral.white,
+    backgroundColor: theme.colors.background.default,
   },
   freqPillActive: {
     backgroundColor: colors.journeys.health.primary,

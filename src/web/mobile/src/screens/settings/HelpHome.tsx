@@ -15,7 +15,7 @@ import { sizing } from '../../../../design-system/src/tokens/sizing';
 
 const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const Header = styled.View`
@@ -28,14 +28,14 @@ const Title = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['text-2xl']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: ${spacing.lg};
 `;
 
 const SearchContainer = styled.View`
   flex-direction: row;
   align-items: center;
-  background-color: ${colors.gray[10]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   border-radius: ${borderRadius.lg};
   padding-horizontal: ${spacing.md};
   height: ${sizing.component.md};
@@ -43,7 +43,7 @@ const SearchContainer = styled.View`
 
 const SearchIcon = styled.Text`
   font-size: ${typography.fontSize['text-lg']};
-  color: ${colors.gray[40]};
+  color: ${({ theme }) => theme.colors.text.subtle};
   margin-right: ${spacing.sm};
 `;
 
@@ -51,7 +51,7 @@ const SearchInput = styled(RNTextInput)`
   flex: 1;
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-md']};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   padding-vertical: 0;
 `;
 
@@ -66,11 +66,11 @@ const CategoryCard = styled.TouchableOpacity`
   width: 48%;
   margin-bottom: ${spacing.md};
   margin-right: 4%;
-  background-color: ${colors.neutral.white};
+  background-color: ${({ theme }) => theme.colors.background.default};
   border-radius: ${borderRadius.lg};
   padding: ${spacing.lg};
   border-width: 1px;
-  border-color: ${colors.gray[10]};
+  border-color: ${({ theme }) => theme.colors.border.muted};
   shadow-color: ${colors.neutral.black};
   shadow-offset: 0px 1px;
   shadow-opacity: 0.05;
@@ -91,21 +91,21 @@ const CategoryIconContainer = styled.View<{ bgColor: string }>`
 const CategoryIconText = styled.Text`
   font-size: ${typography.fontSize['text-xl']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.neutral.white};
+  color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const CategoryTitle = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.neutral.gray900};
+  color: ${({ theme }) => theme.colors.text.default};
   margin-bottom: 2px;
 `;
 
 const CategorySubtitle = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-xs']};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
 `;
 
 const QuickLinksSection = styled.View`
@@ -118,7 +118,7 @@ const QuickLinksTitle = styled.Text`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
   font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.gray[50]};
+  color: ${({ theme }) => theme.colors.text.muted};
   text-transform: uppercase;
   letter-spacing: ${typography.letterSpacing.wide};
   margin-bottom: ${spacing.md};
