@@ -109,10 +109,16 @@ const Input: React.FC<InputProps> = ({
   error,
   helperText,
 }) => {
+  const inputId = testID || `input-${label?.toLowerCase().replace(/\s+/g, '-') || 'field'}`;
+  const errorId = error ? `${inputId}-error` : undefined;
+  const helperId = helperText && !error ? `${inputId}-helper` : undefined;
+  const describedBy = [errorId, helperId].filter(Boolean).join(' ') || undefined;
+
   return (
     <InputContainer>
-      {label && <InputLabel>{label}</InputLabel>}
+      {label && <InputLabel htmlFor={inputId}>{label}</InputLabel>}
       <InputField
+        id={inputId}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
@@ -123,10 +129,12 @@ const Input: React.FC<InputProps> = ({
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
         aria-invalid={!!error}
+        aria-describedby={describedBy}
         style={error ? { borderColor: colors.semantic.error } : undefined}
       />
       {error && (
         <span
+          id={errorId}
           role="alert"
           style={{
             color: colors.semantic.error,
@@ -140,6 +148,7 @@ const Input: React.FC<InputProps> = ({
       )}
       {!error && helperText && (
         <span
+          id={helperId}
           style={{
             color: colors.gray[50],
             fontSize: '12px',

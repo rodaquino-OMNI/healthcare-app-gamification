@@ -70,7 +70,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
             >
               {item.label}
             </BreadcrumbLink>
-            {!isLast && <Separator data-testid="breadcrumb-separator">{separator}</Separator>}
+            {!isLast && <Separator aria-hidden="true" data-testid="breadcrumb-separator">{separator}</Separator>}
           </React.Fragment>
         );
       })}

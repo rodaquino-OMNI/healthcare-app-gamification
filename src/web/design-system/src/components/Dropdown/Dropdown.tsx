@@ -170,7 +170,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         ) : (
           <Placeholder>{placeholder}</Placeholder>
         )}
-        <Arrow isOpen={isOpen}>&#9660;</Arrow>
+        <Arrow isOpen={isOpen} aria-hidden="true">&#9660;</Arrow>
       </DropdownTrigger>
       {isOpen && (
         <DropdownMenu role="listbox" data-testid="dropdown-menu">
@@ -181,6 +181,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search..."
               autoFocus
+              aria-label="Search options"
               data-testid="dropdown-search"
             />
           )}

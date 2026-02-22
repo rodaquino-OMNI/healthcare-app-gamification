@@ -147,6 +147,7 @@ export const Stepper: React.FC<StepperProps> = ({
                 completed={index < activeStep}
                 orientation={orientation}
                 journey={journey}
+                aria-hidden="true"
                 data-testid={`step-connector-${index}`}
               />
             )}

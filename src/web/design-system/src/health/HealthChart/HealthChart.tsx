@@ -103,50 +103,59 @@ export const HealthChart: React.FC<HealthChartProps> = ({
     );
   }
   
+  // Build accessible description
+  const chartDescription = `${type} chart showing ${yAxisLabel || 'data'} over ${xAxisLabel || 'time'}`;
+
   // Render the appropriate chart based on type
   switch (type) {
     case 'line':
       return (
-        <LineChartComponent
-          data={data}
-          xAxisKey={xAxisKey}
-          yAxisKey={yAxisKey}
-          xAxisLabel={xAxisLabel}
-          yAxisLabel={yAxisLabel}
-          lineColor={lineColor}
-          journey={journey}
-        />
+        <Box role="figure" aria-label={chartDescription}>
+          <LineChartComponent
+            data={data}
+            xAxisKey={xAxisKey}
+            yAxisKey={yAxisKey}
+            xAxisLabel={xAxisLabel}
+            yAxisLabel={yAxisLabel}
+            lineColor={lineColor}
+            journey={journey}
+          />
+        </Box>
       );
-      
+
     case 'bar':
       // Transform data for BarChart
       const values = data.map(item => Number(item[yAxisKey]));
       const labels = data.map(item => String(item[xAxisKey]));
       const journeyColor = colors.journeys[journey].primary;
-      
+
       return (
-        <BarChart
-          data={values}
-          labels={labels}
-          colors={[lineColor || journeyColor]}
-          journey={journey}
-          title={`${yAxisLabel || 'Value'} by ${xAxisLabel || 'Category'}`}
-        />
+        <Box role="figure" aria-label={chartDescription}>
+          <BarChart
+            data={values}
+            labels={labels}
+            colors={[lineColor || journeyColor]}
+            journey={journey}
+            title={`${yAxisLabel || 'Value'} by ${xAxisLabel || 'Category'}`}
+          />
+        </Box>
       );
-      
+
     case 'radial':
       // Transform data for RadialChart
       const pieData = data.map(item => ({
         x: String(item[xAxisKey]),
         y: Number(item[yAxisKey])
       }));
-      
+
       return (
-        <RadialChart
-          data={pieData}
-          journey={journey}
-          labelType="percentage"
-        />
+        <Box role="figure" aria-label={chartDescription}>
+          <RadialChart
+            data={pieData}
+            journey={journey}
+            labelType="percentage"
+          />
+        </Box>
       );
       
     default:

@@ -1248,3 +1248,330 @@ prior_session_state:
   if_daemon_stopped: |
     npx @claude-flow/cli@latest daemon start
     npx @claude-flow/cli@latest hooks worker dispatch --trigger map
+
+# =============================================================================
+# CURRENT STATE — Post-Reconciliation (2026-02-21)
+# =============================================================================
+current_state:
+  date: "2026-02-21"
+  phase: "Figma reconciliation COMPLETE — transitioning to production readiness"
+
+  frontend_complete:
+    mobile_screens: 249
+    web_pages: 237
+    navigators: 8
+    ds_components: 57
+    ds_test_files: 49
+    storybook_stories: 0
+    mobile_tests: 0
+    web_tests: 0
+    i18n_coverage: "100% (pt-BR + en-US)"
+    dark_mode: "complete (161 files fixed in W18)"
+    hardcoded_hex: 0
+    files_over_500L: 0
+
+  reconciliation_waves:
+    v1_0:
+      waves: "W1-W14"
+      gate: "PASSED 2026-02-21"
+      deliverables: "207 mobile screens, 195 web pages, 8 navigators"
+    v1_1:
+      waves: "W15-W18"
+      gate: "PASSED 2026-02-21"
+      deliverables:
+        W15_W16: "Health Assessment wizard (54 files, 26-step flow)"
+        W17: "AI Wellness Companion (30 files)"
+        W18: "Dark Mode QA (161 files fixed)"
+    td1:
+      desc: "Tech debt sprint"
+      deliverables: "7 file splits (<500L), 40+ hex removed, 199/199 i18n wired"
+
+  backend_state:
+    prisma_models: 3                    # AuditLog, Plan, Claim — CRITICAL GAP
+    typeorm_services: 3                 # gamification-engine, notification-service, care-service partial
+    dockerfiles: 0                      # CRITICAL — cannot deploy
+    ci_services_deployed: 3             # of 7 total
+    test_coverage_pct: 8.6
+    spec_files: 9
+    lgpd_compliance_pct: 0              # R$50M fine risk
+    validation_pipe_services: 3         # of 7 (missing in 4)
+    cors_configured_services: 3         # of 7 (missing in 4)
+    health_check_endpoints: 0           # K8s probes will fail
+
+  memory_keys:
+    total: 136
+    namespace: "healthcare-platform"
+    key_milestones:
+      - "v1.0-launch-gate-passed"
+      - "v1.1-complete"
+      - "forward-path-plan-v2"
+      - "b1-scope"
+      - "f1-scope"
+
+  known_blockers:
+    - id: BLOCK-001
+      desc: "Prisma schema has 3 models, needs 18+ for real data"
+      phase: B1
+      severity: CRITICAL
+    - id: BLOCK-002
+      desc: "Dual ORM (TypeORM + Prisma) — PHI encryption only covers Prisma entities"
+      phase: B1
+      severity: CRITICAL
+    - id: BLOCK-003
+      desc: "LGPD 0% — no consent module, no DSR endpoints, no DPO"
+      phase: B2
+      severity: CRITICAL
+    - id: BLOCK-004
+      desc: "0 Dockerfiles — cannot containerize or deploy"
+      phase: B4
+      severity: CRITICAL
+    - id: BLOCK-005
+      desc: "TanStack Query v4/v5 split between mobile and web"
+      phase: F1
+      severity: HIGH
+    - id: BLOCK-006
+      desc: "0% test coverage on mobile and web"
+      phase: F2
+      severity: HIGH
+
+# =============================================================================
+# FORWARD PATH PLAN — Production Readiness (Approved 2026-02-21)
+# =============================================================================
+forward_path:
+  plan_ref: "Stored in claude-flow memory key: forward-path-plan-v2"
+  plan_file: ".claude/plans/rustling-imagining-stream.md"
+  approved: "2026-02-21"
+  total_effort: "290-350h P0 (launch-blocking)"
+
+  priority_matrix:
+    p0_launch_blocking:
+      count: 12
+      effort: "290-350h (8-10 weeks with swarm parallelization)"
+      items:
+        - "B1: Prisma schema expansion (3→18+ models) + ORM consolidation (60-80h)"
+        - "B2: LGPD consent module + DSR endpoints (60-80h)"
+        - "B3: ValidationPipe + CORS + health checks for all 7 services (16-24h)"
+        - "B4: 7 Dockerfiles + CI/CD fix (24-32h)"
+        - "B5: Backend smoke tests (24h)"
+        - "F1: TanStack v4→v5 + accessibility WCAG AA (30h)"
+        - "F2: Frontend test infrastructure + smoke tests (26h)"
+        - "F6: Staging environment (12h)"
+    p1_post_launch:
+      count: 7
+      effort: "228h (within 30 days)"
+      items:
+        - "Full backend test suite (40% coverage)"
+        - "Full mobile test suite (20% coverage)"
+        - "Web page tests (15% coverage)"
+        - "Storybook + visual regression"
+        - "Production deployment strategy"
+        - "EAS Build (mobile)"
+        - "Remaining frontend polish"
+    p2_v2:
+      count: 4
+      effort: "100h (90+ days)"
+      items:
+        - "Module 09: Health Records (8 screens)"
+        - "Module 11: Digital Insurance Card (3 screens)"
+        - "Modules 10, 12, 16 (12 screens, needs backend)"
+        - "App Store submissions"
+
+  execution_order:
+    week_1_2:
+      parallel:
+        - phase: B1
+          desc: "Database Foundation — Prisma expansion + ORM consolidation"
+          workers: 5
+          topology: hierarchical
+          est: "60-80h"
+          critical_path: true
+        - phase: F1
+          desc: "Frontend Polish — TanStack v5, accessibility, file splits"
+          workers: 4
+          topology: hierarchical
+          est: "30h"
+    week_3_4:
+      parallel:
+        - phase: B2
+          desc: "LGPD/Security hardening"
+          depends_on: B1
+        - phase: B3
+          desc: "Service hardening (validation, CORS, health checks)"
+          depends_on: B1
+        - phase: F2.1
+          desc: "Test infrastructure setup"
+    week_5_6:
+      parallel:
+        - phase: B4
+          desc: "Containerization (Dockerfiles + CI)"
+          depends_on: B3
+        - phase: B5
+          desc: "Backend testing (starts during B4)"
+          depends_on: B1
+        - phase: "F2.2-F2.4"
+          desc: "Frontend tests (parallel)"
+    week_7_8:
+      parallel:
+        - phase: F6
+          desc: "Deployment pipeline (staging + production)"
+          depends_on: B4
+        - phase: B5
+          desc: "Integration tests (continued)"
+    week_9_10:
+      desc: "Launch validation sprint — E2E smoke tests + penetration testing"
+
+  dependency_chain: |
+    B1 (Database) ←← START HERE
+      ├──→ B2 (LGPD/Security)
+      ├──→ B3 (Service Hardening)
+      │     └──→ B4 (Containerization)
+      │           └──→ F6 (Deployment)
+      └──→ B5 (Testing)
+
+    F1 (Frontend Polish) ←← START HERE (parallel with B1)
+      └──→ F2 (Frontend Tests)
+            └──→ F5 (Mobile Build)
+
+    F3 (Storybook) ←← independent, any time
+
+  phase_details:
+    B1:
+      name: "Database Foundation"
+      key_files:
+        - "src/backend/shared/prisma/schema.prisma"
+        - "src/backend/shared/src/database/prisma.mock.ts"
+        - "src/backend/gamification-engine/src/app.module.ts"
+        - "src/backend/notification-service/src/app.module.ts"
+      models_to_add:
+        - "User, Role, Permission (auth)"
+        - "HealthMetric, HealthGoal, DeviceConnection, MedicalEvent (health)"
+        - "Appointment, Provider, Medication, TreatmentPlan, TelemedicineSession (care)"
+        - "Document, Benefit, Coverage (plan)"
+        - "ConsentRecord (LGPD), Notification, NotificationTemplate (notification)"
+      migration_order:
+        1: "notification-service (4 entities, 8-10h)"
+        2: "gamification-engine (8 entities, 12-16h)"
+        3: "care-service (2 entities, 4-6h)"
+        4: "health-service (2 entities, 4-6h)"
+        5: "auth-service (cleanup, 2-4h)"
+      exit_gates:
+        - "0 occurrences of 'from typeorm' in source"
+        - "18+ models in schema.prisma"
+        - "All 9 existing tests pass"
+        - "All services boot with PrismaService only"
+
+    B2:
+      name: "Security Hardening (LGPD + FHIR + PHI)"
+      key_deliverables:
+        - "src/backend/shared/src/consent/ (module, service, guard, controller)"
+        - "src/backend/shared/src/privacy/ (DSR endpoints: export, delete, rectify)"
+        - "PHI encryption expansion to all migrated entities"
+      lgpd_endpoints:
+        - "GET /api/privacy/my-data (Art. 18-II)"
+        - "GET /api/privacy/export (Art. 18-V, FHIR R4 Bundle)"
+        - "DELETE /api/privacy/my-data (Art. 18-VI)"
+        - "PATCH /api/privacy/my-data (Art. 18-III)"
+        - "GET/POST/DELETE /api/privacy/consents"
+
+    B3:
+      name: "Service Hardening"
+      key_deliverables:
+        - "ValidationPipe added to 4 missing services"
+        - "CORS configured for 4 missing services"
+        - "GET /health and GET /health/ready for all 7 services"
+        - "Port normalization across code, docker-compose, K8s"
+
+    B4:
+      name: "Containerization"
+      key_deliverables:
+        - "7 multi-stage Dockerfiles (node:20-alpine)"
+        - "Fixed docker-compose.yml"
+        - "Fixed K8s manifests (ports, probes)"
+        - "CI/CD deploying all 7 services"
+
+  swarm_spawn_pattern: |
+    Every phase follows ADR-013 standard workflow:
+    1. hooks pre-task → register task
+    2. memory store → store scope
+    3. hive-mind spawn --claude → display command for user
+    4. Wait for user notification
+    5. Verify outputs (grep, wc, find)
+    6. hooks post-task → record completion
+    7. neural train → if significant patterns
+    8. memory store → store completion key
+
+  b1_spawn_command: |
+    npx @claude-flow/cli@latest hive-mind spawn \
+      --workers 5 \
+      --topology hierarchical \
+      --consensus byzantine \
+      --claude \
+      --model-routing intelligent \
+      --namespace healthcare-platform \
+      --use-memory --use-patterns --use-vectors --use-learning \
+      --objective "
+    QUEEN ROLE: You are Queen (coordinator/architect). You MUST NOT write code directly.
+    Spawn as many specialized agents as needed. Use full power of claude-flow as detailed
+    on docs/prompts/013-agent-guide.yaml (sections 10 to 16).
+
+    SWARM B1: Database Foundation — Prisma Schema Expansion + ORM Consolidation
+    WORKSPACE: /Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7
+
+    ANTI-PATTERNS:
+    AP1-AP7 (see 013-agent-guide.yaml section 11)
+
+    PHASE 1 — RECON: Catalog all TypeORM entities across 7 services
+    PHASE 2 — SCHEMA: Expand schema.prisma from 3 to 18+ models
+    PHASE 3 — MIGRATE: 3 parallel agents migrating services to Prisma
+    PHASE 4 — VERIFY: 0 TypeORM imports, migrations pass, tests pass
+    "
+
+  f1_spawn_command: |
+    npx @claude-flow/cli@latest hive-mind spawn \
+      --workers 4 \
+      --topology hierarchical \
+      --consensus byzantine \
+      --claude \
+      --model-routing intelligent \
+      --namespace healthcare-platform \
+      --use-memory --use-patterns --use-vectors --use-learning \
+      --objective "
+    QUEEN ROLE: You are Queen (coordinator/architect). You MUST NOT write code directly.
+    Spawn as many specialized agents as needed.
+
+    SWARM F1: Frontend Polish
+    WORKSPACE: /Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7
+
+    ANTI-PATTERNS:
+    AP1-AP7 (see 013-agent-guide.yaml section 11)
+
+    F1.1: Split ClaimDetail.tsx (506L) + QuestList.tsx (505L)
+    F1.2: Fix 5 hardcoded hex in ThemeSelect.tsx lines 32-36
+    F1.3: TanStack Query v4→v5 (mobile + shared packages)
+    F1.4: Accessibility WCAG AA on 57 DS components
+    F1.5: Shared routes consolidation
+    "
+
+# =============================================================================
+# VERIFICATION STRATEGY (Post Forward Path)
+# =============================================================================
+verification_gates:
+  per_phase:
+    B1: "grep -rn \"from 'typeorm'\" src/backend/ → 0 results"
+    B2: "curl -X POST /api/privacy/consents → 201"
+    B3: "curl /health per service → 7x 200 OK"
+    B4: "docker-compose build → 0 errors"
+    B5: "npm test --coverage → >= 30%"
+    F1: "grep 'react-query.*4' src/web/mobile/package.json → 0"
+    F2: "yarn test in mobile → >= 40 test files"
+    F6: "curl staging.austa.com.br/api/health → 200"
+
+  e2e_smoke_test:
+    - "Auth: Register → Login → JWT → Protected → Refresh → Logout"
+    - "Consent: No consent → 403 → Grant → Success"
+    - "Health: Record metric → Retrieve → Insights → Verify encryption"
+    - "Care: Find provider → Book → Telemedicine"
+    - "Plan: View → Coverage → Claim → Track"
+    - "Gamification: Goal → Achievement → XP → Leaderboard"
+    - "LGPD: Export → Verify → Delete → Verify purge"
+    - "Dark mode: Toggle → All screens render"

@@ -17,11 +17,12 @@ import { formatDate } from 'src/web/shared/utils/format';
 import {
   colors,
   typography,
-  spacing,
-  borderRadius,
 } from '@web/design-system/src/tokens';
 import { useTheme } from 'styled-components/native';
 import type { Theme } from '@web/design-system/src/themes/base.theme';
+
+import { ClaimStatusTimeline } from './ClaimStatusTimeline';
+import { ClaimDocuments } from './ClaimDocuments';
 
 const { plan } = colors.journeys;
 const sp = { xs: 8, sm: 12, md: 16, lg: 20, xl: 24, '2xl': 32 };
@@ -40,29 +41,6 @@ const TYPE_LABELS: Record<string, string> = {
   prescription: 'Receita',
   other: 'Outro',
 };
-
-// Timeline step definitions
-const TIMELINE_STEPS = [
-  { key: 'submitted', label: 'Enviado' },
-  { key: 'under_review', label: 'Em Analise' },
-  { key: 'approved', label: 'Aprovado' },
-  { key: 'paid', label: 'Pago' },
-];
-
-function getTimelineProgress(status: ClaimStatus): number {
-  switch (status) {
-    case 'pending':
-      return 1; // Submitted only
-    case 'additional_info_required':
-      return 1;
-    case 'approved':
-      return 3; // Submitted + Under Review + Approved
-    case 'denied':
-      return 2; // Submitted + Under Review (denied at review)
-    default:
-      return 0;
-  }
-}
 
 /**
  * Renders the Claim Detail screen displaying information about a specific claim.
@@ -113,7 +91,6 @@ export const ClaimDetail: React.FC = () => {
   }
 
   const statusConfig = STATUS_CONFIG[claim.status];
-  const timelineProgress = getTimelineProgress(claim.status);
   const formattedDate = formatDate(claim.submittedAt, 'dd/MM/yyyy');
   const isDenied = claim.status === 'denied';
 
@@ -136,59 +113,12 @@ export const ClaimDetail: React.FC = () => {
       </View>
 
       {/* Progress Timeline */}
-      <View style={styles.timelineCard}>
-        <Text style={styles.sectionTitle}>{t('journeys.plan.claims.timeline')}</Text>
-        {TIMELINE_STEPS.map((step, index) => {
-          const isCompleted = index < timelineProgress;
-          const isCurrent = index === timelineProgress - 1;
-          const isDeniedStep = isDenied && index === 1;
-          const isLast = index === TIMELINE_STEPS.length - 1;
-
-          let circleColor = colors.gray[30];
-          if (isCompleted) circleColor = plan.primary;
-          if (isDeniedStep) circleColor = colors.semantic.error;
-
-          return (
-            <View key={step.key} style={styles.timelineStep}>
-              <View style={styles.timelineLeft}>
-                <View
-                  style={[
-                    styles.timelineCircle,
-                    { backgroundColor: circleColor },
-                    isCurrent && styles.timelineCircleCurrent,
-                  ]}
-                >
-                  {isCompleted && (
-                    <Text style={styles.timelineCheck}>{'\u2713'}</Text>
-                  )}
-                </View>
-                {!isLast && (
-                  <View
-                    style={[
-                      styles.timelineLine,
-                      { backgroundColor: isCompleted && index < timelineProgress - 1 ? plan.primary : colors.gray[20] },
-                    ]}
-                  />
-                )}
-              </View>
-              <View style={styles.timelineContent}>
-                <Text
-                  style={[
-                    styles.timelineLabel,
-                    isCompleted && styles.timelineLabelCompleted,
-                    isDeniedStep && styles.timelineLabelDenied,
-                  ]}
-                >
-                  {isDeniedStep ? 'Negado' : step.label}
-                </Text>
-                {isCompleted && (
-                  <Text style={styles.timelineDate}>{formattedDate}</Text>
-                )}
-              </View>
-            </View>
-          );
-        })}
-      </View>
+      <ClaimStatusTimeline
+        status={claim.status}
+        sectionTitle={t('journeys.plan.claims.timeline')}
+        formattedDate={formattedDate}
+        theme={theme}
+      />
 
       {/* Details Section */}
       <View style={styles.detailsCard}>
@@ -211,17 +141,11 @@ export const ClaimDetail: React.FC = () => {
         </View>
 
         {/* Documents */}
-        {claim.documents && claim.documents.length > 0 && (
-          <>
-            <Text style={[styles.sectionTitle, { marginTop: sp.md }]}>{t('journeys.plan.claims.documents')}</Text>
-            {claim.documents.map((doc, idx) => (
-              <View key={doc.id || idx} style={styles.documentRow}>
-                <Text style={styles.documentIcon}>{'\u{1F4C4}'}</Text>
-                <Text style={styles.documentName}>{doc.type}</Text>
-              </View>
-            ))}
-          </>
-        )}
+        <ClaimDocuments
+          documents={claim.documents}
+          sectionTitle={t('journeys.plan.claims.documents')}
+          theme={theme}
+        />
       </View>
 
       {/* Action Buttons */}
@@ -295,7 +219,6 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     fontSize: 48,
     marginBottom: sp.md,
   },
-  // Header card
   headerCard: {
     backgroundColor: theme.colors.background.default,
     margin: sp.md,
@@ -341,19 +264,6 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     fontFamily: typography.fontFamily.body,
     color: colors.gray[40],
   },
-  // Timeline
-  timelineCard: {
-    backgroundColor: theme.colors.background.default,
-    marginHorizontal: sp.md,
-    marginBottom: sp.md,
-    borderRadius: 8,
-    padding: sp.lg,
-    shadowColor: colors.neutral.black,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 3,
-    elevation: 1,
-  },
   sectionTitle: {
     fontSize: 18,
     fontWeight: typography.fontWeight.semiBold as any,
@@ -361,60 +271,6 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     color: plan.text,
     marginBottom: sp.md,
   },
-  timelineStep: {
-    flexDirection: 'row',
-    minHeight: 56,
-  },
-  timelineLeft: {
-    alignItems: 'center',
-    width: 32,
-    marginRight: sp.sm,
-  },
-  timelineCircle: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  timelineCircleCurrent: {
-    borderWidth: 3,
-    borderColor: plan.secondary,
-  },
-  timelineCheck: {
-    fontSize: 12,
-    color: colors.neutral.white,
-    fontWeight: typography.fontWeight.bold as any,
-  },
-  timelineLine: {
-    width: 2,
-    flex: 1,
-    marginVertical: 4,
-  },
-  timelineContent: {
-    flex: 1,
-    paddingBottom: sp.md,
-  },
-  timelineLabel: {
-    fontSize: 14,
-    fontWeight: typography.fontWeight.medium as any,
-    fontFamily: typography.fontFamily.body,
-    color: colors.gray[40],
-  },
-  timelineLabelCompleted: {
-    color: plan.text,
-    fontWeight: typography.fontWeight.semiBold as any,
-  },
-  timelineLabelDenied: {
-    color: colors.semantic.error,
-  },
-  timelineDate: {
-    fontSize: 12,
-    fontFamily: typography.fontFamily.body,
-    color: colors.gray[40],
-    marginTop: 2,
-  },
-  // Details
   detailsCard: {
     backgroundColor: theme.colors.background.default,
     marginHorizontal: sp.md,
@@ -445,21 +301,6 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     fontFamily: typography.fontFamily.body,
     color: plan.text,
   },
-  documentRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: sp.xs,
-  },
-  documentIcon: {
-    fontSize: 16,
-    marginRight: sp.xs,
-  },
-  documentName: {
-    fontSize: 14,
-    fontFamily: typography.fontFamily.body,
-    color: plan.primary,
-  },
-  // Actions
   actionContainer: {
     paddingHorizontal: sp.md,
     gap: sp.sm,

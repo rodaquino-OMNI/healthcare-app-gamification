@@ -62,8 +62,8 @@ export const RadialChart: React.FC<RadialChartProps> = ({
   };
 
   return (
-    <ChartContainer>
-      <ChartWrapper aria-label={`Radial chart with ${data.length} segments`}>
+    <ChartContainer role="figure" aria-label={`Radial chart with ${data.length} segments`}>
+      <ChartWrapper aria-hidden="true">
         <VictoryPie
           data={data}
           colorScale={effectiveColorScale}

@@ -180,7 +180,12 @@ export const Toast: React.FC<ToastProps> = ({
         </Text>
       </MessageContainer>
       {action && (
-        <Touchable onPress={action.onPress} style={{ marginLeft: spacing.sm }}>
+        <Touchable
+          onPress={action.onPress}
+          accessibilityRole="button"
+          accessibilityLabel={action.label}
+          style={{ marginLeft: spacing.sm }}
+        >
           <Text color={color} fontWeight="medium" fontSize="sm">
             {action.label}
           </Text>

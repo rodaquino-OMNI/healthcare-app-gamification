@@ -68,8 +68,8 @@ export const DonutChart: React.FC<DonutChartProps> = ({
   };
 
   return (
-    <ChartContainer>
-      <ChartWrapper aria-label={`Donut chart with ${data.length} segments`}>
+    <ChartContainer role="figure" aria-label={`Donut chart with ${data.length} segments`}>
+      <ChartWrapper aria-hidden="true">
         <VictoryPie
           data={data}
           colorScale={effectiveColorScale}

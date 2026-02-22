@@ -198,7 +198,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       aria-label={accessibilityLabel}
       data-testid="file-upload"
     >
-      <UploadIcon>&#128193;</UploadIcon>
+      <UploadIcon aria-hidden="true">&#128193;</UploadIcon>
       <DropZoneText>
         Drag and drop files here, or{' '}
         <BrowseLink journey={journey} data-testid="file-upload-browse">browse</BrowseLink>
@@ -232,16 +232,22 @@ export const UploadProgress: React.FC<UploadProgressProps> = ({
     <ProgressContainer data-testid="upload-progress">
       <ProgressInfo>
         <FileName data-testid="upload-filename">{fileName}</FileName>
-        <ProgressBarTrack>
+        <ProgressBarTrack
+          role="progressbar"
+          aria-valuenow={progress}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label={`${fileName} upload progress`}
+        >
           <ProgressBarFill progress={progress} status={status} data-testid="upload-progress-bar" />
         </ProgressBarTrack>
         <StatusText status={status} data-testid="upload-status">{statusLabels[status]}</StatusText>
       </ProgressInfo>
       {status === 'uploading' && onCancel && (
-        <ActionButton onClick={onCancel} data-testid="upload-cancel">Cancel</ActionButton>
+        <ActionButton onClick={onCancel} aria-label={`Cancel uploading ${fileName}`} data-testid="upload-cancel">Cancel</ActionButton>
       )}
       {status === 'error' && onRetry && (
-        <ActionButton onClick={onRetry} data-testid="upload-retry">Retry</ActionButton>
+        <ActionButton onClick={onRetry} aria-label={`Retry uploading ${fileName}`} data-testid="upload-retry">Retry</ActionButton>
       )}
     </ProgressContainer>
   );

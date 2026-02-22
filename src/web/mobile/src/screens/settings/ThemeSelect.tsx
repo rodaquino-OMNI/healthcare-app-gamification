@@ -9,7 +9,7 @@ import { typography } from '../../../../design-system/src/tokens/typography';
 import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { borderRadius } from '../../../../design-system/src/tokens/borderRadius';
 import { sizing } from '../../../../design-system/src/tokens/sizing';
-import { darkTheme } from '../../../../design-system/src/themes';
+import { darkTheme, baseTheme } from '../../../../design-system/src/themes';
 
 // --- Types ---
 
@@ -29,11 +29,11 @@ const THEMES: ThemeOption[] = [
 
 const PREVIEW_COLORS = {
   light: {
-    bg: '#ffffff',
-    card: '#f8fafc',
-    text: '#334155',
-    subtext: '#94a3b8',
-    border: '#e2e8f0',
+    bg: baseTheme.colors.background.default,
+    card: baseTheme.colors.background.muted,
+    text: baseTheme.colors.text.default,
+    subtext: baseTheme.colors.text.subtle,
+    border: baseTheme.colors.border.default,
   },
   dark: {
     bg: darkTheme.colors.background.default,

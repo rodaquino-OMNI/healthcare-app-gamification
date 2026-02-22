@@ -146,9 +146,9 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   const getInitials = (name: string) => name.charAt(0).toUpperCase();
 
   return (
-    <MessageWrapper data-testid="chat-message" aria-label={accessibilityLabel}>
+    <MessageWrapper data-testid="chat-message" role="group" aria-label={accessibilityLabel || `Message from ${sender} at ${timestamp}`}>
       <MessageContainer variant={variant}>
-        <AvatarWrapper data-testid="chat-avatar">
+        <AvatarWrapper data-testid="chat-avatar" aria-hidden="true">
           {avatar || getInitials(sender)}
         </AvatarWrapper>
         <Bubble variant={variant} journey={journey} data-testid="chat-bubble">
@@ -167,10 +167,10 @@ export const TypingIndicator: React.FC<TypingIndicatorProps> = ({
   sender,
   journey,
 }) => (
-  <TypingContainer data-testid="typing-indicator">
-    <TypingDot delay={0} journey={journey} />
-    <TypingDot delay={0.2} journey={journey} />
-    <TypingDot delay={0.4} journey={journey} />
-    {sender && <TypingLabel data-testid="typing-label">{sender} is typing</TypingLabel>}
+  <TypingContainer data-testid="typing-indicator" role="status" aria-label={sender ? `${sender} is typing` : 'Someone is typing'}>
+    <TypingDot delay={0} journey={journey} aria-hidden="true" />
+    <TypingDot delay={0.2} journey={journey} aria-hidden="true" />
+    <TypingDot delay={0.4} journey={journey} aria-hidden="true" />
+    {sender && <TypingLabel data-testid="typing-label" aria-hidden="true">{sender} is typing</TypingLabel>}
   </TypingContainer>
 );

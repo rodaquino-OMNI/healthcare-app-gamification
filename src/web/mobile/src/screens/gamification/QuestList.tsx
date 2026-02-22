@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import {
   View,
   Text,
@@ -17,22 +17,9 @@ import { colors } from 'src/web/design-system/src/tokens/colors';
 import { spacingValues } from 'src/web/design-system/src/tokens/spacing';
 import { borderRadiusValues } from 'src/web/design-system/src/tokens/borderRadius';
 import { sizingValues } from 'src/web/design-system/src/tokens/sizing';
-import { Quest } from 'src/web/shared/types/gamification.types';
 
-/**
- * Extended quest type with category for section grouping.
- */
-interface CategorizedQuest extends Quest {
-  category: 'daily' | 'weekly' | 'special';
-}
-
-type TabFilter = 'active' | 'available' | 'completed';
-
-const TABS: { key: TabFilter; labelKey: string }[] = [
-  { key: 'active', labelKey: 'gamification.quests.tabActive' },
-  { key: 'available', labelKey: 'gamification.quests.tabAvailable' },
-  { key: 'completed', labelKey: 'gamification.quests.tabCompleted' },
-];
+import { QuestListItem, CategorizedQuest } from './QuestListItem';
+import { useQuestFilters, TABS } from './useQuestFilters';
 
 /**
  * Mock quest data for development and immediate rendering.
@@ -53,22 +40,6 @@ const MOCK_QUESTS: CategorizedQuest[] = [
 ];
 
 /**
- * Returns the journey color for a given journey string.
- */
-const getJourneyColor = (journey: string): string => {
-  switch (journey) {
-    case 'health':
-      return colors.journeys.health.primary;
-    case 'care':
-      return colors.journeys.care.primary;
-    case 'plan':
-      return colors.journeys.plan.primary;
-    default:
-      return colors.brand.primary;
-  }
-};
-
-/**
  * QuestList screen displays quests organized by category sections
  * with filter tabs for Active, Available, and Completed states.
  */
@@ -77,41 +48,8 @@ const QuestList: React.FC = () => {
   const navigation = useNavigation<any>();
   const theme = useTheme() as Theme;
   const styles = createStyles(theme);
-  const [activeTab, setActiveTab] = useState<TabFilter>('active');
 
-  const quests = MOCK_QUESTS;
-
-  const stats = useMemo(() => {
-    const total = quests.length;
-    const completed = quests.filter((q) => q.completed).length;
-    const active = quests.filter((q) => !q.completed && q.progress > 0).length;
-    return { total, completed, active };
-  }, [quests]);
-
-  const filteredQuests = useMemo(() => {
-    switch (activeTab) {
-      case 'active':
-        return quests.filter((q) => !q.completed && q.progress > 0);
-      case 'available':
-        return quests.filter((q) => !q.completed && q.progress === 0);
-      case 'completed':
-        return quests.filter((q) => q.completed);
-      default:
-        return quests;
-    }
-  }, [quests, activeTab]);
-
-  const sections = useMemo(() => {
-    const daily = filteredQuests.filter((q) => q.category === 'daily');
-    const weekly = filteredQuests.filter((q) => q.category === 'weekly');
-    const special = filteredQuests.filter((q) => q.category === 'special');
-
-    const result: { title: string; data: CategorizedQuest[] }[] = [];
-    if (daily.length > 0) result.push({ title: t('gamification.quests.sectionDaily'), data: daily });
-    if (weekly.length > 0) result.push({ title: t('gamification.quests.sectionWeekly'), data: weekly });
-    if (special.length > 0) result.push({ title: t('gamification.quests.sectionSpecial'), data: special });
-    return result;
-  }, [filteredQuests]);
+  const { activeTab, setActiveTab, sections, stats } = useQuestFilters(MOCK_QUESTS, t);
 
   const handleQuestPress = useCallback(
     (questId: string) => {
@@ -172,55 +110,9 @@ const QuestList: React.FC = () => {
     </ScrollView>
   );
 
-  const renderQuestItem = ({ item }: { item: CategorizedQuest }) => {
-    const journeyColor = getJourneyColor(item.journey);
-    const progressPercent = item.total > 0 ? (item.progress / item.total) * 100 : 0;
-
-    return (
-      <TouchableOpacity
-        onPress={() => handleQuestPress(item.id)}
-        style={styles.questItem}
-        accessibilityLabel={t('gamification.quests.questAccessibility', { title: item.title, journey: item.journey, percent: Math.round(progressPercent) })}
-        accessibilityHint={t('gamification.quests.questHint')}
-      >
-        <View style={styles.questIconContainer}>
-          <Text style={styles.questIcon}>{item.icon}</Text>
-        </View>
-        <View style={styles.questContent}>
-          <View style={styles.questHeader}>
-            <Text style={styles.questTitle} numberOfLines={1}>
-              {item.title}
-            </Text>
-            {item.completed && (
-              <Text style={styles.checkmark}>{'\u2713'}</Text>
-            )}
-          </View>
-          <Text style={styles.questDescription} numberOfLines={1}>
-            {item.description}
-          </Text>
-          <View style={styles.questMeta}>
-            <View style={[styles.journeyDot, { backgroundColor: journeyColor }]} />
-            <Text style={[styles.journeyText, { color: journeyColor }]}>
-              {item.journey.charAt(0).toUpperCase() + item.journey.slice(1)}
-            </Text>
-          </View>
-          <View style={styles.progressBarContainer}>
-            <View style={styles.progressBarBg}>
-              <View
-                style={[
-                  styles.progressBarFill,
-                  { width: `${Math.min(progressPercent, 100)}%`, backgroundColor: journeyColor },
-                ]}
-              />
-            </View>
-            <Text style={styles.progressText}>
-              {item.progress}/{item.total}
-            </Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  };
+  const renderQuestItem = ({ item }: { item: CategorizedQuest }) => (
+    <QuestListItem item={item} theme={theme} onPress={handleQuestPress} />
+  );
 
   const renderSectionHeader = ({ section }: { section: { title: string } }) => (
     <View style={styles.sectionHeader}>
@@ -390,93 +282,6 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: theme.colors.text.default,
-  },
-  questItem: {
-    flexDirection: 'row',
-    backgroundColor: theme.colors.background.default,
-    borderRadius: borderRadiusValues.md,
-    padding: spacingValues.sm,
-    shadowColor: colors.neutral.black,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  questIconContainer: {
-    width: sizingValues.component.lg,
-    height: sizingValues.component.lg,
-    borderRadius: borderRadiusValues.md,
-    backgroundColor: theme.colors.background.subtle,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: spacingValues.sm,
-  },
-  questIcon: {
-    fontSize: 24,
-  },
-  questContent: {
-    flex: 1,
-  },
-  questHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  questTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: theme.colors.text.default,
-    flex: 1,
-  },
-  checkmark: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.semantic.success,
-    marginLeft: spacingValues.xs,
-  },
-  questDescription: {
-    fontSize: 13,
-    color: theme.colors.text.muted,
-    marginTop: spacingValues['4xs'],
-  },
-  questMeta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: spacingValues.xs,
-  },
-  journeyDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginRight: spacingValues['3xs'],
-  },
-  journeyText: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  progressBarContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: spacingValues.xs,
-  },
-  progressBarBg: {
-    flex: 1,
-    height: 6,
-    backgroundColor: theme.colors.background.subtle,
-    borderRadius: borderRadiusValues.full,
-    overflow: 'hidden',
-    marginRight: spacingValues.xs,
-  },
-  progressBarFill: {
-    height: 6,
-    borderRadius: borderRadiusValues.full,
-  },
-  progressText: {
-    fontSize: 11,
-    fontWeight: '500',
-    color: theme.colors.text.muted,
-    minWidth: 36,
-    textAlign: 'right',
   },
   separator: {
     height: spacingValues.xs,
