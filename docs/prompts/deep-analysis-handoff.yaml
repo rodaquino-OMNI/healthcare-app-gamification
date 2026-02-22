@@ -1253,86 +1253,96 @@ prior_session_state:
 # CURRENT STATE — Post-Reconciliation (2026-02-21)
 # =============================================================================
 current_state:
-  date: "2026-02-21"
-  phase: "Figma reconciliation COMPLETE — transitioning to production readiness"
+  date: "2026-02-22"
+  phase: "ALL P0 LAUNCH-BLOCKING COMPLETE — transitioning to P1 post-launch"
 
   frontend_complete:
     mobile_screens: 249
     web_pages: 237
     navigators: 8
     ds_components: 57
-    ds_test_files: 49
+    ds_test_files: 57                   # was 49 — F2 added 8 new
     storybook_stories: 0
-    mobile_tests: 0
+    mobile_tests: 20                    # F2 added 20 smoke tests
     web_tests: 0
+    frontend_test_files: 77             # 49 DS + 8 new DS + 20 mobile
     i18n_coverage: "100% (pt-BR + en-US)"
     dark_mode: "complete (161 files fixed in W18)"
     hardcoded_hex: 0
     files_over_500L: 0
+    tanstack_version: "5.22.2"          # was v4 — F1 aligned
 
-  reconciliation_waves:
-    v1_0:
-      waves: "W1-W14"
-      gate: "PASSED 2026-02-21"
-      deliverables: "207 mobile screens, 195 web pages, 8 navigators"
-    v1_1:
-      waves: "W15-W18"
-      gate: "PASSED 2026-02-21"
-      deliverables:
-        W15_W16: "Health Assessment wizard (54 files, 26-step flow)"
-        W17: "AI Wellness Companion (30 files)"
-        W18: "Dark Mode QA (161 files fixed)"
-    td1:
-      desc: "Tech debt sprint"
-      deliverables: "7 file splits (<500L), 40+ hex removed, 199/199 i18n wired"
+  backend_complete:
+    prisma_models: 29                   # was 3 — B1 expanded to 29
+    prisma_enums: 9
+    prisma_indexes: 42
+    typeorm_runtime_imports: 0          # was 3 services — B1 consolidated
+    dockerfiles: 7                      # was 0 — B4 created all 7
+    ci_services_deployed: 7             # was 3 — F6 expanded to all 7
+    spec_files: 22                      # was 9 — B5 added 13 new
+    lgpd_consent_module: true           # was 0% — B2 created
+    lgpd_dsr_endpoints: 4              # GET/DELETE/PATCH my-data + GET export
+    phi_encrypted_models: 9            # was 4 — B2 expanded
+    validation_pipe_services: 7         # was 3 — B3 added 4
+    cors_configured_services: 7         # was 3 — B3 added 4
+    health_check_endpoints: 14          # was 0 — B3 added /health + /health/ready x7
 
-  backend_state:
-    prisma_models: 3                    # AuditLog, Plan, Claim — CRITICAL GAP
-    typeorm_services: 3                 # gamification-engine, notification-service, care-service partial
-    dockerfiles: 0                      # CRITICAL — cannot deploy
-    ci_services_deployed: 3             # of 7 total
-    test_coverage_pct: 8.6
-    spec_files: 9
-    lgpd_compliance_pct: 0              # R$50M fine risk
-    validation_pipe_services: 3         # of 7 (missing in 4)
-    cors_configured_services: 3         # of 7 (missing in 4)
-    health_check_endpoints: 0           # K8s probes will fail
+  devops_complete:
+    deploy_staging_services: 7          # was 3 — F6 expanded
+    docker_compose_staging: true        # F6 created (356L)
+    nginx_staging_conf: true            # F6 created (159L)
+    k8s_deployments: 7
+    k8s_probes: 14                      # liveness + readiness x7
+    actions_version: "v4"               # was v3 — F6 updated
+    node_version: "20"                  # was 18 — F6 updated
+
+  p0_phases_completed:
+    B1: { status: "COMPLETE", gates: "V1-V9: 9/9 PASS", date: "2026-02-22" }
+    B2: { status: "COMPLETE", gates: "V1-V10: 10/10 PASS", date: "2026-02-22" }
+    B3: { status: "COMPLETE", gates: "V1-V8: 8/8 PASS", date: "2026-02-22" }
+    B4: { status: "COMPLETE", gates: "V1-V13: 13/13 PASS", date: "2026-02-22" }
+    B5: { status: "COMPLETE", gates: "V1-V8: 7/8 PASS (V2 SKIP)", date: "2026-02-22" }
+    F1: { status: "COMPLETE", gates: "V1-V6: 6/6 PASS", date: "2026-02-22" }
+    F2: { status: "COMPLETE", gates: "V1-V8: 8/8 PASS", date: "2026-02-22" }
+    F6: { status: "COMPLETE", gates: "V1-V8: 8/8 PASS", date: "2026-02-22" }
+
+  resolved_blockers:
+    - id: BLOCK-001
+      desc: "Prisma schema expanded 3→29 models"
+      resolved_by: B1
+    - id: BLOCK-002
+      desc: "0 TypeORM runtime imports — all services use PrismaService"
+      resolved_by: B1
+    - id: BLOCK-003
+      desc: "LGPD consent module + DSR endpoints + PHI encryption (9 models)"
+      resolved_by: B2
+    - id: BLOCK-004
+      desc: "7 Dockerfiles created, docker-compose staging, nginx proxy"
+      resolved_by: "B4 + F6"
+    - id: BLOCK-005
+      desc: "TanStack Query aligned on v5.22.2 across mobile + shared"
+      resolved_by: F1
+    - id: BLOCK-006
+      desc: "77 frontend test files (57 DS + 20 mobile smoke)"
+      resolved_by: F2
+
+  remaining_tech_debt:
+    - "MedicationReminder.tsx 530L, SearchResults.tsx 679L, DoctorSearch.tsx 510L (over 500L)"
+    - "package.json still lists TypeORM deps (runtime removed, cleanup pending)"
+    - "Prisma 7.4.1 needs prisma.config.ts migration (url deprecation)"
+    - "K8s port inconsistencies (api-gateway 4000 vs 3000)"
+    - "i18n structural difference (pt-BR top-level vs en-US nested)"
 
   memory_keys:
-    total: 136
+    total: 160
     namespace: "healthcare-platform"
     key_milestones:
       - "v1.0-launch-gate-passed"
       - "v1.1-complete"
       - "forward-path-plan-v2"
-      - "b1-scope"
-      - "f1-scope"
-
-  known_blockers:
-    - id: BLOCK-001
-      desc: "Prisma schema has 3 models, needs 18+ for real data"
-      phase: B1
-      severity: CRITICAL
-    - id: BLOCK-002
-      desc: "Dual ORM (TypeORM + Prisma) — PHI encryption only covers Prisma entities"
-      phase: B1
-      severity: CRITICAL
-    - id: BLOCK-003
-      desc: "LGPD 0% — no consent module, no DSR endpoints, no DPO"
-      phase: B2
-      severity: CRITICAL
-    - id: BLOCK-004
-      desc: "0 Dockerfiles — cannot containerize or deploy"
-      phase: B4
-      severity: CRITICAL
-    - id: BLOCK-005
-      desc: "TanStack Query v4/v5 split between mobile and web"
-      phase: F1
-      severity: HIGH
-    - id: BLOCK-006
-      desc: "0% test coverage on mobile and web"
-      phase: F2
-      severity: HIGH
+      - "b1-scope through b5-complete-final"
+      - "f1-scope, f1-complete, f2-scope through f2-complete"
+      - "f6-scope, f6-recon, f6-complete, f6-verified"
 
 # =============================================================================
 # FORWARD PATH PLAN — Production Readiness (Approved 2026-02-21)
@@ -1575,3 +1585,109 @@ verification_gates:
     - "Gamification: Goal → Achievement → XP → Leaderboard"
     - "LGPD: Export → Verify → Delete → Verify purge"
     - "Dark mode: Toggle → All screens render"
+
+# =============================================================================
+# P1 POST-LAUNCH PLAN (within 30 days of launch)
+# =============================================================================
+p1_post_launch:
+  date_planned: "2026-02-22"
+  total_effort: "228h"
+
+  phases:
+    B5_EXT:
+      name: "Extended Backend Testing (40% coverage)"
+      effort: "80h"
+      workers: 6
+      topology: "hierarchical-mesh"
+      depends_on: ["B5"]
+      scope: |
+        Expand from 22 spec files to 70+ spec files targeting 40% coverage.
+        Priority: plan-service (claims, plans), health-service (insights, FHIR),
+        care-service (appointments, medications, telemedicine), auth-service (JWT, roles),
+        api-gateway (routing, rate limiting), integration tests (cross-service flows).
+      exit_gates:
+        - "npm test -- --coverage reports >= 40% lines"
+        - "70+ spec files across 7 services"
+        - "0 test failures"
+        - "All consent/privacy tests still pass"
+
+    F2_EXT:
+      name: "Extended Frontend Testing (20% mobile, 15% web)"
+      effort: "60h"
+      workers: 6
+      topology: "hierarchical-mesh"
+      depends_on: ["F2"]
+      scope: |
+        Expand from 20 mobile smoke tests to 60+ covering all journeys.
+        Add 30+ web page tests. Add integration tests for navigation flows.
+        Add MSW API mocking for realistic data scenarios.
+      exit_gates:
+        - "60+ mobile test files"
+        - "30+ web test files"
+        - "All DS tests still pass"
+        - "Coverage >= 20% mobile, >= 15% web"
+
+    F3:
+      name: "Storybook + Visual Regression"
+      effort: "48h"
+      workers: 4
+      topology: "hierarchical"
+      depends_on: []
+      scope: |
+        Storybook 8.x setup for design-system package.
+        Stories for all 57 DS components (default, variants, interactive, dark mode).
+        Chromatic visual regression baseline + GitHub Actions integration.
+      key_files:
+        - "src/web/design-system/.storybook/main.ts"
+        - "src/web/design-system/.storybook/preview.ts"
+        - "src/web/design-system/src/**/*.stories.tsx (57 files)"
+      exit_gates:
+        - "yarn build-storybook succeeds"
+        - "57 story files (1 per DS component)"
+        - "Chromatic baseline uploaded"
+        - "GitHub Actions workflow for visual regression"
+
+    F5:
+      name: "Mobile Build Pipeline (EAS Build)"
+      effort: "32h"
+      workers: 2
+      topology: "hierarchical"
+      depends_on: ["F2"]
+      scope: |
+        EAS Build config (development, preview, production profiles).
+        iOS: Apple Sign-In, ATT framework, Privacy Manifest, HealthKit entitlement.
+        Android: Data Safety Form, Firebase FCM, signing keystore.
+        App Store prep: listings pt-BR/en-US, screenshots, privacy policy URL.
+      exit_gates:
+        - "eas build --profile development succeeds (iOS + Android)"
+        - "app.json/app.config.js complete"
+        - "Privacy manifest includes all data types"
+
+    F6_EXT:
+      name: "Production Deployment Strategy"
+      effort: "8h"
+      workers: 2
+      topology: "hierarchical"
+      depends_on: ["F6"]
+      scope: |
+        Blue-green deployment with canary rollout.
+        Auto-rollback on health check failure.
+        Sentry error tracking + Grafana monitoring dashboards.
+        Production docker-compose and Terraform configs.
+
+  execution_order: |
+    WEEK 1-2 (parallel):
+      F3 (Storybook) — independent, start immediately
+      B5_EXT (Backend tests) — builds on B5
+      F2_EXT (Frontend tests) — builds on F2
+
+    WEEK 3-4 (after F2_EXT):
+      F5 (EAS Build) — needs tests passing
+      F6_EXT (Production deployment) — needs staging validated
+
+  dependency_chain: |
+    F3 (Storybook) ←← independent, start immediately
+
+    B5 ✅ → B5_EXT (extended backend tests)
+    F2 ✅ → F2_EXT (extended frontend tests) → F5 (EAS Build)
+    F6 ✅ → F6_EXT (production deployment)
