@@ -22,3 +22,4 @@ export * from './care';
 export * from './plan';
 export * from './gamification';
 export * from './notifications';
+export * from './wellness';

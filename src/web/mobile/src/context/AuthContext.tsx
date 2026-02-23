@@ -3,12 +3,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage'; // v1.18.1
 import jwtDecode from 'jwt-decode'; // v3.1.2
 
 import { AuthSession, AuthState } from '@shared/types/auth.types';
-import { 
-  login, 
-  register, 
-  verifyMfa, 
-  refreshToken as refreshTokenApi, 
-  socialLogin 
+import {
+  login,
+  register,
+  verifyMfa,
+  refreshToken as refreshTokenApi,
+  socialLogin,
+  RegisterData,
+  SocialTokenData
 } from '../api/auth';
 
 /**
@@ -27,10 +29,10 @@ const REFRESH_BUFFER_TIME = 5 * 60 * 1000;
  */
 interface AuthContextType extends AuthState {
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (userData: object) => Promise<void>;
+  signUp: (userData: RegisterData) => Promise<void>;
   signOut: () => Promise<void>;
   handleMfaVerification: (code: string, tempToken: string) => Promise<void>;
-  handleSocialLogin: (provider: string, tokenData: object) => Promise<void>;
+  handleSocialLogin: (provider: string, tokenData: SocialTokenData) => Promise<void>;
   handleRefreshToken: () => Promise<void>;
   getUserFromToken: (token: string) => any;
   isLoading: boolean;
@@ -166,7 +168,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   /**
    * Register a new user
    */
-  const signUp = async (userData: object): Promise<void> => {
+  const signUp = async (userData: RegisterData): Promise<void> => {
     try {
       setAuthState(prev => ({ ...prev, status: 'loading' }));
       
@@ -226,7 +228,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   /**
    * Handle social login (OAuth)
    */
-  const handleSocialLogin = async (provider: string, tokenData: object): Promise<void> => {
+  const handleSocialLogin = async (provider: string, tokenData: SocialTokenData): Promise<void> => {
     try {
       setAuthState(prev => ({ ...prev, status: 'loading' }));
       

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'; // react v18.0.0
 import { View, Text, StyleSheet, FlatList } from 'react-native'; // react-native v0.71.0
 
-import { MedicalEvent } from '@/types/index';
 import { ROUTES } from '@constants/routes';
 import { useHealthMetrics } from '@hooks/useHealthMetrics';
-import { getMedicalHistory } from '@api/health';
+import { getMedicalHistory, HealthMetric } from '@api/health';
 import { JourneyHeader } from '@components/shared/JourneyHeader';
 import { Card, CardProps } from '@design-system/components/Card/Card';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +19,7 @@ import { colors } from '@design-system/tokens/colors';
 const MedicalHistory = () => {
   const { t } = useTranslation();
   // State variables for managing medical history data and loading state
-  const [medicalHistory, setMedicalHistory] = useState<MedicalEvent[]>([]);
+  const [medicalHistory, setMedicalHistory] = useState<HealthMetric[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { journey } = useJourney();
 
@@ -48,20 +47,20 @@ const MedicalHistory = () => {
   }, []);
 
   // Render item for the FlatList
-  const renderItem = ({ item }: { item: MedicalEvent }) => (
+  const renderItem = ({ item }: { item: HealthMetric }) => (
     <Card style={styles.card}>
       <View style={styles.eventContainer}>
         <View style={styles.eventDetails}>
           <Text style={styles.eventTitle}>{item.type}</Text>
-          <Text style={styles.eventDate}>{formatDate(new Date(item.date), 'MMMM dd, yyyy')}</Text>
-          <Text style={styles.eventDescription}>{item.description}</Text>
+          <Text style={styles.eventDate}>{formatDate(new Date(item.timestamp), 'MMMM dd, yyyy')}</Text>
+          <Text style={styles.eventDescription}>{`${item.value} ${item.unit}`}</Text>
         </View>
       </View>
     </Card>
   );
 
   // Key extractor for FlatList
-  const keyExtractor = (item: MedicalEvent) => item.id;
+  const keyExtractor = (item: HealthMetric) => item.id;
 
   // Render the component
   return (

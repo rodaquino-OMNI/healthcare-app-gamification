@@ -19,9 +19,6 @@ jobs:
           node-version: '20'
           cache: 'yarn'
 
-      - name: Install validation dependencies
-        run: npm install glob
-
       - name: Validate package.json files
         run: node scripts/validate-package-json.js
 

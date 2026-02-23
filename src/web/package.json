@@ -1,5 +1,6 @@
 {
   "name": "web",
+  "version": "1.0.0",
   "private": true,
   "workspaces": [
     "design-system",
@@ -16,6 +17,8 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "test": "turbo run test",
+    "test:ci": "turbo run test -- --ci --coverage",
+    "typecheck": "turbo run typecheck",
     "prepare": "husky install",
     "changeset": "changeset",
     "version": "changeset version",

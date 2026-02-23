@@ -4,7 +4,7 @@ import {
   healthGoalFragment,
   medicalEventFragment,
   deviceConnectionFragment
-} from 'src/web/shared/graphql/fragments/health.fragments.ts';
+} from '../fragments/health.fragments';
 
 /**
  * Query to retrieve health metrics with optional filtering by type, date range, and source

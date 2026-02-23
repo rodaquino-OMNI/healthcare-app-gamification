@@ -23,47 +23,16 @@ jobs:
       with:
         node-version: '20'
         cache: 'yarn'
+        cache-dependency-path: src/backend/yarn.lock
         
-    - name: Install dependencies for Backend Monorepo
+    - name: Install dependencies
       working-directory: src/backend
-      run: npm install --legacy-peer-deps
-
-    - name: Install dependencies for API Gateway
-      working-directory: src/backend/api-gateway
-      run: npm install --legacy-peer-deps
-      
-    - name: Install dependencies for Auth Service
-      working-directory: src/backend/auth-service
-      run: npm install --legacy-peer-deps
-      
-    - name: Install dependencies for Health Service
-      working-directory: src/backend/health-service
-      run: npm install --legacy-peer-deps
-    
-    - name: Install dependencies for Care Service
-      working-directory: src/backend/care-service
-      run: npm install --legacy-peer-deps
-      
-    - name: Install dependencies for Plan Service
-      working-directory: src/backend/plan-service
-      run: npm install --legacy-peer-deps
-      
-    - name: Install dependencies for Gamification Engine
-      working-directory: src/backend/gamification-engine
-      run: npm install --legacy-peer-deps
-      
-    - name: Install dependencies for Notification Service
-      working-directory: src/backend/notification-service
-      run: npm install --legacy-peer-deps
-
-    - name: Install dependencies for Shared
-      working-directory: src/backend/shared
-      run: npm install --legacy-peer-deps
+      run: yarn install --frozen-lockfile
       
     - name: Lint Backend Services
       working-directory: src/backend
-      run: npm run lint
-      
+      run: yarn lint
+
     - name: Test Backend Services
       working-directory: src/backend
-      run: npm run test
+      run: yarn test

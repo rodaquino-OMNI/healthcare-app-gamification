@@ -1,175 +1,353 @@
 /**
- * Authentication API module for the AUSTA SuperApp mobile application
- * Provides functions for user authentication, registration, and session management
- * that implement the Authentication System (F-201) requirement.
+ * Authentication API module for the AUSTA SuperApp mobile application.
+ * Provides functions for user authentication, registration, session management,
+ * and profile operations that implement the Authentication System (F-201) requirement.
  */
 
-import { AuthSession } from '@shared/types/auth.types';
-import { API_BASE_URL } from '@shared/constants/api';
 import fetch from 'cross-fetch'; // v3.1.5
 
+const API_BASE_URL =
+  process.env.EXPO_PUBLIC_API_URL || 'https://api.austa.com.br';
+
+// ---------------------------------------------------------------------------
+// Interfaces
+// ---------------------------------------------------------------------------
+
+export interface AuthSession {
+  accessToken: string;
+  refreshToken: string;
+  expiresAt: number;
+  userId: string;
+  email?: string;
+}
+
+export interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+  cpf?: string;
+  phone?: string;
+  birthDate?: string;
+  acceptedTerms: boolean;
+}
+
+export interface SocialTokenData {
+  idToken?: string;
+  accessToken?: string;
+  authorizationCode?: string;
+  provider: string;
+}
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  cpf?: string;
+  birthDate?: string;
+  avatarUrl?: string;
+  language: string;
+  notificationsEnabled: boolean;
+  createdAt: string;
+}
+
+export interface UpdateProfileData {
+  name?: string;
+  phone?: string;
+  avatarUrl?: string;
+  language?: string;
+  notificationsEnabled?: boolean;
+}
+
+// ---------------------------------------------------------------------------
+// Existing functions (fixed: typed params, no `object`)
+// ---------------------------------------------------------------------------
+
 /**
- * Authenticates a user with email and password
+ * Authenticates a user with email and password.
+ *
  * @param email - User's email address
  * @param password - User's password
- * @returns Promise resolving to an AuthSession object
+ * @returns Promise resolving to an AuthSession
  * @throws Error if authentication fails
  */
-export async function login(email: string, password: string): Promise<AuthSession> {
-  // 1. Construct the API endpoint URL for login
+export async function login(
+  email: string,
+  password: string,
+): Promise<AuthSession> {
   const url = `${API_BASE_URL}/auth/login`;
-  
-  // 2. Send a POST request to the login endpoint with the email and password
   const response = await fetch(url, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ email, password })
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
   });
-  
-  // 3. Parse the JSON response
   const data = await response.json();
-  
-  // Handle error responses
   if (!response.ok) {
-    const message = data.message || 'Authentication failed';
-    throw new Error(message);
+    throw new Error(data.message || 'Authentication failed');
   }
-  
-  // 4. Return the authentication session
   return data.session;
 }
 
 /**
- * Registers a new user
- * @param userData - Object containing user registration data (name, email, password, etc.)
- * @returns Promise resolving to an AuthSession object
+ * Registers a new user.
+ *
+ * @param userData - Registration data (name, email, password, etc.)
+ * @returns Promise resolving to an AuthSession
  * @throws Error if registration fails
  */
-export async function register(userData: object): Promise<AuthSession> {
-  // 1. Construct the API endpoint URL for registration
+export async function register(userData: RegisterData): Promise<AuthSession> {
   const url = `${API_BASE_URL}/auth/register`;
-  
-  // 2. Send a POST request to the registration endpoint with the user data
   const response = await fetch(url, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(userData)
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(userData),
   });
-  
-  // 3. Parse the JSON response
   const data = await response.json();
-  
-  // Handle error responses
   if (!response.ok) {
-    const message = data.message || 'Registration failed';
-    throw new Error(message);
+    throw new Error(data.message || 'Registration failed');
   }
-  
-  // 4. Return the authentication session
   return data.session;
 }
 
 /**
- * Verifies a multi-factor authentication code
+ * Verifies a multi-factor authentication code.
+ *
  * @param code - The MFA verification code entered by the user
  * @param tempToken - Temporary token received after initial authentication
- * @returns Promise resolving to an AuthSession object
+ * @returns Promise resolving to an AuthSession
  * @throws Error if verification fails
  */
-export async function verifyMfa(code: string, tempToken: string): Promise<AuthSession> {
-  // 1. Construct the API endpoint URL for MFA verification
+export async function verifyMfa(
+  code: string,
+  tempToken: string,
+): Promise<AuthSession> {
   const url = `${API_BASE_URL}/auth/verify-mfa`;
-  
-  // 2. Send a POST request to the MFA verification endpoint with the code and temporary token
   const response = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${tempToken}`
+      Authorization: `Bearer ${tempToken}`,
     },
-    body: JSON.stringify({ code })
+    body: JSON.stringify({ code }),
   });
-  
-  // 3. Parse the JSON response
   const data = await response.json();
-  
-  // Handle error responses
   if (!response.ok) {
-    const message = data.message || 'MFA verification failed';
-    throw new Error(message);
+    throw new Error(data.message || 'MFA verification failed');
   }
-  
-  // 4. Return the authentication session
   return data.session;
 }
 
 /**
- * Refreshes the authentication token
- * @returns Promise resolving to a new AuthSession object
+ * Refreshes the authentication token using the stored refresh token cookie.
+ *
+ * @returns Promise resolving to a new AuthSession
  * @throws Error if token refresh fails
  */
 export async function refreshToken(): Promise<AuthSession> {
-  // 1. Construct the API endpoint URL for token refresh
   const url = `${API_BASE_URL}/auth/refresh`;
-  
-  // 2. Send a POST request to the token refresh endpoint
   const response = await fetch(url, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    credentials: 'include' // Include cookies for the refresh token
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
   });
-  
-  // 3. Parse the JSON response
   const data = await response.json();
-  
-  // Handle error responses
   if (!response.ok) {
-    const message = data.message || 'Token refresh failed';
-    throw new Error(message);
+    throw new Error(data.message || 'Token refresh failed');
   }
-  
-  // 4. Return the new authentication session
   return data.session;
 }
 
 /**
- * Authenticates a user with a social provider (OAuth 2.0)
+ * Authenticates a user with a social provider (OAuth 2.0).
+ *
  * @param provider - The social provider (e.g., 'google', 'apple', 'facebook')
- * @param tokenData - Provider-specific token data (contains tokens or authorization codes)
- * @returns Promise resolving to an AuthSession object
+ * @param tokenData - Provider-specific token data
+ * @returns Promise resolving to an AuthSession
  * @throws Error if social authentication fails
  */
 export async function socialLogin(
   provider: string,
-  tokenData: object
+  tokenData: SocialTokenData,
 ): Promise<AuthSession> {
-  // 1. Construct the API endpoint URL for social login
   const url = `${API_BASE_URL}/auth/social/${provider}`;
-  
-  // 2. Send a POST request to the social login endpoint with the provider and token data
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(tokenData),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Social authentication failed');
+  }
+  return data.session;
+}
+
+// ---------------------------------------------------------------------------
+// New functions (7 additions)
+// ---------------------------------------------------------------------------
+
+/**
+ * Sends a password-reset email to the given address.
+ *
+ * @param email - The email address to send the reset link to
+ * @returns Promise resolving to a confirmation message
+ * @throws Error if the request fails
+ */
+export async function forgotPassword(
+  email: string,
+): Promise<{ message: string }> {
+  const url = `${API_BASE_URL}/auth/forgot-password`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to send reset email');
+  }
+  return data;
+}
+
+/**
+ * Verifies an email address using a one-time token.
+ *
+ * @param token - The email verification token
+ * @returns Promise resolving to the verification status
+ * @throws Error if verification fails
+ */
+export async function verifyEmail(
+  token: string,
+): Promise<{ verified: boolean }> {
+  const url = `${API_BASE_URL}/auth/verify-email`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Email verification failed');
+  }
+  return data;
+}
+
+/**
+ * Sets a new password using a reset token.
+ *
+ * @param token - The password-reset token
+ * @param newPassword - The new password to set
+ * @returns Promise resolving to a new AuthSession
+ * @throws Error if the request fails
+ */
+export async function setPassword(
+  token: string,
+  newPassword: string,
+): Promise<AuthSession> {
+  const url = `${API_BASE_URL}/auth/set-password`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, newPassword }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to set password');
+  }
+  return data.session;
+}
+
+/**
+ * Logs out the current user by invalidating the access token server-side.
+ *
+ * @param accessToken - The current access token to invalidate
+ * @throws Error if logout fails
+ */
+export async function logout(accessToken: string): Promise<void> {
+  const url = `${API_BASE_URL}/auth/logout`;
   const response = await fetch(url, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
     },
-    body: JSON.stringify(tokenData)
   });
-  
-  // 3. Parse the JSON response
-  const data = await response.json();
-  
-  // Handle error responses
   if (!response.ok) {
-    const message = data.message || 'Social authentication failed';
-    throw new Error(message);
+    const data = await response.json();
+    throw new Error(data.message || 'Logout failed');
   }
-  
-  // 4. Return the authentication session
-  return data.session;
+}
+
+/**
+ * Fetches the authenticated user's profile.
+ *
+ * @param accessToken - A valid access token
+ * @returns Promise resolving to the user's profile
+ * @throws Error if the request fails
+ */
+export async function getProfile(accessToken: string): Promise<UserProfile> {
+  const url = `${API_BASE_URL}/auth/profile`;
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to get profile');
+  }
+  return data;
+}
+
+/**
+ * Updates the authenticated user's profile.
+ *
+ * @param accessToken - A valid access token
+ * @param updates - The profile fields to update
+ * @returns Promise resolving to the updated profile
+ * @throws Error if the request fails
+ */
+export async function updateProfile(
+  accessToken: string,
+  updates: UpdateProfileData,
+): Promise<UserProfile> {
+  const url = `${API_BASE_URL}/auth/profile`;
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(updates),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Failed to update profile');
+  }
+  return data;
+}
+
+/**
+ * Permanently deletes the authenticated user's account (LGPD right to erasure).
+ *
+ * @param accessToken - A valid access token
+ * @param confirmationCode - A code confirming the user's intent to delete
+ * @throws Error if the request fails
+ */
+export async function deleteAccount(
+  accessToken: string,
+  confirmationCode: string,
+): Promise<void> {
+  const url = `${API_BASE_URL}/auth/account`;
+  const response = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({ confirmationCode }),
+  });
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.message || 'Failed to delete account');
+  }
 }

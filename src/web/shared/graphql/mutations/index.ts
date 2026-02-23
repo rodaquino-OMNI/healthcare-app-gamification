@@ -6,19 +6,19 @@
  */
 
 // Authentication mutations
-import * as AuthMutations from 'src/web/shared/graphql/mutations/auth.mutations';
+import * as AuthMutations from './auth.mutations';
 
 // Health journey mutations
-import * as HealthMutations from 'src/web/shared/graphql/mutations/health.mutations';
+import * as HealthMutations from './health.mutations';
 
 // Care journey mutations
-import * as CareMutations from 'src/web/shared/graphql/mutations/care.mutations';
+import * as CareMutations from './care.mutations';
 
 // Plan journey mutations
-import * as PlanMutations from 'src/web/shared/graphql/mutations/plan.mutations';
+import * as PlanMutations from './plan.mutations';
 
 // Gamification mutations
-import * as GamificationMutations from 'src/web/shared/graphql/mutations/gamification.mutations';
+import * as GamificationMutations from './gamification.mutations';
 
 // Export all mutation groups
 export {

@@ -6,8 +6,8 @@
  */
 
 import { gql } from '@apollo/client'; // v3.7.17
-import { PlanFragment, ClaimFragment } from 'src/web/shared/graphql/fragments/plan.fragments.ts';
-import { Plan, Claim } from 'src/web/shared/types/plan.types.ts';
+import { PlanFragment, ClaimFragment } from '../fragments/plan.fragments';
+import { Plan, Claim } from '../../types/plan.types';
 
 /**
  * GraphQL query to retrieve a specific plan by ID

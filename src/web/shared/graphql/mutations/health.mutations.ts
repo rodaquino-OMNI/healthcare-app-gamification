@@ -1,10 +1,10 @@
 import { gql } from '@apollo/client'; // version 3.7.17
-import { 
-  healthMetricFragment, 
-  healthGoalFragment, 
-  medicalEventFragment, 
-  deviceConnectionFragment 
-} from 'src/web/shared/graphql/fragments/health.fragments';
+import {
+  healthMetricFragment,
+  healthGoalFragment,
+  medicalEventFragment,
+  deviceConnectionFragment
+} from '../fragments/health.fragments';
 
 /**
  * Mutation to create a new health metric

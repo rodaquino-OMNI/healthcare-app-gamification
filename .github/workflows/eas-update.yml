@@ -44,8 +44,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package-lock.json
+          cache: 'yarn'
+          cache-dependency-path: src/web/yarn.lock
 
       - name: Setup Expo
         uses: expo/expo-github-action@v8
@@ -54,7 +54,7 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
-        run: npm ci
+        run: yarn install --frozen-lockfile
 
       - name: Publish update
         run: |

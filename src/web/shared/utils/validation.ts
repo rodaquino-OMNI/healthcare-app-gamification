@@ -10,8 +10,8 @@
 import { z } from 'zod'; // latest
 import { i18n } from 'i18next'; // latest
 import { useTranslation } from 'react-i18next'; // latest
-import { ClaimType } from 'src/web/shared/types/index';
-import { JOURNEY_NAMES } from 'src/web/shared/constants/index';
+import { ClaimType } from '../types/index';
+import { JOURNEY_NAMES } from '../constants/index';
 
 /**
  * Creates validation messages with internationalization support
