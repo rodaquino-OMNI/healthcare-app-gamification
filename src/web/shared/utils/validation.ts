@@ -8,10 +8,7 @@
  */
 
 import { z } from 'zod'; // latest
-import { i18n } from 'i18next'; // latest
 import { useTranslation } from 'react-i18next'; // latest
-import { ClaimType } from '../types/index';
-import { JOURNEY_NAMES } from '../constants/index';
 
 /**
  * Creates validation messages with internationalization support
@@ -56,7 +53,7 @@ export const useClaimValidationSchema = () => {
   const messages = getValidationMessages(t);
   
   return z.object({
-    procedureType: z.nativeEnum(ClaimType, {
+    procedureType: z.enum(['medical', 'dental', 'vision', 'prescription', 'other'], {
       errorMap: () => ({ message: messages.claim.type })
     }),
     date: z.date({
@@ -80,7 +77,7 @@ export const useClaimValidationSchema = () => {
  * Uses default error messages (not internationalized)
  */
 export const claimValidationSchema = z.object({
-  procedureType: z.nativeEnum(ClaimType, {
+  procedureType: z.enum(['medical', 'dental', 'vision', 'prescription', 'other'], {
     errorMap: () => ({ message: 'Please select a valid procedure type' })
   }),
   date: z.date({

@@ -1,6 +1,4 @@
 import { gql } from '@apollo/client'; // @apollo/client version 3.7.10
-import { CARE_PROVIDER_UNAVAILABLE, CARE_APPOINTMENT_SLOT_TAKEN, CARE_TELEMEDICINE_CONNECTION_FAILED } from 'src/backend/shared/src/constants/error-codes.constants';
-import { Appointment } from '../../types/care.types';
 
 /**
  * GraphQL mutation to book an appointment.

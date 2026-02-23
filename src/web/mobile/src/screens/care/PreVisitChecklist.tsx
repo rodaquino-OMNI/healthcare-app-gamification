@@ -167,10 +167,11 @@ export const PreVisitChecklist: React.FC = () => {
             {t('consultation.preVisitChecklist.progress')}: {checkedCount}/{totalCount}
           </Text>
           <ProgressBar
-            value={totalCount > 0 ? (checkedCount / totalCount) * 100 : 0}
+            current={checkedCount}
+            total={totalCount > 0 ? totalCount : 1}
             journey="care"
-            accessibilityLabel={`${checkedCount} ${t('consultation.preVisitChecklist.progress')} ${totalCount}`}
-            testID="progress-bar"
+            ariaLabel={`${checkedCount} ${t('consultation.preVisitChecklist.progress')} ${totalCount}`}
+            testId="progress-bar"
           />
         </View>
 

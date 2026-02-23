@@ -94,7 +94,6 @@ const DoctorFilters: React.FC = () => {
             key={star}
             onPress={() => setMinRating(star === minRating ? 0 : star)}
             accessibilityLabel={`Avaliacao minima ${star} estrelas`}
-            accessibilityState={{ selected: minRating >= star }}
             style={[
               styles.starButton,
               minRating >= star && styles.starButtonActive,

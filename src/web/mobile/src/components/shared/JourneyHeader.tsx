@@ -84,6 +84,7 @@ const BackButton = styled(TouchableOpacity)`
 const TitleContainer = styled.div`
   flex-direction: row;
   align-items: center;
+  gap: 8px;
 `;
 
 /**
@@ -150,12 +151,11 @@ export const JourneyHeader: React.FC<JourneyHeaderProps> = ({
             />
           </BackButton>
         )}
-        <Icon 
-          name={journeyIcon} 
-          size="24px" 
-          color={transparent ? journeyColor : '#FFFFFF'} 
-          aria-hidden="true"
-          style={{ marginRight: '8px' }}
+        <Icon
+          name={journeyIcon}
+          size="24px"
+          color={transparent ? journeyColor : '#FFFFFF'}
+          aria-hidden={true}
         />
         <Text 
           fontSize="xl" 

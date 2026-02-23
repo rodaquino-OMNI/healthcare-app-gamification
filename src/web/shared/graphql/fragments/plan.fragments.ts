@@ -5,7 +5,6 @@
  */
 
 import { gql } from '@apollo/client'; // v3.7.17
-import { Plan, Coverage, Claim, Benefit } from '../../types/plan.types';
 
 /**
  * Fragment for Coverage entity with essential fields

@@ -1,5 +1,5 @@
 import React from 'react'; // Version 18.0.0
-import { useForm } from 'react-hook-form'; // 7.0+
+import { useForm, Controller } from 'react-hook-form'; // 7.0+
 import { yupResolver } from '@hookform/resolvers'; // latest
 import { useNavigation } from '@react-navigation/native'; // latest
 
@@ -26,6 +26,7 @@ export const ClaimForm: React.FC = () => {
   // Uses the `useForm` hook to manage the form state and validation, integrating with `claimValidationSchema` for validation rules.
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors, isSubmitting, isValid },
   } = useForm({
@@ -72,16 +73,31 @@ export const ClaimForm: React.FC = () => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <label>
         Procedure Type:
-        <Select
-          label="Procedure Type"
-          options={procedureTypeOptions}
-          value=""
-          {...register('procedureType')}
+        <Controller
+          name="procedureType"
+          control={control}
+          render={({ field }) => (
+            <Select
+              label="Procedure Type"
+              options={procedureTypeOptions}
+              value={field.value ?? ''}
+              onChange={(val) => field.onChange(val)}
+            />
+          )}
         />
       </label>
       <label>
         Date of Service:
-        <DatePicker {...register('date')} />
+        <Controller
+          name="date"
+          control={control}
+          render={({ field }) => (
+            <DatePicker
+              value={field.value != null && typeof (field.value as unknown) === 'object' ? (field.value as Date) : null}
+              onChange={(date) => field.onChange(date)}
+            />
+          )}
+        />
       </label>
       <label>
         Provider:

@@ -5,8 +5,6 @@ import {
   RewardFragment,
   GamificationProfileFragment
 } from '../fragments/gamification.fragments';
-import { JOURNEY_IDS } from '../../constants/journeys';
-
 /**
  * Query to retrieve a user's gamification profile including level, XP,
  * achievements, and quests.

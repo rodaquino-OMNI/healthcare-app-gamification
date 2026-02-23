@@ -8,7 +8,6 @@
 
 import { gql } from '@apollo/client'; // v3.7.17
 import { ClaimFragment } from '../fragments/plan.fragments';
-import { Claim } from '../../types/plan.types';
 
 /**
  * GraphQL mutation to submit a new insurance claim

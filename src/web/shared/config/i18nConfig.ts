@@ -1,13 +1,11 @@
 /**
  * Internationalization configuration for the AUSTA SuperApp
- * 
+ *
  * This configuration file defines the supported locales and default locale for the application.
  * The i18next library is used throughout the application for translation and localization.
- * 
+ *
  * @package i18next v23.4.4
  */
-
-import i18next from 'i18next';
 
 /**
  * List of locales supported by the application
