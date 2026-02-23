@@ -15,7 +15,7 @@ import { useJourney } from 'src/web/mobile/src/context/JourneyContext.tsx';
 import { userValidationSchema } from 'src/web/shared/utils/validation.ts';
 import { useTranslation } from 'react-i18next';
 import JourneyHeader from 'src/web/mobile/src/components/shared/JourneyHeader.tsx';
-import ErrorState from 'src/web/mobile/src/components/shared/ErrorState.tsx';
+import ErrorState from 'src/web/mobile/src/components/shared/ErrorState';
 import LoadingIndicator from 'src/web/mobile/src/components/shared/LoadingIndicator.tsx';
 
 /**

@@ -1,5 +1,6 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import type { SettingsStackParamList } from './types';
 
 import { SettingsScreen } from '../screens/home/Settings';
 import { ROUTES } from '../constants/routes';
@@ -208,7 +209,7 @@ try {
   ReportProblemScreen = m.ReportProblemScreen || m.default || ReportProblemScreen;
 } catch { /* not yet available */ }
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<SettingsStackParamList>();
 
 /**
  * SettingsNavigator - Stack navigator for all Settings and Help Center screens.

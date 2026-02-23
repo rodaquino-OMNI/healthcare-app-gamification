@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Tooltip } from './Tooltip';
+import { colors } from '../../tokens/colors';
 
 const meta: Meta<typeof Tooltip> = {
   title: 'Components/Tooltip',
@@ -25,7 +26,7 @@ export default meta;
 type Story = StoryObj<typeof Tooltip>;
 
 const TriggerButton = ({ label }: { label: string }) => (
-  <button style={{ padding: '8px 16px', cursor: 'pointer', borderRadius: '4px', border: '1px solid #ccc' }}>
+  <button style={{ padding: '8px 16px', cursor: 'pointer', borderRadius: '4px', border: `1px solid ${colors.gray[30]}` }}>
     {label}
   </button>
 );

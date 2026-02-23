@@ -1,12 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
+import type { AuthNavigationProp } from '../../navigation/types';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
-import { MOBILE_AUTH_ROUTES } from 'src/web/shared/constants/routes';
+
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
 import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
@@ -217,7 +218,7 @@ const calculateStrength = (criteria: PasswordCriteria): StrengthLevel => {
  * - All design-system tokens, zero hardcoded colors/sizes
  */
 export const SetPasswordScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<AuthNavigationProp>();
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -251,7 +252,7 @@ export const SetPasswordScreen: React.FC = () => {
     try {
       // TODO: Call actual set password API
       // await setPassword(data.password);
-      navigation.navigate(MOBILE_AUTH_ROUTES.LOGIN);
+      navigation.navigate('Login');
     } catch (error: any) {
       console.error('Set password failed:', error);
     } finally {

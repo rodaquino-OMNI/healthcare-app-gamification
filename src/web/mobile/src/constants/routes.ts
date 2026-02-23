@@ -94,6 +94,23 @@ export const ROUTES = {
   HEALTH_MEDICATION_CAREGIVER_ACCESS: 'HealthMedicationCaregiverAccess',
   HEALTH_MEDICATION_EXPORT: 'HealthMedicationExport',
 
+  // Health — Cycle Tracking (Module 12)
+  HEALTH_CYCLE_HOME: 'HealthCycleHome',
+  HEALTH_CYCLE_CALENDAR: 'HealthCycleCalendar',
+  HEALTH_CYCLE_LOG_PERIOD: 'HealthCycleLogPeriod',
+  HEALTH_CYCLE_LOG_SYMPTOMS: 'HealthCycleLogSymptoms',
+  HEALTH_CYCLE_LOG_FLOW: 'HealthCycleLogFlow',
+  HEALTH_CYCLE_FERTILITY: 'HealthCycleFertility',
+  HEALTH_CYCLE_PMS: 'HealthCyclePMS',
+  HEALTH_CYCLE_HISTORY: 'HealthCycleHistory',
+  HEALTH_CYCLE_ANALYSIS: 'HealthCycleAnalysis',
+  HEALTH_CYCLE_INSIGHTS: 'HealthCycleInsights',
+  HEALTH_CYCLE_ARTICLE_DETAIL: 'HealthCycleArticleDetail',
+  HEALTH_CYCLE_REMINDERS: 'HealthCycleReminders',
+  HEALTH_CYCLE_PARTNER_SHARING: 'HealthCyclePartnerSharing',
+  HEALTH_CYCLE_SETTINGS: 'HealthCycleSettings',
+  HEALTH_CYCLE_EXPORT_REPORT: 'HealthCycleExportReport',
+
   // Health Assessment Wizard
   HEALTH_ASSESSMENT_WIZARD: 'HealthAssessmentWizard',
 
@@ -252,3 +269,22 @@ export const ROUTES = {
   ERROR_MAINTENANCE: 'ErrorMaintenance',
   ERROR_FORCE_UPDATE: 'ErrorForceUpdate',
 };
+
+/**
+ * Re-export legacy route objects from shared so screens can import from
+ * the local barrel instead of reaching into src/web/shared directly.
+ *
+ * NOTE: The MOBILE_*_ROUTES values differ from the unified ROUTES values
+ * (e.g. MOBILE_AUTH_ROUTES.LOGIN = 'Login' vs ROUTES.AUTH_LOGIN = 'AuthLogin').
+ * The navigators currently register screens using these legacy values, so
+ * screens must continue using MOBILE_*_ROUTES until the navigators are
+ * migrated to the unified ROUTES constants.
+ */
+export {
+  MOBILE_AUTH_ROUTES,
+  MOBILE_PLAN_ROUTES,
+  MOBILE_PROFILE_ROUTES,
+  MOBILE_HEALTH_ROUTES,
+  MOBILE_CARE_ROUTES,
+  MOBILE_GLOBAL_ROUTES,
+} from 'src/web/shared/constants/routes';

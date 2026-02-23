@@ -37,7 +37,10 @@ spec:
         - name: API_GATEWAY_URL
           value: http://api-gateway-service:3000
         - name: DATABASE_URL
-          value: postgresql://user:password@care-db:5432/caredb
+          valueFrom:
+            secretKeyRef:
+              name: care-db-credentials
+              key: database-url
         - name: REDIS_URL
           value: redis://redis:6379
         - name: JWT_SECRET

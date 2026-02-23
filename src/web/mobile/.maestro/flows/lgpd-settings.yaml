@@ -1,0 +1,45 @@
+appId: com.austa.superapp
+tags:
+  - regression
+  - lgpd
+  - privacy
+---
+- launchApp
+- tapOn:
+    id: "welcome-cta-login"
+- tapOn:
+    id: "login-email-input"
+- inputText: "test@austa.health"
+- tapOn:
+    id: "login-password-input"
+- inputText: "Test123!@#"
+- tapOn:
+    id: "login-submit-button"
+- assertVisible:
+    id: "home-screen"
+    timeout: 10000
+- tapOn:
+    text: "Settings"
+- tapOn:
+    id: "settings-privacy-service"
+    timeout: 5000
+- assertVisible:
+    id: "settings-privacy-marketing"
+- tapOn:
+    id: "settings-privacy-export"
+- assertVisible:
+    id: "data-export-request"
+    timeout: 5000
+- back
+- tapOn:
+    id: "settings-privacy-delete-account"
+- assertVisible:
+    id: "delete-account-understand"
+    timeout: 5000
+- tapOn:
+    id: "delete-account-understand"
+- tapOn:
+    id: "delete-account-proceed"
+- assertVisible:
+    id: "delete-confirm-input"
+    timeout: 5000

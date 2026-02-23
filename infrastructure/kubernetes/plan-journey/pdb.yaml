@@ -1,0 +1,13 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: plan-journey-pdb
+  namespace: plan-journey
+  labels:
+    app: plan-journey
+    part-of: austa-superapp
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: plan-journey

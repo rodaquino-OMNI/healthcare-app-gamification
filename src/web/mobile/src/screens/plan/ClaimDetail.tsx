@@ -8,11 +8,12 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import type { PlanNavigationProp } from '../../navigation/types';
 import { useTranslation } from 'react-i18next';
 
 import { Claim, ClaimStatus } from 'src/web/shared/types/plan.types';
 import { useClaims } from 'src/web/mobile/src/hooks/useClaims';
-import { MOBILE_PLAN_ROUTES } from 'src/web/shared/constants/routes';
+
 import { formatDate } from 'src/web/shared/utils/format';
 import {
   colors,
@@ -48,7 +49,7 @@ const TYPE_LABELS: Record<string, string> = {
 export const ClaimDetail: React.FC = () => {
   const { t } = useTranslation();
   const route = useRoute<any>();
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<PlanNavigationProp>();
   const theme = useTheme() as Theme;
   const styles = createStyles(theme);
 
@@ -82,7 +83,7 @@ export const ClaimDetail: React.FC = () => {
         <Text style={styles.errorText}>{t('journeys.plan.claims.notFound')}</Text>
         <TouchableOpacity
           style={styles.backButton}
-          onPress={() => navigation.navigate(MOBILE_PLAN_ROUTES.CLAIMS)}
+          onPress={() => navigation.navigate('ClaimHistory')}
         >
           <Text style={styles.backButtonText}>{t('journeys.plan.claims.backToHistory')}</Text>
         </TouchableOpacity>
@@ -99,8 +100,8 @@ export const ClaimDetail: React.FC = () => {
       {/* Header Card */}
       <View style={styles.headerCard}>
         <View style={styles.headerRow}>
-          <Text style={styles.typeLabel}>{TYPE_LABELS[claim.type] || claim.type}</Text>
-          <View style={[styles.statusBadge, { backgroundColor: statusConfig.bg }]}>
+          <Text testID="plan-claim-detail-title" style={styles.typeLabel}>{TYPE_LABELS[claim.type] || claim.type}</Text>
+          <View testID="plan-claim-detail-status" style={[styles.statusBadge, { backgroundColor: statusConfig.bg }]}>
             <Text style={[styles.statusBadgeText, { color: statusConfig.text }]}>
               {statusConfig.label}
             </Text>
@@ -175,8 +176,9 @@ export const ClaimDetail: React.FC = () => {
           </TouchableOpacity>
         )}
         <TouchableOpacity
+          testID="plan-claim-detail-back"
           style={styles.backButton}
-          onPress={() => navigation.navigate(MOBILE_PLAN_ROUTES.CLAIMS)}
+          onPress={() => navigation.navigate('ClaimHistory')}
           accessibilityRole="button"
           accessibilityLabel={t('journeys.plan.claims.backToHistory')}
         >

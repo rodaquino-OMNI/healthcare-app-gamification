@@ -55,6 +55,7 @@ export const QuestListItem: React.FC<QuestListItemProps> = ({
 
   return (
     <TouchableOpacity
+      testID="gamification-quest-card"
       onPress={() => onPress(item.id)}
       style={styles.questItem}
       accessibilityLabel={t('gamification.quests.questAccessibility', {
@@ -85,7 +86,7 @@ export const QuestListItem: React.FC<QuestListItemProps> = ({
             {item.journey.charAt(0).toUpperCase() + item.journey.slice(1)}
           </Text>
         </View>
-        <View style={styles.progressBarContainer}>
+        <View testID="gamification-quest-progress" style={styles.progressBarContainer}>
           <View style={styles.progressBarBg}>
             <View
               style={[

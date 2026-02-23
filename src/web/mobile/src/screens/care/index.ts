@@ -1,5 +1,3 @@
-import React from 'react'; // S1: Standard import statement.
-
 // IE1: Importing AppointmentBooking component.
 import AppointmentBooking from './AppointmentBooking';
 // IE1: Importing AppointmentDetail component.

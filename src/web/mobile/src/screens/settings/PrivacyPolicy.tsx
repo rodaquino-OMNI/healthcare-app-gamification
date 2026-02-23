@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { SettingsNavigationProp } from '../../navigation/types';
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
 
@@ -142,15 +143,15 @@ const SECTIONS: Section[] = [
  * "Direitos do Titular" to Data Export and Account Deletion.
  */
 export const PrivacyPolicyScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<SettingsNavigationProp>();
   const { t } = useTranslation();
 
   const handleExport = () => {
-    navigation.navigate(ROUTES.SETTINGS_DATA_EXPORT as never);
+    navigation.navigate(ROUTES.SETTINGS_DATA_EXPORT);
   };
 
   const handleDelete = () => {
-    navigation.navigate(ROUTES.SETTINGS_DELETE_ACCOUNT as never);
+    navigation.navigate(ROUTES.SETTINGS_DELETE_ACCOUNT);
   };
 
   return (

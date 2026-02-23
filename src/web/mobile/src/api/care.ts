@@ -5,6 +5,7 @@
  */
 
 import { AxiosResponse } from 'axios'; // Version 1.6.8 with security enhancements
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { restClient } from './client';
 
 // Define Appointment type if it doesn't exist in the project
@@ -29,21 +30,21 @@ interface Session {
 }
 
 // Auth function to get current session - will be imported by users of this module
-export const getAuthSession = (): Session | null => {
+export const getAuthSession = async (): Promise<Session | null> => {
   // In a real implementation, this would use the useAuth hook in a component
   // Since we can't use hooks outside of components, we'll provide this helper
-  
+
   // For testing outside of React components
   try {
     // Try to get the token from storage
-    const tokenFromStorage = localStorage.getItem('auth_session');
+    const tokenFromStorage = await AsyncStorage.getItem('auth_session');
     if (tokenFromStorage) {
       return JSON.parse(tokenFromStorage);
     }
   } catch (error) {
     console.error('Failed to get auth session:', error);
   }
-  
+
   return null;
 };
 
@@ -55,7 +56,7 @@ export const getAuthSession = (): Session | null => {
  */
 export async function bookAppointment(appointmentDetails: object): Promise<Appointment> {
   // Get the session (would use useAuth hook in a component)
-  const session = getAuthSession();
+  const session = await getAuthSession();
   
   if (!session) {
     throw new Error('Authentication required');
@@ -84,7 +85,7 @@ export async function bookAppointment(appointmentDetails: object): Promise<Appoi
  */
 export async function checkSymptoms(symptoms: object): Promise<any> {
   // Get the session (would use useAuth hook in a component)
-  const session = getAuthSession();
+  const session = await getAuthSession();
   
   if (!session) {
     throw new Error('Authentication required');

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import type { SettingsNavigationProp } from '../../navigation/types';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
@@ -163,7 +164,7 @@ const RELATED_ARTICLES = [
 // --- Component ---
 
 export const FAQDetailScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<SettingsNavigationProp>();
   const route = useRoute();
   const { t } = useTranslation();
   const [vote, setVote] = useState<VoteState>(null);
@@ -184,7 +185,7 @@ export const FAQDetailScreen: React.FC = () => {
   };
 
   const handleContactSupport = () => {
-    navigation.navigate(ROUTES.HELP_CONTACT as never);
+    navigation.navigate(ROUTES.HELP_CONTACT);
   };
 
   return (

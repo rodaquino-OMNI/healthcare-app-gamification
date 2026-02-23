@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { AuthNavigationProp } from '../../navigation/types';
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
 
@@ -155,7 +156,7 @@ const CelebrationText = styled.Text`
  * Displays success state and profile summary, navigates to Home.
  */
 const ProfileConfirmation: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<AuthNavigationProp>();
   const { t } = useTranslation();
 
   // TODO: Retrieve actual profile data from context/store

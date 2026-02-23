@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-import { MOBILE_PLAN_ROUTES } from 'src/web/shared/constants/routes';
+
 import Input from 'src/web/design-system/src/components/Input/Input';
 import { Select } from 'src/web/design-system/src/components/Select/Select';
 import Button from 'src/web/design-system/src/components/Button/Button';
@@ -97,7 +97,7 @@ export const CostSimulatorScreen: React.FC = () => {
 
       {/* Form Card */}
       <View style={styles.formCard}>
-        <View style={styles.fieldContainer}>
+        <View testID="plan-cost-procedure-input" style={styles.fieldContainer}>
           <Select
             label={t('journeys.plan.simulator.procedureType')}
             options={procedureOptions}
@@ -160,14 +160,14 @@ export const CostSimulatorScreen: React.FC = () => {
           </View>
         </View>
 
-        <Button onPress={handleSimulateCost} journey="plan">
+        <Button testID="plan-cost-calculate" onPress={handleSimulateCost} journey="plan">
           {t('journeys.plan.simulator.simulate')}
         </Button>
       </View>
 
       {/* Result Card */}
       {estimatedCost !== null && (
-        <View style={styles.resultCard}>
+        <View testID="plan-cost-result" style={styles.resultCard}>
           <Text style={styles.resultTitle}>{t('journeys.plan.simulator.estimatedCost')}</Text>
           <Text style={styles.resultValue}>
             R$ {estimatedCost.toFixed(2)}

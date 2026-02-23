@@ -1,17 +1,14 @@
 import React from 'react'; // v18.2.0
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; // v6.5.8
 import { createNativeStackNavigator } from '@react-navigation/native-stack'; // v6.9.13
-import { useNavigation } from '@react-navigation/native'; // v6.1.7
+import type { HomeStackParamList, MainTabParamList } from './types';
 
-import { AuthNavigator } from './AuthNavigator';
 import HealthNavigator from './HealthNavigator';
 import CareNavigator from './CareNavigator';
 import PlanNavigator from './PlanNavigator';
 import GamificationNavigator from './GamificationNavigator';
 import SettingsNavigator from './SettingsNavigator';
 import HomeScreen from '../screens/home/Home';
-import { useAuth } from '../hooks/useAuth';
-import { MOBILE_AUTH_ROUTES } from 'src/web/shared/constants/routes';
 import { NotificationsScreen } from '../screens/home/Notifications';
 import { ProfileScreen } from '../screens/home/Profile';
 import { JOURNEY_IDS } from 'src/web/shared/constants/journeys';
@@ -152,7 +149,7 @@ try {
 
 // Creates a native stack navigator for the Home tab.
 // This allows HomeMetrics and HomeAlert to be pushed on top of the Home screen.
-const HomeStackNav = createNativeStackNavigator();
+const HomeStackNav = createNativeStackNavigator<HomeStackParamList>();
 
 const HomeStack: React.FC = () => (
   <HomeStackNav.Navigator screenOptions={{ headerShown: false }}>
@@ -180,21 +177,10 @@ const HomeStack: React.FC = () => (
 );
 
 // Creates a Bottom Tab Navigator using createBottomTabNavigator from React Navigation.
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<MainTabParamList>();
 
 // Defines the main tab navigator for the app.
 export const MainNavigator: React.FC = () => {
-  // Retrieves the authentication status using the `useAuth` hook.
-  const { isAuthenticated } = useAuth();
-  // Retrieves the navigation object using the `useNavigation` hook.
-  const navigation = useNavigation();
-
-  // If the user is not authenticated, renders the AuthNavigator.
-  if (!isAuthenticated) {
-    return <AuthNavigator />;
-  }
-
-  // If the user is authenticated, renders the Tab Navigator with the defined screens.
   return (
     <Tab.Navigator
       initialRouteName="Home"

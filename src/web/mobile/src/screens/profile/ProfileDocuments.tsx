@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { AuthNavigationProp } from '../../navigation/types';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -236,7 +237,7 @@ const PrimaryButtonText = styled.Text`
  * Collects: CPF (masked), RG, document type selection, document upload.
  */
 const ProfileDocuments: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<AuthNavigationProp>();
   const { t } = useTranslation();
   const [selectedDocType, setSelectedDocType] = useState<DocumentType>('CPF');
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
@@ -280,7 +281,7 @@ const ProfileDocuments: React.FC = () => {
 
   const onSubmit = (data: DocumentsFormData) => {
     // TODO: persist documents info to profile context/store
-    navigation.navigate('ProfilePhoto' as never);
+    navigation.navigate('ProfilePhoto');
   };
 
   return (

@@ -1,0 +1,13 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: care-service-pdb
+  namespace: care-journey
+  labels:
+    app: care-service
+    part-of: austa-superapp
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: care-service

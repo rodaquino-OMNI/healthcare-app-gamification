@@ -1,0 +1,377 @@
+name: Deploy Production
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      rollback:
+        description: 'Rollback to previous version'
+        required: false
+        type: boolean
+        default: false
+      target_tag:
+        description: 'Specific image tag to deploy (for rollback)'
+        required: false
+        type: string
+
+env:
+  REGISTRY: ghcr.io
+  EKS_CLUSTER: austa-production-cluster
+  AWS_REGION: sa-east-1
+  SERVICES: >-
+    api-gateway auth-service health-service care-service
+    plan-service gamification-engine notification-service
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Install backend dependencies
+        working-directory: src/backend
+        run: yarn install --frozen-lockfile
+
+      - name: Lint backend
+        working-directory: src/backend
+        run: yarn lint
+
+      - name: Audit dependencies
+        working-directory: src/backend
+        run: yarn audit --level high || true
+
+  test:
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Install backend dependencies
+        working-directory: src/backend
+        run: yarn install --frozen-lockfile
+
+      - name: Run backend tests
+        working-directory: src/backend
+        run: yarn test
+
+  build-and-push:
+    runs-on: ubuntu-latest
+    needs: test
+    if: ${{ !inputs.rollback }}
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        service:
+          - api-gateway
+          - auth-service
+          - health-service
+          - care-service
+          - plan-service
+          - gamification-engine
+          - notification-service
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push ${{ matrix.service }}
+        uses: docker/build-push-action@v5
+        with:
+          context: ./src/backend
+          file: ./src/backend/${{ matrix.service }}/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/austa-${{ matrix.service }}:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner }}/austa-${{ matrix.service }}:${{ github.ref_name }}
+
+  deploy-canary:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: ${{ !inputs.rollback }}
+    environment: production-canary
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Kubernetes CLI
+        uses: azure/setup-kubectl@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }} --region ${{ env.AWS_REGION }}
+
+      - name: Patch image tags for canary
+        run: |
+          IMAGE_TAG="${{ github.sha }}"
+          OWNER="${{ github.repository_owner }}"
+          sed -i "s|image:.*austa-api-gateway.*|image: ghcr.io/${OWNER}/austa-api-gateway:${IMAGE_TAG}|" infrastructure/kubernetes/api-gateway/deployment.yaml
+          sed -i "s|image:.*austa-auth-service.*|image: ghcr.io/${OWNER}/austa-auth-service:${IMAGE_TAG}|" infrastructure/kubernetes/auth-service/deployment.yaml
+          sed -i "s|image:.*austa-health-service.*|image: ghcr.io/${OWNER}/austa-health-service:${IMAGE_TAG}|" infrastructure/kubernetes/health-journey/deployment.yaml
+          sed -i "s|image:.*austa-care-service.*|image: ghcr.io/${OWNER}/austa-care-service:${IMAGE_TAG}|" infrastructure/kubernetes/care-journey/deployment.yaml
+          sed -i "s|image:.*austa-plan-service.*|image: ghcr.io/${OWNER}/austa-plan-service:${IMAGE_TAG}|" infrastructure/kubernetes/plan-journey/deployment.yaml
+          sed -i "s|image:.*austa-gamification-engine.*|image: ghcr.io/${OWNER}/austa-gamification-engine:${IMAGE_TAG}|" infrastructure/kubernetes/gamification/deployment.yaml
+          sed -i "s|image:.*austa-notification-service.*|image: ghcr.io/${OWNER}/austa-notification-service:${IMAGE_TAG}|" infrastructure/kubernetes/notification-service/deployment.yaml
+
+      - name: Apply canary deployments (1 replica each)
+        run: |
+          kubectl apply -f infrastructure/kubernetes/api-gateway/deployment.yaml
+          kubectl apply -f infrastructure/kubernetes/auth-service/deployment.yaml
+          kubectl apply -f infrastructure/kubernetes/health-journey/deployment.yaml
+          kubectl apply -f infrastructure/kubernetes/care-journey/deployment.yaml
+          kubectl apply -f infrastructure/kubernetes/plan-journey/deployment.yaml
+          kubectl apply -f infrastructure/kubernetes/gamification/deployment.yaml
+          kubectl apply -f infrastructure/kubernetes/notification-service/deployment.yaml
+
+      - name: Scale canary to 1 replica per service
+        run: |
+          kubectl scale deployment/api-gateway --replicas=1 -n shared-services
+          kubectl scale deployment/auth-service --replicas=1 -n shared-services
+          kubectl scale deployment/health-service --replicas=1 -n health-journey
+          kubectl scale deployment/care-service --replicas=1 -n care-journey
+          kubectl scale deployment/plan-service --replicas=1 -n plan-journey
+          kubectl scale deployment/gamification-engine --replicas=1 -n gamification
+          kubectl scale deployment/notification-service --replicas=1 -n shared-services
+
+      - name: Wait for canary rollouts
+        run: |
+          kubectl rollout status deployment/api-gateway --timeout=300s -n shared-services
+          kubectl rollout status deployment/auth-service --timeout=300s -n shared-services
+          kubectl rollout status deployment/health-service --timeout=300s -n health-journey
+          kubectl rollout status deployment/care-service --timeout=300s -n care-journey
+          kubectl rollout status deployment/plan-service --timeout=300s -n plan-journey
+          kubectl rollout status deployment/gamification-engine --timeout=300s -n gamification
+          kubectl rollout status deployment/notification-service --timeout=300s -n shared-services
+
+  smoke-test:
+    runs-on: ubuntu-latest
+    needs: deploy-canary
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Kubernetes CLI
+        uses: azure/setup-kubectl@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }} --region ${{ env.AWS_REGION }}
+
+      - name: Run smoke tests against canary
+        run: |
+          API_HOST=$(kubectl get svc api-gateway -n shared-services \
+            -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' 2>/dev/null || echo "")
+          if [ -z "$API_HOST" ]; then
+            echo "::warning::No load balancer hostname found, using port-forward fallback"
+            kubectl port-forward svc/api-gateway 8080:4000 -n shared-services &
+            sleep 5
+            API_HOST="localhost:8080"
+            SCHEME="http"
+          else
+            SCHEME="https"
+          fi
+          ENDPOINTS=(
+            "/health"
+            "/api/auth/health"
+            "/api/health/health"
+            "/api/care/health"
+            "/api/plan/health"
+            "/api/gamification/health"
+            "/api/notifications/health"
+          )
+          FAILED=0
+          for endpoint in "${ENDPOINTS[@]}"; do
+            HTTP_CODE=$(curl -sk -o /dev/null -w "%{http_code}" \
+              --max-time 15 --retry 3 --retry-delay 2 \
+              "${SCHEME}://${API_HOST}${endpoint}" || echo "000")
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "PASS: ${endpoint} returned ${HTTP_CODE}"
+            else
+              echo "FAIL: ${endpoint} returned ${HTTP_CODE}"
+              FAILED=$((FAILED + 1))
+            fi
+          done
+          if [ $FAILED -gt 0 ]; then
+            echo "::error::${FAILED}/7 smoke tests failed"
+            exit 1
+          fi
+          echo "All 7 smoke tests passed"
+
+  promote:
+    runs-on: ubuntu-latest
+    needs: smoke-test
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Kubernetes CLI
+        uses: azure/setup-kubectl@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }} --region ${{ env.AWS_REGION }}
+
+      - name: Apply network policies
+        run: |
+          kubectl apply -f infrastructure/kubernetes/api-gateway/network-policy.yaml
+          kubectl apply -f infrastructure/kubernetes/auth-service/network-policy.yaml
+          kubectl apply -f infrastructure/kubernetes/health-journey/network-policy.yaml
+          kubectl apply -f infrastructure/kubernetes/care-journey/network-policy.yaml
+          kubectl apply -f infrastructure/kubernetes/plan-journey/network-policy.yaml
+          kubectl apply -f infrastructure/kubernetes/gamification/network-policy.yaml
+          kubectl apply -f infrastructure/kubernetes/notification-service/network-policy.yaml
+
+      - name: Promote to full production
+        run: |
+          kubectl apply -f infrastructure/kubernetes/api-gateway/
+          kubectl apply -f infrastructure/kubernetes/auth-service/
+          kubectl apply -f infrastructure/kubernetes/health-journey/
+          kubectl apply -f infrastructure/kubernetes/care-journey/
+          kubectl apply -f infrastructure/kubernetes/plan-journey/
+          kubectl apply -f infrastructure/kubernetes/gamification/
+          kubectl apply -f infrastructure/kubernetes/notification-service/
+
+      - name: Wait for all rollouts
+        run: |
+          kubectl rollout status deployment/api-gateway --timeout=600s -n shared-services
+          kubectl rollout status deployment/auth-service --timeout=600s -n shared-services
+          kubectl rollout status deployment/health-service --timeout=600s -n health-journey
+          kubectl rollout status deployment/care-service --timeout=600s -n care-journey
+          kubectl rollout status deployment/plan-service --timeout=600s -n plan-journey
+          kubectl rollout status deployment/gamification-engine --timeout=600s -n gamification
+          kubectl rollout status deployment/notification-service --timeout=600s -n shared-services
+
+      - name: Create Sentry release
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+        run: |
+          if [ -n "$SENTRY_AUTH_TOKEN" ] && [ -n "$SENTRY_ORG" ]; then
+            npx @sentry/cli releases new "${{ github.ref_name }}"
+            npx @sentry/cli releases set-commits "${{ github.ref_name }}" --auto
+            npx @sentry/cli releases finalize "${{ github.ref_name }}"
+            echo "Sentry release created: ${{ github.ref_name }}"
+          else
+            echo "Sentry credentials not configured, skipping release creation"
+          fi
+
+      - name: Notify deployment success
+        if: success()
+        run: |
+          echo "::notice::Production deployment successful: ${{ github.ref_name }} (${{ github.sha }})"
+
+  rollback:
+    runs-on: ubuntu-latest
+    if: ${{ inputs.rollback == true || failure() }}
+    needs: [smoke-test]
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Kubernetes CLI
+        uses: azure/setup-kubectl@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }} --region ${{ env.AWS_REGION }}
+
+      - name: Rollback to specific tag
+        if: ${{ inputs.target_tag != '' }}
+        run: |
+          TAG="${{ inputs.target_tag }}"
+          OWNER="${{ github.repository_owner }}"
+          echo "Rolling back all services to tag: ${TAG}"
+          declare -A NS_MAP=(
+            [api-gateway]="shared-services"
+            [auth-service]="shared-services"
+            [health-service]="health-journey"
+            [care-service]="care-journey"
+            [plan-service]="plan-journey"
+            [gamification-engine]="gamification"
+            [notification-service]="shared-services"
+          )
+          for service in "${!NS_MAP[@]}"; do
+            ns="${NS_MAP[$service]}"
+            kubectl set image deployment/${service} \
+              ${service}=ghcr.io/${OWNER}/austa-${service}:${TAG} \
+              -n ${ns}
+            echo "Set ${service} to tag ${TAG} in namespace ${ns}"
+          done
+
+      - name: Rollback to previous revision
+        if: ${{ inputs.target_tag == '' }}
+        run: |
+          echo "Rolling back all services to previous revision"
+          kubectl rollout undo deployment/api-gateway -n shared-services
+          kubectl rollout undo deployment/auth-service -n shared-services
+          kubectl rollout undo deployment/health-service -n health-journey
+          kubectl rollout undo deployment/care-service -n care-journey
+          kubectl rollout undo deployment/plan-service -n plan-journey
+          kubectl rollout undo deployment/gamification-engine -n gamification
+          kubectl rollout undo deployment/notification-service -n shared-services
+
+      - name: Verify rollback health
+        run: |
+          kubectl rollout status deployment/api-gateway --timeout=300s -n shared-services
+          kubectl rollout status deployment/auth-service --timeout=300s -n shared-services
+          kubectl rollout status deployment/health-service --timeout=300s -n health-journey
+          kubectl rollout status deployment/care-service --timeout=300s -n care-journey
+          kubectl rollout status deployment/plan-service --timeout=300s -n plan-journey
+          kubectl rollout status deployment/gamification-engine --timeout=300s -n gamification
+          kubectl rollout status deployment/notification-service --timeout=300s -n shared-services
+
+      - name: Notify rollback executed
+        run: |
+          echo "::warning::Rollback executed for ${{ github.ref_name }} — verify service health"

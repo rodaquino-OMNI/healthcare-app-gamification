@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import type { SettingsNavigationProp } from '../../navigation/types';
 import styled from 'styled-components/native';
 
 import { useAuth } from '../../hooks/useAuth';
@@ -120,13 +121,13 @@ interface SettingSection {
  *  10. App
  */
 export const SettingsScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<SettingsNavigationProp>();
   const { signOut } = useAuth();
   const { journey } = useJourney();
   const { t } = useTranslation();
 
   const handleLogout = () => {
-    navigation.navigate(ROUTES.SETTINGS_LOGOUT as never);
+    navigation.navigate(ROUTES.SETTINGS_LOGOUT);
   };
 
   const sections: SettingSection[] = [
@@ -135,7 +136,7 @@ export const SettingsScreen: React.FC = () => {
       items: [
         {
           label: t('settings.editProfile'),
-          onPress: () => navigation.navigate(ROUTES.SETTINGS_EDIT as never),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_EDIT),
           showChevron: true,
         },
       ],
@@ -145,22 +146,22 @@ export const SettingsScreen: React.FC = () => {
       items: [
         {
           label: t('settings.personalInfo.title'),
-          onPress: () => navigation.navigate(ROUTES.SETTINGS_PERSONAL_INFO as never),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_PERSONAL_INFO),
           showChevron: true,
         },
         {
           label: t('settings.changePassword.title'),
-          onPress: () => navigation.navigate(ROUTES.SETTINGS_CHANGE_PASSWORD as never),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_CHANGE_PASSWORD),
           showChevron: true,
         },
         {
           label: t('settings.twoFactor.title'),
-          onPress: () => navigation.navigate(ROUTES.SETTINGS_TWO_FACTOR as never),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_TWO_FACTOR),
           showChevron: true,
         },
         {
           label: t('settings.biometric.title'),
-          onPress: () => navigation.navigate(ROUTES.SETTINGS_BIOMETRIC as never),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_BIOMETRIC),
           showChevron: true,
         },
       ],
@@ -170,7 +171,7 @@ export const SettingsScreen: React.FC = () => {
       items: [
         {
           label: t('settings.notifications'),
-          onPress: () => navigation.navigate(ROUTES.SETTINGS_NOTIFICATIONS as never),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_NOTIFICATIONS),
           showChevron: true,
         },
       ],
@@ -180,17 +181,17 @@ export const SettingsScreen: React.FC = () => {
       items: [
         {
           label: t('settings.privacy'),
-          onPress: () => navigation.navigate(ROUTES.SETTINGS_PRIVACY as never),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_PRIVACY),
           showChevron: true,
         },
         {
           label: t('settings.terms.title'),
-          onPress: () => navigation.navigate(ROUTES.SETTINGS_TERMS as never),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_TERMS),
           showChevron: true,
         },
         {
           label: t('settings.privacyPolicy.title'),
-          onPress: () => navigation.navigate(ROUTES.SETTINGS_PRIVACY_POLICY as never),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_PRIVACY_POLICY),
           showChevron: true,
         },
       ],
@@ -200,17 +201,17 @@ export const SettingsScreen: React.FC = () => {
       items: [
         {
           label: t('settings.healthPlan.title'),
-          onPress: () => navigation.navigate(ROUTES.SETTINGS_HEALTH_PLAN as never),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_HEALTH_PLAN),
           showChevron: true,
         },
         {
           label: t('settings.insuranceDocs.title'),
-          onPress: () => navigation.navigate(ROUTES.SETTINGS_INSURANCE_DOCS as never),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_INSURANCE_DOCS),
           showChevron: true,
         },
         {
           label: t('settings.dependents.title'),
-          onPress: () => navigation.navigate(ROUTES.SETTINGS_DEPENDENTS as never),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_DEPENDENTS),
           showChevron: true,
         },
       ],
@@ -220,7 +221,7 @@ export const SettingsScreen: React.FC = () => {
       items: [
         {
           label: t('settings.connectedDevices.title'),
-          onPress: () => navigation.navigate(ROUTES.SETTINGS_CONNECTED_DEVICES as never),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_CONNECTED_DEVICES),
           showChevron: true,
         },
       ],
@@ -230,17 +231,17 @@ export const SettingsScreen: React.FC = () => {
       items: [
         {
           label: t('settings.languageSelect.title'),
-          onPress: () => navigation.navigate(ROUTES.SETTINGS_LANGUAGE as never),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_LANGUAGE),
           showChevron: true,
         },
         {
           label: t('settings.themeSelect.title'),
-          onPress: () => navigation.navigate(ROUTES.SETTINGS_THEME as never),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_THEME),
           showChevron: true,
         },
         {
           label: t('settings.accessibility.title'),
-          onPress: () => navigation.navigate(ROUTES.SETTINGS_ACCESSIBILITY as never),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_ACCESSIBILITY),
           showChevron: true,
         },
       ],
@@ -250,7 +251,7 @@ export const SettingsScreen: React.FC = () => {
       items: [
         {
           label: t('help.home.title'),
-          onPress: () => navigation.navigate(ROUTES.HELP_HOME as never),
+          onPress: () => navigation.navigate(ROUTES.HELP_HOME),
           showChevron: true,
         },
       ],
@@ -260,12 +261,12 @@ export const SettingsScreen: React.FC = () => {
       items: [
         {
           label: t('settings.dataExport.title'),
-          onPress: () => navigation.navigate(ROUTES.SETTINGS_DATA_EXPORT as never),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_DATA_EXPORT),
           showChevron: true,
         },
         {
           label: t('settings.deleteAccount.title'),
-          onPress: () => navigation.navigate(ROUTES.SETTINGS_DELETE_ACCOUNT as never),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_DELETE_ACCOUNT),
           showChevron: true,
         },
       ],
@@ -275,12 +276,12 @@ export const SettingsScreen: React.FC = () => {
       items: [
         {
           label: t('settings.aboutApp.title'),
-          onPress: () => navigation.navigate(ROUTES.SETTINGS_ABOUT as never),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_ABOUT),
           showChevron: true,
         },
         {
           label: t('settings.feedback.title'),
-          onPress: () => navigation.navigate(ROUTES.SETTINGS_FEEDBACK as never),
+          onPress: () => navigation.navigate(ROUTES.SETTINGS_FEEDBACK),
           showChevron: true,
         },
       ],

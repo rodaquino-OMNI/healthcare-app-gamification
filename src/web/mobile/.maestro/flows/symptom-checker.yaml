@@ -1,0 +1,32 @@
+appId: com.austa.superapp
+tags:
+  - regression
+  - care
+---
+- launchApp
+- tapOn:
+    id: "welcome-cta-login"
+- tapOn:
+    id: "login-email-input"
+- inputText: "test@austa.health"
+- tapOn:
+    id: "login-password-input"
+- inputText: "Test123!@#"
+- tapOn:
+    id: "login-submit-button"
+- assertVisible:
+    id: "home-screen"
+    timeout: 10000
+- tapOn:
+    text: "Care"
+- assertVisible:
+    id: "symptom-checker-title"
+    timeout: 5000
+- tapOn:
+    id: "symptom-input"
+- inputText: "headache"
+- tapOn:
+    id: "continue-button"
+- assertVisible:
+    id: "analyzing-title"
+    timeout: 10000

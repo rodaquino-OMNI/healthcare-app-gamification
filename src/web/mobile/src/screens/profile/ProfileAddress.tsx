@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { AuthNavigationProp } from '../../navigation/types';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -192,7 +193,7 @@ const PrimaryButtonText = styled.Text`
  * neighborhood, city, state.
  */
 const ProfileAddress: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<AuthNavigationProp>();
   const { t } = useTranslation();
 
   const {
@@ -249,7 +250,7 @@ const ProfileAddress: React.FC = () => {
 
   const onSubmit = (data: AddressFormData) => {
     // TODO: persist address to profile context/store
-    navigation.navigate('ProfileDocuments' as never);
+    navigation.navigate('ProfileDocuments');
   };
 
   return (

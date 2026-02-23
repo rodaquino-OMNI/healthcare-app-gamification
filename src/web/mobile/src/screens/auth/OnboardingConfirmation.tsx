@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { AuthNavigationProp } from '../../navigation/types';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
@@ -160,7 +161,7 @@ const MOCK_SELECTED_GOALS = [
  * of selected goals and a CTA to enter the main app.
  */
 export const OnboardingConfirmation: React.FC = () => {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<AuthNavigationProp>();
   const { t } = useTranslation();
 
   const handleStartApp = () => {

@@ -7,9 +7,10 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
+import type { AuthNavigationProp } from '../../navigation/types';
 
 import { ROUTES } from '../../constants/routes';
-import { MOBILE_AUTH_ROUTES } from 'src/web/shared/constants/routes';
+
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography } from '../../../../design-system/src/tokens/typography';
 import { spacing } from '../../../../design-system/src/tokens/spacing';
@@ -192,7 +193,7 @@ const DisclaimerText = styled.Text`
 // --- Component ---
 
 export const SocialAuth: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<AuthNavigationProp>();
   const { t } = useTranslation();
   const [lgpdConsent, setLgpdConsent] = useState(false);
 
@@ -296,7 +297,7 @@ export const SocialAuth: React.FC = () => {
 
           {/* Email Login Link */}
           <EmailLink
-            onPress={() => navigation.navigate(MOBILE_AUTH_ROUTES.LOGIN as never)}
+            onPress={() => navigation.navigate('Login')}
             testID="social-auth-email-login"
           >
             <EmailLinkText>{t('auth.socialAuth.emailLogin')}</EmailLinkText>
@@ -307,7 +308,7 @@ export const SocialAuth: React.FC = () => {
             <FooterRow>
               <FooterText>{t('auth.socialAuth.noAccount')} </FooterText>
               <TouchableOpacity
-                onPress={() => navigation.navigate(MOBILE_AUTH_ROUTES.REGISTER as never)}
+                onPress={() => navigation.navigate('Register')}
                 testID="social-auth-register"
               >
                 <FooterLink>{t('auth.socialAuth.register')}</FooterLink>

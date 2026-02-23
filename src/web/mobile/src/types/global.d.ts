@@ -36,20 +36,6 @@ declare module '@react-native-community/netinfo' {
   export * from '@react-native-community/netinfo';
 }
 
-// Add global localStorage interface for React Native environment
-interface Storage {
-  getItem(key: string): string | null;
-  setItem(key: string, value: string): void;
-  removeItem(key: string): void;
-  clear(): void;
-  key(index: number): string | null;
-  readonly length: number;
-}
-
-declare global {
-  var localStorage: Storage;
-}
-
 // Declare global namespace for any global types
 declare namespace NodeJS {
   interface Global {

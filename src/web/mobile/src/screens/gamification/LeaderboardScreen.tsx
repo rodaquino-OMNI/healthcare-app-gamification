@@ -190,6 +190,7 @@ const LeaderboardScreen: React.FC = () => {
 
     return (
       <View
+        testID="gamification-leaderboard-item"
         style={[
           styles.listRow,
           item.isCurrentUser && styles.listRowHighlight,
@@ -197,7 +198,7 @@ const LeaderboardScreen: React.FC = () => {
         accessibilityLabel={`${item.rank} lugar: ${item.username}, ${item.xp.toLocaleString('pt-BR')} XP`}
       >
         {/* Rank */}
-        <Text style={styles.listRank}>{item.rank}</Text>
+        <Text testID="gamification-leaderboard-rank" style={styles.listRank}>{item.rank}</Text>
 
         {/* Avatar */}
         <View style={[styles.listAvatar, { borderColor: journeyColor }]}>
@@ -269,6 +270,7 @@ const LeaderboardScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
+        testID="gamification-leaderboard-list"
         data={restEntries}
         renderItem={renderListItem}
         keyExtractor={(item) => item.id}

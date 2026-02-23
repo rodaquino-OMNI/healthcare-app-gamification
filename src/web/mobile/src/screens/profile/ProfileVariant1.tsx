@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { AuthNavigationProp } from '../../navigation/types';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -221,7 +222,7 @@ const SkipLinkText = styled.Text`
  * Collects health information: blood type, allergies, chronic conditions.
  */
 const ProfileVariant1: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<AuthNavigationProp>();
   const { t } = useTranslation();
   const [selectedConditions, setSelectedConditions] = useState<string[]>([]);
 
@@ -257,11 +258,11 @@ const ProfileVariant1: React.FC = () => {
 
   const onSubmit = (data: HealthInfoFormData) => {
     // TODO: persist health info with selectedConditions to profile context/store
-    navigation.navigate('ProfileVariant2' as never);
+    navigation.navigate('ProfileInsurance');
   };
 
   const handleSkip = () => {
-    navigation.navigate('ProfileAddress' as never);
+    navigation.navigate('ProfileAddress');
   };
 
   return (

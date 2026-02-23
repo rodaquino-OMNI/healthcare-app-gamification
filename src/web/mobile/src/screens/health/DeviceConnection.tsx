@@ -9,7 +9,7 @@ import { Button, ButtonProps } from 'src/web/design-system/src/components/Button
 import { DeviceCard } from 'src/web/design-system/src/health/DeviceCard/DeviceCard.tsx';
 import { useTranslation } from 'react-i18next';
 import LoadingIndicator from 'src/web/mobile/src/components/shared/LoadingIndicator.tsx';
-import ErrorState from 'src/web/mobile/src/components/shared/ErrorState.tsx';
+import ErrorState from 'src/web/mobile/src/components/shared/ErrorState';
 
 /**
  * Renders the DeviceConnection screen, allowing users to connect and manage their wearable devices.

@@ -1,5 +1,6 @@
 import React from 'react'; // version 18.2.0
 import { createStackNavigator } from '@react-navigation/stack'; // version 6.3.16
+import type { HealthStackParamList } from './types';
 
 import { Dashboard } from '../screens/health/Dashboard';
 import { MedicalHistoryScreen } from '../screens/health/MedicalHistory';
@@ -33,11 +34,26 @@ import { MedicationShareCaregiver } from '../screens/health/MedicationShareCareg
 import { MedicationCaregiverAccess } from '../screens/health/MedicationCaregiverAccess';
 import { MedicationExport } from '../screens/health/MedicationExport';
 import { AssessmentWizard } from '../screens/health/assessment';
+import { CycleHome } from '../screens/health/cycle-tracking/CycleHome';
+import { CycleCalendar } from '../screens/health/cycle-tracking/CycleCalendar';
+import { LogPeriodStart } from '../screens/health/cycle-tracking/LogPeriodStart';
+import { LogSymptoms } from '../screens/health/cycle-tracking/LogSymptoms';
+import { LogFlowIntensity } from '../screens/health/cycle-tracking/LogFlowIntensity';
+import { FertilityWindow } from '../screens/health/cycle-tracking/FertilityWindow';
+import { PMSPredictions } from '../screens/health/cycle-tracking/PMSPredictions';
+import { CycleHistory } from '../screens/health/cycle-tracking/CycleHistory';
+import { CycleAnalysis } from '../screens/health/cycle-tracking/CycleAnalysis';
+import { CycleInsights } from '../screens/health/cycle-tracking/CycleInsights';
+import { CycleArticleDetail } from '../screens/health/cycle-tracking/CycleArticleDetail';
+import { CycleReminders } from '../screens/health/cycle-tracking/CycleReminders';
+import { PartnerSharing } from '../screens/health/cycle-tracking/PartnerSharing';
+import { CycleSettings } from '../screens/health/cycle-tracking/CycleSettings';
+import { ExportCycleReport } from '../screens/health/cycle-tracking/ExportCycleReport';
 import { ROUTES } from '../constants/routes';
 import { JOURNEY_COLORS } from '../constants/journeys';
 
 // LD1: Creates a Stack Navigator using createStackNavigator from React Navigation.
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<HealthStackParamList>();
 
 // LD1: Defines the stack navigator for the My Health journey.
 export default function HealthNavigator() {
@@ -83,6 +99,22 @@ export default function HealthNavigator() {
       <Stack.Screen name={ROUTES.HEALTH_MEDICATION_CAREGIVER_ACCESS} component={MedicationCaregiverAccess} />
       <Stack.Screen name={ROUTES.HEALTH_MEDICATION_EXPORT} component={MedicationExport} />
       <Stack.Screen name={ROUTES.HEALTH_ASSESSMENT_WIZARD} component={AssessmentWizard} />
+      {/* Cycle Tracking (Module 12) */}
+      <Stack.Screen name={ROUTES.HEALTH_CYCLE_HOME} component={CycleHome} />
+      <Stack.Screen name={ROUTES.HEALTH_CYCLE_CALENDAR} component={CycleCalendar} />
+      <Stack.Screen name={ROUTES.HEALTH_CYCLE_LOG_PERIOD} component={LogPeriodStart} />
+      <Stack.Screen name={ROUTES.HEALTH_CYCLE_LOG_SYMPTOMS} component={LogSymptoms} />
+      <Stack.Screen name={ROUTES.HEALTH_CYCLE_LOG_FLOW} component={LogFlowIntensity} />
+      <Stack.Screen name={ROUTES.HEALTH_CYCLE_FERTILITY} component={FertilityWindow} />
+      <Stack.Screen name={ROUTES.HEALTH_CYCLE_PMS} component={PMSPredictions} />
+      <Stack.Screen name={ROUTES.HEALTH_CYCLE_HISTORY} component={CycleHistory} />
+      <Stack.Screen name={ROUTES.HEALTH_CYCLE_ANALYSIS} component={CycleAnalysis} />
+      <Stack.Screen name={ROUTES.HEALTH_CYCLE_INSIGHTS} component={CycleInsights} />
+      <Stack.Screen name={ROUTES.HEALTH_CYCLE_ARTICLE_DETAIL} component={CycleArticleDetail} />
+      <Stack.Screen name={ROUTES.HEALTH_CYCLE_REMINDERS} component={CycleReminders} />
+      <Stack.Screen name={ROUTES.HEALTH_CYCLE_PARTNER_SHARING} component={PartnerSharing} />
+      <Stack.Screen name={ROUTES.HEALTH_CYCLE_SETTINGS} component={CycleSettings} />
+      <Stack.Screen name={ROUTES.HEALTH_CYCLE_EXPORT_REPORT} component={ExportCycleReport} />
     </Stack.Navigator>
   );
 }

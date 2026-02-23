@@ -209,6 +209,7 @@ const RewardCatalog: React.FC = () => {
 
     return (
       <TouchableOpacity
+        testID="gamification-reward-card"
         onPress={() => handleRewardPress(item.id)}
         style={[styles.rewardCard, !canAfford && styles.rewardCardDisabled]}
         accessibilityLabel={canAfford ? t('gamification.rewards.rewardAccessibility', { title: item.title, xp: item.xp }) : t('gamification.rewards.rewardAccessibilityDeficit', { title: item.title, xp: item.xp, deficit })}
@@ -220,7 +221,7 @@ const RewardCatalog: React.FC = () => {
         <Text style={styles.rewardTitle} numberOfLines={2}>
           {item.title}
         </Text>
-        <View style={[styles.rewardXPBadge, { backgroundColor: journeyColor + '20' }]}>
+        <View testID="gamification-reward-redeem" style={[styles.rewardXPBadge, { backgroundColor: journeyColor + '20' }]}>
           <Text style={[styles.rewardXPText, { color: journeyColor }]}>
             {item.xp} XP
           </Text>
@@ -263,6 +264,7 @@ const RewardCatalog: React.FC = () => {
       </View>
 
       <FlatList
+        testID="gamification-reward-list"
         data={filteredRewards}
         keyExtractor={(item) => item.id}
         renderItem={renderRewardItem}

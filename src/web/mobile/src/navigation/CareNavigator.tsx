@@ -1,5 +1,6 @@
 import React from 'react'; // version 18.2.0
 import { createStackNavigator } from '@react-navigation/stack'; // version 6.3.16
+import type { CareStackParamList } from './types';
 
 import { Dashboard } from '../screens/care/Dashboard';
 import { AppointmentDetail } from '../screens/care/AppointmentDetail';
@@ -73,7 +74,7 @@ import { ROUTES } from '../constants/routes';
 import { JOURNEY_COLORS } from '../constants/journeys';
 
 // LD1: Creates a Stack Navigator using createStackNavigator from React Navigation.
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<CareStackParamList>();
 
 // LD1: Defines the stack navigator for the Care Now journey.
 export default function CareNavigator() {

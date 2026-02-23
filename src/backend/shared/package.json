@@ -25,7 +25,6 @@
     "@nestjs/schedule": "^4.0.0",
     "@nestjs/swagger": "^11.0.7",
     "@nestjs/throttler": "^5.1.1",
-    "@nestjs/typeorm": "^10.0.1",
     "@nestjs/websockets": "^10.3.0",
     "@sendgrid/client": "^8.1.0",
     "@sendgrid/mail": "^8.1.0",
@@ -64,7 +63,6 @@
     "socket.io": "^4.7.4",
     "swagger-jsdoc": "^6.2.8",
     "twilio": "^4.22.0",
-    "typeorm": "^0.3.20",
     "uuid": "^9.0.1",
     "zod": "^3.22.4"
   },

@@ -24,11 +24,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Run eslint
@@ -38,11 +38,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Run typecheck
@@ -52,11 +52,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Run tests
@@ -66,24 +66,26 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-  e2e:
-    runs-on: ubuntu-latest
+  maestro-e2e:
+    runs-on: macos-latest
+    needs: [lint, test]
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
+          cache: 'yarn'
       - name: Install dependencies
+        working-directory: src/web/mobile
         run: yarn install --frozen-lockfile
-      - name: Build application
-        run: yarn build
-      - name: Start server
-        run: yarn start &
-        shell: bash
-      - name: Run Cypress tests
-        uses: cypress-io/github-action@v5
-        with:
-          wait-on: http://localhost:3000
-          browser: chrome
+      - name: Install Maestro CLI
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+      - name: Start Metro bundler
+        working-directory: src/web/mobile
+        run: npx expo start --no-dev --minify &
+      - name: Run Maestro E2E tests
+        working-directory: src/web/mobile
+        run: maestro test .maestro/flows/
+        timeout-minutes: 15

@@ -152,6 +152,7 @@ const QuestList: React.FC = () => {
       {renderTabs()}
 
       <SectionList
+        testID="gamification-quest-list"
         sections={sections}
         keyExtractor={(item) => item.id}
         renderItem={renderQuestItem}

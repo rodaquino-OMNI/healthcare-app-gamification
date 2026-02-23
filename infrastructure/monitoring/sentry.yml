@@ -1,0 +1,115 @@
+# Sentry Configuration for AUSTA Healthcare SuperApp
+#
+# IMPORTANT: This file contains ConfigMap definitions with placeholder values only.
+# Actual DSN and auth token values MUST be injected at runtime via one of:
+#   - ExternalSecrets Operator (recommended for EKS): syncs from AWS Secrets Manager
+#   - Sealed Secrets (kubeseal): encrypted secret committed to git
+#   - Helm --set values at deploy time (never commit real values)
+#
+# To provision real secrets via ExternalSecrets, see:
+#   infrastructure/kubernetes/monitoring/external-secret-sentry.yaml (create separately)
+#
+# DO NOT commit actual DSN or auth token values to this file or any file in this repo.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+  labels:
+    app.kubernetes.io/managed-by: kubectl
+    environment: production
+
+---
+# Non-sensitive Sentry configuration shared across all services.
+# DSN reference points to the Secret defined below.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sentry-config
+  namespace: monitoring
+  labels:
+    app: sentry
+    component: monitoring
+    app.kubernetes.io/part-of: austa-superapp
+data:
+  # Sentry environment tag — overridden per namespace via Kustomize overlays if needed
+  SENTRY_ENVIRONMENT: "production"
+  # Sample 10% of traces to balance observability cost vs. coverage
+  SENTRY_TRACES_SAMPLE_RATE: "0.1"
+  # Profile 10% of sampled traces
+  SENTRY_PROFILES_SAMPLE_RATE: "0.1"
+  # Release name is injected by the deploy workflow via SENTRY_RELEASE env var
+  # SENTRY_RELEASE is set at pod start from the image tag label
+  SENTRY_RELEASE: ""
+  # Attach server-side stack traces
+  SENTRY_ATTACH_STACKTRACE: "true"
+  # Max breadcrumbs per event
+  SENTRY_MAX_BREADCRUMBS: "50"
+
+---
+# Sentry secrets — values injected by ExternalSecrets or Sealed Secrets.
+# The stringData fields below are PLACEHOLDERS; replace with your secret management
+# solution before applying to a live cluster.
+#
+# Example ExternalSecrets spec (do not commit real values):
+#   spec:
+#     refreshInterval: 1h
+#     secretStoreRef:
+#       name: aws-secrets-manager
+#       kind: SecretStore
+#     target:
+#       name: sentry-secret
+#     data:
+#       - secretKey: sentry-dsn
+#         remoteRef:
+#           key: austa/production/sentry
+#           property: dsn
+#       - secretKey: sentry-auth-token
+#         remoteRef:
+#           key: austa/production/sentry
+#           property: auth_token
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sentry-secret
+  namespace: monitoring
+  labels:
+    app: sentry
+    component: monitoring
+    app.kubernetes.io/part-of: austa-superapp
+  annotations:
+    # Managed by ExternalSecrets — do not edit manually
+    secret-managed-by: "external-secrets-operator"
+type: Opaque
+stringData:
+  # PLACEHOLDER — injected by ExternalSecrets from AWS Secrets Manager
+  # key: austa/production/sentry → property: dsn
+  sentry-dsn: "${SENTRY_DSN}"
+  # PLACEHOLDER — injected by ExternalSecrets from AWS Secrets Manager
+  # key: austa/production/sentry → property: auth_token
+  sentry-auth-token: "${SENTRY_AUTH_TOKEN}"
+
+---
+# ServiceMonitor tells Prometheus to scrape Sentry metrics if sentry-self-hosted is used.
+# Remove this resource if using Sentry SaaS (sentry.io).
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: sentry-monitor
+  namespace: monitoring
+  labels:
+    app: sentry
+    component: monitoring
+    release: austa-prometheus
+spec:
+  selector:
+    matchLabels:
+      app: sentry
+  namespaceSelector:
+    matchNames:
+      - monitoring
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 10s

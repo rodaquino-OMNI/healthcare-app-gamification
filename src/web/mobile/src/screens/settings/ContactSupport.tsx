@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView, Linking, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { SettingsNavigationProp } from '../../navigation/types';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
@@ -178,11 +179,11 @@ const HoursText = styled.Text`
 // --- Component ---
 
 export const ContactSupportScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<SettingsNavigationProp>();
   const { t } = useTranslation();
 
   const handleStartChat = () => {
-    navigation.navigate(ROUTES.HELP_CHAT as never);
+    navigation.navigate(ROUTES.HELP_CHAT);
   };
 
   const handleCall = async () => {

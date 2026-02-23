@@ -11,10 +11,11 @@ import {
   Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { PlanNavigationProp } from '../../navigation/types';
 import { useTranslation } from 'react-i18next';
 
 import { ClaimType } from 'src/web/shared/types/plan.types';
-import { MOBILE_PLAN_ROUTES } from 'src/web/shared/constants/routes';
+
 import {
   colors,
   typography,
@@ -52,7 +53,7 @@ const CLAIM_TYPE_OPTIONS: { value: ClaimType; label: string; icon: string }[] = 
  */
 const ClaimSubmissionScreen: React.FC = () => {
   const { t } = useTranslation();
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<PlanNavigationProp>();
   const theme = useTheme() as Theme;
   const styles = createStyles(theme);
   const [currentStep, setCurrentStep] = useState(0);
@@ -151,6 +152,7 @@ const ClaimSubmissionScreen: React.FC = () => {
         const isSelected = formData.claimType === option.value;
         return (
           <TouchableOpacity
+            testID="plan-claim-type-select"
             key={option.value}
             style={[styles.typeCard, isSelected && styles.typeCardSelected]}
             onPress={() => updateField('claimType', option.value)}
@@ -178,6 +180,7 @@ const ClaimSubmissionScreen: React.FC = () => {
 
       <Text style={styles.fieldLabel}>{t('journeys.plan.claims.submission.providerName')} *</Text>
       <TextInput
+        testID="plan-claim-provider-input"
         style={styles.input}
         value={formData.providerName}
         onChangeText={(t) => updateField('providerName', t)}
@@ -187,6 +190,7 @@ const ClaimSubmissionScreen: React.FC = () => {
 
       <Text style={styles.fieldLabel}>{t('journeys.plan.claims.submission.serviceDate')} *</Text>
       <TextInput
+        testID="plan-claim-date-input"
         style={styles.input}
         value={formData.serviceDate}
         onChangeText={(t) => updateField('serviceDate', t)}
@@ -198,6 +202,7 @@ const ClaimSubmissionScreen: React.FC = () => {
 
       <Text style={styles.fieldLabel}>{t('journeys.plan.claims.submission.amount')} *</Text>
       <TextInput
+        testID="plan-claim-amount-input"
         style={styles.input}
         value={formData.amount}
         onChangeText={(t) => updateField('amount', t.replace(/[^0-9.]/g, ''))}
@@ -208,6 +213,7 @@ const ClaimSubmissionScreen: React.FC = () => {
 
       <Text style={styles.fieldLabel}>{t('journeys.plan.claims.submission.description')}</Text>
       <TextInput
+        testID="plan-claim-description-input"
         style={[styles.input, styles.textArea]}
         value={formData.description}
         onChangeText={(t) => updateField('description', t)}
@@ -227,6 +233,7 @@ const ClaimSubmissionScreen: React.FC = () => {
       <Text style={styles.stepSubtitle}>{t('journeys.plan.claims.submission.documentsSubtitle')}</Text>
 
       <TouchableOpacity
+        testID="plan-claim-upload-receipt"
         style={styles.uploadArea}
         onPress={() => {
           Alert.alert(t('journeys.plan.claims.submission.upload'), t('journeys.plan.claims.submission.uploadComingSoon'));
@@ -311,7 +318,7 @@ const ClaimSubmissionScreen: React.FC = () => {
       </Text>
       <TouchableOpacity
         style={styles.successButton}
-        onPress={() => navigation.navigate(MOBILE_PLAN_ROUTES.CLAIMS)}
+        onPress={() => navigation.navigate('ClaimHistory')}
         accessibilityRole="button"
       >
         <Text style={styles.successButtonText}>{t('journeys.plan.claims.submission.viewClaims')}</Text>
@@ -354,6 +361,7 @@ const ClaimSubmissionScreen: React.FC = () => {
             <Text style={styles.navBackText}>{t('common.buttons.back')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
+            testID="plan-claim-submit-button"
             style={[styles.navNextButton, !isStepValid() && styles.navNextButtonDisabled]}
             onPress={handleNext}
             disabled={!isStepValid()}

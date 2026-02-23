@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import type { AuthNavigationProp } from '../../navigation/types';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components/native';
@@ -10,7 +11,7 @@ import { Button } from 'src/web/design-system/src/components/Button';
 import Input from 'src/web/design-system/src/components/Input';
 import { useAuth } from 'src/web/mobile/src/hooks/useAuth';
 import { showToast, validationSchema } from 'src/web/mobile/src/utils';
-import { MOBILE_AUTH_ROUTES } from 'src/web/shared/constants/routes';
+
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
 import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
@@ -20,7 +21,7 @@ import { borderRadius, borderRadiusValues } from '../../../../design-system/src/
  * Type definition for the navigation properties of the ForgotPasswordScreen.
  */
 type ForgotPasswordScreenProp = {
-  navigation: StackNavigationProp<any, 'ForgotPassword'>;
+  navigation: AuthNavigationProp;
 };
 
 /**
@@ -137,7 +138,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProp> = ({ navig
           </SuccessMessage>
           <ButtonWrapper style={{ width: '100%' }}>
             <Button
-              onPress={() => navigation.navigate(MOBILE_AUTH_ROUTES.LOGIN)}
+              onPress={() => navigation.navigate('Login')}
               journey="health"
               testID="back-to-login-button"
             >
@@ -182,7 +183,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProp> = ({ navig
 
       <ButtonWrapper>
         <Button
-          onPress={() => navigation.navigate(MOBILE_AUTH_ROUTES.LOGIN)}
+          onPress={() => navigation.navigate('Login')}
           variant="tertiary"
           journey="health"
           testID="cancel-button"

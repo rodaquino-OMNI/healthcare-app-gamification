@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FlatList, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { SettingsNavigationProp } from '../../navigation/types';
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
 
@@ -205,7 +206,7 @@ const MOCK_ADDRESSES: Address[] = [
  * primary indicator, full formatted address, and Edit/Delete actions.
  */
 export const AddressesScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<SettingsNavigationProp>();
   const { t } = useTranslation();
   const [addresses, setAddresses] = useState<Address[]>(MOCK_ADDRESSES);
 
@@ -228,11 +229,11 @@ export const AddressesScreen: React.FC = () => {
 
   const handleEdit = (_addr: Address) => {
     // TODO: navigate with pre-filled data
-    navigation.navigate(ROUTES.SETTINGS_ADD_ADDRESS as never);
+    navigation.navigate(ROUTES.SETTINGS_ADD_ADDRESS);
   };
 
   const handleAdd = () => {
-    navigation.navigate(ROUTES.SETTINGS_ADD_ADDRESS as never);
+    navigation.navigate(ROUTES.SETTINGS_ADD_ADDRESS);
   };
 
   const getLabelTranslation = (label: string): string => {

@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import type { GamificationNavigationProp } from '../../navigation/types';
 import { useTheme } from 'styled-components/native';
 import type { Theme } from '../../../../design-system/src/themes/base.theme';
 
@@ -57,7 +58,7 @@ function getJourneyColor(journey: string): string {
 /** Achievements screen with level indicator, XP progress, and filterable grid. */
 const AchievementsScreen: React.FC = () => {
   const { t } = useTranslation();
-  const navigation = useNavigation();
+  const navigation = useNavigation<GamificationNavigationProp>();
   const theme = useTheme() as Theme;
   const styles = createStyles(theme);
   const profile = useGameProfile();
@@ -86,21 +87,21 @@ const AchievementsScreen: React.FC = () => {
   const totalCount = achievements?.length ?? 0;
 
   const handleAchievementPress = (item: Achievement) => {
-    navigation.navigate('GamificationAchievementDetail' as never, {
+    navigation.navigate('GamificationAchievementDetail', {
       achievementId: item.id,
-    } as never);
+    });
   };
 
   const handleLeaderboardPress = () => {
-    navigation.navigate('GamificationLeaderboard' as never);
+    navigation.navigate('GamificationLeaderboard');
   };
 
   const handleQuestsPress = () => {
-    navigation.navigate('GamificationQuests' as never);
+    navigation.navigate('GamificationQuests');
   };
 
   const handleRewardsPress = () => {
-    navigation.navigate('GamificationRewards' as never);
+    navigation.navigate('GamificationRewards');
   };
 
   const renderFilterTab = (tab: { key: JourneyFilter; labelKey: string }) => {
@@ -127,6 +128,7 @@ const AchievementsScreen: React.FC = () => {
 
     return (
       <TouchableOpacity
+        testID="gamification-achievement-card"
         style={[styles.achievementCard, !item.unlocked && styles.achievementCardLocked]}
         onPress={() => handleAchievementPress(item)}
         accessibilityRole="button"
@@ -208,6 +210,7 @@ const AchievementsScreen: React.FC = () => {
       {/* Quick nav buttons */}
       <View style={styles.quickNav}>
         <TouchableOpacity
+          testID="gamification-tab-leaderboard"
           style={styles.quickNavButton}
           onPress={handleLeaderboardPress}
           accessibilityRole="button"
@@ -217,6 +220,7 @@ const AchievementsScreen: React.FC = () => {
           <Text style={styles.quickNavLabel}>{t('gamification.achievements.ranking')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
+          testID="gamification-tab-quests"
           style={styles.quickNavButton}
           onPress={handleQuestsPress}
           accessibilityRole="button"
@@ -226,6 +230,7 @@ const AchievementsScreen: React.FC = () => {
           <Text style={styles.quickNavLabel}>{t('gamification.achievements.quests')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
+          testID="gamification-tab-rewards"
           style={styles.quickNavButton}
           onPress={handleRewardsPress}
           accessibilityRole="button"
@@ -266,6 +271,7 @@ const AchievementsScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
+        testID="gamification-achievements-list"
         data={filteredAchievements}
         renderItem={renderAchievementItem}
         keyExtractor={(item) => item.id}

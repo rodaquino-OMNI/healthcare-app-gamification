@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { SettingsNavigationProp } from '../../navigation/types';
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
 
@@ -207,7 +208,7 @@ const ActionButtonText = styled.Text<{ variant?: 'primary' | 'outline' }>`
  */
 export const HealthPlanInfoScreen: React.FC = () => {
   const { t } = useTranslation();
-  const navigation = useNavigation();
+  const navigation = useNavigation<SettingsNavigationProp>();
 
   return (
     <Container>
@@ -286,7 +287,7 @@ export const HealthPlanInfoScreen: React.FC = () => {
 
         <ActionButton
           variant="outline"
-          onPress={() => navigation.navigate(ROUTES.SETTINGS_INSURANCE_DOCS as never)}
+          onPress={() => navigation.navigate(ROUTES.SETTINGS_INSURANCE_DOCS)}
           accessibilityRole="button"
           accessibilityLabel={t('settings.healthPlan.viewDocs')}
           testID="health-plan-view-docs"

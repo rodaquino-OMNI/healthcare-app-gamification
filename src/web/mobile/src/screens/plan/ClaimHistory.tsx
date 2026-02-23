@@ -9,10 +9,11 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { PlanNavigationProp } from '../../navigation/types';
 
 import { Claim, ClaimStatus, ClaimType } from 'src/web/shared/types/plan.types';
 import { useJourney } from 'src/web/mobile/src/hooks/useJourney';
-import { MOBILE_PLAN_ROUTES } from 'src/web/shared/constants/routes';
+
 import {
   colors,
   typography,
@@ -120,7 +121,7 @@ const MOCK_CLAIMS: Claim[] = [
 const ClaimHistory: React.FC = () => {
   const { t } = useTranslation();
   const { journey } = useJourney();
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<PlanNavigationProp>();
   const theme = useTheme() as Theme;
   const styles = createStyles(theme);
   const [activeFilter, setActiveFilter] = useState<FilterTab>('all');
@@ -166,8 +167,9 @@ const ClaimHistory: React.FC = () => {
     const statusStyle = STATUS_COLORS[item.status];
     return (
       <TouchableOpacity
+        testID="plan-claims-item"
         style={styles.claimCard}
-        onPress={() => navigation.navigate(MOBILE_PLAN_ROUTES.CLAIMS, { claimId: item.id })}
+        onPress={() => navigation.navigate('ClaimDetail', { claimId: item.id })}
         accessibilityRole="button"
         accessibilityLabel={`Solicitacao ${CLAIM_TYPE_LABELS[item.type]}, ${formatCurrency(item.amount)}, ${STATUS_LABELS[item.status]}`}
       >
@@ -208,6 +210,7 @@ const ClaimHistory: React.FC = () => {
     <View style={styles.container}>
       {/* Filter Tabs */}
       <ScrollView
+        testID="plan-claims-filter"
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.filterContainer}
@@ -233,6 +236,7 @@ const ClaimHistory: React.FC = () => {
 
       {/* Claims List */}
       <FlatList
+        testID="plan-claims-list"
         data={filteredClaims}
         keyExtractor={(item) => item.id}
         renderItem={renderClaimItem}
@@ -243,8 +247,9 @@ const ClaimHistory: React.FC = () => {
 
       {/* Submit New Claim FAB */}
       <TouchableOpacity
+        testID="plan-claims-submit-new"
         style={styles.fab}
-        onPress={() => navigation.navigate(MOBILE_PLAN_ROUTES.CLAIM_SUBMISSION)}
+        onPress={() => navigation.navigate('ClaimSubmission')}
         accessibilityRole="button"
         accessibilityLabel={t('journeys.plan.claims.newClaim')}
       >

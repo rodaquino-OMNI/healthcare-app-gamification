@@ -122,9 +122,9 @@ const Coverage: React.FC = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>{t('journeys.plan.coverage.title')}</Text>
-      <Text style={styles.subtitle}>
+    <ScrollView testID="plan-coverage-back" style={styles.container}>
+      <Text testID="plan-coverage-title" style={styles.title}>{t('journeys.plan.coverage.title')}</Text>
+      <Text testID="plan-coverage-details" style={styles.subtitle}>
         {t('journeys.plan.coverage.details')}
       </Text>
 

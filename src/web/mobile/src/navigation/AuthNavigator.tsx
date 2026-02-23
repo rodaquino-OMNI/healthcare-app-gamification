@@ -1,5 +1,6 @@
 import React from 'react'; // v18.2.0
 import { createStackNavigator } from '@react-navigation/stack'; // v6.0.0
+import type { AuthStackParamList } from './types';
 
 import Login from '../screens/auth/Login';
 import RegisterScreen from '../screens/auth/Register';
@@ -25,7 +26,7 @@ import { MOBILE_AUTH_ROUTES, MOBILE_PROFILE_ROUTES } from 'src/web/shared/consta
 import { ROUTES } from '../constants/routes';
 
 // Create a stack navigator
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<AuthStackParamList>();
 
 /**
  * A React component that defines the navigation stack for the authentication flow.

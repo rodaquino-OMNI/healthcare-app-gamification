@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Skeleton } from './Skeleton';
+import { colors } from '../../tokens/colors';
 
 const meta: Meta<typeof Skeleton> = {
   title: 'Primitives/Skeleton',
@@ -49,7 +50,7 @@ export const TextVariant: Story = {
 
 export const CardSkeleton: Story = {
   render: () => (
-    <div style={{ padding: '16px', border: '1px solid #eee', borderRadius: '8px', width: '300px' }}>
+    <div style={{ padding: '16px', border: `1px solid ${colors.gray[20]}`, borderRadius: '8px', width: '300px' }}>
       <div style={{ display: 'flex', gap: '12px', marginBottom: '16px', alignItems: 'center' }}>
         <Skeleton variant="circular" width="40px" height="40px" />
         <div style={{ flex: 1 }}>

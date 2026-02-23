@@ -9,6 +9,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { HomeNavigationProp } from '../../navigation/types';
 import { useTheme } from 'styled-components/native';
 import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { Notification, NotificationStatus } from 'src/web/shared/types/notification.types';
@@ -98,7 +99,7 @@ export const NotificationsScreen: React.FC = () => {
   const theme = useTheme() as Theme;
   const styles = createStyles(theme);
   const { t } = useTranslation();
-  const navigation = useNavigation();
+  const navigation = useNavigation<HomeNavigationProp>();
   const { notifications, loading, error, refresh } = useNotifications();
   const notificationContext = useNotificationContext();
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
@@ -136,9 +137,9 @@ export const NotificationsScreen: React.FC = () => {
       if (notification.status !== NotificationStatus.READ) {
         await notificationContext.markAsRead(notification.id);
       }
-      navigation.navigate(ROUTES.NOTIFICATION_DETAIL as never, {
+      navigation.navigate('NotificationDetail', {
         notificationId: notification.id,
-      } as never);
+      });
     } catch (err) {
       console.error('Erro ao processar notificacao:', err);
     }

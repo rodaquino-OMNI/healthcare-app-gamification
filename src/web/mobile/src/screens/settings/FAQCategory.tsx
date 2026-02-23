@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import type { SettingsNavigationProp } from '../../navigation/types';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
@@ -146,7 +147,7 @@ const FAQ_ITEMS: FAQItemData[] = [
 // --- Component ---
 
 export const FAQCategoryScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<SettingsNavigationProp>();
   const route = useRoute();
   const { t } = useTranslation();
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());

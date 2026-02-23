@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { PlanNavigationProp } from '../../navigation/types';
 import { EmptyState } from '@web/mobile/src/components/shared/EmptyState';
 import { LoadingIndicator } from '@web/mobile/src/components/shared/LoadingIndicator';
 import { useClaims } from '@web/mobile/src/hooks/useClaims';
@@ -27,7 +28,7 @@ import type { Theme } from '@web/design-system/src/themes/base.theme';
  */
 const PlanDashboard: React.FC = () => {
   const { t } = useTranslation();
-  const navigation = useNavigation();
+  const navigation = useNavigation<PlanNavigationProp>();
   const theme = useTheme() as Theme;
   const styles = createStyles(theme);
 
@@ -58,11 +59,11 @@ const PlanDashboard: React.FC = () => {
   });
 
   const handleClaimPress = (claimId: string) => {
-    navigation.navigate('ClaimDetails' as never, { claimId } as never);
+    navigation.navigate('ClaimDetail', { claimId });
   };
 
-  const handleCoveragePress = (coverageId: string) => {
-    navigation.navigate('CoverageDetails' as never, { coverageId } as never);
+  const handleCoveragePress = (_coverageId: string) => {
+    navigation.navigate('Coverage');
   };
 
   const handleShareCard = () => {
@@ -70,15 +71,15 @@ const PlanDashboard: React.FC = () => {
   };
 
   const handleNewClaim = () => {
-    navigation.navigate('ClaimSubmission' as never);
+    navigation.navigate('ClaimSubmission');
   };
 
   const handleTrackClaim = (claimId: string) => {
-    navigation.navigate('ClaimTracking' as never, { claimId } as never);
+    navigation.navigate('ClaimDetail', { claimId });
   };
 
   const handleViewClaimDetails = (claimId: string) => {
-    navigation.navigate('ClaimDetails' as never, { claimId } as never);
+    navigation.navigate('ClaimDetail', { claimId });
   };
 
   useEffect(() => {
@@ -99,7 +100,7 @@ const PlanDashboard: React.FC = () => {
       <JourneyHeader title={t('journeys.plan.title')} />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Insurance Card (RN-native, replaces web-only InsuranceCard) */}
-        <View style={styles.insuranceCard}>
+        <View testID="plan-dashboard-digital-card" style={styles.insuranceCard}>
           <View style={styles.insuranceCardHeader}>
             <Text style={styles.insuranceCardPlanName}>
               {insuranceCardData.plan.name}
@@ -155,11 +156,11 @@ const PlanDashboard: React.FC = () => {
 
         {/* Stats Row */}
         <View style={styles.statsRow}>
-          <View style={styles.statCard}>
+          <View testID="plan-dashboard-cost-simulator" style={styles.statCard}>
             <Text style={styles.statValue}>{totalClaims}</Text>
             <Text style={styles.statLabel}>{t('journeys.plan.claims.title')}</Text>
           </View>
-          <View style={styles.statCard}>
+          <View testID="plan-dashboard-benefits" style={styles.statCard}>
             <Text style={styles.statValue}>{activeBenefits}</Text>
             <Text style={styles.statLabel}>{t('journeys.plan.benefits.title')}</Text>
           </View>
@@ -170,7 +171,7 @@ const PlanDashboard: React.FC = () => {
         </View>
 
         {/* Coverage Information */}
-        <Text style={styles.sectionTitle}>{t('journeys.plan.coverage.title')}</Text>
+        <Text testID="plan-dashboard-coverage" style={styles.sectionTitle}>{t('journeys.plan.coverage.title')}</Text>
         {isCoverageLoading ? (
           <LoadingIndicator label={t('journeys.plan.coverage.loading')} />
         ) : coverageError ? (
@@ -209,7 +210,7 @@ const PlanDashboard: React.FC = () => {
         )}
 
         {/* Claims */}
-        <Text style={styles.sectionTitle}>{t('journeys.plan.claims.title')}</Text>
+        <Text testID="plan-dashboard-claims" style={styles.sectionTitle}>{t('journeys.plan.claims.title')}</Text>
         {isClaimsLoading ? (
           <LoadingIndicator label={t('journeys.plan.claims.loading')} />
         ) : claimsError ? (

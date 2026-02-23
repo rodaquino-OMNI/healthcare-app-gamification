@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ScrollView, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { AuthNavigationProp } from '../../navigation/types';
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
 
@@ -155,7 +156,7 @@ const SkipLinkText = styled.Text`
  * Allows the user to take or choose a profile photo.
  */
 const ProfilePhoto: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<AuthNavigationProp>();
   const { t } = useTranslation();
   const [photoUri, setPhotoUri] = useState<string | null>(null);
 
@@ -212,11 +213,11 @@ const ProfilePhoto: React.FC = () => {
 
   const handleContinue = () => {
     // TODO: persist photo URI to profile context/store
-    navigation.navigate('ProfileConfirmation' as never);
+    navigation.navigate('ProfileConfirmation');
   };
 
   const handleSkip = () => {
-    navigation.navigate('ProfileConfirmation' as never);
+    navigation.navigate('ProfileConfirmation');
   };
 
   return (

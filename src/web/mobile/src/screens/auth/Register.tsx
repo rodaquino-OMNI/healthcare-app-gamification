@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import type { AuthNavigationProp } from '../../navigation/types';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import styled from 'styled-components/native';
@@ -11,7 +12,7 @@ import { useAuth } from 'src/web/mobile/src/hooks/useAuth';
 import { Button } from 'src/web/design-system/src/components/Button/Button';
 import { Input } from 'src/web/design-system/src/components/Input/Input';
 import { Checkbox } from 'src/web/design-system/src/components/Checkbox/Checkbox';
-import { MOBILE_AUTH_ROUTES } from 'src/web/shared/constants/routes';
+
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography } from '../../../../design-system/src/tokens/typography';
 import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
@@ -77,7 +78,7 @@ const LinkButton = styled.Text`
  * Uses react-hook-form with yup validation and design-system tokens.
  */
 export const RegisterScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<AuthNavigationProp>();
   const { signIn } = useAuth();
   const { t } = useTranslation();
 
@@ -97,7 +98,7 @@ export const RegisterScreen: React.FC = () => {
   const onSubmit = async (data: any) => {
     try {
       const session = await register(data);
-      navigation.navigate(MOBILE_AUTH_ROUTES.LOGIN);
+      navigation.navigate('Login');
     } catch (error: any) {
       console.error('Registration failed', error.message);
     }
@@ -180,7 +181,7 @@ export const RegisterScreen: React.FC = () => {
 
       <LinkContainer>
         <LinkText>{t('register.alreadyHaveAccount')} </LinkText>
-        <LinkButton onPress={() => navigation.navigate(MOBILE_AUTH_ROUTES.LOGIN)}>
+        <LinkButton onPress={() => navigation.navigate('Login')}>
           {t('register.login') || 'Log In'}
         </LinkButton>
       </LinkContainer>

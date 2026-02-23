@@ -1,5 +1,6 @@
 import React from 'react'; // version 18.2.0
 import { createStackNavigator } from '@react-navigation/stack'; // version 6.3.16
+import type { GamificationStackParamList } from './types';
 
 import Achievements from '../screens/home/Achievements';
 import { ROUTES } from '../constants/routes';
@@ -55,7 +56,7 @@ try {
   // RewardDetail screen not yet available
 }
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<GamificationStackParamList>();
 
 /**
  * Stack navigator for the Gamification journey.

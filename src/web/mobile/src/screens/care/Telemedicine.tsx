@@ -8,7 +8,7 @@ import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeade
 import { Button } from 'src/web/design-system/src/components/Button/Button.tsx';
 import { MOBILE_CARE_ROUTES } from 'src/web/shared/constants/routes.ts';
 import LoadingIndicator from 'src/web/mobile/src/components/shared/LoadingIndicator.tsx';
-import ErrorState from 'src/web/mobile/src/components/shared/ErrorState.tsx';
+import ErrorState from 'src/web/mobile/src/components/shared/ErrorState';
 
 /**
  * A React component that provides the UI for accessing telemedicine services.

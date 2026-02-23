@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Icon } from './Icon';
+import { colors } from '../../tokens/colors';
 
 const meta: Meta<typeof Icon> = {
   title: 'Primitives/Icon',
@@ -65,7 +66,7 @@ export const AllIcons: Story = {
         {icons.map((name) => (
           <div key={name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
             <Icon name={name} size="md" />
-            <span style={{ fontSize: '10px', color: '#666' }}>{name}</span>
+            <span style={{ fontSize: '10px', color: colors.gray[50] }}>{name}</span>
           </div>
         ))}
       </div>

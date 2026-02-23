@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Box } from './Box';
+import { colors } from '../../tokens/colors';
 
 const meta: Meta<typeof Box> = {
   title: 'Primitives/Box',
@@ -44,7 +45,7 @@ export const WithJourney: Story = {
 export const WithSize: Story = {
   args: {
     size: 'md',
-    backgroundColor: '#e0e0e0',
+    backgroundColor: colors.gray[20],
     children: null,
   },
 };
@@ -66,9 +67,9 @@ export const FlexLayout: Story = {
     padding: 'md',
     children: (
       <>
-        <Box padding="sm" backgroundColor="#f0f0f0">Item 1</Box>
-        <Box padding="sm" backgroundColor="#f0f0f0">Item 2</Box>
-        <Box padding="sm" backgroundColor="#f0f0f0">Item 3</Box>
+        <Box padding="sm" backgroundColor={colors.gray[10]}>Item 1</Box>
+        <Box padding="sm" backgroundColor={colors.gray[10]}>Item 2</Box>
+        <Box padding="sm" backgroundColor={colors.gray[10]}>Item 3</Box>
       </>
     ),
   },

@@ -6,6 +6,9 @@ import SettingsScreen from './Settings';
 import { HomeAlertScreen } from './HomeAlert';
 import { HomeMetricsScreen } from './HomeMetrics';
 import { HomeHeader } from './HomeHeader';
+import { SearchResultsScreen } from './SearchResults';
+import { SearchResultsFilterPanel } from './SearchResultsFilterPanel';
+import { SearchResultsCard } from './SearchResultsCard';
 
 export {
     HomeScreen,
@@ -16,4 +19,7 @@ export {
     HomeAlertScreen,
     HomeMetricsScreen,
     HomeHeader,
+    SearchResultsScreen,
+    SearchResultsFilterPanel,
+    SearchResultsCard,
 };

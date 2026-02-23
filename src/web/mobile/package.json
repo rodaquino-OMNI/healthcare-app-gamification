@@ -10,7 +10,12 @@
     "test": "jest",
     "clean": "rm -rf node_modules && rm -rf ios/Pods && rm -rf android/app/build",
     "typecheck": "tsc --noEmit",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "build:dev": "eas build --profile development --platform all",
+    "build:preview": "eas build --profile preview --platform all",
+    "build:production": "eas build --profile production --platform all",
+    "submit:ios": "eas submit --platform ios",
+    "submit:android": "eas submit --platform android"
   },
   "dependencies": {
     "@apollo/client": "^3.7.17",
@@ -194,8 +199,6 @@
       "@babel/plugin-proposal-logical-assignment-operators": "@babel/plugin-transform-logical-assignment-operators"
     },
     "glob": "7.2.3",
-    "@react-navigation/native": "7.1.8",
-    "@react-navigation/stack": "7.3.1",
     "react-native-reanimated": "3.17.5",
     "react-native-gesture-handler": "2.25.0",
     "react-native-safe-area-context": "5.4.0"

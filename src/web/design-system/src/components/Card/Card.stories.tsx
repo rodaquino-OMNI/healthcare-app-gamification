@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Card } from './Card';
+import { colors } from '../../tokens/colors';
 
 const meta: Meta<typeof Card> = {
   title: 'Components/Card',
@@ -32,7 +33,7 @@ export const Default: Story = {
     children: (
       <div>
         <h3 style={{ margin: '0 0 8px' }}>Card Title</h3>
-        <p style={{ margin: 0, color: '#666' }}>This is a basic card with some content.</p>
+        <p style={{ margin: 0, color: colors.gray[50] }}>This is a basic card with some content.</p>
       </div>
     ),
   },
@@ -45,7 +46,7 @@ export const Elevated: Story = {
     children: (
       <div>
         <h3 style={{ margin: '0 0 8px' }}>Elevated Card</h3>
-        <p style={{ margin: 0, color: '#666' }}>This card has a more pronounced shadow.</p>
+        <p style={{ margin: 0, color: colors.gray[50] }}>This card has a more pronounced shadow.</p>
       </div>
     ),
   },
@@ -59,7 +60,7 @@ export const Interactive: Story = {
     children: (
       <div>
         <h3 style={{ margin: '0 0 8px' }}>Clickable Card</h3>
-        <p style={{ margin: 0, color: '#666' }}>Hover to see the interactive effect.</p>
+        <p style={{ margin: 0, color: colors.gray[50] }}>Hover to see the interactive effect.</p>
       </div>
     ),
   },

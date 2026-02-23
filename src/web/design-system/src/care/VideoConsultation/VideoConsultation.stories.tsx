@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
+import { colors } from '../../tokens/colors';
 
 /**
  * VideoConsultation requires Agora RTC SDK and React Navigation context.
@@ -12,7 +13,7 @@ const PlaceholderComponent: React.FC = () => (
     style={{
       padding: '2rem',
       textAlign: 'center',
-      backgroundColor: '#1a1a2e',
+      backgroundColor: colors.neutral.gray900,
       color: 'white',
       borderRadius: '8px',
       minHeight: '300px',

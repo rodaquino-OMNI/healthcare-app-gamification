@@ -1,0 +1,21 @@
+appId: com.austa.superapp
+tags:
+  - smoke
+  - auth
+---
+- launchApp
+- tapOn:
+    id: "welcome-cta-login"
+- assertVisible:
+    id: "login-email-input"
+- tapOn:
+    id: "login-email-input"
+- inputText: "test@austa.health"
+- tapOn:
+    id: "login-password-input"
+- inputText: "Test123!@#"
+- tapOn:
+    id: "login-submit-button"
+- assertVisible:
+    id: "home-screen"
+    timeout: 10000

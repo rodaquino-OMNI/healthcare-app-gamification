@@ -10,6 +10,7 @@ import {
   FlatList,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { HomeNavigationProp } from '../../navigation/types';
 import { useTheme } from 'styled-components/native';
 import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { colors } from '../../../../design-system/src/tokens/colors';
@@ -69,7 +70,7 @@ export const SearchScreen: React.FC = () => {
   const theme = useTheme() as Theme;
   const styles = createStyles(theme);
   const { t } = useTranslation();
-  const navigation = useNavigation();
+  const navigation = useNavigation<HomeNavigationProp>();
   const [query, setQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<SearchFilter>('all');
   const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([
@@ -92,20 +93,18 @@ export const SearchScreen: React.FC = () => {
     setRecentSearches((prev) => [newSearch, ...prev.filter((s) => s.query !== query.trim()).slice(0, 9)]);
 
     // Navegar para resultados
-    navigation.navigate(ROUTES.SEARCH_RESULTS as never, {
+    navigation.navigate('SearchResults', {
       query: query.trim(),
-      filter: activeFilter,
-    } as never);
-  }, [query, activeFilter, navigation]);
+    });
+  }, [query, navigation]);
 
   // Busca rapida a partir de sugestao ou recente
   const handleQuickSearch = useCallback(
     (searchQuery: string, filter?: SearchFilter) => {
       setQuery(searchQuery);
-      navigation.navigate(ROUTES.SEARCH_RESULTS as never, {
+      navigation.navigate('SearchResults', {
         query: searchQuery,
-        filter: filter || activeFilter,
-      } as never);
+      });
     },
     [activeFilter, navigation],
   );

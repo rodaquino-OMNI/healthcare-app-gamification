@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FlatList, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { SettingsNavigationProp } from '../../navigation/types';
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
 
@@ -196,7 +197,7 @@ const MOCK_DEPENDENTS: Dependent[] = [
  * and Edit/Remove action buttons.
  */
 export const DependentsScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<SettingsNavigationProp>();
   const { t } = useTranslation();
   const [dependents, setDependents] = useState<Dependent[]>(MOCK_DEPENDENTS);
 
@@ -219,11 +220,11 @@ export const DependentsScreen: React.FC = () => {
 
   const handleEdit = (_dep: Dependent) => {
     // TODO: navigate to edit dependent with pre-filled data
-    navigation.navigate(ROUTES.SETTINGS_ADD_DEPENDENT as never);
+    navigation.navigate(ROUTES.SETTINGS_ADD_DEPENDENT);
   };
 
   const handleAdd = () => {
-    navigation.navigate(ROUTES.SETTINGS_ADD_DEPENDENT as never);
+    navigation.navigate(ROUTES.SETTINGS_ADD_DEPENDENT);
   };
 
   const renderItem = ({ item }: { item: Dependent }) => (

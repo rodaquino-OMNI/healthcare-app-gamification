@@ -34,7 +34,6 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "allowSyntheticDefaultImports": true,
-    "types": [],  // Removed types that were causing errors
     "typeRoots": ["./node_modules/@types", "./src/types"]
   },
   "include": [

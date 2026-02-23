@@ -6,19 +6,20 @@ import { AuthProvider } from './src/context/AuthContext';
 import { JourneyProvider } from './src/context/JourneyContext';
 import { NotificationProvider } from './src/context/NotificationContext';
 import { AppThemeProvider, useAppTheme } from './src/context/ThemeContext';
+import { ErrorBoundary } from './src/components/shared/ErrorBoundary';
 import { config } from './src/constants/config';
 
 /**
  * Inner component that has access to ThemeContext for StatusBar styling.
  */
 const StatusBarManager: React.FC = () => {
-  const { isDark } = useAppTheme();
+  const { isDark, theme } = useAppTheme();
   const barStyle = isDark ? 'light-content' : 'dark-content';
 
   if (config.platform === 'ios') {
     StatusBar.setBarStyle(barStyle, true);
   } else {
-    StatusBar.setBackgroundColor(isDark ? '#334155' : '#ffffff');
+    StatusBar.setBackgroundColor(theme.colors.background.default);
     StatusBar.setBarStyle(barStyle);
   }
 
@@ -35,16 +36,18 @@ const StatusBarManager: React.FC = () => {
  */
 const App: React.FC = () => {
   return (
-    <AppThemeProvider>
-      <StatusBarManager />
-      <AuthProvider>
-        <JourneyProvider>
-          <NotificationProvider>
-            <RootNavigator />
-          </NotificationProvider>
-        </JourneyProvider>
-      </AuthProvider>
-    </AppThemeProvider>
+    <ErrorBoundary>
+      <AppThemeProvider>
+        <StatusBarManager />
+        <AuthProvider>
+          <JourneyProvider>
+            <NotificationProvider>
+              <RootNavigator />
+            </NotificationProvider>
+          </JourneyProvider>
+        </AuthProvider>
+      </AppThemeProvider>
+    </ErrorBoundary>
   );
 };
 

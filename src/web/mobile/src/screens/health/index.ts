@@ -4,6 +4,9 @@ import { HealthGoals } from './HealthGoals';
 import { MedicalHistoryScreen } from './MedicalHistory';
 import { MetricDetailScreen } from './MetricDetail';
 import { AddMetricScreen } from './AddMetric';
+import { MedicationReminderScreen } from './MedicationReminder';
+import { MedicationReminderForm } from './MedicationReminderForm';
+import { MedicationSchedulePicker } from './MedicationSchedulePicker';
 
 export {
     Dashboard,
@@ -11,5 +14,8 @@ export {
     HealthGoals,
     MedicalHistoryScreen,
     MetricDetailScreen,
-    AddMetricScreen
+    AddMetricScreen,
+    MedicationReminderScreen,
+    MedicationReminderForm,
+    MedicationSchedulePicker,
 };

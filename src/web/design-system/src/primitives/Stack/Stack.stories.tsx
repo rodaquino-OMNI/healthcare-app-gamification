@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Stack } from './Stack';
+import { colors } from '../../tokens/colors';
 
 const meta: Meta<typeof Stack> = {
   title: 'Primitives/Stack',
@@ -24,7 +25,7 @@ export default meta;
 type Story = StoryObj<typeof Stack>;
 
 const Item = ({ label }: { label: string }) => (
-  <div style={{ padding: '12px 16px', background: '#f0f0f0', borderRadius: '4px', minWidth: '80px', textAlign: 'center' }}>
+  <div style={{ padding: '12px 16px', background: colors.gray[10], borderRadius: '4px', minWidth: '80px', textAlign: 'center' }}>
     {label}
   </div>
 );

@@ -1,11 +1,12 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
+import type { AuthNavigationProp } from '../../navigation/types';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '../hooks/useAuth';
-import { MOBILE_AUTH_ROUTES } from 'src/web/shared/constants/routes';
+
 import { Input } from 'src/web/design-system/src/components/Input/Input';
 import { Button } from 'src/web/design-system/src/components/Button/Button';
 import { LoadingIndicator } from '../components/shared/LoadingIndicator';
@@ -24,7 +25,7 @@ import { spacing } from '../../../../design-system/src/tokens/spacing';
  */
 const LoginScreen = () => {
   // Get navigation and auth hooks
-  const navigation = useNavigation();
+  const navigation = useNavigation<AuthNavigationProp>();
   const { signIn } = useAuth();
   const { t } = useTranslation();
 
@@ -79,6 +80,7 @@ const LoginScreen = () => {
           {t('common.labels.email')}
         </Text>
         <Input
+          testID="login-email-input"
           value={formik.values.email}
           onChange={formik.handleChange('email')}
           placeholder={t('auth.login.emailPlaceholder')}
@@ -98,6 +100,7 @@ const LoginScreen = () => {
           {t('auth.login.password')}
         </Text>
         <Input
+          testID="login-password-input"
           value={formik.values.password}
           onChange={formik.handleChange('password')}
           placeholder={t('auth.login.passwordPlaceholder')}
@@ -114,6 +117,7 @@ const LoginScreen = () => {
       {/* Login button */}
       <Box marginBottom="lg">
         <Button
+          testID="login-submit-button"
           onPress={() => formik.handleSubmit()}
           disabled={formik.isSubmitting}
           loading={formik.isSubmitting}
@@ -126,7 +130,8 @@ const LoginScreen = () => {
       {/* Forgot password link */}
       <Box alignItems="center" marginBottom="md">
         <Button
-          onPress={() => navigation.navigate(MOBILE_AUTH_ROUTES.FORGOT_PASSWORD)}
+          testID="login-forgot-password"
+          onPress={() => navigation.navigate('ForgotPassword')}
           variant="tertiary"
           journey="health"
         >
@@ -140,7 +145,8 @@ const LoginScreen = () => {
           {t('auth.login.noAccount')}
         </Text>
         <Button
-          onPress={() => navigation.navigate(MOBILE_AUTH_ROUTES.REGISTER)}
+          testID="login-register-link"
+          onPress={() => navigation.navigate('Register')}
           variant="tertiary"
           journey="health"
         >

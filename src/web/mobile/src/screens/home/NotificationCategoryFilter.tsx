@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { FlatList, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { HomeNavigationProp } from '../../navigation/types';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
@@ -256,7 +257,7 @@ const MOCK_NOTIFICATIONS: CategoryNotification[] = [
 // --- Component ---
 
 export const NotificationCategoryFilterScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<HomeNavigationProp>();
   const { t } = useTranslation();
   const [activeCategory, setActiveCategory] = useState<CategoryType>('all');
 
@@ -271,9 +272,9 @@ export const NotificationCategoryFilterScreen: React.FC = () => {
 
   const handleNotificationPress = useCallback(
     (id: string) => {
-      navigation.navigate(ROUTES.NOTIFICATION_DETAIL as never, {
+      navigation.navigate('NotificationDetail', {
         notificationId: id,
-      } as never);
+      });
     },
     [navigation],
   );

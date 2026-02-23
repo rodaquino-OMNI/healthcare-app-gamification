@@ -14,8 +14,9 @@ import { ProgressCircle } from 'src/web/design-system/src/components/ProgressCir
 import { ProgressBar } from 'src/web/design-system/src/components/ProgressBar/ProgressBar.tsx'; // Imports the ProgressBar component for use in the mobile app.
 import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader.tsx'; // Imports the JourneyHeader component for use in the mobile app.
 import { LoadingIndicator } from 'src/web/mobile/src/components/shared/LoadingIndicator.tsx'; // Imports the LoadingIndicator component for use in the mobile app.
-import { ErrorState } from 'src/web/mobile/src/components/shared/ErrorState.tsx'; // Imports the ErrorState component for use in the mobile app.
-import { EmptyState } from 'src/web/mobile/src/components/shared/EmptyState.tsx'; // Imports the EmptyState component for use in the mobile app.
+import { ErrorState } from './shared/ErrorState';
+import { ErrorBoundary } from './shared/ErrorBoundary';
+import EmptyState from './shared/EmptyState';
 
 // Export all imported components to make them accessible throughout the application
 export {
@@ -29,5 +30,6 @@ export {
     JourneyHeader, // Exports the JourneyHeader component for use in the mobile app.
     LoadingIndicator, // Exports the LoadingIndicator component for use in the mobile app.
     ErrorState, // Exports the ErrorState component for use in the mobile app.
+    ErrorBoundary, // Exports the ErrorBoundary component for use in the mobile app.
     EmptyState, // Exports the EmptyState component for use in the mobile app.
 };

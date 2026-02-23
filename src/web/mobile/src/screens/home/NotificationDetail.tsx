@@ -9,6 +9,7 @@ import {
   Share,
 } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import type { HomeTabScreenNavigationProp } from '../../navigation/types';
 import { useTheme } from 'styled-components/native';
 import type { Theme } from '../../../../design-system/src/themes/base.theme';
 import { Notification, NotificationStatus } from 'src/web/shared/types/notification.types';
@@ -114,7 +115,7 @@ export const NotificationDetailScreen: React.FC = () => {
   const theme = useTheme() as Theme;
   const styles = createStyles(theme);
   const { t } = useTranslation();
-  const navigation = useNavigation();
+  const navigation = useNavigation<HomeTabScreenNavigationProp>();
   const route = useRoute<RouteProp<NotificationDetailParams, 'NotificationDetail'>>();
   const { notificationId } = route.params;
   const { notifications } = useNotifications();

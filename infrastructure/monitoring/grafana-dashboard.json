@@ -1,0 +1,363 @@
+{
+  "uid": "austa-service-health",
+  "title": "AUSTA Service Health",
+  "description": "Service availability, traffic, latency and resource usage for all 7 AUSTA microservices",
+  "tags": ["austa", "services", "production"],
+  "timezone": "America/Sao_Paulo",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "30s",
+  "time": { "from": "now-6h", "to": "now" },
+  "timepicker": { "refresh_intervals": ["10s","30s","1m","5m"] },
+  "templating": {
+    "list": [
+      {
+        "name": "datasource",
+        "type": "datasource",
+        "query": "prometheus",
+        "current": { "text": "Prometheus", "value": "Prometheus" },
+        "hide": 0,
+        "label": "Datasource"
+      },
+      {
+        "name": "job",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "$datasource" },
+        "query": "label_values(up, job)",
+        "includeAll": true,
+        "allValue": ".*",
+        "current": {},
+        "hide": 0,
+        "label": "Service",
+        "refresh": 2,
+        "sort": 1
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "row",
+      "title": "Availability",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "api-gateway",
+      "datasource": { "type": "prometheus", "uid": "$datasource" },
+      "gridPos": { "h": 4, "w": 3, "x": 0, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [{ "type": "value", "options": { "0": { "text": "DOWN", "color": "red" }, "1": { "text": "UP", "color": "green" } } }],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": 0 }, { "color": "green", "value": 1 }] }
+        }
+      },
+      "targets": [{ "expr": "up{job=\"api-gateway\"}", "legendFormat": "api-gateway", "instant": true }]
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "auth-service",
+      "datasource": { "type": "prometheus", "uid": "$datasource" },
+      "gridPos": { "h": 4, "w": 3, "x": 3, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [{ "type": "value", "options": { "0": { "text": "DOWN", "color": "red" }, "1": { "text": "UP", "color": "green" } } }],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": 0 }, { "color": "green", "value": 1 }] }
+        }
+      },
+      "targets": [{ "expr": "up{job=\"auth-service\"}", "legendFormat": "auth-service", "instant": true }]
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "health-service",
+      "datasource": { "type": "prometheus", "uid": "$datasource" },
+      "gridPos": { "h": 4, "w": 3, "x": 6, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [{ "type": "value", "options": { "0": { "text": "DOWN", "color": "red" }, "1": { "text": "UP", "color": "green" } } }],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": 0 }, { "color": "green", "value": 1 }] }
+        }
+      },
+      "targets": [{ "expr": "up{job=\"health-service\"}", "legendFormat": "health-service", "instant": true }]
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "care-service",
+      "datasource": { "type": "prometheus", "uid": "$datasource" },
+      "gridPos": { "h": 4, "w": 3, "x": 9, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [{ "type": "value", "options": { "0": { "text": "DOWN", "color": "red" }, "1": { "text": "UP", "color": "green" } } }],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": 0 }, { "color": "green", "value": 1 }] }
+        }
+      },
+      "targets": [{ "expr": "up{job=\"care-service\"}", "legendFormat": "care-service", "instant": true }]
+    },
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "plan-service",
+      "datasource": { "type": "prometheus", "uid": "$datasource" },
+      "gridPos": { "h": 4, "w": 3, "x": 12, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [{ "type": "value", "options": { "0": { "text": "DOWN", "color": "red" }, "1": { "text": "UP", "color": "green" } } }],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": 0 }, { "color": "green", "value": 1 }] }
+        }
+      },
+      "targets": [{ "expr": "up{job=\"plan-service\"}", "legendFormat": "plan-service", "instant": true }]
+    },
+    {
+      "id": 7,
+      "type": "stat",
+      "title": "gamification-engine",
+      "datasource": { "type": "prometheus", "uid": "$datasource" },
+      "gridPos": { "h": 4, "w": 3, "x": 15, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [{ "type": "value", "options": { "0": { "text": "DOWN", "color": "red" }, "1": { "text": "UP", "color": "green" } } }],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": 0 }, { "color": "green", "value": 1 }] }
+        }
+      },
+      "targets": [{ "expr": "up{job=\"gamification-engine\"}", "legendFormat": "gamification-engine", "instant": true }]
+    },
+    {
+      "id": 8,
+      "type": "stat",
+      "title": "notification-service",
+      "datasource": { "type": "prometheus", "uid": "$datasource" },
+      "gridPos": { "h": 4, "w": 3, "x": 18, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "background", "graphMode": "none", "textMode": "auto" },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [{ "type": "value", "options": { "0": { "text": "DOWN", "color": "red" }, "1": { "text": "UP", "color": "green" } } }],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": 0 }, { "color": "green", "value": 1 }] }
+        }
+      },
+      "targets": [{ "expr": "up{job=\"notification-service\"}", "legendFormat": "notification-service", "instant": true }]
+    },
+    {
+      "id": 9,
+      "type": "stat",
+      "title": "Pod Count (all services)",
+      "datasource": { "type": "prometheus", "uid": "$datasource" },
+      "gridPos": { "h": 4, "w": 3, "x": 21, "y": 1 },
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] }, "colorMode": "value", "graphMode": "none" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": 0 }, { "color": "yellow", "value": 1 }, { "color": "green", "value": 7 }] }
+        }
+      },
+      "targets": [{ "expr": "count(up == 1)", "legendFormat": "Healthy pods", "instant": true }]
+    },
+    {
+      "id": 10,
+      "type": "row",
+      "title": "Traffic",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "collapsed": false
+    },
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "Request Rate per Service (req/s)",
+      "datasource": { "type": "prometheus", "uid": "$datasource" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "custom": { "lineWidth": 2, "fillOpacity": 10 }
+        }
+      },
+      "targets": [
+        { "expr": "sum(rate(http_requests_total{job=\"api-gateway\"}[2m]))", "legendFormat": "api-gateway" },
+        { "expr": "sum(rate(http_requests_total{job=\"auth-service\"}[2m]))", "legendFormat": "auth-service" },
+        { "expr": "sum(rate(http_requests_total{job=\"health-service\"}[2m]))", "legendFormat": "health-service" },
+        { "expr": "sum(rate(http_requests_total{job=\"care-service\"}[2m]))", "legendFormat": "care-service" },
+        { "expr": "sum(rate(http_requests_total{job=\"plan-service\"}[2m]))", "legendFormat": "plan-service" },
+        { "expr": "sum(rate(http_requests_total{job=\"gamification-engine\"}[2m]))", "legendFormat": "gamification-engine" },
+        { "expr": "sum(rate(http_requests_total{job=\"notification-service\"}[2m]))", "legendFormat": "notification-service" }
+      ]
+    },
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "Error Rate per Service (5xx/s)",
+      "datasource": { "type": "prometheus", "uid": "$datasource" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1,
+          "custom": { "lineWidth": 2, "fillOpacity": 20 },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": 0 }, { "color": "yellow", "value": 0.01 }, { "color": "red", "value": 0.05 }] }
+        }
+      },
+      "targets": [
+        { "expr": "sum(rate(http_requests_total{job=\"api-gateway\",status=~\"5..\"}[2m])) / sum(rate(http_requests_total{job=\"api-gateway\"}[2m]))", "legendFormat": "api-gateway" },
+        { "expr": "sum(rate(http_requests_total{job=\"auth-service\",status=~\"5..\"}[2m])) / sum(rate(http_requests_total{job=\"auth-service\"}[2m]))", "legendFormat": "auth-service" },
+        { "expr": "sum(rate(http_requests_total{job=\"health-service\",status=~\"5..\"}[2m])) / sum(rate(http_requests_total{job=\"health-service\"}[2m]))", "legendFormat": "health-service" },
+        { "expr": "sum(rate(http_requests_total{job=\"care-service\",status=~\"5..\"}[2m])) / sum(rate(http_requests_total{job=\"care-service\"}[2m]))", "legendFormat": "care-service" },
+        { "expr": "sum(rate(http_requests_total{job=\"plan-service\",status=~\"5..\"}[2m])) / sum(rate(http_requests_total{job=\"plan-service\"}[2m]))", "legendFormat": "plan-service" },
+        { "expr": "sum(rate(http_requests_total{job=\"gamification-engine\",status=~\"5..\"}[2m])) / sum(rate(http_requests_total{job=\"gamification-engine\"}[2m]))", "legendFormat": "gamification-engine" },
+        { "expr": "sum(rate(http_requests_total{job=\"notification-service\",status=~\"5..\"}[2m])) / sum(rate(http_requests_total{job=\"notification-service\"}[2m]))", "legendFormat": "notification-service" }
+      ]
+    },
+    {
+      "id": 13,
+      "type": "row",
+      "title": "Latency",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 14 },
+      "collapsed": false
+    },
+    {
+      "id": 14,
+      "type": "timeseries",
+      "title": "Response Latency p50 (ms)",
+      "datasource": { "type": "prometheus", "uid": "$datasource" },
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 15 },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "fieldConfig": { "defaults": { "unit": "ms", "custom": { "lineWidth": 2 } } },
+      "targets": [
+        { "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket{job=\"api-gateway\"}[5m])) by (le)) * 1000", "legendFormat": "api-gateway p50" },
+        { "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket{job=\"auth-service\"}[5m])) by (le)) * 1000", "legendFormat": "auth-service p50" },
+        { "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket{job=\"health-service\"}[5m])) by (le)) * 1000", "legendFormat": "health-service p50" },
+        { "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket{job=\"care-service\"}[5m])) by (le)) * 1000", "legendFormat": "care-service p50" },
+        { "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket{job=\"plan-service\"}[5m])) by (le)) * 1000", "legendFormat": "plan-service p50" },
+        { "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket{job=\"gamification-engine\"}[5m])) by (le)) * 1000", "legendFormat": "gamification-engine p50" },
+        { "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket{job=\"notification-service\"}[5m])) by (le)) * 1000", "legendFormat": "notification-service p50" }
+      ]
+    },
+    {
+      "id": 15,
+      "type": "timeseries",
+      "title": "Response Latency p95 (ms)",
+      "datasource": { "type": "prometheus", "uid": "$datasource" },
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 15 },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "custom": { "lineWidth": 2 },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": 0 }, { "color": "yellow", "value": 500 }, { "color": "red", "value": 1000 }] }
+        }
+      },
+      "targets": [
+        { "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"api-gateway\"}[5m])) by (le)) * 1000", "legendFormat": "api-gateway p95" },
+        { "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"auth-service\"}[5m])) by (le)) * 1000", "legendFormat": "auth-service p95" },
+        { "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"health-service\"}[5m])) by (le)) * 1000", "legendFormat": "health-service p95" },
+        { "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"care-service\"}[5m])) by (le)) * 1000", "legendFormat": "care-service p95" },
+        { "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"plan-service\"}[5m])) by (le)) * 1000", "legendFormat": "plan-service p95" },
+        { "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"gamification-engine\"}[5m])) by (le)) * 1000", "legendFormat": "gamification-engine p95" },
+        { "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job=\"notification-service\"}[5m])) by (le)) * 1000", "legendFormat": "notification-service p95" }
+      ]
+    },
+    {
+      "id": 16,
+      "type": "timeseries",
+      "title": "Response Latency p99 (ms)",
+      "datasource": { "type": "prometheus", "uid": "$datasource" },
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 15 },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "custom": { "lineWidth": 2 },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": 0 }, { "color": "yellow", "value": 1000 }, { "color": "red", "value": 2000 }] }
+        }
+      },
+      "targets": [
+        { "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{job=\"api-gateway\"}[5m])) by (le)) * 1000", "legendFormat": "api-gateway p99" },
+        { "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{job=\"auth-service\"}[5m])) by (le)) * 1000", "legendFormat": "auth-service p99" },
+        { "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{job=\"health-service\"}[5m])) by (le)) * 1000", "legendFormat": "health-service p99" },
+        { "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{job=\"care-service\"}[5m])) by (le)) * 1000", "legendFormat": "care-service p99" },
+        { "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{job=\"plan-service\"}[5m])) by (le)) * 1000", "legendFormat": "plan-service p99" },
+        { "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{job=\"gamification-engine\"}[5m])) by (le)) * 1000", "legendFormat": "gamification-engine p99" },
+        { "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{job=\"notification-service\"}[5m])) by (le)) * 1000", "legendFormat": "notification-service p99" }
+      ]
+    },
+    {
+      "id": 17,
+      "type": "row",
+      "title": "Resources",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 23 },
+      "collapsed": false
+    },
+    {
+      "id": 18,
+      "type": "timeseries",
+      "title": "CPU Usage per Service (cores)",
+      "datasource": { "type": "prometheus", "uid": "$datasource" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 24 },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "fieldConfig": { "defaults": { "unit": "short", "custom": { "lineWidth": 2, "fillOpacity": 10 } } },
+      "targets": [
+        { "expr": "sum(rate(container_cpu_usage_seconds_total{container=\"api-gateway\"}[5m]))", "legendFormat": "api-gateway" },
+        { "expr": "sum(rate(container_cpu_usage_seconds_total{container=\"auth-service\"}[5m]))", "legendFormat": "auth-service" },
+        { "expr": "sum(rate(container_cpu_usage_seconds_total{container=\"health-service\"}[5m]))", "legendFormat": "health-service" },
+        { "expr": "sum(rate(container_cpu_usage_seconds_total{container=\"care-service\"}[5m]))", "legendFormat": "care-service" },
+        { "expr": "sum(rate(container_cpu_usage_seconds_total{container=\"plan-service\"}[5m]))", "legendFormat": "plan-service" },
+        { "expr": "sum(rate(container_cpu_usage_seconds_total{container=\"gamification-engine\"}[5m]))", "legendFormat": "gamification-engine" },
+        { "expr": "sum(rate(container_cpu_usage_seconds_total{container=\"notification-service\"}[5m]))", "legendFormat": "notification-service" }
+      ]
+    },
+    {
+      "id": 19,
+      "type": "timeseries",
+      "title": "Memory Usage per Service (MB)",
+      "datasource": { "type": "prometheus", "uid": "$datasource" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "fieldConfig": { "defaults": { "unit": "decmbytes", "custom": { "lineWidth": 2, "fillOpacity": 10 } } },
+      "targets": [
+        { "expr": "sum(container_memory_usage_bytes{container=\"api-gateway\"}) / 1024 / 1024", "legendFormat": "api-gateway" },
+        { "expr": "sum(container_memory_usage_bytes{container=\"auth-service\"}) / 1024 / 1024", "legendFormat": "auth-service" },
+        { "expr": "sum(container_memory_usage_bytes{container=\"health-service\"}) / 1024 / 1024", "legendFormat": "health-service" },
+        { "expr": "sum(container_memory_usage_bytes{container=\"care-service\"}) / 1024 / 1024", "legendFormat": "care-service" },
+        { "expr": "sum(container_memory_usage_bytes{container=\"plan-service\"}) / 1024 / 1024", "legendFormat": "plan-service" },
+        { "expr": "sum(container_memory_usage_bytes{container=\"gamification-engine\"}) / 1024 / 1024", "legendFormat": "gamification-engine" },
+        { "expr": "sum(container_memory_usage_bytes{container=\"notification-service\"}) / 1024 / 1024", "legendFormat": "notification-service" }
+      ]
+    },
+    {
+      "id": 20,
+      "type": "timeseries",
+      "title": "Pod Count per Service",
+      "datasource": { "type": "prometheus", "uid": "$datasource" },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 32 },
+      "options": { "legend": { "displayMode": "list", "placement": "bottom" }, "tooltip": { "mode": "multi" } },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "custom": { "lineWidth": 2, "fillOpacity": 5 },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": 0 }, { "color": "yellow", "value": 1 }, { "color": "green", "value": 2 }] }
+        }
+      },
+      "targets": [
+        { "expr": "count(up{job=\"api-gateway\"} == 1) or vector(0)", "legendFormat": "api-gateway" },
+        { "expr": "count(up{job=\"auth-service\"} == 1) or vector(0)", "legendFormat": "auth-service" },
+        { "expr": "count(up{job=\"health-service\"} == 1) or vector(0)", "legendFormat": "health-service" },
+        { "expr": "count(up{job=\"care-service\"} == 1) or vector(0)", "legendFormat": "care-service" },
+        { "expr": "count(up{job=\"plan-service\"} == 1) or vector(0)", "legendFormat": "plan-service" },
+        { "expr": "count(up{job=\"gamification-engine\"} == 1) or vector(0)", "legendFormat": "gamification-engine" },
+        { "expr": "count(up{job=\"notification-service\"} == 1) or vector(0)", "legendFormat": "notification-service" }
+      ]
+    }
+  ]
+}
