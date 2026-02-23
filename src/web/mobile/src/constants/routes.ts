@@ -230,6 +230,23 @@ export const ROUTES = {
   GAMIFICATION_REWARDS: 'GamificationRewards',
   GAMIFICATION_REWARD_DETAIL: 'GamificationRewardDetail',
 
+  // AI Wellness Companion (Module 06)
+  WELLNESS_CHAT: 'WellnessChat',
+  WELLNESS_CHAT_ACTIVE: 'WellnessChatActive',
+  WELLNESS_QUICK_REPLIES: 'WellnessQuickReplies',
+  WELLNESS_MOOD_CHECK_IN: 'WellnessMoodCheckIn',
+  WELLNESS_TIP_DETAIL: 'WellnessTipDetail',
+  WELLNESS_BREATHING: 'WellnessBreathing',
+  WELLNESS_MEDITATION: 'WellnessMeditation',
+  WELLNESS_DAILY_PLAN: 'WellnessDailyPlan',
+  WELLNESS_INSIGHTS: 'WellnessInsights',
+  WELLNESS_GOALS: 'WellnessGoals',
+  WELLNESS_JOURNAL: 'WellnessJournal',
+  WELLNESS_JOURNAL_HISTORY: 'WellnessJournalHistory',
+  WELLNESS_CHALLENGES: 'WellnessChallenges',
+  WELLNESS_CHALLENGE_DETAIL: 'WellnessChallengeDetail',
+  WELLNESS_STREAKS: 'WellnessStreaks',
+
   // Settings Module Routes (18-03 through 18-33)
   SETTINGS_PERSONAL_INFO: 'SettingsPersonalInfo',
   SETTINGS_CHANGE_PASSWORD: 'SettingsChangePassword',

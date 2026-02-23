@@ -8,6 +8,13 @@ import CareNavigator from './CareNavigator';
 import PlanNavigator from './PlanNavigator';
 import GamificationNavigator from './GamificationNavigator';
 import SettingsNavigator from './SettingsNavigator';
+
+let WellnessNavigator: React.FC = () => null;
+try {
+  const mod = require('./WellnessNavigator');
+  WellnessNavigator = mod.default || mod.WellnessNavigator || WellnessNavigator;
+} catch { /* WellnessNavigator not yet available */ }
+
 import HomeScreen from '../screens/home/Home';
 import { NotificationsScreen } from '../screens/home/Notifications';
 import { ProfileScreen } from '../screens/home/Profile';
@@ -195,6 +202,7 @@ export const MainNavigator: React.FC = () => {
       <Tab.Screen name="Notifications" component={NotificationsScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
       <Tab.Screen name="Achievements" component={GamificationNavigator} />
+      <Tab.Screen name="Wellness" component={WellnessNavigator} />
       <Tab.Screen name={ROUTES.SETTINGS} component={SettingsNavigator} />
     </Tab.Navigator>
   );

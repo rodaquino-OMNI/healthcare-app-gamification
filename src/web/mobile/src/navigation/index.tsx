@@ -6,6 +6,7 @@ import HealthNavigator from './HealthNavigator'; // src/web/mobile/src/navigatio
 import { MainNavigator } from './MainNavigator'; // src/web/mobile/src/navigation/MainNavigator.tsx
 import { PlanNavigator } from './PlanNavigator'; // src/web/mobile/src/navigation/PlanNavigator.tsx
 import { RootNavigator } from './RootNavigator'; // src/web/mobile/src/navigation/RootNavigator.tsx
+import WellnessNavigator from './WellnessNavigator'; // src/web/mobile/src/navigation/WellnessNavigator.tsx
 
 // IE3: Be generous about your exports so long as it doesn't create a security risk.
 export {
@@ -16,4 +17,5 @@ export {
   MainNavigator, // Navigation component for the main app flow (after authentication).
   PlanNavigator, // Navigation component for the My Plan & Benefits journey.
   RootNavigator, // Root navigation component that determines whether to show the auth flow or the main app.
+  WellnessNavigator, // Navigation component for the AI Wellness Companion journey (Module 06).
 };

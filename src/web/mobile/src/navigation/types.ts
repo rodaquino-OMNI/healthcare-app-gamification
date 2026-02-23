@@ -299,6 +299,33 @@ export type GamificationStackParamList = {
 };
 
 // ---------------------------------------------------------------------------
+// AI Wellness Companion (Module 06)
+// ---------------------------------------------------------------------------
+
+export type WellnessStackParamList = {
+  WellnessChat: undefined;
+  WellnessChatActive: undefined;
+  WellnessQuickReplies: undefined;
+  WellnessMoodCheckIn: undefined;
+  WellnessTipDetail: { tipId: string };
+  WellnessBreathing: undefined;
+  WellnessMeditation: undefined;
+  WellnessDailyPlan: undefined;
+  WellnessInsights: undefined;
+  WellnessGoals: undefined;
+  WellnessJournal: undefined;
+  WellnessJournalHistory: undefined;
+  WellnessChallenges: undefined;
+  WellnessChallengeDetail: { challengeId: string };
+  WellnessStreaks: undefined;
+};
+
+export type WellnessNavigationProp = StackNavigationProp<WellnessStackParamList>;
+
+export type WellnessScreenProps<T extends keyof WellnessStackParamList> =
+  StackScreenProps<WellnessStackParamList, T>;
+
+// ---------------------------------------------------------------------------
 // Main Tab (bottom tab navigator)
 // ---------------------------------------------------------------------------
 
@@ -310,6 +337,7 @@ export type MainTabParamList = {
   Notifications: undefined;
   Profile: undefined;
   Achievements: NavigatorScreenParams<GamificationStackParamList>;
+  Wellness: NavigatorScreenParams<WellnessStackParamList>;
   Settings: NavigatorScreenParams<SettingsStackParamList>;
 };
 
