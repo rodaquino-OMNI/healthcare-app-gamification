@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ RUN yarn install --frozen-lockfile
 RUN npx prisma generate --schema=shared/prisma/schema.prisma || true
 RUN yarn nest build notification-service
 
-FROM node:20-alpine
+FROM node:22-alpine
 
 WORKDIR /app
 
@@ -21,6 +21,8 @@ COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/dist/notification-service ./dist
 
 USER node
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD wget -qO- http://localhost:3006/health || exit 1
 
 EXPOSE 3006
 
