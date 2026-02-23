@@ -49,6 +49,18 @@ import { CycleReminders } from '../screens/health/cycle-tracking/CycleReminders'
 import { PartnerSharing } from '../screens/health/cycle-tracking/PartnerSharing';
 import { CycleSettings } from '../screens/health/cycle-tracking/CycleSettings';
 import { ExportCycleReport } from '../screens/health/cycle-tracking/ExportCycleReport';
+import { SleepHome } from '../screens/health/sleep/SleepHome';
+import { SleepLog } from '../screens/health/sleep/SleepLog';
+import { SleepQuality } from '../screens/health/sleep/SleepQuality';
+import { SleepDiary } from '../screens/health/sleep/SleepDiary';
+import { SleepTrends } from '../screens/health/sleep/SleepTrends';
+import { SleepGoals } from '../screens/health/sleep/SleepGoals';
+import { SleepDetail } from '../screens/health/sleep/SleepDetail';
+import { BedtimeRoutine } from '../screens/health/sleep/BedtimeRoutine';
+import { SmartAlarm } from '../screens/health/sleep/SmartAlarm';
+import { SleepInsights } from '../screens/health/sleep/SleepInsights';
+import { SleepDeviceSync } from '../screens/health/sleep/SleepDeviceSync';
+import { SleepExport } from '../screens/health/sleep/SleepExport';
 import { ROUTES } from '../constants/routes';
 import { JOURNEY_COLORS } from '../constants/journeys';
 
@@ -115,6 +127,19 @@ export default function HealthNavigator() {
       <Stack.Screen name={ROUTES.HEALTH_CYCLE_PARTNER_SHARING} component={PartnerSharing} />
       <Stack.Screen name={ROUTES.HEALTH_CYCLE_SETTINGS} component={CycleSettings} />
       <Stack.Screen name={ROUTES.HEALTH_CYCLE_EXPORT_REPORT} component={ExportCycleReport} />
+      {/* Sleep Management (Module 09) */}
+      <Stack.Screen name={ROUTES.HEALTH_SLEEP_HOME} component={SleepHome} />
+      <Stack.Screen name={ROUTES.HEALTH_SLEEP_LOG} component={SleepLog} />
+      <Stack.Screen name={ROUTES.HEALTH_SLEEP_QUALITY} component={SleepQuality} />
+      <Stack.Screen name={ROUTES.HEALTH_SLEEP_DIARY} component={SleepDiary} />
+      <Stack.Screen name={ROUTES.HEALTH_SLEEP_TRENDS} component={SleepTrends} />
+      <Stack.Screen name={ROUTES.HEALTH_SLEEP_GOALS} component={SleepGoals} />
+      <Stack.Screen name={ROUTES.HEALTH_SLEEP_DETAIL} component={SleepDetail} />
+      <Stack.Screen name={ROUTES.HEALTH_SLEEP_BEDTIME_ROUTINE} component={BedtimeRoutine} />
+      <Stack.Screen name={ROUTES.HEALTH_SLEEP_SMART_ALARM} component={SmartAlarm} />
+      <Stack.Screen name={ROUTES.HEALTH_SLEEP_INSIGHTS} component={SleepInsights} />
+      <Stack.Screen name={ROUTES.HEALTH_SLEEP_DEVICE_SYNC} component={SleepDeviceSync} />
+      <Stack.Screen name={ROUTES.HEALTH_SLEEP_EXPORT} component={SleepExport} />
     </Stack.Navigator>
   );
 }

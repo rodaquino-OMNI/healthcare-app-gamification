@@ -111,6 +111,20 @@ export const ROUTES = {
   HEALTH_CYCLE_SETTINGS: 'HealthCycleSettings',
   HEALTH_CYCLE_EXPORT_REPORT: 'HealthCycleExportReport',
 
+  // Health — Sleep Management (Module 09)
+  HEALTH_SLEEP_HOME: 'HealthSleepHome',
+  HEALTH_SLEEP_LOG: 'HealthSleepLog',
+  HEALTH_SLEEP_QUALITY: 'HealthSleepQuality',
+  HEALTH_SLEEP_DIARY: 'HealthSleepDiary',
+  HEALTH_SLEEP_TRENDS: 'HealthSleepTrends',
+  HEALTH_SLEEP_GOALS: 'HealthSleepGoals',
+  HEALTH_SLEEP_DETAIL: 'HealthSleepDetail',
+  HEALTH_SLEEP_BEDTIME_ROUTINE: 'HealthSleepBedtimeRoutine',
+  HEALTH_SLEEP_SMART_ALARM: 'HealthSleepSmartAlarm',
+  HEALTH_SLEEP_INSIGHTS: 'HealthSleepInsights',
+  HEALTH_SLEEP_DEVICE_SYNC: 'HealthSleepDeviceSync',
+  HEALTH_SLEEP_EXPORT: 'HealthSleepExport',
+
   // Health Assessment Wizard
   HEALTH_ASSESSMENT_WIZARD: 'HealthAssessmentWizard',
 

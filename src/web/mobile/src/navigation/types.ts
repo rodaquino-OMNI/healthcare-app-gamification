@@ -216,6 +216,19 @@ export type HealthStackParamList = {
   HealthCyclePartnerSharing: undefined;
   HealthCycleSettings: undefined;
   HealthCycleExportReport: undefined;
+  // Sleep Management
+  HealthSleepHome: undefined;
+  HealthSleepLog: undefined;
+  HealthSleepQuality: undefined;
+  HealthSleepDiary: undefined;
+  HealthSleepTrends: undefined;
+  HealthSleepGoals: undefined;
+  HealthSleepDetail: { date: string };
+  HealthSleepBedtimeRoutine: undefined;
+  HealthSleepSmartAlarm: undefined;
+  HealthSleepInsights: undefined;
+  HealthSleepDeviceSync: undefined;
+  HealthSleepExport: undefined;
 };
 
 // ---------------------------------------------------------------------------
