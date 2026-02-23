@@ -3,7 +3,7 @@
  * Extracted from screen-level MOCK_ constants for reuse and single source of truth.
  */
 
-import type { Reward, Quest } from 'src/web/shared/types/gamification.types';
+import type { Reward, Quest } from '@shared/types/gamification.types';
 
 // ---------------------------------------------------------------------------
 // Extended types

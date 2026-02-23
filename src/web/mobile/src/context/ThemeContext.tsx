@@ -2,8 +2,8 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { useColorScheme as useRNColorScheme } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemeProvider as SCThemeProvider } from 'styled-components/native';
-import { baseTheme, darkTheme } from '../../../../design-system/src/themes';
-import type { Theme } from '../../../../design-system/src/themes';
+import { baseTheme, darkTheme } from '@design-system/themes';
+import type { Theme } from '@design-system/themes';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
 

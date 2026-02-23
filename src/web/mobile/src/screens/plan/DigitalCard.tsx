@@ -10,14 +10,14 @@ import {
 } from 'react-native';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from 'src/web/mobile/src/hooks/useAuth';
-import { getDigitalCard } from 'src/web/mobile/src/api/plan';
-import { colors } from '@web/design-system/src/tokens/colors';
-import { spacingValues } from '@web/design-system/src/tokens/spacing';
-import { fontSizeValues } from '@web/design-system/src/tokens/typography';
-import { borderRadiusValues } from '@web/design-system/src/tokens/borderRadius';
+import { useAuth } from '@hooks/useAuth';
+import { getDigitalCard } from '@api/plan';
+import { colors } from '@design-system/tokens/colors';
+import { spacingValues } from '@design-system/tokens/spacing';
+import { fontSizeValues } from '@design-system/tokens/typography';
+import { borderRadiusValues } from '@design-system/tokens/borderRadius';
 import { useTheme } from 'styled-components/native';
-import type { Theme } from '@web/design-system/src/themes/base.theme';
+import type { Theme } from '@design-system/themes/base.theme';
 
 /**
  * Type definition for the route parameters.
@@ -250,7 +250,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   logoText: {
     color: colors.neutral.white,
     fontSize: fontSizeValues.md,
-    fontWeight: String(700) as any,
+    fontWeight: '700' as const,
     letterSpacing: 1,
   },
   planTypeBadge: {
@@ -262,12 +262,12 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   planTypeText: {
     color: colors.neutral.white,
     fontSize: fontSizeValues.xs,
-    fontWeight: String(600) as any,
+    fontWeight: '600' as const,
   },
   planName: {
     color: colors.neutral.white,
     fontSize: fontSizeValues.xl,
-    fontWeight: String(700) as any,
+    fontWeight: '700' as const,
   },
   cardBody: {
     padding: spacingValues.lg,
@@ -284,13 +284,13 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   fieldLabel: {
     fontSize: fontSizeValues.xs,
-    fontWeight: String(500) as any,
+    fontWeight: '500' as const,
     color: colors.gray[40],
     marginBottom: spacingValues['4xs'],
   },
   fieldValue: {
     fontSize: fontSizeValues.sm,
-    fontWeight: String(600) as any,
+    fontWeight: '600' as const,
     color: colors.journeys.plan.text,
   },
 
@@ -311,7 +311,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   qrText: {
     fontSize: fontSizeValues.sm,
-    fontWeight: String(500) as any,
+    fontWeight: '500' as const,
     color: colors.gray[40],
   },
   qrHint: {
@@ -333,7 +333,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   primaryButtonText: {
     color: colors.neutral.white,
     fontSize: fontSizeValues.md,
-    fontWeight: String(600) as any,
+    fontWeight: '600' as const,
   },
   secondaryButton: {
     backgroundColor: theme.colors.background.default,
@@ -346,7 +346,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   secondaryButtonText: {
     color: colors.journeys.plan.primary,
     fontSize: fontSizeValues.md,
-    fontWeight: String(600) as any,
+    fontWeight: '600' as const,
   },
 });
 

@@ -10,9 +10,9 @@
  */
 
 import { useQuery } from '@tanstack/react-query'; // v5.22+
-import { Plan } from 'src/web/shared/types/plan.types';
-import { getPlans } from 'src/web/mobile/src/api/plan';
-import { useAuth } from 'src/web/mobile/src/context/AuthContext';
+import { Plan } from '@shared/types/plan.types';
+import { getPlans } from '@api/plan';
+import { useAuth } from '@context/AuthContext';
 
 /**
  * Custom hook to fetch and manage insurance coverage data for a specific plan.

@@ -21,8 +21,8 @@ import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter'; 
 import { FilterDto } from '@app/shared/dto/filter.dto'; // Import FilterDto for filtering health data
 import { PaginationDto } from '@app/shared/dto/pagination.dto'; // Import PaginationDto for paginating health data
 import { AUTH_INSUFFICIENT_PERMISSIONS } from '@app/shared/constants/error-codes.constants'; // Import AUTH_INSUFFICIENT_PERMISSIONS for error code
-import { JwtAuthGuard } from '@app/auth/guards/jwt-auth.guard'; // NestJS JWT 10.0.0+
-import { RolesGuard } from '@app/auth/guards/roles.guard'; // NestJS JWT 10.0.0+
+import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard'; // NestJS JWT 10.0.0+
+import { RolesGuard } from '@app/auth/auth/guards/roles.guard'; // NestJS JWT 10.0.0+
 import { ConsentGuard, RequireConsent } from '@app/shared/consent'; // LGPD consent guard
 import { ConsentType } from '@app/shared/consent'; // Consent type enum
 

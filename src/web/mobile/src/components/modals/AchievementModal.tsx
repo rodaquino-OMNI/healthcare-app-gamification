@@ -1,10 +1,10 @@
 import React from 'react';
-import { Modal, ModalProps } from 'src/web/design-system/src/components/Modal/Modal.tsx'; // version: Not specified
-import { Button, ButtonProps } from 'src/web/design-system/src/components/Button/Button.tsx'; // version: Not specified
-import { Text, TextProps } from 'src/web/design-system/src/primitives/Text/Text.tsx'; // version: Not specified
-import { Badge, BadgeProps } from 'src/web/design-system/src/components/Badge/Badge.tsx'; // version: Not specified
-import { useJourney } from 'src/web/mobile/src/context/JourneyContext.tsx'; // version: Not specified
-import { Achievement } from 'src/web/shared/types/gamification.types.ts'; // version: Not specified
+import { Modal, ModalProps } from '@design-system/components/Modal/Modal'; // version: Not specified
+import { Button, ButtonProps } from '@design-system/components/Button/Button'; // version: Not specified
+import { Text, TextProps } from '@design-system/primitives/Text/Text'; // version: Not specified
+import { Badge, BadgeProps } from '@design-system/components/Badge/Badge'; // version: Not specified
+import { useJourney } from '@context/JourneyContext'; // version: Not specified
+import { Achievement } from '@shared/types/gamification.types'; // version: Not specified
 
 /**
  * Props interface for the AchievementModal component
@@ -43,12 +43,12 @@ export const AchievementModal: React.FC<AchievementModalProps> = ({
 
   // LD1: Render a Modal component with the achievement title.
   return (
-    <Modal visible={visible} onClose={onClose} title={title} journey={journey}>
+    <Modal visible={visible} onClose={onClose} title={title} journey={journey as 'health' | 'care' | 'plan'}>
       {/* LD1: Render the achievement badge with the achievement details. */}
       <Badge
         size="lg"
         unlocked={achievement.unlocked}
-        journey={journey}
+        journey={journey as 'health' | 'care' | 'plan'}
         accessibilityLabel={`${title} Achievement`}
       >
         {icon}

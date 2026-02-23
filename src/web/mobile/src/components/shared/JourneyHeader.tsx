@@ -4,16 +4,22 @@ import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import styled from 'styled-components';
 
-import { Box } from '../../../design-system/src/primitives/Box';
-import { Text } from '../../../design-system/src/primitives/Text';
-import { Icon } from '../../../design-system/src/primitives/Icon';
+import { Box } from '@design-system/primitives/Box';
+import { Text } from '@design-system/primitives/Text';
+import { Icon } from '@design-system/primitives/Icon';
 import { useJourney } from '../../hooks/useJourney';
-import { JOURNEY_NAMES, JOURNEY_COLORS, JOURNEY_ICONS } from '../../../shared/constants/journeys';
+import { JOURNEY_NAMES, JOURNEY_COLORS } from '@shared/constants/journeys';
+
+const JOURNEY_ICONS: Record<string, string> = {
+  HEALTH: 'heart',
+  CARE: 'medical',
+  PLAN: 'card',
+};
 
 /**
  * Props for the JourneyHeader component
  */
-interface JourneyHeaderProps {
+export interface JourneyHeaderProps {
   /**
    * Optional custom title to override the journey name
    */

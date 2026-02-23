@@ -46,17 +46,17 @@ spec:
         - name: PORT
           value: "4000"
         - name: AUTH_SERVICE_URL
-          value: "http://auth-service:3000"
+          value: "http://auth-service"
         - name: HEALTH_SERVICE_URL
-          value: "http://health-journey:3000"
+          value: "http://health-journey"
         - name: CARE_SERVICE_URL
-          value: "http://care-journey:3000"
+          value: "http://care-journey"
         - name: PLAN_SERVICE_URL
-          value: "http://plan-journey:3000"
+          value: "http://plan-journey"
         - name: GAMIFICATION_SERVICE_URL
-          value: "http://gamification-engine:3000"
+          value: "http://gamification-engine"
         - name: NOTIFICATION_SERVICE_URL
-          value: "http://notification-service:3000"
+          value: "http://notification-service"
         - name: REDIS_URL
           valueFrom:
             secretKeyRef:

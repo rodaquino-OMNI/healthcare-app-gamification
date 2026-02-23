@@ -6,8 +6,8 @@ import {
   Text,
   Icon,
   Badge,
-} from 'src/web/design-system/src/components';
-import { EmptyState } from '../shared/EmptyState';
+} from '@design-system/components';
+import EmptyState from '../shared/EmptyState';
 import { LoadingIndicator } from '../shared/LoadingIndicator';
 import { useNotifications } from '../../hooks/useNotifications';
 import { useJourney } from '../../hooks/useJourney';
@@ -15,8 +15,8 @@ import {
   Notification,
   NotificationType,
   NotificationStatus,
-} from 'src/web/shared/types/notification.types';
-import { formatRelativeTime } from '../../utils/date';
+} from '@shared/types/notification.types';
+import { formatRelativeDate } from '../../utils/date';
 
 /**
  * Interface defining the props for the NotificationList component
@@ -80,7 +80,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({
 
   // Filter notifications based on the filter prop if provided
   const filteredNotifications = filter
-    ? notifications.filter((notification) => filter(notification))
+    ? notifications.filter((notification) => (filter as (n: Notification) => boolean)(notification))
     : notifications;
 
   // Limit the number of notifications based on maxItems prop if provided
@@ -96,7 +96,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({
         try {
           await markAsRead(item.id);
           if (item.deepLink) {
-            navigation.navigate(item.deepLink);
+            (navigation as any).navigate(item.deepLink);
           }
           if (onNotificationPress) {
             onNotificationPress(item);
@@ -108,7 +108,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({
 
       return (
         <TouchableOpacity onPress={handlePress} style={styles.notificationItem}>
-          <Card journey={item.journey}>
+          <Card journey={item.journey as 'health' | 'care' | 'plan' | undefined}>
             <View style={styles.notificationHeader}>
               <View style={styles.contentContainer}>
                 <View style={styles.iconContainer}>
@@ -122,7 +122,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({
             </View>
             <Text style={styles.notificationBody}>{item.body}</Text>
             <Text style={styles.notificationTime}>
-              {formatRelativeTime(item.createdAt)}
+              {formatRelativeDate(new Date(item.createdAt))}
             </Text>
           </Card>
         </TouchableOpacity>

@@ -4,7 +4,7 @@ import { LoggerModule } from '@app/shared/logging/logger.module';
 import { TracingModule } from '@app/shared/tracing/tracing.module';
 import { RedisModule } from '@app/shared/redis/redis.module';
 import { JOURNEY_IDS } from '@app/shared/constants/journey.constants';
-import { ErrorCodes } from '@app/shared/constants/error-codes.constants';
+import { AUTH_INVALID_CREDENTIALS } from '@app/shared/constants/error-codes.constants';
 
 /**
  * Configuration for the API Gateway.
@@ -25,7 +25,7 @@ export const configuration = registerAs('apiGateway', () => ({
     issuer: process.env.TOKEN_ISSUER || 'austa.com.br',
     audience: process.env.TOKEN_AUDIENCE || 'austa-users',
     errorCodes: {
-      invalidCredentials: ErrorCodes.AUTH_INVALID_CREDENTIALS,
+      invalidCredentials: AUTH_INVALID_CREDENTIALS,
     },
   },
   

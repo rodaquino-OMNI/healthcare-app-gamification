@@ -7,9 +7,9 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query'; // v5.22+
 import { getClaims } from '../api/plan';
-import { Claim } from '../../shared/types/plan.types';
+import { Claim } from '@shared/types/plan.types';
 import { useAuth } from './useAuth';
-import { AuthContextType } from '../context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 
 /**
  * Custom hook to fetch and manage claims data for a specific user.

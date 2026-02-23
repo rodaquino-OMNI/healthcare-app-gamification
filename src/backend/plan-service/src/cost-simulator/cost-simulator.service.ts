@@ -1,12 +1,11 @@
-import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Injectable } from '@nestjs/common';
 import { SimulateCostDto, CodingStandard, ProcedureType } from './dto/simulate-cost.dto';
 
 // Define the error types and exceptions for now, to be replaced with proper imports later
 class AppException extends Error {
   constructor(
-    message: string, 
-    public readonly errorType: string, 
+    message: string,
+    public readonly errorType: string,
     public readonly errorCode: string,
     public readonly context?: Record<string, any>,
     public readonly originalError?: Error

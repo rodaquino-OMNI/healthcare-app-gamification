@@ -6,6 +6,7 @@ COPY package.json yarn.lock ./
 COPY tsconfig.json tsconfig.build.json nest-cli.json ./
 COPY shared ./shared
 COPY health-service ./health-service
+COPY auth-service/src ./auth-service/src
 
 RUN yarn install --frozen-lockfile
 RUN npx prisma generate --schema=shared/prisma/schema.prisma || true

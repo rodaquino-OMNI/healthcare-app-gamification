@@ -3,14 +3,14 @@ import { useForm } from 'react-hook-form'; // ^7.0.0
 import { yupResolver } from '@hookform/resolvers/yup'; // ^3.0.0
 import * as yup from 'yup'; // ^1.0.0
 
-import { HealthMetricType } from 'src/web/shared/types/health.types.ts';
-import { createHealthMetric } from 'src/web/mobile/src/api/health.ts';
-import { useHealthMetrics } from 'src/web/mobile/src/hooks/useHealthMetrics.ts';
-import { Input, InputProps } from 'src/web/design-system/src/components/Input/Input.tsx';
-import { Button, ButtonProps } from 'src/web/design-system/src/components/Button/Button.tsx';
-import { Select } from 'src/web/design-system/src/components/Select/Select.tsx';
-import { useJourney } from 'src/web/mobile/src/context/JourneyContext.tsx';
-import { isValidDate } from 'src/web/shared/utils/validation.ts';
+import { HealthMetricType } from '@shared/types/health.types';
+import { createHealthMetric } from '@api/health';
+import { useHealthMetrics } from '@hooks/useHealthMetrics';
+import { Input, InputProps } from '@design-system/components/Input';
+import { Button, ButtonProps } from '@design-system/components/Button/Button';
+import { Select } from '@design-system/components/Select/Select';
+import { useJourney } from '@context/JourneyContext';
+import { isValidDate } from '@shared/utils/validation';
 
 /**
  * Component for adding a new health metric.
@@ -30,7 +30,7 @@ export const HealthMetricForm: React.FC = () => {
 
   // Initialize the form using React Hook Form with the Yup resolver
   const { register, handleSubmit, formState: { errors }, reset } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema as any),
   });
 
   // Access the useHealthMetrics hook to refetch data after submission
@@ -66,18 +66,20 @@ export const HealthMetricForm: React.FC = () => {
         label="Value"
         placeholder="Enter value"
         type="number"
+        value=""
         {...register('value')}
       />
-      {errors.value && <span>{errors.value.message}</span>}
+      {errors.value && <span>{errors.value.message as string}</span>}
 
       {/* Input field for metric unit */}
       <Input
         label="Unit"
         placeholder="Enter unit"
         type="text"
+        value=""
         {...register('unit')}
       />
-      {errors.unit && <span>{errors.unit.message}</span>}
+      {errors.unit && <span>{errors.unit.message as string}</span>}
 
       {/* Input field for metric timestamp */}
       <Input
@@ -86,7 +88,7 @@ export const HealthMetricForm: React.FC = () => {
         type="datetime-local"
         {...register('timestamp')}
       />
-      {errors.timestamp && <span>{errors.timestamp.message}</span>}
+      {errors.timestamp && <span>{errors.timestamp.message as string}</span>}
 
       {/* Select component for choosing the metric type */}
       <Select
@@ -104,7 +106,7 @@ export const HealthMetricForm: React.FC = () => {
           register('type').onChange(event);
         }}
       />
-      {errors.type && <span>{errors.type.message}</span>}
+      {errors.type && <span>{errors.type.message as string}</span>}
 
       {/* Button component to submit the form */}
       <Button type="submit">Add Metric</Button>

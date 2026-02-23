@@ -2,9 +2,8 @@
 import { Injectable } from '@nestjs/common'; // v10.0.0+
 import { ConfigService } from '@nestjs/config'; // v10.0.0+
 import { Twilio } from 'twilio'; // v4.0.0+
-import { notification } from '../config/configuration';
-import { LoggerService } from '../../../shared/src/logging/logger.service';
-import { SYS_INTERNAL_SERVER_ERROR } from '../../../shared/src/constants/error-codes.constants';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { SYS_INTERNAL_SERVER_ERROR } from '@app/shared/constants/error-codes.constants';
 
 /**
  * Service responsible for sending SMS notifications using Twilio.

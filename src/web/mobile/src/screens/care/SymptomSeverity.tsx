@@ -7,7 +7,7 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Slider } from '@austa/design-system/src/components/Slider/Slider';
 import { Badge } from '@austa/design-system/src/components/Badge/Badge';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
-import { ROUTES } from '../../../../constants/routes';
+import { ROUTES } from '@constants/routes';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { useTranslation } from 'react-i18next';

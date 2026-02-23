@@ -8,7 +8,7 @@ import { Badge } from '@austa/design-system/src/components/Badge/Badge';
 import { ProgressBar } from '@austa/design-system/src/components/ProgressBar/ProgressBar';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchable';
-import { ROUTES } from '../../../../constants/routes';
+import { ROUTES } from '@constants/routes';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 

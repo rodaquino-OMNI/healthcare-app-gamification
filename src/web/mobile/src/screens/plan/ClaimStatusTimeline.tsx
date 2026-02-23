@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-import { ClaimStatus } from 'src/web/shared/types/plan.types';
+import { ClaimStatus } from '@shared/types/plan.types';
 import {
   colors,
   typography,
-} from '@web/design-system/src/tokens';
-import type { Theme } from '@web/design-system/src/themes/base.theme';
+} from '@design-system/tokens';
+import type { Theme } from '@design-system/themes/base.theme';
 
 const { plan } = colors.journeys;
 const sp = { xs: 8, sm: 12, md: 16, lg: 20, xl: 24, '2xl': 32 };
@@ -73,7 +73,7 @@ export const ClaimStatusTimeline: React.FC<ClaimStatusTimelineProps> = ({
         const isDeniedStep = isDenied && index === 1;
         const isLast = index === TIMELINE_STEPS.length - 1;
 
-        let circleColor = colors.gray[30];
+        let circleColor: string = colors.gray[30];
         if (isCompleted) circleColor = plan.primary;
         if (isDeniedStep) circleColor = colors.semantic.error;
 
@@ -142,7 +142,7 @@ const createStyles = (theme: Theme) =>
     },
     sectionTitle: {
       fontSize: 18,
-      fontWeight: typography.fontWeight.semiBold as any,
+      fontWeight: '600' as const,
       fontFamily: typography.fontFamily.heading,
       color: plan.text,
       marginBottom: sp.md,
@@ -170,7 +170,7 @@ const createStyles = (theme: Theme) =>
     timelineCheck: {
       fontSize: 12,
       color: colors.neutral.white,
-      fontWeight: typography.fontWeight.bold as any,
+      fontWeight: '700' as const,
     },
     timelineLine: {
       width: 2,
@@ -183,13 +183,13 @@ const createStyles = (theme: Theme) =>
     },
     timelineLabel: {
       fontSize: 14,
-      fontWeight: typography.fontWeight.medium as any,
+      fontWeight: '500' as const,
       fontFamily: typography.fontFamily.body,
       color: colors.gray[40],
     },
     timelineLabelCompleted: {
       color: plan.text,
-      fontWeight: typography.fontWeight.semiBold as any,
+      fontWeight: '600' as const,
     },
     timelineLabelDenied: {
       color: colors.semantic.error,

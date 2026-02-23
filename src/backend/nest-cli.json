@@ -27,7 +27,8 @@
       "entryFile": "main",
       "sourceRoot": "api-gateway/src",
       "compilerOptions": {
-        "tsConfigPath": "api-gateway/tsconfig.json"
+        "tsConfigPath": "api-gateway/tsconfig.json",
+        "webpackConfigPath": "api-gateway/webpack.config.js"
       }
     },
     "auth-service": {
@@ -45,7 +46,8 @@
       "entryFile": "main",
       "sourceRoot": "health-service/src",
       "compilerOptions": {
-        "tsConfigPath": "health-service/tsconfig.json"
+        "tsConfigPath": "health-service/tsconfig.json",
+        "webpackConfigPath": "health-service/webpack.config.js"
       }
     },
     "care-service": {
@@ -54,7 +56,8 @@
       "entryFile": "main",
       "sourceRoot": "care-service/src",
       "compilerOptions": {
-        "tsConfigPath": "care-service/tsconfig.json"
+        "tsConfigPath": "care-service/tsconfig.json",
+        "webpackConfigPath": "care-service/webpack.config.js"
       }
     },
     "plan-service": {

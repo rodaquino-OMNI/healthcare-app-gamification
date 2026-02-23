@@ -229,6 +229,37 @@ export type HealthStackParamList = {
   HealthSleepInsights: undefined;
   HealthSleepDeviceSync: undefined;
   HealthSleepExport: undefined;
+  // Activity Tracker (Module 10)
+  HealthActivityHome: undefined;
+  HealthActivityWorkoutLog: undefined;
+  HealthActivityWorkoutDetail: { workoutId: string };
+  HealthActivityWorkoutHistory: undefined;
+  HealthActivityStepGoals: undefined;
+  HealthActivityTrends: undefined;
+  HealthActivityExerciseLibrary: undefined;
+  HealthActivityExerciseDetail: { exerciseId: string };
+  HealthActivityDeviceSync: undefined;
+  HealthActivityExport: undefined;
+  // Nutrition Monitoring (Module 11)
+  HealthNutritionHome: undefined;
+  HealthNutritionMealLog: undefined;
+  HealthNutritionMealDetail: { mealId: string };
+  HealthNutritionFoodDiary: undefined;
+  HealthNutritionMacroTracker: undefined;
+  HealthNutritionWaterIntake: undefined;
+  HealthNutritionDietaryGoals: undefined;
+  HealthNutritionInsights: undefined;
+  HealthNutritionFoodSearch: undefined;
+  HealthNutritionExport: undefined;
+  // Wellness Resources (Module 16)
+  HealthWellnessResourcesHome: undefined;
+  HealthWellnessResourcesArticleList: undefined;
+  HealthWellnessResourcesArticleDetail: { articleId: string };
+  HealthWellnessResourcesVideoLibrary: undefined;
+  HealthWellnessResourcesVideoPlayer: { videoId: string };
+  HealthWellnessResourcesPrograms: undefined;
+  HealthWellnessResourcesProgramDetail: { programId: string };
+  HealthWellnessResourcesBookmarks: undefined;
 };
 
 // ---------------------------------------------------------------------------

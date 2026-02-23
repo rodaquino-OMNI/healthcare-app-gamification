@@ -1,13 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config'; // v10.0.0+
-import { LoggerService } from '../../../shared/src/logging/logger.service';
+import { LoggerService } from '@app/shared/logging/logger.service';
 import { WebsocketsGateway } from '../../websockets/websockets.gateway';
-import { RedisService } from '../../../shared/src/redis/redis.service';
-import { notification } from '../../config/configuration';
-import { SYS_INTERNAL_SERVER_ERROR } from '../../../shared/src/constants/error-codes.constants';
-import { Service } from '../../../shared/src/interfaces/service.interface';
-import { NotificationEntity } from '../../notifications/entities/notification.entity';
+import { RedisService } from '@app/shared/redis/redis.service';
+import { Notification } from '../../notifications/entities/notification.entity';
 
 /**
  * Handles the sending of in-app notifications within the AUSTA SuperApp.
@@ -15,10 +12,10 @@ import { NotificationEntity } from '../../notifications/entities/notification.en
  * either delivering notifications via WebSockets or storing them for later delivery.
  */
 @Injectable()
-export class InAppService implements Service<any, any, any> {
+export class InAppService {
   /**
    * Initializes the InAppService with required dependencies.
-   * 
+   *
    * @param websocketsGateway - Service for sending WebSocket messages
    * @param redisService - Service for Redis operations and checking connection status
    * @param logger - Service for logging
@@ -35,12 +32,12 @@ export class InAppService implements Service<any, any, any> {
    * Sends an in-app notification to a user.
    * If the user is connected, sends the notification via WebSocket.
    * If the user is not connected, stores the notification for later delivery.
-   * 
+   *
    * @param userId - The ID of the user to send the notification to
    * @param notification - The notification entity to send
    * @returns A promise that resolves with a boolean indicating whether the notification was sent successfully
    */
-  async send(userId: string, notification: NotificationEntity): Promise<boolean> {
+  async send(userId: string, notification: Notification): Promise<boolean> {
     try {
       this.logger.log(`Attempting to send in-app notification to user ${userId}`, 'InAppService');
 
@@ -50,16 +47,14 @@ export class InAppService implements Service<any, any, any> {
       if (isConnected) {
         // If user is connected, send notification immediately
         this.websocketsGateway.sendToUser(userId, {
-          id: notification.id,
+          id: String(notification.id),
+          userId: notification.userId,
           type: notification.type,
           title: notification.title,
-          body: notification.body,
-          timestamp: notification.createdAt || new Date().toISOString(),
-          channel: 'in-app',
-          status: notification.status,
-          data: {} // Additional data could be added here if needed
+          message: notification.body,
+          timestamp: notification.createdAt || new Date(),
         });
-        
+
         this.logger.debug(`In-app notification sent to connected user ${userId}`, 'InAppService');
         return true;
       } else {
@@ -81,7 +76,7 @@ export class InAppService implements Service<any, any, any> {
   /**
    * Checks if a user is connected to the WebSocket server.
    * Uses Redis to verify if the user has an active connection.
-   * 
+   *
    * @param userId - The ID of the user to check
    * @returns A promise that resolves with a boolean indicating whether the user is connected
    */
@@ -104,19 +99,19 @@ export class InAppService implements Service<any, any, any> {
   /**
    * Stores a notification for later delivery when the user connects.
    * Uses Redis to store the notification with an appropriate TTL based on journey context.
-   * 
+   *
    * @param userId - The ID of the user to store the notification for
    * @param notification - The notification to store
    * @returns A promise that resolves with a boolean indicating whether the notification was stored successfully
    */
   async storeNotificationForLaterDelivery(
     userId: string,
-    notification: NotificationEntity,
+    notification: Notification,
   ): Promise<boolean> {
     try {
       // Create a key for the user's pending notifications
       const pendingNotificationsKey = `user:${userId}:pending_notifications`;
-      
+
       // Create notification payload
       const notificationPayload = {
         id: notification.id,
@@ -128,26 +123,26 @@ export class InAppService implements Service<any, any, any> {
         status: notification.status,
         data: {} // Additional data could be added here if needed
       };
-      
+
       // Serialize the notification
       const serializedNotification = JSON.stringify(notificationPayload);
-      
+
       // Generate a unique ID for the notification
       const notificationId = `${Date.now()}`;
-      
+
       // Store the notification in a Redis hash
       await this.redisService.hset(
         pendingNotificationsKey,
         notificationId,
         serializedNotification
       );
-      
+
       // Set an appropriate TTL for the pending notifications key
       const journey = this.getJourneyFromNotification(notification);
       const ttl = this.redisService.getJourneyTTL(journey);
-      
+
       await this.redisService.expire(pendingNotificationsKey, ttl);
-      
+
       return true;
     } catch (error) {
       this.logger.error(
@@ -162,17 +157,17 @@ export class InAppService implements Service<any, any, any> {
   /**
    * Determines the journey context from a notification.
    * Used to set appropriate cache TTLs based on journey type.
-   * 
+   *
    * @param notification - The notification to analyze
    * @returns The journey identifier (health, care, plan, game)
    * @private
    */
-  private getJourneyFromNotification(notification: NotificationEntity): string {
+  private getJourneyFromNotification(notification: Notification): string {
     // Default to health journey if no type is available
     if (!notification || !notification.type) return 'health';
-    
+
     const type = notification.type.toLowerCase();
-    
+
     if (type.includes('health') || type.includes('metric') || type.includes('goal')) {
       return 'health';
     } else if (type.includes('care') || type.includes('appointment') || type.includes('medication')) {
@@ -182,7 +177,7 @@ export class InAppService implements Service<any, any, any> {
     } else if (type.includes('achievement') || type.includes('quest') || type.includes('level')) {
       return 'game';
     }
-    
+
     return 'health'; // Default to health journey if type is unknown
   }
 }

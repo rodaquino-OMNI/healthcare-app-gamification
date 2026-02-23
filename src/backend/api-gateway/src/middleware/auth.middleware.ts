@@ -44,7 +44,7 @@ export class AuthMiddleware implements NestMiddleware {
       const authHeader = req.headers.authorization;
       if (!authHeader) {
         // If no token is provided, allow the request to proceed to public routes
-        this.loggerService.log('info', 'No authentication token provided');
+        this.loggerService.log('No authentication token provided');
         return next();
       }
 
@@ -79,7 +79,7 @@ export class AuthMiddleware implements NestMiddleware {
           email: decoded.email
         };
 
-        this.loggerService.log('info', `Authenticated user: ${userId}`);
+        this.loggerService.log(`Authenticated user: ${userId}`);
         return next();
       } catch (error) {
         const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';

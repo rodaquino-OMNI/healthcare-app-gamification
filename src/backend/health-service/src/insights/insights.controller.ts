@@ -1,9 +1,9 @@
 import { Controller, Get, UseGuards, Request, Inject } from '@nestjs/common'; // @nestjs/common v10.0.0+
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@nestjs/passport'; // @nestjs/passport v10.0.0+
-import { InsightsService } from '@app/health/insights/insights.service.ts';
-import { LoggerService } from '@app/shared/logging/logger.service.ts';
-import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator.ts';
+import { InsightsService } from '@app/health/insights/insights.service';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 
 /**
  * Handles incoming requests related to health insights.

@@ -125,6 +125,38 @@ export const ROUTES = {
   HEALTH_SLEEP_DEVICE_SYNC: 'HealthSleepDeviceSync',
   HEALTH_SLEEP_EXPORT: 'HealthSleepExport',
 
+  // Health — Activity Tracker (Module 10)
+  HEALTH_ACTIVITY_HOME: 'HealthActivityHome',
+  HEALTH_ACTIVITY_WORKOUT_LOG: 'HealthActivityWorkoutLog',
+  HEALTH_ACTIVITY_WORKOUT_DETAIL: 'HealthActivityWorkoutDetail',
+  HEALTH_ACTIVITY_WORKOUT_HISTORY: 'HealthActivityWorkoutHistory',
+  HEALTH_ACTIVITY_STEP_GOALS: 'HealthActivityStepGoals',
+  HEALTH_ACTIVITY_TRENDS: 'HealthActivityTrends',
+  HEALTH_ACTIVITY_EXERCISE_LIBRARY: 'HealthActivityExerciseLibrary',
+  HEALTH_ACTIVITY_EXERCISE_DETAIL: 'HealthActivityExerciseDetail',
+  HEALTH_ACTIVITY_DEVICE_SYNC: 'HealthActivityDeviceSync',
+  HEALTH_ACTIVITY_EXPORT: 'HealthActivityExport',
+  // Health — Nutrition Monitoring (Module 11)
+  HEALTH_NUTRITION_HOME: 'HealthNutritionHome',
+  HEALTH_NUTRITION_MEAL_LOG: 'HealthNutritionMealLog',
+  HEALTH_NUTRITION_MEAL_DETAIL: 'HealthNutritionMealDetail',
+  HEALTH_NUTRITION_FOOD_DIARY: 'HealthNutritionFoodDiary',
+  HEALTH_NUTRITION_MACRO_TRACKER: 'HealthNutritionMacroTracker',
+  HEALTH_NUTRITION_WATER_INTAKE: 'HealthNutritionWaterIntake',
+  HEALTH_NUTRITION_DIETARY_GOALS: 'HealthNutritionDietaryGoals',
+  HEALTH_NUTRITION_INSIGHTS: 'HealthNutritionInsights',
+  HEALTH_NUTRITION_FOOD_SEARCH: 'HealthNutritionFoodSearch',
+  HEALTH_NUTRITION_EXPORT: 'HealthNutritionExport',
+  // Health — Wellness Resources (Module 16)
+  HEALTH_WELLNESS_RESOURCES_HOME: 'HealthWellnessResourcesHome',
+  HEALTH_WELLNESS_RESOURCES_ARTICLE_LIST: 'HealthWellnessResourcesArticleList',
+  HEALTH_WELLNESS_RESOURCES_ARTICLE_DETAIL: 'HealthWellnessResourcesArticleDetail',
+  HEALTH_WELLNESS_RESOURCES_VIDEO_LIBRARY: 'HealthWellnessResourcesVideoLibrary',
+  HEALTH_WELLNESS_RESOURCES_VIDEO_PLAYER: 'HealthWellnessResourcesVideoPlayer',
+  HEALTH_WELLNESS_RESOURCES_PROGRAMS: 'HealthWellnessResourcesPrograms',
+  HEALTH_WELLNESS_RESOURCES_PROGRAM_DETAIL: 'HealthWellnessResourcesProgramDetail',
+  HEALTH_WELLNESS_RESOURCES_BOOKMARKS: 'HealthWellnessResourcesBookmarks',
+
   // Health Assessment Wizard
   HEALTH_ASSESSMENT_WIZARD: 'HealthAssessmentWizard',
 
@@ -299,4 +331,4 @@ export const ROUTES = {
   ERROR_SERVER: 'ErrorServer',
   ERROR_MAINTENANCE: 'ErrorMaintenance',
   ERROR_FORCE_UPDATE: 'ErrorForceUpdate',
-};
+} as const;

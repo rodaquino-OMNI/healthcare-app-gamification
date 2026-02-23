@@ -1,4 +1,3 @@
-import Text, { TextProps } from './Text';
-
-export type { TextProps };
-export default Text;
+export { Text } from './Text';
+export { default } from './Text';
+export type { TextProps } from './Text';

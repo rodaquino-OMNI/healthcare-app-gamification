@@ -35,7 +35,7 @@ interface NotificationPayload {
   namespace: 'notifications'
 })
 export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
-  @WebSocketServer() server: Server;
+  @WebSocketServer() server!: Server;
   
   // Store connected clients by userId
   private connectedUsers: Map<string, Set<string>> = new Map();
@@ -70,7 +70,7 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
     if (!this.connectedUsers.has(userId)) {
       this.connectedUsers.set(userId, new Set());
     }
-    this.connectedUsers.get(userId).add(client.id);
+    this.connectedUsers.get(userId)!.add(client.id);
     
     // Default to all journeys if not specified
     const journeys = client.handshake.query.journeys 
@@ -193,7 +193,7 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
    * Check if a user is connected
    */
   isUserConnected(userId: string): boolean {
-    return this.connectedUsers.has(userId) && this.connectedUsers.get(userId).size > 0;
+    return this.connectedUsers.has(userId) && (this.connectedUsers.get(userId)?.size ?? 0) > 0;
   }
   
   /**

@@ -3,7 +3,7 @@ import { View, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
-import { ROUTES } from '../../../../constants/routes';
+import { ROUTES } from '@constants/routes';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 

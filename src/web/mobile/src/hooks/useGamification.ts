@@ -1,8 +1,8 @@
 import { useQuery } from '@apollo/client'; // Version 3.0+
 import { gql } from '@apollo/client';
-import { GameProfile } from 'src/web/shared/types/gamification.types';
-import { getGameProfile, getAchievements, getQuests, getRewards } from 'src/web/mobile/src/api/gamification';
-import { useAuth } from 'src/web/mobile/src/context/AuthContext';
+import { GameProfile } from '@shared/types/gamification.types';
+import { getGameProfile, getAchievements, getQuests, getRewards } from '@api/gamification';
+import { useAuth } from '@context/AuthContext';
 
 // GraphQL query to fetch a user's game profile
 const GET_GAME_PROFILE = gql`
@@ -85,7 +85,8 @@ const GET_REWARDS = gql`
  * @returns The user's game profile, or undefined if not loaded or an error occurred.
  */
 export function useGameProfile(): GameProfile | undefined {
-  const { userId } = useAuth();
+  const { session, getUserFromToken } = useAuth();
+  const userId = session?.accessToken ? getUserFromToken(session.accessToken)?.sub : undefined;
   
   const { data } = useQuery(GET_GAME_PROFILE, {
     variables: { userId },
@@ -104,7 +105,8 @@ export function useGameProfile(): GameProfile | undefined {
  * @returns The user's achievements, or undefined if not loaded or an error occurred.
  */
 export function useAchievements() {
-  const { userId } = useAuth();
+  const { session, getUserFromToken } = useAuth();
+  const userId = session?.accessToken ? getUserFromToken(session.accessToken)?.sub : undefined;
   
   const { data } = useQuery(GET_ACHIEVEMENTS, {
     variables: { userId },
@@ -123,7 +125,8 @@ export function useAchievements() {
  * @returns The user's quests, or undefined if not loaded or an error occurred.
  */
 export function useQuests() {
-  const { userId } = useAuth();
+  const { session, getUserFromToken } = useAuth();
+  const userId = session?.accessToken ? getUserFromToken(session.accessToken)?.sub : undefined;
   
   const { data } = useQuery(GET_QUESTS, {
     variables: { userId },
@@ -142,7 +145,8 @@ export function useQuests() {
  * @returns The user's rewards, or undefined if not loaded or an error occurred.
  */
 export function useRewards() {
-  const { userId } = useAuth();
+  const { session, getUserFromToken } = useAuth();
+  const userId = session?.accessToken ? getUserFromToken(session.accessToken)?.sub : undefined;
   
   const { data } = useQuery(GET_REWARDS, {
     variables: { userId },
@@ -154,4 +158,22 @@ export function useRewards() {
   });
   
   return data?.rewards;
+}
+
+/**
+ * Combined gamification hook that provides access to all gamification data.
+ * @returns Object with profile, achievements, quests, and rewards
+ */
+export function useGamification() {
+  const profile = useGameProfile();
+  const achievements = useAchievements();
+  const quests = useQuests();
+  const rewards = useRewards();
+
+  return {
+    profile,
+    achievements,
+    quests,
+    rewards,
+  };
 }

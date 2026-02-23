@@ -6,18 +6,18 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
 
-import { userValidationSchema } from 'src/web/shared/utils/validation';
-import { register } from 'src/web/mobile/src/api/auth';
-import { useAuth } from 'src/web/mobile/src/hooks/useAuth';
+import { userValidationSchema } from '@shared/utils/validation';
+import { register } from '@api/auth';
+import { useAuth } from '@hooks/useAuth';
 import { ROUTES } from '../../constants/routes';
-import { Button } from 'src/web/design-system/src/components/Button/Button';
-import { Input } from 'src/web/design-system/src/components/Input/Input';
-import { Checkbox } from 'src/web/design-system/src/components/Checkbox/Checkbox';
+import { Button } from '@design-system/components/Button/Button';
+import { Input } from '@design-system/components/Input';
+import { Checkbox } from '@design-system/components/Checkbox/Checkbox';
 
-import { colors } from '../../../../design-system/src/tokens/colors';
-import { typography } from '../../../../design-system/src/tokens/typography';
-import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
-import { borderRadius } from '../../../../design-system/src/tokens/borderRadius';
+import { colors } from '@design-system/tokens/colors';
+import { typography } from '@design-system/tokens/typography';
+import { spacing, spacingValues } from '@design-system/tokens/spacing';
+import { borderRadius } from '@design-system/tokens/borderRadius';
 
 // Styled components using design-system tokens
 const Container = styled.View`
@@ -84,7 +84,7 @@ export const RegisterScreen: React.FC = () => {
   const { t } = useTranslation();
 
   const { control, handleSubmit, formState: { errors, isValid, isSubmitting }, register: registerInput } = useForm({
-    resolver: yupResolver(userValidationSchema),
+    resolver: yupResolver(userValidationSchema as any),
     mode: 'onBlur',
     defaultValues: {
       name: '',

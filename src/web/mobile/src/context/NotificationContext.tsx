@@ -1,7 +1,7 @@
 import { ReactNode, createContext, useState, useEffect, useCallback, useContext } from 'react';
-import { api } from '../api/index';
+import { getNotifications, markNotificationAsRead } from '@api/notifications';
 import { useAuth } from '../hooks/useAuth';
-import { Notification, NotificationStatus } from '../../shared/types/notification.types';
+import { Notification, NotificationStatus } from '@shared/types/notification.types';
 
 /**
  * Defines the structure of the notification context value.
@@ -55,8 +55,8 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         return;
       }
       
-      const notificationData = await api.notifications.getNotifications(userId);
-      setNotifications(notificationData);
+      const notificationData = await getNotifications(userId);
+      setNotifications(notificationData as unknown as Notification[]);
     } catch (error) {
       console.error('Failed to fetch notifications:', error);
       throw error;
@@ -74,7 +74,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     }
     
     try {
-      await api.notifications.markNotificationAsRead(id);
+      await markNotificationAsRead(id);
       
       // Update local state
       setNotifications(prevNotifications => 

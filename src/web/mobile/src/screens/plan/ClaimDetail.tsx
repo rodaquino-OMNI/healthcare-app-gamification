@@ -11,16 +11,16 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import type { PlanNavigationProp } from '../../navigation/types';
 import { useTranslation } from 'react-i18next';
 
-import { Claim, ClaimStatus } from 'src/web/shared/types/plan.types';
-import { useClaims } from 'src/web/mobile/src/hooks/useClaims';
+import { Claim, ClaimStatus } from '@shared/types/plan.types';
+import { useClaims } from '@hooks/useClaims';
 
-import { formatDate } from 'src/web/shared/utils/format';
+import { formatDate } from '@shared/utils/format';
 import {
   colors,
   typography,
-} from '@web/design-system/src/tokens';
+} from '@design-system/tokens';
 import { useTheme } from 'styled-components/native';
-import type { Theme } from '@web/design-system/src/themes/base.theme';
+import type { Theme } from '@design-system/themes/base.theme';
 
 import { ClaimStatusTimeline } from './ClaimStatusTimeline';
 import { ClaimDocuments } from './ClaimDocuments';
@@ -211,7 +211,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   errorText: {
     fontSize: 18,
-    fontWeight: typography.fontWeight.semiBold as any,
+    fontWeight: '600' as const,
     fontFamily: typography.fontFamily.heading,
     color: colors.semantic.error,
     textAlign: 'center',
@@ -240,7 +240,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   typeLabel: {
     fontSize: 16,
-    fontWeight: typography.fontWeight.medium as any,
+    fontWeight: '500' as const,
     fontFamily: typography.fontFamily.body,
     color: colors.gray[50],
   },
@@ -251,12 +251,12 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   statusBadgeText: {
     fontSize: 12,
-    fontWeight: typography.fontWeight.semiBold as any,
+    fontWeight: '600' as const,
     fontFamily: typography.fontFamily.body,
   },
   amountValue: {
     fontSize: 32,
-    fontWeight: typography.fontWeight.bold as any,
+    fontWeight: '700' as const,
     fontFamily: typography.fontFamily.heading,
     color: plan.text,
     marginBottom: 4,
@@ -268,7 +268,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: typography.fontWeight.semiBold as any,
+    fontWeight: '600' as const,
     fontFamily: typography.fontFamily.heading,
     color: plan.text,
     marginBottom: sp.md,
@@ -299,7 +299,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   detailValue: {
     fontSize: 14,
-    fontWeight: typography.fontWeight.medium as any,
+    fontWeight: '500' as const,
     fontFamily: typography.fontFamily.body,
     color: plan.text,
   },
@@ -316,7 +316,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   appealButtonText: {
     fontSize: 16,
-    fontWeight: typography.fontWeight.semiBold as any,
+    fontWeight: '600' as const,
     fontFamily: typography.fontFamily.body,
     color: plan.primary,
   },
@@ -329,7 +329,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   cancelButtonText: {
     fontSize: 16,
-    fontWeight: typography.fontWeight.semiBold as any,
+    fontWeight: '600' as const,
     fontFamily: typography.fontFamily.body,
     color: colors.semantic.error,
   },
@@ -341,7 +341,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   backButtonText: {
     fontSize: 16,
-    fontWeight: typography.fontWeight.medium as any,
+    fontWeight: '500' as const,
     fontFamily: typography.fontFamily.body,
     color: colors.gray[60],
   },

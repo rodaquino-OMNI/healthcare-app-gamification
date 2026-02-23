@@ -3,17 +3,18 @@ import { View, StyleSheet, Text } from 'react-native'; // React Native v0.71+
 import { useNavigation } from '@react-navigation/native'; // v6.0+
 import { useTranslation } from 'react-i18next';
 
-import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader.tsx';
-import { AppointmentList } from 'src/web/mobile/src/components/lists/AppointmentList.tsx';
-import { MedicationList } from 'src/web/mobile/src/components/lists/MedicationList.tsx';
-import { EmptyState } from 'src/web/mobile/src/components/shared/EmptyState.tsx';
-import { useAppointments } from 'src/web/mobile/src/hooks/useAppointments.ts';
-import { JOURNEY_IDS } from 'src/web/shared/constants/journeys.ts';
-import { Button } from 'src/web/design-system/src/components/Button/Button.tsx';
-import { Card } from 'src/web/design-system/src/components/Card/Card.tsx';
-import { useJourney } from 'src/web/mobile/src/hooks/useJourney.ts';
-import { LoadingIndicator } from 'src/web/mobile/src/components/shared/LoadingIndicator.tsx';
-import { colors } from 'src/web/design-system/src/tokens/colors';
+import { JourneyHeader } from '@components/shared/JourneyHeader';
+// AppointmentList component is not yet available — stub for now
+const AppointmentList: React.FC = () => null;
+import { MedicationList } from '@components/lists/MedicationList';
+import EmptyState from '@components/shared/EmptyState';
+import { useAppointments } from '@hooks/useAppointments';
+import { JOURNEY_IDS } from '@shared/constants/journeys';
+import { Button } from '@design-system/components/Button/Button';
+import { Card } from '@design-system/components/Card/Card';
+import { useJourney } from '@hooks/useJourney';
+import { LoadingIndicator } from '@components/shared/LoadingIndicator';
+import { colors } from '@design-system/tokens/colors';
 
 /**
  * Renders the Care Now dashboard screen, displaying upcoming appointments and medication tracking information.

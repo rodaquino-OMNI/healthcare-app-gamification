@@ -3,11 +3,11 @@ import { ScrollView, Linking, Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
-import { colors } from '../../../../design-system/src/tokens/colors';
-import { typography } from '../../../../design-system/src/tokens/typography';
-import { spacing } from '../../../../design-system/src/tokens/spacing';
-import { borderRadius } from '../../../../design-system/src/tokens/borderRadius';
-import { sizing } from '../../../../design-system/src/tokens/sizing';
+import { colors } from '@design-system/tokens/colors';
+import { typography } from '@design-system/tokens/typography';
+import { spacing } from '@design-system/tokens/spacing';
+import { borderRadius } from '@design-system/tokens/borderRadius';
+import { sizing } from '@design-system/tokens/sizing';
 
 // --- Constants ---
 
@@ -35,7 +35,7 @@ const IconCircle = styled.View`
   width: 96px;
   height: 96px;
   border-radius: 48px;
-  background-color: ${colors.semantic.infoBg};
+  background-color: ${colors.semantic.info}20;
   align-items: center;
   justify-content: center;
   margin-bottom: ${spacing.xl};

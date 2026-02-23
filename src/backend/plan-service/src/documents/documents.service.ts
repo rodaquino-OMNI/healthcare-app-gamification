@@ -45,10 +45,10 @@ export class DocumentsService {
       try {
         const document = await this.prisma.document.create({
           data: {
-            entity_id: entityId,
-            entity_type: entityType,
+            entityId,
+            entityType,
             type,
-            file_path,
+            filePath: file_path,
           },
         });
         
@@ -78,8 +78,8 @@ export class DocumentsService {
       try {
         const documents = await this.prisma.document.findMany({
           where: {
-            entity_id: entityId,
-            entity_type: entityType,
+            entityId,
+            entityType,
           },
         });
         

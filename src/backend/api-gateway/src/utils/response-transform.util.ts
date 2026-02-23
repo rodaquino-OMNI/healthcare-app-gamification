@@ -2,12 +2,21 @@
 import { HttpStatus, Logger } from '@nestjs/common';
 import { JOURNEY_IDS } from '@app/shared/constants/journey.constants';
 import { ErrorCodes } from '@app/shared/constants/error-codes.constants';
+import {
+  AUTH_INVALID_CREDENTIALS,
+  AUTH_INSUFFICIENT_PERMISSIONS,
+  AUTH_TOKEN_INVALID,
+} from '@app/shared/constants/error-codes.constants';
 
 const logger = new Logger('ResponseTransformUtil');
 
+// Additional error code constants not in the ErrorCodes enum
+const API_RATE_LIMIT_EXCEEDED = 'API_RATE_LIMIT_EXCEEDED';
+const API_INVALID_PARAMETER = 'API_INVALID_PARAMETER';
+
 /**
  * Transforms a successful response from a backend service into a standardized format for the client.
- * 
+ *
  * @param data - The data to transform
  * @returns The transformed response data
  */
@@ -16,7 +25,7 @@ export function transformResponse(data: any): any {
   if (data === null || data === undefined) {
     return {};
   }
-  
+
   // Return the data as is
   return data;
 }
@@ -24,13 +33,13 @@ export function transformResponse(data: any): any {
 /**
  * Transforms an error response from a backend service into a standardized format for the client.
  * Extracts relevant information from various error types and converts them to a consistent format.
- * 
+ *
  * @param error - The error to transform
  * @returns A standardized error response object
  */
-export function transformErrorResponse(error: any): { 
-  statusCode: number; 
-  errorCode: string; 
+export function transformErrorResponse(error: any): {
+  statusCode: number;
+  errorCode: string;
   message: string;
   timestamp: string;
   path?: string;
@@ -38,7 +47,7 @@ export function transformErrorResponse(error: any): {
 } {
   let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
   let errorMessage = 'An unexpected error occurred';
-  let errorCode = ErrorCodes.SYS_INTERNAL_SERVER_ERROR;
+  let errorCode: string = ErrorCodes.SYS_INTERNAL_SERVER_ERROR;
   let path: string | undefined;
   let journey: string | undefined;
 
@@ -51,7 +60,7 @@ export function transformErrorResponse(error: any): {
     errorMessage = error.response.data?.message || (error as any).message || errorMessage;
     errorCode = error.response.data?.errorCode || errorCode;
     path = error.response.data?.path || error.config?.url;
-    
+
     // Extract journey from path if available
     if (path) {
       Object.values(JOURNEY_IDS).forEach(journeyId => {
@@ -74,22 +83,22 @@ export function transformErrorResponse(error: any): {
 
   // Map specific error messages to appropriate error codes if not already set
   if (errorCode === ErrorCodes.SYS_INTERNAL_SERVER_ERROR) {
-    if (errorMessage.toLowerCase().includes('unauthorized') || 
+    if (errorMessage.toLowerCase().includes('unauthorized') ||
         errorMessage.toLowerCase().includes('unauthenticated')) {
-      errorCode = ErrorCodes.AUTH_INVALID_CREDENTIALS;
+      errorCode = AUTH_INVALID_CREDENTIALS;
       statusCode = HttpStatus.UNAUTHORIZED;
     } else if (errorMessage.toLowerCase().includes('forbidden')) {
-      errorCode = ErrorCodes.AUTH_INSUFFICIENT_PERMISSIONS;
+      errorCode = AUTH_INSUFFICIENT_PERMISSIONS;
       statusCode = HttpStatus.FORBIDDEN;
     } else if (errorMessage.toLowerCase().includes('token expired')) {
-      errorCode = ErrorCodes.AUTH_TOKEN_INVALID;
+      errorCode = AUTH_TOKEN_INVALID;
       statusCode = HttpStatus.UNAUTHORIZED;
     } else if (errorMessage.toLowerCase().includes('rate limit')) {
-      errorCode = ErrorCodes.API_RATE_LIMIT_EXCEEDED;
+      errorCode = API_RATE_LIMIT_EXCEEDED;
       statusCode = HttpStatus.TOO_MANY_REQUESTS;
-    } else if (errorMessage.toLowerCase().includes('invalid input') || 
+    } else if (errorMessage.toLowerCase().includes('invalid input') ||
                errorMessage.toLowerCase().includes('validation failed')) {
-      errorCode = ErrorCodes.API_INVALID_PARAMETER;
+      errorCode = API_INVALID_PARAMETER;
       statusCode = HttpStatus.BAD_REQUEST;
     }
   }
@@ -105,6 +114,6 @@ export function transformErrorResponse(error: any): {
   };
 
   logger.debug(`Transformed error response: ${JSON.stringify(errorResponse)}`);
-  
+
   return errorResponse;
 }

@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CheckSymptomsDto } from './dto/check-symptoms.dto';
-import { AppException, ErrorType } from '../../shared/src/exceptions/exceptions.types';
-import { LoggerService } from '../../shared/src/logging/logger.service';
-import { TracingService } from '../../shared/src/tracing/tracing.service';
-import { CARE_PROVIDER_UNAVAILABLE } from '../../shared/src/constants/error-codes.constants';
+import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { TracingService } from '@app/shared/tracing/tracing.service';
+import { CARE_PROVIDER_UNAVAILABLE } from '@app/shared/constants/error-codes.constants';
 
 /**
  * Interface for symptom checker response

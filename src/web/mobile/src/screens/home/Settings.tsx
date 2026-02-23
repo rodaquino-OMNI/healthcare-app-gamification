@@ -12,10 +12,10 @@ import styled from 'styled-components/native';
 import { useAuth } from '../../hooks/useAuth';
 import { useJourney } from '../../hooks/useJourney';
 import { ROUTES } from '../../constants/routes';
-import { colors } from '../../../../design-system/src/tokens/colors';
-import { typography } from '../../../../design-system/src/tokens/typography';
-import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
-import { borderRadius } from '../../../../design-system/src/tokens/borderRadius';
+import { colors } from '@design-system/tokens/colors';
+import { typography } from '@design-system/tokens/typography';
+import { spacing, spacingValues } from '@design-system/tokens/spacing';
+import { borderRadius } from '@design-system/tokens/borderRadius';
 
 // --- Styled Components ---
 

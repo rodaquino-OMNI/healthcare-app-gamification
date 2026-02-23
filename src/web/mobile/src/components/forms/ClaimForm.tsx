@@ -3,16 +3,16 @@ import { useForm } from 'react-hook-form'; // 7.0+
 import { yupResolver } from '@hookform/resolvers'; // latest
 import { useNavigation } from '@react-navigation/native'; // latest
 
-import { ClaimType } from 'src/web/shared/types/plan.types';
-import { JOURNEY_NAMES } from 'src/web/shared/constants/index';
-import { claimValidationSchema } from 'src/web/shared/utils/validation';
-import { useClaims } from 'src/web/mobile/src/hooks/useClaims';
-import { submitClaim } from 'src/web/mobile/src/api/plan';
-import Input, { InputProps } from 'src/web/design-system/src/components/Input/Input.tsx';
-import DatePicker from 'src/web/design-system/src/components/DatePicker/DatePicker.tsx';
-import { Select, SelectProps } from 'src/web/design-system/src/components/Select/Select.tsx';
-import Button, { ButtonProps } from 'src/web/design-system/src/components/Button/Button.tsx';
-import { useJourneyContext } from 'src/web/mobile/src/context/JourneyContext.tsx';
+import { ClaimType } from '@shared/types/plan.types';
+import { JOURNEY_NAMES } from '@shared/constants/index';
+import { claimValidationSchema } from '@shared/utils/validation';
+import { useClaims } from '@hooks/useClaims';
+import { submitClaim } from '@api/plan';
+import Input, { InputProps } from '@design-system/components/Input/Input';
+import DatePicker from '@design-system/components/DatePicker/DatePicker';
+import { Select, SelectProps } from '@design-system/components/Select/Select';
+import { Button } from '@design-system/components/Button/Button';
+import { useJourney } from '@hooks/useJourney';
 
 /**
  * A React component that renders a form for submitting insurance claims.
@@ -20,8 +20,8 @@ import { useJourneyContext } from 'src/web/mobile/src/context/JourneyContext.tsx
  * @returns The rendered claim submission form.
  */
 export const ClaimForm: React.FC = () => {
-  // Uses the `useJourneyContext` hook to get the current journey.
-  const { journey } = useJourneyContext();
+  // Uses the `useJourney` hook to get the current journey.
+  const { journey } = useJourney();
 
   // Uses the `useForm` hook to manage the form state and validation, integrating with `claimValidationSchema` for validation rules.
   const {
@@ -60,7 +60,7 @@ export const ClaimForm: React.FC = () => {
       alert('Claim submitted successfully!');
 
       // Navigate to confirmation screen
-      navigation.navigate('ClaimConfirmation', { claimId: result.id });
+      (navigation as any).navigate('ClaimConfirmation', { claimId: result.id });
     } catch (error) {
       // Display error message
       alert('Claim submission failed. Please try again.');
@@ -73,7 +73,9 @@ export const ClaimForm: React.FC = () => {
       <label>
         Procedure Type:
         <Select
+          label="Procedure Type"
           options={procedureTypeOptions}
+          value=""
           {...register('procedureType')}
         />
       </label>
@@ -83,11 +85,11 @@ export const ClaimForm: React.FC = () => {
       </label>
       <label>
         Provider:
-        <Input {...register('provider')} />
+        <Input value="" {...register('provider')} />
       </label>
       <label>
         Amount:
-        <Input {...register('amount')} />
+        <Input value="" {...register('amount')} />
       </label>
       {/* Renders a submit button that triggers the `handleSubmit` function. */}
       <Button type="submit" disabled={isSubmitting}>

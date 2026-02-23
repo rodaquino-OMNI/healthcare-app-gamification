@@ -30,17 +30,21 @@ export class NotificationsService {
       this.logger.log(`Sending notification to user ${sendNotificationDto.userId} using template ${sendNotificationDto.templateId}`);
 
       // Get the notification template
-      const template = await this.templatesService.findById(sendNotificationDto.templateId);
+      const template = await this.templatesService.findById(sendNotificationDto.templateId!);
 
       if (!template) {
-        throw new AppException(ErrorType.TEMPLATE_NOT_FOUND, { templateId: sendNotificationDto.templateId } as any
+        throw new AppException(
+          'Template not found',
+          ErrorType.TEMPLATE_NOT_FOUND,
+          'TEMPLATE_NOT_FOUND',
+          { templateId: sendNotificationDto.templateId },
         );
       }
 
       // Check if template is active
       if (!(template as any).isActive) {
         this.logger.warn(`Attempted to use inactive template: ${(template as any).code}`);
-        return null;
+        return null as any;
       }
 
       // Get user preferences
@@ -50,27 +54,30 @@ export class NotificationsService {
         this.logger.warn(`No preferences found for user ${sendNotificationDto.userId}, using defaults`);
       }
 
+      // Template is guaranteed non-null after the throw above
+      const validTemplate = template!;
+
       // Determine journey context (from notification or template)
-      const journey = sendNotificationDto.journey || template.journey || 'default';
+      const journey = sendNotificationDto.journey || validTemplate.journey || 'default';
 
       // Check if user has disabled this journey's notifications
       if (userPreferences?.journeyPreferences?.[journey]?.enabled === false) {
         this.logger.warn(`User ${sendNotificationDto.userId} has disabled notifications for journey ${journey}`);
-        return null;
+        return null as any;
       }
 
       // Process template content with provided data
-      const processedTemplate = this.processTemplateContent(template as any, sendNotificationDto.data);
+      const processedTemplate = this.processTemplateContent(validTemplate as any, sendNotificationDto.data);
 
       // Determine the available channels based on template and user preferences
-      const availableChannels = template.channels.split(',');
+      const availableChannels = validTemplate.channels.split(',');
 
       // Filter by user preferences
       const enabledChannels = this.getEnabledChannels(availableChannels, userPreferences);
 
       if (enabledChannels.length === 0) {
         this.logger.warn(`No enabled channels for user ${sendNotificationDto.userId}`);
-        return null;
+        return null as any;
       }
 
       // Create notification record
@@ -78,7 +85,7 @@ export class NotificationsService {
         userId: sendNotificationDto.userId,
         title: processedTemplate.title,
         body: processedTemplate.message,
-        type: (template as any).code,
+        type: (validTemplate as any).code,
         journey: journey,
         metadata: sendNotificationDto.data
       });
@@ -184,7 +191,7 @@ export class NotificationsService {
         channel: 'in-app',
         status: 'PENDING',
       },
-    });
+    }) as unknown as Promise<Notification>;
   }
 
   /**
@@ -314,12 +321,16 @@ export class NotificationsService {
     });
 
     if (!notification) {
-      throw new AppException(ErrorType.NOTIFICATION_NOT_FOUND, { id, userId } as any
+      throw new AppException(
+        'Notification not found',
+        ErrorType.NOTIFICATION_NOT_FOUND,
+        'NOTIFICATION_NOT_FOUND',
+        { id, userId },
       );
     }
 
     if (notification.status === 'READ') {
-      return notification;
+      return notification as unknown as Notification;
     }
 
     return this.prisma.notification.update({
@@ -328,7 +339,7 @@ export class NotificationsService {
         status: 'READ',
         updatedAt: new Date(),
       },
-    });
+    }) as unknown as Promise<Notification>;
   }
 
   /**
@@ -357,7 +368,7 @@ export class NotificationsService {
     return this.prisma.notification.findMany({
       where,
       orderBy: { createdAt: 'desc' },
-    });
+    }) as unknown as Promise<Notification[]>;
   }
 
   /**
@@ -375,11 +386,15 @@ export class NotificationsService {
     });
 
     if (!notification) {
-      throw new AppException(ErrorType.NOTIFICATION_NOT_FOUND, { id, userId } as any
+      throw new AppException(
+        'Notification not found',
+        ErrorType.NOTIFICATION_NOT_FOUND,
+        'NOTIFICATION_NOT_FOUND',
+        { id, userId },
       );
     }
 
-    return notification;
+    return notification as unknown as Notification;
   }
 
   /**

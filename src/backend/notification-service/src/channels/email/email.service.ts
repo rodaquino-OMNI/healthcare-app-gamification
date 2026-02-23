@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
@@ -77,7 +76,6 @@ export class EmailService {
         ErrorType.EXTERNAL,
         'NOTIFICATION_001',
         { recipient: to },
-        error,
       );
     }
   }

@@ -3,16 +3,17 @@ import { View, Text } from 'react-native'; // react-native version 0.71.0
 import { useRoute, useNavigation } from '@react-navigation/native'; // @react-navigation/native version 6.0+
 import { RouteProp } from '@react-navigation/native';
 import { useTheme } from 'styled-components/native';
-import type { Theme } from '../../../design-system/src/themes/base.theme';
+import type { Theme } from '@design-system/themes/base.theme';
 
 import { ROUTES } from '../../constants/routes';
 import { JourneyHeader } from '../../components/shared/JourneyHeader';
 import { useHealthMetrics } from '../../hooks/useHealthMetrics';
-import { HealthMetric } from '../../../shared/types/health.types';
-import { Card } from '../../../design-system/src/components/Card/Card';
-import { LineChart } from '../../../design-system/src/charts/LineChart/LineChart';
-import { formatDate, formatHealthMetric } from '../../utils/format';
-import { colors } from '../../../design-system/src/tokens/colors';
+import { HealthMetric } from '@shared/types/health.types';
+import { Card } from '@design-system/components/Card/Card';
+import { LineChart } from '@design-system/charts/LineChart/LineChart';
+import { formatHealthMetric } from '../../utils/format';
+import { formatDate } from '../../utils/date';
+import { colors } from '@design-system/tokens/colors';
 import { useTranslation } from 'react-i18next';
 import { useJourney } from '../../context/JourneyContext';
 import { useAuth } from '../../hooks/useAuth';
@@ -22,7 +23,7 @@ import { getHealthMetrics } from '../../api/health';
  * Type definition for the Health stack param list used by this screen.
  */
 type HealthStackParamList = {
-  [key: string]: undefined;
+  [key: string]: undefined | { metricId: string };
   HealthMetricDetail: { metricId: string };
 };
 
@@ -86,8 +87,8 @@ export const MetricDetailScreen: React.FC = () => {
   }, [data, metricId]);
 
   // 9. Formats the start and end dates for the API request.
-  const startDate = timeRange ? formatDate(timeRange[0]) : 'N/A';
-  const endDate = timeRange ? formatDate(timeRange[1]) : 'N/A';
+  const startDate = timeRange ? formatDate(timeRange[0], 'dd/MM/yyyy') : 'N/A';
+  const endDate = timeRange ? formatDate(timeRange[1], 'dd/MM/yyyy') : 'N/A';
 
   // 10. Guard: if no metricId was provided via route params, show an error.
   if (!metricId) {
@@ -114,13 +115,13 @@ export const MetricDetailScreen: React.FC = () => {
         <JourneyHeader
           title={selectedMetric.type}
           showBackButton
-          onBackPress={() => navigation.navigate(ROUTES.HEALTH_DASHBOARD)}
+          onBackPress={() => (navigation as any).navigate(ROUTES.HEALTH_DASHBOARD)}
         />
 
         {/* 12. Renders a `Card` component to display the metric details, including the current value and a `LineChart` to visualize the historical data. */}
-        <Card journey={journey}>
+        <Card journey={journey as 'health' | 'care' | 'plan'}>
           <Text style={{ color: colors.journeys[journey].text }}>
-            {formatHealthMetric(selectedMetric.value, selectedMetric.type, selectedMetric.unit)}
+            {formatHealthMetric(selectedMetric.value, selectedMetric.unit)}
           </Text>
           <LineChart
             data={data?.getHealthMetrics || []}
@@ -128,7 +129,7 @@ export const MetricDetailScreen: React.FC = () => {
             yAxisKey="value"
             xAxisLabel="Date"
             yAxisLabel="Value"
-            journey={journey}
+            journey={journey as 'health' | 'care' | 'plan'}
           />
         </Card>
       </View>

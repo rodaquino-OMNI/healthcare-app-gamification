@@ -7,19 +7,19 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import { Benefit } from 'src/web/shared/types/plan.types';
-import EmptyState from '../components/shared/EmptyState';
-import ErrorState from '../components/shared/ErrorState';
-import LoadingIndicator from '../components/shared/LoadingIndicator';
-import JourneyHeader from '../components/shared/JourneyHeader';
-import { JOURNEY_IDS } from 'src/web/shared/constants/journeys';
-import { colors } from '@web/design-system/src/tokens/colors';
-import { spacingValues } from '@web/design-system/src/tokens/spacing';
-import { fontSizeValues } from '@web/design-system/src/tokens/typography';
-import { borderRadiusValues } from '@web/design-system/src/tokens/borderRadius';
+import { Benefit } from '@shared/types/plan.types';
+import EmptyState from '@components/shared/EmptyState';
+import ErrorState from '@components/shared/ErrorState';
+import LoadingIndicator from '@components/shared/LoadingIndicator';
+import { JourneyHeader } from '@components/shared/JourneyHeader';
+import { JOURNEY_IDS } from '@shared/constants/journeys';
+import { colors } from '@design-system/tokens/colors';
+import { spacingValues } from '@design-system/tokens/spacing';
+import { fontSizeValues } from '@design-system/tokens/typography';
+import { borderRadiusValues } from '@design-system/tokens/borderRadius';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components/native';
-import type { Theme } from '@web/design-system/src/themes/base.theme';
+import type { Theme } from '@design-system/themes/base.theme';
 
 /**
  * Categories for filtering benefits.
@@ -94,9 +94,9 @@ const BenefitsScreen: React.FC = () => {
           <ErrorState
             icon="error"
             title={t('journeys.plan.benefits.error')}
-            description={t('common.errors.network')}
-            actionLabel={t('journeys.plan.benefits.retry')}
-            onAction={fetchBenefits}
+            message={t('common.errors.network')}
+            onRetry={fetchBenefits}
+            retryLabel={t('journeys.plan.benefits.retry')}
             journey="plan"
           />
         </View>
@@ -246,12 +246,12 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   filterTabText: {
     fontSize: fontSizeValues.sm,
-    fontWeight: String(500) as any,
+    fontWeight: '500' as const,
     color: colors.gray[50],
   },
   filterTabTextActive: {
     color: colors.neutral.white,
-    fontWeight: String(600) as any,
+    fontWeight: '600' as const,
   },
 
   /* Benefits List */
@@ -275,7 +275,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     gap: spacingValues.xs,
   },
   benefitType: {
-    fontWeight: String(700) as any,
+    fontWeight: '700' as const,
     fontSize: fontSizeValues.lg,
     color: colors.journeys.plan.text,
   },
@@ -290,7 +290,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   benefitDetailLabel: {
     fontSize: fontSizeValues.sm,
-    fontWeight: String(500) as any,
+    fontWeight: '500' as const,
     color: colors.gray[60],
   },
   benefitDetailValue: {

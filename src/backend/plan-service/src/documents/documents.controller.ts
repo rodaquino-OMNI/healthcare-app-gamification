@@ -81,7 +81,7 @@ export class DocumentsController {
     const document = await this.documentsService.findOne(id);
     
     if (!document) {
-      throw new Error(ErrorCodes.PLAN_INVALID_CLAIM_DATA);
+      throw new Error('PLAN_DOCUMENT_NOT_FOUND');
     }
     
     return document;

@@ -41,7 +41,7 @@ export class RolesService {
     });
     
     // Returns the created role.
-    return role;
+    return role as unknown as Role;
   }
 
   /**
@@ -60,11 +60,11 @@ export class RolesService {
       take: paginationDto?.limit,
       where: filterDto?.where,
       orderBy: filterDto?.orderBy,
-      include: filterDto?.include || { permissions: true }
+      include: { permissions: true }
     });
-    
+
     // Returns the list of roles.
-    return roles;
+    return roles as unknown as Role[];
   }
 
   /**
@@ -88,7 +88,7 @@ export class RolesService {
     }
     
     // Returns the role.
-    return role;
+    return role as unknown as Role;
   }
 
   /**
@@ -109,7 +109,7 @@ export class RolesService {
     });
     
     // Returns the updated role.
-    return role;
+    return role as unknown as Role;
   }
 
   /**

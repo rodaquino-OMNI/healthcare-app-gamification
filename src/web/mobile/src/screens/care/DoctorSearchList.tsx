@@ -1,15 +1,15 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Button } from 'src/web/design-system/src/components/Button/Button';
-import { Card } from 'src/web/design-system/src/components/Card/Card';
-import { Badge } from 'src/web/design-system/src/components/Badge/Badge';
-import { Avatar } from 'src/web/design-system/src/components/Avatar/Avatar';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text';
+import { Button } from '@design-system/components/Button/Button';
+import { Card } from '@design-system/components/Card/Card';
+import { Badge } from '@design-system/components/Badge/Badge';
+import { Avatar } from '@design-system/components/Avatar/Avatar';
+import { Text } from '@design-system/primitives/Text/Text';
 import { useTheme } from 'styled-components/native';
-import type { Theme } from 'src/web/design-system/src/themes/base.theme';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { spacingValues } from 'src/web/design-system/src/tokens/spacing';
+import type { Theme } from '@design-system/themes/base.theme';
+import { colors } from '@design-system/tokens/colors';
+import { spacingValues } from '@design-system/tokens/spacing';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -214,6 +214,48 @@ export const MapPlaceholder: React.FC = () => {
 // ---------------------------------------------------------------------------
 // Styles
 // ---------------------------------------------------------------------------
+
+// Static styles used by module-level exported components
+const styles = StyleSheet.create({
+  doctorRow: {
+    flexDirection: 'row',
+    gap: spacingValues.sm,
+  },
+  doctorInfo: {
+    flex: 1,
+  },
+  specialtyRow: {
+    flexDirection: 'row',
+    gap: spacingValues.xs,
+    marginTop: spacingValues['3xs'],
+    flexWrap: 'wrap',
+  },
+  detailsRow: {
+    flexDirection: 'row',
+    gap: spacingValues.sm,
+    marginTop: spacingValues.xs,
+    alignItems: 'center',
+  },
+  actionRow: {
+    marginTop: spacingValues.sm,
+    alignItems: 'flex-start',
+  },
+  mapPlaceholder: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: spacingValues.md,
+    borderRadius: spacingValues.sm,
+    borderWidth: 1,
+    padding: spacingValues['3xl'],
+    gap: spacingValues.xs,
+  },
+  emptyContainer: {
+    paddingTop: spacingValues['3xl'],
+    alignItems: 'center',
+    gap: spacingValues.xs,
+  },
+});
 
 const createStyles = (theme: Theme) => StyleSheet.create({
   doctorRow: {

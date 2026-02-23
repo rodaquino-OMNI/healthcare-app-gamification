@@ -1,16 +1,16 @@
 import React, { useState, useCallback } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { Button } from 'src/web/design-system/src/components/Button/Button';
-import { Card } from 'src/web/design-system/src/components/Card/Card';
-import { Input } from 'src/web/design-system/src/components/Input/Input';
-import { Select } from 'src/web/design-system/src/components/Select/Select';
-import { Checkbox } from 'src/web/design-system/src/components/Checkbox/Checkbox';
-import { Badge } from 'src/web/design-system/src/components/Badge/Badge';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text';
-import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader';
-import { ROUTES } from 'src/web/mobile/src/constants/routes';
-import { colors } from 'src/web/design-system/src/tokens/colors';
+import { Button } from '@design-system/components/Button/Button';
+import { Card } from '@design-system/components/Card/Card';
+import { Input } from '@design-system/components/Input';
+import { Select } from '@design-system/components/Select/Select';
+import { Checkbox } from '@design-system/components/Checkbox/Checkbox';
+import { Badge } from '@design-system/components/Badge/Badge';
+import { Text } from '@design-system/primitives/Text/Text';
+import { JourneyHeader } from '@components/shared/JourneyHeader';
+import { ROUTES } from '@constants/routes';
+import { colors } from '@design-system/tokens/colors';
 import { useTranslation } from 'react-i18next';
 
 /**

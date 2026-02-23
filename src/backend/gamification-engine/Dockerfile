@@ -5,6 +5,7 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 COPY tsconfig.json tsconfig.build.json nest-cli.json ./
 COPY shared ./shared
+COPY auth-service ./auth-service
 COPY gamification-engine ./gamification-engine
 
 RUN yarn install --frozen-lockfile

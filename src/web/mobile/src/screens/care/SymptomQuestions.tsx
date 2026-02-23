@@ -8,7 +8,7 @@ import { RadioButton } from '@austa/design-system/src/components/RadioButton/Rad
 import { Checkbox } from '@austa/design-system/src/components/Checkbox/Checkbox';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { Box } from '@austa/design-system/src/primitives/Box/Box';
-import { ROUTES } from '../../../../constants/routes';
+import { ROUTES } from '@constants/routes';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { useTranslation } from 'react-i18next';

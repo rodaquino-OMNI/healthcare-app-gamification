@@ -9,7 +9,7 @@ import { DatePicker } from '@austa/design-system/src/components/DatePicker/DateP
 import Input from '@austa/design-system/src/components/Input/Input';
 import { Slider } from '@austa/design-system/src/components/Slider/Slider';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
-import { ROUTES } from '../../../../constants/routes';
+import { ROUTES } from '@constants/routes';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { useTranslation } from 'react-i18next';

@@ -8,11 +8,11 @@ import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
 
 import { ROUTES } from '../../constants/routes';
-import { colors } from '../../../../design-system/src/tokens/colors';
-import { typography } from '../../../../design-system/src/tokens/typography';
-import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
-import { borderRadius } from '../../../../design-system/src/tokens/borderRadius';
-import { sizing } from '../../../../design-system/src/tokens/sizing';
+import { colors } from '@design-system/tokens/colors';
+import { typography } from '@design-system/tokens/typography';
+import { spacing, spacingValues } from '@design-system/tokens/spacing';
+import { borderRadius } from '@design-system/tokens/borderRadius';
+import { sizing } from '@design-system/tokens/sizing';
 
 // --- Styled Components ---
 

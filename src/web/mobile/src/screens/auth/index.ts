@@ -1,9 +1,9 @@
 // src/web/mobile/src/screens/auth/index.ts
 
-import LoginScreen from './Login.tsx';
-import RegisterScreen from './Register.tsx';
-import ForgotPasswordScreen from './ForgotPassword.tsx';
-import MFAScreen from './MFA.tsx';
+import LoginScreen from './Login';
+import RegisterScreen from './Register';
+import ForgotPasswordScreen from './ForgotPassword';
+import MFAScreen from './MFA';
 import WelcomeSplashScreen from './WelcomeSplash';
 import OnboardingScreen from './Onboarding';
 import WelcomeCTAScreen from './WelcomeCTA';

@@ -5,8 +5,8 @@ import type { PlanStackParamList } from './types';
 import PlanDashboard from '../screens/plan/Dashboard'; // The main dashboard screen for the Plan journey.
 import Coverage from '../screens/plan/Coverage'; // Screen to display insurance coverage details.
 import ClaimHistory from '../screens/plan/ClaimHistory'; // Screen to display the history of submitted claims.
-import ClaimDetail from '../screens/plan/ClaimDetail'; // Screen to display details of a specific claim.
-import ClaimSubmission from '../screens/plan/ClaimSubmission'; // Screen to allow users to submit new claims.
+import { ClaimDetail } from '../screens/plan/ClaimDetail'; // Screen to display details of a specific claim.
+import { ClaimSubmissionScreen as ClaimSubmission } from '../screens/plan/ClaimSubmission'; // Screen to allow users to submit new claims.
 import CostSimulator from '../screens/plan/CostSimulator'; // Screen to simulate healthcare costs based on the user's plan.
 import DigitalCard from '../screens/plan/DigitalCard'; // Screen to display the user's digital insurance card.
 import Benefits from '../screens/plan/Benefits'; // Screen to display available benefits.

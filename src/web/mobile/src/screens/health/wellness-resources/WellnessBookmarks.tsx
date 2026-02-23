@@ -91,7 +91,7 @@ export const WellnessBookmarks: React.FC = () => {
   }, []);
 
   const handleBrowseResources = useCallback(() => {
-    navigation.navigate('WellnessResourcesHome');
+    navigation.navigate('HealthWellnessResourcesHome');
   }, [navigation]);
 
   const renderBookmarkItem = useCallback(

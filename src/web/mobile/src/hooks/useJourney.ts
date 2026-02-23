@@ -1,7 +1,7 @@
 import { useContext } from 'react'; // react v17.0.2
-import { JOURNEY_IDS } from '../../shared/constants/journeys';
+import { JOURNEY_IDS } from '@shared/constants/journeys';
 import { JourneyContext } from '../context/JourneyContext';
-import { JourneyId } from '../../shared/types';
+import { JourneyId } from '@shared/types';
 
 /**
  * A custom hook that provides access to the current journey and a function to update it.

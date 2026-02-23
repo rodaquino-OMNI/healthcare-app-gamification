@@ -1,9 +1,9 @@
 import React from 'react';
-import { Modal } from '../../../../design-system/src/components/Modal/Modal';
-import { Button } from '../../../../design-system/src/components/Button/Button';
+import { Modal } from '@design-system/components/Modal/Modal';
+import { Button } from '@design-system/components/Button/Button';
 import { useJourney } from '../../context/JourneyContext';
-import { Text } from '../../../../design-system/src/primitives/Text/Text';
-import { Box } from '../../../../design-system/src/primitives/Box/Box';
+import { Text } from '@design-system/primitives/Text/Text';
+import { Box } from '@design-system/primitives/Box/Box';
 
 /**
  * Defines the props for the ConfirmationModal component.
@@ -79,11 +79,11 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
       visible={visible}
       onClose={onClose}
       title={title}
-      journey={journey}
+      journey={journey as 'health' | 'care' | 'plan'}
     >
       <Box marginBottom="lg">
-        <Text 
-          journey={journey}
+        <Text
+          journey={journey as 'health' | 'care' | 'plan'}
           fontSize="md"
           lineHeight="relaxed"
         >
@@ -100,16 +100,16 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         <Button
           variant="secondary"
           onPress={onClose}
-          journey={journey}
+          journey={journey as 'health' | 'care' | 'plan'}
           accessibilityLabel={cancelText}
         >
           {cancelText}
         </Button>
-        
+
         <Button
           variant="primary"
           onPress={onConfirm}
-          journey={journey}
+          journey={journey as 'health' | 'care' | 'plan'}
           accessibilityLabel={confirmText}
         >
           {confirmText}

@@ -7,7 +7,7 @@ import { borderRadius } from '../../tokens/borderRadius';
 /**
  * Supported input types for the Input component
  */
-type InputType = 'text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search';
+type InputType = 'text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search' | 'date' | 'datetime-local' | 'time' | string;
 
 /**
  * Journey identifier for journey-specific styling
@@ -21,12 +21,12 @@ export interface InputProps {
   /**
    * Current value of the input
    */
-  value: string;
+  value?: string;
 
   /**
    * Callback fired when the input value changes
    */
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: ((event: React.ChangeEvent<HTMLInputElement>) => void) | ((...args: any[]) => void);
 
   /**
    * Placeholder text displayed when the input is empty
@@ -79,6 +79,39 @@ export interface InputProps {
    * Helper text displayed below the input
    */
   helperText?: string;
+
+  /**
+   * Input name attribute (for form integration)
+   */
+  name?: string;
+
+  /**
+   * onBlur handler
+   */
+  onBlur?: (...args: any[]) => void;
+
+  /**
+   * Ref callback (for react-hook-form)
+   */
+  ref?: any;
+
+  /**
+   * Additional style overrides
+   */
+  style?: any;
+
+  /**
+   * Min value constraint
+   */
+  min?: string | number;
+
+  /**
+   * Max value constraint
+   */
+  max?: string | number;
+
+  /** Allow additional passthrough props for RN/web/form compatibility */
+  [key: string]: any;
 }
 
 /**

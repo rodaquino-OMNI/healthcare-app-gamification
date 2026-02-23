@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@austa/design-system/src/components/Button/Button';
 import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
-import { ROUTES } from '../../../../constants/routes';
+import { ROUTES } from '@constants/routes';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 

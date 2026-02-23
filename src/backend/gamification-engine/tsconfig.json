@@ -1,20 +1,15 @@
 {
-  "extends": "../../../tsconfig.base.json",
+  "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "strict": true,
-    "baseUrl": ".",
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "useDefineForClassFields": false,
+    "baseUrl": "..",
     "paths": {
-      "@app/auth/*": ["../auth-service/src/*"],
-      "@app/health/*": ["../health-service/src/*"],
-      "@app/care/*": ["../care-service/src/*"],
-      "@app/plan/*": ["../plan-service/src/*"],
-      "@app/gamification/*": ["./src/*"],
-      "@app/notifications/*": ["../notification-service/src/*"],
-      "@app/shared/*": ["../shared/src/*"]
+      "@app/shared": ["shared/src"],
+      "@app/shared/*": ["shared/src/*"],
+      "@app/auth": ["auth-service/src"],
+      "@app/auth/*": ["auth-service/src/*"],
+      "@app/gamification": ["gamification-engine/src"],
+      "@app/gamification/*": ["gamification-engine/src/*"]
     }
   },
   "include": [

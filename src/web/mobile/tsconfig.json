@@ -26,7 +26,15 @@
       "@context/*": ["src/context/*"],
       "@assets/*": ["src/assets/*"],
       "@constants/*": ["src/constants/*"],
-      "@i18n/*": ["src/i18n/*"]
+      "@i18n/*": ["src/i18n/*"],
+      "@shared/*": ["../shared/*"],
+      "@design-system/*": ["../design-system/src/*"],
+      "@austa/design-system": ["../design-system/src/index"],
+      "@austa/design-system/*": ["../design-system/src/*"],
+      "@austa/shared/*": ["../shared/*"],
+      "@web/design-system/*": ["../design-system/*"],
+      "@web/shared/*": ["../shared/*"],
+      "@web/mobile/*": ["./src/*"]
     },
     "noImplicitAny": false,
     "noImplicitReturns": true,

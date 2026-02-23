@@ -11,14 +11,14 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import type { HomeNavigationProp } from '../../navigation/types';
 import { useTheme } from 'styled-components/native';
-import type { Theme } from '../../../../design-system/src/themes/base.theme';
-import { Notification, NotificationStatus } from 'src/web/shared/types/notification.types';
-import { useNotifications } from 'src/web/mobile/src/hooks/useNotifications';
-import { useNotificationContext } from 'src/web/mobile/src/context/NotificationContext';
-import { colors } from '../../../../design-system/src/tokens/colors';
-import { spacingValues } from '../../../../design-system/src/tokens/spacing';
-import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
-import { borderRadiusValues } from '../../../../design-system/src/tokens/borderRadius';
+import type { Theme } from '@design-system/themes/base.theme';
+import { Notification, NotificationStatus } from '@shared/types/notification.types';
+import { useNotifications } from '@hooks/useNotifications';
+import { useNotificationContext } from '@context/NotificationContext';
+import { colors } from '@design-system/tokens/colors';
+import { spacingValues } from '@design-system/tokens/spacing';
+import { typography, fontSizeValues } from '@design-system/tokens/typography';
+import { borderRadiusValues } from '@design-system/tokens/borderRadius';
 import { ROUTES } from '../../constants/routes';
 import { useTranslation } from 'react-i18next';
 

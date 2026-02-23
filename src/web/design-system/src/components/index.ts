@@ -111,3 +111,10 @@ export type { TableProps, TableColumn } from './Table';
 // Tooltip
 export { Tooltip } from './Tooltip';
 export type { TooltipProps } from './Tooltip';
+
+// Re-export primitives for convenience (some consumers import from components)
+export { Text } from '../primitives/Text';
+export type { TextProps } from '../primitives/Text';
+export { Icon } from '../primitives/Icon';
+export type { IconProps } from '../primitives/Icon';
+export { Stack } from '../primitives/Stack';

@@ -1,13 +1,13 @@
 import { useState, useEffect, useCallback } from 'react'; // ^18.0.0
-import { createTelemedicineSession, getTelemedicineSession } from 'src/web/mobile/src/api/care';
-import { TelemedicineSession } from 'src/web/shared/types/care.types';
-import { useAuth } from 'src/web/mobile/src/hooks/useAuth';
-import { useJourney } from 'src/web/mobile/src/context/JourneyContext';
-import { config } from 'src/web/mobile/src/constants/config';
-import { formatDate } from 'src/web/mobile/src/utils/format';
-import { checkAndroidPermissions } from 'src/web/mobile/src/utils/permissions';
-import LoadingIndicator from 'src/web/mobile/src/components/shared/LoadingIndicator';
-import ErrorState from 'src/web/mobile/src/components/shared/ErrorState';
+import { createTelemedicineSession, getTelemedicineSession } from '@api/care';
+import { TelemedicineSession } from '@shared/types/care.types';
+import { useAuth } from '@hooks/useAuth';
+import { useJourney } from '@context/JourneyContext';
+import { config } from '@constants/config';
+import { formatDate } from '@utils/date';
+import { checkAndroidPermissions } from '@utils/permissions';
+import LoadingIndicator from '@components/shared/LoadingIndicator';
+import ErrorState from '@components/shared/ErrorState';
 
 /**
  * Custom hook for managing telemedicine sessions within the AUSTA SuperApp.

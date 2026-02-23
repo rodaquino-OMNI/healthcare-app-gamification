@@ -1,9 +1,9 @@
 import React from 'react'; // React, v18.0+
 import { useNavigation } from '@react-navigation/native'; // @react-navigation/native, ^6.0.0
-import { Claim } from 'src/web/shared/types/plan.types'; // Defines the structure of claim data.
-import { useClaims } from 'src/web/mobile/src/hooks/useClaims'; // Fetches claims data for the current user.
-import EmptyState from 'src/web/mobile/src/components/shared/EmptyState'; // Displays a message when there are no claims to show.
-import { Card } from 'src/web/design-system/src/components/Card/Card'; // Provides a styled container for claim information.
+import { Claim } from '@shared/types/plan.types'; // Defines the structure of claim data.
+import { useClaims } from '@hooks/useClaims'; // Fetches claims data for the current user.
+import EmptyState from '@components/shared/EmptyState'; // Displays a message when there are no claims to show.
+import { Card } from '@design-system/components/Card/Card'; // Provides a styled container for claim information.
 
 /**
  * Renders a list of claims or an empty state message if no claims are available.
@@ -34,7 +34,7 @@ export const ClaimList: React.FC = () => {
         title="No claims found"
         description="Submit a new claim to get started."
         actionLabel="Submit Claim"
-        onAction={() => navigation.navigate('ClaimSubmission')} // Replace 'ClaimSubmission' with the actual route name
+        onAction={() => (navigation as any).navigate('ClaimSubmission')}
         journey="plan"
       />
     );

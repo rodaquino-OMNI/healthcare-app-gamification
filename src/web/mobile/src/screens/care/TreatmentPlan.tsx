@@ -4,15 +4,15 @@ import { useTranslation } from 'react-i18next';
 import { useRoute } from '@react-navigation/native'; // @react-navigation/native v6.0.0
 import {
   TreatmentPlan as TreatmentPlanType, // TreatmentPlan interface
-} from 'src/web/shared/types/care.types';
-import { MedicationList } from 'src/web/mobile/src/components/lists/MedicationList'; // MedicationList component
-import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader'; // JourneyHeader component
-import { useJourney } from 'src/web/mobile/src/hooks/useJourney'; // useJourney hook
-import { Card } from 'src/web/design-system/src/components/Card/Card'; // Card component
-import { Button } from 'src/web/design-system/src/components/Button/Button'; // Button component
-import { ProgressBar } from 'src/web/design-system/src/components/ProgressBar/ProgressBar'; // ProgressBar component
-import { LoadingIndicator } from 'src/web/mobile/src/components/shared/LoadingIndicator'; // LoadingIndicator component
-import { ErrorState } from 'src/web/mobile/src/components/shared/ErrorState'; // ErrorState component
+} from '@shared/types/care.types';
+import { MedicationList } from '@components/lists/MedicationList'; // MedicationList component
+import { JourneyHeader } from '@components/shared/JourneyHeader'; // JourneyHeader component
+import { useJourney } from '@hooks/useJourney'; // useJourney hook
+import { Card } from '@design-system/components/Card/Card'; // Card component
+import { Button } from '@design-system/components/Button/Button'; // Button component
+import { ProgressBar } from '@design-system/components/ProgressBar/ProgressBar'; // ProgressBar component
+import { LoadingIndicator } from '@components/shared/LoadingIndicator'; // LoadingIndicator component
+import { ErrorState } from '@components/shared/ErrorState'; // ErrorState component
 
 /**
  * Displays the details of a treatment plan and its associated medications.
@@ -40,6 +40,8 @@ export const TreatmentPlanScreen: React.FC = () => {
         setTimeout(() => {
           const mockTreatmentPlan: TreatmentPlanType = {
             id: treatmentPlanId,
+            patientId: 'patient-001',
+            providerId: 'provider-001',
             name: 'Sample Treatment Plan',
             description: 'This is a sample treatment plan to manage your health.',
             startDate: '2023-01-01',

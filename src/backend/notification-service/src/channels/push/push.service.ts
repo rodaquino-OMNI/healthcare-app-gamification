@@ -27,7 +27,7 @@ export class PushService {
     this.logger = logger;
     
     // Retrieve the push notification API key from the configuration
-    this.apiKey = this.configService.get<string>('notification.push.apiKey');
+    this.apiKey = this.configService.get<string>('notification.push.apiKey', '');
     
     // Initialize Firebase Admin SDK
     this.initializeFirebaseAdmin();
@@ -106,13 +106,7 @@ export class PushService {
       
       // Logs the successful sending of the push notification
       this.logger.log(
-        `Push notification sent successfully`,
-        {
-          messageId: response,
-          tokenPreview: `${token.substring(0, 8)}...`,
-          title: payload.title,
-          journey: payload.journey || 'unknown',
-        },
+        `Push notification sent successfully to ${token.substring(0, 8)}...`,
         'PushService'
       );
     } catch (error) {

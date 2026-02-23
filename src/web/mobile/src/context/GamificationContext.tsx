@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useQuery } from '@apollo/client';
-import { GameProfile } from 'src/web/shared/types/gamification.types';
-import { getGameProfile } from 'src/web/mobile/src/api/gamification';
-import { useAuth } from 'src/web/mobile/src/context/AuthContext';
+import { GameProfile } from '@shared/types/gamification.types';
+import { getGameProfile } from '@api/gamification';
+import { useAuth } from '@context/AuthContext';
 
 /**
  * Interface that defines the shape of the gamification context value
@@ -27,8 +27,9 @@ const GamificationContext = createContext<GamificationContextType | undefined>(u
  * Makes the gamification context available to all child components
  */
 const GamificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Get the user ID from the authentication context
-  const { userId } = useAuth();
+  // Get the session from the authentication context and extract userId
+  const { session, getUserFromToken } = useAuth();
+  const userId = session?.accessToken ? getUserFromToken(session.accessToken)?.sub : undefined;
   
   // State for managing the game profile data
   const [gameProfile, setGameProfile] = useState<GameProfile | undefined>(undefined);
@@ -49,7 +50,7 @@ const GamificationProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       try {
         // Get the game profile from the API
         const profile = await getGameProfile(userId);
-        setGameProfile(profile);
+        setGameProfile(profile as unknown as GameProfile | undefined);
         setError(null);
       } catch (err) {
         setError(err);

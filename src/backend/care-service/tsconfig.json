@@ -1,7 +1,10 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "strictNullChecks": false,
+    "strictPropertyInitialization": false,
+    "noImplicitAny": false
   },
   "include": [
     "src/**/*"

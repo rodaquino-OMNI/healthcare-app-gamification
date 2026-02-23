@@ -150,7 +150,7 @@ export const WellnessPrograms: React.FC = () => {
 
   const handleProgramPress = useCallback(
     (programId: string) => {
-      navigation.navigate('WellnessResourcesProgramDetail', { programId });
+      navigation.navigate('HealthWellnessResourcesProgramDetail', { programId });
     },
     [navigation],
   );

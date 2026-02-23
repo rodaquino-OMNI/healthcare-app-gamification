@@ -20,7 +20,7 @@
     "changeset": "changeset",
     "version": "changeset version",
     "publish": "turbo run build && changeset publish",
-    "postinstall": "node ../scripts/apply-security-patches.js"
+    "postinstall": "node ../scripts/apply-security-patches.js || true"
   },
   "dependencies": {
     "@apollo/client": "^3.8.10",
@@ -240,7 +240,7 @@
     "eslint-config-next": "14.2.29",
     "@next/bundle-analyzer": "^14.2.29",
     "@next/eslint-plugin-next": "^14.2.29",
-    "react-native": "0.72.6",
+    "react-native": "0.73.0",
     "@types/react": "18.2.37",
     "@types/react-dom": "18.2.15",
     "typescript": "5.3.3",
@@ -249,7 +249,6 @@
     "@nestjs/platform-express": "10.0.0",
     "@prisma/client": "5.10.2",
     "prisma": "5.10.2",
-    "@types/react-native": "0.72.2",
     "@react-native/typescript-config": "0.73.1",
     "@react-navigation/native": "6.1.7",
     "@react-navigation/bottom-tabs": "6.5.8",

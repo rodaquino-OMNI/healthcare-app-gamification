@@ -11,26 +11,37 @@ export interface StackProps {
    * Can be responsive with different values at different breakpoints
    */
   direction?: 'column' | 'row' | { [breakpoint: string]: 'column' | 'row' };
-  
+
   /**
    * Spacing between items in the stack
    * Can be a token (xs, sm, md, lg, xl, 2xl, 3xl, 4xl) or a specific value
    * Can be responsive with different values at different breakpoints
    */
   spacing?: string | number | { [breakpoint: string]: string | number };
-  
+
   /**
    * Whether items should wrap to the next line when there's not enough space
    * Can be responsive with different values at different breakpoints
    */
   wrap?: boolean | { [breakpoint: string]: boolean };
-  
+
   /**
    * Alignment of items in the stack
    * Can be responsive with different values at different breakpoints
    */
-  align?: 'flex-start' | 'flex-end' | 'center' | 'stretch' | 'baseline' | 
+  align?: 'flex-start' | 'flex-end' | 'center' | 'stretch' | 'baseline' |
           { [breakpoint: string]: 'flex-start' | 'flex-end' | 'center' | 'stretch' | 'baseline' };
+
+  /**
+   * Padding around the stack content
+   * Can be a spacing token (xs, sm, md, lg, xl, 2xl) or a specific value
+   */
+  padding?: string | number | { [breakpoint: string]: string | number };
+
+  /**
+   * Test ID for component testing
+   */
+  testID?: string;
 }
 
 /**

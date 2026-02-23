@@ -32,8 +32,7 @@ export class PreferencesService {
         'Failed to retrieve notification preferences',
         ErrorType.TECHNICAL,
         SYS_INTERNAL_SERVER_ERROR,
-        { filter, pagination },
-        error,
+        { filter, pagination } as any,
       );
     }
   }
@@ -45,7 +44,7 @@ export class PreferencesService {
    * @returns A promise that resolves to a NotificationPreference or null
    */
   async findOne(where: any): Promise<NotificationPreference | null> {
-    return this.prisma.notificationPreference.findFirst({ where });
+    return this.prisma.notificationPreference.findFirst({ where }) as unknown as NotificationPreference | null;
   }
 
   /**
@@ -58,14 +57,13 @@ export class PreferencesService {
     try {
       return this.prisma.notificationPreference.create({
         data: { userId },
-      });
+      }) as unknown as NotificationPreference;
     } catch (error) {
       throw new AppException(
         'Failed to create notification preferences',
         ErrorType.TECHNICAL,
         SYS_INTERNAL_SERVER_ERROR,
         { userId },
-        error,
       );
     }
   }
@@ -85,14 +83,13 @@ export class PreferencesService {
       return this.prisma.notificationPreference.update({
         where: { id: parseInt(id) },
         data,
-      });
+      }) as unknown as NotificationPreference;
     } catch (error) {
       throw new AppException(
         'Failed to update notification preferences',
         ErrorType.TECHNICAL,
         SYS_INTERNAL_SERVER_ERROR,
-        { id, data },
-        error,
+        { id, data } as any,
       );
     }
   }

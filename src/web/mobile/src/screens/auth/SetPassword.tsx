@@ -9,11 +9,11 @@ import { useTranslation } from 'react-i18next';
 
 
 import { ROUTES } from '../../constants/routes';
-import { colors } from '../../../../design-system/src/tokens/colors';
-import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
-import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
-import { borderRadius, borderRadiusValues } from '../../../../design-system/src/tokens/borderRadius';
-import { sizing, sizingValues } from '../../../../design-system/src/tokens/sizing';
+import { colors } from '@design-system/tokens/colors';
+import { typography, fontSizeValues } from '@design-system/tokens/typography';
+import { spacing, spacingValues } from '@design-system/tokens/spacing';
+import { borderRadius, borderRadiusValues } from '@design-system/tokens/borderRadius';
+import { sizing, sizingValues } from '@design-system/tokens/sizing';
 
 // --- Constants ---
 
@@ -224,7 +224,7 @@ export const SetPasswordScreen: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { control, handleSubmit, watch, formState: { errors } } = useForm<SetPasswordFormData>({
-    resolver: yupResolver(setPasswordSchema(t)),
+    resolver: yupResolver(setPasswordSchema(t as (key: string, options?: any) => string) as any),
     mode: 'onChange',
     defaultValues: {
       password: '',

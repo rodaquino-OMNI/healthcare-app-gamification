@@ -1,11 +1,12 @@
 import React from 'react';
-import { Stack, Icon, Text, Button } from '@austa/design-system';
+import { View, StyleSheet } from 'react-native';
+import { Icon, Text, Button } from '@austa/design-system';
 import { useJourney } from '../../hooks/useJourney';
 
 /**
  * Props for the EmptyState component
  */
-interface EmptyStateProps {
+export interface EmptyStateProps {
   /** Icon name to display */
   icon: string;
   /** Main message to display */
@@ -61,11 +62,9 @@ const EmptyState: React.FC<EmptyStateProps> = ({
   };
 
   return (
-    <Stack
-      spacing="lg"
-      align="center"
+    <View
+      style={emptyStyles.container}
       testID={testID || 'empty-state'}
-      padding="xl"
     >
       {/* Icon with journey-specific color */}
       <Icon
@@ -107,8 +106,16 @@ const EmptyState: React.FC<EmptyStateProps> = ({
           {actionLabel}
         </Button>
       )}
-    </Stack>
+    </View>
   );
 };
+
+const emptyStyles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    padding: 24,
+    gap: 16,
+  },
+});
 
 export default EmptyState;

@@ -6,14 +6,14 @@
  */
 
 // Authentication types
-export type { AuthSession, AuthState } from '../../../shared/types/auth.types';
+export type { AuthSession, AuthState } from '@shared/types/auth.types';
 
 // Health journey types
-export type { HealthMetric, MedicalEvent, HealthGoal, DeviceConnection } from '../../../shared/types/health.types';
-export { HealthMetricType } from '../../../shared/types/health.types';
+export type { HealthMetric, MedicalEvent, HealthGoal, DeviceConnection } from '@shared/types/health.types';
+export { HealthMetricType } from '@shared/types/health.types';
 
 // Care journey types
-export type { Appointment, Medication, TelemedicineSession, TreatmentPlan } from '../../../shared/types/care.types';
+export type { Appointment, Medication, TelemedicineSession, TreatmentPlan } from '@shared/types/care.types';
 
 // Plan journey types
 export type {
@@ -25,10 +25,10 @@ export type {
   Plan, 
   Coverage, 
   Benefit
-} from '../../../shared/types/plan.types';
+} from '@shared/types/plan.types';
 
 // Gamification types
-export type { Achievement, Quest, Reward, GameProfile } from '../../../shared/types/gamification.types';
+export type { Achievement, Quest, Reward, GameProfile } from '@shared/types/gamification.types';
 
 // Notification types
 export type {
@@ -43,11 +43,11 @@ export type {
   LevelUpNotificationData,
   AppointmentReminderData,
   ClaimStatusUpdateData
-} from '../../../shared/types/notification.types';
+} from '@shared/types/notification.types';
 
 export {
   NotificationType,
   NotificationChannel,
   NotificationStatus,
   NotificationPriority
-} from '../../../shared/types/notification.types';
+} from '@shared/types/notification.types';

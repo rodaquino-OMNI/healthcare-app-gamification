@@ -92,7 +92,7 @@ export const MedicationEdit: React.FC = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<MedicationEditFormData>({
-    resolver: yupResolver(medicationEditSchema) as any,
+    resolver: yupResolver(medicationEditSchema as any),
     defaultValues: {
       name: prefillName,
       dosage: prefillDosage,

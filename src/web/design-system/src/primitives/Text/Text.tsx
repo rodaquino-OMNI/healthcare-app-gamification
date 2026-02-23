@@ -11,37 +11,37 @@ export interface TextProps {
    * Font family to use (from design system or custom value)
    */
   fontFamily?: string;
-  
+
   /**
    * Font size to use (from design system or custom value)
    */
-  fontSize?: string;
-  
+  fontSize?: string | number;
+
   /**
    * Font weight to use (from design system or custom value)
    */
   fontWeight?: string;
-  
+
   /**
    * Line height to use (from design system or custom value)
    */
   lineHeight?: string;
-  
+
   /**
    * Text color to use (from design system or custom value)
    */
   color?: string;
-  
+
   /**
    * Text alignment (left, right, center, justify)
    */
   textAlign?: string;
-  
+
   /**
    * Test ID for component testing
    */
   testID?: string;
-  
+
   /**
    * Journey identifier for journey-specific theming
    */
@@ -57,22 +57,63 @@ export interface TextProps {
    * Determines if text should be truncated with ellipsis when overflowing
    */
   truncate?: boolean;
-  
+
   /**
    * HTML element to render as
    */
   as?: 'span' | 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'label' | 'div';
-  
+
   /**
    * Accessibility props
    */
   'aria-label'?: string;
-  'aria-hidden'?: boolean;
-  
+  'aria-hidden'?: boolean | string;
+
   /**
    * Child elements (text content)
    */
-  children: React.ReactNode;
+  children?: React.ReactNode;
+
+  /**
+   * Additional style overrides
+   */
+  style?: any;
+
+  /**
+   * Number of lines before truncation (React Native)
+   */
+  numberOfLines?: number;
+
+  /**
+   * Ellipsize mode for text truncation (React Native)
+   */
+  ellipsizeMode?: 'head' | 'middle' | 'tail' | 'clip' | string;
+
+  /**
+   * Accessibility label
+   */
+  accessibilityLabel?: string;
+
+  /**
+   * Spacing shorthand props — margin
+   */
+  marginTop?: string | number;
+  marginBottom?: string | number;
+  marginLeft?: string | number;
+  marginRight?: string | number;
+  margin?: string | number;
+
+  /**
+   * Spacing shorthand props — padding
+   */
+  paddingTop?: string | number;
+  paddingBottom?: string | number;
+  paddingLeft?: string | number;
+  paddingRight?: string | number;
+  padding?: string | number;
+
+  /** Allow additional passthrough props for RN/web compatibility */
+  [key: string]: any;
 }
 
 /**

@@ -1,10 +1,10 @@
 import React from 'react';
-import { Modal } from 'src/web/design-system/src/components/Modal/Modal';
-import { AchievementBadge } from 'src/web/design-system/src/gamification/AchievementBadge/AchievementBadge';
-import { useGamification } from 'src/web/mobile/src/context/GamificationContext';
-import { formatJourneyValue } from 'src/web/shared/utils/format';
-import { Box } from 'src/web/design-system/src/primitives/Box/Box';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text';
+import { Modal } from '@design-system/components/Modal/Modal';
+import { AchievementBadge } from '@design-system/gamification/AchievementBadge/AchievementBadge';
+import { useGamification } from '@context/GamificationContext';
+import { formatJourneyValue } from '@shared/utils/format';
+import { Box } from '@design-system/primitives/Box/Box';
+import { Text } from '@design-system/primitives/Text/Text';
 
 /**
  * Props for the GamificationPopup component
@@ -57,7 +57,7 @@ export const GamificationPopup: React.FC<GamificationPopupProps> = ({
       visible={visible}
       onClose={onClose}
       title="Conquista Desbloqueada!"
-      journey={achievement.journey}
+      journey={achievement.journey as 'health' | 'care' | 'plan'}
     >
       <Box 
         display="flex" 

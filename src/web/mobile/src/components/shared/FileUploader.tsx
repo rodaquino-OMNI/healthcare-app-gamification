@@ -8,10 +8,10 @@ import {
   Platform, 
   Alert 
 } from 'react-native';
-import { launchCameraAsync, launchImageLibraryAsync } from 'expo-image-picker'; // v14.0+
+import { launchCameraAsync, launchImageLibraryAsync, MediaTypeOptions } from 'expo-image-picker'; // v14.0+
 import { useNavigation } from '@react-navigation/native'; // v6.0+
 import { checkAndroidPermissions } from '@utils/permissions';
-import { LoadingIndicator } from '@components/common';
+import { LoadingIndicator } from '@components/shared';
 
 interface FileUploaderProps {
   label: string;
@@ -35,7 +35,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
       
       // Check permissions on Android
       if (Platform.OS === 'android') {
-        const hasPermission = await checkAndroidPermissions('camera');
+        const hasPermission = await checkAndroidPermissions();
         if (!hasPermission) {
           Alert.alert(
             'Permission Required',
@@ -74,7 +74,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
       
       // Check permissions on Android
       if (Platform.OS === 'android') {
-        const hasPermission = await checkAndroidPermissions('storage');
+        const hasPermission = await checkAndroidPermissions();
         if (!hasPermission) {
           Alert.alert(
             'Permission Required',
@@ -88,7 +88,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
 
       const result = await launchImageLibraryAsync({
         allowsEditing: false,
-        mediaTypes: 'All',
+        mediaTypes: MediaTypeOptions.All,
         quality: 0.8,
       });
 

@@ -32,10 +32,17 @@ export class Quest {
   journey: string = '';
 
   /**
-   * The name of the icon to display for the quest.
+   * The number of steps required to complete the quest.
+   */
+  @IsInt()
+  @Min(1)
+  steps: number = 1;
+
+  /**
+   * The name of the icon to display for the quest (optional, present in shared schema).
    */
   @IsString()
-  icon: string = '';
+  icon?: string;
 
   /**
    * The amount of XP (experience points) awarded for completing the quest.
@@ -45,4 +52,14 @@ export class Quest {
   @Min(0)
   @Max(1000)
   xpReward: number = 0;
+
+  /**
+   * The date and time when the quest was created.
+   */
+  createdAt?: Date;
+
+  /**
+   * The date and time when the quest was last updated.
+   */
+  updatedAt?: Date;
 }

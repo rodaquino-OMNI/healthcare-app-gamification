@@ -136,7 +136,7 @@ export const ArticleDetail: React.FC = () => {
 
   const handleRelatedPress = useCallback(
     (relatedId: string) => {
-      navigation.push('WellnessResourcesArticleDetail', { articleId: relatedId });
+      navigation.push('HealthWellnessResourcesArticleDetail', { articleId: relatedId });
     },
     [navigation],
   );

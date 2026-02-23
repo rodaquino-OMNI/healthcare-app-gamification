@@ -2,11 +2,11 @@ import React from 'react'; // Version 18.2.0
 import { FlatList, StyleSheet, View } from 'react-native'; // Version 0.71.14
 import { useNavigation } from '@react-navigation/native'; // Version 6.0.0
 
-import { useAchievements } from 'src/web/mobile/src/hooks/useGamification'; // src/web/mobile/src/hooks/useGamification.ts
-import { Achievement } from 'src/web/shared/types/gamification.types'; // src/web/shared/types/gamification.types.ts
-import { AchievementBadge } from 'src/web/design-system/src/gamification/AchievementBadge/AchievementBadge'; // src/web/design-system/src/gamification/AchievementBadge/AchievementBadge.tsx
-import EmptyState from 'src/web/mobile/src/components/shared/EmptyState'; // src/web/mobile/src/components/shared/EmptyState.tsx
-import { JOURNEY_NAMES } from 'src/web/mobile/src/constants/journeys'; // src/web/mobile/src/constants/journeys.ts
+import { useAchievements } from '@hooks/useGamification'; // src/web/mobile/src/hooks/useGamification.ts
+import { Achievement } from '@shared/types/gamification.types'; // src/web/shared/types/gamification.types.ts
+import { AchievementBadge } from '@design-system/gamification/AchievementBadge/AchievementBadge'; // src/web/design-system/src/gamification/AchievementBadge/AchievementBadge.tsx
+import EmptyState from '@components/shared/EmptyState'; // src/web/mobile/src/components/shared/EmptyState.tsx
+import { JOURNEY_NAMES } from '@constants/journeys'; // src/web/mobile/src/constants/journeys.ts
 
 // Define the style for the component
 const styles = StyleSheet.create({
@@ -41,7 +41,7 @@ const AchievementList: React.FC = () => {
               achievement={item}
               onPress={() => {
                 // Navigate to the achievement details screen when an achievement is pressed
-                navigation.navigate('AchievementDetails', { achievementId: item.id });
+                (navigation as any).navigate('AchievementDetails', { achievementId: item.id });
               }}
             />
           )}

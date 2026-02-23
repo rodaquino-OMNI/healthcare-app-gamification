@@ -26,14 +26,14 @@ export class CreateConsentDto {
     example: ConsentType.HEALTH_DATA_SHARING,
   })
   @IsEnum(ConsentType)
-  consentType: ConsentType;
+  consentType!: ConsentType;
 
   @ApiProperty({
     description: 'Clear description of the purpose for data processing',
     example: 'Share health metrics with treating physician for telemedicine sessions',
   })
   @IsString()
-  purpose: string;
+  purpose!: string;
 
   @ApiProperty({
     description: 'Categories of personal data covered by this consent',
@@ -43,7 +43,7 @@ export class CreateConsentDto {
   @IsArray()
   @ArrayMinSize(1)
   @IsString({ each: true })
-  dataCategories: string[];
+  dataCategories!: string[];
 
   @ApiPropertyOptional({
     description: 'ISO 8601 date when the consent expires (optional, null means indefinite)',

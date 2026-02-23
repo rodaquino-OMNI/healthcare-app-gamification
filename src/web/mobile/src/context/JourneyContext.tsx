@@ -1,6 +1,6 @@
-import React, { createContext, useState, ReactNode } from 'react';
-import { JOURNEY_IDS } from '../../shared/constants/journeys';
-import { JourneyId } from '../../shared/types';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { JOURNEY_IDS } from '@shared/constants/journeys';
+import { JourneyId } from '@shared/types';
 
 /**
  * Context interface that defines what's provided by the JourneyContext
@@ -37,4 +37,12 @@ export const JourneyProvider: React.FC<{ children: ReactNode }> = ({ children })
       {children}
     </JourneyContext.Provider>
   );
+};
+
+/**
+ * Hook to access the current journey context
+ * @returns The current journey and setJourney function
+ */
+export const useJourney = () => {
+  return useContext(JourneyContext);
 };

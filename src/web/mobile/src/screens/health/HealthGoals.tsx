@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react'; // react v18.0.0
-import { View, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // version 6.1.7
 
 import {
   Card,
   Button,
   ProgressBar,
-} from 'src/web/design-system/src/components';
+} from '@design-system/components';
 import {
   LoadingIndicator,
   ErrorState,
   JourneyHeader,
-} from 'src/web/mobile/src/components/shared';
-import { HealthGoalForm } from 'src/web/mobile/src/components/forms';
-import { useJourney } from 'src/web/mobile/src/context/JourneyContext';
-import { useAuth } from 'src/web/mobile/src/hooks/useAuth';
-import { useHealthMetrics } from 'src/web/mobile/src/hooks/useHealthMetrics';
-import { useGamification } from 'src/web/mobile/src/hooks/useGamification';
-import { HealthGoal } from 'src/web/shared/types/health.types';
+} from '@components/shared';
+import { HealthGoalForm } from '@components/forms';
+import { useJourney } from '@context/JourneyContext';
+import { useAuth } from '@hooks/useAuth';
+import { useHealthMetrics } from '@hooks/useHealthMetrics';
+import { useGamification } from '@hooks/useGamification';
+import { HealthGoal } from '@shared/types/health.types';
 import { useTranslation } from 'react-i18next';
 import { ROUTES } from '../../constants/routes';
 import type { HealthNavigationProp } from '../../navigation/types';
@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
 const HealthGoals: React.FC = () => {
   const { t } = useTranslation();
   // Get the current user's ID from the authentication context
-  const { userId } = useAuth();
+  const { session, getUserFromToken } = useAuth();
+  const userId = session?.accessToken ? getUserFromToken(session.accessToken)?.sub : undefined;
 
   // Fetch available health metric types using the useHealthMetrics hook
   const { data: healthMetricTypes, loading, error } = useHealthMetrics(userId, null, null, []);
@@ -96,7 +97,7 @@ const HealthGoals: React.FC = () => {
               variant="secondary"
               size="sm"
               onPress={handleAddGoal}
-              journey={journey}
+              journey={journey as 'health' | 'care' | 'plan'}
               accessibilityLabel="Add new health goal"
             >
               {t('journeys.health.goals.setGoal')}
@@ -112,13 +113,13 @@ const HealthGoals: React.FC = () => {
         style={styles.goalItem}
         contentContainerStyle={styles.listContent}
         renderItem={({ item }) => (
-          <Card journey={journey}>
+          <Card journey={journey as 'health' | 'care' | 'plan'}>
             <TouchableOpacity onPress={() => navigation.navigate(ROUTES.HEALTH_METRIC_DETAIL, { metricType: item.id })}>
               <View>
                 {/* Display the goal title */}
-                <Text fontWeight="medium">{item.title}</Text>
+                <Text style={{ fontWeight: '500' }}>{item.title}</Text>
                 {/* Display the progress of the goal using the ProgressBar component */}
-                <ProgressBar current={item.progress} total={100} journey={journey} />
+                <ProgressBar current={item.progress} total={100} journey={journey as 'health' | 'care' | 'plan'} />
               </View>
             </TouchableOpacity>
           </Card>
@@ -126,7 +127,7 @@ const HealthGoals: React.FC = () => {
       />
 
       {/* Render the HealthGoalForm modal when the add goal button is pressed */}
-      <HealthGoalForm isVisible={isFormVisible} onClose={handleCloseForm} />
+      <HealthGoalForm onSubmit={handleCloseForm} onCancel={handleCloseForm} />
     </View>
   );
 };

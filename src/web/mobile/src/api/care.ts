@@ -105,3 +105,63 @@ export async function checkSymptoms(symptoms: object): Promise<any> {
   // Return the symptom check results on success
   return response.data;
 }
+
+/**
+ * Creates a new telemedicine session.
+ * @param appointmentId - The appointment ID to create a session for
+ * @returns A promise that resolves with the created session data
+ */
+export async function createTelemedicineSession(appointmentId: string): Promise<any> {
+  const session = await getAuthSession();
+  if (!session) {
+    throw new Error('Authentication required');
+  }
+  const response: AxiosResponse<any> = await restClient.post(
+    '/care/telemedicine/sessions',
+    { appointmentId },
+    { headers: { Authorization: `Bearer ${session.accessToken}` } }
+  );
+  return response.data;
+}
+
+/**
+ * Fetches an existing telemedicine session by ID.
+ * @param sessionId - The session ID to fetch
+ * @returns A promise that resolves with the session data
+ */
+export async function getTelemedicineSession(sessionId: string): Promise<any> {
+  const session = await getAuthSession();
+  if (!session) {
+    throw new Error('Authentication required');
+  }
+  const response: AxiosResponse<any> = await restClient.get(
+    `/care/telemedicine/sessions/${sessionId}`,
+    { headers: { Authorization: `Bearer ${session.accessToken}` } }
+  );
+  return response.data;
+}
+
+/**
+ * Searches for healthcare providers based on criteria.
+ * @param params - Search parameters (specialty, location, name, etc.)
+ * @returns A promise that resolves with matching providers
+ */
+export async function searchProviders(params: {
+  specialty?: string;
+  name?: string;
+  location?: string;
+  [key: string]: any;
+}): Promise<any[]> {
+  const session = await getAuthSession();
+  if (!session) {
+    throw new Error('Authentication required');
+  }
+  const response: AxiosResponse<any[]> = await restClient.get(
+    '/care/providers/search',
+    {
+      params,
+      headers: { Authorization: `Bearer ${session.accessToken}` }
+    }
+  );
+  return response.data;
+}

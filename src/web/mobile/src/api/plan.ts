@@ -10,14 +10,14 @@ import { graphQLClient, restClient } from './client';
 import {
   GET_PLAN,
   GET_CLAIMS,
-} from '../../shared/graphql/queries/plan.queries';
+} from '@shared/graphql/queries/plan.queries';
 import {
   SUBMIT_CLAIM,
   UPLOAD_CLAIM_DOCUMENT,
   UPDATE_CLAIM,
   CANCEL_CLAIM,
-} from '../../shared/graphql/mutations/plan.mutations';
-import { Plan, Claim, ClaimStatus } from '../../shared/types/plan.types';
+} from '@shared/graphql/mutations/plan.mutations';
+import { Plan, Claim, ClaimStatus } from '@shared/types/plan.types';
 
 /**
  * Fetches all insurance plans for a specific user

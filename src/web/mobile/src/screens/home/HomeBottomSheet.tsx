@@ -4,11 +4,11 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 import type { HomeTabScreenNavigationProp } from '../../navigation/types';
 
-import { colors } from '../../../../design-system/src/tokens/colors';
-import { typography } from '../../../../design-system/src/tokens/typography';
-import { spacing } from '../../../../design-system/src/tokens/spacing';
-import { borderRadius } from '../../../../design-system/src/tokens/borderRadius';
-import { sizing } from '../../../../design-system/src/tokens/sizing';
+import { colors } from '@design-system/tokens/colors';
+import { typography } from '@design-system/tokens/typography';
+import { spacing } from '@design-system/tokens/spacing';
+import { borderRadius } from '@design-system/tokens/borderRadius';
+import { sizing } from '@design-system/tokens/sizing';
 import { ROUTES } from '../../constants/routes';
 
 // --- Styled Components ---
@@ -147,7 +147,7 @@ export const HomeBottomSheet: React.FC<HomeBottomSheetProps> = ({ onClose }) => 
           navigation.navigate('Care', { screen: 'CareAppointmentBooking' });
           break;
         case ROUTES.CARE_SYMPTOM_CHECKER:
-          navigation.navigate('Care', { screen: 'CareSymptomChecker' });
+          navigation.navigate('Care', { screen: 'CareSymptomChecker', params: {} } as any);
           break;
         default:
           break;

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form'; // v7.0.0
 import { zodResolver } from '@hookform/resolvers/zod'; // v3.0.0
+import { z } from 'zod'; // latest
 import { Input, Button, FormContainer, FormField } from '@austa/design-system'; // latest
 import { AuthSession } from '@austa/shared/types'; // latest
-import { useAuth } from '../hooks/useAuth';
-import { userValidationSchema } from '../../../shared/utils/validation';
+import { useAuth } from '@hooks/useAuth';
 
 // Define the shape of our form data
 type ProfileFormData = {
@@ -26,7 +26,11 @@ export const ProfileForm: React.FC = () => {
   const user = session?.accessToken ? getUserFromToken(session.accessToken) : null;
 
   // Create a validation schema for profile updates (just name and email)
-  const profileSchema = userValidationSchema.pick({ name: true, email: true });
+  // userValidationSchema is a ZodEffects (has .refine), so define a plain ZodObject for pick
+  const profileSchema = z.object({
+    name: z.string().min(1, { message: 'Name is required' }),
+    email: z.string().min(1, { message: 'Email is required' }).email({ message: 'Invalid email format' }),
+  });
   
   // Initialize form with React Hook Form
   const { register, handleSubmit, formState: { errors } } = useForm<ProfileFormData>({

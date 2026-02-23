@@ -9,15 +9,15 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 
-import Input from 'src/web/design-system/src/components/Input/Input';
-import { Select } from 'src/web/design-system/src/components/Select/Select';
-import Button from 'src/web/design-system/src/components/Button/Button';
-import { colors } from '@web/design-system/src/tokens/colors';
-import { spacingValues } from '@web/design-system/src/tokens/spacing';
-import { fontSizeValues } from '@web/design-system/src/tokens/typography';
-import { borderRadiusValues } from '@web/design-system/src/tokens/borderRadius';
+import Input from '@design-system/components/Input/Input';
+import { Select } from '@design-system/components/Select/Select';
+import { Button } from '@design-system/components/Button/Button';
+import { colors } from '@design-system/tokens/colors';
+import { spacingValues } from '@design-system/tokens/spacing';
+import { fontSizeValues } from '@design-system/tokens/typography';
+import { borderRadiusValues } from '@design-system/tokens/borderRadius';
 import { useTheme } from 'styled-components/native';
-import type { Theme } from '@web/design-system/src/themes/base.theme';
+import type { Theme } from '@design-system/themes/base.theme';
 
 /**
  * Deductible percentage options for the slider-style selector.
@@ -203,7 +203,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   title: {
     fontSize: fontSizeValues['2xl'],
-    fontWeight: String(700) as any,
+    fontWeight: '700' as const,
     color: colors.journeys.plan.text,
   },
   subtitle: {
@@ -229,7 +229,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   fieldLabel: {
     fontSize: fontSizeValues.sm,
-    fontWeight: String(500) as any,
+    fontWeight: '500' as const,
     color: colors.gray[60],
   },
 
@@ -249,7 +249,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   sliderStepText: {
     fontSize: fontSizeValues.xs,
-    fontWeight: String(600) as any,
+    fontWeight: '600' as const,
     color: colors.gray[50],
   },
   sliderStepTextActive: {
@@ -281,13 +281,13 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   resultTitle: {
     fontSize: fontSizeValues.lg,
-    fontWeight: String(700) as any,
+    fontWeight: '700' as const,
     color: colors.journeys.plan.text,
     marginBottom: spacingValues.xs,
   },
   resultValue: {
     fontSize: 28,
-    fontWeight: String(700) as any,
+    fontWeight: '700' as const,
     color: colors.journeys.plan.primary,
     marginBottom: spacingValues.xs,
   },
@@ -314,7 +314,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   resultMetaValue: {
     fontSize: fontSizeValues.sm,
-    fontWeight: String(600) as any,
+    fontWeight: '600' as const,
     color: colors.journeys.plan.text,
   },
 });

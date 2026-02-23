@@ -12,13 +12,13 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components/native';
-import type { Theme } from '../../../../design-system/src/themes/base.theme';
+import type { Theme } from '@design-system/themes/base.theme';
 
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { spacingValues } from 'src/web/design-system/src/tokens/spacing';
-import { borderRadiusValues } from 'src/web/design-system/src/tokens/borderRadius';
-import { sizingValues } from 'src/web/design-system/src/tokens/sizing';
-import { Quest } from 'src/web/shared/types/gamification.types';
+import { colors } from '@design-system/tokens/colors';
+import { spacingValues } from '@design-system/tokens/spacing';
+import { borderRadiusValues } from '@design-system/tokens/borderRadius';
+import { sizingValues } from '@design-system/tokens/sizing';
+import { Quest } from '@shared/types/gamification.types';
 
 /**
  * Route params for QuestDetail.

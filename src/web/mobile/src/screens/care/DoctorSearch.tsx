@@ -2,16 +2,16 @@ import React, { useState, useCallback } from 'react';
 import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-import { Input } from 'src/web/design-system/src/components/Input/Input';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text';
-import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader';
-import { LoadingIndicator } from 'src/web/mobile/src/components/shared/LoadingIndicator';
-import { ROUTES } from 'src/web/mobile/src/constants/routes';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { spacingValues } from 'src/web/design-system/src/tokens/spacing';
+import { Input } from '@design-system/components/Input';
+import { Text } from '@design-system/primitives/Text/Text';
+import { JourneyHeader } from '@components/shared/JourneyHeader';
+import { LoadingIndicator } from '@components/shared/LoadingIndicator';
+import { ROUTES } from '@constants/routes';
+import { colors } from '@design-system/tokens/colors';
+import { spacingValues } from '@design-system/tokens/spacing';
 import { useTranslation } from 'react-i18next';
 
-import { SPECIALTIES, SpecialtyTabs, ControlsRow } from './DoctorSearchFilters';
+import { SPECIALTIES_KEYS as SPECIALTIES, SpecialtyTabs, ControlsRow } from './DoctorSearchFilters';
 import { Doctor, MOCK_DOCTORS, DoctorItem, MapPlaceholder } from './DoctorSearchList';
 
 /**

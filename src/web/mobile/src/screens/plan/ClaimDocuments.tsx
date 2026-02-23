@@ -4,8 +4,8 @@ import { View, Text, StyleSheet } from 'react-native';
 import {
   colors,
   typography,
-} from '@web/design-system/src/tokens';
-import type { Theme } from '@web/design-system/src/themes/base.theme';
+} from '@design-system/tokens';
+import type { Theme } from '@design-system/themes/base.theme';
 
 const { plan } = colors.journeys;
 const sp = { xs: 8, sm: 12, md: 16, lg: 20, xl: 24, '2xl': 32 };
@@ -57,7 +57,7 @@ const createStyles = (_theme: Theme) =>
   StyleSheet.create({
     sectionTitle: {
       fontSize: 18,
-      fontWeight: typography.fontWeight.semiBold as any,
+      fontWeight: '600' as const,
       fontFamily: typography.fontFamily.heading,
       color: plan.text,
       marginTop: sp.md,

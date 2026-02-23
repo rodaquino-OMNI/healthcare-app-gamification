@@ -10,17 +10,27 @@ export class UserQuest {
   /**
    * Unique identifier for the user quest.
    */
-  id: string = '';
+  id?: string;
 
   /**
-   * The game profile of the user participating in the quest.
+   * The ID of the user's game profile.
    */
-  profile: any;
+  profileId?: string;
 
   /**
-   * The quest being undertaken by the user.
+   * The ID of the quest.
    */
-  quest: Quest = new Quest();
+  questId?: string;
+
+  /**
+   * The game profile of the user participating in the quest (included via Prisma relation).
+   */
+  profile?: any;
+
+  /**
+   * The quest being undertaken by the user (included via Prisma relation).
+   */
+  quest?: Quest;
 
   /**
    * The user's current progress toward completing the quest (0-100).
@@ -38,4 +48,19 @@ export class UserQuest {
    */
   @IsBoolean()
   completed: boolean = false;
+
+  /**
+   * The date and time when the quest was completed.
+   */
+  completedAt?: Date | null;
+
+  /**
+   * The date and time when the user quest was created.
+   */
+  createdAt?: Date;
+
+  /**
+   * The date and time when the user quest was last updated.
+   */
+  updatedAt?: Date;
 }

@@ -24,7 +24,7 @@ export class Role {
   /**
    * The journey this role is associated with (health, care, plan, or null for global roles)
    */
-  journey: string = '';
+  journey: string | null = null;
 
   /**
    * Indicates if this is a default role assigned to new users

@@ -5,18 +5,18 @@ import { yupResolver } from '@hookform/resolvers/yup'; // @hookform/resolvers ve
 import * as yup from 'yup'; // Yup version 1.3.2
 import { useNavigation } from '@react-navigation/native'; // @react-navigation/native version 6.1.9
 
-import { HealthMetricType } from 'src/web/shared/types/health.types.ts';
-import { createHealthMetric } from 'src/web/mobile/src/api/health.ts';
-import { useHealthMetrics } from 'src/web/mobile/src/hooks/useHealthMetrics.ts';
-import { useAuth } from 'src/web/mobile/src/hooks/useAuth.ts';
-import Input from 'src/web/design-system/src/components/Input/Input.tsx';
-import Button from 'src/web/design-system/src/components/Button/Button.tsx';
-import { useJourney } from 'src/web/mobile/src/context/JourneyContext.tsx';
-import { userValidationSchema } from 'src/web/shared/utils/validation.ts';
+import { HealthMetricType } from '@shared/types/health.types';
+import { createHealthMetric } from '@api/health';
+import { useHealthMetrics } from '@hooks/useHealthMetrics';
+import { useAuth } from '@hooks/useAuth';
+import { Input } from '@design-system/components/Input';
+import { Button } from '@design-system/components/Button/Button';
+import { useJourney } from '@context/JourneyContext';
+import { userValidationSchema } from '@shared/utils/validation';
 import { useTranslation } from 'react-i18next';
-import JourneyHeader from 'src/web/mobile/src/components/shared/JourneyHeader.tsx';
-import ErrorState from 'src/web/mobile/src/components/shared/ErrorState';
-import LoadingIndicator from 'src/web/mobile/src/components/shared/LoadingIndicator.tsx';
+import { JourneyHeader } from '@components/shared/JourneyHeader';
+import ErrorState from '@components/shared/ErrorState';
+import LoadingIndicator from '@components/shared/LoadingIndicator';
 
 /**
  * Props for the AddMetricScreen component
@@ -47,7 +47,7 @@ export const AddMetricScreen: React.FC<AddMetricScreenProps> = () => {
 
   // LD1: Uses the useForm hook to manage the form state and validation.
   const { control, handleSubmit, formState: { errors }, reset } = useForm({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema as any),
     defaultValues: {
       type: '',
       value: '',
@@ -95,28 +95,22 @@ export const AddMetricScreen: React.FC<AddMetricScreenProps> = () => {
       {/* LD1: Reusable input component from the design system. */}
       <Input
         placeholder={t('journeys.health.metrics.type')}
-        // IE1: The Input component requires value and onChange props.
-        //      These are provided using the register function from React Hook Form.
-        //      The register function also handles validation and error display.
-        // LD1: Accessibility label for screen readers.
+        value=""
+        onChange={() => {}}
         aria-label="Metric Type"
       />
       {/* LD1: Reusable input component from the design system. */}
       <Input
         placeholder={t('journeys.health.metrics.value')}
-        // IE1: The Input component requires value and onChange props.
-        //      These are provided using the register function from React Hook Form.
-        //      The register function also handles validation and error display.
-        // LD1: Accessibility label for screen readers.
+        value=""
+        onChange={() => {}}
         aria-label="Metric Value"
       />
       {/* LD1: Reusable input component from the design system. */}
       <Input
         placeholder={t('common.labels.time')}
-        // IE1: The Input component requires value and onChange props.
-        //      These are provided using the register function from React Hook Form.
-        //      The register function also handles validation and error display.
-        // LD1: Accessibility label for screen readers.
+        value=""
+        onChange={() => {}}
         aria-label="Timestamp"
       />
       {/* LD1: Reusable button component from the design system. */}

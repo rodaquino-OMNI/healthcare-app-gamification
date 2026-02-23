@@ -23,7 +23,7 @@ export class CreateClaimDto {
    */
   @ApiProperty({ description: 'User ID submitting the claim' })
   @IsString()
-  userId: string;
+  userId!: string;
 
   /**
    * Plan ID the claim is associated with
@@ -31,7 +31,7 @@ export class CreateClaimDto {
    */
   @ApiProperty({ description: 'Plan ID the claim is associated with' })
   @IsString()
-  planId: string;
+  planId!: string;
 
   /**
    * Type of claim (e.g., medical_visit, procedure, medication)
@@ -39,7 +39,7 @@ export class CreateClaimDto {
    */
   @ApiProperty({ description: 'Type of claim' })
   @IsString()
-  type: string;
+  type!: string;
 
   /**
    * Amount being claimed in local currency
@@ -47,7 +47,7 @@ export class CreateClaimDto {
    */
   @ApiProperty({ description: 'Amount being claimed' })
   @IsNumber()
-  amount: number;
+  amount!: number;
 
   /**
    * Initial status of the claim (default: submitted)

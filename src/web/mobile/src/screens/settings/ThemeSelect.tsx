@@ -5,11 +5,11 @@ import { useTranslation } from 'react-i18next';
 
 import { useAppTheme } from '../../context/ThemeContext';
 import type { ThemeMode } from '../../context/ThemeContext';
-import { typography } from '../../../../design-system/src/tokens/typography';
-import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
-import { borderRadius } from '../../../../design-system/src/tokens/borderRadius';
-import { sizing } from '../../../../design-system/src/tokens/sizing';
-import { darkTheme, baseTheme } from '../../../../design-system/src/themes';
+import { typography } from '@design-system/tokens/typography';
+import { spacing, spacingValues } from '@design-system/tokens/spacing';
+import { borderRadius } from '@design-system/tokens/borderRadius';
+import { sizing } from '@design-system/tokens/sizing';
+import { darkTheme, baseTheme } from '@design-system/themes';
 
 // --- Types ---
 

@@ -1,11 +1,11 @@
 import React, { useState, useCallback } from 'react';
-import { Modal, ModalProps } from 'src/web/design-system/src/components/Modal/Modal.tsx'; // version: that is compatible with the design system
-import { Button } from 'src/web/design-system/src/components/Button/Button.tsx'; // version: that is compatible with the design system
-import { Checkbox } from 'src/web/design-system/src/components/Checkbox/Checkbox.tsx'; // version: that is compatible with the design system
-import { RadioButton } from 'src/web/design-system/src/components/RadioButton/RadioButton.tsx'; // version: that is compatible with the design system
-import { JourneyContext } from 'src/web/mobile/src/context/JourneyContext.tsx';
-import { useI18n } from 'src/web/mobile/src/i18n/index.ts'; // i18next version: v23.0.0
-import { FilterOption } from 'src/web/shared/types/index.ts';
+import { Modal, ModalProps } from '@design-system/components/Modal/Modal'; // version: that is compatible with the design system
+import { Button } from '@design-system/components/Button/Button'; // version: that is compatible with the design system
+import { Checkbox } from '@design-system/components/Checkbox/Checkbox'; // version: that is compatible with the design system
+import { RadioButton } from '@design-system/components/RadioButton/RadioButton'; // version: that is compatible with the design system
+import { JourneyContext } from '@context/JourneyContext';
+import { useI18n } from '@i18n/index'; // i18next version: v23.0.0
+import { FilterOption } from '@shared/types/index';
 
 /**
  * Props interface for the FilterModal component.
@@ -74,7 +74,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
       visible={visible}
       onClose={onClose}
       title={t(title)}
-      journey={journey}
+      journey={journey as 'health' | 'care' | 'plan'}
     >
       {/* Mapping through the options array to render each filter option */}
       {options.map((option) => (
@@ -87,7 +87,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
               checked={!!selectedOptions.find((o) => o.id === option.id)}
               onChange={() => handleOptionChange(option)}
               label={t(option.label)}
-              journey={journey}
+              journey={journey as 'health' | 'care' | 'plan'}
             />
           ) : (
             <RadioButton
@@ -97,17 +97,17 @@ export const FilterModal: React.FC<FilterModalProps> = ({
               checked={!!selectedOptions.find((o) => o.id === option.id)}
               onChange={() => handleOptionChange(option)}
               label={t(option.label)}
-              journey={journey}
+              journey={journey as 'health' | 'care' | 'plan'}
             />
           )}
         </React.Fragment>
       ))}
 
       {/* Apply and Cancel buttons */}
-      <Button onPress={handleApply} journey={journey}>
+      <Button onPress={handleApply} journey={journey as 'health' | 'care' | 'plan' | undefined}>
         {t('common.buttons.save')}
       </Button>
-      <Button variant="secondary" onPress={onClose} journey={journey}>
+      <Button variant="secondary" onPress={onClose} journey={journey as 'health' | 'care' | 'plan' | undefined}>
         {t('common.buttons.cancel')}
       </Button>
     </Modal>

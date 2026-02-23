@@ -49,7 +49,7 @@ spec:
               name: jwt-secret
               key: JWT_SECRET
         - name: API_GATEWAY_URL
-          value: http://api-gateway:3000
+          value: http://api-gateway:4000
         resources:
           requests:
             cpu: 250m

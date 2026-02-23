@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react'; // react v18.0.0
-import { View, StyleSheet, FlatList } from 'react-native'; // react-native v0.71.0
+import { View, Text, StyleSheet, FlatList } from 'react-native'; // react-native v0.71.0
 
-import { MedicalEvent } from 'src/web/mobile/src/types/index';
-import { ROUTES } from 'src/web/mobile/src/constants/routes';
-import { useHealthMetrics } from 'src/web/mobile/src/hooks/useHealthMetrics';
-import { getMedicalHistory } from 'src/web/mobile/src/api/health';
-import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader';
-import { Card, CardProps } from 'src/web/design-system/src/components/Card/Card';
+import { MedicalEvent } from '@/types/index';
+import { ROUTES } from '@constants/routes';
+import { useHealthMetrics } from '@hooks/useHealthMetrics';
+import { getMedicalHistory } from '@api/health';
+import { JourneyHeader } from '@components/shared/JourneyHeader';
+import { Card, CardProps } from '@design-system/components/Card/Card';
 import { useTranslation } from 'react-i18next';
-import { useJourney } from 'src/web/mobile/src/context/JourneyContext';
-import { formatDate } from 'src/web/mobile/src/utils/date';
-import { colors } from 'src/web/design-system/src/tokens/colors';
+import { useJourney } from '@context/JourneyContext';
+import { formatDate } from '@utils/date';
+import { colors } from '@design-system/tokens/colors';
 
 /**
  * MedicalHistory Component:
@@ -33,7 +33,7 @@ const MedicalHistory = () => {
     const fetchHistory = async () => {
       try {
         // Simulate fetching medical history data (replace with actual API call)
-        const history = await getMedicalHistory('user-123', [], null, null);
+        const history = await getMedicalHistory('user-123');
         setMedicalHistory(history);
       } catch (error) {
         console.error('Failed to fetch medical history:', error);

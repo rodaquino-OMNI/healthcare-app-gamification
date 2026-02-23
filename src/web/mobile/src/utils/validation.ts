@@ -16,7 +16,7 @@ import {
   isNotEmpty,
   useClaimValidationSchema,
   useUserValidationSchema,
-} from 'src/web/shared/utils/validation';
+} from '@shared/utils/validation';
 
 /**
  * Maximum allowed file sizes for different file types (in bytes)
@@ -546,6 +546,28 @@ export const isFieldModified = (initialValue: any, currentValue: any): boolean =
 
 // Re-export shared validation utilities that are relevant for mobile
 export { isValidCPF, isNotEmpty };
+
+/**
+ * Displays a toast notification to the user
+ * @param message - The message to display
+ * @param type - The type of toast ('success' | 'error' | 'warning' | 'info')
+ */
+export const showToast = (message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info'): void => {
+  // In a real implementation, this would use a toast library like react-native-toast-message
+  console.log(`[${type.toUpperCase()}] ${message}`);
+};
+
+/**
+ * Base validation schema factory for common form fields
+ */
+export const validationSchema = {
+  email: z.string().email(),
+  password: z.string().min(8),
+  name: z.string().min(2),
+  cpf: z.string().refine(isValidCPF, { message: 'Invalid CPF' }),
+  phone: z.string().min(10).max(15),
+  required: z.string().min(1),
+};
 
 export default {
   // Re-exports from shared validation

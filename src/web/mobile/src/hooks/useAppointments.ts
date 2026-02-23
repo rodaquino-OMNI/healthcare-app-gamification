@@ -1,6 +1,6 @@
 import { useQuery, useMutation, ApolloError, gql } from '@apollo/client'; // v3.7.17
 import { useAuth } from './useAuth';
-import { Appointment } from 'src/web/shared/types/care.types';
+import { Appointment } from '@shared/types/care.types';
 
 /**
  * GraphQL query for fetching user appointments
@@ -71,11 +71,12 @@ export function useAppointments() {
         }
       },
       // Update cache after successful cancellation to avoid refetching
-      update(cache, { data: { cancelAppointment } }) {
+      update(cache, { data: mutationData }) {
+        const cancelAppointment = (mutationData as any)?.cancelAppointment;
         // Read current appointments from cache
-        const cachedData = cache.readQuery<{ appointments: Appointment[] }>({
+        const cachedData = cache.readQuery({
           query: GET_APPOINTMENTS
-        });
+        }) as { appointments: Appointment[] } | null;
         
         if (cachedData) {
           // Update the cancelled appointment in the cache

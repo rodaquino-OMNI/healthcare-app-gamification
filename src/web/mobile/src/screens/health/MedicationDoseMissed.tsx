@@ -8,7 +8,7 @@ import {
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components/native';
-import type { Theme } from '../../../../design-system/src/themes/base.theme';
+import type { Theme } from '@design-system/themes/base.theme';
 
 import { ROUTES } from '../../constants/routes';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';

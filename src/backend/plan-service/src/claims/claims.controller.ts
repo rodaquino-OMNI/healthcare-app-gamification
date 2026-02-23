@@ -79,7 +79,7 @@ export class ClaimsController {
     @CurrentUser('id') userId: string,
     @Query() filterDto: FilterDto,
     @Query() paginationDto: PaginationDto,
-  ): Promise<Claim[]> {
+  ): Promise<{ data: Claim[]; total: number; page: number; limit: number }> {
     this.logger.log(`Retrieving claims for user: ${userId}`, 'ClaimsController');
     
     return this.tracingService.createSpan('ClaimsController.findAll', async () => {

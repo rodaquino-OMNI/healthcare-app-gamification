@@ -64,10 +64,10 @@ export class UsersService {
         });
 
         if (defaultRole) {
-          await this.prisma.userRole.create({
+          await this.prisma.user.update({
+            where: { id: user.id },
             data: {
-              userId: user.id,
-              roleId: defaultRole.id
+              roles: { connect: { id: defaultRole.id } }
             }
           });
         }
@@ -255,20 +255,15 @@ export class UsersService {
       );
     }
 
-    // First remove all existing role associations
-    await this.prisma.userRole.deleteMany({
-      where: { userId }
-    });
-
-    // Then create new role associations
-    for (const roleId of roleIds) {
-      await this.prisma.userRole.create({
-        data: {
-          userId,
-          roleId
+    // Update user's roles using implicit many-to-many connect/set
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        roles: {
+          set: roleIds.map(roleId => ({ id: roleId }))
         }
-      });
-    }
+      }
+    });
   }
 
   /**

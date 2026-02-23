@@ -13,7 +13,7 @@ import i18n from 'i18next';
 import { initReactI18next, useTranslation } from 'react-i18next';
 import ptBR from './pt-BR'; // Brazilian Portuguese translations
 import enUS from './en-US'; // US English translations
-import { supportedLocales, defaultLocale } from 'src/web/shared/config/i18nConfig';
+import { supportedLocales, defaultLocale } from '@shared/config/i18nConfig';
 
 // Initialize i18next with the available translations
 i18n
@@ -43,3 +43,8 @@ i18n
 
 // Export the configured i18n instance and the useTranslation hook for use in components
 export { i18n, useTranslation };
+
+/**
+ * Alias for useTranslation for backward compatibility
+ */
+export const useI18n = useTranslation;

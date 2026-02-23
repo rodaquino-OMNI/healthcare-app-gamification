@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { getConnectedDevices, connectDevice } from '../api/health';
 import { useAuth } from '../context/AuthContext';
-import { DeviceConnection } from '../../../shared/types/health.types';
+import { DeviceConnection } from '@shared/types/health.types';
 
 /**
  * A React hook that fetches connected devices for a user and provides a function to connect new devices.

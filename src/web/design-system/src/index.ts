@@ -28,3 +28,36 @@ export { health };
 export { care };
 // O2: Export all plan components
 export { plan };
+
+// Individual primitive re-exports for direct named imports
+export { Text } from './primitives/Text';
+export type { TextProps } from './primitives/Text';
+export { Stack } from './primitives/Stack';
+export { Icon } from './primitives/Icon';
+export type { IconProps } from './primitives/Icon';
+
+// Individual component re-exports for direct named imports
+export { Button } from './components/Button';
+export type { ButtonProps } from './components/Button';
+export { Card } from './components/Card';
+export type { CardProps } from './components/Card';
+export { Input } from './components/Input';
+export type { InputProps } from './components/Input';
+export { Modal } from './components/Modal';
+export type { ModalProps } from './components/Modal';
+export { Select } from './components/Select';
+export type { SelectProps } from './components/Select';
+export { ProgressBar } from './components/ProgressBar';
+export type { ProgressBarProps } from './components/ProgressBar';
+export { ProgressCircle } from './components/ProgressCircle';
+export type { ProgressCircleProps } from './components/ProgressCircle';
+export { Checkbox } from './components/Checkbox';
+export type { CheckboxProps } from './components/Checkbox';
+export { Tabs } from './components/Tabs';
+export type { TabsProps } from './components/Tabs';
+export { Avatar } from './components/Avatar';
+export type { AvatarProps } from './components/Avatar';
+
+// FormContainer and FormField placeholder exports for form components
+export { Input as FormField } from './components/Input';
+export { Stack as FormContainer } from './primitives/Stack';

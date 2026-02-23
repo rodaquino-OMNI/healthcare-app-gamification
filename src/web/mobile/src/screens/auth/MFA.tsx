@@ -5,11 +5,11 @@ import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '../../hooks/useAuth';
-import { colors } from '../../../../design-system/src/tokens/colors';
-import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
-import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
-import { borderRadius, borderRadiusValues } from '../../../../design-system/src/tokens/borderRadius';
-import { sizing, sizingValues } from '../../../../design-system/src/tokens/sizing';
+import { colors } from '@design-system/tokens/colors';
+import { typography, fontSizeValues } from '@design-system/tokens/typography';
+import { spacing, spacingValues } from '@design-system/tokens/spacing';
+import { borderRadius, borderRadiusValues } from '@design-system/tokens/borderRadius';
+import { sizing, sizingValues } from '@design-system/tokens/sizing';
 
 /**
  * Styled container for the MFA screen
@@ -122,8 +122,9 @@ export const MFAScreen: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      const route = navigation.getState().routes[navigation.getState().index];
-      const tempToken = (route.params as any)?.tempToken;
+      const navState = navigation.getState();
+      const route = navState?.routes[navState?.index ?? 0];
+      const tempToken = (route?.params as any)?.tempToken;
 
       await handleMfaVerification(code, tempToken);
       // Navigation after successful verification is handled by the auth context

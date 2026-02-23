@@ -2,6 +2,7 @@
  * Represents a document.
  * This entity is used for storing document metadata for various entities
  * like claims, medical history records, etc.
+ * Field names match Prisma's camelCase convention.
  */
 export class Document {
   /**
@@ -12,13 +13,13 @@ export class Document {
   /**
    * ID of the entity this document is associated with
    */
-  entity_id!: string;
+  entityId!: string;
 
   /**
    * Type of entity this document is associated with
    * (e.g., 'claim', 'medical_record', etc.)
    */
-  entity_type!: string;
+  entityType!: string;
 
   /**
    * Type of document
@@ -29,23 +30,15 @@ export class Document {
   /**
    * Path to the file in storage
    */
-  file_path!: string;
+  filePath!: string;
 
   /**
    * Date when the document was created
    */
-  created_at!: Date;
+  createdAt!: Date;
 
   /**
    * Date when the document was last updated
    */
-  updated_at!: Date;
-
-  /**
-   * Convenience property to get the entity ID
-   * This is used by relationships in other entities
-   */
-  get entityId(): string {
-    return this.entity_id;
-  }
+  updatedAt!: Date;
 }

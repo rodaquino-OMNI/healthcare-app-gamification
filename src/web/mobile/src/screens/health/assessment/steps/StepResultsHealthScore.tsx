@@ -9,7 +9,7 @@ import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { borderRadiusValues } from '@austa/design-system/src/tokens/borderRadius';
 import { useTheme } from 'styled-components/native';
-import type { Theme } from '../../../../../design-system/src/themes/base.theme';
+import type { Theme } from '@design-system/themes/base.theme';
 
 interface StepProps {
   data: Record<string, any>;

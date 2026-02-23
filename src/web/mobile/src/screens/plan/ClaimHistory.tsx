@@ -11,18 +11,18 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import type { PlanNavigationProp } from '../../navigation/types';
 
-import { Claim, ClaimStatus, ClaimType } from 'src/web/shared/types/plan.types';
-import { useJourney } from 'src/web/mobile/src/hooks/useJourney';
+import { Claim, ClaimStatus, ClaimType } from '@shared/types/plan.types';
+import { useJourney } from '@hooks/useJourney';
 
 import {
   colors,
   typography,
   spacing,
   borderRadius,
-} from '@web/design-system/src/tokens';
+} from '@design-system/tokens';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components/native';
-import type { Theme } from '@web/design-system/src/themes/base.theme';
+import type { Theme } from '@design-system/themes/base.theme';
 
 const { plan } = colors.journeys;
 const sp = { xs: 8, sm: 12, md: 16, lg: 20, xl: 24, '2xl': 32 };
@@ -129,7 +129,7 @@ const ClaimHistory: React.FC = () => {
   // In a real app, replace with API call: const { claims, isLoading, error } = useClaims(planId);
   const claims = MOCK_CLAIMS;
   const isLoading = false;
-  const error: Error | null = null;
+  const error = null as Error | null;
 
   const filteredClaims = useMemo(() => {
     if (activeFilter === 'all') return claims;
@@ -280,7 +280,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   errorText: {
     fontSize: 18,
-    fontWeight: typography.fontWeight.bold as any,
+    fontWeight: '700' as const,
     fontFamily: typography.fontFamily.heading,
     color: colors.semantic.error,
     textAlign: 'center',
@@ -317,7 +317,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   filterTabText: {
     fontSize: 14,
-    fontWeight: typography.fontWeight.medium as any,
+    fontWeight: '500' as const,
     fontFamily: typography.fontFamily.body,
     color: colors.gray[50],
   },
@@ -362,7 +362,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   claimType: {
     fontSize: 16,
-    fontWeight: typography.fontWeight.semiBold as any,
+    fontWeight: '600' as const,
     fontFamily: typography.fontFamily.body,
     color: plan.text,
   },
@@ -377,7 +377,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   claimAmount: {
     fontSize: 16,
-    fontWeight: typography.fontWeight.bold as any,
+    fontWeight: '700' as const,
     fontFamily: typography.fontFamily.body,
     color: plan.text,
     marginBottom: 4,
@@ -389,7 +389,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   statusBadgeText: {
     fontSize: 11,
-    fontWeight: typography.fontWeight.semiBold as any,
+    fontWeight: '600' as const,
     fontFamily: typography.fontFamily.body,
   },
   // Empty state
@@ -403,7 +403,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   emptyTitle: {
     fontSize: 18,
-    fontWeight: typography.fontWeight.semiBold as any,
+    fontWeight: '600' as const,
     fontFamily: typography.fontFamily.heading,
     color: plan.text,
     marginBottom: sp.xs,
@@ -435,13 +435,13 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   fabIcon: {
     fontSize: 20,
-    fontWeight: typography.fontWeight.bold as any,
+    fontWeight: '700' as const,
     color: colors.neutral.white,
     marginRight: sp.xs,
   },
   fabText: {
     fontSize: 16,
-    fontWeight: typography.fontWeight.semiBold as any,
+    fontWeight: '600' as const,
     fontFamily: typography.fontFamily.body,
     color: colors.neutral.white,
   },

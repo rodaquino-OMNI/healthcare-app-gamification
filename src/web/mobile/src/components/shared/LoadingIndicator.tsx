@@ -1,9 +1,9 @@
 import React from 'react';
-import { Box } from 'src/web/design-system/src/primitives/Box/Box';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text';
-import { animation } from 'src/web/design-system/src/tokens/animation';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { JOURNEY_COLORS } from 'src/web/mobile/src/constants/journeys';
+import { Box } from '@design-system/primitives/Box/Box';
+import { Text } from '@design-system/primitives/Text/Text';
+import { animation } from '@design-system/tokens/animation';
+import { colors } from '@design-system/tokens/colors';
+import { JOURNEY_COLORS } from '@constants/journeys';
 import styled, { keyframes } from 'styled-components';
 
 // Create a rotation animation

@@ -1,17 +1,17 @@
 import React, { useCallback } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import { Appointment } from 'src/web/shared/types/care.types';
-import { useAppointments } from 'src/web/mobile/src/hooks/useAppointments';
-import { ROUTES } from 'src/web/mobile/src/constants/routes';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { Button } from 'src/web/design-system/src/components/Button/Button';
-import { Card } from 'src/web/design-system/src/components/Card/Card';
-import { Badge } from 'src/web/design-system/src/components/Badge/Badge';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text';
-import { formatDate } from 'src/web/mobile/src/utils/format';
-import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader';
-import { LoadingIndicator } from 'src/web/mobile/src/components/shared/LoadingIndicator';
+import { Appointment } from '@shared/types/care.types';
+import { useAppointments } from '@hooks/useAppointments';
+import { ROUTES } from '@constants/routes';
+import { colors } from '@design-system/tokens/colors';
+import { Button } from '@design-system/components/Button/Button';
+import { Card } from '@design-system/components/Card/Card';
+import { Badge } from '@design-system/components/Badge/Badge';
+import { Text } from '@design-system/primitives/Text/Text';
+import { formatDate } from '@utils/date';
+import { JourneyHeader } from '@components/shared/JourneyHeader';
+import { LoadingIndicator } from '@components/shared/LoadingIndicator';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -98,7 +98,7 @@ const AppointmentDetail: React.FC = () => {
     );
   }
 
-  const formattedDateTime = formatDate(appointment.dateTime, 'long');
+  const formattedDateTime = formatDate(new Date(appointment.dateTime), 'PPPp');
   const appointmentStatus = (appointment as any).status || 'confirmed';
   const statusInfo = STATUS_MAP[appointmentStatus] || STATUS_MAP.confirmed;
 

@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { Button } from 'src/web/design-system/src/components/Button/Button';
-import { Card } from 'src/web/design-system/src/components/Card/Card';
-import { Badge } from 'src/web/design-system/src/components/Badge/Badge';
-import { ProgressBar } from 'src/web/design-system/src/components/ProgressBar/ProgressBar';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text';
-import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader';
-import { ROUTES } from 'src/web/mobile/src/constants/routes';
-import { colors } from 'src/web/design-system/src/tokens/colors';
+import { Button } from '@design-system/components/Button/Button';
+import { Card } from '@design-system/components/Card/Card';
+import { Badge } from '@design-system/components/Badge/Badge';
+import { ProgressBar } from '@design-system/components/ProgressBar/ProgressBar';
+import { Text } from '@design-system/primitives/Text/Text';
+import { JourneyHeader } from '@components/shared/JourneyHeader';
+import { ROUTES } from '@constants/routes';
+import { colors } from '@design-system/tokens/colors';
 import { useTheme } from 'styled-components/native';
-import type { Theme } from 'src/web/design-system/src/themes/base.theme';
+import type { Theme } from '@design-system/themes/base.theme';
 import { useTranslation } from 'react-i18next';
 
 /**

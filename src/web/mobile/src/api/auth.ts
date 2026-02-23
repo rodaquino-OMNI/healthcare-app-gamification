@@ -4,8 +4,8 @@
  * that implement the Authentication System (F-201) requirement.
  */
 
-import { AuthSession } from 'src/web/shared/types/auth.types';
-import { API_BASE_URL } from 'src/web/shared/constants/api';
+import { AuthSession } from '@shared/types/auth.types';
+import { API_BASE_URL } from '@shared/constants/api';
 import fetch from 'cross-fetch'; // v3.1.5
 
 /**

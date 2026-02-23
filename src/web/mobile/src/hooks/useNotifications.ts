@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'; // Version ^18.0.0
 import { getNotifications, markNotificationAsRead } from '../api/notifications';
-import { Notification, NotificationStatus } from 'src/web/shared/types/notification.types';
+import { Notification, NotificationStatus } from '@shared/types/notification.types';
 
 /**
  * A React hook that fetches and manages notifications for the current user.
@@ -24,7 +24,7 @@ export const useNotifications = () => {
       const userId = "current-user-id"; // Placeholder for demonstration
       
       const data = await getNotifications(userId);
-      setNotifications(data);
+      setNotifications(data as unknown as Notification[]);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Failed to fetch notifications'));

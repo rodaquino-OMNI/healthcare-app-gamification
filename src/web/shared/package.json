@@ -177,7 +177,6 @@
     "@nestjs/platform-express": "10.0.0",
     "@prisma/client": "5.10.2",
     "prisma": "5.10.2",
-    "@types/react-native": "0.72.2",
     "@react-native/typescript-config": "0.73.1",
     "@react-navigation/native": "6.1.7",
     "@react-navigation/bottom-tabs": "6.5.8",

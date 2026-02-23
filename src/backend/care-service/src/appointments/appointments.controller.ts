@@ -2,8 +2,8 @@ import { Controller, Get, Post, Body, Param, Delete, UseGuards, UseFilters, Http
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
-import { JwtAuthGuard } from '@nestjs/passport'; // 10.0.0+
-import { RolesGuard } from '@nestjs/passport'; // 10.0.0+
+import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
+import { RolesGuard } from '@app/auth/auth/guards/roles.guard';
 import { Roles } from '@app/auth/auth/decorators/roles.decorator';
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 import { AppointmentType, AppointmentStatus } from './entities/appointment.entity';
@@ -57,7 +57,7 @@ export class AppointmentsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   async findOne(@Param('id') id: string) {
     // Calls the `findOne` method of the `appointmentsService` to retrieve the appointment.
-    return await this.appointmentsService.findOne(id);
+    return await this.appointmentsService.findById(id);
     // Returns the requested appointment.
   }
 
@@ -85,7 +85,7 @@ export class AppointmentsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   async remove(@Param('id') id: string) {
     // Calls the `remove` method of the `appointmentsService` to delete the appointment.
-    await this.appointmentsService.remove(id);
+    await this.appointmentsService.delete(id);
     // Returns no content (204 status code).
   }
 }

@@ -2,18 +2,18 @@ import React, { useState, useCallback } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-import { Button } from 'src/web/design-system/src/components/Button/Button';
-import { Select } from 'src/web/design-system/src/components/Select/Select';
-import { Slider } from 'src/web/design-system/src/components/Slider/Slider';
-import { Checkbox } from 'src/web/design-system/src/components/Checkbox/Checkbox';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text';
-import { Box } from 'src/web/design-system/src/primitives/Box/Box';
-import { Touchable } from 'src/web/design-system/src/primitives/Touchable/Touchable';
-import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { spacingValues } from 'src/web/design-system/src/tokens/spacing';
+import { Button } from '@design-system/components/Button/Button';
+import { Select } from '@design-system/components/Select/Select';
+import { Slider } from '@design-system/components/Slider/Slider';
+import { Checkbox } from '@design-system/components/Checkbox/Checkbox';
+import { Text } from '@design-system/primitives/Text/Text';
+import { Box } from '@design-system/primitives/Box/Box';
+import { Touchable } from '@design-system/primitives/Touchable/Touchable';
+import { JourneyHeader } from '@components/shared/JourneyHeader';
+import { colors } from '@design-system/tokens/colors';
+import { spacingValues } from '@design-system/tokens/spacing';
 import { useTheme } from 'styled-components/native';
-import type { Theme } from 'src/web/design-system/src/themes/base.theme';
+import type { Theme } from '@design-system/themes/base.theme';
 import { useTranslation } from 'react-i18next';
 
 // Options are now inside the component to access t()

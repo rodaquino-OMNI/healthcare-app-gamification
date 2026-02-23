@@ -127,7 +127,7 @@ export const ArticleList: React.FC = () => {
 
   const handleArticlePress = useCallback(
     (articleId: string) => {
-      navigation.navigate('WellnessResourcesArticleDetail', { articleId });
+      navigation.navigate('HealthWellnessResourcesArticleDetail', { articleId });
     },
     [navigation],
   );

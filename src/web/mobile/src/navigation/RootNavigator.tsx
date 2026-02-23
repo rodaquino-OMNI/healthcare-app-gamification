@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native'; // v6.1.7
 import { AuthNavigator } from './AuthNavigator';
 import { MainNavigator } from './MainNavigator';
 import { useAuth } from '../hooks/useAuth';
-import { AuthSession } from 'src/web/shared/types/auth.types';
+import { AuthSession } from '@shared/types/auth.types';
 
 /**
  * Determines the navigation structure based on the authentication status.

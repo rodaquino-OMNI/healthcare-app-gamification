@@ -57,19 +57,19 @@ const CATEGORIES: CategoryCard[] = [
     id: 'cat-articles',
     labelKey: 'journeys.health.wellnessResources.home.articles',
     icon: 'book-outline' as keyof typeof Ionicons.glyphMap,
-    screen: 'WellnessResourcesArticleList',
+    screen: 'HealthWellnessResourcesArticleList',
   },
   {
     id: 'cat-videos',
     labelKey: 'journeys.health.wellnessResources.home.videos',
     icon: 'videocam-outline' as keyof typeof Ionicons.glyphMap,
-    screen: 'WellnessResourcesVideoLibrary',
+    screen: 'HealthWellnessResourcesVideoLibrary',
   },
   {
     id: 'cat-programs',
     labelKey: 'journeys.health.wellnessResources.home.programs',
     icon: 'leaf-outline' as keyof typeof Ionicons.glyphMap,
-    screen: 'WellnessResourcesPrograms',
+    screen: 'HealthWellnessResourcesPrograms',
   },
 ];
 
@@ -127,17 +127,17 @@ export const WellnessResourcesHome: React.FC = () => {
   );
 
   const handleBookmarksPress = useCallback(() => {
-    navigation.navigate('WellnessResourcesBookmarks');
+    navigation.navigate('HealthWellnessResourcesBookmarks');
   }, [navigation]);
 
   const handleFeaturedPress = useCallback(
     (item: FeaturedContent) => {
       if (item.category === 'article') {
-        navigation.navigate('WellnessResourcesArticleDetail', { articleId: item.id });
+        navigation.navigate('HealthWellnessResourcesArticleDetail', { articleId: item.id });
       } else if (item.category === 'video') {
-        navigation.navigate('WellnessResourcesVideoPlayer', { videoId: item.id });
+        navigation.navigate('HealthWellnessResourcesVideoPlayer', { videoId: item.id });
       } else {
-        navigation.navigate('WellnessResourcesProgramDetail', { programId: item.id });
+        navigation.navigate('HealthWellnessResourcesProgramDetail', { programId: item.id });
       }
     },
     [navigation],
@@ -146,11 +146,11 @@ export const WellnessResourcesHome: React.FC = () => {
   const handleRecentPress = useCallback(
     (item: RecentActivity) => {
       if (item.category === 'article') {
-        navigation.navigate('WellnessResourcesArticleDetail', { articleId: item.id });
+        navigation.navigate('HealthWellnessResourcesArticleDetail', { articleId: item.id });
       } else if (item.category === 'video') {
-        navigation.navigate('WellnessResourcesVideoPlayer', { videoId: item.id });
+        navigation.navigate('HealthWellnessResourcesVideoPlayer', { videoId: item.id });
       } else {
-        navigation.navigate('WellnessResourcesProgramDetail', { programId: item.id });
+        navigation.navigate('HealthWellnessResourcesProgramDetail', { programId: item.id });
       }
     },
     [navigation],
@@ -322,7 +322,7 @@ export const WellnessResourcesHome: React.FC = () => {
           <Button
             variant="secondary"
             journey="health"
-            onPress={() => navigation.navigate('WellnessResourcesArticleList')}
+            onPress={() => navigation.navigate('HealthWellnessResourcesArticleList')}
             accessibilityLabel={t('journeys.health.wellnessResources.home.searchAll')}
             testID="wellness-resources-home-search-button"
           >

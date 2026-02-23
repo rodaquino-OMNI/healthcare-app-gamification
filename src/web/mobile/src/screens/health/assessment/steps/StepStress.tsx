@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components/native';
-import type { Theme } from '../../../../../design-system/src/themes/base.theme';
+import type { Theme } from '@design-system/themes/base.theme';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchable';
 import { Card } from '@austa/design-system/src/components/Card/Card';

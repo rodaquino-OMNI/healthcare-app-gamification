@@ -9,20 +9,20 @@ import {
 } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 
-import { useCoverage } from 'src/web/mobile/src/hooks/useCoverage';
-import { JOURNEY_IDS } from 'src/web/shared/constants/journeys';
-import { JourneyContext } from 'src/web/mobile/src/context/JourneyContext';
-import { Coverage as CoverageType } from 'src/web/shared/types/plan.types';
+import { useCoverage } from '@hooks/useCoverage';
+import { JOURNEY_IDS } from '@shared/constants/journeys';
+import { JourneyContext } from '@context/JourneyContext';
+import { Coverage as CoverageType } from '@shared/types/plan.types';
 import {
   colors,
   typography,
   spacing,
   borderRadius,
   sizing,
-} from '@web/design-system/src/tokens';
+} from '@design-system/tokens';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components/native';
-import type { Theme } from '@web/design-system/src/themes/base.theme';
+import type { Theme } from '@design-system/themes/base.theme';
 
 const { plan } = colors.journeys;
 const sp = {
@@ -100,7 +100,7 @@ const Coverage: React.FC = () => {
   }
 
   // Group coverage items by type
-  const grouped = coverage.reduce<Record<string, CoverageType[]>>((acc, item) => {
+  const grouped = (coverage as CoverageType[]).reduce<Record<string, CoverageType[]>>((acc, item) => {
     const key = item.type || 'other';
     if (!acc[key]) acc[key] = [];
     acc[key].push(item);
@@ -187,14 +187,14 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: typography.fontWeight.bold as any,
+    fontWeight: '700' as const,
     fontFamily: typography.fontFamily.heading,
     color: plan.primary,
     marginBottom: sp.xs,
   },
   subtitle: {
     fontSize: 16,
-    fontWeight: typography.fontWeight.regular as any,
+    fontWeight: '400' as const,
     fontFamily: typography.fontFamily.body,
     color: colors.neutral.gray700,
     marginBottom: sp.xl,
@@ -227,7 +227,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   sectionHeaderText: {
     flex: 1,
     fontSize: 18,
-    fontWeight: typography.fontWeight.semiBold as any,
+    fontWeight: '600' as const,
     fontFamily: typography.fontFamily.heading,
     color: plan.text,
   },
@@ -247,7 +247,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   coverageDetails: {
     fontSize: 14,
-    fontWeight: typography.fontWeight.regular as any,
+    fontWeight: '400' as const,
     fontFamily: typography.fontFamily.body,
     color: plan.text,
     lineHeight: 20,
@@ -259,13 +259,13 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   limitationLabel: {
     fontSize: 12,
-    fontWeight: typography.fontWeight.medium as any,
+    fontWeight: '500' as const,
     color: colors.gray[50],
     marginRight: 4,
   },
   limitationValue: {
     fontSize: 12,
-    fontWeight: typography.fontWeight.regular as any,
+    fontWeight: '400' as const,
     color: colors.gray[50],
     flex: 1,
   },
@@ -276,13 +276,13 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   copayLabel: {
     fontSize: 12,
-    fontWeight: typography.fontWeight.medium as any,
+    fontWeight: '500' as const,
     color: colors.gray[50],
     marginRight: 4,
   },
   copayValue: {
     fontSize: 14,
-    fontWeight: typography.fontWeight.semiBold as any,
+    fontWeight: '600' as const,
     color: plan.primary,
   },
   loadingContainer: {
@@ -308,7 +308,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   errorText: {
     fontSize: 18,
-    fontWeight: typography.fontWeight.bold as any,
+    fontWeight: '700' as const,
     fontFamily: typography.fontFamily.heading,
     color: colors.semantic.error,
     textAlign: 'center',

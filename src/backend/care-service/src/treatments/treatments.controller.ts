@@ -1,11 +1,11 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '@app/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 import { TreatmentsService } from './treatments.service';
 import { CreateTreatmentPlanDto } from './dto/create-treatment-plan.dto';
 import { UpdateTreatmentPlanDto } from './dto/update-treatment-plan.dto';
 import { FilterDto } from '@app/shared/dto/filter.dto';
-import { CurrentUser } from '@app/auth/decorators/current-user.decorator';
+import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 import { TracingService } from '@app/shared/tracing/tracing.service';
 
 @ApiTags('treatments')

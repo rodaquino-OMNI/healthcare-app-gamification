@@ -5,7 +5,7 @@ import type { HomeStackParamList, MainTabParamList } from './types';
 
 import HealthNavigator from './HealthNavigator';
 import CareNavigator from './CareNavigator';
-import PlanNavigator from './PlanNavigator';
+import { PlanNavigator } from './PlanNavigator';
 import GamificationNavigator from './GamificationNavigator';
 import SettingsNavigator from './SettingsNavigator';
 
@@ -18,7 +18,7 @@ try {
 import HomeScreen from '../screens/home/Home';
 import { NotificationsScreen } from '../screens/home/Notifications';
 import { ProfileScreen } from '../screens/home/Profile';
-import { JOURNEY_IDS } from 'src/web/shared/constants/journeys';
+import { JOURNEY_IDS } from '@shared/constants/journeys';
 import { ROUTES } from '../constants/routes';
 
 // Lazy-loaded screens for the Home stack.
@@ -196,9 +196,9 @@ export const MainNavigator: React.FC = () => {
       }}
     >
       <Tab.Screen name="Home" component={HomeStack} />
-      <Tab.Screen name={JOURNEY_IDS.HEALTH} component={HealthNavigator} />
-      <Tab.Screen name={JOURNEY_IDS.CARE} component={CareNavigator} />
-      <Tab.Screen name={JOURNEY_IDS.PLAN} component={PlanNavigator} />
+      <Tab.Screen name={JOURNEY_IDS.HEALTH as keyof MainTabParamList} component={HealthNavigator} />
+      <Tab.Screen name={JOURNEY_IDS.CARE as keyof MainTabParamList} component={CareNavigator} />
+      <Tab.Screen name={JOURNEY_IDS.PLAN as keyof MainTabParamList} component={PlanNavigator} />
       <Tab.Screen name="Notifications" component={NotificationsScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
       <Tab.Screen name="Achievements" component={GamificationNavigator} />

@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, Switch, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../../../design-system/src/tokens/colors';
-import { spacingValues } from '../../../../design-system/src/tokens/spacing';
-import { fontSizeValues } from '../../../../design-system/src/tokens/typography';
-import { borderRadiusValues } from '../../../../design-system/src/tokens/borderRadius';
+import { colors } from '@design-system/tokens/colors';
+import { spacingValues } from '@design-system/tokens/spacing';
+import { fontSizeValues } from '@design-system/tokens/typography';
+import { borderRadiusValues } from '@design-system/tokens/borderRadius';
 
 // ---------------------------------------------------------------------------
 // Constants

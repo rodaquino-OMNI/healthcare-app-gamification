@@ -10,13 +10,13 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components/native';
-import type { Theme } from '../../../../design-system/src/themes/base.theme';
+import type { Theme } from '@design-system/themes/base.theme';
 
-import { colors } from '../../../../design-system/src/tokens/colors';
-import { spacingValues } from '../../../../design-system/src/tokens/spacing';
-import { fontSizeValues } from '../../../../design-system/src/tokens/typography';
-import { borderRadiusValues } from '../../../../design-system/src/tokens/borderRadius';
-import { sizingValues } from '../../../../design-system/src/tokens/sizing';
+import { colors } from '@design-system/tokens/colors';
+import { spacingValues } from '@design-system/tokens/spacing';
+import { fontSizeValues } from '@design-system/tokens/typography';
+import { borderRadiusValues } from '@design-system/tokens/borderRadius';
+import { sizingValues } from '@design-system/tokens/sizing';
 
 // ---------------------------------------------------------------------------
 // Types

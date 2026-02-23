@@ -2,18 +2,18 @@ import React, { useState, useEffect, useCallback } from 'react'; // React v18.0+
 import { View, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // v6.0+
 
-import { searchProviders } from 'src/web/mobile/src/api/care';
-import { Provider } from 'src/web/shared/types/care.types';
-import { Card, CardProps } from 'src/web/design-system/src/components/Card/Card';
-import { Input, InputProps } from 'src/web/design-system/src/components/Input/Input';
-import { Button, ButtonProps } from 'src/web/design-system/src/components/Button/Button';
+import { searchProviders } from '@api/care';
+import { Provider } from '@shared/types/care.types';
+import { Card, CardProps } from '@design-system/components/Card/Card';
+import { Input, InputProps } from '@design-system/components/Input';
+import { Button, ButtonProps } from '@design-system/components/Button/Button';
 import { useTheme } from 'styled-components/native';
-import type { Theme } from 'src/web/design-system/src/themes/base.theme';
-import { JOURNEY_COLORS } from 'src/web/mobile/src/constants/journeys';
-import { JourneyHeader, JourneyHeaderProps } from 'src/web/mobile/src/components/shared/JourneyHeader';
-import { useAuth } from 'src/web/mobile/src/hooks/useAuth';
-import { LoadingIndicator } from 'src/web/mobile/src/components/shared/LoadingIndicator';
-import { ErrorState } from 'src/web/mobile/src/components/shared/ErrorState';
+import type { Theme } from '@design-system/themes/base.theme';
+import { JOURNEY_COLORS } from '@constants/journeys';
+import { JourneyHeader, JourneyHeaderProps } from '@components/shared/JourneyHeader';
+import { useAuth } from '@hooks/useAuth';
+import { LoadingIndicator } from '@components/shared/LoadingIndicator';
+import { ErrorState } from '@components/shared/ErrorState';
 import { useTranslation } from 'react-i18next';
 
 /**

@@ -1,15 +1,15 @@
 import React, { useState } from 'react'; // react v18.2.0
 import { View } from 'react-native';
-import { JourneyHeader, JourneyHeaderProps } from 'src/web/mobile/src/components/shared/JourneyHeader.tsx';
-import { useJourney } from 'src/web/mobile/src/hooks/useJourney.ts';
-import { useDevices } from 'src/web/mobile/src/hooks/useDevices.ts';
-import { DeviceConnection } from 'src/web/shared/types/health.types.ts';
-import { Card, CardProps } from 'src/web/design-system/src/components/Card/Card.tsx';
-import { Button, ButtonProps } from 'src/web/design-system/src/components/Button/Button.tsx';
-import { DeviceCard } from 'src/web/design-system/src/health/DeviceCard/DeviceCard.tsx';
+import { JourneyHeader, JourneyHeaderProps } from '@components/shared/JourneyHeader';
+import { useJourney } from '@hooks/useJourney';
+import { useDevices } from '@hooks/useDevices';
+import { DeviceConnection as DeviceConnectionType } from '@shared/types/health.types';
+import { Card, CardProps } from '@design-system/components/Card/Card';
+import { Button, ButtonProps } from '@design-system/components/Button/Button';
+import { DeviceCard } from '@design-system/health/DeviceCard/DeviceCard';
 import { useTranslation } from 'react-i18next';
-import LoadingIndicator from 'src/web/mobile/src/components/shared/LoadingIndicator.tsx';
-import ErrorState from 'src/web/mobile/src/components/shared/ErrorState';
+import LoadingIndicator from '@components/shared/LoadingIndicator';
+import ErrorState from '@components/shared/ErrorState';
 
 /**
  * Renders the DeviceConnection screen, allowing users to connect and manage their wearable devices.
@@ -43,7 +43,7 @@ export const DeviceConnection: React.FC = () => {
         devices.map((device) => (
           <DeviceCard
             key={device.id}
-            deviceName={device.deviceName}
+            deviceName={device.deviceId}
             deviceType={device.deviceType}
             lastSync={device.lastSync}
             status={device.status}
@@ -51,7 +51,7 @@ export const DeviceConnection: React.FC = () => {
         ))}
 
       {/* LD1: Renders a `Button` to allow users to connect a new device. */}
-      <Button onPress={() => console.log('Connect new device')} journey={journey}>
+      <Button onPress={() => console.log('Connect new device')} journey={journey as 'health' | 'care' | 'plan'}>
         {t('journeys.health.devices.connectNew')}
       </Button>
     </View>

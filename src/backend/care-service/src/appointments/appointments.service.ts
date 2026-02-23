@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Injectable } from '@nestjs/common'; // v10.0.0+
 import { CreateAppointmentDto } from '../appointments/dto/create-appointment.dto';
 import { UpdateAppointmentDto } from '../appointments/dto/update-appointment.dto';

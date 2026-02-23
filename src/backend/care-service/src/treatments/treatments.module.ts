@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common'; // ^9.0.0
 import { TreatmentsService } from './treatments.service';
 import { TreatmentsController } from './treatments.controller';
-import { SharedModule } from '@app/shared';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { TracingService } from '@app/shared/tracing/tracing.service';
@@ -17,9 +16,7 @@ import { TracingService } from '@app/shared/tracing/tracing.service';
  * Note: PrismaService is also provided globally via DatabaseModule in the root AppModule.
  */
 @Module({
-  imports: [
-    SharedModule,
-  ],
+  imports: [],
   controllers: [TreatmentsController],
   providers: [
     TreatmentsService,

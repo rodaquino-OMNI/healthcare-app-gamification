@@ -3,10 +3,10 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 // useTranslation available; labels provided via props from parent
 import { useTranslation } from 'react-i18next';
 import type { HomeTabScreenNavigationProp, HomeStackParamList, MainTabParamList } from '../../navigation/types';
-import { colors } from '../../../../design-system/src/tokens/colors';
-import { spacingValues } from '../../../../design-system/src/tokens/spacing';
-import { fontSizeValues } from '../../../../design-system/src/tokens/typography';
-import { borderRadiusValues } from '../../../../design-system/src/tokens/borderRadius';
+import { colors } from '@design-system/tokens/colors';
+import { spacingValues } from '@design-system/tokens/spacing';
+import { fontSizeValues } from '@design-system/tokens/typography';
+import { borderRadiusValues } from '@design-system/tokens/borderRadius';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -43,10 +43,10 @@ export const QuickActions: React.FC<QuickActionsProps> = ({ navigation, actions 
         'NotificationEmpty', 'NotificationSettings',
       ];
       if (homeScreens.includes(route as keyof HomeStackParamList)) {
-        navigation.navigate(route as keyof HomeStackParamList);
+        (navigation as any).navigate(route);
       } else {
         // Tab-level navigation (Profile, Notifications, etc.)
-        navigation.navigate(route as keyof MainTabParamList);
+        (navigation as any).navigate(route);
       }
     },
     [navigation],

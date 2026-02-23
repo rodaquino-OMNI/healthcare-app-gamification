@@ -4,11 +4,11 @@ import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 
-import { colors } from '../../../../design-system/src/tokens/colors';
-import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
-import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
-import { borderRadius, borderRadiusValues } from '../../../../design-system/src/tokens/borderRadius';
-import { sizing, sizingValues } from '../../../../design-system/src/tokens/sizing';
+import { colors } from '@design-system/tokens/colors';
+import { typography, fontSizeValues } from '@design-system/tokens/typography';
+import { spacing, spacingValues } from '@design-system/tokens/spacing';
+import { borderRadius, borderRadiusValues } from '@design-system/tokens/borderRadius';
+import { sizing, sizingValues } from '@design-system/tokens/sizing';
 
 /**
  * Number of OTP digits
@@ -186,6 +186,7 @@ export const EmailVerifyScreen: React.FC = () => {
       }, 3000);
       return () => clearTimeout(timer);
     }
+    return undefined;
   }, [toast.visible]);
 
   /**
@@ -302,9 +303,7 @@ export const EmailVerifyScreen: React.FC = () => {
         {digits.map((digit, index) => (
           <OtpInput
             key={`otp-${index}`}
-            ref={(ref: RNTextInput | null) => {
-              inputRefs.current[index] = ref;
-            }}
+            {...{ ref: (r: RNTextInput | null) => { inputRefs.current[index] = r; } } as any}
             value={digit}
             onChangeText={(text: string) => handleDigitChange(text, index)}
             onKeyPress={(e: any) => handleKeyPress(e, index)}

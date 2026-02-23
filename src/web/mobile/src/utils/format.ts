@@ -16,14 +16,19 @@ import {
   formatHealthMetric,
   truncateText,
   formatPhoneNumber,
-  formatCPF
-} from 'src/web/shared/utils/format';
+  formatCPF as sharedFormatCPF,
+  formatDate as sharedFormatDate
+} from '@shared/utils/format';
 
 /**
  * Re-export formatting functions from shared utilities.
  * This promotes code reuse and ensures consistent formatting across
  * all platforms while making the functions directly accessible
  * within the mobile application's codebase.
+ *
+ * Note: formatDate and formatCPF are NOT re-exported here because
+ * they are already exported from utils/date.ts (via date-fns) and
+ * would cause duplicate-export errors in the barrel index.
  */
 export {
   formatNumber,
@@ -33,7 +38,6 @@ export {
   formatHealthMetric,
   truncateText,
   formatPhoneNumber,
-  formatCPF
 };
 
 /**

@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'; // React v18.0+
 import {
   Camera,
-  useCameraPermissions,
+  useCameraPermission,
 } from 'react-native-vision-camera'; // react-native-vision-camera v3.0+
-import { Permissions, Platform, View, Image, StyleSheet } from 'react-native'; // react-native v0.71+
-import { Button, ButtonProps } from 'src/web/design-system/src/components/Button/Button.tsx';
-import { LoadingIndicator } from 'src/web/mobile/src/components/shared/LoadingIndicator.tsx';
-import { checkAndroidPermissions } from 'src/web/mobile/src/utils/index.ts';
+import { PermissionsAndroid as Permissions, Platform, View, Image, StyleSheet } from 'react-native'; // react-native v0.71+
+import { Button, ButtonProps } from '@design-system/components/Button/Button';
+import { LoadingIndicator } from '@components/shared/LoadingIndicator';
+import { checkAndroidPermissions } from '@utils/index';
 
 /**
  * PhotoCapture Component:
@@ -34,7 +34,7 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({ onCapture }) => {
   const camera = useRef<Camera>(null);
 
   // Request camera permissions
-  const [cameraPermissionStatus, requestCameraPermission] = useCameraPermissions();
+  const { hasPermission: cameraPermissionStatus, requestPermission: requestCameraPermission } = useCameraPermission();
 
   /**
    * useEffect hook to handle camera permissions and initialization.
@@ -49,17 +49,14 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({ onCapture }) => {
         // Check and request camera permissions on Android
         permissionGranted = await checkAndroidPermissions();
       } else {
-        // Check camera permissions on iOS
-        const cameraStatus = await Permissions.check('camera');
-        if (cameraStatus === 'authorized') {
-          permissionGranted = true;
-        }
+        // Check camera permissions on iOS using vision-camera hook
+        permissionGranted = !!cameraPermissionStatus;
       }
 
       // Request camera permissions if they are not granted
-      if (!permissionGranted && cameraPermissionStatus !== 'authorized') {
+      if (!permissionGranted && !cameraPermissionStatus) {
         const requestResult = await requestCameraPermission();
-        permissionGranted = requestResult === 'authorized';
+        permissionGranted = requestResult;
       }
 
       // Set the camera permission status
@@ -114,7 +111,7 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({ onCapture }) => {
     <View style={styles.container}>
       <Camera
         style={styles.camera}
-        device={Camera.getAvailableCameraDevices()[0]}
+        device={(Camera as any).getAvailableCameraDevices?.()[0]}
         isActive={hasCameraPermission}
         ref={camera}
         photo={true}

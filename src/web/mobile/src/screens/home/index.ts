@@ -1,14 +1,14 @@
 import HomeScreen from './Home';
 import Achievements from './Achievements';
 import Notifications from './Notifications';
-import ProfileScreen from './Profile';
+import { ProfileScreen } from './Profile';
 import SettingsScreen from './Settings';
 import { HomeAlertScreen } from './HomeAlert';
 import { HomeMetricsScreen } from './HomeMetrics';
 import { HomeHeader } from './HomeHeader';
 import { SearchResultsScreen } from './SearchResults';
-import { SearchResultsFilterPanel } from './SearchResultsFilterPanel';
-import { SearchResultsCard } from './SearchResultsCard';
+import { FilterPanel as SearchResultsFilterPanel } from './SearchResultsFilterPanel';
+import { DoctorCard as SearchResultsCard } from './SearchResultsCard';
 
 export {
     HomeScreen,

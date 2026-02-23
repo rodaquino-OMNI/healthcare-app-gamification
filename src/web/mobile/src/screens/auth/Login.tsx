@@ -5,17 +5,17 @@ import * as yup from 'yup';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '@hooks/useAuth';
 import { ROUTES } from '../../constants/routes';
 
-import { Input } from 'src/web/design-system/src/components/Input/Input';
-import { Button } from 'src/web/design-system/src/components/Button/Button';
-import { LoadingIndicator } from '../components/shared/LoadingIndicator';
-import { Box } from 'src/web/design-system/src/primitives/Box/Box';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text';
-import { colors } from '../../../../design-system/src/tokens/colors';
-import { typography } from '../../../../design-system/src/tokens/typography';
-import { spacing } from '../../../../design-system/src/tokens/spacing';
+import { Input } from '@design-system/components/Input';
+import { Button } from '@design-system/components/Button/Button';
+import { LoadingIndicator } from '@components/shared/LoadingIndicator';
+import { Box } from '@design-system/primitives/Box/Box';
+import { Text } from '@design-system/primitives/Text/Text';
+import { colors } from '@design-system/tokens/colors';
+import { typography } from '@design-system/tokens/typography';
+import { spacing } from '@design-system/tokens/spacing';
 
 /**
  * LoginScreen provides the user interface for the login screen, allowing users
@@ -64,7 +64,7 @@ const LoginScreen = () => {
   });
 
   return (
-    <Box padding="lg" backgroundColor="background.default" flex={1} justifyContent="center">
+    <Box padding="lg" backgroundColor="background.default" flex={'1' as any} justifyContent="center">
       {/* Header section */}
       <Box marginBottom="xl" alignItems="center">
         <Text fontSize="3xl" fontWeight="bold">

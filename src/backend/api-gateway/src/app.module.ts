@@ -29,7 +29,7 @@ import { GatewayHealthModule } from './health/health.module';
       sortSchema: true,
       playground: process.env.NODE_ENV !== 'production',
       debug: process.env.NODE_ENV !== 'production',
-      resolvers: resolvers,
+      resolvers: resolvers as any,
     }), ExceptionsModule, TracingModule, AuditModule, AuthModule, HealthModule, CareAppModule, ClaimsModule, AchievementsModule, NotificationsModule, GatewayHealthModule],
   controllers: [],
   providers: [{ provide: APP_INTERCEPTOR, useClass: AuditInterceptor }],

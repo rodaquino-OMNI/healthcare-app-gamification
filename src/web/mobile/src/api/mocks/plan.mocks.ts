@@ -7,7 +7,7 @@ import type {
   Claim,
   Coverage,
   Benefit,
-} from 'src/web/shared/types/plan.types';
+} from '@shared/types/plan.types';
 
 // ---------------------------------------------------------------------------
 // Mock data

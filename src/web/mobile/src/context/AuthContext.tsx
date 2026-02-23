@@ -2,7 +2,7 @@ import React, { createContext, useState, useContext, useEffect, ReactNode } from
 import AsyncStorage from '@react-native-async-storage/async-storage'; // v1.18.1
 import jwtDecode from 'jwt-decode'; // v3.1.2
 
-import { AuthSession, AuthState } from '../../shared/types/auth.types';
+import { AuthSession, AuthState } from '@shared/types/auth.types';
 import { 
   login, 
   register, 

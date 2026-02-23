@@ -172,7 +172,7 @@ export class QuestsService {
 
       // Update the UserQuest to mark it as completed
       const updatedUserQuest = await this.prisma.userQuest.update({
-        where: { id: userQuest.id },
+        where: { profileId_questId: { profileId: profile.id, questId } },
         data: {
           progress: 100,
           completed: true

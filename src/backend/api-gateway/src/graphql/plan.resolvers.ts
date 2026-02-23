@@ -5,7 +5,14 @@ import { CurrentUser } from '../decorators/current-user.decorator';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom } from 'rxjs';
-import { GraphQLUpload, FileUpload } from 'graphql-upload';
+// graphql-upload types inlined to avoid missing dependency at build time
+const GraphQLUpload = 'Upload';
+interface FileUpload {
+  filename: string;
+  mimetype: string;
+  encoding: string;
+  createReadStream: () => NodeJS.ReadableStream;
+}
 
 @Resolver()
 export class PlanResolvers {

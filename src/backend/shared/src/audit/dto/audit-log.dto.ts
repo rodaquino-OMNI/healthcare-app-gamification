@@ -18,13 +18,13 @@ export enum AuditAction {
  */
 export class CreateAuditLogDto {
   @IsString()
-  userId: string;
+  userId!: string;
 
   @IsEnum(AuditAction)
-  action: AuditAction;
+  action!: AuditAction;
 
   @IsString()
-  resourceType: string;
+  resourceType!: string;
 
   @IsOptional()
   @IsString()

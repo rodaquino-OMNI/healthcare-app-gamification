@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Injectable } from '@nestjs/common'; // @nestjs/common 10.0.0+
 import planService from '../config/configuration';
 import { PlansService } from '../plans/plans.service';

@@ -14,16 +14,16 @@ import { useNavigation } from '@react-navigation/native';
 import type { PlanNavigationProp } from '../../navigation/types';
 import { useTranslation } from 'react-i18next';
 
-import { ClaimType } from 'src/web/shared/types/plan.types';
+import { ClaimType } from '@shared/types/plan.types';
 
 import {
   colors,
   typography,
   spacing,
   borderRadius,
-} from '@web/design-system/src/tokens';
+} from '@design-system/tokens';
 import { useTheme } from 'styled-components/native';
-import type { Theme } from '@web/design-system/src/themes/base.theme';
+import type { Theme } from '@design-system/themes/base.theme';
 
 const { plan } = colors.journeys;
 const sp = { xs: 8, sm: 12, md: 16, lg: 20, xl: 24, '2xl': 32 };
@@ -395,22 +395,22 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   stepLineActive: { backgroundColor: plan.primary },
   stepLineInactive: { backgroundColor: colors.gray[30] },
   stepContent: { paddingHorizontal: sp.md },
-  stepTitle: { fontSize: 22, fontWeight: fw.bold as any, fontFamily: headFont, color: plan.text, marginBottom: 4 },
+  stepTitle: { fontSize: 22, fontWeight: '700' as const, fontFamily: headFont, color: plan.text, marginBottom: 4 },
   stepSubtitle: { fontSize: 14, fontFamily: font, color: colors.gray[50], marginBottom: sp.xl },
   typeCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: theme.colors.background.default, borderRadius: 8, padding: sp.md, marginBottom: sp.sm, borderWidth: 2, borderColor: theme.colors.border.default },
   typeCardSelected: { borderColor: plan.primary, backgroundColor: plan.background },
   typeIcon: { fontSize: 24, marginRight: sp.sm },
-  typeLabel: { flex: 1, fontSize: 16, fontWeight: fw.medium as any, fontFamily: font, color: plan.text },
-  typeLabelSelected: { color: plan.primary, fontWeight: fw.semiBold as any },
+  typeLabel: { flex: 1, fontSize: 16, fontWeight: '500' as const, fontFamily: font, color: plan.text },
+  typeLabelSelected: { color: plan.primary, fontWeight: '600' as const },
   radioCircle: { width: 22, height: 22, borderRadius: 11, borderWidth: 2, borderColor: colors.gray[30], justifyContent: 'center', alignItems: 'center' },
   radioCircleSelected: { borderColor: plan.primary },
   radioInner: { width: 12, height: 12, borderRadius: 6, backgroundColor: plan.primary },
-  fieldLabel: { fontSize: 14, fontWeight: fw.medium as any, fontFamily: font, color: plan.text, marginBottom: sp.xs },
+  fieldLabel: { fontSize: 14, fontWeight: '500' as const, fontFamily: font, color: plan.text, marginBottom: sp.xs },
   input: { backgroundColor: theme.colors.background.default, borderRadius: 8, borderWidth: 1, borderColor: theme.colors.border.default, paddingHorizontal: sp.md, paddingVertical: sp.sm, fontSize: 16, fontFamily: font, color: plan.text, marginBottom: sp.md },
   textArea: { minHeight: 100, textAlignVertical: 'top' },
   uploadArea: { borderWidth: 2, borderStyle: 'dashed', borderColor: plan.primary, borderRadius: 8, paddingVertical: sp['2xl'], alignItems: 'center', backgroundColor: theme.colors.background.default },
   uploadIcon: { fontSize: 32, marginBottom: sp.xs },
-  uploadText: { fontSize: 16, fontWeight: fw.medium as any, fontFamily: font, color: plan.primary, marginBottom: 4 },
+  uploadText: { fontSize: 16, fontWeight: '500' as const, fontFamily: font, color: plan.primary, marginBottom: 4 },
   uploadHint: { fontSize: 12, fontFamily: font, color: colors.gray[40] },
   documentList: { marginTop: sp.md },
   documentItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: sp.xs },
@@ -419,22 +419,22 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   reviewCard: { backgroundColor: theme.colors.background.default, borderRadius: 8, padding: sp.md, shadowColor: colors.neutral.black, shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 3, elevation: 1 },
   reviewRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: sp.xs, borderBottomWidth: 1, borderBottomColor: theme.colors.border.default },
   reviewLabel: { fontSize: 14, fontFamily: font, color: colors.gray[50] },
-  reviewValue: { fontSize: 14, fontWeight: fw.medium as any, fontFamily: font, color: plan.text, maxWidth: '60%', textAlign: 'right' },
-  reviewValueHighlight: { fontSize: 16, fontWeight: fw.bold as any, fontFamily: font, color: plan.primary },
+  reviewValue: { fontSize: 14, fontWeight: '500' as const, fontFamily: font, color: plan.text, maxWidth: '60%', textAlign: 'right' },
+  reviewValueHighlight: { fontSize: 16, fontWeight: '700' as const, fontFamily: font, color: plan.primary },
   successContainer: { alignItems: 'center', paddingTop: sp['2xl'] * 2, paddingHorizontal: sp.xl },
   successCircle: { width: 80, height: 80, borderRadius: 40, backgroundColor: colors.semantic.success, justifyContent: 'center', alignItems: 'center', marginBottom: sp.xl },
-  successCheck: { fontSize: 36, color: colors.neutral.white, fontWeight: fw.bold as any },
-  successTitle: { fontSize: 24, fontWeight: fw.bold as any, fontFamily: headFont, color: plan.text, marginBottom: sp.xs },
+  successCheck: { fontSize: 36, color: colors.neutral.white, fontWeight: '700' as const },
+  successTitle: { fontSize: 24, fontWeight: '700' as const, fontFamily: headFont, color: plan.text, marginBottom: sp.xs },
   successSubtitle: { fontSize: 16, fontFamily: font, color: colors.gray[50], textAlign: 'center', marginBottom: sp.md },
   successClaimId: { fontSize: 14, fontFamily: typography.fontFamily.mono, color: colors.gray[40], marginBottom: sp['2xl'] },
   successButton: { backgroundColor: plan.primary, borderRadius: 8, paddingVertical: sp.sm, paddingHorizontal: sp['2xl'] },
-  successButtonText: { fontSize: 16, fontWeight: fw.semiBold as any, fontFamily: font, color: colors.neutral.white },
+  successButtonText: { fontSize: 16, fontWeight: '600' as const, fontFamily: font, color: colors.neutral.white },
   navButtons: { flexDirection: 'row', paddingHorizontal: sp.md, paddingVertical: sp.sm, backgroundColor: theme.colors.background.default, borderTopWidth: 1, borderTopColor: theme.colors.border.default, gap: sp.sm },
   navBackButton: { flex: 1, backgroundColor: theme.colors.background.subtle, borderRadius: 8, paddingVertical: sp.sm, alignItems: 'center' },
-  navBackText: { fontSize: 16, fontWeight: fw.medium as any, fontFamily: font, color: colors.gray[60] },
+  navBackText: { fontSize: 16, fontWeight: '500' as const, fontFamily: font, color: colors.gray[60] },
   navNextButton: { flex: 2, backgroundColor: plan.primary, borderRadius: 8, paddingVertical: sp.sm, alignItems: 'center' },
   navNextButtonDisabled: { backgroundColor: colors.gray[30] },
-  navNextText: { fontSize: 16, fontWeight: fw.semiBold as any, fontFamily: font, color: colors.neutral.white },
+  navNextText: { fontSize: 16, fontWeight: '600' as const, fontFamily: font, color: colors.neutral.white },
 });
 
 export { ClaimSubmissionScreen };

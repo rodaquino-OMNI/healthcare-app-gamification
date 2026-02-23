@@ -6,9 +6,9 @@ import { Button } from '@austa/design-system/src/components/Button/Button';
 import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchable';
-import { ROUTES } from '../../../../constants/routes';
+import { ROUTES } from '@constants/routes';
 import { useTheme } from 'styled-components/native';
-import type { Theme } from '../../../../design-system/src/themes/base.theme';
+import type { Theme } from '@design-system/themes/base.theme';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 

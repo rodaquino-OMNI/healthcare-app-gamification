@@ -3,11 +3,11 @@ import { useNavigation } from '@react-navigation/native'; // 6.1.7
 import { View, Text } from 'react-native'; // 0.71.0
 import { useTranslation } from 'react-i18next';
 
-import { useTelemedicineSession } from 'src/web/mobile/src/hooks/useTelemedicine.ts';
-import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader.tsx';
-import { Button } from 'src/web/design-system/src/components/Button/Button.tsx';
-import LoadingIndicator from 'src/web/mobile/src/components/shared/LoadingIndicator.tsx';
-import ErrorState from 'src/web/mobile/src/components/shared/ErrorState';
+import { useTelemedicineSession } from '@hooks/useTelemedicine';
+import { JourneyHeader } from '@components/shared/JourneyHeader';
+import { Button } from '@design-system/components/Button/Button';
+import LoadingIndicator from '@components/shared/LoadingIndicator';
+import ErrorState from '@components/shared/ErrorState';
 
 /**
  * A React component that provides the UI for accessing telemedicine services.

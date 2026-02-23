@@ -3,7 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack'; // version 6.3.1
 import type { CareStackParamList } from './types';
 
 import { Dashboard } from '../screens/care/Dashboard';
-import { AppointmentDetail } from '../screens/care/AppointmentDetail';
+import AppointmentDetail from '../screens/care/AppointmentDetail';
 import ProviderSearchScreen from '../screens/care/ProviderSearch';
 import SymptomChecker from '../screens/care/SymptomChecker';
 import { Telemedicine } from '../screens/care/Telemedicine';

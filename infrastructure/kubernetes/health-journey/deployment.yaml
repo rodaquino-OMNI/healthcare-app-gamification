@@ -45,7 +45,7 @@ spec:
         - name: NODE_ENV
           value: production
         - name: API_URL
-          value: http://api-gateway:3000/graphql
+          value: http://api-gateway:4000/graphql
         # Secure credentials management using Kubernetes secrets
         - name: DATABASE_URL
           valueFrom:

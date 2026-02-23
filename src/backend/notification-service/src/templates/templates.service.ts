@@ -2,9 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { NotificationTemplate } from './entities/notification-template.entity';
 import { LoggerService } from '@app/shared/logging/logger.service';
-import { Repository } from '@app/shared/interfaces/repository.interface';
-import { Service } from '@app/shared/interfaces/service.interface';
-import { ErrorCodeDetails } from '@app/shared/constants/error-codes.constants';
 import { JOURNEY_IDS } from '@app/shared/constants/journey.constants';
 
 /**
@@ -31,7 +28,7 @@ export class TemplatesService {
    */
   async findById(id: string): Promise<NotificationTemplate | null> {
     this.logger.log(`Finding template by ID: ${id}`, 'TemplatesService');
-    return this.prisma.notificationTemplate.findUnique({ where: { id } });
+    return this.prisma.notificationTemplate.findUnique({ where: { id } }) as unknown as NotificationTemplate | null;
   }
 
   /**
@@ -41,7 +38,7 @@ export class TemplatesService {
    */
   async findByCode(code: string): Promise<NotificationTemplate | null> {
     this.logger.log(`Finding template by code: ${code}`, 'TemplatesService');
-    return this.prisma.notificationTemplate.findFirst({ where: { templateId: code } });
+    return this.prisma.notificationTemplate.findFirst({ where: { templateId: code } }) as unknown as NotificationTemplate | null;
   }
 
   /**
@@ -65,7 +62,7 @@ export class TemplatesService {
       filter.language = language;
     }
 
-    return this.prisma.notificationTemplate.findMany({ where: filter });
+    return this.prisma.notificationTemplate.findMany({ where: filter }) as unknown as NotificationTemplate[];
   }
 
   /**
@@ -86,8 +83,8 @@ export class TemplatesService {
     );
 
     // Validate that the journey is a valid journey type
-    if (!Object.values(JOURNEY_IDS).includes(journey)) {
-      this.logger.error(`Invalid journey type: ${journey}`, null, 'TemplatesService');
+    if (!Object.values(JOURNEY_IDS).includes(journey as any)) {
+      this.logger.error(`Invalid journey type: ${journey}`, undefined, 'TemplatesService');
       throw new Error(`Invalid journey type: ${journey}`);
     }
 
@@ -119,7 +116,7 @@ export class TemplatesService {
       'TemplatesService',
     );
 
-    return this.prisma.notificationTemplate.findMany({ where: filter });
+    return this.prisma.notificationTemplate.findMany({ where: filter }) as unknown as NotificationTemplate[];
   }
 
   /**
@@ -135,7 +132,7 @@ export class TemplatesService {
       'TemplatesService',
     );
 
-    return this.prisma.notificationTemplate.create({ data: template as any });
+    return this.prisma.notificationTemplate.create({ data: template as any }) as unknown as NotificationTemplate;
   }
 
   /**
@@ -153,7 +150,7 @@ export class TemplatesService {
     return this.prisma.notificationTemplate.update({
       where: { id },
       data: template as any,
-    });
+    }) as unknown as NotificationTemplate;
   }
 
   /**
@@ -191,7 +188,7 @@ export class TemplatesService {
       'TemplatesService',
     );
 
-    let template: NotificationTemplate = null;
+    let template: NotificationTemplate | null = null;
 
     // Try to find a template matching all criteria
     if (journey) {
@@ -225,7 +222,7 @@ export class TemplatesService {
 
     // If no template found at all, throw an error
     if (!template) {
-      this.logger.error(`No template found for templateId: ${templateId}`, null, 'TemplatesService');
+      this.logger.error(`No template found for templateId: ${templateId}`, undefined, 'TemplatesService');
       throw new Error(`No template found for templateId: ${templateId}`);
     }
 

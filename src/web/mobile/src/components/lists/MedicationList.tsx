@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Card } from 'src/web/design-system/src/components/Card/Card';
-import { formatDate } from 'src/web/mobile/src/utils/date';
-import { LoadingIndicator } from 'src/web/mobile/src/components/shared/LoadingIndicator';
-import { EmptyState } from 'src/web/mobile/src/components/shared/EmptyState';
-import { JOURNEY_IDS } from 'src/web/shared/constants/journeys';
+import { Card } from '@design-system/components/Card/Card';
+import { formatDate } from '@utils/date';
+import { LoadingIndicator } from '@components/shared/LoadingIndicator';
+import EmptyState from '@components/shared/EmptyState';
+import { JOURNEY_IDS } from '@shared/constants/journeys';
 
 // Define the Medication interface
 interface Medication {
@@ -55,7 +55,7 @@ export const MedicationList: React.FC = () => {
 
   // If medications are loading, display a LoadingIndicator
   if (isLoading) {
-    return <LoadingIndicator journey={JOURNEY_IDS.CARE} label="Loading medications..." />;
+    return <LoadingIndicator journey={JOURNEY_IDS.CARE as 'health' | 'care' | 'plan'} label="Loading medications..." />;
   }
 
   // If there are no medications, display an EmptyState
@@ -67,7 +67,7 @@ export const MedicationList: React.FC = () => {
         description="You don't have any medications added yet. Adding your medications helps us track your treatment plan and remind you when to take them."
         actionLabel="Add Medication"
         onAction={() => {/* Navigation logic would go here */}}
-        journey={JOURNEY_IDS.CARE}
+        journey={JOURNEY_IDS.CARE as 'health' | 'care' | 'plan'}
       />
     );
   }
@@ -84,7 +84,7 @@ export const MedicationList: React.FC = () => {
         return (
           <Card
             key={medication.id}
-            journey={JOURNEY_IDS.CARE}
+            journey={JOURNEY_IDS.CARE as 'health' | 'care' | 'plan'}
             elevation="sm"
             margin="md"
             padding="md"

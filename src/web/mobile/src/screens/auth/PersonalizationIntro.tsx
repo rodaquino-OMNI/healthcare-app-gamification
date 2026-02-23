@@ -4,11 +4,11 @@ import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
-import { colors } from '../../../../design-system/src/tokens/colors';
-import { typography } from '../../../../design-system/src/tokens/typography';
-import { spacing } from '../../../../design-system/src/tokens/spacing';
-import { borderRadius } from '../../../../design-system/src/tokens/borderRadius';
-import { sizing } from '../../../../design-system/src/tokens/sizing';
+import { colors } from '@design-system/tokens/colors';
+import { typography } from '@design-system/tokens/typography';
+import { spacing } from '@design-system/tokens/spacing';
+import { borderRadius } from '@design-system/tokens/borderRadius';
+import { sizing } from '@design-system/tokens/sizing';
 import { ROUTES } from '../../constants/routes';
 
 // --- Styled Components ---
@@ -30,7 +30,7 @@ const IllustrationContainer = styled.View`
   width: 160px;
   height: 160px;
   border-radius: 80px;
-  background-color: ${colors.brand.primaryLight || colors.gray[5]};
+  background-color: ${colors.brand.secondary || colors.gray[5]};
   align-items: center;
   justify-content: center;
   margin-bottom: ${spacing['2xl']};

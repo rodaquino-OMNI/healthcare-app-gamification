@@ -100,7 +100,7 @@ export const VideoPlayer: React.FC = () => {
 
   const handleRelatedVideoPress = useCallback(
     (relatedId: string) => {
-      navigation.navigate('WellnessResourcesVideoPlayer', { videoId: relatedId });
+      navigation.navigate('HealthWellnessResourcesVideoPlayer', { videoId: relatedId });
     },
     [navigation],
   );

@@ -1,4 +1,4 @@
-import { Coverage } from './Coverage';
+import Coverage from './Coverage';
 import { DigitalCardScreen as DigitalCard } from './DigitalCard';
 import { ClaimSubmissionScreen } from './ClaimSubmission';
 import ClaimHistory from './ClaimHistory';

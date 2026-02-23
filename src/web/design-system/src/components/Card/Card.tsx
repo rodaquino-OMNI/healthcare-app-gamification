@@ -9,11 +9,11 @@ import { shadows } from '../../tokens/shadows';
  */
 export interface CardProps {
   /** Content to be rendered inside the card */
-  children: React.ReactNode;
+  children?: React.ReactNode;
   /** Optional callback function when card is pressed/clicked */
   onPress?: () => void;
   /** Controls the shadow depth of the card */
-  elevation?: 'sm' | 'md' | 'lg'; 
+  elevation?: 'sm' | 'md' | 'lg';
   /** Journey context for automatic theming */
   journey?: 'health' | 'care' | 'plan';
   /** Whether the card should appear interactive (cursor pointer, hover effects) */
@@ -25,15 +25,21 @@ export interface CardProps {
   /** Border radius of the card */
   borderRadius?: string;
   /** Padding inside the card */
-  padding?: string;
+  padding?: string | number;
   /** Margin around the card */
-  margin?: string;
+  margin?: string | number;
   /** Width of the card */
   width?: string;
   /** Height of the card */
   height?: string;
   /** Accessibility label for screen readers */
   accessibilityLabel?: string;
+  /** Test ID for component testing */
+  testID?: string;
+  /** Additional style overrides */
+  style?: any;
+  /** Shadow shorthand */
+  shadow?: string;
 
   /**
    * Shorthand for applying a medium elevation shadow (shadows.md).
@@ -42,6 +48,9 @@ export interface CardProps {
    * @default false
    */
   elevated?: boolean;
+
+  /** Allow additional passthrough props for RN/web compatibility */
+  [key: string]: any;
 }
 
 /**

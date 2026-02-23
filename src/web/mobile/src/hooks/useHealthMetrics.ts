@@ -1,9 +1,9 @@
 import { useQuery } from '@apollo/client'; // version 3.7.17
-import { HealthMetric, HealthMetricType } from '../../../shared/types/health.types';
-import { GET_HEALTH_METRICS } from '../../../shared/graphql/queries/health.queries';
+import { HealthMetric, HealthMetricType } from '@shared/types/health.types';
+import { GET_HEALTH_METRICS } from '@shared/graphql/queries/health.queries';
 import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../constants/config';
-import { isValidDate } from '../../../shared/utils/date';
+import { isValidDate } from '@shared/utils/date';
 import { useJourney } from '../context/JourneyContext';
 
 /**

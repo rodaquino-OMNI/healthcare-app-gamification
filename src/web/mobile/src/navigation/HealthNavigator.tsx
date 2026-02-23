@@ -3,9 +3,9 @@ import { createStackNavigator } from '@react-navigation/stack'; // version 6.3.1
 import type { HealthStackParamList } from './types';
 
 import { Dashboard } from '../screens/health/Dashboard';
-import { MedicalHistoryScreen } from '../screens/health/MedicalHistory';
-import { HealthGoalsScreen } from '../screens/health/HealthGoals';
-import { DeviceConnectionScreen } from '../screens/health/DeviceConnection';
+import MedicalHistoryScreen from '../screens/health/MedicalHistory';
+import HealthGoalsScreen from '../screens/health/HealthGoals';
+import { DeviceConnection as DeviceConnectionScreen } from '../screens/health/DeviceConnection';
 import { MetricDetail } from '../screens/health/MetricDetail';
 import { AddMetricScreen } from '../screens/health/AddMetric';
 import MedicationList from '../screens/health/MedicationList';
@@ -61,6 +61,37 @@ import { SmartAlarm } from '../screens/health/sleep/SmartAlarm';
 import { SleepInsights } from '../screens/health/sleep/SleepInsights';
 import { SleepDeviceSync } from '../screens/health/sleep/SleepDeviceSync';
 import { SleepExport } from '../screens/health/sleep/SleepExport';
+// Activity Tracker (Module 10)
+import { ActivityHome } from '../screens/health/activity/ActivityHome';
+import { WorkoutLog } from '../screens/health/activity/WorkoutLog';
+import { WorkoutDetail } from '../screens/health/activity/WorkoutDetail';
+import { WorkoutHistory } from '../screens/health/activity/WorkoutHistory';
+import { StepGoals } from '../screens/health/activity/StepGoals';
+import { ActivityTrends } from '../screens/health/activity/ActivityTrends';
+import { ExerciseLibrary } from '../screens/health/activity/ExerciseLibrary';
+import { ExerciseDetail } from '../screens/health/activity/ExerciseDetail';
+import { ActivityDeviceSync } from '../screens/health/activity/ActivityDeviceSync';
+import { ActivityExport } from '../screens/health/activity/ActivityExport';
+// Nutrition Monitoring (Module 11)
+import { NutritionHome } from '../screens/health/nutrition/NutritionHome';
+import { MealLog } from '../screens/health/nutrition/MealLog';
+import { MealDetail } from '../screens/health/nutrition/MealDetail';
+import { FoodDiary } from '../screens/health/nutrition/FoodDiary';
+import { MacroTracker } from '../screens/health/nutrition/MacroTracker';
+import { WaterIntake } from '../screens/health/nutrition/WaterIntake';
+import { DietaryGoals } from '../screens/health/nutrition/DietaryGoals';
+import { NutritionInsights } from '../screens/health/nutrition/NutritionInsights';
+import { FoodSearch } from '../screens/health/nutrition/FoodSearch';
+import { NutritionExport } from '../screens/health/nutrition/NutritionExport';
+// Wellness Resources (Module 16)
+import { WellnessResourcesHome } from '../screens/health/wellness-resources/WellnessResourcesHome';
+import { ArticleList } from '../screens/health/wellness-resources/ArticleList';
+import { ArticleDetail } from '../screens/health/wellness-resources/ArticleDetail';
+import { VideoLibrary } from '../screens/health/wellness-resources/VideoLibrary';
+import { VideoPlayer } from '../screens/health/wellness-resources/VideoPlayer';
+import { WellnessPrograms } from '../screens/health/wellness-resources/WellnessPrograms';
+import { ProgramDetail } from '../screens/health/wellness-resources/ProgramDetail';
+import { WellnessBookmarks } from '../screens/health/wellness-resources/WellnessBookmarks';
 import { ROUTES } from '../constants/routes';
 import { JOURNEY_COLORS } from '../constants/journeys';
 
@@ -140,6 +171,37 @@ export default function HealthNavigator() {
       <Stack.Screen name={ROUTES.HEALTH_SLEEP_INSIGHTS} component={SleepInsights} />
       <Stack.Screen name={ROUTES.HEALTH_SLEEP_DEVICE_SYNC} component={SleepDeviceSync} />
       <Stack.Screen name={ROUTES.HEALTH_SLEEP_EXPORT} component={SleepExport} />
+      {/* Activity Tracker (Module 10) */}
+      <Stack.Screen name={ROUTES.HEALTH_ACTIVITY_HOME} component={ActivityHome} />
+      <Stack.Screen name={ROUTES.HEALTH_ACTIVITY_WORKOUT_LOG} component={WorkoutLog} />
+      <Stack.Screen name={ROUTES.HEALTH_ACTIVITY_WORKOUT_DETAIL} component={WorkoutDetail} />
+      <Stack.Screen name={ROUTES.HEALTH_ACTIVITY_WORKOUT_HISTORY} component={WorkoutHistory} />
+      <Stack.Screen name={ROUTES.HEALTH_ACTIVITY_STEP_GOALS} component={StepGoals} />
+      <Stack.Screen name={ROUTES.HEALTH_ACTIVITY_TRENDS} component={ActivityTrends} />
+      <Stack.Screen name={ROUTES.HEALTH_ACTIVITY_EXERCISE_LIBRARY} component={ExerciseLibrary} />
+      <Stack.Screen name={ROUTES.HEALTH_ACTIVITY_EXERCISE_DETAIL} component={ExerciseDetail} />
+      <Stack.Screen name={ROUTES.HEALTH_ACTIVITY_DEVICE_SYNC} component={ActivityDeviceSync} />
+      <Stack.Screen name={ROUTES.HEALTH_ACTIVITY_EXPORT} component={ActivityExport} />
+      {/* Nutrition Monitoring (Module 11) */}
+      <Stack.Screen name={ROUTES.HEALTH_NUTRITION_HOME} component={NutritionHome} />
+      <Stack.Screen name={ROUTES.HEALTH_NUTRITION_MEAL_LOG} component={MealLog} />
+      <Stack.Screen name={ROUTES.HEALTH_NUTRITION_MEAL_DETAIL} component={MealDetail} />
+      <Stack.Screen name={ROUTES.HEALTH_NUTRITION_FOOD_DIARY} component={FoodDiary} />
+      <Stack.Screen name={ROUTES.HEALTH_NUTRITION_MACRO_TRACKER} component={MacroTracker} />
+      <Stack.Screen name={ROUTES.HEALTH_NUTRITION_WATER_INTAKE} component={WaterIntake} />
+      <Stack.Screen name={ROUTES.HEALTH_NUTRITION_DIETARY_GOALS} component={DietaryGoals} />
+      <Stack.Screen name={ROUTES.HEALTH_NUTRITION_INSIGHTS} component={NutritionInsights} />
+      <Stack.Screen name={ROUTES.HEALTH_NUTRITION_FOOD_SEARCH} component={FoodSearch} />
+      <Stack.Screen name={ROUTES.HEALTH_NUTRITION_EXPORT} component={NutritionExport} />
+      {/* Wellness Resources (Module 16) */}
+      <Stack.Screen name={ROUTES.HEALTH_WELLNESS_RESOURCES_HOME} component={WellnessResourcesHome} />
+      <Stack.Screen name={ROUTES.HEALTH_WELLNESS_RESOURCES_ARTICLE_LIST} component={ArticleList} />
+      <Stack.Screen name={ROUTES.HEALTH_WELLNESS_RESOURCES_ARTICLE_DETAIL} component={ArticleDetail} />
+      <Stack.Screen name={ROUTES.HEALTH_WELLNESS_RESOURCES_VIDEO_LIBRARY} component={VideoLibrary} />
+      <Stack.Screen name={ROUTES.HEALTH_WELLNESS_RESOURCES_VIDEO_PLAYER} component={VideoPlayer} />
+      <Stack.Screen name={ROUTES.HEALTH_WELLNESS_RESOURCES_PROGRAMS} component={WellnessPrograms} />
+      <Stack.Screen name={ROUTES.HEALTH_WELLNESS_RESOURCES_PROGRAM_DETAIL} component={ProgramDetail} />
+      <Stack.Screen name={ROUTES.HEALTH_WELLNESS_RESOURCES_BOOKMARKS} component={WellnessBookmarks} />
     </Stack.Navigator>
   );
 }

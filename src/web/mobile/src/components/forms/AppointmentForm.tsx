@@ -3,13 +3,13 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Appointment } from 'src/web/shared/types/care.types.ts';
-import { claimValidationSchema } from 'src/web/shared/utils/validation.ts';
-import { JourneyContext } from 'src/web/mobile/src/context/JourneyContext.tsx';
-import { JOURNEY_COLORS } from 'src/web/shared/constants/journeys';
+import { Appointment } from '@shared/types/care.types';
+import { claimValidationSchema } from '@shared/utils/validation';
+import { JourneyContext } from '@context/JourneyContext';
+import { JOURNEY_COLORS } from '@shared/constants/journeys';
 import { useNavigation } from '@react-navigation/native';
-import type { CareNavigationProp } from 'src/web/mobile/src/navigation/types';
-import { ROUTES } from 'src/web/mobile/src/constants/routes';
+import type { CareNavigationProp } from '@navigation/types';
+import { ROUTES } from '@constants/routes';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 

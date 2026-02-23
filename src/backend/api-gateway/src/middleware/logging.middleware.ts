@@ -18,15 +18,15 @@ export class LoggingMiddleware implements NestMiddleware {
     try {
       // Generate a correlation ID if not already present
       const correlationId = req.headers['x-correlation-id'] as string || uuidv4();
-      
+
       // Add correlation ID to response headers
       res.setHeader('X-Correlation-Id', correlationId);
-      
+
       // Extract request information
-      const { method, originalUrl, body, headers } = req;
+      const { method, originalUrl, body } = req;
       const userAgent = req.get('user-agent') || 'unknown';
       const ipAddress = this.getIpAddress(req);
-      
+
       // Create a context for logging
       const logContext = {
         correlationId,
@@ -38,15 +38,14 @@ export class LoggingMiddleware implements NestMiddleware {
 
       // Log the request
       const hasBody = body && Object.keys(body).length > 0;
+      const requestMeta = {
+        ...logContext,
+        hasBody,
+        // Don't log sensitive body data like passwords
+        body: hasBody ? this.sanitizeRequestBody(body) : undefined,
+      };
       this.loggerService.log(
-        'info',
-        `Request received ${method} ${originalUrl}`,
-        {
-          ...logContext,
-          hasBody,
-          // Don't log sensitive body data like passwords
-          body: hasBody ? this.sanitizeRequestBody(body) : undefined,
-        }
+        `Request received ${method} ${originalUrl} ${JSON.stringify(requestMeta)}`
       );
 
       // Calculate request start time
@@ -54,17 +53,12 @@ export class LoggingMiddleware implements NestMiddleware {
 
       // Store the logger reference for use in the end method override
       const loggerService = this.loggerService;
-      
+
       // Override response end method to log response
       const originalEnd = res.end;
-      
-      // Create a new end function with the correct type safety
-      const newEndFn = function(
-        this: Response,
-        chunk?: any, 
-        encoding?: BufferEncoding,
-        callback?: () => void
-      ): Response {
+
+      // Use type assertion to avoid complex overload resolution
+      res.end = function(this: Response, ...args: any[]): any {
         // Calculate request duration
         const [seconds, nanoseconds] = process.hrtime(startTime);
         const responseTime = seconds * 1000 + nanoseconds / 1000000;
@@ -74,38 +68,31 @@ export class LoggingMiddleware implements NestMiddleware {
         const contentLength = res.getHeader('content-length') || 0;
 
         // Log the response
-        loggerService.log(
-          statusCode >= 400 ? 'warn' : 'info',
-          `Response sent ${statusCode} ${method} ${originalUrl} - ${responseTime.toFixed(2)}ms`,
-          {
-            ...logContext,
-            statusCode,
-            contentLength,
-            responseTime,
-          }
-        );
-
-        // Call the original end function with the correct arguments
-        if (chunk !== undefined && encoding !== undefined && callback !== undefined) {
-          return originalEnd.call(this, chunk, encoding, callback);
-        } else if (chunk !== undefined && encoding !== undefined) {
-          return originalEnd.call(this, chunk, encoding);
-        } else if (chunk !== undefined) {
-          return originalEnd.call(this, chunk);
+        const responseMeta = {
+          ...logContext,
+          statusCode,
+          contentLength,
+          responseTime,
+        };
+        if (statusCode >= 400) {
+          loggerService.warn(
+            `Response sent ${statusCode} ${method} ${originalUrl} - ${responseTime.toFixed(2)}ms ${JSON.stringify(responseMeta)}`
+          );
         } else {
-          return originalEnd.call(this);
+          loggerService.log(
+            `Response sent ${statusCode} ${method} ${originalUrl} - ${responseTime.toFixed(2)}ms ${JSON.stringify(responseMeta)}`
+          );
         }
-      };
 
-      // Replace the end method
-      res.end = newEndFn;
+        // Call the original end function
+        return originalEnd.apply(this, args as any);
+      } as any;
 
       next();
     } catch (error) {
       const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
       const errorStack = error instanceof Error ? (error as any).stack : 'No stack trace';
-      const logContext = { path: req.originalUrl, method: req.method };
-      this.loggerService.error(`Logging error: ${errorMessage}`, errorStack, logContext);
+      this.loggerService.error(`Logging error: ${errorMessage}`, errorStack);
       next();
     }
   }
@@ -113,7 +100,7 @@ export class LoggingMiddleware implements NestMiddleware {
   /**
    * Extracts the IP address from the request.
    * Handles various proxy headers and fallbacks.
-   * 
+   *
    * @param req - The Express request object
    * @returns The client IP address
    */
@@ -128,7 +115,7 @@ export class LoggingMiddleware implements NestMiddleware {
 
   /**
    * Sanitizes the request body to remove sensitive information.
-   * 
+   *
    * @param body - The request body to sanitize
    * @returns The sanitized body
    */

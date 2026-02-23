@@ -23,14 +23,14 @@ export class UserAchievement {
   achievementId!: string;
 
   /**
-   * The user's game profile.
+   * The user's game profile (included via Prisma relation).
    */
-  profile!: GameProfile;
+  profile?: GameProfile;
 
   /**
-   * The achievement.
+   * The achievement (included via Prisma relation).
    */
-  achievement!: Achievement;
+  achievement?: Achievement;
 
   /**
    * The user's current progress towards unlocking the achievement.
@@ -49,7 +49,7 @@ export class UserAchievement {
   /**
    * The date and time when the achievement was unlocked.
    */
-  unlockedAt?: Date;
+  unlockedAt?: Date | null;
 
   /**
    * The date and time when the user achievement was created.

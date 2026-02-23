@@ -19,46 +19,46 @@ export interface ButtonProps {
    * Button style variant
    * @default 'primary'
    */
-  variant?: 'primary' | 'secondary' | 'tertiary';
-  
+  variant?: 'primary' | 'secondary' | 'tertiary' | string;
+
   /**
    * Button size
    * @default 'md'
    */
   size?: 'sm' | 'md' | 'lg';
-  
+
   /**
    * Whether the button is disabled
    * @default false
    */
   disabled?: boolean;
-  
+
   /**
    * Whether to show a loading spinner
    * @default false
    */
   loading?: boolean;
-  
+
   /**
    * Icon name to display inside the button
    */
   icon?: string;
-  
+
   /**
    * Function called when the button is pressed
    */
-  onPress?: () => void;
-  
+  onPress?: (() => void) | (() => Promise<void>);
+
   /**
    * Accessibility label for screen readers
    */
   accessibilityLabel?: string;
-  
+
   /**
    * Button content
    */
-  children: React.ReactNode;
-  
+  children?: React.ReactNode;
+
   /**
    * Journey identifier for journey-specific styling
    * @default 'health'
@@ -71,6 +71,24 @@ export interface ButtonProps {
    * @default false
    */
   iconOnly?: boolean;
+
+  /**
+   * Test ID for component testing
+   */
+  testID?: string;
+
+  /**
+   * Additional style overrides
+   */
+  style?: any;
+
+  /**
+   * Button type (for web forms)
+   */
+  type?: string;
+
+  /** Allow additional passthrough props for RN/web compatibility */
+  [key: string]: any;
 }
 
 /**

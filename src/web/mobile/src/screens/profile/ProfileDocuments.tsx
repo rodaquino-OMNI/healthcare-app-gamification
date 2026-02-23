@@ -8,11 +8,11 @@ import * as yup from 'yup';
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
 
-import { colors } from '../../../../design-system/src/tokens/colors';
-import { typography } from '../../../../design-system/src/tokens/typography';
-import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
-import { borderRadius, borderRadiusValues } from '../../../../design-system/src/tokens/borderRadius';
-import { sizing, sizingValues } from '../../../../design-system/src/tokens/sizing';
+import { colors } from '@design-system/tokens/colors';
+import { typography } from '@design-system/tokens/typography';
+import { spacing, spacingValues } from '@design-system/tokens/spacing';
+import { borderRadius, borderRadiusValues } from '@design-system/tokens/borderRadius';
+import { sizing, sizingValues } from '@design-system/tokens/sizing';
 
 /**
  * CPF validation: 11 digits after removing mask characters.
@@ -247,7 +247,7 @@ const ProfileDocuments: React.FC = () => {
     handleSubmit,
     formState: { errors, isValid },
   } = useForm<DocumentsFormData>({
-    resolver: yupResolver(createDocumentsSchema(t)),
+    resolver: yupResolver(createDocumentsSchema(t as (key: string, options?: any) => string) as any),
     mode: 'onBlur',
     defaultValues: {
       cpf: '',

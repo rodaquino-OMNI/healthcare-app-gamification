@@ -94,7 +94,7 @@ const MedicationAdd: React.FC = () => {
     formState: { errors },
     setValue,
   } = useForm<MedicationFormData>({
-    resolver: yupResolver(medicationSchema) as any,
+    resolver: yupResolver(medicationSchema as any),
     defaultValues: {
       name: prefillName,
       dosage: prefillDosage,

@@ -1,6 +1,6 @@
 # AUSTA SuperApp — Healthcare Platform with Gamification
 
-> **A unified digital health platform** that transforms healthcare delivery through a journey-centred approach with gamification at its core. The platform consolidates multiple healthcare functions into three colour-coded user journeys, making healthcare management engaging, accessible and clinically rigorous.
+> **A unified digital health platform** that transforms healthcare delivery through a journey-centred approach with gamification at its core. The platform consolidates multiple healthcare functions into four colour-coded user journeys, making healthcare management engaging, accessible and clinically rigorous.
 
 [![Backend CI](https://github.com/rodaquino-OMNI/healthcare-super-app--w-gamification--tgfzl7/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/rodaquino-OMNI/healthcare-super-app--w-gamification--tgfzl7/actions/workflows/backend-ci.yml)
 [![Frontend CI](https://github.com/rodaquino-OMNI/healthcare-super-app--w-gamification--tgfzl7/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/rodaquino-OMNI/healthcare-super-app--w-gamification--tgfzl7/actions/workflows/frontend-ci.yml)
@@ -13,51 +13,76 @@
 
 | Metric | Value |
 |---|---|
-| **Total source files** | 2,843 |
-| **TypeScript / TSX files** | 1,474 (656 `.ts` + 818 `.tsx`) |
-| **Lines of TS/JS code** | ~378,000 |
+| **Total source files** | 2,969 |
+| **TypeScript / TSX files** | 1,590 (661 `.ts` + 929 `.tsx`) |
+| **Lines of TS/JS code** | ~406,700 |
 | — Backend (NestJS services) | ~45,500 |
-| — Frontend (Next.js + React Native) | ~175,600 |
-| **Markdown documentation** | 267 files / ~88,500 lines |
+| — Frontend (Next.js + React Native) | ~204,300 |
+| **Markdown documentation** | 268 files / ~89,000 lines |
 | **Terraform IaC** | 28 files / ~3,100 lines |
 | **Kubernetes manifests** | 40 YAML files |
-| **Test files** | 85 (72 `.spec.ts` + 1 `.test.ts` + 12 `.e2e-spec.ts`) |
+| **Test files** | 232 (72 `.spec.ts` + 1 `.test.ts` + 12 `.e2e-spec.ts` + 147 `.spec.tsx`/`.test.tsx`) |
 | **GitHub Actions workflows** | 10 pipelines |
-| **Architecture Decision Records** | 5 ADRs |
+| **Architecture Decision Records** | 6 ADRs |
 | **Design system components** | 67 component directories |
 | **Prisma schemas** | 2 (shared + gamification) |
 | **GraphQL schemas** | 2 (API Gateway + web shared) |
+| **i18n locales** | 2 languages (en-US, pt-BR) — web + mobile |
+| **Navigation stacks (mobile)** | 10 typed navigators |
 
-*Measured February 22 2026 — excludes `.git/`, `node_modules/`, `.next/` cache.*
+*Measured February 23 2026 — excludes `.git/`, `node_modules/`, `.next/`, `.claude-flow/`, `.swarm/` cache.*
 
 ---
 
 ## 📋 Table of Contents
 
-- [Features](#-features)
-- [Architecture](#️-architecture)
-- [Repository Structure](#-repository-structure)
-- [Technology Stack](#-technology-stack)
-- [Getting Started](#-getting-started)
-- [Development](#️-development)
-- [Testing](#-testing)
-- [Infrastructure and Deployment](#-infrastructure--deployment)
-- [CICD Pipelines](#️-cicd-pipelines)
-- [Documentation](#-documentation)
-- [Contributing](#-contributing)
-- [License](#-license)
+1. [Features](#-features)
+2. [Architecture](#architecture)
+3. [Repository Structure](#-repository-structure)
+4. [Technology Stack](#-technology-stack)
+5. [Getting Started](#-getting-started)
+6. [Development](#development)
+7. [Testing](#-testing)
+8. [Infrastructure and Deployment](#-infrastructure-and-deployment)
+9. [CICD Pipelines](#cicd-pipelines)
+10. [Documentation](#-documentation)
+11. [Contributing](#-contributing)
+12. [License](#-license)
 
 ---
 
 ## 🎯 Features
 
-### Three Core User Journeys
+### Four Core User Journeys
 
 | Journey | Colour | Key Capabilities |
 |---|---|---|
-| 🏥 **Minha Saúde** (My Health) | Blue | Health metrics & vitals tracking, wearable integration (Google Fit / Apple HealthKit), medical history timeline, FHIR-compliant EHR, health goal management |
+| 🏥 **Minha Saúde** (My Health) | Blue | Health metrics & vitals tracking, wearable integration (Google Fit / Apple HealthKit), medical history timeline, FHIR-compliant EHR, health goal management, cycle tracking, health assessment |
 | 🩺 **Cuidar-me Agora** (Care Now) | Green | Symptom checker & self-triage, appointment booking, telemedicine / video consultations, medication tracking & reminders, treatment plan management, provider search |
 | 📋 **Meu Plano & Benefícios** (My Plan & Benefits) | Orange | Insurance coverage & digital cards, claims submission & tracking, cost simulation for procedures, benefits showcase, document management |
+| 🧘 **Bem-estar** (Wellness) | Purple | AI Wellness Companion chat, mood check-ins, meditation & breathing exercises, journal, sleep tracking, activity & nutrition tracking, wellness resources (articles, videos, programmes) |
+
+### 🧘 Wellness Journey — AI Companion (new)
+
+The fourth journey introduces an AI-powered wellness companion with:
+
+- Conversational AI chat interface (CompanionChat / CompanionChatActive)
+- Mood check-ins and emotion tracking
+- Guided meditation and breathing sessions
+- Personal journal with history
+- Daily wellness plans, streaks and challenges
+- Wellness tips feed with deep-link articles
+- Insights dashboard
+- Quick-reply suggestions
+
+### 🏃 Health Sub-modules (new)
+
+Expanded health journey with dedicated modules:
+
+- **Activity** — step goals, exercise library, workout log/history, device sync, trends export
+- **Nutrition** — food diary, food search, macro tracker, meal log, water intake, dietary goals, insights
+- **Sleep** — sleep home, diary, goals, quality score, trends, smart alarm, bedtime routine, insights, device sync
+- **Wellness Resources** — article list/detail, video library/player, wellness programmes, bookmarks
 
 ### 🎮 Gamification Engine
 
@@ -77,9 +102,15 @@
 - Role-based access control (RBAC) and fine-grained permissions
 - End-to-end TLS, WAF (AWS WAFv2), and VPC network isolation
 
+### 🌐 Internationalisation
+
+- Full i18n support: **en-US** and **pt-BR**
+- Separate locale files for web (`src/web/web/src/i18n/`) and mobile (`src/web/mobile/src/i18n/`)
+- Formatter utilities for dates, currencies and health units per locale
+
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ### System Overview
 
@@ -120,6 +151,7 @@
 | [ADR-002](docs/adr/ADR-002-api-contract-strategy.md) | GraphQL-first API contract strategy | Accepted |
 | [ADR-003](docs/adr/ADR-003-error-handling-strategy.md) | Structured error-handling with journey context | Accepted |
 | [ADR-004](docs/adr/ADR-004-lgpd-compliance.md) | LGPD compliance data architecture | Accepted |
+| [ADR-005](docs/adr/ADR-005-design-ui-consistency.md) | Design & UI consistency standards | Accepted |
 | [ADR-013](docs/adr/013-claude-flow-swarm-intelligence.md) | Claude Flow swarm-intelligence agent pattern | Accepted |
 
 ---
@@ -130,10 +162,10 @@
 healthcare-super-app/
 ├── src/
 │   ├── backend/                        # NestJS monorepo (Lerna)
-│   │   ├── api-gateway/                # GraphQL + REST unified entry point  (26 TS files)
-│   │   ├── auth-service/               # OAuth2, JWT, MFA, biometric          (42 TS files)
-│   │   ├── care-service/               # Appointments, telemedicine, Rx        (49 TS files)
-│   │   ├── gamification-engine/        # XP, achievements, quests, rewards    (59 TS files)
+│   │   ├── api-gateway/                # GraphQL + REST entry point       26 TS / 2,771 lines
+│   │   ├── auth-service/               # OAuth2, JWT, MFA, biometric      42 TS / 4,129 lines
+│   │   ├── care-service/               # Appointments, telemedicine, Rx   49 TS / 6,675 lines
+│   │   ├── gamification-engine/        # XP, achievements, quests         59 TS / 6,641 lines
 │   │   │   └── src/
 │   │   │       ├── achievements/       # Badge & achievement processing
 │   │   │       ├── quests/             # Multi-step quest engine
@@ -141,30 +173,78 @@ healthcare-super-app/
 │   │   │       ├── rewards/            # Reward catalogue & redemption
 │   │   │       ├── rules/              # Event-driven rules engine
 │   │   │       ├── profiles/           # Gamification user profiles
-│   │   │       └── events/             # Kafka event consumers/producers
-│   │   ├── health-service/             # Vitals, goals, wearable integrations  (56 TS files)
-│   │   ├── notification-service/       # Push, SMS, email, in-app              (43 TS files)
-│   │   ├── plan-service/               # Insurance, claims, benefits           (54 TS files)
-│   │   ├── shared/                     # Cross-service utilities & DTOs        (57 TS files)
+│   │   │       └── events/             # Kafka consumers/producers
+│   │   ├── health-service/             # Vitals, goals, wearables         56 TS / 6,696 lines
+│   │   ├── notification-service/       # Push, SMS, email, in-app         43 TS / 4,633 lines
+│   │   ├── plan-service/               # Insurance, claims, benefits       54 TS / 6,427 lines
+│   │   ├── shared/                     # Cross-service utilities & DTOs   57 TS / 7,402 lines
 │   │   └── packages/
 │   │       ├── auth/                   # Shared auth guards & decorators
 │   │       └── shared/                 # Shared NestJS modules
 │   │
 │   └── web/                            # Turborepo monorepo
-│       ├── web/                        # Next.js 14 web application            (341 TS/TSX files)
+│       ├── web/                        # Next.js 14 web application       396 TSX / 54,569 lines
 │       │   └── src/
+│       │       ├── pages/
+│       │       │   ├── auth/           # Login, register, MFA
+│       │       │   ├── health/         # Metrics, assessment, cycle,
+│       │       │   │                   # activity, nutrition, sleep,
+│       │       │   │                   # wellness-resources
+│       │       │   ├── care/           # Appointments, telemedicine,
+│       │       │   │                   # symptom-checker, visits
+│       │       │   ├── plan/           # Coverage, claims
+│       │       │   ├── wellness/       # AI companion, mood, meditation,
+│       │       │   │                   # breathing, journal, daily-plan,
+│       │       │   │                   # goals, streaks, challenges, tips,
+│       │       │   │                   # insights, chat, quick-replies
+│       │       │   ├── achievements/   # Quests, rewards
+│       │       │   ├── home/           # Dashboard
+│       │       │   ├── notifications/
+│       │       │   ├── profile/
+│       │       │   ├── settings/
+│       │       │   ├── search/
+│       │       │   └── help/           # FAQ
 │       │       ├── components/         # forms, navigation, modals, dashboard
+│       │       ├── i18n/               # en-US, pt-BR locale files
 │       │       ├── context/            # React context providers
-│       │       ├── utils/              # Helpers and hooks
-│       │       └── __tests__/          # Unit tests by page/feature
-│       ├── mobile/                     # React Native 0.73 app                 (402 TS/TSX files)
+│       │       └── utils/              # Helpers and hooks
+│       │
+│       ├── mobile/                     # React Native 0.73 app           463 TSX / 116,419 lines
 │       │   └── src/
-│       │       ├── screens/            # auth, care, gamification, health,
-│       │       │                       # home, plan, profile, settings, error
-│       │       ├── navigation/         # Typed React Navigation stack
+│       │       ├── screens/
+│       │       │   ├── auth/           # Login, register, biometric
+│       │       │   ├── health/         # Vitals + sub-modules:
+│       │       │   │   ├── activity/   # ActivityHome, StepGoals, WorkoutLog,
+│       │       │   │   │               # ExerciseLibrary, Trends, DeviceSync
+│       │       │   │   ├── nutrition/  # FoodDiary, MacroTracker, WaterIntake,
+│       │       │   │   │               # MealLog, DietaryGoals, Insights
+│       │       │   │   ├── sleep/      # SleepHome, Diary, Goals, Quality,
+│       │       │   │   │               # SmartAlarm, BedtimeRoutine, Trends
+│       │       │   │   ├── wellness-resources/ # Articles, Videos, Programmes
+│       │       │   │   ├── assessment/ # Health risk assessment + steps
+│       │       │   │   └── cycle-tracking/
+│       │       │   ├── care/           # Appointments, telemedicine, Rx
+│       │       │   ├── plan/           # Coverage, claims
+│       │       │   ├── wellness/       # AI Companion (15 screens):
+│       │       │   │                   # Chat, MoodCheckIn, Meditation,
+│       │       │   │                   # Breathing, Journal, DailyPlan,
+│       │       │   │                   # Goals, Streaks, Challenges,
+│       │       │   │                   # WellnessTip, Insights, QuickReplies
+│       │       │   ├── gamification/   # Achievements, leaderboard, quests
+│       │       │   ├── home/           # Dashboard
+│       │       │   ├── profile/
+│       │       │   ├── settings/
+│       │       │   └── error/
+│       │       ├── navigation/         # 10 typed navigators:
+│       │       │                       # Root, Main, Auth, Health, Care,
+│       │       │                       # Plan, Gamification, Wellness,
+│       │       │                       # Settings navigators
+│       │       ├── i18n/               # en-US, pt-BR locale files
+│       │       ├── constants/          # Route constants
 │       │       ├── context/            # App-wide context
 │       │       └── utils/              # RN-specific helpers
-│       ├── design-system/              # Shared component library (Storybook)  (305 TS/TSX files)
+│       │
+│       ├── design-system/              # Shared component library (Storybook) 305 files / 29,821 lines
 │       │   └── src/
 │       │       ├── care/               # AppointmentCard, SymptomSelector,
 │       │       │                       # MedicationCard, ProviderCard,
@@ -173,7 +253,7 @@ healthcare-super-app/
 │       │       │                       # Leaderboard, QuestCard, RewardCard,
 │       │       │                       # AchievementNotification, XPCounter
 │       │       └── plan/               # ClaimCard, CoverageInfoCard …
-│       ├── shared/                     # Shared hooks, utils, GraphQL schema   (34 TS/TSX files)
+│       ├── shared/                     # Shared hooks, utils, GraphQL schema  34 files / 3,294 lines
 │       └── types/                      # Global TypeScript type definitions
 │
 ├── infrastructure/
@@ -198,18 +278,19 @@ healthcare-super-app/
 │   │   │   └── waf/                    # AWS WAFv2
 │   │   └── environments/               # staging / production tfvars
 │   ├── monitoring/
-│   │   ├── grafana-dashboard.json      # Pre-built Grafana dashboard
-│   │   └── sentry.yml                  # Sentry project config
+│   │   ├── grafana-dashboard.json
+│   │   └── sentry.yml
 │   ├── nginx/
 │   │   └── nginx.production.conf
 │   └── docker-compose.production.yml
 │
 ├── docs/
-│   ├── adr/                            # 5 Architecture Decision Records
-│   ├── analysis/                       # Security audit, quality scorecard
-│   ├── design/                         # System & service architecture docs
+│   ├── adr/                            # 6 Architecture Decision Records
+│   ├── analysis/                       # Security audit, quality scorecard,
+│   │                                   # deep analysis, forward path plan
+│   ├── design/                         # 10 architecture & design documents
 │   ├── Figma/                          # Design tokens (JSON) + screen inventory
-│   ├── specifications/                 # 8 formal spec documents
+│   ├── specifications/                 # 8 formal specification documents
 │   └── original documentation/        # Project guide & technical spec
 │
 ├── .github/workflows/                  # 10 GitHub Actions pipelines
@@ -253,6 +334,7 @@ healthcare-super-app/
 | Component docs | Storybook | — |
 | Mobile E2E | Maestro | — |
 | Mobile distribution | EAS (Expo Application Services) | — |
+| i18n | Custom i18n layer | en-US + pt-BR |
 
 ### Infrastructure
 
@@ -308,7 +390,7 @@ yarn prisma db seed
 
 ---
 
-## 🛠️ Development
+## Development
 
 ### Backend Services
 
@@ -371,11 +453,12 @@ yarn format
 
 ## 🧪 Testing
 
-The repository contains **85 test files**:
+The repository contains **232 test files**:
 
-- 72 unit/integration spec files (`.spec.ts`)
+- 72 backend unit/integration spec files (`.spec.ts`)
 - 1 isolated test file (`.test.ts`)
 - 12 end-to-end spec files (`.e2e-spec.ts`)
+- 147 frontend component & screen test files (`.spec.tsx` / `.test.tsx`)
 - Maestro flows for native E2E (`src/web/mobile/.maestro/flows/`)
 
 ```bash
@@ -403,7 +486,7 @@ yarn design-system test
 
 ---
 
-## 📦 Infrastructure & Deployment
+## 📦 Infrastructure and Deployment
 
 ### Local (Docker Compose)
 
@@ -460,7 +543,7 @@ make deploy-all ENV=production
 
 ---
 
-## ⚙️ CI/CD Pipelines
+## CICD Pipelines
 
 | Workflow file | Trigger | Purpose |
 |---|---|---|
@@ -481,11 +564,11 @@ make deploy-all ENV=production
 
 | Location | Contents |
 |---|---|
-| [`docs/adr/`](docs/adr/) | 5 Architecture Decision Records |
-| [`docs/specifications/`](docs/specifications/) | 8 formal specification documents (functional, non-functional, integration, UI/UX, user stories, acceptance criteria) |
-| [`docs/design/`](docs/design/) | System architecture, service pseudocode, API gateway design, gamification architecture, test strategy, security & error handling |
+| [`docs/adr/`](docs/adr/) | 6 Architecture Decision Records |
+| [`docs/specifications/`](docs/specifications/) | 8 formal specification documents (functional, non-functional, integration, UI/UX, user stories, acceptance criteria, system analysis, technical constraints) |
+| [`docs/design/`](docs/design/) | 10 documents: system architecture, service pseudocode, API gateway & service mesh, component architecture, data flow, gamification engine, deployment infrastructure, healthcare research insights, security & error handling, test strategy |
 | [`docs/analysis/`](docs/analysis/) | Build quality scorecard, repository deep analysis, security audit, forward path plan |
-| [`docs/Figma/`](docs/Figma/) | Design tokens JSON, screen inventory (100%), theme definitions |
+| [`docs/Figma/`](docs/Figma/) | Design tokens JSON (core, light, dark, theme), screen inventory (100%), mode definitions |
 | [`docs/original documentation/`](docs/original%20documentation/) | Original project guide and technical specification |
 | [`src/backend/docs/`](src/backend/docs/) | Backend-specific API and service documentation |
 
@@ -520,4 +603,4 @@ AUSTA SuperApp is committed to making healthcare more accessible, engaging and e
 
 ---
 
-*Repository: `rodaquino-OMNI/healthcare-super-app--w-gamification--tgfzl7` · Branch: `main` · Last audited: February 22, 2026*
+*Repository: `rodaquino-OMNI/healthcare-super-app--w-gamification--tgfzl7` · Branch: `main` · Last audited: February 23, 2026*

@@ -8,19 +8,19 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { PlanNavigationProp } from '../../navigation/types';
-import { EmptyState } from '@web/mobile/src/components/shared/EmptyState';
-import { LoadingIndicator } from '@web/mobile/src/components/shared/LoadingIndicator';
-import { useClaims } from '@web/mobile/src/hooks/useClaims';
-import { useCoverage } from '@web/mobile/src/hooks/useCoverage';
-import { useAuth } from '@web/mobile/src/hooks/useAuth';
-import { JourneyHeader } from '@web/mobile/src/components/shared/JourneyHeader';
-import { colors } from '@web/design-system/src/tokens/colors';
-import { spacingValues } from '@web/design-system/src/tokens/spacing';
-import { fontSizeValues } from '@web/design-system/src/tokens/typography';
-import { borderRadiusValues } from '@web/design-system/src/tokens/borderRadius';
+import EmptyState from '../../components/shared/EmptyState';
+import { LoadingIndicator } from '../../components/shared/LoadingIndicator';
+import { useClaims } from '../../hooks/useClaims';
+import { useCoverage } from '../../hooks/useCoverage';
+import { useAuth } from '../../hooks/useAuth';
+import { JourneyHeader } from '../../components/shared/JourneyHeader';
+import { colors } from '@design-system/tokens/colors';
+import { spacingValues } from '@design-system/tokens/spacing';
+import { fontSizeValues } from '@design-system/tokens/typography';
+import { borderRadiusValues } from '@design-system/tokens/borderRadius';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components/native';
-import type { Theme } from '@web/design-system/src/themes/base.theme';
+import type { Theme } from '@design-system/themes/base.theme';
 
 /**
  * Renders the main dashboard screen for the Plan journey, fetching and
@@ -311,7 +311,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   insuranceCardPlanName: {
     color: colors.neutral.white,
     fontSize: fontSizeValues.lg,
-    fontWeight: String(700) as any,
+    fontWeight: '700' as const,
     flex: 1,
   },
   insuranceCardTypeBadge: {
@@ -323,7 +323,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   insuranceCardTypeText: {
     color: colors.neutral.white,
     fontSize: fontSizeValues.xs,
-    fontWeight: String(600) as any,
+    fontWeight: '600' as const,
   },
   insuranceCardBody: {
     padding: spacingValues.md,
@@ -337,13 +337,13 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   insuranceCardLabel: {
     fontSize: fontSizeValues.xs,
-    fontWeight: String(500) as any,
+    fontWeight: '500' as const,
     color: colors.gray[40],
     marginBottom: spacingValues['4xs'],
   },
   insuranceCardValue: {
     fontSize: fontSizeValues.sm,
-    fontWeight: String(600) as any,
+    fontWeight: '600' as const,
     color: colors.journeys.plan.text,
   },
   shareButton: {
@@ -355,7 +355,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   shareButtonText: {
     color: colors.journeys.plan.primary,
     fontSize: fontSizeValues.sm,
-    fontWeight: String(600) as any,
+    fontWeight: '600' as const,
   },
 
   /* Stats Row */
@@ -377,12 +377,12 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   statValue: {
     fontSize: fontSizeValues.xl,
-    fontWeight: String(700) as any,
+    fontWeight: '700' as const,
     color: colors.journeys.plan.primary,
   },
   statLabel: {
     fontSize: fontSizeValues.xs,
-    fontWeight: String(500) as any,
+    fontWeight: '500' as const,
     color: colors.gray[50],
     marginTop: spacingValues['4xs'],
   },
@@ -390,7 +390,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   /* Section Title */
   sectionTitle: {
     fontSize: fontSizeValues.lg,
-    fontWeight: String(700) as any,
+    fontWeight: '700' as const,
     color: colors.journeys.plan.text,
     marginTop: spacingValues.xs,
   },
@@ -413,7 +413,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   coverageItemName: {
     fontSize: fontSizeValues.md,
-    fontWeight: String(600) as any,
+    fontWeight: '600' as const,
     color: colors.journeys.plan.text,
   },
   coverageItemDesc: {
@@ -445,7 +445,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   claimItemTitle: {
     fontSize: fontSizeValues.md,
-    fontWeight: String(600) as any,
+    fontWeight: '600' as const,
     color: colors.journeys.plan.text,
   },
   claimStatusBadge: {
@@ -465,13 +465,13 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   claimStatusText: {
     fontSize: fontSizeValues.xs,
-    fontWeight: String(600) as any,
+    fontWeight: '600' as const,
     color: colors.gray[60],
     textTransform: 'capitalize',
   },
   claimAmount: {
     fontSize: fontSizeValues.lg,
-    fontWeight: String(700) as any,
+    fontWeight: '700' as const,
     color: colors.journeys.plan.primary,
     marginTop: spacingValues.xs,
   },
@@ -489,7 +489,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   },
   claimActionText: {
     fontSize: fontSizeValues.sm,
-    fontWeight: String(600) as any,
+    fontWeight: '600' as const,
     color: colors.journeys.plan.primary,
   },
 });

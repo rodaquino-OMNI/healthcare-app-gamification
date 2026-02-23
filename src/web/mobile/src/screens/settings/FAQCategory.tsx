@@ -5,10 +5,10 @@ import type { SettingsNavigationProp } from '../../navigation/types';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
-import { colors } from '../../../../design-system/src/tokens/colors';
-import { typography } from '../../../../design-system/src/tokens/typography';
-import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
-import { borderRadius } from '../../../../design-system/src/tokens/borderRadius';
+import { colors } from '@design-system/tokens/colors';
+import { typography } from '@design-system/tokens/typography';
+import { spacing, spacingValues } from '@design-system/tokens/spacing';
+import { borderRadius } from '@design-system/tokens/borderRadius';
 
 // --- Styled Components ---
 

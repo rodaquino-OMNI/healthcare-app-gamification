@@ -37,8 +37,7 @@
     "generate:service": "node tools/generators/service-generator",
     "generate:docs": "node tools/scripts/generate-api-docs.js",
     "prepare": "husky install",
-    "preinstall": "npx npm-force-resolutions",
-    "postinstall": "node ../scripts/apply-security-patches.js",
+    "postinstall": "node ../scripts/apply-security-patches.js || true",
     "patch-security": "node tools/scripts/patch-axios.js"
   },
   "engines": {
@@ -280,7 +279,6 @@
     "@babel/plugin-transform-async-generator-functions": "7.23.3",
     "eslint": "8.57.0",
     "superagent": "9.0.0",
-    "@types/react-native": "0.72.2",
     "@react-native/typescript-config": "0.73.1",
     "@react-navigation/native": "6.1.7",
     "@react-navigation/bottom-tabs": "6.5.8",

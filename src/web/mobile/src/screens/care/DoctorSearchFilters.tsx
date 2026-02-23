@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Select } from 'src/web/design-system/src/components/Select/Select';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { spacingValues } from 'src/web/design-system/src/tokens/spacing';
+import { Select } from '@design-system/components/Select/Select';
+import { Text } from '@design-system/primitives/Text/Text';
+import { colors } from '@design-system/tokens/colors';
+import { spacingValues } from '@design-system/tokens/spacing';
 
 // ---------------------------------------------------------------------------
 // Constants

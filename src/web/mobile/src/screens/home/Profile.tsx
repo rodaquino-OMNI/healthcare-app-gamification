@@ -3,12 +3,12 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components/native';
-import type { Theme } from '../../../../design-system/src/themes/base.theme';
+import type { Theme } from '@design-system/themes/base.theme';
 
-import { colors } from '../../../../design-system/src/tokens/colors';
+import { colors } from '@design-system/tokens/colors';
 import { useAuth } from '../../hooks/useAuth';
-import ProfileForm from '../../components/forms/ProfileForm';
-import Avatar from '../../../design-system/src/components/Avatar/Avatar';
+import { ProfileForm } from '../../components/forms/ProfileForm';
+import { Avatar } from '@design-system/components/Avatar/Avatar';
 import { ROUTES } from '../../constants/routes';
 
 /**
@@ -31,7 +31,7 @@ export const ProfileScreen: React.FC = () => {
   };
 
   const navigateToSettings = () => {
-    navigation.navigate(ROUTES.SETTINGS);
+    (navigation as any).navigate(ROUTES.SETTINGS);
   };
 
   if (!user) {

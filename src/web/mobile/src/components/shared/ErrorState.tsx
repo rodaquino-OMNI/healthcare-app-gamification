@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text, Button, Icon, Stack } from '@austa/design-system';
+import { Text, Button, Icon } from '@austa/design-system';
 import { useJourney } from '../../hooks/useJourney';
 import { useTheme } from '../../hooks/useTheme';
 
@@ -47,7 +47,7 @@ const ErrorState: React.FC<ErrorStateProps> = ({
       testID={testID || 'error-state'}
       accessibilityRole="alert"
     >
-      <Stack spacing="md" align="center" padding="xl">
+      <View style={styles.inner}>
         <Icon
           name={icon}
           size={48}
@@ -86,7 +86,7 @@ const ErrorState: React.FC<ErrorStateProps> = ({
             {retryLabel || 'Retry'}
           </Button>
         )}
-      </Stack>
+      </View>
     </View>
   );
 };
@@ -97,6 +97,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
+  },
+  inner: {
+    alignItems: 'center',
+    padding: 24,
+    gap: 16,
   },
 });
 

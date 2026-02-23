@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { LoggerService } from '../logging/logger.service';
 import { AuditAction, AuditLogEntry } from './dto/audit-log.dto';
@@ -39,7 +40,7 @@ export class AuditService {
             journeyId: entry.journeyId ?? null,
             ipAddress: entry.ipAddress ?? null,
             userAgent: entry.userAgent ?? null,
-            metadata: entry.metadata ?? null,
+            metadata: entry.metadata ? (entry.metadata as Prisma.InputJsonValue) : Prisma.JsonNull,
           },
         });
       } catch (error) {

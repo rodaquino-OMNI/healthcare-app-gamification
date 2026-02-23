@@ -5,7 +5,7 @@
  */
 
 import { Platform } from 'react-native'; // react-native version 0.71+
-import { JOURNEY_NAMES } from 'src/web/shared/constants/journeys.ts';
+import { JOURNEY_NAMES } from '@shared/constants/journeys';
 
 // Environment detection
 export const isDevEnv = __DEV__; // React Native global variable

@@ -8,9 +8,9 @@ import {
   Text,
 } from '@austa/design-system';
 import { Stepper } from '@austa/design-system/src/components/Stepper/Stepper';
-import { ROUTES } from '../../../../constants/routes';
-import { checkSymptoms } from '../../../../api/care';
-import { useJourney } from '../../../../hooks/useJourney';
+import { ROUTES } from '@constants/routes';
+import { checkSymptoms } from '@api/care';
+import { useJourney } from '@hooks/useJourney';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { useTranslation } from 'react-i18next';

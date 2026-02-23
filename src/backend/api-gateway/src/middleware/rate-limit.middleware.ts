@@ -36,8 +36,8 @@ export class RateLimitMiddleware implements NestMiddleware {
         'unknown';
       
       // Check if user is authenticated
-      const isAuthenticated = !!(req.user);
-      const userId = isAuthenticated ? (req.user as any).id : null;
+      const isAuthenticated = !!((req as any).user);
+      const userId = isAuthenticated ? ((req as any).user as any).id : null;
       
       // Determine which journey this request is for
       const journey = this.getRequestJourney(req);

@@ -111,7 +111,7 @@ export const VideoLibrary: React.FC = () => {
 
   const handleVideoPress = useCallback(
     (videoId: string) => {
-      navigation.navigate('WellnessResourcesVideoPlayer', { videoId });
+      navigation.navigate('HealthWellnessResourcesVideoPlayer', { videoId });
     },
     [navigation],
   );

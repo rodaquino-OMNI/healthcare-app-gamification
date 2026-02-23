@@ -9,31 +9,30 @@ import {
   Platform,
   StatusBar,
 } from 'react-native'; // react-native version 0.71+
-import { LoadingIndicator } from '../components/shared/LoadingIndicator';
-import { ErrorState } from '../components/shared/ErrorState';
+import { LoadingIndicator } from '@components/shared/LoadingIndicator';
+import { ErrorState } from '@components/shared/ErrorState';
 import {
   Card,
   CardProps,
-} from 'src/web/design-system/src/components/Card/Card.tsx';
+} from '@design-system/components/Card/Card';
 import {
   MetricCard,
   MetricCardProps,
-} from 'src/web/design-system/src/health/MetricCard/MetricCard.tsx';
+} from '@design-system/health/MetricCard/MetricCard';
 import {
   HealthChart,
   HealthChartProps,
-} from 'src/web/design-system/src/health/HealthChart/HealthChart.tsx';
-import { useHealthMetrics } from '../hooks/useHealthMetrics';
-import { useGameProfile } from '../hooks/useGamification';
+} from '@design-system/health/HealthChart/HealthChart';
+import { useHealthMetrics } from '@hooks/useHealthMetrics';
+import { useGameProfile } from '@hooks/useGamification';
 import {
   AchievementBadge,
-  AchievementBadgeProps,
-} from 'src/web/design-system/src/gamification/AchievementBadge/AchievementBadge.tsx';
+} from '@design-system/gamification/AchievementBadge/AchievementBadge';
 import { useTranslation } from 'react-i18next';
-import { useJourney } from '../context/JourneyContext';
-import { JOURNEY_IDS } from '../../shared/constants/journeys';
-import { JourneyHeader, JourneyHeaderProps } from '../components/shared/JourneyHeader';
-import { colors } from 'src/web/design-system/src/tokens/colors';
+import { useJourney } from '@context/JourneyContext';
+import { JOURNEY_IDS } from '@shared/constants/journeys';
+import { JourneyHeader, JourneyHeaderProps } from '@components/shared/JourneyHeader';
+import { colors } from '@design-system/tokens/colors';
 
 /**
  * Displays the main dashboard for the My Health journey.
@@ -64,7 +63,7 @@ export const Dashboard: React.FC = () => {
 
   // Handle loading state
   if (healthMetricsLoading || !gameProfile) {
-    return <LoadingIndicator journey={journey} />;
+    return <LoadingIndicator journey={journey as 'health' | 'care' | 'plan'} />;
   }
 
   // Handle error state
@@ -97,15 +96,15 @@ export const Dashboard: React.FC = () => {
       <JourneyHeader title={t('journeys.health.title')} showBackButton={false} />
       <ScrollView contentContainerStyle={styles.contentContainer}>
         {healthMetrics.map((metric, index) => (
-          <MetricCard
-            key={index}
-            metricName={metric.type}
-            value={metric.value}
-            unit={metric.unit}
-            trend={metric.trend}
-            journey={journey}
-            style={styles.metricCard}
-          />
+          <View key={index} style={styles.metricCard}>
+            <MetricCard
+              metricName={metric.type}
+              value={metric.value}
+              unit={metric.unit}
+              trend={metric.trend}
+              journey={journey as 'health' | 'care' | 'plan'}
+            />
+          </View>
         ))}
       </ScrollView>
     </View>

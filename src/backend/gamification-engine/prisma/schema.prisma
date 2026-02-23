@@ -14,6 +14,7 @@ model GameProfile {
   xp            Int               @default(0)
   achievements  UserAchievement[]
   quests        UserQuest[]
+  rewards       UserReward[]
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
 }
@@ -68,6 +69,48 @@ model UserQuest {
   updatedAt   DateTime    @updatedAt
 
   @@id([profileId, questId])
+}
+
+model Reward {
+  id          String       @id @default(uuid())
+  title       String
+  description String
+  xpReward    Int
+  icon        String
+  journey     String       @default("global")
+  users       UserReward[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model UserReward {
+  id        String      @id @default(uuid())
+  profileId String
+  rewardId  String
+  profile   GameProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  reward    Reward      @relation(fields: [rewardId], references: [id], onDelete: Cascade)
+  earnedAt  DateTime    @default(now())
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@unique([profileId, rewardId])
+}
+
+model AuditLog {
+  id           String   @id @default(uuid())
+  userId       String
+  action       String
+  resourceType String
+  resourceId   String?
+  journeyId    String?
+  ipAddress    String?
+  userAgent    String?
+  metadata     Json?
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+  @@index([resourceType, resourceId])
+  @@index([createdAt])
 }
 
 model LeaderboardEntry {
