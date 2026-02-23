@@ -11,6 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components/native';
 import type { Theme } from '../../../../design-system/src/themes/base.theme';
+import type { HomeTabScreenNavigationProp } from '../../navigation/types';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
@@ -103,7 +104,7 @@ export const HomeAlertScreen: React.FC = () => {
   const theme = useTheme() as Theme;
   const styles = createStyles(theme);
   const { t } = useTranslation();
-  const navigation = useNavigation();
+  const navigation = useNavigation<HomeTabScreenNavigationProp>();
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
 
   const handleDismiss = useCallback((id: string) => {
@@ -116,7 +117,15 @@ export const HomeAlertScreen: React.FC = () => {
 
   const handleAction = useCallback(
     (action: string) => {
-      navigation.navigate(action as never);
+      const actionRouteMap: Record<string, () => void> = {
+        HEALTH_METRIC_DETAIL: () => navigation.navigate('Health', { screen: 'HealthMetricDetail', params: { metricType: '' } }),
+        HEALTH_DASHBOARD: () => navigation.navigate('Health', { screen: 'HealthDashboard' }),
+        CARE_MEDICATION_TRACKING: () => navigation.navigate('Care', { screen: 'CareMedicationTracking' }),
+      };
+      const handler = actionRouteMap[action];
+      if (handler) {
+        handler();
+      }
     },
     [navigation],
   );

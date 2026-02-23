@@ -11,6 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components/native';
 import type { Theme } from '../../../../design-system/src/themes/base.theme';
+import type { HomeTabScreenNavigationProp } from '../../navigation/types';
 
 import { HomeHeader } from './HomeHeader';
 import { ChartPreview, GoalsSection, JourneysSection } from './HomeWidgets';
@@ -54,7 +55,7 @@ const HomeScreen: React.FC = () => {
   const theme = useTheme() as Theme;
   const styles = createStyles(theme);
   const { t } = useTranslation();
-  const navigation = useNavigation();
+  const navigation = useNavigation<HomeTabScreenNavigationProp>();
   const { session, getUserFromToken } = useAuth();
   const { gameProfile } = useGamification();
 
@@ -148,7 +149,7 @@ const HomeScreen: React.FC = () => {
               key={metric.id}
               style={styles.metricCard}
               onPress={() =>
-                navigation.navigate(ROUTES.HEALTH_METRIC_DETAIL as never, { metricId: metric.id } as never)
+                navigation.navigate('Health', { screen: 'HealthMetricDetail', params: { metricType: metric.id } })
               }
               accessibilityRole="button"
               accessibilityLabel={`${metric.name}: ${metric.value} ${metric.unit}`}

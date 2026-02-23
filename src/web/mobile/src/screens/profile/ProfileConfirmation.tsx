@@ -1,7 +1,8 @@
 import React from 'react';
 import { ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import type { AuthNavigationProp } from '../../navigation/types';
+import type { StackNavigationProp } from '@react-navigation/stack';
+import type { RootStackParamList } from '../../navigation/types';
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
 
@@ -11,7 +12,6 @@ import { spacing } from '../../../../design-system/src/tokens/spacing';
 import { borderRadius } from '../../../../design-system/src/tokens/borderRadius';
 import { sizing } from '../../../../design-system/src/tokens/sizing';
 import { shadows } from '../../../../design-system/src/tokens/shadows';
-import { ROUTES } from '../../constants/routes';
 
 // --- Styled Components ---
 
@@ -156,7 +156,7 @@ const CelebrationText = styled.Text`
  * Displays success state and profile summary, navigates to Home.
  */
 const ProfileConfirmation: React.FC = () => {
-  const navigation = useNavigation<AuthNavigationProp>();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const { t } = useTranslation();
 
   // TODO: Retrieve actual profile data from context/store
@@ -167,10 +167,10 @@ const ProfileConfirmation: React.FC = () => {
   };
 
   const handleContinueToHome = () => {
-    // Reset navigation stack and go to Home
+    // Reset navigation stack and go to Main (root-level tab navigator)
     navigation.reset({
       index: 0,
-      routes: [{ name: ROUTES.HOME as never }],
+      routes: [{ name: 'Main' }],
     });
   };
 

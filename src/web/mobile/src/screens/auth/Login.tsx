@@ -6,6 +6,7 @@ import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '../hooks/useAuth';
+import { ROUTES } from '../../constants/routes';
 
 import { Input } from 'src/web/design-system/src/components/Input/Input';
 import { Button } from 'src/web/design-system/src/components/Button/Button';
@@ -131,7 +132,7 @@ const LoginScreen = () => {
       <Box alignItems="center" marginBottom="md">
         <Button
           testID="login-forgot-password"
-          onPress={() => navigation.navigate('ForgotPassword')}
+          onPress={() => navigation.navigate(ROUTES.AUTH_FORGOT_PASSWORD)}
           variant="tertiary"
           journey="health"
         >
@@ -146,7 +147,7 @@ const LoginScreen = () => {
         </Text>
         <Button
           testID="login-register-link"
-          onPress={() => navigation.navigate('Register')}
+          onPress={() => navigation.navigate(ROUTES.AUTH_REGISTER)}
           variant="tertiary"
           journey="health"
         >

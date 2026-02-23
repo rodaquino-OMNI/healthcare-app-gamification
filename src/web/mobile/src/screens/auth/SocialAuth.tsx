@@ -5,9 +5,10 @@ import {
   Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
-import type { AuthNavigationProp } from '../../navigation/types';
+import type { AuthNavigationProp, RootStackParamList } from '../../navigation/types';
 
 import { ROUTES } from '../../constants/routes';
 
@@ -232,13 +233,23 @@ export const SocialAuth: React.FC = () => {
             <ConsentText>
               {t('auth.socialAuth.lgpdConsent')}{' '}
               <ConsentLink
-                onPress={() => navigation.navigate(ROUTES.SETTINGS_PRIVACY_POLICY as never)}
+                onPress={() => {
+                  const root = navigation.getParent<StackNavigationProp<RootStackParamList>>();
+                  if (root) {
+                    root.navigate('Main', { screen: 'Settings', params: { screen: ROUTES.SETTINGS_PRIVACY_POLICY } });
+                  }
+                }}
               >
                 {t('auth.socialAuth.privacyPolicy')}
               </ConsentLink>
               {' '}{t('auth.socialAuth.and')}{' '}
               <ConsentLink
-                onPress={() => navigation.navigate(ROUTES.SETTINGS_TERMS as never)}
+                onPress={() => {
+                  const root = navigation.getParent<StackNavigationProp<RootStackParamList>>();
+                  if (root) {
+                    root.navigate('Main', { screen: 'Settings', params: { screen: ROUTES.SETTINGS_TERMS } });
+                  }
+                }}
               >
                 {t('auth.socialAuth.termsOfService')}
               </ConsentLink>
@@ -297,7 +308,7 @@ export const SocialAuth: React.FC = () => {
 
           {/* Email Login Link */}
           <EmailLink
-            onPress={() => navigation.navigate('Login')}
+            onPress={() => navigation.navigate(ROUTES.AUTH_LOGIN)}
             testID="social-auth-email-login"
           >
             <EmailLinkText>{t('auth.socialAuth.emailLogin')}</EmailLinkText>
@@ -308,7 +319,7 @@ export const SocialAuth: React.FC = () => {
             <FooterRow>
               <FooterText>{t('auth.socialAuth.noAccount')} </FooterText>
               <TouchableOpacity
-                onPress={() => navigation.navigate('Register')}
+                onPress={() => navigation.navigate(ROUTES.AUTH_REGISTER)}
                 testID="social-auth-register"
               >
                 <FooterLink>{t('auth.socialAuth.register')}</FooterLink>

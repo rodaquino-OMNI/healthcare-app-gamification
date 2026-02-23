@@ -26,13 +26,13 @@ export type AuthStackParamList = {
   AuthWelcome: undefined;
   AuthOnboarding: undefined;
   AuthWelcomeCTA: undefined;
-  // Legacy MOBILE_AUTH_ROUTES names (still registered in AuthNavigator)
-  Login: undefined;
-  Register: undefined;
-  ForgotPassword: undefined;
-  MFA: undefined;
-  EmailVerify: undefined;
-  SetPassword: undefined;
+  // Core auth screens (unified ROUTES constants)
+  AuthLogin: undefined;
+  AuthRegister: undefined;
+  AuthForgotPassword: undefined;
+  AuthMFA: undefined;
+  AuthEmailVerify: undefined;
+  AuthSetPassword: undefined;
   // Social
   AuthSocial: undefined;
   // Personalization
@@ -220,7 +220,7 @@ export type HealthStackParamList = {
 
 // ---------------------------------------------------------------------------
 // Plan Stack
-// Note: PlanNavigator uses legacy `routes` (lowercase) values from MOBILE_PLAN_ROUTES
+// Note: PlanNavigator uses legacy `routes` (lowercase) values
 // ---------------------------------------------------------------------------
 
 export type PlanStackParamList = {

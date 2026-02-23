@@ -7,8 +7,9 @@ import { Appointment } from 'src/web/shared/types/care.types.ts';
 import { claimValidationSchema } from 'src/web/shared/utils/validation.ts';
 import { JourneyContext } from 'src/web/mobile/src/context/JourneyContext.tsx';
 import { JOURNEY_COLORS } from 'src/web/shared/constants/journeys';
-import { MOBILE_CARE_ROUTES } from 'src/web/shared/constants/routes';
 import { useNavigation } from '@react-navigation/native';
+import type { CareNavigationProp } from 'src/web/mobile/src/navigation/types';
+import { ROUTES } from 'src/web/mobile/src/constants/routes';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 
@@ -31,7 +32,7 @@ const AppointmentForm: React.FC = () => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const { journey } = useContext(JourneyContext);
-  const navigation = useNavigation();
+  const navigation = useNavigation<CareNavigationProp>();
 
   const {
     control,
@@ -73,10 +74,9 @@ const AppointmentForm: React.FC = () => {
       });
       
       // Navigate to confirmation
-      navigation.navigate(MOBILE_CARE_ROUTES.APPOINTMENTS as never, {
+      navigation.navigate(ROUTES.CARE_APPOINTMENTS, {
         appointmentId: response.id,
-        showConfirmation: true,
-      } as never);
+      });
       
     } catch (error) {
       console.error('Error booking appointment:', error);

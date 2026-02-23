@@ -19,7 +19,8 @@ import { useHealthMetrics } from 'src/web/mobile/src/hooks/useHealthMetrics';
 import { useGamification } from 'src/web/mobile/src/hooks/useGamification';
 import { HealthGoal } from 'src/web/shared/types/health.types';
 import { useTranslation } from 'react-i18next';
-import { MOBILE_HEALTH_ROUTES } from 'src/web/shared/constants/routes';
+import { ROUTES } from '../../constants/routes';
+import type { HealthNavigationProp } from '../../navigation/types';
 
 // Define the style for the component
 const styles = StyleSheet.create({
@@ -58,7 +59,7 @@ const HealthGoals: React.FC = () => {
   const { journey } = useJourney();
 
   // Access the navigation object for screen navigation
-  const navigation = useNavigation();
+  const navigation = useNavigation<HealthNavigationProp>();
 
   // State to manage the visibility of the HealthGoalForm modal
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -112,7 +113,7 @@ const HealthGoals: React.FC = () => {
         contentContainerStyle={styles.listContent}
         renderItem={({ item }) => (
           <Card journey={journey}>
-            <TouchableOpacity onPress={() => navigation.navigate(MOBILE_HEALTH_ROUTES.METRIC_DETAIL)}>
+            <TouchableOpacity onPress={() => navigation.navigate(ROUTES.HEALTH_METRIC_DETAIL, { metricType: item.id })}>
               <View>
                 {/* Display the goal title */}
                 <Text fontWeight="medium">{item.title}</Text>

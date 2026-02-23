@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components/native';
 import type { Theme } from '../../../../design-system/src/themes/base.theme';
+import type { HomeTabScreenNavigationProp } from '../../navigation/types';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { fontSizeValues } from '../../../../design-system/src/tokens/typography';
@@ -48,7 +49,7 @@ export const CHART_MAX_HEIGHT = 80;
 // ---------------------------------------------------------------------------
 
 interface ChartPreviewProps {
-  navigation: any;
+  navigation: HomeTabScreenNavigationProp;
   bars: WeeklyBar[];
   legendLabels: LegendLabels;
   viewDetailsLabel: string;
@@ -127,7 +128,7 @@ export const ChartPreview: React.FC<ChartPreviewProps> = ({
     </View>
 
     <TouchableOpacity
-      onPress={() => navigation.navigate(healthDashboardRoute as never)}
+      onPress={() => navigation.navigate('Health', { screen: 'HealthDashboard' })}
       accessibilityRole="link"
       accessibilityLabel={viewDetailsAccessibilityLabel}
     >
@@ -194,7 +195,7 @@ export const GoalsSection: React.FC<GoalsSectionProps> = ({ goals, completedLabe
 // ---------------------------------------------------------------------------
 
 interface JourneysSectionProps {
-  navigation: any;
+  navigation: HomeTabScreenNavigationProp;
   journeys: JourneyCard[];
 }
 
@@ -205,13 +206,33 @@ export const JourneysSection: React.FC<JourneysSectionProps> = ({ navigation, jo
   const { t } = useTranslation();
   const theme = useTheme() as Theme;
   const styles = createStyles(theme);
+
+  const handleJourneyPress = useCallback(
+    (route: string) => {
+      switch (route) {
+        case 'HealthDashboard':
+          navigation.navigate('Health', { screen: 'HealthDashboard' });
+          break;
+        case 'CareDashboard':
+          navigation.navigate('Care', { screen: 'CareDashboard' });
+          break;
+        case 'PlanDashboard':
+          navigation.navigate('Plan', { screen: 'PlanDashboard' });
+          break;
+        default:
+          break;
+      }
+    },
+    [navigation],
+  );
+
   return (
   <>
     {journeys.map((journey) => (
       <TouchableOpacity
         key={journey.id}
         style={styles.journeyCard}
-        onPress={() => navigation.navigate(journey.route as never)}
+        onPress={() => handleJourneyPress(journey.route)}
         accessibilityRole="button"
         accessibilityLabel={t('home.navigateTo', { title: journey.title })}
       >

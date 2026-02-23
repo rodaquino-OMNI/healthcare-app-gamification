@@ -19,7 +19,6 @@ import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
 import { borderRadiusValues } from '../../../../design-system/src/tokens/borderRadius';
-import { ROUTES } from '../../constants/routes';
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -162,14 +161,14 @@ export const NotificationDetailScreen: React.FC = () => {
     switch (type) {
       case 'appointment':
       case 'care':
-        navigation.navigate(ROUTES.CARE_APPOINTMENTS as never);
+        navigation.navigate('Care', { screen: 'CareAppointments', params: {} });
         break;
       case 'medication':
       case 'health':
-        navigation.navigate(ROUTES.CARE_MEDICATION_TRACKING as never);
+        navigation.navigate('Care', { screen: 'CareMedicationTracking' });
         break;
       case 'plan':
-        navigation.navigate(ROUTES.PLAN_DASHBOARD as never);
+        navigation.navigate('Plan', { screen: 'PlanDashboard' });
         break;
       default:
         break;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ScrollView, TextInput as RNTextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import type { SettingsNavigationProp } from '../../navigation/types';
+import type { SettingsNavigationProp, SettingsStackParamList } from '../../navigation/types';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
@@ -201,11 +201,11 @@ export const HelpHomeScreen: React.FC = () => {
   ];
 
   const handleCategoryPress = (route: string) => {
-    navigation.navigate(route as never);
+    navigation.navigate(route as keyof SettingsStackParamList);
   };
 
   const handleQuickLink = (route: string) => {
-    navigation.navigate(route as never);
+    navigation.navigate(route as keyof SettingsStackParamList);
   };
 
   return (

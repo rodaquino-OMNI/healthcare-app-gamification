@@ -5,7 +5,6 @@ import { AuthNavigator } from './AuthNavigator';
 import { MainNavigator } from './MainNavigator';
 import { useAuth } from '../hooks/useAuth';
 import { AuthSession } from 'src/web/shared/types/auth.types';
-import { MOBILE_AUTH_ROUTES } from 'src/web/shared/constants/routes';
 
 /**
  * Determines the navigation structure based on the authentication status.

@@ -12,11 +12,11 @@ import {
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { useTheme } from 'styled-components/native';
 import type { Theme } from '../../../../design-system/src/themes/base.theme';
+import type { HomeTabScreenNavigationProp } from '../../navigation/types';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
 import { borderRadiusValues } from '../../../../design-system/src/tokens/borderRadius';
-import { ROUTES } from '../../constants/routes';
 import { useTranslation } from 'react-i18next';
 
 import { SearchFilter, FilterPanel } from './SearchResultsFilterPanel';
@@ -51,7 +51,7 @@ export const SearchResultsScreen: React.FC = () => {
   const theme = useTheme() as Theme;
   const styles = createStyles(theme);
   const { t } = useTranslation();
-  const navigation = useNavigation();
+  const navigation = useNavigation<HomeTabScreenNavigationProp>();
   const route = useRoute<RouteProp<SearchResultsParams, 'SearchResults'>>();
   const { query: initialQuery, filter: initialFilter } = route.params;
 
@@ -188,7 +188,7 @@ export const SearchResultsScreen: React.FC = () => {
                 <DoctorCard
                   key={doctor.id}
                   doctor={doctor}
-                  onPress={() => navigation.navigate(ROUTES.CARE_APPOINTMENTS as never)}
+                  onPress={() => navigation.navigate('Care', { screen: 'CareAppointments', params: {} })}
                 />
               ))}
             </View>
@@ -205,7 +205,7 @@ export const SearchResultsScreen: React.FC = () => {
                 <MedicationCard
                   key={medication.id}
                   medication={medication}
-                  onPress={() => navigation.navigate(ROUTES.CARE_MEDICATION_TRACKING as never)}
+                  onPress={() => navigation.navigate('Care', { screen: 'CareMedicationTracking' })}
                 />
               ))}
             </View>

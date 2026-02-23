@@ -12,8 +12,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components/native';
 import type { Theme } from '../../../../design-system/src/themes/base.theme';
+import type { HomeTabScreenNavigationProp } from '../../navigation/types';
 
-import { ROUTES } from '../../constants/routes';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { fontSizeValues } from '../../../../design-system/src/tokens/typography';
@@ -144,7 +144,7 @@ export const HomeMetricsScreen: React.FC = () => {
   const theme = useTheme() as Theme;
   const styles = createStyles(theme);
   const { t } = useTranslation();
-  const navigation = useNavigation();
+  const navigation = useNavigation<HomeTabScreenNavigationProp>();
   const [activeFilter, setActiveFilter] = useState<MetricCategory>('all');
 
   const filteredMetrics = useMemo(() => {
@@ -154,13 +154,13 @@ export const HomeMetricsScreen: React.FC = () => {
 
   const handleMetricPress = useCallback(
     (metricId: string) => {
-      navigation.navigate(ROUTES.HEALTH_METRIC_DETAIL as never, { metricId } as never);
+      navigation.navigate('Health', { screen: 'HealthMetricDetail', params: { metricType: metricId } });
     },
     [navigation],
   );
 
   const handleAddMetric = useCallback(() => {
-    navigation.navigate(ROUTES.HEALTH_ADD_METRIC as never);
+    navigation.navigate('Health', { screen: 'HealthAddMetric' });
   }, [navigation]);
 
   const renderMetricCard = useCallback(

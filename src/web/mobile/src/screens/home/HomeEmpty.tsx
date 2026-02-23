@@ -3,6 +3,7 @@ import { ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
+import type { HomeTabScreenNavigationProp } from '../../navigation/types';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography } from '../../../../design-system/src/tokens/typography';
@@ -188,22 +189,50 @@ const SETUP_CHECKLIST: ChecklistEntry[] = [
 // --- Component ---
 
 export const HomeEmptyScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<HomeTabScreenNavigationProp>();
   const { t } = useTranslation();
 
-  const handleChecklistPress = useCallback(
+  const navigateToRoute = useCallback(
     (route: string) => {
-      navigation.navigate(route as never);
+      switch (route) {
+        case ROUTES.PROFILE:
+          navigation.navigate('Profile');
+          break;
+        case ROUTES.HEALTH_HEALTH_GOALS:
+          navigation.navigate('Health', { screen: 'HealthGoals' });
+          break;
+        case ROUTES.HEALTH_DEVICE_CONNECTION:
+          navigation.navigate('Health', { screen: 'HealthDeviceConnection' });
+          break;
+        case ROUTES.CARE_APPOINTMENT_BOOKING:
+          navigation.navigate('Care', { screen: 'CareAppointmentBooking' });
+          break;
+        case ROUTES.HEALTH_MEDICATION_ADD:
+          navigation.navigate('Health', { screen: 'HealthMedicationAdd' });
+          break;
+        case ROUTES.HEALTH_DASHBOARD:
+          navigation.navigate('Health', { screen: 'HealthDashboard' });
+          break;
+        default:
+          break;
+      }
     },
     [navigation],
   );
 
+  const handleChecklistPress = useCallback(
+    (route: string) => {
+      navigateToRoute(route);
+    },
+    [navigateToRoute],
+  );
+
   const handleExplore = useCallback(() => {
-    navigation.navigate(ROUTES.HEALTH_DASHBOARD as never);
+    navigation.navigate('Health', { screen: 'HealthDashboard' });
   }, [navigation]);
 
   const handleBookAppointment = useCallback(() => {
-    navigation.navigate(ROUTES.CARE_APPOINTMENT_BOOKING as never);
+    navigation.navigate('Care', { screen: 'CareAppointmentBooking' });
   }, [navigation]);
 
   return (

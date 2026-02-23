@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 // useTranslation available; labels provided via props from parent
 import { useTranslation } from 'react-i18next';
+import type { HomeTabScreenNavigationProp, HomeStackParamList, MainTabParamList } from '../../navigation/types';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { fontSizeValues } from '../../../../design-system/src/tokens/typography';
@@ -22,28 +23,51 @@ export interface QuickAction {
 // ---------------------------------------------------------------------------
 
 interface QuickActionsProps {
-  navigation: any;
+  navigation: HomeTabScreenNavigationProp;
   actions: QuickAction[];
 }
 
 /**
  * Quick action buttons for navigating to common destinations.
+ * Routes can be Home stack screens (HomeAlert, HomeMetrics) or tab names (Profile).
  */
-export const QuickActions: React.FC<QuickActionsProps> = ({ navigation, actions }) => (
-  <View style={styles.quickActionsRow}>
-    {actions.map((action) => (
-      <TouchableOpacity
-        key={action.id}
-        style={styles.quickActionButton}
-        onPress={() => navigation.navigate(action.route as never)}
-        accessibilityRole="button"
-        accessibilityLabel={action.label}
-      >
-        <Text style={styles.quickActionText}>{action.label}</Text>
-      </TouchableOpacity>
-    ))}
-  </View>
-);
+export const QuickActions: React.FC<QuickActionsProps> = ({ navigation, actions }) => {
+  const handlePress = useCallback(
+    (route: string) => {
+      // Check if the route is a Home stack screen
+      const homeScreens: Array<keyof HomeStackParamList> = [
+        'HomeAlert', 'HomeMetrics', 'HomeMain', 'Search', 'SearchResults',
+        'HomeWeeklySummary', 'HomeBottomSheet', 'HomeMedicationReminders',
+        'HomeAppointmentWidget', 'HomeHealthTips', 'HomeEmpty',
+        'NotificationDetail', 'NotificationUnread', 'NotificationCategoryFilter',
+        'NotificationEmpty', 'NotificationSettings',
+      ];
+      if (homeScreens.includes(route as keyof HomeStackParamList)) {
+        navigation.navigate(route as keyof HomeStackParamList);
+      } else {
+        // Tab-level navigation (Profile, Notifications, etc.)
+        navigation.navigate(route as keyof MainTabParamList);
+      }
+    },
+    [navigation],
+  );
+
+  return (
+    <View style={styles.quickActionsRow}>
+      {actions.map((action) => (
+        <TouchableOpacity
+          key={action.id}
+          style={styles.quickActionButton}
+          onPress={() => handlePress(action.route)}
+          accessibilityRole="button"
+          accessibilityLabel={action.label}
+        >
+          <Text style={styles.quickActionText}>{action.label}</Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
+};
 
 // ---------------------------------------------------------------------------
 // Styles

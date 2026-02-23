@@ -2,13 +2,13 @@ import React, { useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
+import type { HomeTabScreenNavigationProp } from '../../navigation/types';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography } from '../../../../design-system/src/tokens/typography';
 import { spacing } from '../../../../design-system/src/tokens/spacing';
 import { borderRadius } from '../../../../design-system/src/tokens/borderRadius';
 import { sizing } from '../../../../design-system/src/tokens/sizing';
-import { ROUTES } from '../../constants/routes';
 
 // --- Styled Components ---
 
@@ -108,7 +108,7 @@ const GoHomeText = styled.Text`
 // --- Component ---
 
 export const NotificationEmptyScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<HomeTabScreenNavigationProp>();
   const { t } = useTranslation();
 
   const handleGoBack = useCallback(() => {
@@ -116,7 +116,7 @@ export const NotificationEmptyScreen: React.FC = () => {
   }, [navigation]);
 
   const handleGoHome = useCallback(() => {
-    navigation.navigate(ROUTES.HOME as never);
+    navigation.navigate('Home', { screen: 'HomeMain' });
   }, [navigation]);
 
   return (

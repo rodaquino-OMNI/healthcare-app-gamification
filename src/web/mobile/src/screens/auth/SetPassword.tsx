@@ -8,6 +8,7 @@ import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 
 
+import { ROUTES } from '../../constants/routes';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
 import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
@@ -252,7 +253,7 @@ export const SetPasswordScreen: React.FC = () => {
     try {
       // TODO: Call actual set password API
       // await setPassword(data.password);
-      navigation.navigate('Login');
+      navigation.navigate(ROUTES.AUTH_LOGIN);
     } catch (error: any) {
       console.error('Set password failed:', error);
     } finally {

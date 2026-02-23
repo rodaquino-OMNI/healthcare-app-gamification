@@ -269,22 +269,3 @@ export const ROUTES = {
   ERROR_MAINTENANCE: 'ErrorMaintenance',
   ERROR_FORCE_UPDATE: 'ErrorForceUpdate',
 };
-
-/**
- * Re-export legacy route objects from shared so screens can import from
- * the local barrel instead of reaching into src/web/shared directly.
- *
- * NOTE: The MOBILE_*_ROUTES values differ from the unified ROUTES values
- * (e.g. MOBILE_AUTH_ROUTES.LOGIN = 'Login' vs ROUTES.AUTH_LOGIN = 'AuthLogin').
- * The navigators currently register screens using these legacy values, so
- * screens must continue using MOBILE_*_ROUTES until the navigators are
- * migrated to the unified ROUTES constants.
- */
-export {
-  MOBILE_AUTH_ROUTES,
-  MOBILE_PLAN_ROUTES,
-  MOBILE_PROFILE_ROUTES,
-  MOBILE_HEALTH_ROUTES,
-  MOBILE_CARE_ROUTES,
-  MOBILE_GLOBAL_ROUTES,
-} from 'src/web/shared/constants/routes';

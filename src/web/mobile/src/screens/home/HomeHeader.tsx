@@ -9,9 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from 'styled-components/native';
 import type { Theme } from '../../../../design-system/src/themes/base.theme';
+import type { HomeTabScreenNavigationProp } from '../../navigation/types';
 
 import { useAuth } from '../../context/AuthContext';
-import { ROUTES } from '../../constants/routes';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { fontSizeValues } from '../../../../design-system/src/tokens/typography';
@@ -47,7 +47,7 @@ export const HomeHeader: React.FC = () => {
   const theme = useTheme() as Theme;
   const styles = createStyles(theme);
   const { t } = useTranslation();
-  const navigation = useNavigation();
+  const navigation = useNavigation<HomeTabScreenNavigationProp>();
   const { session, getUserFromToken } = useAuth();
 
   const user = session?.accessToken
@@ -82,7 +82,7 @@ export const HomeHeader: React.FC = () => {
       {/* Notification Bell */}
       <TouchableOpacity
         style={styles.bellButton}
-        onPress={() => navigation.navigate(ROUTES.NOTIFICATIONS as never)}
+        onPress={() => navigation.navigate('Notifications')}
         accessibilityRole="button"
         accessibilityLabel={t('home.header.viewNotifications')}
       >

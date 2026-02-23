@@ -3,13 +3,13 @@ import { FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
+import type { HomeTabScreenNavigationProp } from '../../navigation/types';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography } from '../../../../design-system/src/tokens/typography';
 import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { borderRadius } from '../../../../design-system/src/tokens/borderRadius';
 import { sizing } from '../../../../design-system/src/tokens/sizing';
-import { ROUTES } from '../../constants/routes';
 
 // --- Styled Components ---
 
@@ -221,7 +221,7 @@ const MOCK_REMINDERS: MedicationReminder[] = [
 // --- Component ---
 
 export const HomeMedicationRemindersScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<HomeTabScreenNavigationProp>();
   const { t } = useTranslation();
   const [reminders, setReminders] = useState(MOCK_REMINDERS);
 
@@ -230,7 +230,7 @@ export const HomeMedicationRemindersScreen: React.FC = () => {
   }, [navigation]);
 
   const handleViewAll = useCallback(() => {
-    navigation.navigate(ROUTES.HEALTH_MEDICATION_LIST as never);
+    navigation.navigate('Health', { screen: 'HealthMedicationList' });
   }, [navigation]);
 
   const handleTake = useCallback((id: string) => {

@@ -11,6 +11,7 @@ import { Button } from 'src/web/design-system/src/components/Button';
 import Input from 'src/web/design-system/src/components/Input';
 import { useAuth } from 'src/web/mobile/src/hooks/useAuth';
 import { showToast, validationSchema } from 'src/web/mobile/src/utils';
+import { ROUTES } from '../../constants/routes';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography, fontSizeValues } from '../../../../design-system/src/tokens/typography';
@@ -138,7 +139,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProp> = ({ navig
           </SuccessMessage>
           <ButtonWrapper style={{ width: '100%' }}>
             <Button
-              onPress={() => navigation.navigate('Login')}
+              onPress={() => navigation.navigate(ROUTES.AUTH_LOGIN)}
               journey="health"
               testID="back-to-login-button"
             >
@@ -183,7 +184,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProp> = ({ navig
 
       <ButtonWrapper>
         <Button
-          onPress={() => navigation.navigate('Login')}
+          onPress={() => navigation.navigate(ROUTES.AUTH_LOGIN)}
           variant="tertiary"
           journey="health"
           testID="cancel-button"

@@ -1,7 +1,8 @@
 import React from 'react';
 import { ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import type { AuthNavigationProp } from '../../navigation/types';
+import type { RootStackParamList } from '../../navigation/types';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
@@ -10,7 +11,6 @@ import { typography } from '../../../../design-system/src/tokens/typography';
 import { spacing } from '../../../../design-system/src/tokens/spacing';
 import { borderRadius } from '../../../../design-system/src/tokens/borderRadius';
 import { sizing } from '../../../../design-system/src/tokens/sizing';
-import { ROUTES } from '../../constants/routes';
 
 // --- Styled Components ---
 
@@ -161,13 +161,13 @@ const MOCK_SELECTED_GOALS = [
  * of selected goals and a CTA to enter the main app.
  */
 export const OnboardingConfirmation: React.FC = () => {
-  const navigation = useNavigation<AuthNavigationProp>();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const { t } = useTranslation();
 
   const handleStartApp = () => {
     navigation.reset({
       index: 0,
-      routes: [{ name: ROUTES.HOME as never }],
+      routes: [{ name: 'Main' }],
     });
   };
 

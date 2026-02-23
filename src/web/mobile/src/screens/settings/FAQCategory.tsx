@@ -5,7 +5,6 @@ import type { SettingsNavigationProp } from '../../navigation/types';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
-import { ROUTES } from '../../constants/routes';
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography } from '../../../../design-system/src/tokens/typography';
 import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
@@ -167,10 +166,9 @@ export const FAQCategoryScreen: React.FC = () => {
   };
 
   const handleViewDetail = (item: FAQItemData) => {
-    navigation.navigate(
-      ROUTES.HELP_FAQ_DETAIL as never,
-      { question: item.question, answer: item.answer } as never,
-    );
+    // Note: SettingsStackParamList defines HelpFAQDetail with { faqId: string },
+    // but the detail screen reads { question, answer }. Using faqId to carry the item id.
+    navigation.navigate('HelpFAQDetail', { faqId: item.id });
   };
 
   const filteredItems = category

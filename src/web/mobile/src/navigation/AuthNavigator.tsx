@@ -22,7 +22,6 @@ import ProfileAddressScreen from '../screens/profile/ProfileAddress';
 import ProfileDocumentsScreen from '../screens/profile/ProfileDocuments';
 import ProfilePhotoScreen from '../screens/profile/ProfilePhoto';
 import ProfileConfirmationScreen from '../screens/profile/ProfileConfirmation';
-import { MOBILE_AUTH_ROUTES, MOBILE_PROFILE_ROUTES } from 'src/web/shared/constants/routes';
 import { ROUTES } from '../constants/routes';
 
 // Create a stack navigator
@@ -44,14 +43,14 @@ const AuthStack = () => {
       <Stack.Screen name={ROUTES.AUTH_WELCOME} component={WelcomeSplashScreen} />
       <Stack.Screen name={ROUTES.AUTH_ONBOARDING} component={OnboardingScreen} />
       <Stack.Screen name={ROUTES.AUTH_WELCOME_CTA} component={WelcomeCTAScreen} />
-      <Stack.Screen name={MOBILE_AUTH_ROUTES.LOGIN} component={Login} />
-      <Stack.Screen name={MOBILE_AUTH_ROUTES.REGISTER} component={RegisterScreen} />
-      <Stack.Screen name={MOBILE_AUTH_ROUTES.FORGOT_PASSWORD} component={ForgotPasswordScreen} />
-      <Stack.Screen name={MOBILE_AUTH_ROUTES.MFA} component={MFAScreen} />
+      <Stack.Screen name={ROUTES.AUTH_LOGIN} component={Login} />
+      <Stack.Screen name={ROUTES.AUTH_REGISTER} component={RegisterScreen} />
+      <Stack.Screen name={ROUTES.AUTH_FORGOT_PASSWORD} component={ForgotPasswordScreen} />
+      <Stack.Screen name={ROUTES.AUTH_MFA} component={MFAScreen} />
 
       {/* Verification */}
-      <Stack.Screen name={MOBILE_AUTH_ROUTES.EMAIL_VERIFY} component={EmailVerifyScreen} />
-      <Stack.Screen name={MOBILE_AUTH_ROUTES.SET_PASSWORD} component={SetPasswordScreen} />
+      <Stack.Screen name={ROUTES.AUTH_EMAIL_VERIFY} component={EmailVerifyScreen} />
+      <Stack.Screen name={ROUTES.AUTH_SET_PASSWORD} component={SetPasswordScreen} />
 
       {/* Social Authentication */}
       <Stack.Screen name={ROUTES.AUTH_SOCIAL} component={SocialAuth} />
@@ -62,13 +61,13 @@ const AuthStack = () => {
       <Stack.Screen name={ROUTES.AUTH_ONBOARDING_CONFIRMATION} component={OnboardingConfirmationScreen} />
 
       {/* Profile Setup */}
-      <Stack.Screen name={MOBILE_PROFILE_ROUTES.SETUP} component={ProfileSetupScreen} />
-      <Stack.Screen name={MOBILE_PROFILE_ROUTES.HEALTH} component={ProfileVariant1Screen} />
-      <Stack.Screen name={MOBILE_PROFILE_ROUTES.INSURANCE} component={ProfileVariant2Screen} />
-      <Stack.Screen name={MOBILE_PROFILE_ROUTES.ADDRESS} component={ProfileAddressScreen} />
-      <Stack.Screen name={MOBILE_PROFILE_ROUTES.DOCUMENTS} component={ProfileDocumentsScreen} />
-      <Stack.Screen name={MOBILE_PROFILE_ROUTES.PHOTO} component={ProfilePhotoScreen} />
-      <Stack.Screen name={MOBILE_PROFILE_ROUTES.CONFIRMATION} component={ProfileConfirmationScreen} />
+      <Stack.Screen name={ROUTES.PROFILE_SETUP} component={ProfileSetupScreen} />
+      <Stack.Screen name={ROUTES.PROFILE_HEALTH} component={ProfileVariant1Screen} />
+      <Stack.Screen name={ROUTES.PROFILE_INSURANCE} component={ProfileVariant2Screen} />
+      <Stack.Screen name={ROUTES.PROFILE_ADDRESS} component={ProfileAddressScreen} />
+      <Stack.Screen name={ROUTES.PROFILE_DOCUMENTS} component={ProfileDocumentsScreen} />
+      <Stack.Screen name={ROUTES.PROFILE_PHOTO} component={ProfilePhotoScreen} />
+      <Stack.Screen name={ROUTES.PROFILE_CONFIRMATION} component={ProfileConfirmationScreen} />
     </Stack.Navigator>
   );
 };

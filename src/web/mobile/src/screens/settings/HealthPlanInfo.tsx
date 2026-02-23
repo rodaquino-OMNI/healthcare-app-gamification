@@ -1,7 +1,8 @@
 import React from 'react';
 import { ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import type { SettingsNavigationProp } from '../../navigation/types';
+import type { SettingsNavigationProp, MainTabParamList } from '../../navigation/types';
+import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
 
@@ -275,7 +276,7 @@ export const HealthPlanInfoScreen: React.FC = () => {
 
         {/* Action Buttons */}
         <ActionButton
-          onPress={() => navigation.navigate(ROUTES.PLAN_DIGITAL_CARD as never)}
+          onPress={() => navigation.getParent<BottomTabNavigationProp<MainTabParamList>>()?.navigate('Plan', { screen: 'DigitalCard' })}
           accessibilityRole="button"
           accessibilityLabel={t('settings.healthPlan.viewCard')}
           testID="health-plan-view-card"

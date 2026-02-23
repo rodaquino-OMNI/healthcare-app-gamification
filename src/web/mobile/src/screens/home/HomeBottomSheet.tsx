@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
+import type { HomeTabScreenNavigationProp } from '../../navigation/types';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography } from '../../../../design-system/src/tokens/typography';
@@ -129,13 +130,28 @@ const QUICK_ACTIONS: QuickAction[] = [
 // --- Component ---
 
 export const HomeBottomSheet: React.FC<HomeBottomSheetProps> = ({ onClose }) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<HomeTabScreenNavigationProp>();
   const { t } = useTranslation();
 
   const handleActionPress = useCallback(
     (route: string) => {
       onClose();
-      navigation.navigate(route as never);
+      switch (route) {
+        case ROUTES.HEALTH_ADD_METRIC:
+          navigation.navigate('Health', { screen: 'HealthAddMetric' });
+          break;
+        case ROUTES.HEALTH_MEDICATION_LIST:
+          navigation.navigate('Health', { screen: 'HealthMedicationList' });
+          break;
+        case ROUTES.CARE_APPOINTMENT_BOOKING:
+          navigation.navigate('Care', { screen: 'CareAppointmentBooking' });
+          break;
+        case ROUTES.CARE_SYMPTOM_CHECKER:
+          navigation.navigate('Care', { screen: 'CareSymptomChecker' });
+          break;
+        default:
+          break;
+      }
     },
     [navigation, onClose],
   );

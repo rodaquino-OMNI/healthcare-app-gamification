@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { userValidationSchema } from 'src/web/shared/utils/validation';
 import { register } from 'src/web/mobile/src/api/auth';
 import { useAuth } from 'src/web/mobile/src/hooks/useAuth';
+import { ROUTES } from '../../constants/routes';
 import { Button } from 'src/web/design-system/src/components/Button/Button';
 import { Input } from 'src/web/design-system/src/components/Input/Input';
 import { Checkbox } from 'src/web/design-system/src/components/Checkbox/Checkbox';
@@ -98,7 +99,7 @@ export const RegisterScreen: React.FC = () => {
   const onSubmit = async (data: any) => {
     try {
       const session = await register(data);
-      navigation.navigate('Login');
+      navigation.navigate(ROUTES.AUTH_LOGIN);
     } catch (error: any) {
       console.error('Registration failed', error.message);
     }
@@ -181,7 +182,7 @@ export const RegisterScreen: React.FC = () => {
 
       <LinkContainer>
         <LinkText>{t('register.alreadyHaveAccount')} </LinkText>
-        <LinkButton onPress={() => navigation.navigate('Login')}>
+        <LinkButton onPress={() => navigation.navigate(ROUTES.AUTH_LOGIN)}>
           {t('register.login') || 'Log In'}
         </LinkButton>
       </LinkContainer>

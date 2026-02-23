@@ -177,11 +177,10 @@ export const FAQDetailScreen: React.FC = () => {
     setVote(value);
   };
 
-  const handleRelatedArticle = (article: { question: string; answer: string }) => {
-    navigation.navigate(
-      ROUTES.HELP_FAQ_DETAIL as never,
-      { question: article.question, answer: article.answer } as never,
-    );
+  const handleRelatedArticle = (article: { id: string; question: string; answer: string }) => {
+    // Note: SettingsStackParamList defines HelpFAQDetail with { faqId: string }.
+    // Using faqId to carry the article id.
+    navigation.navigate('HelpFAQDetail', { faqId: article.id });
   };
 
   const handleContactSupport = () => {

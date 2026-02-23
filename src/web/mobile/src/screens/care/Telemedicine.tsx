@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import { useTelemedicineSession } from 'src/web/mobile/src/hooks/useTelemedicine.ts';
 import { JourneyHeader } from 'src/web/mobile/src/components/shared/JourneyHeader.tsx';
 import { Button } from 'src/web/design-system/src/components/Button/Button.tsx';
-import { MOBILE_CARE_ROUTES } from 'src/web/shared/constants/routes.ts';
 import LoadingIndicator from 'src/web/mobile/src/components/shared/LoadingIndicator.tsx';
 import ErrorState from 'src/web/mobile/src/components/shared/ErrorState';
 

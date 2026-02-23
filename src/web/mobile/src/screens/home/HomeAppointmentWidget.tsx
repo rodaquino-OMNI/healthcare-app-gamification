@@ -3,13 +3,13 @@ import { FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
+import type { HomeTabScreenNavigationProp } from '../../navigation/types';
 
 import { colors } from '../../../../design-system/src/tokens/colors';
 import { typography } from '../../../../design-system/src/tokens/typography';
 import { spacing, spacingValues } from '../../../../design-system/src/tokens/spacing';
 import { borderRadius } from '../../../../design-system/src/tokens/borderRadius';
 import { sizing } from '../../../../design-system/src/tokens/sizing';
-import { ROUTES } from '../../constants/routes';
 
 // --- Styled Components ---
 
@@ -219,7 +219,7 @@ const MOCK_APPOINTMENTS: Appointment[] = [
 // --- Component ---
 
 export const HomeAppointmentWidgetScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<HomeTabScreenNavigationProp>();
   const { t } = useTranslation();
 
   const handleGoBack = useCallback(() => {
@@ -227,14 +227,15 @@ export const HomeAppointmentWidgetScreen: React.FC = () => {
   }, [navigation]);
 
   const handleSeeAll = useCallback(() => {
-    navigation.navigate(ROUTES.CARE_APPOINTMENTS as never);
+    navigation.navigate('Care', { screen: 'CareAppointments', params: {} });
   }, [navigation]);
 
   const handleJoin = useCallback(
     (appointmentId: string) => {
-      navigation.navigate(ROUTES.CARE_TELEMEDICINE as never, {
-        appointmentId,
-      } as never);
+      navigation.navigate('Care', {
+        screen: 'CareTelemedicine',
+        params: { sessionId: appointmentId },
+      });
     },
     [navigation],
   );
