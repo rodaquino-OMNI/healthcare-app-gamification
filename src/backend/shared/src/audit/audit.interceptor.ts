@@ -4,10 +4,12 @@ import {
   ExecutionContext,
   CallHandler,
 } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { AuditService } from './audit.service';
 import { AuditAction } from './dto/audit-log.dto';
+import { PHI_ACCESS_KEY, PhiAccessMetadata } from './phi-access.decorator';
 
 /**
  * Maps HTTP methods to audit actions.
@@ -29,7 +31,10 @@ const HTTP_METHOD_ACTION_MAP: Record<string, AuditAction> = {
  */
 @Injectable()
 export class AuditInterceptor implements NestInterceptor {
-  constructor(private readonly auditService: AuditService) {}
+  constructor(
+    private readonly auditService: AuditService,
+    private readonly reflector: Reflector,
+  ) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const request = context.switchToHttp().getRequest();
@@ -62,6 +67,27 @@ export class AuditInterceptor implements NestInterceptor {
             statusCode: context.switchToHttp().getResponse().statusCode,
           },
         });
+
+        // PHI-specific audit logging (LGPD compliance)
+        const phiMeta = this.reflector.get<PhiAccessMetadata>(
+          PHI_ACCESS_KEY,
+          context.getHandler(),
+        );
+        if (phiMeta) {
+          this.auditService.logPHIAccess(
+            userId,
+            phiMeta.resourceType,
+            resourceId ?? request.url,
+            action,
+            {
+              method,
+              path: request.url,
+              handler: handlerName,
+              ipAddress,
+              userAgent,
+            },
+          );
+        }
       }),
     );
   }

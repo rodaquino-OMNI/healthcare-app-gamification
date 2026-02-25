@@ -8,6 +8,7 @@ import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { CARE_TELEMEDICINE_CONNECTION_FAILED } from '@app/shared/constants/error-codes.constants';
+import { PhiAccess } from '@app/shared/audit';
 
 /**
  * Controller for handling telemedicine session requests.
@@ -33,6 +34,7 @@ export class TelemedicineController {
    */
   @Post('session')
   @UseGuards(JwtAuthGuard)
+  @PhiAccess('TelemedicineSession')
   async startTelemedicineSession(
     @Body() createSessionDto: CreateSessionDto
   ): Promise<any> {

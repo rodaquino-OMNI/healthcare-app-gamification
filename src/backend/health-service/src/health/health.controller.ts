@@ -25,6 +25,7 @@ import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard'; // NestJS J
 import { RolesGuard } from '@app/auth/auth/guards/roles.guard'; // NestJS JWT 10.0.0+
 import { ConsentGuard, RequireConsent } from '@app/shared/consent'; // LGPD consent guard
 import { ConsentType } from '@app/shared/consent'; // Consent type enum
+import { PhiAccess } from '@app/shared/audit';
 
 /**
  * Handles incoming HTTP requests related to health data.
@@ -52,6 +53,7 @@ export class HealthController {
   @Post(':recordId')
   @UseGuards(ConsentGuard)
   @RequireConsent(ConsentType.HEALTH_DATA_SHARING)
+  @PhiAccess('HealthMetric')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new health metric' })
   @ApiResponse({ status: 201, description: 'Health metric created successfully' })
@@ -73,6 +75,7 @@ export class HealthController {
   @Put(':id')
   @UseGuards(ConsentGuard)
   @RequireConsent(ConsentType.HEALTH_DATA_SHARING)
+  @PhiAccess('HealthMetric')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Update an existing health metric' })
   @ApiResponse({ status: 200, description: 'Health metric updated successfully' })

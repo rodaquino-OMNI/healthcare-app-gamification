@@ -35,4 +35,12 @@ jobs:
 
     - name: Test Backend Services
       working-directory: src/backend
-      run: yarn test
+      run: yarn test --coverage --coverageReporters=lcov
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        flags: backend
+        directory: src/backend
+        fail_ci_if_error: false

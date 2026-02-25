@@ -6,3 +6,4 @@ export {
   CreateAuditLogDto,
   AuditLogEntry,
 } from './dto/audit-log.dto';
+export { PhiAccess, PHI_ACCESS_KEY, PhiAccessMetadata } from './phi-access.decorator';

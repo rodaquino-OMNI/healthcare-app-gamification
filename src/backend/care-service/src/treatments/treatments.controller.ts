@@ -7,6 +7,7 @@ import { UpdateTreatmentPlanDto } from './dto/update-treatment-plan.dto';
 import { FilterDto } from '@app/shared/dto/filter.dto';
 import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 import { TracingService } from '@app/shared/tracing/tracing.service';
+import { PhiAccess } from '@app/shared/audit';
 
 @ApiTags('treatments')
 @Controller('treatments')
@@ -22,6 +23,7 @@ export class TreatmentsController {
   @ApiOperation({ summary: 'Create a new treatment plan' })
   @ApiResponse({ status: 201, description: 'Treatment plan created successfully.' })
   @ApiResponse({ status: 400, description: 'Invalid input data.' })
+  @PhiAccess('TreatmentPlan')
   async create(
     @CurrentUser() userId: string,
     @Body() createTreatmentPlanDto: CreateTreatmentPlanDto,
@@ -34,6 +36,7 @@ export class TreatmentsController {
   @Get()
   @ApiOperation({ summary: 'Get all treatment plans for a user' })
   @ApiResponse({ status: 200, description: 'List of treatment plans returned.' })
+  @PhiAccess('TreatmentPlan')
   async findAll(
     @CurrentUser() userId: string,
     @Query() filterDto: FilterDto,
@@ -47,6 +50,7 @@ export class TreatmentsController {
   @ApiOperation({ summary: 'Get a treatment plan by id' })
   @ApiResponse({ status: 200, description: 'Treatment plan returned.' })
   @ApiResponse({ status: 404, description: 'Treatment plan not found.' })
+  @PhiAccess('TreatmentPlan')
   async findOne(
     @Param('id') id: string,
   ) {
@@ -59,6 +63,7 @@ export class TreatmentsController {
   @ApiOperation({ summary: 'Update a treatment plan' })
   @ApiResponse({ status: 200, description: 'Treatment plan updated successfully.' })
   @ApiResponse({ status: 404, description: 'Treatment plan not found.' })
+  @PhiAccess('TreatmentPlan')
   async update(
     @Param('id') id: string,
     @Body() updateTreatmentPlanDto: UpdateTreatmentPlanDto,
@@ -72,6 +77,7 @@ export class TreatmentsController {
   @ApiOperation({ summary: 'Delete a treatment plan' })
   @ApiResponse({ status: 200, description: 'Treatment plan deleted successfully.' })
   @ApiResponse({ status: 404, description: 'Treatment plan not found.' })
+  @PhiAccess('TreatmentPlan')
   async remove(
     @Param('id') id: string,
   ) {

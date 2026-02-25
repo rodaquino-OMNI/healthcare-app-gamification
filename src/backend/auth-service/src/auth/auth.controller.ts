@@ -12,7 +12,9 @@ import {
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { LockoutGuard } from './guards/lockout.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
@@ -49,7 +51,7 @@ export class AuthController {
    * 
    * @returns An object containing the JWT token.
    */
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(LockoutGuard, LocalAuthGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Log in an existing user' })
@@ -59,9 +61,38 @@ export class AuthController {
   }
 
   /**
+   * Refreshes access and refresh tokens using a valid refresh token.
+   * @param refreshTokenDto DTO containing the refresh token
+   * @returns New access and refresh tokens.
+   */
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Refresh access token using refresh token' })
+  @ApiResponse({ status: 200, description: 'New tokens generated successfully' })
+  @ApiResponse({ status: 401, description: 'Invalid or expired refresh token' })
+  async refresh(@Body() refreshTokenDto: RefreshTokenDto) {
+    return this.authService.refreshTokens(refreshTokenDto.refresh_token);
+  }
+
+  /**
+   * Logs out the authenticated user by revoking their refresh token.
+   * @param refreshTokenDto DTO containing the refresh token to revoke
+   * @returns Confirmation message.
+   */
+  @UseGuards(JwtAuthGuard)
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Logout and invalidate refresh token' })
+  @ApiResponse({ status: 200, description: 'Logged out successfully' })
+  async logout(@Body() refreshTokenDto: RefreshTokenDto) {
+    await this.authService.revokeRefreshToken(refreshTokenDto.refresh_token);
+    return { message: 'Logged out successfully' };
+  }
+
+  /**
    * Retrieves the profile of the currently authenticated user.
    * Uses the JwtAuthGuard to ensure the request is authenticated.
-   * 
+   *
    * @returns The user profile.
    */
   @UseGuards(JwtAuthGuard)

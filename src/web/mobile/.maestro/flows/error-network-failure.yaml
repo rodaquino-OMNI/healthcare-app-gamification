@@ -1,0 +1,42 @@
+appId: com.austa.superapp
+tags:
+  - regression
+  - auth
+  - error-path
+  - network
+---
+# Network Failure During Login — E2E Error Path
+# Validates that the app gracefully handles network loss during authentication,
+# showing the network-error-message banner and NOT navigating to the home screen.
+
+# Step 1: Launch app and navigate to login
+- launchApp
+- tapOn:
+    id: "welcome-cta-login"
+
+# Step 2: Enter valid credentials
+- tapOn:
+    id: "login-email-input"
+- inputText: "test@austa.health"
+- tapOn:
+    id: "login-password-input"
+- inputText: "Test123!@#"
+
+# Step 3: Enable airplane mode to simulate network failure
+- toggleAirplaneMode
+
+# Step 4: Attempt login (should fail due to no network)
+- tapOn:
+    id: "login-submit-button"
+
+# Step 5: Verify network error banner is displayed
+- assertVisible:
+    id: "network-error-message"
+    timeout: 10000
+
+# Step 6: Verify we did NOT navigate to home (login still visible)
+- assertNotVisible:
+    id: "home-screen"
+
+# Step 7: Restore network connectivity
+- toggleAirplaneMode

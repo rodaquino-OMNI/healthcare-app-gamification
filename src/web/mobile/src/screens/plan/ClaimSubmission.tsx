@@ -70,6 +70,8 @@ const ClaimSubmissionScreen: React.FC = () => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
+  const [showValidationError, setShowValidationError] = useState(false);
+
   const isStepValid = (): boolean => {
     switch (currentStep) {
       case 0:
@@ -91,6 +93,11 @@ const ClaimSubmissionScreen: React.FC = () => {
   };
 
   const handleNext = () => {
+    if (!isStepValid()) {
+      setShowValidationError(true);
+      return;
+    }
+    setShowValidationError(false);
     if (currentStep < TOTAL_STEPS - 2) {
       setCurrentStep((s) => s + 1);
     } else if (currentStep === TOTAL_STEPS - 2) {
@@ -350,6 +357,15 @@ const ClaimSubmissionScreen: React.FC = () => {
         {stepRenderers[currentStep]()}
       </ScrollView>
 
+      {/* Validation Error */}
+      {showValidationError && !isStepValid() && (
+        <View style={styles.validationErrorContainer}>
+          <Text testID="claim-validation-error" style={styles.validationErrorText}>
+            {t('journeys.plan.claims.submission.validationError', { defaultValue: 'Please fill in all required fields before continuing.' })}
+          </Text>
+        </View>
+      )}
+
       {/* Navigation Buttons */}
       {!isSuccess && (
         <View style={styles.navButtons}>
@@ -364,7 +380,6 @@ const ClaimSubmissionScreen: React.FC = () => {
             testID="plan-claim-submit-button"
             style={[styles.navNextButton, !isStepValid() && styles.navNextButtonDisabled]}
             onPress={handleNext}
-            disabled={!isStepValid()}
             accessibilityRole="button"
           >
             <Text style={styles.navNextText}>
@@ -429,6 +444,8 @@ const createStyles = (theme: Theme) => StyleSheet.create({
   successClaimId: { fontSize: 14, fontFamily: typography.fontFamily.mono, color: colors.gray[40], marginBottom: sp['2xl'] },
   successButton: { backgroundColor: plan.primary, borderRadius: 8, paddingVertical: sp.sm, paddingHorizontal: sp['2xl'] },
   successButtonText: { fontSize: 16, fontWeight: '600' as const, fontFamily: font, color: colors.neutral.white },
+  validationErrorContainer: { paddingHorizontal: sp.md, paddingVertical: sp.xs, backgroundColor: colors.semantic.error + '1A' },
+  validationErrorText: { fontSize: 14, fontFamily: font, color: colors.semantic.error, textAlign: 'center' },
   navButtons: { flexDirection: 'row', paddingHorizontal: sp.md, paddingVertical: sp.sm, backgroundColor: theme.colors.background.default, borderTopWidth: 1, borderTopColor: theme.colors.border.default, gap: sp.sm },
   navBackButton: { flex: 1, backgroundColor: theme.colors.background.subtle, borderRadius: 8, paddingVertical: sp.sm, alignItems: 'center' },
   navBackText: { fontSize: 16, fontWeight: '500' as const, fontFamily: font, color: colors.gray[60] },

@@ -1,6 +1,6 @@
 /**
  * Navigation type definitions for the AUSTA SuperApp mobile app.
- * Provides typed ParamList for all 8 navigators + utility types.
+ * Provides typed ParamList for all 8 navigators + 5 Health sub-navigators + utility types.
  *
  * Usage:
  *   import { CareStackParamList } from '../navigation/types';
@@ -161,6 +161,80 @@ export type CareStackParamList = {
 };
 
 // ---------------------------------------------------------------------------
+// Health Sub-Navigator Param Lists
+// ---------------------------------------------------------------------------
+
+export type CycleTrackingParamList = {
+  HealthCycleHome: undefined;
+  HealthCycleCalendar: undefined;
+  HealthCycleLogPeriod: undefined;
+  HealthCycleLogSymptoms: undefined;
+  HealthCycleLogFlow: undefined;
+  HealthCycleFertility: undefined;
+  HealthCyclePMS: undefined;
+  HealthCycleHistory: undefined;
+  HealthCycleAnalysis: undefined;
+  HealthCycleInsights: undefined;
+  HealthCycleArticleDetail: { articleId: string };
+  HealthCycleReminders: undefined;
+  HealthCyclePartnerSharing: undefined;
+  HealthCycleSettings: undefined;
+  HealthCycleExportReport: undefined;
+};
+
+export type SleepParamList = {
+  HealthSleepHome: undefined;
+  HealthSleepLog: undefined;
+  HealthSleepQuality: undefined;
+  HealthSleepDiary: undefined;
+  HealthSleepTrends: undefined;
+  HealthSleepGoals: undefined;
+  HealthSleepDetail: { date: string };
+  HealthSleepBedtimeRoutine: undefined;
+  HealthSleepSmartAlarm: undefined;
+  HealthSleepInsights: undefined;
+  HealthSleepDeviceSync: undefined;
+  HealthSleepExport: undefined;
+};
+
+export type ActivityParamList = {
+  HealthActivityHome: undefined;
+  HealthActivityWorkoutLog: undefined;
+  HealthActivityWorkoutDetail: { workoutId: string };
+  HealthActivityWorkoutHistory: undefined;
+  HealthActivityStepGoals: undefined;
+  HealthActivityTrends: undefined;
+  HealthActivityExerciseLibrary: undefined;
+  HealthActivityExerciseDetail: { exerciseId: string };
+  HealthActivityDeviceSync: undefined;
+  HealthActivityExport: undefined;
+};
+
+export type NutritionParamList = {
+  HealthNutritionHome: undefined;
+  HealthNutritionMealLog: undefined;
+  HealthNutritionMealDetail: { mealId: string };
+  HealthNutritionFoodDiary: undefined;
+  HealthNutritionMacroTracker: undefined;
+  HealthNutritionWaterIntake: undefined;
+  HealthNutritionDietaryGoals: undefined;
+  HealthNutritionInsights: undefined;
+  HealthNutritionFoodSearch: undefined;
+  HealthNutritionExport: undefined;
+};
+
+export type WellnessResourcesParamList = {
+  HealthWellnessResourcesHome: undefined;
+  HealthWellnessResourcesArticleList: undefined;
+  HealthWellnessResourcesArticleDetail: { articleId: string };
+  HealthWellnessResourcesVideoLibrary: undefined;
+  HealthWellnessResourcesVideoPlayer: { videoId: string };
+  HealthWellnessResourcesPrograms: undefined;
+  HealthWellnessResourcesProgramDetail: { programId: string };
+  HealthWellnessResourcesBookmarks: undefined;
+};
+
+// ---------------------------------------------------------------------------
 // Health Stack
 // ---------------------------------------------------------------------------
 
@@ -200,66 +274,12 @@ export type HealthStackParamList = {
   HealthMedicationShareCaregiver: { medicationId?: string };
   HealthMedicationCaregiverAccess: undefined;
   HealthMedicationExport: undefined;
-  // Cycle tracking
-  HealthCycleHome: undefined;
-  HealthCycleCalendar: undefined;
-  HealthCycleLogPeriod: undefined;
-  HealthCycleLogSymptoms: undefined;
-  HealthCycleLogFlow: undefined;
-  HealthCycleFertility: undefined;
-  HealthCyclePMS: undefined;
-  HealthCycleHistory: undefined;
-  HealthCycleAnalysis: undefined;
-  HealthCycleInsights: undefined;
-  HealthCycleArticleDetail: { articleId: string };
-  HealthCycleReminders: undefined;
-  HealthCyclePartnerSharing: undefined;
-  HealthCycleSettings: undefined;
-  HealthCycleExportReport: undefined;
-  // Sleep Management
-  HealthSleepHome: undefined;
-  HealthSleepLog: undefined;
-  HealthSleepQuality: undefined;
-  HealthSleepDiary: undefined;
-  HealthSleepTrends: undefined;
-  HealthSleepGoals: undefined;
-  HealthSleepDetail: { date: string };
-  HealthSleepBedtimeRoutine: undefined;
-  HealthSleepSmartAlarm: undefined;
-  HealthSleepInsights: undefined;
-  HealthSleepDeviceSync: undefined;
-  HealthSleepExport: undefined;
-  // Activity Tracker (Module 10)
-  HealthActivityHome: undefined;
-  HealthActivityWorkoutLog: undefined;
-  HealthActivityWorkoutDetail: { workoutId: string };
-  HealthActivityWorkoutHistory: undefined;
-  HealthActivityStepGoals: undefined;
-  HealthActivityTrends: undefined;
-  HealthActivityExerciseLibrary: undefined;
-  HealthActivityExerciseDetail: { exerciseId: string };
-  HealthActivityDeviceSync: undefined;
-  HealthActivityExport: undefined;
-  // Nutrition Monitoring (Module 11)
-  HealthNutritionHome: undefined;
-  HealthNutritionMealLog: undefined;
-  HealthNutritionMealDetail: { mealId: string };
-  HealthNutritionFoodDiary: undefined;
-  HealthNutritionMacroTracker: undefined;
-  HealthNutritionWaterIntake: undefined;
-  HealthNutritionDietaryGoals: undefined;
-  HealthNutritionInsights: undefined;
-  HealthNutritionFoodSearch: undefined;
-  HealthNutritionExport: undefined;
-  // Wellness Resources (Module 16)
-  HealthWellnessResourcesHome: undefined;
-  HealthWellnessResourcesArticleList: undefined;
-  HealthWellnessResourcesArticleDetail: { articleId: string };
-  HealthWellnessResourcesVideoLibrary: undefined;
-  HealthWellnessResourcesVideoPlayer: { videoId: string };
-  HealthWellnessResourcesPrograms: undefined;
-  HealthWellnessResourcesProgramDetail: { programId: string };
-  HealthWellnessResourcesBookmarks: undefined;
+  // Sub-navigator references
+  CycleTracking: NavigatorScreenParams<CycleTrackingParamList>;
+  Sleep: NavigatorScreenParams<SleepParamList>;
+  Activity: NavigatorScreenParams<ActivityParamList>;
+  Nutrition: NavigatorScreenParams<NutritionParamList>;
+  WellnessResources: NavigatorScreenParams<WellnessResourcesParamList>;
 };
 
 // ---------------------------------------------------------------------------
@@ -405,6 +425,11 @@ export type HealthNavigationProp = StackNavigationProp<HealthStackParamList>;
 export type PlanNavigationProp = StackNavigationProp<PlanStackParamList>;
 export type SettingsNavigationProp = StackNavigationProp<SettingsStackParamList>;
 export type GamificationNavigationProp = StackNavigationProp<GamificationStackParamList>;
+export type CycleTrackingNavigationProp = StackNavigationProp<CycleTrackingParamList>;
+export type SleepNavigationProp = StackNavigationProp<SleepParamList>;
+export type ActivityNavigationProp = StackNavigationProp<ActivityParamList>;
+export type NutritionNavigationProp = StackNavigationProp<NutritionParamList>;
+export type WellnessResourcesNavigationProp = StackNavigationProp<WellnessResourcesParamList>;
 export type MainTabNavigationProp = BottomTabNavigationProp<MainTabParamList>;
 
 /** Composite navigation prop for screens inside the Home tab stack. */
@@ -437,3 +462,18 @@ export type SettingsScreenProps<T extends keyof SettingsStackParamList> =
 
 export type GamificationScreenProps<T extends keyof GamificationStackParamList> =
   StackScreenProps<GamificationStackParamList, T>;
+
+export type CycleTrackingScreenProps<T extends keyof CycleTrackingParamList> =
+  StackScreenProps<CycleTrackingParamList, T>;
+
+export type SleepScreenProps<T extends keyof SleepParamList> =
+  StackScreenProps<SleepParamList, T>;
+
+export type ActivityScreenProps<T extends keyof ActivityParamList> =
+  StackScreenProps<ActivityParamList, T>;
+
+export type NutritionScreenProps<T extends keyof NutritionParamList> =
+  StackScreenProps<NutritionParamList, T>;
+
+export type WellnessResourcesScreenProps<T extends keyof WellnessResourcesParamList> =
+  StackScreenProps<WellnessResourcesParamList, T>;

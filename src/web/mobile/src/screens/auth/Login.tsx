@@ -54,11 +54,25 @@ const LoginScreen = () => {
         // Attempt to sign in with provided credentials
         await signIn(values.email, values.password);
         // Navigation after successful login is handled by the auth context
-      } catch (error) {
-        // Handle login error
-        formik.setErrors({
-          email: t('auth.login.invalidCredentials'),
-        });
+      } catch (error: unknown) {
+        // Distinguish network errors from credential errors
+        const isNetworkError =
+          error instanceof TypeError ||
+          (error != null &&
+            typeof error === 'object' &&
+            'message' in error &&
+            typeof (error as { message: unknown }).message === 'string' &&
+            /network|timeout|abort|ECONNREFUSED/i.test(
+              (error as { message: string }).message,
+            ));
+
+        if (isNetworkError) {
+          formik.setStatus('network-error');
+        } else {
+          formik.setErrors({
+            email: t('auth.login.invalidCredentials'),
+          });
+        }
       }
     },
   });
@@ -89,11 +103,27 @@ const LoginScreen = () => {
           type="email"
         />
         {formik.touched.email && formik.errors.email && (
-          <Text color={colors.semantic.error} fontSize="sm" marginTop="xs">
+          <Text testID="login-error-message" color={colors.semantic.error} fontSize="sm" marginTop="xs">
             {formik.errors.email}
           </Text>
         )}
       </Box>
+
+      {/* Network error banner */}
+      {formik.status === 'network-error' && (
+        <Box
+          testID="network-error-message"
+          padding="md"
+          marginBottom="md"
+          borderRadius="md"
+          backgroundColor="background.subtle"
+          accessibilityRole="alert"
+        >
+          <Text color={colors.semantic.error} fontSize="sm" textAlign="center">
+            {t('auth.login.networkError')}
+          </Text>
+        </Box>
+      )}
 
       {/* Password input field */}
       <Box marginBottom="lg">

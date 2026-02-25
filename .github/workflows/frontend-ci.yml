@@ -76,8 +76,11 @@ jobs:
         run: yarn test:ci
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: frontend
+          directory: src/web
+          fail_ci_if_error: false
 
   maestro-e2e:
     runs-on: macos-latest

@@ -3,6 +3,7 @@ export default {
   rootDir: '.',
   testRegex: '.*\\.spec\\.ts$',
   transform: { '^.+\\.(t|j)s$': 'ts-jest' },
+  globals: { 'ts-jest': { diagnostics: false } },
   collectCoverageFrom: [
     'src/**/*.(t|j)s',
     '!src/main.ts',

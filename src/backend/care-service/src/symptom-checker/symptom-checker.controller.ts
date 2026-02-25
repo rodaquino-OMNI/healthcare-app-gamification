@@ -2,6 +2,7 @@ import { Controller, Post, Body, UseGuards } from '@nestjs/common'; // v10.0.0+
 import { JwtAuthGuard } from '@nestjs/passport'; // v5.1.0
 import { SymptomCheckerService } from './symptom-checker.service';
 import { CheckSymptomsDto } from './dto/check-symptoms.dto';
+import { PhiAccess } from '@app/shared/audit';
 
 /**
  * Controller for handling symptom check requests in the Care Now journey.
@@ -26,6 +27,7 @@ export class SymptomCheckerController {
    */
   @Post()
   @UseGuards(JwtAuthGuard)
+  @PhiAccess('SymptomCheck')
   async checkSymptoms(@Body() checkSymptomsDto: CheckSymptomsDto): Promise<any> {
     return this.symptomCheckerService.checkSymptoms(checkSymptomsDto);
   }

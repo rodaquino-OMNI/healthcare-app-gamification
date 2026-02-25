@@ -282,9 +282,18 @@ export const SettingsPrivacyScreen: React.FC = () => {
   });
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [consentRevokedVisible, setConsentRevokedVisible] = useState(false);
 
   const toggleConsent = (key: keyof ConsentState) => {
-    setConsent((prev) => ({ ...prev, [key]: !prev[key] }));
+    setConsent((prev) => {
+      const next = { ...prev, [key]: !prev[key] };
+      if (key === 'marketing' && !next.marketing) {
+        setConsentRevokedVisible(true);
+      } else {
+        setConsentRevokedVisible(false);
+      }
+      return next;
+    });
   };
 
   const toggleSharing = (key: keyof SharingState) => {
@@ -369,6 +378,15 @@ export const SettingsPrivacyScreen: React.FC = () => {
         <InfoText>
           {t('settings.privacy.lgpdInfo')}
         </InfoText>
+
+        {consentRevokedVisible && (
+          <InfoText
+            testID="consent-revoked-message"
+            style={{ color: colors.semantic.warning }}
+          >
+            {t('settings.privacy.consentRevoked', { defaultValue: 'Marketing consent has been revoked. You will no longer receive promotional communications.' })}
+          </InfoText>
+        )}
 
         {/* Compartilhamento de Dados */}
         <SectionHeader>

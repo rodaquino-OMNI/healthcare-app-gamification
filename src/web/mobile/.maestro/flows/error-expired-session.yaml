@@ -1,0 +1,30 @@
+appId: com.austa.superapp
+tags:
+  - regression
+  - auth
+  - error-path
+---
+# Login successfully first
+- launchApp
+- tapOn:
+    id: "welcome-cta-login"
+- tapOn:
+    id: "login-email-input"
+- inputText: "test@austa.health"
+- tapOn:
+    id: "login-password-input"
+- inputText: "Test123!@#"
+- tapOn:
+    id: "login-submit-button"
+- assertVisible:
+    id: "home-screen"
+    timeout: 10000
+# Clear app data to simulate expired token
+- clearState
+- launchApp
+# Should be redirected to login (token expired/cleared)
+- assertVisible:
+    id: "welcome-cta-login"
+    timeout: 10000
+- assertNotVisible:
+    id: "home-screen"

@@ -1745,7 +1745,13 @@ const translations = {
       email: 'Email',
       password: 'Senha',
       forgotPassword: 'Esqueceu sua senha?',
-      register: 'Criar conta'
+      register: 'Criar conta',
+      submit: 'Entrar',
+      emailPlaceholder: 'Digite seu email',
+      passwordPlaceholder: 'Digite sua senha',
+      noAccount: 'Ainda nao tem conta?',
+      invalidCredentials: 'Email ou senha invalidos. Tente novamente.',
+      networkError: 'Sem conexao. Verifique sua internet e tente novamente.'
     },
     register: {
       title: 'Criar Conta',

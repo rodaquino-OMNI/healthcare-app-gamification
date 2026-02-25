@@ -1,8 +1,10 @@
 import { ExecutionContext, CallHandler } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { of } from 'rxjs';
 import { AuditInterceptor } from './audit.interceptor';
 import { AuditService } from './audit.service';
 import { AuditAction } from './dto/audit-log.dto';
+import { PHI_ACCESS_KEY } from './phi-access.decorator';
 
 /**
  * Helper that builds a minimal ExecutionContext mock from the supplied request
@@ -50,6 +52,7 @@ function buildMockContext(
 describe('AuditInterceptor', () => {
   let interceptor: AuditInterceptor;
   let auditService: jest.Mocked<AuditService>;
+  let mockReflector: jest.Mocked<Reflector>;
 
   const mockResponse = {};
 
@@ -65,7 +68,11 @@ describe('AuditInterceptor', () => {
       logPHIAccess: jest.fn(),
     } as unknown as jest.Mocked<AuditService>;
 
-    interceptor = new AuditInterceptor(auditService);
+    mockReflector = {
+      get: jest.fn().mockReturnValue(undefined),
+    } as unknown as jest.Mocked<Reflector>;
+
+    interceptor = new AuditInterceptor(auditService, mockReflector);
   });
 
   // ------------------------------------------------------------------
@@ -388,6 +395,70 @@ describe('AuditInterceptor', () => {
         expect(auditService.log).toHaveBeenCalledWith(
           expect.objectContaining({ ipAddress: '203.0.113.42' }),
         );
+        done();
+      },
+      error: done,
+    });
+  });
+
+  // ------------------------------------------------------------------
+  // 11. Calls logPHIAccess when @PhiAccess metadata is present
+  // ------------------------------------------------------------------
+  it('should call logPHIAccess when handler has @PhiAccess metadata', (done) => {
+    const context = buildMockContext(
+      {
+        method: 'GET',
+        url: '/health/metrics/m-1',
+        params: { id: 'm-1' },
+        user: { id: 'user-phi' },
+        ip: '10.0.0.5',
+        headers: { 'user-agent': 'TestAgent/2.0' },
+      },
+      { controllerName: 'HealthController', handlerName: 'findOne' },
+    );
+
+    // Simulate @PhiAccess('HealthMetric') metadata on the handler
+    mockReflector.get.mockReturnValue({ resourceType: 'HealthMetric', isPhi: true });
+
+    interceptor.intercept(context, mockCallHandler).subscribe({
+      complete: () => {
+        expect(auditService.logPHIAccess).toHaveBeenCalledTimes(1);
+        expect(auditService.logPHIAccess).toHaveBeenCalledWith(
+          'user-phi',
+          'HealthMetric',
+          'm-1',
+          AuditAction.READ,
+          expect.objectContaining({
+            method: 'GET',
+            path: '/health/metrics/m-1',
+            handler: 'findOne',
+          }),
+        );
+        done();
+      },
+      error: done,
+    });
+  });
+
+  // ------------------------------------------------------------------
+  // 12. Does NOT call logPHIAccess when no @PhiAccess metadata
+  // ------------------------------------------------------------------
+  it('should NOT call logPHIAccess when handler lacks @PhiAccess metadata', (done) => {
+    const context = buildMockContext(
+      {
+        method: 'GET',
+        url: '/plans',
+        user: { id: 'user-no-phi' },
+      },
+      { controllerName: 'PlansController', handlerName: 'findAll' },
+    );
+
+    // No PHI metadata
+    mockReflector.get.mockReturnValue(undefined);
+
+    interceptor.intercept(context, mockCallHandler).subscribe({
+      complete: () => {
+        expect(auditService.logPHIAccess).not.toHaveBeenCalled();
         done();
       },
       error: done,

@@ -1734,7 +1734,13 @@ const translations = {
         email: 'Email',
         password: 'Password',
         forgotPassword: 'Forgot your password?',
-        register: 'Create account'
+        register: 'Create account',
+        submit: 'Sign In',
+        emailPlaceholder: 'Enter your email',
+        passwordPlaceholder: 'Enter your password',
+        noAccount: "Don't have an account?",
+        invalidCredentials: 'Invalid email or password. Please try again.',
+        networkError: 'Unable to connect. Please check your internet connection and try again.'
       },
       register: {
         title: 'Create Account',

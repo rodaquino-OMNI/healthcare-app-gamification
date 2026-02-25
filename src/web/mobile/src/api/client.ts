@@ -4,6 +4,7 @@ import axios, { AxiosInstance, AxiosError } from 'axios'; // Version 1.6.8
 import { Platform } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import Constants from 'expo-constants';
+import { getPinConfig } from './ssl-pinning';
 
 // Define __DEV__ if it's not already defined by React Native
 declare const __DEV__: boolean;
@@ -148,6 +149,16 @@ const createSecureAxiosInstance = (): AxiosInstance => {
         config.url = normalizedUrl.pathname + normalizedUrl.search;
       }
       
+      // Certificate pinning validation
+      // Note: Full TLS pin verification requires native modules (e.g., react-native-ssl-pinning).
+      // This header-based approach enables server-side pin validation and signals pinning intent.
+      const targetHost = new URL(urlToCheck).hostname;
+      const pinConfig = getPinConfig(targetHost);
+      if (pinConfig) {
+        config.headers = config.headers || {};
+        config.headers['X-Expected-Pin'] = pinConfig.pins[0];
+      }
+
       return config;
     },
     (error) => {

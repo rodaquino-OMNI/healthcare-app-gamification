@@ -24,6 +24,7 @@ import { Service } from '@app/shared/interfaces/service.interface';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+import { PhiAccess } from '@app/shared/audit';
 
 /**
  * Controller class for managing medications.
@@ -52,6 +53,7 @@ export class MedicationsController {
    */
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @PhiAccess('Medication')
   async create(
     @Body() createMedicationDto: CreateMedicationDto,
     @CurrentUser('id') userId: string
@@ -66,6 +68,7 @@ export class MedicationsController {
    * @returns A list of medications
    */
   @Get()
+  @PhiAccess('Medication')
   async findAll(@CurrentUser('id') userId: string): Promise<Medication[]> {
     this.logger.log(`Retrieving all medications for user ${userId}`, 'MedicationsController');
     return this.medicationsService.findAll({ where: { userId } }, { limit: 100 });
@@ -78,6 +81,7 @@ export class MedicationsController {
    * @returns The medication, if found
    */
   @Get(':id')
+  @PhiAccess('Medication')
   async findOne(
     @Param('id') id: string,
     @CurrentUser('id') userId: string
@@ -109,6 +113,7 @@ export class MedicationsController {
    * @returns The updated medication
    */
   @Put(':id')
+  @PhiAccess('Medication')
   async update(
     @Param('id') id: string,
     @Body() updateMedicationData: Record<string, any>,
@@ -139,6 +144,7 @@ export class MedicationsController {
    * @param req The request object containing the user information
    */
   @Delete(':id')
+  @PhiAccess('Medication')
   async remove(
     @Param('id') id: string,
     @CurrentUser('id') userId: string

@@ -8,6 +8,7 @@ import { Roles } from '@app/auth/auth/decorators/roles.decorator';
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 import { AppointmentType, AppointmentStatus } from './entities/appointment.entity';
 import { AUTH_INSUFFICIENT_PERMISSIONS } from '@app/shared/constants/error-codes.constants';
+import { PhiAccess } from '@app/shared/audit';
 
 /**
  * Handles incoming requests related to appointments.
@@ -29,6 +30,7 @@ export class AppointmentsController {
    */
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @PhiAccess('Appointment')
   async create(@Body() createAppointmentDto: CreateAppointmentDto) {
     // Calls the `create` method of the `appointmentsService` to create the appointment.
     return await this.appointmentsService.create(createAppointmentDto);
@@ -42,6 +44,7 @@ export class AppointmentsController {
    */
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @PhiAccess('Appointment')
   async findAll(@Query() query: any) {
     // Calls the `findAll` method of the `appointmentsService` to retrieve the appointments.
     return await this.appointmentsService.findAll(query);
@@ -55,6 +58,7 @@ export class AppointmentsController {
    */
   @Get(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @PhiAccess('Appointment')
   async findOne(@Param('id') id: string) {
     // Calls the `findOne` method of the `appointmentsService` to retrieve the appointment.
     return await this.appointmentsService.findById(id);
@@ -69,6 +73,7 @@ export class AppointmentsController {
    */
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @PhiAccess('Appointment')
   async update(@Param('id') id: string, @Body() updateAppointmentDto: UpdateAppointmentDto) {
     // Calls the `update` method of the `appointmentsService` to update the appointment.
     return await this.appointmentsService.update(id, updateAppointmentDto);
@@ -83,6 +88,7 @@ export class AppointmentsController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @PhiAccess('Appointment')
   async remove(@Param('id') id: string) {
     // Calls the `remove` method of the `appointmentsService` to delete the appointment.
     await this.appointmentsService.delete(id);

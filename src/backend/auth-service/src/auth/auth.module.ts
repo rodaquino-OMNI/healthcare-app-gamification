@@ -9,6 +9,7 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { OAuthStrategy } from './strategies/oauth.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
+import { LockoutGuard } from './guards/lockout.guard';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { configuration } from '../config/configuration';
@@ -47,6 +48,7 @@ import { PermissionsModule } from '../permissions/permissions.module';
     OAuthStrategy,
     JwtAuthGuard,
     RolesGuard,
+    LockoutGuard,
     PrismaService,
     LoggerService,
   ],
