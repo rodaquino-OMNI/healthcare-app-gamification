@@ -1,4 +1,4 @@
-import { IsString, IsEmail, MinLength, MaxLength, IsOptional } from 'class-validator'; // class-validator@0.14.0
+import { IsString, IsEmail, MinLength, MaxLength, IsOptional, Matches } from 'class-validator'; // class-validator@0.14.0
 
 /**
  * Data transfer object for creating a new user in the AUSTA SuperApp.
@@ -23,11 +23,14 @@ export class CreateUserDto {
 
   /**
    * Password of the user.
-   * Must be at least 8 characters long for security.
+   * Must be at least 10 characters long with uppercase, lowercase, number, and special character.
    */
   @IsString()
-  @MinLength(8)
+  @MinLength(10)
   @MaxLength(255)
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,}$/, {
+    message: 'Password must contain uppercase, lowercase, number, and special character',
+  })
   password: string = '';
 
   /**

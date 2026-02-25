@@ -125,10 +125,15 @@ async function seedDatabase() {
       // Admin user doesn't exist, create it
       logger.log('Creating default admin user...');
       
+      const seedPassword = process.env.SEED_ADMIN_PASSWORD;
+      if (!seedPassword) {
+        throw new Error('SEED_ADMIN_PASSWORD environment variable required for seeding');
+      }
+
       const adminData = new CreateUserDto();
       adminData.name = defaultAdminUser?.name || 'System Administrator';
       adminData.email = adminEmail;
-      adminData.password = defaultAdminUser?.password || 'Admin@123456';
+      adminData.password = defaultAdminUser?.password || seedPassword;
       adminData.phone = defaultAdminUser?.phone;
       adminData.cpf = defaultAdminUser?.cpf;
       

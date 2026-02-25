@@ -18,10 +18,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private usersService: UsersService,
     private logger: LoggerService
   ) {
+    const jwtSecret = configService.get<string>('authService.jwt.secret');
+    if (!jwtSecret) {
+      throw new Error('JWT_SECRET environment variable is required — cannot start auth-service without it');
+    }
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('authService.jwt.secret'),
+      secretOrKey: jwtSecret,
     });
   }
 

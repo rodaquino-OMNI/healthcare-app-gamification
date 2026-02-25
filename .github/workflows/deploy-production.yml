@@ -47,7 +47,7 @@ jobs:
 
       - name: Audit dependencies
         working-directory: src/backend
-        run: yarn audit --level high || true
+        run: yarn audit --level high
 
   test:
     runs-on: ubuntu-latest

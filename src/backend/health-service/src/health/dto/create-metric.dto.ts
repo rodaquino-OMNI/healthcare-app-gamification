@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString, IsDate, IsEnum, IsOptional } from 'class-validator'; // v0.14.0+
+import { IsNotEmpty, IsNumber, IsString, IsDate, IsEnum, IsOptional, Min, Max } from 'class-validator'; // v0.14.0+
 import { MetricType, MetricSource } from '../types/health.types';
 
 /**
@@ -19,6 +19,8 @@ export class CreateMetricDto {
    */
   @IsNotEmpty()
   @IsNumber()
+  @Min(0, { message: 'Value must be non-negative' })
+  @Max(10000, { message: 'Value exceeds maximum allowed range' })
   value: number;
 
   /**

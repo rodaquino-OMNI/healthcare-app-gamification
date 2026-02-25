@@ -48,8 +48,8 @@ services:
     environment:
       NODE_ENV: development
       PORT: 3001
-      DATABASE_URL: postgresql://austa:austa@postgres:5432/austa?schema=auth
-      JWT_SECRET: secret
+      DATABASE_URL: postgresql://${POSTGRES_USER:-austa}:${POSTGRES_PASSWORD:-austa}@postgres:5432/${POSTGRES_DB:-austa}?schema=auth
+      JWT_SECRET: ${JWT_SECRET:-changeme-dev-only}
       REDIS_HOST: redis
       REDIS_PORT: 6379
     depends_on:
@@ -210,9 +210,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: austa
-      POSTGRES_PASSWORD: austa
-      POSTGRES_DB: austa
+      POSTGRES_USER: ${POSTGRES_USER:-austa}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-austa}
+      POSTGRES_DB: ${POSTGRES_DB:-austa}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:

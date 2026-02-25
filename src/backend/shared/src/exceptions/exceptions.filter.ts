@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { AppException, ErrorType } from './exceptions.types';
 import { LoggerService } from '../logging/logger.service';
+import * as Sentry from '@sentry/node';
 
 /**
  * Global exception filter that catches all exceptions, transforms them into a standardized format,
@@ -42,12 +43,17 @@ export class AllExceptionsFilter implements ExceptionFilter {
       errorResponse = exception.toJSON();
       statusCode = this.getStatusCodeFromErrorType(exception.type);
       this.logAppException(exception, requestInfo);
+      if (process.env.NODE_ENV === 'production') {
+        Sentry.captureException(exception, {
+          extra: { path: requestInfo.url, method: requestInfo.method, statusCode },
+        });
+      }
     } 
     else if (exception instanceof HttpException) {
       // For NestJS HttpExceptions
       statusCode = exception.getStatus();
       const exceptionResponse = exception.getResponse();
-      
+
       if (typeof exceptionResponse === 'object') {
         errorResponse = {
           error: {
@@ -63,8 +69,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
           }
         };
       }
-      
+
       this.logHttpException(exception, statusCode, requestInfo);
+      if (process.env.NODE_ENV === 'production') {
+        Sentry.captureException(exception, {
+          extra: { path: requestInfo.url, method: requestInfo.method, statusCode },
+        });
+      }
     } 
     else {
       // For unknown exceptions
@@ -82,8 +93,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
           })
         }
       };
-      
+
       this.logUnknownException(exception, requestInfo);
+      if (process.env.NODE_ENV === 'production') {
+        Sentry.captureException(exception, {
+          extra: { path: requestInfo.url, method: requestInfo.method, statusCode },
+        });
+      }
     }
 
     // Send the response

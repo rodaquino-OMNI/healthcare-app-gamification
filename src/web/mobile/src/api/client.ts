@@ -3,6 +3,7 @@ import { createUploadLink } from 'apollo-upload-client'; // Version 17.0.0
 import axios, { AxiosInstance, AxiosError } from 'axios'; // Version 1.6.8
 import { Platform } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
+import Constants from 'expo-constants';
 
 // Define __DEV__ if it's not already defined by React Native
 declare const __DEV__: boolean;
@@ -12,7 +13,10 @@ declare const __DEV__: boolean;
  * Note: In a production environment, these values should be loaded from environment variables
  * or a configuration service rather than being hardcoded.
  */
-const API_URL = 'https://api.austa.com.br';
+const API_URL =
+  Constants.expoConfig?.extra?.apiUrl ||
+  process.env.EXPO_PUBLIC_API_URL ||
+  'https://api.austa.com.br';
 const GRAPHQL_ENDPOINT = `${API_URL}/graphql`;
 const API_TIMEOUT = 30000; // 30 seconds
 
