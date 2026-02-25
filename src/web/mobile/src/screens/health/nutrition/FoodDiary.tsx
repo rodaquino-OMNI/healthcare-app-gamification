@@ -4,6 +4,8 @@ import {
   FlatList,
   StyleSheet,
   ListRenderItemInfo,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -237,7 +239,7 @@ export const FoodDiary: React.FC = () => {
               style={[
                 styles.filterTab,
                 isActive && styles.filterTabActive,
-              ]}
+              ] as any}
             >
               <Text
                 fontSize="sm"

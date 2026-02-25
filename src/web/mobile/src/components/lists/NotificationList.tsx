@@ -70,7 +70,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({
   showEmptyState,
 }) => {
   // Use the useNotifications hook to get notifications, loading state, and markAsRead function
-  const { notifications, loading, error, markAsRead } = useNotifications();
+  const { notifications, isLoading, error, markAsRead } = useNotifications();
 
   // Use the useJourney hook to get the current journey context
   const { journey } = useJourney();
@@ -131,7 +131,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({
     [markAsRead, navigation, onNotificationPress]
   );
 
-  if (loading) {
+  if (isLoading) {
     return <LoadingIndicator />;
   }
 

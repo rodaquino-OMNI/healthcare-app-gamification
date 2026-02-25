@@ -4,6 +4,8 @@ import {
   FlatList,
   StyleSheet,
   ListRenderItemInfo,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -226,7 +228,7 @@ export const CycleInsights: React.FC = () => {
             style={[
               styles.categoryChip,
               selectedCategory === 'all' && styles.categoryChipActive,
-            ]}
+            ] as any}
           >
             <Text
               fontSize="sm"
@@ -249,7 +251,7 @@ export const CycleInsights: React.FC = () => {
               style={[
                 styles.categoryChip,
                 selectedCategory === cat && styles.categoryChipActive,
-              ]}
+              ] as any}
             >
               <Text
                 fontSize="sm"

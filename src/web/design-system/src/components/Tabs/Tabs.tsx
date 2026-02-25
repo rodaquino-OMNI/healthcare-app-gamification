@@ -327,9 +327,9 @@ const Tab: React.FC<TabProps & { index?: number }> = ({
       data-testid={`tab-${index}`}
     >
       {icon && (
-        <Box as="span" marginRight="xs" aria-hidden="true">
+        <span style={{ marginRight: '4px' }} aria-hidden={true}>
           {icon}
-        </Box>
+        </span>
       )}
       {label}
     </StyledTab>

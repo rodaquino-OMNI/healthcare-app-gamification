@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { Box } from '../primitives/Box';
-import { animation, spacing, shadows, breakpoints, colors } from '../../tokens';
+import { Box } from '../../primitives/Box';
+import { animation, spacing, shadows, mediaQueries, colors } from '../../tokens';
 
 // Styled component for the modal backdrop that covers the entire screen with a semi-transparent background
 export const ModalBackdrop = styled(Box)<{ visible?: boolean }>`
@@ -45,15 +45,15 @@ export const ModalContainer = styled(Box)<{ visible?: boolean }>`
     opacity: 1;
   `}
   
-  @media ${breakpoints.mediaQueries.sm} {
+  @media ${mediaQueries.sm} {
     width: 80%;
   }
   
-  @media ${breakpoints.mediaQueries.md} {
+  @media ${mediaQueries.md} {
     width: 70%;
   }
   
-  @media ${breakpoints.mediaQueries.lg} {
+  @media ${mediaQueries.lg} {
     width: 60%;
   }
 `;

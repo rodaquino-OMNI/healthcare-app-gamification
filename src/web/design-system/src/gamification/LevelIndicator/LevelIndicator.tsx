@@ -6,12 +6,22 @@ import { spacing } from '../../tokens/spacing';
 import { ProgressBar } from '../../components/ProgressBar/ProgressBar';
 import { XPCounter } from '../XPCounter/XPCounter';
 import { AchievementBadge } from '../AchievementBadge/AchievementBadge';
-import type { Achievement } from 'src/web/shared/types/gamification.types';
+// Local type stub for Achievement (shared package not available at build time)
+interface Achievement {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  progress: number;
+  total: number;
+  unlocked: boolean;
+  journey: 'health' | 'care' | 'plan';
+}
 
 /**
  * Props for the LevelIndicator component
  */
-interface LevelIndicatorProps {
+export interface LevelIndicatorProps {
   /**
    * The user's current level.
    */

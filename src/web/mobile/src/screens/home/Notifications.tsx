@@ -100,17 +100,17 @@ export const NotificationsScreen: React.FC = () => {
   const styles = createStyles(theme);
   const { t } = useTranslation();
   const navigation = useNavigation<HomeNavigationProp>();
-  const { notifications, loading, error, refresh } = useNotifications();
+  const { notifications, isLoading, error, refetch } = useNotifications();
   const notificationContext = useNotificationContext();
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
 
   // Atualizar notificacoes quando a tela recebe foco
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      refresh();
+      refetch();
     });
     return unsubscribe;
-  }, [navigation, refresh]);
+  }, [navigation, refetch]);
 
   // Filtrar notificacoes com base no filtro ativo
   const filteredNotifications = useMemo(() => {
@@ -212,7 +212,7 @@ export const NotificationsScreen: React.FC = () => {
   ];
 
   // Estado de carregamento
-  if (loading && (!notifications || notifications.length === 0)) {
+  if (isLoading && (!notifications || notifications.length === 0)) {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.centerContainer}>
@@ -229,7 +229,7 @@ export const NotificationsScreen: React.FC = () => {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.centerContainer}>
           <Text style={styles.errorText}>{t('notifications.loadError')}</Text>
-          <TouchableOpacity style={styles.retryButton} onPress={refresh}>
+          <TouchableOpacity style={styles.retryButton} onPress={() => { refetch(); }}>
             <Text style={styles.retryButtonText}>{t('common.buttons.retry')}</Text>
           </TouchableOpacity>
         </View>
@@ -287,8 +287,8 @@ export const NotificationsScreen: React.FC = () => {
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}
-          refreshing={loading}
-          onRefresh={refresh}
+          refreshing={isLoading}
+          onRefresh={() => { refetch(); }}
         />
       )}
     </SafeAreaView>

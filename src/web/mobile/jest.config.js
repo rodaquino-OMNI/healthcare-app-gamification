@@ -4,8 +4,15 @@
  */
 
 module.exports = {
-  // Use React Native preset for Jest
-  preset: 'react-native',
+  // Do NOT use react-native preset — it loads Flow-annotated setupFiles
+  // that fail with the custom esbuild transformer. Instead configure manually.
+  // (The react-native preset's haste, transform, and setupFiles are replicated below.)
+
+  // Haste settings from react-native preset
+  haste: {
+    defaultPlatform: 'ios',
+    platforms: ['android', 'ios', 'native'],
+  },
 
   // Setup files to run after the test environment is set up
   setupFilesAfterEnv: [
@@ -13,9 +20,12 @@ module.exports = {
     '<rootDir>/jest.setup.js'
   ],
 
-  // Transform files using babel-jest
+  // Transform files using a custom esbuild-based transformer.
+  // This avoids the @babel/traverse version mismatch caused by the
+  // @babel/traverse@7.23.2 override in the web workspace package.json
+  // conflicting with newer @babel/ helpers (7.27+) used by the presets.
   transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest'
+    '^.+\\.(js|jsx|ts|tsx|mjs)$': '<rootDir>/jest-esbuild-transform.js',
   },
 
   // Don't transform modules in node_modules except for React Native related packages

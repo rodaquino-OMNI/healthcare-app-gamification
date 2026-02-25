@@ -61,9 +61,9 @@ export const StepConsentPrivacy: React.FC<StepProps> = ({ data, onUpdate }) => {
             accessibilityLabel={t(`healthAssessment.consentPrivacy.${key}`)}
             accessibilityRole="checkbox"
             testID={`consent-${key}`}
-            style={[styles.consentRow, isChecked && styles.consentRowActive]}
+            style={[styles.consentRow, isChecked && styles.consentRowActive] as any}
           >
-            <View style={[styles.checkbox, isChecked && styles.checkboxActive]}>
+            <View style={[styles.checkbox, isChecked && styles.checkboxActive] as any}>
               {isChecked && (
                 <Text fontSize="xs" color={colors.neutral.white} textAlign="center">
                   {'\u2713'}

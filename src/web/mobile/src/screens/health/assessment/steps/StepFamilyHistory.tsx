@@ -104,14 +104,14 @@ export const StepFamilyHistory: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t(`healthAssessment.familyHistory.${key}`)}
               accessibilityRole="checkbox"
               testID={`family-condition-${key}`}
-              style={styles.conditionToggle}
+              style={styles.conditionToggle as any}
             >
               <View style={styles.conditionRow}>
                 <View
                   style={[
                     styles.checkbox,
                     isActive && styles.checkboxActive,
-                  ]}
+                  ] as any}
                 >
                   {isActive && (
                     <Text
@@ -162,7 +162,7 @@ export const StepFamilyHistory: React.FC<StepProps> = ({ data, onUpdate }) => {
                         style={[
                           styles.relationPill,
                           isSelected && styles.relationPillActive,
-                        ]}
+                        ] as any}
                       >
                         <Text
                           fontSize="xs"

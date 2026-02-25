@@ -155,7 +155,8 @@ const StyledButton = styled(Touchable)<{
 /**
  * Spacer component for gap between icon and text
  */
-const IconSpacing = styled.View`
+const IconSpacing = styled.span`
+  display: inline-block;
   width: ${spacing.sm};
   height: 1px;
 `;

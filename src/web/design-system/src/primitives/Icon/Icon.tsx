@@ -13,8 +13,8 @@ export interface IconProps {
   size?: keyof typeof sizing.icon | string | number;
   /** The color of the icon, using a color token from the design system. */
   color?: string;
-  /** A boolean indicating whether the icon should be hidden from screen readers. */
-  'aria-hidden'?: boolean;
+  /** Whether the icon should be hidden from screen readers. Accepts boolean or string "true"/"false". */
+  'aria-hidden'?: boolean | string;
   /** Accessible label for the icon (required when aria-hidden is false) */
   'aria-label'?: string;
 }
@@ -228,27 +228,30 @@ export const Icon: React.FC<IconProps> = ({
     return null;
   }
   
+  // Normalise to boolean for internal logic
+  const ariaHiddenBool = ariaHidden !== false && ariaHidden !== 'false';
+
   // If the icon isn't hidden from screen readers, it needs an aria-label
-  if (ariaHidden === false && !ariaLabel) {
+  if (!ariaHiddenBool && !ariaLabel) {
     console.warn('Icon requires an aria-label when aria-hidden is false');
   }
-  
+
   return (
-    <IconContainer 
-      size={size} 
-      color={color} 
-      aria-hidden={ariaHidden} 
+    <IconContainer
+      size={size}
+      color={color}
+      aria-hidden={ariaHiddenBool}
       data-testid="icon-container"
       {...props}
     >
-      <svg 
-        xmlns="http://www.w3.org/2000/svg" 
-        viewBox={icon.viewBox || '0 0 24 24'} 
-        width="100%" 
-        height="100%" 
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox={icon.viewBox || '0 0 24 24'}
+        width="100%"
+        height="100%"
         fill="currentColor"
-        role={ariaHidden ? undefined : 'img'}
-        aria-label={ariaHidden ? undefined : ariaLabel}
+        role={ariaHiddenBool ? undefined : 'img'}
+        aria-label={ariaHiddenBool ? undefined : ariaLabel}
       >
         <path d={icon.path} />
       </svg>

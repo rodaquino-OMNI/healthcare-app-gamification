@@ -1,179 +1,205 @@
-import { useQuery } from '@apollo/client'; // Version 3.0+
-import { gql } from '@apollo/client';
-import { GameProfile } from '@shared/types/gamification.types';
-import { getGameProfile, getAchievements, getQuests, getRewards } from '@api/gamification';
-import { useAuth } from '@context/AuthContext';
+/**
+ * @file useGamification.ts
+ * @description Custom React hooks for fetching gamification data within the
+ * Gamification Engine journey. Each sub-hook fetches a specific slice of
+ * gamification state via TanStack Query v5, replacing the former Apollo GraphQL queries.
+ */
 
-// GraphQL query to fetch a user's game profile
-const GET_GAME_PROFILE = gql`
-  query GetGameProfile($userId: ID!) {
-    gameProfile(userId: $userId) {
-      level
-      xp
-      achievements {
-        id
-        title
-        description
-        journey
-        icon
-        progress
-        total
-        unlocked
-      }
-      quests {
-        id
-        title
-        description
-        journey
-        icon
-        progress
-        total
-        completed
-      }
-    }
-  }
-`;
+import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import {
+  getGameProfile,
+  getAchievements,
+  getQuests,
+  getRewards,
+  GameProfile,
+  Achievement,
+  Quest,
+  Reward,
+} from '../api/gamification';
+import { useAuth } from './useAuth';
 
-// GraphQL query to fetch a user's achievements
-const GET_ACHIEVEMENTS = gql`
-  query GetAchievements($userId: ID!) {
-    achievements(userId: $userId) {
-      id
-      title
-      description
-      journey
-      icon
-      progress
-      total
-      unlocked
-    }
-  }
-`;
+// ---------------------------------------------------------------------------
+// Internal helper
+// ---------------------------------------------------------------------------
 
-// GraphQL query to fetch a user's quests
-const GET_QUESTS = gql`
-  query GetQuests($userId: ID!) {
-    quests(userId: $userId) {
-      id
-      title
-      description
-      journey
-      icon
-      progress
-      total
-      completed
-    }
-  }
-`;
+/**
+ * Derives the userId string from the auth context, or undefined if unavailable.
+ */
+function useUserId(): string | undefined {
+  const { session, getUserFromToken } = useAuth();
+  return session?.accessToken
+    ? (getUserFromToken(session.accessToken)?.sub as string | undefined)
+    : undefined;
+}
 
-// GraphQL query to fetch a user's rewards
-const GET_REWARDS = gql`
-  query GetRewards($userId: ID!) {
-    rewards(userId: $userId) {
-      id
-      title
-      description
-      journey
-      icon
-      xp
-    }
-  }
-`;
+// ---------------------------------------------------------------------------
+// Sub-hooks
+// ---------------------------------------------------------------------------
 
 /**
  * Fetches and provides the game profile for the currently authenticated user.
- * @returns The user's game profile, or undefined if not loaded or an error occurred.
+ *
+ * @returns The user's GameProfile, or undefined if not yet loaded.
  */
 export function useGameProfile(): GameProfile | undefined {
-  const { session, getUserFromToken } = useAuth();
-  const userId = session?.accessToken ? getUserFromToken(session.accessToken)?.sub : undefined;
-  
-  const { data } = useQuery(GET_GAME_PROFILE, {
-    variables: { userId },
-    skip: !userId,
-    fetchPolicy: 'cache-and-network',
-    onError: (error) => {
+  const userId = useUserId();
+
+  const { data, error } = useQuery<GameProfile, Error>({
+    queryKey: ['gameProfile', userId],
+    queryFn: () => getGameProfile(userId as string),
+    enabled: !!userId,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+  });
+
+  useEffect(() => {
+    if (error) {
       console.error('Error fetching game profile:', error);
     }
-  });
-  
-  return data?.gameProfile;
+  }, [error]);
+
+  return data;
 }
 
 /**
  * Fetches and provides the achievements for the currently authenticated user.
- * @returns The user's achievements, or undefined if not loaded or an error occurred.
+ *
+ * @returns The user's Achievement array, or undefined if not yet loaded.
  */
-export function useAchievements() {
-  const { session, getUserFromToken } = useAuth();
-  const userId = session?.accessToken ? getUserFromToken(session.accessToken)?.sub : undefined;
-  
-  const { data } = useQuery(GET_ACHIEVEMENTS, {
-    variables: { userId },
-    skip: !userId,
-    fetchPolicy: 'cache-and-network',
-    onError: (error) => {
+export function useAchievements(): Achievement[] | undefined {
+  const userId = useUserId();
+
+  const { data, error } = useQuery<Achievement[], Error>({
+    queryKey: ['achievements', userId],
+    queryFn: () => getAchievements(userId as string),
+    enabled: !!userId,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+  });
+
+  useEffect(() => {
+    if (error) {
       console.error('Error fetching achievements:', error);
     }
-  });
-  
-  return data?.achievements;
+  }, [error]);
+
+  return data;
 }
 
 /**
  * Fetches and provides the quests for the currently authenticated user.
- * @returns The user's quests, or undefined if not loaded or an error occurred.
+ *
+ * @returns The user's Quest array, or undefined if not yet loaded.
  */
-export function useQuests() {
-  const { session, getUserFromToken } = useAuth();
-  const userId = session?.accessToken ? getUserFromToken(session.accessToken)?.sub : undefined;
-  
-  const { data } = useQuery(GET_QUESTS, {
-    variables: { userId },
-    skip: !userId,
-    fetchPolicy: 'cache-and-network',
-    onError: (error) => {
+export function useQuests(): Quest[] | undefined {
+  const userId = useUserId();
+
+  const { data, error } = useQuery<Quest[], Error>({
+    queryKey: ['quests', userId],
+    queryFn: () => getQuests(userId as string),
+    enabled: !!userId,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+  });
+
+  useEffect(() => {
+    if (error) {
       console.error('Error fetching quests:', error);
     }
-  });
-  
-  return data?.quests;
+  }, [error]);
+
+  return data;
 }
 
 /**
  * Fetches and provides the rewards for the currently authenticated user.
- * @returns The user's rewards, or undefined if not loaded or an error occurred.
+ *
+ * @returns The user's Reward array, or undefined if not yet loaded.
  */
-export function useRewards() {
-  const { session, getUserFromToken } = useAuth();
-  const userId = session?.accessToken ? getUserFromToken(session.accessToken)?.sub : undefined;
-  
-  const { data } = useQuery(GET_REWARDS, {
-    variables: { userId },
-    skip: !userId,
-    fetchPolicy: 'cache-and-network',
-    onError: (error) => {
+export function useRewards(): Reward[] | undefined {
+  const userId = useUserId();
+
+  const { data, error } = useQuery<Reward[], Error>({
+    queryKey: ['rewards', userId],
+    queryFn: () => getRewards(userId as string),
+    enabled: !!userId,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+  });
+
+  useEffect(() => {
+    if (error) {
       console.error('Error fetching rewards:', error);
     }
-  });
-  
-  return data?.rewards;
+  }, [error]);
+
+  return data;
 }
 
+// ---------------------------------------------------------------------------
+// Combined hook
+// ---------------------------------------------------------------------------
+
 /**
- * Combined gamification hook that provides access to all gamification data.
- * @returns Object with profile, achievements, quests, and rewards
+ * Combined gamification hook that provides access to all gamification data
+ * with unified loading, error, and refetch support.
+ *
+ * Unlike the individual sub-hooks, this hook calls useQuery directly so it can
+ * expose isLoading, error, and refetch at the aggregate level.
+ *
+ * @returns Object with profile, achievements, quests, rewards, isLoading, error, and refetch.
  */
 export function useGamification() {
-  const profile = useGameProfile();
-  const achievements = useAchievements();
-  const quests = useQuests();
-  const rewards = useRewards();
+  const userId = useUserId();
+
+  const profileQ = useQuery<GameProfile, Error>({
+    queryKey: ['gameProfile', userId],
+    queryFn: () => getGameProfile(userId as string),
+    enabled: !!userId,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+  });
+
+  const achievementsQ = useQuery<Achievement[], Error>({
+    queryKey: ['achievements', userId],
+    queryFn: () => getAchievements(userId as string),
+    enabled: !!userId,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+  });
+
+  const questsQ = useQuery<Quest[], Error>({
+    queryKey: ['quests', userId],
+    queryFn: () => getQuests(userId as string),
+    enabled: !!userId,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+  });
+
+  const rewardsQ = useQuery<Reward[], Error>({
+    queryKey: ['rewards', userId],
+    queryFn: () => getRewards(userId as string),
+    enabled: !!userId,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+  });
+
+  const isLoading = profileQ.isPending || achievementsQ.isPending || questsQ.isPending || rewardsQ.isPending;
+  const error = profileQ.error || achievementsQ.error || questsQ.error || rewardsQ.error;
 
   return {
-    profile,
-    achievements,
-    quests,
-    rewards,
+    profile: profileQ.data,
+    achievements: achievementsQ.data ?? [],
+    quests: questsQ.data ?? [],
+    rewards: rewardsQ.data ?? [],
+    isLoading,
+    error,
+    refetch: () => {
+      profileQ.refetch();
+      achievementsQ.refetch();
+      questsQ.refetch();
+      rewardsQ.refetch();
+    },
   };
 }

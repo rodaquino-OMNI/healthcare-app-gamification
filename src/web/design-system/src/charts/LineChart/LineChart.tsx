@@ -10,11 +10,16 @@ import {
   VictoryLabel
 } from 'victory';
 
-import Box from '../../primitives/Box/Box';
-import Text from '../../primitives/Text/Text';
+import { Box } from '../../primitives/Box/Box';
+import { Text } from '../../primitives/Text/Text';
 import { colors, typography } from '../../tokens/index';
 import { ChartContainer, ChartWrapper } from './LineChart.styles';
-import { useJourneyColor } from '@web/shared';
+
+// Local utility replacing @web/shared import
+const useJourneyColor = (journey?: string) => {
+  const key = journey && ['health', 'care', 'plan'].includes(journey) ? journey : 'health';
+  return colors.journeys[key as keyof typeof colors.journeys];
+};
 
 /**
  * Props interface for the LineChart component

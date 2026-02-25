@@ -3,6 +3,8 @@ import {
   View,
   ScrollView,
   StyleSheet,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -240,7 +242,7 @@ export const CycleHome: React.FC = () => {
                   styles.dayCell,
                   hasPhase && { backgroundColor: PHASE_COLORS[day.phase] + '20' },
                   day.isToday && styles.todayCell,
-                ]}
+                ] as StyleProp<ViewStyle>}
                 testID={`calendar-day-${day.date}`}
               >
                 <Text
@@ -309,7 +311,7 @@ export const CycleHome: React.FC = () => {
             accessibilityLabel={t(tab.labelKey)}
             accessibilityRole="button"
             testID={`tab-${tab.key}`}
-            style={[styles.tabItem, activeTab === tab.key && styles.tabItemActive]}
+            style={[styles.tabItem, activeTab === tab.key && styles.tabItemActive] as any}
           >
             <Text
               fontSize="lg"

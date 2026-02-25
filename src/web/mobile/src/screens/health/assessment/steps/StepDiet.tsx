@@ -57,7 +57,7 @@ export const StepDiet: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t(`healthAssessment.diet.type.${opt}`)}
               accessibilityRole="button"
               testID={`diet-type-${opt}`}
-              style={[styles.optionChip, selected && styles.optionChipSelected]}
+              style={[styles.optionChip, selected && styles.optionChipSelected] as any}
             >
               <Text
                 fontSize="sm"
@@ -85,7 +85,7 @@ export const StepDiet: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t(`healthAssessment.diet.mealFrequency.${opt}`)}
               accessibilityRole="button"
               testID={`meal-frequency-${opt}`}
-              style={[styles.optionChip, selected && styles.optionChipSelected]}
+              style={[styles.optionChip, selected && styles.optionChipSelected] as any}
             >
               <Text
                 fontSize="sm"
@@ -112,7 +112,7 @@ export const StepDiet: React.FC<StepProps> = ({ data, onUpdate }) => {
             accessibilityLabel={t(`healthAssessment.diet.fruitVeg.${key}`)}
             accessibilityRole="button"
             testID={`fruit-veg-${key}`}
-            style={[styles.indicatorRow, selected && styles.indicatorRowSelected]}
+            style={[styles.indicatorRow, selected && styles.indicatorRowSelected] as any}
           >
             <View style={[styles.indicatorDot, { backgroundColor: indicator }]} />
             <Text
@@ -140,7 +140,7 @@ export const StepDiet: React.FC<StepProps> = ({ data, onUpdate }) => {
             accessibilityLabel={t(`healthAssessment.diet.fastFood.${key}`)}
             accessibilityRole="button"
             testID={`fast-food-${key}`}
-            style={[styles.indicatorRow, selected && styles.indicatorRowSelected]}
+            style={[styles.indicatorRow, selected && styles.indicatorRowSelected] as any}
           >
             <View style={[styles.indicatorDot, { backgroundColor: indicator }]} />
             <Text

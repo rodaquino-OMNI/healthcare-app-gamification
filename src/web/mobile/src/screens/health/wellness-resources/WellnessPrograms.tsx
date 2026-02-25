@@ -5,6 +5,8 @@ import {
   ScrollView,
   StyleSheet,
   ListRenderItemInfo,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -300,7 +302,7 @@ export const WellnessPrograms: React.FC = () => {
               style={[
                 styles.filterChip,
                 isActive && styles.filterChipActive,
-              ]}
+              ] as any}
             >
               <Text
                 fontSize="sm"

@@ -188,7 +188,7 @@ export const MedicationExport: React.FC = () => {
                 style={[
                   styles.scopeOption,
                   selectedScope === option.id && styles.scopeOptionActive,
-                ]}
+                ] as any}
               >
                 <Text
                   fontSize="sm"

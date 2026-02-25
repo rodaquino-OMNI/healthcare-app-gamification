@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
-import { colors } from '../../../tokens/colors';
-import { animation } from '../../../tokens/animation';
+import { colors } from '../../tokens/colors';
+import { animation } from '../../tokens/animation';
 
 /**
  * Props for the circle container

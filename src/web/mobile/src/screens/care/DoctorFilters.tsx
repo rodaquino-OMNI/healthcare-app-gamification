@@ -97,7 +97,7 @@ const DoctorFilters: React.FC = () => {
             style={[
               styles.starButton,
               minRating >= star && styles.starButtonActive,
-            ]}
+            ] as any}
           >
             <Text
               fontSize="xl"

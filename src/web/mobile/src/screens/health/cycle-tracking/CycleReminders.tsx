@@ -5,6 +5,8 @@ import {
   Switch,
   StyleSheet,
   Alert,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -163,7 +165,7 @@ export const CycleReminders: React.FC = () => {
                         style={[
                           styles.dayChip,
                           reminder.daysBefore === days && styles.dayChipActive,
-                        ]}
+                        ] as any}
                       >
                         <Text
                           fontSize="sm"

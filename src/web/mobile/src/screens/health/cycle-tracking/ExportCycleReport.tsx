@@ -5,6 +5,8 @@ import {
   Switch,
   StyleSheet,
   Alert,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -158,7 +160,7 @@ export const ExportCycleReport: React.FC = () => {
                 style={[
                   styles.rangeOption,
                   dateRange === option.id && styles.rangeOptionActive,
-                ]}
+                ] as any}
               >
                 <Text
                   fontSize="sm"

@@ -1713,11 +1713,8 @@ const translations = {
         limit: 'Limite',
         description: 'Descrição do Benefício'
       }
-    }
-  },
-
-  // Gamification translations
-  gamification: {
+    },
+    gamification: {
     level: 'Nível {{level}}',
     xp: '{{value}} XP',
     achievements: {
@@ -1742,9 +1739,7 @@ const translations = {
       score: 'Pontuação'
     }
   },
-
-  // Authentication translations
-  auth: {
+    auth: {
     login: {
       title: 'Entrar',
       email: 'Email',
@@ -1793,9 +1788,7 @@ const translations = {
       disclaimer: 'Ao entrar, voce concorda com nossos Termos de Servico e Politica de Privacidade. Seus dados sao protegidos pela LGPD (Lei Geral de Protecao de Dados).'
     }
   },
-
-  // Profile and settings translations
-  profile: {
+    profile: {
     title: 'Perfil',
     edit: 'Editar Perfil',
     settings: 'Configurações',
@@ -1804,8 +1797,7 @@ const translations = {
     help: 'Ajuda',
     logout: 'Sair'
   },
-
-  settings: {
+    settings: {
     title: 'Configuracoes',
     language: 'Idioma',
     notifications: 'Notificacoes',
@@ -2048,8 +2040,7 @@ const translations = {
       app: 'App'
     }
   },
-
-  help: {
+    help: {
     home: {
       title: 'Central de Ajuda',
       search: 'Buscar',
@@ -2104,11 +2095,11 @@ const translations = {
       submit: 'Enviar Relatorio'
     }
   },
-
-  notifications: {
+    notifications: {
     title: 'Notificações',
     empty: 'Nenhuma notificação.',
     markAllRead: 'Marcar Todas como Lidas'
+  }
   },
   onboarding: {
     personalizationIntro: {

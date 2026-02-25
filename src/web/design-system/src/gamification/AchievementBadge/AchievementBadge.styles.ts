@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Icon } from '../../primitives/Icon/Icon';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
 import { sizing, sizingValues } from '../../tokens/sizing';
@@ -38,7 +39,7 @@ export function useJourneyColor(journey: string) {
  * Container for the achievement badge.
  * Handles sizing, styling, and appearance based on unlocked state and journey.
  */
-export const BadgeContainer = styled.TouchableOpacity<{
+export const BadgeContainer = styled.button<{
   size: 'sm' | 'md' | 'lg';
   unlocked: boolean;
   journey: string;
@@ -78,7 +79,7 @@ export const BadgeIcon = styled(Icon)<{
  * Progress ring that shows completion percentage for incomplete achievements.
  * Visualizes how close the user is to unlocking the achievement.
  */
-export const ProgressRing = styled.View<{
+export const ProgressRing = styled.div<{
   progress: number;
   total: number;
   color: string;
@@ -103,7 +104,7 @@ export const ProgressRing = styled.View<{
  * Visual indicator that appears when an achievement is unlocked.
  * Displays as a small colored dot on the bottom-right of the badge.
  */
-export const UnlockedIndicator = styled.View<{
+export const UnlockedIndicator = styled.div<{
   color: string;
 }>`
   position: absolute;

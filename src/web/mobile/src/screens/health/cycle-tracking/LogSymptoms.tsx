@@ -5,6 +5,8 @@ import {
   StyleSheet,
   Alert,
   TextInput,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -155,7 +157,7 @@ export const LogSymptoms: React.FC = () => {
                   style={[
                     styles.chip,
                     isSelected && styles.chipSelected,
-                  ]}
+                  ] as any}
                 >
                   <Text
                     fontSize="sm"
@@ -188,7 +190,7 @@ export const LogSymptoms: React.FC = () => {
                   style={[
                     styles.moodOption,
                     isSelected && styles.moodOptionSelected,
-                  ]}
+                  ] as any}
                 >
                   <Text fontSize="heading-2xl">{mood.emoji}</Text>
                   <Text
@@ -222,7 +224,7 @@ export const LogSymptoms: React.FC = () => {
                   style={[
                     styles.energyOption,
                     isSelected && styles.energyOptionSelected,
-                  ]}
+                  ] as any}
                 >
                   <Text
                     fontSize="md"

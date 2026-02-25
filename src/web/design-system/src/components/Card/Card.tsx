@@ -1,8 +1,5 @@
 import React from 'react';
-import { Box } from '../primitives/Box/Box';
-import { CardContainer } from './Card.styles';
-import { borderRadius as borderRadiusTokens } from '../../tokens/borderRadius';
-import { shadows } from '../../tokens/shadows';
+import { Box } from '../../primitives/Box/Box';
 
 /**
  * Interface defining the props for the Card component
@@ -83,7 +80,6 @@ export const Card: React.FC<CardProps> = ({
   journey,
   interactive = false,
   backgroundColor,
-  borderColor,
   borderRadius = 'md',
   padding = 'md',
   margin,
@@ -100,34 +96,28 @@ export const Card: React.FC<CardProps> = ({
   const resolvedElevation = elevated ? 'md' : elevation;
 
   // Style object to override CardContainer defaults when needed
-  const style = {
+  const style: React.CSSProperties = {
     cursor: isInteractive ? 'pointer' : 'default',
     transition: 'all 0.2s ease-in-out',
   };
 
   return (
     <Box
-      as={CardContainer}
       display="flex"
       flexDirection="column"
       boxShadow={resolvedElevation}
       backgroundColor={backgroundColor}
       borderRadius={borderRadius}
-      padding={padding}
-      margin={margin}
+      padding={padding !== undefined ? String(padding) : undefined}
+      margin={margin !== undefined ? String(margin) : undefined}
       width={width}
       height={height}
-      onClick={onPress}
+      onClick={onPress as React.MouseEventHandler<HTMLDivElement>}
       role={onPress ? 'button' : undefined}
       aria-label={accessibilityLabel}
       journey={journey}
-      // Apply journey-specific left border if journey is provided
-      borderLeft={journey ? `4px solid` : undefined}
-      borderLeftColor={journey ? `journeys.${journey}.primary` : undefined}
-      // Apply border color if specified
-      borderColor={borderColor || 'neutral.gray200'}
       style={style}
-      {...rest}
+      data-testid={rest.testID}
     >
       {children}
     </Box>

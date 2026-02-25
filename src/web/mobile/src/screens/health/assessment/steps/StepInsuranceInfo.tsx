@@ -70,7 +70,7 @@ export const StepInsuranceInfo: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t(`healthAssessment.insuranceInfo.hasInsurance.${opt}`)}
               accessibilityRole="button"
               testID={`insurance-has-${opt}`}
-              style={[styles.toggleChip, selected && styles.toggleChipSelected]}
+              style={[styles.toggleChip, selected && styles.toggleChipSelected] as any}
             >
               <Text
                 fontSize="sm"
@@ -115,7 +115,7 @@ export const StepInsuranceInfo: React.FC<StepProps> = ({ data, onUpdate }) => {
                   accessibilityLabel={t(`healthAssessment.insuranceInfo.planType.${opt}`)}
                   accessibilityRole="button"
                   testID={`plan-type-${opt}`}
-                  style={[styles.chip, selected && styles.chipSelected]}
+                  style={[styles.chip, selected && styles.chipSelected] as any}
                 >
                   <Text
                     fontSize="sm"
@@ -158,7 +158,7 @@ export const StepInsuranceInfo: React.FC<StepProps> = ({ data, onUpdate }) => {
                   accessibilityLabel={t(`healthAssessment.insuranceInfo.coverage.${opt}`)}
                   accessibilityRole="checkbox"
                   testID={`coverage-${opt}`}
-                  style={[styles.chip, isActive && styles.chipSelected]}
+                  style={[styles.chip, isActive && styles.chipSelected] as any}
                 >
                   <Text
                     fontSize="sm"

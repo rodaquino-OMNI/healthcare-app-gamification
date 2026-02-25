@@ -152,17 +152,18 @@ const variantConfig = {
  */
 const getTypographyToken = <T extends Record<string, any>>(
   category: T,
-  value: string | undefined,
+  value: string | number | undefined,
   defaultValue: keyof T
 ): string | number => {
   if (value === undefined) {
     return category[defaultValue];
   }
-  
-  if (value in category) {
-    return category[value as keyof T];
+
+  const strValue = String(value);
+  if (strValue in category) {
+    return category[strValue as keyof T];
   }
-  
+
   return value;
 };
 

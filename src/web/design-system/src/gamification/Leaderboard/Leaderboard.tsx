@@ -8,7 +8,7 @@ import { AchievementBadge } from '../AchievementBadge/AchievementBadge';
 /**
  * Props for the Leaderboard component
  */
-interface LeaderboardProps {
+export interface LeaderboardProps {
   /**
    * An array of objects containing user data for the leaderboard.
    */

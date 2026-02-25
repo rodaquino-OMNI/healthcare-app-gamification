@@ -285,7 +285,7 @@ const MedicationList: React.FC = () => {
           style={[
             styles.tab,
             activeTab === 'active' && styles.tabActive,
-          ]}
+          ] as any}
         >
           <Text
             fontWeight={activeTab === 'active' ? 'semiBold' : 'regular'}
@@ -306,7 +306,7 @@ const MedicationList: React.FC = () => {
           style={[
             styles.tab,
             activeTab === 'completed' && styles.tabActive,
-          ]}
+          ] as any}
         >
           <Text
             fontWeight={activeTab === 'completed' ? 'semiBold' : 'regular'}

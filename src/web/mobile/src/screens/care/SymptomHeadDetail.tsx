@@ -130,7 +130,7 @@ const SymptomHeadDetail: React.FC = () => {
                   height: `${region.height}%`,
                 },
                 isSelected(region.id) && styles.regionSelected,
-              ]}
+              ] as any}
               accessibilityLabel={`${t(`journeys.care.symptomChecker.headDetail.regions.${region.labelKey}`)}${isSelected(region.id) ? `, ${t('journeys.care.symptomChecker.headDetail.selected')}` : ''}`}
               accessibilityRole="button"
               testID={`head-region-${region.id}`}

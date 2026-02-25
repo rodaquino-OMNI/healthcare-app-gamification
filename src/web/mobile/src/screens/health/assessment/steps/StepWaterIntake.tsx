@@ -53,7 +53,7 @@ export const StepWaterIntake: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t(`healthAssessment.waterIntake.daily.${key}`)}
               accessibilityRole="button"
               testID={`water-intake-${key}`}
-              style={[styles.waterCard, selected && styles.waterCardSelected]}
+              style={[styles.waterCard, selected && styles.waterCardSelected] as any}
             >
               {/* Glass visualization */}
               <View style={styles.glassContainer}>
@@ -100,7 +100,7 @@ export const StepWaterIntake: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t(`healthAssessment.waterIntake.caffeine.${opt}`)}
               accessibilityRole="button"
               testID={`caffeine-${opt}`}
-              style={[styles.chip, selected && styles.chipSelected]}
+              style={[styles.chip, selected && styles.chipSelected] as any}
             >
               <Text
                 fontSize="sm"
@@ -128,7 +128,7 @@ export const StepWaterIntake: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t(`healthAssessment.waterIntake.sugary.${opt}`)}
               accessibilityRole="button"
               testID={`sugary-drinks-${opt}`}
-              style={[styles.chip, selected && styles.chipSelected]}
+              style={[styles.chip, selected && styles.chipSelected] as any}
             >
               <Text
                 fontSize="sm"

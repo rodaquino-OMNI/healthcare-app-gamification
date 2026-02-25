@@ -6,8 +6,23 @@ import { Icon } from '../../primitives/Icon/Icon';
 import { AchievementBadge } from '../AchievementBadge/AchievementBadge';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
-import type { Quest } from 'src/web/shared/types/gamification.types';
-import { useJourneyTheme } from 'src/web/design-system/src/themes/index';
+// Local type stub for Quest (shared package not available at build time)
+interface Quest {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  progress: number;
+  total: number;
+  completed: boolean;
+  journey: 'health' | 'care' | 'plan';
+}
+
+// Local utility replacing shared theme import
+const useJourneyTheme = (journey?: string) => {
+  const key = journey && ['health', 'care', 'plan'].includes(journey) ? journey as 'health' | 'care' | 'plan' : 'health';
+  return colors.journeys[key];
+};
 
 /**
  * Props for the QuestCard component

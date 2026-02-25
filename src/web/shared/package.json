@@ -79,7 +79,8 @@
   "scripts": {
     "lint": "eslint . --ext .ts,.tsx",
     "typecheck": "tsc --noEmit",
-    "test": "jest"
+    "test": "jest",
+    "test:ci": "jest --ci --coverage --passWithNoTests"
   },
   "overrides": {
     "postcss": "8.4.31",

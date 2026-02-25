@@ -56,7 +56,7 @@ export const StepChronicPain: React.FC<StepProps> = ({ data, onUpdate }) => {
         {(['yes', 'no'] as const).map((opt) => {
           const selected = hasPain === opt;
           return (
-            <Touchable key={opt} onPress={() => onUpdate('hasPain', opt)} accessibilityLabel={t(`healthAssessment.chronicPain.hasPain.${opt}`)} accessibilityRole="button" testID={`has-pain-${opt}`} style={[styles.chipWide, selected && styles.chipSelected]}>
+            <Touchable key={opt} onPress={() => onUpdate('hasPain', opt)} accessibilityLabel={t(`healthAssessment.chronicPain.hasPain.${opt}`)} accessibilityRole="button" testID={`has-pain-${opt}`} style={[styles.chipWide, selected && styles.chipSelected] as any}>
               <Text fontSize="sm" fontWeight={selected ? 'semiBold' : 'regular'} color={selected ? colors.neutral.white : colors.neutral.gray700}>
                 {t(`healthAssessment.chronicPain.hasPain.${opt}`)}
               </Text>
@@ -74,7 +74,7 @@ export const StepChronicPain: React.FC<StepProps> = ({ data, onUpdate }) => {
             {PAIN_LOCATIONS.map((location) => {
               const selected = selectedLocations.includes(location);
               return (
-                <Touchable key={location} onPress={() => handleToggleLocation(location)} accessibilityLabel={t(`healthAssessment.chronicPain.locations.${location}`)} accessibilityRole="checkbox" testID={`pain-location-${location}`} style={[styles.chip, selected && styles.chipSelected]}>
+                <Touchable key={location} onPress={() => handleToggleLocation(location)} accessibilityLabel={t(`healthAssessment.chronicPain.locations.${location}`)} accessibilityRole="checkbox" testID={`pain-location-${location}`} style={[styles.chip, selected && styles.chipSelected] as any}>
                   <Text fontSize="sm" fontWeight={selected ? 'semiBold' : 'regular'} color={selected ? colors.neutral.white : colors.neutral.gray700}>
                     {t(`healthAssessment.chronicPain.locations.${location}`)}
                   </Text>
@@ -91,7 +91,7 @@ export const StepChronicPain: React.FC<StepProps> = ({ data, onUpdate }) => {
               const selected = data.painSeverity === level;
               const activeColor = getSeverityColor(level);
               return (
-                <Touchable key={level} onPress={() => onUpdate('painSeverity', level)} accessibilityLabel={t('healthAssessment.chronicPain.severityLevel', { level: String(level) })} accessibilityRole="button" testID={`pain-severity-${level}`} style={[styles.severityCell, selected && { backgroundColor: activeColor, borderColor: activeColor }]}>
+                <Touchable key={level} onPress={() => onUpdate('painSeverity', level)} accessibilityLabel={t('healthAssessment.chronicPain.severityLevel', { level: String(level) })} accessibilityRole="button" testID={`pain-severity-${level}`} style={[styles.severityCell, selected && { backgroundColor: activeColor, borderColor: activeColor }] as any}>
                   <Text fontSize="xs" fontWeight={selected ? 'bold' : 'regular'} color={selected ? colors.neutral.white : colors.neutral.gray700} textAlign="center">
                     {String(level)}
                   </Text>
@@ -107,8 +107,8 @@ export const StepChronicPain: React.FC<StepProps> = ({ data, onUpdate }) => {
             {PAIN_FREQUENCY.map((freq) => {
               const selected = data.painFrequency === freq;
               return (
-                <Touchable key={freq} onPress={() => onUpdate('painFrequency', freq)} accessibilityLabel={t(`healthAssessment.chronicPain.frequency.${freq}`)} accessibilityRole="button" testID={`pain-frequency-${freq}`} style={[styles.radioCard, selected && styles.radioCardSelected]}>
-                  <View style={[styles.radioCircle, selected && styles.radioCircleActive]}>
+                <Touchable key={freq} onPress={() => onUpdate('painFrequency', freq)} accessibilityLabel={t(`healthAssessment.chronicPain.frequency.${freq}`)} accessibilityRole="button" testID={`pain-frequency-${freq}`} style={[styles.radioCard, selected && styles.radioCardSelected] as any}>
+                  <View style={[styles.radioCircle, selected && styles.radioCircleActive] as any}>
                     {selected && <View style={styles.radioInner} />}
                   </View>
                   <Text fontSize="sm" fontWeight={selected ? 'semiBold' : 'regular'} color={selected ? colors.journeys.health.text : colors.neutral.gray700} style={styles.radioLabel}>
@@ -126,7 +126,7 @@ export const StepChronicPain: React.FC<StepProps> = ({ data, onUpdate }) => {
             {PAIN_IMPACT.map((impact) => {
               const selected = data.painImpact === impact;
               return (
-                <Touchable key={impact} onPress={() => onUpdate('painImpact', impact)} accessibilityLabel={t(`healthAssessment.chronicPain.impact.${impact}`)} accessibilityRole="button" testID={`pain-impact-${impact}`} style={[styles.chip, selected && styles.chipSelected]}>
+                <Touchable key={impact} onPress={() => onUpdate('painImpact', impact)} accessibilityLabel={t(`healthAssessment.chronicPain.impact.${impact}`)} accessibilityRole="button" testID={`pain-impact-${impact}`} style={[styles.chip, selected && styles.chipSelected] as any}>
                   <Text fontSize="sm" fontWeight={selected ? 'semiBold' : 'regular'} color={selected ? colors.neutral.white : colors.neutral.gray700}>
                     {t(`healthAssessment.chronicPain.impact.${impact}`)}
                   </Text>

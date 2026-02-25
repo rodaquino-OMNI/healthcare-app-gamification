@@ -1,5 +1,5 @@
 import styled, { keyframes, css } from 'styled-components';
-import { Icon } from '@some-ui-library/icons'; // v1.0.0
+import { Icon } from '../../primitives/Icon/Icon';
 import { spacing } from '../../tokens/spacing';
 import { borderRadius } from '../../tokens/borderRadius';
 import { typography } from '../../tokens/typography';
@@ -28,7 +28,17 @@ const collapseAnimation = keyframes`
   }
 `;
 
-export const AccordionHeader = styled.div`
+interface AccordionHeaderProps {
+  isExpanded?: boolean;
+  journey?: 'health' | 'care' | 'plan';
+}
+
+interface AccordionIconProps {
+  isExpanded?: boolean;
+  journey?: 'health' | 'care' | 'plan';
+}
+
+export const AccordionHeader = styled.div<AccordionHeaderProps>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -41,7 +51,7 @@ export const AccordionHeader = styled.div`
   transition: background-color 0.2s ease;
 
   /* Journey-specific styling - safely access journey colors with fallbacks */
-  border-left: 3px solid ${({ theme, journey }) => {
+  border-left: 3px solid ${({ journey }) => {
     if (journey && colors.journeys[journey]) {
       return colors.journeys[journey].primary;
     }
@@ -76,7 +86,7 @@ export const AccordionHeader = styled.div`
   }
 `;
 
-export const AccordionContent = styled.div`
+export const AccordionContent = styled.div<AccordionHeaderProps>`
   overflow: hidden;
   animation: ${({ isExpanded }) => isExpanded ? expandAnimation : collapseAnimation} 0.3s ease forwards;
   max-height: ${({ isExpanded }) => isExpanded ? '1000px' : '0'};
@@ -97,7 +107,7 @@ export const AccordionContent = styled.div`
   }}
 `;
 
-export const AccordionIcon = styled(Icon)`
+export const AccordionIcon = styled(Icon)<AccordionIconProps>`
   transition: transform 0.3s ease;
   transform: ${({ isExpanded }) => isExpanded ? 'rotate(180deg)' : 'rotate(0deg)'};
 

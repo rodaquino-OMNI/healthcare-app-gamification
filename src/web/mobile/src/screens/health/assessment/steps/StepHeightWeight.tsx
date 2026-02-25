@@ -98,7 +98,7 @@ export const StepHeightWeight: React.FC<StepProps> = ({ data, onUpdate }) => {
             style={[
               styles.unitTab,
               unit === opt && styles.unitTabActive,
-            ]}
+            ] as any}
           >
             <Text
               fontSize="sm"

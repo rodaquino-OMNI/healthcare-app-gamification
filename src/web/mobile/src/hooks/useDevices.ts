@@ -1,74 +1,95 @@
-import { useState, useEffect } from 'react';
-import { useQuery } from '@apollo/client';
+/**
+ * @file useDevices.ts
+ * @description Custom React hook for fetching connected devices and connecting new ones.
+ * Uses @tanstack/react-query v5 for data fetching, caching, and mutations.
+ * Supports the My Health Journey functionality (F-101) for device management.
+ */
+
+import { useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'; // v5.22+
 import { getConnectedDevices, connectDevice } from '../api/health';
-import { useAuth } from '../context/AuthContext';
 import { DeviceConnection } from '@shared/types/health.types';
+import { useAuth } from './useAuth';
 
 /**
- * A React hook that fetches connected devices for a user and provides a function to connect new devices.
- * This hook supports the My Health Journey functionality (F-101) for device management.
- * 
- * @returns An object containing the list of connected devices, loading state, error state, and a function to connect new devices.
+ * Custom hook that fetches connected devices for the current user and provides
+ * a function to connect new devices.
+ *
+ * @returns An object containing the list of connected devices, loading state, error state,
+ * and a function to connect new devices.
  */
 export function useDevices() {
-  const { session } = useAuth();
-  const userId = session?.accessToken ? useAuth().getUserFromToken(session.accessToken)?.sub : undefined;
-  
-  const [devices, setDevices] = useState<DeviceConnection[] | undefined>(undefined);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<any>(null);
-  
-  // Fetch connected devices when component mounts or userId changes
+  const queryClient = useQueryClient();
+  const auth = useAuth();
+
+  // Derive userId from the JWT in the current session
+  const userId: string | undefined = auth.session?.accessToken
+    ? auth.getUserFromToken(auth.session.accessToken)?.sub
+    : undefined;
+
+  const {
+    data,
+    isPending,
+    error,
+    refetch,
+  } = useQuery<DeviceConnection[], Error>({
+    queryKey: ['devices', userId],
+    // The API returns HealthDevice[] which is structurally compatible with DeviceConnection[]
+    queryFn: () => getConnectedDevices(userId as string) as Promise<DeviceConnection[]>,
+    enabled: !!userId && auth.isAuthenticated,
+    staleTime: 5 * 60 * 1000,  // Device list is fresh for 5 minutes
+    gcTime: 30 * 60 * 1000,    // Unused data remains in cache for 30 minutes
+  });
+
+  // Log fetch errors via useEffect (v5 removed onError from useQuery)
   useEffect(() => {
-    if (!userId) {
-      setLoading(false);
-      return;
+    if (error) {
+      console.error('Error fetching devices:', error);
     }
-    
-    setLoading(true);
-    setError(null);
-    
-    getConnectedDevices(userId)
-      .then(result => {
-        setDevices(result);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Error fetching devices:', err);
-        setError(err);
-        setLoading(false);
-      });
-  }, [userId]);
-  
+  }, [error]);
+
+  // Mutation for connecting a new device
+  const connectMutation = useMutation<
+    DeviceConnection,
+    Error,
+    { deviceType: string; deviceId: string }
+  >({
+    mutationFn: async (deviceData: {
+      deviceType: string;
+      deviceId: string;
+    }): Promise<DeviceConnection> => {
+      if (!userId) {
+        throw new Error('User must be authenticated to connect a device');
+      }
+      // The API returns HealthDevice which is structurally compatible with DeviceConnection
+      return connectDevice(userId, deviceData) as Promise<DeviceConnection>;
+    },
+    onSuccess: () => {
+      // Invalidate and re-fetch the devices list to include the newly connected device
+      queryClient.invalidateQueries({ queryKey: ['devices', userId] });
+    },
+    onError: (err) => {
+      console.error('Error connecting device:', err);
+    },
+  });
+
   /**
-   * Connect a new device to the user's account
-   * @param deviceData - Data needed to connect the device (type, id, name, etc.)
+   * Connect a new device to the user's account.
+   *
+   * @param deviceData - Data needed to connect the device (deviceType, deviceId, etc.)
    * @returns The newly connected device object
    * @throws Error if connection fails or user is not authenticated
    */
-  const connect = async (deviceData: any): Promise<DeviceConnection> => {
-    if (!userId) {
-      throw new Error('User must be authenticated to connect a device');
-    }
-    
-    try {
-      const newDevice = await connectDevice(userId, deviceData);
-      
-      // Update the devices list to include the newly connected device
-      setDevices(prev => prev ? [...prev, newDevice] : [newDevice]);
-      
-      return newDevice;
-    } catch (err) {
-      console.error('Error connecting device:', err);
-      setError(err);
-      throw err;
-    }
-  };
-  
+  const connect = (deviceData: {
+    deviceType: string;
+    deviceId: string;
+  }): Promise<DeviceConnection> => connectMutation.mutateAsync(deviceData);
+
   return {
-    devices,
-    loading,
+    devices: data ?? [],
+    isLoading: isPending,
     error,
-    connect
+    connect,
+    refetch,
   };
 }

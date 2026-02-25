@@ -41,6 +41,8 @@ export interface HealthMetric {
   unit: string;
   timestamp: string;
   source?: string;
+  /** Optional trend indicator (e.g. 'up', 'down', 'stable') for UI display */
+  trend?: string;
 }
 
 export interface CreateMetricInput {

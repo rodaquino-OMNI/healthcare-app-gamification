@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import { AccordionHeader, AccordionContent, AccordionIcon } from './Accordion.styles';
-import Box from '../../primitives/Box/Box';
-import Text from '../../primitives/Text/Text';
-import Touchable from '../../primitives/Touchable/Touchable';
+import { Box } from '../../primitives/Box/Box';
+import { Text } from '../../primitives/Text/Text';
+import { Touchable } from '../../primitives/Touchable/Touchable';
 
 // Helper function to generate a unique ID if none is provided
 const generateId = (): string => {
@@ -33,7 +33,7 @@ export interface AccordionProps {
   /**
    * Journey context for journey-specific styling (health, care, plan)
    */
-  journey?: string;
+  journey?: 'health' | 'care' | 'plan';
   
   /**
    * Optional CSS class name for custom styling

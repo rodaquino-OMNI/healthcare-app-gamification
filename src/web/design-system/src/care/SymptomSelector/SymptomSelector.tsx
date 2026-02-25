@@ -1,12 +1,18 @@
 import React, { useState, useMemo } from 'react';
 import { colors } from '../../tokens/colors';
-import Box from '../../primitives/Box/Box';
-import Text from '../../primitives/Text/Text';
-import Input from '../../components/Input/Input';
-import Button from '../../components/Button/Button';
-import Card from '../../components/Card/Card';
-import Checkbox from '../../components/Checkbox/Checkbox';
-import { Symptom } from '../../../shared/types/care.types';
+import { Box } from '../../primitives/Box/Box';
+import { Text } from '../../primitives/Text/Text';
+import { Input } from '../../components/Input/Input';
+import { Button } from '../../components/Button/Button';
+import { Card } from '../../components/Card/Card';
+import { Checkbox } from '../../components/Checkbox/Checkbox';
+
+// Local type stub for Symptom (shared package not available at build time)
+interface Symptom {
+  id: string;
+  name: string;
+  description?: string;
+}
 
 /**
  * A component that allows users to select symptoms from a predefined list.

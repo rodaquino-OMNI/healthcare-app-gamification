@@ -6,7 +6,7 @@ import { spacing } from '../../tokens/spacing';
 import { borderRadius } from '../../tokens/borderRadius';
 
 // Styled components for the GoalCard
-const Card = styled.div`
+const Card = styled.div<{ completed?: boolean }>`
   display: flex;
   flex-direction: column;
   padding: ${spacing.md};
@@ -47,13 +47,13 @@ const ProgressContainer = styled.div`
   margin-top: auto;
 `;
 
-const ProgressBar = styled.div`
+const ProgressBar = styled.div<{ completed?: boolean; progress?: number }>`
   height: 100%;
   border-radius: ${borderRadius.xs};
   background-color: ${props => props.completed
     ? props.theme.colors.semantic.success
     : props.theme.colors.journeys.health.primary};
-  width: ${props => props.progress}%;
+  width: ${props => props.progress ?? 0}%;
   transition: width 0.3s ease;
 `;
 
@@ -87,20 +87,27 @@ const ProgressText = styled.span`
 `;
 
 /**
- * GoalCard - A component for displaying goal information
- * 
- * @param {Object} props - Component props
- * @param {string} props.title - The title of the goal
- * @param {string} [props.description] - A description of the goal
- * @param {number} [props.progress=0] - The progress towards completing the goal (0-100)
- * @param {boolean} [props.completed=false] - Whether the goal has been completed
- * @returns {React.ReactElement} The GoalCard component
+ * Props for the GoalCard component
  */
-const GoalCard = ({ 
-  title, 
-  description, 
-  progress = 0, 
-  completed = false 
+export interface GoalCardProps {
+  /** The title of the goal */
+  title: string;
+  /** A description of the goal */
+  description?: string;
+  /** The progress towards completing the goal (0-100) */
+  progress?: number;
+  /** Whether the goal has been completed */
+  completed?: boolean;
+}
+
+/**
+ * GoalCard - A component for displaying goal information
+ */
+const GoalCard: React.FC<GoalCardProps> = ({
+  title,
+  description,
+  progress = 0,
+  completed = false
 }) => {
   // Ensure progress is within valid range
   const normalizedProgress = completed ? 100 : Math.min(Math.max(progress, 0), 100);
@@ -125,13 +132,13 @@ const GoalCard = ({
       )}
       
       <ProgressContainer>
-        <ProgressBar 
-          progress={normalizedProgress} 
+        <ProgressBar
+          progress={normalizedProgress}
           completed={completed}
           role="progressbar"
           aria-valuenow={normalizedProgress}
-          aria-valuemin="0"
-          aria-valuemax="100"
+          aria-valuemin={0}
+          aria-valuemax={100}
         />
       </ProgressContainer>
     </Card>

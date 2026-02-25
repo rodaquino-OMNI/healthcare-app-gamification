@@ -66,7 +66,7 @@ export const StepExercise: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t(`healthAssessment.exercise.frequency.${opt}`)}
               accessibilityRole="button"
               testID={`exercise-frequency-${opt}`}
-              style={[styles.optionChip, selected && styles.optionChipSelected]}
+              style={[styles.optionChip, selected && styles.optionChipSelected] as any}
             >
               <Text
                 fontSize="sm"
@@ -94,7 +94,7 @@ export const StepExercise: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t(`healthAssessment.exercise.type.${key}`)}
               accessibilityRole="button"
               testID={`exercise-type-${key}`}
-              style={[styles.typeCard, selected && styles.typeCardSelected]}
+              style={[styles.typeCard, selected && styles.typeCardSelected] as any}
             >
               <Text fontSize="heading-xl" textAlign="center">
                 {emoji}
@@ -127,7 +127,7 @@ export const StepExercise: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t(`healthAssessment.exercise.duration.${opt}`)}
               accessibilityRole="button"
               testID={`exercise-duration-${opt}`}
-              style={[styles.optionChip, selected && styles.optionChipSelected]}
+              style={[styles.optionChip, selected && styles.optionChipSelected] as any}
             >
               <Text
                 fontSize="sm"

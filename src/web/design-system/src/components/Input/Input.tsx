@@ -128,7 +128,7 @@ export interface InputProps {
  *   journey="health"
  * />
  */
-const Input: React.FC<InputProps> = ({
+export const Input: React.FC<InputProps> = ({
   value,
   onChange,
   placeholder,

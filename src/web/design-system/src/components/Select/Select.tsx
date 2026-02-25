@@ -198,11 +198,11 @@ export const Select = forwardRef<any, SelectProps>((props, ref) => {
         accessibilityHint={`Opens a list of options. Currently selected: ${getDisplayValue()}`}
         accessibilityState={{ expanded: isOpen, disabled }}
         ref={inputRef}
-        style={[
-          styles.touchable,
-          disabled && { opacity: 0.5 },
-          journey && { borderColor: journeyColor }
-        ]}
+        style={{
+          ...styles.touchable,
+          ...(disabled ? { opacity: 0.5 } : {}),
+          ...(journey ? { borderColor: journeyColor } : {})
+        } as React.CSSProperties}
         testID={testID || 'select-component'}
         journey={journey}
       >

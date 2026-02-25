@@ -22,7 +22,7 @@ interface Achievement {
   /** Description of the achievement */
   description: string;
   /** Journey this achievement belongs to */
-  journey: string;
+  journey: 'health' | 'care' | 'plan';
   /** Icon name for the achievement badge */
   icon: string;
   /** Current progress toward the achievement */

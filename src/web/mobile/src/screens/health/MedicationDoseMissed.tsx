@@ -152,9 +152,9 @@ export const MedicationDoseMissed: React.FC = () => {
                   style={[
                     styles.reasonItem,
                     isSelected && styles.reasonItemSelected,
-                  ]}
+                  ] as any}
                 >
-                  <View style={[styles.radioOuter, isSelected && styles.radioOuterSelected]}>
+                  <View style={[styles.radioOuter, isSelected && styles.radioOuterSelected] as any}>
                     {isSelected && <View style={styles.radioInner} />}
                   </View>
                   <Text

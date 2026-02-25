@@ -151,7 +151,7 @@ const SymptomBodyMapBack: React.FC = () => {
                   height: `${region.height}%`,
                 },
                 isSelected(region.id) && styles.regionSelected,
-              ]}
+              ] as any}
               accessibilityLabel={`${t(`journeys.care.symptomChecker.bodyMapBack.regions.${region.labelKey}`)}${isSelected(region.id) ? `, ${t('journeys.care.symptomChecker.bodyMapBack.selected')}` : ''}`}
               accessibilityRole="button"
               testID={`body-region-back-${region.id}`}

@@ -23,10 +23,11 @@ jobs:
       with:
         node-version: '20'
         cache: 'yarn'
+        cache-dependency-path: src/web/yarn.lock
         
     - name: Install dependencies for Web Monorepo
       working-directory: src/web
-      run: yarn install
+      run: yarn install --frozen-lockfile
       
     - name: Validate package.json files
       run: node scripts/validate-package-json.js
@@ -37,7 +38,7 @@ jobs:
       
     - name: Test Web Components
       working-directory: src/web
-      run: yarn test
+      run: yarn test:ci
       
     - name: Build Web Application
       working-directory: src/web

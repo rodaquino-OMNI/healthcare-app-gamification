@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import { AgoraRendererView } from 'react-native-agora'; // v4.0+
-import { useJourney } from 'hooks/useJourney';
+// AgoraRendererView — stub for web build (React Native only)
+const AgoraRendererView = (_props: { uid?: number; style?: React.CSSProperties; canvas?: { uid: number; renderMode?: number; mirrorMode?: number } }) => null;
+// useJourney — stub for web build
+const useJourney = () => ({ journey: 'care' as const });
 
 import {
   VideoContainer,
@@ -32,15 +34,24 @@ const VideoConsultation: React.FC = () => {
   const { journey } = useJourney();
   
   // Extract consultation parameters from route
-  const { 
-    sessionId, 
-    channelName, 
-    token, 
+  const params = (route.params || {}) as {
+    sessionId?: string;
+    channelName?: string;
+    token?: string;
+    providerId?: string;
+    providerName?: string;
+    providerSpecialty?: string;
+    providerAvatar?: string;
+  };
+  const {
+    sessionId,
+    channelName,
+    token,
     providerId,
     providerName = 'Dr. Silva',
     providerSpecialty = 'Cardiologista',
     providerAvatar
-  } = route.params || {};
+  } = params;
   
   // Video call state
   const [localVideoEnabled, setLocalVideoEnabled] = useState(true);

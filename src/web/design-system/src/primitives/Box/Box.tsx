@@ -83,16 +83,17 @@ export const Box = React.forwardRef<HTMLDivElement, BoxProps>(({
   }
   
   // Helper function to resolve token values to their actual values
-  const resolveToken = (value: string | undefined, tokenMap: Record<string, string>): string | undefined => {
+  const resolveToken = (value: string | undefined, tokenMap: Record<string, unknown>): string | undefined => {
     if (!value) return undefined;
-    return tokenMap[value] || value; // Use token value if it exists, otherwise raw value
+    const resolved = tokenMap[value];
+    return (typeof resolved === 'string' ? resolved : value);
   };
-  
+
   // Resolve tokens for various properties
   const resolvedProps = {
     // Colors
-    backgroundColor: bgColor ? resolveToken(bgColor, colors) : undefined,
-    color: color ? resolveToken(color, colors) : undefined,
+    backgroundColor: bgColor ? resolveToken(bgColor, colors as Record<string, unknown>) : undefined,
+    color: color ? resolveToken(color, colors as Record<string, unknown>) : undefined,
     
     // Spacing - padding
     padding: padding ? resolveToken(padding, spacing) : undefined,

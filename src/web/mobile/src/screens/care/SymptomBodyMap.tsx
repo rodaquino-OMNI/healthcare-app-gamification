@@ -166,7 +166,7 @@ const SymptomBodyMap: React.FC = () => {
                   height: `${region.height}%`,
                 },
                 isSelected(region.id) && styles.regionSelected,
-              ]}
+              ] as any}
               accessibilityLabel={`${region.label} region${isSelected(region.id) ? ', selected' : ''}`}
               accessibilityRole="button"
               testID={`body-region-${region.id}`}

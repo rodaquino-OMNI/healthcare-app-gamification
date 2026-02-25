@@ -5,6 +5,8 @@ import {
   StyleSheet,
   Alert,
   TextInput,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -136,7 +138,7 @@ export const LogPeriodStart: React.FC = () => {
                   style={[
                     styles.dateOption,
                     isSelected && styles.dateOptionSelected,
-                  ]}
+                  ] as any}
                 >
                   <Text
                     fontSize="sm"
@@ -170,7 +172,7 @@ export const LogPeriodStart: React.FC = () => {
                   style={[
                     styles.flowOption,
                     isSelected && styles.flowOptionSelected,
-                  ]}
+                  ] as any}
                 >
                   <View style={styles.dropletContainer}>
                     {Array.from({ length: option.iconScale }, (_, i) => (

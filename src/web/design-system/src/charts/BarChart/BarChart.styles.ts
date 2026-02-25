@@ -63,7 +63,7 @@ export const Bar = styled.div<{
  */
 export const XAxisLabel = styled.div`
   font-size: 12px;
-  color: ${props => props.theme.colors?.text?.secondary || colors.neutral.gray600};
+  color: ${props => props.theme.colors?.text?.muted || colors.neutral.gray600};
   text-align: center;
   margin-top: 8px;
   white-space: nowrap;
@@ -81,7 +81,7 @@ export const XAxisLabel = styled.div`
  */
 export const YAxisLabel = styled.div`
   font-size: 12px;
-  color: ${props => props.theme.colors?.text?.secondary || colors.neutral.gray600};
+  color: ${props => props.theme.colors?.text?.muted || colors.neutral.gray600};
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   margin-right: 8px;

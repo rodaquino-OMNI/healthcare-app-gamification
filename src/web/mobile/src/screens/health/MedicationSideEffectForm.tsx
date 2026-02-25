@@ -127,7 +127,7 @@ export const MedicationSideEffectForm: React.FC = () => {
                 style={[
                   styles.effectChip,
                   selectedEffect === effect.id && styles.effectChipSelected,
-                ]}
+                ] as any}
               >
                 <Text
                   fontSize="sm"
@@ -164,7 +164,7 @@ export const MedicationSideEffectForm: React.FC = () => {
                     backgroundColor: option.color,
                     borderColor: option.color,
                   },
-                ]}
+                ] as any}
               >
                 <Text
                   fontSize="sm"

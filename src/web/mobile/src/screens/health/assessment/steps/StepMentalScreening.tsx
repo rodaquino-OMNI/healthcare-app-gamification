@@ -70,9 +70,9 @@ export const StepMentalScreening: React.FC<StepProps> = ({ data, onUpdate }) => 
                   accessibilityLabel={t(`healthAssessment.mentalScreening.options.${option.key}`)}
                   accessibilityRole="button"
                   testID={`phq2-${question}-${option.key}`}
-                  style={[styles.optionCard, selected && styles.optionCardSelected]}
+                  style={[styles.optionCard, selected && styles.optionCardSelected] as any}
                 >
-                  <View style={[styles.radioCircle, selected && styles.radioCircleSelected]}>
+                  <View style={[styles.radioCircle, selected && styles.radioCircleSelected] as any}>
                     {selected && <View style={styles.radioInner} />}
                   </View>
                   <Text
@@ -96,7 +96,7 @@ export const StepMentalScreening: React.FC<StepProps> = ({ data, onUpdate }) => 
           <Text fontSize="sm" fontWeight="medium" color={colors.neutral.gray600}>
             {t('healthAssessment.mentalScreening.scoreLabel')}
           </Text>
-          <View style={[styles.scoreBadge, score >= 3 && styles.scoreBadgeHigh]}>
+          <View style={[styles.scoreBadge, score >= 3 && styles.scoreBadgeHigh] as any}>
             <Text fontSize="md" fontWeight="bold" color={colors.neutral.white}>
               {String(score)}/6
             </Text>

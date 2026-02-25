@@ -57,9 +57,9 @@ export const StepAlcoholTobacco: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t(`healthAssessment.alcoholTobacco.smoking.${opt}`)}
               accessibilityRole="button"
               testID={`smoking-status-${opt}`}
-              style={[styles.radioCard, selected && styles.radioCardSelected]}
+              style={[styles.radioCard, selected && styles.radioCardSelected] as any}
             >
-              <View style={[styles.radioCircle, selected && styles.radioCircleSelected]}>
+              <View style={[styles.radioCircle, selected && styles.radioCircleSelected] as any}>
                 {selected && <View style={styles.radioInner} />}
               </View>
               <Text
@@ -91,7 +91,7 @@ export const StepAlcoholTobacco: React.FC<StepProps> = ({ data, onUpdate }) => {
                   accessibilityLabel={t(`healthAssessment.alcoholTobacco.cigarettesPerDay.${opt}`)}
                   accessibilityRole="button"
                   testID={`cigarettes-${opt}`}
-                  style={[styles.chip, selected && styles.chipSelected]}
+                  style={[styles.chip, selected && styles.chipSelected] as any}
                 >
                   <Text
                     fontSize="sm"
@@ -118,7 +118,7 @@ export const StepAlcoholTobacco: React.FC<StepProps> = ({ data, onUpdate }) => {
                   accessibilityLabel={t(`healthAssessment.alcoholTobacco.yearsSmoking.${opt}`)}
                   accessibilityRole="button"
                   testID={`years-smoking-${opt}`}
-                  style={[styles.chip, selected && styles.chipSelected]}
+                  style={[styles.chip, selected && styles.chipSelected] as any}
                 >
                   <Text
                     fontSize="sm"
@@ -148,9 +148,9 @@ export const StepAlcoholTobacco: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t(`healthAssessment.alcoholTobacco.alcohol.${opt}`)}
               accessibilityRole="button"
               testID={`alcohol-frequency-${opt}`}
-              style={[styles.radioCard, selected && styles.radioCardSelected]}
+              style={[styles.radioCard, selected && styles.radioCardSelected] as any}
             >
-              <View style={[styles.radioCircle, selected && styles.radioCircleSelected]}>
+              <View style={[styles.radioCircle, selected && styles.radioCircleSelected] as any}>
                 {selected && <View style={styles.radioInner} />}
               </View>
               <Text
@@ -182,7 +182,7 @@ export const StepAlcoholTobacco: React.FC<StepProps> = ({ data, onUpdate }) => {
                   accessibilityLabel={t(`healthAssessment.alcoholTobacco.drinksPerWeek.${opt}`)}
                   accessibilityRole="button"
                   testID={`drinks-per-week-${opt}`}
-                  style={[styles.chip, selected && styles.chipSelected]}
+                  style={[styles.chip, selected && styles.chipSelected] as any}
                 >
                   <Text
                     fontSize="sm"
@@ -212,9 +212,9 @@ export const StepAlcoholTobacco: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t(`healthAssessment.alcoholTobacco.drugScreening.${opt}`)}
               accessibilityRole="button"
               testID={`drug-screening-${opt}`}
-              style={[styles.radioCard, selected && styles.radioCardSelected]}
+              style={[styles.radioCard, selected && styles.radioCardSelected] as any}
             >
-              <View style={[styles.radioCircle, selected && styles.radioCircleSelected]}>
+              <View style={[styles.radioCircle, selected && styles.radioCircleSelected] as any}>
                 {selected && <View style={styles.radioInner} />}
               </View>
               <Text

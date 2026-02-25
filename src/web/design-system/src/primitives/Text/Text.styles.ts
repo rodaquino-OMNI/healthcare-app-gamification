@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { typography, colors, mediaQueries } from '../tokens';
+import { typography, colors, mediaQueries } from '../../tokens';
 
 /**
  * Defines the props interface for the StyledText component

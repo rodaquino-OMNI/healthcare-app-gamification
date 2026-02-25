@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Modal as RNModal } from 'react-native';
 import { tokens } from '../../tokens';
 import { borderRadius } from '../../tokens/borderRadius';
 import { colors } from '../../tokens/colors';
@@ -18,22 +17,22 @@ export interface ModalProps {
    * Controls whether the modal is visible
    */
   visible: boolean;
-  
+
   /**
    * Function called when the modal is closed
    */
   onClose: () => void;
-  
+
   /**
    * Title to display in the modal header
    */
   title?: string;
-  
+
   /**
    * Modal content
    */
   children: React.ReactNode;
-  
+
   /**
    * Journey identifier for journey-specific theming
    * @default 'health'
@@ -52,11 +51,16 @@ export interface ModalProps {
  * Styled container for the modal overlay
  */
 const ModalContainer = styled.div<{ variant?: 'center' | 'bottomSheet' }>`
-  flex: 1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
-  align-items: center;
-  justify-content: ${({ variant }) => variant === 'bottomSheet' ? 'flex-end' : 'center'};
+  align-items: ${({ variant }) => variant === 'bottomSheet' ? 'flex-end' : 'center'};
+  justify-content: center;
   background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
 `;
 
 /**
@@ -82,9 +86,8 @@ const BottomSheetContent = styled.div`
   border-bottom-right-radius: 0;
   padding: ${tokens.spacing.md};
   box-shadow: ${shadows.xl};
-  position: absolute;
-  bottom: 0;
   max-height: 80%;
+  overflow-y: auto;
 `;
 
 /**
@@ -100,7 +103,7 @@ const ModalHeader = styled.div`
 
 /**
  * Modal component for the AUSTA SuperApp design system.
- * 
+ *
  * This component provides a consistent modal experience across the application
  * with journey-specific theming and proper accessibility support.
  *
@@ -132,13 +135,13 @@ export const Modal: React.FC<ModalProps> = ({
         onClose();
       }
     };
-    
+
     document.addEventListener('keydown', handleEscKey);
     return () => {
       document.removeEventListener('keydown', handleEscKey);
     };
   }, [visible, onClose]);
-  
+
   // Prevent body scrolling when modal is open
   useEffect(() => {
     if (visible) {
@@ -146,91 +149,88 @@ export const Modal: React.FC<ModalProps> = ({
     } else {
       document.body.style.overflow = '';
     }
-    
+
     return () => {
       document.body.style.overflow = '';
     };
   }, [visible]);
-  
+
+  if (!visible) {
+    return null;
+  }
+
   return (
-    <RNModal
-      visible={visible}
-      transparent={true}
-      animationType="fade"
-      onRequestClose={onClose}
+    <ModalContainer
+      variant={variant}
+      onClick={(e) => {
+        // Close modal when clicking outside content
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
       aria-modal="true"
       role="dialog"
+      aria-labelledby={title ? 'modal-title' : undefined}
     >
-      <ModalContainer
-        variant={variant}
-        onClick={(e) => {
-          // Close modal when clicking outside content
-          if (e.target === e.currentTarget) {
-            onClose();
-          }
-        }}
-        aria-labelledby={title ? "modal-title" : undefined}
-      >
-        {variant === 'bottomSheet' ? (
-          <BottomSheetContent onClick={(e) => e.stopPropagation()}>
-            <ModalHeader>
-              {title && (
-                <Text
-                  fontSize="lg"
-                  fontWeight="medium"
-                  id="modal-title"
-                  journey={journey}
-                >
-                  {title}
-                </Text>
-              )}
-              <Touchable
-                onPress={onClose}
-                accessibilityLabel="Close modal"
-                accessibilityRole="button"
+      {variant === 'bottomSheet' ? (
+        <BottomSheetContent onClick={(e) => e.stopPropagation()}>
+          <ModalHeader>
+            {title && (
+              <Text
+                fontSize="lg"
+                fontWeight="medium"
+                id="modal-title"
                 journey={journey}
               >
-                <Box padding="xs">
-                  <Text fontSize="xl">x</Text>
-                </Box>
-              </Touchable>
-            </ModalHeader>
+                {title}
+              </Text>
+            )}
+            <Touchable
+              onPress={onClose}
+              accessibilityLabel="Close modal"
+              accessibilityRole="button"
+              journey={journey}
+            >
+              <Box padding="xs">
+                <Text fontSize="xl">x</Text>
+              </Box>
+            </Touchable>
+          </ModalHeader>
 
-            <Box>
-              {children}
-            </Box>
-          </BottomSheetContent>
-        ) : (
-          <ModalContent onClick={(e) => e.stopPropagation()}>
-            <ModalHeader>
-              {title && (
-                <Text
-                  fontSize="lg"
-                  fontWeight="medium"
-                  id="modal-title"
-                  journey={journey}
-                >
-                  {title}
-                </Text>
-              )}
-              <Touchable
-                onPress={onClose}
-                accessibilityLabel="Close modal"
-                accessibilityRole="button"
+          <Box>
+            {children}
+          </Box>
+        </BottomSheetContent>
+      ) : (
+        <ModalContent onClick={(e) => e.stopPropagation()}>
+          <ModalHeader>
+            {title && (
+              <Text
+                fontSize="lg"
+                fontWeight="medium"
+                id="modal-title"
                 journey={journey}
               >
-                <Box padding="xs">
-                  <Text fontSize="xl">x</Text>
-                </Box>
-              </Touchable>
-            </ModalHeader>
+                {title}
+              </Text>
+            )}
+            <Touchable
+              onPress={onClose}
+              accessibilityLabel="Close modal"
+              accessibilityRole="button"
+              journey={journey}
+            >
+              <Box padding="xs">
+                <Text fontSize="xl">x</Text>
+              </Box>
+            </Touchable>
+          </ModalHeader>
 
-            <Box>
-              {children}
-            </Box>
-          </ModalContent>
-        )}
-      </ModalContainer>
-    </RNModal>
+          <Box>
+            {children}
+          </Box>
+        </ModalContent>
+      )}
+    </ModalContainer>
   );
 };

@@ -66,7 +66,7 @@ export const StepMedications: React.FC<StepProps> = ({ data, onUpdate }) => {
         accessibilityLabel={t(`healthAssessment.medications.${labelKey}`)}
         accessibilityRole="button"
         testID={testId}
-        style={[styles.toggleOption, isActive && styles.toggleOptionActive]}
+        style={[styles.toggleOption, isActive && styles.toggleOptionActive] as any}
       >
         <Text
           fontSize="md"
@@ -148,7 +148,7 @@ export const StepMedications: React.FC<StepProps> = ({ data, onUpdate }) => {
                   accessibilityLabel={t(`healthAssessment.medications.freq_${freq}`)}
                   accessibilityRole="button"
                   testID={`med-freq-${freq}-${index}`}
-                  style={[styles.freqPill, entry.frequency === freq && styles.freqPillActive]}
+                  style={[styles.freqPill, entry.frequency === freq && styles.freqPillActive] as any}
                 >
                   <Text
                     fontSize="xs"

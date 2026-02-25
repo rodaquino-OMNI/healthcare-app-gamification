@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import { colors, spacing, shadows, animation, typography, borderRadius, sizing } from '../../tokens';
-import Card from '../../components/Card';
-import Text from '../../primitives/Text';
-import Icon from '../../primitives/Icon';
+import { Card } from '../../components/Card';
+import { Text } from '../../primitives/Text';
+import { Icon } from '../../primitives/Icon';
 
 /**
  * Utility function to get journey-specific colors for theming

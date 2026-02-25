@@ -5,6 +5,8 @@ import {
   Switch,
   StyleSheet,
   Alert,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -114,7 +116,7 @@ export const SmartAlarm: React.FC = () => {
                 style={[
                   styles.windowOption,
                   wakeWindow === option.value && styles.windowOptionActive,
-                ]}
+                ] as any}
               >
                 <Text
                   fontSize="md"

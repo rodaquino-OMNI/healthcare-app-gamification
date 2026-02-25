@@ -59,9 +59,19 @@ const getStackStyles = (props: {
 };
 
 /**
+ * Stack layout props type
+ */
+export interface StackStyleProps {
+  direction?: 'column' | 'row';
+  spacing?: string | number;
+  wrap?: boolean;
+  align?: 'flex-start' | 'center' | 'flex-end' | 'stretch' | 'baseline';
+}
+
+/**
  * The main styled component for the Stack primitive that arranges its children in a stack layout.
  * Extends the Box component to inherit all its styling capabilities.
  */
-export const StackContainer = styled(Box)`
+export const StackContainer = styled(Box)<StackStyleProps>`
   ${props => getStackStyles(props)}
 `;

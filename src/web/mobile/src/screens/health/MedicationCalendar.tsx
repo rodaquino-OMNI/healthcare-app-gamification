@@ -211,7 +211,7 @@ export const MedicationCalendar: React.FC = () => {
               style={[
                 styles.dayCell,
                 isSelected && styles.dayCellSelected,
-              ]}
+              ] as any}
             >
               <Text
                 fontSize="xs"

@@ -1,5 +1,2 @@
-import GoalCard from './GoalCard';
-import { GoalCardProps } from './GoalCard';
-
-export { GoalCardProps };
-export default GoalCard;
+export { default as GoalCard, default } from './GoalCard';
+export type { GoalCardProps } from './GoalCard';

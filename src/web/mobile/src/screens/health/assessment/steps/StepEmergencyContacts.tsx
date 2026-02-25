@@ -87,7 +87,7 @@ export const StepEmergencyContacts: React.FC<StepProps> = ({ data, onUpdate }) =
                 accessibilityLabel={t(`healthAssessment.emergencyContacts.relationship.${opt}`)}
                 accessibilityRole="button"
                 testID={`primary-relationship-${opt}`}
-                style={[styles.chip, selected && styles.chipSelected]}
+                style={[styles.chip, selected && styles.chipSelected] as any}
               >
                 <Text
                   fontSize="sm"
@@ -172,7 +172,7 @@ export const StepEmergencyContacts: React.FC<StepProps> = ({ data, onUpdate }) =
                   accessibilityLabel={t(`healthAssessment.emergencyContacts.relationship.${opt}`)}
                   accessibilityRole="button"
                   testID={`secondary-relationship-${opt}`}
-                  style={[styles.chip, selected && styles.chipSelected]}
+                  style={[styles.chip, selected && styles.chipSelected] as any}
                 >
                   <Text
                     fontSize="sm"

@@ -4,7 +4,7 @@ import { Box } from '../../primitives/Box';
 import { Text } from '../../primitives/Text';
 import { Touchable } from '../../primitives/Touchable';
 import { Icon } from '../../primitives/Icon';
-import { useJourneyTheme } from '../../themes';
+// useJourneyTheme removed — using styled-components theme prop instead
 import { colors } from '../../tokens/colors';
 import { typography } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';

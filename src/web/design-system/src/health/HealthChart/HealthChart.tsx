@@ -4,13 +4,22 @@ import { typography } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
 import { borderRadius } from '../../tokens/borderRadius';
 import { sizing } from '../../tokens/sizing';
-import Box from '../../primitives/Box/Box';
-import Text from '../../primitives/Text/Text';
-import LineChartComponent from '../../charts/LineChart/LineChart';
-import BarChart from '../../charts/BarChart/BarChart';
-import RadialChart from '../../charts/RadialChart/RadialChart';
-import { HealthMetric } from 'src/web/shared/types/health.types';
-import { useTheme } from 'src/web/design-system/src/themes/index';
+import { Box } from '../../primitives/Box/Box';
+import { Text } from '../../primitives/Text/Text';
+import { LineChart as LineChartComponent } from '../../charts/LineChart/LineChart';
+import { BarChart } from '../../charts/BarChart/BarChart';
+import { RadialChart } from '../../charts/RadialChart/RadialChart';
+import { baseTheme } from '../../themes';
+
+// Local type stub for HealthMetric (shared package not available at build time)
+interface HealthMetric {
+  id: string;
+  type: string;
+  value: number;
+  unit: string;
+  timestamp: string;
+  journey?: 'health' | 'care' | 'plan';
+}
 
 /**
  * Props interface for the HealthChart component.

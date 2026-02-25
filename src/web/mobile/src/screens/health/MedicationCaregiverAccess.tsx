@@ -150,7 +150,7 @@ export const MedicationCaregiverAccess: React.FC = () => {
             style={[
               styles.toggleOption,
               item.accessLevel === 'view_only' && styles.toggleOptionActive,
-            ]}
+            ] as any}
           >
             <Text
               fontSize="sm"
@@ -172,7 +172,7 @@ export const MedicationCaregiverAccess: React.FC = () => {
             style={[
               styles.toggleOption,
               item.accessLevel === 'full_access' && styles.toggleOptionActive,
-            ]}
+            ] as any}
           >
             <Text
               fontSize="sm"

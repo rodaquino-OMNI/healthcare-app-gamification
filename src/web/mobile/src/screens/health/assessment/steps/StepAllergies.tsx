@@ -100,7 +100,7 @@ export const StepAllergies: React.FC<StepProps> = ({ data, onUpdate }) => {
               style={[
                 styles.allergenChip,
                 isActive && styles.allergenChipActive,
-              ]}
+              ] as any}
             >
               <Text
                 fontSize="sm"
@@ -153,7 +153,7 @@ export const StepAllergies: React.FC<StepProps> = ({ data, onUpdate }) => {
                               ? SEVERITY_COLORS[sev]
                               : colors.neutral.gray200,
                         },
-                      ]}
+                      ] as any}
                     >
                       <Text
                         fontSize="xs"

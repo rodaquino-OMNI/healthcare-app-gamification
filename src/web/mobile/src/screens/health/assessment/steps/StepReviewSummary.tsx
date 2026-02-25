@@ -104,7 +104,7 @@ export const StepReviewSummary: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t('healthAssessment.reviewSummary.edit')}
               accessibilityRole="button"
               testID={`edit-${section.key}`}
-              style={styles.editButton}
+              style={styles.editButton as any}
             >
               <Text
                 fontSize="sm"

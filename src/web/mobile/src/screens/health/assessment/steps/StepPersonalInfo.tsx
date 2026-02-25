@@ -103,7 +103,7 @@ export const StepPersonalInfo: React.FC<StepProps> = ({ data, onUpdate }) => {
               style={[
                 styles.optionPill,
                 data.gender === option && styles.optionPillSelected,
-              ]}
+              ] as any}
             >
               <Text
                 fontSize="sm"
@@ -137,7 +137,7 @@ export const StepPersonalInfo: React.FC<StepProps> = ({ data, onUpdate }) => {
               style={[
                 styles.bloodTypeCell,
                 data.bloodType === type && styles.bloodTypeCellSelected,
-              ]}
+              ] as any}
             >
               <Text
                 fontSize="sm"

@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
-import Card from '../../components/Card/Card';
-import Box from '../../primitives/Box/Box';
+import { Card } from '../../components/Card/Card';
+import { Box } from '../../primitives/Box/Box';
 import Text from '../../primitives/Text/Text';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';

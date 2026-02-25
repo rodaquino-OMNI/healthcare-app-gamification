@@ -57,7 +57,7 @@ export const StepMoodAssessment: React.FC<StepProps> = ({ data, onUpdate }) => {
               style={[
                 styles.moodCard,
                 selected && { borderColor: color, backgroundColor: colors.journeys.health.background },
-              ]}
+              ] as any}
             >
               <Text fontSize="heading-xl" textAlign="center">
                 {emoji}
@@ -89,9 +89,9 @@ export const StepMoodAssessment: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t(`healthAssessment.moodAssessment.frequency.${freq}`)}
               accessibilityRole="button"
               testID={`mood-frequency-${freq}`}
-              style={[styles.optionCard, selected && styles.optionCardSelected]}
+              style={[styles.optionCard, selected && styles.optionCardSelected] as any}
             >
-              <View style={[styles.radioCircle, selected && styles.radioCircleSelected]}>
+              <View style={[styles.radioCircle, selected && styles.radioCircleSelected] as any}>
                 {selected && <View style={styles.radioInner} />}
               </View>
               <Text
@@ -121,7 +121,7 @@ export const StepMoodAssessment: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t(`healthAssessment.moodAssessment.yesNo.${opt}`)}
               accessibilityRole="button"
               testID={`recent-changes-${opt}`}
-              style={[styles.chip, selected && styles.chipSelected]}
+              style={[styles.chip, selected && styles.chipSelected] as any}
             >
               <Text
                 fontSize="sm"
@@ -149,7 +149,7 @@ export const StepMoodAssessment: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t(`healthAssessment.moodAssessment.sleepImpact.${opt}`)}
               accessibilityRole="button"
               testID={`sleep-impact-${opt}`}
-              style={[styles.chip, selected && styles.chipSelected]}
+              style={[styles.chip, selected && styles.chipSelected] as any}
             >
               <Text
                 fontSize="sm"

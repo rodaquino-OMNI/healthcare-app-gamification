@@ -5,6 +5,8 @@ import {
   StyleSheet,
   Alert,
   TextInput,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -134,13 +136,13 @@ export const WorkoutLog: React.FC = () => {
                       style={[
                         styles.typeCard,
                         isSelected && styles.typeCardSelected,
-                      ]}
+                      ] as StyleProp<ViewStyle>}
                     >
                       <View
                         style={[
                           styles.typeIconCircle,
                           isSelected && styles.typeIconCircleSelected,
-                        ]}
+                        ] as StyleProp<ViewStyle>}
                       >
                         <Ionicons
                           name={wt.icon}
@@ -226,7 +228,7 @@ export const WorkoutLog: React.FC = () => {
                   style={[
                     styles.intensityChip,
                     isActive && styles.intensityChipActive,
-                  ]}
+                  ] as any}
                 >
                   <Text
                     fontSize="sm"

@@ -4,6 +4,8 @@
  * Re-exports all design system primitives as flat named exports.
  */
 
+export { Box } from './Box/Box';
+export type { BoxProps } from './Box/Box';
 export { Text } from './Text';
 export type { TextProps } from './Text';
 export { Icon } from './Icon';

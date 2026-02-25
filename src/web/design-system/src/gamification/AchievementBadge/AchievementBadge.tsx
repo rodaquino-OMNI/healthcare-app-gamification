@@ -7,30 +7,40 @@ import {
   getBadgeSize,
   useJourneyColor
 } from './AchievementBadge.styles';
-import type { Achievement } from 'src/web/shared/types/gamification.types';
+// Local type stub for Achievement (shared package not available at build time)
+interface Achievement {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  progress: number;
+  total: number;
+  unlocked: boolean;
+  journey: string;
+}
 import { colors } from '../../tokens/colors';
 
 /**
  * Props for the AchievementBadge component
  */
-interface AchievementBadgeProps {
+export interface AchievementBadgeProps {
   /**
    * The achievement object containing details like id, title, description, icon, progress, total, unlocked, and journey.
    */
   achievement: Achievement;
-  
+
   /**
    * The size of the badge.
    * @default 'md'
    */
   size?: 'sm' | 'md' | 'lg';
-  
+
   /**
    * Whether to show the progress indicator for locked achievements.
    * @default true
    */
   showProgress?: boolean;
-  
+
   /**
    * Callback function to execute when the badge is pressed.
    */
@@ -48,29 +58,31 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
 }) => {
   const { title, description, icon, progress, total, unlocked, journey } = achievement;
   const journeyColor = useJourneyColor(journey);
-  
+
   // Calculate progress percentage for accessibility
   const progressPercentage = total > 0 ? Math.round((progress / total) * 100) : 0;
-  
+
+  const accessLabel = `${title} achievement. ${description}. ${
+    unlocked ? 'Unlocked' : `Progress: ${progress} of ${total}`
+  }`;
+
   return (
     <BadgeContainer
       size={size}
       unlocked={unlocked}
       journey={journey}
-      onPress={onPress}
-      accessibilityLabel={`${title} achievement. ${description}. ${
-        unlocked ? 'Unlocked' : `Progress: ${progress} of ${total}`
-      }`}
-      testID="badge-container"
+      onClick={onPress}
+      aria-label={accessLabel}
+      data-testid="badge-container"
     >
       <BadgeIcon
         name={icon}
         color={unlocked ? journeyColor.primary : colors.neutral.gray400}
         size={getBadgeSize(size)}
         aria-hidden="true"
-        testID="badge-icon"
+        data-testid="badge-icon"
       />
-      
+
       {showProgress && !unlocked && (
         <ProgressRing
           progress={progress}
@@ -80,15 +92,15 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={progressPercentage}
-          testID="progress-ring"
+          data-testid="progress-ring"
         />
       )}
-      
+
       {unlocked && (
         <UnlockedIndicator
           color={journeyColor.primary}
           aria-hidden="true"
-          testID="unlocked-indicator"
+          data-testid="unlocked-indicator"
         />
       )}
     </BadgeContainer>

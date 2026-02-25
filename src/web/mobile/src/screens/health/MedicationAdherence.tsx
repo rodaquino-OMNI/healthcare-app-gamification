@@ -153,7 +153,7 @@ export const MedicationAdherence: React.FC = () => {
               style={[
                 styles.tab,
                 activeTab === tab.key && styles.tabActive,
-              ]}
+              ] as any}
             >
               <Text
                 fontWeight={activeTab === tab.key ? 'semiBold' : 'regular'}
@@ -196,7 +196,7 @@ export const MedicationAdherence: React.FC = () => {
                           height: barHeight,
                           backgroundColor: getBarColor(item.adherence),
                         },
-                      ]}
+                      ] as any}
                     />
                   </View>
                   <Text

@@ -5,6 +5,8 @@ import {
   StyleSheet,
   Alert,
   TextInput,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -206,7 +208,7 @@ export const MealLog: React.FC = () => {
                   style={[
                     styles.mealTypeTab,
                     isActive && styles.mealTypeTabActive,
-                  ]}
+                  ] as any}
                 >
                   <Text
                     fontSize="xs"

@@ -1,5 +1,3 @@
-import { AchievementBadge } from './AchievementBadge';
-import type { AchievementBadgeProps } from './AchievementBadge';
-
-export type { AchievementBadgeProps };
-export default AchievementBadge;
+export { AchievementBadge } from './AchievementBadge';
+export type { AchievementBadgeProps } from './AchievementBadge';
+export { AchievementBadge as default } from './AchievementBadge';

@@ -17,7 +17,6 @@ import { colors } from '@design-system/tokens/colors';
 import { useTranslation } from 'react-i18next';
 import { useJourney } from '../../context/JourneyContext';
 import { useAuth } from '../../hooks/useAuth';
-import { getHealthMetrics } from '../../api/health';
 
 /**
  * Type definition for the Health stack param list used by this screen.
@@ -72,7 +71,7 @@ export const MetricDetailScreen: React.FC = () => {
   const [timeRange, setTimeRange] = useState<Date[] | null>(null);
 
   // 7. Uses `useHealthMetrics` to fetch health metrics data for the specified `metricId` and time range.
-  const { data, loading, error } = useHealthMetrics(
+  const { data, isLoading, error } = useHealthMetrics(
     userId,
     timeRange ? timeRange[0] : null,
     timeRange ? timeRange[1] : null,
@@ -81,8 +80,8 @@ export const MetricDetailScreen: React.FC = () => {
 
   // 8. Filters the fetched health metrics to find the selected metric.
   useEffect(() => {
-    if (data?.getHealthMetrics && metricId) {
-      setSelectedMetric(data.getHealthMetrics.find(metric => metric.id === metricId));
+    if (data && metricId) {
+      setSelectedMetric(data.find(metric => metric.id === metricId));
     }
   }, [data, metricId]);
 
@@ -124,7 +123,7 @@ export const MetricDetailScreen: React.FC = () => {
             {formatHealthMetric(selectedMetric.value, selectedMetric.unit)}
           </Text>
           <LineChart
-            data={data?.getHealthMetrics || []}
+            data={data || []}
             xAxisKey="timestamp"
             yAxisKey="value"
             xAxisLabel="Date"
@@ -137,7 +136,7 @@ export const MetricDetailScreen: React.FC = () => {
   }
 
   // 13. Loading state.
-  if (loading) {
+  if (isLoading) {
     return (
       <View style={{ flex: 1, backgroundColor: colors.journeys[journey].background, justifyContent: 'center', alignItems: 'center' }}>
         <Text style={{ color: theme.colors.text.muted }}>{t('journeys.health.metrics.loading')}</Text>

@@ -9,12 +9,15 @@ import { spacing } from '../../tokens/spacing';
 import { typography } from '../../tokens/typography';
 import { borderRadius } from '../../tokens/borderRadius';
 import { shadows } from '../../tokens/shadows';
-import Box from '../../primitives/Box/Box';
-import Text from '../../primitives/Text/Text';
+import { Box } from '../../primitives/Box/Box';
+import { Text } from '../../primitives/Text/Text';
 import { Touchable } from '../../primitives/Touchable/Touchable';
-import Modal from '../../components/Modal/Modal';
-import Button from '../../components/Button/Button';
-import { isValidDate } from '../../../shared/utils/date';
+import { Modal } from '../../components/Modal/Modal';
+import { Button } from '../../components/Button/Button';
+
+// Local utility replacing shared package import
+const isValidDate = (date: unknown): date is Date =>
+  date instanceof Date && !isNaN(date.getTime());
 
 // Register the Brazilian Portuguese locale for the datepicker
 registerLocale('pt-BR', pt);

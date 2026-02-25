@@ -68,23 +68,36 @@ export interface StackProps {
  * </Stack>
  */
 export const Stack = React.forwardRef<
-  HTMLDivElement, 
+  HTMLDivElement,
   StackProps & React.HTMLAttributes<HTMLDivElement>
 >(({
   direction = 'column',
   spacing,
   wrap,
   align,
+  padding,
+  testID,
   children,
   ...rest
 }, ref) => {
+  // Resolve responsive values to simple values for StackContainer
+  const resolvedDirection = typeof direction === 'object' ? 'column' : direction;
+  const resolvedSpacing = typeof spacing === 'object' ? undefined : spacing;
+  const resolvedWrap = typeof wrap === 'object' ? false : wrap;
+  const resolvedAlign = typeof align === 'object' ? 'stretch' : align;
+  // Resolve responsive padding to a simple string for Box
+  const resolvedPadding = typeof padding === 'object' ? undefined
+    : padding !== undefined ? String(padding) : undefined;
+
   return (
     <StackContainer
       ref={ref}
-      direction={direction}
-      spacing={spacing}
-      wrap={wrap}
-      align={align}
+      direction={resolvedDirection}
+      spacing={resolvedSpacing}
+      wrap={resolvedWrap}
+      align={resolvedAlign}
+      padding={resolvedPadding}
+      data-testid={testID}
       {...rest}
     >
       {children}

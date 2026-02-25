@@ -3,6 +3,8 @@ import {
   View,
   ScrollView,
   StyleSheet,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -172,7 +174,7 @@ export const ActivityTrends: React.FC = () => {
               style={[
                 styles.periodOption,
                 selectedPeriod === period && styles.periodOptionActive,
-              ]}
+              ] as any}
             >
               <Text
                 fontSize="sm"

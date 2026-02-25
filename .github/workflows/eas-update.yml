@@ -40,6 +40,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Check EXPO_TOKEN
+        run: |
+          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+            echo "::warning::EXPO_TOKEN not set. Update will be skipped."
+            echo "SKIP_BUILD=true" >> $GITHUB_ENV
+          fi
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -48,6 +55,7 @@ jobs:
           cache-dependency-path: src/web/yarn.lock
 
       - name: Setup Expo
+        if: env.SKIP_BUILD != 'true'
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
@@ -55,8 +63,10 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+        working-directory: src/web
 
       - name: Publish update
+        if: env.SKIP_BUILD != 'true'
         run: |
           BRANCH="${{ github.event.inputs.branch || 'production' }}"
           MESSAGE="${{ github.event.inputs.message || format('OTA update from {0}', github.sha) }}"

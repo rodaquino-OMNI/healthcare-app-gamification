@@ -4,8 +4,8 @@ import { spacing } from '../../tokens/spacing';
 import { typography } from '../../tokens/typography';
 import { borderRadius } from '../../tokens/borderRadius';
 import { sizing } from '../../tokens/sizing';
-import Card from '../../components/Card';
-import ProgressBar from '../../components/ProgressBar';
+import { Card } from '../../components/Card';
+import { ProgressBar } from '../../components/ProgressBar';
 
 /**
  * Returns the appropriate color for the specified journey.

@@ -22,7 +22,7 @@ export const DeviceConnection: React.FC = () => {
   const { journey } = useJourney();
 
   // LD1: Retrieves the connected devices, loading state, and error state using the `useDevices` hook.
-  const { devices, loading, error, connect } = useDevices();
+  const { devices, isLoading, error, connect } = useDevices();
 
   // LD1: Sets up local state for managing the new device type.
   const [newDevice, setNewDevice] = useState<string>('');
@@ -33,7 +33,7 @@ export const DeviceConnection: React.FC = () => {
       <JourneyHeader title={t('journeys.health.devices.title')} showBackButton />
 
       {/* LD1: Conditionally renders a `LoadingIndicator` if the data is still loading. */}
-      {loading && <LoadingIndicator />}
+      {isLoading && <LoadingIndicator />}
 
       {/* LD1: Conditionally renders an `ErrorState` if there was an error fetching the data. */}
       {error && <ErrorState message={t('common.errors.default')} />}

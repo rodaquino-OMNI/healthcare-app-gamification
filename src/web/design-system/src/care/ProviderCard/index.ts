@@ -1,1 +1,2 @@
-export { default as ProviderCard } from './ProviderCard';
+export { ProviderCard } from './ProviderCard';
+export type { ProviderCardProps } from './ProviderCard';

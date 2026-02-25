@@ -31,7 +31,7 @@ interface Reward {
 /**
  * Props for the RewardCard component
  */
-interface RewardCardProps {
+export interface RewardCardProps {
   /** The reward object containing title, description, icon, xp, and journey */
   reward: Reward;
   /** Callback function when the card is pressed */

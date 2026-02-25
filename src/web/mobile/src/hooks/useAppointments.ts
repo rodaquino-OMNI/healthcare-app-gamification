@@ -1,124 +1,83 @@
-import { useQuery, useMutation, ApolloError, gql } from '@apollo/client'; // v3.7.17
+/**
+ * @file useAppointments.ts
+ * @description Custom React hook for fetching and managing appointment data within
+ * the Care Now Journey (F-102). Encapsulates TanStack Query logic for listing
+ * appointments and mutating (cancelling) them via the REST API layer.
+ */
+
+import { useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getAppointments, cancelAppointment } from '../api/care';
+import { Appointment } from '../api/care';
 import { useAuth } from './useAuth';
-import { Appointment } from '@shared/types/care.types';
 
 /**
- * GraphQL query for fetching user appointments
- */
-const GET_APPOINTMENTS = gql`
-  query GetAppointments {
-    appointments {
-      id
-      providerId
-      userId
-      dateTime
-      type
-      status
-      reason
-      notes
-    }
-  }
-`;
-
-/**
- * GraphQL mutation for cancelling an appointment
- */
-const CANCEL_APPOINTMENT = gql`
-  mutation CancelAppointment($id: ID!) {
-    cancelAppointment(id: $id) {
-      id
-      status
-    }
-  }
-`;
-
-/**
- * Provides hooks for fetching and managing appointments.
- * This hook supports the Care Now Journey (F-102) by enabling users
- * to view and manage their healthcare appointments.
- * 
- * @returns An object containing the list of appointments, loading state, error, refetch function, and cancel function.
+ * Provides the list of appointments for the currently authenticated user,
+ * plus a cancel function backed by a mutation that invalidates the cache.
+ *
+ * @returns An object containing appointments, loading state, error, refetch, and cancel.
  */
 export function useAppointments() {
-  // Get auth session for API authorization
-  const { session } = useAuth();
-  
-  // Fetch appointments using GraphQL query
-  const { data, loading, error, refetch } = useQuery<{ appointments: Appointment[] }>(
-    GET_APPOINTMENTS,
-    {
-      // Skip query if user is not authenticated
-      skip: !session,
-      // Fetch fresh data on component mount
-      fetchPolicy: 'cache-and-network',
-      // Context for request headers
-      context: {
-        headers: {
-          Authorization: session ? `Bearer ${session.accessToken}` : ''
-        }
-      }
-    }
-  );
-  
-  // Set up mutation for cancelling appointments
-  const [cancelMutation] = useMutation(
-    CANCEL_APPOINTMENT,
-    {
-      // Add auth headers to the request
-      context: {
-        headers: {
-          Authorization: session ? `Bearer ${session.accessToken}` : ''
-        }
-      },
-      // Update cache after successful cancellation to avoid refetching
-      update(cache, { data: mutationData }) {
-        const cancelAppointment = (mutationData as any)?.cancelAppointment;
-        // Read current appointments from cache
-        const cachedData = cache.readQuery({
-          query: GET_APPOINTMENTS
-        }) as { appointments: Appointment[] } | null;
-        
-        if (cachedData) {
-          // Update the cancelled appointment in the cache
-          cache.writeQuery({
-            query: GET_APPOINTMENTS,
-            data: {
-              appointments: cachedData.appointments.map(appointment => 
-                appointment.id === cancelAppointment.id 
-                  ? { ...appointment, status: cancelAppointment.status } 
-                  : appointment
-              )
-            }
-          });
-        }
-      }
-    }
-  );
-  
-  /**
-   * Cancel an appointment by ID
-   * 
-   * @param id - ID of the appointment to cancel
-   * @returns Promise that resolves when the cancellation is complete
-   */
-  const cancel = async (id: string): Promise<void> => {
-    if (!session) {
-      throw new Error('Authentication required');
-    }
-    
-    try {
-      await cancelMutation({ variables: { id } });
-    } catch (err) {
-      console.error('Error cancelling appointment:', err);
-      throw err;
-    }
-  };
-  
-  return {
-    appointments: data?.appointments || [],
-    loading,
+  const auth = useAuth();
+  const queryClient = useQueryClient();
+
+  // Derive userId from the decoded access token
+  const userId: string | undefined =
+    auth.session?.accessToken
+      ? auth.getUserFromToken(auth.session.accessToken)?.sub
+      : undefined;
+
+  const {
+    data,
+    isPending,
     error,
     refetch,
-    cancel
+  } = useQuery<Appointment[], Error>({
+    queryKey: ['appointments', userId],
+    queryFn: () => getAppointments(userId as string),
+    // Only fetch when authenticated and userId is available
+    enabled: !!userId && auth.isAuthenticated,
+    staleTime: 5 * 60 * 1000,  // 5 minutes
+    gcTime: 30 * 60 * 1000,    // 30 minutes
+  });
+
+  // Handle fetch errors via useEffect (TanStack Query v5 removed onError)
+  useEffect(() => {
+    if (error) {
+      console.error('Error fetching appointments:', error);
+    }
+  }, [error]);
+
+  const cancelMutation = useMutation<void, Error, { id: string; reason?: string }>({
+    mutationFn: ({ id, reason }) => cancelAppointment(id, reason),
+    onSuccess: () => {
+      // Invalidate the appointments query so the list refreshes after cancellation
+      queryClient.invalidateQueries({ queryKey: ['appointments', userId] });
+    },
+    onError: (err) => {
+      console.error('Error cancelling appointment:', err);
+    },
+  });
+
+  /**
+   * Cancel an appointment by ID.
+   *
+   * @param id - ID of the appointment to cancel
+   * @param reason - Optional cancellation reason
+   * @returns Promise that resolves when the cancellation is complete
+   */
+  const cancel = async (id: string, reason?: string): Promise<void> => {
+    if (!auth.isAuthenticated) {
+      throw new Error('Authentication required');
+    }
+    await cancelMutation.mutateAsync({ id, reason });
+  };
+
+  return {
+    appointments: data ?? [],
+    isLoading: isPending,
+    error,
+    refetch,
+    cancel,
   };
 }

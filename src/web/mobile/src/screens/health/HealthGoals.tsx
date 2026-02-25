@@ -51,7 +51,7 @@ const HealthGoals: React.FC = () => {
   const userId = session?.accessToken ? getUserFromToken(session.accessToken)?.sub : undefined;
 
   // Fetch available health metric types using the useHealthMetrics hook
-  const { data: healthMetricTypes, loading, error } = useHealthMetrics(userId, null, null, []);
+  const { data: healthMetricTypes, isLoading, error } = useHealthMetrics(userId, null, null, []);
 
   // Access gamification data and functions using the useGamification hook
   const gamification = useGamification();
@@ -76,7 +76,7 @@ const HealthGoals: React.FC = () => {
   };
 
   // Render loading indicator while health metric types are being fetched
-  if (loading) {
+  if (isLoading) {
     return <LoadingIndicator />;
   }
 

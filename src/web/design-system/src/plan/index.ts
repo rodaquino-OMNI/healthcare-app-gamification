@@ -7,10 +7,10 @@
  * import { BenefitCard, ClaimCard } from 'design-system/plan';
  */
 
-import { BenefitCard } from './BenefitCard/BenefitCard.tsx';
-import { ClaimCard } from './ClaimCard/ClaimCard.tsx';
-import { CoverageInfoCard } from './CoverageInfoCard/CoverageInfoCard.tsx';
-import { InsuranceCard } from './InsuranceCard/InsuranceCard.tsx';
+import { BenefitCard } from './BenefitCard/BenefitCard';
+import { ClaimCard } from './ClaimCard/ClaimCard';
+import { CoverageInfoCard } from './CoverageInfoCard/CoverageInfoCard';
+import { InsuranceCard } from './InsuranceCard/InsuranceCard';
 
 export {
   BenefitCard,

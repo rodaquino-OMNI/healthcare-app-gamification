@@ -3,6 +3,8 @@ import {
   View,
   ScrollView,
   StyleSheet,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -168,7 +170,7 @@ export const SleepHome: React.FC = () => {
                 style={[
                   styles.calendarDay,
                   isSelected && styles.calendarDaySelected,
-                ]}
+                ] as any}
               >
                 <Text
                   fontSize="xs"

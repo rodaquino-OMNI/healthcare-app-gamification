@@ -225,16 +225,16 @@ export const MetricCard: React.FC<MetricCardProps> = ({
       
       {showChart && (
         <div style={{ marginTop: spacing.md }}>
-          <HealthChart 
+          <HealthChart
             type="line"
             data={[
-              { timestamp: new Date(Date.now() - 86400000 * 6), value: Number(value) * 0.85 },
-              { timestamp: new Date(Date.now() - 86400000 * 5), value: Number(value) * 0.9 },
-              { timestamp: new Date(Date.now() - 86400000 * 4), value: Number(value) * 0.82 },
-              { timestamp: new Date(Date.now() - 86400000 * 3), value: Number(value) * 0.95 },
-              { timestamp: new Date(Date.now() - 86400000 * 2), value: Number(value) * 0.88 },
-              { timestamp: new Date(Date.now() - 86400000), value: Number(value) * 0.93 },
-              { timestamp: new Date(), value: Number(value) }
+              { id: '1', type: 'metric', unit: unit, timestamp: new Date(Date.now() - 86400000 * 6).toISOString(), value: Number(value) * 0.85 },
+              { id: '2', type: 'metric', unit: unit, timestamp: new Date(Date.now() - 86400000 * 5).toISOString(), value: Number(value) * 0.9 },
+              { id: '3', type: 'metric', unit: unit, timestamp: new Date(Date.now() - 86400000 * 4).toISOString(), value: Number(value) * 0.82 },
+              { id: '4', type: 'metric', unit: unit, timestamp: new Date(Date.now() - 86400000 * 3).toISOString(), value: Number(value) * 0.95 },
+              { id: '5', type: 'metric', unit: unit, timestamp: new Date(Date.now() - 86400000 * 2).toISOString(), value: Number(value) * 0.88 },
+              { id: '6', type: 'metric', unit: unit, timestamp: new Date(Date.now() - 86400000).toISOString(), value: Number(value) * 0.93 },
+              { id: '7', type: 'metric', unit: unit, timestamp: new Date().toISOString(), value: Number(value) }
             ]}
             xAxisKey="timestamp"
             yAxisKey="value"

@@ -100,7 +100,7 @@ export const StepHealthGoals: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t(`healthAssessment.healthGoals.goals.${goal}`)}
               accessibilityRole="checkbox"
               testID={`goal-${goal}`}
-              style={[styles.goalChip, selected && styles.goalChipSelected]}
+              style={[styles.goalChip, selected && styles.goalChipSelected] as any}
             >
               <Text fontSize="heading-md" textAlign="center">
                 {GOAL_EMOJIS[goal]}
@@ -139,7 +139,7 @@ export const StepHealthGoals: React.FC<StepProps> = ({ data, onUpdate }) => {
                   accessibilityLabel={t(`healthAssessment.healthGoals.goals.${goal}`)}
                   accessibilityRole="button"
                   testID={`priority-${goal}`}
-                  style={[styles.priorityChip, isPriority && styles.priorityChipSelected]}
+                  style={[styles.priorityChip, isPriority && styles.priorityChipSelected] as any}
                 >
                   {isPriority && (
                     <View style={styles.priorityBadge}>

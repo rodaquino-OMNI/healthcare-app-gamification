@@ -92,7 +92,7 @@ export const StepStress: React.FC<StepProps> = ({ data, onUpdate }) => {
               style={[
                 styles.levelCard,
                 selected && { borderColor: color, backgroundColor: colors.journeys.health.background },
-              ]}
+              ] as any}
             >
               <Text fontSize="heading-xl" textAlign="center">
                 {emoji}
@@ -124,7 +124,7 @@ export const StepStress: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t(`healthAssessment.stress.sources.${source}`)}
               accessibilityRole="checkbox"
               testID={`stress-source-${source}`}
-              style={[styles.chip, selected && styles.chipSelected]}
+              style={[styles.chip, selected && styles.chipSelected] as any}
             >
               <Text
                 fontSize="sm"
@@ -152,7 +152,7 @@ export const StepStress: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t(`healthAssessment.stress.coping.${mechanism}`)}
               accessibilityRole="checkbox"
               testID={`stress-coping-${mechanism}`}
-              style={[styles.chip, selected && styles.chipSelected]}
+              style={[styles.chip, selected && styles.chipSelected] as any}
             >
               <Text
                 fontSize="sm"
@@ -184,7 +184,7 @@ export const StepStress: React.FC<StepProps> = ({ data, onUpdate }) => {
                 accessibilityLabel={t(`healthAssessment.stress.mentalHealth.${opt}`)}
                 accessibilityRole="button"
                 testID={`mental-health-${opt}`}
-                style={[styles.mentalHealthChip, selected && styles.mentalHealthChipSelected]}
+                style={[styles.mentalHealthChip, selected && styles.mentalHealthChipSelected] as any}
               >
                 <Text
                   fontSize="sm"

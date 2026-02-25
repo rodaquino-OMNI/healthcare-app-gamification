@@ -48,7 +48,7 @@ export const Dashboard: React.FC = () => {
   const insets = useSafeAreaInsets();
 
   // Fetch health metrics data using the useHealthMetrics hook
-  const { data: healthMetricsData, loading: healthMetricsLoading, error: healthMetricsError } = useHealthMetrics(
+  const { data: healthMetrics, isLoading: healthMetricsLoading, error: healthMetricsError } = useHealthMetrics(
     'user-123', // Replace with actual user ID
     null,
     null,
@@ -70,9 +70,6 @@ export const Dashboard: React.FC = () => {
   if (healthMetricsError) {
     return <ErrorState message={t('common.errors.default')} />;
   }
-
-  // Extract health metrics from the fetched data
-  const healthMetrics = healthMetricsData?.getHealthMetrics || [];
 
   // Define styles for the dashboard
   const styles = StyleSheet.create({

@@ -1,9 +1,16 @@
 import React from 'react';
 import { colors } from '../../tokens/colors';
 import { Card } from '../../components/Card/Card';
-import Text from '../../primitives/Text/Text';
+import { Text } from '../../primitives/Text/Text';
 import { Stack } from '../../primitives/Stack/Stack';
-import { Benefit } from '../../../shared/types/plan.types';
+
+// Local type stub for Benefit (shared package not available at build time)
+interface Benefit {
+  type: string;
+  description: string;
+  limitations?: string;
+  usage?: string;
+}
 
 /**
  * Interface defining the props for the BenefitCard component

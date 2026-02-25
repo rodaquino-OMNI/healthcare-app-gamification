@@ -149,7 +149,7 @@ const SymptomMedicationContext: React.FC = () => {
             <Touchable
               key={med.id}
               onPress={() => toggleMedication(med.id)}
-              style={[styles.medicationItem, med.isCurrentlyTaking && styles.medicationItemActive]}
+              style={[styles.medicationItem, med.isCurrentlyTaking && styles.medicationItemActive] as any}
               accessibilityLabel={`${med.id.startsWith('custom-med-') ? med.nameKey : t(`journeys.care.symptomChecker.medicationContext.medications.${med.nameKey}`)}${med.dosage ? `, ${med.dosage}` : ''}${med.isCurrentlyTaking ? `, ${t('journeys.care.symptomChecker.medicationContext.currentlyTaking')}` : ''}`}
               accessibilityRole="button"
               testID={`medication-item-${med.id}`}
@@ -174,12 +174,12 @@ const SymptomMedicationContext: React.FC = () => {
                     </Text>
                   ) : null}
                 </View>
-                <View style={[styles.toggleIndicator, med.isCurrentlyTaking && styles.toggleActive]}>
+                <View style={[styles.toggleIndicator, med.isCurrentlyTaking && styles.toggleActive] as any}>
                   <View
                     style={[
                       styles.toggleThumb,
                       med.isCurrentlyTaking && styles.toggleThumbActive,
-                    ]}
+                    ] as any}
                   />
                 </View>
               </View>

@@ -1,11 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Card } from '../components/Card/Card';
+import { Card } from '../../components/Card/Card';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
 import { typography } from '../../tokens/typography';
 import { borderRadius } from '../../tokens/borderRadius';
-import { Coverage } from 'src/web/shared/types/plan.types';
+
+// Local type stub for Coverage (shared package not available at build time)
+interface Coverage {
+  type: string;
+  details: string;
+  limitations?: string;
+  coPayment?: number;
+}
 
 /**
  * Interface defining the props for the CoverageInfoCard component

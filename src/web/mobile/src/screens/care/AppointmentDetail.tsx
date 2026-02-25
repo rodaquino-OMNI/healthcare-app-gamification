@@ -40,7 +40,7 @@ const AppointmentDetail: React.FC = () => {
     cancelled: { label: t('journeys.care.appointments.statusCancelled'), status: 'error' },
   };
 
-  const { appointments, loading, error, cancel } = useAppointments();
+  const { appointments, isLoading, error, cancel } = useAppointments();
   const appointment: Appointment | undefined = appointments.find((appt) => appt.id === id);
 
   const handleCancel = useCallback(() => {
@@ -59,7 +59,7 @@ const AppointmentDetail: React.FC = () => {
   }, [appointment, navigation]);
 
   // Loading state
-  if (loading) {
+  if (isLoading) {
     return (
       <View style={styles.container}>
         <JourneyHeader title={t('journeys.care.appointments.detail')} showBackButton />

@@ -5,6 +5,8 @@ import {
   TextInput,
   FlatList,
   ListRenderItemInfo,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -222,7 +224,7 @@ export const ExerciseLibrary: React.FC = () => {
             style={[
               styles.filterChip,
               selectedCategory === filter.id && styles.filterChipActive,
-            ]}
+            ] as any}
           >
             <Text
               fontSize="sm"

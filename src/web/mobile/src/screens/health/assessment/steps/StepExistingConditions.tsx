@@ -76,14 +76,14 @@ export const StepExistingConditions: React.FC<StepProps> = ({ data, onUpdate }) 
               style={[
                 styles.conditionChip,
                 isActive && styles.conditionChipActive,
-              ]}
+              ] as any}
             >
               <View style={styles.chipContent}>
                 <View
                   style={[
                     styles.checkbox,
                     isActive && styles.checkboxActive,
-                  ]}
+                  ] as any}
                 >
                   {isActive && (
                     <Text

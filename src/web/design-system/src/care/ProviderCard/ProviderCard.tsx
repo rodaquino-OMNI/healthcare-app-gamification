@@ -4,7 +4,7 @@ import { Stack } from '../../primitives/Stack';
 import { Text } from '../../primitives/Text';
 import { Icon } from '../../primitives/Icon';
 import { Button } from '../../components/Button';
-import { useTheme } from '../../themes';
+import { colors } from '../../tokens/colors';
 import { sizing } from '../../tokens/sizing';
 
 /**
@@ -46,24 +46,22 @@ export interface ProviderCardProps {
  * rating, location, availability, and insurance coverage information.
  */
 export const ProviderCard: React.FC<ProviderCardProps> = ({ provider, onPress }) => {
-  const theme = useTheme();
-  
-  // Get Care Journey specific colors
-  const careColors = theme.colors.journeys.care;
-  
+  // Get Care Journey specific colors directly from tokens
+  const careColors = colors.journeys.care;
+
   // Render star rating
   const renderRating = () => {
     // Create filled stars based on rating
     const stars = [];
     for (let i = 0; i < 5; i++) {
-      const starColor = i < provider.rating ? careColors.primary : theme.colors.neutral.gray400;
+      const starColor = i < provider.rating ? careColors.primary : colors.neutral.gray400;
       stars.push(<Icon key={i} name="star" color={starColor} size={sizing.icon.xs} aria-hidden="true" />);
     }
     
     return (
       <Stack direction="row" spacing="xs" align="center">
         {stars}
-        <Text color={theme.colors.neutral.gray600} fontSize="sm">
+        <Text color={colors.neutral.gray600} fontSize="sm">
           ({provider.reviewCount} avaliações)
         </Text>
       </Stack>
@@ -85,18 +83,19 @@ export const ProviderCard: React.FC<ProviderCardProps> = ({ provider, onPress })
           <Text fontSize="lg" fontWeight="bold">
             {provider.name}
           </Text>
-          <Text color={theme.colors.neutral.gray700}>
+          <Text color={colors.neutral.gray700}>
             {provider.specialty}
           </Text>
           {provider.rating > 0 && renderRating()}
         </Stack>
         
         {/* Divider for visual separation */}
-        <Box 
-          height="1px" 
-          backgroundColor={theme.colors.neutral.gray200} 
-          marginY="md"
-          aria-hidden="true"
+        <Box
+          height="1px"
+          backgroundColor={colors.neutral.gray200}
+          marginTop="md"
+          marginBottom="md"
+          aria-hidden={true}
         />
         
         {/* Provider details with icons */}

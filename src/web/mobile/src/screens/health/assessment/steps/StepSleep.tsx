@@ -70,7 +70,7 @@ export const StepSleep: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t(`healthAssessment.sleep.hours.${opt}`)}
               accessibilityRole="button"
               testID={`sleep-hours-${opt}`}
-              style={[styles.hourChip, selected && styles.hourChipSelected]}
+              style={[styles.hourChip, selected && styles.hourChipSelected] as any}
             >
               <Text fontSize="heading-lg" textAlign="center">
                 {'\uD83C\uDF19'}
@@ -106,7 +106,7 @@ export const StepSleep: React.FC<StepProps> = ({ data, onUpdate }) => {
               style={[
                 styles.qualityCard,
                 selected && { borderColor: indicatorColor, backgroundColor: colors.journeys.health.background },
-              ]}
+              ] as any}
             >
               <View style={[styles.qualityIndicator, { backgroundColor: indicatorColor }]} />
               <Text
@@ -135,9 +135,9 @@ export const StepSleep: React.FC<StepProps> = ({ data, onUpdate }) => {
             accessibilityLabel={t(`healthAssessment.sleep.issues.${issue}`)}
             accessibilityRole="checkbox"
             testID={`sleep-issue-${issue}`}
-            style={[styles.issueRow, selected && styles.issueRowSelected]}
+            style={[styles.issueRow, selected && styles.issueRowSelected] as any}
           >
-            <View style={[styles.checkbox, selected && styles.checkboxSelected]}>
+            <View style={[styles.checkbox, selected && styles.checkboxSelected] as any}>
               {selected && (
                 <Text fontSize="xs" color={colors.neutral.white} textAlign="center">
                   {'\u2713'}
@@ -170,7 +170,7 @@ export const StepSleep: React.FC<StepProps> = ({ data, onUpdate }) => {
               accessibilityLabel={t(`healthAssessment.sleep.schedule.${opt}`)}
               accessibilityRole="button"
               testID={`sleep-schedule-${opt}`}
-              style={[styles.toggleChip, selected && styles.toggleChipSelected]}
+              style={[styles.toggleChip, selected && styles.toggleChipSelected] as any}
             >
               <Text
                 fontSize="sm"

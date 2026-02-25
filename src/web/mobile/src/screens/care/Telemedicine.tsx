@@ -17,7 +17,7 @@ import ErrorState from '@components/shared/ErrorState';
 export const Telemedicine: React.FC = () => {
   const { t } = useTranslation();
   // LD1: Uses the `useTelemedicineSession` hook to manage the state and logic for the telemedicine session.
-  const { session: telemedicineSession, loading, error, createSession } = useTelemedicineSession();
+  const { session: telemedicineSession, isLoading, error, createSession } = useTelemedicineSession();
 
   // LD1: Uses the `useNavigation` hook to get the navigation object.
   const navigation = useNavigation();
@@ -41,7 +41,7 @@ export const Telemedicine: React.FC = () => {
       />
 
       {/* LD1: If `loading` is true, renders a `LoadingIndicator` component. */}
-      {loading && <LoadingIndicator label={t('journeys.care.telemedicine.initializing')} />}
+      {isLoading && <LoadingIndicator label={t('journeys.care.telemedicine.initializing')} />}
 
       {/* LD1: If `error` is not null, renders an `ErrorState` component with the error message. */}
       {error && <ErrorState message={error.message} />}

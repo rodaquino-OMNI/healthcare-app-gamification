@@ -67,9 +67,9 @@ export const StepReproductiveHealth: React.FC<StepProps> = ({ data, onUpdate }) 
               accessibilityLabel={t(`healthAssessment.reproductiveHealth.pregnancy.${opt}`)}
               accessibilityRole="button"
               testID={`pregnancy-${opt}`}
-              style={[styles.optionCard, selected && styles.optionCardSelected]}
+              style={[styles.optionCard, selected && styles.optionCardSelected] as any}
             >
-              <View style={[styles.radioCircle, selected && styles.radioCircleSelected]}>
+              <View style={[styles.radioCircle, selected && styles.radioCircleSelected] as any}>
                 {selected && <View style={styles.radioInner} />}
               </View>
               <Text
@@ -99,7 +99,7 @@ export const StepReproductiveHealth: React.FC<StepProps> = ({ data, onUpdate }) 
               accessibilityLabel={t(`healthAssessment.reproductiveHealth.checkup.${opt}`)}
               accessibilityRole="button"
               testID={`checkup-${opt}`}
-              style={[styles.chip, selected && styles.chipSelected]}
+              style={[styles.chip, selected && styles.chipSelected] as any}
             >
               <Text
                 fontSize="sm"
@@ -127,7 +127,7 @@ export const StepReproductiveHealth: React.FC<StepProps> = ({ data, onUpdate }) 
               accessibilityLabel={t(`healthAssessment.reproductiveHealth.contraception.${opt}`)}
               accessibilityRole="button"
               testID={`contraception-${opt}`}
-              style={[styles.chipWide, selected && styles.chipSelected]}
+              style={[styles.chipWide, selected && styles.chipSelected] as any}
             >
               <Text
                 fontSize="sm"
@@ -155,7 +155,7 @@ export const StepReproductiveHealth: React.FC<StepProps> = ({ data, onUpdate }) 
               accessibilityLabel={t(`healthAssessment.reproductiveHealth.menstrual.${opt}`)}
               accessibilityRole="button"
               testID={`menstrual-${opt}`}
-              style={[styles.chipWide, selected && styles.chipSelected]}
+              style={[styles.chipWide, selected && styles.chipSelected] as any}
             >
               <Text
                 fontSize="sm"

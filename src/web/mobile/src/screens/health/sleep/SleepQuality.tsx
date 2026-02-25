@@ -4,6 +4,8 @@ import {
   ScrollView,
   StyleSheet,
   Alert,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -137,7 +139,7 @@ export const SleepQuality: React.FC = () => {
                   style={[
                     styles.moodOption,
                     isSelected && styles.moodOptionSelected,
-                  ]}
+                  ] as any}
                 >
                   <Text fontSize="heading-2xl">{option.emoji}</Text>
                   <Text
@@ -182,7 +184,7 @@ export const SleepQuality: React.FC = () => {
                       style={[
                         styles.factorContent,
                         isSelected && styles.factorContentSelected,
-                      ]}
+                      ] as StyleProp<ViewStyle>}
                     >
                       <View
                         style={[

@@ -20,12 +20,12 @@ export interface BarChartProps {
    * Array of color values for the bars
    * If multiple colors are provided, the first color will be used
    */
-  colors: string[];
-  
+  colors?: string[];
+
   /**
    * Journey identifier for theming (health, care, plan)
    */
-  journey: string;
+  journey?: 'health' | 'care' | 'plan';
   
   /**
    * Chart title
@@ -51,8 +51,8 @@ export interface BarChartProps {
 export const BarChart: React.FC<BarChartProps> = ({
   data,
   labels,
-  colors,
-  journey,
+  colors: colorProp,
+  journey = 'health',
   title,
 }) => {
   // Check if screen is at least tablet sized
@@ -68,11 +68,10 @@ export const BarChart: React.FC<BarChartProps> = ({
   const safeLabels = labels.slice(0, minLength);
   
   // Default color based on journey — uses design tokens
-  const journeyKey = journey as keyof typeof colors.journeys;
-  const defaultColor = colors.journeys[journeyKey]?.primary || colors.journeys.health.primary;
-  
+  const defaultColor = colors.journeys[journey]?.primary || colors.journeys.health.primary;
+
   // If no colors provided, use the default journey color
-  const chartColor = colors && colors.length > 0 ? colors[0] : defaultColor;
+  const chartColor = colorProp && colorProp.length > 0 ? colorProp[0] : defaultColor;
   
   // Transform the data into the format expected by Recharts
   const chartData = safeLabels.map((label, index) => ({
@@ -133,7 +132,7 @@ export const BarChart: React.FC<BarChartProps> = ({
             dataKey="name"
             tick={{ fontSize: isTabletOrLarger ? 14 : 12, fontFamily: typography.fontFamily.body }}
             tickMargin={10}
-            interval={chartData.length <= 6 ? 0 : 'auto'}
+            interval={chartData.length <= 6 ? 0 : 'preserveStartEnd'}
             angle={labelAngle}
             textAnchor={labelAnchor}
             height={labelHeight}

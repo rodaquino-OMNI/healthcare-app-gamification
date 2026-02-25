@@ -5,6 +5,8 @@ import {
   Switch,
   StyleSheet,
   Alert,
+  StyleProp,
+  ViewStyle,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -136,7 +138,7 @@ export const CycleSettings: React.FC = () => {
               accessibilityLabel={t('journeys.health.cycle.settings.decrease', { field: label })}
               accessibilityRole="button"
               testID={`decrease-${field}`}
-              style={[styles.stepButton, value <= min && styles.stepButtonDisabled]}
+              style={[styles.stepButton, value <= min && styles.stepButtonDisabled] as any}
             >
               <Text
                 fontSize="lg"
@@ -156,7 +158,7 @@ export const CycleSettings: React.FC = () => {
               accessibilityLabel={t('journeys.health.cycle.settings.increase', { field: label })}
               accessibilityRole="button"
               testID={`increase-${field}`}
-              style={[styles.stepButton, value >= max && styles.stepButtonDisabled]}
+              style={[styles.stepButton, value >= max && styles.stepButtonDisabled] as any}
             >
               <Text
                 fontSize="lg"

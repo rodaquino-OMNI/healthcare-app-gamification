@@ -135,7 +135,7 @@ const SymptomMedicalHistory: React.FC = () => {
         <Touchable
           key={item.id}
           onPress={() => toggleRelevance(item.id)}
-          style={[styles.historyItem, item.isRelevant && styles.historyItemRelevant]}
+          style={[styles.historyItem, item.isRelevant && styles.historyItemRelevant] as any}
           accessibilityLabel={`${item.id.startsWith('custom-') ? item.nameKey : t(`journeys.care.symptomChecker.medicalHistory.items.${item.nameKey}`)}, ${item.dateLabel}${item.isRelevant ? `, ${t('journeys.care.symptomChecker.medicalHistory.relevant')}` : ''}`}
           accessibilityRole="button"
           testID={`history-item-${item.id}`}
@@ -158,7 +158,7 @@ const SymptomMedicalHistory: React.FC = () => {
                 {item.dateLabel}
               </Text>
             </View>
-            <View style={[styles.checkbox, item.isRelevant && styles.checkboxChecked]}>
+            <View style={[styles.checkbox, item.isRelevant && styles.checkboxChecked] as any}>
               {item.isRelevant && (
                 <Text fontSize="text-xs" color={colors.neutral.white}>
                   {'\u2713'}

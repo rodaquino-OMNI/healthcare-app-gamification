@@ -3,52 +3,17 @@ import { restClient } from './client';
 import { getAuthSession } from './care';
 
 // ---------------------------------------------------------------------------
-// Interfaces
+// Interfaces — re-exported from the shared canonical types
 // ---------------------------------------------------------------------------
 
-export interface GameProfile {
-  userId: string;
-  level: number;
-  points: number;
-  achievements: string[];
-  badges: string[];
-  streak: number;
-  rank: number;
-}
+import type {
+  Achievement,
+  Quest,
+  Reward,
+  GameProfile,
+} from '@shared/types/gamification.types';
 
-export interface Achievement {
-  id: string;
-  name: string;
-  description: string;
-  iconUrl: string;
-  category: string;
-  unlockedAt?: string;
-  progress: number;
-  target: number;
-}
-
-export interface Quest {
-  id: string;
-  name: string;
-  description: string;
-  type: 'daily' | 'weekly' | 'special';
-  status: 'active' | 'completed' | 'expired';
-  reward: { type: string; amount: number };
-  progress: number;
-  target: number;
-  expiresAt?: string;
-}
-
-export interface Reward {
-  id: string;
-  name: string;
-  description: string;
-  cost: number;
-  category: string;
-  imageUrl?: string;
-  available: boolean;
-  redeemedAt?: string;
-}
+export type { Achievement, Quest, Reward, GameProfile };
 
 export interface LeaderboardEntry {
   rank: number;

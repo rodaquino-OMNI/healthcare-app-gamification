@@ -20,10 +20,14 @@ export const InputLabel = styled.label`
   margin-bottom: ${({ theme }) => theme.spacing.xs};
 `;
 
+interface InputFieldProps {
+  journey?: 'health' | 'care' | 'plan';
+}
+
 /**
  * The actual input field
  */
-export const InputField = styled.input`
+export const InputField = styled.input<InputFieldProps>`
   padding: ${({ theme }) => theme.spacing.sm};
   font-size: ${({ theme }) => theme.typography.fontSize.md};
   border-radius: ${({ theme }) => theme.borderRadius.sm};
