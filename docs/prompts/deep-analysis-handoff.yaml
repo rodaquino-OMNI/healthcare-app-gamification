@@ -1714,3 +1714,114 @@ p1_post_launch:
     B5 ✅ → B5_EXT (extended backend tests)
     F2 ✅ → F2_EXT (extended frontend tests) → F5 (EAS Build)
     F6 ✅ → F6_EXT (production deployment)
+
+# =============================================================================
+# DEPENDABOT / DEPENDENCY VULNERABILITY REMEDIATION
+# =============================================================================
+# GitHub flagged 112 vulnerabilities on origin/main (2026-02-26).
+# Source: https://github.com/rodaquino-OMNI/healthcare-app-gamification/security/dependabot
+#
+# This is a BLOCKING concern for any production deployment path.
+# Agents tackling forward-path phases MUST evaluate and remediate these
+# before or during their respective scopes.
+
+dependency_vulnerabilities:
+  reported_date: "2026-02-26"
+  source: "GitHub Dependabot (origin push)"
+  dashboard: "https://github.com/rodaquino-OMNI/healthcare-app-gamification/security/dependabot"
+  total: 112
+  breakdown:
+    critical: 2
+    high: 60
+    moderate: 35
+    low: 15
+
+  agent_task:
+    id: "SEC-VULN-001"
+    title: "Evaluate and Remediate 112 Dependabot Vulnerabilities"
+    priority: P0
+    severity: CRITICAL
+    role: "security-architect + coder"
+    blocking: ["F5", "F6_EXT"]   # Cannot ship to production with critical/high CVEs
+
+    phase_1_triage:
+      description: "Fetch full Dependabot alert list, classify by package location and exploitability"
+      commands:
+        - "gh api /repos/rodaquino-OMNI/healthcare-app-gamification/dependabot/alerts --paginate -q '.[] | [.number, .severity, .security_advisory.cve_id, .dependency.package.name, .dependency.manifest_path] | @tsv'"
+        - "npm audit --json > /tmp/npm-audit-backend.json   # run from src/backend/"
+        - "yarn audit --json > /tmp/yarn-audit-web.json      # run from src/web/"
+      outputs:
+        - "docs/analysis/DEPENDABOT_TRIAGE.md"
+      classify_by:
+        - "Package location: backend vs frontend vs shared vs infra"
+        - "Direct vs transitive dependency"
+        - "Exploitability: network-reachable vs local-only vs test-only"
+        - "Fix available: yes (patch) vs no (requires major upgrade or replacement)"
+
+    phase_2_critical_high:
+      description: "Remediate all critical (2) and high (60) vulnerabilities"
+      approach:
+        auto_fix: "npm audit fix / yarn upgrade for semver-compatible patches"
+        manual_fix: "Major version bumps requiring code changes (e.g., breaking API changes)"
+        replace: "Deprecated packages with no fix — find alternatives"
+        suppress: "False positives or test-only deps — document rationale in DEPENDABOT_TRIAGE.md"
+      exit_gates:
+        - "0 critical vulnerabilities remaining"
+        - "0 high vulnerabilities remaining (or documented suppression with rationale)"
+        - "All existing tests still pass after dependency updates"
+        - "npm audit / yarn audit clean or documented exceptions only"
+
+    phase_3_moderate_low:
+      description: "Address moderate (35) and low (15) vulnerabilities"
+      approach: "Batch update, preferring automated fixes. Defer only if fix introduces breaking changes."
+      exit_gates:
+        - "Total remaining vulnerabilities <= 10 (all low, documented)"
+        - "No new vulnerabilities introduced by fixes"
+
+    phase_4_prevention:
+      description: "Establish automated vulnerability monitoring"
+      tasks:
+        - "Enable Dependabot auto-merge for patch-level security updates"
+        - "Add npm audit / yarn audit to CI pipeline (fail on critical/high)"
+        - "Configure Renovate or Dependabot version updates for proactive maintenance"
+        - "Add SECURITY.md with vulnerability reporting policy"
+      exit_gates:
+        - "GitHub Actions workflow runs npm audit on every PR"
+        - "Dependabot auto-merge configured for security patches"
+        - "SECURITY.md exists at repo root"
+
+  known_risk_packages:
+    backend:
+      - package: "jsonwebtoken"
+        concern: "CVE-2022-23529 (critical) — already flagged in PRE analysis"
+        action: "Upgrade to >= 9.0.0 or switch to jose"
+      - package: "bcrypt"
+        concern: "Native compilation issues + potential timing attacks in older versions"
+        action: "Verify >= 5.1.0 or consider bcryptjs"
+      - package: "passport-*"
+        concern: "Multiple passport strategies may have independent CVEs"
+        action: "Audit each strategy version individually"
+    frontend:
+      - package: "next"
+        concern: "Next.js 14 may have server-action CVEs in older patches"
+        action: "Upgrade to latest 14.x patch"
+      - package: "react-native-*"
+        concern: "RN ecosystem packages frequently have transitive vuln chains"
+        action: "Focus on direct deps; suppress transitive-only where no fix exists"
+    infrastructure:
+      - package: "terraform modules"
+        concern: "Pinned module versions may reference vulnerable providers"
+        action: "Update provider versions in providers.tf"
+
+  integration_with_forward_path:
+    B5_EXT: "Run npm audit as part of extended backend test suite"
+    F2_EXT: "Run yarn audit as part of extended frontend test suite"
+    F5: "BLOCKED until critical/high CVEs resolved — app store review rejects known CVEs"
+    F6_EXT: "Production deployment MUST have clean audit or documented exceptions"
+
+  memory_store:
+    namespace: "austa-analysis"
+    keys:
+      - "sec-vuln-001-triage"
+      - "sec-vuln-001-critical-fixes"
+      - "sec-vuln-001-prevention"
