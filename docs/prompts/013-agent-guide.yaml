@@ -12,11 +12,13 @@
 meta:
   adr: "013"
   title: "Claude-Flow Swarm Intelligence Agent Guide"
-  cli_version: "3.1.0-alpha.44"
+  cli_version: "3.1.0-alpha.52"
   packages: ["claude-flow", "ruflo", "@claude-flow/cli"]
   license: "MIT"
   project_namespace: "healthcare-platform"
   pattern_namespace: "patterns"
+  updated: "2026-02-26"
+  changelog: "Added comprehensive bootstrap protocol, directory structure docs, config reference, troubleshooting"
 
 # ============================================================================
 # SECTION 1: EXECUTION MODELS
@@ -768,41 +770,353 @@ workers:
 # ============================================================================
 # SECTION 14: BOOTSTRAP PROTOCOL
 # ============================================================================
+# IMPORTANT: This section documents the COMPLETE initialization sequence.
+# The sequence was validated on 2026-02-26 against v3.1.0-alpha.52.
+#
+# KEY LEARNING: Do NOT use `init --force` if you already have a customized
+# .claude/settings.json or .claude-flow/config.yaml — it overwrites them.
+# Use the granular commands below instead.
 
 bootstrap:
   description: "mandatory initialization sequence for every new session"
 
-  phase_a_system_init:
+  prerequisites:
+    node: ">= 20.0.0"           # v22 LTS recommended
+    npm: ">= 10.0.0"
+    claude_code_cli: ">= 2.0.0" # `claude --version`
+    disk_space: "500MB"          # For memory.db + neural models
+
+  phase_0_cache_clear:
+    description: "Clear stale npx cache — REQUIRED when upgrading versions"
+    why: >
+      npx caches old versions. If `doctor` shows "Version Freshness" warning,
+      or you're on an old alpha, clear cache first. Without this, all commands
+      silently use the cached (old) binary.
     steps:
-      - "npx @claude-flow/cli@latest init --force"
-      - "npx @claude-flow/cli@latest --version  # expect >= 3.1.0-alpha.44"
-      - "npx @claude-flow/cli@latest daemon start"
-      - "npx @claude-flow/cli@latest doctor --verbose"
-      - "npx @claude-flow/cli@latest memory init --force --verbose"
-      - "npx @claude-flow/cli@latest hooks pretrain --verbose"
-      - "npx @claude-flow/cli@latest hooks build-agents --verbose"
-    note: "init --force generates 115 files (10 hooks, 30 skills, 23 agents, 41 helpers)"
+      - "rm -rf ~/.npm/_npx/*"
+      - "npx -y @claude-flow/cli@latest --version"
+    expected: "claude-flow v3.1.x-alpha.xx"
+    note: "zsh may prompt 'remove?' for each dir — answer 'y'"
+
+  phase_a_system_init:
+    description: "Initialize core subsystems (config, memory, daemon)"
+    steps:
+      - command: "npx @claude-flow/cli@latest config init"
+        creates: [".claude/settings.json", ".claude-flow/config.yaml", ".mcp.json"]
+        warning: "Use config init (NOT init --force) to avoid overwriting customized files"
+      - command: "npx @claude-flow/cli@latest memory init --force --verbose"
+        creates: [".swarm/memory.db"]
+        verification: "6/6 tests should pass (tables, ONNX, HNSW, patterns, temporal, queries)"
+      - command: "npx @claude-flow/cli@latest daemon start"
+        creates: [".claude-flow/daemon.pid", ".claude-flow/daemon.log"]
+        note: "Runs in background. Check: daemon status. Stop: daemon stop"
+      - command: "npx @claude-flow/cli@latest doctor --verbose"
+        expected: "10+ passed, 0-2 warnings, 0-1 failures (disk space only)"
+    note: "init --force generates 115 files but OVERWRITES settings.json and CLAUDE.md"
     warning: "init --force OVERWRITES .claude/settings.json and CLAUDE.md — backup first"
 
-  phase_b_daemon_workers:
+  phase_b_intelligence:
+    description: "Train neural patterns and build agent configs"
     steps:
-      - "npx @claude-flow/cli@latest hooks worker dispatch --trigger map"
-      - "npx @claude-flow/cli@latest hooks worker dispatch --trigger deepdive"
-      - "npx @claude-flow/cli@latest hooks worker dispatch --trigger ultralearn"
+      - command: "npx @claude-flow/cli@latest hooks pretrain --model-type moe --epochs 3"
+        what_it_does: "Scans 84+ files, extracts 30+ patterns, learns 16+ strategies"
+        duration: "~1-3 seconds"
+      - command: "npx @claude-flow/cli@latest hooks build-agents --verbose"
+        creates: ["agents/coder.yaml", "agents/architect.yaml", "agents/tester.yaml",
+                   "agents/security-architect.yaml", "agents/reviewer.yaml"]
+        note: "Writes to PROJECT_ROOT/agents/, NOT .claude-flow/agents/ — this is correct"
+      - command: "npx @claude-flow/cli@latest neural train -p coordination"
+        what_it_does: "50 epochs, builds ReasoningBank (100 patterns)"
+        creates: [".claude-flow/neural/patterns.json", ".claude-flow/neural/stats.json"]
+    model_types:
+      moe: "Mixture of Experts — routes to specialized sub-models (recommended)"
+      transformer: "Full transformer attention"
+      classifier: "Pattern classification"
 
-  phase_c_neural_training:
+  phase_c_daemon_workers:
+    description: "Dispatch background analysis workers"
     steps:
-      - "npx @claude-flow/cli@latest neural train --modelType moe --epochs 10"
-      - "npx @claude-flow/cli@latest neural train --modelType transformer --epochs 10"
-      - "npx @claude-flow/cli@latest neural train --modelType classifier --epochs 10"
-    verify:
+      - command: "npx @claude-flow/cli@latest hooks worker dispatch --trigger map"
+        purpose: "Codebase mapping and architecture analysis"
+      - command: "npx @claude-flow/cli@latest hooks worker dispatch --trigger deepdive"
+        purpose: "Deep analysis of complex code patterns"
+      - command: "npx @claude-flow/cli@latest hooks worker dispatch --trigger ultralearn"
+        purpose: "Neural training sequence, pattern consolidation"
+    all_workers: [map, deepdive, ultralearn, audit, optimize, consolidate,
+                  testgaps, document, refactor, benchmark]
+    note: "Workers run async; use 'hooks worker status' to check"
+
+  phase_d_hive_mind:
+    description: "Initialize queen-led swarm coordination"
+    command: >
+      npx @claude-flow/cli@latest hive-mind init
+      --topology hierarchical --max-agents 15 --consensus byzantine --auto
+    topologies:
+      hierarchical: "Queen controls all workers (recommended for coding)"
+      mesh: "Peer-to-peer coordination"
+      hierarchical-mesh: "Queen + peer groups (recommended for complex analysis)"
+      adaptive: "Dynamic topology based on workload"
+    consensus_algorithms:
+      byzantine: "BFT — tolerates f faults with 3f+1 agents (most robust)"
+      raft: "Leader election — fast, good for stable teams"
+      gossip: "Epidemic protocol — eventually consistent"
+    creates: [".claude-flow/hive-mind/state.json"]
+
+  phase_e_verification:
+    description: "Final health check after bootstrap"
+    commands:
+      - "npx @claude-flow/cli@latest doctor --verbose"
       - "npx @claude-flow/cli@latest neural status"
-      - "npx @claude-flow/cli@latest hooks intelligence stats"
-      - "npx @claude-flow/cli@latest memory search --query 'test query'"
+      - "npx @claude-flow/cli@latest memory stats"
+    expected_doctor: "10+ passed, 0-2 warnings"
+    known_cosmetic_warnings:
+      - "No config file — doctor checks config.json but V3 uses config.yaml"
+      - "No API keys — not needed for local Claude Code CLI usage"
 
-  phase_d_hive_mind: >
-    npx @claude-flow/cli@latest hive-mind init
-    --topology hierarchical-mesh --max-agents 15 --consensus byzantine
+  quickstart_copy_paste:
+    description: "Minimal copy-paste sequence for a complete bootstrap"
+    sequence:
+      - "rm -rf ~/.npm/_npx/*"
+      - "npx -y @claude-flow/cli@latest --version"
+      - "npx @claude-flow/cli@latest memory init --force --verbose"
+      - "npx @claude-flow/cli@latest daemon start"
+      - "npx @claude-flow/cli@latest hooks pretrain --model-type moe --epochs 3"
+      - "npx @claude-flow/cli@latest hooks build-agents --verbose"
+      - "npx @claude-flow/cli@latest neural train -p coordination"
+      - "npx @claude-flow/cli@latest hive-mind init --topology hierarchical --max-agents 15 --consensus byzantine --auto"
+      - "npx @claude-flow/cli@latest doctor --verbose"
+
+# ============================================================================
+# SECTION 14b: .claude-flow/ DIRECTORY STRUCTURE & EXPECTED STATE
+# ============================================================================
+# CRITICAL: Some directories are INTENTIONALLY EMPTY after bootstrap.
+# This section documents which directories should have files and which are
+# lazy-initialized placeholders.
+
+directory_structure:
+  description: >
+    The `config init` command creates the directory scaffold. NOT all directories
+    are populated at init time. Many are lazy-initialized — they receive content
+    only when their corresponding feature is first used during actual work.
+    Empty directories after bootstrap is EXPECTED BEHAVIOR.
+
+  ".claude-flow/":
+    populated_at_init:
+      config.yaml: "Runtime config — always present after config init"
+      agents.json: "Agent registry store — populated by hive-mind init"
+      daemon-state.json: "Worker run counts — populated by daemon start"
+      daemon.pid: "Daemon process ID — populated by daemon start"
+      daemon.log: "Daemon log output — populated by daemon start"
+      CAPABILITIES.md: "Feature documentation — generated by config init"
+      ".gitignore": "Excludes transient files from git"
+      ".trend-cache.json": "Trend analysis cache"
+
+    data/:
+      populated_by: "hooks, memory operations, intelligence system"
+      files: ["auto-memory-store.json", "graph-state.json",
+              "intelligence-snapshot.json", "pending-insights.jsonl",
+              "ranked-context.json"]
+      status: "Populated after pretrain and worker dispatch"
+
+    neural/:
+      populated_by: "neural train command"
+      files: ["patterns.json", "stats.json"]
+      status: "Populated after 'neural train -p coordination'"
+
+    sessions/:
+      populated_by: "session-start hook and daemon"
+      files: ["current.json", "session-{timestamp}.json"]
+      status: "Populated automatically during sessions"
+
+    hive-mind/:
+      populated_by: "hive-mind init"
+      files: ["state.json"]
+      status: "Populated after hive-mind init"
+
+    metrics/:
+      populated_by: "hooks, workers, learning system"
+      files: ["learning.json", "swarm-activity.json", "v3-progress.json"]
+      status: "Populated during active usage"
+
+    security/:
+      populated_by: "security audit worker"
+      files: ["audit-status.json"]
+      status: "Populated after audit worker runs"
+
+    logs/:
+      populated_by: "daemon, error logging"
+      status: "Populated during daemon operation"
+
+    # ═══ INTENTIONALLY EMPTY AFTER BOOTSTRAP ═══
+
+    agents/:
+      populated_by: "agent lifecycle operations (spawn, create)"
+      purpose: "Runtime agent state storage (store.json created on first agent spawn)"
+      why_empty: >
+        This directory stores runtime agent instance state — NOT agent config
+        templates. Agent config YAMLs go in PROJECT_ROOT/agents/. The store.json
+        file appears here only when agents are spawned via hive-mind or swarm
+        commands during actual task execution.
+      status: "EMPTY AFTER BOOTSTRAP — this is expected"
+      will_contain: "store.json (agent records with status, health, task counts)"
+
+    hooks/:
+      populated_by: "custom hook definitions (user-created)"
+      purpose: "Custom hook handler scripts"
+      why_empty: >
+        Default hooks are defined in .claude/settings.json and handled by
+        .claude/helpers/hook-handler.cjs. This directory is for optional
+        custom hook overrides that users write themselves. Claude Flow V3
+        does not generate files here automatically.
+      status: "EMPTY AFTER BOOTSTRAP — this is expected"
+      will_contain: "User-created hook scripts (e.g., custom-pre-edit.sh)"
+
+    workflows/:
+      populated_by: "workflow definitions (user-created or future feature)"
+      purpose: "Reusable workflow templates for multi-step tasks"
+      why_empty: >
+        Workflow definitions are a V3 feature still in development. The directory
+        is scaffolded for forward compatibility. Users can manually create
+        workflow YAML files here for custom multi-step automation.
+      status: "EMPTY AFTER BOOTSTRAP — this is expected"
+      will_contain: "Workflow YAML definitions (future feature)"
+
+    learning/:
+      populated_by: "learning-service.mjs (from .claude/helpers/)"
+      purpose: "Cross-session learning persistence (patterns.db, metrics)"
+      why_empty: >
+        The learning service creates files here on first pattern promotion.
+        Patterns start in short-term memory (in-memory) and are promoted to
+        long-term storage after 3+ uses. Until significant patterns accumulate
+        from actual coding work, this directory stays empty. The initial
+        pretrain data goes to neural/ and data/ directories instead.
+      status: "EMPTY AFTER BOOTSTRAP — this is expected"
+      will_contain: "patterns.db, learning-metrics.json (after sustained usage)"
+
+  # ═══ OTHER KEY DIRECTORIES (outside .claude-flow/) ═══
+
+  "agents/":
+    location: "PROJECT_ROOT/agents/"
+    populated_by: "hooks build-agents"
+    contains: ["coder.yaml", "architect.yaml", "tester.yaml",
+               "security-architect.yaml", "reviewer.yaml"]
+    note: "These are agent CONFIG TEMPLATES, not runtime state"
+
+  ".swarm/":
+    location: "PROJECT_ROOT/.swarm/"
+    populated_by: "memory init"
+    contains: ["memory.db"]
+    note: "SQLite + HNSW vector database (the main persistent memory)"
+
+  ".claude/":
+    location: "PROJECT_ROOT/.claude/"
+    populated_by: "config init or init --force"
+    contains: ["settings.json", "helpers/", "commands/", "agents/"]
+    note: "Claude Code integration layer — hooks, permissions, statusline"
+
+# ============================================================================
+# SECTION 14c: CONFIGURATION FILES REFERENCE
+# ============================================================================
+
+config_reference:
+  description: "Three-layer configuration architecture in Claude Flow V3"
+
+  layer_1_runtime:
+    file: ".claude-flow/config.yaml"
+    purpose: "THE main runtime config — single source of truth for V3"
+    format: YAML
+    read_by:
+      - "auto-memory-hook.mjs (learningBridge, memoryGraph, agentScopes)"
+      - "daemon (workers, schedules, autoStart)"
+      - "hooks (preTask, postTask, trainOnEdit)"
+      - "hive-mind (topology, consensus)"
+      - "MCP server (transport, port, capabilities)"
+    sections: [version, swarm, hiveMind, memory, neural, embeddings,
+               hooks, daemon, mcp, agents, learning, orchestrator,
+               verification, security, logging, project]
+    schema_source: "v3/@claude-flow/shared/src/core/config/schema.ts"
+    why_yaml: >
+      V3 uses YAML (not JSON) because: (1) YAML supports comments essential
+      for documenting 16 config sections, (2) auto-memory-hook.mjs explicitly
+      reads .claude-flow/config.yaml, (3) COMPONENTS.md states 'config.yaml
+      configures V3 runtime'. The V2 JSON format (config.json) is legacy.
+
+  layer_2_hooks:
+    file: ".claude/settings.json"
+    purpose: "Claude Code integration — hooks, permissions, env vars"
+    format: JSON
+    key_sections:
+      hooks: "PreToolUse, PostToolUse, UserPromptSubmit, SessionStart/End, Stop"
+      permissions: "allow/deny rules for Bash, MCP, file reads"
+      env: "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1, CLAUDE_FLOW_V3_ENABLED=true"
+      claudeFlow: "Mirrors key config.yaml settings"
+
+  layer_3_mcp:
+    file: ".mcp.json"
+    purpose: "MCP server connection for tool integration"
+    format: JSON
+    content:
+      server: "claude-flow"
+      command: "npx @claude-flow/cli@latest mcp start"
+      env_vars:
+        CLAUDE_FLOW_MODE: "v3"
+        CLAUDE_FLOW_HOOKS_ENABLED: "true"
+        CLAUDE_FLOW_TOPOLOGY: "hierarchical"
+        CLAUDE_FLOW_MAX_AGENTS: "15"
+        CLAUDE_FLOW_MEMORY_BACKEND: "hybrid"
+
+# ============================================================================
+# SECTION 14d: TROUBLESHOOTING
+# ============================================================================
+
+troubleshooting:
+  stale_version:
+    symptom: "doctor shows 'Version Freshness' warning or old alpha number"
+    fix: "rm -rf ~/.npm/_npx/* && npx -y @claude-flow/cli@latest --version"
+
+  config_warning:
+    symptom: "doctor shows 'No config file (using defaults)'"
+    fix: "npx @claude-flow/cli@latest config init"
+    note: "Cosmetic — doctor checks for config.json but V3 uses config.yaml"
+
+  daemon_not_running:
+    symptom: "doctor shows 'Daemon Status: Not running'"
+    fix: "npx @claude-flow/cli@latest daemon start"
+
+  sona_not_loaded:
+    symptom: "neural status shows 'SONA Engine: Not loaded'"
+    fix: "npx @claude-flow/cli@latest neural train -p coordination"
+    note: "SONA is optional; SONA Coordinator + ReasoningBank are sufficient"
+
+  wasm_fallback:
+    symptom: "attention.FlashAttention is not a constructor"
+    impact: "None — falls back to JS implementation automatically"
+    fix: "No action needed"
+
+  memory_empty:
+    symptom: "memory stats shows 0 entries after init"
+    explanation: "Normal — entries accumulate during actual usage"
+    quick_test: "npx @claude-flow/cli@latest memory store --key test --value hello --namespace test"
+
+  api_keys_warning:
+    symptom: "doctor shows 'No API keys found'"
+    impact: "Not needed for local Claude Code CLI usage"
+    fix: "Set ANTHROPIC_API_KEY only if using API directly"
+
+  timeout_on_macos:
+    symptom: "Commands exit with code 143 or 'timeout not found'"
+    explanation: "macOS does not ship with GNU timeout"
+    workaround: "Background long commands with & and sleep, or use gtimeout from coreutils"
+
+  yaml_corruption:
+    symptom: "config.yaml has garbled/merged content"
+    explanation: "Some editor tools can corrupt YAML during write"
+    fix: "Delete the file and re-create via terminal: cat > .claude-flow/config.yaml << 'EOF'"
+
+  empty_claude_flow_dirs:
+    symptom: ".claude-flow/agents, hooks, workflows, learning are empty"
+    explanation: "Expected behavior — see directory_structure section above"
+    fix: "No action needed — these populate lazily during actual work"
 
 # ============================================================================
 # SECTION 15: PHASE WORKFLOW (Standard Execution Cycle)
@@ -868,7 +1182,7 @@ tool_checklist:
     version: "3.1.0+"
 
 # ============================================================================
-# SECTION 17: CONFIGURATION FILES
+# SECTION 17: CONFIGURATION FILES (see also Section 14c for full reference)
 # ============================================================================
 
 configuration:
