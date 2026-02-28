@@ -28,7 +28,6 @@
   "dependencyDashboardTitle": "Renovate Dependency Dashboard — AUSTA SuperApp",
 
   "rangeStrategy": "replace",
-  "respectLatestAt": true,
 
   "ignorePaths": [
     "**/node_modules/**",
@@ -57,16 +56,16 @@
       "groupName": "patch bumps (all workspaces)",
       "matchUpdateTypes": ["patch"],
       "matchDepTypes": ["dependencies", "devDependencies", "peerDependencies"],
-      "excludePackagePatterns": [
-        "^@nestjs/",
-        "^jest$", "^ts-jest$", "^@types/jest$",
-        "^typescript$",
-        "^eslint", "^@typescript-eslint/",
-        "^react$", "^react-dom$", "^react-native$",
-        "^@react-navigation/", "^@react-native",
-        "^@mui/", "^@expo/",
-        "^turbo$", "^metro", "^webpack$",
-        "^next$"
+      "excludePackageNames": [
+        "/^@nestjs/",
+        "/^jest$/", "/^ts-jest$/", "/^@types\\/jest$/",
+        "/^typescript$/",
+        "/^eslint/", "/^@typescript-eslint/",
+        "/^react$/", "/^react-dom$/", "/^react-native$/",
+        "/^@react-navigation/", "/^@react-native/",
+        "/^@mui/", "/^@expo/",
+        "/^turbo$/", "/^metro/", "/^webpack$/",
+        "/^next$/"
       ],
       "automerge": true,
       "automergeType": "pr",
@@ -79,26 +78,26 @@
       "description": "Group 3 — Backend minor bumps: NestJS ecosystem + backend tooling",
       "groupName": "backend minor bumps",
       "matchUpdateTypes": ["minor"],
-      "matchPackagePatterns": [
-        "^@nestjs/",
-        "^@prisma/",
-        "^prisma$",
-        "^rxjs$",
-        "^typeorm$",
-        "^fastify",
-        "^@fastify/",
-        "^graphql$",
-        "^@apollo/",
-        "^apollo-",
-        "^passport",
-        "^@passport-",
-        "^ioredis$",
-        "^kafkajs$",
-        "^pino",
-        "^@pino/",
-        "^class-validator$",
-        "^class-transformer$",
-        "^reflect-metadata$"
+      "matchPackageNames": [
+        "/^@nestjs/",
+        "/^@prisma/",
+        "/^prisma$/",
+        "/^rxjs$/",
+        "/^typeorm$/",
+        "/^fastify/",
+        "/^@fastify/",
+        "/^graphql$/",
+        "/^@apollo/",
+        "/^apollo-/",
+        "/^passport/",
+        "/^@passport-/",
+        "/^ioredis$/",
+        "/^kafkajs$/",
+        "/^pino/",
+        "/^@pino/",
+        "/^class-validator$/",
+        "/^class-transformer$/",
+        "/^reflect-metadata$/"
       ],
       "automerge": false,
       "labels": ["dependencies", "renovate", "backend"],
@@ -109,15 +108,15 @@
       "description": "Group 3 — Backend tooling minor bumps: jest/ts-jest/typescript/eslint",
       "groupName": "backend tooling minor bumps",
       "matchUpdateTypes": ["minor"],
-      "matchPackagePatterns": [
-        "^jest$",
-        "^ts-jest$",
-        "^@types/jest$",
-        "^jest-",
-        "^typescript$",
-        "^eslint$",
-        "^@typescript-eslint/",
-        "^eslint-"
+      "matchPackageNames": [
+        "/^jest$/",
+        "/^ts-jest$/",
+        "/^@types\\/jest$/",
+        "/^jest-/",
+        "/^typescript$/",
+        "/^eslint$/",
+        "/^@typescript-eslint/",
+        "/^eslint-/"
       ],
       "automerge": false,
       "labels": ["dependencies", "renovate", "backend"],
@@ -128,16 +127,16 @@
       "description": "Group 4 — Frontend minor bumps: React / React Native ecosystem",
       "groupName": "react + react-native minor bumps",
       "matchUpdateTypes": ["minor"],
-      "matchPackagePatterns": [
-        "^react$",
-        "^react-dom$",
-        "^react-native$",
-        "^@types/react$",
-        "^@types/react-dom$",
-        "^@types/react-native$",
-        "^react-native-",
-        "^@react-native",
-        "^@react-native-community/"
+      "matchPackageNames": [
+        "/^react$/",
+        "/^react-dom$/",
+        "/^react-native$/",
+        "/^@types\\/react$/",
+        "/^@types\\/react-dom$/",
+        "/^@types\\/react-native$/",
+        "/^react-native-/",
+        "/^@react-native/",
+        "/^@react-native-community/"
       ],
       "automerge": false,
       "labels": ["dependencies", "renovate", "frontend"],
@@ -148,8 +147,8 @@
       "description": "Group 4 — Frontend minor bumps: navigation",
       "groupName": "react-navigation minor bumps",
       "matchUpdateTypes": ["minor"],
-      "matchPackagePatterns": [
-        "^@react-navigation/"
+      "matchPackageNames": [
+        "/^@react-navigation/"
       ],
       "automerge": false,
       "labels": ["dependencies", "renovate", "frontend"],
@@ -160,14 +159,14 @@
       "description": "Group 4 — Frontend minor bumps: MUI, Expo, Next.js",
       "groupName": "ui + build tools minor bumps",
       "matchUpdateTypes": ["minor"],
-      "matchPackagePatterns": [
-        "^@mui/",
-        "^@emotion/",
-        "^@expo/",
-        "^expo$",
-        "^expo-",
-        "^next$",
-        "^@next/"
+      "matchPackageNames": [
+        "/^@mui/",
+        "/^@emotion/",
+        "/^@expo/",
+        "/^expo$/",
+        "/^expo-/",
+        "/^next$/",
+        "/^@next/"
       ],
       "automerge": false,
       "labels": ["dependencies", "renovate", "frontend"],
@@ -178,15 +177,15 @@
       "description": "Group 4 — Frontend minor bumps: build tooling (turbo, metro, webpack)",
       "groupName": "frontend build tooling minor bumps",
       "matchUpdateTypes": ["minor"],
-      "matchPackagePatterns": [
-        "^turbo$",
-        "^metro$",
-        "^metro-",
-        "^webpack$",
-        "^webpack-",
-        "^babel$",
-        "^@babel/",
-        "^babel-"
+      "matchPackageNames": [
+        "/^turbo$/",
+        "/^metro$/",
+        "/^metro-/",
+        "/^webpack$/",
+        "/^webpack-/",
+        "/^babel$/",
+        "/^@babel/",
+        "/^babel-/"
       ],
       "automerge": false,
       "labels": ["dependencies", "renovate", "frontend"],
@@ -226,12 +225,11 @@
     {
       "description": "Group 6 — All major bumps: individual PRs, never auto-merge",
       "matchUpdateTypes": ["major"],
-      "groupName": null,
       "automerge": false,
       "labels": ["dependencies", "renovate", "major-bump"],
       "prPriority": 1,
       "schedule": ["at any time"],
-      "stabilityDays": 7
+      "minimumReleaseAge": "7 days"
     }
   ],
 

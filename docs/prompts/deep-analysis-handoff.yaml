@@ -2,704 +2,89 @@
 # AGENT HANDOFF — AUSTA SuperApp Forward Path
 # =============================================================================
 # Updated: 2026-02-28
-# Status: PDQ Campaign complete (68→88/100). Remaining: Tier1 security + API wiring.
-# Guide: docs/prompts/013-agent-guide.yaml (954 lines, 19 sections — ALL enforced)
+# Scorecard: 95/100 — 3 security blockers remain, all API wiring complete
+# Guide: docs/prompts/013-agent-guide.yaml (ALL 19 sections enforced)
+# Audit: docs/analysis/pre-deployment-audit-2026-02-28.md (344L, grade B-)
 # =============================================================================
 
 meta:
-  handoff_id: "forward-path-003"
-  created: "2026-02-28"
-  updated: "2026-02-28T18:30Z"
-  prepared_by: "Queen Coordinator (AUDIT-GAMMA swarm)"
-  session_origin: "healthcare-super-app--w-gamification--tgfzl7 / main"
-  adr_compliance: "ADR-013 mandatory"
+  handoff_id: "forward-path-004"
+  updated: "2026-02-28T22:00Z"
+  branch: main
   guide_ref: "docs/prompts/013-agent-guide.yaml"
-  scorecard: "90/100 (was 88/100 pre-audit)"
-  latest_commits:
-    - "fd36296 — fix(ci): husky v9 + postinstall (unblocks ALL PRs)"
-    - "94e76d3 — feat(deps): Renovate config + audit report"
+  audit_ref: "docs/analysis/pre-deployment-audit-2026-02-28.md"
 
 # =============================================================================
-# CURRENT STATE — All completed work (reference only)
+# PLATFORM STATE (compact — read audit report for full details)
 # =============================================================================
-completed_summary:
-  date: "2026-02-28"
-  total_commits: 7  # 67da6b6, 0d2c3cf, 096d1b1, wave3 vuln, wave3 docs, fd36296 (ci-fix), 94e76d3 (audit+renovate)
-
-  pdq_campaign:
-    score_progression: "68 → 75 → 83 → 88 /100"
-    waves_completed: 4
-    swarms_run: 14
-    total_workers: "~95"
-
-  platform_totals:
+platform:
+  frontend:
     mobile_screens: 319
     web_pages: 307
-    navigators: 10
+    navigators: 14
     ds_components: 57
-    test_files_frontend: 147  # 57 DS + 60 mobile + 30 web
-    test_files_backend: 72    # 22 B5 + 48 B5_EXT + 2 splits
-    maestro_e2e_flows: 12     # 7 QG-W4 + 5 PDQ-W2
-    prisma_models: 29
-    dockerfiles: 7
-    ci_pipelines: 10  # all hardened: permissions, timeout-minutes, concurrency
     i18n: "100% pt-BR + en-US"
     hardcoded_hex: 0
     as_never_casts: 0
     files_over_500L: 0
-
-  vulnerability_status:
-    backend: "236 → 10 (0 critical, 0 high)"
-    web: "89 → 21 (0 critical, 8 high residual)"
-    residual_accepted:
-      - "next (4 high): needs Next.js 15 migration — major breaking change"
-      - "rollup (2 high): needs @sentry/nextjs upgrade to v8"
-      - "ip (2 high): react-native transitive — no patch available"
-
-  docs_created:
-    - "docs/production-setup-guide.md (463L)"
-    - "docs/mobile-security-guide.md (289L)"
-    - "docs/todo-triage-report.md (169L)"
-
-  phases_completed:
-    # P0 (launch-blocking)
-    - { id: B1, name: "Database Foundation", gates: "9/9 PASS" }
-    - { id: B2, name: "Security/LGPD", gates: "10/10 PASS" }
-    - { id: B3, name: "Service Hardening", gates: "8/8 PASS" }
-    - { id: B4, name: "Containerization", gates: "13/13 PASS" }
-    - { id: B5, name: "Backend Testing", gates: "7/8 PASS" }
-    - { id: F1, name: "Frontend Polish", gates: "6/6 PASS" }
-    - { id: F2, name: "Frontend Testing", gates: "8/8 PASS" }
-    - { id: F6, name: "Deployment Pipeline", gates: "8/8 PASS" }
-    # P1 (post-launch)
-    - { id: F3, name: "Storybook", gates: "7/7 PASS" }
-    - { id: B5_EXT, name: "Extended Backend Testing", gates: "7/7 PASS" }
-    - { id: F2_EXT, name: "Extended Frontend Testing", gates: "7/7 PASS" }
-    - { id: F5, name: "EAS Build Pipeline", gates: "8/8 PASS" }
-    - { id: F6_EXT, name: "Production Deployment", gates: "8/8 PASS" }
-    # P2 v2.0 modules
-    - { id: P2-W1, name: "Module 12: Cycle Tracking (15 screens)", gates: "12/12 PASS" }
-    - { id: P2-W2, name: "Tech Debt Sprint", gates: "9/9 PASS" }
-    - { id: P2-W3, name: "Module 06: AI Wellness (15 screens)", gates: "16/16 PASS" }
-    - { id: P2-W4, name: "Module 09: Sleep (12 screens)", gates: "11/11 PASS" }
-    - { id: P2-W5, name: "Module: Activity (10 screens)", gates: "18/18 PASS" }
-    - { id: P2-W6, name: "Module: Nutrition (10 screens)", gates: "18/18 PASS" }
-    - { id: P2-W7, name: "Module: Wellness Resources (8 screens)", gates: "18/18 PASS" }
-    # Quality Gates
-    - { id: QG-W1, name: "Quality Gate Foundation", gates: "PASS" }
-    - { id: QG-W2, name: "Runtime Crash Prevention", gates: "6/6 PASS" }
-    - { id: QG-W3, name: "Nav Types + API Contract", gates: "7/9 PASS" }
-    - { id: QG-W4, name: "E2E Tests + 0 as-never", gates: "7/7 PASS" }
-    - { id: QG-W4B, name: "Zero as-never + Zero MOBILE_ROUTES", gates: "8/8 PASS" }
-    # PDQ Campaign
-    - { id: PDQ-SEC, name: "Security Hardening", gates: "11/11 PASS" }
-    - { id: PDQ-POLISH, name: "CI/CD Polish", gates: "5/5 PASS" }
-    - { id: VULN-BE, name: "Backend Vuln Triage", gates: "PASS (236→10)" }
-    - { id: PDQ-W2, name: "5 Parallel Swarms", gates: "ALL PASS" }
-    - { id: VULN-WEB, name: "Web Vuln Triage", gates: "9/10 PASS (89→21)" }
-    - { id: DOC-PROD, name: "Production Docs", gates: "10/10 PASS" }
-    - { id: TODO-TRIAGE, name: "TODO/FIXME Triage", gates: "10/10 PASS" }
-    # AUDIT Campaign (3 swarms: ALPHA, BETA, GAMMA)
-    - { id: AUDIT-ALPHA, name: "CI/CD Hardening (10 workflows)", gates: "V1-V10 ALL PASS" }
-    - { id: AUDIT-BETA-DEPS, name: "Dependency Resolution Pins (5 CVEs)", gates: "V1-V3 ALL PASS" }
-    - { id: AUDIT-BETA-README, name: "README Sync (14 corrections)", gates: "V1-V10 ALL PASS" }
-    - { id: AUDIT-GAMMA, name: "Pre-Deployment Audit Report", gates: "V1-V6 + cross-swarm V1-V7 ALL PASS" }
-    # CI/CD + Dependency Management
-    - { id: CI-FIX, name: "Husky v9 + Postinstall Fix", gates: "commit fd36296 pushed" }
-    - { id: DEP-CLEANUP, name: "Stale Dependabot PRs Closed (16/18)", gates: "16 PRs closed" }
-    - { id: RENOVATE, name: "Renovate Config (6 groups, tiered)", gates: "renovate.json committed" }
+  backend:
+    prisma_models: 29
+    services: 7  # api-gateway, auth, health, care, plan, gamification, notification
+    dockerfiles: 7
+    test_files: 72
+  testing:
+    frontend_tests: 147  # 57 DS + 60 mobile + 30 web
+    maestro_e2e: 12
+  ci_cd:
+    pipelines: 10  # all hardened: permissions, timeout-minutes, concurrency
+    deploy_envs: [staging, production-canary, production]
+  vulnerabilities:
+    backend: "11 total (0 critical, 1 high dev-only, 6 moderate, 4 low)"
+    web: "17 total (0 critical, 8 high residual, 8 moderate, 1 low)"
 
 # =============================================================================
-# REMAINING WORK — Prioritized (from docs/todo-triage-report.md)
+# REMAINING WORK — What's actually still open
 # =============================================================================
+# All T1-T12 API wiring items are DONE (commits 4de8a0c + 7d29dd9).
+# All T2 groups A-J (59 items) are DONE (66 files wired in 4de8a0c).
+# All T3 items 1-3 are DONE (noEmitOnError, hex→tokens, PlanNavigator routes).
+# What remains: 3 security blockers + infrastructure setup + dependency mgmt.
+
 remaining_work:
 
-  tier1_critical:
-    count: 14
-    effort: "~2-3 weeks (security sprint)"
-    description: "Security, LGPD compliance, infrastructure breaking changes"
-    items:
-      - id: T1-01
-        file: "src/web/mobile/src/api/ssl-pinning.ts:7"
-        desc: "SSL cert pinning uses placeholder SPKI hashes — production BLOCKER"
-        category: Security
-        effort: M
-      - id: T1-02
-        file: "src/web/web/src/pages/settings/logout.tsx:14"
-        desc: "Logout does not clear session tokens — session hijack risk"
-        category: Security
-        effort: S
-      - id: T1-03
-        file: "src/web/web/src/pages/settings/two-factor.tsx:18,22"
-        desc: "2FA toggle + config never calls API — users think 2FA is enabled"
-        category: Security
-        effort: S
-      - id: T1-04
-        file: "src/web/web/src/pages/settings/change-password.tsx:31"
-        desc: "Password change form never calls API"
-        category: Security
-        effort: S
-      - id: T1-05
-        file: "src/web/web/src/pages/settings/delete-account.tsx:26"
-        desc: "Account deletion navigates away without deleting — LGPD violation"
-        category: "Security/LGPD"
-        effort: S
-      - id: T1-06
-        file: "src/web/mobile/src/screens/home/SettingsPrivacy.tsx:319"
-        desc: "Mobile account deletion shows alert only, no backend call"
-        category: "Security/LGPD"
-        effort: S
-      - id: T1-07
-        file: "src/web/web/src/pages/profile/index.tsx:66"
-        desc: "Profile account deletion not implemented"
-        category: "Security/LGPD"
-        effort: S
-      - id: T1-08
-        file: "src/web/web/src/pages/profile/privacy.tsx:217,222"
-        desc: "Privacy settings + LGPD data export — no API calls"
-        category: "Privacy/LGPD"
-        effort: M
-      - id: T1-09
-        file: "src/web/web/src/pages/settings/data-export.tsx:32"
-        desc: "LGPD data export request has no API integration"
-        category: LGPD
-        effort: M
-      - id: T1-10
-        file: "src/web/web/src/pages/auth/social-auth.tsx:172"
-        desc: "OAuth flow not implemented — logs only"
-        category: Security
-        effort: M
-      - id: T1-11
-        file: "src/web/mobile/src/screens/auth/SocialAuth.tsx:209"
-        desc: "Social auth shows alert instead of OAuth flow"
-        category: Security
-        effort: M
-      - id: T1-12
-        file: "src/backend/shared/prisma/schema.prisma:7"
-        desc: "Prisma url env syntax deprecated — breaking in Prisma 7.x"
-        category: Infrastructure
-        effort: M
-
-  tier2_important:
-    count: 59
-    effort: "~4-6 weeks (API integration sprints)"
-    description: "Non-functional UI — profile/settings/health screens never persist data"
-    groups:
-      - group: A
-        name: "Profile Setup Flow (Mobile)"
-        count: 13
-        summary: "15 profile screens — all save actions are mocked, onboarding non-functional"
-      - group: B
-        name: "Settings Pages (Web)"
-        count: 11
-        summary: "Personal info, dependents, theme, language, accessibility, addresses — all mocked"
-      - group: C
-        name: "Settings Screens (Mobile)"
-        count: 8
-        summary: "Emergency contacts, feedback, dependents, addresses — edit mode not implemented"
-      - group: D
-        name: "Health & Medication"
-        count: 6
-        summary: "Reminders, dose tracking, alarm actions — not persisted"
-      - group: E
-        name: "Dashboard & Search"
-        count: 4
-        summary: "Hardcoded user ID, mock trends, mock search results"
-      - group: F
-        name: "Auth Flow Gaps"
-        count: 2
-        summary: "SetPassword and EmailVerify API never called"
-      - group: G
-        name: "Profile Pages (Web)"
-        count: 4
-        summary: "Mock profile data, save uses mock, biometric enrollment not implemented"
-      - group: H
-        name: "Notifications & Help"
-        count: 2
-        summary: "Mock notification detail, report submission has no API"
-      - group: I
-        name: "Observability Placeholders"
-        count: 3
-        summary: "Google Analytics + Datadog placeholder IDs"
-      - group: J
-        name: "EAS Build Placeholder"
-        count: 1
-        summary: "app.json your-project-id placeholder — EAS builds blocked"
-    full_report: "docs/todo-triage-report.md"
-
-  tier3_nice_to_have:
-    count: 5
-    effort: "~1-2 weeks"
-    items:
-      - "DS noEmitOnError missing (167 TS errors suppressed, no runtime impact)"
-      - "11 colors.gray[]/brandPalette[] in 5 auth files (cosmetic)"
-      - "PlanNavigator 9 hardcoded route strings"
-      - "Account deletion needs confirmation dialog (UX)"
-      - "Plan E2E test file is single-line placeholder"
-
-  residual_vulnerabilities:
-    count: 8
-    severity: "high (all accepted risks)"
-    items:
-      - pkg: "next"
-        count: 4
-        fix: "Upgrade to Next.js >=15.0.8 (major migration)"
-        effort: XL
-      - pkg: "rollup"
-        count: 2
-        fix: "Upgrade @sentry/nextjs to v8 (rollup 4.x)"
-        effort: L
-      - pkg: "ip"
-        count: 2
-        fix: "No patch — react-native transitive dependency"
-        effort: N/A
-
-  recommended_sprint_order:
-    sprint_1: "Tier 1 critical (14 items) — security sprint, all S/M effort"
-    sprint_2: "Group A (Profile Setup, 13 items) — onboarding is fully non-functional"
-    sprint_3: "Groups B+C (Settings, 19 items) — user preferences lost on reload"
-    sprint_4: "Groups D+F+G (Health+Auth+Profile, 12 items)"
-    sprint_5: "Groups E+H+I+J (Dashboard+Notifications+Config, 10 items)"
-    post_launch: "Tier 3 (5 items) + Next.js 15 migration"
-
-# =============================================================================
-# CLAUDE-FLOW WORKFLOW REFERENCE (ADR-013 + 013-agent-guide.yaml)
-# =============================================================================
-# This section documents the CORRECT workflow for all swarm operations.
-# Coordinator role: prepare commands, memory, hooks, verify.
-# User role: copy-paste spawn commands into separate terminals, report completion.
-
-workflow_reference:
-
   # ---------------------------------------------------------------------------
-  # BOOTSTRAP (once per session — 013-agent-guide Section 14)
+  # LAUNCH BLOCKERS — Must fix before production (3 items, ~1 day)
   # ---------------------------------------------------------------------------
-  bootstrap:
-    description: "Run ONCE at start of each new session"
-    phase_a_system_init:
-      commands:
-        - "npx @claude-flow/cli@latest daemon start"
-        - "npx @claude-flow/cli@latest doctor --verbose"
-        - "npx @claude-flow/cli@latest memory init --force --verbose"
-        - "npx @claude-flow/cli@latest hooks pretrain --verbose"
-        - "npx @claude-flow/cli@latest hooks build-agents --verbose"
-    phase_b_daemon_workers:
-      commands:
-        - "npx @claude-flow/cli@latest hooks worker dispatch --trigger map"
-        - "npx @claude-flow/cli@latest hooks worker dispatch --trigger deepdive"
-        - "npx @claude-flow/cli@latest hooks worker dispatch --trigger ultralearn"
-    phase_c_neural_training:
-      commands:
-        - "npx @claude-flow/cli@latest neural train --modelType moe --epochs 10"
-        - "npx @claude-flow/cli@latest neural train --modelType transformer --epochs 10"
-        - "npx @claude-flow/cli@latest neural train --modelType classifier --epochs 10"
-      verify:
-        - "npx @claude-flow/cli@latest neural status"
-        - "npx @claude-flow/cli@latest hooks intelligence stats"
-    phase_d_hive_mind:
-      command: >
-        npx @claude-flow/cli@latest hive-mind init
-        --topology hierarchical-mesh --max-agents 15 --consensus byzantine
-      note: "MUST run before EVERY swarm spawn, not just once"
-
-  # ---------------------------------------------------------------------------
-  # PHASE WORKFLOW (every swarm — 013-agent-guide Section 15, 9 steps)
-  # ---------------------------------------------------------------------------
-  phase_workflow:
-    description: "Standard execution cycle for EVERY swarm task"
-    steps:
-      step_1_pre_task:
-        what: "Register task with hooks system"
-        command: >
-          npx @claude-flow/cli@latest hooks pre-task
-          --task-id "{swarm-id}"
-          --description "{task description}"
-        note: "Run from /tmp if root package.json has EOVERRIDE conflict"
-
-      step_2_store_scope:
-        what: "Persist task scope in memory for workers to read"
-        command: >
-          npx @claude-flow/cli@latest memory store
-          --key "{swarm-id}-scope"
-          --value "{scope description with deliverables, files, constraints}"
-          --namespace healthcare-platform
-
-      step_3_hive_mind_init:
-        what: "Initialize hive-mind coordination (MANDATORY before every spawn)"
-        command: >
-          npx @claude-flow/cli@latest hive-mind init
-          --topology hierarchical-mesh
-          --max-agents 15
-          --consensus byzantine
-        critical: "NEVER skip this step — swarm spawn without init causes drift"
-
-      step_4_spawn:
-        what: "Display benchmark-quality spawn command for user to copy-paste"
-        action: "Display command in markdown code block. STOP. Wait for user."
-        template: "See spawn_command_template below"
-        rules:
-          - "NEVER auto-execute — display command only"
-          - "NEVER do RECON work that belongs to swarm workers"
-          - "NEVER spawn Task tool agents when using hive-mind CLI"
-          - "After displaying command: STOP. Say nothing more. Wait."
-
-      step_5_wait:
-        what: "User runs command in separate terminal"
-        action: "Wait for user to report completion"
-        rules:
-          - "Do NOT poll status"
-          - "Do NOT ask 'should I check?'"
-          - "Do NOT run any commands"
-
-      step_6_verify:
-        what: "Verify exit criteria after user reports completion"
-        action: "Run grep/wc/find commands to validate deliverables"
-        example: |
-          grep -c "it(" src/backend/plan-service/test/claims.integration.spec.ts
-          wc -l docs/production-setup-guide.md
-          git diff --name-only
-
-      step_7_post_task:
-        what: "Record task completion in hooks system"
-        command: >
-          npx @claude-flow/cli@latest hooks post-task
-          --task-id "{swarm-id}"
-          --success true
-          --store-results true
-
-      step_8_neural_train:
-        what: "Train neural patterns on key deliverable files"
-        command: >
-          npx @claude-flow/cli@latest hooks post-edit
-          --file "{main-deliverable-file}"
-          --success true
-          --train-neural true
-        when: "Only if significant new code patterns were created"
-
-      step_9_store_complete:
-        what: "Store completion key in memory"
-        command: >
-          npx @claude-flow/cli@latest memory store
-          --key "{swarm-id}-complete"
-          --value "{summary of results, exit criteria scores}"
-          --namespace healthcare-platform
-
-  # ---------------------------------------------------------------------------
-  # POST-TASK ROUTINES (after each swarm — full checklist)
-  # ---------------------------------------------------------------------------
-  post_task_routines:
-    description: "Complete checklist after EVERY swarm completion"
-    steps:
-      - step: "Verify exit criteria (grep/wc/find for each EC)"
-      - step: "hooks post-task --task-id X --success true --store-results true"
-      - step: "hooks post-edit --file X --train-neural true (per key file)"
-      - step: "memory store --key X-complete --value 'results summary'"
-      - step: "memory store --key pattern-X --namespace patterns --value 'what worked'"
-      - step: "Dispatch relevant workers if applicable"
-        examples:
-          - "hooks worker dispatch --trigger audit  (after security changes)"
-          - "hooks worker dispatch --trigger testgaps  (after new features)"
-          - "hooks worker dispatch --trigger optimize  (after refactoring)"
-          - "hooks worker dispatch --trigger map  (after 5+ file changes)"
-
-  # ---------------------------------------------------------------------------
-  # SPAWN COMMAND TEMPLATE (benchmark quality — proven pattern)
-  # ---------------------------------------------------------------------------
-  spawn_command_template:
-    description: "Every hive-mind spawn MUST follow this structure"
-    command_flags: |
-      npx @claude-flow/cli@latest hive-mind spawn \
-        --workers {8} \
-        --topology hierarchical-mesh \
-        --consensus byzantine \
-        --claude \
-        --model-routing intelligent \
-        --namespace healthcare-platform \
-        --use-memory \
-        --use-patterns \
-        --use-vectors \
-        --use-learning \
-        --objective '{OBJECTIVE}'
-
-    objective_structure: |
-      SWARM {ID}: {Description} | {count} items | ~{N} files
-
-      MEMORY: {scope-key} (healthcare-platform namespace)
-      WORKSPACE: /Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7
-      DURATION: ~{N} min
-
-      PRIMARY DELIVERABLES:
-      1. {file-path} — {description}
-      2. {file-path} — {description}
-
-      ANTI-PATTERNS TO AVOID:
-      ❌ AP1 agent_introspection_loop (WEIGHT=0.95): Workers running hooks/status. CORRECT: read, edit, store >500 bytes.
-      ❌ AP2 missing_upstream_gate (WEIGHT=0.90): Verifier skipping key checks. CORRECT: check ALL keys >200 bytes.
-      ❌ AP3 queen_as_coder (WEIGHT=0.85): Queen editing files. CORRECT: delegate.
-      ❌ AP4 {domain-specific} (WEIGHT=X.XX): {description}. CORRECT: {correction}.
-      ❌ AP5 {domain-specific} (WEIGHT=X.XX): {description}. CORRECT: {correction}.
-
-      ━━━ EXISTING CODE (READ BEFORE WRITING) ━━━
-      [{service/module}] {path}:
-        Has: {what exists — real code references}
-        MISSING: {what needs to be created}
-
-      ━━━ TARGET PATTERN ━━━
-      [{pattern name}]:
-        {code example showing desired output structure}
-
-      ━━━ PHASE 1: RECON ({N} workers) ━━━
-      Worker-{N} (ROLE):
-        READ: {file list}
-        MAP: {what to discover}
-        STORE: memory store --key {key} --namespace healthcare-platform
-        EXIT GATE: memory retrieve --key {key} | wc -c → must be > 500
-
-      ━━━ PHASE 2: CODER ({N} workers, parallel) ━━━
-      Worker-{N} (ROLE):
-        READ: {inputs}
-        EXECUTE: {what to create/modify}
-        STORE: memory store --key {key} --namespace healthcare-platform
-        EXIT GATE: {grep/wc command} → must be >= {threshold}
-
-      ━━━ PHASE 3: VERIFIER ({N} workers) ━━━
-      Worker-{N} (VERIFIER):
-        REQUIRED_UPSTREAM_KEYS: {list all keys from phases 1-2}
-        V1: {check} → expect {value}
-        V2: {check} → expect {value}
-        STORE: memory store --key {key}-verify --namespace healthcare-platform
-        EXIT GATE: V1-VN all PASS
-
-      ━━━ EXIT CRITERIA ({N}) ━━━
-      EC1: {measurable check}
-      EC2: {measurable check}
-
-      ROLLBACK: {cleanup command}
-
-  # ---------------------------------------------------------------------------
-  # ANTI-DRIFT CONFIGURATION
-  # ---------------------------------------------------------------------------
-  anti_drift:
-    topology: hierarchical-mesh
-    max_agents: 15
-    strategy: specialized
-    consensus: byzantine
-    guidelines:
-      - "hierarchical: coordinator catches divergence"
-      - "max-agents 8 per swarm: smaller team = less drift"
-      - "specialized: clear roles, no overlap"
-      - "3-phase RECON→CODER→VERIFIER: prevents skipping validation"
-      - "EXIT GATE per worker: self-verification before declaring done"
-      - "UPSTREAM GATE on verifier: blocks synthesis without complete data"
-
-  # ---------------------------------------------------------------------------
-  # KEY CLI COMMANDS REFERENCE
-  # ---------------------------------------------------------------------------
-  cli_quick_ref:
-    memory:
-      store: "memory store --key {k} --value {v} --namespace healthcare-platform"
-      search: "memory search --query {q} --namespace healthcare-platform"
-      retrieve: "memory retrieve --key {k} --namespace healthcare-platform"
-      list: "memory list --namespace healthcare-platform --limit 10"
-    hooks:
-      pre_task: "hooks pre-task --task-id {id} --description {desc}"
-      post_task: "hooks post-task --task-id {id} --success true --store-results true"
-      post_edit: "hooks post-edit --file {f} --success true --train-neural true"
-      route: "hooks route --task {desc}"
-      worker: "hooks worker dispatch --trigger {map|audit|testgaps|optimize|deepdive}"
-    neural:
-      train: "neural train --modelType {moe|transformer|classifier} --epochs 10"
-      status: "neural status"
-      patterns: "neural patterns --list"
-    hive_mind:
-      init: "hive-mind init --topology hierarchical-mesh --max-agents 15 --consensus byzantine"
-      spawn: "hive-mind spawn --claude --workers 8 --topology hierarchical-mesh --consensus byzantine --model-routing intelligent --namespace healthcare-platform --use-memory --use-patterns --use-vectors --use-learning --objective '{...}'"
-      status: "hive-mind status"
-    note: "All commands prefixed with: npx @claude-flow/cli@latest"
-    eoverride_workaround: "Run from /tmp if root package.json EOVERRIDE conflict occurs"
-
-# =============================================================================
-# MEMORY KEYS REFERENCE
-# =============================================================================
-memory_keys:
-  namespace: "healthcare-platform"
-  total: "200+"
-  key_milestones:
-    - "forward-path-plan-v2"
-    - "b1-scope through b5-complete-final"
-    - "f1-scope through f6ext-complete"
-    - "p2-w1-* through p2-w4-*, p2-w5w6w7-complete, p2-phase-b-complete"
-    - "qg-w1-complete through qg-w5-*"
-    - "vuln-triage-complete, vuln-triage-repowide"
-    - "pdq-wave2-complete, pdq-wave3-complete"
-    - "doc-production-scope, todo-triage-scope, vuln-triage-web-scope"
-  pattern_keys:
-    - "pattern-vuln-triage (backend resolution strategy)"
-    - "pattern-vuln-web-resolution (web resolution strategy)"
-    - "pattern-doc-production (docs structure pattern)"
-    - "pattern-pdq-wave2-parallel (5-swarm parallel pattern)"
-    - "pattern-benchmark-prompt (spawn prompt structure)"
-    - "pattern-p2-phase-ab-parallel (screen-only → infra sequential)"
-  audit_keys:
-    - "recon-cicd (9650B — 10 workflow findings)"
-    - "recon-dependabot (1034B — 61 vulns, 7 stale PRs)"
-    - "recon-readme (2032B — 13 fields needing update)"
-    - "recon-security (9544B — seed creds, RCE, PHI)"
-    - "alpha-verification (580B — V1-V10 CI/CD checks)"
-    - "beta-verify-deps (998B — resolution pin verification)"
-    - "beta-verify-readme (1387B — README correction verification)"
-    - "dim-security-summary (4488B — Grade B-, full findings)"
-    - "dim-dependabot-fix (529B — 5 CVE pins applied)"
-    - "dim-dependabot-config (472B — Dependabot gaps)"
-    - "dim-readme-metrics (153B — 11 metric corrections)"
-    - "dim-readme-triggers (182B — 3 CI trigger corrections)"
-    - "gamma-data-collected (2362B — combined upstream data)"
-    - "gamma-report-verification (V1-V6 ALL PASS)"
-    - "gamma-final-verification (cross-swarm V1-V7 ALL PASS)"
-
-# =============================================================================
-# AUDIT CAMPAIGN RESULTS (ALPHA + BETA + GAMMA)
-# =============================================================================
-audit_campaign:
-  date: "2026-02-28"
-  swarms: 3
-  total_workers: 15
-  report: "docs/analysis/pre-deployment-audit-2026-02-28.md"
-  overall_grade: "B-"
-
-  alpha_cicd_hardening:
-    description: "10/10 workflows hardened with permissions, timeout-minutes, concurrency"
-    changes:
-      - "permissions: declarations added to all 10 workflows"
-      - "31 timeout-minutes entries added (was 0)"
-      - "concurrency: controls added to all 10 workflows"
-      - "cancel-in-progress: false on deploy-staging and deploy-production"
-      - "contents: write on auto-commit-push, packages: write on deploy-staging"
-      - "pull-requests: write on eas-build"
-    not_done: "SHA pinning for GitHub Actions (semver tags only)"
-
-  beta_dependency_fixes:
-    resolution_pins_applied:
-      - "minimatch 3.1.3 → 3.1.4 (ReDoS)"
-      - "follow-redirects 1.15.4 → 1.15.9 (open redirect)"
-      - "terser 5.16.6 → 5.31.6 (code injection)"
-      - "ws 8.17.1 → 8.18.0 (DoS)"
-      - "@fastify/middie 9.1.0 → 9.2.0 (path normalization)"
-    residual: "serialize-javascript RCE via @nestjs/cli (dev-only, transitive)"
-
-  beta_readme_sync:
-    corrections: 14
-    fields: "TS/TSX count, test count, DS components, navigators, dates, versions, CI triggers"
-
-  gamma_report:
-    sections: 9
-    lines: 291
-    highlights:
-      security_findings:
-        - "1 HIGH: RCE via new Function() in rules.service.ts:268"
-        - "2 MEDIUM: static scrypt salt, hardcoded seed credentials"
-        - "2 LOW: K8s security context, silent consent deletion"
-      launch_blockers: 3  # RCE fix, unique salts, remove seed creds
-      human_actions: 12
-
-  ci_fix:
-    description: "Fixed root cause of ALL PR CI failures"
-    commit: "fd36296"
-    root_causes:
-      - "src/web/package.json: prepare script used `husky install` (v8 cmd) with husky ^9.0.6"
-      - "src/web/package.json: postinstall referenced non-existent apply-security-patches.js"
-      - "package.json (root): postinstall also referenced non-existent script without || true"
-    fixes:
-      - "prepare: `cd ../.. && husky || true` (v9 cmd, runs from git root, CI-safe)"
-      - "postinstall: removed dead script reference from src/web, added || true at root"
-    impact: "Unblocks ALL open and future PRs — CI was broken for every PR"
-
-  dependabot_cleanup:
-    prs_closed: 16
-    prs_remaining: 2  # #61 (dev deps, 5 days old), #64 (76 web deps, today)
-    action_taken: "Closed all PRs aged 5-10 months (Apr-Oct 2025), kept Feb 2026 PRs"
-
-  renovate_migration:
-    config_file: "renovate.json"
-    groups:
-      - { name: "Security", automerge: true, delay: "none" }
-      - { name: "Patches", automerge: true, delay: "3 days" }
-      - { name: "Backend minor", automerge: false }
-      - { name: "Frontend minor", automerge: false }
-      - { name: "Infrastructure", automerge: false }
-      - { name: "Majors", automerge: false, separate_prs: true }
-    features: "SHA pinning, Terraform tracking, Docker tracking, yarn dedupe, weekday schedule"
-
-# =============================================================================
-# IMMEDIATE NEXT STEPS — For continuing agent
-# =============================================================================
-next_steps_immediate:
-  description: "Actionable items with verification commands for the next agent session"
-
-  step_1_monitor_pr_rebases:
-    priority: HIGH
-    what: "Check if Dependabot rebased PRs #61 and #64 against fixed main"
-    commands:
-      - "gh pr checks 61  # should show NEW run IDs (not 22325141075)"
-      - "gh pr checks 64  # should show NEW run IDs (not 22523887477)"
-    expected:
-      - "PR #61: CI should PASS now (dev-only patch bumps, husky fixed)"
-      - "PR #64: CI either PASSES (76 deps are compatible) or FAILS with real errors (not husky)"
-    if_61_passes: "Merge immediately: gh pr merge 61 --squash"
-    if_64_passes: "Review diff carefully, then merge: gh pr merge 64 --squash"
-    if_64_fails_real:
-      - "Read the actual lint/build/test errors (they are real now, not husky)"
-      - "Close PR #64: gh pr close 64 --comment 'Closing: real CI failures after rebase. Will apply updates in tiers via Renovate.'"
-      - "Renovate will create tiered PRs automatically once activated"
-
-  step_2_activate_renovate:
-    priority: HIGH
-    what: "Install Renovate GitHub App to activate the config"
-    action: "User must visit https://github.com/apps/renovate and install on the repo"
-    post_activation:
-      - "Renovate will create an onboarding PR within minutes"
-      - "Merge the onboarding PR to activate scheduled scans"
-      - "Renovate reads renovate.json from main branch"
-    verify: "gh pr list --label renovate  # should show onboarding PR"
-
-  step_3_disable_dependabot:
-    priority: MEDIUM
-    what: "Disable Dependabot after confirming Renovate is working"
-    prereq: "At least 1 Renovate PR successfully created and merged"
-    option_a: "Replace .github/dependabot.yml content with: version: 2\\nupdates: []"
-    option_b: "Delete .github/dependabot.yml entirely"
-    verify: "No more Dependabot PRs created after 1 week"
-
-  step_4_security_sprint_tier1:
-    priority: CRITICAL
-    what: "Fix 3 launch-blocking security findings from audit report"
-    ref: "docs/analysis/pre-deployment-audit-2026-02-28.md § 8. Human Actions Required"
+  launch_blockers:
     items:
       - id: SEC-01
-        file: "src/backend/*/src/rules/rules.service.ts:268"
-        finding: "RCE via new Function() — arbitrary code execution with DB write access"
-        fix: "Replace with safe expression evaluator (expr-eval, json-rules-engine, or static rule map)"
+        severity: HIGH
+        file: "src/backend/gamification-engine/src/rules/rules.service.ts:268"
+        finding: "RCE via new Function() — arbitrary code execution"
+        fix: "Replace with safe evaluator (expr-eval or static rule map)"
         effort: M
-        owner: "Security Lead"
-        blocking: true
+        verify: "grep -rn 'new Function(' src/backend/ → 0 matches"
       - id: SEC-02
-        file: "src/backend/*/src/crypto/encryption.service.ts"
-        finding: "Static scrypt salt — all passwords use same salt"
-        fix: "Generate unique salt per user via crypto.randomBytes(32), store alongside hash"
+        severity: MEDIUM
+        file: "src/backend/shared/src/encryption/encryption.service.ts:23"
+        finding: "Static scrypt salt 'austa-phi-salt' — all users share same salt"
+        fix: "crypto.randomBytes(32) per user, store salt alongside hash"
         effort: S
-        owner: "Backend Lead"
-        blocking: true
+        verify: "grep -rn 'austa-phi-salt' src/backend/ → 0 matches"
       - id: SEC-03
-        file: "src/backend/shared/prisma/seed.ts"
-        finding: "Hardcoded Password123!, real CPF numbers (12345678901), phone numbers"
-        fix: "Read from env vars (SEED_ADMIN_PASSWORD, SEED_ADMIN_CPF) or use faker for dev"
+        severity: MEDIUM
+        file: "src/backend/shared/prisma/seed.ts:285,292,315"
+        finding: "Hardcoded Password123! and CPF 12345678901"
+        fix: "Read from env vars (SEED_ADMIN_PASSWORD) or use @faker-js/faker"
         effort: S
-        owner: "Backend Lead"
-        blocking: true
+        verify: |
+          grep -rn 'Password123' src/backend/shared/prisma/seed.ts → 0
+          grep -rn '12345678901' src/backend/shared/prisma/seed.ts → 0
+        note: "Test files use Password123! for fixtures — acceptable."
     swarm_template: |
-      SWARM [SEC-SPRINT-1]: Fix 3 launch-blocking security findings | 3 items | ~5 files
+      SWARM [SEC-SPRINT]: Fix 3 launch-blocking security findings | 3 items | ~5 files
 
-      MEMORY: sec-sprint-1-scope (healthcare-platform namespace)
+      MEMORY: sec-sprint-scope (healthcare-platform namespace)
       WORKSPACE: /Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7
 
       PRIMARY DELIVERABLES:
@@ -708,98 +93,442 @@ next_steps_immediate:
       3. seed.ts — env vars instead of hardcoded creds
 
       ANTI-PATTERNS:
-      ❌ AP1 (0.95): Do NOT add new dependencies without checking license compatibility
-      ❌ AP2 (0.90): Do NOT change rule evaluation behavior — only the execution mechanism
-      ❌ AP3 (0.85): Do NOT modify existing test expectations unless the fix changes public API
+      ❌ AP1 (0.95): Do NOT add new deps without checking license
+      ❌ AP2 (0.90): Do NOT change rule evaluation behavior — only the mechanism
+      ❌ AP3 (0.85): Do NOT modify test fixtures unless fix changes public API
+
+      ━━━ EXISTING CODE ━━━
+      [gamification-engine] rules.service.ts:268:
+        Has: const evaluateFunc = new Function('context', `...`)
+        MISSING: Safe evaluator (no Function constructor)
+
+      [shared] encryption.service.ts:23:
+        Has: this.key = crypto.scryptSync(encryptionKey, 'austa-phi-salt', 32)
+        MISSING: Per-user salt via crypto.randomBytes(32)
+
+      [shared] seed.ts:285,292,315:
+        Has: bcrypt.hash('Password123!', 10), cpf: '12345678901'
+        MISSING: process.env.SEED_ADMIN_PASSWORD || faker fallback
 
       ━━━ PHASE 1: RECON (2 workers) ━━━
-      Worker-1: READ rules.service.ts, find all new Function() usages, map rule evaluation flow
-      Worker-2: READ encryption.service.ts + seed.ts, map salt usage + credential references
+      Worker-1: READ rules.service.ts, map all new Function() call sites
+      Worker-2: READ encryption.service.ts + seed.ts, map salt + credential refs
 
       ━━━ PHASE 2: CODER (3 workers, parallel) ━━━
-      Worker-3: Replace new Function() with safe evaluator in rules.service.ts
-      Worker-4: Implement per-user salt generation in encryption.service.ts
-      Worker-5: Replace hardcoded creds in seed.ts with env vars + faker fallback
+      Worker-3: Replace new Function() in rules.service.ts
+      Worker-4: Per-user salt in encryption.service.ts
+      Worker-5: Env vars + faker in seed.ts
 
       ━━━ PHASE 3: VERIFIER (2 workers) ━━━
-      Worker-6: grep -rn "new Function" src/backend/ → 0 results
-      Worker-7: grep -rn "Password123" src/backend/ → 0 results, grep -rn "12345678901" → 0
+      Worker-6: grep -rn "new Function" src/backend/ → 0
+      Worker-7: grep -rn "Password123" src/backend/shared/prisma/seed.ts → 0
 
       EXIT CRITERIA:
-      EC1: grep -rn "new Function(" src/backend/ → 0 matches
-      EC2: grep -rn "Password123" src/backend/ → 0 matches
-      EC3: grep -rn "12345678901" src/backend/ → 0 matches
-      EC4: All existing tests pass: cd src/backend && yarn test
-      EC5: No new files over 500 lines
+      EC1: grep -rn "new Function(" src/backend/ → 0
+      EC2: grep -rn "austa-phi-salt" src/backend/ → 0
+      EC3: grep -rn "Password123" src/backend/shared/prisma/seed.ts → 0
+      EC4: grep -rn "12345678901" src/backend/shared/prisma/seed.ts → 0
+      EC5: cd src/backend && yarn test → all pass
+      EC6: No new files over 500 lines
 
-  step_5_tier1_remaining:
-    priority: HIGH
-    what: "Remaining 11 Tier 1 items after security sprint"
-    ref: "remaining_work.tier1_critical (T1-01 through T1-12, minus SEC-01/02/03)"
-    items:
-      - "T1-01: SSL cert pinning placeholder hashes (src/web/mobile/src/api/ssl-pinning.ts:7)"
-      - "T1-02: Logout not clearing session tokens (src/web/web/src/pages/settings/logout.tsx:14)"
-      - "T1-03: 2FA toggle never calls API (src/web/web/src/pages/settings/two-factor.tsx:18)"
-      - "T1-04: Password change never calls API (src/web/web/src/pages/settings/change-password.tsx:31)"
-      - "T1-05: Account deletion LGPD violation (src/web/web/src/pages/settings/delete-account.tsx:26)"
-      - "T1-06: Mobile account deletion — alert only (src/web/mobile/src/screens/home/SettingsPrivacy.tsx:319)"
-      - "T1-07: Profile account deletion not implemented (src/web/web/src/pages/profile/index.tsx:66)"
-      - "T1-08: Privacy settings + LGPD data export no API (src/web/web/src/pages/profile/privacy.tsx:217)"
-      - "T1-09: LGPD data export no API (src/web/web/src/pages/settings/data-export.tsx:32)"
-      - "T1-10: OAuth flow not implemented — logs only (src/web/web/src/pages/auth/social-auth.tsx:172)"
-      - "T1-11: Mobile social auth — alert only (src/web/mobile/src/screens/auth/SocialAuth.tsx:209)"
-    grouping:
-      swarm_a: "LGPD compliance (T1-05,06,07,08,09) — 5 items, ~5 files"
-      swarm_b: "Auth security (T1-02,03,04,10,11) — 5 items, ~5 files"
-      swarm_c: "SSL pinning (T1-01) — 1 item, needs real cert SPKI hashes"
+      ROLLBACK: git checkout -- src/backend/gamification-engine/src/rules/rules.service.ts src/backend/shared/src/encryption/encryption.service.ts src/backend/shared/prisma/seed.ts
 
-  step_6_github_actions_sha_pinning:
-    priority: LOW
-    what: "Pin all GitHub Actions to full commit SHA (supply-chain protection)"
-    ref: "audit report § 7 Warnings W-08"
-    note: "Renovate config already includes helpers:pinGitHubActionDigests — this will happen automatically once Renovate is active. No manual action needed."
+  # ---------------------------------------------------------------------------
+  # INFRASTRUCTURE SETUP — Human actions (no code changes)
+  # ---------------------------------------------------------------------------
+  infrastructure:
+    - id: INFRA-01
+      what: "Create GitHub Environments"
+      where: "GitHub > Settings > Environments"
+      items: [production-canary, production]
+      why: "deploy-production.yml references these — IDE shows errors until created"
+
+    - id: INFRA-02
+      what: "Add repository secrets"
+      where: "GitHub > Settings > Secrets and variables > Actions"
+      items:
+        - AWS_ACCESS_KEY_ID
+        - AWS_SECRET_ACCESS_KEY
+        - SENTRY_AUTH_TOKEN
+        - SENTRY_ORG
+
+    - id: INFRA-03
+      what: "SSL certificate SPKI hashes"
+      file: "src/web/mobile/src/api/ssl-pinning.ts"
+      status: "Env vars (SSL_PIN_*) wired, PLACEHOLDER defaults remain"
+      action: "Ops team extracts real hashes from production certs, sets env vars"
+
+    - id: INFRA-04
+      what: "EAS project ID"
+      file: "src/web/mobile/app.config.js"
+      status: "Reads EAS_PROJECT_ID from process.env, no default"
+      action: "Run `eas init` or set EAS_PROJECT_ID in EAS secrets"
+
+  # ---------------------------------------------------------------------------
+  # POST-LAUNCH — Non-blocking improvements
+  # ---------------------------------------------------------------------------
+  post_launch:
+    - id: PL-01
+      what: "Next.js 15 migration"
+      effort: XL
+      vulns_fixed: "4 high (next package)"
+      note: "Major migration — affects all web pages and API routes"
+
+    - id: PL-02
+      what: "@sentry/nextjs v8 upgrade"
+      effort: L
+      vulns_fixed: "2 high (rollup transitive)"
+
+    - id: PL-03
+      what: "Plan E2E test"
+      file: "src/web/mobile/.maestro/flows/plan-navigation.yaml"
+      status: "Created but needs real device validation"
+
+  # ---------------------------------------------------------------------------
+  # RESIDUAL VULNERABILITIES — Accepted risks
+  # ---------------------------------------------------------------------------
+  residual_vulns:
+    backend:
+      total: 11
+      high: 1
+      details:
+        - pkg: "serialize-javascript"
+          severity: high
+          path: "@nestjs/cli > webpack > terser-webpack-plugin > serialize-javascript"
+          risk: "Dev-only, not in production runtime"
+          fix: "Requires @nestjs/cli major bump to v11"
+          accepted: true
+    web:
+      total: 17
+      high: 8
+      details:
+        - pkg: "next"
+          count: 4
+          fix: "Next.js >=15.0.8 (major migration)"
+          accepted: true
+        - pkg: "rollup"
+          count: 2
+          fix: "@sentry/nextjs v8 (rollup 4.x)"
+          accepted: true
+        - pkg: "ip"
+          count: 2
+          fix: "No patch — react-native transitive"
+          accepted: true
 
 # =============================================================================
-# DECISION LOG — Items requiring human/team decisions
+# SWARM WORKFLOW — Compact reference (full: 013-agent-guide.yaml)
+# =============================================================================
+workflow:
+
+  bootstrap: # Run ONCE per session
+    - "npx @claude-flow/cli@latest daemon start"
+    - "npx @claude-flow/cli@latest doctor --verbose"
+    - "npx @claude-flow/cli@latest memory init --force --verbose"
+    - "npx @claude-flow/cli@latest hooks pretrain --verbose"
+    - "npx @claude-flow/cli@latest hooks build-agents --verbose"
+    - "npx @claude-flow/cli@latest hooks worker dispatch --trigger map"
+    - "npx @claude-flow/cli@latest hooks worker dispatch --trigger deepdive"
+    - "npx @claude-flow/cli@latest hooks worker dispatch --trigger ultralearn"
+    - "npx @claude-flow/cli@latest neural train --modelType moe --epochs 10"
+    - "npx @claude-flow/cli@latest neural train --modelType transformer --epochs 10"
+    - "npx @claude-flow/cli@latest neural train --modelType classifier --epochs 10"
+
+  per_swarm: # 9 steps per swarm (Section 15)
+    1_pre_task: "hooks pre-task --task-id {id} --description {desc}"
+    2_store_scope: "memory store --key {id}-scope --value {scope} --namespace healthcare-platform"
+    3_hive_init: "hive-mind init --topology hierarchical-mesh --max-agents 15 --consensus byzantine"
+    4_spawn: "Display command. STOP. Wait for user."
+    5_wait: "User runs in separate terminal. Do NOT poll."
+    6_verify: "Run grep/wc/find for exit criteria."
+    7_post_task: "hooks post-task --task-id {id} --success true --store-results true"
+    8_neural: "hooks post-edit --file {f} --train-neural true"
+    9_store: "memory store --key {id}-complete --value {results} --namespace healthcare-platform"
+
+  spawn_flags: |
+    npx @claude-flow/cli@latest hive-mind spawn \
+      --workers {N} \
+      --topology hierarchical-mesh \
+      --consensus byzantine \
+      --claude \
+      --model-routing intelligent \
+      --namespace healthcare-platform \
+      --use-memory --use-patterns --use-vectors --use-learning \
+      --objective '{OBJECTIVE}'
+
+  anti_drift:
+    topology: hierarchical-mesh
+    max_agents: 15
+    consensus: byzantine
+    rules:
+      - "3-phase RECON→CODER→VERIFIER"
+      - "EXIT GATE per worker (self-verification)"
+      - "UPSTREAM GATE on verifier (blocks without data)"
+      - "max 8 workers per swarm for tight coordination"
+
+  cli_prefix: "npx @claude-flow/cli@latest"
+  eoverride_workaround: "Run from /tmp if root package.json EOVERRIDE conflict"
+
+# =============================================================================
+# DEPENDENCY MANAGEMENT — Detailed instructions
+# =============================================================================
+# Current state as of 2026-02-28:
+#   - Dependabot: ACTIVE (.github/dependabot.yml, 7 ecosystems)
+#   - Renovate: CONFIG COMMITTED (renovate.json) but APP NOT INSTALLED
+#   - Open PRs: #61 (4 dev-dep bumps, open 5 days)
+#   - Backend: 11 vulns (1 high dev-only)
+#   - Web: 17 vulns (8 high accepted-risk)
+
+dependency_management:
+
+  # ---------------------------------------------------------------------------
+  # CURRENT VULNERABILITY SNAPSHOT (2026-02-28)
+  # ---------------------------------------------------------------------------
+  current_state:
+    backend_audit: "yarn audit --level high → 1 high (serialize-javascript, dev-only)"
+    web_audit: "yarn audit --level high → 8 high (4 next, 2 rollup, 2 ip)"
+    resolution_pins_active:
+      - { pkg: "minimatch", pinned: "3.1.4", reason: "ReDoS CVE" }
+      - { pkg: "follow-redirects", pinned: "1.15.9", reason: "Open redirect" }
+      - { pkg: "terser", pinned: "5.31.6", reason: "Code injection" }
+      - { pkg: "ws", pinned: "8.18.0", reason: "DoS via close frame" }
+      - { pkg: "@fastify/middie", pinned: "9.2.0", reason: "Path normalization bypass" }
+    where_pins_live:
+      backend: "src/backend/package.json → resolutions block"
+      web: "src/web/package.json → resolutions block"
+      root: "package.json → overrides block (109 entries)"
+
+  # ---------------------------------------------------------------------------
+  # STEP 1: TRIAGE PR #61 (priority: HIGH)
+  # ---------------------------------------------------------------------------
+  step_1_triage_pr_61:
+    pr: 61
+    title: "bump the dev-dependencies group across 1 directory with 4 updates"
+    status: "Open since 2026-02-23"
+    ci_status: "Was failing due to husky bug (now fixed in fd36296)"
+    action: |
+      # Check if Dependabot rebased against fixed main
+      gh pr checks 61
+
+      # If CI passes → merge immediately (dev-only, low risk)
+      gh pr merge 61 --squash
+
+      # If CI still fails → Dependabot may not have rebased yet
+      # Comment to trigger rebase:
+      gh pr comment 61 --body "@dependabot rebase"
+
+      # If CI fails with REAL errors after rebase → close
+      gh pr close 61 --comment "Closing: CI failures unrelated to husky. Renovate will handle."
+
+  # ---------------------------------------------------------------------------
+  # STEP 2: ACTIVATE RENOVATE (priority: HIGH)
+  # ---------------------------------------------------------------------------
+  step_2_activate_renovate:
+    config: "renovate.json (already committed to main)"
+    groups:
+      - { name: "security-patches", automerge: true, delay: "0 days", scope: "Security advisories only" }
+      - { name: "patch-updates", automerge: true, delay: "3 days", scope: "All patch bumps" }
+      - { name: "backend-minor", automerge: false, scope: "NestJS, Prisma, etc." }
+      - { name: "frontend-minor", automerge: false, scope: "React, Next.js, RN, etc." }
+      - { name: "infrastructure", automerge: false, scope: "Docker, Terraform, GH Actions" }
+      - { name: "major-updates", automerge: false, scope: "All major bumps (separate PRs)" }
+    features:
+      - "SHA-pins GitHub Actions digests (helpers:pinGitHubActionDigests)"
+      - "Tracks Dockerfiles and Terraform .tf files"
+      - "Schedule: weekday mornings, America/Sao_Paulo"
+      - "Max 5 concurrent PRs, 2 per hour"
+      - "Runs yarn dedupe after updates"
+      - "Respects existing resolutions/overrides (ignoreDeps for pinned packages)"
+    activation: |
+      # User must install the Renovate GitHub App:
+      # 1. Visit https://github.com/apps/renovate
+      # 2. Install on the repository
+      # 3. Renovate creates an onboarding PR within minutes
+      # 4. Review and merge the onboarding PR
+      # 5. Renovate begins scanning per renovate.json schedule
+
+      # Verify activation:
+      gh pr list --label renovate
+      # Should show "Configure Renovate" onboarding PR
+
+  # ---------------------------------------------------------------------------
+  # STEP 3: DISABLE DEPENDABOT (priority: MEDIUM, after Renovate is proven)
+  # ---------------------------------------------------------------------------
+  step_3_disable_dependabot:
+    prereq: "At least 1 Renovate PR created and merged successfully"
+    options:
+      option_a: |
+        # Disable all update checks (keep file for security alerts)
+        cat > .github/dependabot.yml << 'EOF'
+        version: 2
+        updates: []
+        EOF
+      option_b: |
+        # Remove entirely (also disables Dependabot security alerts)
+        git rm .github/dependabot.yml
+    verify: "No new Dependabot PRs created after 1 week"
+    note: |
+      Dependabot security ALERTS (not PRs) are separate from version updates.
+      Even with dependabot.yml deleted, security alerts remain active if enabled
+      in GitHub Settings > Code security > Dependabot alerts.
+
+  # ---------------------------------------------------------------------------
+  # STEP 4: RESOLUTION PIN MAINTENANCE (ongoing)
+  # ---------------------------------------------------------------------------
+  step_4_maintain_pins:
+    description: "Resolutions/overrides force specific versions for transitive deps with CVEs"
+    when_to_add: |
+      # Run when a new CVE appears in yarn audit:
+      cd src/backend && yarn audit --level high
+
+      # If a HIGH/CRITICAL vulnerability is in a transitive dep:
+      # 1. Check if the patched version exists on npm
+      # 2. Verify it doesn't break the parent package
+      # 3. Add to the appropriate resolutions block:
+
+      # Backend transitive → src/backend/package.json resolutions
+      # Web transitive → src/web/package.json resolutions
+      # Root-level → package.json overrides
+
+    when_to_remove: |
+      # Pins become stale when the parent package updates its own dependency.
+      # Check periodically:
+      yarn why <pinned-package>
+
+      # If the parent now pulls a safe version natively → remove the pin.
+      # Renovate PRs may also flag unnecessary pins via its update logic.
+
+    format: |
+      # In package.json (yarn resolutions or npm overrides):
+      "resolutions": {
+        "vulnerable-pkg": ">=safe-version"
+      }
+      # Then: yarn install (regenerates lock file with patched version)
+
+  # ---------------------------------------------------------------------------
+  # STEP 5: MAJOR MIGRATION PLANNING (post-launch)
+  # ---------------------------------------------------------------------------
+  step_5_major_migrations:
+    next_js_15:
+      vulns_fixed: 4
+      effort: "XL (2-4 weeks)"
+      breaking_changes:
+        - "App Router changes (async page params, headers/cookies)"
+        - "Turbopack default in dev"
+        - "React 19 required"
+        - "Middleware and routing changes"
+      approach: |
+        # Incremental migration path:
+        # 1. Audit all src/web/web/src/pages/ for incompatible patterns
+        # 2. Update next.config.js for Next.js 15 compatibility
+        # 3. Upgrade React to 19.x alongside Next.js
+        # 4. Run full test suite after migration
+        # This should be a dedicated sprint, not mixed with feature work.
+
+    sentry_nextjs_v8:
+      vulns_fixed: 2
+      effort: "L (3-5 days)"
+      breaking_changes:
+        - "New SDK initialization pattern"
+        - "Different instrumentation approach"
+        - "Drops support for older Node.js versions"
+      approach: |
+        # Simpler than Next.js 15 — can be done first:
+        # 1. Upgrade @sentry/nextjs from v7 to v8
+        # 2. Update sentry.client.config.ts and sentry.server.config.ts
+        # 3. This resolves rollup 4.x transitive vulns automatically
+
+    nestjs_cli_v11:
+      vulns_fixed: 1
+      effort: "M (1-2 days)"
+      note: "Only fixes serialize-javascript (dev-only, lowest priority)"
+
+  # ---------------------------------------------------------------------------
+  # STEP 6: VULNERABILITY ACCEPTANCE CRITERIA
+  # ---------------------------------------------------------------------------
+  step_6_acceptance_criteria:
+    accept_if:
+      - "Dev-only dependency (not in production bundle)"
+      - "No direct exploit path from user input"
+      - "Transitive with no available patch"
+      - "Fix requires major migration with breaking changes"
+    reject_if:
+      - "Production runtime, reachable from user input"
+      - "Critical or high severity with available patch"
+      - "Direct dependency (can be bumped without breaking)"
+    documentation: |
+      # When accepting a residual vulnerability, document:
+      # 1. Package name and CVE/advisory ID
+      # 2. Why it's accepted (which criteria above)
+      # 3. What would fix it (even if deferred)
+      # 4. Review date (re-evaluate quarterly)
+
+      # Store in memory for audit trail:
+      npx @claude-flow/cli@latest memory store \
+        --key "vuln-accepted-{pkg}" \
+        --value "{reason, fix, review-date}" \
+        --namespace healthcare-platform
+
+  # ---------------------------------------------------------------------------
+  # STEP 7: AUTOMATED SECURITY SCANNING (CI integration)
+  # ---------------------------------------------------------------------------
+  step_7_ci_integration:
+    current: "yarn audit --level high in deploy-staging.yml and deploy-production.yml"
+    enhancement: |
+      # Renovate + Dependabot alerts provide overlapping coverage:
+      # - Renovate: creates PRs for updates (proactive)
+      # - Dependabot alerts: flags known CVEs (reactive)
+      # - yarn audit in CI: blocks deploys with new critical/high vulns
+
+      # Recommended: keep all three active
+      # - Renovate handles updates
+      # - Dependabot alerts catch things Renovate misses
+      # - CI audit is the hard gate before deployment
+
+# =============================================================================
+# DECISIONS PENDING — Items requiring human/team input
 # =============================================================================
 decisions_pending:
   - id: DEC-01
-    topic: "Merge or investigate PR #64 (76 web dependency updates)"
-    context: "CI was broken by husky issue, not by the deps. After rebase, CI will reveal real status."
-    options:
-      - "If CI passes: merge (deps were always compatible)"
-      - "If CI fails: close and let Renovate handle tiered updates"
-    owner: "Tech Lead"
+    topic: "Accept serialize-javascript residual risk (dev-only)"
+    context: "Transitive via @nestjs/cli → webpack. Dev-only, not in prod."
+    recommendation: "Accept — dev-only risk, fix deferred to NestJS CLI v11"
 
   - id: DEC-02
-    topic: "Accept serialize-javascript residual risk (dev-only)"
-    context: "Transitive via @nestjs/cli → webpack → terser-webpack-plugin. Unfixable without @nestjs/cli major bump."
-    risk: "RCE in dev environment only, not production runtime"
-    options:
-      - "Accept risk (dev-only, no production impact)"
-      - "Major-bump @nestjs/cli to v11 (significant migration effort)"
-    owner: "Tech Lead"
+    topic: "Next.js 15 migration timeline"
+    context: "4 high vulns in next 14.2.35. Major migration effort."
+    recommendation: "Post-launch sprint (2-4 weeks dedicated)"
 
   - id: DEC-03
-    topic: "Next.js 15 migration (4 high vulns in next 14.2.35)"
-    context: "Residual from web vuln triage. Next.js 15 is a major migration."
-    effort: "XL (2-4 weeks, affects all web pages and API routes)"
-    owner: "Frontend Lead"
-
-  - id: DEC-04
-    topic: "rules.service.ts:268 RCE remediation approach"
-    context: "new Function() used for dynamic rule evaluation. Needs safe alternative."
+    topic: "RCE remediation approach for rules.service.ts"
     options:
       - "expr-eval: lightweight, no prototype pollution, MIT license"
-      - "json-rules-engine: heavier but rule-engine-native, well maintained"
-      - "Static rule map: no dynamic evaluation, safest but least flexible"
-    owner: "Security Lead + Backend Lead"
+      - "json-rules-engine: heavier but rule-engine-native"
+      - "Static rule map: safest, least flexible"
+    recommendation: "expr-eval — minimal footprint, proven safe"
 
-  - id: DEC-05
-    topic: "Seed data strategy for development"
-    context: "seed.ts has hardcoded Password123! and real CPF numbers"
+  - id: DEC-04
+    topic: "Seed data strategy"
     options:
-      - "Environment variables for all seed values"
-      - "Faker library for generating realistic but fake PII"
-      - "Both: env vars for passwords, faker for PII"
-    owner: "Backend Lead"
+      - "Env vars for passwords + @faker-js/faker for PII"
+      - "Env vars only (SEED_ADMIN_PASSWORD, SEED_ADMIN_CPF)"
+    recommendation: "Both — env vars for secrets, faker for PII data"
+
+# =============================================================================
+# MEMORY KEYS — Key references in healthcare-platform namespace
+# =============================================================================
+memory_keys:
+  patterns:
+    - "pattern-vuln-triage (backend resolution strategy)"
+    - "pattern-vuln-web-resolution (web resolution strategy)"
+    - "pattern-benchmark-prompt (spawn prompt structure)"
+    - "pattern-p2-phase-ab-parallel (screen-only → infra sequential)"
+  audit:
+    - "recon-cicd (9650B), recon-dependabot (1034B), recon-security (9544B)"
+    - "alpha-verification (580B), beta-verify-deps (998B), beta-verify-readme (1387B)"
+    - "dim-security-summary (4488B), gamma-final-verification (V1-V7 ALL PASS)"
+  milestone_markers:
+    - "b1-scope through b5-complete-final"
+    - "f1-scope through f6ext-complete"
+    - "p2-w1-* through p2-phase-b-complete"
+    - "qg-w1-complete through qg-w5-*"
+    - "audit-alpha-complete, audit-beta-complete, audit-gamma-complete"
