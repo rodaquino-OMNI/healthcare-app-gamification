@@ -11,7 +11,7 @@
   ],
 
   "timezone": "America/Sao_Paulo",
-  "schedule": ["before 6am on weekdays"],
+  "schedule": ["before 6am every weekday"],
 
   "prConcurrentLimit": 5,
   "prHourlyLimit": 2,
@@ -56,16 +56,16 @@
       "groupName": "patch bumps (all workspaces)",
       "matchUpdateTypes": ["patch"],
       "matchDepTypes": ["dependencies", "devDependencies", "peerDependencies"],
-      "excludePackageNames": [
-        "/^@nestjs/",
-        "/^jest$/", "/^ts-jest$/", "/^@types\\/jest$/",
-        "/^typescript$/",
-        "/^eslint/", "/^@typescript-eslint/",
-        "/^react$/", "/^react-dom$/", "/^react-native$/",
-        "/^@react-navigation/", "/^@react-native/",
-        "/^@mui/", "/^@expo/",
-        "/^turbo$/", "/^metro/", "/^webpack$/",
-        "/^next$/"
+      "matchPackageNames": [
+        "!/^@nestjs/",
+        "!/^jest$/", "!/^ts-jest$/", "!/^@types\\/jest$/",
+        "!/^typescript$/",
+        "!/^eslint/", "!/^@typescript-eslint/",
+        "!/^react$/", "!/^react-dom$/", "!/^react-native$/",
+        "!/^@react-navigation/", "!/^@react-native/",
+        "!/^@mui/", "!/^@expo/",
+        "!/^turbo$/", "!/^metro/", "!/^webpack$/",
+        "!/^next$/"
       ],
       "automerge": true,
       "automergeType": "pr",
@@ -242,8 +242,7 @@
     "enabled": true,
     "labels": ["dependencies", "renovate", "security"],
     "automerge": true,
-    "schedule": ["at any time"],
-    "prPriority": 10
+    "schedule": ["at any time"]
   },
 
   "osvVulnerabilityAlerts": true,
@@ -257,23 +256,23 @@
 
   "github-actions": {
     "pinDigests": true,
-    "fileMatch": ["^\\.github/workflows/[^/]+\\.ya?ml$"]
+    "managerFilePatterns": ["/^\\.github/workflows/[^/]+\\.ya?ml$/"]
   },
 
   "dockerfile": {
-    "fileMatch": [
-      "src/backend/api-gateway/Dockerfile",
-      "src/backend/auth-service/Dockerfile",
-      "src/backend/health-service/Dockerfile",
-      "src/backend/care-service/Dockerfile",
-      "src/backend/plan-service/Dockerfile",
-      "src/backend/gamification-engine/Dockerfile",
-      "src/backend/notification-service/Dockerfile"
+    "managerFilePatterns": [
+      "/src/backend/api-gateway/Dockerfile/",
+      "/src/backend/auth-service/Dockerfile/",
+      "/src/backend/health-service/Dockerfile/",
+      "/src/backend/care-service/Dockerfile/",
+      "/src/backend/plan-service/Dockerfile/",
+      "/src/backend/gamification-engine/Dockerfile/",
+      "/src/backend/notification-service/Dockerfile/"
     ]
   },
 
   "terraform": {
-    "fileMatch": ["\\.tf$"]
+    "managerFilePatterns": ["/\\.tf$/"]
   },
 
   "postUpdateOptions": [

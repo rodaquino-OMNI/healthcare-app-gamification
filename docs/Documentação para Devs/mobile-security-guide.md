@@ -9,13 +9,18 @@ Gaps are called out explicitly — this is not a marketing document.
 
 ## 1. Secure Storage
 
-### 1.1 Current Implementation (AsyncStorage)
+### 1.1 Current Implementation (MMKV Encrypted Storage)
 
-Auth tokens are persisted via `@react-native-async-storage/async-storage`. On Android this is
-plaintext SQLite; on iOS it uses NSUserDefaults-backed files.
+Auth tokens are persisted via `react-native-mmkv` v2.10.1 with AES encryption enabled.
+The encrypted wrapper lives in `src/web/mobile/src/utils/secure-storage.ts` and exposes
+`SecureStorage` (generic) and `secureTokenStorage` (auth-specific) APIs.
 
-**Gap — CRITICAL**: Neither storage backend is encrypted. Root/jailbreak access exposes raw
-token bytes. See `src/web/mobile/package.json` for the installed dependency.
+A one-time migration function `migrateFromAsyncStorage()` copies existing AsyncStorage
+tokens into MMKV and removes the plaintext originals. Non-sensitive preferences (e.g.,
+theme mode) remain in AsyncStorage.
+
+**Status**: MMKV wrapper created. Next step: wire `secureTokenStorage` into `AuthContext.tsx`
+and `care.ts` to replace `AsyncStorage.getItem/setItem` calls for auth tokens.
 
 ### 1.2 MMKV Encrypted Storage (Recommended Migration)
 
@@ -128,25 +133,10 @@ Configured in `src/web/mobile/app.json`:
 
 ### 3.4 Network Security Config (Android)
 
-**Gap — MEDIUM**: No `network_security_config.xml`. Android API 28+ default blocks cleartext
-(acceptable), but a custom config is required to: declare OS-level certificate pins, exclude
-user-installed CA certificates, and serve as prerequisite for native pinning.
-
-```xml
-<!-- Recommended: create at android/app/src/main/res/xml/network_security_config.xml -->
-<network-security-config>
-  <base-config cleartextTrafficPermitted="false">
-    <trust-anchors><certificates src="system" /></trust-anchors>
-  </base-config>
-  <domain-config>
-    <domain includeSubdomains="true">austa.com.br</domain>
-    <pin-set>
-      <pin digest="SHA-256">PLACEHOLDER_PRIMARY_PIN==</pin>
-      <pin digest="SHA-256">PLACEHOLDER_BACKUP_PIN==</pin>
-    </pin-set>
-  </domain-config>
-</network-security-config>
-```
+**Implemented**: `network_security_config.xml` exists at
+`android/app/src/main/res/xml/network_security_config.xml` with cleartext blocked,
+system-only CAs, and placeholder pin-set for `austa.com.br`. Pin values must be
+replaced with real SHA-256 SPKI hashes before production release.
 
 ---
 
@@ -154,7 +144,7 @@ user-installed CA certificates, and serve as prerequisite for native pinning.
 
 | MASVS Control | Requirement | Status | Implementation / Gap |
 |---|---|---|---|
-| MASVS-STORAGE-1 | Sensitive data not in plaintext | **Gap** | Tokens in unencrypted AsyncStorage |
+| MASVS-STORAGE-1 | Sensitive data not in plaintext | **Partial** | MMKV encrypted wrapper created (`secure-storage.ts`); wiring into AuthContext pending |
 | MASVS-STORAGE-2 | No PHI in logs or backups | Partial | Sentry/Crashlytics present; PHI scrubbing not verified |
 | MASVS-CRYPTO-1 | AES-256-GCM at rest | Implemented | `src/backend/shared/src/encryption/encryption.service.ts` |
 | MASVS-CRYPTO-2 | Cryptographically secure RNG | Implemented | `crypto.randomBytes` for IV generation |
@@ -166,17 +156,20 @@ user-installed CA certificates, and serve as prerequisite for native pinning.
 | MASVS-NETWORK-3 | No sensitive data in URLs | Implemented | Auth tokens in Authorization header only |
 | MASVS-PLATFORM-1 | IPC restricted | Implemented | No exported activities beyond defaults |
 | MASVS-PLATFORM-2 | WebView hardened | Partial | No WebViews identified; verify if added |
-| MASVS-CODE-1 | Code obfuscation (Android) | **Gap** | ProGuard/R8 not configured |
+| MASVS-CODE-1 | Code obfuscation (Android) | **Partial** | `proguard-rules.pro` created; enable `minifyEnabled` in build.gradle when ejected |
 | MASVS-CODE-2 | Debug disabled in release | Partial | EAS production uses AAB; `android:debuggable` not verified |
-| MASVS-RESILIENCE-1 | Root/jailbreak detection | Gap | react-native-device-info installed; detection not implemented |
+| MASVS-RESILIENCE-1 | Root/jailbreak detection | **Partial** | `device-security.ts` created with `isRooted()`/`warnIfCompromised()`; wire into App.tsx pending |
 | MASVS-RESILIENCE-2 | Anti-tampering | Gap | No integrity checks; EAS code signing only |
 
-**Summary**: 5 implemented, 5 partial, 6 gaps.
-Priority closures before launch: MASVS-STORAGE-1, MASVS-AUTH-2, MASVS-NETWORK-2, MASVS-CODE-1.
+**Summary**: 5 implemented, 8 partial, 3 gaps.
+Priority closures before launch: MASVS-AUTH-2, MASVS-NETWORK-2, MASVS-RESILIENCE-2.
 
-> **Audit note (2026-02-28)**: All 6 gaps and 5 partial items remain unchanged. No progress
-> on MMKV migration, native biometric API calls, native TLS pinning, ProGuard/R8, root/jailbreak
-> detection, or anti-tampering since initial assessment.
+> **Audit note (2026-02-28)**: MOBI-SEC hardening sprint completed 3 new deliverables:
+> 1. `secure-storage.ts` — MMKV encrypted wrapper with AsyncStorage migration (MASVS-STORAGE-1)
+> 2. `device-security.ts` — Root/jailbreak detection via react-native-device-info (MASVS-RESILIENCE-1)
+> 3. `proguard-rules.pro` — R8 obfuscation rules for RN 0.73 + Hermes + native deps (MASVS-CODE-1)
+> 4. PHI encryption docs updated: per-record salt, 4-segment wire format (Section 5.3)
+> Remaining: wire MMKV into AuthContext, wire device checks into App.tsx, enable minifyEnabled.
 
 ---
 
@@ -208,8 +201,9 @@ PHI-decorated endpoints trigger `auditService.logPHIAccess()` with `phiAccess: t
 File: `src/backend/shared/src/encryption/encryption.service.ts`
 Middleware: `src/backend/shared/src/encryption/prisma-encryption.middleware.ts`
 
-AES-256-GCM, random 16-byte IV per record, key from `crypto.scryptSync(ENCRYPTION_KEY, 'austa-phi-salt', 32)`.
-Wire format: `iv:authTag:ciphertext` (hex). Auto-encrypted Prisma fields:
+AES-256-GCM with per-record `crypto.randomBytes(32)` salt and random 16-byte IV.
+Key derived via `crypto.scryptSync(ENCRYPTION_KEY, randomSalt, 32)`.
+Wire format: `salt:iv:authTag:ciphertext` (4 hex segments). Auto-encrypted Prisma fields:
 
 | Model | Fields |
 |---|---|
@@ -235,14 +229,11 @@ insertion errors before production — silent failures break LGPD audit trail re
 LGPD consent toggles and data deletion UI exist in
 `src/web/mobile/src/screens/home/SettingsPrivacy.tsx`.
 
-**Gap**: All controls have `TODO: connect to API` comments. Backend DSR endpoints exist (B2)
-but the mobile app has not wired up the calls.
-
-> **Update (2026-02-28)**: Account deletion on mobile (`SettingsPrivacy.tsx`) now calls
-> `deleteAccount()` with real API. Web privacy page (`profile/privacy.tsx`) now calls
-> `restClient.patch('/privacy/my-data')` for settings persistence and
-> `restClient.get('/privacy/export')` for data export. However, mobile data export still only
-> shows an Alert without an API call — this remains a gap for LGPD compliance on mobile.
+**Status**: Account deletion and data export on mobile (`SettingsPrivacy.tsx`) are both wired
+to real API calls. `deleteAccount()` handles deletion; `restClient.get('/privacy/export')`
+handles data export with loading state and error handling. Web privacy page
+(`profile/privacy.tsx`) calls `restClient.patch('/privacy/my-data')` for settings persistence
+and `restClient.get('/privacy/export')` for data export. LGPD data portability is covered.
 
 ---
 
@@ -250,8 +241,10 @@ but the mobile app has not wired up the calls.
 
 ### 6.1 ProGuard/R8 for Android
 
-**Gap — HIGH**: No `proguard-rules.pro` and `minifyEnabled` is not set. Class/method names are
-readable in the APK, dead library code ships, and reverse engineering is significantly easier.
+**Status**: `proguard-rules.pro` created at `android/app/proguard-rules.pro` with keep rules
+for React Native, Hermes, Expo, MMKV, device-info, biometrics, and other native dependencies.
+`minifyEnabled` cannot be set until the project is ejected from Expo managed workflow or
+EAS build handles it via `eas.json` configuration.
 
 ```pro
 -keep class com.facebook.react.** { *; }

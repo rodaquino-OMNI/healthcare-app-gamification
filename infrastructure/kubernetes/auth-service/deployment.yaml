@@ -24,11 +24,14 @@ spec:
         image: ghcr.io/austa-superapp/auth-service:latest
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 3000
+        - containerPort: 3001
           name: http
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
+        env:
+        - name: PORT
+          value: "3001"
         envFrom:
         - configMapRef:
             name: auth-service-config

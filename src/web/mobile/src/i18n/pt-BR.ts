@@ -1715,397 +1715,397 @@ const translations = {
       }
     },
     gamification: {
-    level: 'Nível {{level}}',
-    xp: '{{value}} XP',
-    achievements: {
-      unlocked: 'Conquista Desbloqueada!',
-      progress: 'Progresso: {{value}}/{{total}}',
-      reward: 'Recompensa: {{reward}}',
-      empty: 'Nenhuma conquista desbloqueada.'
-    },
-    quests: {
-      active: 'Missões Ativas',
-      completed: 'Missões Concluídas',
-      new: 'Nova Missão Disponível!',
-      empty: 'Nenhuma missão ativa.'
-    },
-    rewards: {
-      empty: 'Nenhuma recompensa disponível.'
-    },
-    leaderboard: {
-      title: 'Classificação',
-      rank: 'Posição',
-      user: 'Usuário',
-      score: 'Pontuação'
-    }
-  },
-    auth: {
-    login: {
-      title: 'Entrar',
-      email: 'Email',
-      password: 'Senha',
-      forgotPassword: 'Esqueceu sua senha?',
-      register: 'Criar conta',
-      submit: 'Entrar',
-      emailPlaceholder: 'Digite seu email',
-      passwordPlaceholder: 'Digite sua senha',
-      noAccount: 'Ainda nao tem conta?',
-      invalidCredentials: 'Email ou senha invalidos. Tente novamente.',
-      networkError: 'Sem conexao. Verifique sua internet e tente novamente.'
-    },
-    register: {
-      title: 'Criar Conta',
-      name: 'Nome Completo',
-      email: 'Email',
-      cpf: 'CPF',
-      phone: 'Telefone',
-      password: 'Senha',
-      confirmPassword: 'Confirmar Senha',
-      terms: 'Eu concordo com os Termos de Serviço e Política de Privacidade.',
-      login: 'Já tem uma conta?'
-    },
-    forgotPassword: {
-      title: 'Recuperar Senha',
-      email: 'Email',
-      sendCode: 'Enviar Código de Verificação'
-    },
-    mfa: {
-      title: 'Verificação de Segurança',
-      code: 'Código de Verificação',
-      resendCode: 'Reenviar Código'
-    },
-    socialAuth: {
-      title: 'Bem-vindo ao AUSTA',
-      subtitle: 'Entre para continuar sua jornada de saude',
-      googleButton: 'Continuar com Google',
-      appleButton: 'Continuar com Apple',
-      facebookButton: 'Continuar com Facebook',
-      divider: 'ou continue com email',
-      emailLogin: 'Entrar com Email',
-      noAccount: 'Nao tem uma conta?',
-      register: 'Criar Conta',
-      lgpdConsent: 'Eu concordo com o tratamento dos meus dados pessoais conforme a',
-      privacyPolicy: 'Politica de Privacidade',
-      and: 'e',
-      termsOfService: 'Termos de Servico',
-      consentRequired: 'Consentimento Necessario',
-      consentMessage: 'Por favor, aceite os termos de privacidade antes de continuar com o login social.',
-      comingSoon: 'Integracao com autenticacao social em breve.',
-      disclaimer: 'Ao entrar, voce concorda com nossos Termos de Servico e Politica de Privacidade. Seus dados sao protegidos pela LGPD (Lei Geral de Protecao de Dados).'
-    }
-  },
-    profile: {
-    title: 'Perfil',
-    edit: 'Editar Perfil',
-    settings: 'Configurações',
-    notifications: 'Notificações',
-    security: 'Segurança',
-    help: 'Ajuda',
-    logout: 'Sair'
-  },
-    settings: {
-    title: 'Configuracoes',
-    language: 'Idioma',
-    notifications: 'Notificacoes',
-    privacy: 'Privacidade',
-    about: 'Sobre',
-    editProfile: 'Editar Perfil',
-    personalInfo: {
-      title: 'Informacoes Pessoais',
-      fullName: 'Nome Completo',
-      dateOfBirth: 'Data de Nascimento',
-      gender: 'Genero',
-      bloodType: 'Tipo Sanguineo',
-      cpf: 'CPF',
-      save: 'Salvar',
-      cancel: 'Cancelar',
-      changePhoto: 'Alterar foto',
-      genderOptions: { male: 'Masculino', female: 'Feminino', other: 'Outro', preferNotToSay: 'Prefiro nao informar' }
-    },
-    changePassword: {
-      title: 'Alterar Senha',
-      currentPassword: 'Senha Atual',
-      newPassword: 'Nova Senha',
-      confirmPassword: 'Confirmar Nova Senha',
-      strength: { weak: 'Fraca', medium: 'Media', strong: 'Forte' },
-      save: 'Alterar Senha',
-      success: 'Senha alterada com sucesso!',
-      error: 'Erro ao alterar senha.',
-      validation: { minLength: 'Minimo de 8 caracteres', uppercase: 'Deve conter letra maiuscula', match: 'As senhas nao coincidem' }
-    },
-    twoFactor: {
-      title: 'Autenticacao em Duas Etapas',
-      enabled: 'Ativada',
-      disabled: 'Desativada',
-      method: 'Metodo de Verificacao',
-      sms: 'SMS',
-      authenticator: 'Aplicativo Autenticador',
-      phone: 'Telefone',
-      changeNumber: 'Alterar numero',
-      qrInstructions: 'Escaneie o codigo QR com seu aplicativo autenticador',
-      disable: 'Desativar 2FA',
-      disableConfirm: 'Tem certeza que deseja desativar a autenticacao em duas etapas?'
-    },
-    biometric: {
-      title: 'Autenticacao Biometrica',
-      faceId: 'Face ID',
-      fingerprint: 'Impressao Digital',
-      available: 'Disponivel neste dispositivo',
-      notAvailable: 'Nao disponivel neste dispositivo',
-      info: 'A autenticacao biometrica adiciona uma camada extra de seguranca ao seu login.'
-    },
-    dataExport: {
-      title: 'Exportar Dados',
-      info: 'De acordo com a LGPD, voce tem direito de solicitar uma copia dos seus dados pessoais.',
-      categories: { profile: 'Dados do Perfil', health: 'Registros de Saude', appointments: 'Consultas', medications: 'Medicamentos', claims: 'Reembolsos' },
-      format: { json: 'JSON', pdf: 'PDF' },
-      request: 'Solicitar Exportacao',
-      status: { pending: 'Pendente', processing: 'Processando', ready: 'Pronto para Download' },
-      lastExport: 'Ultima exportacao'
-    },
-    deleteAccount: {
-      title: 'Excluir Conta',
-      warning: 'Esta acao e permanente e nao pode ser desfeita.',
-      consequences: {
-        healthData: 'Todos os seus registros de saude serao excluidos',
-        plan: 'Seu plano de saude sera cancelado',
-        leaderboard: 'Voce sera removido dos rankings',
-        achievements: 'Todas as conquistas e XP serao perdidos',
-        irreversible: 'Esta acao nao pode ser desfeita'
+      level: 'Nível {{level}}',
+      xp: '{{value}} XP',
+      achievements: {
+        unlocked: 'Conquista Desbloqueada!',
+        progress: 'Progresso: {{value}}/{{total}}',
+        reward: 'Recompensa: {{reward}}',
+        empty: 'Nenhuma conquista desbloqueada.'
       },
-      understand: 'Entendo que esta acao e permanente e irreversivel',
-      proceed: 'Prosseguir para Confirmacao',
-      goBack: 'Voltar'
+      quests: {
+        active: 'Missões Ativas',
+        completed: 'Missões Concluídas',
+        new: 'Nova Missão Disponível!',
+        empty: 'Nenhuma missão ativa.'
+      },
+      rewards: {
+        empty: 'Nenhuma recompensa disponível.'
+      },
+      leaderboard: {
+        title: 'Classificação',
+        rank: 'Posição',
+        user: 'Usuário',
+        score: 'Pontuação'
+      }
     },
-    deleteConfirm: {
-      title: 'Confirmacao Final',
-      waitMessage: 'Aguarde {{seconds}} segundos',
-      typeToConfirm: 'Digite EXCLUIR para confirmar',
-      confirmWord: 'EXCLUIR',
-      deleteForever: 'Excluir Minha Conta Permanentemente',
-      cancel: 'Cancelar'
+    auth: {
+      login: {
+        title: 'Entrar',
+        email: 'Email',
+        password: 'Senha',
+        forgotPassword: 'Esqueceu sua senha?',
+        register: 'Criar conta',
+        submit: 'Entrar',
+        emailPlaceholder: 'Digite seu email',
+        passwordPlaceholder: 'Digite sua senha',
+        noAccount: 'Ainda nao tem conta?',
+        invalidCredentials: 'Email ou senha invalidos. Tente novamente.',
+        networkError: 'Sem conexao. Verifique sua internet e tente novamente.'
+      },
+      register: {
+        title: 'Criar Conta',
+        name: 'Nome Completo',
+        email: 'Email',
+        cpf: 'CPF',
+        phone: 'Telefone',
+        password: 'Senha',
+        confirmPassword: 'Confirmar Senha',
+        terms: 'Eu concordo com os Termos de Serviço e Política de Privacidade.',
+        login: 'Já tem uma conta?'
+      },
+      forgotPassword: {
+        title: 'Recuperar Senha',
+        email: 'Email',
+        sendCode: 'Enviar Código de Verificação'
+      },
+      mfa: {
+        title: 'Verificação de Segurança',
+        code: 'Código de Verificação',
+        resendCode: 'Reenviar Código'
+      },
+      socialAuth: {
+        title: 'Bem-vindo ao AUSTA',
+        subtitle: 'Entre para continuar sua jornada de saude',
+        googleButton: 'Continuar com Google',
+        appleButton: 'Continuar com Apple',
+        facebookButton: 'Continuar com Facebook',
+        divider: 'ou continue com email',
+        emailLogin: 'Entrar com Email',
+        noAccount: 'Nao tem uma conta?',
+        register: 'Criar Conta',
+        lgpdConsent: 'Eu concordo com o tratamento dos meus dados pessoais conforme a',
+        privacyPolicy: 'Politica de Privacidade',
+        and: 'e',
+        termsOfService: 'Termos de Servico',
+        consentRequired: 'Consentimento Necessario',
+        consentMessage: 'Por favor, aceite os termos de privacidade antes de continuar com o login social.',
+        comingSoon: 'Integracao com autenticacao social em breve.',
+        disclaimer: 'Ao entrar, voce concorda com nossos Termos de Servico e Politica de Privacidade. Seus dados sao protegidos pela LGPD (Lei Geral de Protecao de Dados).'
+      }
     },
-    languageSelect: {
-      title: 'Idioma',
-      portuguese: 'Portugues (Brasil)',
-      english: 'English (US)',
-      spanish: 'Espanol',
-      preview: 'Visualizacao',
-      save: 'Salvar'
+    profile: {
+      title: 'Perfil',
+      edit: 'Editar Perfil',
+      settings: 'Configurações',
+      notifications: 'Notificações',
+      security: 'Segurança',
+      help: 'Ajuda',
+      logout: 'Sair'
     },
-    themeSelect: {
-      title: 'Tema',
-      light: 'Claro',
-      dark: 'Escuro',
-      system: 'Sistema (Automatico)',
-      preview: 'Visualizacao'
-    },
-    accessibility: {
-      title: 'Acessibilidade',
-      fontSize: 'Tamanho da Fonte',
-      fontSizes: { small: 'P', medium: 'M', large: 'G', extraLarge: 'XG' },
-      highContrast: 'Alto Contraste',
-      reducedMotion: 'Movimento Reduzido',
-      screenReaderInfo: 'Este app e compativel com VoiceOver (iOS) e TalkBack (Android).',
-      preview: 'Texto de exemplo para visualizacao'
-    },
-    connectedDevices: {
-      title: 'Dispositivos Conectados',
-      pairNew: 'Parear Novo Dispositivo',
-      unpair: 'Desconectar',
-      lastSync: 'Ultima sincronizacao',
-      connected: 'Conectado',
-      disconnected: 'Desconectado',
-      empty: 'Nenhum dispositivo conectado.',
-      confirmUnpair: 'Deseja desconectar este dispositivo?'
-    },
-    healthPlan: {
-      title: 'Dados do Plano',
-      planName: 'Nome do Plano',
-      planNumber: 'Numero do Plano',
-      type: 'Tipo',
-      validity: 'Vigencia',
-      memberName: 'Nome do Titular',
-      memberNumber: 'Numero do Cartao',
-      ansRegistration: 'Registro ANS',
-      viewCard: 'Ver Carteirinha Digital',
-      viewDocs: 'Ver Documentos'
-    },
-    insuranceDocs: {
-      title: 'Documentos do Plano',
-      filters: { all: 'Todos', cards: 'Carteirinhas', guides: 'Guias', policies: 'Politicas' },
-      download: 'Baixar',
-      view: 'Visualizar',
-      empty: 'Nenhum documento disponivel.'
-    },
-    dependents: {
-      title: 'Dependentes',
-      addDependent: 'Adicionar Dependente',
-      edit: 'Editar',
-      remove: 'Remover',
-      relationship: 'Parentesco',
-      dob: 'Data de Nascimento',
-      cpf: 'CPF',
-      empty: 'Nenhum dependente cadastrado.',
-      confirmRemove: 'Deseja remover este dependente?'
-    },
-    addDependent: {
-      title: 'Adicionar Dependente',
-      fullName: 'Nome Completo',
-      dateOfBirth: 'Data de Nascimento',
-      cpf: 'CPF',
-      relationship: 'Parentesco',
-      relationshipOptions: { spouse: 'Conjuge', child: 'Filho(a)', father: 'Pai', mother: 'Mae', other: 'Outro' },
-      save: 'Salvar',
-      cancel: 'Cancelar'
-    },
-    emergencyContacts: {
-      title: 'Contatos de Emergencia',
-      addContact: 'Adicionar Contato',
-      name: 'Nome',
-      phone: 'Telefone',
-      relationship: 'Relacao',
-      priority: 'Prioridade',
-      edit: 'Editar',
-      delete: 'Excluir',
-      empty: 'Nenhum contato de emergencia cadastrado.'
-    },
-    addresses: {
-      title: 'Enderecos',
-      addAddress: 'Adicionar Endereco',
-      primary: 'Principal',
-      edit: 'Editar',
-      delete: 'Excluir',
-      empty: 'Nenhum endereco cadastrado.',
-      labels: { home: 'Casa', work: 'Trabalho', other: 'Outro' }
-    },
-    addAddress: {
-      title: 'Adicionar Endereco',
-      label: 'Tipo',
-      cep: 'CEP',
-      street: 'Rua',
-      number: 'Numero',
-      complement: 'Complemento',
-      neighborhood: 'Bairro',
-      city: 'Cidade',
-      state: 'Estado',
-      setPrimary: 'Definir como endereco principal',
-      save: 'Salvar',
-      cancel: 'Cancelar',
-      cepLoading: 'Buscando endereco...'
-    },
-    terms: {
-      title: 'Termos de Servico',
-      lastUpdated: 'Atualizado em'
-    },
-    privacyPolicy: {
-      title: 'Politica de Privacidade',
-      lastUpdated: 'Atualizado em',
-      exportLink: 'Exportar meus dados',
-      deleteLink: 'Excluir minha conta'
-    },
-    aboutApp: {
-      title: 'Sobre o App',
-      version: 'Versao',
-      build: 'Build',
-      environment: 'Ambiente',
-      credits: 'Creditos',
-      licenses: 'Licencas Open Source',
-      rateApp: 'Avaliar este App',
-      copyright: 'AUSTA Saude. Todos os direitos reservados.'
-    },
-    logout: {
-      title: 'Sair da Conta',
-      sessionInfo: 'Conectado desde',
-      device: 'Dispositivo',
-      warning: 'Ao sair, sua sessao sera encerrada e dados em cache serao removidos.',
-      signOut: 'Sair',
-      cancel: 'Cancelar'
-    },
-    feedback: {
-      title: 'Avaliar o App',
-      rating: 'Sua Avaliacao',
-      ratingLabels: { terrible: 'Pessimo', bad: 'Ruim', average: 'Regular', good: 'Bom', excellent: 'Excelente' },
-      category: 'Categoria',
-      categoryOptions: { bug: 'Bug', suggestion: 'Sugestao', compliment: 'Elogio', other: 'Outro' },
-      comment: 'Comentario',
-      charCount: '{{count}}/500',
-      submit: 'Enviar Feedback',
-      rateOnStore: 'Avaliar na App Store'
-    },
-    sections: {
-      account: 'Conta',
-      security: 'Seguranca',
+    settings: {
+      title: 'Configuracoes',
+      language: 'Idioma',
       notifications: 'Notificacoes',
       privacy: 'Privacidade',
-      healthPlan: 'Plano de Saude',
-      devices: 'Dispositivos',
-      preferences: 'Preferencias',
-      help: 'Ajuda',
-      data: 'Dados',
-      app: 'App'
-    }
-  },
+      about: 'Sobre',
+      editProfile: 'Editar Perfil',
+      personalInfo: {
+        title: 'Informacoes Pessoais',
+        fullName: 'Nome Completo',
+        dateOfBirth: 'Data de Nascimento',
+        gender: 'Genero',
+        bloodType: 'Tipo Sanguineo',
+        cpf: 'CPF',
+        save: 'Salvar',
+        cancel: 'Cancelar',
+        changePhoto: 'Alterar foto',
+        genderOptions: { male: 'Masculino', female: 'Feminino', other: 'Outro', preferNotToSay: 'Prefiro nao informar' }
+      },
+      changePassword: {
+        title: 'Alterar Senha',
+        currentPassword: 'Senha Atual',
+        newPassword: 'Nova Senha',
+        confirmPassword: 'Confirmar Nova Senha',
+        strength: { weak: 'Fraca', medium: 'Media', strong: 'Forte' },
+        save: 'Alterar Senha',
+        success: 'Senha alterada com sucesso!',
+        error: 'Erro ao alterar senha.',
+        validation: { minLength: 'Minimo de 8 caracteres', uppercase: 'Deve conter letra maiuscula', match: 'As senhas nao coincidem' }
+      },
+      twoFactor: {
+        title: 'Autenticacao em Duas Etapas',
+        enabled: 'Ativada',
+        disabled: 'Desativada',
+        method: 'Metodo de Verificacao',
+        sms: 'SMS',
+        authenticator: 'Aplicativo Autenticador',
+        phone: 'Telefone',
+        changeNumber: 'Alterar numero',
+        qrInstructions: 'Escaneie o codigo QR com seu aplicativo autenticador',
+        disable: 'Desativar 2FA',
+        disableConfirm: 'Tem certeza que deseja desativar a autenticacao em duas etapas?'
+      },
+      biometric: {
+        title: 'Autenticacao Biometrica',
+        faceId: 'Face ID',
+        fingerprint: 'Impressao Digital',
+        available: 'Disponivel neste dispositivo',
+        notAvailable: 'Nao disponivel neste dispositivo',
+        info: 'A autenticacao biometrica adiciona uma camada extra de seguranca ao seu login.'
+      },
+      dataExport: {
+        title: 'Exportar Dados',
+        info: 'De acordo com a LGPD, voce tem direito de solicitar uma copia dos seus dados pessoais.',
+        categories: { profile: 'Dados do Perfil', health: 'Registros de Saude', appointments: 'Consultas', medications: 'Medicamentos', claims: 'Reembolsos' },
+        format: { json: 'JSON', pdf: 'PDF' },
+        request: 'Solicitar Exportacao',
+        status: { pending: 'Pendente', processing: 'Processando', ready: 'Pronto para Download' },
+        lastExport: 'Ultima exportacao'
+      },
+      deleteAccount: {
+        title: 'Excluir Conta',
+        warning: 'Esta acao e permanente e nao pode ser desfeita.',
+        consequences: {
+          healthData: 'Todos os seus registros de saude serao excluidos',
+          plan: 'Seu plano de saude sera cancelado',
+          leaderboard: 'Voce sera removido dos rankings',
+          achievements: 'Todas as conquistas e XP serao perdidos',
+          irreversible: 'Esta acao nao pode ser desfeita'
+        },
+        understand: 'Entendo que esta acao e permanente e irreversivel',
+        proceed: 'Prosseguir para Confirmacao',
+        goBack: 'Voltar'
+      },
+      deleteConfirm: {
+        title: 'Confirmacao Final',
+        waitMessage: 'Aguarde {{seconds}} segundos',
+        typeToConfirm: 'Digite EXCLUIR para confirmar',
+        confirmWord: 'EXCLUIR',
+        deleteForever: 'Excluir Minha Conta Permanentemente',
+        cancel: 'Cancelar'
+      },
+      languageSelect: {
+        title: 'Idioma',
+        portuguese: 'Portugues (Brasil)',
+        english: 'English (US)',
+        spanish: 'Espanol',
+        preview: 'Visualizacao',
+        save: 'Salvar'
+      },
+      themeSelect: {
+        title: 'Tema',
+        light: 'Claro',
+        dark: 'Escuro',
+        system: 'Sistema (Automatico)',
+        preview: 'Visualizacao'
+      },
+      accessibility: {
+        title: 'Acessibilidade',
+        fontSize: 'Tamanho da Fonte',
+        fontSizes: { small: 'P', medium: 'M', large: 'G', extraLarge: 'XG' },
+        highContrast: 'Alto Contraste',
+        reducedMotion: 'Movimento Reduzido',
+        screenReaderInfo: 'Este app e compativel com VoiceOver (iOS) e TalkBack (Android).',
+        preview: 'Texto de exemplo para visualizacao'
+      },
+      connectedDevices: {
+        title: 'Dispositivos Conectados',
+        pairNew: 'Parear Novo Dispositivo',
+        unpair: 'Desconectar',
+        lastSync: 'Ultima sincronizacao',
+        connected: 'Conectado',
+        disconnected: 'Desconectado',
+        empty: 'Nenhum dispositivo conectado.',
+        confirmUnpair: 'Deseja desconectar este dispositivo?'
+      },
+      healthPlan: {
+        title: 'Dados do Plano',
+        planName: 'Nome do Plano',
+        planNumber: 'Numero do Plano',
+        type: 'Tipo',
+        validity: 'Vigencia',
+        memberName: 'Nome do Titular',
+        memberNumber: 'Numero do Cartao',
+        ansRegistration: 'Registro ANS',
+        viewCard: 'Ver Carteirinha Digital',
+        viewDocs: 'Ver Documentos'
+      },
+      insuranceDocs: {
+        title: 'Documentos do Plano',
+        filters: { all: 'Todos', cards: 'Carteirinhas', guides: 'Guias', policies: 'Politicas' },
+        download: 'Baixar',
+        view: 'Visualizar',
+        empty: 'Nenhum documento disponivel.'
+      },
+      dependents: {
+        title: 'Dependentes',
+        addDependent: 'Adicionar Dependente',
+        edit: 'Editar',
+        remove: 'Remover',
+        relationship: 'Parentesco',
+        dob: 'Data de Nascimento',
+        cpf: 'CPF',
+        empty: 'Nenhum dependente cadastrado.',
+        confirmRemove: 'Deseja remover este dependente?'
+      },
+      addDependent: {
+        title: 'Adicionar Dependente',
+        fullName: 'Nome Completo',
+        dateOfBirth: 'Data de Nascimento',
+        cpf: 'CPF',
+        relationship: 'Parentesco',
+        relationshipOptions: { spouse: 'Conjuge', child: 'Filho(a)', father: 'Pai', mother: 'Mae', other: 'Outro' },
+        save: 'Salvar',
+        cancel: 'Cancelar'
+      },
+      emergencyContacts: {
+        title: 'Contatos de Emergencia',
+        addContact: 'Adicionar Contato',
+        name: 'Nome',
+        phone: 'Telefone',
+        relationship: 'Relacao',
+        priority: 'Prioridade',
+        edit: 'Editar',
+        delete: 'Excluir',
+        empty: 'Nenhum contato de emergencia cadastrado.'
+      },
+      addresses: {
+        title: 'Enderecos',
+        addAddress: 'Adicionar Endereco',
+        primary: 'Principal',
+        edit: 'Editar',
+        delete: 'Excluir',
+        empty: 'Nenhum endereco cadastrado.',
+        labels: { home: 'Casa', work: 'Trabalho', other: 'Outro' }
+      },
+      addAddress: {
+        title: 'Adicionar Endereco',
+        label: 'Tipo',
+        cep: 'CEP',
+        street: 'Rua',
+        number: 'Numero',
+        complement: 'Complemento',
+        neighborhood: 'Bairro',
+        city: 'Cidade',
+        state: 'Estado',
+        setPrimary: 'Definir como endereco principal',
+        save: 'Salvar',
+        cancel: 'Cancelar',
+        cepLoading: 'Buscando endereco...'
+      },
+      terms: {
+        title: 'Termos de Servico',
+        lastUpdated: 'Atualizado em'
+      },
+      privacyPolicy: {
+        title: 'Politica de Privacidade',
+        lastUpdated: 'Atualizado em',
+        exportLink: 'Exportar meus dados',
+        deleteLink: 'Excluir minha conta'
+      },
+      aboutApp: {
+        title: 'Sobre o App',
+        version: 'Versao',
+        build: 'Build',
+        environment: 'Ambiente',
+        credits: 'Creditos',
+        licenses: 'Licencas Open Source',
+        rateApp: 'Avaliar este App',
+        copyright: 'AUSTA Saude. Todos os direitos reservados.'
+      },
+      logout: {
+        title: 'Sair da Conta',
+        sessionInfo: 'Conectado desde',
+        device: 'Dispositivo',
+        warning: 'Ao sair, sua sessao sera encerrada e dados em cache serao removidos.',
+        signOut: 'Sair',
+        cancel: 'Cancelar'
+      },
+      feedback: {
+        title: 'Avaliar o App',
+        rating: 'Sua Avaliacao',
+        ratingLabels: { terrible: 'Pessimo', bad: 'Ruim', average: 'Regular', good: 'Bom', excellent: 'Excelente' },
+        category: 'Categoria',
+        categoryOptions: { bug: 'Bug', suggestion: 'Sugestao', compliment: 'Elogio', other: 'Outro' },
+        comment: 'Comentario',
+        charCount: '{{count}}/500',
+        submit: 'Enviar Feedback',
+        rateOnStore: 'Avaliar na App Store'
+      },
+      sections: {
+        account: 'Conta',
+        security: 'Seguranca',
+        notifications: 'Notificacoes',
+        privacy: 'Privacidade',
+        healthPlan: 'Plano de Saude',
+        devices: 'Dispositivos',
+        preferences: 'Preferencias',
+        help: 'Ajuda',
+        data: 'Dados',
+        app: 'App'
+      }
+    },
     help: {
-    home: {
-      title: 'Central de Ajuda',
-      search: 'Buscar',
-      searchPlaceholder: 'Como podemos ajudar?',
-      categories: { faq: 'Perguntas Frequentes', contact: 'Fale Conosco', report: 'Reportar Problema', terms: 'Termos de Servico', privacy: 'Politica de Privacidade', about: 'Sobre o App' },
-      quickLinks: 'Links Rapidos'
+      home: {
+        title: 'Central de Ajuda',
+        search: 'Buscar',
+        searchPlaceholder: 'Como podemos ajudar?',
+        categories: { faq: 'Perguntas Frequentes', contact: 'Fale Conosco', report: 'Reportar Problema', terms: 'Termos de Servico', privacy: 'Politica de Privacidade', about: 'Sobre o App' },
+        quickLinks: 'Links Rapidos'
+      },
+      faq: {
+        title: 'Perguntas Frequentes',
+        noResults: 'Nenhum resultado encontrado.'
+      },
+      faqDetail: {
+        title: 'Detalhes',
+        wasHelpful: 'Este artigo foi util?',
+        yes: 'Sim',
+        no: 'Nao',
+        thankYou: 'Obrigado pelo feedback!',
+        relatedArticles: 'Artigos Relacionados',
+        contactSupport: 'Falar com Suporte'
+      },
+      contact: {
+        title: 'Fale Conosco',
+        chat: 'Chat ao Vivo',
+        chatDescription: 'Converse com nosso time de suporte',
+        chatOnline: 'Online',
+        startChat: 'Iniciar Chat',
+        phone: 'Telefone',
+        phoneNumber: '0800 123 4567',
+        phoneHours: 'Seg-Sex, 8h as 20h',
+        call: 'Ligar',
+        email: 'Email',
+        emailAddress: 'suporte@austa.com.br',
+        emailResponse: 'Resposta em ate 24h',
+        sendEmail: 'Enviar Email',
+        operatingHours: 'Horario de Atendimento'
+      },
+      chat: {
+        title: 'Chat ao Vivo',
+        placeholder: 'Digite sua mensagem...',
+        send: 'Enviar',
+        typing: 'Digitando...',
+        online: 'Online'
+      },
+      report: {
+        title: 'Reportar Problema',
+        category: 'Categoria',
+        categoryOptions: { bug: 'Bug', crash: 'Crash', performance: 'Desempenho', visual: 'Visual', other: 'Outro' },
+        description: 'Descricao do Problema',
+        stepsToReproduce: 'Passos para Reproduzir',
+        attachScreenshot: 'Anexar Captura de Tela',
+        deviceInfo: 'Informacoes do Dispositivo',
+        submit: 'Enviar Relatorio'
+      }
     },
-    faq: {
-      title: 'Perguntas Frequentes',
-      noResults: 'Nenhum resultado encontrado.'
-    },
-    faqDetail: {
-      title: 'Detalhes',
-      wasHelpful: 'Este artigo foi util?',
-      yes: 'Sim',
-      no: 'Nao',
-      thankYou: 'Obrigado pelo feedback!',
-      relatedArticles: 'Artigos Relacionados',
-      contactSupport: 'Falar com Suporte'
-    },
-    contact: {
-      title: 'Fale Conosco',
-      chat: 'Chat ao Vivo',
-      chatDescription: 'Converse com nosso time de suporte',
-      chatOnline: 'Online',
-      startChat: 'Iniciar Chat',
-      phone: 'Telefone',
-      phoneNumber: '0800 123 4567',
-      phoneHours: 'Seg-Sex, 8h as 20h',
-      call: 'Ligar',
-      email: 'Email',
-      emailAddress: 'suporte@austa.com.br',
-      emailResponse: 'Resposta em ate 24h',
-      sendEmail: 'Enviar Email',
-      operatingHours: 'Horario de Atendimento'
-    },
-    chat: {
-      title: 'Chat ao Vivo',
-      placeholder: 'Digite sua mensagem...',
-      send: 'Enviar',
-      typing: 'Digitando...',
-      online: 'Online'
-    },
-    report: {
-      title: 'Reportar Problema',
-      category: 'Categoria',
-      categoryOptions: { bug: 'Bug', crash: 'Crash', performance: 'Desempenho', visual: 'Visual', other: 'Outro' },
-      description: 'Descricao do Problema',
-      stepsToReproduce: 'Passos para Reproduzir',
-      attachScreenshot: 'Anexar Captura de Tela',
-      deviceInfo: 'Informacoes do Dispositivo',
-      submit: 'Enviar Relatorio'
-    }
-  },
     notifications: {
-    title: 'Notificações',
-    empty: 'Nenhuma notificação.',
-    markAllRead: 'Marcar Todas como Lidas'
-  }
+      title: 'Notificações',
+      empty: 'Nenhuma notificação.',
+      markAllRead: 'Marcar Todas como Lidas'
+    }
   },
   onboarding: {
     personalizationIntro: {

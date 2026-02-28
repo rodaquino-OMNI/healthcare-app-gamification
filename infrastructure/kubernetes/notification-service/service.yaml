@@ -11,6 +11,6 @@ spec:
     app: notification-service
   ports:
     - port: 80
-      targetPort: http
+      targetPort: 3006
       protocol: TCP
       name: http

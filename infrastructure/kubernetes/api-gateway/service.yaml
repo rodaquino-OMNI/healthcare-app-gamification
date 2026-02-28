@@ -11,6 +11,6 @@ spec:
     app: api-gateway
   ports:
     - port: 80
-      targetPort: 4000
+      targetPort: 3000
       protocol: TCP
       name: http

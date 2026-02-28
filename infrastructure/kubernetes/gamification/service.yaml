@@ -11,13 +11,13 @@ metadata:
   annotations:
     description: "Service for Gamification Engine microservice"
     prometheus.io/scrape: "true"
-    prometheus.io/port: "3000"
+    prometheus.io/port: "3005"
     prometheus.io/path: "/metrics"
 spec:
   type: ClusterIP
   ports:
     - port: 80
-      targetPort: 3000
+      targetPort: 3005
       protocol: TCP
       name: http
   selector:

@@ -11,7 +11,7 @@ metadata:
   annotations:
     description: "Service for Care Journey microservice"
     prometheus.io/scrape: "true"
-    prometheus.io/port: "3000"
+    prometheus.io/port: "3003"
     prometheus.io/path: "/metrics"
 spec:
   type: ClusterIP
@@ -20,7 +20,7 @@ spec:
     journey: care
   ports:
     - port: 80
-      targetPort: 3000
+      targetPort: 3003
       name: http
       protocol: TCP
   sessionAffinity: ClientIP

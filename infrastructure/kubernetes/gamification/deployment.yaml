@@ -35,13 +35,13 @@ spec:
             drop:
               - ALL
         ports:
-        - containerPort: 3000
+        - containerPort: 3005
           name: http
         env:
         - name: NODE_ENV
           value: "production"
         - name: PORT
-          value: "3000"
+          value: "3005"
         - name: DATABASE_URL
           valueFrom:
             secretKeyRef:

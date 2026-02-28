@@ -28,7 +28,7 @@ const config = [
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
       }),
       commonjs(),
-      typescript({ tsconfig: './tsconfig.json' }),
+      typescript({ tsconfig: './tsconfig.build.json' }),
       babel({
         babelHelpers: 'bundled',
         exclude: 'node_modules/**',

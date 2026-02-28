@@ -26,13 +26,13 @@ spec:
         image: austa-superapp/plan-journey:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 3000
+        - containerPort: 3004
           name: http
         env:
         - name: NODE_ENV
           value: production
         - name: PORT
-          value: "3000"
+          value: "3004"
         - name: DATABASE_URL
           valueFrom:
             secretKeyRef:

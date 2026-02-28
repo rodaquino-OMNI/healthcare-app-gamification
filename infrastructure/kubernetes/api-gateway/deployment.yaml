@@ -23,7 +23,7 @@ spec:
         app: api-gateway
       annotations:
         prometheus.io/scrape: "true"
-        prometheus.io/port: "4000"
+        prometheus.io/port: "3000"
         prometheus.io/path: "/metrics"
     spec:
       containers:
@@ -31,7 +31,7 @@ spec:
         image: austa-superapp/api-gateway:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 4000
+        - containerPort: 3000
           name: http
         resources:
           requests:
@@ -44,7 +44,7 @@ spec:
         - name: NODE_ENV
           value: "production"
         - name: PORT
-          value: "4000"
+          value: "3000"
         - name: AUTH_SERVICE_URL
           value: "http://auth-service"
         - name: HEALTH_SERVICE_URL
