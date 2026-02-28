@@ -1,6 +1,6 @@
 # AUSTA Healthcare SuperApp — Production Setup Guide
 
-> Last audited: 2026-02-28 | No task changes detected — all items in this guide remain pending/operational.
+> Last audited: 2026-02-28 | Updated 2026-02-28 — stale claims corrected after SWARM-A/B completion.
 
 AWS region: sa-east-1 (LGPD compliance). All infrastructure is managed via Terraform
 (`infrastructure/terraform/`). Kubernetes manifests live under `infrastructure/kubernetes/`.
@@ -132,15 +132,15 @@ Secrets are stored in AWS Secrets Manager and injected into pods via the Externa
 Operator (configured in `infrastructure/monitoring/sentry.yml` for the Sentry DSN).
 Secret naming convention: `austa/<environment>/<secret-name>`.
 
-> Note: There is a naming inconsistency between environments. Staging CI uses
-> `AWS_ACCESS_KEY` while production CI uses `AWS_ACCESS_KEY_ID`. Align these when
-> rotating credentials. *(Still unresolved as of 2026-02-28)*
+> Note: AWS credential naming has been standardized to `AWS_ACCESS_KEY_ID` /
+> `AWS_SECRET_ACCESS_KEY` across all environments (staging and production).
 
 ### 3.2 Environment Variables per Service
 
 Variables are derived from `src/backend/docker-compose.yml` (local) and
-`src/backend/docker-compose.staging.yml` (staging). No `.env.example` files exist in the
-repository; the staging `.env.staging` file must be created manually on first deploy.
+`src/backend/docker-compose.staging.yml` (staging). Each service includes a `.env.example`
+file with all required variables documented. Copy to `.env` and fill in real values for
+local development.
 
 **Common to all services:**
 
@@ -184,10 +184,8 @@ Configure these in the repository's Settings > Secrets and variables > Actions:
 
 | Secret | Used by | Description |
 |--------|---------|-------------|
-| `AWS_ACCESS_KEY_ID` | deploy-production.yml | IAM key for ECR/EKS access |
-| `AWS_SECRET_ACCESS_KEY` | deploy-production.yml | IAM secret |
-| `AWS_ACCESS_KEY` | deploy-staging.yml | IAM key (staging — note naming difference) |
-| `AWS_SECRET_KEY` | deploy-staging.yml | IAM secret (staging) |
+| `AWS_ACCESS_KEY_ID` | deploy-production.yml, deploy-staging.yml | IAM key for ECR/EKS access (standardized across all environments) |
+| `AWS_SECRET_ACCESS_KEY` | deploy-production.yml, deploy-staging.yml | IAM secret (standardized across all environments) |
 | `SENTRY_AUTH_TOKEN` | deploy-production.yml | Sentry release creation |
 | `SENTRY_ORG` | deploy-production.yml | Sentry organisation slug |
 | `CODECOV_TOKEN` | backend-ci.yml, frontend-ci.yml | Coverage upload |

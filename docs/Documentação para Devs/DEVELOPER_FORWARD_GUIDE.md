@@ -126,9 +126,7 @@ The application is designed for AWS EKS. You will need to provision:
 | Secrets Manager | All service credentials |
 | CloudFront | CDN for web app |
 
-K8s manifests are in `src/infrastructure/kubernetes/` — one directory per service.
-
-**Before deploying:** Fix the port inconsistencies in the K8s configs (see Known Technical Issues section).
+K8s manifests are in `infrastructure/kubernetes/` — one directory per service.
 
 ---
 
@@ -265,8 +263,10 @@ Prioritize TODOs in: auth flows, API connections, navigation edge cases.
 
 ### 5. Prisma Migration (Required Before First Deploy)
 
-> **Status (2026-02-28)**: Still pending. `schema.prisma` still uses `url = env("DATABASE_URL")`.
-> A migration comment was added at line 9-10 but `prisma.config.ts` has not been created.
+> **Status (2026-02-28)**: `prisma.config.ts` has been created at `src/backend/shared/prisma/prisma.config.ts`
+> (forward-compatible with Prisma 7.x). The current `schema.prisma` still uses `url = env("DATABASE_URL")`
+> which works with Prisma 5.x/6.x. When upgrading to Prisma 7.x, uncomment the defineConfig export in
+> prisma.config.ts.
 
 Prisma 7.4.1 deprecates the `url` field in `schema.prisma` in favor of `prisma.config.ts`.
 
@@ -274,8 +274,7 @@ Prisma 7.4.1 deprecates the `url` field in `schema.prisma` in favor of `prisma.c
 # Check current schema
 cat src/backend/shared/prisma/schema.prisma | grep url
 
-# Create prisma.config.ts next to schema.prisma:
-# export default defineConfig({ datasources: { db: { url: process.env.DATABASE_URL } } })
+# prisma.config.ts already exists — uncomment defineConfig when upgrading to Prisma 7.x
 ```
 
 ---
@@ -288,7 +287,7 @@ Lower priority. Address after stable production operation.
 2. **Accessibility audit** — target WCAG 2.1 AA; focus on screen reader support in React Native
 3. **A/B testing framework** — integrate with Firebase Remote Config (already a dependency)
 4. **Advanced analytics dashboards** — gamification metrics, health journey completion rates
-5. **i18n alignment** — pt-BR uses top-level keys, en-US uses nested structure (cosmetic inconsistency)
+5. **i18n alignment** — pt-BR uses top-level keys, en-US uses nested structure (cosmetic inconsistency). Parity check script exists: `npx tsx scripts/check-i18n-parity.ts`
 
 ---
 
@@ -327,20 +326,9 @@ yarn add -D vite @vitejs/plugin-react
 
 ---
 
-### 3. K8s Port Inconsistencies
+### 3. K8s Port Alignment
 
-> **Status (2026-02-28)**: Still pending. Port mismatches remain between Deployment and Service manifests.
-
-Some service manifests have mismatched ports between the Deployment and Service definitions.
-
-**Check and fix:**
-```bash
-# Find mismatches
-grep -A5 "containerPort" src/infrastructure/kubernetes/api-gateway/deployment.yaml
-grep "port:" src/infrastructure/kubernetes/api-gateway/service.yaml
-```
-
-Services affected: `api-gateway` (4000 vs 3000 mismatch), `health-service` (3-way mismatch).
+> **Status (2026-02-28)**: RESOLVED. All 7 service Deployment and Service manifests are aligned (ports 3000-3006). Fixed by INFRA-QA sprint.
 
 ---
 
@@ -351,7 +339,8 @@ Services affected: `api-gateway` (4000 vs 3000 mismatch), `health-service` (3-wa
 **Find mismatches:**
 ```bash
 # Keys in en-US not in pt-BR
-npx ts-node scripts/check-i18n-parity.ts  # Script does not exist yet — create it
+# Script exists: scripts/check-i18n-parity.ts
+npx tsx scripts/check-i18n-parity.ts
 ```
 
 Cosmetic issue. Does not break the app.
@@ -415,7 +404,7 @@ src/
 │   │   └── src/         # Components + tokens + stories
 │   └── shared/          # Types, utils, constants shared between mobile+web
 ├── backend/
-│   ├── api-gateway/     # GraphQL federation gateway (port 4000)
+│   ├── api-gateway/     # GraphQL federation gateway (port 3000)
 │   ├── auth-service/    # Authentication + LGPD (port 3001)
 │   ├── health-service/  # Health journey (port 3002)
 │   ├── care-service/    # Care journey (port 3003)

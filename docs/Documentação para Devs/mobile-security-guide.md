@@ -29,7 +29,7 @@ key — never hardcode the encryption key:
 
 ```ts
 import { MMKV } from 'react-native-mmkv';
-// NOT yet implemented — recommended migration target
+// Reference: keystore-derived key enhancement (human task)
 const secureStorage = new MMKV({
   id: 'austa-secure',
   encryptionKey: '<key-from-device-keystore>',
@@ -41,8 +41,8 @@ secureStorage.set('auth.accessToken', token);
 
 | Data Type | Current Storage | Encrypted | Recommended |
 |---|---|---|---|
-| JWT access token | AsyncStorage | No | MMKV + keystore key |
-| JWT refresh token | AsyncStorage | No | MMKV + keystore key |
+| JWT access token | AsyncStorage (MMKV wrapper created, wiring pending) | No | MMKV + keystore key |
+| JWT refresh token | AsyncStorage (MMKV wrapper created, wiring pending) | No | MMKV + keystore key |
 | Biometric key | Not persisted | N/A | react-native-keychain |
 | User preferences | AsyncStorage | No | AsyncStorage (acceptable) |
 
@@ -63,10 +63,13 @@ before launch for hardware-backed credential storage.
 UI scaffolding exists in `src/web/mobile/src/screens/profile/ProfileBiometricSetup.tsx` and
 `src/web/mobile/src/screens/settings/BiometricPrefs.tsx`.
 
-**Gap — HIGH**: Both screens contain `TODO` placeholders — native biometric API calls are not
-implemented. No key-pair is generated and no biometric-gated token exchange occurs. Remediation:
-implement `ReactNativeBiometrics.createKeys()` and `.createSignature()` with server-side
-challenge verification.
+**Gap — MEDIUM (partial)**: `ProfileBiometricSetup.tsx` has real biometric integration via
+`expo-local-authentication` (`hasHardwareAsync`, `isEnrolledAsync`, `authenticateAsync`).
+Local biometric prompt and hardware detection are functional. However, server-side key-pair
+challenge verification (`createKeys()` / `createSignature()`) is not yet implemented — the
+current flow authenticates locally but does not bind a cryptographic key to the biometric
+for server-side proof. Remediation: implement key-pair generation and server-side challenge
+verification for MASVS-AUTH-2 full compliance.
 
 ### 2.2 JWT Token Lifecycle
 
@@ -149,7 +152,7 @@ replaced with real SHA-256 SPKI hashes before production release.
 | MASVS-CRYPTO-1 | AES-256-GCM at rest | Implemented | `src/backend/shared/src/encryption/encryption.service.ts` |
 | MASVS-CRYPTO-2 | Cryptographically secure RNG | Implemented | `crypto.randomBytes` for IV generation |
 | MASVS-AUTH-1 | Password policy enforced | Implemented | bcrypt cost 10, configurable JWT expiry |
-| MASVS-AUTH-2 | Biometric authentication | **Gap** | Scaffolded — native calls not implemented |
+| MASVS-AUTH-2 | Biometric authentication | **Partial** | Local biometric via expo-local-authentication implemented; server-side key-pair challenge pending |
 | MASVS-AUTH-3 | Session invalidation on logout | Partial | Server-side revocation done; client-side wipe not verified |
 | MASVS-NETWORK-1 | TLS 1.2+ enforced | Implemented | iOS ATS active; Android target SDK 34 |
 | MASVS-NETWORK-2 | Certificate pinning | **Gap** | Header-signaling only; no native TLS interception |
@@ -161,8 +164,8 @@ replaced with real SHA-256 SPKI hashes before production release.
 | MASVS-RESILIENCE-1 | Root/jailbreak detection | **Partial** | `device-security.ts` created with `isRooted()`/`warnIfCompromised()`; wire into App.tsx pending |
 | MASVS-RESILIENCE-2 | Anti-tampering | Gap | No integrity checks; EAS code signing only |
 
-**Summary**: 5 implemented, 8 partial, 3 gaps.
-Priority closures before launch: MASVS-AUTH-2, MASVS-NETWORK-2, MASVS-RESILIENCE-2.
+**Summary**: 5 implemented, 9 partial, 2 gaps.
+Priority closures before launch: MASVS-NETWORK-2, MASVS-RESILIENCE-2, MASVS-AUTH-2 (server-side key-pair).
 
 > **Audit note (2026-02-28)**: MOBI-SEC hardening sprint completed 3 new deliverables:
 > 1. `secure-storage.ts` — MMKV encrypted wrapper with AsyncStorage migration (MASVS-STORAGE-1)
@@ -286,6 +289,33 @@ Before each production release verify:
 - No debug flavors in the production AAB
 - Sentry source maps uploaded (DSN must come from environment, not hardcoded)
 - `ITSAppUsesNonExemptEncryption` declaration matches actual crypto usage
+
+---
+
+## 7. Remaining Human Actions
+
+The following items require manual intervention, production credentials, or native build
+configuration that cannot be completed by automated tooling:
+
+1. **Generate real SSL SPKI hashes** from production certificates and replace placeholders
+   in `ssl-pinning.ts` and `network_security_config.xml` (see Section 3.1 for the `openssl`
+   command). Repeat for all three domains with backup pins.
+2. **Install `react-native-keychain` or `expo-secure-store`** for hardware-backed
+   keystore-derived encryption key used by MMKV (Section 1.2).
+3. **Wire `secureTokenStorage` into `AuthContext.tsx`** to replace `AsyncStorage` for auth
+   token persistence (Section 1.1).
+4. **Wire `warnIfCompromised()` into `App.tsx` startup** so root/jailbreak detection runs
+   on every cold start (MASVS-RESILIENCE-1).
+5. **Enable `minifyEnabled` in `build.gradle`** when the project is ejected from Expo
+   managed workflow or configure via `eas.json` (Section 6.1).
+6. **Implement native TLS certificate pinning** (`react-native-ssl-pinning` or equivalent)
+   to replace the current header-signaling approach (MASVS-NETWORK-2).
+7. **Verify `android:debuggable=false`** in the merged `AndroidManifest.xml` of the
+   production AAB (Section 6.3).
+8. **Implement server-side biometric key-pair challenge verification** — `createKeys()` and
+   `createSignature()` with backend challenge endpoint (MASVS-AUTH-2).
+9. **Implement anti-tampering / integrity checks** for MASVS-RESILIENCE-2 compliance
+   (e.g., code signing verification, SafetyNet/Play Integrity attestation).
 
 ---
 
