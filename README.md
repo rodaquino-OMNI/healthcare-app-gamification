@@ -14,23 +14,23 @@
 | Metric | Value |
 |---|---|
 | **Total source files** | 2,969 |
-| **TypeScript / TSX files** | 1,590 (661 `.ts` + 929 `.tsx`) |
+| **TypeScript / TSX files** | 1,615 (669 `.ts` + 946 `.tsx`) |
 | **Lines of TS/JS code** | ~406,700 |
 | — Backend (NestJS services) | ~45,500 |
 | — Frontend (Next.js + React Native) | ~204,300 |
 | **Markdown documentation** | 268 files / ~89,000 lines |
 | **Terraform IaC** | 28 files / ~3,100 lines |
 | **Kubernetes manifests** | 40 YAML files |
-| **Test files** | 232 (72 `.spec.ts` + 1 `.test.ts` + 12 `.e2e-spec.ts` + 147 `.spec.tsx`/`.test.tsx`) |
+| **Test files** | 251 (79 `.spec.ts` + 1 `.test.ts` + 12 `.e2e-spec.ts` + 159 `.spec.tsx`/`.test.tsx`) |
 | **GitHub Actions workflows** | 10 pipelines |
 | **Architecture Decision Records** | 6 ADRs |
-| **Design system components** | 67 component directories |
+| **Design system components** | 57 component directories |
 | **Prisma schemas** | 2 (shared + gamification) |
 | **GraphQL schemas** | 2 (API Gateway + web shared) |
 | **i18n locales** | 2 languages (en-US, pt-BR) — web + mobile |
-| **Navigation stacks (mobile)** | 10 typed navigators |
+| **Navigation stacks (mobile)** | 14 typed navigators |
 
-*Measured February 23 2026 — excludes `.git/`, `node_modules/`, `.next/`, `.claude-flow/`, `.swarm/` cache.*
+*Measured February 28 2026 — excludes `.git/`, `node_modules/`, `.next/`, `.claude-flow/`, `.swarm/` cache.*
 
 ---
 
@@ -322,8 +322,8 @@ healthcare-super-app/
 
 | Layer | Technology | Version |
 |---|---|---|
-| Web framework | Next.js | 14.2.29 |
-| Mobile framework | React Native | 0.73.4 |
+| Web framework | Next.js | 14.2.35 |
+| Mobile framework | React Native | 0.73.0 |
 | UI library | React | 18.2.0 |
 | State / data fetching | TanStack Query (React Query) | — |
 | Styling | Styled Components | 6.0+ |
@@ -453,12 +453,12 @@ yarn format
 
 ## 🧪 Testing
 
-The repository contains **232 test files**:
+The repository contains **251 test files**:
 
-- 72 backend unit/integration spec files (`.spec.ts`)
+- 79 backend unit/integration spec files (`.spec.ts`)
 - 1 isolated test file (`.test.ts`)
 - 12 end-to-end spec files (`.e2e-spec.ts`)
-- 147 frontend component & screen test files (`.spec.tsx` / `.test.tsx`)
+- 159 frontend component & screen test files (`.spec.tsx` / `.test.tsx`)
 - Maestro flows for native E2E (`src/web/mobile/.maestro/flows/`)
 
 ```bash
@@ -551,12 +551,12 @@ make deploy-all ENV=production
 | `frontend-ci.yml` | push / PR | Lint, type-check, unit tests for Next.js web |
 | `web-ci.yml` | push / PR | Full web build & test |
 | `design-system-ci.yml` | push / PR | Component tests + Storybook build |
-| `storybook-ci.yml` | push / PR | Publish Storybook artefact |
+| `storybook-ci.yml` | push / PR | Storybook build + Chromatic visual regression |
 | `eas-build.yml` | push / PR | EAS build for React Native (iOS + Android) |
 | `eas-update.yml` | merge to main | OTA update via EAS |
-| `deploy-staging.yml` | merge to main | Deploy all services to staging |
+| `deploy-staging.yml` | push to staging / manual | Deploy all services to staging |
 | `deploy-production.yml` | manual / tag | Blue/green production deploy |
-| `auto-commit-push.yml` | schedule | Automated dependency & changelog commits |
+| `auto-commit-push.yml` | manual (workflow_dispatch) | Automated dependency & changelog commits |
 
 ---
 
@@ -603,4 +603,4 @@ AUSTA SuperApp is committed to making healthcare more accessible, engaging and e
 
 ---
 
-*Repository: `rodaquino-OMNI/healthcare-super-app--w-gamification--tgfzl7` · Branch: `main` · Last audited: February 23, 2026*
+*Repository: `rodaquino-OMNI/healthcare-super-app--w-gamification--tgfzl7` · Branch: `main` · Last audited: February 28, 2026*

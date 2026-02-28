@@ -8,9 +8,17 @@ on:
   # schedule:
   #   - cron: '0 0 * * *'  # Runs at midnight UTC every day
 
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   commit-and-push:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

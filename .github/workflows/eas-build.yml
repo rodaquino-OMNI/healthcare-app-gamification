@@ -31,6 +31,10 @@ on:
           - preview
           - production
 
+permissions:
+  contents: read
+  pull-requests: write
+
 concurrency:
   group: eas-build-${{ github.ref }}
   cancel-in-progress: true
@@ -43,6 +47,7 @@ jobs:
   lint:
     name: Lint & Type Check
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -70,6 +75,7 @@ jobs:
   test:
     name: Run Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: lint
     defaults:
       run:
@@ -103,6 +109,7 @@ jobs:
   build-preview:
     name: Build Preview
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: test
     if: github.event_name == 'pull_request'
     defaults:
@@ -158,6 +165,7 @@ jobs:
   build-production:
     name: Build Production
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: test
     if: startsWith(github.ref, 'refs/tags/v')
     defaults:
@@ -201,6 +209,7 @@ jobs:
   build-manual:
     name: Manual Build
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: test
     if: github.event_name == 'workflow_dispatch'
     defaults:
@@ -244,6 +253,7 @@ jobs:
   submit:
     name: Submit to Stores
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: build-production
     if: startsWith(github.ref, 'refs/tags/v')
     defaults:

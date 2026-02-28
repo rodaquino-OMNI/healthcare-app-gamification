@@ -21,6 +21,9 @@ on:
         required: false
         type: string
 
+permissions:
+  contents: read
+
 concurrency:
   group: eas-update-${{ github.ref }}
   cancel-in-progress: true
@@ -33,6 +36,7 @@ jobs:
   update:
     name: Publish OTA Update
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: ${{ env.WORKING_DIRECTORY }}
