@@ -10,6 +10,7 @@
  * 3. Run `npx prisma generate` to verify
  */
 
+// Prisma 7.x configuration (uncomment when upgrading):
 // import { defineConfig } from 'prisma/config';
 // import { envField } from 'prisma/env';
 //
@@ -20,5 +21,19 @@
 //   },
 // });
 
-// Current Prisma version uses env() in schema.prisma (Prisma 5.x/6.x compatible)
-export {};
+/**
+ * Runtime configuration helper for current Prisma 5.x/6.x.
+ * Validates DATABASE_URL is set at startup.
+ */
+export function validateDatabaseConfig(): void {
+  if (!process.env.DATABASE_URL) {
+    throw new Error(
+      'DATABASE_URL environment variable is required. ' +
+      'Set it in .env or your deployment configuration.'
+    );
+  }
+}
+
+export const prismaConfig = {
+  databaseUrl: process.env.DATABASE_URL,
+} as const;

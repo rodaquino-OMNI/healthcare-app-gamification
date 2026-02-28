@@ -11,6 +11,7 @@ import CostSimulator from '../screens/plan/CostSimulator';
 import DigitalCard from '../screens/plan/DigitalCard';
 import Benefits from '../screens/plan/Benefits';
 import { useJourney } from '../hooks/useJourney';
+import { ROUTES } from '../constants/routes';
 
 const Stack = createStackNavigator<PlanStackParamList>();
 
@@ -22,15 +23,15 @@ const PlanNavigator: React.FC = () => {
   };
 
   return (
-    <Stack.Navigator initialRouteName="PlanDashboard" screenOptions={screenOptions}>
-      <Stack.Screen name="PlanDashboard" component={PlanDashboard} />
-      <Stack.Screen name="Coverage" component={Coverage} />
-      <Stack.Screen name="ClaimHistory" component={ClaimHistory} />
-      <Stack.Screen name="ClaimDetail" component={ClaimDetail} />
-      <Stack.Screen name="ClaimSubmission" component={ClaimSubmission} />
-      <Stack.Screen name="CostSimulator" component={CostSimulator} />
-      <Stack.Screen name="DigitalCard" component={DigitalCard} />
-      <Stack.Screen name="Benefits" component={Benefits} />
+    <Stack.Navigator initialRouteName={ROUTES.PLAN_DASHBOARD} screenOptions={screenOptions}>
+      <Stack.Screen name={ROUTES.PLAN_DASHBOARD} component={PlanDashboard} />
+      <Stack.Screen name={ROUTES.PLAN_COVERAGE} component={Coverage} />
+      <Stack.Screen name={ROUTES.PLAN_CLAIMS} component={ClaimHistory} />
+      <Stack.Screen name={ROUTES.PLAN_CLAIM_DETAIL} component={ClaimDetail} />
+      <Stack.Screen name={ROUTES.PLAN_CLAIM_SUBMISSION} component={ClaimSubmission} />
+      <Stack.Screen name={ROUTES.PLAN_COST_SIMULATOR} component={CostSimulator} />
+      <Stack.Screen name={ROUTES.PLAN_DIGITAL_CARD} component={DigitalCard} />
+      <Stack.Screen name={ROUTES.PLAN_BENEFITS} component={Benefits} />
     </Stack.Navigator>
   );
 };

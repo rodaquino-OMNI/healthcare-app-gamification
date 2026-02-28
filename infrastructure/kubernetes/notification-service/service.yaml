@@ -11,10 +11,6 @@ spec:
     app: notification-service
   ports:
     - port: 80
-      targetPort: 3000
+      targetPort: http
       protocol: TCP
       name: http
-    - port: 8080
-      targetPort: 3001
-      protocol: TCP
-      name: websocket

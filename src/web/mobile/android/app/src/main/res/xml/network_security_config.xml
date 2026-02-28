@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Network Security Configuration for AUSTA SuperApp
+  - Blocks cleartext (HTTP) traffic globally
+  - Trusts only system CAs (excludes user-installed certificates)
+  - Pins austa.com.br domains with placeholder SHA-256 hashes
+
+  IMPORTANT: Replace PLACEHOLDER pin hashes with real certificate
+  SHA-256 hashes before production deployment. Generate pins using:
+  openssl s_client -connect api.austa.com.br:443 | openssl x509 -pubkey -noout | openssl pkey -pubin -outform der | openssl dgst -sha256 -binary | openssl enc -base64
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+
+    <domain-config>
+        <domain includeSubdomains="true">austa.com.br</domain>
+        <pin-set expiration="2027-01-01">
+            <!-- Replace with actual certificate pin hashes before production -->
+            <pin digest="SHA-256">PLACEHOLDER_PRIMARY_PIN_HASH_BASE64</pin>
+            <pin digest="SHA-256">PLACEHOLDER_BACKUP_PIN_HASH_BASE64</pin>
+        </pin-set>
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </domain-config>
+</network-security-config>

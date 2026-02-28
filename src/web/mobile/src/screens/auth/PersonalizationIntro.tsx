@@ -30,7 +30,7 @@ const IllustrationContainer = styled.View`
   width: 160px;
   height: 160px;
   border-radius: 80px;
-  background-color: ${colors.brand.secondary || colors.gray[5]};
+  background-color: ${({ theme }) => colors.brand.secondary || theme.colors.background.muted};
   align-items: center;
   justify-content: center;
   margin-bottom: ${spacing['2xl']};

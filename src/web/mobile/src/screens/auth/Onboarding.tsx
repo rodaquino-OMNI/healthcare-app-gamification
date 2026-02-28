@@ -100,7 +100,7 @@ const StepTitle = styled.Text`
   font-family: ${typography.fontFamily.heading};
   font-size: ${typography.fontSize['heading-xl']};
   font-weight: ${typography.fontWeight.bold};
-  color: ${colors.gray[70]};
+  color: ${({ theme }) => theme.colors.text.default};
   text-align: center;
   margin-bottom: ${spacing.sm};
 `;
@@ -147,7 +147,7 @@ const Dot = styled.View<{ active: boolean }>`
   height: 8px;
   border-radius: ${borderRadius.full};
   background-color: ${(props) =>
-    props.active ? colors.brand.primary : colors.gray[20]};
+    props.active ? colors.brand.primary : props.theme.colors.border.default};
   margin-horizontal: ${spacing['3xs']};
 `;
 

@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from 'styled-components/native';
 import type { AuthNavigationProp, RootStackParamList } from '../../navigation/types';
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
@@ -126,7 +127,7 @@ const DividerRow = styled.View`
 const DividerLine = styled.View`
   flex: 1;
   height: 1px;
-  background-color: ${colors.gray[20]};
+  background-color: ${({ theme }) => theme.colors.border.default};
 `;
 
 const DividerText = styled.Text`
@@ -164,7 +165,7 @@ const Checkbox = styled.TouchableOpacity<{ checked: boolean }>`
   height: ${sizing.icon.sm};
   border-radius: ${borderRadius.sm};
   border-width: 2px;
-  border-color: ${(props: { checked: boolean }) => (props.checked ? colors.brand.primary : colors.gray[30])};
+  border-color: ${(props: { checked: boolean }) => (props.checked ? colors.brand.primary : props.theme.colors.text.subtle)};
   background-color: ${(props: { checked: boolean }) => (props.checked ? colors.brand.primary : 'transparent')};
   align-items: center;
   justify-content: center;
@@ -231,6 +232,7 @@ export const SocialAuth: React.FC = () => {
   const { t } = useTranslation();
   const [lgpdConsent, setLgpdConsent] = useState(false);
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(false);
+  const theme = useTheme();
 
   const handleSocialLogin = async (provider: string) => {
     if (!lgpdConsent) {
@@ -332,7 +334,7 @@ export const SocialAuth: React.FC = () => {
             {/* Google Sign-In */}
             <SocialButton
               bgColor={colors.neutral.white}
-              borderColor={colors.gray[20]}
+              borderColor={theme.colors.border.default}
               onPress={() => handleSocialLogin('Google')}
               testID="social-auth-google"
               accessibilityLabel={t('auth.socialAuth.googleButton')}

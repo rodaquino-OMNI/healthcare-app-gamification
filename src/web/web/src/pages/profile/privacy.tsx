@@ -151,6 +151,71 @@ const SaveButton = styled.button`
   }
 `;
 
+const DialogOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const DialogCard = styled.div`
+  background-color: ${colors.neutral.white};
+  border-radius: 12px;
+  padding: ${spacing.xl};
+  max-width: 400px;
+  width: 90%;
+`;
+
+const DialogTitle = styled.h3`
+  font-family: ${typography.fontFamily.heading};
+  font-size: ${typography.fontSize['heading-sm']};
+  font-weight: ${typography.fontWeight.semiBold};
+  color: ${colors.semantic.error};
+  margin: 0 0 ${spacing.sm} 0;
+`;
+
+const DialogMessage = styled.p`
+  font-family: ${typography.fontFamily.body};
+  font-size: ${typography.fontSize['text-sm']};
+  color: ${colors.gray[50]};
+  line-height: ${typography.lineHeight.base};
+  margin: 0;
+`;
+
+const DialogActions = styled.div`
+  display: flex;
+  gap: ${spacing.sm};
+  justify-content: flex-end;
+  margin-top: ${spacing.xl};
+`;
+
+const DialogCancelBtn = styled.button`
+  font-family: ${typography.fontFamily.body};
+  font-size: ${typography.fontSize['text-sm']};
+  font-weight: ${typography.fontWeight.medium};
+  color: ${colors.gray[60]};
+  background-color: transparent;
+  border: 1px solid ${colors.gray[30]};
+  border-radius: 8px;
+  padding: ${spacing.xs} ${spacing.lg};
+  cursor: pointer;
+`;
+
+const DialogConfirmBtn = styled.button`
+  font-family: ${typography.fontFamily.body};
+  font-size: ${typography.fontSize['text-sm']};
+  font-weight: ${typography.fontWeight.semiBold};
+  color: ${colors.neutral.white};
+  background-color: ${colors.semantic.error};
+  border: none;
+  border-radius: 8px;
+  padding: ${spacing.xs} ${spacing.lg};
+  cursor: pointer;
+`;
+
 const LinkButton = styled.button`
   font-family: ${typography.fontFamily.body};
   font-size: ${typography.fontSize['text-sm']};
@@ -324,10 +389,32 @@ export default function PrivacySettingsPage() {
             A exclusao da conta e permanente e remove todos os seus dados.
             Esta acao nao pode ser desfeita.
           </SectionDescription>
-          <DangerButton onClick={handleDeleteAccount}>
+          <DangerButton onClick={() => setShowDeleteConfirm(true)}>
             Excluir Minha Conta
           </DangerButton>
         </Section>
+        {showDeleteConfirm && (
+          <DialogOverlay
+            aria-label="Confirmar exclusao de conta"
+            onClick={() => setShowDeleteConfirm(false)}
+          >
+            <DialogCard onClick={(e) => e.stopPropagation()}>
+              <DialogTitle>Excluir Conta</DialogTitle>
+              <DialogMessage>
+                Tem certeza que deseja excluir sua conta? Esta acao e permanente
+                e todos os seus dados serao removidos. Nao e possivel desfazer.
+              </DialogMessage>
+              <DialogActions>
+                <DialogCancelBtn onClick={() => setShowDeleteConfirm(false)}>
+                  Cancelar
+                </DialogCancelBtn>
+                <DialogConfirmBtn onClick={handleDeleteAccount}>
+                  Sim, Excluir
+                </DialogConfirmBtn>
+              </DialogActions>
+            </DialogCard>
+          </DialogOverlay>
+        )}
       </PageContainer>
     </MainLayout>
   );

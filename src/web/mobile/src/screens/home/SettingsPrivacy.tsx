@@ -9,6 +9,7 @@ import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
 
 import { deleteAccount } from '../../../api/auth';
+import { restClient } from '../../../api/client';
 import { useAuth } from '../../../context/AuthContext';
 
 import { colors } from '@design-system/tokens/colors';
@@ -287,6 +288,7 @@ export const SettingsPrivacyScreen: React.FC = () => {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [consentRevokedVisible, setConsentRevokedVisible] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   const toggleConsent = (key: keyof ConsentState) => {
     setConsent((prev) => {
@@ -304,11 +306,22 @@ export const SettingsPrivacyScreen: React.FC = () => {
     setSharing((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const handleExportData = () => {
-    Alert.alert(
-      t('settings.privacy.exportTitle'),
-      t('settings.privacy.exportMessage'),
-    );
+  const handleExportData = async () => {
+    setIsExporting(true);
+    try {
+      const response = await restClient.get('/privacy/export');
+      Alert.alert(
+        t('settings.privacy.exportTitle'),
+        t('settings.privacy.exportMessage'),
+      );
+    } catch (err: unknown) {
+      Alert.alert(
+        t('settings.privacy.errorTitle'),
+        err instanceof Error ? err.message : t('settings.privacy.errorGeneric'),
+      );
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const handleRequestDeletion = async () => {
@@ -454,11 +467,14 @@ export const SettingsPrivacyScreen: React.FC = () => {
         <ActionButtonContainer>
           <OutlineButton
             onPress={handleExportData}
+            disabled={isExporting}
             accessibilityRole="button"
             accessibilityLabel={t('settings.privacy.exportData')}
             testID="settings-privacy-export"
           >
-            <OutlineButtonText>{t('settings.privacy.exportData')}</OutlineButtonText>
+            <OutlineButtonText>
+              {isExporting ? t('common.buttons.loading', { defaultValue: 'Loading...' }) : t('settings.privacy.exportData')}
+            </OutlineButtonText>
           </OutlineButton>
 
           <DangerOutlineButton

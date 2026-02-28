@@ -262,10 +262,13 @@ export const ROUTES = {
 
   // My Plan & Benefits Journey Routes (Blue)
   PLAN_DASHBOARD: 'PlanDashboard',
-  PLAN_COVERAGE: 'PlanCoverage',
-  PLAN_DIGITAL_CARD: 'PlanDigitalCard',
-  PLAN_CLAIMS: 'PlanClaims',
-  PLAN_COST_SIMULATOR: 'PlanCostSimulator',
+  PLAN_COVERAGE: 'Coverage',
+  PLAN_DIGITAL_CARD: 'DigitalCard',
+  PLAN_CLAIMS: 'ClaimHistory',
+  PLAN_COST_SIMULATOR: 'CostSimulator',
+  PLAN_CLAIM_DETAIL: 'ClaimDetail',
+  PLAN_CLAIM_SUBMISSION: 'ClaimSubmission',
+  PLAN_BENEFITS: 'Benefits',
 
   // Gamification Journey Routes (Purple)
   GAMIFICATION_ACHIEVEMENTS: 'GamificationAchievements',

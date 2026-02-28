@@ -60,7 +60,7 @@ const Tagline = styled.Text`
 const IllustrationPlaceholder = styled.View`
   width: 100%;
   height: 200px;
-  background-color: ${colors.brandPalette[50]};
+  background-color: ${({ theme }) => theme.colors.background.subtle};
   border-radius: ${borderRadius.lg};
   margin-bottom: ${spacing['3xl']};
   align-items: center;

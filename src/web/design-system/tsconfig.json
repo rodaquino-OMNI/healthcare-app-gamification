@@ -8,6 +8,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": false,
+    "noEmitOnError": true,
     "outDir": "./dist",
     "declaration": true,
     "esModuleInterop": true,

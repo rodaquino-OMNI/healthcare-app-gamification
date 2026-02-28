@@ -73,10 +73,10 @@ const GoalCard = styled.TouchableOpacity<{ selected: boolean }>`
   flex-direction: row;
   align-items: center;
   background-color: ${(props) =>
-    props.selected ? colors.gray[5] : colors.neutral.white};
+    props.selected ? props.theme.colors.background.muted : props.theme.colors.neutral.white};
   border-width: 2px;
   border-color: ${(props) =>
-    props.selected ? colors.brand.primary : colors.gray[20]};
+    props.selected ? colors.brand.primary : props.theme.colors.border.default};
   border-radius: ${borderRadius.lg};
   padding: ${spacing.lg};
   margin-bottom: ${spacing.sm};
@@ -87,7 +87,7 @@ const GoalIconContainer = styled.View<{ selected: boolean }>`
   height: 48px;
   border-radius: ${borderRadius.md};
   background-color: ${(props) =>
-    props.selected ? colors.brand.primary : colors.gray[10]};
+    props.selected ? colors.brand.primary : props.theme.colors.border.muted};
   align-items: center;
   justify-content: center;
   margin-right: ${spacing.md};
@@ -121,7 +121,7 @@ const CheckmarkContainer = styled.View<{ selected: boolean }>`
   border-radius: 12px;
   border-width: 2px;
   border-color: ${(props) =>
-    props.selected ? colors.brand.primary : colors.gray[30]};
+    props.selected ? colors.brand.primary : props.theme.colors.text.subtle};
   background-color: ${(props) =>
     props.selected ? colors.brand.primary : 'transparent'};
   align-items: center;
@@ -141,7 +141,7 @@ const BottomSection = styled.View`
 
 const ContinueButton = styled.TouchableOpacity<{ disabled: boolean }>`
   background-color: ${(props) =>
-    props.disabled ? colors.gray[30] : colors.brand.primary};
+    props.disabled ? props.theme.colors.text.subtle : colors.brand.primary};
   border-radius: ${borderRadius.md};
   height: ${sizing.component.lg};
   width: 100%;
