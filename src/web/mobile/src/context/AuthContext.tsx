@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // v1.18.1
 import jwtDecode from 'jwt-decode'; // v3.1.2
+import { secureTokenStorage, migrateFromAsyncStorage } from '../utils/secure-storage';
 
 import { AuthSession, AuthState } from '@shared/types/auth.types';
 import {
@@ -12,11 +12,6 @@ import {
   RegisterData,
   SocialTokenData
 } from '../api/auth';
-
-/**
- * Storage key for persisting authentication session
- */
-const AUTH_STORAGE_KEY = '@AUSTA:auth_session';
 
 /**
  * Buffer time (in ms) before token expiration when we should refresh
@@ -69,7 +64,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
    */
   const loadPersistedSession = async () => {
     try {
-      const sessionData = await AsyncStorage.getItem(AUTH_STORAGE_KEY);
+      const sessionData = secureTokenStorage.getSession();
       
       if (sessionData) {
         const session = JSON.parse(sessionData) as AuthSession;
@@ -83,7 +78,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             await handleRefreshToken();
           } catch (error) {
             // If refresh fails, clear the session
-            await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
+            secureTokenStorage.removeSession();
             setAuthState({ session: null, status: 'unauthenticated' });
           }
         } else {
@@ -109,9 +104,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const persistSession = async (session: AuthSession | null) => {
     try {
       if (session) {
-        await AsyncStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(session));
+        secureTokenStorage.setSession(JSON.stringify(session));
       } else {
-        await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
+        secureTokenStorage.removeSession();
       }
     } catch (error) {
       console.error('Error persisting auth session:', error);
@@ -196,7 +191,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
       
       // Remove session from storage
-      await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
+      secureTokenStorage.removeSession();
       
       // Update state
       setAuthState({ session: null, status: 'unauthenticated' });
@@ -281,10 +276,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  // Load the persisted session on mount
+  // Load the persisted session on mount, preceded by a one-time migration
   useEffect(() => {
-    loadPersistedSession();
-    
+    migrateFromAsyncStorage().then(() => {
+      loadPersistedSession();
+    });
+
     // Clean up the refresh timer on unmount
     return () => {
       if (refreshTimerId) {

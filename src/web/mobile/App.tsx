@@ -1,4 +1,4 @@
-import React from 'react'; // v18.2.0
+import React, { useEffect } from 'react'; // v18.2.0
 import { StatusBar, Platform } from 'react-native'; // v0.71+
 
 import { RootNavigator } from './src/navigation/RootNavigator';
@@ -8,6 +8,7 @@ import { NotificationProvider } from './src/context/NotificationContext';
 import { AppThemeProvider, useAppTheme } from './src/context/ThemeContext';
 import { ErrorBoundary } from './src/components/shared/ErrorBoundary';
 import { config } from './src/constants/config';
+import { warnIfCompromised } from './src/utils/device-security';
 
 /**
  * Inner component that has access to ThemeContext for StatusBar styling.
@@ -35,6 +36,10 @@ const StatusBarManager: React.FC = () => {
  * - Cross-Platform Framework (F-402): Provides a cross-platform framework for building the mobile application.
  */
 const App: React.FC = () => {
+  useEffect(() => {
+    warnIfCompromised();
+  }, []);
+
   return (
     <ErrorBoundary>
       <AppThemeProvider>

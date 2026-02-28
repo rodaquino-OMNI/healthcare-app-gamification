@@ -58,19 +58,16 @@ function generateService(name, outputDir, journey) {
   // Create directory structure
   const controllersDir = path.join(serviceDir, 'controllers');
   const servicesDir = path.join(serviceDir, 'services');
-  const entitiesDir = path.join(serviceDir, 'entities');
   const dtosDir = path.join(serviceDir, 'dtos');
-  
+
   createDirectoryIfNotExists(serviceDir);
   createDirectoryIfNotExists(controllersDir);
   createDirectoryIfNotExists(servicesDir);
-  createDirectoryIfNotExists(entitiesDir);
   createDirectoryIfNotExists(dtosDir);
-  
+
   // Generate files
   generateControllerFile(name, controllersDir);
   generateServiceFile(name, servicesDir);
-  generateEntityFile(name, entitiesDir);
   generateDtoFiles(name, dtosDir);
   generateModuleFile(name, serviceDir);
   
@@ -154,36 +151,6 @@ function generateServiceFile(name, dir) {
 }
 
 /**
- * Generates entity file
- * @param {string} name - Service name
- * @param {string} dir - Output directory
- */
-function generateEntityFile(name, dir) {
-  const filename = `${paramCase(name)}.entity.ts`;
-  const filePath = path.join(dir, filename);
-  
-  // Import the entity template generator function
-  const { generateEntityTemplate } = require('./templates/entity.template');
-  
-  // Generate entity content
-  let content;
-  try {
-    content = generateEntityTemplate(name);
-  } catch (error) {
-    logger.error(`Failed to generate entity content: ${error.message}`, error.stack);
-    throw new Error(`Failed to generate entity content: ${error.message}`);
-  }
-  
-  try {
-    fs.writeFileSync(filePath, content);
-    logger.log(`Generated entity: ${filePath}`);
-  } catch (error) {
-    logger.error(`Failed to write entity file: ${error.message}`, error.stack);
-    throw new Error(`Failed to write entity file: ${error.message}`);
-  }
-}
-
-/**
  * Generates DTO files
  * @param {string} name - Service name
  * @param {string} dir - Output directory
@@ -220,14 +187,9 @@ function generateModuleFile(name, dir) {
   const content = `import { Module } from '@nestjs/common';
 import { ${pascalCaseName}Controller } from './controllers/${paramCaseName}.controller';
 import { ${pascalCaseName}Service } from './services/${paramCaseName}.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ${pascalCaseName} } from './entities/${paramCaseName}.entity';
 import { LoggerService } from '../../../shared/src/logging/logger.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([${pascalCaseName}]),
-  ],
   controllers: [${pascalCaseName}Controller],
   providers: [${pascalCaseName}Service, LoggerService],
   exports: [${pascalCaseName}Service],
