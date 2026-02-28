@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, Alert } from 'react-native';
+import { ScrollView, Alert, Linking, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
@@ -136,25 +136,93 @@ const CopyrightText = styled.Text`
   margin-top: ${spacing['3xl']};
 `;
 
+const LicensesSectionTitle = styled.Text`
+  font-family: ${typography.fontFamily.heading};
+  font-size: ${typography.fontSize['text-sm']};
+  font-weight: ${typography.fontWeight.semiBold};
+  color: ${({ theme }) => theme.colors.text.muted};
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  width: 100%;
+  margin-top: ${spacing.xl};
+  margin-bottom: ${spacing.sm};
+`;
+
+const LicenseRow = styled.View`
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding-vertical: ${spacing.xs};
+  border-bottom-width: 1px;
+  border-bottom-color: ${colors.gray[10]};
+`;
+
+const LicenseName = styled.Text`
+  font-family: ${typography.fontFamily.mono};
+  font-size: ${typography.fontSize['text-xs']};
+  font-weight: ${typography.fontWeight.regular};
+  color: ${({ theme }) => theme.colors.text.default};
+  flex: 1;
+`;
+
+const LicenseMeta = styled.Text`
+  font-family: ${typography.fontFamily.mono};
+  font-size: ${typography.fontSize['text-xs']};
+  font-weight: ${typography.fontWeight.regular};
+  color: ${({ theme }) => theme.colors.text.subtle};
+  margin-left: ${spacing.sm};
+`;
+
+interface LicenseEntry {
+  name: string;
+  version: string;
+  license: string;
+}
+
+const OPEN_SOURCE_LICENSES: LicenseEntry[] = [
+  { name: 'react-native', version: '0.73.0', license: 'MIT' },
+  { name: 'react', version: '18.2.0', license: 'MIT' },
+  { name: '@react-navigation/native', version: '6.1.9', license: 'MIT' },
+  { name: '@react-navigation/stack', version: '6.3.20', license: 'MIT' },
+  { name: '@tanstack/react-query', version: '5.22.2', license: 'MIT' },
+  { name: 'styled-components', version: '6.0.5', license: 'MIT' },
+  { name: 'axios', version: '1.7.8', license: 'MIT' },
+  { name: 'i18next', version: '23.2.11', license: 'MIT' },
+  { name: 'date-fns', version: '3.3.1', license: 'MIT' },
+  { name: 'zod', version: '3.22.4', license: 'MIT' },
+];
+
+const APP_STORE_URL_IOS =
+  'itms-apps://apps.apple.com/app/id6450000000?action=write-review';
+const APP_STORE_URL_ANDROID = 'market://details?id=com.austa.health';
+
 /**
  * AboutApp screen -- displays app logo, version info, credits,
- * open-source licenses link, rate-the-app button, and copyright.
+ * open-source licenses list, rate-the-app button, and copyright.
  */
 export const AboutAppScreen: React.FC = () => {
   const navigation = useNavigation();
   const { t } = useTranslation();
 
+  const [showLicenses, setShowLicenses] = React.useState(false);
+
   const handleLicenses = () => {
-    // TODO: navigate to open-source licenses screen
+    setShowLicenses((prev) => !prev);
   };
 
   const handleRateApp = () => {
+    const url =
+      Platform.OS === 'ios' ? APP_STORE_URL_IOS : APP_STORE_URL_ANDROID;
     Alert.alert(
       t('settings.aboutApp.rateApp'),
       t('settings.aboutApp.rateAppConfirm'),
       [
         { text: t('settings.aboutApp.cancel'), style: 'cancel' },
-        { text: t('settings.aboutApp.confirm'), onPress: () => {/* TODO: open app store */} },
+        {
+          text: t('settings.aboutApp.confirm'),
+          onPress: () => Linking.openURL(url),
+        },
       ],
     );
   };
@@ -190,7 +258,7 @@ export const AboutAppScreen: React.FC = () => {
             {t('settings.aboutApp.credits')}
           </CreditsText>
 
-          {/* Open-source licenses */}
+          {/* Open-source licenses toggle */}
           <MenuRow
             onPress={handleLicenses}
             accessibilityRole="button"
@@ -198,8 +266,30 @@ export const AboutAppScreen: React.FC = () => {
             testID="about-licenses"
           >
             <MenuLabel>{t('settings.aboutApp.licenses')}</MenuLabel>
-            <ChevronText accessibilityElementsHidden>{'>'}</ChevronText>
+            <ChevronText accessibilityElementsHidden>
+              {showLicenses ? 'v' : '>'}
+            </ChevronText>
           </MenuRow>
+
+          {/* Open-source licenses list */}
+          {showLicenses && (
+            <>
+              <LicensesSectionTitle testID="about-licenses-title">
+                Open Source
+              </LicensesSectionTitle>
+              {OPEN_SOURCE_LICENSES.map((entry) => (
+                <LicenseRow
+                  key={entry.name}
+                  testID={`about-license-${entry.name}`}
+                >
+                  <LicenseName numberOfLines={1}>
+                    {entry.name} {entry.version}
+                  </LicenseName>
+                  <LicenseMeta>{entry.license}</LicenseMeta>
+                </LicenseRow>
+              ))}
+            </>
+          )}
 
           {/* Rate App */}
           <RateButton

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { colors } from 'src/web/design-system/src/tokens/colors';
@@ -6,6 +6,7 @@ import { typography } from 'src/web/design-system/src/tokens/typography';
 import { spacing } from 'src/web/design-system/src/tokens/spacing';
 import { borderRadius } from 'src/web/design-system/src/tokens/borderRadius';
 import AuthLayout from 'src/web/web/src/layouts/AuthLayout';
+import { restClient } from '../../api/client';
 
 const ContentContainer = styled.div`
   display: flex;
@@ -131,10 +132,37 @@ const BENEFITS = [
  */
 export default function BiometricSetupPage() {
   const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+  const [enrolling, setEnrolling] = useState(false);
 
-  const handleEnable = () => {
-    // TODO: Trigger biometric enrollment
-    router.push('/profile/confirmation');
+  const handleEnable = async () => {
+    setEnrolling(true);
+    setError(null);
+    try {
+      const credential = await navigator.credentials.create({
+        publicKey: {
+          challenge: new Uint8Array(32),
+          rp: { name: 'AUSTA Health' },
+          user: {
+            id: new Uint8Array(16),
+            name: 'user',
+            displayName: 'User',
+          },
+          pubKeyCredParams: [{ alg: -7, type: 'public-key' as const }],
+        },
+      });
+      if (credential) {
+        await restClient.post('/auth/biometric/enroll', {
+          credentialId: credential.id,
+          type: credential.type,
+        });
+      }
+      router.push('/profile/confirmation');
+    } catch (err) {
+      setError('Falha no cadastro biometrico');
+    } finally {
+      setEnrolling(false);
+    }
   };
 
   const handleSkip = () => {
@@ -163,8 +191,12 @@ export default function BiometricSetupPage() {
           ))}
         </BenefitsList>
 
-        <PrimaryButton onClick={handleEnable}>
-          Ativar Face ID / Touch ID
+        {error && (
+          <Subtitle style={{ color: colors.semantic?.error || '#dc2626' }}>{error}</Subtitle>
+        )}
+
+        <PrimaryButton onClick={handleEnable} disabled={enrolling}>
+          {enrolling ? 'Ativando...' : 'Ativar Face ID / Touch ID'}
         </PrimaryButton>
 
         <SkipLink onClick={handleSkip}>

@@ -5,6 +5,7 @@ import { colors } from 'src/web/design-system/src/tokens/colors';
 import { typography } from 'src/web/design-system/src/tokens/typography';
 import { spacing } from 'src/web/design-system/src/tokens/spacing';
 import { MainLayout } from 'src/web/web/src/layouts/MainLayout';
+import { restClient } from 'src/web/web/src/api/client';
 
 const PageContainer = styled.div`
   max-width: 600px;
@@ -287,6 +288,11 @@ const PrimaryButton = styled.button`
   &:hover {
     background-color: ${colors.journeys.health.secondary};
   }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 `;
 
 const SecondaryButton = styled.button`
@@ -306,6 +312,14 @@ const SecondaryButton = styled.button`
     border-color: ${colors.journeys.health.secondary};
     color: ${colors.journeys.health.secondary};
   }
+`;
+
+const ErrorMessage = styled.p`
+  font-family: ${typography.fontFamily.body};
+  font-size: ${typography.fontSize['text-sm']};
+  color: ${colors.feedback.error.pure};
+  text-align: center;
+  margin: 0 0 ${spacing.sm} 0;
 `;
 
 type FrequencyType = 'daily' | 'weekly' | 'interval' | 'custom';
@@ -348,6 +362,8 @@ export default function MedicationReminderPage() {
   const [intervalHours, setIntervalHours] = useState('8');
   const [snoozeEnabled, setSnoozeEnabled] = useState(true);
   const [snoozeDuration, setSnoozeDuration] = useState(10);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const toggleDay = (day: string) => {
     setSelectedDays(prev =>
@@ -368,10 +384,25 @@ export default function MedicationReminderPage() {
     }
   };
 
-  const handleSave = () => {
-    // TODO: Save reminder to API
-    console.log('Saving reminder:', { medicationName, time, frequency, selectedDays, intervalHours, snoozeEnabled, snoozeDuration });
-    router.back();
+  const handleSave = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      await restClient.post('/health/medication-reminders', {
+        medicationName,
+        time,
+        frequency,
+        selectedDays,
+        intervalHours: Number(intervalHours),
+        snoozeEnabled,
+        snoozeDuration,
+      });
+      router.back();
+    } catch (err) {
+      setError('Failed to save reminder');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -489,10 +520,11 @@ export default function MedicationReminderPage() {
 
         {/* Buttons */}
         <ButtonRow>
-          <PrimaryButton onClick={handleSave}>
-            Salvar Lembrete
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+          <PrimaryButton onClick={handleSave} disabled={loading}>
+            {loading ? 'Salvando...' : 'Salvar Lembrete'}
           </PrimaryButton>
-          <SecondaryButton onClick={() => router.back()}>
+          <SecondaryButton onClick={() => router.back()} disabled={loading}>
             Cancelar
           </SecondaryButton>
         </ButtonRow>

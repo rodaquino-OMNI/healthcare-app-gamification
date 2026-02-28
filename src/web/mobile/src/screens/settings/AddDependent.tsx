@@ -5,9 +5,13 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
+
+import { restClient } from '../../api/client';
+import type { SettingsStackParamList } from '../../navigation/types';
 
 import { colors } from '@design-system/tokens/colors';
 import { typography } from '@design-system/tokens/typography';
@@ -158,15 +162,20 @@ const RELATIONSHIP_OPTIONS = ['Conjuge', 'Filho(a)', 'Pai', 'Mae', 'Outro'];
  * Fields: full name, date of birth (DD/MM/YYYY), CPF (masked numeric),
  * relationship selector. Validates all required fields before saving.
  */
+type AddDependentRouteProp = RouteProp<SettingsStackParamList, 'SettingsAddDependent'>;
+
 export const AddDependentScreen: React.FC = () => {
   const navigation = useNavigation();
+  const route = useRoute<AddDependentRouteProp>();
   const { t } = useTranslation();
 
+  const prefill = route.params?.dependent;
+
   const [form, setForm] = useState<FormState>({
-    fullName: '',
-    dateOfBirth: '',
-    cpf: '',
-    relationship: '',
+    fullName: prefill?.name ?? '',
+    dateOfBirth: prefill?.dob ?? '',
+    cpf: prefill?.cpf ?? '',
+    relationship: prefill?.relationship ?? '',
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -223,17 +232,22 @@ export const AddDependentScreen: React.FC = () => {
 
     setIsSaving(true);
     try {
-      // TODO: call API to register dependent
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      Alert.alert(
-        t('settings.addDependent.success'),
-        t('settings.addDependent.successMessage'),
-      );
+      const payload = {
+        name: form.fullName.trim(),
+        cpf: form.cpf.replace(/\D/g, ''),
+        dob: form.dateOfBirth,
+        relationship: form.relationship,
+      };
+      if (prefill?.id) {
+        await restClient.put(`/users/me/dependents/${prefill.id}`, payload);
+      } else {
+        await restClient.post('/users/me/dependents', payload);
+      }
       navigation.goBack();
-    } catch {
+    } catch (err: unknown) {
       Alert.alert(
         t('settings.addDependent.error'),
-        t('settings.addDependent.errorMessage'),
+        err instanceof Error ? err.message : t('settings.addDependent.errorMessage'),
       );
     } finally {
       setIsSaving(false);

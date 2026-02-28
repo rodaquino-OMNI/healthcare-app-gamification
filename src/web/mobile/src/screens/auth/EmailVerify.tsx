@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { TextInput as RNTextInput } from 'react-native';
+import { Alert, TextInput as RNTextInput } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 
+import { verifyEmail } from '../../api/auth';
 import { colors } from '@design-system/tokens/colors';
 import { typography, fontSizeValues } from '@design-system/tokens/typography';
 import { spacing, spacingValues } from '@design-system/tokens/spacing';
@@ -211,18 +212,15 @@ export const EmailVerifyScreen: React.FC = () => {
   const handleVerify = useCallback(async (otpCode: string) => {
     setIsSubmitting(true);
     try {
-      // TODO: Call actual email verification API
-      // await verifyEmail(otpCode);
-      showToast('success', t('auth.emailVerify.successMessage'));
-      // Navigate after short delay for toast visibility
-      setTimeout(() => {
-        navigation.goBack();
-      }, 1500);
-    } catch (error: any) {
-      showToast('error', error?.message || t('auth.emailVerify.errorMessage'));
+      await verifyEmail(otpCode);
+      Alert.alert(t('common.success'), t('auth.emailVerified'));
+      navigation.navigate('AuthLogin' as never);
+    } catch (err) {
+      Alert.alert(t('common.error'), t('common.tryAgain'));
+    } finally {
       setIsSubmitting(false);
     }
-  }, [navigation, showToast]);
+  }, [navigation, t]);
 
   /**
    * Handles digit input change for a specific index

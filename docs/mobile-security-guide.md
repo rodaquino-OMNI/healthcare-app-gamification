@@ -1,6 +1,6 @@
 # AUSTA Mobile App — Security Guide
 
-> Version: 1.0 | Last updated: 2026-02-25
+> Version: 1.1 | Last updated: 2026-02-28
 > Audience: Mobile engineers, security reviewers, compliance team
 
 Gaps are called out explicitly — this is not a marketing document.
@@ -174,6 +174,10 @@ user-installed CA certificates, and serve as prerequisite for native pinning.
 **Summary**: 5 implemented, 5 partial, 6 gaps.
 Priority closures before launch: MASVS-STORAGE-1, MASVS-AUTH-2, MASVS-NETWORK-2, MASVS-CODE-1.
 
+> **Audit note (2026-02-28)**: All 6 gaps and 5 partial items remain unchanged. No progress
+> on MMKV migration, native biometric API calls, native TLS pinning, ProGuard/R8, root/jailbreak
+> detection, or anti-tampering since initial assessment.
+
 ---
 
 ## 5. PHI Access Logging
@@ -233,6 +237,12 @@ LGPD consent toggles and data deletion UI exist in
 
 **Gap**: All controls have `TODO: connect to API` comments. Backend DSR endpoints exist (B2)
 but the mobile app has not wired up the calls.
+
+> **Update (2026-02-28)**: Account deletion on mobile (`SettingsPrivacy.tsx`) now calls
+> `deleteAccount()` with real API. Web privacy page (`profile/privacy.tsx`) now calls
+> `restClient.patch('/privacy/my-data')` for settings persistence and
+> `restClient.get('/privacy/export')` for data export. However, mobile data export still only
+> shows an Alert without an API call — this remains a gap for LGPD compliance on mobile.
 
 ---
 

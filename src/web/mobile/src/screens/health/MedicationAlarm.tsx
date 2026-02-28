@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Alert } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useTheme } from 'styled-components/native';
 import type { Theme } from '@design-system/themes/base.theme';
@@ -8,6 +8,7 @@ import { spacingValues } from '@design-system/tokens/spacing';
 import { fontSizeValues } from '@design-system/tokens/typography';
 import { borderRadiusValues } from '@design-system/tokens/borderRadius';
 import { useTranslation } from 'react-i18next';
+import { restClient } from '../../api/client';
 
 /**
  * Route params for MedicationAlarm screen.
@@ -61,27 +62,42 @@ export const MedicationAlarmScreen: React.FC = () => {
   /**
    * Handle "Tomar Agora" (take now) action.
    */
-  const handleTakeNow = () => {
-    // TODO: Record dose taken event to backend
-    console.log('Dose taken:', { medicationName, time: new Date().toISOString() });
+  const handleTakeNow = async () => {
+    try {
+      await restClient.post('/health/medication-doses', {
+        medicationName, action: 'taken', time: new Date().toISOString(),
+      });
+    } catch (err) {
+      Alert.alert(t('common.error'), t('common.tryAgain'));
+    }
     navigation.goBack();
   };
 
   /**
    * Handle "Soneca" (snooze) action.
    */
-  const handleSnooze = () => {
-    // TODO: Schedule a new alarm after snoozeDuration minutes
-    console.log('Snoozed for', snoozeDuration, 'minutes');
+  const handleSnooze = async () => {
+    try {
+      await restClient.post('/health/medication-doses', {
+        medicationName, action: 'snoozed', snoozeDuration,
+      });
+    } catch (err) {
+      Alert.alert(t('common.error'), t('common.tryAgain'));
+    }
     navigation.goBack();
   };
 
   /**
    * Handle "Pular" (skip) action.
    */
-  const handleSkip = () => {
-    // TODO: Record skipped dose event to backend
-    console.log('Dose skipped:', { medicationName, time: new Date().toISOString() });
+  const handleSkip = async () => {
+    try {
+      await restClient.post('/health/medication-doses', {
+        medicationName, action: 'skipped', time: new Date().toISOString(),
+      });
+    } catch (err) {
+      Alert.alert(t('common.error'), t('common.tryAgain'));
+    }
     navigation.goBack();
   };
 

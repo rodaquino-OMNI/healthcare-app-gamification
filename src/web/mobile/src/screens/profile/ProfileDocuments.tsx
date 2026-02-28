@@ -14,6 +14,10 @@ import { spacing, spacingValues } from '@design-system/tokens/spacing';
 import { borderRadius, borderRadiusValues } from '@design-system/tokens/borderRadius';
 import { sizing, sizingValues } from '@design-system/tokens/sizing';
 
+import * as DocumentPicker from 'expo-document-picker';
+import { useAuth } from '../../context/AuthContext';
+import { updateProfile } from '../../api/auth';
+
 /**
  * CPF validation: 11 digits after removing mask characters.
  */
@@ -239,6 +243,9 @@ const PrimaryButtonText = styled.Text`
 const ProfileDocuments: React.FC = () => {
   const navigation = useNavigation<AuthNavigationProp>();
   const { t } = useTranslation();
+  const { session } = useAuth();
+  const [saving, setSaving] = useState(false);
+  const [documentUri, setDocumentUri] = useState<string | null>(null);
   const [selectedDocType, setSelectedDocType] = useState<DocumentType>('CPF');
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
 
@@ -257,31 +264,44 @@ const ProfileDocuments: React.FC = () => {
 
   /**
    * Opens document picker for file upload.
-   * Uses react-native-document-picker pattern.
+   * Uses expo-document-picker to select images or PDF documents.
    */
   const handleDocumentUpload = async () => {
     try {
-      // TODO: Replace with real document picker integration:
-      // import DocumentPicker from 'react-native-document-picker';
-      // const result = await DocumentPicker.pick({
-      //   type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
-      // });
-      // setUploadedFileName(result[0].name);
-
-      // Mock for development
-      setUploadedFileName(`document_${selectedDocType.toLowerCase()}.pdf`);
-    } catch (err: unknown) {
-      // User cancelled the picker or an error occurred
-      const error = err as { code?: string };
-      if (error.code !== 'DOCUMENT_PICKER_CANCELED') {
-        Alert.alert(t('common.errors.default'), t('profile.documents.uploadError'));
+      const result = await DocumentPicker.getDocumentAsync({
+        type: ['image/*', 'application/pdf'],
+        copyToCacheDirectory: true,
+      });
+      if (!result.canceled && result.assets && result.assets[0]) {
+        setUploadedFileName(result.assets[0].name);
+        setDocumentUri(result.assets[0].uri);
       }
+    } catch (err: unknown) {
+      Alert.alert(t('common.errors.default'), t('profile.documents.uploadError'));
     }
   };
 
-  const onSubmit = (data: DocumentsFormData) => {
-    // TODO: persist documents info to profile context/store
-    navigation.navigate('ProfilePhoto');
+  const onSubmit = async (data: DocumentsFormData) => {
+    if (!session?.accessToken) return;
+    setSaving(true);
+    try {
+      await updateProfile(session.accessToken, {
+        documents: {
+          cpf: data.cpf,
+          rg: data.rg,
+          documentType: selectedDocType,
+          documentUrl: documentUri || undefined,
+        },
+      });
+      navigation.navigate('ProfilePhoto');
+    } catch (err: unknown) {
+      Alert.alert(
+        t('common.errors.default'),
+        err instanceof Error ? err.message : t('common.errors.generic'),
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (

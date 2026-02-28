@@ -1,5 +1,5 @@
-import React from 'react';
-import { ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
@@ -10,6 +10,7 @@ import { spacing } from '@design-system/tokens/spacing';
 import { borderRadius } from '@design-system/tokens/borderRadius';
 import { sizing } from '@design-system/tokens/sizing';
 import { ROUTES } from '../../constants/routes';
+import * as LocalAuthentication from 'expo-local-authentication';
 
 // --- Styled Components ---
 
@@ -149,11 +150,34 @@ const BENEFITS = [
 export const ProfileBiometricSetup: React.FC = () => {
   const navigation = useNavigation<any>();
   const { t } = useTranslation();
+  const [enrolling, setEnrolling] = useState(false);
 
-  const handleEnable = () => {
-    // TODO: Trigger native biometric enrollment
-    // After success, navigate to confirmation
-    navigation.navigate(ROUTES.PROFILE_CONFIRMATION);
+  const handleEnable = async () => {
+    setEnrolling(true);
+    try {
+      const hasHardware = await LocalAuthentication.hasHardwareAsync();
+      if (!hasHardware) {
+        Alert.alert(t('profile.biometricSetup.notSupported'));
+        return;
+      }
+      const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+      if (!isEnrolled) {
+        Alert.alert(t('profile.biometricSetup.notEnrolled'));
+        return;
+      }
+      const result = await LocalAuthentication.authenticateAsync({
+        promptMessage: t('profile.biometricSetup.prompt'),
+      });
+      if (result.success) {
+        navigation.navigate(ROUTES.PROFILE_CONFIRMATION);
+      } else {
+        Alert.alert(t('profile.biometricSetup.failed'));
+      }
+    } catch {
+      Alert.alert(t('common.errors.default'));
+    } finally {
+      setEnrolling(false);
+    }
   };
 
   const handleSkip = () => {

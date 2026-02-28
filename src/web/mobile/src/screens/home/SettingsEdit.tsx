@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
+import * as ImagePicker from 'expo-image-picker';
 
-import { useAuth } from '../../hooks/useAuth';
+import { restClient } from '../../api/client';
 import { colors } from '@design-system/tokens/colors';
 import { typography } from '@design-system/tokens/typography';
 import { spacing, spacingValues } from '@design-system/tokens/spacing';
@@ -49,6 +51,13 @@ const AvatarInitials = styled.Text`
   font-size: ${typography.fontSize['heading-xl']};
   font-weight: ${typography.fontWeight.bold};
   color: ${colors.brand.primary};
+`;
+
+const AvatarImage = styled.Image`
+  width: 96px;
+  height: 96px;
+  border-radius: 48px;
+  margin-bottom: ${spacing.sm};
 `;
 
 const ChangePhotoButton = styled.TouchableOpacity`
@@ -137,6 +146,12 @@ const SecondaryButtonText = styled.Text`
   color: ${({ theme }) => theme.colors.text.default};
 `;
 
+const LoadingContainer = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+`;
+
 // --- Types ---
 
 interface FormState {
@@ -156,7 +171,7 @@ interface FormErrors {
  * SettingsEdit screen -- allows the user to edit their profile information.
  *
  * Fields:
- *  - Avatar with "Alterar foto" action
+ *  - Avatar with "Alterar foto" action (camera or gallery via expo-image-picker)
  *  - Nome completo (editable, required)
  *  - Email (read-only)
  *  - Telefone (editable, validated)
@@ -168,12 +183,10 @@ interface FormErrors {
 export const SettingsEditScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation();
-  const { session, getUserFromToken } = useAuth();
-  const user = session?.accessToken ? getUserFromToken(session.accessToken) : null;
 
   const [form, setForm] = useState<FormState>({
-    fullName: user?.name || '',
-    email: user?.email || '',
+    fullName: '',
+    email: '',
     phone: '',
     dateOfBirth: '',
     cpf: '',
@@ -181,6 +194,34 @@ export const SettingsEditScreen: React.FC = () => {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [photo, setPhoto] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      setIsLoading(true);
+      try {
+        const response = await restClient.get('/users/me');
+        const data = response.data ?? {};
+        setForm({
+          fullName: data.name ?? data.fullName ?? '',
+          email: data.email ?? '',
+          phone: data.phone ?? '',
+          dateOfBirth: data.dateOfBirth ?? '',
+          cpf: data.cpf ?? '',
+        });
+        if (data.photoUrl) {
+          setPhoto(data.photoUrl);
+        }
+      } catch (err: unknown) {
+        Alert.alert('Erro', err instanceof Error ? err.message : 'Erro inesperado.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   const getInitials = (name: string): string => {
     const parts = name.trim().split(/\s+/);
@@ -191,7 +232,6 @@ export const SettingsEditScreen: React.FC = () => {
 
   const updateField = (field: keyof FormState, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
-    // Clear error on edit
     if (errors[field as keyof FormErrors]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
@@ -212,17 +252,57 @@ export const SettingsEditScreen: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const handlePickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+    if (!result.canceled) {
+      setPhoto(result.assets[0].uri);
+    }
+  };
+
+  const handleTakePhoto = async () => {
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+    if (!result.canceled) {
+      setPhoto(result.assets[0].uri);
+    }
+  };
+
+  const handleChangePhoto = () => {
+    Alert.alert(
+      t('settings.edit.changePhoto'),
+      t('settings.edit.chooseOption'),
+      [
+        { text: t('settings.edit.camera'), onPress: handleTakePhoto },
+        { text: t('settings.edit.gallery'), onPress: handlePickImage },
+        { text: t('common.buttons.cancel'), style: 'cancel' },
+      ],
+    );
+  };
+
   const handleSave = async () => {
     if (!validate()) return;
 
     setIsSaving(true);
     try {
-      // TODO: call API to persist profile changes
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      const formData = {
+        name: form.fullName,
+        phone: form.phone,
+        dateOfBirth: form.dateOfBirth,
+        ...(photo ? { photoUrl: photo } : {}),
+      };
+      await restClient.put('/users/me', formData);
       Alert.alert(t('settings.edit.alerts.successTitle'), t('settings.edit.alerts.successMessage'));
       navigation.goBack();
-    } catch {
-      Alert.alert(t('settings.edit.alerts.errorTitle'), t('settings.edit.alerts.errorMessage'));
+    } catch (err: unknown) {
+      Alert.alert('Erro', err instanceof Error ? err.message : 'Erro inesperado.');
     } finally {
       setIsSaving(false);
     }
@@ -232,17 +312,15 @@ export const SettingsEditScreen: React.FC = () => {
     navigation.goBack();
   };
 
-  const handleChangePhoto = () => {
-    Alert.alert(
-      t('settings.edit.changePhoto'),
-      t('settings.edit.chooseOption'),
-      [
-        { text: t('settings.edit.camera'), onPress: () => {/* TODO: open camera */} },
-        { text: t('settings.edit.gallery'), onPress: () => {/* TODO: open gallery */} },
-        { text: t('common.buttons.cancel'), style: 'cancel' },
-      ],
+  if (isLoading) {
+    return (
+      <Container>
+        <LoadingContainer>
+          <ActivityIndicator size="large" color={colors.brand.primary} testID="settings-edit-loading" />
+        </LoadingContainer>
+      </Container>
     );
-  };
+  }
 
   return (
     <Container>
@@ -258,9 +336,13 @@ export const SettingsEditScreen: React.FC = () => {
           <ContentWrapper>
             {/* Avatar */}
             <AvatarSection>
-              <AvatarPlaceholder>
-                <AvatarInitials>{getInitials(form.fullName)}</AvatarInitials>
-              </AvatarPlaceholder>
+              {photo ? (
+                <AvatarImage source={{ uri: photo }} />
+              ) : (
+                <AvatarPlaceholder>
+                  <AvatarInitials>{getInitials(form.fullName)}</AvatarInitials>
+                </AvatarPlaceholder>
+              )}
               <ChangePhotoButton
                 onPress={handleChangePhoto}
                 accessibilityRole="button"

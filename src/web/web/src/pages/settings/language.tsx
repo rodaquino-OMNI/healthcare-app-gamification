@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { saveLanguage } from '../../api/settings';
 
 interface LanguageOption {
   code: string;
@@ -22,10 +23,20 @@ const LANGUAGES: LanguageOption[] = [
 const LanguagePage: NextPage = () => {
   const router = useRouter();
   const [selected, setSelected] = useState('pt-BR');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSave = () => {
-    // TODO: Save language preference via API and reload
-    router.push('/settings');
+  const handleSave = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      await saveLanguage(selected);
+      router.push('/settings');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro ao salvar idioma.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -56,7 +67,8 @@ const LanguagePage: NextPage = () => {
           </div>
         ))}
 
-        <button onClick={handleSave} style={primaryButtonStyle}>Salvar Idioma</button>
+        {error && <p style={{ color: 'red', marginBottom: spacing.sm, fontSize: typography.fontSize['text-sm'], fontFamily: typography.fontFamily.body }}>{error}</p>}
+        <button onClick={handleSave} disabled={loading} style={primaryButtonStyle}>{loading ? 'Salvando...' : 'Salvar Idioma'}</button>
       </div>
     </div>
   );

@@ -2,8 +2,8 @@
 # ADR-013 AGENT GUIDE — Machine-Readable Claude-Flow Intelligence Reference
 # ============================================================================
 # Source: docs/ADRs/013-claude-flow-swarm-intelligence.md
-# Version: 3.1.0-alpha.44 (ruflo)
-# Updated: 2026-02-20
+# Version: 3.5.2 (ruflo)
+# Updated: 2026-02-28
 # Purpose: AI agent operational guide — patterns, anti-patterns, workflows
 # Consumption: AI agents, swarm workers, coordinators, hook handlers
 # Format: YAML (structured for LLM context injection and semantic parsing)
@@ -12,13 +12,19 @@
 meta:
   adr: "013"
   title: "Claude-Flow Swarm Intelligence Agent Guide"
-  cli_version: "3.1.0-alpha.52"
+  cli_version: "3.5.2"
   packages: ["claude-flow", "ruflo", "@claude-flow/cli"]
   license: "MIT"
   project_namespace: "healthcare-platform"
   pattern_namespace: "patterns"
-  updated: "2026-02-26"
-  changelog: "Added comprehensive bootstrap protocol, directory structure docs, config reference, troubleshooting"
+  updated: "2026-02-28"
+  changelog: >
+    v3.5.2 audit: Fixed hive-mind spawn flags (removed 6 non-existent flags),
+    corrected two-step init→spawn workflow, documented --claude flag as primary
+    mechanism, fixed dimensions 768→384, ReasoningBank 100→150, added missing
+    consensus algorithms (crdt, quorum), documented missing spawn flags
+    (--dry-run, --non-interactive, --dangerously-skip-permissions),
+    corrected config init vs init --force distinction.
 
 # ============================================================================
 # SECTION 1: EXECUTION MODELS
@@ -38,7 +44,9 @@ execution_models:
       - "Agent Teams hooks fire automatically (TeammateIdle, TaskCompleted)"
       - "results available in-session for immediate validation"
     spawn_pattern: |
-      mcp__claude-flow__swarm_init({ topology: "hierarchical-mesh", maxAgents: 8, strategy: "specialized" })
+      mcp__claude-flow__swarm_init({ topology: "hierarchical-mesh", maxAgents: 8 })
+      # NOTE: MCP wire name is "swarm_init". Parameters: topology (string), maxAgents (number), config (object).
+      # The prefix mcp__claude-flow__ is added by Claude Code's MCP integration.
       Task("Coordinator", "Initialize session, coordinate via memory namespace.", "hierarchical-coordinator")
       Task("Researcher", "Analyze requirements. Store findings in memory.", "researcher")
       Task("Architect", "Design implementation based on research.", "system-architect")
@@ -50,29 +58,60 @@ execution_models:
   hive_mind_cli:
     label: "Hive-Mind Spawn CLI (Large Swarms)"
     when: "> 8 agents, detached execution, large parallel workloads"
-    how: "display command in code block for user to copy-paste into separate terminal"
+    how: "TWO-STEP: init hive (once) → spawn with --claude (launches Claude Code instances)"
     max_agents: 100+
-    command_template: |
-      npx @claude-flow/cli@latest hive-mind spawn \
-        --workers {N} \
+
+    # ── Step 1: Initialize hive (once per session) ──
+    init_command: |
+      claude-flow hive-mind init \
         --topology hierarchical-mesh \
         --consensus byzantine \
+        --max-agents 15 \
+        --memory-backend hybrid
+    init_flags:
+      "-t, --topology": "hierarchical | mesh | hierarchical-mesh (default) | adaptive"
+      "-c, --consensus": "byzantine (default) | raft | gossip | crdt | quorum"
+      "-m, --max-agents": "maximum agents (default: 15)"
+      "-p, --persist": "enable persistent state (default: true)"
+      "--memory-backend": "agentdb | sqlite | hybrid (default)"
+
+    # ── Step 2: Spawn workers with Claude Code ──
+    spawn_command_template: |
+      claude-flow hive-mind spawn \
         --claude \
-        --model-routing intelligent \
-        --namespace healthcare-platform \
-        --use-memory \
-        --use-patterns \
-        --use-vectors \
-        --use-learning \
-        --objective "{DETAILED_OBJECTIVE}"
-    flags_required:
-      "--claude": "enables native Claude coordination, agents spawn automatically"
-      "--model-routing intelligent": "cost-efficient tier routing (Haiku for simple, Sonnet for complex)"
-      "--use-memory": "access to claude-flow memory system"
-      "--use-patterns": "access to pattern library"
-      "--use-vectors": "semantic search via RuVector HNSW"
-      "--use-learning": "neural learning and pattern extraction"
-    agent_behavior_after_display: "STOP. Do NOT spawn Task tool agents. Do NOT poll status. Wait for user notification."
+        -n {N} \
+        -o "{DETAILED_OBJECTIVE}"
+    spawn_flags:
+      "-n, --count": "number of workers to spawn (default: 1)"
+      "-r, --role": "worker (default) | specialist | scout"
+      "-t, --type": "agent type (default: worker)"
+      "-p, --prefix": "prefix for worker IDs (default: hive-worker)"
+      "--claude": "CRITICAL — launches Claude Code instances with hive-mind coordination prompt"
+      "-o, --objective": "objective for the hive mind (required with --claude)"
+      "--dangerously-skip-permissions": "skip permission prompts in Claude Code (default: true)"
+      "--no-auto-permissions": "disable automatic permission skipping"
+      "--dry-run": "show what would be done without launching Claude Code"
+      "--non-interactive": "run Claude Code in non-interactive mode"
+
+    # ── Complete example ──
+    full_example: |
+      # Step 1: Initialize hive (only once per session)
+      claude-flow hive-mind init -t hierarchical-mesh -c byzantine -m 15
+
+      # Step 2: Spawn 5 Claude Code workers with objective
+      claude-flow hive-mind spawn --claude -n 5 -o "Implement FHIR patient service:
+        1. Create src/backend/health-service/src/fhir/patient.controller.ts
+        2. Create src/backend/health-service/src/fhir/patient.service.ts
+        3. Write tests in src/backend/health-service/test/fhir/patient.spec.ts
+        4. Store results in memory key 'fhir-patient-impl' namespace 'healthcare-platform'"
+
+      # Step 3: Submit additional tasks to running hive
+      claude-flow hive-mind task -d "Add validation middleware for FHIR resources"
+
+    agent_behavior_after_display: >
+      STOP. Do NOT spawn Task tool agents. Do NOT poll status.
+      Wait for user to execute the commands and report back.
+      The --claude flag handles launching Claude Code instances automatically.
 
 # ============================================================================
 # SECTION 2: MODEL ROUTING (3-Tier — ADR-026)
@@ -362,7 +401,7 @@ vectors:
   operations:
     index: >
       npx @claude-flow/cli@latest vector index
-      --source "{directory}" --namespace {namespace} --algorithm hnsw --dimensions 768
+      --source "{directory}" --namespace {namespace} --algorithm hnsw --dimensions 384
     search: >
       npx @claude-flow/cli@latest vector search
       --query "{semantic_query}" --namespace {namespace} --top-k 5
@@ -401,13 +440,64 @@ swarm:
       max_agents: 20
       fault_tolerance: "medium"
     hierarchical_mesh:
-      best_for: "complex multi-domain projects"
+      best_for: "complex multi-domain projects (DEFAULT)"
       max_agents: "100+"
       fault_tolerance: "high (Byzantine)"
+    adaptive:
+      best_for: "dynamic workloads, auto-adjusting topology"
+      max_agents: "100+"
+      fault_tolerance: "varies by current topology"
 
   initialization: >
-    npx @claude-flow/cli@latest hive-mind init
+    claude-flow hive-mind init
     --topology hierarchical-mesh --max-agents 15 --consensus byzantine
+
+  # ── swarm vs hive-mind: Two Separate Command Groups ──
+  command_groups:
+    swarm:
+      description: "Generic swarm coordination (init, start, stop, scale, coordinate)"
+      primary_use: "V3 15-agent hierarchical mesh coordination"
+      example: "claude-flow swarm init --v3-mode"
+      subcommands: [init, start, status, stop, scale, coordinate]
+    hive_mind:
+      description: "Queen-led consensus-based multi-agent coordination with --claude support"
+      primary_use: "Spawning Claude Code instances for parallel work"
+      example: "claude-flow hive-mind spawn --claude -n 5 -o 'Build feature'"
+      subcommands: [init, spawn, status, task, join, leave, consensus, broadcast, memory, optimize-memory, shutdown]
+    relationship: >
+      Both exist in parallel. 'swarm' is the generic coordination layer.
+      'hive-mind' adds queen-led consensus, --claude spawning, task submission,
+      and inter-worker broadcast. For most AI agent workflows, use hive-mind.
+
+  # ── hive-mind subcommands reference ──
+  hive_mind_subcommands:
+    init: "initialize hive with topology, consensus, max-agents"
+    spawn: "spawn workers (with --claude to launch Claude Code instances)"
+    status: "show hive status, worker count, queen health"
+    task: "submit tasks to the hive (-d 'description')"
+    join: "join an agent to the hive mind"
+    leave: "remove an agent from the hive mind"
+    consensus: "manage consensus proposals and voting"
+    broadcast: "broadcast a message to all workers in the hive"
+    memory: "access hive shared memory"
+    optimize-memory: "optimize hive memory and patterns"
+    shutdown: "shutdown the hive mind"
+
+  # ── MCP Tool Wire Names ──
+  mcp_tool_names:
+    description: >
+      When used via MCP (from Claude Code), tools are prefixed with
+      mcp__claude-flow__. The wire name (internal) drops the prefix.
+    mapping:
+      "mcp__claude-flow__swarm_init": { wire: "swarm_init", params: "topology, maxAgents, config" }
+      "mcp__claude-flow__hive-mind_init": { wire: "hive-mind_init", params: "topology, consensus, maxAgents, persist, memoryBackend" }
+      "mcp__claude-flow__hive-mind_spawn": { wire: "hive-mind_spawn", params: "count, role, type, prefix, claude, objective" }
+      "mcp__claude-flow__hive-mind_status": { wire: "hive-mind_status", params: "format" }
+      "mcp__claude-flow__hive-mind_task": { wire: "hive-mind_task", params: "description, priority, assignTo" }
+      "mcp__claude-flow__hive-mind_broadcast": { wire: "hive-mind_broadcast", params: "message, type" }
+      "mcp__claude-flow__hive-mind_memory": { wire: "hive-mind_memory", params: "action, key, value" }
+      "mcp__claude-flow__hive-mind_shutdown": { wire: "hive-mind_shutdown", params: "force" }
+      "mcp__claude-flow__agent_spawn": { wire: "agent_spawn", params: "type, name, config" }
 
 # ============================================================================
 # SECTION 10: PATTERNS (CORRECT BEHAVIORS)
@@ -428,21 +518,114 @@ patterns:
 
   complete_swarm_workflow:
     id: "pattern-complete-swarm-workflow"
+    description: >
+      The CANONICAL workflow for delegating work to a swarm. The agent (coordinator)
+      prepares everything, then displays the complete prompt for the user to paste
+      in a second terminal. Agent NEVER executes the spawn command itself.
     steps:
-      pre_spawn:
-        - "hooks pre-task — register task, get routing recommendation"
-        - "memory store scope — store task scope for swarm agents"
-        - "hive-mind init — initialize coordination (hierarchical-mesh)"
-        - "hive-mind status — verify initialization"
-        - "choose execution model: Task tool (in-session) or CLI (large swarm)"
-      spawn:
-        in_session: "Task tool spawns agents directly (parallel, same message)"
-        cli: "user copies command to separate terminal, monitors, notifies agent"
-      post_task:
-        - "memory store — store completion with results summary"
-        - "hooks post-task — record completion status"
-        - "neural train — only if significant new code patterns"
-        - "pattern store — only if reusable pattern discovered"
+      # ── STEP 1: PRE-TASK (agent executes in current terminal) ──
+      step_1_pre_task:
+        what: "Register task, store scope, verify hive is ready"
+        agent_executes:
+          - "npx @claude-flow/cli@latest hooks pre-task --description '{task}' --task-id '{id}' --namespace healthcare-platform"
+          - "npx @claude-flow/cli@latest memory store --key 'phase-{X}-scope' --value '{scope_json}' --namespace healthcare-platform"
+          - "npx @claude-flow/cli@latest hive-mind status"
+        decision: "if hive not initialized → run: claude-flow hive-mind init -t hierarchical-mesh -c byzantine -m 15"
+
+      # ── STEP 2: BUILD BENCHMARK PROMPT (agent constructs, displays in code block) ──
+      step_2_build_prompt:
+        what: "Construct the complete hive-mind spawn command with benchmark-style objective"
+        agent_displays: >
+          The agent builds a complete objective following prompt_structure pattern
+          and wraps it in a hive-mind spawn command. The ENTIRE command is shown
+          in a single code block for the user to copy-paste into a SECOND terminal.
+        template: |
+          ```bash
+          claude-flow hive-mind spawn --claude -n {N} -o "
+          SWARM [{NAME}]: {SCOPE_SUMMARY} | {N} workers | {FILE_COUNT} files
+
+          MEMORY KEYS: {key1}, {key2}, {key3}
+          WORKSPACE: {absolute_path}
+
+          PRIMARY DELIVERABLES:
+          1. {exact/file/path.ts}
+          2. {exact/file/path.ts}
+
+          ANTI-PATTERNS TO AVOID:
+          ❌ Do NOT use hooks statusline or hive-mind status as work substitute
+          ❌ Do NOT create PROGRESS.md, STATUS.md or any state markdown files
+          ❌ Do NOT declare completion without EXIT GATE passing
+
+          ━━━ EXISTING CODE (READ BEFORE WRITING) ━━━
+          {MODULE}: {path}
+            {ClassName}.{method}(args) → return_type
+
+          ━━━ PHASE 1: RECON (1 worker) ━━━
+          READ: {exact files}
+          MAP: {what to extract — interfaces, types, patterns}
+          STORE: memory key 'recon-{name}' namespace 'healthcare-platform'
+
+          ━━━ PHASE 2: CODER ({N} workers, parallel) ━━━
+          Worker-1 ({ROLE}):
+            CREATE: {exact/file/path.ts}
+            VALIDATE: {tsc --noEmit | jest --passWithNoTests}
+            STORE: memory key 'dim1-{label}' namespace 'healthcare-platform'
+            EXIT GATE: memory retrieve -k 'dim1-{label}' --namespace healthcare-platform | wc -c → must be > 500
+
+          Worker-2 ({ROLE}):
+            CREATE: {exact/file/path.ts}
+            VALIDATE: {command}
+            STORE: memory key 'dim2-{label}' namespace 'healthcare-platform'
+            EXIT GATE: memory retrieve -k 'dim2-{label}' --namespace healthcare-platform | wc -c → must be > 500
+
+          ━━━ PHASE 3: VERIFIER (1 worker) ━━━
+          UPSTREAM GATE: verify ALL dim keys exist with > 200 bytes BEFORE proceeding
+          V1: {command} → {expected}
+          V2: {command} → {expected}
+          STORE: memory key 'verification-{name}' namespace 'healthcare-platform'
+
+          ━━━ EXIT CRITERIA ━━━
+          ✅ All files created: find {path} -name '*.ts' | wc -l → {N}
+          ✅ TypeScript compiles: tsc --noEmit --project {tsconfig} → exit 0
+          ✅ Tests pass: jest --passWithNoTests {path} → exit 0
+          ✅ All memory keys stored with > 500 bytes
+
+          ROLLBACK: git checkout -- {paths}
+          "
+          ```
+
+      # ── STEP 3: AGENT STOPS AND WAITS ──
+      step_3_wait:
+        what: "Agent displays the command and STOPS"
+        agent_behavior: |
+          After displaying the code block:
+          1. Tell user: "Paste this command in a second terminal"
+          2. STOP. Do NOT spawn Task tool agents.
+          3. Do NOT poll hive-mind status.
+          4. Do NOT run any more commands.
+          5. Wait for user to report back with results.
+
+      # ── STEP 4: POST-TASK (agent executes after user reports completion) ──
+      step_4_post_task:
+        what: "Validate results, record completion, optionally train"
+        agent_executes:
+          - "npx @claude-flow/cli@latest memory retrieve --key 'verification-{name}' --namespace healthcare-platform"
+          - "find {path} -name '*.ts' | wc -l"
+          - "npx @claude-flow/cli@latest hooks post-task --task-id '{id}' --status success --output '{summary}'"
+          - "npx @claude-flow/cli@latest memory store --key 'phase-{X}-complete' --value '{completion_json}' --namespace healthcare-platform"
+        optional:
+          - "npx @claude-flow/cli@latest neural train --data-source '{path}' (only if significant new patterns)"
+
+    choosing_execution_model:
+      task_tool_when:
+        - "<= 8 workers needed"
+        - "interactive work requiring agent oversight"
+        - "quick iterations where results feed next step immediately"
+      hive_mind_cli_when:
+        - "> 8 workers needed"
+        - "long-running parallel workloads"
+        - "user wants detached execution"
+        - "multiple independent dimensions"
 
   per_worker_exit_gate:
     id: "pattern-per-worker-exit-gate"
@@ -617,13 +800,24 @@ anti_patterns:
   automated_cli_execution:
     id: "AP6"
     severity: "medium"
-    definition: "agent executing hive-mind spawn command directly in terminal"
+    definition: "agent executing hive-mind spawn command directly in its own terminal"
     incorrect:
-      - "running spawn in agent's bash (blocks dialog)"
-      - "heredoc to file then cat (extra steps)"
-      - "background execution with &"
-    correct: "display command in code block for user to copy-paste"
-    reason: "terminal conflicts, escaping issues, lost output, blocked dialog"
+      - "running spawn in agent's bash via run_in_terminal (blocks dialog, steals terminal)"
+      - "heredoc to file then cat (extra steps, escaping issues)"
+      - "background execution with & (lost output, no monitoring)"
+      - "running spawn without --claude (spawns idle workers with no objective)"
+    correct: |
+      Display the COMPLETE hive-mind spawn --claude command in a code block.
+      User pastes it in a SECOND terminal. The --claude flag handles:
+      - Launching Claude Code instances automatically
+      - Injecting the hive-mind coordination prompt
+      - Setting up inter-agent communication
+      Agent's role: build the command, display it, STOP, wait for user.
+    reason: >
+      Agent's terminal is shared with Claude Code. Running spawn there blocks
+      the conversation. The --claude flag automates what was previously manual
+      (no need for user to manage individual Claude instances). But the spawn
+      command itself must run in a SEPARATE terminal to avoid conflicts.
 
   npx_hooks:
     id: "AP7"
@@ -771,7 +965,7 @@ workers:
 # SECTION 14: BOOTSTRAP PROTOCOL
 # ============================================================================
 # IMPORTANT: This section documents the COMPLETE initialization sequence.
-# The sequence was validated on 2026-02-26 against v3.1.0-alpha.52.
+# The sequence was validated on 2026-02-28 against v3.5.2.
 #
 # KEY LEARNING: Do NOT use `init --force` if you already have a customized
 # .claude/settings.json or .claude-flow/config.yaml — it overwrites them.
@@ -787,46 +981,54 @@ bootstrap:
     disk_space: "500MB"          # For memory.db + neural models
 
   phase_0_cache_clear:
-    description: "Clear stale npx cache — REQUIRED when upgrading versions"
+    description: "Clear stale npx cache and install globally — REQUIRED when upgrading versions"
     why: >
-      npx caches old versions. If `doctor` shows "Version Freshness" warning,
-      or you're on an old alpha, clear cache first. Without this, all commands
-      silently use the cached (old) binary.
+      npx caches old versions and may timeout on 757+ packages (SIGTERM).
+      Global install is PREFERRED: it avoids cold-start penalty on every command
+      and ensures the correct version is always used.
     steps:
       - "rm -rf ~/.npm/_npx/*"
-      - "npx -y @claude-flow/cli@latest --version"
-    expected: "claude-flow v3.1.x-alpha.xx"
+      - "npm install -g @claude-flow/cli@latest"
+      - "claude-flow --version"
+    expected: "claude-flow v3.5.2"
     note: "zsh may prompt 'remove?' for each dir — answer 'y'"
 
   phase_a_system_init:
     description: "Initialize core subsystems (config, memory, daemon)"
     steps:
-      - command: "npx @claude-flow/cli@latest config init"
-        creates: [".claude/settings.json", ".claude-flow/config.yaml", ".mcp.json"]
-        warning: "Use config init (NOT init --force) to avoid overwriting customized files"
-      - command: "npx @claude-flow/cli@latest memory init --force --verbose"
+      - command: "claude-flow config init --force"
+        creates: ["claude-flow.config.json", ".claude-flow/config.yaml", ".claude-flow/ directory tree"]
+        note: >
+          'config init' creates claude-flow.config.json (SystemConfigSchema-validated)
+          and .claude-flow/ directory. This is DIFFERENT from 'claude-flow init --force'
+          which creates 115 files including .claude/settings.json, .claude/helpers/, CLAUDE.md.
+          Use 'config init' for config only; use 'init --force' for full scaffold (OVERWRITES existing files).
+        flags:
+          "--force, -f": "overwrite existing configuration"
+          "--sparc": "initialize with SPARC methodology (specification, pseudocode, architecture, refinement, completion)"
+          "--v3": "initialize V3 configuration (default: true)"
+      - command: "claude-flow memory init --force --verbose"
         creates: [".swarm/memory.db"]
         verification: "6/6 tests should pass (tables, ONNX, HNSW, patterns, temporal, queries)"
-      - command: "npx @claude-flow/cli@latest daemon start"
+      - command: "claude-flow daemon start"
         creates: [".claude-flow/daemon.pid", ".claude-flow/daemon.log"]
         note: "Runs in background. Check: daemon status. Stop: daemon stop"
-      - command: "npx @claude-flow/cli@latest doctor --verbose"
+      - command: "claude-flow doctor --verbose"
         expected: "10+ passed, 0-2 warnings, 0-1 failures (disk space only)"
-    note: "init --force generates 115 files but OVERWRITES settings.json and CLAUDE.md"
     warning: "init --force OVERWRITES .claude/settings.json and CLAUDE.md — backup first"
 
   phase_b_intelligence:
     description: "Train neural patterns and build agent configs"
     steps:
-      - command: "npx @claude-flow/cli@latest hooks pretrain --model-type moe --epochs 3"
+      - command: "claude-flow hooks pretrain --model-type moe --epochs 3"
         what_it_does: "Scans 84+ files, extracts 30+ patterns, learns 16+ strategies"
         duration: "~1-3 seconds"
-      - command: "npx @claude-flow/cli@latest hooks build-agents --verbose"
+      - command: "claude-flow hooks build-agents --verbose"
         creates: ["agents/coder.yaml", "agents/architect.yaml", "agents/tester.yaml",
                    "agents/security-architect.yaml", "agents/reviewer.yaml"]
         note: "Writes to PROJECT_ROOT/agents/, NOT .claude-flow/agents/ — this is correct"
-      - command: "npx @claude-flow/cli@latest neural train -p coordination"
-        what_it_does: "50 epochs, builds ReasoningBank (100 patterns)"
+      - command: "claude-flow neural train -p coordination"
+        what_it_does: "50 epochs, builds ReasoningBank (150 patterns)"
         creates: [".claude-flow/neural/patterns.json", ".claude-flow/neural/stats.json"]
     model_types:
       moe: "Mixture of Experts — routes to specialized sub-models (recommended)"
@@ -836,11 +1038,11 @@ bootstrap:
   phase_c_daemon_workers:
     description: "Dispatch background analysis workers"
     steps:
-      - command: "npx @claude-flow/cli@latest hooks worker dispatch --trigger map"
+      - command: "claude-flow hooks worker dispatch --trigger map"
         purpose: "Codebase mapping and architecture analysis"
-      - command: "npx @claude-flow/cli@latest hooks worker dispatch --trigger deepdive"
+      - command: "claude-flow hooks worker dispatch --trigger deepdive"
         purpose: "Deep analysis of complex code patterns"
-      - command: "npx @claude-flow/cli@latest hooks worker dispatch --trigger ultralearn"
+      - command: "claude-flow hooks worker dispatch --trigger ultralearn"
         purpose: "Neural training sequence, pattern consolidation"
     all_workers: [map, deepdive, ultralearn, audit, optimize, consolidate,
                   testgaps, document, refactor, benchmark]
@@ -849,42 +1051,54 @@ bootstrap:
   phase_d_hive_mind:
     description: "Initialize queen-led swarm coordination"
     command: >
-      npx @claude-flow/cli@latest hive-mind init
-      --topology hierarchical --max-agents 15 --consensus byzantine --auto
+      claude-flow hive-mind init
+      --topology hierarchical-mesh --max-agents 15 --consensus byzantine
     topologies:
       hierarchical: "Queen controls all workers (recommended for coding)"
       mesh: "Peer-to-peer coordination"
-      hierarchical-mesh: "Queen + peer groups (recommended for complex analysis)"
+      hierarchical-mesh: "Queen + peer groups (recommended for complex analysis, DEFAULT)"
       adaptive: "Dynamic topology based on workload"
     consensus_algorithms:
-      byzantine: "BFT — tolerates f faults with 3f+1 agents (most robust)"
+      byzantine: "BFT — tolerates f faults with 3f+1 agents (most robust, DEFAULT)"
       raft: "Leader election — fast, good for stable teams"
       gossip: "Epidemic protocol — eventually consistent"
+      crdt: "Conflict-free replicated data — automatic merge"
+      quorum: "Simple majority voting"
+    additional_flags:
+      "--persist": "enable persistent state (default: true)"
+      "--memory-backend": "agentdb | sqlite | hybrid (default)"
     creates: [".claude-flow/hive-mind/state.json"]
 
   phase_e_verification:
     description: "Final health check after bootstrap"
     commands:
-      - "npx @claude-flow/cli@latest doctor --verbose"
-      - "npx @claude-flow/cli@latest neural status"
-      - "npx @claude-flow/cli@latest memory stats"
+      - "claude-flow doctor --verbose"
+      - "claude-flow neural status"
+      - "claude-flow memory stats"
     expected_doctor: "10+ passed, 0-2 warnings"
     known_cosmetic_warnings:
-      - "No config file — doctor checks config.json but V3 uses config.yaml"
       - "No API keys — not needed for local Claude Code CLI usage"
+      - "Disk space — hardware constraint, not actionable"
 
   quickstart_copy_paste:
     description: "Minimal copy-paste sequence for a complete bootstrap"
     sequence:
       - "rm -rf ~/.npm/_npx/*"
-      - "npx -y @claude-flow/cli@latest --version"
-      - "npx @claude-flow/cli@latest memory init --force --verbose"
-      - "npx @claude-flow/cli@latest daemon start"
-      - "npx @claude-flow/cli@latest hooks pretrain --model-type moe --epochs 3"
-      - "npx @claude-flow/cli@latest hooks build-agents --verbose"
-      - "npx @claude-flow/cli@latest neural train -p coordination"
-      - "npx @claude-flow/cli@latest hive-mind init --topology hierarchical --max-agents 15 --consensus byzantine --auto"
-      - "npx @claude-flow/cli@latest doctor --verbose"
+      - "npm install -g @claude-flow/cli@latest"
+      - "claude-flow --version"
+      - "claude-flow config init --force"
+      - "claude-flow memory init --force --verbose"
+      - "claude-flow daemon start"
+      - "claude-flow hooks pretrain --model-type moe --epochs 3"
+      - "claude-flow hooks build-agents --verbose"
+      - "claude-flow neural train -p coordination"
+      - "claude-flow hive-mind init --topology hierarchical-mesh --max-agents 15 --consensus byzantine"
+      - "claude-flow doctor --verbose"
+    note_for_ai_agents: >
+      Execute commands ONE AT A TIME. Wait for each to fully complete before
+      running the next. Terminal commands that receive input too quickly will
+      SIGTERM/exit 130. npx-based execution may timeout on 757+ packages —
+      prefer global install via npm install -g.
 
 # ============================================================================
 # SECTION 14b: .claude-flow/ DIRECTORY STRUCTURE & EXPECTED STATE
@@ -1010,16 +1224,34 @@ directory_structure:
 
   ".claude/":
     location: "PROJECT_ROOT/.claude/"
-    populated_by: "config init or init --force"
+    populated_by: "init --force (NOT config init — these are different commands)"
     contains: ["settings.json", "helpers/", "commands/", "agents/"]
-    note: "Claude Code integration layer — hooks, permissions, statusline"
+    note: "Claude Code integration layer — hooks, permissions, statusline. Created by 'init --force' which generates 115 files."
 
 # ============================================================================
 # SECTION 14c: CONFIGURATION FILES REFERENCE
 # ============================================================================
 
 config_reference:
-  description: "Three-layer configuration architecture in Claude Flow V3"
+  description: "Four-layer configuration architecture in Claude Flow V3"
+
+  layer_0_schema:
+    file: "claude-flow.config.json"
+    purpose: "SystemConfigSchema-validated shim — checked by doctor, read by CLI core"
+    format: JSON
+    created_by: "claude-flow config init"
+    schema_source: "@claude-flow/shared/dist/core/config/schema.js (Zod)"
+    required_fields:
+      orchestrator: "REQUIRED — { session, health, lifecycle }"
+      memory: "{ type: 'hybrid' (NOT 'backend'), path, agentdb: { dimensions, indexType } }"
+      mcp: "{ name, transport: { type: 'stdio' } }"
+      swarm: "OPTIONAL — { topology, maxAgents, autoScale: { enabled, minAgents, maxAgents, ... }, coordination }"
+    key_gotchas:
+      - "'orchestrator' is REQUIRED — missing it causes Zod validation error"
+      - "'swarm.autoScale' must be an OBJECT not boolean — { enabled: true, minAgents: 2, ... }"
+      - "use 'memory.type' NOT 'memory.backend'"
+      - "extra root keys like 'neural', 'hooks', '$schema', 'version' are NOT in schema"
+    adapter: "config-adapter.js converts between SystemConfig ↔ V3Config via systemConfigToV3Config()"
 
   layer_1_runtime:
     file: ".claude-flow/config.yaml"
@@ -1034,12 +1266,13 @@ config_reference:
     sections: [version, swarm, hiveMind, memory, neural, embeddings,
                hooks, daemon, mcp, agents, learning, orchestrator,
                verification, security, logging, project]
-    schema_source: "v3/@claude-flow/shared/src/core/config/schema.ts"
+    schema_source: "@claude-flow/shared/dist/core/config/schema.js (Zod validated)"
     why_yaml: >
-      V3 uses YAML (not JSON) because: (1) YAML supports comments essential
-      for documenting 16 config sections, (2) auto-memory-hook.mjs explicitly
-      reads .claude-flow/config.yaml, (3) COMPONENTS.md states 'config.yaml
-      configures V3 runtime'. The V2 JSON format (config.json) is legacy.
+      V3 uses YAML (not JSON) for runtime config because: (1) YAML supports
+      comments essential for documenting 16 config sections, (2) auto-memory-hook.mjs
+      explicitly reads .claude-flow/config.yaml, (3) COMPONENTS.md states 'config.yaml
+      configures V3 runtime'. Note: claude-flow.config.json (layer_0) also exists
+      as the SystemConfigSchema-validated entry point — both files coexist.
 
   layer_2_hooks:
     file: ".claude/settings.json"
@@ -1061,7 +1294,7 @@ config_reference:
       env_vars:
         CLAUDE_FLOW_MODE: "v3"
         CLAUDE_FLOW_HOOKS_ENABLED: "true"
-        CLAUDE_FLOW_TOPOLOGY: "hierarchical"
+        CLAUDE_FLOW_TOPOLOGY: "hierarchical-mesh"
         CLAUDE_FLOW_MAX_AGENTS: "15"
         CLAUDE_FLOW_MEMORY_BACKEND: "hybrid"
 
@@ -1072,12 +1305,16 @@ config_reference:
 troubleshooting:
   stale_version:
     symptom: "doctor shows 'Version Freshness' warning or old alpha number"
-    fix: "rm -rf ~/.npm/_npx/* && npx -y @claude-flow/cli@latest --version"
+    fix: "rm -rf ~/.npm/_npx/* && npm install -g @claude-flow/cli@latest && claude-flow --version"
 
   config_warning:
     symptom: "doctor shows 'No config file (using defaults)'"
-    fix: "npx @claude-flow/cli@latest config init"
-    note: "Cosmetic — doctor checks for config.json but V3 uses config.yaml"
+    fix: "claude-flow config init && edit claude-flow.config.json to conform to SystemConfigSchema"
+    note: >
+      NOT cosmetic — config init creates claude-flow.config.json which must conform to
+      SystemConfigSchema (Zod). Key gotchas: 'orchestrator' is required, 'swarm.autoScale'
+      must be an object (not boolean), use 'memory.type' (not 'memory.backend').
+      Schema source: @claude-flow/shared/dist/core/config/schema.js
 
   daemon_not_running:
     symptom: "doctor shows 'Daemon Status: Not running'"
@@ -1123,18 +1360,82 @@ troubleshooting:
 # ============================================================================
 
 phase_workflow:
-  description: "standard phase execution cycle for all swarm tasks"
-  steps:
-    1_pre_task: "hooks pre-task --task-id 'phase-X'"
-    2_store_scope: "memory store --key 'phase-X-scope' --value '...'"
-    3a_in_session: "Task('Role', 'Instructions', 'agent-type') × N  (all in same message)"
-    3b_cli_swarm: "display hive-mind spawn command for user copy-paste"
-    4_completion: "in-session: receive Task results | CLI: wait for user notification"
-    5_verify: "find, wc, grep commands to validate output files"
-    6_post_task: "hooks post-task --task-id 'phase-X' --success"
-    7_neural_train: "neural train --data-source '...' (only if significant new patterns)"
-    8_store_complete: "memory store --key 'phase-X-complete'"
-    9_next_phase: "repeat cycle"
+  description: >
+    Standard phase execution cycle for all swarm tasks.
+    This is the MASTER WORKFLOW that the coordinator agent follows.
+    Each phase is a complete pre-task → prompt → paste → post-task cycle.
+  
+  overview: |
+    ┌─────────────────────────────────────────────────────┐
+    │  PHASE N EXECUTION CYCLE                            │
+    │                                                     │
+    │  1. PRE-TASK  → agent runs hooks, stores scope      │
+    │  2. PROMPT    → agent builds benchmark-style prompt  │
+    │  3. DISPLAY   → agent shows spawn command in ```     │
+    │  4. ── STOP ──→ user pastes in second terminal      │
+    │  5. WAIT      → agent waits for user notification    │
+    │  6. VALIDATE  → agent runs find/wc/grep checks      │
+    │  7. POST-TASK → agent records completion             │
+    │  8. NEXT      → repeat for Phase N+1                │
+    └─────────────────────────────────────────────────────┘
+
+  detailed_steps:
+    step_1_pre_task:
+      agent_runs:
+        - "npx @claude-flow/cli@latest hooks pre-task --description '{task}' --task-id 'phase-{X}' --namespace healthcare-platform"
+        - "npx @claude-flow/cli@latest memory store --key 'phase-{X}-scope' --value '{scope}' --namespace healthcare-platform"
+      purpose: "register task in lifecycle system, store scope for workers to read"
+
+    step_2_build_prompt:
+      agent_does: "constructs the benchmark-style objective following prompt_structure pattern"
+      includes:
+        - "SWARM header with scope, metrics, file count"
+        - "MEMORY keys workers will write to"
+        - "WORKSPACE absolute path"
+        - "PRIMARY DELIVERABLES with exact file paths"
+        - "ANTI-PATTERNS block (all from section 11)"
+        - "EXISTING CODE references (read before write)"
+        - "3-tier phases: RECON → CODER → VERIFIER"
+        - "Per-worker EXIT GATES with memory retrieve + wc -c"
+        - "EXIT CRITERIA with measurable commands"
+        - "ROLLBACK command"
+
+    step_3_display:
+      agent_does: |
+        Wraps the objective in:
+        ```bash
+        claude-flow hive-mind spawn --claude -n {N} -o "{COMPLETE_OBJECTIVE}"
+        ```
+        Tells user: "Paste this in a second terminal."
+
+    step_4_stop:
+      agent_behavior: "STOP. No more tool calls. No polling. No Task spawns."
+      wait_for: "User returns with results or reports errors."
+
+    step_5_validate:
+      agent_runs:
+        - "find {path} -name '*.ts' -newer {reference} | wc -l"
+        - "npx @claude-flow/cli@latest memory retrieve --key 'verification-{name}' --namespace healthcare-platform"
+        - "tsc --noEmit --project {tsconfig} (if TypeScript)"
+        - "jest --passWithNoTests {path} (if tests expected)"
+
+    step_6_post_task:
+      agent_runs:
+        - "npx @claude-flow/cli@latest hooks post-task --task-id 'phase-{X}' --status success --output '{summary}'"
+        - "npx @claude-flow/cli@latest memory store --key 'phase-{X}-complete' --value '{results}' --namespace healthcare-platform"
+      optional: "npx @claude-flow/cli@latest neural train --data-source '{path}' (if significant patterns)"
+
+    step_7_next_phase:
+      check: "are there more phases? if yes, repeat from step_1 with phase X+1"
+      gate: "if next phase depends on this one, verify memory keys exist before proceeding"
+
+  multi_swarm_sequencing:
+    description: "when phases have dependencies, use sequential swarms with gates"
+    example: |
+      SWARM-A (Phase 1+2, independent): dim-1 + dim-2 workers
+      SWARM-B (Phase 3+4, independent): dim-3 + dim-4 workers
+      ── GATE: verify all SWARM-A + SWARM-B memory keys > 500 bytes ──
+      SWARM-C (Phase 5, depends on A+B): synthesis + verification workers
 
 # ============================================================================
 # SECTION 16: TOOL CHECKLIST (ALL must be used)
@@ -1248,8 +1549,8 @@ agent_roles:
 compliance:
   description: "run these before any code generation sprint"
   checks:
-    - command: "npx @claude-flow/cli@latest --version"
-      expected: ">= 3.1.0-alpha.44"
+    - command: "claude-flow --version"
+      expected: ">= 3.5.0"
     - command: "ls .claude/helpers/hook-handler.cjs .claude/helpers/auto-memory-hook.mjs"
       expected: "both files must exist"
     - command: "grep 'CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS' .claude/settings.json"

@@ -5,6 +5,8 @@ import { colors } from 'src/web/design-system/src/tokens/colors';
 import { typography } from 'src/web/design-system/src/tokens/typography';
 import { spacing } from 'src/web/design-system/src/tokens/spacing';
 import { MainLayout } from 'src/web/web/src/layouts/MainLayout';
+import { getProfile } from '../../api/auth';
+import { restClient } from '../../api/client';
 
 const PageContainer = styled.div`
   max-width: 600px;
@@ -137,15 +139,28 @@ export default function ProfileEditPage() {
     dob: '',
   });
 
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    // TODO: Fetch actual profile data from API
-    setForm({
-      name: 'Maria Silva',
-      email: 'maria@example.com',
-      phone: '(11) 99999-9999',
-      cpf: '***.***.***-00',
-      dob: '1990-01-15',
-    });
+    const fetchProfile = async () => {
+      setLoading(true);
+      try {
+        const data = await getProfile();
+        setForm({
+          name: data.name || '',
+          email: data.email || '',
+          phone: data.phone || '',
+          cpf: data.cpf || '',
+          dob: data.dob || '',
+        });
+      } catch (err) {
+        setError('Falha ao carregar perfil');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfile();
   }, []);
 
   const handleChange = (field: keyof ProfileData) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -155,10 +170,12 @@ export default function ProfileEditPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
+    setError(null);
     try {
-      // TODO: Call API to save profile changes
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await restClient.put('/users/me', form);
       router.back();
+    } catch (err) {
+      setError('Falha ao salvar perfil');
     } finally {
       setSaving(false);
     }
@@ -169,6 +186,8 @@ export default function ProfileEditPage() {
       <PageContainer>
         <Title>Editar Perfil</Title>
         <Subtitle>Atualize suas informacoes pessoais.</Subtitle>
+
+        {error && <Subtitle style={{ color: colors.semantic.error }}>{error}</Subtitle>}
 
         <form onSubmit={handleSave}>
           <FieldGroup>

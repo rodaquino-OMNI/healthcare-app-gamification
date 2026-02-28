@@ -8,6 +8,7 @@ import { typography } from '@design-system/tokens/typography';
 import { spacing, spacingValues } from '@design-system/tokens/spacing';
 import { borderRadius } from '@design-system/tokens/borderRadius';
 import { sizing } from '@design-system/tokens/sizing';
+import { restClient } from '../../api/client';
 
 // --- Styled Components ---
 
@@ -232,7 +233,7 @@ const MOCK_CONTACTS: EmergencyContact[] = [
 /**
  * EmergencyContacts screen -- manages the user's emergency contact list.
  * Each contact shows priority badge, name, phone, relationship,
- * and inline Edit/Delete actions. Inline add form on "Add Contact".
+ * and inline Edit/Delete actions. Inline add/edit form on "Add Contact".
  */
 export const EmergencyContactsScreen: React.FC = () => {
   const { t } = useTranslation();
@@ -241,6 +242,8 @@ export const EmergencyContactsScreen: React.FC = () => {
   const [newName, setNewName] = useState('');
   const [newPhone, setNewPhone] = useState('');
   const [newRelationship, setNewRelationship] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const handleDelete = (contact: EmergencyContact) => {
     Alert.alert(
@@ -251,62 +254,180 @@ export const EmergencyContactsScreen: React.FC = () => {
         {
           text: t('settings.emergencyContacts.delete'),
           style: 'destructive',
-          onPress: () => {
-            setContacts((prev) => prev.filter((c) => c.id !== contact.id));
+          onPress: async () => {
+            setLoading(true);
+            try {
+              await restClient.delete(`/users/me/emergency-contacts/${contact.id}`);
+              setContacts((prev) => prev.filter((c) => c.id !== contact.id));
+            } catch (err: unknown) {
+              Alert.alert('Erro', err instanceof Error ? err.message : 'Erro inesperado.');
+            } finally {
+              setLoading(false);
+            }
           },
         },
       ],
     );
   };
 
-  const handleAddSave = () => {
-    if (!newName.trim() || !newPhone.trim()) return;
-
-    const newContact: EmergencyContact = {
-      id: Date.now().toString(),
-      name: newName.trim(),
-      phone: newPhone.trim(),
-      relationship: newRelationship.trim() || '-',
-      priority: contacts.length + 1,
-    };
-
-    setContacts((prev) => [...prev, newContact]);
-    setNewName('');
-    setNewPhone('');
-    setNewRelationship('');
+  const handleEdit = (contact: EmergencyContact) => {
+    setEditingId(contact.id);
+    setNewName(contact.name);
+    setNewPhone(contact.phone);
+    setNewRelationship(contact.relationship);
     setShowAddForm(false);
   };
 
-  const renderItem = ({ item }: { item: EmergencyContact }) => (
-    <Card testID={`contact-card-${item.id}`}>
-      <PriorityBadge>
-        <PriorityText>{item.priority}</PriorityText>
-      </PriorityBadge>
-      <ContactInfo>
-        <ContactName>{item.name}</ContactName>
-        <ContactPhone>{item.phone}</ContactPhone>
-        <ContactRelationship>{item.relationship}</ContactRelationship>
-      </ContactInfo>
-      <ActionRow>
-        <IconButton
-          onPress={() => {/* TODO: edit mode */}}
-          accessibilityRole="button"
-          accessibilityLabel={`${t('settings.emergencyContacts.edit')} ${item.name}`}
-          testID={`contact-edit-${item.id}`}
-        >
-          <IconText>{'E'}</IconText>
-        </IconButton>
-        <IconButton
-          onPress={() => handleDelete(item)}
-          accessibilityRole="button"
-          accessibilityLabel={`${t('settings.emergencyContacts.delete')} ${item.name}`}
-          testID={`contact-delete-${item.id}`}
-        >
-          <DeleteIconText>{'X'}</DeleteIconText>
-        </IconButton>
-      </ActionRow>
-    </Card>
-  );
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setNewName('');
+    setNewPhone('');
+    setNewRelationship('');
+  };
+
+  const handleEditSave = async (contactId: string) => {
+    if (!newName.trim() || !newPhone.trim()) return;
+
+    setLoading(true);
+    try {
+      await restClient.put(`/users/me/emergency-contacts/${contactId}`, {
+        name: newName.trim(),
+        phone: newPhone.trim(),
+        relationship: newRelationship.trim() || '-',
+      });
+      setContacts((prev) =>
+        prev.map((c) =>
+          c.id === contactId
+            ? { ...c, name: newName.trim(), phone: newPhone.trim(), relationship: newRelationship.trim() || '-' }
+            : c,
+        ),
+      );
+      setEditingId(null);
+      setNewName('');
+      setNewPhone('');
+      setNewRelationship('');
+    } catch (err: unknown) {
+      Alert.alert('Erro', err instanceof Error ? err.message : 'Erro inesperado.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddSave = async () => {
+    if (!newName.trim() || !newPhone.trim()) return;
+
+    setLoading(true);
+    try {
+      const response = await restClient.post('/users/me/emergency-contacts', {
+        name: newName.trim(),
+        phone: newPhone.trim(),
+        relationship: newRelationship.trim() || '-',
+        priority: contacts.length + 1,
+      });
+
+      const created: EmergencyContact = response.data ?? {
+        id: Date.now().toString(),
+        name: newName.trim(),
+        phone: newPhone.trim(),
+        relationship: newRelationship.trim() || '-',
+        priority: contacts.length + 1,
+      };
+
+      setContacts((prev) => [...prev, created]);
+      setNewName('');
+      setNewPhone('');
+      setNewRelationship('');
+      setShowAddForm(false);
+    } catch (err: unknown) {
+      Alert.alert('Erro', err instanceof Error ? err.message : 'Erro inesperado.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const renderItem = ({ item }: { item: EmergencyContact }) => {
+    if (editingId === item.id) {
+      return (
+        <InlineForm>
+          <FormLabel>{t('settings.emergencyContacts.name')}</FormLabel>
+          <FormInput
+            value={newName}
+            onChangeText={setNewName}
+            placeholder={t('settings.emergencyContacts.name')}
+            placeholderTextColor={colors.gray[40]}
+            testID={`contact-edit-name-${item.id}`}
+          />
+          <FormLabel>{t('settings.emergencyContacts.phone')}</FormLabel>
+          <FormInput
+            value={newPhone}
+            onChangeText={setNewPhone}
+            placeholder="+55 11 99999-9999"
+            placeholderTextColor={colors.gray[40]}
+            keyboardType="phone-pad"
+            testID={`contact-edit-phone-${item.id}`}
+          />
+          <FormLabel>{t('settings.emergencyContacts.relationship')}</FormLabel>
+          <FormInput
+            value={newRelationship}
+            onChangeText={setNewRelationship}
+            placeholder={t('settings.emergencyContacts.relationship')}
+            placeholderTextColor={colors.gray[40]}
+            testID={`contact-edit-relationship-${item.id}`}
+          />
+          <FormButtonRow>
+            <FormSaveButton
+              onPress={() => handleEditSave(item.id)}
+              disabled={loading}
+              accessibilityRole="button"
+              accessibilityLabel={t('settings.emergencyContacts.save')}
+              testID={`contact-edit-save-${item.id}`}
+            >
+              <FormSaveText>{t('settings.emergencyContacts.save')}</FormSaveText>
+            </FormSaveButton>
+            <FormCancelButton
+              onPress={handleCancelEdit}
+              accessibilityRole="button"
+              accessibilityLabel={t('settings.emergencyContacts.cancel')}
+              testID={`contact-edit-cancel-${item.id}`}
+            >
+              <FormCancelText>{t('settings.emergencyContacts.cancel')}</FormCancelText>
+            </FormCancelButton>
+          </FormButtonRow>
+        </InlineForm>
+      );
+    }
+
+    return (
+      <Card testID={`contact-card-${item.id}`}>
+        <PriorityBadge>
+          <PriorityText>{item.priority}</PriorityText>
+        </PriorityBadge>
+        <ContactInfo>
+          <ContactName>{item.name}</ContactName>
+          <ContactPhone>{item.phone}</ContactPhone>
+          <ContactRelationship>{item.relationship}</ContactRelationship>
+        </ContactInfo>
+        <ActionRow>
+          <IconButton
+            onPress={() => handleEdit(item)}
+            accessibilityRole="button"
+            accessibilityLabel={`${t('settings.emergencyContacts.edit')} ${item.name}`}
+            testID={`contact-edit-${item.id}`}
+          >
+            <IconText>{'E'}</IconText>
+          </IconButton>
+          <IconButton
+            onPress={() => handleDelete(item)}
+            accessibilityRole="button"
+            accessibilityLabel={`${t('settings.emergencyContacts.delete')} ${item.name}`}
+            testID={`contact-delete-${item.id}`}
+          >
+            <DeleteIconText>{'X'}</DeleteIconText>
+          </IconButton>
+        </ActionRow>
+      </Card>
+    );
+  };
 
   const renderEmpty = () => (
     <EmptyContainer>
@@ -360,6 +481,7 @@ export const EmergencyContactsScreen: React.FC = () => {
               <FormButtonRow>
                 <FormSaveButton
                   onPress={handleAddSave}
+                  disabled={loading}
                   accessibilityRole="button"
                   accessibilityLabel={t('settings.emergencyContacts.save')}
                   testID="contact-add-save"
@@ -379,9 +501,10 @@ export const EmergencyContactsScreen: React.FC = () => {
           ) : null
         }
       />
-      {!showAddForm && (
+      {!showAddForm && editingId === null && (
         <AddContactButton
           onPress={() => setShowAddForm(true)}
+          disabled={loading}
           accessibilityRole="button"
           accessibilityLabel={t('settings.emergencyContacts.addContact')}
           testID="contacts-add-button"

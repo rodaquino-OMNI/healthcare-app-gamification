@@ -5,6 +5,7 @@ import { colors } from 'src/web/design-system/src/tokens/colors';
 import { typography } from 'src/web/design-system/src/tokens/typography';
 import { spacing } from 'src/web/design-system/src/tokens/spacing';
 import { MainLayout } from 'src/web/web/src/layouts/MainLayout';
+import { restClient } from 'src/web/web/src/api/client';
 
 const PageContainer = styled.div`
   max-width: 720px;
@@ -97,15 +98,32 @@ export default function NotificationDetailPage() {
   const router = useRouter();
   const { id } = router.query;
 
-  // TODO: Fetch notification by id from API
-  const [notification] = useState({
-    id: id as string,
-    title: 'Notificacao',
-    body: 'Detalhes da notificacao serao carregados aqui.',
-    journey: 'health',
-    createdAt: new Date().toISOString(),
-    deepLink: null as string | null,
-  });
+  const [notification, setNotification] = useState<{
+    id: string;
+    title: string;
+    body: string;
+    journey: string;
+    createdAt: string;
+    deepLink: string | null;
+  } | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!id) return;
+
+    restClient
+      .get(`/notifications/${id}`)
+      .then((res) => {
+        setNotification(res.data);
+      })
+      .catch(() => {
+        setError('Erro ao carregar notificacao.');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [id]);
 
   const getJourneyColor = (journey: string): string => {
     switch (journey) {
@@ -132,22 +150,26 @@ export default function NotificationDetailPage() {
           Voltar
         </BackButton>
 
-        <NotificationCard>
-          <JourneyBadge journeyColor={getJourneyColor(notification.journey)}>
-            {getJourneyLabel(notification.journey)}
-          </JourneyBadge>
-          <Title>{notification.title}</Title>
-          <TimeStamp>
-            {new Date(notification.createdAt).toLocaleString('pt-BR')}
-          </TimeStamp>
-          <Body>{notification.body}</Body>
+        {loading && <div>Carregando...</div>}
+        {error && <div>{error}</div>}
+        {!loading && !error && notification && (
+          <NotificationCard>
+            <JourneyBadge journeyColor={getJourneyColor(notification.journey)}>
+              {getJourneyLabel(notification.journey)}
+            </JourneyBadge>
+            <Title>{notification.title}</Title>
+            <TimeStamp>
+              {new Date(notification.createdAt).toLocaleString('pt-BR')}
+            </TimeStamp>
+            <Body>{notification.body}</Body>
 
-          {notification.deepLink && (
-            <ActionButton onClick={() => router.push(notification.deepLink!)}>
-              Ver mais
-            </ActionButton>
-          )}
-        </NotificationCard>
+            {notification.deepLink && (
+              <ActionButton onClick={() => router.push(notification.deepLink!)}>
+                Ver mais
+              </ActionButton>
+            )}
+          </NotificationCard>
+        )}
       </PageContainer>
     </MainLayout>
   );

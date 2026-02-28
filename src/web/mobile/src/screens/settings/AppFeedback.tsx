@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, Alert } from 'react-native';
+import { ScrollView, Alert, Linking, Platform } from 'react-native';
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
 
@@ -8,6 +8,7 @@ import { typography } from '@design-system/tokens/typography';
 import { spacing, spacingValues } from '@design-system/tokens/spacing';
 import { borderRadius } from '@design-system/tokens/borderRadius';
 import { sizing } from '@design-system/tokens/sizing';
+import { restClient } from '../../api/client';
 
 // --- Styled Components ---
 
@@ -180,8 +181,7 @@ export const AppFeedbackScreen: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      // TODO: call API to submit feedback
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      await restClient.post('/feedback', { rating, category, comment });
       Alert.alert(
         t('settings.feedback.successTitle'),
         t('settings.feedback.successMessage'),
@@ -189,14 +189,19 @@ export const AppFeedbackScreen: React.FC = () => {
       setRating(0);
       setCategory('');
       setComment('');
-    } catch {
-      Alert.alert(
-        t('settings.feedback.errorTitle'),
-        t('settings.feedback.errorMessage'),
-      );
+    } catch (err: unknown) {
+      Alert.alert('Erro', err instanceof Error ? err.message : 'Erro inesperado.');
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleAppStoreRating = () => {
+    const url =
+      Platform.OS === 'ios'
+        ? 'itms-apps://apps.apple.com/app/idYOUR_APP_ID?action=write-review'
+        : 'market://details?id=com.austa.health';
+    Linking.openURL(url);
   };
 
   const handleRateOnStore = () => {
@@ -205,7 +210,7 @@ export const AppFeedbackScreen: React.FC = () => {
       t('settings.feedback.rateOnStoreConfirm'),
       [
         { text: t('settings.feedback.cancel'), style: 'cancel' },
-        { text: t('settings.feedback.confirm'), onPress: () => {/* TODO: open store */} },
+        { text: t('settings.feedback.confirm'), onPress: handleAppStoreRating },
       ],
     );
   };

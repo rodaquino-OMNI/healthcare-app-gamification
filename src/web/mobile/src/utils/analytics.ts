@@ -37,6 +37,20 @@ import * as Constants from '../constants/index';
 // Default to enabling analytics
 let analyticsEnabled = true;
 
+// Analytics service IDs - configured via app.config.js extra or environment variables
+const GA_TRACKING_ID = (Constants as any).expoConfig?.extra?.gaTrackingId
+  || (typeof process !== 'undefined' && process.env?.EXPO_PUBLIC_GA_TRACKING_ID)
+  || 'G-XXXXXXXXXX';
+const DD_APP_ID = (Constants as any).expoConfig?.extra?.datadogAppId
+  || (typeof process !== 'undefined' && process.env?.EXPO_PUBLIC_DATADOG_APP_ID)
+  || 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX';
+const DD_CLIENT_TOKEN = (Constants as any).expoConfig?.extra?.datadogClientToken
+  || (typeof process !== 'undefined' && process.env?.EXPO_PUBLIC_DATADOG_CLIENT_TOKEN)
+  || 'pub_XXXXXXXX';
+const SENTRY_DSN = (Constants as any).expoConfig?.extra?.sentryDsn
+  || (typeof process !== 'undefined' && process.env?.EXPO_PUBLIC_SENTRY_DSN)
+  || 'https://example@sentry.io/123456';
+
 /**
  * Initializes the analytics services with user information and application context.
  * @param options Configuration options for analytics initialization
@@ -52,7 +66,7 @@ export const initAnalytics = async (options: {
     analyticsEnabled = options.enableAnalytics !== false;
 
     // Initialize Google Analytics
-    ReactGA.initialize('G-XXXXXXXXXX', { // Replace with actual tracking ID in production
+    ReactGA.initialize(GA_TRACKING_ID, {
       gaOptions: {
         userId: options.userId
       },
@@ -61,8 +75,8 @@ export const initAnalytics = async (options: {
 
     // Initialize Datadog RUM
     datadogRum.init({
-      applicationId: 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX', // Replace with actual Datadog app ID
-      clientToken: 'pub_XXXXXXXX', // Replace with actual Datadog token
+      applicationId: DD_APP_ID,
+      clientToken: DD_CLIENT_TOKEN,
       env: ENVIRONMENT,
       version: APP_VERSION,
       trackUserInteractions: true,
@@ -74,7 +88,7 @@ export const initAnalytics = async (options: {
 
     // Set up Sentry
     Sentry.init({
-      dsn: 'https://example@sentry.io/123456', // Replace with actual Sentry DSN
+      dsn: SENTRY_DSN,
       environment: ENVIRONMENT,
       release: APP_VERSION,
       enableAutoSessionTracking: true,

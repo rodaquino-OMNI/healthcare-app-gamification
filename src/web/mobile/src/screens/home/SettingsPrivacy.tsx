@@ -8,6 +8,9 @@ import {
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
 
+import { deleteAccount } from '../../../api/auth';
+import { useAuth } from '../../../context/AuthContext';
+
 import { colors } from '@design-system/tokens/colors';
 import { typography } from '@design-system/tokens/typography';
 import { spacing, spacingValues } from '@design-system/tokens/spacing';
@@ -269,6 +272,7 @@ interface SharingState {
  */
 export const SettingsPrivacyScreen: React.FC = () => {
   const { t } = useTranslation();
+  const { session, signOut } = useAuth();
   const [consent, setConsent] = useState<ConsentState>({
     serviceImprovement: true,
     marketing: false,
@@ -307,20 +311,30 @@ export const SettingsPrivacyScreen: React.FC = () => {
     );
   };
 
-  const handleRequestDeletion = () => {
-    Alert.alert(
-      t('settings.privacy.deletionRequestTitle'),
-      t('settings.privacy.deletionRequestMessage'),
-    );
+  const handleRequestDeletion = async () => {
+    try {
+      if (!session?.accessToken) return;
+      await deleteAccount(session.accessToken, 'CONFIRM_DELETE');
+      await signOut();
+    } catch (err: unknown) {
+      Alert.alert(
+        t('settings.privacy.errorTitle'),
+        err instanceof Error ? err.message : t('settings.privacy.errorGeneric')
+      );
+    }
   };
 
-  const handleDeleteAccount = () => {
-    setShowDeleteModal(false);
-    // TODO: call API to delete account
-    Alert.alert(
-      t('settings.privacy.accountDeletedTitle'),
-      t('settings.privacy.accountDeletedMessage'),
-    );
+  const handleDeleteAccount = async () => {
+    try {
+      if (!session?.accessToken) return;
+      await deleteAccount(session.accessToken, 'CONFIRM_DELETE');
+      await signOut();
+    } catch (err: unknown) {
+      Alert.alert(
+        t('settings.privacy.errorTitle'),
+        err instanceof Error ? err.message : t('settings.privacy.errorGeneric')
+      );
+    }
   };
 
   const trackColor = {

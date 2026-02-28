@@ -6,6 +6,9 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+// Prisma 7.x migration: When upgrading, move env("DATABASE_URL") to prisma.config.ts
+// using defineConfig({ earlyAccess: true, datasource: { url: envField("DATABASE_URL") } })
+// See: prisma.config.ts in this directory for forward-compatible configuration
 
 // ──────────────────────────────────────────────────────────────
 // ENUMS

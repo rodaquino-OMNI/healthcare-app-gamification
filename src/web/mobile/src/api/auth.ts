@@ -57,6 +57,39 @@ export interface UpdateProfileData {
   avatarUrl?: string;
   language?: string;
   notificationsEnabled?: boolean;
+  birthDate?: string;
+  bloodType?: string;
+  allergies?: string;
+  chronicConditions?: string[];
+  insurance?: {
+    provider?: string;
+    planNumber?: string;
+    groupNumber?: string;
+    planType?: string;
+    hasInsurance?: boolean;
+  };
+  address?: {
+    cep?: string;
+    street?: string;
+    number?: string;
+    complement?: string;
+    neighborhood?: string;
+    city?: string;
+    state?: string;
+  };
+  documents?: {
+    cpf?: string;
+    rg?: string;
+    documentType?: string;
+    documentUrl?: string;
+  };
+  emergencyContact?: {
+    name?: string;
+    phone?: string;
+    relationship?: string;
+    isPrimary?: boolean;
+  };
+  biometricEnabled?: boolean;
 }
 
 // ---------------------------------------------------------------------------

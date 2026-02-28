@@ -6,6 +6,7 @@ import { typography } from 'src/web/design-system/src/tokens/typography';
 import { spacing } from 'src/web/design-system/src/tokens/spacing';
 import { MainLayout } from 'src/web/web/src/layouts/MainLayout';
 import { WEB_GLOBAL_ROUTES } from 'src/web/shared/constants/routes';
+import { restClient } from 'src/web/web/src/api/client';
 
 const PageContainer = styled.div`
   max-width: 720px;
@@ -130,6 +131,7 @@ export default function SearchResultsPage() {
   const query = (router.query.q as string) || '';
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const getJourneyColor = (journey: string): string => {
     switch (journey) {
@@ -143,14 +145,28 @@ export default function SearchResultsPage() {
   useEffect(() => {
     if (!query) return;
 
+    const controller = new AbortController();
     setLoading(true);
-    // TODO: Replace with actual API call
-    const timeout = setTimeout(() => {
-      setResults([]);
-      setLoading(false);
-    }, 500);
+    setError(null);
 
-    return () => clearTimeout(timeout);
+    restClient
+      .get<{ results: SearchResult[] }>('/search', {
+        params: { q: query },
+        signal: controller.signal,
+      })
+      .then((res) => {
+        setResults(res.data.results ?? []);
+      })
+      .catch((err) => {
+        if (err.name !== 'CanceledError') {
+          setError('Erro ao buscar resultados. Tente novamente.');
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+
+    return () => controller.abort();
   }, [query]);
 
   return (
@@ -167,7 +183,12 @@ export default function SearchResultsPage() {
           </ResultCount>
         </SearchHeader>
 
-        {!loading && results.length === 0 ? (
+        {error ? (
+          <EmptyState>
+            <EmptyTitle>Erro na busca</EmptyTitle>
+            <EmptyDescription>{error}</EmptyDescription>
+          </EmptyState>
+        ) : !loading && results.length === 0 ? (
           <EmptyState>
             <EmptyTitle>Nenhum resultado encontrado</EmptyTitle>
             <EmptyDescription>

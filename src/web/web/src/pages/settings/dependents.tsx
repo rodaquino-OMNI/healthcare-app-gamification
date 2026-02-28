@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { getDependents, removeDependent } from '../../api/settings';
 
 interface Dependent {
   id: string;
@@ -9,12 +10,8 @@ interface Dependent {
   relationship: string;
   dob: string;
   cpf: string;
+  gender: string;
 }
-
-const MOCK_DEPENDENTS: Dependent[] = [
-  { id: '1', name: 'Joao Silva', relationship: 'Filho', dob: '10/05/2015', cpf: '987.654.321-00' },
-  { id: '2', name: 'Ana Silva', relationship: 'Filha', dob: '22/08/2018', cpf: '876.543.210-99' },
-];
 
 /**
  * Dependents list page.
@@ -22,11 +19,32 @@ const MOCK_DEPENDENTS: Dependent[] = [
  */
 const DependentsPage: NextPage = () => {
   const router = useRouter();
-  const [dependents] = useState<Dependent[]>(MOCK_DEPENDENTS);
+  const [dependents, setDependents] = useState<Dependent[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleRemove = (id: string) => {
-    // TODO: Confirm and remove dependent via API
-    console.log('Remove dependent:', id);
+  useEffect(() => {
+    const fetchDependents = async () => {
+      setLoading(true);
+      try {
+        const data = await getDependents();
+        setDependents(data);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Erro ao carregar dependentes.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDependents();
+  }, []);
+
+  const handleRemove = async (id: string) => {
+    try {
+      await removeDependent(id);
+      setDependents(prev => prev.filter(d => d.id !== id));
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro ao remover dependente.');
+    }
   };
 
   return (
@@ -34,7 +52,17 @@ const DependentsPage: NextPage = () => {
       <h1 style={titleStyle}>Dependentes</h1>
       <p style={subtitleStyle}>Gerencie os dependentes vinculados ao seu plano.</p>
 
-      {dependents.length === 0 ? (
+      {error ? (
+        <p style={errorStyle}>{error}</p>
+      ) : null}
+
+      {loading ? (
+        <div style={{ ...cardStyle, textAlign: 'center' as const }}>
+          <p style={{ fontSize: typography.fontSize['text-md'], color: colors.gray[40], margin: 0 }}>
+            Carregando dependentes...
+          </p>
+        </div>
+      ) : dependents.length === 0 ? (
         <div style={{ ...cardStyle, textAlign: 'center' as const }}>
           <p style={{ fontSize: typography.fontSize['text-md'], color: colors.gray[40], margin: 0 }}>
             Nenhum dependente cadastrado.
@@ -118,6 +146,10 @@ const addBtnStyle: React.CSSProperties = {
   borderRadius: borderRadius.md, cursor: 'pointer', fontSize: typography.fontSize['text-md'],
   fontWeight: typography.fontWeight.medium, fontFamily: typography.fontFamily.body,
   marginTop: spacing.md,
+};
+const errorStyle: React.CSSProperties = {
+  fontSize: typography.fontSize['text-sm'], color: colors.semantic.error,
+  marginBottom: spacing.md, fontFamily: typography.fontFamily.body,
 };
 
 export default DependentsPage;

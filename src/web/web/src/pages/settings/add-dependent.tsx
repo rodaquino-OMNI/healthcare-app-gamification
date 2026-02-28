@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { addDependent } from '../../api/settings';
 
 /**
  * Add dependent form page.
@@ -14,11 +15,21 @@ const AddDependentPage: NextPage = () => {
   const [dob, setDob] = useState('');
   const [relationship, setRelationship] = useState('');
   const [gender, setGender] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!name || !cpf || !dob || !relationship) return;
-    // TODO: Submit new dependent via API
-    router.push('/settings/dependents');
+    setLoading(true);
+    setError('');
+    try {
+      await addDependent({ name, cpf, dob, relationship, gender });
+      router.push('/settings/dependents');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro ao adicionar dependente.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const isValid = name && cpf && dob && relationship;
@@ -66,18 +77,22 @@ const AddDependentPage: NextPage = () => {
           </select>
         </div>
 
+        {error ? (
+          <p style={errorStyle}>{error}</p>
+        ) : null}
+
         <button
           onClick={handleSubmit}
-          disabled={!isValid}
+          disabled={!isValid || loading}
           style={{
             ...primaryButtonStyle,
-            backgroundColor: isValid ? colors.brand.primary : colors.gray[30],
-            cursor: isValid ? 'pointer' : 'not-allowed',
+            backgroundColor: isValid && !loading ? colors.brand.primary : colors.gray[30],
+            cursor: isValid && !loading ? 'pointer' : 'not-allowed',
           }}
         >
-          Cadastrar Dependente
+          {loading ? 'Cadastrando...' : 'Cadastrar Dependente'}
         </button>
-        <button onClick={() => router.back()} style={secondaryButtonStyle}>Cancelar</button>
+        <button onClick={() => router.back()} style={secondaryButtonStyle} disabled={loading}>Cancelar</button>
       </div>
     </div>
   );
@@ -119,6 +134,10 @@ const secondaryButtonStyle: React.CSSProperties = {
   color: colors.gray[50], border: `1px solid ${colors.gray[20]}`, borderRadius: borderRadius.md,
   cursor: 'pointer', fontSize: typography.fontSize['text-md'], fontFamily: typography.fontFamily.body,
   marginTop: spacing.xs,
+};
+const errorStyle: React.CSSProperties = {
+  fontSize: typography.fontSize['text-sm'], color: colors.semantic.error,
+  marginBottom: spacing.md, fontFamily: typography.fontFamily.body,
 };
 
 export default AddDependentPage;

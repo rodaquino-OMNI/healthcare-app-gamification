@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { changePassword } from '@web/web/src/api/auth';
 
 /**
  * Change password page.
@@ -13,9 +14,12 @@ const ChangePasswordPage: NextPage = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setError('');
+    setSuccess(false);
     if (!currentPassword || !newPassword || !confirmPassword) {
       setError('Preencha todos os campos.');
       return;
@@ -28,8 +32,16 @@ const ChangePasswordPage: NextPage = () => {
       setError('As senhas nao coincidem.');
       return;
     }
-    // TODO: Call API to change password
-    router.push('/settings');
+    setLoading(true);
+    try {
+      await changePassword(currentPassword, newPassword);
+      setSuccess(true);
+      setTimeout(() => router.push('/settings'), 1500);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro ao alterar senha. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -39,6 +51,7 @@ const ChangePasswordPage: NextPage = () => {
 
       <div style={cardStyle}>
         {error && <div style={errorStyle}>{error}</div>}
+        {success && <div style={{backgroundColor: colors.semantic.successBg, color: colors.semantic.success, padding: spacing.sm, borderRadius: borderRadius.sm, marginBottom: spacing.md, fontSize: typography.fontSize['text-sm'], fontFamily: typography.fontFamily.body}}>Senha alterada com sucesso! Redirecionando...</div>}
 
         <div style={fieldGroup}>
           <label style={labelStyle}>Senha Atual</label>
@@ -80,7 +93,7 @@ const ChangePasswordPage: NextPage = () => {
           <li>Ao menos um caractere especial</li>
         </ul>
 
-        <button onClick={handleSubmit} style={primaryButtonStyle}>Alterar Senha</button>
+        <button onClick={handleSubmit} disabled={loading} style={{...primaryButtonStyle, opacity: loading ? 0.6 : 1}}>{loading ? 'Alterando...' : 'Alterar Senha'}</button>
         <button onClick={() => router.back()} style={secondaryButtonStyle}>Cancelar</button>
       </div>
     </div>

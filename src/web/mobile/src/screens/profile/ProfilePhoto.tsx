@@ -11,6 +11,10 @@ import { spacing } from '@design-system/tokens/spacing';
 import { borderRadius } from '@design-system/tokens/borderRadius';
 import { sizing, sizingValues } from '@design-system/tokens/sizing';
 
+import * as ImagePicker from 'expo-image-picker';
+import { useAuth } from '../../context/AuthContext';
+import { updateProfile } from '../../api/auth';
+
 // --- Styled Components ---
 
 const Container = styled.SafeAreaView`
@@ -158,29 +162,30 @@ const SkipLinkText = styled.Text`
 const ProfilePhoto: React.FC = () => {
   const navigation = useNavigation<AuthNavigationProp>();
   const { t } = useTranslation();
+  const { session } = useAuth();
+  const [saving, setSaving] = useState(false);
   const [photoUri, setPhotoUri] = useState<string | null>(null);
 
   /**
    * Launch camera to take a profile photo.
-   * Uses react-native-image-picker pattern.
+   * Uses expo-image-picker to capture from the device camera.
    */
   const handleTakePhoto = async () => {
     try {
-      // TODO: Replace with real image picker integration:
-      // import { launchCamera } from 'react-native-image-picker';
-      // const result = await launchCamera({
-      //   mediaType: 'photo',
-      //   cameraType: 'front',
-      //   quality: 0.8,
-      //   maxWidth: 512,
-      //   maxHeight: 512,
-      // });
-      // if (result.assets && result.assets[0]?.uri) {
-      //   setPhotoUri(result.assets[0].uri);
-      // }
-
-      // Mock for development
-      setPhotoUri('https://via.placeholder.com/150');
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert(t('common.permissions.camera'));
+        return;
+      }
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 0.8,
+        allowsEditing: true,
+        aspect: [1, 1],
+      });
+      if (!result.canceled && result.assets[0]) {
+        setPhotoUri(result.assets[0].uri);
+      }
     } catch {
       Alert.alert(t('common.errors.default'), t('profile.photo.cameraError'));
     }
@@ -188,32 +193,48 @@ const ProfilePhoto: React.FC = () => {
 
   /**
    * Launch gallery to pick a profile photo.
-   * Uses react-native-image-picker pattern.
+   * Uses expo-image-picker to select from the device media library.
    */
   const handleChooseFromGallery = async () => {
     try {
-      // TODO: Replace with real image picker integration:
-      // import { launchImageLibrary } from 'react-native-image-picker';
-      // const result = await launchImageLibrary({
-      //   mediaType: 'photo',
-      //   quality: 0.8,
-      //   maxWidth: 512,
-      //   maxHeight: 512,
-      // });
-      // if (result.assets && result.assets[0]?.uri) {
-      //   setPhotoUri(result.assets[0].uri);
-      // }
-
-      // Mock for development
-      setPhotoUri('https://via.placeholder.com/150');
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert(t('common.permissions.gallery'));
+        return;
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 0.8,
+        allowsEditing: true,
+        aspect: [1, 1],
+      });
+      if (!result.canceled && result.assets[0]) {
+        setPhotoUri(result.assets[0].uri);
+      }
     } catch {
       Alert.alert(t('common.errors.default'), t('profile.photo.galleryError'));
     }
   };
 
-  const handleContinue = () => {
-    // TODO: persist photo URI to profile context/store
-    navigation.navigate('ProfileConfirmation');
+  const handleContinue = async () => {
+    if (!session?.accessToken) {
+      navigation.navigate('ProfileConfirmation');
+      return;
+    }
+    setSaving(true);
+    try {
+      await updateProfile(session.accessToken, {
+        avatarUrl: photoUri || undefined,
+      });
+      navigation.navigate('ProfileConfirmation');
+    } catch (err: unknown) {
+      Alert.alert(
+        t('common.errors.default'),
+        err instanceof Error ? err.message : t('common.errors.generic'),
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleSkip = () => {

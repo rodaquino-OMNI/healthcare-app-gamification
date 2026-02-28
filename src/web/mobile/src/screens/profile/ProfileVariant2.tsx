@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { AuthNavigationProp } from '../../navigation/types';
 import { useForm, Controller } from 'react-hook-form';
@@ -13,6 +13,9 @@ import { typography } from '@design-system/tokens/typography';
 import { spacing, spacingValues } from '@design-system/tokens/spacing';
 import { borderRadius, borderRadiusValues } from '@design-system/tokens/borderRadius';
 import { sizing } from '@design-system/tokens/sizing';
+
+import { useAuth } from '../../context/AuthContext';
+import { updateProfile } from '../../api/auth';
 
 /**
  * Validation schema for insurance information form.
@@ -221,6 +224,8 @@ const PrimaryButtonText = styled.Text`
 const ProfileVariant2: React.FC = () => {
   const navigation = useNavigation<AuthNavigationProp>();
   const { t } = useTranslation();
+  const { session } = useAuth();
+  const [saving, setSaving] = useState(false);
   const [hasInsurance, setHasInsurance] = useState(true);
 
   const {
@@ -243,9 +248,28 @@ const ProfileVariant2: React.FC = () => {
 
   const planType = watch('planType');
 
-  const onSubmit = (data: any) => {
-    // TODO: persist insurance info to profile context/store
-    navigation.navigate('ProfileAddress');
+  const onSubmit = async (data: InsuranceFormData) => {
+    if (!session?.accessToken) return;
+    setSaving(true);
+    try {
+      await updateProfile(session.accessToken, {
+        insurance: {
+          provider: data.provider,
+          planNumber: data.planNumber,
+          groupNumber: data.groupNumber,
+          planType: data.planType,
+          hasInsurance,
+        },
+      });
+      navigation.navigate('ProfileAddress');
+    } catch (err: unknown) {
+      Alert.alert(
+        t('common.errors.default'),
+        err instanceof Error ? err.message : t('common.errors.generic'),
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
   const toggleInsurance = () => {

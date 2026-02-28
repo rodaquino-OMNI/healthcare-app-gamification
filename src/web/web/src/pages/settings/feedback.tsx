@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { submitFeedback } from '../../api/settings';
 
 /**
  * App feedback page.
@@ -13,6 +14,8 @@ const FeedbackPage: NextPage = () => {
   const [comment, setComment] = useState('');
   const [category, setCategory] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const categories = [
     { value: 'usability', label: 'Usabilidade' },
@@ -23,10 +26,18 @@ const FeedbackPage: NextPage = () => {
     { value: 'other', label: 'Outro' },
   ];
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (rating === 0) return;
-    // TODO: Submit feedback via API
-    setSubmitted(true);
+    setLoading(true);
+    setError('');
+    try {
+      await submitFeedback({ rating, category, comment });
+      setSubmitted(true);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro ao enviar feedback.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (submitted) {
@@ -103,16 +114,21 @@ const FeedbackPage: NextPage = () => {
           />
         </div>
 
+        {error && (
+          <p style={{ color: colors.semantic.error, fontSize: typography.fontSize['text-sm'], marginBottom: spacing.sm, fontFamily: typography.fontFamily.body }}>
+            {error}
+          </p>
+        )}
         <button
           onClick={handleSubmit}
-          disabled={rating === 0}
+          disabled={rating === 0 || loading}
           style={{
             ...primaryButtonStyle,
-            backgroundColor: rating > 0 ? colors.brand.primary : colors.gray[30],
-            cursor: rating > 0 ? 'pointer' : 'not-allowed',
+            backgroundColor: rating > 0 && !loading ? colors.brand.primary : colors.gray[30],
+            cursor: rating > 0 && !loading ? 'pointer' : 'not-allowed',
           }}
         >
-          Enviar Feedback
+          {loading ? 'Enviando...' : 'Enviar Feedback'}
         </button>
       </div>
     </div>

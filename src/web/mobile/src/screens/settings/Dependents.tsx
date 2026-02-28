@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import { FlatList, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { FlatList, Alert, ActivityIndicator, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { SettingsNavigationProp } from '../../navigation/types';
+
+import { restClient } from '../../api/client';
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
 
@@ -172,25 +174,6 @@ interface Dependent {
   cpf: string;
 }
 
-// --- Mock Data ---
-
-const MOCK_DEPENDENTS: Dependent[] = [
-  {
-    id: '1',
-    name: 'Ana Silva',
-    relationship: 'Filho(a)',
-    dob: '15/03/2015',
-    cpf: '***.***.***-12',
-  },
-  {
-    id: '2',
-    name: 'Carlos Silva',
-    relationship: 'Conjuge',
-    dob: '22/07/1988',
-    cpf: '***.***.***-45',
-  },
-];
-
 /**
  * Dependents screen -- lists family members linked to the user's health plan.
  * Each card shows name, relationship badge, date of birth, masked CPF,
@@ -199,7 +182,27 @@ const MOCK_DEPENDENTS: Dependent[] = [
 export const DependentsScreen: React.FC = () => {
   const navigation = useNavigation<SettingsNavigationProp>();
   const { t } = useTranslation();
-  const [dependents, setDependents] = useState<Dependent[]>(MOCK_DEPENDENTS);
+  const [dependents, setDependents] = useState<Dependent[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDependents = async () => {
+      setIsLoading(true);
+      try {
+        const response = await restClient.get<Dependent[]>('/users/me/dependents');
+        setDependents(response.data);
+      } catch (err: unknown) {
+        Alert.alert(
+          t('settings.dependents.error'),
+          err instanceof Error ? err.message : t('settings.dependents.errorMessage'),
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDependents();
+  }, [t]);
 
   const handleRemove = (dep: Dependent) => {
     Alert.alert(
@@ -210,17 +213,24 @@ export const DependentsScreen: React.FC = () => {
         {
           text: t('settings.dependents.remove'),
           style: 'destructive',
-          onPress: () => {
-            setDependents((prev) => prev.filter((d) => d.id !== dep.id));
+          onPress: async () => {
+            try {
+              await restClient.delete(`/users/me/dependents/${dep.id}`);
+              setDependents((prev) => prev.filter((d) => d.id !== dep.id));
+            } catch (err: unknown) {
+              Alert.alert(
+                t('settings.dependents.error'),
+                err instanceof Error ? err.message : t('settings.dependents.errorMessage'),
+              );
+            }
           },
         },
       ],
     );
   };
 
-  const handleEdit = (_dep: Dependent) => {
-    // TODO: navigate to edit dependent with pre-filled data
-    navigation.navigate(ROUTES.SETTINGS_ADD_DEPENDENT);
+  const handleEdit = (dep: Dependent) => {
+    navigation.navigate(ROUTES.SETTINGS_ADD_DEPENDENT, { dependent: dep });
   };
 
   const handleAdd = () => {
@@ -269,6 +279,19 @@ export const DependentsScreen: React.FC = () => {
       <EmptyText>{t('settings.dependents.empty')}</EmptyText>
     </EmptyContainer>
   );
+
+  if (isLoading) {
+    return (
+      <Container>
+        <Header>
+          <Title>{t('settings.dependents.title')}</Title>
+        </Header>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} testID="dependents-loading">
+          <ActivityIndicator size="large" />
+        </View>
+      </Container>
+    );
+  }
 
   return (
     <Container>

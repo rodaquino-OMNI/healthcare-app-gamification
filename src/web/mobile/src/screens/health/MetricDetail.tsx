@@ -52,18 +52,23 @@ export const MetricDetailScreen: React.FC = () => {
   // 4. Retrieves authenticated user info for API calls.
   const { session, getUserFromToken } = useAuth();
 
-  // 5. Derive userId from authentication token.
-  // TODO: Replace fallback with proper error handling when auth is fully integrated
+  // 5. Derive userId from authentication token; redirect to login if unavailable.
+  if (!session?.accessToken) {
+    (navigation as any).navigate('AuthLogin');
+    return null;
+  }
+
   const userId = (() => {
     try {
-      if (session?.accessToken) {
-        const user = getUserFromToken(session.accessToken);
-        return user?.id ?? 'unknown';
+      const user = getUserFromToken(session.accessToken);
+      if (user?.id) {
+        return user.id;
       }
     } catch {
-      // Fallback if token parsing fails
+      // Token decode failed — redirect to login
     }
-    return 'unknown';
+    (navigation as any).navigate('AuthLogin');
+    return '';
   })();
 
   // 6. Defines state variables for the selected metric and time range.

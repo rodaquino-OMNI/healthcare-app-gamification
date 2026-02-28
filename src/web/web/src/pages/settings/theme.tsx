@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { saveTheme } from '../../api/settings';
 
 type ThemeOption = 'light' | 'dark' | 'system';
 
@@ -26,10 +27,20 @@ const THEMES: ThemeChoice[] = [
 const ThemePage: NextPage = () => {
   const router = useRouter();
   const [selected, setSelected] = useState<ThemeOption>('light');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSave = () => {
-    // TODO: Persist theme preference
-    router.push('/settings');
+  const handleSave = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      await saveTheme(selected);
+      router.push('/settings');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro ao salvar tema.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -69,7 +80,8 @@ const ThemePage: NextPage = () => {
           </div>
         ))}
 
-        <button onClick={handleSave} style={primaryButtonStyle}>Aplicar Tema</button>
+        {error && <p style={{ color: 'red', marginBottom: spacing.sm, fontSize: typography.fontSize['text-sm'], fontFamily: typography.fontFamily.body }}>{error}</p>}
+        <button onClick={handleSave} disabled={loading} style={primaryButtonStyle}>{loading ? 'Salvando...' : 'Aplicar Tema'}</button>
       </div>
     </div>
   );

@@ -47,3 +47,6 @@ export { getGameProfile } from './gamification';
 
 // Notification API functions
 export { getNotifications, markNotificationAsRead } from './notifications';
+
+// Settings API functions
+export * from './settings';

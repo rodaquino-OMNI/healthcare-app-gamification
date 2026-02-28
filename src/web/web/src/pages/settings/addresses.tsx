@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { getAddresses, removeAddress } from '../../api/settings';
 
 interface Address {
   id: string;
@@ -16,30 +17,40 @@ interface Address {
   isPrimary: boolean;
 }
 
-const MOCK_ADDRESSES: Address[] = [
-  {
-    id: '1', label: 'Casa', street: 'Rua das Flores', number: '123',
-    complement: 'Apto 45', neighborhood: 'Jardim Paulista',
-    city: 'Sao Paulo', state: 'SP', cep: '01401-000', isPrimary: true,
-  },
-  {
-    id: '2', label: 'Trabalho', street: 'Av. Paulista', number: '1000',
-    complement: 'Sala 1201', neighborhood: 'Bela Vista',
-    city: 'Sao Paulo', state: 'SP', cep: '01310-100', isPrimary: false,
-  },
-];
-
 /**
  * Address list management page.
  * Shows saved addresses with options to edit or remove.
  */
 const AddressesPage: NextPage = () => {
   const router = useRouter();
-  const [addresses] = useState<Address[]>(MOCK_ADDRESSES);
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleRemove = (id: string) => {
-    // TODO: Remove address via API
-    console.log('Remove address:', id);
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const data = await getAddresses();
+        setAddresses(data);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Erro ao carregar enderecos.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAddresses();
+  }, []);
+
+  const handleRemove = async (id: string) => {
+    setError('');
+    try {
+      await removeAddress(id);
+      setAddresses((prev) => prev.filter((addr) => addr.id !== id));
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro ao remover endereco.');
+    }
   };
 
   return (
@@ -47,7 +58,17 @@ const AddressesPage: NextPage = () => {
       <h1 style={titleStyle}>Meus Enderecos</h1>
       <p style={subtitleStyle}>Gerencie seus enderecos cadastrados.</p>
 
-      {addresses.map((addr) => (
+      {error && (
+        <div style={errorStyle}>{error}</div>
+      )}
+
+      {loading && (
+        <p style={{ color: colors.gray[50], fontFamily: typography.fontFamily.body, fontSize: typography.fontSize['text-sm'] }}>
+          Carregando...
+        </p>
+      )}
+
+      {!loading && addresses.map((addr) => (
         <div key={addr.id} style={{ ...cardStyle, marginBottom: spacing.md }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.sm }}>
             <h3 style={addrLabelStyle}>{addr.label}</h3>
@@ -72,6 +93,10 @@ const AddressesPage: NextPage = () => {
   );
 };
 
+const errorStyle: React.CSSProperties = {
+  backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: 6,
+  color: '#b91c1c', fontSize: 14, padding: '10px 14px', marginBottom: 16,
+};
 const titleStyle: React.CSSProperties = {
   fontSize: typography.fontSize['heading-xl'], fontWeight: typography.fontWeight.semiBold,
   color: colors.gray[70], marginBottom: spacing.xs, fontFamily: typography.fontFamily.heading,

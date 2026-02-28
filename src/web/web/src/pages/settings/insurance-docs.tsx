@@ -1,32 +1,52 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import type { NextPage } from 'next';
 import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { getInsuranceDocs, downloadDoc } from '../../api/settings';
 
 interface InsuranceDoc {
   id: string;
   name: string;
   type: string;
-  date: string;
-  size: string;
+  url: string;
+  uploadedAt: string;
 }
-
-const MOCK_DOCS: InsuranceDoc[] = [
-  { id: '1', name: 'Contrato do Plano', type: 'PDF', date: '15/01/2024', size: '2.3 MB' },
-  { id: '2', name: 'Guia de Cobertura 2024', type: 'PDF', date: '01/01/2024', size: '1.8 MB' },
-  { id: '3', name: 'Carteirinha Digital', type: 'PDF', date: '15/01/2024', size: '450 KB' },
-  { id: '4', name: 'Declaracao de Saude', type: 'PDF', date: '10/12/2023', size: '890 KB' },
-  { id: '5', name: 'Termo de Adesao', type: 'PDF', date: '15/01/2023', size: '1.1 MB' },
-  { id: '6', name: 'Rede Credenciada', type: 'PDF', date: '01/03/2024', size: '3.5 MB' },
-];
 
 /**
  * Insurance documents page.
  * Displays available plan documents for download.
  */
 const InsuranceDocsPage: NextPage = () => {
-  const handleDownload = (doc: InsuranceDoc) => {
-    // TODO: Download document via API
-    console.log('Downloading:', doc.name);
+  const [docs, setDocs] = useState<InsuranceDoc[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchDocs = async () => {
+      setLoading(true);
+      try {
+        const data = await getInsuranceDocs();
+        setDocs(data);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Erro ao carregar documentos.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDocs();
+  }, []);
+
+  const handleDownload = async (doc: { id: string; name: string }) => {
+    try {
+      const blob = await downloadDoc(doc.id);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = doc.name;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro ao baixar documento.');
+    }
   };
 
   return (
@@ -34,28 +54,40 @@ const InsuranceDocsPage: NextPage = () => {
       <h1 style={titleStyle}>Documentos do Plano</h1>
       <p style={subtitleStyle}>Acesse e baixe seus documentos de seguro saude.</p>
 
-      <div style={cardStyle}>
-        {MOCK_DOCS.map((doc, idx) => (
-          <div
-            key={doc.id}
-            style={{
-              ...docRowStyle,
-              borderBottom: idx < MOCK_DOCS.length - 1 ? `1px solid ${colors.gray[10]}` : 'none',
-            }}
-          >
-            <div style={docIconStyle}>
-              {doc.type}
+      {error && (
+        <p style={{ color: colors.semantic.error, fontSize: typography.fontSize['text-sm'], marginBottom: spacing.sm, fontFamily: typography.fontFamily.body }}>
+          {error}
+        </p>
+      )}
+
+      {loading ? (
+        <p style={{ fontSize: typography.fontSize['text-sm'], color: colors.gray[50], fontFamily: typography.fontFamily.body }}>
+          Carregando documentos...
+        </p>
+      ) : (
+        <div style={cardStyle}>
+          {docs.map((doc, idx) => (
+            <div
+              key={doc.id}
+              style={{
+                ...docRowStyle,
+                borderBottom: idx < docs.length - 1 ? `1px solid ${colors.gray[10]}` : 'none',
+              }}
+            >
+              <div style={docIconStyle}>
+                {doc.type}
+              </div>
+              <div style={{ flex: 1 }}>
+                <span style={docNameStyle}>{doc.name}</span>
+                <span style={docMetaStyle}>{doc.uploadedAt}</span>
+              </div>
+              <button onClick={() => handleDownload(doc)} style={downloadBtnStyle} aria-label={`Baixar ${doc.name}`}>
+                Baixar
+              </button>
             </div>
-            <div style={{ flex: 1 }}>
-              <span style={docNameStyle}>{doc.name}</span>
-              <span style={docMetaStyle}>{doc.date} - {doc.size}</span>
-            </div>
-            <button onClick={() => handleDownload(doc)} style={downloadBtnStyle} aria-label={`Baixar ${doc.name}`}>
-              Baixar
-            </button>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       <p style={footerNoteStyle}>
         Todos os documentos estao protegidos e disponiveis conforme a LGPD.

@@ -9,6 +9,10 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
 import type { AuthNavigationProp, RootStackParamList } from '../../navigation/types';
+import * as AuthSession from 'expo-auth-session';
+import * as WebBrowser from 'expo-web-browser';
+import { socialLogin } from '../../api/auth';
+import type { SocialTokenData } from '../../api/auth';
 
 import { ROUTES } from '../../constants/routes';
 
@@ -17,6 +21,35 @@ import { typography } from '@design-system/tokens/typography';
 import { spacing } from '@design-system/tokens/spacing';
 import { borderRadius } from '@design-system/tokens/borderRadius';
 import { sizing } from '@design-system/tokens/sizing';
+
+WebBrowser.maybeCompleteAuthSession();
+
+const OAUTH_DISCOVERY = {
+  google: {
+    authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
+    tokenEndpoint: 'https://oauth2.googleapis.com/token',
+  },
+  apple: {
+    authorizationEndpoint: 'https://appleid.apple.com/auth/authorize',
+    tokenEndpoint: 'https://appleid.apple.com/auth/token',
+  },
+  facebook: {
+    authorizationEndpoint: 'https://www.facebook.com/v18.0/dialog/oauth',
+    tokenEndpoint: 'https://graph.facebook.com/v18.0/oauth/access_token',
+  },
+};
+
+const OAUTH_CLIENT_IDS: Record<string, string> = {
+  google: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID || '',
+  apple: process.env.EXPO_PUBLIC_APPLE_CLIENT_ID || '',
+  facebook: process.env.EXPO_PUBLIC_FACEBOOK_CLIENT_ID || '',
+};
+
+const OAUTH_SCOPES: Record<string, string[]> = {
+  google: ['openid', 'email', 'profile'],
+  apple: ['name', 'email'],
+  facebook: ['email', 'public_profile'],
+};
 
 // --- Styled Components ---
 
@@ -197,8 +230,9 @@ export const SocialAuth: React.FC = () => {
   const navigation = useNavigation<AuthNavigationProp>();
   const { t } = useTranslation();
   const [lgpdConsent, setLgpdConsent] = useState(false);
+  const [isAuthLoading, setIsAuthLoading] = useState<boolean>(false);
 
-  const handleSocialLogin = (provider: string) => {
+  const handleSocialLogin = async (provider: string) => {
     if (!lgpdConsent) {
       Alert.alert(
         t('auth.socialAuth.consentRequired'),
@@ -206,8 +240,45 @@ export const SocialAuth: React.FC = () => {
       );
       return;
     }
-    // TODO: Integrate with social auth providers
-    Alert.alert(provider, t('auth.socialAuth.comingSoon'));
+
+    const providerKey = provider.toLowerCase();
+    const clientId = OAUTH_CLIENT_IDS[providerKey];
+    if (!clientId) {
+      Alert.alert(t('auth.socialAuth.error'), t('auth.socialAuth.notConfigured'));
+      return;
+    }
+
+    setIsAuthLoading(true);
+    try {
+      const discovery = OAUTH_DISCOVERY[providerKey as keyof typeof OAUTH_DISCOVERY];
+      const redirectUri = AuthSession.makeRedirectUri({ scheme: 'austa' });
+      const request = new AuthSession.AuthRequest({
+        clientId,
+        scopes: OAUTH_SCOPES[providerKey] || ['email'],
+        redirectUri,
+      });
+
+      const result = await request.promptAsync(discovery);
+
+      if (result.type === 'success' && result.params?.code) {
+        const tokenData: SocialTokenData = {
+          authorizationCode: result.params.code,
+          provider: providerKey,
+        };
+        await socialLogin(providerKey, tokenData);
+        const root = navigation.getParent<StackNavigationProp<RootStackParamList>>();
+        if (root) {
+          root.reset({ index: 0, routes: [{ name: 'Main' }] });
+        }
+      } else if (result.type === 'error') {
+        Alert.alert(t('auth.socialAuth.error'), result.error?.message || t('auth.socialAuth.authFailed'));
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : t('auth.socialAuth.authFailed');
+      Alert.alert(t('auth.socialAuth.error'), message);
+    } finally {
+      setIsAuthLoading(false);
+    }
   };
 
   return (

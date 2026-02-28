@@ -1,5 +1,7 @@
 # AUSTA Healthcare SuperApp — Production Setup Guide
 
+> Last audited: 2026-02-28 | No task changes detected — all items in this guide remain pending/operational.
+
 AWS region: sa-east-1 (LGPD compliance). All infrastructure is managed via Terraform
 (`infrastructure/terraform/`). Kubernetes manifests live under `infrastructure/kubernetes/`.
 Docker Compose files for local and staging use are under `src/backend/`.
@@ -132,7 +134,7 @@ Secret naming convention: `austa/<environment>/<secret-name>`.
 
 > Note: There is a naming inconsistency between environments. Staging CI uses
 > `AWS_ACCESS_KEY` while production CI uses `AWS_ACCESS_KEY_ID`. Align these when
-> rotating credentials.
+> rotating credentials. *(Still unresolved as of 2026-02-28)*
 
 ### 3.2 Environment Variables per Service
 

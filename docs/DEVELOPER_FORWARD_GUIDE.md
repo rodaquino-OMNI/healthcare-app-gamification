@@ -64,6 +64,12 @@ These items cannot be completed by AI tooling alone. They require external accou
 
 ### 1. API Layer — Stub Replacement (~150 implementations)
 
+> **Update (2026-02-28)**: The `auth` module is now largely complete — `login()`, `logout()`,
+> `changePassword()`, `enable2FA()`, `disable2FA()`, `configure2FA()`, `deleteAccount()`,
+> `getProfile()`, and OAuth social auth (web + mobile) are all wired to real API endpoints.
+> `care.ts` (79 exports) and `health.ts` (127 exports) have comprehensive API layers. The
+> remaining stubs are concentrated in profile setup, settings, and health/medication screens.
+
 Currently ~23 stub functions serve 367 screens. Each returns hardcoded or empty data.
 
 **Files to work on:**
@@ -81,11 +87,13 @@ src/web/mobile/src/api/
 3. Implement the NestJS resolver/controller endpoint
 4. Wire the frontend API function to the real endpoint
 
-**Priority order:** `auth` → `health` → `care` → `plan` → `wellness` → `gamification`
+**Priority order:** ~~`auth`~~ (✅ done) → `health` → `care` → `plan` → `wellness` → `gamification`
 
 ---
 
 ### 2. Expo Project Setup
+
+> **Status (2026-02-28)**: Still pending — `your-project-id` placeholders remain in `app.json` (lines 163, 167).
 
 ```bash
 # In the mobile directory:
@@ -238,6 +246,10 @@ Recommended order: `shared` → `auth` → `home` → `health` → others
 
 ### 4. TODO/FIXME Audit
 
+> **Update (2026-02-28)**: 11 critical Tier 1 TODOs resolved (logout, 2FA, password, account
+> deletion, privacy, data export, OAuth). ~65 TODOs remain (down from 78). See
+> `docs/todo-triage-report.md` for the full updated inventory.
+
 ```bash
 # Find all TODOs
 grep -rn "TODO\|FIXME\|HACK\|XXX" src/ --include="*.ts" --include="*.tsx" | wc -l
@@ -252,6 +264,9 @@ Prioritize TODOs in: auth flows, API connections, navigation edge cases.
 ---
 
 ### 5. Prisma Migration (Required Before First Deploy)
+
+> **Status (2026-02-28)**: Still pending. `schema.prisma` still uses `url = env("DATABASE_URL")`.
+> A migration comment was added at line 9-10 but `prisma.config.ts` has not been created.
 
 Prisma 7.4.1 deprecates the `url` field in `schema.prisma` in favor of `prisma.config.ts`.
 
@@ -313,6 +328,8 @@ yarn add -D vite @vitejs/plugin-react
 ---
 
 ### 3. K8s Port Inconsistencies
+
+> **Status (2026-02-28)**: Still pending. Port mismatches remain between Deployment and Service manifests.
 
 Some service manifests have mismatched ports between the Deployment and Service definitions.
 
@@ -475,4 +492,4 @@ maestro test .maestro/  # Run all flows
 
 ---
 
-*Last updated: 2026-02-23*
+*Last updated: 2026-02-28*

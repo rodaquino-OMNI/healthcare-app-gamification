@@ -14,28 +14,38 @@ export interface PinConfig {
   enforceInDev: boolean;
 }
 
+/**
+ * Reads a pin from the environment if available, otherwise returns the fallback.
+ */
+function getEnvPin(key: string, fallback: string): string {
+  if (typeof process !== 'undefined' && process.env?.[key]) {
+    return process.env[key]!;
+  }
+  return fallback;
+}
+
 export const SSL_PINS: Record<string, PinConfig> = {
   'api.austa.com.br': {
     includeSubdomains: true,
     pins: [
-      'sha256/PLACEHOLDER_PRIMARY_PIN_REPLACE_BEFORE_PRODUCTION',
-      'sha256/PLACEHOLDER_BACKUP_PIN_REPLACE_BEFORE_PRODUCTION',
+      getEnvPin('SSL_PIN_API_PRIMARY', 'sha256/PLACEHOLDER_REPLACE_IN_PRODUCTION'),
+      getEnvPin('SSL_PIN_API_BACKUP', 'sha256/PLACEHOLDER_REPLACE_IN_PRODUCTION'),
     ],
     enforceInDev: false,
   },
   'auth.austa.com.br': {
     includeSubdomains: false,
     pins: [
-      'sha256/PLACEHOLDER_PRIMARY_PIN_REPLACE_BEFORE_PRODUCTION',
-      'sha256/PLACEHOLDER_BACKUP_PIN_REPLACE_BEFORE_PRODUCTION',
+      getEnvPin('SSL_PIN_AUTH_PRIMARY', 'sha256/PLACEHOLDER_REPLACE_IN_PRODUCTION'),
+      getEnvPin('SSL_PIN_AUTH_BACKUP', 'sha256/PLACEHOLDER_REPLACE_IN_PRODUCTION'),
     ],
     enforceInDev: false,
   },
   'cdn.austa.com.br': {
     includeSubdomains: true,
     pins: [
-      'sha256/PLACEHOLDER_PRIMARY_PIN_REPLACE_BEFORE_PRODUCTION',
-      'sha256/PLACEHOLDER_BACKUP_PIN_REPLACE_BEFORE_PRODUCTION',
+      getEnvPin('SSL_PIN_CDN_PRIMARY', 'sha256/PLACEHOLDER_REPLACE_IN_PRODUCTION'),
+      getEnvPin('SSL_PIN_CDN_BACKUP', 'sha256/PLACEHOLDER_REPLACE_IN_PRODUCTION'),
     ],
     enforceInDev: false,
   },
@@ -66,4 +76,29 @@ export function getPinConfig(hostname: string): PinConfig | undefined {
   }
 
   return undefined;
+}
+
+/**
+ * Validates that a pin string has the correct format: 'sha256/' followed by
+ * a non-empty base64 payload.
+ */
+export function validatePinFormat(pin: string): boolean {
+  if (!pin.startsWith('sha256/')) {
+    return false;
+  }
+  const payload = pin.slice(7);
+  if (payload.length === 0) {
+    return false;
+  }
+  return /^[A-Za-z0-9+/]+=*$/.test(payload);
+}
+
+/**
+ * Returns true when every configured pin has been replaced with a real
+ * certificate hash (i.e. no pin contains 'PLACEHOLDER').
+ */
+export function isProductionPinned(): boolean {
+  return Object.values(SSL_PINS).every(
+    (config) => config.pins.every((pin) => !pin.includes('PLACEHOLDER')),
+  );
 }

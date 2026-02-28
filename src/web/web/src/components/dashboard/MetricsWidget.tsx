@@ -3,6 +3,7 @@ import { HealthMetric } from 'src/web/shared/types/health.types.ts';
 import { JOURNEY_IDS } from 'src/web/shared/constants/journeys.ts';
 import { Card } from 'src/web/design-system/src/components/Card/Card.tsx';
 import { MetricCard } from 'src/web/design-system/src/health/MetricCard/MetricCard.tsx';
+import { useAuth } from 'src/web/web/src/hooks/useAuth';
 import { useHealthMetrics } from 'src/web/web/src/hooks/useHealthMetrics.ts';
 import { useJourney } from 'src/web/web/src/hooks/useJourney.ts';
 
@@ -15,11 +16,20 @@ export const MetricsWidget: React.FC = () => {
   // LD1: Call the `useJourney` hook to get the current journey context.
   const { journey } = useJourney();
 
-  // LD1: Call the `useHealthMetrics` hook to fetch health metrics for the user.
+  // Get authenticated user ID for personalized metrics
+  const { user } = useAuth();
   const { loading, error, metrics } = useHealthMetrics(
-    'user-123', // TODO: Replace with actual user ID
+    user?.id ?? '',
     [], // Fetch all metric types
   );
+
+  // Compute trend from metrics history
+  const computeTrend = (metric: HealthMetric): 'up' | 'down' | 'stable' => {
+    if (metric.previousValue === undefined) return 'stable';
+    if (metric.value > metric.previousValue) return 'up';
+    if (metric.value < metric.previousValue) return 'down';
+    return 'stable';
+  };
 
   // LD1: Render a `Card` component with journey-specific styling.
   return (
@@ -41,7 +51,7 @@ export const MetricsWidget: React.FC = () => {
               metricName={metric.type}
               value={metric.value}
               unit={metric.unit}
-              trend="stable" // TODO: Replace with actual trend data
+              trend={computeTrend(metric)}
               journey={JOURNEY_IDS.HEALTH}
             />
           ))}

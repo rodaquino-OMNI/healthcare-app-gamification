@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { lookupCep, saveAddress } from '../../api/settings';
 
 /**
  * Add address form page with CEP lookup.
@@ -17,25 +18,38 @@ const AddAddressPage: NextPage = () => {
   const [neighborhood, setNeighborhood] = useState('');
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
-  const [cepLoading, setCepLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleCepLookup = () => {
-    if (cep.length < 8) return;
-    setCepLoading(true);
-    // TODO: Lookup CEP via ViaCEP API
-    setTimeout(() => {
-      setStreet('Rua Exemplo');
-      setNeighborhood('Centro');
-      setCity('Sao Paulo');
-      setState('SP');
-      setCepLoading(false);
-    }, 500);
+  const handleCepLookup = async () => {
+    if (!cep || cep.length < 8) return;
+    setLoading(true);
+    setError('');
+    try {
+      const data = await lookupCep(cep);
+      setStreet(data.logradouro || '');
+      setNeighborhood(data.bairro || '');
+      setCity(data.localidade || '');
+      setState(data.uf || '');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro ao buscar CEP.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!label || !cep || !street || !number || !city || !state) return;
-    // TODO: Save address via API
-    router.push('/settings/addresses');
+    setLoading(true);
+    setError('');
+    try {
+      await saveAddress({ label, cep, street, number, complement, neighborhood, city, state });
+      router.push('/settings/addresses');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro inesperado.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const isValid = label && cep && street && number && city && state;
@@ -44,6 +58,10 @@ const AddAddressPage: NextPage = () => {
     <div style={{ padding: spacing.xl, maxWidth: '600px', margin: '0 auto' }}>
       <h1 style={titleStyle}>Adicionar Endereco</h1>
       <p style={subtitleStyle}>Preencha o CEP para buscar o endereco automaticamente.</p>
+
+      {error && (
+        <div style={errorStyle}>{error}</div>
+      )}
 
       <div style={cardStyle}>
         <div style={fieldGroup}>
@@ -55,8 +73,8 @@ const AddAddressPage: NextPage = () => {
           <label style={labelStyle}>CEP *</label>
           <div style={{ display: 'flex', gap: spacing.xs }}>
             <input type="text" value={cep} onChange={(e) => setCep(e.target.value)} style={{ ...inputStyle, flex: 1 }} placeholder="00000-000" maxLength={9} />
-            <button onClick={handleCepLookup} disabled={cepLoading} style={lookupBtnStyle}>
-              {cepLoading ? 'Buscando...' : 'Buscar'}
+            <button onClick={handleCepLookup} disabled={loading} style={lookupBtnStyle}>
+              {loading ? 'Buscando...' : 'Buscar'}
             </button>
           </div>
         </div>
@@ -95,14 +113,14 @@ const AddAddressPage: NextPage = () => {
 
         <button
           onClick={handleSubmit}
-          disabled={!isValid}
+          disabled={!isValid || loading}
           style={{
             ...primaryButtonStyle,
-            backgroundColor: isValid ? colors.brand.primary : colors.gray[30],
-            cursor: isValid ? 'pointer' : 'not-allowed',
+            backgroundColor: isValid && !loading ? colors.brand.primary : colors.gray[30],
+            cursor: isValid && !loading ? 'pointer' : 'not-allowed',
           }}
         >
-          Salvar Endereco
+          {loading ? 'Salvando...' : 'Salvar Endereco'}
         </button>
         <button onClick={() => router.back()} style={secondaryButtonStyle}>Cancelar</button>
       </div>
@@ -110,6 +128,10 @@ const AddAddressPage: NextPage = () => {
   );
 };
 
+const errorStyle: React.CSSProperties = {
+  backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: 6,
+  color: '#b91c1c', fontSize: 14, padding: '10px 14px', marginBottom: 16,
+};
 const titleStyle: React.CSSProperties = {
   fontSize: typography.fontSize['heading-xl'], fontWeight: typography.fontWeight.semiBold,
   color: colors.gray[70], marginBottom: spacing.xs, fontFamily: typography.fontFamily.heading,

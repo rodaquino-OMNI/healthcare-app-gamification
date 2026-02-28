@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { enable2FA, disable2FA, configure2FA } from '@web/web/src/api/auth';
 
 /**
  * Two-factor authentication settings page.
@@ -12,15 +13,38 @@ const TwoFactorPage: NextPage = () => {
   const [enabled, setEnabled] = useState(false);
   const [method, setMethod] = useState<'sms' | 'authenticator'>('sms');
   const [phone, setPhone] = useState('(11) 99999-9999');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleToggle = () => {
-    setEnabled(!enabled);
-    // TODO: Enable/disable 2FA via API
+  const handleToggle = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      if (enabled) {
+        await disable2FA();
+        setEnabled(false);
+      } else {
+        await enable2FA();
+        setEnabled(true);
+      }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro ao alterar 2FA.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSave = () => {
-    // TODO: Save 2FA configuration
-    router.push('/settings');
+  const handleSave = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      await configure2FA(method, method === 'sms' ? phone : undefined);
+      router.push('/settings');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro ao salvar configuracao.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -31,6 +55,7 @@ const TwoFactorPage: NextPage = () => {
       </p>
 
       <div style={cardStyle}>
+        {error && <div style={{ backgroundColor: colors.semantic.errorBg, color: colors.semantic.error, padding: spacing.sm, borderRadius: borderRadius.sm, marginBottom: spacing.md, fontSize: typography.fontSize['text-sm'] }}>{error}</div>}
         {/* Enable/Disable toggle */}
         <div style={toggleRowStyle}>
           <div>
@@ -41,6 +66,7 @@ const TwoFactorPage: NextPage = () => {
           </div>
           <button
             onClick={handleToggle}
+            disabled={loading}
             style={{
               ...toggleBtnStyle,
               backgroundColor: enabled ? colors.brand.primary : colors.gray[30],
@@ -106,7 +132,7 @@ const TwoFactorPage: NextPage = () => {
               </div>
             )}
 
-            <button onClick={handleSave} style={primaryButtonStyle}>Salvar Configuracao</button>
+            <button onClick={handleSave} disabled={loading} style={{ ...primaryButtonStyle, opacity: loading ? 0.6 : 1 }}>{loading ? 'Salvando...' : 'Salvar Configuracao'}</button>
           </>
         )}
       </div>

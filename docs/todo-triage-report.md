@@ -1,40 +1,40 @@
 # TODO/FIXME Triage Report
-**Generated**: 2026-02-25
-**Total Active Items**: 78 (73 code TODOs + 5 tech debt)
-**Resolved Items**: 3 (TD3 i18n structure, TD7 care.ts, TD8 health.ts)
+**Generated**: 2026-02-25 | **Last audited**: 2026-02-28
+**Total Active Items**: 65 (60 code TODOs + 5 tech debt)
+**Resolved Items**: 16 (TD3 i18n structure, TD7 care.ts, TD8 health.ts + 11 Tier 1 items + 2 Tier 2 auth items)
 
 ## Summary
 | Tier | Count | Description |
 |------|-------|-------------|
-| Tier 1 — Critical | 14 | Security, LGPD compliance, infrastructure breaking changes |
-| Tier 2 — Important | 59 | Non-functional UI — profile/settings/health screens never persist data |
+| Tier 1 — Critical | 3 | SSL pinning placeholders, Prisma url deprecation, biometric enrollment |
+| Tier 2 — Important | 57 | Non-functional UI — profile/settings/health screens never persist data |
 | Tier 3 — Nice-to-Have | 5 | Code style, cosmetic, suppressed warnings |
 
 ---
 
 ## Tier 1 — Critical
-| # | File:Line | Description | Category | Effort |
-|---|-----------|-------------|----------|--------|
-| 1 | `src/web/mobile/src/api/ssl-pinning.ts:7` | SSL certificate pinning uses placeholder SPKI hashes — production BLOCKER | Security | M |
-| 2 | `src/web/web/src/pages/settings/logout.tsx:14` | Logout does not clear session tokens — session hijack risk | Security | S |
-| 3 | `src/web/web/src/pages/settings/two-factor.tsx:18` | 2FA toggle does not call API — users believe 2FA is enabled when it is not | Security | S |
-| 4 | `src/web/web/src/pages/settings/two-factor.tsx:22` | 2FA config never saved to backend | Security | S |
-| 5 | `src/web/web/src/pages/settings/change-password.tsx:31` | Password change form never calls API — password remains unchanged | Security | S |
-| 6 | `src/web/web/src/pages/settings/delete-account.tsx:26` | Account deletion navigates away without deleting account — LGPD violation | Security/LGPD | S |
-| 7 | `src/web/mobile/src/screens/home/SettingsPrivacy.tsx:319` | Mobile account deletion shows alert only, no backend call | Security/LGPD | S |
-| 8 | `src/web/web/src/pages/profile/index.tsx:66` | Profile account deletion not implemented | Security/LGPD | S |
-| 9 | `src/web/web/src/pages/profile/privacy.tsx:217` | Privacy settings never persisted to API | Privacy/LGPD | S |
-| 10 | `src/web/web/src/pages/profile/privacy.tsx:222` | LGPD data export button has no backend call — compliance violation | LGPD | M |
-| 11 | `src/web/web/src/pages/settings/data-export.tsx:32` | LGPD data export request has no API integration | LGPD | M |
-| 12 | `src/web/web/src/pages/auth/social-auth.tsx:172` | OAuth flow not implemented — logs only | Security | M |
-| 13 | `src/web/mobile/src/screens/auth/SocialAuth.tsx:209` | Social auth shows alert instead of OAuth flow | Security | M |
-| 14 | `src/backend/shared/prisma/schema.prisma:7` | Prisma `url` env syntax deprecated — breaking in Prisma 7.x across all services | Infrastructure | M |
+| # | File:Line | Description | Category | Effort | Status |
+|---|-----------|-------------|----------|--------|--------|
+| 1 | `src/web/mobile/src/api/ssl-pinning.ts:7` | SSL certificate pinning uses placeholder SPKI hashes — production BLOCKER | Security | M | **PENDING** |
+| 2 | `src/web/web/src/pages/settings/logout.tsx:14` | ~~Logout does not clear session tokens~~ — now calls `logout()` API + `localStorage.clear()` | Security | S | ✅ RESOLVED |
+| 3 | `src/web/web/src/pages/settings/two-factor.tsx:18` | ~~2FA toggle does not call API~~ — now calls `enable2FA()` / `disable2FA()` | Security | S | ✅ RESOLVED |
+| 4 | `src/web/web/src/pages/settings/two-factor.tsx:22` | ~~2FA config never saved~~ — now calls `configure2FA()` API | Security | S | ✅ RESOLVED |
+| 5 | `src/web/web/src/pages/settings/change-password.tsx:31` | ~~Password change form never calls API~~ — now calls `changePassword()` API | Security | S | ✅ RESOLVED |
+| 6 | `src/web/web/src/pages/settings/delete-account.tsx:26` | ~~Account deletion navigates away without deleting~~ — now calls `deleteAccount()` API | Security/LGPD | S | ✅ RESOLVED |
+| 7 | `src/web/mobile/src/screens/home/SettingsPrivacy.tsx:319` | ~~Mobile account deletion shows alert only~~ — now calls `deleteAccount()` with real API | Security/LGPD | S | ✅ RESOLVED |
+| 8 | `src/web/web/src/pages/profile/index.tsx:66` | ~~Profile account deletion not implemented~~ — now calls `restClient.delete('/auth/account')` | Security/LGPD | S | ✅ RESOLVED |
+| 9 | `src/web/web/src/pages/profile/privacy.tsx:217` | ~~Privacy settings never persisted~~ — now calls `restClient.patch('/privacy/my-data')` | Privacy/LGPD | S | ✅ RESOLVED |
+| 10 | `src/web/web/src/pages/profile/privacy.tsx:222` | ~~LGPD data export button has no backend call~~ — now calls `restClient.get('/privacy/export')` | LGPD | M | ✅ RESOLVED |
+| 11 | `src/web/web/src/pages/settings/data-export.tsx:32` | ~~LGPD data export request has no API integration~~ — now calls `restClient.post('/privacy/export')` | LGPD | M | ✅ RESOLVED |
+| 12 | `src/web/web/src/pages/auth/social-auth.tsx:172` | ~~OAuth flow not implemented~~ — now has full OAuth config (Google/Apple/Facebook) with `authUrl` + `redirectUri` | Security | M | ✅ RESOLVED |
+| 13 | `src/web/mobile/src/screens/auth/SocialAuth.tsx:209` | ~~Social auth shows alert instead of OAuth flow~~ — now uses `expo-auth-session` + `expo-web-browser` with `AuthSession.AuthRequest` | Security | M | ✅ RESOLVED |
+| 14 | `src/backend/shared/prisma/schema.prisma:7` | Prisma `url` env syntax deprecated — migration comment added but `url = env("DATABASE_URL")` still in use; needs `prisma.config.ts` for Prisma 7.x | Infrastructure | M | **PENDING** |
 
 ---
 
 ## Tier 2 — Important
 
-### Group A: Profile Setup Flow (Mobile) — 15 items
+### Group A: Profile Setup Flow (Mobile) — 15 items (all still pending)
 | # | File:Line | Description | Category | Effort |
 |---|-----------|-------------|----------|--------|
 | A1 | `src/web/mobile/src/screens/profile/ProfileSetup.tsx:167` | Profile not saved to backend | API Integration | S |
@@ -51,7 +51,7 @@
 | A12 | `src/web/mobile/src/screens/profile/ProfileConfirmation.tsx:162` | Shows mock data, not real profile | API Integration | S |
 | A13 | `src/web/mobile/src/screens/profile/ProfileBiometricSetup.tsx:154` | Biometric enrollment not implemented | API Integration | M |
 
-### Group B: Settings Pages (Web) — 13 items
+### Group B: Settings Pages (Web) — 13 items (all still pending)
 | # | File:Line | Description | Category | Effort |
 |---|-----------|-------------|----------|--------|
 | B1 | `src/web/web/src/pages/settings/personal-info.tsx:19` | Personal info save not wired to API | API Integration | S |
@@ -66,7 +66,7 @@
 | B10 | `src/web/web/src/pages/settings/feedback.tsx:28` | Feedback not sent to backend | API Integration | S |
 | B11 | `src/web/web/src/pages/settings/insurance-docs.tsx:28` | Insurance docs not persisted | API Integration | S |
 
-### Group C: Settings Screens (Mobile) — 8 items
+### Group C: Settings Screens (Mobile) — 8 items (all still pending)
 | # | File:Line | Description | Category | Effort |
 |---|-----------|-------------|----------|--------|
 | C1 | `src/web/mobile/src/screens/settings/EmergencyContacts.tsx:292` | Edit mode not implemented | API Integration | S |
@@ -145,25 +145,43 @@
 | ID | Item | Status |
 |----|------|--------|
 | TD3 | `src/web/mobile/src/i18n/locales/` — i18n structure mismatch | RESOLVED — en-US and pt-BR share identical top-level structure |
-| TD7 | `src/web/mobile/src/api/care.ts` — incomplete API layer | RESOLVED — 47 exported functions, comprehensive coverage |
-| TD8 | `src/web/mobile/src/api/health.ts` — incomplete API layer | RESOLVED — 78 exported functions, comprehensive coverage |
+| TD7 | `src/web/mobile/src/api/care.ts` — incomplete API layer | RESOLVED — 79 exported functions, comprehensive coverage |
+| TD8 | `src/web/mobile/src/api/health.ts` — incomplete API layer | RESOLVED — 127 exported functions, comprehensive coverage |
+
+## Resolved Tier 1 Items (audited 2026-02-28)
+| # | Item | Resolution |
+|----|------|-----------|
+| 2 | Logout does not clear tokens | `logout()` API + `localStorage.clear()` implemented |
+| 3 | 2FA toggle no API | `enable2FA()` / `disable2FA()` wired to API |
+| 4 | 2FA config not saved | `configure2FA()` API call implemented |
+| 5 | Password change no API | `changePassword()` API call implemented |
+| 6 | Web account deletion | `deleteAccount()` API call implemented |
+| 7 | Mobile account deletion | `deleteAccount()` with real API call implemented |
+| 8 | Profile account deletion | `restClient.delete('/auth/account')` implemented |
+| 9 | Privacy settings not persisted | `restClient.patch('/privacy/my-data')` implemented |
+| 10 | LGPD data export (privacy.tsx) | `restClient.get('/privacy/export')` implemented |
+| 11 | LGPD data export (data-export.tsx) | `restClient.post('/privacy/export')` with category selection |
+| 12 | Web OAuth flow | Full OAuth config for Google/Apple/Facebook with `authUrl` + `redirectUri` |
+| 13 | Mobile social auth | `expo-auth-session` + `expo-web-browser` with `AuthSession.AuthRequest` |
 
 ---
 
 ## Recommendations
-1. **IMMEDIATE (pre-launch)**: All 14 Tier 1 items — SSL pinning, session token cleanup, 2FA API, password change API, account deletion, LGPD data export, OAuth, Prisma migration
+1. **IMMEDIATE (pre-launch)**: Remaining 3 Tier 1 items — SSL pinning placeholder replacement (#1), Prisma config migration (#14), biometric enrollment (A13/G3)
 2. **Sprint 1**: Group A (Profile Setup) — onboarding is fully non-functional without persistence; 15 screens, all save actions are mocked
 3. **Sprint 2**: Groups B + C (Settings persistence) — user preferences lost on every reload; 21 items
 4. **Sprint 3**: Group D (Health/medication) + Group F (Auth flow) + Group G (Web profile) — 12 items
 5. **Sprint 4**: Groups E, H, J (Dashboard, notifications, EAS) + observability config (Groups I) — 11 items
 6. **Post-launch**: All Tier 3 items (TD2, TD4, TD6, UX dialog, plan E2E placeholder)
 
+> **Note (2026-02-28 audit)**: 11 Tier 1 items were resolved since last report — all security/LGPD critical items for logout, 2FA, password change, account deletion, privacy settings, data export, and OAuth are now wired to real API calls. Mobile data export (`SettingsPrivacy.tsx`) still only shows an Alert without calling the export API — consider wiring `restClient.post('/privacy/export')` for full LGPD compliance on mobile.
+
 ---
 
 ## Effort Summary
 | Tier | Items | Estimate |
 |------|-------|----------|
-| Tier 1 — Critical | 14 | ~2-3 weeks (security sprint) |
-| Tier 2 — Important | 59 | ~4-6 weeks (API integration sprints, dominated by profile + settings) |
+| Tier 1 — Critical | 3 (was 14) | ~0.5-1 week (SSL pins + Prisma config + biometric) |
+| Tier 2 — Important | 57 (was 59) | ~4-6 weeks (API integration sprints, dominated by profile + settings) |
 | Tier 3 — Nice-to-Have | 5 | ~1-2 weeks |
-| **Grand Total** | **78** | **~7-11 weeks** |
+| **Grand Total** | **65** (was 78) | **~5.5-9 weeks** |

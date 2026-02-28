@@ -4,6 +4,7 @@ import { colors } from 'src/web/design-system/src/tokens/colors';
 import { typography } from 'src/web/design-system/src/tokens/typography';
 import { spacing } from 'src/web/design-system/src/tokens/spacing';
 import { MainLayout } from 'src/web/web/src/layouts/MainLayout';
+import { restClient } from '../../api/client';
 
 const PageContainer = styled.div`
   max-width: 600px;
@@ -196,9 +197,23 @@ export default function NotificationPreferencesPage() {
     );
   };
 
-  const handleSave = () => {
-    // TODO: Save preferences to API
-    console.log('Saving notification preferences:', preferences);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSave = async () => {
+    setSaving(true);
+    setError(null);
+    try {
+      const payload = preferences.reduce((acc, pref) => {
+        acc[pref.key] = pref.enabled;
+        return acc;
+      }, {} as Record<string, boolean>);
+      await restClient.put('/users/me/notification-preferences', payload);
+    } catch (err) {
+      setError('Falha ao salvar preferencias');
+    } finally {
+      setSaving(false);
+    }
   };
 
   // Group preferences by category
@@ -251,8 +266,10 @@ export default function NotificationPreferencesPage() {
           {otherPrefs.map(renderToggle)}
         </Section>
 
-        <SaveButton onClick={handleSave}>
-          Salvar Preferencias
+        {error && <Subtitle style={{ color: colors.semantic?.error || '#dc2626' }}>{error}</Subtitle>}
+
+        <SaveButton onClick={handleSave} disabled={saving}>
+          {saving ? 'Salvando...' : 'Salvar Preferencias'}
         </SaveButton>
       </PageContainer>
     </MainLayout>

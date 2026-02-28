@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { deleteAccount } from '@web/web/src/api/auth';
 
 /**
  * Account deletion page.
@@ -12,6 +13,8 @@ const DeleteAccountPage: NextPage = () => {
   const [confirmed, setConfirmed] = useState(false);
   const [password, setPassword] = useState('');
   const [reason, setReason] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const consequences = [
     'Todos os seus dados pessoais serao removidos permanentemente',
@@ -21,10 +24,19 @@ const DeleteAccountPage: NextPage = () => {
     'Esta acao nao pode ser desfeita',
   ];
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!confirmed || !password) return;
-    // TODO: Call API to delete account
-    router.push('/auth/login');
+    setLoading(true);
+    setError('');
+    try {
+      await deleteAccount(password, reason || undefined);
+      localStorage.clear();
+      router.push('/auth/login');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro ao excluir conta. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -43,6 +55,8 @@ const DeleteAccountPage: NextPage = () => {
           ))}
         </ul>
       </div>
+
+      {error && <div style={{backgroundColor: colors.semantic.errorBg, color: colors.semantic.error, padding: spacing.sm, borderRadius: borderRadius.sm, marginTop: spacing.md, fontSize: typography.fontSize['text-sm'], fontFamily: typography.fontFamily.body}}>{error}</div>}
 
       {/* Reason */}
       <div style={{ ...cardStyle, marginTop: spacing.md }}>
@@ -87,7 +101,7 @@ const DeleteAccountPage: NextPage = () => {
             cursor: confirmed && password ? 'pointer' : 'not-allowed',
           }}
         >
-          Excluir Minha Conta
+          {loading ? 'Excluindo...' : 'Excluir Minha Conta'}
         </button>
         <button onClick={() => router.back()} style={cancelButtonStyle}>Cancelar</button>
       </div>

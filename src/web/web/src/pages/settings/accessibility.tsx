@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { saveAccessibility } from '../../api/settings';
 
 /**
  * Accessibility settings page.
@@ -13,6 +14,8 @@ const AccessibilityPage: NextPage = () => {
   const [highContrast, setHighContrast] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [screenReader, setScreenReader] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const fontSizes = [
     { value: 'normal' as const, label: 'Normal', preview: '16px' },
@@ -26,15 +29,27 @@ const AccessibilityPage: NextPage = () => {
     { label: 'Leitor de Tela', desc: 'Otimizar para leitores de tela (VoiceOver, TalkBack)', value: screenReader, toggle: () => setScreenReader(!screenReader) },
   ];
 
-  const handleSave = () => {
-    // TODO: Save accessibility preferences
-    router.push('/settings');
+  const handleSave = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      await saveAccessibility({ fontSize, highContrast, reducedMotion, screenReader });
+      router.push('/settings');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro inesperado.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div style={{ padding: spacing.xl, maxWidth: '600px', margin: '0 auto' }}>
       <h1 style={titleStyle}>Acessibilidade</h1>
       <p style={subtitleStyle}>Personalize a experiencia para suas necessidades.</p>
+
+      {error && (
+        <div style={errorStyle}>{error}</div>
+      )}
 
       {/* Font size selector */}
       <div style={cardStyle}>
@@ -89,11 +104,17 @@ const AccessibilityPage: NextPage = () => {
         ))}
       </div>
 
-      <button onClick={handleSave} style={primaryButtonStyle}>Salvar Preferencias</button>
+      <button onClick={handleSave} disabled={loading} style={{ ...primaryButtonStyle, opacity: loading ? 0.7 : 1 }}>
+        {loading ? 'Salvando...' : 'Salvar Preferencias'}
+      </button>
     </div>
   );
 };
 
+const errorStyle: React.CSSProperties = {
+  backgroundColor: '#fef2f2', border: '1px solid #fecaca', borderRadius: 6,
+  color: '#b91c1c', fontSize: 14, padding: '10px 14px', marginBottom: 16,
+};
 const titleStyle: React.CSSProperties = {
   fontSize: typography.fontSize['heading-xl'], fontWeight: typography.fontWeight.semiBold,
   color: colors.gray[70], marginBottom: spacing.xs, fontFamily: typography.fontFamily.heading,

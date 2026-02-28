@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { restClient } from 'src/web/web/src/api/client';
 
 /**
  * Report problem form page.
@@ -14,6 +15,8 @@ const ReportPage: NextPage = () => {
   const [description, setDescription] = useState('');
   const [severity, setSeverity] = useState('medium');
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const categories = [
     { value: 'bug', label: 'Erro / Bug' },
@@ -32,10 +35,25 @@ const ReportPage: NextPage = () => {
     { value: 'critical', label: 'Critica', desc: 'Dados ou seguranca afetados' },
   ];
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!category || !title || !description) return;
-    // TODO: Submit report via API
-    setSubmitted(true);
+
+    setSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      await restClient.post('/support/reports', {
+        category,
+        title,
+        description,
+        severity,
+      });
+      setSubmitted(true);
+    } catch {
+      setSubmitError('Erro ao enviar relato. Tente novamente.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -107,16 +125,21 @@ const ReportPage: NextPage = () => {
           </div>
         </div>
 
+        {submitError && (
+          <p style={{ color: colors.semantic.error, fontSize: typography.fontSize['text-sm'], marginBottom: spacing.sm }}>
+            {submitError}
+          </p>
+        )}
         <button
           onClick={handleSubmit}
-          disabled={!isValid}
+          disabled={!isValid || submitting}
           style={{
             ...primaryButtonStyle,
             backgroundColor: isValid ? colors.brand.primary : colors.gray[30],
             cursor: isValid ? 'pointer' : 'not-allowed',
           }}
         >
-          Enviar Relato
+          {submitting ? 'Enviando...' : 'Enviar Relato'}
         </button>
       </div>
     </div>

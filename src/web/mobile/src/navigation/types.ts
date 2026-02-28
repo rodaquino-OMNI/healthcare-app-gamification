@@ -32,7 +32,7 @@ export type AuthStackParamList = {
   AuthForgotPassword: undefined;
   AuthMFA: undefined;
   AuthEmailVerify: undefined;
-  AuthSetPassword: undefined;
+  AuthSetPassword: { token?: string } | undefined;
   // Social
   AuthSocial: undefined;
   // Personalization
@@ -327,7 +327,15 @@ export type SettingsStackParamList = {
   SettingsHealthPlan: undefined;
   SettingsInsuranceDocs: undefined;
   SettingsDependents: undefined;
-  SettingsAddDependent: undefined;
+  SettingsAddDependent: {
+    dependent?: {
+      id: string;
+      name: string;
+      relationship: string;
+      dob: string;
+      cpf: string;
+    };
+  } | undefined;
   // Contacts & Addresses
   SettingsEmergencyContacts: undefined;
   SettingsAddresses: undefined;

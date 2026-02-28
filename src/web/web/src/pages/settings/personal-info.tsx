@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { savePersonalInfo } from '../../api/settings';
 
 /**
  * Personal information settings page.
@@ -14,10 +15,20 @@ const PersonalInfoPage: NextPage = () => {
   const [gender, setGender] = useState('feminino');
   const [bloodType, setBloodType] = useState('O+');
   const [cpf, setCpf] = useState('123.456.789-00');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSave = () => {
-    // TODO: Save personal info via API
-    router.push('/settings');
+  const handleSave = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      await savePersonalInfo({ name, dob, gender, bloodType });
+      router.push('/settings');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro ao salvar dados pessoais.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -61,7 +72,8 @@ const PersonalInfoPage: NextPage = () => {
           <span style={hintStyle}>O CPF nao pode ser alterado.</span>
         </div>
 
-        <button onClick={handleSave} style={primaryButtonStyle}>Salvar Alteracoes</button>
+        {error && <p style={{ color: 'red', marginTop: spacing.sm, fontSize: typography.fontSize['text-sm'], fontFamily: typography.fontFamily.body }}>{error}</p>}
+        <button onClick={handleSave} disabled={loading} style={primaryButtonStyle}>{loading ? 'Salvando...' : 'Salvar Alteracoes'}</button>
         <button onClick={() => router.back()} style={secondaryButtonStyle}>Cancelar</button>
       </div>
     </div>

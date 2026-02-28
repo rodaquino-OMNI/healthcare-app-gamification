@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { ScrollView, Switch } from 'react-native';
+import { ScrollView, Switch, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
@@ -10,6 +10,8 @@ import { spacing } from '@design-system/tokens/spacing';
 import { borderRadius } from '@design-system/tokens/borderRadius';
 import { sizing } from '@design-system/tokens/sizing';
 import { ROUTES } from '../../constants/routes';
+import { useAuth } from '../../context/AuthContext';
+import { updateProfile } from '../../api/auth';
 
 // --- Constants ---
 
@@ -192,6 +194,8 @@ const SaveButtonText = styled.Text`
 export const ProfileEmergencyContact: React.FC = () => {
   const navigation = useNavigation<any>();
   const { t } = useTranslation();
+  const { session } = useAuth();
+  const [saving, setSaving] = useState(false);
 
   const [contactName, setContactName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -202,10 +206,28 @@ export const ProfileEmergencyContact: React.FC = () => {
     navigation.goBack();
   };
 
-  const handleSave = useCallback(() => {
-    // TODO: Save emergency contact data to context/store
-    navigation.navigate(ROUTES.PROFILE_CONFIRMATION);
-  }, [navigation]);
+  const handleSave = useCallback(async () => {
+    if (!session?.accessToken) return;
+    setSaving(true);
+    try {
+      await updateProfile(session.accessToken, {
+        emergencyContact: {
+          name: contactName,
+          phone: phoneNumber,
+          relationship: relationship || undefined,
+          isPrimary,
+        },
+      });
+      navigation.navigate(ROUTES.PROFILE_CONFIRMATION);
+    } catch (err: unknown) {
+      Alert.alert(
+        t('common.errors.default'),
+        err instanceof Error ? err.message : t('common.errors.generic'),
+      );
+    } finally {
+      setSaving(false);
+    }
+  }, [session, contactName, phoneNumber, relationship, isPrimary, navigation, t]);
 
   const selectRelationship = useCallback((rel: Relationship) => {
     setRelationship(rel);

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TextInput, Alert } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useTheme } from 'styled-components/native';
 import type { Theme } from '@design-system/themes/base.theme';
@@ -9,6 +9,7 @@ import { fontSizeValues } from '@design-system/tokens/typography';
 import { borderRadiusValues } from '@design-system/tokens/borderRadius';
 import { useTranslation } from 'react-i18next';
 import { useJourney } from '../../context/JourneyContext';
+import { restClient } from '../../api/client';
 
 import { FrequencyType, FrequencyPicker, DAYS_OF_WEEK } from './MedicationReminderForm';
 import { SnoozePicker, ReminderPreview } from './MedicationSchedulePicker';
@@ -32,6 +33,9 @@ export const MedicationReminderScreen: React.FC = () => {
   const route = useRoute<any>();
   const navigation = useNavigation();
   const { journey } = useJourney();
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const params = (route.params ?? {}) as MedicationReminderParams;
   const medicationName = params.medicationName ?? 'Medicamento';
@@ -61,8 +65,7 @@ export const MedicationReminderScreen: React.FC = () => {
   /**
    * Handle save reminder action.
    */
-  const handleSave = () => {
-    // TODO: Persist reminder configuration to backend/local storage
+  const handleSave = async () => {
     const reminderConfig = {
       medicationName,
       medicationDosage,
@@ -73,8 +76,17 @@ export const MedicationReminderScreen: React.FC = () => {
       snoozeEnabled,
       snoozeDuration: snoozeEnabled ? snoozeDuration : null,
     };
-    console.log('Reminder saved:', reminderConfig);
-    navigation.goBack();
+    setLoading(true);
+    setError(null);
+    try {
+      await restClient.post('/health/medication-reminders', reminderConfig);
+      navigation.goBack();
+    } catch (err) {
+      setError(t('common.error'));
+      Alert.alert(t('common.error'), t('common.tryAgain'));
+    } finally {
+      setLoading(false);
+    }
   };
 
   /**

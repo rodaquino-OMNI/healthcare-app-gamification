@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { AuthNavigationProp } from '../../navigation/types';
 import { useForm, Controller } from 'react-hook-form';
@@ -13,6 +13,9 @@ import { typography } from '@design-system/tokens/typography';
 import { spacing, spacingValues } from '@design-system/tokens/spacing';
 import { borderRadius, borderRadiusValues } from '@design-system/tokens/borderRadius';
 import { sizing } from '@design-system/tokens/sizing';
+
+import { useAuth } from '../../context/AuthContext';
+import { updateProfile } from '../../api/auth';
 
 /**
  * Validation schema for health information form.
@@ -224,6 +227,8 @@ const SkipLinkText = styled.Text`
 const ProfileVariant1: React.FC = () => {
   const navigation = useNavigation<AuthNavigationProp>();
   const { t } = useTranslation();
+  const { session } = useAuth();
+  const [saving, setSaving] = useState(false);
   const [selectedConditions, setSelectedConditions] = useState<string[]>([]);
 
   const {
@@ -256,9 +261,24 @@ const ProfileVariant1: React.FC = () => {
     });
   };
 
-  const onSubmit = (data: HealthInfoFormData) => {
-    // TODO: persist health info with selectedConditions to profile context/store
-    navigation.navigate('ProfileInsurance');
+  const onSubmit = async (data: HealthInfoFormData) => {
+    if (!session?.accessToken) return;
+    setSaving(true);
+    try {
+      await updateProfile(session.accessToken, {
+        bloodType: data.bloodType,
+        allergies: data.allergies,
+        chronicConditions: selectedConditions,
+      });
+      navigation.navigate('ProfileInsurance');
+    } catch (err: unknown) {
+      Alert.alert(
+        t('common.errors.default'),
+        err instanceof Error ? err.message : t('common.errors.generic'),
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleSkip = () => {

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { logout } from '@web/web/src/api/auth';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
@@ -9,9 +10,19 @@ import { colors, typography, spacing, borderRadius } from '@web/design-system/sr
  */
 const LogoutPage: NextPage = () => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
-  const handleLogout = () => {
-    // TODO: Clear session and call logout API
+  const handleLogout = async () => {
+    setLoading(true);
+    try {
+      await logout();
+    } catch {
+      // Continue with local cleanup even if API fails
+    }
+    localStorage.clear();
+    document.cookie.split(';').forEach((c) => {
+      document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+    });
     router.push('/auth/login');
   };
 
@@ -31,8 +42,8 @@ const LogoutPage: NextPage = () => {
           </p>
         </div>
 
-        <button onClick={handleLogout} style={logoutBtnStyle}>
-          Sim, Sair
+        <button onClick={handleLogout} disabled={loading} style={{...logoutBtnStyle, opacity: loading ? 0.6 : 1}}>
+          {loading ? 'Saindo...' : 'Sim, Sair'}
         </button>
         <button onClick={() => router.back()} style={cancelBtnStyle}>
           Cancelar

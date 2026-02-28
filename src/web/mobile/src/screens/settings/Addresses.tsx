@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { FlatList, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { FlatList, Alert, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { SettingsNavigationProp } from '../../navigation/types';
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
 
+import { restClient } from '../../api/client';
 import { ROUTES } from '../../constants/routes';
 import { colors } from '@design-system/tokens/colors';
 import { typography } from '@design-system/tokens/typography';
@@ -163,6 +164,12 @@ const EmptyText = styled.Text`
   text-align: center;
 `;
 
+const LoadingContainer = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+`;
+
 // --- Types ---
 
 interface Address {
@@ -176,31 +183,6 @@ interface Address {
   isPrimary: boolean;
 }
 
-// --- Mock Data ---
-
-const MOCK_ADDRESSES: Address[] = [
-  {
-    id: '1',
-    label: 'Casa',
-    street: 'Rua das Flores, 123',
-    neighborhood: 'Jardim Paulista',
-    city: 'Sao Paulo',
-    state: 'SP',
-    cep: '01234-567',
-    isPrimary: true,
-  },
-  {
-    id: '2',
-    label: 'Trabalho',
-    street: 'Av. Paulista, 1000',
-    neighborhood: 'Bela Vista',
-    city: 'Sao Paulo',
-    state: 'SP',
-    cep: '01310-100',
-    isPrimary: false,
-  },
-];
-
 /**
  * Addresses screen -- lists saved addresses with label badges,
  * primary indicator, full formatted address, and Edit/Delete actions.
@@ -208,7 +190,24 @@ const MOCK_ADDRESSES: Address[] = [
 export const AddressesScreen: React.FC = () => {
   const navigation = useNavigation<SettingsNavigationProp>();
   const { t } = useTranslation();
-  const [addresses, setAddresses] = useState<Address[]>(MOCK_ADDRESSES);
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      setLoading(true);
+      try {
+        const response = await restClient.get('/users/me/addresses');
+        setAddresses(response.data ?? []);
+      } catch (err: unknown) {
+        Alert.alert('Erro', err instanceof Error ? err.message : 'Erro inesperado.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAddresses();
+  }, []);
 
   const handleDelete = (addr: Address) => {
     Alert.alert(
@@ -228,7 +227,6 @@ export const AddressesScreen: React.FC = () => {
   };
 
   const handleEdit = (_addr: Address) => {
-    // TODO: navigate with pre-filled data
     navigation.navigate(ROUTES.SETTINGS_ADD_ADDRESS);
   };
 
@@ -286,6 +284,19 @@ export const AddressesScreen: React.FC = () => {
       <EmptyText>{t('settings.addresses.empty')}</EmptyText>
     </EmptyContainer>
   );
+
+  if (loading) {
+    return (
+      <Container>
+        <Header>
+          <Title>{t('settings.addresses.title')}</Title>
+        </Header>
+        <LoadingContainer>
+          <ActivityIndicator size="large" color={colors.brand.primary} testID="addresses-loading" />
+        </LoadingContainer>
+      </Container>
+    );
+  }
 
   return (
     <Container>

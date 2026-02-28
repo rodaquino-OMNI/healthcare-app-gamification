@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { restClient } from '../../api/client';
 
 interface ExportCategory {
   key: string;
@@ -23,14 +24,28 @@ const DataExportPage: NextPage = () => {
   ]);
   const [format, setFormat] = useState<'json' | 'csv' | 'pdf'>('json');
   const [requested, setRequested] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const toggleCategory = (key: string) => {
     setCategories((prev) => prev.map((c) => c.key === key ? { ...c, selected: !c.selected } : c));
   };
 
-  const handleRequest = () => {
-    // TODO: Call API to request data export
-    setRequested(true);
+  const handleRequest = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const selectedCategories = categories.filter(c => c.selected).map(c => c.key);
+      await restClient.post('/privacy/export', {
+        categories: selectedCategories,
+        format,
+      });
+      setRequested(true);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro ao solicitar exportação de dados');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const anySelected = categories.some((c) => c.selected);
@@ -87,7 +102,7 @@ const DataExportPage: NextPage = () => {
             ))}
           </div>
 
-          <button onClick={handleRequest} disabled={!anySelected} style={{
+          <button onClick={handleRequest} disabled={!anySelected || loading} style={{
             ...primaryButtonStyle,
             backgroundColor: anySelected ? colors.brand.primary : colors.gray[30],
             cursor: anySelected ? 'pointer' : 'not-allowed',

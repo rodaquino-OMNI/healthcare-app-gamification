@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
@@ -216,8 +216,17 @@ export const SearchArticleResults: React.FC = () => {
     navigation.goBack();
   }, [navigation]);
 
-  const handleArticlePress = useCallback((_articleId: string) => {
-    // TODO: Navigate to article detail when route is available
+  const handleArticlePress = useCallback((articleId: string) => {
+    // Navigate to article detail - for now opens in-app browser or external link
+    const article = MOCK_ARTICLES.find(a => a.id === articleId);
+    if (article) {
+      // Future: navigation.navigate('ArticleDetail', { articleId })
+      Alert.alert(
+        article.title,
+        `${article.source}\n\n${article.readTime} min de leitura`,
+        [{ text: 'OK' }],
+      );
+    }
   }, []);
 
   const renderArticleItem = useCallback(

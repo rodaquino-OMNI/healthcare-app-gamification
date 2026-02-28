@@ -11,6 +11,7 @@ import { LoadingIndicator } from 'src/web/web/src/components/shared/LoadingIndic
 import { EmptyState } from 'src/web/web/src/components/shared/EmptyState.tsx';
 import MainLayout from 'src/web/web/src/layouts/MainLayout.tsx';
 import { WEB_AUTH_ROUTES } from 'src/web/shared/constants/routes.ts';
+import { restClient } from 'src/web/web/src/api/client';
 
 /**
  * A page component that displays and allows users to edit their profile information.
@@ -25,6 +26,8 @@ const ProfilePage: React.FC = () => {
 
   // LD1: Defines a state variable for managing the confirmation modal visibility.
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // LD1: If the authentication status is loading, renders a loading indicator.
   if (isLoading) {
@@ -62,9 +65,16 @@ const ProfilePage: React.FC = () => {
       {/* LD1: Confirmation modal for account deletion */}
       <ConfirmationModal
         visible={isModalVisible}
-        onConfirm={() => {
-          // TODO: Implement account deletion logic
-          console.log('Account deletion confirmed');
+        onConfirm={async () => {
+          setLoading(true);
+          try {
+            await restClient.delete('/auth/account');
+            window.location.href = '/login';
+          } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Erro ao excluir conta');
+          } finally {
+            setLoading(false);
+          }
           setIsModalVisible(false);
         }}
         onCancel={() => setIsModalVisible(false)}

@@ -4,6 +4,7 @@ import { colors } from 'src/web/design-system/src/tokens/colors';
 import { typography } from 'src/web/design-system/src/tokens/typography';
 import { spacing } from 'src/web/design-system/src/tokens/spacing';
 import { MainLayout } from 'src/web/web/src/layouts/MainLayout';
+import { restClient } from 'src/web/web/src/api/client';
 
 const PageContainer = styled.div`
   max-width: 600px;
@@ -178,6 +179,9 @@ interface PrivacySetting {
  * Mirrors the mobile SettingsPrivacy screen.
  */
 export default function PrivacySettingsPage() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [settings, setSettings] = useState<PrivacySetting[]>([
     {
       key: 'share_health_data',
@@ -213,19 +217,38 @@ export default function PrivacySettingsPage() {
     );
   };
 
-  const handleSave = () => {
-    // TODO: Save privacy settings to API
-    console.log('Saving privacy settings:', settings);
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      await restClient.patch('/privacy/my-data', { settings });
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro ao salvar configurações');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleExportData = () => {
-    // TODO: Trigger data export via API
-    console.log('Requesting data export');
+  const handleExportData = async () => {
+    setLoading(true);
+    try {
+      await restClient.get('/privacy/export');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro ao exportar dados');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDeleteAccount = () => {
-    // TODO: Show confirmation dialog and proceed with account deletion
-    console.log('Account deletion requested');
+  const handleDeleteAccount = async () => {
+    setLoading(true);
+    try {
+      await restClient.delete('/privacy/my-data');
+      window.location.href = '/login';
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro ao excluir conta');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

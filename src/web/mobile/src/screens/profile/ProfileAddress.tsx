@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { AuthNavigationProp } from '../../navigation/types';
 import { useForm, Controller } from 'react-hook-form';
@@ -7,6 +7,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import styled from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
+
+import { useAuth } from '../../context/AuthContext';
+import { updateProfile } from '../../api/auth';
 
 import { colors } from '@design-system/tokens/colors';
 import { typography } from '@design-system/tokens/typography';
@@ -195,6 +198,9 @@ const PrimaryButtonText = styled.Text`
 const ProfileAddress: React.FC = () => {
   const navigation = useNavigation<AuthNavigationProp>();
   const { t } = useTranslation();
+  const { session } = useAuth();
+  const [saving, setSaving] = useState(false);
+  const [loadingCep, setLoadingCep] = useState(false);
 
   const {
     control,
@@ -219,38 +225,55 @@ const ProfileAddress: React.FC = () => {
   const cep = watch('cep');
   const state = watch('state');
 
-  /**
-   * Auto-fill address fields when CEP reaches 8 digits.
-   * TODO: Replace mock with real ViaCEP API call (https://viacep.com.br/ws/{cep}/json/)
-   */
   useEffect(() => {
     if (cep && cep.replace(/\D/g, '').length === 8) {
       const cleanCep = cep.replace(/\D/g, '');
-
-      // TODO: Replace with real API call:
-      // fetch(`https://viacep.com.br/ws/${cleanCep}/json/`)
-      //   .then(res => res.json())
-      //   .then(data => {
-      //     if (!data.erro) {
-      //       setValue('street', data.logradouro, { shouldValidate: true });
-      //       setValue('neighborhood', data.bairro, { shouldValidate: true });
-      //       setValue('city', data.localidade, { shouldValidate: true });
-      //       setValue('state', data.uf, { shouldValidate: true });
-      //     }
-      //   })
-      //   .catch(console.error);
-
-      // Mock auto-fill for development
-      setValue('street', 'Rua Example', { shouldValidate: true });
-      setValue('neighborhood', 'Centro', { shouldValidate: true });
-      setValue('city', 'Sao Paulo', { shouldValidate: true });
-      setValue('state', 'SP', { shouldValidate: true });
+      setLoadingCep(true);
+      fetch(`https://viacep.com.br/ws/${cleanCep}/json/`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.erro) {
+            Alert.alert(t('profileSetup.address.cepError'));
+            return;
+          }
+          setValue('street', data.logradouro || '', { shouldValidate: true });
+          setValue('neighborhood', data.bairro || '', { shouldValidate: true });
+          setValue('city', data.localidade || '', { shouldValidate: true });
+          setValue('state', data.uf || '', { shouldValidate: true });
+        })
+        .catch(() => {
+          Alert.alert(t('profileSetup.address.cepError'));
+        })
+        .finally(() => {
+          setLoadingCep(false);
+        });
     }
-  }, [cep, setValue]);
+  }, [cep, setValue, t]);
 
-  const onSubmit = (data: AddressFormData) => {
-    // TODO: persist address to profile context/store
-    navigation.navigate('ProfileDocuments');
+  const onSubmit = async (data: AddressFormData) => {
+    if (!session?.accessToken) return;
+    setSaving(true);
+    try {
+      await updateProfile(session.accessToken, {
+        address: {
+          cep: data.cep,
+          street: data.street,
+          number: data.number,
+          complement: data.complement,
+          neighborhood: data.neighborhood,
+          city: data.city,
+          state: data.state,
+        },
+      });
+      navigation.navigate('ProfileDocuments');
+    } catch (err: unknown) {
+      Alert.alert(
+        t('common.errors.default'),
+        err instanceof Error ? err.message : t('common.errors.generic'),
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (

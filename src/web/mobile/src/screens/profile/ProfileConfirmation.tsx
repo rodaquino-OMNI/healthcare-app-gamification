@@ -1,5 +1,5 @@
-import React from 'react';
-import { ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import type { RootStackParamList } from '../../navigation/types';
@@ -12,6 +12,8 @@ import { spacing } from '@design-system/tokens/spacing';
 import { borderRadius } from '@design-system/tokens/borderRadius';
 import { sizing } from '@design-system/tokens/sizing';
 import { shadows } from '@design-system/tokens/shadows';
+import { useAuth } from '../../context/AuthContext';
+import { getProfile } from '../../api/auth';
 
 // --- Styled Components ---
 
@@ -158,13 +160,35 @@ const CelebrationText = styled.Text`
 const ProfileConfirmation: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const { t } = useTranslation();
+  const { session } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [profileData, setProfileData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+  });
 
-  // TODO: Retrieve actual profile data from context/store
-  const profileData = {
-    name: 'User Name',
-    email: 'user@email.com',
-    phone: '+55 11 99999-9999',
-  };
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!session?.accessToken) {
+        setLoading(false);
+        return;
+      }
+      try {
+        const data = await getProfile(session.accessToken);
+        setProfileData({
+          name: data.name || '',
+          email: data.email || '',
+          phone: data.phone || '',
+        });
+      } catch {
+        // Profile fetch failed, show empty data
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfile();
+  }, [session]);
 
   const handleContinueToHome = () => {
     // Reset navigation stack and go to Main (root-level tab navigator)

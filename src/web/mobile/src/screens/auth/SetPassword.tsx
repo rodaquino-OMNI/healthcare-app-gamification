@@ -1,7 +1,10 @@
 import React, { useState, useMemo } from 'react';
+import { Alert } from 'react-native';
 import styled from 'styled-components/native';
-import { useNavigation } from '@react-navigation/native';
-import type { AuthNavigationProp } from '../../navigation/types';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
+import type { AuthNavigationProp, AuthStackParamList } from '../../navigation/types';
+import { setPassword } from '../../api/auth';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -220,6 +223,7 @@ const calculateStrength = (criteria: PasswordCriteria): StrengthLevel => {
  */
 export const SetPasswordScreen: React.FC = () => {
   const navigation = useNavigation<AuthNavigationProp>();
+  const route = useRoute<RouteProp<AuthStackParamList, 'AuthSetPassword'>>();
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -251,11 +255,12 @@ export const SetPasswordScreen: React.FC = () => {
   const onSubmit = async (data: SetPasswordFormData) => {
     setIsSubmitting(true);
     try {
-      // TODO: Call actual set password API
-      // await setPassword(data.password);
+      const token = route.params?.token ?? '';
+      await setPassword(token, data.password);
+      Alert.alert(t('common.success'), t('auth.passwordSet'));
       navigation.navigate(ROUTES.AUTH_LOGIN);
-    } catch (error: any) {
-      console.error('Set password failed:', error);
+    } catch (err) {
+      Alert.alert(t('common.error'), t('common.tryAgain'));
     } finally {
       setIsSubmitting(false);
     }

@@ -164,12 +164,48 @@ const LegalLink = styled.button`
   }
 `;
 
+const OAUTH_CONFIG: Record<string, { authUrl: string; clientId: string; scope: string; redirectUri: string }> = {
+  google: {
+    authUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
+    clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
+    scope: 'openid email profile',
+    redirectUri: typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : '',
+  },
+  apple: {
+    authUrl: 'https://appleid.apple.com/auth/authorize',
+    clientId: process.env.NEXT_PUBLIC_APPLE_CLIENT_ID || '',
+    scope: 'name email',
+    redirectUri: typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : '',
+  },
+  facebook: {
+    authUrl: 'https://www.facebook.com/v18.0/dialog/oauth',
+    clientId: process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_ID || '',
+    scope: 'email public_profile',
+    redirectUri: typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : '',
+  },
+};
+
 export default function SocialAuthPage() {
   const router = useRouter();
 
   const handleSocialAuth = (provider: string) => {
-    console.log(`Iniciando autenticação com ${provider}`);
-    // TODO: Implement actual OAuth flow
+    const config = OAUTH_CONFIG[provider.toLowerCase()];
+    if (!config?.clientId) {
+      console.warn(`OAuth not configured for ${provider}`);
+      return;
+    }
+    const state = typeof crypto !== 'undefined' && crypto.randomUUID
+      ? crypto.randomUUID()
+      : Math.random().toString(36).substring(2);
+    const params = new URLSearchParams({
+      client_id: config.clientId,
+      redirect_uri: config.redirectUri,
+      response_type: 'code',
+      scope: config.scope,
+      state,
+    });
+    sessionStorage.setItem('oauth_state', state);
+    window.location.href = `${config.authUrl}?${params.toString()}`;
   };
 
   const handleEmailLogin = () => {
