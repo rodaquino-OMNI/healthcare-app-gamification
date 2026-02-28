@@ -6,6 +6,7 @@ import { LoggerService } from '../../../shared/src/logging/logger.service';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { ProfilesService } from '../profiles/profiles.service';
 import { AchievementsService } from '../achievements/achievements.service';
+import { Parser } from 'expr-eval';
 
 /**
  * Event interface for the gamification engine
@@ -56,6 +57,7 @@ export interface RuleAction {
 @Injectable()
 export class RulesService implements OnModuleInit {
   private rules: Rule[] = [];
+  private readonly parser = new Parser();
   private readonly rulesRefreshInterval: number;
 
   constructor(
@@ -229,8 +231,7 @@ export class RulesService implements OnModuleInit {
         }
       };
       
-      // Simple condition evaluation using Function constructor (can be replaced with a proper rules engine)
-      // Note: In production, you'd want a more secure way to evaluate conditions
+      // Evaluate condition using expr-eval safe expression parser (no arbitrary code execution)
       const conditionResult = await this.evaluateCondition(rule.condition, context);
       
       if (!conditionResult) {
@@ -263,19 +264,8 @@ export class RulesService implements OnModuleInit {
    */
   private async evaluateCondition(condition: string, context: any): Promise<boolean> {
     try {
-      // Use Function constructor to evaluate the condition
-      // In production, use a proper rules engine with security measures
-      const evaluateFunc = new Function('context', `
-        try {
-          with (context) {
-            return ${condition};
-          }
-        } catch (error) {
-          return false;
-        }
-      `);
-      
-      return evaluateFunc(context) === true;
+      const expr = this.parser.parse(condition);
+      return expr.evaluate(context) === true;
     } catch (error) {
       this.logger.error(
         `Error evaluating condition: ${condition}: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,

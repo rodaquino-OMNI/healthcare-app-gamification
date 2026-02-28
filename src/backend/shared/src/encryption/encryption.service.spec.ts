@@ -56,17 +56,18 @@ describe('EncryptionService', () => {
   });
 
   describe('encrypt', () => {
-    it('returns a string in iv:authTag:ciphertext hex format', () => {
+    it('returns a string in salt:iv:authTag:ciphertext hex format', () => {
       const plaintext = 'hello world';
       const result = service.encrypt(plaintext);
 
-      expect(result).toMatch(/^[0-9a-f]+:[0-9a-f]+:[0-9a-f]+$/);
+      expect(result).toMatch(/^[0-9a-f]+:[0-9a-f]+:[0-9a-f]+:[0-9a-f]+$/);
 
       const parts = result.split(':');
-      expect(parts).toHaveLength(3);
-      parts.forEach((part) => {
-        expect(part.length).toBeGreaterThan(0);
-      });
+      expect(parts).toHaveLength(4);
+      expect(parts[0]).toHaveLength(64); // 32-byte salt = 64 hex chars
+      expect(parts[1]).toHaveLength(32); // 16-byte IV = 32 hex chars
+      expect(parts[2]).toHaveLength(32); // 16-byte authTag = 32 hex chars
+      expect(parts[3].length).toBeGreaterThan(0);
     });
 
     it('produces different ciphertexts for the same input due to random IV', () => {
@@ -118,10 +119,14 @@ describe('EncryptionService', () => {
       expect(() => service.decrypt('aaaa:bbbb')).toThrow();
     });
 
+    it('throws on invalid format with three colon-separated parts (old format)', () => {
+      expect(() => service.decrypt('aaaa:bbbb:cccc')).toThrow();
+    });
+
     it('throws when the auth tag has been tampered with', () => {
       const encrypted = service.encrypt('original value');
       const parts = encrypted.split(':');
-      parts[1] = 'deadbeefdeadbeefdeadbeefdeadbeef';
+      parts[2] = 'deadbeefdeadbeefdeadbeefdeadbeef';
       const tampered = parts.join(':');
 
       expect(() => service.decrypt(tampered)).toThrow();
@@ -130,9 +135,9 @@ describe('EncryptionService', () => {
     it('throws when the ciphertext has been tampered with', () => {
       const encrypted = service.encrypt('original value');
       const parts = encrypted.split(':');
-      const firstByte = parseInt(parts[2].slice(0, 2), 16);
+      const firstByte = parseInt(parts[3].slice(0, 2), 16);
       const flipped = (firstByte ^ 0xff).toString(16).padStart(2, '0');
-      parts[2] = flipped + parts[2].slice(2);
+      parts[3] = flipped + parts[3].slice(2);
       const tampered = parts.join(':');
 
       expect(() => service.decrypt(tampered)).toThrow();
@@ -141,7 +146,7 @@ describe('EncryptionService', () => {
     it('throws when the IV has been replaced', () => {
       const encrypted = service.encrypt('original value');
       const parts = encrypted.split(':');
-      parts[0] = '000000000000000000000000';
+      parts[1] = '00000000000000000000000000000000';
       const tampered = parts.join(':');
 
       expect(() => service.decrypt(tampered)).toThrow();
@@ -176,6 +181,10 @@ describe('EncryptionService', () => {
 
     it('returns false for a string with two colon-separated parts', () => {
       expect(service.isEncrypted('aabbcc:ddeeff')).toBe(false);
+    });
+
+    it('returns false for old three-part format', () => {
+      expect(service.isEncrypted('a'.repeat(32) + ':' + 'b'.repeat(32) + ':' + 'c'.repeat(10))).toBe(false);
     });
 
     it('returns false for a string containing non-hex characters', () => {

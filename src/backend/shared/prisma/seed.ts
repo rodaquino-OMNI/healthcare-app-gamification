@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { UsersService } from '@app/auth/users/users.service';
 import * as bcrypt from 'bcrypt';
+import { faker } from '@faker-js/faker';
 
 /**
  * Seeds the database with initial data.
@@ -282,14 +283,16 @@ async function seedRoles(prisma: PrismaClient): Promise<void> {
 async function seedUsers(prisma: PrismaClient): Promise<void> {
   try {
     // Create admin user
-    const adminPassword = await bcrypt.hash('Password123!', 10);
+    const adminPwd = process.env.SEED_ADMIN_PASSWORD || faker.internet.password({ length: 16 });
+    const adminCpf = process.env.SEED_ADMIN_CPF || faker.string.numeric(11);
+    const adminPassword = await bcrypt.hash(adminPwd, 10);
     const adminUser = await prisma.user.create({
       data: {
         name: 'Admin User',
         email: 'admin@austa.com.br',
         password: adminPassword,
         phone: '+5511999999999',
-        cpf: '12345678901',
+        cpf: adminCpf,
       },
     });
     
@@ -312,14 +315,16 @@ async function seedUsers(prisma: PrismaClient): Promise<void> {
     }
     
     // Create regular test user
-    const userPassword = await bcrypt.hash('Password123!', 10);
+    const userPwd = process.env.SEED_USER_PASSWORD || faker.internet.password({ length: 16 });
+    const userCpf = process.env.SEED_USER_CPF || faker.string.numeric(11);
+    const userPassword = await bcrypt.hash(userPwd, 10);
     const testUser = await prisma.user.create({
       data: {
         name: 'Test User',
         email: 'user@austa.com.br',
         password: userPassword,
         phone: '+5511888888888',
-        cpf: '98765432109',
+        cpf: userCpf,
       },
     });
     
@@ -340,6 +345,7 @@ async function seedUsers(prisma: PrismaClient): Promise<void> {
       });
       console.log(`Created test user: ${testUser.email} with ${userRole.name} role`);
     }
+    console.log('Seed passwords set via SEED_ADMIN_PASSWORD / SEED_USER_PASSWORD env vars (or random)');
   } catch (error) {
     console.error(`Error creating users: ${(error as any).message}`);
     throw error as any;
