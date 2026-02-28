@@ -14,7 +14,6 @@ out/
 !.yarn/cache
 !.yarn/patches
 !.yarn/plugins
-!.yarn/releases
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
@@ -103,6 +102,17 @@ src/backend/api-gateway/src/graphql/schema.generated.ts
 .mcp.json
 CLAUDE.md
 agents/
+claude-flow.config.json
+docs/prompts/
+docs/analysis/
+docs/adr/013-claude-flow-swarm-intelligence.md
+
+# Generated reports (can be regenerated on demand)
+dependency-report.json
+
+# Yarn vendored binaries — use system-installed yarn instead
+.yarn/releases/
+src/web/.yarn/releases/
 
 # TypeScript build info
 *.tsbuildinfo
