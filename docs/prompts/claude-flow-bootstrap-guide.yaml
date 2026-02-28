@@ -6,18 +6,19 @@
 #          configure, and operate Claude Flow V3 in this workspace.
 #
 # REPO:    https://github.com/ruvnet/claude-flow
-# VERSION: v3.1.0-alpha.52+
-# UPDATED: 2026-02-26
+# VERSION: v3.5.2 (stable)
+# UPDATED: 2026-02-28
 # ──────────────────────────────────────────────────────────────────────────────
 
 # ┌─────────────────────────────────────────────────────────────────────────────┐
 # │  ARCHITECTURE OVERVIEW                                                      │
 # │                                                                             │
-# │  Claude Flow V3 has THREE configuration layers:                             │
+# │  Claude Flow V3 has FOUR configuration layers:                            │
 # │                                                                             │
-# │  1. .claude/settings.json     — Claude Code hooks, permissions, env vars    │
-# │  2. .claude-flow/config.yaml  — Runtime: swarm, memory, neural, daemon      │
-# │  3. .mcp.json                 — MCP server connection for tool integration  │
+# │  1. .claude/settings.json       — Claude Code hooks, permissions, env vars  │
+# │  2. .claude-flow/config.yaml    — Runtime: swarm, memory, neural, daemon    │
+# │  3. .mcp.json                   — MCP server connection for tool integration│
+# │  4. claude-flow.config.json     — SystemConfigSchema (doctor validation)    │
 # │                                                                             │
 # │  Data directories:                                                          │
 # │  - .swarm/memory.db           — SQLite + HNSW vector database               │
@@ -35,9 +36,10 @@ prerequisites:
     node: ">= 20.0.0"           # v22 LTS recommended
     npm: ">= 10.0.0"
     git: ">= 2.40.0"
-    claude_code_cli: ">= 2.0.0" # `claude --version`
+    claude_code_cli: ">= 2.0.0" # `claude --version` — install: npm install -g @anthropic-ai/claude-code
   optional:
     typescript: ">= 5.0.0"
+    agentic_flow: ">= 2.0.7"    # For embeddings/routing — install: yarn add --dev agentic-flow@latest -W
   disk_space_minimum: "500MB"    # For memory.db + neural models
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -56,7 +58,17 @@ phase_1_install:
 
     - description: "Pull and verify latest version"
       command: "npx -y @claude-flow/cli@latest --version"
-      expected: "claude-flow v3.1.x-alpha.xx"
+      expected: "claude-flow v3.5.x"
+
+  global_install_alternative:
+    description: >
+      npx can timeout on slow connections due to the large dependency tree
+      (757+ packages). For reliability, install globally instead:
+    commands:
+      - "npm install -g @claude-flow/cli@latest"
+      - "claude-flow --version"
+    benefit: "All subsequent commands use 'claude-flow' directly (faster, no npx overhead)"
+    cleanup: "npm uninstall -g @claude-flow/cli  # when no longer needed"
 
 # ══════════════════════════════════════════════════════════════════════════════
 # PHASE 2: INITIALIZATION (Run once per workspace)
@@ -70,11 +82,16 @@ phase_2_init:
     creates:
       - ".claude/settings.json"
       - ".claude/helpers/"
-      - ".claude/commands/"
+      - ".claude/commands/    (10 commands)"
+      - ".claude/skills/      (30 skills)"
+      - ".claude/agents/      (99 agents)"
       - ".claude-flow/config.yaml"
       - ".claude-flow/data/"
       - ".claude-flow/logs/"
+      - ".claude-flow/sessions/"
       - ".mcp.json"
+      - "CLAUDE.md            (swarm guidance)"
+    actual_output: "115 files created"
     notes:
       - "Use --force to reinitialize if already exists"
       - "The generated config.yaml is minimal — see our comprehensive version"
@@ -152,8 +169,15 @@ phase_3_intelligence:
     command: "npx @claude-flow/cli@latest neural train -p coordination"
     what_it_does:
       - "Runs 50 epochs of pattern training"
-      - "Builds ReasoningBank (100 patterns)"
+      - "Builds ReasoningBank (150 patterns)"
       - "Persists to .claude-flow/neural/patterns.json"
+    actual_metrics:
+      epochs: 50
+      batch_size: 32
+      embedding_dim: 256
+      learning_rate: 0.01
+      reasoning_bank_size: 150
+      duration: "~0.2s"
     trainable_patterns:
       - coordination
       - optimization
@@ -215,13 +239,17 @@ phase_5_workers:
     ultralearn:
       command: "npx @claude-flow/cli@latest hooks worker dispatch --trigger ultralearn"
       purpose: "Neural training sequence, pattern consolidation"
-      duration: "~30s"
+      duration: "~60s"
     audit:
       command: "npx @claude-flow/cli@latest hooks worker dispatch --trigger audit"
       purpose: "Security scanning and CVE detection"
+      duration: "~45s"
+      priority: "critical"
     optimize:
       command: "npx @claude-flow/cli@latest hooks worker dispatch --trigger optimize"
       purpose: "Performance optimization analysis"
+      duration: "~30s"
+      priority: "high"
 
 # ══════════════════════════════════════════════════════════════════════════════
 # DAILY USAGE COMMANDS (Reference card)
@@ -268,7 +296,7 @@ config_files:
       - "hive-mind (topology, consensus)"
       - "MCP server (transport, port, capabilities)"
     format: YAML
-    schema_source: "v3/@claude-flow/shared/src/core/config/schema.ts"
+    schema_source: "@claude-flow/shared/src/core/config/schema.ts (SystemConfigSchema, validated via Zod)"
     sections:
       - swarm
       - hiveMind
@@ -304,9 +332,40 @@ config_files:
       env_vars:
         CLAUDE_FLOW_MODE: v3
         CLAUDE_FLOW_HOOKS_ENABLED: "true"
-        CLAUDE_FLOW_TOPOLOGY: hierarchical
+        CLAUDE_FLOW_TOPOLOGY: hierarchical-mesh
         CLAUDE_FLOW_MAX_AGENTS: "15"
         CLAUDE_FLOW_MEMORY_BACKEND: hybrid
+
+  "claude-flow.config.json":
+    purpose: "SystemConfigSchema shim — doctor validation (V2-legacy path)"
+    format: JSON
+    critical_note: >
+      The doctor checks this file AND validates it against the Zod
+      SystemConfigSchema in @claude-flow/shared/src/core/config/schema.ts.
+      This is NOT purely cosmetic — an invalid file produces [WARN] on
+      every CLI command. The file MUST conform to SystemConfigSchema.
+    required_shape:
+      orchestrator:
+        session: { persistSessions: true, dataDir: ".claude-flow/data", sessionRetentionMs: 3600000 }
+        health: { checkInterval: 30000, historyLimit: 100, degradedThreshold: 1, unhealthyThreshold: 2 }
+        lifecycle: { maxConcurrentAgents: 15, spawnTimeout: 30000, terminateTimeout: 10000, maxSpawnRetries: 3 }
+      swarm:
+        topology: "hierarchical-mesh"
+        maxAgents: 15
+        autoScale: { enabled: true, minAgents: 1, maxAgents: 15 }  # MUST be object, NOT boolean
+        coordination: { consensusRequired: true, timeoutMs: 10000, retryPolicy: { maxRetries: 3, backoffMs: 500 } }
+      memory:
+        type: "hybrid"           # NOT "backend" — schema uses "type" enum
+        path: ".swarm/memory.db"
+        agentdb: { dimensions: 384, indexType: "hnsw" }
+      mcp:
+        name: "claude-flow"
+        transport: { type: "stdio" }
+    common_mistakes:
+      - "Using 'autoScale: true' (boolean) instead of 'autoScale: { enabled: true, ... }' (object)"
+      - "Missing 'orchestrator' key (it is REQUIRED, not optional)"
+      - "Adding 'neural', 'hooks', '$schema', 'version' at root (not in SystemConfigSchema)"
+      - "Using 'backend' instead of 'type' for memory"
 
   "agents/*.yaml":
     purpose: "Per-agent type configurations"
@@ -320,10 +379,10 @@ config_files:
       - reviewer
 
 # ══════════════════════════════════════════════════════════════════════════════
-# WHY config.yaml IS BEST PRACTICE
+# WHY BOTH config.yaml AND config.json ARE NEEDED
 # ══════════════════════════════════════════════════════════════════════════════
 #
-# ANALYSIS (from https://github.com/ruvnet/claude-flow source code):
+# ANALYSIS (from https://github.com/ruvnet/claude-flow source code, v3.5.2):
 #
 # 1. The auto-memory-hook.mjs EXPLICITLY reads `.claude-flow/config.yaml`:
 #      const configPath = join(PROJECT_ROOT, '.claude-flow', 'config.yaml');
@@ -336,19 +395,26 @@ config_files:
 #    ".claude-flow/config.yaml configures V3 runtime"
 #
 # 4. The config loader (loader.ts) searches for:
-#    - claude-flow.config.json (V2 legacy)
+#    - claude-flow.config.json (V2 legacy — BUT STILL VALIDATED)
 #    - claude-flow.config.js
 #    - claude-flow.json
-#    But the V3 CLI commands read config.yaml directly.
+#    The V3 CLI commands read config.yaml directly for runtime.
 #
-# 5. YAML vs JSON:
+# 5. CRITICAL DISCOVERY (v3.5.2): The doctor AND all CLI commands validate
+#    claude-flow.config.json against SystemConfigSchema (Zod). An invalid
+#    file produces [WARN] on EVERY command, not just doctor. The schema
+#    requires: orchestrator (object, not optional), swarm.autoScale (object,
+#    not boolean), memory.type (not memory.backend).
+#
+# 6. YAML vs JSON:
 #    - YAML supports comments (essential for documenting 15+ config sections)
 #    - YAML is more readable for nested structures
 #    - settings.json remains JSON because Claude Code requires it
-#    - config.yaml is the V3 standard; config.json is V2 legacy
+#    - config.yaml is the V3 runtime standard
+#    - config.json is ALSO required for doctor validation / CLI shim
 #
-# VERDICT: YES — .claude-flow/config.yaml is the correct and recommended
-#          configuration file for Claude Flow V3.
+# VERDICT: BOTH files are needed. config.yaml for runtime, config.json
+#          for CLI/doctor validation. They serve different purposes.
 #
 # ══════════════════════════════════════════════════════════════════════════════
 
@@ -360,6 +426,7 @@ quickstart_sequence:
   commands:
     - "rm -rf ~/.npm/_npx/*"
     - "npx -y @claude-flow/cli@latest --version"
+    - "npx @claude-flow/cli@latest config init --force"
     - "npx @claude-flow/cli@latest memory init --force --verbose"
     - "npx @claude-flow/cli@latest daemon start"
     - "npx @claude-flow/cli@latest hooks pretrain --model-type moe --epochs 3"
@@ -367,6 +434,11 @@ quickstart_sequence:
     - "npx @claude-flow/cli@latest neural train -p coordination"
     - "npx @claude-flow/cli@latest hive-mind init --topology hierarchical --max-agents 15 --consensus byzantine --auto"
     - "npx @claude-flow/cli@latest doctor --verbose"
+  note_for_ai_agents: >
+    When running this sequence programmatically, wait for each command to
+    fully complete before starting the next. Overlapping commands in the
+    same terminal will cause SIGTERM / exit code 130 failures. Large
+    installs (npm install -g) can take 60+ seconds.
 
 # ══════════════════════════════════════════════════════════════════════════════
 # TROUBLESHOOTING
@@ -378,8 +450,13 @@ troubleshooting:
 
   config_warning:
     symptom: "doctor shows 'No config file (using defaults)'"
-    fix: "npx @claude-flow/cli@latest config init"
-    note: "The doctor checks for config.json, but config.yaml is the V3 standard — this warning is cosmetic"
+    fix: "Create claude-flow.config.json at project root (see config_files reference)"
+    note: >
+      NOT cosmetic. The doctor checks for claude-flow.config.json AND validates
+      it against SystemConfigSchema (Zod). An invalid file causes [WARN] on
+      every CLI command. Key pitfalls: orchestrator is REQUIRED, swarm.autoScale
+      must be an object (not boolean), memory uses 'type' not 'backend'.
+      config.yaml remains the V3 runtime config; config.json is the doctor shim.
 
   daemon_not_running:
     symptom: "doctor shows 'Daemon Status: Not running'"
@@ -408,3 +485,20 @@ troubleshooting:
     symptom: "doctor shows 'No API keys found'"
     impact: "Not needed for local Claude Code CLI usage"
     fix: "Set ANTHROPIC_API_KEY env var only if using API directly"
+
+  agentic_flow_missing:
+    symptom: "doctor shows 'agentic-flow: Not installed (optional)'"
+    impact: "Embeddings/routing will use JS fallbacks (slower but functional)"
+    fix: "yarn add --dev agentic-flow@latest -W   # for yarn workspaces"
+    fix_alt: "npm install --save-dev agentic-flow@latest  # for npm projects"
+    note: >
+      Must be installed LOCALLY in the project node_modules — global install
+      is not detected by the doctor. In monorepos, use -W (yarn) or
+      --workspace-root (npm) to install at root level. The package has 740+
+      transitive dependencies; allow 60+ seconds for install.
+    disk_tip: "If installed globally during troubleshooting, remove with: npm uninstall -g agentic-flow"
+
+  claude_code_cli_missing:
+    symptom: "doctor shows 'Claude Code CLI: Not installed'"
+    fix: "npm install -g @anthropic-ai/claude-code"
+    verification: "claude --version  # expect: 2.x.x (Claude Code)"

@@ -1,1827 +1,529 @@
 # =============================================================================
-# AGENT HANDOFF — DEEP REPOSITORY ANALYSIS
-# AUSTA SuperApp | healthcare-super-app--w-gamification--tgfzl7
+# AGENT HANDOFF — AUSTA SuperApp Forward Path
 # =============================================================================
-# FORMAT: YAML — chosen for structured agent consumption, multi-line string
-#         support, inline comments, and direct compatibility with claude-flow
-#         config conventions (.claude/claude-flow-init.yaml pattern).
-# HUMAN-READABLE COMPANION: docs/prompts/deep-analysis-handoff.md
+# Updated: 2026-02-28
+# Status: PDQ Campaign complete (68→88/100). Remaining: Tier1 security + API wiring.
+# Guide: docs/prompts/013-agent-guide.yaml (954 lines, 19 sections — ALL enforced)
 # =============================================================================
 
 meta:
-  handoff_id:        "deep-analysis-001"
-  created:           "2026-02-19"
-  prepared_by:       "Architect Agent"
-  session_origin:    "healthcare-super-app--w-gamification--tgfzl7 / main"
-  adr_compliance:    "ADR-013 mandatory"
-  human_ref:         "docs/prompts/deep-analysis-handoff.md"
-  estimated_duration: "4-6 hours (swarm-parallelized)"
+  handoff_id: "forward-path-002"
+  created: "2026-02-28"
+  prepared_by: "Architect Agent"
+  session_origin: "healthcare-super-app--w-gamification--tgfzl7 / main"
+  adr_compliance: "ADR-013 mandatory"
+  guide_ref: "docs/prompts/013-agent-guide.yaml"
+  scorecard: "88/100 (was 68/100 at PDQ start)"
 
 # =============================================================================
-# RECEIVING AGENT CONTRACT
+# CURRENT STATE — All completed work (reference only)
 # =============================================================================
-agent_contract:
-  role:           "Senior Technical Analyst + Quality Auditor"
-  not_role:       "Coder, Editor, Refactorer"
-  permitted:
-    - "READ source files"
-    - "READ documentation"
-    - "RUN read-only terminal commands (find, grep, wc, cat, npm audit)"
-    - "STORE findings in claude-flow memory"
-    - "WRITE reports to docs/analysis/"
-    - "SPAWN analysis swarm via hive-mind"
-  forbidden:
-    - "MODIFY any source file (*.ts, *.tsx, *.json, *.yaml outside docs/analysis)"
-    - "CREATE PROGRESS.md, STATUS.md, TODO.md, HANDOFF.yaml — use memory store"
-    - "RUN npm install, yarn install, or any mutation commands"
-    - "WRITE code in any form"
-    - "AUTO-EXECUTE hive-mind spawn — display command for user copy-paste"
-  outputs:
-    primary:   "docs/analysis/REPOSITORY_DEEP_ANALYSIS.md"
-    secondary: "docs/analysis/SECURITY_AUDIT.md"
-    tertiary:  "docs/analysis/BUILD_QUALITY_SCORECARD.md"
-  memory_namespace: "austa-analysis"
-
-# =============================================================================
-# REPOSITORY CONTEXT (Pre-analyzed — do not re-discover)
-# =============================================================================
-repository:
-  workspace: "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7"
-  name:      "AUSTA SuperApp"
-  type:      "Healthcare Super App with Gamification"
-  origin:    "Blitzy AI-generated (90% complete, 1800/2000 estimated engineer-hours)"
-  vcs:
-    system:   "git"
-    remote:   "github.com/rodaquino-OMNI/healthcare-super-app--w-gamification--tgfzl7"
-    branch:   "main"
-
-  structure:
-    backend:
-      root:       "src/backend/"
-      framework:  "NestJS 10 + TypeScript 5.3"
-      source_files: 252          # .ts files, excl. node_modules, .d.ts
-      test_files:   3            # CRITICAL GAP — ratio 3:252
-      services:
-        - name: api-gateway
-          path: src/backend/api-gateway/
-          role: "GraphQL Federation gateway, middleware, rate-limiting, guards"
-        - name: auth-service
-          path: src/backend/auth-service/
-          role: "JWT + OAuth2, RBAC, permissions, roles, users"
-        - name: health-service
-          path: src/backend/health-service/
-          role: "Devices, health records, FHIR integration, insights, types"
-        - name: care-service
-          path: src/backend/care-service/
-          role: "Appointments, telemedicine (WebRTC/Agora), medications, providers, symptom-checker, treatments"
-        - name: plan-service
-          path: src/backend/plan-service/
-          role: "Insurance plans, claims, documents, cost-simulator, eligibility"
-        - name: gamification-engine
-          path: src/backend/gamification-engine/
-          role: "Achievements, leaderboard, profiles, quests, rewards, rules, events"
-          orm: "Prisma"
-        - name: notification-service
-          path: src/backend/notification-service/
-          role: "Multi-channel (email/SMS/push), templates, preferences, websockets"
-        - name: shared
-          path: src/backend/shared/
-          role: "Cross-service utilities"
-        - name: packages/auth
-          path: src/backend/packages/auth/
-          role: "Auth shared package"
-        - name: packages/shared
-          path: src/backend/packages/shared/
-          role: "Shared package"
-      key_dependencies:
-        messaging:      [kafkajs]
-        cache:          [ioredis, redis]
-        database:       [pg, typeorm, "@prisma/client"]  # BOTH ORMs — potential inconsistency
-        graphql:        ["@apollo/server", "@apollo/subgraph", graphql, graphql-ws]
-        observability:  ["@opentelemetry/api", "@opentelemetry/sdk-node", winston]
-        auth:           [passport-jwt, passport-local, passport-oauth2, jsonwebtoken, bcrypt]
-        notifications:  ["@sendgrid/mail", twilio, nodemailer, "firebase-admin"]
-        video:          [agora-rtc-sdk-ng]
-        fhir:           [fhir-kit-client]
-        validation:     [class-validator, class-transformer, zod, joi]
-        security:       [helmet]
-      todo_fixme_count: 11       # files with debt markers found
-      any_type_count:  847       # TypeScript 'any' usages — quality signal
-
-    frontend:
-      root:           "src/web/"
-      source_files:   415          # .ts + .tsx files, excl. node_modules
-      test_files:     34           # design-system has tests; web/mobile sparse
-      workspaces:
-        - name: web
-          path: src/web/web/
-          framework: "Next.js 14"
-          structure: "pages, components, hooks, i18n, api, context, layouts, styles, types, utils"
-        - name: mobile
-          path: src/web/mobile/
-          framework: "React Native (Expo/bare)"
-          structure: "screens, navigation, components, hooks, i18n, api, context, assets"
-        - name: design-system
-          path: src/web/design-system/
-          structure: "care, gamification, health, plan, charts, components, primitives, tokens, themes"
-          test_files: 31          # main test concentration
-        - name: shared
-          path: src/web/shared/
-          role: "Cross-platform shared logic"
-      key_dependencies:
-        state:          ["@apollo/client", "@tanstack/react-query"]
-        forms:          [react-hook-form, "@hookform/resolvers", formik]
-        navigation:     ["@react-navigation/native", "@react-navigation/stack", "@react-navigation/bottom-tabs", "@react-navigation/drawer"]
-        monitoring:     ["@sentry/nextjs", "@sentry/react-native"]
-        i18n:           [i18next, react-i18next]
-        validation:     [zod, yup]
-        biometrics:     [react-native-biometrics]
-        camera:         [react-native-vision-camera]
-        video:          [react-native-agora]
-        storage:        [react-native-mmkv, "@react-native-async-storage/async-storage"]
-
-    documentation:
-      specs:
-        - path: docs/specifications/FUNCTIONAL_REQUIREMENTS.md
-        - path: docs/specifications/NON_FUNCTIONAL_REQUIREMENTS.md
-        - path: docs/specifications/USER_STORIES.md
-        - path: docs/specifications/ACCEPTANCE_CRITERIA.md
-        - path: docs/specifications/SYSTEM_ANALYSIS.md
-        - path: docs/specifications/INTEGRATION_REQUIREMENTS.md
-        - path: docs/specifications/TECHNICAL_CONSTRAINTS.md
-        - path: docs/specifications/UI_UX_REQUIREMENTS.md
-      design:
-        - path: docs/design/SYSTEM_ARCHITECTURE.md
-        - path: docs/design/COMPONENT_ARCHITECTURE.md
-        - path: docs/design/DATA_FLOW_ARCHITECTURE.md
-        - path: docs/design/API_GATEWAY_SERVICE_MESH.md
-        - path: docs/design/GAMIFICATION_ENGINE_ARCHITECTURE.md
-        - path: docs/design/DEPLOYMENT_INFRASTRUCTURE.md
-        - path: docs/design/SECURITY_ERROR_HANDLING.md
-        - path: docs/design/SERVICE_PSEUDOCODE.md
-        - path: docs/design/TEST_STRATEGY.md
-        - path: docs/design/HEALTHCARE_RESEARCH_INSIGHTS_2024.md
-      adrs:
-        - path: docs/ADRs/013-claude-flow-swarm-intelligence.md
-          note: "Only 1 ADR — major gap for a system of this complexity"
-      original:
-        - path: "docs/original documentation/Project Guide.md"
-          note: "States 90% complete, 200h human work remaining — key baseline"
-        - path: "docs/original documentation/Technical Specifications_*.md"
-      adr_gap: "CRITICAL — 1 ADR found for a 10-service distributed system. Expect 10-20 missing."
-
-    infrastructure:
-      kubernetes:
-        path: infrastructure/kubernetes/
-        note: "Deployments, services, ingress, HPA for all services + namespaces"
-      terraform:
-        path: infrastructure/terraform/
-        modules: [eks, network, rds, elasticache, msk, s3, waf, monitoring]
-        note: "Full AWS IaC — EKS, RDS, MSK (Kafka), ElastiCache, S3, WAF"
-
-  known_issues_pre_analysis:
-    - id: PRE-001
-      finding: "Only 3 test files in backend (252 source files) — test:source ratio ~1.2%"
-      severity: CRITICAL
-    - id: PRE-002
-      finding: "847 TypeScript 'any' usages across 127 backend files"
-      severity: HIGH
-    - id: PRE-003
-      finding: "Both TypeORM AND Prisma used — ORM inconsistency across services"
-      severity: MEDIUM
-    - id: PRE-004
-      finding: "Only 1 ADR documented for a 10-service distributed system"
-      severity: HIGH
-    - id: PRE-005
-      finding: "backend_audit.json contains npm ENOLOCK error — lockfile missing"
-      severity: MEDIUM
-    - id: PRE-006
-      finding: "Project Guide states this is AI-generated (Blitzy) — human review needed"
-      severity: INFO
-
-# =============================================================================
-# CLAUDE-FLOW TOOL SELECTION RATIONALE
-# =============================================================================
-tool_selection:
-  why_not_manual_grep_only: |
-    Manual grep misses semantic relationships between files.
-    A spec file may say 'real-time health metrics' while code says 'HealthMetricsGateway' —
-    only vector similarity search connects these. SONA learns which patterns co-occur
-    across 667 source files and surfaces anomalies that sequential reading misses.
-
-  tools_and_why:
-    vector_index_and_search:
-      tool: "npx @claude-flow/cli@latest vector index / vector search"
-      engine: "RuVector HNSW (cosine similarity, 768-dim)"
-      why: |
-        Cross-file semantic analysis. Find ALL files related to 'HIPAA compliance'
-        or 'gamification XP calculation' across 667 files without knowing exact
-        variable names. Essential for plan-to-code adherence tracing.
-      use_for:
-        - "Dim 1: Find all purpose/problem-statement mentions across docs"
-        - "Dim 3: Trace user story concepts to code implementations"
-        - "Dim 5: Find all authentication/encryption patterns across services"
-
-    memory_store_retrieve:
-      tool: "npx @claude-flow/cli@latest memory store / retrieve / search"
-      engine: "Hybrid SQLite + HNSW semantic search"
-      why: |
-        Persist intermediate findings between swarm workers. Worker-1 stores
-        'purpose findings'; Worker-8 retrieves all to synthesize final report.
-        Eliminates need for PROGRESS.md files. Enables semantic 'what did we
-        find about security so far?' queries during analysis.
-      use_for:
-        - "All 5 dimensions: persist per-dimension findings"
-        - "Cross-dimension synthesis by report worker"
-        - "Resume analysis if session interrupted"
-
-    neural_sona_pattern_analysis:
-      tool: "npx @claude-flow/cli@latest neural train + hooks intelligence stats"
-      engine: "SONA (256-dim, rank-4 LoRA, 624k learn/s) + MoE routing"
-      why: |
-        Train on the codebase to extract architectural patterns automatically.
-        SONA identifies: which modules are architecturally similar, which deviate
-        from the dominant pattern, where complexity concentrations exist.
-        After training, 'hooks worker dispatch --trigger deepdive' runs autonomous
-        deep pattern extraction across all 667 files.
-      use_for:
-        - "Dim 4: Automated pattern consistency analysis across 10 services"
-        - "Dim 4: Identify outlier files with unusual complexity"
-        - "Dim 2: Verify if architecture docs match code patterns"
-      commands:
-        - "npx @claude-flow/cli@latest neural train --modelType transformer --data-source src/ --epochs 5 --namespace austa-analysis"
-        - "npx @claude-flow/cli@latest hooks worker dispatch --trigger deepdive"
-        - "npx @claude-flow/cli@latest hooks worker dispatch --trigger map"
-        - "npx @claude-flow/cli@latest hooks intelligence stats"
-
-    hive_mind_swarm:
-      tool: "npx @claude-flow/cli@latest hive-mind spawn"
-      topology: "hierarchical-mesh"
-      consensus: "byzantine"
-      why: |
-        8 workers execute the 5 analysis dimensions IN PARALLEL with coordination.
-        Without swarm: sequential analysis takes 4-6h of agent time.
-        With swarm: parallel execution reduces wall-clock time by ~5x.
-        Byzantine consensus ensures no single worker's incorrect finding dominates.
-        Hierarchical-mesh: RECON workers share findings with CODER/AUDITOR workers
-        peer-to-peer, without going through a bottleneck coordinator.
-      workers: 8
-      worker_assignments:
-        worker_1: "RECON-LEAD — read all specs, extract purpose + user personas"
-        worker_2: "DOCS-ANALYST — score all documentation artifacts"
-        worker_3: "TRACE-ANALYST — user story → code traceability matrix"
-        worker_4: "CODE-AUDITOR-BACKEND — backend completeness + debt"
-        worker_5: "CODE-AUDITOR-FRONTEND — web + mobile + design-system"
-        worker_6: "SECURITY-AUDITOR — full security checklist + HIPAA/LGPD"
-        worker_7: "DEPENDENCY-AUDITOR — npm audit, CVEs, deprecated packages"
-        worker_8: "REPORT-SYNTHESIZER — wait for 1-7, write 3 final reports"
-
-    hooks_pretrain:
-      tool: "npx @claude-flow/cli@latest hooks pretrain"
-      engine: "Pattern extraction from codebase (84+ files → 30 patterns, 16 strategies)"
-      why: |
-        Pre-trains hook intelligence on THIS codebase. After pretrain, the routing
-        system knows which agents are best suited for which file types in this repo.
-        Also generates agent configs tailored to this project's patterns.
-      note: "Already run in previous session — check with 'hooks intelligence stats'"
-
-    wasm_fallback_note: |
-      RuVector native modules may not load via npx (known ISSUE-001 in claude-flow-init.yaml).
-      WASM fallback activates automatically — all vector/SONA/HNSW functionality preserved.
-      Do NOT spend time troubleshooting 'not loaded' messages — proceed normally.
-
-# =============================================================================
-# SESSION BOOTSTRAP (execute sequentially before spawning swarm)
-# =============================================================================
-session_bootstrap:
-  description: "Run these commands in order before any analysis work"
-  note: "Display each command group to user — do NOT auto-execute hive-mind spawn"
-
-  phase_a_verify:
-    description: "Verify claude-flow system state"
-    commands:
-      - cmd: "npx @claude-flow/cli@latest --version"
-        expect: ">= 3.0.0"
-      - cmd: "npx @claude-flow/cli@latest doctor"
-        expect: "No critical failures"
-      - cmd: "npx @claude-flow/cli@latest daemon status"
-        expect: "Running (if stopped: daemon start)"
-      - cmd: "npx @claude-flow/cli@latest hive-mind status"
-        expect: "initialized"
-      - cmd: "npx @claude-flow/cli@latest memory stats"
-        expect: "Operational"
-
-  phase_b_index:
-    description: "Index repository into vector store for semantic search"
-    note: "This is the core SONA/RuVector setup — enables cross-file semantic analysis"
-    commands:
-      - cmd: |
-          npx @claude-flow/cli@latest vector index \
-            --source "docs/" \
-            --namespace austa-analysis \
-            --algorithm hnsw \
-            --dimensions 768
-        purpose: "Index all 19 documentation files for semantic retrieval"
-      - cmd: |
-          npx @claude-flow/cli@latest vector index \
-            --source "src/backend" \
-            --namespace austa-analysis \
-            --algorithm hnsw \
-            --dimensions 768
-        purpose: "Index backend source for code pattern matching"
-      - cmd: |
-          npx @claude-flow/cli@latest vector index \
-            --source "src/web" \
-            --namespace austa-analysis \
-            --algorithm hnsw \
-            --dimensions 768
-        purpose: "Index frontend source for pattern matching"
-
-  phase_c_neural:
-    description: "Train SONA on codebase to enable autonomous pattern extraction"
-    commands:
-      - cmd: "npx @claude-flow/cli@latest neural train --modelType transformer --data-source src/ --epochs 5 --namespace austa-analysis"
-        purpose: "Learn architectural patterns across all 667 source files"
-      - cmd: "npx @claude-flow/cli@latest hooks worker dispatch --trigger map"
-        purpose: "Autonomous codebase mapping"
-      - cmd: "npx @claude-flow/cli@latest hooks worker dispatch --trigger deepdive"
-        purpose: "Deep pattern extraction"
-      - cmd: "npx @claude-flow/cli@latest hooks intelligence stats"
-        purpose: "Confirm SONA + MoE active"
-
-  phase_d_hooks:
-    description: "Register task and store scope"
-    commands:
-      - cmd: |
-          npx @claude-flow/cli@latest hooks pre-task \
-            --description "Deep repository analysis — 5 dimensions — AUSTA SuperApp" \
-            --task-id "deep-analysis-001" \
-            --namespace austa-analysis
-      - cmd: |
-          npx @claude-flow/cli@latest memory store \
-            --key "analysis-scope" \
-            --value "5-dimension deep analysis: (1)purpose (2)plan-quality (3)plan-adherence (4)build-quality (5)security-enterprise. Workspace: /Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7" \
-            --namespace austa-analysis
-      - cmd: |
-          npx @claude-flow/cli@latest memory store \
-            --key "repo-context" \
-            --value "NestJS 10 backend (252 ts files, 8 services), React Native + Next.js frontend (415 ts/tsx files), 667 total source files, 37 total test files, 847 any-type usages, 1 ADR, Blitzy AI-generated 90% complete" \
-            --namespace austa-analysis
-
-# =============================================================================
-# ANALYSIS DIMENSIONS (structured for agent iteration)
-# =============================================================================
-analysis_dimensions:
-
-  - id: DIM-1
-    name: "Repository Purpose & Problem Definition"
-    weight: 1.0         # Foundational — all other dims depend on this
-    priority: FIRST     # Execute before all others
-    agent_role: "RECON-LEAD"
-    memory_output_key: "dim1-purpose-summary"
-
-    objective: |
-      Fully understand what this system IS, WHO it serves, and WHAT PROBLEM it solves.
-      Establish the ground truth that all other dimensions are measured against.
-
-    vector_queries:
-      - query: "healthcare super app purpose problem statement target users patient"
-        top_k: 10
-        namespace: "austa-analysis"
-      - query: "gamification health engagement behavior change incentive"
-        top_k: 8
-        namespace: "austa-analysis"
-      - query: "AUSTA business context market Brazil LATAM mHealth"
-        top_k: 5
-        namespace: "austa-analysis"
-      - query: "My Health Care Now Plan Benefits three journeys"
-        top_k: 8
-        namespace: "austa-analysis"
-
-    files_to_read:      # ordered by priority
-      - path: "docs/original documentation/Project Guide.md"
-        priority: 1
-        why: "States project completion status + AI generation context"
-      - path: "docs/original documentation/Technical Specifications_*.md"
-        priority: 2
-        why: "Original full specification — ground truth for purpose"
-      - path: "docs/specifications/FUNCTIONAL_REQUIREMENTS.md"
-        priority: 3
-      - path: "docs/specifications/USER_STORIES.md"
-        priority: 4
-      - path: "docs/specifications/SYSTEM_ANALYSIS.md"
-        priority: 5
-      - path: "docs/design/HEALTHCARE_RESEARCH_INSIGHTS_2024.md"
-        priority: 6
-        why: "Validates whether gamification approach is evidence-based"
-
-    questions:
-      - "What is the primary problem this application solves?"
-      - "Who are the target users — patient personas, roles, demographics?"
-      - "What are the 3 core journeys (Health/Care/Plan) and how do they relate?"
-      - "What role does gamification play — cosmetic or structurally integrated?"
-      - "What regulatory/compliance context exists — HIPAA, LGPD, ANS Brazil?"
-      - "Is the target market Brazil-specific, LATAM, or global?"
-      - "Does the healthcare research justify the gamification design choices?"
-      - "What are the stated performance SLAs and availability targets?"
-
-    scoring_rubric:
-      problem_clarity:
-        max: 5
-        description: "Is the core problem statement clear, specific, and validated?"
-      user_persona_definition:
-        max: 5
-        description: "Are target users defined with demographics, needs, constraints?"
-      journey_coherence:
-        max: 5
-        description: "Are the 3 journeys logically distinct and internally consistent?"
-      regulatory_clarity:
-        max: 5
-        description: "Are compliance frameworks (HIPAA/LGPD/ANS) explicitly addressed?"
-      market_definition:
-        max: 5
-        description: "Is target market, scale, and business model defined?"
-
-  - id: DIM-2
-    name: "Quality of Plan (Documentation & Architecture)"
-    weight: 0.9
-    priority: SECOND
-    agent_role: "DOCS-ANALYST"
-    memory_output_key: "dim2-plan-quality-scores"
-
-    objective: |
-      Assess completeness, internal consistency, and professional quality of ALL
-      planning artifacts. Rate each artifact. Identify gaps.
-
-    vector_queries:
-      - query: "acceptance criteria measurable testable specific"
-        top_k: 8
-        namespace: "austa-analysis"
-      - query: "architecture decision record rationale tradeoff alternatives"
-        top_k: 5
-        namespace: "austa-analysis"
-      - query: "non-functional requirements SLA performance availability security"
-        top_k: 8
-        namespace: "austa-analysis"
-      - query: "data model schema ERD entity relationship"
-        top_k: 5
-        namespace: "austa-analysis"
-      - query: "test strategy coverage unit integration e2e contract"
-        top_k: 8
-        namespace: "austa-analysis"
-
-    files_to_read:      # ALL documentation files
-      - path: "docs/specifications/ACCEPTANCE_CRITERIA.md"
-      - path: "docs/specifications/FUNCTIONAL_REQUIREMENTS.md"
-      - path: "docs/specifications/NON_FUNCTIONAL_REQUIREMENTS.md"
-      - path: "docs/specifications/INTEGRATION_REQUIREMENTS.md"
-      - path: "docs/specifications/TECHNICAL_CONSTRAINTS.md"
-      - path: "docs/specifications/UI_UX_REQUIREMENTS.md"
-      - path: "docs/specifications/USER_STORIES.md"
-      - path: "docs/specifications/SYSTEM_ANALYSIS.md"
-      - path: "docs/design/SYSTEM_ARCHITECTURE.md"
-      - path: "docs/design/COMPONENT_ARCHITECTURE.md"
-      - path: "docs/design/DATA_FLOW_ARCHITECTURE.md"
-      - path: "docs/design/API_GATEWAY_SERVICE_MESH.md"
-      - path: "docs/design/GAMIFICATION_ENGINE_ARCHITECTURE.md"
-      - path: "docs/design/DEPLOYMENT_INFRASTRUCTURE.md"
-      - path: "docs/design/SECURITY_ERROR_HANDLING.md"
-      - path: "docs/design/SERVICE_PSEUDOCODE.md"
-      - path: "docs/design/TEST_STRATEGY.md"
-      - path: "docs/ADRs/013-claude-flow-swarm-intelligence.md"
-
-    scoring_rubric:
-      artifacts:
-        - name: "Functional Requirements"
-          dimensions: [completeness, internal_consistency, measurability, technical_depth]
-        - name: "Non-Functional Requirements"
-          dimensions: [completeness, internal_consistency, measurability, technical_depth]
-          note: "Check: are SLAs numeric? e.g. '99.9% uptime' not 'high availability'"
-        - name: "User Stories + Acceptance Criteria"
-          dimensions: [completeness, internal_consistency, measurability, testability]
-        - name: "System Architecture"
-          dimensions: [completeness, internal_consistency, diagram_quality, decision_rationale]
-        - name: "Component Architecture"
-          dimensions: [completeness, internal_consistency, interface_definition, dependency_clarity]
-        - name: "Data Flow Architecture"
-          dimensions: [completeness, internal_consistency, security_considerations]
-        - name: "Security Design"
-          dimensions: [completeness, threat_model_presence, control_coverage, compliance_mapping]
-        - name: "Test Strategy"
-          dimensions: [completeness, coverage_targets_numeric, tooling_specificity, all_test_types_covered]
-        - name: "ADR Coverage"
-          dimensions: [count_vs_expected, decision_quality, rationale_depth]
-          expected_adrs: 10
-          found_adrs: 1
-
-    gap_indicators:
-      - "Missing ERD / data model document"
-      - "Missing API contract (OpenAPI spec or GraphQL schema file)"
-      - "NFRs without numeric SLAs"
-      - "Acceptance criteria with vague language (e.g. 'fast', 'reliable', 'secure')"
-      - "Architecture docs not referencing actual service names"
-      - "Test strategy without coverage % targets"
-      - "Missing ADRs for: database choice, ORM selection, auth strategy, messaging"
-
-    questions:
-      - "How many user stories exist? What % have complete acceptance criteria?"
-      - "Are NFRs defined with SLAs? (e.g. p99 < 200ms, 99.9% uptime)"
-      - "Is there a data model / ERD documented anywhere?"
-      - "Are API contracts defined (OpenAPI spec or GraphQL schema)?"
-      - "How many ADRs should exist? How many do? What's missing?"
-      - "Is there a documented threat model?"
-      - "Does the test strategy specify coverage targets and tooling?"
-      - "Are there design gaps — undocumented services or missing design decisions?"
-
-  - id: DIM-3
-    name: "Plan-to-Purpose Adherence"
-    weight: 0.85
-    priority: THIRD     # depends on DIM-1 and DIM-2 findings
-    agent_role: "TRACE-ANALYST"
-    memory_output_key: "dim3-adherence-gaps"
-    depends_on: [DIM-1, DIM-2]
-
-    objective: |
-      Measure how well the plan addresses the stated purpose. Build a traceability
-      matrix. Identify misalignments, over-engineering, and under-coverage.
-
-    memory_retrieve_before_starting:
-      - key: "dim1-purpose-summary"
-        namespace: "austa-analysis"
-      - key: "dim2-plan-quality-scores"
-        namespace: "austa-analysis"
-
-    vector_queries:
-      - query: "user story acceptance criteria traceability requirement implementation"
-        top_k: 10
-        namespace: "austa-analysis"
-      - query: "gamification health outcome evidence research behavioral economics"
-        top_k: 8
-        namespace: "austa-analysis"
-      - query: "FHIR integration wearable device health data interoperability"
-        top_k: 6
-        namespace: "austa-analysis"
-      - query: "insurance eligibility claims real-time ANS compliance"
-        top_k: 6
-        namespace: "austa-analysis"
-      - query: "telemedicine WebRTC video appointment booking latency"
-        top_k: 6
-        namespace: "austa-analysis"
-
-    trace_methodology: |
-      For each user need identified in DIM-1, attempt to trace through:
-        User Need → Functional Requirement → Acceptance Criterion → Architecture Component
-      
-      Mark each chain:
-        COMPLETE:   all 4 links exist and are consistent
-        PARTIAL:    1-2 links missing
-        BROKEN:     user need exists but no requirement or design found
-        ORPHANED:   design/component exists with no user need justification
-      
-      Report % complete, % partial, % broken, % orphaned.
-
-    specific_trace_targets:
-      - need: "Real-time health metrics from wearables"
-        expected_requirement: "FUNCTIONAL_REQUIREMENTS.md — wearable integration"
-        expected_architecture: "health-service + FHIR adapter + TimescaleDB"
-      - need: "AI-powered symptom checker"
-        expected_requirement: "FUNCTIONAL_REQUIREMENTS.md — symptom checker"
-        expected_architecture: "care-service/symptom-checker + ML model"
-      - need: "Gamification — XP + achievements + leaderboard"
-        expected_requirement: "FUNCTIONAL_REQUIREMENTS.md — gamification"
-        expected_architecture: "gamification-engine + event-driven"
-      - need: "Insurance claims digital submission"
-        expected_requirement: "FUNCTIONAL_REQUIREMENTS.md — claims"
-        expected_architecture: "plan-service + OCR + insurance API"
-      - need: "Multi-language support"
-        expected_requirement: "NON_FUNCTIONAL_REQUIREMENTS.md or UI_UX"
-        expected_code: "i18n in web + mobile"
-      - need: "LGPD compliance (Brazilian data privacy)"
-        expected_requirement: "NON_FUNCTIONAL_REQUIREMENTS.md or TECHNICAL_CONSTRAINTS"
-        expected_architecture: "SECURITY_ERROR_HANDLING.md"
-
-    questions:
-      - "What % of user stories have complete traces to code?"
-      - "Are there planned features with no user/business justification (over-engineering)?"
-      - "Does the gamification design reflect healthcare research evidence?"
-      - "Are integration requirements (FHIR, insurance, telemedicine) adequately architected?"
-      - "Is multi-tenancy addressed consistently across all services?"
-      - "Is multi-language (i18n) addressed throughout or only partially?"
-      - "Are the 3 journeys equally well designed, or is there imbalance?"
-      - "Does the deployment infrastructure match the scale requirements?"
-
-  - id: DIM-4
-    name: "Build Quality"
-    weight: 1.0         # highest signal — this is what the next human work targets
-    priority: PARALLEL  # run alongside DIM-3 (no dependency)
-    agent_roles: ["CODE-AUDITOR-BACKEND", "CODE-AUDITOR-FRONTEND"]
-    memory_output_keys:
-      backend:   "dim4-backend-scored"
-      frontend:  "dim4-frontend-scored"
-      combined:  "dim4-build-quality-summary"
-
-    objective: |
-      Assess current implementation state: completeness, correctness, maintainability,
-      and technical debt. Do NOT fix anything — measure and report.
-
-    recon_commands:   # READ-ONLY — run these first before file sampling
-      count_by_service: |
-        find src/backend -name "*.ts" | grep -v node_modules | grep -v ".d.ts" | grep -v ".spec" \
-          | sed 's|/[^/]*$||' | sort | uniq -c | sort -rn | head -30
-      test_ratio: |
-        echo "Source files:" && find src -name "*.ts" -o -name "*.tsx" | grep -v node_modules | grep -v spec | grep -v test | wc -l
-        echo "Test files:" && find src -name "*.spec.ts" -o -name "*.test.ts" -o -name "*.spec.tsx" -o -name "*.test.tsx" | grep -v node_modules | wc -l
-      debt_markers: |
-        grep -rn "TODO\|FIXME\|HACK\|WORKAROUND\|XXX\|NOT IMPLEMENTED\|placeholder" \
-          src/ --include="*.ts" --include="*.tsx" | grep -v node_modules | grep -v ".spec"
-      stub_files: |
-        find src/backend -name "*.ts" | grep -v node_modules | xargs wc -l 2>/dev/null \
-          | sort -n | head -40
-      any_type_density: |
-        find src/backend -name "*.ts" | grep -v node_modules | \
-          xargs grep -c "\bany\b" 2>/dev/null | grep -v ":0" | sort -t: -k2 -rn | head -20
-      error_handling: |
-        grep -rn "try {" src/backend --include="*.ts" | grep -v node_modules | wc -l
-        grep -rn "catch (e)" src/backend --include="*.ts" | grep -v node_modules | wc -l
-        grep -rn "@Catch\|ExceptionFilter\|HttpException" src/backend --include="*.ts" | grep -v node_modules | wc -l
-      opentelemetry_usage: |
-        grep -rn "trace\|span\|meter\|opentelemetry" src/backend --include="*.ts" | grep -v node_modules | grep -v "import" | wc -l
-      prisma_vs_typeorm: |
-        echo "Prisma usages:" && grep -rn "prisma\b" src/backend --include="*.ts" | grep -v node_modules | wc -l
-        echo "TypeORM usages:" && grep -rn "@Entity\|@Column\|@Repository\|getRepository" src/backend --include="*.ts" | grep -v node_modules | wc -l
-
-    files_to_sample:   # representative sample — not exhaustive
-      backend_core:
-        - "src/backend/gamification-engine/src/achievements/"   # full directory
-        - "src/backend/gamification-engine/src/rules/"          # full directory
-        - "src/backend/auth-service/src/auth/"                  # full directory
-        - "src/backend/care-service/src/telemedicine/"          # full directory
-        - "src/backend/health-service/src/health/"              # full directory
-        - "src/backend/api-gateway/src/graphql/"                # full directory
-        - "src/backend/plan-service/src/claims/"                # full directory
-        - "src/backend/notification-service/src/notifications/" # full directory
-      backend_config:
-        - "src/backend/docker-compose.yml"
-        - "src/backend/nest-cli.json"
-        - "src/backend/gamification-engine/prisma/"             # Prisma schema
-      frontend_web:
-        - "src/web/web/src/pages/"                              # list + sample 3
-        - "src/web/web/src/components/"                         # list
-        - "src/web/web/src/hooks/"                              # list + sample 2
-      frontend_mobile:
-        - "src/web/mobile/src/screens/"                         # list + sample 3
-        - "src/web/mobile/src/navigation/"                      # full
-      design_system:
-        - "src/web/design-system/src/"                          # structure overview
-        - "src/web/design-system/src/tokens/"                   # design tokens
-        - "src/web/design-system/src/themes/"                   # theme config
-      shared:
-        - "src/web/shared/"                                     # structure + key files
-
-    scoring_rubric:
-      backend:
-        - dimension: "Implementation completeness"
-          description: "% of planned service modules actually implemented"
-          max: 5
-        - dimension: "Test coverage"
-          description: "Test files / source files ratio. Target: >60%"
-          max: 5
-        - dimension: "Code consistency"
-          description: "Same patterns, naming, structure across all 8 services"
-          max: 5
-        - dimension: "Error handling"
-          description: "try/catch, typed errors, global filters, user-facing messages"
-          max: 5
-        - dimension: "Observability"
-          description: "OpenTelemetry spans, structured logging, metrics"
-          max: 5
-        - dimension: "Database design"
-          description: "Schema quality, migrations present, indexes defined"
-          max: 5
-        - dimension: "API design"
-          description: "GraphQL schema quality, REST consistency, validation"
-          max: 5
-        - dimension: "TypeScript quality"
-          description: "'any' density, interface coverage, strict mode adherence"
-          max: 5
-        - dimension: "Technical debt density"
-          description: "TODOs/FIXMEs per 1000 lines (target: <2)"
-          max: 5
-        - dimension: "ORM consistency"
-          description: "Single ORM or justified dual-ORM pattern"
-          max: 5
-      frontend:
-        - dimension: "Page/screen completeness"
-          description: "Implemented pages vs planned screens in UI/UX spec"
-          max: 5
-        - dimension: "Design system adoption"
-          description: "% of UI using design-system vs ad-hoc styled components"
-          max: 5
-        - dimension: "Type safety"
-          description: "'any' density, proper component typing"
-          max: 5
-        - dimension: "State management consistency"
-          description: "Apollo Client vs React Query — clear separation of concerns"
-          max: 5
-        - dimension: "Error boundary coverage"
-          description: "Error boundaries on all major page sections"
-          max: 5
-        - dimension: "Accessibility"
-          description: "ARIA labels, semantic HTML, screen reader support"
-          max: 5
-        - dimension: "i18n completeness"
-          description: "Translation keys complete for all text in web + mobile"
-          max: 5
-        - dimension: "Test coverage"
-          description: "Component tests coverage in design-system vs web/mobile"
-          max: 5
-
-    critical_checks:
-      - "Does gamification-engine implement ALL subsystems: achievements, leaderboard, quests, rewards, rules, events, profiles?"
-      - "Is there consistent error handling or each service handles errors differently?"
-      - "Are all 3 journeys (Health/Care/Plan) at similar completion levels?"
-      - "Are there empty service modules or stub implementations?"
-      - "Is the design-system complete enough to support both web and mobile consistently?"
-      - "Are environment variables validated at startup (class-validator/Joi schemas)?"
-      - "Are Kafka consumers/producers implemented in all services that need them?"
-
-  - id: DIM-5
-    name: "Security & Enterprise Requirements"
-    weight: 1.0         # non-negotiable for healthcare
-    priority: PARALLEL  # run alongside DIM-4
-    agent_roles: ["SECURITY-AUDITOR", "DEPENDENCY-AUDITOR"]
-    memory_output_keys:
-      security:     "dim5-security-checklist"
-      dependencies: "dim5-deps-audit"
-      critical:     "dim5-critical-vulnerabilities"
-
-    objective: |
-      Identify security vulnerabilities, deprecated/vulnerable dependencies,
-      compliance gaps, and deviations from enterprise best practices.
-      Healthcare data requires HIPAA + LGPD compliance — treat all gaps as CRITICAL.
-
-    compliance_frameworks:
-      - name: "HIPAA"
-        focus: "PHI handling, audit logs, encryption at rest/transit, access controls, minimum necessary principle"
-      - name: "LGPD"
-        focus: "Brazilian GDPR — consent, data subject rights, DPO, biometric data, data retention"
-      - name: "ANS"
-        focus: "Brazilian health insurance regulator — claim processing, coverage verification"
-      - name: "OWASP Top 10 (2021)"
-        focus: "Injection, broken auth, sensitive data exposure, broken access control, security misconfiguration"
-      - name: "OWASP Mobile Top 10"
-        focus: "Improper platform usage, insecure data storage, insecure communication"
-
-    automated_commands:   # READ-ONLY security checks
-      npm_audit_backend: |
-        cd src/backend && npm audit --json 2>/dev/null | python3 -c "
-        import sys, json
-        try:
-            d = json.load(sys.stdin)
-            vuln = d.get('vulnerabilities', {})
-            by_severity = {}
-            for k, v in vuln.items():
-                s = v.get('severity', 'unknown')
-                by_severity.setdefault(s, []).append(k)
-            for s in ['critical', 'high', 'moderate', 'low']:
-                items = by_severity.get(s, [])
-                if items: print(f'{s.upper()} ({len(items)}): {items[:5]}')
-        except: print('audit parse error')
-        "
-      npm_audit_web: |
-        cd src/web && npm audit --json 2>/dev/null | python3 -c "
-        import sys, json
-        try:
-            d = json.load(sys.stdin)
-            vuln = d.get('vulnerabilities', {})
-            by_severity = {}
-            for k, v in vuln.items():
-                s = v.get('severity', 'unknown')
-                by_severity.setdefault(s, []).append(k)
-            for s in ['critical', 'high', 'moderate', 'low']:
-                items = by_severity.get(s, [])
-                if items: print(f'{s.upper()} ({len(items)}): {items[:5]}')
-        except: print('audit parse error')
-        "
-      hardcoded_secrets: |
-        grep -rn "password\s*[:=]\s*['\"][^'\"\$][^'\"]\|secret\s*[:=]\s*['\"][^'\"\$][^'\"]\|api[_-]key\s*[:=]\s*['\"][^'\"\$]" \
-          src/ --include="*.ts" --include="*.tsx" | grep -v node_modules | grep -v ".spec" | grep -v "test"
-      env_files_committed: |
-        find . -name ".env" -not -name ".env.example" -not -path "*/node_modules/*"
-      jwt_config: |
-        grep -rn "expiresIn\|secret\|JWT_SECRET\|refreshToken\|rotation" \
-          src/backend --include="*.ts" | grep -v node_modules | grep -v ".spec"
-      auth_guards: |
-        find src/backend -name "*.guard.ts" | grep -v node_modules
-        grep -rn "@UseGuards\|JwtAuthGuard\|RolesGuard" src/backend --include="*.ts" | grep -v node_modules | wc -l
-      data_encryption: |
-        grep -rn "encrypt\|AES\|crypto\|bcrypt\|hash\|salt" \
-          src/backend --include="*.ts" | grep -v node_modules | grep -v ".spec" | head -20
-      kubernetes_security: |
-        grep -rn "runAsNonRoot\|runAsUser\|readOnlyRootFilesystem\|allowPrivilegeEscalation\|NetworkPolicy" \
-          infrastructure/kubernetes/ --include="*.yaml"
-      cors_config: |
-        grep -rn "cors\|CORS\|origin" src/backend --include="*.ts" | grep -v node_modules | head -10
-      helmet_config: |
-        grep -rn "helmet\|ContentSecurityPolicy\|hsts\|frameguard" \
-          src/backend --include="*.ts" | grep -v node_modules | head -10
-      rate_limiting: |
-        grep -rn "ThrottlerModule\|ThrottlerGuard\|RateLimit\|@Throttle" \
-          src/backend --include="*.ts" | grep -v node_modules | head -10
-      audit_logging: |
-        grep -rn "audit\|AuditLog\|auditTrail\|who.*what.*when" \
-          src/backend --include="*.ts" | grep -v node_modules | head -15
-      phi_handling: |
-        grep -rn "PHI\|HIPAA\|personalHealth\|medical\|diagnosis\|prescription" \
-          src/backend --include="*.ts" | grep -v node_modules | head -15
-      biometric_mobile: |
-        grep -rn "biometric\|Biometrics\|FaceID\|TouchID\|fingerprint" \
-          src/web/mobile/src --include="*.ts" --include="*.tsx" | head -10
-      multitenancy_isolation: |
-        grep -rn "tenantId\|organizationId\|companyId\|tenant" \
-          src/backend --include="*.ts" | grep -v node_modules | grep -v ".spec" | head -15
-
-    security_checklist:   # agent fills in: PASS / FAIL / PARTIAL / NOT_IMPLEMENTED
-      authentication:
-        - control: "JWT authentication implemented"
-          severity: CRITICAL
-          check_hint: "passport-jwt, JwtAuthGuard usage in controllers"
-        - control: "OAuth2 social login implemented"
-          severity: HIGH
-          check_hint: "passport-oauth2, OAuth2Strategy"
-        - control: "JWT expiration configured (not infinite)"
-          severity: HIGH
-          check_hint: "expiresIn in JWT config"
-        - control: "Refresh token rotation implemented"
-          severity: HIGH
-          check_hint: "refreshToken endpoint + token blacklist"
-        - control: "Biometric auth in mobile"
-          severity: MEDIUM
-          check_hint: "react-native-biometrics usage"
-      authorization:
-        - control: "RBAC implemented"
-          severity: CRITICAL
-          check_hint: "@Roles decorator, RolesGuard, permissions module"
-        - control: "Resource-level authorization (users can only access own data)"
-          severity: CRITICAL
-          check_hint: "userId checks in service layer"
-        - control: "GraphQL field-level authorization"
-          severity: HIGH
-          check_hint: "@UseGuards on resolvers"
-      input_security:
-        - control: "Input validation on all endpoints"
-          severity: CRITICAL
-          check_hint: "class-validator DTOs, ValidationPipe global"
-        - control: "SQL injection prevention"
-          severity: CRITICAL
-          check_hint: "TypeORM parameterized queries / Prisma (both safe by default)"
-        - control: "XSS prevention"
-          severity: HIGH
-          check_hint: "sanitize-html or DOMPurify usage"
-      transport:
-        - control: "CORS configured restrictively"
-          severity: HIGH
-          check_hint: "cors() with allowlist, not '*'"
-        - control: "Helmet HTTP security headers"
-          severity: MEDIUM
-          check_hint: "helmet() in main.ts"
-        - control: "Rate limiting / throttling"
-          severity: HIGH
-          check_hint: "ThrottlerModule in app.module.ts"
-      data_protection:
-        - control: "Passwords hashed with bcrypt"
-          severity: CRITICAL
-          check_hint: "bcrypt.hash usage in auth service"
-        - control: "PHI encrypted at rest"
-          severity: CRITICAL
-          check_hint: "encryption service, AES usage on health records"
-        - control: "Secrets in environment variables only"
-          severity: CRITICAL
-          check_hint: "no hardcoded secrets in source"
-        - control: "No .env files committed"
-          severity: CRITICAL
-          check_hint: ".gitignore includes .env"
-      compliance:
-        - control: "Audit trail for PHI access"
-          severity: CRITICAL
-          check_hint: "AuditLog entity, interceptor logging WHO accessed WHAT"
-        - control: "Data retention policies defined"
-          severity: HIGH
-          check_hint: "LGPD compliance — retention limits"
-        - control: "Consent management"
-          severity: HIGH
-          check_hint: "LGPD — explicit consent for data processing"
-        - control: "Right to be forgotten support"
-          severity: HIGH
-          check_hint: "account deletion + data purge functionality"
-        - control: "FHIR data privacy controls"
-          severity: CRITICAL
-          check_hint: "fhir.service.ts access controls"
-        - control: "Multi-tenant data isolation"
-          severity: CRITICAL
-          check_hint: "tenantId filtering in all queries"
-      infrastructure:
-        - control: "Kubernetes pods run as non-root"
-          severity: HIGH
-          check_hint: "securityContext.runAsNonRoot in deployments"
-        - control: "Kubernetes network policies defined"
-          severity: HIGH
-          check_hint: "NetworkPolicy resources in k8s/"
-        - control: "Kubernetes secrets not in plain YAML"
-          severity: CRITICAL
-          check_hint: "Sealed Secrets or AWS Secrets Manager references"
-        - control: "Container images use non-root user"
-          severity: HIGH
-          check_hint: "USER directive in Dockerfiles"
-        - control: "WAF configured"
-          severity: HIGH
-          check_hint: "infrastructure/terraform/modules/waf/"
-
-    dependency_audit:
-      extract_command: |
-        # Extract all package.json files and their dependencies
-        for f in src/backend/package.json src/web/package.json src/web/web/package.json \
-                  src/web/mobile/package.json src/web/design-system/package.json; do
-          echo "=== $f ===";
-          cat $f | python3 -c "import sys,json; d=json.load(sys.stdin); 
-            print(json.dumps({**d.get('dependencies',{}), **d.get('devDependencies',{})}, indent=2))"
-        done
-      check_for:
-        deprecated_packages:
-          - "request (deprecated 2020 — use axios/fetch)"
-          - "node-uuid (use uuid)"
-          - "moment (use date-fns or dayjs)"
-          - "tslint (replaced by eslint)"
-          - "ts-jest (check version compatibility)"
-          - "glob@7 (v9+ breaking change)"
-        outdated_majors:
-          - "NestJS v9 → v10 breaking changes"
-          - "TypeORM v0.2 → v0.3 breaking changes"
-          - "Prisma v4 → v5 breaking changes"
-          - "React 17 → 18 (concurrent features)"
-          - "React Native 0.71 → 0.73 (new arch)"
-          - "Next.js 13 → 14 (app router)"
-        security_sensitive:
-          - "jsonwebtoken (check: CVE-2022-23529)"
-          - "passport-jwt (check: version pinning)"
-          - "bcrypt (check: bcryptjs vs bcrypt native)"
-          - "typeorm (SQL injection in older versions)"
-          - "axios (SSRF in older versions)"
-          - "express (check for latest security patches)"
-
-# =============================================================================
-# SWARM SPAWN COMMAND
-# =============================================================================
-swarm_spawn:
-  protocol: |
-    AGENT: After completing SESSION BOOTSTRAP, display the command below as a
-    markdown code block. Do NOT execute it. Instruct the user to copy and paste
-    it into a SEPARATE terminal window. Wait for user to report completion.
-  
-  display_message: |
-    Bootstrap complete. Please copy the entire command below and paste it into
-    your separate terminal window to start the analysis swarm. Notify me when
-    the swarm completes.
-
-  command: |
-    npx @claude-flow/cli@latest hive-mind spawn \
-      --workers 8 \
-      --topology hierarchical-mesh \
-      --consensus byzantine \
-      --claude \
-      --model-routing intelligent \
-      --namespace austa-analysis \
-      --use-memory \
-      --use-patterns \
-      --use-vectors \
-      --use-learning \
-      --objective "
-    SWARM DEEP-ANALYSIS-001: 5-dimension repository analysis | AUSTA SuperApp | 667 source files | output: 3 analysis reports
-
-    MEMORY: analysis-scope, repo-context
-    WORKSPACE: /Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7
-
-    PRIMARY DELIVERABLES:
-    1. docs/analysis/REPOSITORY_DEEP_ANALYSIS.md
-    2. docs/analysis/SECURITY_AUDIT.md
-    3. docs/analysis/BUILD_QUALITY_SCORECARD.md
-
-    ANTI-PATTERNS TO AVOID:
-    ❌AP1: Modifying any source file — READ ONLY analysis
-    ❌AP2: Writing code — analysis and reporting only
-    ❌AP3: Creating PROGRESS.md, STATUS.md — use memory store only
-    ❌AP4: Vague findings without file:line evidence
-    ❌AP5: Skipping compliance verification before starting
-    ❌AP6: Agent introspection loop — do NOT run 'hooks statusline' or 'hive-mind status' as a substitute for reading files. Each worker MUST read actual source/doc files and store substantive memory keys.
-    ❌AP7: Missing per-worker exit gate — every worker MUST self-verify its own memory key was stored with >500 bytes BEFORE declaring completion. Command: npx @claude-flow/cli@latest memory retrieve -k <key> --namespace austa-analysis | wc -c → must be > 500
-    ❌AP8: Synthesizer (Worker-8) starting without upstream gate — check ALL 7 upstream keys exist with >200 bytes each BEFORE writing any report. If any key is missing: store error key "synthesis-blocked-missing-<key>" and ABORT cleanly.
-    ❌AP9: Parallel dimension workers reading each other's dependencies — Workers 1-7 are independent; Worker-8 is the ONLY synthesizer. Do NOT have Worker-3 read DIM-1 results from memory before Worker-1 has stored them.
-
-    ━━━ PHASE 1: RECON (Workers 1-2, parallel) ━━━
-    Worker-1 (RECON-LEAD):
-      READ: all docs/specifications/ files, docs/original documentation/ files
-      EXTRACT: purpose, user personas, regulatory context, NFR SLAs
-      SEMANTIC SEARCH: use vector search with queries from DIM-1 in handoff YAML
-      STORE: memory key dim1-purpose-summary, namespace austa-analysis
-      EXIT GATE ✅: npx @claude-flow/cli@latest memory retrieve -k dim1-purpose-summary --namespace austa-analysis | wc -c  → must be > 500. IF GATE FAILS: re-execute READ+STORE.
-
-    Worker-2 (DOCS-ANALYST):
-      READ: all docs/design/ files, docs/ADRs/ files
-      SCORE: each artifact using rubric in handoff YAML DIM-2
-      COUNT: user stories with complete acceptance criteria
-      IDENTIFY: missing ADRs, vague NFRs, undocumented decisions
-      STORE: memory key dim2-plan-quality-scores, namespace austa-analysis
-      EXIT GATE ✅: npx @claude-flow/cli@latest memory retrieve -k dim2-plan-quality-scores --namespace austa-analysis | wc -c  → must be > 500. IF GATE FAILS: re-execute READ+STORE.
-
-    ━━━ PHASE 2: ANALYSIS (Workers 3-7, parallel after Phase 1) ━━━
-    Worker-3 (TRACE-ANALYST):
-      RETRIEVE: dim1-purpose-summary, dim2-plan-quality-scores
-      PRE-CHECK: both keys must have >200 bytes or ABORT with "trace-blocked-missing-upstream"
-      BUILD: traceability matrix (user need → requirement → architecture → code)
-      MEASURE: % complete, % partial, % broken, % orphaned chains
-      IDENTIFY: over-engineered features, under-covered user needs
-      STORE: memory key dim3-adherence-gaps, namespace austa-analysis
-      EXIT GATE ✅: npx @claude-flow/cli@latest memory retrieve -k dim3-adherence-gaps --namespace austa-analysis | wc -c  → must be > 500. IF GATE FAILS: re-execute BUILD+STORE.
-
-    Worker-4 (CODE-AUDITOR-BACKEND):
-      RUN: recon commands from DIM-4 (find, grep, wc — read only)
-      SAMPLE READ: gamification-engine/achievements/, auth-service/auth/, care-service/telemedicine/, api-gateway/graphql/
-      SCORE: all 10 backend rubric dimensions
-      IDENTIFY: stub files, missing tests, ORM inconsistency, debt markers
-      STORE: memory key dim4-backend-scored, namespace austa-analysis
-      EXIT GATE ✅: npx @claude-flow/cli@latest memory retrieve -k dim4-backend-scored --namespace austa-analysis | wc -c  → must be > 500. IF GATE FAILS: re-execute SCORE+STORE.
-
-    Worker-5 (CODE-AUDITOR-FRONTEND):
-      RUN: test ratio and coverage commands
-      SAMPLE READ: web/src/pages/ (3 pages), mobile/src/screens/ (3 screens), design-system/src/ structure
-      SCORE: all 8 frontend rubric dimensions
-      IDENTIFY: missing screens vs planned, design-system adoption gaps
-      STORE: memory key dim4-frontend-scored, namespace austa-analysis
-      EXIT GATE ✅: npx @claude-flow/cli@latest memory retrieve -k dim4-frontend-scored --namespace austa-analysis | wc -c  → must be > 500. IF GATE FAILS: re-execute SCORE+STORE.
-
-    Worker-6 (SECURITY-AUDITOR):
-      RUN: all automated security commands from DIM-5
-      ASSESS: every control in security checklist (PASS/FAIL/PARTIAL/NOT_IMPLEMENTED)
-      CHECK: HIPAA, LGPD, OWASP Top 10 compliance
-      IDENTIFY: critical gaps requiring immediate remediation
-      STORE: memory key dim5-security-checklist, namespace austa-analysis
-      EXIT GATE ✅: npx @claude-flow/cli@latest memory retrieve -k dim5-security-checklist --namespace austa-analysis | wc -c  → must be > 500. IF GATE FAILS: re-execute ASSESS+STORE.
-
-    Worker-7 (DEPENDENCY-AUDITOR):
-      EXTRACT: all dependencies from all package.json files
-      CHECK: npm audit results from automated commands
-      IDENTIFY: deprecated packages, outdated majors, CVE-flagged packages
-      LIST: exact package@version for each finding
-      STORE: memory key dim5-deps-audit, namespace austa-analysis
-      EXIT GATE ✅: npx @claude-flow/cli@latest memory retrieve -k dim5-deps-audit --namespace austa-analysis | wc -c  → must be > 500. IF GATE FAILS: re-execute CHECK+STORE.
-
-    ━━━ PHASE 3: SYNTHESIS (Worker-8, STRICTLY after Phase 2 complete) ━━━
-    Worker-8 (REPORT-SYNTHESIZER):
-      UPSTREAM GATE (MANDATORY FIRST STEP — DO NOT SKIP):
-        FOR EACH key in [dim1-purpose-summary, dim2-plan-quality-scores, dim3-adherence-gaps,
-                         dim4-backend-scored, dim4-frontend-scored, dim5-security-checklist, dim5-deps-audit]:
-          result = npx @claude-flow/cli@latest memory retrieve -k <key> --namespace austa-analysis | wc -c
-          IF result < 200: ABORT — store "synthesis-blocked-missing-<key>" and STOP.
-          DO NOT write any report with incomplete upstream data.
-      RETRIEVE ALL: dim1-purpose-summary, dim2-plan-quality-scores, dim3-adherence-gaps,
-                    dim4-backend-scored, dim4-frontend-scored, dim5-security-checklist,
-                    dim5-deps-audit from namespace austa-analysis
-      WRITE: docs/analysis/REPOSITORY_DEEP_ANALYSIS.md (full report per template)
-      WRITE: docs/analysis/SECURITY_AUDIT.md (security findings + remediation plan)
-      WRITE: docs/analysis/BUILD_QUALITY_SCORECARD.md (scored rubrics + evidence)
-      INCLUDE: all file:line citations for every finding
-      PRODUCE: Prioritized Recommendations table (P0/P1/P2/P3)
-
-    EXIT CRITERIA:
-    ✅ ls docs/analysis/ shows 3 files
-    ✅ wc -l docs/analysis/REPOSITORY_DEEP_ANALYSIS.md >= 300
-    ✅ wc -l docs/analysis/SECURITY_AUDIT.md >= 150
-    ✅ npx @claude-flow/cli@latest memory list --namespace austa-analysis shows 9+ keys
-    ✅ All 5 scoring rubrics completed with numeric scores (not '?')
-    ✅ Security checklist 100% assessed (no '?' remaining)
-    ✅ Prioritized recommendations table has P0 items identified
-
-    ROLLBACK: If Worker-8 fails, each worker report is independently in memory.
-    Retrieve all keys and manually synthesize: npx @claude-flow/cli@latest memory list --namespace austa-analysis
-
-    ESTIMATED TIME: 3-4 hours
-    "
-
-# =============================================================================
-# FINAL REPORT TEMPLATE
-# =============================================================================
-report_template:
-  primary: "docs/analysis/REPOSITORY_DEEP_ANALYSIS.md"
-  structure:
-    - section: "Executive Summary"
-      required_fields:
-        - "Overall maturity score: X/5 (weighted average of 5 dimensions)"
-        - "Top 3 strengths (with evidence)"
-        - "Top 3 critical gaps (with evidence)"
-        - "Priority action list (P0 = do now, P1 = this sprint, P2 = next sprint)"
-    - section: "Dimension 1 — Purpose & Problem Definition"
-      required_fields:
-        - "Problem statement (extracted, not paraphrased)"
-        - "User personas identified (with attributes)"
-        - "Regulatory context (HIPAA/LGPD/ANS — present/absent)"
-        - "Market scope (Brazil/LATAM/global)"
-        - "Score: X/25 with per-criterion breakdown"
-    - section: "Dimension 2 — Plan Quality"
-      required_fields:
-        - "Artifact rubric table (all artifacts scored)"
-        - "ADR gap analysis (found vs expected)"
-        - "Documentation completeness %"
-        - "Score: X/45 with per-artifact breakdown"
-    - section: "Dimension 3 — Plan-to-Purpose Adherence"
-      required_fields:
-        - "Traceability matrix (% complete/partial/broken/orphaned)"
-        - "Journey balance analysis (Health vs Care vs Plan)"
-        - "Over-engineering findings"
-        - "Under-coverage findings"
-        - "Score: X/25 with evidence"
-    - section: "Dimension 4 — Build Quality"
-      required_fields:
-        - "Per-service completion status table"
-        - "Test coverage ratio (actual numbers)"
-        - "Backend rubric table (10 dimensions scored)"
-        - "Frontend rubric table (8 dimensions scored)"
-        - "Technical debt items (file:line)"
-        - "Score: X/90 (backend 50 + frontend 40)"
-    - section: "Dimension 5 — Security & Enterprise"
-      required_fields:
-        - "Security checklist table (PASS/FAIL/PARTIAL/NOT_IMPLEMENTED)"
-        - "HIPAA compliance status"
-        - "LGPD compliance status"
-        - "OWASP Top 10 status"
-        - "CVE findings (package@version, CVE-ID, severity)"
-        - "Deprecated packages list"
-        - "Score: X/20 (security controls)"
-    - section: "Prioritized Recommendations"
-      required_fields:
-        - "P0 — Immediate (security critical, blocks launch)"
-        - "P1 — This Sprint (high impact, <1 week effort)"
-        - "P2 — Next Sprint (medium impact)"
-        - "P3 — Backlog (improvements, nice-to-have)"
-        - "Each item: Finding | Impact | Effort | Owner | Swarm-ready?"
-    - section: "Appendix A — File Evidence Index"
-      required_fields:
-        - "All file:line citations for all findings"
-    - section: "Appendix B — Dependency Audit"
-      required_fields:
-        - "All packages: name | current version | latest | CVE status | deprecated?"
-
-# =============================================================================
-# POST-ANALYSIS PROTOCOL
-# =============================================================================
-post_analysis:
-  description: "Execute after Worker-8 confirms all 3 reports written"
-  commands:
-    train_on_analysis: |
-      npx @claude-flow/cli@latest neural train \
-        --modelType moe \
-        --data-source "docs/analysis" \
-        --epochs 5 \
-        --namespace austa-analysis
-    post_task_hook: |
-      npx @claude-flow/cli@latest hooks post-task \
-        --task-id "deep-analysis-001" \
-        --outcome success
-    store_completion: |
-      npx @claude-flow/cli@latest memory store \
-        --key "deep-analysis-001-complete" \
-        --value "5-dimension analysis complete. Reports: docs/analysis/. Date: 2026-02-19" \
-        --namespace austa-analysis
-    verify_outputs: |
-      ls -la docs/analysis/
-      wc -l docs/analysis/*.md
-
-# =============================================================================
-# COMPLIANCE VERIFICATION (run before any work)
-# =============================================================================
-compliance_verification:
-  - cmd: "npx @claude-flow/cli@latest --version"
-    expect: ">= 3.0.0"
-  - cmd: "npx @claude-flow/cli@latest hive-mind status"
-    expect: "initialized"
-  - cmd: "npx @claude-flow/cli@latest memory list --namespace austa-analysis"
-    expect: "analysis-scope key present (after bootstrap)"
-  - cmd: "npx @claude-flow/cli@latest neural list"
-    expect: "models listed"
-  - cmd: "npx @claude-flow/cli@latest hooks intelligence stats"
-    expect: "SONA active, MoE active"
-
-# =============================================================================
-# SESSION CONTINUITY — If Analysis is Interrupted
-# =============================================================================
-resume_protocol:
-  check_progress: |
-    npx @claude-flow/cli@latest memory list --namespace austa-analysis
-  dimension_keys_to_check:
-    - "dim1-purpose-summary"
-    - "dim2-plan-quality-scores"
-    - "dim3-adherence-gaps"
-    - "dim4-backend-scored"
-    - "dim4-frontend-scored"
-    - "dim5-security-checklist"
-    - "dim5-deps-audit"
-  resume_logic: |
-    For each missing key above: re-run only that dimension's worker.
-    Already-complete dimensions: retrieve from memory, do not re-execute.
-    Final report: only run Worker-8 when all 7 keys present.
-
-# =============================================================================
-# KNOWN SESSION STATE (from previous bootstrap session)
-# =============================================================================
-prior_session_state:
-  date: "2026-02-19"
-  completed:
-    - "claude-flow v3.0.0-alpha.151 installed + 4 alpha bugs patched"
-    - "Daemon started (check with daemon status — may need restart)"
-    - "Memory DB initialized at .swarm/memory.db"
-    - "Hive-mind initialized (hierarchical, byzantine, 15 max agents)"
-    - "5 agent configs: agents/ (coder, architect, tester, security-architect, reviewer)"
-    - "Native modules globally installed: @ruvector/attention, @ruvector/sona, @ruvector/core, agentdb, agentic-flow"
-    - "Init guide: .claude/claude-flow-init.yaml (1124 lines)"
-  check_first: |
-    npx @claude-flow/cli@latest daemon status
-    npx @claude-flow/cli@latest hive-mind status
-  if_daemon_stopped: |
-    npx @claude-flow/cli@latest daemon start
-    npx @claude-flow/cli@latest hooks worker dispatch --trigger map
-
-# =============================================================================
-# CURRENT STATE — Post-Reconciliation (2026-02-21)
-# =============================================================================
-current_state:
-  date: "2026-02-22"
-  phase: "ALL P0 + P1 COMPLETE — production-ready, transitioning to P2 v2.0"
-
-  frontend_complete:
-    mobile_screens: 249
-    web_pages: 237
-    navigators: 8
+completed_summary:
+  date: "2026-02-28"
+  total_commits: 5  # 67da6b6, 0d2c3cf, 096d1b1, + wave3 vuln + wave3 docs
+
+  pdq_campaign:
+    score_progression: "68 → 75 → 83 → 88 /100"
+    waves_completed: 4
+    swarms_run: 14
+    total_workers: "~95"
+
+  platform_totals:
+    mobile_screens: 319
+    web_pages: 307
+    navigators: 10
     ds_components: 57
-    ds_test_files: 57
-    storybook_stories: 57              # F3 created 57 stories
-    mobile_tests: 60                    # F2(20) + F2_EXT(+40)
-    web_tests: 30                       # F2_EXT created 30
-    frontend_test_files: 147            # 57 DS + 60 mobile + 30 web
-    i18n_coverage: "100% (pt-BR + en-US)"
-    dark_mode: "complete (161 files fixed in W18)"
-    hardcoded_hex: 0
-    files_over_500L: 0
-    tanstack_version: "5.22.2"
-    eas_build_profiles: 3              # development, preview, production
-    eas_ci_workflows: 2                 # eas-build.yml + eas-update.yml
-
-  backend_complete:
+    test_files_frontend: 147  # 57 DS + 60 mobile + 30 web
+    test_files_backend: 72    # 22 B5 + 48 B5_EXT + 2 splits
+    maestro_e2e_flows: 12     # 7 QG-W4 + 5 PDQ-W2
     prisma_models: 29
-    prisma_enums: 9
-    prisma_indexes: 42
-    typeorm_runtime_imports: 0
     dockerfiles: 7
-    ci_services_deployed: 7
-    spec_files: 70                      # B5(22) + B5_EXT(+48)
-    lgpd_consent_module: true
-    lgpd_dsr_endpoints: 4
-    phi_encrypted_models: 9
-    validation_pipe_services: 7
-    cors_configured_services: 7
-    health_check_endpoints: 14
+    ci_pipelines: 7
+    i18n: "100% pt-BR + en-US"
+    hardcoded_hex: 0
+    as_never_casts: 0
+    files_over_500L: 0
 
-  devops_complete:
-    deploy_staging_services: 7
-    deploy_production_pipeline: true    # F6_EXT: canary + rollback + Sentry
-    docker_compose_staging: true        # 356L
-    docker_compose_production: true     # 359L, resource limits
-    nginx_staging_conf: true            # 159L
-    nginx_production_conf: true         # 239L, TLS + HTTP/2 + security headers
-    k8s_deployments: 7
-    k8s_probes: 14
-    k8s_hpa: 7                          # autoscaling/v2
-    k8s_pdb: 7                          # policy/v1
-    monitoring_sentry: true             # 115L ConfigMap+Secret+ServiceMonitor
-    monitoring_grafana: true            # 363L 4-row SRE dashboard
-    actions_version: "v4"
-    node_version: "20"
+  vulnerability_status:
+    backend: "236 → 10 (0 critical, 0 high)"
+    web: "89 → 21 (0 critical, 8 high residual)"
+    residual_accepted:
+      - "next (4 high): needs Next.js 15 migration — major breaking change"
+      - "rollup (2 high): needs @sentry/nextjs upgrade to v8"
+      - "ip (2 high): react-native transitive — no patch available"
 
-  p0_phases_completed:
-    B1: { status: "COMPLETE", gates: "V1-V9: 9/9 PASS", date: "2026-02-22" }
-    B2: { status: "COMPLETE", gates: "V1-V10: 10/10 PASS", date: "2026-02-22" }
-    B3: { status: "COMPLETE", gates: "V1-V8: 8/8 PASS", date: "2026-02-22" }
-    B4: { status: "COMPLETE", gates: "V1-V13: 13/13 PASS", date: "2026-02-22" }
-    B5: { status: "COMPLETE", gates: "V1-V8: 7/8 PASS (V2 SKIP)", date: "2026-02-22" }
-    F1: { status: "COMPLETE", gates: "V1-V6: 6/6 PASS", date: "2026-02-22" }
-    F2: { status: "COMPLETE", gates: "V1-V8: 8/8 PASS", date: "2026-02-22" }
-    F6: { status: "COMPLETE", gates: "V1-V8: 8/8 PASS", date: "2026-02-22" }
+  docs_created:
+    - "docs/production-setup-guide.md (463L)"
+    - "docs/mobile-security-guide.md (289L)"
+    - "docs/todo-triage-report.md (169L)"
 
-  p1_phases_completed:
-    F3: { status: "COMPLETE", gates: "V1-V7: 7/7 PASS", date: "2026-02-22", desc: "57 Storybook stories + storybook-ci.yml" }
-    B5_EXT: { status: "COMPLETE", gates: "V1-V7: 7/7 PASS", date: "2026-02-22", desc: "70 specs (48 new) across 8 services" }
-    F2_EXT: { status: "COMPLETE", gates: "V1-V7: 7/7 PASS", date: "2026-02-22", desc: "60 mobile + 30 web = 147 total tests" }
-    F5: { status: "COMPLETE", gates: "V1-V8: 8/8 PASS", date: "2026-02-22", desc: "EAS 3 profiles + 2 CI workflows" }
-    F6_EXT: { status: "COMPLETE", gates: "V1-V8: 8/8 PASS", date: "2026-02-22", desc: "19 files: canary deploy + monitoring" }
-
-  resolved_blockers:
-    - id: BLOCK-001
-      desc: "Prisma schema expanded 3→29 models"
-      resolved_by: B1
-    - id: BLOCK-002
-      desc: "0 TypeORM runtime imports — all services use PrismaService"
-      resolved_by: B1
-    - id: BLOCK-003
-      desc: "LGPD consent module + DSR endpoints + PHI encryption (9 models)"
-      resolved_by: B2
-    - id: BLOCK-004
-      desc: "7 Dockerfiles created, docker-compose staging+production, nginx proxies"
-      resolved_by: "B4 + F6 + F6_EXT"
-    - id: BLOCK-005
-      desc: "TanStack Query aligned on v5.22.2 across mobile + shared"
-      resolved_by: F1
-    - id: BLOCK-006
-      desc: "147 frontend test files (57 DS + 60 mobile + 30 web)"
-      resolved_by: "F2 + F2_EXT"
-
-  remaining_tech_debt:
-    - "MedicationReminder.tsx 530L, SearchResults.tsx 679L, DoctorSearch.tsx 510L (over 500L)"
-    - "package.json still lists TypeORM deps (runtime removed, cleanup pending)"
-    - "Prisma 7.4.1 needs prisma.config.ts migration (url deprecation)"
-    - "K8s port inconsistencies (api-gateway 4000 vs 3000)"
-    - "i18n structural difference (pt-BR top-level vs en-US nested)"
-    - "health.service.spec.ts 525L (pre-existing, over 500L limit)"
-    - "16 hex in Storybook demo wrappers (low severity)"
-    - "Expo project ID placeholder (your-project-id) needs eas init"
-
-  memory_keys:
-    total: 180
-    namespace: "healthcare-platform"
-    key_milestones:
-      - "v1.0-launch-gate-passed"
-      - "v1.1-complete"
-      - "forward-path-plan-v2"
-      - "b1-scope through b5-complete-final"
-      - "f1-scope through f6-verified"
-      - "f3-scope through f3-complete"
-      - "b5-ext-scope through b5ext-complete"
-      - "f2-ext-scope through f2ext-complete"
-      - "f5-scope through f5-complete"
-      - "f6ext-scope through f6ext-complete"
+  phases_completed:
+    # P0 (launch-blocking)
+    - { id: B1, name: "Database Foundation", gates: "9/9 PASS" }
+    - { id: B2, name: "Security/LGPD", gates: "10/10 PASS" }
+    - { id: B3, name: "Service Hardening", gates: "8/8 PASS" }
+    - { id: B4, name: "Containerization", gates: "13/13 PASS" }
+    - { id: B5, name: "Backend Testing", gates: "7/8 PASS" }
+    - { id: F1, name: "Frontend Polish", gates: "6/6 PASS" }
+    - { id: F2, name: "Frontend Testing", gates: "8/8 PASS" }
+    - { id: F6, name: "Deployment Pipeline", gates: "8/8 PASS" }
+    # P1 (post-launch)
+    - { id: F3, name: "Storybook", gates: "7/7 PASS" }
+    - { id: B5_EXT, name: "Extended Backend Testing", gates: "7/7 PASS" }
+    - { id: F2_EXT, name: "Extended Frontend Testing", gates: "7/7 PASS" }
+    - { id: F5, name: "EAS Build Pipeline", gates: "8/8 PASS" }
+    - { id: F6_EXT, name: "Production Deployment", gates: "8/8 PASS" }
+    # P2 v2.0 modules
+    - { id: P2-W1, name: "Module 12: Cycle Tracking (15 screens)", gates: "12/12 PASS" }
+    - { id: P2-W2, name: "Tech Debt Sprint", gates: "9/9 PASS" }
+    - { id: P2-W3, name: "Module 06: AI Wellness (15 screens)", gates: "16/16 PASS" }
+    - { id: P2-W4, name: "Module 09: Sleep (12 screens)", gates: "11/11 PASS" }
+    - { id: P2-W5, name: "Module: Activity (10 screens)", gates: "18/18 PASS" }
+    - { id: P2-W6, name: "Module: Nutrition (10 screens)", gates: "18/18 PASS" }
+    - { id: P2-W7, name: "Module: Wellness Resources (8 screens)", gates: "18/18 PASS" }
+    # Quality Gates
+    - { id: QG-W1, name: "Quality Gate Foundation", gates: "PASS" }
+    - { id: QG-W2, name: "Runtime Crash Prevention", gates: "6/6 PASS" }
+    - { id: QG-W3, name: "Nav Types + API Contract", gates: "7/9 PASS" }
+    - { id: QG-W4, name: "E2E Tests + 0 as-never", gates: "7/7 PASS" }
+    - { id: QG-W4B, name: "Zero as-never + Zero MOBILE_ROUTES", gates: "8/8 PASS" }
+    # PDQ Campaign
+    - { id: PDQ-SEC, name: "Security Hardening", gates: "11/11 PASS" }
+    - { id: PDQ-POLISH, name: "CI/CD Polish", gates: "5/5 PASS" }
+    - { id: VULN-BE, name: "Backend Vuln Triage", gates: "PASS (236→10)" }
+    - { id: PDQ-W2, name: "5 Parallel Swarms", gates: "ALL PASS" }
+    - { id: VULN-WEB, name: "Web Vuln Triage", gates: "9/10 PASS (89→21)" }
+    - { id: DOC-PROD, name: "Production Docs", gates: "10/10 PASS" }
+    - { id: TODO-TRIAGE, name: "TODO/FIXME Triage", gates: "10/10 PASS" }
 
 # =============================================================================
-# FORWARD PATH PLAN — Production Readiness (Approved 2026-02-21)
+# REMAINING WORK — Prioritized (from docs/todo-triage-report.md)
 # =============================================================================
-forward_path:
-  plan_ref: "Stored in claude-flow memory key: forward-path-plan-v2"
-  plan_file: ".claude/plans/rustling-imagining-stream.md"
-  approved: "2026-02-21"
-  total_effort: "290-350h P0 (launch-blocking)"
+remaining_work:
 
-  priority_matrix:
-    p0_launch_blocking:
-      count: 12
-      effort: "290-350h (8-10 weeks with swarm parallelization)"
-      items:
-        - "B1: Prisma schema expansion (3→18+ models) + ORM consolidation (60-80h)"
-        - "B2: LGPD consent module + DSR endpoints (60-80h)"
-        - "B3: ValidationPipe + CORS + health checks for all 7 services (16-24h)"
-        - "B4: 7 Dockerfiles + CI/CD fix (24-32h)"
-        - "B5: Backend smoke tests (24h)"
-        - "F1: TanStack v4→v5 + accessibility WCAG AA (30h)"
-        - "F2: Frontend test infrastructure + smoke tests (26h)"
-        - "F6: Staging environment (12h)"
-    p1_post_launch:
-      count: 7
-      effort: "228h (within 30 days)"
-      items:
-        - "Full backend test suite (40% coverage)"
-        - "Full mobile test suite (20% coverage)"
-        - "Web page tests (15% coverage)"
-        - "Storybook + visual regression"
-        - "Production deployment strategy"
-        - "EAS Build (mobile)"
-        - "Remaining frontend polish"
-    p2_v2:
-      count: 4
-      effort: "100h (90+ days)"
-      items:
-        - "Module 09: Health Records (8 screens)"
-        - "Module 11: Digital Insurance Card (3 screens)"
-        - "Modules 10, 12, 16 (12 screens, needs backend)"
-        - "App Store submissions"
+  tier1_critical:
+    count: 14
+    effort: "~2-3 weeks (security sprint)"
+    description: "Security, LGPD compliance, infrastructure breaking changes"
+    items:
+      - id: T1-01
+        file: "src/web/mobile/src/api/ssl-pinning.ts:7"
+        desc: "SSL cert pinning uses placeholder SPKI hashes — production BLOCKER"
+        category: Security
+        effort: M
+      - id: T1-02
+        file: "src/web/web/src/pages/settings/logout.tsx:14"
+        desc: "Logout does not clear session tokens — session hijack risk"
+        category: Security
+        effort: S
+      - id: T1-03
+        file: "src/web/web/src/pages/settings/two-factor.tsx:18,22"
+        desc: "2FA toggle + config never calls API — users think 2FA is enabled"
+        category: Security
+        effort: S
+      - id: T1-04
+        file: "src/web/web/src/pages/settings/change-password.tsx:31"
+        desc: "Password change form never calls API"
+        category: Security
+        effort: S
+      - id: T1-05
+        file: "src/web/web/src/pages/settings/delete-account.tsx:26"
+        desc: "Account deletion navigates away without deleting — LGPD violation"
+        category: "Security/LGPD"
+        effort: S
+      - id: T1-06
+        file: "src/web/mobile/src/screens/home/SettingsPrivacy.tsx:319"
+        desc: "Mobile account deletion shows alert only, no backend call"
+        category: "Security/LGPD"
+        effort: S
+      - id: T1-07
+        file: "src/web/web/src/pages/profile/index.tsx:66"
+        desc: "Profile account deletion not implemented"
+        category: "Security/LGPD"
+        effort: S
+      - id: T1-08
+        file: "src/web/web/src/pages/profile/privacy.tsx:217,222"
+        desc: "Privacy settings + LGPD data export — no API calls"
+        category: "Privacy/LGPD"
+        effort: M
+      - id: T1-09
+        file: "src/web/web/src/pages/settings/data-export.tsx:32"
+        desc: "LGPD data export request has no API integration"
+        category: LGPD
+        effort: M
+      - id: T1-10
+        file: "src/web/web/src/pages/auth/social-auth.tsx:172"
+        desc: "OAuth flow not implemented — logs only"
+        category: Security
+        effort: M
+      - id: T1-11
+        file: "src/web/mobile/src/screens/auth/SocialAuth.tsx:209"
+        desc: "Social auth shows alert instead of OAuth flow"
+        category: Security
+        effort: M
+      - id: T1-12
+        file: "src/backend/shared/prisma/schema.prisma:7"
+        desc: "Prisma url env syntax deprecated — breaking in Prisma 7.x"
+        category: Infrastructure
+        effort: M
 
-  execution_order:
-    week_1_2:
-      parallel:
-        - phase: B1
-          desc: "Database Foundation — Prisma expansion + ORM consolidation"
-          workers: 5
-          topology: hierarchical
-          est: "60-80h"
-          critical_path: true
-        - phase: F1
-          desc: "Frontend Polish — TanStack v5, accessibility, file splits"
-          workers: 4
-          topology: hierarchical
-          est: "30h"
-    week_3_4:
-      parallel:
-        - phase: B2
-          desc: "LGPD/Security hardening"
-          depends_on: B1
-        - phase: B3
-          desc: "Service hardening (validation, CORS, health checks)"
-          depends_on: B1
-        - phase: F2.1
-          desc: "Test infrastructure setup"
-    week_5_6:
-      parallel:
-        - phase: B4
-          desc: "Containerization (Dockerfiles + CI)"
-          depends_on: B3
-        - phase: B5
-          desc: "Backend testing (starts during B4)"
-          depends_on: B1
-        - phase: "F2.2-F2.4"
-          desc: "Frontend tests (parallel)"
-    week_7_8:
-      parallel:
-        - phase: F6
-          desc: "Deployment pipeline (staging + production)"
-          depends_on: B4
-        - phase: B5
-          desc: "Integration tests (continued)"
-    week_9_10:
-      desc: "Launch validation sprint — E2E smoke tests + penetration testing"
+  tier2_important:
+    count: 59
+    effort: "~4-6 weeks (API integration sprints)"
+    description: "Non-functional UI — profile/settings/health screens never persist data"
+    groups:
+      - group: A
+        name: "Profile Setup Flow (Mobile)"
+        count: 13
+        summary: "15 profile screens — all save actions are mocked, onboarding non-functional"
+      - group: B
+        name: "Settings Pages (Web)"
+        count: 11
+        summary: "Personal info, dependents, theme, language, accessibility, addresses — all mocked"
+      - group: C
+        name: "Settings Screens (Mobile)"
+        count: 8
+        summary: "Emergency contacts, feedback, dependents, addresses — edit mode not implemented"
+      - group: D
+        name: "Health & Medication"
+        count: 6
+        summary: "Reminders, dose tracking, alarm actions — not persisted"
+      - group: E
+        name: "Dashboard & Search"
+        count: 4
+        summary: "Hardcoded user ID, mock trends, mock search results"
+      - group: F
+        name: "Auth Flow Gaps"
+        count: 2
+        summary: "SetPassword and EmailVerify API never called"
+      - group: G
+        name: "Profile Pages (Web)"
+        count: 4
+        summary: "Mock profile data, save uses mock, biometric enrollment not implemented"
+      - group: H
+        name: "Notifications & Help"
+        count: 2
+        summary: "Mock notification detail, report submission has no API"
+      - group: I
+        name: "Observability Placeholders"
+        count: 3
+        summary: "Google Analytics + Datadog placeholder IDs"
+      - group: J
+        name: "EAS Build Placeholder"
+        count: 1
+        summary: "app.json your-project-id placeholder — EAS builds blocked"
+    full_report: "docs/todo-triage-report.md"
 
-  dependency_chain: |
-    B1 (Database) ←← START HERE
-      ├──→ B2 (LGPD/Security)
-      ├──→ B3 (Service Hardening)
-      │     └──→ B4 (Containerization)
-      │           └──→ F6 (Deployment)
-      └──→ B5 (Testing)
+  tier3_nice_to_have:
+    count: 5
+    effort: "~1-2 weeks"
+    items:
+      - "DS noEmitOnError missing (167 TS errors suppressed, no runtime impact)"
+      - "11 colors.gray[]/brandPalette[] in 5 auth files (cosmetic)"
+      - "PlanNavigator 9 hardcoded route strings"
+      - "Account deletion needs confirmation dialog (UX)"
+      - "Plan E2E test file is single-line placeholder"
 
-    F1 (Frontend Polish) ←← START HERE (parallel with B1)
-      └──→ F2 (Frontend Tests)
-            └──→ F5 (Mobile Build)
+  residual_vulnerabilities:
+    count: 8
+    severity: "high (all accepted risks)"
+    items:
+      - pkg: "next"
+        count: 4
+        fix: "Upgrade to Next.js >=15.0.8 (major migration)"
+        effort: XL
+      - pkg: "rollup"
+        count: 2
+        fix: "Upgrade @sentry/nextjs to v8 (rollup 4.x)"
+        effort: L
+      - pkg: "ip"
+        count: 2
+        fix: "No patch — react-native transitive dependency"
+        effort: N/A
 
-    F3 (Storybook) ←← independent, any time
-
-  phase_details:
-    B1:
-      name: "Database Foundation"
-      key_files:
-        - "src/backend/shared/prisma/schema.prisma"
-        - "src/backend/shared/src/database/prisma.mock.ts"
-        - "src/backend/gamification-engine/src/app.module.ts"
-        - "src/backend/notification-service/src/app.module.ts"
-      models_to_add:
-        - "User, Role, Permission (auth)"
-        - "HealthMetric, HealthGoal, DeviceConnection, MedicalEvent (health)"
-        - "Appointment, Provider, Medication, TreatmentPlan, TelemedicineSession (care)"
-        - "Document, Benefit, Coverage (plan)"
-        - "ConsentRecord (LGPD), Notification, NotificationTemplate (notification)"
-      migration_order:
-        1: "notification-service (4 entities, 8-10h)"
-        2: "gamification-engine (8 entities, 12-16h)"
-        3: "care-service (2 entities, 4-6h)"
-        4: "health-service (2 entities, 4-6h)"
-        5: "auth-service (cleanup, 2-4h)"
-      exit_gates:
-        - "0 occurrences of 'from typeorm' in source"
-        - "18+ models in schema.prisma"
-        - "All 9 existing tests pass"
-        - "All services boot with PrismaService only"
-
-    B2:
-      name: "Security Hardening (LGPD + FHIR + PHI)"
-      key_deliverables:
-        - "src/backend/shared/src/consent/ (module, service, guard, controller)"
-        - "src/backend/shared/src/privacy/ (DSR endpoints: export, delete, rectify)"
-        - "PHI encryption expansion to all migrated entities"
-      lgpd_endpoints:
-        - "GET /api/privacy/my-data (Art. 18-II)"
-        - "GET /api/privacy/export (Art. 18-V, FHIR R4 Bundle)"
-        - "DELETE /api/privacy/my-data (Art. 18-VI)"
-        - "PATCH /api/privacy/my-data (Art. 18-III)"
-        - "GET/POST/DELETE /api/privacy/consents"
-
-    B3:
-      name: "Service Hardening"
-      key_deliverables:
-        - "ValidationPipe added to 4 missing services"
-        - "CORS configured for 4 missing services"
-        - "GET /health and GET /health/ready for all 7 services"
-        - "Port normalization across code, docker-compose, K8s"
-
-    B4:
-      name: "Containerization"
-      key_deliverables:
-        - "7 multi-stage Dockerfiles (node:20-alpine)"
-        - "Fixed docker-compose.yml"
-        - "Fixed K8s manifests (ports, probes)"
-        - "CI/CD deploying all 7 services"
-
-  swarm_spawn_pattern: |
-    Every phase follows ADR-013 standard workflow:
-    1. hooks pre-task → register task
-    2. memory store → store scope
-    3. hive-mind spawn --claude → display command for user
-    4. Wait for user notification
-    5. Verify outputs (grep, wc, find)
-    6. hooks post-task → record completion
-    7. neural train → if significant patterns
-    8. memory store → store completion key
-
-  b1_spawn_command: |
-    npx @claude-flow/cli@latest hive-mind spawn \
-      --workers 5 \
-      --topology hierarchical \
-      --consensus byzantine \
-      --claude \
-      --model-routing intelligent \
-      --namespace healthcare-platform \
-      --use-memory --use-patterns --use-vectors --use-learning \
-      --objective "
-    QUEEN ROLE: You are Queen (coordinator/architect). You MUST NOT write code directly.
-    Spawn as many specialized agents as needed. Use full power of claude-flow as detailed
-    on docs/prompts/013-agent-guide.yaml (sections 10 to 16).
-
-    SWARM B1: Database Foundation — Prisma Schema Expansion + ORM Consolidation
-    WORKSPACE: /Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7
-
-    ANTI-PATTERNS:
-    AP1-AP7 (see 013-agent-guide.yaml section 11)
-
-    PHASE 1 — RECON: Catalog all TypeORM entities across 7 services
-    PHASE 2 — SCHEMA: Expand schema.prisma from 3 to 18+ models
-    PHASE 3 — MIGRATE: 3 parallel agents migrating services to Prisma
-    PHASE 4 — VERIFY: 0 TypeORM imports, migrations pass, tests pass
-    "
-
-  f1_spawn_command: |
-    npx @claude-flow/cli@latest hive-mind spawn \
-      --workers 4 \
-      --topology hierarchical \
-      --consensus byzantine \
-      --claude \
-      --model-routing intelligent \
-      --namespace healthcare-platform \
-      --use-memory --use-patterns --use-vectors --use-learning \
-      --objective "
-    QUEEN ROLE: You are Queen (coordinator/architect). You MUST NOT write code directly.
-    Spawn as many specialized agents as needed.
-
-    SWARM F1: Frontend Polish
-    WORKSPACE: /Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7
-
-    ANTI-PATTERNS:
-    AP1-AP7 (see 013-agent-guide.yaml section 11)
-
-    F1.1: Split ClaimDetail.tsx (506L) + QuestList.tsx (505L)
-    F1.2: Fix 5 hardcoded hex in ThemeSelect.tsx lines 32-36
-    F1.3: TanStack Query v4→v5 (mobile + shared packages)
-    F1.4: Accessibility WCAG AA on 57 DS components
-    F1.5: Shared routes consolidation
-    "
+  recommended_sprint_order:
+    sprint_1: "Tier 1 critical (14 items) — security sprint, all S/M effort"
+    sprint_2: "Group A (Profile Setup, 13 items) — onboarding is fully non-functional"
+    sprint_3: "Groups B+C (Settings, 19 items) — user preferences lost on reload"
+    sprint_4: "Groups D+F+G (Health+Auth+Profile, 12 items)"
+    sprint_5: "Groups E+H+I+J (Dashboard+Notifications+Config, 10 items)"
+    post_launch: "Tier 3 (5 items) + Next.js 15 migration"
 
 # =============================================================================
-# VERIFICATION STRATEGY (Post Forward Path)
+# CLAUDE-FLOW WORKFLOW REFERENCE (ADR-013 + 013-agent-guide.yaml)
 # =============================================================================
-verification_gates:
-  per_phase:
-    B1: "grep -rn \"from 'typeorm'\" src/backend/ → 0 results"
-    B2: "curl -X POST /api/privacy/consents → 201"
-    B3: "curl /health per service → 7x 200 OK"
-    B4: "docker-compose build → 0 errors"
-    B5: "npm test --coverage → >= 30%"
-    F1: "grep 'react-query.*4' src/web/mobile/package.json → 0"
-    F2: "yarn test in mobile → >= 40 test files"
-    F6: "curl staging.austa.com.br/api/health → 200"
+# This section documents the CORRECT workflow for all swarm operations.
+# Coordinator role: prepare commands, memory, hooks, verify.
+# User role: copy-paste spawn commands into separate terminals, report completion.
 
-  e2e_smoke_test:
-    - "Auth: Register → Login → JWT → Protected → Refresh → Logout"
-    - "Consent: No consent → 403 → Grant → Success"
-    - "Health: Record metric → Retrieve → Insights → Verify encryption"
-    - "Care: Find provider → Book → Telemedicine"
-    - "Plan: View → Coverage → Claim → Track"
-    - "Gamification: Goal → Achievement → XP → Leaderboard"
-    - "LGPD: Export → Verify → Delete → Verify purge"
-    - "Dark mode: Toggle → All screens render"
+workflow_reference:
 
-# =============================================================================
-# P1 POST-LAUNCH PLAN (within 30 days of launch)
-# =============================================================================
-p1_post_launch:
-  date_planned: "2026-02-22"
-  total_effort: "228h"
-
-  phases:
-    B5_EXT:
-      name: "Extended Backend Testing (40% coverage)"
-      effort: "80h"
-      workers: 6
-      topology: "hierarchical-mesh"
-      depends_on: ["B5"]
-      scope: |
-        Expand from 22 spec files to 70+ spec files targeting 40% coverage.
-        Priority: plan-service (claims, plans), health-service (insights, FHIR),
-        care-service (appointments, medications, telemedicine), auth-service (JWT, roles),
-        api-gateway (routing, rate limiting), integration tests (cross-service flows).
-      exit_gates:
-        - "npm test -- --coverage reports >= 40% lines"
-        - "70+ spec files across 7 services"
-        - "0 test failures"
-        - "All consent/privacy tests still pass"
-
-    F2_EXT:
-      name: "Extended Frontend Testing (20% mobile, 15% web)"
-      effort: "60h"
-      workers: 6
-      topology: "hierarchical-mesh"
-      depends_on: ["F2"]
-      scope: |
-        Expand from 20 mobile smoke tests to 60+ covering all journeys.
-        Add 30+ web page tests. Add integration tests for navigation flows.
-        Add MSW API mocking for realistic data scenarios.
-      exit_gates:
-        - "60+ mobile test files"
-        - "30+ web test files"
-        - "All DS tests still pass"
-        - "Coverage >= 20% mobile, >= 15% web"
-
-    F3:
-      name: "Storybook + Visual Regression"
-      effort: "48h"
-      workers: 4
-      topology: "hierarchical"
-      depends_on: []
-      scope: |
-        Storybook 8.x setup for design-system package.
-        Stories for all 57 DS components (default, variants, interactive, dark mode).
-        Chromatic visual regression baseline + GitHub Actions integration.
-      key_files:
-        - "src/web/design-system/.storybook/main.ts"
-        - "src/web/design-system/.storybook/preview.ts"
-        - "src/web/design-system/src/**/*.stories.tsx (57 files)"
-      exit_gates:
-        - "yarn build-storybook succeeds"
-        - "57 story files (1 per DS component)"
-        - "Chromatic baseline uploaded"
-        - "GitHub Actions workflow for visual regression"
-
-    F5:
-      name: "Mobile Build Pipeline (EAS Build)"
-      effort: "32h"
-      workers: 2
-      topology: "hierarchical"
-      depends_on: ["F2"]
-      scope: |
-        EAS Build config (development, preview, production profiles).
-        iOS: Apple Sign-In, ATT framework, Privacy Manifest, HealthKit entitlement.
-        Android: Data Safety Form, Firebase FCM, signing keystore.
-        App Store prep: listings pt-BR/en-US, screenshots, privacy policy URL.
-      exit_gates:
-        - "eas build --profile development succeeds (iOS + Android)"
-        - "app.json/app.config.js complete"
-        - "Privacy manifest includes all data types"
-
-    F6_EXT:
-      name: "Production Deployment Strategy"
-      effort: "8h"
-      workers: 2
-      topology: "hierarchical"
-      depends_on: ["F6"]
-      scope: |
-        Blue-green deployment with canary rollout.
-        Auto-rollback on health check failure.
-        Sentry error tracking + Grafana monitoring dashboards.
-        Production docker-compose and Terraform configs.
-
-  execution_order: |
-    WEEK 1-2 (parallel):
-      F3 (Storybook) — independent, start immediately
-      B5_EXT (Backend tests) — builds on B5
-      F2_EXT (Frontend tests) — builds on F2
-
-    WEEK 3-4 (after F2_EXT):
-      F5 (EAS Build) — needs tests passing
-      F6_EXT (Production deployment) — needs staging validated
-
-  dependency_chain: |
-    F3 (Storybook) ←← independent, start immediately
-
-    B5 ✅ → B5_EXT (extended backend tests)
-    F2 ✅ → F2_EXT (extended frontend tests) → F5 (EAS Build)
-    F6 ✅ → F6_EXT (production deployment)
-
-# =============================================================================
-# DEPENDABOT / DEPENDENCY VULNERABILITY REMEDIATION
-# =============================================================================
-# GitHub flagged 112 vulnerabilities on origin/main (2026-02-26).
-# Source: https://github.com/rodaquino-OMNI/healthcare-app-gamification/security/dependabot
-#
-# This is a BLOCKING concern for any production deployment path.
-# Agents tackling forward-path phases MUST evaluate and remediate these
-# before or during their respective scopes.
-
-dependency_vulnerabilities:
-  reported_date: "2026-02-26"
-  source: "GitHub Dependabot (origin push)"
-  dashboard: "https://github.com/rodaquino-OMNI/healthcare-app-gamification/security/dependabot"
-  total: 112
-  breakdown:
-    critical: 2
-    high: 60
-    moderate: 35
-    low: 15
-
-  agent_task:
-    id: "SEC-VULN-001"
-    title: "Evaluate and Remediate 112 Dependabot Vulnerabilities"
-    priority: P0
-    severity: CRITICAL
-    role: "security-architect + coder"
-    blocking: ["F5", "F6_EXT"]   # Cannot ship to production with critical/high CVEs
-
-    phase_1_triage:
-      description: "Fetch full Dependabot alert list, classify by package location and exploitability"
+  # ---------------------------------------------------------------------------
+  # BOOTSTRAP (once per session — 013-agent-guide Section 14)
+  # ---------------------------------------------------------------------------
+  bootstrap:
+    description: "Run ONCE at start of each new session"
+    phase_a_system_init:
       commands:
-        - "gh api /repos/rodaquino-OMNI/healthcare-app-gamification/dependabot/alerts --paginate -q '.[] | [.number, .severity, .security_advisory.cve_id, .dependency.package.name, .dependency.manifest_path] | @tsv'"
-        - "npm audit --json > /tmp/npm-audit-backend.json   # run from src/backend/"
-        - "yarn audit --json > /tmp/yarn-audit-web.json      # run from src/web/"
-      outputs:
-        - "docs/analysis/DEPENDABOT_TRIAGE.md"
-      classify_by:
-        - "Package location: backend vs frontend vs shared vs infra"
-        - "Direct vs transitive dependency"
-        - "Exploitability: network-reachable vs local-only vs test-only"
-        - "Fix available: yes (patch) vs no (requires major upgrade or replacement)"
+        - "npx @claude-flow/cli@latest daemon start"
+        - "npx @claude-flow/cli@latest doctor --verbose"
+        - "npx @claude-flow/cli@latest memory init --force --verbose"
+        - "npx @claude-flow/cli@latest hooks pretrain --verbose"
+        - "npx @claude-flow/cli@latest hooks build-agents --verbose"
+    phase_b_daemon_workers:
+      commands:
+        - "npx @claude-flow/cli@latest hooks worker dispatch --trigger map"
+        - "npx @claude-flow/cli@latest hooks worker dispatch --trigger deepdive"
+        - "npx @claude-flow/cli@latest hooks worker dispatch --trigger ultralearn"
+    phase_c_neural_training:
+      commands:
+        - "npx @claude-flow/cli@latest neural train --modelType moe --epochs 10"
+        - "npx @claude-flow/cli@latest neural train --modelType transformer --epochs 10"
+        - "npx @claude-flow/cli@latest neural train --modelType classifier --epochs 10"
+      verify:
+        - "npx @claude-flow/cli@latest neural status"
+        - "npx @claude-flow/cli@latest hooks intelligence stats"
+    phase_d_hive_mind:
+      command: >
+        npx @claude-flow/cli@latest hive-mind init
+        --topology hierarchical-mesh --max-agents 15 --consensus byzantine
+      note: "MUST run before EVERY swarm spawn, not just once"
 
-    phase_2_critical_high:
-      description: "Remediate all critical (2) and high (60) vulnerabilities"
-      approach:
-        auto_fix: "npm audit fix / yarn upgrade for semver-compatible patches"
-        manual_fix: "Major version bumps requiring code changes (e.g., breaking API changes)"
-        replace: "Deprecated packages with no fix — find alternatives"
-        suppress: "False positives or test-only deps — document rationale in DEPENDABOT_TRIAGE.md"
-      exit_gates:
-        - "0 critical vulnerabilities remaining"
-        - "0 high vulnerabilities remaining (or documented suppression with rationale)"
-        - "All existing tests still pass after dependency updates"
-        - "npm audit / yarn audit clean or documented exceptions only"
+  # ---------------------------------------------------------------------------
+  # PHASE WORKFLOW (every swarm — 013-agent-guide Section 15, 9 steps)
+  # ---------------------------------------------------------------------------
+  phase_workflow:
+    description: "Standard execution cycle for EVERY swarm task"
+    steps:
+      step_1_pre_task:
+        what: "Register task with hooks system"
+        command: >
+          npx @claude-flow/cli@latest hooks pre-task
+          --task-id "{swarm-id}"
+          --description "{task description}"
+        note: "Run from /tmp if root package.json has EOVERRIDE conflict"
 
-    phase_3_moderate_low:
-      description: "Address moderate (35) and low (15) vulnerabilities"
-      approach: "Batch update, preferring automated fixes. Defer only if fix introduces breaking changes."
-      exit_gates:
-        - "Total remaining vulnerabilities <= 10 (all low, documented)"
-        - "No new vulnerabilities introduced by fixes"
+      step_2_store_scope:
+        what: "Persist task scope in memory for workers to read"
+        command: >
+          npx @claude-flow/cli@latest memory store
+          --key "{swarm-id}-scope"
+          --value "{scope description with deliverables, files, constraints}"
+          --namespace healthcare-platform
 
-    phase_4_prevention:
-      description: "Establish automated vulnerability monitoring"
-      tasks:
-        - "Enable Dependabot auto-merge for patch-level security updates"
-        - "Add npm audit / yarn audit to CI pipeline (fail on critical/high)"
-        - "Configure Renovate or Dependabot version updates for proactive maintenance"
-        - "Add SECURITY.md with vulnerability reporting policy"
-      exit_gates:
-        - "GitHub Actions workflow runs npm audit on every PR"
-        - "Dependabot auto-merge configured for security patches"
-        - "SECURITY.md exists at repo root"
+      step_3_hive_mind_init:
+        what: "Initialize hive-mind coordination (MANDATORY before every spawn)"
+        command: >
+          npx @claude-flow/cli@latest hive-mind init
+          --topology hierarchical-mesh
+          --max-agents 15
+          --consensus byzantine
+        critical: "NEVER skip this step — swarm spawn without init causes drift"
 
-  known_risk_packages:
-    backend:
-      - package: "jsonwebtoken"
-        concern: "CVE-2022-23529 (critical) — already flagged in PRE analysis"
-        action: "Upgrade to >= 9.0.0 or switch to jose"
-      - package: "bcrypt"
-        concern: "Native compilation issues + potential timing attacks in older versions"
-        action: "Verify >= 5.1.0 or consider bcryptjs"
-      - package: "passport-*"
-        concern: "Multiple passport strategies may have independent CVEs"
-        action: "Audit each strategy version individually"
-    frontend:
-      - package: "next"
-        concern: "Next.js 14 may have server-action CVEs in older patches"
-        action: "Upgrade to latest 14.x patch"
-      - package: "react-native-*"
-        concern: "RN ecosystem packages frequently have transitive vuln chains"
-        action: "Focus on direct deps; suppress transitive-only where no fix exists"
-    infrastructure:
-      - package: "terraform modules"
-        concern: "Pinned module versions may reference vulnerable providers"
-        action: "Update provider versions in providers.tf"
+      step_4_spawn:
+        what: "Display benchmark-quality spawn command for user to copy-paste"
+        action: "Display command in markdown code block. STOP. Wait for user."
+        template: "See spawn_command_template below"
+        rules:
+          - "NEVER auto-execute — display command only"
+          - "NEVER do RECON work that belongs to swarm workers"
+          - "NEVER spawn Task tool agents when using hive-mind CLI"
+          - "After displaying command: STOP. Say nothing more. Wait."
 
-  integration_with_forward_path:
-    B5_EXT: "Run npm audit as part of extended backend test suite"
-    F2_EXT: "Run yarn audit as part of extended frontend test suite"
-    F5: "BLOCKED until critical/high CVEs resolved — app store review rejects known CVEs"
-    F6_EXT: "Production deployment MUST have clean audit or documented exceptions"
+      step_5_wait:
+        what: "User runs command in separate terminal"
+        action: "Wait for user to report completion"
+        rules:
+          - "Do NOT poll status"
+          - "Do NOT ask 'should I check?'"
+          - "Do NOT run any commands"
 
-  memory_store:
-    namespace: "austa-analysis"
-    keys:
-      - "sec-vuln-001-triage"
-      - "sec-vuln-001-critical-fixes"
-      - "sec-vuln-001-prevention"
+      step_6_verify:
+        what: "Verify exit criteria after user reports completion"
+        action: "Run grep/wc/find commands to validate deliverables"
+        example: |
+          grep -c "it(" src/backend/plan-service/test/claims.integration.spec.ts
+          wc -l docs/production-setup-guide.md
+          git diff --name-only
+
+      step_7_post_task:
+        what: "Record task completion in hooks system"
+        command: >
+          npx @claude-flow/cli@latest hooks post-task
+          --task-id "{swarm-id}"
+          --success true
+          --store-results true
+
+      step_8_neural_train:
+        what: "Train neural patterns on key deliverable files"
+        command: >
+          npx @claude-flow/cli@latest hooks post-edit
+          --file "{main-deliverable-file}"
+          --success true
+          --train-neural true
+        when: "Only if significant new code patterns were created"
+
+      step_9_store_complete:
+        what: "Store completion key in memory"
+        command: >
+          npx @claude-flow/cli@latest memory store
+          --key "{swarm-id}-complete"
+          --value "{summary of results, exit criteria scores}"
+          --namespace healthcare-platform
+
+  # ---------------------------------------------------------------------------
+  # POST-TASK ROUTINES (after each swarm — full checklist)
+  # ---------------------------------------------------------------------------
+  post_task_routines:
+    description: "Complete checklist after EVERY swarm completion"
+    steps:
+      - step: "Verify exit criteria (grep/wc/find for each EC)"
+      - step: "hooks post-task --task-id X --success true --store-results true"
+      - step: "hooks post-edit --file X --train-neural true (per key file)"
+      - step: "memory store --key X-complete --value 'results summary'"
+      - step: "memory store --key pattern-X --namespace patterns --value 'what worked'"
+      - step: "Dispatch relevant workers if applicable"
+        examples:
+          - "hooks worker dispatch --trigger audit  (after security changes)"
+          - "hooks worker dispatch --trigger testgaps  (after new features)"
+          - "hooks worker dispatch --trigger optimize  (after refactoring)"
+          - "hooks worker dispatch --trigger map  (after 5+ file changes)"
+
+  # ---------------------------------------------------------------------------
+  # SPAWN COMMAND TEMPLATE (benchmark quality — proven pattern)
+  # ---------------------------------------------------------------------------
+  spawn_command_template:
+    description: "Every hive-mind spawn MUST follow this structure"
+    command_flags: |
+      npx @claude-flow/cli@latest hive-mind spawn \
+        --workers {8} \
+        --topology hierarchical-mesh \
+        --consensus byzantine \
+        --claude \
+        --model-routing intelligent \
+        --namespace healthcare-platform \
+        --use-memory \
+        --use-patterns \
+        --use-vectors \
+        --use-learning \
+        --objective '{OBJECTIVE}'
+
+    objective_structure: |
+      SWARM {ID}: {Description} | {count} items | ~{N} files
+
+      MEMORY: {scope-key} (healthcare-platform namespace)
+      WORKSPACE: /Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7
+      DURATION: ~{N} min
+
+      PRIMARY DELIVERABLES:
+      1. {file-path} — {description}
+      2. {file-path} — {description}
+
+      ANTI-PATTERNS TO AVOID:
+      ❌ AP1 agent_introspection_loop (WEIGHT=0.95): Workers running hooks/status. CORRECT: read, edit, store >500 bytes.
+      ❌ AP2 missing_upstream_gate (WEIGHT=0.90): Verifier skipping key checks. CORRECT: check ALL keys >200 bytes.
+      ❌ AP3 queen_as_coder (WEIGHT=0.85): Queen editing files. CORRECT: delegate.
+      ❌ AP4 {domain-specific} (WEIGHT=X.XX): {description}. CORRECT: {correction}.
+      ❌ AP5 {domain-specific} (WEIGHT=X.XX): {description}. CORRECT: {correction}.
+
+      ━━━ EXISTING CODE (READ BEFORE WRITING) ━━━
+      [{service/module}] {path}:
+        Has: {what exists — real code references}
+        MISSING: {what needs to be created}
+
+      ━━━ TARGET PATTERN ━━━
+      [{pattern name}]:
+        {code example showing desired output structure}
+
+      ━━━ PHASE 1: RECON ({N} workers) ━━━
+      Worker-{N} (ROLE):
+        READ: {file list}
+        MAP: {what to discover}
+        STORE: memory store --key {key} --namespace healthcare-platform
+        EXIT GATE: memory retrieve --key {key} | wc -c → must be > 500
+
+      ━━━ PHASE 2: CODER ({N} workers, parallel) ━━━
+      Worker-{N} (ROLE):
+        READ: {inputs}
+        EXECUTE: {what to create/modify}
+        STORE: memory store --key {key} --namespace healthcare-platform
+        EXIT GATE: {grep/wc command} → must be >= {threshold}
+
+      ━━━ PHASE 3: VERIFIER ({N} workers) ━━━
+      Worker-{N} (VERIFIER):
+        REQUIRED_UPSTREAM_KEYS: {list all keys from phases 1-2}
+        V1: {check} → expect {value}
+        V2: {check} → expect {value}
+        STORE: memory store --key {key}-verify --namespace healthcare-platform
+        EXIT GATE: V1-VN all PASS
+
+      ━━━ EXIT CRITERIA ({N}) ━━━
+      EC1: {measurable check}
+      EC2: {measurable check}
+
+      ROLLBACK: {cleanup command}
+
+  # ---------------------------------------------------------------------------
+  # ANTI-DRIFT CONFIGURATION
+  # ---------------------------------------------------------------------------
+  anti_drift:
+    topology: hierarchical-mesh
+    max_agents: 15
+    strategy: specialized
+    consensus: byzantine
+    guidelines:
+      - "hierarchical: coordinator catches divergence"
+      - "max-agents 8 per swarm: smaller team = less drift"
+      - "specialized: clear roles, no overlap"
+      - "3-phase RECON→CODER→VERIFIER: prevents skipping validation"
+      - "EXIT GATE per worker: self-verification before declaring done"
+      - "UPSTREAM GATE on verifier: blocks synthesis without complete data"
+
+  # ---------------------------------------------------------------------------
+  # KEY CLI COMMANDS REFERENCE
+  # ---------------------------------------------------------------------------
+  cli_quick_ref:
+    memory:
+      store: "memory store --key {k} --value {v} --namespace healthcare-platform"
+      search: "memory search --query {q} --namespace healthcare-platform"
+      retrieve: "memory retrieve --key {k} --namespace healthcare-platform"
+      list: "memory list --namespace healthcare-platform --limit 10"
+    hooks:
+      pre_task: "hooks pre-task --task-id {id} --description {desc}"
+      post_task: "hooks post-task --task-id {id} --success true --store-results true"
+      post_edit: "hooks post-edit --file {f} --success true --train-neural true"
+      route: "hooks route --task {desc}"
+      worker: "hooks worker dispatch --trigger {map|audit|testgaps|optimize|deepdive}"
+    neural:
+      train: "neural train --modelType {moe|transformer|classifier} --epochs 10"
+      status: "neural status"
+      patterns: "neural patterns --list"
+    hive_mind:
+      init: "hive-mind init --topology hierarchical-mesh --max-agents 15 --consensus byzantine"
+      spawn: "hive-mind spawn --claude --workers 8 --topology hierarchical-mesh --consensus byzantine --model-routing intelligent --namespace healthcare-platform --use-memory --use-patterns --use-vectors --use-learning --objective '{...}'"
+      status: "hive-mind status"
+    note: "All commands prefixed with: npx @claude-flow/cli@latest"
+    eoverride_workaround: "Run from /tmp if root package.json EOVERRIDE conflict occurs"
+
+# =============================================================================
+# MEMORY KEYS REFERENCE
+# =============================================================================
+memory_keys:
+  namespace: "healthcare-platform"
+  total: "200+"
+  key_milestones:
+    - "forward-path-plan-v2"
+    - "b1-scope through b5-complete-final"
+    - "f1-scope through f6ext-complete"
+    - "p2-w1-* through p2-w4-*, p2-w5w6w7-complete, p2-phase-b-complete"
+    - "qg-w1-complete through qg-w5-*"
+    - "vuln-triage-complete, vuln-triage-repowide"
+    - "pdq-wave2-complete, pdq-wave3-complete"
+    - "doc-production-scope, todo-triage-scope, vuln-triage-web-scope"
+  pattern_keys:
+    - "pattern-vuln-triage (backend resolution strategy)"
+    - "pattern-vuln-web-resolution (web resolution strategy)"
+    - "pattern-doc-production (docs structure pattern)"
+    - "pattern-pdq-wave2-parallel (5-swarm parallel pattern)"
+    - "pattern-benchmark-prompt (spawn prompt structure)"
+    - "pattern-p2-phase-ab-parallel (screen-only → infra sequential)"

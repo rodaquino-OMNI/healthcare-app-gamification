@@ -1,0 +1,70 @@
+{
+  "orchestrator": {
+    "session": {
+      "persistSessions": true,
+      "dataDir": ".claude-flow/data",
+      "sessionRetentionMs": 3600000
+    },
+    "health": {
+      "checkInterval": 30000,
+      "historyLimit": 100,
+      "degradedThreshold": 1,
+      "unhealthyThreshold": 2
+    },
+    "lifecycle": {
+      "maxConcurrentAgents": 15,
+      "spawnTimeout": 30000,
+      "terminateTimeout": 10000,
+      "maxSpawnRetries": 3
+    }
+  },
+  "swarm": {
+    "topology": "hierarchical-mesh",
+    "maxAgents": 15,
+    "autoScale": {
+      "enabled": true,
+      "minAgents": 1,
+      "maxAgents": 15,
+      "scaleUpThreshold": 0.8,
+      "scaleDownThreshold": 0.3
+    },
+    "coordination": {
+      "consensusRequired": true,
+      "timeoutMs": 10000,
+      "retryPolicy": {
+        "maxRetries": 3,
+        "backoffMs": 500
+      }
+    },
+    "communication": {
+      "protocol": "events",
+      "batchSize": 10,
+      "flushIntervalMs": 100
+    }
+  },
+  "memory": {
+    "type": "hybrid",
+    "path": ".swarm/memory.db",
+    "maxSize": 1000000,
+    "agentdb": {
+      "dimensions": 384,
+      "indexType": "hnsw",
+      "efConstruction": 200,
+      "m": 16,
+      "quantization": "none"
+    }
+  },
+  "mcp": {
+    "name": "claude-flow",
+    "version": "3.0.0",
+    "transport": {
+      "type": "stdio"
+    },
+    "capabilities": {
+      "tools": true,
+      "resources": true,
+      "prompts": true,
+      "logging": true
+    }
+  }
+}

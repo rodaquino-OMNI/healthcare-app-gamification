@@ -9198,7 +9198,7 @@ agentdb@^2.0.0-alpha.2.20, agentdb@^2.0.0-alpha.3.3:
   optionalDependencies:
     better-sqlite3 "^11.8.1"
 
-agentic-flow@^2.0.7:
+agentic-flow@2.0.7:
   version "2.0.7"
   resolved "https://registry.yarnpkg.com/agentic-flow/-/agentic-flow-2.0.7.tgz#a0dcf31db6bbb2ab0318f6a71ab81de305fb4f75"
   integrity sha512-g2fFIi6mp4LdauRtwGfaa0ddIRDBcPSwa7TvqV4ttQgQwZR+l8LYH3v7Rg9QTKizGXROmbNCm0nKYRE4pmq5Kg==
