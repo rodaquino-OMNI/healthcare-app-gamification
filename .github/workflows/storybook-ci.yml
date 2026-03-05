@@ -17,8 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: '20'
           cache: 'yarn'
@@ -30,7 +30,7 @@ jobs:
         run: yarn build-storybook
         working-directory: src/web/design-system
       - name: Upload Storybook artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: storybook-build
           path: src/web/design-system/storybook-static
@@ -41,10 +41,10 @@ jobs:
     timeout-minutes: 10
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: '20'
           cache: 'yarn'
@@ -53,7 +53,7 @@ jobs:
         working-directory: src/web
         run: yarn install --frozen-lockfile
       - name: Publish to Chromatic
-        uses: chromaui/action@v10
+        uses: chromaui/action@v15
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           workingDir: src/web/design-system
