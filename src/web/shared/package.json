@@ -146,7 +146,7 @@
   },
   "resolutions": {
     "postcss": "8.4.31",
-    "webpack": "5.76.0",
+    "webpack": "5.104.1",
     "terser": "5.16.6",
     "node-fetch": "2.6.9",
     "shelljs": "8.4.31",
