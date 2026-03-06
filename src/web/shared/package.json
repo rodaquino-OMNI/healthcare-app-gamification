@@ -13,7 +13,7 @@
     "@tanstack/react-query": "^5.22.2",
     "@types/react-redux": "7.1.25",
     "apollo-upload-client": "17.0.0",
-    "axios": "1.7.8",
+    "axios": "1.13.6",
     "date-fns": "^3.3.1",
     "framer-motion": "^10.12.16",
     "graphql": "16.8.1",
@@ -136,7 +136,7 @@
       "@babel/plugin-proposal-export-namespace-from": "@babel/plugin-transform-export-namespace-from",
       "@babel/plugin-proposal-logical-assignment-operators": "@babel/plugin-transform-logical-assignment-operators"
     },
-    "axios": "1.7.8",
+    "axios": "1.13.6",
     "glob": "7.2.3",
     "@react-navigation/native": "7.1.8",
     "@react-navigation/stack": "7.3.1",
@@ -158,7 +158,7 @@
         "follow-redirects": "1.15.4"
       }
     },
-    "axios": "1.7.8",
+    "axios": "1.13.6",
     "follow-redirects": "1.15.4",
     "@babel/traverse": "7.23.2",
     "json5": "2.2.3",
