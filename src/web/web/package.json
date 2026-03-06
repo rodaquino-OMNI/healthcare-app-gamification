@@ -17,7 +17,7 @@
     "axios": "1.7.8",
     "date-fns": "^3.3.1",
     "i18next": "^23.8.2",
-    "next": "14.2.29",
+    "next": "15.5.10",
     "next-seo": "^6.4.0",
     "nookies": "2.5.2",
     "react": "18.2.0",
@@ -64,7 +64,7 @@
     "loader-utils": "2.0.4",
     "minimist": "1.2.8",
     "shelljs": "0.8.5",
-    "next": "14.2.29",
+    "next": "15.5.10",
     "eslint-config-next": "14.2.29",
     "@babel/plugin-proposal-class-properties": "@babel/plugin-transform-class-properties",
     "@babel/plugin-proposal-nullish-coalescing-operator": "@babel/plugin-transform-nullish-coalescing-operator",
@@ -132,7 +132,7 @@
     "node-fetch": "2.6.9",
     "shelljs": "0.8.5",
     "minimist": "1.2.8",
-    "next": "14.2.29",
+    "next": "15.5.10",
     "eslint-config-next": "14.2.29",
     "@sentry/nextjs": {
       "@sentry/core": {
