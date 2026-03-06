@@ -222,7 +222,7 @@
     "validator": "13.15.22",
     "body-parser": "1.20.3",
     "@remix-run/router": "1.23.2",
-    "rollup": "3.29.5"
+    "rollup": "3.30.0"
   },
   "resolutions": {
     "react": "18.2.0",
@@ -299,7 +299,7 @@
     "validator": "13.15.22",
     "body-parser": "1.20.3",
     "@remix-run/router": "1.23.2",
-    "rollup": "3.29.5"
+    "rollup": "3.30.0"
   },
   "engines": {
     "node": ">=18.0.0"
