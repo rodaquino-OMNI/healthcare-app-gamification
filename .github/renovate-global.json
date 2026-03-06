@@ -1,0 +1,5 @@
+{
+  "repositories": ["rodaquino-OMNI/healthcare-app-gamification"],
+  "onboarding": false,
+  "requireConfig": "optional"
+}
