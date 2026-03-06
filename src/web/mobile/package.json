@@ -73,7 +73,7 @@
     "@babel/preset-env": "7.22.9",
     "@babel/preset-react": "^7.22.5",
     "@babel/preset-typescript": "^7.22.5",
-    "@babel/runtime": "7.22.6",
+    "@babel/runtime": "7.26.10",
     "@babel/plugin-transform-class-properties": "7.23.3",
     "@babel/plugin-transform-nullish-coalescing-operator": "7.23.3",
     "@babel/plugin-transform-optional-chaining": "7.23.3",
