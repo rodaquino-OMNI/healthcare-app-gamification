@@ -159,7 +159,7 @@
       }
     },
     "axios": "1.7.8",
-    "follow-redirects": "1.15.4",
+    "follow-redirects": "1.15.6",
     "@babel/traverse": "7.23.2",
     "json5": "2.2.3",
     "word-wrap": "1.2.4",

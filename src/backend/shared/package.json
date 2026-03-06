@@ -125,23 +125,23 @@
     "qs": "6.11.2",
     "agora-rtc-sdk-ng": {
       "axios": "1.7.8",
-      "follow-redirects": "1.15.4",
+      "follow-redirects": "1.15.6",
       "@agora-js/media": {
         "axios": "1.7.8",
-        "follow-redirects": "1.15.4"
+        "follow-redirects": "1.15.6"
       },
       "@agora-js/report": {
         "axios": "1.7.8",
-        "follow-redirects": "1.15.4"
+        "follow-redirects": "1.15.6"
       },
       "@agora-js/shared": {
         "axios": "1.7.8",
-        "follow-redirects": "1.15.4"
+        "follow-redirects": "1.15.6"
       }
     },
     "agora-rtc-sdk": {
       "axios": "1.7.8",
-      "follow-redirects": "1.15.4"
+      "follow-redirects": "1.15.6"
     },
     "@babel/plugin-proposal-class-properties": "@babel/plugin-transform-class-properties",
     "@babel/plugin-proposal-nullish-coalescing-operator": "@babel/plugin-transform-nullish-coalescing-operator",
@@ -210,7 +210,7 @@
       "follow-redirects": "1.15.4"
     },
     "axios": "1.7.8",
-    "follow-redirects": "1.15.4",
+    "follow-redirects": "1.15.6",
     "@babel/traverse": "7.23.2",
     "semver": "7.5.4",
     "json5": "2.2.3",
