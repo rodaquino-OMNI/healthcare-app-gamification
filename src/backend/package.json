@@ -211,7 +211,7 @@
     "jws": "3.2.3",
     "@apollo/server": "4.13.0",
     "fast-xml-parser": "5.4.1",
-    "multer": "2.0.2",
+    "multer": "2.1.1",
     "fastify": "5.7.4",
     "@fastify/middie": "9.2.0",
     "babel-preset-fbjs": {
@@ -332,7 +332,7 @@
     "jws": "3.2.3",
     "@apollo/server": "4.13.0",
     "fast-xml-parser": "5.4.1",
-    "multer": "2.0.2",
+    "multer": "2.1.1",
     "fastify": "5.7.4",
     "@fastify/middie": "9.2.0"
   }
