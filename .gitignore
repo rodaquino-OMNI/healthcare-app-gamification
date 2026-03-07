@@ -116,3 +116,4 @@ src/web/.yarn/releases/
 
 # TypeScript build info
 *.tsbuildinfo
+src/web/design-system/storybook-static/
