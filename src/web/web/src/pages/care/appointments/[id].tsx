@@ -1,5 +1,3 @@
-# src/web/web/src/pages/care/appointments/[id].tsx
-```tsx
 import React from 'react';
 import { useRouter } from 'next/router'; // next/router 13.0+
 import { Appointment } from 'src/web/shared/types/care.types';

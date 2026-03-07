@@ -1,5 +1,3 @@
-# src/web/web/src/pages/health/metrics/[id].tsx
-```tsx
 import React from 'react';
 import { useRouter } from 'next/router'; // next/router v13.0.0
 import {
