@@ -1,3 +1,4 @@
+/* eslint-disable */
 declare module '@app/gamification/events/kafka/kafka.producer' {
     export class KafkaProducer {
         constructor();
@@ -5,6 +6,6 @@ declare module '@app/gamification/events/kafka/kafka.producer' {
         /**
          * Sends event to Kafka
          */
-        send(topic: string, message: any, key?: string): Promise<any>;
+        send(topic: string, message: unknown, key?: string): Promise<unknown>;
     }
 }

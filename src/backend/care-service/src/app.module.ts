@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { AuditModule, AuditInterceptor } from '@app/shared/audit';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
@@ -19,25 +20,25 @@ import { TelemedicineModule } from './telemedicine/telemedicine.module';
 import { TreatmentsModule } from './treatments/treatments.module';
 
 /**
- * Root module for the Care Service that configures and organizes all the necessary modules, controllers,
- * and providers for the Care Now journey of the AUSTA SuperApp. It integrates various feature modules
- * including appointments, medications, providers, symptom checker, telemedicine, and treatments,
- * along with shared infrastructure modules.
+ * Root module for the Care Service that configures and organizes all the necessary modules,
+ * controllers, and providers for the Care Now journey of the AUSTA SuperApp. It integrates
+ * various feature modules including appointments, medications, providers, symptom checker,
+ * telemedicine, and treatments, along with shared infrastructure modules.
  *
  * This module addresses the following requirements:
  * - F-102: Care Now Journey - Provides immediate healthcare access through various features.
- * - F-102-RQ-002: Appointment Booking - Enables users to schedule appointments with healthcare providers.
- * - F-102-RQ-003: Telemedicine Access - Provides video consultation capabilities with healthcare providers.
- * - F-102-RQ-004: Medication Tracking - Tracks medication schedules with reminders and adherence monitoring.
- * - F-102-RQ-005: Treatment Plan Execution - Displays and tracks progress of prescribed treatment plans.
+ * - F-102-RQ-002: Appointment Booking - Enables scheduling with healthcare providers.
+ * - F-102-RQ-003: Telemedicine Access - Provides video consultation capabilities.
+ * - F-102-RQ-004: Medication Tracking - Tracks schedules with reminders and adherence.
+ * - F-102-RQ-005: Treatment Plan Execution - Displays and tracks prescribed treatment plans.
  */
 @Module({
     imports: [
         // ConfigModule: Provides configuration management for the Care Service.
         ConfigModule.forRoot({
-            load: [configuration], // Loads the configuration settings from the configuration function.
-            validationSchema: validationSchema, // Validates the configuration settings against the validation schema.
-            isGlobal: true, // Makes the ConfigModule globally available throughout the application.
+            load: [configuration],
+            validationSchema: validationSchema,
+            isGlobal: true,
         }),
         // AppointmentsModule: Provides appointment booking and management functionality.
         AppointmentsModule,

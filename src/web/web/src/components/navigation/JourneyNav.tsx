@@ -1,12 +1,12 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { ALL_JOURNEYS } from 'src/web/shared/constants/journeys.ts';
-import { MOBILE_CARE_ROUTES } from 'src/web/shared/constants/routes.ts';
-import { Card } from 'src/web/design-system/src/components/Card/Card.tsx';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text.tsx';
-import { Icon } from 'src/web/design-system/src/primitives/Icon/Icon.tsx';
-import { useJourney } from 'src/web/web/src/hooks/useJourney.ts';
-import { useJourneyContext } from 'src/web/web/src/context/JourneyContext.tsx';
+import { ALL_JOURNEYS } from 'shared/constants/journeys';
+import { MOBILE_CARE_ROUTES } from 'shared/constants/routes';
+import { Card } from 'design-system/components/Card/Card';
+import { Text } from 'design-system/primitives/Text/Text';
+import { Icon } from 'design-system/primitives/Icon/Icon';
+import { useJourney } from '@/hooks/useJourney';
+import { useJourneyContext } from '@/context/JourneyContext';
 
 /**
  * A navigation component that displays the available journeys in the AUSTA SuperApp.

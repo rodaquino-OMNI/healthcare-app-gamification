@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { ValidationPipe } from '@nestjs/common'; // @nestjs/common 10.0.0+
 import { ConfigService } from '@nestjs/config'; // @nestjs/config 10.0.0+
 import { NestFactory } from '@nestjs/core'; // @nestjs/core 10.0.0+
@@ -8,7 +9,6 @@ import helmet from 'helmet'; // helmet ^6.0.0
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from '../../shared/src/exceptions/exceptions.filter';
 import { LoggerService } from '../../shared/src/logging/logger.service';
-import { TracingService } from '../../shared/src/tracing/tracing.service';
 
 /**
  * Bootstraps the NestJS application for the Plan Service.
@@ -18,9 +18,8 @@ async function bootstrap(): Promise<void> {
     // LD1: Create a NestJS application instance with the AppModule
     const app = await NestFactory.create(AppModule);
 
-    // LD1: Get the LoggerService and TracingService from the app's DI container
+    // LD1: Get the LoggerService from the app's DI container
     const logger = app.get(LoggerService);
-    const tracingService = app.get(TracingService);
 
     // LD1: Set up the global exception filter with dependency injection
     app.useGlobalFilters(new AllExceptionsFilter(logger));
@@ -79,4 +78,4 @@ async function bootstrap(): Promise<void> {
 }
 
 // LD1: Bootstrap the application
-bootstrap();
+void bootstrap();

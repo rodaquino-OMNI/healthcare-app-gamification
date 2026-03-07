@@ -1,17 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
-import { Service } from '@app/shared/interfaces/service.interface';
 import { KafkaService } from '@app/shared/kafka/kafka.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { TracingService } from '@app/shared/tracing/tracing.service';
-import { JourneyType as Journey } from '@app/shared/types/journey.types';
-import { formatDate } from '@app/shared/utils/date.util';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
-import { Configuration } from '../config/configuration';
-import { HealthGoal, GoalType, GoalStatus } from '../health/entities/health-goal.entity';
+import { HealthGoal, GoalStatus } from '../health/entities/health-goal.entity';
 import { HealthMetric } from '../health/entities/health-metric.entity';
 import { FhirService } from '../integrations/fhir/fhir.service';
 import { WearablesService } from '../integrations/wearables/wearables.service';

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 import { SYS_INTERNAL_SERVER_ERROR } from '@app/shared/constants/error-codes.constants';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 import { LoggerService } from '@app/shared/logging/logger.service';
@@ -93,7 +93,7 @@ export class GoogleFitAdapter implements WearableAdapter {
         } catch (error: any) {
             // Check for specific OAuth errors
             if (error.response && error.response.data) {
-                const { error: errorType, error_description } = error.response.data;
+                const { error: errorType, error_description: _error_description } = error.response.data;
 
                 if (errorType === 'invalid_grant') {
                     throw new AppException(

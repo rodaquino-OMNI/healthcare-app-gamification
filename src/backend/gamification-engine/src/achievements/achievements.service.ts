@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { FilterDto } from '@app/shared/dto/filter.dto';
 import { PaginatedResponse, PaginationDto, PaginationMeta } from '@app/shared/dto/pagination.dto';
@@ -44,7 +44,7 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
     async findOne(criteria: Partial<Achievement>): Promise<Achievement | null> {
         try {
             return await this.prisma.achievement.findFirst({ where: criteria });
-        } catch (error: unknown) {
+        } catch {
             throw new AppException('Failed to find achievement', ErrorType.TECHNICAL, 'GAME_002', { criteria });
         }
     }
@@ -67,11 +67,11 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
             const skip = (page - 1) * limit;
 
             // Build the where clause with filters
-            const where: any = {};
+            const where: Record<string, unknown> = {};
 
             // Apply journey filter if provided
             if (filter?.journey) {
-                where.journey = filter.journey;
+                where['journey'] = filter.journey;
             }
 
             // Apply where conditions if provided
@@ -80,7 +80,7 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
             }
 
             // Build orderBy clause
-            let orderBy: any = { title: 'asc' };
+            let orderBy: Record<string, string> = { title: 'asc' };
             if (filter?.orderBy) {
                 const entries = Object.entries(filter.orderBy);
                 if (entries.length > 0) {
@@ -108,6 +108,9 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
                 total: totalItems,
             };
         } catch (error: unknown) {
+            if (error instanceof AppException) {
+                throw error;
+            }
             throw new AppException('Failed to retrieve achievements', ErrorType.TECHNICAL, 'GAME_002', { filter });
         }
     }
@@ -188,7 +191,7 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
             return achievement;
         } catch (error: unknown) {
             if (error instanceof AppException) {
-                throw error as any;
+                throw error;
             }
 
             throw new AppException(`Failed to retrieve achievement with ID ${id}`, ErrorType.TECHNICAL, 'GAME_002', {
@@ -206,8 +209,13 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
      */
     async create(achievementData: CreateAchievementDto): Promise<Achievement> {
         try {
-            return await this.prisma.achievement.create({ data: achievementData as any });
+            return await this.prisma.achievement.create({
+                data: achievementData as Parameters<typeof this.prisma.achievement.create>[0]['data'],
+            });
         } catch (error: unknown) {
+            if (error instanceof AppException) {
+                throw error;
+            }
             throw new AppException('Failed to create achievement', ErrorType.TECHNICAL, 'GAME_003', {
                 achievementData,
             });
@@ -230,11 +238,11 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
             // Update the achievement
             return await this.prisma.achievement.update({
                 where: { id },
-                data: achievementData as any,
+                data: achievementData as Parameters<typeof this.prisma.achievement.update>[0]['data'],
             });
         } catch (error: unknown) {
             if (error instanceof AppException) {
-                throw error as any;
+                throw error;
             }
 
             throw new AppException(`Failed to update achievement with ID ${id}`, ErrorType.TECHNICAL, 'GAME_005', {
@@ -261,7 +269,7 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
             return true;
         } catch (error: unknown) {
             if (error instanceof AppException) {
-                throw error as any;
+                throw error;
             }
 
             throw new AppException(`Failed to delete achievement with ID ${id}`, ErrorType.TECHNICAL, 'GAME_006', {
@@ -278,11 +286,11 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
      */
     async count(filter?: AchievementFilterDto): Promise<number> {
         try {
-            const where: any = {};
+            const where: Record<string, unknown> = {};
 
             // Apply journey filter if provided
             if (filter?.journey) {
-                where.journey = filter.journey;
+                where['journey'] = filter.journey;
             }
 
             // Apply where conditions if provided
@@ -292,6 +300,9 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
 
             return await this.prisma.achievement.count({ where });
         } catch (error: unknown) {
+            if (error instanceof AppException) {
+                throw error;
+            }
             throw new AppException('Failed to count achievements', ErrorType.TECHNICAL, 'GAME_007', { filter });
         }
     }
@@ -370,7 +381,7 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
             return savedAchievement;
         } catch (error: unknown) {
             if (error instanceof AppException) {
-                throw error as any;
+                throw error;
             }
 
             throw new AppException(
@@ -443,6 +454,9 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
 
             return this.createPaginatedResponse(achievements, totalItems, page, limit);
         } catch (error: unknown) {
+            if (error instanceof AppException) {
+                throw error;
+            }
             throw new AppException('Failed to search achievements', ErrorType.TECHNICAL, 'GAME_008', { searchTerm });
         }
     }

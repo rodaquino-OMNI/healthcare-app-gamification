@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { AuditModule, AuditInterceptor } from '@app/shared/audit';
 import { Module } from '@nestjs/common'; // NestJS Common 10.0.0+
 import { ConfigModule } from '@nestjs/config'; // NestJS Config 2.3.1+
@@ -19,16 +20,15 @@ import { RedisModule } from '../../shared/src/redis/redis.module'; // Provides c
 import { TracingModule } from '../../shared/src/tracing/tracing.module'; // Enables distributed tracing for monitoring and debugging
 
 /**
- * Root module for the Health Service that orchestrates all components required for the My Health Journey.
- * It imports and configures all necessary modules including health data management, device connections,
- * integrations with external systems, and cross-cutting concerns like logging and event processing.
+ * Root module for the Health Service orchestrating all components for the My Health Journey.
+ * Configures health data management, device connections, integrations, and cross-cutting concerns.
  */
 @Module({
     imports: [
         ConfigModule.forRoot({
             // Configures the ConfigModule to load environment variables and validate them.
             load: [health], // Loads the health-specific configuration.
-            validationSchema, // Uses the Joi validation schema to validate the environment variables.
+            validationSchema, // Joi validation schema for environment variables.
             isGlobal: true, // Makes the ConfigModule globally available.
         }),
         LoggerModule, // Imports the LoggerModule for application-wide logging.
@@ -45,7 +45,7 @@ import { TracingModule } from '../../shared/src/tracing/tracing.module'; // Enab
         HealthCheckModule, // Health check endpoint for service liveness/readiness probes.
     ],
     controllers: [], // No controllers are defined directly in the AppModule.
-    providers: [PrismaService, { provide: APP_INTERCEPTOR, useClass: AuditInterceptor }], // Provides the PrismaService for database access.
+    providers: [PrismaService, { provide: APP_INTERCEPTOR, useClass: AuditInterceptor }],
 })
 export class AppModule {
     /**

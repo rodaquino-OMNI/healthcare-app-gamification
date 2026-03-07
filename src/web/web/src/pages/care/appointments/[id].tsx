@@ -1,10 +1,10 @@
 import React from 'react';
 import { useRouter } from 'next/router'; // next/router 13.0+
-import { Appointment } from 'src/web/shared/types/care.types';
-import { WEB_CARE_ROUTES } from 'src/web/shared/constants/routes.ts';
-import { AppointmentCard } from 'src/web/design-system/src/care/AppointmentCard/AppointmentCard.tsx';
-import { useAppointments } from 'src/web/web/src/hooks/useAppointments.ts';
-import { JourneyHeader } from 'src/web/web/src/components/shared/JourneyHeader.tsx';
+import { Appointment } from 'shared/types/care.types';
+import { WEB_CARE_ROUTES } from 'shared/constants/routes';
+import { AppointmentCard } from 'design-system/care/AppointmentCard/AppointmentCard';
+import { useAppointments } from '@/hooks/useAppointments';
+import { JourneyHeader } from '@/components/shared/JourneyHeader';
 
 /**
  * Renders the details of a specific appointment.

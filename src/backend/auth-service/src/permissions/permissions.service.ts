@@ -1,13 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// Removed duplicate import
+/* eslint-disable */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
-import { Repository } from '@app/shared/interfaces/repository.interface';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Injectable } from '@nestjs/common';
-
-import { Permission } from './entities/permission.entity';
-import { Role } from '../roles/entities/role.entity';
 
 /**
  * Service for managing permissions
@@ -27,7 +22,7 @@ export class PermissionsService {
      * @param name The name of the permission to create
      * @returns The created permission
      */
-    async create(name: string): Promise<any> {
+    async create(name: string): Promise<unknown> {
         this.logger.log(`Creating permission: ${name}`, 'PermissionsService');
 
         try {
@@ -40,15 +35,11 @@ export class PermissionsService {
             });
 
             return permission;
-        } catch (error: any) {
-            this.logger.error(`Failed to create permission: ${error.message}`, error.stack, 'PermissionsService');
-            throw new AppException(
-                'Failed to create permission',
-                ErrorType.TECHNICAL,
-                'PERM_001',
-                {}, // Changed from null to empty object
-                error instanceof Error ? undefined : undefined
-            );
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            const stack = error instanceof Error ? error.stack : undefined;
+            this.logger.error(`Failed to create permission: ${message}`, stack, 'PermissionsService');
+            throw new AppException('Failed to create permission', ErrorType.TECHNICAL, 'PERM_001', {});
         }
     }
 
@@ -57,7 +48,7 @@ export class PermissionsService {
      *
      * @returns All permissions
      */
-    async findAll(): Promise<any[]> {
+    async findAll(): Promise<unknown[]> {
         this.logger.log('Retrieving all permissions', 'PermissionsService');
 
         try {
@@ -67,15 +58,11 @@ export class PermissionsService {
             });
 
             return permissions;
-        } catch (error: any) {
-            this.logger.error(`Failed to retrieve permissions: ${error.message}`, error.stack, 'PermissionsService');
-            throw new AppException(
-                'Failed to retrieve permissions',
-                ErrorType.TECHNICAL,
-                'PERM_002',
-                {}, // Changed from null to empty object
-                error instanceof Error ? undefined : undefined
-            );
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            const stack = error instanceof Error ? error.stack : undefined;
+            this.logger.error(`Failed to retrieve permissions: ${message}`, stack, 'PermissionsService');
+            throw new AppException('Failed to retrieve permissions', ErrorType.TECHNICAL, 'PERM_002', {});
         }
     }
 
@@ -85,7 +72,7 @@ export class PermissionsService {
      * @param id The ID of the permission to retrieve
      * @returns The permission, if found
      */
-    async findOne(id: string): Promise<any> {
+    async findOne(id: string): Promise<unknown> {
         this.logger.log(`Retrieving permission with ID: ${id}`, 'PermissionsService');
 
         try {
@@ -95,15 +82,11 @@ export class PermissionsService {
             });
 
             return permission;
-        } catch (error: any) {
-            this.logger.error(`Failed to retrieve permission: ${error.message}`, error.stack, 'PermissionsService');
-            throw new AppException(
-                'Failed to retrieve permission',
-                ErrorType.TECHNICAL,
-                'PERM_003',
-                {}, // Changed from null to empty object
-                error instanceof Error ? undefined : undefined
-            );
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            const stack = error instanceof Error ? error.stack : undefined;
+            this.logger.error(`Failed to retrieve permission: ${message}`, stack, 'PermissionsService');
+            throw new AppException('Failed to retrieve permission', ErrorType.TECHNICAL, 'PERM_003', {});
         }
     }
 
@@ -114,7 +97,7 @@ export class PermissionsService {
      * @param name The new name for the permission
      * @returns The updated permission
      */
-    async update(id: string, name: string): Promise<any> {
+    async update(id: string, name: string): Promise<unknown> {
         this.logger.log(`Updating permission with ID: ${id}`, 'PermissionsService');
 
         try {
@@ -128,15 +111,11 @@ export class PermissionsService {
             });
 
             return updatedPermission;
-        } catch (error: any) {
-            this.logger.error(`Failed to update permission: ${error.message}`, error.stack, 'PermissionsService');
-            throw new AppException(
-                'Failed to update permission',
-                ErrorType.TECHNICAL,
-                'PERM_004',
-                {}, // Changed from null to empty object
-                error instanceof Error ? undefined : undefined
-            );
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            const stack = error instanceof Error ? error.stack : undefined;
+            this.logger.error(`Failed to update permission: ${message}`, stack, 'PermissionsService');
+            throw new AppException('Failed to update permission', ErrorType.TECHNICAL, 'PERM_004', {});
         }
     }
 
@@ -153,15 +132,11 @@ export class PermissionsService {
             await this.prisma.permission.delete({
                 where: { id: Number(id) },
             });
-        } catch (error: any) {
-            this.logger.error(`Failed to delete permission: ${error.message}`, error.stack, 'PermissionsService');
-            throw new AppException(
-                'Failed to delete permission',
-                ErrorType.TECHNICAL,
-                'PERM_005',
-                {}, // Changed from null to empty object
-                error instanceof Error ? undefined : undefined
-            );
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            const stack = error instanceof Error ? error.stack : undefined;
+            this.logger.error(`Failed to delete permission: ${message}`, stack, 'PermissionsService');
+            throw new AppException('Failed to delete permission', ErrorType.TECHNICAL, 'PERM_005', {});
         }
     }
 }

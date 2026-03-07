@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'; // React v18.0.0
-import { formatJourneyDate } from 'src/web/shared/utils/date.ts';
-import { LoadingIndicator } from 'src/web/web/src/components/shared/LoadingIndicator.tsx';
-import { Card, CardProps } from 'src/web/design-system/src/components/Card/Card.tsx';
-import { useAuth } from 'src/web/web/src/hooks/useAuth.ts';
-import { JOURNEY_CONFIG } from 'src/web/web/src/constants/journeys.ts';
-import { HealthMetric, Appointment, Claim } from 'src/web/shared/types/index.ts';
-import { getHealthMetrics } from 'src/web/web/src/api/index.ts';
+import { formatJourneyDate } from 'shared/utils/date';
+import { LoadingIndicator } from '@/components/shared/LoadingIndicator';
+import { Card, CardProps } from 'design-system/components/Card/Card';
+import { useAuth } from '@/hooks/useAuth';
+import { JOURNEY_CONFIG } from '@/constants/journeys';
+import { HealthMetric, Appointment, Claim } from 'shared/types/index';
+import { getHealthMetrics } from '@/api/index';
 
 /**
  * Represents a single recent activity item.

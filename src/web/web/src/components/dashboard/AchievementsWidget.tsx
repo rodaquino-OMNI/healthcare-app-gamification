@@ -1,13 +1,13 @@
 import React from 'react';
 import { useRouter } from 'next/router'; // latest
-import { useAuth } from 'src/web/web/src/hooks/useAuth.ts';
-import { useGameProfile } from 'src/web/web/src/hooks/useGamification.ts';
-import { Card, CardProps } from 'src/web/design-system/src/components/Card/Card.tsx';
-import { Button } from 'src/web/design-system/src/components/Button/Button.tsx';
-import { AchievementBadge } from 'src/web/design-system/src/gamification/AchievementBadge/AchievementBadge.tsx';
-import { ALL_JOURNEYS } from 'src/web/shared/constants/journeys.ts';
-import { GameProfile } from 'src/web/shared/types/gamification.types.ts';
-import { useJourney } from 'src/web/web/src/context/JourneyContext.tsx';
+import { useAuth } from '@/hooks/useAuth';
+import { useGameProfile } from '@/hooks/useGamification';
+import { Card, CardProps } from 'design-system/components/Card/Card';
+import { Button } from 'design-system/components/Button/Button';
+import { AchievementBadge } from 'design-system/gamification/AchievementBadge/AchievementBadge';
+import { ALL_JOURNEYS } from 'shared/constants/journeys';
+import { GameProfile } from 'shared/types/gamification.types';
+import { useJourney } from '@/context/JourneyContext';
 
 /**
  * Displays a list of recent achievements with a link to the full achievement gallery.

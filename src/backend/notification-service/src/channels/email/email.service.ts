@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 import { LoggerService } from '@app/shared/logging/logger.service';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 
@@ -63,10 +63,10 @@ export class EmailService {
             await this.transporter.sendMail(mailOptions);
 
             this.logger.log(`Email sent successfully to ${to}`, 'EmailService');
-        } catch (error) {
+        } catch (error: unknown) {
             this.logger.error(
-                `Failed to send email to ${to}: ${(error as any).message}`,
-                (error as any).stack,
+                `Failed to send email to ${to}: ${error instanceof Error ? error.message : String(error)}`,
+                error instanceof Error ? error.stack : undefined,
                 'EmailService'
             );
 

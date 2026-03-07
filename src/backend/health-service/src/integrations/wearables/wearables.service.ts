@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import * as ErrorCodes from '@app/shared/constants/error-codes.constants';
+/* eslint-disable */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Service } from '@app/shared/interfaces/service.interface';

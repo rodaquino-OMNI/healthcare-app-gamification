@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text';
-import { Box } from 'src/web/design-system/src/primitives/Box/Box';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { spacing } from 'src/web/design-system/src/tokens/spacing';
+import { Text } from 'design-system/primitives/Text/Text';
+import { Box } from 'design-system/primitives/Box/Box';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
 
 interface DiaryEntry {
     date: string;

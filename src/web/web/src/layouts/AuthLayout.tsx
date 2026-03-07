@@ -1,6 +1,6 @@
 import React from 'react';
-import Box from 'src/web/design-system/src/primitives/Box/Box';
-import Text from 'src/web/design-system/src/primitives/Text/Text';
+import Box from 'design-system/primitives/Box/Box';
+import Text from 'design-system/primitives/Text/Text';
 
 /**
  * Defines the props interface for the AuthLayout component

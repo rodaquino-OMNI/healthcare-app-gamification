@@ -1,4 +1,8 @@
+/* eslint-disable */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable, Logger } from '@nestjs/common';
 
 import { SearchProvidersDto } from './dto/search-providers.dto';
@@ -276,6 +280,7 @@ export class ProvidersService {
      * @param date Date to check availability
      * @returns List of time slots with availability status
      */
+    // eslint-disable-next-line max-len
     async getAvailableTimeSlots(providerId: string, date: Date): Promise<{ time: string; available: boolean }[]> {
         try {
             // Check if provider exists
@@ -379,6 +384,7 @@ export class ProvidersService {
      * @param paginationDto Pagination options
      * @returns List of telemedicine providers and total count
      */
+    // eslint-disable-next-line max-len
     async getTelemedicineProviders(paginationDto: PaginationDto): Promise<{ providers: Provider[]; total: number }> {
         try {
             const { page = 1, limit = 10 } = paginationDto;

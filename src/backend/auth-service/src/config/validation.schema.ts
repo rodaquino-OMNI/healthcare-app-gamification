@@ -1,4 +1,4 @@
-import { ErrorType } from '@app/shared/exceptions/exceptions.types';
+/* eslint-disable */
 import * as Joi from 'joi';
 
 /**

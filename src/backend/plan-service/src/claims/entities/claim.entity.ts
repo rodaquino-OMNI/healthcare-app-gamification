@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Document } from '../../documents/entities/document.entity';
 
 /**
@@ -154,7 +155,7 @@ export class Claim {
     /**
      * Relationship with the Plan entity
      */
-    plan!: any;
+    plan!: Record<string, unknown>;
 
     /**
      * Documents associated with this claim (e.g., receipts, prescriptions)

@@ -1,19 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form'; // react-hook-form 7.0+
 import { yupResolver } from '@hookform/resolvers/yup'; // @hookform/resolvers 3.0+
-import { gql, useMutation } from '@apollo/client'; // @apollo/client 3.7.17
-import {
-    HealthMetricType,
-    //HealthMetric, //Unused import
-} from 'src/web/shared/types/health.types';
-import Input from 'src/web/design-system/src/components/Input/Input';
-import { Select } from 'src/web/design-system/src/components/Select/Select';
-import { useAuth } from 'src/web/web/src/hooks/useAuth.ts';
-import { formatHealthMetric } from 'src/web/shared/utils/format.ts';
-import { JOURNEY_NAMES } from 'src/web/shared/constants/index.ts';
-import { claimValidationSchema } from 'src/web/shared/utils/validation.ts';
-import { CREATE_HEALTH_METRIC } from 'src/web/shared/graphql/mutations/health.mutations.ts';
-import { GET_HEALTH_METRICS } from 'src/web/shared/graphql/queries/health.queries.ts';
+import { useMutation } from '@apollo/client'; // @apollo/client 3.7.17
+import { HealthMetricType } from 'shared/types/health.types';
+import Input from 'design-system/components/Input/Input';
+import { Select } from 'design-system/components/Select/Select';
+import { useAuth } from '@/hooks/useAuth';
+import { claimValidationSchema } from 'shared/utils/validation';
+import { CREATE_HEALTH_METRIC } from 'shared/graphql/mutations/health.mutations';
+import { GET_HEALTH_METRICS } from 'shared/graphql/queries/health.queries';
 
 /**
  * A form component for creating and updating health metrics.
@@ -21,7 +16,6 @@ import { GET_HEALTH_METRICS } from 'src/web/shared/graphql/queries/health.querie
 export const HealthMetricForm: React.FC = () => {
     // Initialize the form state using React Hook Form and Yup for validation.
     const {
-        control,
         register,
         handleSubmit,
         formState: { errors },
@@ -34,7 +28,7 @@ export const HealthMetricForm: React.FC = () => {
     const userId = session?.user?.id;
 
     // Define the onSubmit function to handle form submission.
-    const onSubmit = async (data: any) => {
+    const onSubmit = async (data: Record<string, unknown>) => {
         if (!userId) {
             console.error('User ID is not available.');
             return;

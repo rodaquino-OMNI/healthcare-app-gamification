@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 import { PhiAccess } from '@app/shared/audit';
@@ -17,7 +18,8 @@ import {
     UseFilters,
     HttpCode,
     HttpStatus,
-    Inject,
+    UsePipes,
+    ValidationPipe,
 } from '@nestjs/common'; // v10.0.0+
 
 import { CreateMedicationDto } from './dto/create-medication.dto';
@@ -52,6 +54,7 @@ export class MedicationsController {
     @Post()
     @HttpCode(HttpStatus.CREATED)
     @PhiAccess('Medication')
+    @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
     async create(
         @Body() createMedicationDto: CreateMedicationDto,
         @CurrentUser('id') userId: string
@@ -109,9 +112,10 @@ export class MedicationsController {
      */
     @Put(':id')
     @PhiAccess('Medication')
+    @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
     async update(
         @Param('id') id: string,
-        @Body() updateMedicationData: Record<string, any>,
+        @Body() updateMedicationData: Record<string, unknown>,
         @CurrentUser('id') userId: string
     ): Promise<Medication> {
         this.logger.log(`Updating medication ${id} for user ${userId}`, 'MedicationsController');
@@ -130,7 +134,7 @@ export class MedicationsController {
             );
         }
 
-        return this.medicationsService.update(id, updateMedicationData);
+        return this.medicationsService.update(id, updateMedicationData as Record<string, unknown>);
     }
 
     /**

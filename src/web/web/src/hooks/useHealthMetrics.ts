@@ -1,9 +1,9 @@
 import { useQuery } from '@apollo/client'; // 3.7.17
 import { useContext } from 'react';
-import { HealthMetric } from 'src/web/shared/types/health.types';
-import { GET_HEALTH_METRICS } from 'src/web/shared/graphql/queries/health.queries';
-import { useAuth } from 'src/web/web/src/context/AuthContext';
-import { apiConfig } from 'src/web/shared/config/apiConfig';
+import { HealthMetric } from 'shared/types/health.types';
+import { GET_HEALTH_METRICS } from 'shared/graphql/queries/health.queries';
+import { AuthContext } from '@/context/AuthContext';
+import { apiConfig } from 'shared/config/apiConfig';
 
 /**
  * A React hook that fetches and manages health metrics data for the My Health journey.

@@ -1,12 +1,12 @@
 import React, { useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
-import { Button } from 'src/web/design-system/src/components/Button/Button';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text';
-import { Box } from 'src/web/design-system/src/primitives/Box/Box';
-import { Stepper } from 'src/web/design-system/src/components/Stepper/Stepper';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { spacing } from 'src/web/design-system/src/tokens/spacing';
-import { WEB_HEALTH_ROUTES } from 'src/web/shared/constants/routes';
+import { Button } from 'design-system/components/Button/Button';
+import { Text } from 'design-system/primitives/Text/Text';
+import { Box } from 'design-system/primitives/Box/Box';
+import { Stepper } from 'design-system/components/Stepper/Stepper';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 import StepIntroduction from './steps/step-introduction';
 import StepPersonalInfo from './steps/step-personal-info';
 import StepHeightWeight from './steps/step-height-weight';
@@ -65,10 +65,10 @@ const TOTAL_STEPS = STEPS.length;
 const HealthAssessmentPage: React.FC = () => {
     const router = useRouter();
     const [activeStep, setActiveStep] = useState(0);
-    const [formData, setFormData] = useState<Record<string, any>>({});
+    const [formData, setFormData] = useState<Record<string, unknown>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleUpdate = useCallback((field: string, value: any) => {
+    const handleUpdate = useCallback((field: string, value: unknown) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     }, []);
 

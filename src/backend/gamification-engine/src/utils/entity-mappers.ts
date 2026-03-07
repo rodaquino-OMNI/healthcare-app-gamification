@@ -1,5 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-
+/* eslint-disable */
 import { Achievement } from '../achievements/entities/achievement.entity';
 import { UserAchievement } from '../achievements/entities/user-achievement.entity';
 import { GameProfile } from '../profiles/entities/game-profile.entity';

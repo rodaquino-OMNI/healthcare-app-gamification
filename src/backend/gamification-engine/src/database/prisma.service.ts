@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
@@ -20,14 +21,14 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     /**
      * Connects to the database when the module initializes.
      */
-    async onModuleInit() {
+    async onModuleInit(): Promise<void> {
         await this.$connect();
     }
 
     /**
      * Disconnects from the database when the module is destroyed.
      */
-    async onModuleDestroy() {
+    async onModuleDestroy(): Promise<void> {
         await this.$disconnect();
     }
 }

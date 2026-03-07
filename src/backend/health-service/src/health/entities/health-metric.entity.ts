@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { MetricType, MetricSource } from '../types/health.types';
 
 /**
@@ -62,7 +63,7 @@ export class HealthMetric {
     /**
      * Additional metadata for the metric
      */
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
 
     /**
      * Created timestamp

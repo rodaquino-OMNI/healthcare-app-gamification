@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 
-jest.mock('src/web/web/src/hooks/useClaims', () => ({
+jest.mock('@/hooks/useClaims', () => ({
     useClaims: () => ({
         claims: [
             {
@@ -28,14 +28,14 @@ jest.mock('src/web/web/src/hooks/useClaims', () => ({
     }),
 }));
 
-jest.mock('src/web/web/src/hooks/useJourney', () => ({
+jest.mock('@/hooks/useJourney', () => ({
     useJourney: () => ({
         journey: 'plan',
         t: (key: string) => key,
     }),
 }));
 
-jest.mock('src/web/design-system/src/plan/ClaimCard', () => ({
+jest.mock('design-system/plan/ClaimCard', () => ({
     ClaimCard: ({ claim, onViewDetails }: any) => (
         <div data-testid="claim-card" data-status={claim.status}>
             <span>{claim.type}</span>
@@ -44,7 +44,7 @@ jest.mock('src/web/design-system/src/plan/ClaimCard', () => ({
     ),
 }));
 
-jest.mock('@web/design-system/src/tokens', () => ({
+jest.mock('design-system/tokens', () => ({
     colors: {
         journeys: { plan: { primary: '#7c4dff', text: '#2d1b69' } },
         semantic: { error: '#ef4444' },

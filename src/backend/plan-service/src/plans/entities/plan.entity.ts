@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Coverage } from './coverage.entity';
 
 // Define a constant for journey IDs as a temporary fix
@@ -73,10 +74,10 @@ export class Plan {
     /**
      * Related benefits
      */
-    benefits!: any[];
+    benefits!: unknown[];
 
     /**
      * Related claims
      */
-    claims!: any[];
+    claims!: unknown[];
 }

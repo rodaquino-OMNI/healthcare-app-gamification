@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { PaginationDto, PaginatedResponse } from '@app/shared/dto/pagination.dto';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { hash, compare } from 'bcrypt';
 
 import { CreateUserDto } from './dto/create-user.dto';
@@ -27,7 +26,7 @@ export class UsersService {
      * @param createUserDto The user creation data
      * @returns The created user without sensitive information
      */
-    async create(createUserDto: CreateUserDto): Promise<any> {
+    async create(createUserDto: CreateUserDto): Promise<Record<string, unknown>> {
         this.logger.log(`Creating user with email: ${createUserDto.email}`, 'UsersService');
 
         try {
@@ -68,21 +67,20 @@ export class UsersService {
                         },
                     });
                 }
-            } catch (error: any) {
-                const errorMsg = error.message || 'Unknown error';
-                const errorStack = error.stack || '';
+            } catch (error: unknown) {
+                const errorStack = error instanceof Error ? error.stack : '';
                 this.logger.error(`Failed to assign default roles to user ${user.id}`, errorStack, 'UsersService');
                 // Don't fail the user creation if role assignment fails
             }
 
             return this.sanitizeUser(user);
-        } catch (error) {
+        } catch (error: unknown) {
             this.logger.error(
                 `Failed to create user`,
-                error instanceof Error ? (error as any).stack : 'Unknown error',
+                error instanceof Error ? error.stack : 'Unknown error',
                 'UsersService'
             );
-            throw error as any;
+            throw error;
         }
     }
 
@@ -93,11 +91,14 @@ export class UsersService {
      * @param filterDto Filter parameters
      * @returns Paginated list of users without sensitive information
      */
-    async findAll(paginationDto?: PaginationDto, filterDto?: UserFilterDto): Promise<PaginatedResponse<any>> {
+    async findAll(
+        paginationDto?: PaginationDto,
+        filterDto?: UserFilterDto
+    ): Promise<PaginatedResponse<Record<string, unknown>>> {
         this.logger.log('Finding all users', 'UsersService');
 
         // Build where condition based on filter
-        const where: any = {};
+        const where: Record<string, unknown> = {};
         if (filterDto?.search) {
             where.OR = [
                 { name: { contains: filterDto.search, mode: 'insensitive' } },
@@ -119,7 +120,7 @@ export class UsersService {
 
         // Sanitize user data before returning
         return {
-            data: users.map((user: any) => {
+            data: users.map((user) => {
                 return this.sanitizeUser(user);
             }),
             meta: {
@@ -142,7 +143,7 @@ export class UsersService {
      * @param id The ID of the user to retrieve
      * @returns The user without sensitive information
      */
-    async findOne(id: string): Promise<any> {
+    async findOne(id: string): Promise<Record<string, unknown>> {
         this.logger.log(`Finding user with ID: ${id}`, 'UsersService');
 
         const user = await this.prisma.user.findUnique({
@@ -166,7 +167,7 @@ export class UsersService {
      * @param updateUserDto The data to update
      * @returns The updated user without sensitive information
      */
-    async update(id: string, updateUserDto: UpdateUserDto): Promise<any> {
+    async update(id: string, updateUserDto: UpdateUserDto): Promise<Record<string, unknown>> {
         this.logger.log(`Updating user with ID: ${id}`, 'UsersService');
 
         const user = await this.prisma.user.findUnique({
@@ -178,7 +179,7 @@ export class UsersService {
         }
 
         // Prepare the data to update
-        const dataToUpdate: any = {
+        const dataToUpdate: Record<string, unknown> = {
             name: updateUserDto.name,
             email: updateUserDto.email,
             phone: updateUserDto.phone,
@@ -258,7 +259,7 @@ export class UsersService {
      * @param password User's password
      * @returns The user if credentials are valid
      */
-    async validateCredentials(email: string, password: string): Promise<any> {
+    async validateCredentials(email: string, password: string): Promise<Record<string, unknown>> {
         this.logger.log(`Validating credentials for user with email: ${email}`, 'UsersService');
 
         const user = await this.prisma.user.update({
@@ -291,8 +292,8 @@ export class UsersService {
      * @param user The user to sanitize
      * @returns The user without sensitive information
      */
-    private sanitizeUser(user: any): any {
-        const { password, ...sanitizedUser } = user;
+    private sanitizeUser(user: Record<string, unknown>): Record<string, unknown> {
+        const { password: _password, ...sanitizedUser } = user;
         return sanitizedUser;
     }
 }

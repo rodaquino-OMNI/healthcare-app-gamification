@@ -4,7 +4,7 @@
  */
 
 // Re-export date utility functions
-export { formatRelativeDate, getAge, isValidDate } from 'src/web/shared/utils/date';
+export { formatRelativeDate, getAge, isValidDate } from 'shared/utils/date';
 
 // Re-export formatting utility functions
 export {
@@ -17,10 +17,10 @@ export {
     truncateText,
     formatPhoneNumber,
     formatCPF,
-} from 'src/web/shared/utils/format';
+} from 'shared/utils/format';
 
 // Re-export validation schemas
-export { claimValidationSchema, userValidationSchema } from 'src/web/shared/utils/validation';
+export { claimValidationSchema, userValidationSchema } from 'shared/utils/validation';
 
 // Re-export shared constants
 export {
@@ -40,7 +40,7 @@ export {
     MOBILE_CARE_ROUTES,
     MOBILE_PLAN_ROUTES,
     getWebRouteWithParams,
-} from 'src/web/shared/constants/index';
+} from 'shared/constants/index';
 
 // Re-export SEO utility function
-export { generateSeoMetadata } from 'src/web/web/src/utils/seo';
+export { generateSeoMetadata } from '@/utils/seo';

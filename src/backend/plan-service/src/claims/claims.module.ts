@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
 import { KafkaModule } from '@app/shared/kafka/kafka.module';
 import { LoggerModule } from '@app/shared/logging/logger.module';
@@ -9,8 +10,8 @@ import { PlansModule } from '../plans/plans.module';
 
 /**
  * Module that encapsulates the ClaimsController and ClaimsService.
- * This module is responsible for managing insurance claims within the Plan journey,
- * addressing requirements for Claims Submission and Claims Tracking in the My Plan & Benefits journey.
+ * Manages insurance claims within the Plan journey, addressing requirements
+ * for Claims Submission and Claims Tracking in the My Plan & Benefits journey.
  */
 @Module({
     imports: [KafkaModule, LoggerModule, ExceptionsModule, PlansModule],

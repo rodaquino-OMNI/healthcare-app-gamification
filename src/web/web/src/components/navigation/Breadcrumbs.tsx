@@ -1,12 +1,12 @@
 import React from 'react';
 import { useRouter } from 'next/router'; // next/router 13.0+
 import Link from 'next/link'; // next/link 13.0+
-import { WEB_HEALTH_ROUTES, WEB_CARE_ROUTES, WEB_PLAN_ROUTES } from 'src/web/shared/constants/routes.ts';
-import { Journey } from 'src/web/shared/types/index.ts';
-import { useJourney } from 'src/web/web/src/hooks/useJourney.ts';
-import JourneyNav from 'src/web/web/src/components/navigation/JourneyNav.tsx';
-import Box from 'src/web/design-system/src/primitives/Box/Box.tsx';
-import { i18n } from 'src/web/web/src/i18n/index.ts';
+import { WEB_HEALTH_ROUTES, WEB_CARE_ROUTES, WEB_PLAN_ROUTES } from 'shared/constants/routes';
+import { Journey } from 'shared/types/index';
+import { useJourney } from '@/hooks/useJourney';
+import JourneyNav from '@/components/navigation/JourneyNav';
+import Box from 'design-system/primitives/Box/Box';
+import { i18n } from '@/i18n/index';
 
 interface BreadcrumbsProps {}
 

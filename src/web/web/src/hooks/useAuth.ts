@@ -2,10 +2,10 @@ import { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/navigation'; // next/navigation 13.0+
 import axios from 'axios'; // axios 1.4+
 
-import { AuthSession } from 'src/web/shared/types/auth.types';
-import { API_BASE_URL } from 'src/web/shared/constants/api';
-import { WEB_AUTH_ROUTES } from 'src/web/shared/constants/routes';
-import { AuthContext } from '../contexts/AuthContext';
+import { AuthSession } from 'shared/types/auth.types';
+import { API_BASE_URL } from 'shared/constants/api';
+import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
+import { AuthContext } from '../context/AuthContext';
 
 /**
  * Hook that provides authentication-related functionality
@@ -36,8 +36,10 @@ export const useAuth = () => {
             // Navigate to home page after successful login
             router.push('/');
             return session;
-        } catch (err: any) {
-            setError(err.response?.data?.message || 'Login failed');
+        } catch (err: unknown) {
+            setError(
+                (err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Login failed'
+            );
             throw err;
         } finally {
             setLoading(false);
@@ -59,8 +61,11 @@ export const useAuth = () => {
             // Navigate to login page after successful registration
             router.push(WEB_AUTH_ROUTES.LOGIN);
             return response.data;
-        } catch (err: any) {
-            setError(err.response?.data?.message || 'Registration failed');
+        } catch (err: unknown) {
+            setError(
+                (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+                    'Registration failed'
+            );
             throw err;
         } finally {
             setLoading(false);

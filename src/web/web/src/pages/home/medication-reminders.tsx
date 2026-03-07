@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { typography } from 'src/web/design-system/src/tokens/typography';
-import { spacing } from 'src/web/design-system/src/tokens/spacing';
-import { borderRadius } from 'src/web/design-system/src/tokens/borderRadius';
+import { colors } from 'design-system/tokens/colors';
+import { typography } from 'design-system/tokens/typography';
+import { spacing } from 'design-system/tokens/spacing';
+import { borderRadius } from 'design-system/tokens/borderRadius';
 
 interface MedicationReminder {
     id: string;

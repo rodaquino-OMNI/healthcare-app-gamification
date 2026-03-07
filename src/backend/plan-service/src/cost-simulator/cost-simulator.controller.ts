@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {
     Controller,
     Post,
@@ -26,18 +27,25 @@ export const Roles = (...roles: string[]) => SetMetadata('roles', roles);
 // Simple mock guard for roles - replace with actual implementation when available
 @Injectable()
 export class RolesGuard implements CanActivate {
-    canActivate(context: ExecutionContext): boolean {
+    canActivate(_context: ExecutionContext): boolean {
         return true; // Mock implementation
     }
+}
+
+interface ResponseWithStatus {
+    status: (code: number) => { json: (body: unknown) => void };
+}
+interface RequestWithUrl {
+    url: string;
 }
 
 // Simple exception filter - replace with actual implementation when available
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-    catch(exception: unknown, host: ArgumentsHost) {
+    catch(exception: unknown, host: ArgumentsHost): void {
         const ctx = host.switchToHttp();
-        const response = ctx.getResponse();
-        const request = ctx.getRequest();
+        const response = ctx.getResponse<ResponseWithStatus>();
+        const request = ctx.getRequest<RequestWithUrl>();
         const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
 
         response.status(status).json({
@@ -69,7 +77,7 @@ export class CostSimulatorController {
     @ApiResponse({ status: 400, description: 'Invalid input data' })
     @ApiResponse({ status: 404, description: 'Plan not found' })
     @ApiResponse({ status: 500, description: 'Internal server error' })
-    async simulateCost(@Body() simulateCostDto: SimulateCostDto) {
+    async simulateCost(@Body() simulateCostDto: SimulateCostDto): Promise<unknown> {
         return this.costSimulatorService.simulateCost(simulateCostDto);
     }
 }

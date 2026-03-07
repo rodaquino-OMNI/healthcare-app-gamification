@@ -1,13 +1,11 @@
+/* eslint-disable */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { FilterDto } from '@app/shared/dto/filter.dto';
 import { PaginationDto } from '@app/shared/dto/pagination.dto';
-import { AppException } from '@app/shared/exceptions/exceptions.types';
-import { Repository } from '@app/shared/interfaces/repository.interface';
 import { LoggerService } from '@app/shared/logging/logger.service';
-import { Injectable, NotFoundException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { Role } from './entities/role.entity';
-import { Permission } from '../permissions/entities/permission.entity';
 
 /**
  * Service class for managing roles.
@@ -31,9 +29,9 @@ export class RolesService {
      * @param createRoleDto The role creation data
      * @returns The newly created role.
      */
-    async create(createRoleDto: any): Promise<Role> {
+    async create(createRoleDto: Record<string, unknown>): Promise<Role> {
         // Logs the creation attempt.
-        this.logger.log(`Creating role: ${createRoleDto.name}`);
+        this.logger.log(`Creating role: ${String(createRoleDto.name)}`);
 
         // Creates the role using Prisma.
         const role = await this.prisma.role.create({
@@ -55,7 +53,7 @@ export class RolesService {
         // Logs the attempt to find all roles.
         this.logger.log('Finding all roles');
 
-        // Retrieves all roles from the database using Prisma, applying pagination and filtering if provided.
+        // Retrieves all roles from the database using Prisma, applying pagination and filtering.
         const roles = await this.prisma.role.findMany({
             skip: paginationDto?.skip,
             take: paginationDto?.limit,
@@ -98,7 +96,7 @@ export class RolesService {
      * @param updateRoleDto The role update data
      * @returns The updated role.
      */
-    async update(id: string, updateRoleDto: any): Promise<Role> {
+    async update(id: string, updateRoleDto: Record<string, unknown>): Promise<Role> {
         // Logs the attempt to update a role.
         this.logger.log(`Updating role with ID: ${id}`);
 

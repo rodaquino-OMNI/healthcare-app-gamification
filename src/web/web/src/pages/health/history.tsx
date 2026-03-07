@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { MedicalEvent } from 'src/web/shared/types/health.types';
-import { WEB_HEALTH_ROUTES } from 'src/web/shared/constants/routes';
-import { formatRelativeDate } from 'src/web/shared/utils/date';
-import { truncateText } from 'src/web/shared/utils/format';
-import { GET_MEDICAL_HISTORY } from 'src/web/shared/graphql/queries/health.queries';
-import { Card } from 'src/web/design-system/src/components/Card/Card';
-import HealthLayout from 'src/web/web/src/layouts/HealthLayout';
+import { MedicalEvent } from 'shared/types/health.types';
+import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
+import { formatRelativeDate } from 'shared/utils/date';
+import { truncateText } from 'shared/utils/format';
+import { GET_MEDICAL_HISTORY } from 'shared/graphql/queries/health.queries';
+import { Card } from 'design-system/components/Card/Card';
+import HealthLayout from '@/layouts/HealthLayout';
 import styled from 'styled-components';
-import { useAuth } from 'src/web/web/src/hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 
 // Styled components for the Medical History Timeline page
 const PageTitle = styled.h1`

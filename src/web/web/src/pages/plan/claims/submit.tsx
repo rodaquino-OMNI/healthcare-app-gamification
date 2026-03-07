@@ -2,16 +2,16 @@ import React, { useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { ClaimType } from 'src/web/shared/types/plan.types';
-import { claimValidationSchema } from 'src/web/shared/utils/validation';
-import { useClaims } from 'src/web/web/src/hooks/useClaims';
-import { useJourneyContext } from 'src/web/web/src/context/JourneyContext';
-import { MOBILE_PLAN_ROUTES } from 'src/web/shared/constants/routes';
-import { FileUploader } from 'src/web/web/src/components/shared/FileUploader';
-import { Button } from 'src/web/design-system/src/components/Button/Button';
-import Input from 'src/web/design-system/src/components/Input/Input';
-import { Select } from 'src/web/design-system/src/components/Select/Select';
-import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { ClaimType } from 'shared/types/plan.types';
+import { claimValidationSchema } from 'shared/utils/validation';
+import { useClaims } from '@/hooks/useClaims';
+import { useJourneyContext } from '@/context/JourneyContext';
+import { MOBILE_PLAN_ROUTES } from 'shared/constants/routes';
+import { FileUploader } from '@/components/shared/FileUploader';
+import { Button } from 'design-system/components/Button/Button';
+import Input from 'design-system/components/Input/Input';
+import { Select } from 'design-system/components/Select/Select';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 
 const { plan } = colors.journeys;
 
@@ -51,7 +51,7 @@ export const ClaimForm: React.FC = () => {
         { label: 'Outro', value: 'other' },
     ];
 
-    const onSubmit = async (data: any) => {
+    const onSubmit = async (data: Record<string, unknown>) => {
         try {
             await submitClaim({
                 planId: 'plan-001',

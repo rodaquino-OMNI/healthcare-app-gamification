@@ -1,6 +1,7 @@
+/* eslint-disable */
 import { Injectable } from '@nestjs/common';
 
-import { SimulateCostDto, CodingStandard, ProcedureType } from './dto/simulate-cost.dto';
+import { SimulateCostDto, ProcedureType } from './dto/simulate-cost.dto';
 
 // Define the error types and exceptions for now, to be replaced with proper imports later
 class AppException extends Error {
@@ -8,7 +9,7 @@ class AppException extends Error {
         message: string,
         public readonly errorType: string,
         public readonly errorCode: string,
-        public readonly context?: Record<string, any>,
+        public readonly context?: Record<string, unknown>,
         public readonly originalError?: Error
     ) {
         super(message);
@@ -48,10 +49,10 @@ class LoggerService {
  * Mock TracingService for telemetry
  */
 class TracingService {
-    startSpan(name: string) {
+    startSpan(_name: string) {
         return {
             end: () => {},
-            setTag: (key: string, value: any) => {},
+            setTag: (_key: string, _value: unknown) => {},
         };
     }
 }

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { typography } from 'src/web/design-system/src/tokens/typography';
-import { spacing } from 'src/web/design-system/src/tokens/spacing';
-import AuthLayout from 'src/web/web/src/layouts/AuthLayout';
-import { WEB_AUTH_ROUTES } from 'src/web/shared/constants/routes';
+import { colors } from 'design-system/tokens/colors';
+import { typography } from 'design-system/tokens/typography';
+import { spacing } from 'design-system/tokens/spacing';
+import AuthLayout from '@/layouts/AuthLayout';
+import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 
 const Title = styled.h2`
     font-family: ${typography.fontFamily.heading};

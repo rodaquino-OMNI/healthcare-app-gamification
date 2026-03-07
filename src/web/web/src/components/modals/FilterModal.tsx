@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react';
-import { Modal, ModalProps } from 'src/web/design-system/src/components/Modal/Modal.tsx'; // version 18.0+
-import { Button, ButtonProps } from 'src/web/design-system/src/components/Button/Button.tsx'; // version 18.0+
-import { Checkbox } from 'src/web/design-system/src/components/Checkbox/Checkbox.tsx'; // version 18.0+
-import { ALL_JOURNEYS, Journey } from 'src/web/shared/utils/index.ts';
-import { useJourney } from 'src/web/web/src/hooks/useJourney.ts';
+import { Modal, ModalProps } from 'design-system/components/Modal/Modal'; // version 18.0+
+import { Button, ButtonProps } from 'design-system/components/Button/Button'; // version 18.0+
+import { Checkbox } from 'design-system/components/Checkbox/Checkbox'; // version 18.0+
+import { ALL_JOURNEYS, Journey } from 'shared/utils/index';
+import { useJourney } from '@/hooks/useJourney';
 
 /**
  * Defines the props interface for the FilterModal component
@@ -63,7 +63,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, titl
 
     return (
         // Renders a Modal component with a title and close button.
-        <Modal visible={visible} onClose={onClose} title={title} journey={journey?.id as any}>
+        <Modal visible={visible} onClose={onClose} title={title} journey={journey?.id as string}>
             {/* Renders a list of Checkbox components for each filter option. */}
             {options &&
                 options.map((option) => (
@@ -75,15 +75,15 @@ export const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, titl
                         label={option.label}
                         checked={selectedOptions.includes(option.id)}
                         onChange={() => handleCheckboxChange(option.id)}
-                        journey={journey?.id as any}
+                        journey={journey?.id as string}
                     />
                 ))}
 
             {/* Renders 'Apply' and 'Cancel' buttons. */}
-            <Button onPress={handleApply} journey={journey?.id as any}>
+            <Button onPress={handleApply} journey={journey?.id as string}>
                 Apply
             </Button>
-            <Button variant="secondary" onPress={handleCancel} journey={journey?.id as any}>
+            <Button variant="secondary" onPress={handleCancel} journey={journey?.id as string}>
                 Cancel
             </Button>
         </Modal>

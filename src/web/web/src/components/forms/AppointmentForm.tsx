@@ -4,11 +4,11 @@ import { useForm } from 'react-hook-form'; // react-hook-form 7.0+
 import { yupResolver } from '@hookform/resolvers/yup'; // @hookform/resolvers/yup latest
 import * as yup from 'yup'; // yup latest
 
-import { Appointment } from 'src/web/shared/types/care.types';
-import { API_BASE_URL } from 'src/web/shared/constants/index';
-import { useAppointments } from 'src/web/web/src/hooks/useAppointments';
-import { useJourney } from 'src/web/web/src/context/JourneyContext.tsx';
-import { Input, Select, Button, DatePicker } from 'src/web/design-system/src/components';
+import { Appointment } from 'shared/types/care.types';
+import { API_BASE_URL } from 'shared/constants/index';
+import { useAppointments } from '@/hooks/useAppointments';
+import { useJourney } from '@/context/JourneyContext';
+import { Input, Select, Button, DatePicker } from 'design-system/components';
 
 /**
  * Interface defining the props for the AppointmentForm component.

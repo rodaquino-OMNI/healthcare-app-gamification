@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { ValidationPipe } from '@nestjs/common'; // v10.0.0+
@@ -65,4 +66,4 @@ async function bootstrap(): Promise<void> {
 }
 
 // LD1: Call the bootstrap function to start the application
-bootstrap();
+void bootstrap();

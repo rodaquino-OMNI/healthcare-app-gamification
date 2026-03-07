@@ -1,17 +1,17 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 
-jest.mock('src/web/web/src/layouts/PlanLayout', () => ({
+jest.mock('@/layouts/PlanLayout', () => ({
     PlanLayout: ({ children }: any) => <div data-testid="plan-layout">{children}</div>,
 }));
 
-jest.mock('src/web/web/src/hooks/useAuth', () => ({
+jest.mock('@/hooks/useAuth', () => ({
     useAuth: () => ({
         session: { accessToken: 'mock-token' },
     }),
 }));
 
-jest.mock('src/web/design-system/src/plan/InsuranceCard/InsuranceCard', () => ({
+jest.mock('design-system/plan/InsuranceCard/InsuranceCard', () => ({
     InsuranceCard: ({ plan, user }: any) => (
         <div data-testid="insurance-card">
             <span>{plan.planNumber}</span>
@@ -20,7 +20,7 @@ jest.mock('src/web/design-system/src/plan/InsuranceCard/InsuranceCard', () => ({
     ),
 }));
 
-jest.mock('src/web/design-system/src/plan/ClaimCard/ClaimCard', () => ({
+jest.mock('design-system/plan/ClaimCard/ClaimCard', () => ({
     ClaimCard: ({ claim, onViewDetails }: any) => (
         <div data-testid="claim-card">
             <span>{claim.id}</span>
@@ -29,11 +29,11 @@ jest.mock('src/web/design-system/src/plan/ClaimCard/ClaimCard', () => ({
     ),
 }));
 
-jest.mock('src/web/design-system/src/primitives', () => ({
+jest.mock('design-system/primitives', () => ({
     Text: ({ children, ...props }: any) => <span {...props}>{children}</span>,
 }));
 
-jest.mock('@web/design-system/src/tokens', () => ({
+jest.mock('design-system/tokens', () => ({
     colors: {
         journeys: {
             plan: { primary: '#7c4dff', text: '#2d1b69', accent: '#9c6eff' },
@@ -64,7 +64,7 @@ jest.mock('@web/design-system/src/tokens', () => ({
     borderRadius: { md: '8px' },
 }));
 
-jest.mock('src/web/shared/constants/routes', () => ({
+jest.mock('shared/constants/routes', () => ({
     WEB_PLAN_ROUTES: {
         CLAIMS: '/plan/claims',
         COVERAGE: '/plan/coverage',

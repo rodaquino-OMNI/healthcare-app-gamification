@@ -1,8 +1,8 @@
 import React from 'react'; // react ^18.0.0
-import { EmptyState, LoadingIndicator, JourneyHeader } from 'src/web/web/src/components/shared';
-import { MainLayout } from 'src/web/web/src/layouts/MainLayout';
-import { useNotifications } from 'src/web/web/src/hooks/useNotifications';
-import { ALL_JOURNEYS } from 'src/web/shared/constants/journeys';
+import { EmptyState, LoadingIndicator, JourneyHeader } from '@/components/shared';
+import { MainLayout } from '@/layouts/MainLayout';
+import { useNotifications } from '@/hooks/useNotifications';
+import { ALL_JOURNEYS } from 'shared/constants/journeys';
 
 /**
  * This component renders the notifications page, displaying a list of notifications or appropriate placeholders.

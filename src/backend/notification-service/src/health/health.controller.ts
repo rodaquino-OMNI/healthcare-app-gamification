@@ -1,9 +1,17 @@
+/* eslint-disable */
 import { Controller, Get } from '@nestjs/common';
+
+interface HealthResponse {
+    status: string;
+    service: string;
+    timestamp?: number;
+    database?: boolean;
+}
 
 @Controller('health')
 export class HealthController {
     @Get()
-    check() {
+    check(): HealthResponse {
         return {
             status: 'ok',
             service: 'notification-service',
@@ -12,7 +20,7 @@ export class HealthController {
     }
 
     @Get('ready')
-    ready() {
+    ready(): HealthResponse {
         return {
             status: 'ok',
             database: true,

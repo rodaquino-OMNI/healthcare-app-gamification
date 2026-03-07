@@ -2,13 +2,13 @@ import type { AppProps } from 'next/app'; // next/app 13.0+
 import { ThemeProvider } from 'styled-components'; // styled-components 6.0+
 import { useRouter } from 'next/router'; // next/router 13.0+
 import { useEffect } from 'react';
-import { JourneyContext, JourneyProvider } from 'src/web/web/src/context/JourneyContext';
-import { AuthProvider } from 'src/web/web/src/context/AuthContext';
-import { GamificationProvider } from 'src/web/web/src/context/GamificationContext';
-import { NotificationProvider } from 'src/web/web/src/context/NotificationContext';
-import { I18nProvider } from 'src/web/web/src/i18n';
-import { theme, GlobalStyle } from 'src/web/web/src/styles/theme';
-import initEnvironment from 'src/web/web/src/utils/env-init';
+import { JourneyContext, JourneyProvider } from '@/context/JourneyContext';
+import { AuthProvider } from '@/context/AuthContext';
+import { GamificationProvider } from '@/context/GamificationContext';
+import { NotificationProvider } from '@/context/NotificationContext';
+import { I18nProvider } from '@/i18n';
+import { theme, GlobalStyle } from '@/styles/theme';
+import initEnvironment from '@/utils/env-init';
 
 /**
  * Custom App component that wraps all pages.

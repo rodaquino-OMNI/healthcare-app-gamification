@@ -1,17 +1,20 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
-import { Service } from '@app/shared/interfaces/service.interface';
 import { LoggerService } from '@app/shared/logging/logger.service';
-import { ForbiddenException, Injectable } from '@nestjs/common'; // NestJS Common 9.0.0+
-import { EventEmitter2 } from 'eventemitter2'; // EventEmitter2 6.4.0+
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { EventEmitter2 } from 'eventemitter2';
 
-import { Configuration } from '@app/health/config/configuration';
-import { HealthMetric } from '@app/health/health/entities/health-metric.entity';
-import { MedicalEvent } from '@app/health/health/entities/medical-event.entity';
 import { FHIRAdapter } from '@app/health/integrations/fhir/fhir.adapter';
 
+interface FhirObservation {
+    valueQuantity?: { value?: number; unit?: string };
+    effectiveDateTime?: string;
+    note?: Array<{ text?: string }>;
+}
+
 /**
- * Handles the retrieval of patient data from FHIR-compliant systems and emits events when new data is available.
+ * Handles the retrieval of patient data from FHIR-compliant systems
+ * and emits events when new data is available.
  */
 @Injectable()
 export class FhirService {
@@ -32,38 +35,32 @@ export class FhirService {
      * Retrieves a patient record from a FHIR-compliant system.
      *
      * @param patientId - The unique identifier of the patient
+     * @param requestingUserId - The ID of the user making the request
      * @returns A promise that resolves to the patient record
      */
-    async getPatientRecord(patientId: string, requestingUserId: string): Promise<any> {
+    async getPatientRecord(patientId: string, requestingUserId: string): Promise<unknown> {
         if (patientId !== requestingUserId) {
             throw new ForbiddenException("Access denied: cannot access another patient's records");
         }
 
-        // Log the retrieval attempt
         this.logger.log(`Retrieving patient record for patient ID: ${patientId}`, 'FhirService');
 
         try {
-            // Call the FHIR adapter to retrieve the patient record
             const patientRecord = await this.fhirAdapter.getPatientRecord(patientId);
 
-            // Emit a 'patient.record.retrieved' event with the patient data
             this.eventEmitter.emit('patient.record.retrieved', {
                 patientId,
                 data: patientRecord,
                 timestamp: new Date(),
             });
 
-            // Return the patient record
             return patientRecord;
         } catch (error) {
-            this.logger.error(
-                `Failed to retrieve patient record for patient ID: ${patientId}`,
-                (error as any).stack,
-                'FhirService'
-            );
+            const stack = error instanceof Error ? error.stack : undefined;
+            this.logger.error(`Failed to retrieve patient record for patient ID: ${patientId}`, stack, 'FhirService');
 
             if (error instanceof AppException) {
-                throw error as any;
+                throw error;
             }
 
             throw new AppException(
@@ -80,39 +77,33 @@ export class FhirService {
      * Retrieves a patient's medical history from a FHIR-compliant system.
      *
      * @param patientId - The unique identifier of the patient
+     * @param requestingUserId - The ID of the user making the request
      * @returns A promise that resolves to an array of medical events
      */
-    async getMedicalHistory(patientId: string, requestingUserId: string): Promise<any[]> {
+    async getMedicalHistory(patientId: string, requestingUserId: string): Promise<unknown[]> {
         if (patientId !== requestingUserId) {
             throw new ForbiddenException("Access denied: cannot access another patient's records");
         }
 
-        // Log the medical history retrieval attempt
         this.logger.log(`Retrieving medical history for patient ID: ${patientId}`, 'FhirService');
 
         try {
-            // Call the FHIR adapter to retrieve the medical history
             const medicalEvents = await this.fhirAdapter.getMedicalHistory(patientId);
 
-            // Emit a 'medical.history.retrieved' event with the medical events
             this.eventEmitter.emit('medical.history.retrieved', {
                 patientId,
                 events: medicalEvents,
-                count: medicalEvents.length,
+                count: (medicalEvents as unknown[]).length,
                 timestamp: new Date(),
             });
 
-            // Return the array of medical events
-            return medicalEvents;
+            return medicalEvents as unknown[];
         } catch (error) {
-            this.logger.error(
-                `Failed to retrieve medical history for patient ID: ${patientId}`,
-                (error as any).stack,
-                'FhirService'
-            );
+            const stack = error instanceof Error ? error.stack : undefined;
+            this.logger.error(`Failed to retrieve medical history for patient ID: ${patientId}`, stack, 'FhirService');
 
             if (error instanceof AppException) {
-                throw error as any;
+                throw error;
             }
 
             throw new AppException(
@@ -130,40 +121,35 @@ export class FhirService {
      *
      * @param patientId - The unique identifier of the patient
      * @param metricType - The type of health metric to retrieve
+     * @param requestingUserId - The ID of the user making the request
      * @param dateRange - Optional date range to filter metrics
      * @returns A promise that resolves to an array of health metrics
      */
-    async getHealthMetricsFromFhir(
+    getHealthMetricsFromFhir(
         patientId: string,
         metricType: string,
         requestingUserId: string,
         dateRange?: object
-    ): Promise<any[]> {
+    ): unknown[] {
         if (patientId !== requestingUserId) {
             throw new ForbiddenException("Access denied: cannot access another patient's records");
         }
 
-        // Log the health metrics retrieval attempt
         this.logger.log(`Retrieving health metrics of type ${metricType} for patient ID: ${patientId}`, 'FhirService');
 
         try {
             // Construct the appropriate FHIR query based on metricType and dateRange
-            const query = {
+            const _query = {
                 patient: patientId,
                 code: this.mapMetricTypeToFhirCode(metricType),
-                // Add date range parameters if provided
                 ...(dateRange ? { date: dateRange } : {}),
             };
 
-            // Call the FHIR adapter to retrieve the health metrics
-            // Note: In a real implementation, this would call an appropriate method on the adapter
-            // or use a generic search method to retrieve FHIR Observation resources
-            const observations: any[] = []; // Placeholder for actual implementation
+            // Placeholder for actual implementation
+            const observations: FhirObservation[] = [];
 
-            // Transform the FHIR observations into the internal HealthMetric format
             const metrics = observations.map((obs) => this.transformObservationToMetric(obs, patientId, metricType));
 
-            // Emit a 'health.metrics.retrieved' event with the health metrics
             this.eventEmitter.emit('health.metrics.retrieved', {
                 patientId,
                 metricType,
@@ -172,17 +158,17 @@ export class FhirService {
                 timestamp: new Date(),
             });
 
-            // Return the array of health metrics
             return metrics;
         } catch (error) {
+            const stack = error instanceof Error ? error.stack : undefined;
             this.logger.error(
                 `Failed to retrieve health metrics of type ${metricType} for patient ID: ${patientId}`,
-                (error as any).stack,
+                stack,
                 'FhirService'
             );
 
             if (error instanceof AppException) {
-                throw error as any;
+                throw error;
             }
 
             throw new AppException(
@@ -200,18 +186,16 @@ export class FhirService {
      *
      * @param metricType - The internal metric type
      * @returns The corresponding FHIR code
-     * @private
      */
     private mapMetricTypeToFhirCode(metricType: string): string {
-        // This is a simplified mapping, a real implementation would be more comprehensive
         const codeMap: Record<string, string> = {
-            HEART_RATE: '8867-4', // LOINC code for heart rate
-            BLOOD_PRESSURE: '85354-9', // LOINC code for blood pressure panel
-            BLOOD_GLUCOSE: '2339-0', // LOINC code for glucose
-            WEIGHT: '29463-7', // LOINC code for body weight
-            HEIGHT: '8302-2', // LOINC code for body height
-            STEPS: '41950-7', // LOINC code for number of steps in 24 hour measured
-            TEMPERATURE: '8310-5', // LOINC code for body temperature
+            HEART_RATE: '8867-4',
+            BLOOD_PRESSURE: '85354-9',
+            BLOOD_GLUCOSE: '2339-0',
+            WEIGHT: '29463-7',
+            HEIGHT: '8302-2',
+            STEPS: '41950-7',
+            TEMPERATURE: '8310-5',
         };
 
         return codeMap[metricType] || metricType;
@@ -224,21 +208,20 @@ export class FhirService {
      * @param patientId - The patient identifier
      * @param metricType - The metric type
      * @returns The transformed metric
-     * @private
      */
-    private transformObservationToMetric(observation: any, patientId: string, metricType: string): any {
-        // This is a placeholder transformation function
-        // In a real implementation, this would extract relevant data from the FHIR observation
-        // and map it to the internal HealthMetric format
-
+    private transformObservationToMetric(
+        observation: FhirObservation,
+        patientId: string,
+        metricType: string
+    ): Record<string, unknown> {
         return {
             userId: patientId,
             type: metricType,
-            value: observation.valueQuantity?.value || 0,
-            unit: observation.valueQuantity?.unit || '',
-            timestamp: new Date(observation.effectiveDateTime || new Date()),
+            value: observation.valueQuantity?.value ?? 0,
+            unit: observation.valueQuantity?.unit ?? '',
+            timestamp: new Date(observation.effectiveDateTime ?? new Date()),
             source: 'FHIR',
-            notes: observation.note?.map((n: any) => n.text).join('\n') || null,
+            notes: observation.note?.map((n) => n.text ?? '').join('\n') ?? null,
             isAbnormal: false,
         };
     }

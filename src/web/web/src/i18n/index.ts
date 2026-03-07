@@ -13,7 +13,7 @@ import ptBR from './pt-BR';
 import enUS from './en-US';
 
 // Import i18n configuration
-import { defaultLocale, supportedLocales } from 'src/web/shared/config/i18nConfig';
+import { defaultLocale, supportedLocales } from 'shared/config/i18nConfig';
 
 // Import formatters
 import { formatDate } from './formatters';

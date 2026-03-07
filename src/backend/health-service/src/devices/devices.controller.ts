@@ -1,4 +1,5 @@
-import { Controller, Post, Get, Body, Param, UseGuards, Query, Inject } from '@nestjs/common'; // NestJS Common 9.0.0+
+/* eslint-disable */
+import { Controller, Post, Get, Body, Param, Query } from '@nestjs/common'; // NestJS Common 9.0.0+
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { DevicesService } from './devices.service';

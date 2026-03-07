@@ -126,7 +126,7 @@ export const parseDate = (
  * @param date The date to validate
  * @returns True if the date is valid, false otherwise
  */
-export const isValidDate = (date: any): boolean => {
+export const isValidDate = (date: unknown): boolean => {
     if (date === null || date === undefined) {
         return false;
     }

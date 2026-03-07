@@ -1,10 +1,10 @@
 import React from 'react'; // React v18.0+
 import { useRouter } from 'next/router'; // next/router latest
 
-import { JourneyHeader } from 'src/web/web/src/components/shared/JourneyHeader';
-import { AppointmentForm } from 'src/web/web/src/components/forms/AppointmentForm';
-import { JourneyContext } from 'src/web/web/src/context/JourneyContext';
-import { CareLayout } from 'src/web/web/src/layouts/CareLayout';
+import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { AppointmentForm } from '@/components/forms/AppointmentForm';
+import { JourneyContext } from '@/context/JourneyContext';
+import { CareLayout } from '@/layouts/CareLayout';
 
 /**
  * Renders the appointment booking page with the JourneyHeader and AppointmentForm.

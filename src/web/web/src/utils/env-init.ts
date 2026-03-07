@@ -22,7 +22,8 @@ declare const process: {
 export const initEnvironment = (): void => {
     if (typeof window !== 'undefined') {
         // Initialize the __ENV__ object if not already present
-        (window as any).__ENV__ = (window as any).__ENV__ || {};
+        (window as unknown as { __ENV__: Record<string, unknown> }).__ENV__ =
+            (window as unknown as { __ENV__: Record<string, unknown> }).__ENV__ || {};
 
         // Capture Next.js public environment variables
         // Adding a check for process.env to avoid errors in the browser
@@ -35,33 +36,36 @@ export const initEnvironment = (): void => {
         envKeys.forEach((key) => {
             if (typeof process !== 'undefined' && process.env && process.env[key]) {
                 const cleanKey = key.replace('NEXT_PUBLIC_', '');
-                (window as any).__ENV__[cleanKey] = process.env[key];
+                (window as unknown as { __ENV__: Record<string, unknown> }).__ENV__[cleanKey] = process.env[key];
             }
         });
 
         // Add API URL for convenience
-        if (!('API_URL' in (window as any).__ENV__)) {
+        if (!('API_URL' in (window as unknown as { __ENV__: Record<string, unknown> }).__ENV__)) {
             const apiUrl =
                 typeof process !== 'undefined' && process.env
                     ? process.env.NEXT_PUBLIC_API_URL || process.env.API_BASE_URL
                     : null;
-            (window as any).__ENV__.API_URL = apiUrl || 'https://api.austa.com.br';
+            (window as unknown as { __ENV__: Record<string, unknown> }).__ENV__.API_URL =
+                apiUrl || 'https://api.austa.com.br';
         }
 
         // Add environment
-        if (!('ENVIRONMENT' in (window as any).__ENV__)) {
+        if (!('ENVIRONMENT' in (window as unknown as { __ENV__: Record<string, unknown> }).__ENV__)) {
             const environment =
                 typeof process !== 'undefined' && process.env
                     ? process.env.NEXT_PUBLIC_ENVIRONMENT || process.env.NODE_ENV
                     : null;
-            (window as any).__ENV__.ENVIRONMENT = environment || 'development';
+            (window as unknown as { __ENV__: Record<string, unknown> }).__ENV__.ENVIRONMENT =
+                environment || 'development';
         }
 
         // Add feature flags
-        if (!('FEATURE_GAMIFICATION' in (window as any).__ENV__)) {
+        if (!('FEATURE_GAMIFICATION' in (window as unknown as { __ENV__: Record<string, unknown> }).__ENV__)) {
             const featureFlag =
                 typeof process !== 'undefined' && process.env ? process.env.NEXT_PUBLIC_FEATURE_GAMIFICATION : null;
-            (window as any).__ENV__.FEATURE_GAMIFICATION = featureFlag !== 'false';
+            (window as unknown as { __ENV__: Record<string, unknown> }).__ENV__.FEATURE_GAMIFICATION =
+                featureFlag !== 'false';
         }
     }
 };

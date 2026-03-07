@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react'; // react latest
 import { useRouter } from 'next/navigation'; // next/navigation latest
 
-import { useAuth } from 'src/web/web/src/hooks/useAuth.ts';
-import ProfileForm from 'src/web/web/src/components/forms/ProfileForm.tsx';
-import JourneyHeader from 'src/web/web/src/components/shared/JourneyHeader.tsx';
-import { AuthContext } from 'src/web/web/src/context/AuthContext.tsx';
-import { ConfirmationModal } from 'src/web/web/src/components/modals/ConfirmationModal.tsx';
-import { ErrorState } from 'src/web/web/src/components/shared/ErrorState.tsx';
-import { LoadingIndicator } from 'src/web/web/src/components/shared/LoadingIndicator.tsx';
-import { EmptyState } from 'src/web/web/src/components/shared/EmptyState.tsx';
-import MainLayout from 'src/web/web/src/layouts/MainLayout.tsx';
-import { WEB_AUTH_ROUTES } from 'src/web/shared/constants/routes.ts';
-import { restClient } from 'src/web/web/src/api/client';
+import { useAuth } from '@/hooks/useAuth';
+import ProfileForm from '@/components/forms/ProfileForm';
+import JourneyHeader from '@/components/shared/JourneyHeader';
+import { AuthContext } from '@/context/AuthContext';
+import { ConfirmationModal } from '@/components/modals/ConfirmationModal';
+import { ErrorState } from '@/components/shared/ErrorState';
+import { LoadingIndicator } from '@/components/shared/LoadingIndicator';
+import { EmptyState } from '@/components/shared/EmptyState';
+import MainLayout from '@/layouts/MainLayout';
+import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
+import { restClient } from '@/api/client';
 
 /**
  * A page component that displays and allows users to edit their profile information.

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { HealthGoal } from 'src/web/shared/types/health.types'; // Import HealthGoal interface from shared types
-import Input from 'src/web/design-system/src/components/Input/Input.tsx'; // Import Input component from design system
-import Button from 'src/web/design-system/src/components/Button/Button.tsx'; // Import Button component from design system
-import { Select } from 'src/web/design-system/src/components/Select/Select.tsx'; // Import Select component from design system
-import { DatePicker } from 'src/web/design-system/src/components/DatePicker/DatePicker.tsx'; // Import DatePicker component from design system
+import { HealthGoal } from 'shared/types/health.types'; // Import HealthGoal interface from shared types
+import Input from 'design-system/components/Input/Input'; // Import Input component from design system
+import Button from 'design-system/components/Button/Button'; // Import Button component from design system
+import { Select } from 'design-system/components/Select/Select'; // Import Select component from design system
+import { DatePicker } from 'design-system/components/DatePicker/DatePicker'; // Import DatePicker component from design system
 import { useForm } from 'react-hook-form'; // version: latest
 import { yupResolver } from '@hookform/resolvers/yup'; // version: latest
 import * as yup from 'yup'; // version: latest
-import { useHealthMetrics } from 'src/web/mobile/src/hooks/useHealthMetrics'; // Import useHealthMetrics hook
-import { useAuth } from 'src/web/mobile/src/hooks/useAuth'; // Import useAuth hook
+import { useHealthMetrics } from '@/hooks/useHealthMetrics'; // Import useHealthMetrics hook
+import { useAuth } from '@/hooks/useAuth'; // Import useAuth hook
 
 /**
  * Interface for the properties of the HealthGoalForm component.

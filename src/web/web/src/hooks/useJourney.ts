@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'; // next/router 13.0+
-import { ALL_JOURNEYS } from 'src/web/shared/constants/journeys.ts';
-import { Journey } from 'src/web/shared/types/index.ts';
-import { useJourneyContext } from 'src/web/web/src/context/JourneyContext.tsx';
+import { ALL_JOURNEYS } from 'shared/constants/journeys';
+import { Journey } from 'shared/types/index';
+import { useJourneyContext } from '@/context/JourneyContext';
 
 /**
  * Custom hook that provides access to the current user journey in the AUSTA SuperApp.

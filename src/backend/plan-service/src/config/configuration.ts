@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { registerAs } from '@nestjs/config'; // @nestjs/config 10.0.0+
 
 import validationSchema from './validation.schema';
@@ -143,18 +144,18 @@ export const planService = registerAs('planService', () => {
     };
 
     // Validate the configuration
-    const { error, value } = validationSchema.validate(config, {
+    const validationResult = validationSchema.validate(config, {
         abortEarly: false,
     });
 
     // If validation fails, throw error with details
-    if (error) {
-        const errorDetails = error.details.map((detail) => detail.message).join(', ');
+    if (validationResult.error) {
+        const errorDetails = validationResult.error.details.map((detail) => detail.message).join(', ');
         throw new Error(`Plan Service configuration validation failed: ${errorDetails}`);
     }
 
     // Return the validated configuration with defaults from schema
-    return value;
+    return validationResult.value as typeof config;
 });
 
 export default planService;

@@ -3,12 +3,12 @@
  */
 
 // Internal imports
-import { EmptyState } from 'src/web/web/src/components/shared/EmptyState.tsx';
-import { ErrorState } from 'src/web/web/src/components/shared/ErrorState.tsx';
-import { FileUploader } from 'src/web/web/src/components/shared/FileUploader.tsx';
-import { GamificationPopup } from 'src/web/web/src/components/shared/GamificationPopup.tsx';
-import { JourneyHeader } from 'src/web/web/src/components/shared/JourneyHeader.tsx';
-import { LoadingIndicator } from 'src/web/web/src/components/shared/LoadingIndicator.tsx';
+import { EmptyState } from '@/components/shared/EmptyState';
+import { ErrorState } from '@/components/shared/ErrorState';
+import { FileUploader } from '@/components/shared/FileUploader';
+import { GamificationPopup } from '@/components/shared/GamificationPopup';
+import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { LoadingIndicator } from '@/components/shared/LoadingIndicator';
 
 // Export all shared components
 export {

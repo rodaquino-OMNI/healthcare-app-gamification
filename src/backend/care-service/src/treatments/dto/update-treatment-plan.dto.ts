@@ -1,5 +1,5 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsString, IsOptional, IsDateString, IsNumber, Min, Max, IsUUID } from 'class-validator';
+/* eslint-disable */
+import { PartialType } from '@nestjs/swagger';
 
 import { CreateTreatmentPlanDto } from './create-treatment-plan.dto';
 

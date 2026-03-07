@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 import { KafkaService } from '@app/shared/kafka/kafka.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Injectable, OnModuleInit } from '@nestjs/common';
@@ -23,7 +23,7 @@ export class EventsConsumer implements OnModuleInit {
     /**
      * Initializes Kafka consumers when the module is initialized.
      */
-    async onModuleInit() {
+    async onModuleInit(): Promise<void> {
         try {
             this.logger.log('Initializing Kafka event consumers', 'EventsConsumer');
 
@@ -34,27 +34,23 @@ export class EventsConsumer implements OnModuleInit {
 
             this.logger.log('Kafka event consumers initialized successfully', 'EventsConsumer');
         } catch (error) {
-            this.logger.error(
-                `Failed to initialize Kafka event consumers: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
-                error instanceof Error ? (error as any).stack : undefined,
-                'EventsConsumer'
-            );
-            throw error as any;
+            const msg = error instanceof Error ? error.message : 'Unknown error';
+            const stack = error instanceof Error ? error.stack : undefined;
+            this.logger.error(`Failed to initialize Kafka event consumers: ${msg}`, stack, 'EventsConsumer');
+            throw error;
         }
     }
 
     /**
      * Handles incoming events from Kafka.
      * @param payload The event payload
-     * @param key The message key
-     * @param headers The message headers
      */
-    private async handleEvent(payload: any): Promise<void> {
+    private async handleEvent(payload: Record<string, unknown>): Promise<void> {
         try {
             this.logger.log(`Processing event`, 'EventsConsumer');
 
             // Extract message value from the payload object
-            const messageValue = payload.value;
+            const messageValue = payload['value'] as Record<string, unknown>;
 
             // Validate the event structure
             if (!this.isValidEvent(messageValue)) {
@@ -64,21 +60,19 @@ export class EventsConsumer implements OnModuleInit {
 
             // Process the event through the rules engine
             await this.rulesService.processEvent({
-                type: messageValue.type,
-                userId: messageValue.userId,
-                timestamp: new Date(messageValue.timestamp),
-                journey: messageValue.journey,
-                data: messageValue.data,
-                metadata: messageValue.metadata || {},
+                type: messageValue['type'] as string,
+                userId: messageValue['userId'] as string,
+                timestamp: new Date(messageValue['timestamp'] as string),
+                journey: messageValue['journey'] as string,
+                data: messageValue['data'] as Record<string, unknown>,
+                metadata: (messageValue['metadata'] as Record<string, unknown>) || {},
             });
 
             this.logger.log(`Successfully processed event`, 'EventsConsumer');
         } catch (error) {
-            this.logger.error(
-                `Error processing event: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
-                error instanceof Error ? (error as any).stack : undefined,
-                'EventsConsumer'
-            );
+            const msg = error instanceof Error ? error.message : 'Unknown error';
+            const stack = error instanceof Error ? error.stack : undefined;
+            this.logger.error(`Error processing event: ${msg}`, stack, 'EventsConsumer');
         }
     }
 
@@ -87,15 +81,16 @@ export class EventsConsumer implements OnModuleInit {
      * @param event The event to validate
      * @returns True if the event is valid, false otherwise
      */
-    private isValidEvent(event: any): boolean {
+    private isValidEvent(event: Record<string, unknown> | null | undefined): boolean {
         return (
-            event &&
+            event !== null &&
+            event !== undefined &&
             typeof event === 'object' &&
-            typeof event.type === 'string' &&
-            typeof event.userId === 'string' &&
-            typeof event.timestamp === 'string' &&
-            typeof event.journey === 'string' &&
-            typeof event.data === 'object'
+            typeof event['type'] === 'string' &&
+            typeof event['userId'] === 'string' &&
+            typeof event['timestamp'] === 'string' &&
+            typeof event['journey'] === 'string' &&
+            typeof event['data'] === 'object'
         );
     }
 }

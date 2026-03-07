@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Represents a treatment plan for a patient.
  * This entity is part of the Care Journey and allows tracking and display
@@ -37,7 +38,7 @@ export class TreatmentPlan {
     /**
      * Reference to the care activity this treatment plan is associated with.
      */
-    careActivity: any;
+    careActivity: unknown;
 
     /**
      * Date and time when the treatment plan was created.

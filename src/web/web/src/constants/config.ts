@@ -5,9 +5,9 @@
  * including API endpoints, feature flags, and other application-wide settings.
  */
 
-import { apiConfig } from 'src/web/shared/config/apiConfig';
-import { defaultLocale, supportedLocales } from 'src/web/shared/config/i18nConfig';
-import { JOURNEY_IDS } from 'src/web/shared/constants/journeys';
+import { apiConfig } from 'shared/config/apiConfig';
+import { defaultLocale, supportedLocales } from 'shared/config/i18nConfig';
+import { JOURNEY_IDS } from 'shared/constants/journeys';
 
 /**
  * Feature flags for controlling feature availability

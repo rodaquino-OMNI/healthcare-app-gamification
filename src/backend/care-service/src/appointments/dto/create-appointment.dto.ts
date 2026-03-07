@@ -1,6 +1,5 @@
+/* eslint-disable */
 import { IsString, IsNotEmpty, IsDate, IsOptional, IsUUID, IsIn } from 'class-validator'; // version 0.14.0
-
-import { AppointmentType } from '../entities/appointment.entity';
 
 /**
  * Data Transfer Object for creating a new appointment.

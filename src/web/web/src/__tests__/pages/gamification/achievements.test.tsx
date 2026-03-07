@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 
-jest.mock('src/web/web/src/hooks/useGamification', () => ({
+jest.mock('@/hooks/useGamification', () => ({
     useGameProfile: () => ({
         data: {
             gameProfile: {
@@ -40,7 +40,7 @@ jest.mock('src/web/web/src/hooks/useGamification', () => ({
     }),
 }));
 
-jest.mock('src/web/design-system/src/components/Card/Card', () => ({
+jest.mock('design-system/components/Card/Card', () => ({
     Card: ({ children, ...props }: any) => (
         <div data-testid="card" {...props}>
             {children}
@@ -48,7 +48,7 @@ jest.mock('src/web/design-system/src/components/Card/Card', () => ({
     ),
 }));
 
-jest.mock('src/web/design-system/src/gamification/AchievementBadge', () => ({
+jest.mock('design-system/gamification/AchievementBadge', () => ({
     AchievementBadge: ({ achievement, size, showProgress }: any) => (
         <div data-testid="achievement-badge" data-id={achievement.id} data-size={size}>
             {achievement.title}
@@ -56,13 +56,13 @@ jest.mock('src/web/design-system/src/gamification/AchievementBadge', () => ({
     ),
 }));
 
-jest.mock('src/web/design-system/src/gamification/LevelIndicator', () => ({
+jest.mock('design-system/gamification/LevelIndicator', () => ({
     LevelIndicator: ({ level, currentXp, nextLevelXp }: any) => (
         <div data-testid="level-indicator" data-level={level} />
     ),
 }));
 
-jest.mock('src/web/design-system/src/gamification/XPCounter', () => ({
+jest.mock('design-system/gamification/XPCounter', () => ({
     XPCounter: ({ value, size }: any) => (
         <div data-testid="xp-counter" data-value={value} data-size={size}>
             {value} XP
@@ -70,22 +70,22 @@ jest.mock('src/web/design-system/src/gamification/XPCounter', () => ({
     ),
 }));
 
-jest.mock('src/web/design-system/src/primitives/Text/Text', () => ({
+jest.mock('design-system/primitives/Text/Text', () => ({
     Text: ({ children, ...props }: any) => <span {...props}>{children}</span>,
 }));
 
-jest.mock('src/web/design-system/src/primitives/Box/Box', () => ({
+jest.mock('design-system/primitives/Box/Box', () => ({
     Box: ({ children, ...props }: any) => <div {...props}>{children}</div>,
 }));
 
-jest.mock('src/web/design-system/src/tokens/colors', () => ({
+jest.mock('design-system/tokens/colors', () => ({
     colors: {
         gray: { 50: '#888' },
         semantic: { error: '#ef4444' },
     },
 }));
 
-jest.mock('src/web/design-system/src/tokens/spacing', () => ({
+jest.mock('design-system/tokens/spacing', () => ({
     spacing: { xs: '8px', sm: '12px', md: '16px', lg: '24px', xl: '32px', '2xl': '48px' },
 }));
 

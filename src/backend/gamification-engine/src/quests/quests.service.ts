@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 import { PrismaService } from '@app/shared/database/prisma.service';
-import { FilterDto } from '@app/shared/dto/filter.dto';
-import { PaginationDto } from '@app/shared/dto/pagination.dto';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 import { KafkaService } from '@app/shared/kafka/kafka.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
@@ -35,9 +33,10 @@ export class QuestsService {
     async findAll(): Promise<Quest[]> {
         try {
             return await this.prisma.quest.findMany();
-        } catch (error: any) {
-            this.logger.error('Failed to retrieve quests', error?.stack, 'QuestsService');
-            throw new AppException('Failed to retrieve quests', ErrorType.TECHNICAL, 'GAME_009', {}, error);
+        } catch (error: unknown) {
+            const stack = error instanceof Error ? error.stack : String(error);
+            this.logger.error('Failed to retrieve quests', stack, 'QuestsService');
+            throw new AppException('Failed to retrieve quests', ErrorType.TECHNICAL, 'GAME_009', {});
         }
     }
 
@@ -55,19 +54,14 @@ export class QuestsService {
             }
 
             return quest;
-        } catch (error: any) {
+        } catch (error: unknown) {
             if (error instanceof NotFoundException) {
-                throw error as any;
+                throw error;
             }
 
-            this.logger.error(`Failed to retrieve quest with ID ${id}`, error?.stack, 'QuestsService');
-            throw new AppException(
-                `Failed to retrieve quest with ID ${id}`,
-                ErrorType.TECHNICAL,
-                'GAME_010',
-                { id },
-                error
-            );
+            const stack = error instanceof Error ? error.stack : String(error);
+            this.logger.error(`Failed to retrieve quest with ID ${id}`, stack, 'QuestsService');
+            throw new AppException(`Failed to retrieve quest with ID ${id}`, ErrorType.TECHNICAL, 'GAME_010', { id });
         }
     }
 
@@ -119,18 +113,18 @@ export class QuestsService {
             });
 
             return savedUserQuest;
-        } catch (error: any) {
+        } catch (error: unknown) {
             if (error instanceof NotFoundException) {
-                throw error as any;
+                throw error;
             }
 
-            this.logger.error(`Failed to start quest ${questId} for user ${userId}`, error?.stack, 'QuestsService');
+            const stack = error instanceof Error ? error.stack : String(error);
+            this.logger.error(`Failed to start quest ${questId} for user ${userId}`, stack, 'QuestsService');
             throw new AppException(
                 `Failed to start quest ${questId} for user ${userId}`,
                 ErrorType.TECHNICAL,
                 'GAME_011',
-                { userId, questId },
-                error
+                { userId, questId }
             );
         }
     }
@@ -185,7 +179,7 @@ export class QuestsService {
             // Check if completing this quest unlocks any achievements
             // This is a placeholder for actual achievement checking logic
             // which would likely be implemented in the AchievementsService
-            const unlockedAchievements = await this.achievementsService.findByJourney(userQuest.quest.journey);
+            const _unlockedAchievements = await this.achievementsService.findByJourney(userQuest.quest.journey);
 
             // Log and publish event
             this.logger.log(
@@ -200,18 +194,18 @@ export class QuestsService {
             });
 
             return updatedUserQuest;
-        } catch (error: any) {
+        } catch (error: unknown) {
             if (error instanceof NotFoundException) {
-                throw error as any;
+                throw error;
             }
 
-            this.logger.error(`Failed to complete quest ${questId} for user ${userId}`, error?.stack, 'QuestsService');
+            const stack = error instanceof Error ? error.stack : String(error);
+            this.logger.error(`Failed to complete quest ${questId} for user ${userId}`, stack, 'QuestsService');
             throw new AppException(
                 `Failed to complete quest ${questId} for user ${userId}`,
                 ErrorType.TECHNICAL,
                 'GAME_012',
-                { userId, questId },
-                error
+                { userId, questId }
             );
         }
     }

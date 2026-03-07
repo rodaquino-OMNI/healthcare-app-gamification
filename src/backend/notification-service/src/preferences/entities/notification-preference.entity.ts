@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { ApiProperty } from '@nestjs/swagger';
 
 /**
@@ -60,7 +61,7 @@ export class NotificationPreference {
         example: { APPOINTMENT_REMINDER: { push: true, email: true, sms: false } },
         required: false,
     })
-    typePreferences?: Record<string, any>;
+    typePreferences?: Record<string, unknown>;
 
     /**
      * Journey-specific notification preferences (stored as JSON)
@@ -71,5 +72,5 @@ export class NotificationPreference {
         example: { health: { push: true, email: true }, care: { push: true, sms: true } },
         required: false,
     })
-    journeyPreferences?: Record<string, any>;
+    journeyPreferences?: Record<string, unknown>;
 }

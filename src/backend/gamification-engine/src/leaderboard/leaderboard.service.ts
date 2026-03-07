@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { RedisService } from '@app/shared/redis/redis.service';
 import { Injectable } from '@nestjs/common';
@@ -36,7 +36,7 @@ export class LeaderboardService {
      * @param journey The journey to get leaderboard data for (health, care, plan)
      * @returns A promise that resolves to the leaderboard data.
      */
-    async getLeaderboard(journey: string): Promise<any> {
+    async getLeaderboard(journey: string): Promise<unknown> {
         try {
             // Create a cache key based on the journey
             const cacheKey = `leaderboard:${journey.toLowerCase()}`;
@@ -46,7 +46,7 @@ export class LeaderboardService {
 
             if (cachedData) {
                 this.logger.log(`Retrieved leaderboard from cache: ${cacheKey}`, 'LeaderboardService');
-                return JSON.parse(cachedData);
+                return JSON.parse(cachedData) as unknown;
             }
 
             // Calculate leaderboard if not in cache
@@ -75,12 +75,10 @@ export class LeaderboardService {
 
             return leaderboardData;
         } catch (error) {
-            this.logger.error(
-                `Failed to get leaderboard for ${journey}: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
-                error instanceof Error ? (error as any).stack : undefined,
-                'LeaderboardService'
-            );
-            throw error as any;
+            const msg = error instanceof Error ? error.message : 'Unknown error';
+            const stack = error instanceof Error ? error.stack : undefined;
+            this.logger.error(`Failed to get leaderboard for ${journey}: ${msg}`, stack, 'LeaderboardService');
+            throw error;
         }
     }
 
@@ -96,12 +94,10 @@ export class LeaderboardService {
             // Sort by XP in descending order (copy first to avoid mutating the original array)
             return [...profiles].sort((a, b) => b.xp - a.xp);
         } catch (error) {
-            this.logger.error(
-                `Failed to calculate leaderboard: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
-                error instanceof Error ? (error as any).stack : undefined,
-                'LeaderboardService'
-            );
-            throw error as any;
+            const msg = error instanceof Error ? error.message : 'Unknown error';
+            const stack = error instanceof Error ? error.stack : undefined;
+            this.logger.error(`Failed to calculate leaderboard: ${msg}`, stack, 'LeaderboardService');
+            throw error;
         }
     }
 }

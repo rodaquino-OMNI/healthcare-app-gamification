@@ -1,9 +1,9 @@
 import { createContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // next/navigation 13.0+
 
-import { login, logout, getProfile } from 'src/web/web/src/api/auth';
-import { AuthSession } from 'src/web/shared/types/auth.types';
-import { WEB_AUTH_ROUTES } from 'src/web/shared/constants/routes';
+import { login, logout, getProfile } from '@/api/auth';
+import { AuthSession } from 'shared/types/auth.types';
+import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 
 /**
  * Authentication context interface
@@ -44,7 +44,7 @@ interface AuthContextType {
      * Retrieves the current user's profile
      * @returns A promise resolving to the user profile
      */
-    getProfile: () => Promise<any>;
+    getProfile: () => Promise<unknown>;
 }
 
 /**
@@ -165,7 +165,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     /**
      * Retrieves user profile
      */
-    const handleGetProfile = async (): Promise<any> => {
+    const handleGetProfile = async (): Promise<unknown> => {
         if (!session) {
             throw new Error('No active session');
         }
@@ -174,7 +174,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             return await getProfile();
         } catch (error) {
             // If we get an unauthorized error, clear the session
-            if ((error as any)?.response?.status === 401) {
+            if ((error as { response?: { status?: number } })?.response?.status === 401) {
                 setSession(null);
             }
             throw error;

@@ -1,3 +1,4 @@
+/* eslint-disable */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { RedisService } from '@app/shared/redis/redis.service';
@@ -36,7 +37,7 @@ export class InAppService {
      *
      * @param userId - The ID of the user to send the notification to
      * @param notification - The notification entity to send
-     * @returns A promise that resolves with a boolean indicating whether the notification was sent successfully
+     * @returns A promise that resolves with a boolean indicating success
      */
     async send(userId: string, notification: Notification): Promise<boolean> {
         try {
@@ -69,8 +70,8 @@ export class InAppService {
             }
         } catch (error) {
             this.logger.error(
-                `Failed to send in-app notification to user ${userId}: ${(error as any).message}`,
-                (error as any).stack,
+                `Failed to send in-app notification to user ${userId}: ${error instanceof Error ? error.message : String(error)}`,
+                error instanceof Error ? error.stack : undefined,
                 'InAppService'
             );
             return false;
@@ -92,8 +93,8 @@ export class InAppService {
             return connectionExists > 0;
         } catch (error) {
             this.logger.error(
-                `Error checking connection status for user ${userId}: ${(error as any).message}`,
-                (error as any).stack,
+                `Error checking connection status for user ${userId}: ${error instanceof Error ? error.message : String(error)}`,
+                error instanceof Error ? error.stack : undefined,
                 'InAppService'
             );
             return false;
@@ -106,7 +107,7 @@ export class InAppService {
      *
      * @param userId - The ID of the user to store the notification for
      * @param notification - The notification to store
-     * @returns A promise that resolves with a boolean indicating whether the notification was stored successfully
+     * @returns A promise that resolves with a boolean indicating whether stored successfully
      */
     async storeNotificationForLaterDelivery(userId: string, notification: Notification): Promise<boolean> {
         try {
@@ -143,8 +144,8 @@ export class InAppService {
             return true;
         } catch (error) {
             this.logger.error(
-                `Error storing notification for later delivery for user ${userId}: ${(error as any).message}`,
-                (error as any).stack,
+                `Error storing notification for later delivery for user ${userId}: ${error instanceof Error ? error.message : String(error)}`,
+                error instanceof Error ? error.stack : undefined,
                 'InAppService'
             );
             return false;

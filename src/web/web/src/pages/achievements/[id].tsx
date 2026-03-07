@@ -1,15 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text';
-import { Box } from 'src/web/design-system/src/primitives/Box/Box';
-import { Card } from 'src/web/design-system/src/components/Card/Card';
-import { Button } from 'src/web/design-system/src/components/Button/Button';
-import { AchievementBadge } from 'src/web/design-system/src/gamification/AchievementBadge';
-import { ProgressBar } from 'src/web/design-system/src/components/ProgressBar/ProgressBar';
-import { useGameProfile } from 'src/web/web/src/hooks/useGamification';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { spacing } from 'src/web/design-system/src/tokens/spacing';
+import { Text } from 'design-system/primitives/Text/Text';
+import { Box } from 'design-system/primitives/Box/Box';
+import { Card } from 'design-system/components/Card/Card';
+import { Button } from 'design-system/components/Button/Button';
+import { AchievementBadge } from 'design-system/gamification/AchievementBadge';
+import { ProgressBar } from 'design-system/components/ProgressBar/ProgressBar';
+import { useGameProfile } from '@/hooks/useGamification';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
 
 const JOURNEY_COLORS: Record<string, string> = {
     health: colors.journeys?.health?.primary ?? '#0ACF83',

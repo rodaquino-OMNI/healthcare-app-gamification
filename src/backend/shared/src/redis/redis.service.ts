@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Redis, { RedisOptions } from 'ioredis';
@@ -15,7 +15,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     // Using definite assignment assertion to fix property initialization error
     private readonly client!: Redis;
     private subscriptionClient: Redis | null = null;
-    private readonly configNamespace = 'gamificationEngine.redis'; // Match the namespace used in configuration.ts
+    private readonly configNamespace = 'gamificationEngine.redis';
 
     /**
      * Helper method to safely extract error message and stack trace from unknown errors
@@ -23,8 +23,8 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     private formatError(error: unknown): { message: string; stack?: string } {
         if (error instanceof Error) {
             return {
-                message: (error as any).message,
-                stack: (error as any).stack,
+                message: error.message,
+                stack: error.stack,
             };
         } else if (typeof error === 'string') {
             return {
@@ -105,7 +105,8 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
             } catch (error) {
                 const formattedError = this.formatError(error);
                 this.logger.error(
-                    `Failed to parse Redis URL: ${formattedError.message}. Falling back to connection parameters.`,
+                    // eslint-disable-next-line max-len
+                    'Failed to parse Redis URL: ' + `${formattedError.message}. Falling back to connection parameters.`,
                     formattedError.stack,
                     'RedisService'
                 );
@@ -134,7 +135,8 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
             if (!this.client) {
                 // Create client now if it wasn't successful in constructor
                 const redisConfig = this.getRedisConfig();
-                (this as any).client = new Redis(redisConfig);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (this as unknown as { client: Redis }).client = new Redis(redisConfig);
             }
 
             // Ping Redis to verify connection
@@ -245,7 +247,8 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         try {
             const keysArray = Array.isArray(keys) ? keys : [keys];
             const count = await this.client.del(...keysArray);
-            this.logger.debug(`Redis DEL: ${Array.isArray(keys) ? keys.join(', ') : keys}`, 'RedisService');
+            const keyList = Array.isArray(keys) ? keys.join(', ') : keys;
+            this.logger.debug(`Redis DEL: ${keyList}`, 'RedisService');
             return count;
         } catch (error) {
             const formattedError = this.formatError(error);
@@ -263,7 +266,8 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         try {
             const keysArray = Array.isArray(keys) ? keys : [keys];
             const count = await this.client.exists(...keysArray);
-            this.logger.debug(`Redis EXISTS: ${Array.isArray(keys) ? keys.join(', ') : keys}`, 'RedisService');
+            const existsKeyList = Array.isArray(keys) ? keys.join(', ') : keys;
+            this.logger.debug(`Redis EXISTS: ${existsKeyList}`, 'RedisService');
             return count;
         } catch (error) {
             const formattedError = this.formatError(error);
@@ -369,7 +373,8 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     async hmset(key: string, fieldValues: Record<string, string>): Promise<string> {
         try {
             const result = await this.client.hmset(key, fieldValues);
-            this.logger.debug(`Redis HMSET: ${key} (${Object.keys(fieldValues).length} fields)`, 'RedisService');
+            const hmsetFieldCount = Object.keys(fieldValues).length;
+            this.logger.debug(`Redis HMSET: ${key} (${hmsetFieldCount} fields)`, 'RedisService');
             return result;
         } catch (error) {
             const formattedError = this.formatError(error);
@@ -470,7 +475,10 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         try {
             const args = withScores ? ['WITHSCORES'] : [];
             // Use type assertion to fix the typing issue
-            const result = await (this.client.zrange as any)(key, start, stop, ...args);
+            // Use typed wrapper to avoid unsafe member access
+            type ZrangeFn = (k: string, s: number, e: number, ...a: string[]) => Promise<string[]>;
+            const zrangeFn = this.client.zrange.bind(this.client) as ZrangeFn;
+            const result = await zrangeFn(key, start, stop, ...args);
             this.logger.debug(
                 `Redis ZRANGE: ${key} ${start} ${stop}${withScores ? ' WITHSCORES' : ''}`,
                 'RedisService'

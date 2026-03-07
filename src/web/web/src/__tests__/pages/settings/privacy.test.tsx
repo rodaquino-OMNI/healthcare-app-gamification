@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 
-jest.mock('src/web/web/src/layouts/MainLayout', () => ({
+jest.mock('@/layouts/MainLayout', () => ({
     MainLayout: ({ children }: any) => <div data-testid="main-layout">{children}</div>,
 }));
 
-jest.mock('src/web/design-system/src/tokens/colors', () => ({
+jest.mock('design-system/tokens/colors', () => ({
     colors: {
         gray: { 10: '#f9fafb', 20: '#e5e7eb', 30: '#d1d5db', 40: '#9ca3af', 50: '#888', 60: '#4b5563', 70: '#374151' },
         brand: { primary: '#0066cc' },
@@ -15,7 +15,7 @@ jest.mock('src/web/design-system/src/tokens/colors', () => ({
     },
 }));
 
-jest.mock('src/web/design-system/src/tokens/typography', () => ({
+jest.mock('design-system/tokens/typography', () => ({
     typography: {
         fontFamily: { heading: 'sans-serif', body: 'sans-serif' },
         fontSize: {
@@ -30,7 +30,7 @@ jest.mock('src/web/design-system/src/tokens/typography', () => ({
     },
 }));
 
-jest.mock('src/web/design-system/src/tokens/spacing', () => ({
+jest.mock('design-system/tokens/spacing', () => ({
     spacing: {
         xs: '8px',
         sm: '12px',

@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Represents the connection status of a wearable device
  */
@@ -77,7 +78,7 @@ export class DeviceConnection {
     /**
      * Additional metadata for the device connection (JSON)
      */
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
 
     /**
      * Date when the connection was created

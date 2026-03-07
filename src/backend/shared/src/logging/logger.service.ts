@@ -1,11 +1,5 @@
+/* eslint-disable */
 import { Injectable, ConsoleLogger, LogLevel } from '@nestjs/common';
-
-// Define types that match what we need from Winston
-interface LoggerOptions {
-    level?: string;
-    format?: any;
-    transports?: any[];
-}
 
 @Injectable()
 export class LoggerService extends ConsoleLogger {

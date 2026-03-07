@@ -1,8 +1,7 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client'; // v3.7.17
 import { createUploadLink } from 'apollo-upload-client'; // v17.0.0
 import axios, { AxiosInstance } from 'axios'; // v1.4.0
-import { apiConfig } from 'src/web/shared/config/apiConfig';
-import { AuthSession } from 'src/web/shared/types';
+import { apiConfig } from 'shared/config/apiConfig';
 
 /**
  * Apollo Client instance for GraphQL API requests

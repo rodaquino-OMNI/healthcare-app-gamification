@@ -1,6 +1,6 @@
 import React from 'react'; // react 18.0.0
 import { useJourney } from '../hooks/useJourney';
-import { JOURNEY_IDS } from 'src/web/shared/constants/journeys';
+import { JOURNEY_IDS } from 'shared/constants/journeys';
 import styled from 'styled-components'; // styled-components 6.0.0+
 
 /**

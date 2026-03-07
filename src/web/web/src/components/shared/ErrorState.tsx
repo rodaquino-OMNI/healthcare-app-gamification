@@ -1,8 +1,8 @@
 import React from 'react';
-import { Button } from 'src/web/design-system/src/components/Button';
-import { Text } from 'src/web/design-system/src/primitives/Text';
-import { Box } from 'src/web/design-system/src/primitives/Box';
-import { useJourney } from 'src/web/mobile/src/hooks/useJourney';
+import { Button } from 'design-system/components/Button';
+import { Text } from 'design-system/primitives/Text';
+import { Box } from 'design-system/primitives/Box';
+import { useJourney } from '@/hooks/useJourney';
 
 interface ErrorStateProps {
     /**

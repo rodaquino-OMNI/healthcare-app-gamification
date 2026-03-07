@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -285,7 +285,7 @@ export class RulesService implements OnModuleInit {
      * @param userId The user ID
      * @param context The context for action execution
      */
-    private async executeAction(action: RuleAction, userId: string, context: any): Promise<void> {
+    private async executeAction(action: RuleAction, userId: string, _context: unknown): Promise<void> {
         try {
             switch (action.type) {
                 case 'AWARD_XP':

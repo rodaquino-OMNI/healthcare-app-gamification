@@ -2,17 +2,17 @@ import React from 'react';
 import { useForm } from 'react-hook-form'; // 7.0+
 import { yupResolver } from '@hookform/resolvers/yup'; // latest
 import { z } from 'zod'; // latest
-import { ClaimType } from 'src/web/shared/types/plan.types';
-import { claimValidationSchema } from 'src/web/shared/utils/validation';
-import { useClaims } from 'src/web/web/src/hooks/useClaims';
-import { useJourneyContext } from 'src/web/web/src/context/JourneyContext.tsx';
-import { Button } from 'src/web/design-system/src/components/index';
-import Input from 'src/web/design-system/src/components/index';
-import { Select } from 'src/web/design-system/src/components/index';
+import { ClaimType } from 'shared/types/plan.types';
+import { claimValidationSchema } from 'shared/utils/validation';
+import { useClaims } from '@/hooks/useClaims';
+import { useJourneyContext } from '@/context/JourneyContext';
+import { Button } from 'design-system/components/index';
+import Input from 'design-system/components/index';
+import { Select } from 'design-system/components/index';
 import { useRouter } from 'next/router'; // 13.0+
-import { MOBILE_PLAN_ROUTES } from 'src/web/shared/constants/routes';
+import { MOBILE_PLAN_ROUTES } from 'shared/constants/routes';
 import { useMutation } from '@apollo/client'; // 3.7.17
-import { SUBMIT_CLAIM } from 'src/web/shared/graphql/mutations/plan.mutations';
+import { SUBMIT_CLAIM } from 'shared/graphql/mutations/plan.mutations';
 
 /**
  * A React component that renders a form for submitting insurance claims.
@@ -49,7 +49,7 @@ export const ClaimForm: React.FC = () => {
         { label: 'Other', value: 'other' },
     ];
 
-    const onSubmit = async (data: any) => {
+    const onSubmit = async (data: Record<string, unknown>) => {
         try {
             // Calls the `submitClaim` function from the `useClaims` hook to submit the claim data to the backend.
             const result = await submitClaim({

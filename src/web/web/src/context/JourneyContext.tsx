@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { ALL_JOURNEYS } from 'src/web/shared/constants/journeys.ts';
-import { useAuth } from 'src/web/web/src/hooks/useAuth.ts';
+import { ALL_JOURNEYS } from 'shared/constants/journeys';
+import { useAuth } from '@/hooks/useAuth';
 
 /**
  * Type for a journey object as defined in journeys.ts

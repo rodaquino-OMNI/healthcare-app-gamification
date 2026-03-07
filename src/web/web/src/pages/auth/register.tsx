@@ -4,14 +4,14 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useAuth } from 'src/web/web/src/hooks/useAuth';
-import Input from 'src/web/design-system/src/components/Input';
-import { Button } from 'src/web/design-system/src/components/Button';
-import FormField from 'src/web/design-system/src/components/Input';
-import AuthLayout from 'src/web/web/src/layouts/AuthLayout';
-import { WEB_AUTH_ROUTES } from 'src/web/shared/constants/routes';
-import Box from 'src/web/design-system/src/primitives/Box/Box';
-import Text from 'src/web/design-system/src/primitives/Text/Text';
+import { useAuth } from '@/hooks/useAuth';
+import Input from 'design-system/components/Input';
+import { Button } from 'design-system/components/Button';
+import FormField from 'design-system/components/Input';
+import AuthLayout from '@/layouts/AuthLayout';
+import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
+import Box from 'design-system/primitives/Box/Box';
+import Text from 'design-system/primitives/Text/Text';
 
 // Define the form values interface
 interface RegisterFormValues {
@@ -70,8 +70,11 @@ const Register: React.FC = () => {
             const { name, email, password } = data;
             await registerUser({ name, email, password });
             router.push(WEB_AUTH_ROUTES.LOGIN);
-        } catch (error: any) {
-            setSubmitError(error.response?.data?.message || 'Erro ao criar conta. Tente novamente.');
+        } catch (error: unknown) {
+            setSubmitError(
+                (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+                    'Erro ao criar conta. Tente novamente.'
+            );
         }
     };
 

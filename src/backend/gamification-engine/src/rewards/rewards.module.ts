@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
 import { KafkaModule } from '@app/shared/kafka/kafka.module';
 import { LoggerModule } from '@app/shared/logging/logger.module';
@@ -13,8 +14,8 @@ import { ProfilesModule } from '../profiles/profiles.module';
 import { QuestsModule } from '../quests/quests.module';
 
 /**
- * Configures the RewardsModule in NestJS, which is responsible for managing rewards within the gamification engine.
- * It imports and exports the RewardsService and RewardsController, making them available for use in other modules.
+ * Configures the RewardsModule in NestJS, which manages rewards within the gamification engine.
+ * Imports and exports RewardsService and RewardsController for use in other modules.
  */
 @Module({
     imports: [

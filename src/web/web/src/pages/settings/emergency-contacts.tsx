@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { NextPage } from 'next';
-import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 
 interface Contact {
     id: string;

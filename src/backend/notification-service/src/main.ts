@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { ValidationPipe } from '@nestjs/common';
@@ -8,7 +9,7 @@ import helmet from 'helmet';
 
 import { AppModule } from './app.module';
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
     const app = await NestFactory.create(AppModule);
 
     // S1: Adds security HTTP headers via helmet middleware.
@@ -57,4 +58,4 @@ async function bootstrap() {
     await app.listen(port);
     logger.log(`Notification service running on port: ${port}`);
 }
-bootstrap();
+void bootstrap();

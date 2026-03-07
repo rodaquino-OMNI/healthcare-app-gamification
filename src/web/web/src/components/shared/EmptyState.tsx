@@ -1,7 +1,7 @@
 import React from 'react';
-import { Box, Text, Icon } from 'src/web/design-system/src/primitives/index';
-import { Button } from 'src/web/design-system/src/components/Button/Button';
-import { JOURNEY_ICONS } from 'src/web/shared/constants/index';
+import { Box, Text, Icon } from 'design-system/primitives/index';
+import { Button } from 'design-system/components/Button/Button';
+import { JOURNEY_ICONS } from 'shared/constants/index';
 
 /**
  * Props for the EmptyState component

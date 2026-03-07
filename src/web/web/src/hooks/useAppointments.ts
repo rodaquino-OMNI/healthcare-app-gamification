@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client'; // v3.0+
-import { Appointment } from 'src/web/shared/types/care.types';
-import { useAuth } from 'src/web/web/src/context/AuthContext';
-import { GET_APPOINTMENTS } from 'src/web/shared/graphql/queries/care.queries';
+import { Appointment } from 'shared/types/care.types';
+import { useAuth } from '@/context/AuthContext';
+import { GET_APPOINTMENTS } from 'shared/graphql/queries/care.queries';
 
 /**
  * Hook to fetch and manage appointments within the Care Now journey.

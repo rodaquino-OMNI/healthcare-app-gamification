@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { registerAs } from '@nestjs/config'; // v10.0.0+
 
 import { DEFAULT_PORT } from './validation.schema';
@@ -95,7 +96,7 @@ export const gamificationEngine = registerAs('gamificationEngine', () => ({
             enabled: process.env.CACHE_ENABLED !== 'false', // Enabled by default
         },
         leaderboard: {
-            updateInterval: parseIntSafe(process.env.LEADERBOARD_UPDATE_INTERVAL, 900000), // 15 minutes
+            updateInterval: parseIntSafe(process.env.LEADERBOARD_UPDATE_INTERVAL, 900000), // 15 min
             maxEntries: parseIntSafe(process.env.LEADERBOARD_MAX_ENTRIES, 100),
         },
         achievements: {

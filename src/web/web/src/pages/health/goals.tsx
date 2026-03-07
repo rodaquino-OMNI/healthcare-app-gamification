@@ -2,16 +2,16 @@ import React, { useState } from 'react'; // react 18.0+
 import { useRouter } from 'next/router'; // next/router 13.0+
 import { useQuery } from '@apollo/client'; // 3.7.17
 
-import { HealthGoal } from 'src/web/shared/types/health.types';
-import { useAuth } from 'src/web/web/src/hooks/useAuth.ts';
-import { HealthGoalForm } from 'src/web/mobile/src/components/forms/HealthGoalForm.tsx';
-import { Card } from 'src/web/design-system/src/components/Card/Card.tsx';
-import { Button } from 'src/web/design-system/src/components/Button/Button.tsx';
-import { GET_HEALTH_GOALS } from 'src/web/shared/graphql/queries/health.queries.ts';
-import { CREATE_HEALTH_METRIC } from 'src/web/shared/graphql/mutations/health.mutations.ts';
-import { WEB_HEALTH_ROUTES } from 'src/web/shared/constants/routes.ts';
-import { useHealthMetrics } from 'src/web/web/src/hooks/useHealthMetrics.ts';
-import { JourneyHeader } from 'src/web/web/src/components/shared/JourneyHeader.tsx';
+import { HealthGoal } from 'shared/types/health.types';
+import { useAuth } from '@/hooks/useAuth';
+import { HealthGoalForm } from '@/components/forms/HealthGoalForm';
+import { Card } from 'design-system/components/Card/Card';
+import { Button } from 'design-system/components/Button/Button';
+import { GET_HEALTH_GOALS } from 'shared/graphql/queries/health.queries';
+import { CREATE_HEALTH_METRIC } from 'shared/graphql/mutations/health.mutations';
+import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
+import { useHealthMetrics } from '@/hooks/useHealthMetrics';
+import { JourneyHeader } from '@/components/shared/JourneyHeader';
 
 /**
  * Renders the Health Goals page, displaying a list of current goals and providing functionality to add new goals or modify existing ones.

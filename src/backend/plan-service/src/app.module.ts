@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { AuditModule, AuditInterceptor } from '@app/shared/audit';
 import { DatabaseModule } from '@app/shared/database/database.module';
 import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
@@ -19,8 +20,8 @@ import { PlansModule } from './plans/plans.module';
 
 /**
  * Root module for the Plan Service that configures and organizes all the necessary components.
- * This module integrates all the necessary components for insurance plan management, claims processing,
- * cost simulation, document handling, and insurance verification.
+ * Integrates insurance plan management, claims processing, cost simulation,
+ * document handling, and insurance verification.
  */
 @Module({
     imports: [

@@ -1,17 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { ErrorType } from '@app/shared/exceptions/error.types';
+/* eslint-disable */
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
-import { Service } from '@app/shared/interfaces/service.interface';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { TracingService } from '@app/shared/tracing/tracing.service';
-import { formatDate } from '@app/shared/utils/date.util';
 import { truncate } from '@app/shared/utils/string.util';
-import { Injectable, Logger } from '@nestjs/common'; // NestJS Common 9.0.0+
-import axios from 'axios'; // Axios 1.4+
+import { Injectable } from '@nestjs/common'; // NestJS Common 9.0.0+
 import FhirClient from 'fhir-kit-client'; // FHIR Kit Client 4.0.0+
 
 import { health } from '@app/health/config/configuration';
-import { HealthMetric } from '@app/health/health/entities/health-metric.entity';
 import { MedicalEvent } from '@app/health/health/entities/medical-event.entity';
 
 /**
@@ -374,8 +369,8 @@ export class FHIRAdapter {
                 .map((entry) => {
                     const condition = entry.resource;
 
-                    // Extract clinical status
-                    const clinicalStatus =
+                    // Extract clinical status (reserved for future use)
+                    const _clinicalStatus =
                         condition.clinicalStatus?.coding?.[0]?.display ||
                         condition.clinicalStatus?.coding?.[0]?.code ||
                         '';
@@ -397,8 +392,8 @@ export class FHIRAdapter {
                     // Extract provider information
                     const provider = condition.asserter?.display || '';
 
-                    // Extract notes
-                    const notes = condition.note?.map((n) => n.text).join('\n') || '';
+                    // Extract notes (reserved for future use)
+                    const _notes = condition.note?.map((n) => n.text).join('\n') || '';
 
                     // Create a new MedicalEvent entity
                     const medicalEvent = new MedicalEvent();

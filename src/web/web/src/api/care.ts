@@ -9,19 +9,19 @@
  * through appointment booking, telemedicine, and other care-related features.
  */
 
-import { gql, ApolloClient } from '@apollo/client'; // v3.7.0
-import { apiConfig } from 'src/web/shared/config/apiConfig';
-import { API_TIMEOUT } from 'src/web/shared/constants/index';
-import { Appointment } from 'src/web/shared/types/care.types';
-import { GET_APPOINTMENTS, GET_APPOINTMENT, GET_PROVIDERS } from 'src/web/shared/graphql/queries/care.queries';
-import { BOOK_APPOINTMENT, CANCEL_APPOINTMENT } from 'src/web/shared/graphql/mutations/care.mutations';
+import { ApolloClient } from '@apollo/client'; // v3.7.0
+import { apiConfig } from 'shared/config/apiConfig';
+import { API_TIMEOUT } from 'shared/constants/index';
+import { Appointment } from 'shared/types/care.types';
+import { GET_APPOINTMENTS, GET_APPOINTMENT, GET_PROVIDERS } from 'shared/graphql/queries/care.queries';
+import { BOOK_APPOINTMENT, CANCEL_APPOINTMENT } from 'shared/graphql/mutations/care.mutations';
 
 // Apollo client instance for making GraphQL requests
 // This would typically be imported from a central client configuration
 // but is created here for the purposes of this file
 const client = new ApolloClient({
     uri: apiConfig.journeys.care,
-    cache: new (ApolloClient as any).InMemoryCache(),
+    cache: new (ApolloClient as unknown as { InMemoryCache: new () => unknown }).InMemoryCache(),
     defaultOptions: {
         query: {
             fetchPolicy: 'network-only',
@@ -83,7 +83,7 @@ export async function getAppointment(id: string): Promise<Appointment> {
  * @param location - The location to filter providers by
  * @returns A promise that resolves to an array of provider objects
  */
-export async function getProviders(specialty: string, location: string): Promise<any[]> {
+export async function getProviders(specialty: string, location: string): Promise<unknown[]> {
     try {
         const { data } = await client.query({
             query: GET_PROVIDERS,

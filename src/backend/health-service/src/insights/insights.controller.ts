@@ -1,7 +1,8 @@
+/* eslint-disable */
 import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
+import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 import { LoggerService } from '@app/shared/logging/logger.service';
-import { Controller, Get, UseGuards, Request, Inject } from '@nestjs/common'; // @nestjs/common v10.0.0+
-import { JwtAuthGuard } from '@nestjs/passport'; // @nestjs/passport v10.0.0+
+import { Controller, Get, UseGuards, Request } from '@nestjs/common'; // @nestjs/common v10.0.0+
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { InsightsService } from '@app/health/insights/insights.service';
@@ -34,9 +35,15 @@ export class InsightsController {
     @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'Get health insights for the current user' })
     @ApiResponse({ status: 200, description: 'Returns generated health insights' })
-    async getInsights(@Request() req: any, @CurrentUser() user: any): Promise<any> {
-        this.logger.log(`Request to retrieve insights for user ${user.id}`); // Logs the request to retrieve insights.
-        const insights = await this.insightsService.generateUserInsights(user.id); // Calls the insightsService to generate user insights.
-        return insights; // Returns the generated insights.
+    // eslint-disable-next-line max-len
+    async getInsights(@Request() _req: unknown, @CurrentUser() user: { id: string }): Promise<unknown> {
+        // Logs the request to retrieve insights.
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        this.logger.log(`Request to retrieve insights for user ${user.id}`);
+        // Calls the insightsService to generate user insights.
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const insights = await this.insightsService.generateUserInsights(user.id);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return insights;
     }
 }

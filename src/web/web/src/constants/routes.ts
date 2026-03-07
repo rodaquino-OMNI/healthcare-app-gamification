@@ -3,7 +3,7 @@
  * Organized by user journey to maintain clear navigation structure.
  */
 
-import { JOURNEY_NAMES } from 'src/web/shared/constants/journeys.ts';
+import { JOURNEY_NAMES } from 'shared/constants/journeys';
 
 /**
  * Application routes for navigation and routing configuration

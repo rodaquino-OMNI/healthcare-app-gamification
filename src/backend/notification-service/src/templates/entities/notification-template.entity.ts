@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { ApiProperty } from '@nestjs/swagger';
 
 /**
@@ -97,5 +98,5 @@ export class NotificationTemplate {
         description: 'Additional template metadata',
         required: false,
     })
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { NextPage } from 'next';
-import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import { getInsuranceDocs, downloadDoc } from '../../api/settings';
 
 interface InsuranceDoc {

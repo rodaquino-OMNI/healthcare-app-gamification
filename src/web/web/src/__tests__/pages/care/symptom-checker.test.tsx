@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 
-jest.mock('src/web/design-system/src/components/Card/Card', () => ({
+jest.mock('design-system/components/Card/Card', () => ({
     Card: ({ children, ...props }: any) => (
         <div data-testid="card" {...props}>
             {children}
@@ -9,7 +9,7 @@ jest.mock('src/web/design-system/src/components/Card/Card', () => ({
     ),
 }));
 
-jest.mock('src/web/design-system/src/components/Button/Button', () => ({
+jest.mock('design-system/components/Button/Button', () => ({
     Button: ({ children, onPress, accessibilityLabel, disabled }: any) => (
         <button onClick={onPress} aria-label={accessibilityLabel} disabled={disabled} data-testid="button">
             {children}
@@ -17,7 +17,7 @@ jest.mock('src/web/design-system/src/components/Button/Button', () => ({
     ),
 }));
 
-jest.mock('src/web/design-system/src/components/Badge/Badge', () => ({
+jest.mock('design-system/components/Badge/Badge', () => ({
     Badge: ({ children, status }: any) => (
         <span data-testid="badge" data-status={status}>
             {children}
@@ -25,21 +25,21 @@ jest.mock('src/web/design-system/src/components/Badge/Badge', () => ({
     ),
 }));
 
-jest.mock('src/web/design-system/src/components/ProgressBar/ProgressBar', () => ({
+jest.mock('design-system/components/ProgressBar/ProgressBar', () => ({
     ProgressBar: ({ current, total, ariaLabel }: any) => (
         <div role="progressbar" aria-label={ariaLabel} aria-valuenow={current} aria-valuemax={total} />
     ),
 }));
 
-jest.mock('src/web/design-system/src/primitives/Text/Text', () => ({
+jest.mock('design-system/primitives/Text/Text', () => ({
     Text: ({ children, ...props }: any) => <span {...props}>{children}</span>,
 }));
 
-jest.mock('src/web/design-system/src/primitives/Box/Box', () => ({
+jest.mock('design-system/primitives/Box/Box', () => ({
     Box: ({ children, ...props }: any) => <div {...props}>{children}</div>,
 }));
 
-jest.mock('src/web/design-system/src/tokens/colors', () => ({
+jest.mock('design-system/tokens/colors', () => ({
     colors: {
         journeys: { care: { text: '#1e3a5f', primary: '#2e7cf6' } },
         gray: { 50: '#888' },
@@ -47,7 +47,7 @@ jest.mock('src/web/design-system/src/tokens/colors', () => ({
     },
 }));
 
-jest.mock('src/web/design-system/src/tokens/spacing', () => ({
+jest.mock('design-system/tokens/spacing', () => ({
     spacing: {
         xs: '8px',
         sm: '12px',
@@ -58,7 +58,7 @@ jest.mock('src/web/design-system/src/tokens/spacing', () => ({
     },
 }));
 
-jest.mock('src/web/shared/constants/routes', () => ({
+jest.mock('shared/constants/routes', () => ({
     WEB_CARE_ROUTES: {
         SYMPTOM_RECOMMENDATION: '/care/symptom-checker/recommendation',
     },

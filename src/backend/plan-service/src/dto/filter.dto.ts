@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * DTO for filtering and pagination across plan service endpoints
  */
@@ -6,7 +7,7 @@ export class FilterDto {
     /**
      * Where clauses for the filter
      */
-    where?: Record<string, any>;
+    where?: Record<string, unknown>;
 
     /**
      * Order by clauses

@@ -181,7 +181,7 @@ export const acknowledgeAchievement = async (userId: string, achievementId: stri
 export const triggerGamificationEvent = async (
     userId: string,
     eventType: string,
-    eventData: any
+    eventData: unknown
 ): Promise<{ achievements?: Achievement[]; rewards?: Reward[] }> => {
     try {
         const response = await axios.post(`${GAMIFICATION_API_URL}/events`, {

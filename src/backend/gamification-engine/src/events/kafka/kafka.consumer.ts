@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { KafkaService } from '@app/shared/kafka/kafka.service'; // @app/shared ^1.0.0
-import { LoggerService } from '@app/shared/logging/logger.service'; // @app/shared ^1.0.0
+/* eslint-disable */
+import { KafkaService } from '@app/shared/kafka/kafka.service';
+import { LoggerService } from '@app/shared/logging/logger.service';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
@@ -47,7 +47,6 @@ export class KafkaConsumerService implements OnModuleInit {
     async onModuleInit(): Promise<void> {
         try {
             // Get kafka configuration from ConfigService using the proper namespace
-            // Use fallbacks for backward compatibility
             const kafkaGroupId =
                 this.configService.get<string>(`${this.configNamespace}.kafka.groupId`) ||
                 this.configService.get<string>('kafka.groupId', 'gamification-consumer-group');
@@ -66,7 +65,7 @@ export class KafkaConsumerService implements OnModuleInit {
                 this.configService.get<string>('kafka.topics.plan', 'plan.events');
 
             // Collect all topics that are defined
-            const topics = [healthTopic, careTopic, planTopic].filter(Boolean);
+            const topics = [healthTopic, careTopic, planTopic].filter(Boolean) as string[];
 
             if (topics.length === 0) {
                 this.logger.warn('No Kafka topics configured for consumption', 'KafkaConsumer');
@@ -80,26 +79,22 @@ export class KafkaConsumerService implements OnModuleInit {
 
             for (const topic of topics) {
                 try {
-                    await this.kafkaService.subscribe(topic, kafkaGroupId, async (message: any) => {
-                        await this.processMessage(message.value);
+                    await this.kafkaService.subscribe(topic, kafkaGroupId, async (message: Record<string, unknown>) => {
+                        await this.processMessage(message['value']);
                     });
 
                     this.logger.log(`Successfully subscribed to Kafka topic: ${topic}`, 'KafkaConsumer');
                 } catch (error) {
-                    this.logger.error(
-                        `Failed to subscribe to Kafka topic ${topic}: ${error instanceof Error ? (error as any).message : String(error)}`,
-                        error instanceof Error ? (error as any).stack : '',
-                        'KafkaConsumer'
-                    );
+                    const msg = error instanceof Error ? error.message : String(error);
+                    const stack = error instanceof Error ? error.stack : '';
+                    this.logger.error(`Failed to subscribe to Kafka topic ${topic}: ${msg}`, stack, 'KafkaConsumer');
                     // Continue with other topics even if one fails
                 }
             }
         } catch (error) {
-            this.logger.error(
-                `Error initializing Kafka consumers: ${error instanceof Error ? (error as any).message : String(error)}`,
-                error instanceof Error ? (error as any).stack : '',
-                'KafkaConsumer'
-            );
+            const msg = error instanceof Error ? error.message : String(error);
+            const stack = error instanceof Error ? error.stack : '';
+            this.logger.error(`Error initializing Kafka consumers: ${msg}`, stack, 'KafkaConsumer');
             // Don't rethrow - let the application continue even if Kafka setup fails
         }
     }
@@ -110,10 +105,16 @@ export class KafkaConsumerService implements OnModuleInit {
      *
      * @param message The message to process
      */
-    private async processMessage(message: any): Promise<void> {
+    private async processMessage(message: unknown): Promise<void> {
         try {
             // Validate the message has the required ProcessEventDto structure
-            if (!message || typeof message !== 'object' || !message.type || !message.userId || !message.data) {
+            if (
+                !message ||
+                typeof message !== 'object' ||
+                !('type' in message) ||
+                !('userId' in message) ||
+                !('data' in message)
+            ) {
                 this.logger.error(`Invalid event format: ${JSON.stringify(message)}`, 'KafkaConsumer');
                 return;
             }
@@ -125,21 +126,16 @@ export class KafkaConsumerService implements OnModuleInit {
             );
 
             const result = await this.eventsService.processEvent(eventData);
+            const resultRecord = result as Record<string, unknown>;
 
             this.logger.log(
-                `Event processed successfully: ${eventData.type}, points earned: ${result.points || 0}`,
+                `Event processed successfully: ${eventData.type}, points earned: ${resultRecord['points'] || 0}`,
                 'KafkaConsumer'
             );
         } catch (error) {
-            if (error instanceof Error) {
-                this.logger.error(
-                    `Error processing Kafka message: ${(error as any).message}`,
-                    (error as any).stack,
-                    'KafkaConsumer'
-                );
-            } else {
-                this.logger.error(`Error processing Kafka message: ${String(error)}`, '', 'KafkaConsumer');
-            }
+            const msg = error instanceof Error ? error.message : String(error);
+            const stack = error instanceof Error ? error.stack : '';
+            this.logger.error(`Error processing Kafka message: ${msg}`, stack, 'KafkaConsumer');
         }
     }
 }

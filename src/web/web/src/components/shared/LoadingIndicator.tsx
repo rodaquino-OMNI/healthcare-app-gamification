@@ -1,9 +1,9 @@
 import React from 'react';
-import { Box } from 'src/web/design-system/src/primitives/Box';
-import { Text } from 'src/web/design-system/src/primitives/Text';
-import { ProgressCircle } from 'src/web/design-system/src/components/ProgressCircle';
-import { useJourney } from 'src/web/web/src/context/JourneyContext';
-import { JOURNEY_COLORS } from 'src/web/shared/constants/journeys';
+import { Box } from 'design-system/primitives/Box';
+import { Text } from 'design-system/primitives/Text';
+import { ProgressCircle } from 'design-system/components/ProgressCircle';
+import { useJourney } from '@/context/JourneyContext';
+import { JOURNEY_COLORS } from 'shared/constants/journeys';
 
 /**
  * Props for the LoadingIndicator component

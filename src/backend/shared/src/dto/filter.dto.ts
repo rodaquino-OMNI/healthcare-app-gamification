@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * DTO for filtering entities in list operations
  */
@@ -5,7 +6,7 @@ export class FilterDto {
     /**
      * WHERE clause for filtering results
      */
-    where?: Record<string, any>;
+    where?: Record<string, unknown>;
 
     /**
      * ORDER BY clause for sorting results

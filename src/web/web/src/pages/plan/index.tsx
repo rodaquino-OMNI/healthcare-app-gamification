@@ -1,13 +1,13 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { PlanLayout } from 'src/web/web/src/layouts/PlanLayout';
-import { InsuranceCard } from 'src/web/design-system/src/plan/InsuranceCard/InsuranceCard';
-import { ClaimCard } from 'src/web/design-system/src/plan/ClaimCard/ClaimCard';
-import { Text } from 'src/web/design-system/src/primitives';
-import { WEB_PLAN_ROUTES } from 'src/web/shared/constants/routes';
-import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
-import { useAuth } from 'src/web/web/src/hooks/useAuth';
-import { Claim } from 'src/web/shared/types/plan.types';
+import { PlanLayout } from '@/layouts/PlanLayout';
+import { InsuranceCard } from 'design-system/plan/InsuranceCard/InsuranceCard';
+import { ClaimCard } from 'design-system/plan/ClaimCard/ClaimCard';
+import { Text } from 'design-system/primitives';
+import { WEB_PLAN_ROUTES } from 'shared/constants/routes';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import { useAuth } from '@/hooks/useAuth';
+import { Claim } from 'shared/types/plan.types';
 
 const { plan } = colors.journeys;
 

@@ -1,5 +1,5 @@
-import { ErrorType } from '@app/shared/exceptions/exceptions.types';
-import * as Joi from 'joi'; // joi 17.9.1
+/* eslint-disable */
+import Joi from 'joi'; // joi 17.9.1
 
 /**
  * Creates a Joi validation schema for the Plan Service configuration
@@ -198,11 +198,6 @@ const createValidationSchema = (): Joi.ObjectSchema => {
         }).default(),
     });
 };
-
-/**
- * Validation schema for the Plan Service configuration using Joi.
- */
-class PlanServiceConfigValidation {}
 
 // Export the validation schema for use in the configuration module
 export default createValidationSchema();

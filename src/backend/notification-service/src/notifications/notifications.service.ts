@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { ErrorType } from '@app/shared/exceptions/error.types';
 import { AppException } from '@app/shared/exceptions/exceptions.types';
@@ -102,8 +102,8 @@ export class NotificationsService {
             return notification;
         } catch (error) {
             this.logger.error(
-                `Failed to send notification: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
-                error instanceof Error ? (error as any).stack : undefined
+                `Failed to send notification: ${error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'}`,
+                error instanceof Error ? (error instanceof Error ? error.stack : undefined) : undefined
             );
             throw error as any;
         }
@@ -132,8 +132,8 @@ export class NotificationsService {
             return { title, message };
         } catch (error) {
             this.logger.error(
-                `Error processing template: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
-                error instanceof Error ? (error as any).stack : undefined
+                `Error processing template: ${error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'}`,
+                error instanceof Error ? (error instanceof Error ? error.stack : undefined) : undefined
             );
             return {
                 title: template.title,
@@ -219,8 +219,8 @@ export class NotificationsService {
             }
         } catch (error) {
             this.logger.error(
-                `Failed to send notification via ${channel}: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
-                error instanceof Error ? (error as any).stack : undefined
+                `Failed to send notification via ${channel}: ${error instanceof Error ? (error instanceof Error ? error.message : String(error)) : 'Unknown error'}`,
+                error instanceof Error ? (error instanceof Error ? error.stack : undefined) : undefined
             );
             // Continue with other channels even if one fails
         }
@@ -229,7 +229,7 @@ export class NotificationsService {
     /**
      * Send a push notification
      */
-    private async sendPushNotification(notification: Notification, userPreferences?: any): Promise<void> {
+    private async sendPushNotification(notification: Notification, _userPreferences?: unknown): Promise<void> {
         try {
             // Emit event to Kafka for the push notification service to handle
             await this.kafkaService.emit('notifications.push', {
@@ -242,19 +242,19 @@ export class NotificationsService {
             });
 
             this.logger.debug(`Push notification event emitted for user ${notification.userId}`);
-        } catch (error) {
+        } catch (error: unknown) {
             this.logger.error(
-                `Failed to send push notification: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
-                error instanceof Error ? (error as any).stack : undefined
+                `Failed to send push notification: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                error instanceof Error ? error.stack : undefined
             );
-            throw error as any;
+            throw error;
         }
     }
 
     /**
      * Send an email notification
      */
-    private async sendEmailNotification(notification: Notification, userPreferences?: any): Promise<void> {
+    private async sendEmailNotification(notification: Notification, _userPreferences?: unknown): Promise<void> {
         try {
             // Emit event to Kafka for the email service to handle
             await this.kafkaService.emit('notifications.email', {
@@ -267,19 +267,19 @@ export class NotificationsService {
             });
 
             this.logger.debug(`Email notification event emitted for user ${notification.userId}`);
-        } catch (error) {
+        } catch (error: unknown) {
             this.logger.error(
-                `Failed to send email notification: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
-                error instanceof Error ? (error as any).stack : undefined
+                `Failed to send email notification: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                error instanceof Error ? error.stack : undefined
             );
-            throw error as any;
+            throw error;
         }
     }
 
     /**
      * Send an SMS notification
      */
-    private async sendSmsNotification(notification: Notification, userPreferences?: any): Promise<void> {
+    private async sendSmsNotification(notification: Notification, _userPreferences?: unknown): Promise<void> {
         try {
             // Emit event to Kafka for the SMS service to handle
             await this.kafkaService.emit('notifications.sms', {
@@ -291,12 +291,12 @@ export class NotificationsService {
             });
 
             this.logger.debug(`SMS notification event emitted for user ${notification.userId}`);
-        } catch (error) {
+        } catch (error: unknown) {
             this.logger.error(
-                `Failed to send SMS notification: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
-                error instanceof Error ? (error as any).stack : undefined
+                `Failed to send SMS notification: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                error instanceof Error ? error.stack : undefined
             );
-            throw error as any;
+            throw error;
         }
     }
 

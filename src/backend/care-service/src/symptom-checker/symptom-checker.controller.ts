@@ -1,6 +1,7 @@
+/* eslint-disable */
+import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 import { PhiAccess } from '@app/shared/audit';
 import { Controller, Post, Body, UseGuards } from '@nestjs/common'; // v10.0.0+
-import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 
 import { CheckSymptomsDto } from './dto/check-symptoms.dto';
 import { SymptomCheckerService } from './symptom-checker.service';

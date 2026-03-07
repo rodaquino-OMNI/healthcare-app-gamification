@@ -1,15 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text';
-import { Box } from 'src/web/design-system/src/primitives/Box/Box';
-import { Card } from 'src/web/design-system/src/components/Card/Card';
-import { AchievementBadge } from 'src/web/design-system/src/gamification/AchievementBadge';
-import { LevelIndicator } from 'src/web/design-system/src/gamification/LevelIndicator';
-import { XPCounter } from 'src/web/design-system/src/gamification/XPCounter';
-import { useGameProfile } from 'src/web/web/src/hooks/useGamification';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { spacing } from 'src/web/design-system/src/tokens/spacing';
-import type { Achievement } from 'src/web/shared/types/gamification.types';
+import { Text } from 'design-system/primitives/Text/Text';
+import { Box } from 'design-system/primitives/Box/Box';
+import { Card } from 'design-system/components/Card/Card';
+import { AchievementBadge } from 'design-system/gamification/AchievementBadge';
+import { LevelIndicator } from 'design-system/gamification/LevelIndicator';
+import { XPCounter } from 'design-system/gamification/XPCounter';
+import { useGameProfile } from '@/hooks/useGamification';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import type { Achievement } from 'shared/types/gamification.types';
 
 const JOURNEY_LABELS: Record<string, string> = {
     health: 'My Health',

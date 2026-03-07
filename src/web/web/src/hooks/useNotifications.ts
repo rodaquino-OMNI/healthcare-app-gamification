@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'; // react 18.2.0
 import { useAuth } from '../hooks/useAuth';
 import { getNotifications, markNotificationAsRead, subscribeToNotifications } from '../api/notifications';
-import { Notification, NotificationStatus } from 'src/web/shared/types';
+import { Notification, NotificationStatus } from 'shared/types';
 
 /**
  * A custom React hook for managing and interacting with user notifications.
@@ -17,7 +17,7 @@ export const useNotifications = () => {
     const [unreadCount, setUnreadCount] = useState(0);
 
     // Reference to store subscription for cleanup
-    const subscriptionRef = useRef<any>(null);
+    const subscriptionRef = useRef<unknown>(null);
 
     // Get the current user ID from auth
     const { userId } = useAuth();

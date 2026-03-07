@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
-import { restClient } from 'src/web/web/src/api/client';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import { restClient } from '@/api/client';
 
 /**
  * Report problem form page.

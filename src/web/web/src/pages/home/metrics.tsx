@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { spacing } from 'src/web/design-system/src/tokens/spacing';
-import { typography } from 'src/web/design-system/src/tokens/typography';
-import { borderRadius } from 'src/web/design-system/src/tokens/borderRadius';
-import { shadows } from 'src/web/design-system/src/tokens/shadows';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import { borderRadius } from 'design-system/tokens/borderRadius';
+import { shadows } from 'design-system/tokens/shadows';
 
-import { MainLayout, useHealthMetrics, useAuth } from 'src/web/web/src/components/index';
+import { MainLayout, useHealthMetrics, useAuth } from '@/components/index';
 
 /**
  * Filter options for the metrics view.

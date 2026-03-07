@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useMemo, useState, useEffect, ReactNode } from 'react';
-import { useGameProfile } from 'src/web/mobile/src/hooks/useGamification';
-import { GameProfile } from 'src/web/shared/types/gamification.types';
-import { useAuth } from 'src/web/web/src/context/AuthContext';
+import { useGameProfile } from '@/hooks/useGamification';
+import { GameProfile } from 'shared/types/gamification.types';
+import { useAuth } from '@/context/AuthContext';
 
 /**
  * Interface defining the shape of the Gamification Context
@@ -18,7 +18,7 @@ interface GamificationContextType {
     error: Error | null;
 
     // Triggers a gamification event (e.g., completing a task, reaching a milestone)
-    triggerGamificationEvent: (eventType: string, eventData?: any) => Promise<void>;
+    triggerGamificationEvent: (eventType: string, eventData?: unknown) => Promise<void>;
 
     // Checks if a specific achievement is unlocked
     hasAchievement: (achievementId: string) => boolean;
@@ -59,7 +59,7 @@ export const GamificationProvider: React.FC<{ children: ReactNode }> = ({ childr
      * @param eventData - Additional data related to the event
      * @returns Promise that resolves when the event is processed
      */
-    const triggerGamificationEvent = async (eventType: string, eventData?: any): Promise<void> => {
+    const triggerGamificationEvent = async (eventType: string, eventData?: unknown): Promise<void> => {
         // Ensure the user is authenticated
         if (!userId) {
             const authError = new Error('User must be authenticated to trigger gamification events');

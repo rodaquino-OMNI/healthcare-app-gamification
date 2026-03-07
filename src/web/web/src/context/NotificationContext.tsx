@@ -1,6 +1,6 @@
 import { createContext, useContext, ReactNode } from 'react'; // react 18.0+
 import { useNotifications } from '../hooks/useNotifications';
-import { Notification } from 'src/web/shared/types';
+import { Notification } from 'shared/types';
 
 /**
  * Type definition for the notification context

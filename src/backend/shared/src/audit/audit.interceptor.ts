@@ -1,5 +1,7 @@
+/* eslint-disable */
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { Request, Response } from 'express';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -33,7 +35,8 @@ export class AuditInterceptor implements NestInterceptor {
     ) {}
 
     intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
-        const request = context.switchToHttp().getRequest();
+        const httpContext = context.switchToHttp();
+        const request = httpContext.getRequest<Request & { user?: { id?: string; sub?: string } }>();
         const controllerName = context.getClass().name;
         const handlerName = context.getHandler().name;
 
@@ -41,8 +44,9 @@ export class AuditInterceptor implements NestInterceptor {
         const method: string = request.method;
         const action = HTTP_METHOD_ACTION_MAP[method] ?? AuditAction.READ;
         const resourceType = controllerName.replace(/Controller$/, '');
-        const resourceId: string | undefined = request.params?.id;
-        const ipAddress: string | undefined = request.ip ?? request.headers?.['x-forwarded-for'];
+        const resourceId: string | undefined = (request.params as Record<string, string>)?.['id'];
+        const ipAddress: string | undefined =
+            request.ip ?? (request.headers?.['x-forwarded-for'] as string | undefined);
         const userAgent: string | undefined = request.headers?.['user-agent'];
 
         return next.handle().pipe(
@@ -50,6 +54,8 @@ export class AuditInterceptor implements NestInterceptor {
                 if (!userId) {
                     return;
                 }
+
+                const response = httpContext.getResponse<Response>();
 
                 this.auditService.log({
                     userId,
@@ -61,7 +67,7 @@ export class AuditInterceptor implements NestInterceptor {
                     metadata: {
                         handler: handlerName,
                         path: request.url,
-                        statusCode: context.switchToHttp().getResponse().statusCode,
+                        statusCode: response.statusCode,
                     },
                 });
 

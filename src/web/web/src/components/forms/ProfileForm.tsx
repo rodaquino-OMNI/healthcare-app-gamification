@@ -4,11 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useContext } from 'react';
 
-import Input from 'src/web/design-system/src/components/Input/Input';
-import Button from 'src/web/design-system/src/components/Button/Button';
-import { isValidCPF } from 'src/web/shared/utils/validation';
-import { useAuth } from 'src/web/web/src/hooks/useAuth';
-import { AuthContext } from 'src/web/web/src/context/AuthContext';
+import Input from 'design-system/components/Input/Input';
+import Button from 'design-system/components/Button/Button';
+import { isValidCPF } from 'shared/utils/validation';
+import { useAuth } from '@/hooks/useAuth';
+import { AuthContext } from '@/context/AuthContext';
 
 // Create a validation schema specifically for profile updates
 const profileUpdateSchema = z.object({

@@ -3,12 +3,12 @@ import { useRouter } from 'next/router'; // next/router v13.0+
 import { format } from 'date-fns'; // date-fns v2.30+
 import { ptBR } from 'date-fns/locale'; // date-fns/locale v2.30+
 
-import { WEB_AUTH_ROUTES } from 'src/web/shared/constants/routes.ts';
-import { useAuth } from 'src/web/web/src/hooks/useAuth.ts';
-import { AuthContext } from 'src/web/web/src/context/AuthContext.tsx';
-import { Button, ButtonProps } from 'src/web/design-system/src/components/Button/Button.tsx';
-import { Input, InputProps } from 'src/web/design-system/src/components/Input/Input.tsx';
-import { JourneyHeader, JourneyHeaderProps } from 'src/web/web/src/components/shared/JourneyHeader.tsx';
+import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
+import { useAuth } from '@/hooks/useAuth';
+import { AuthContext } from '@/context/AuthContext';
+import { Button, ButtonProps } from 'design-system/components/Button/Button';
+import { Input, InputProps } from 'design-system/components/Input/Input';
+import { JourneyHeader, JourneyHeaderProps } from '@/components/shared/JourneyHeader';
 
 /**
  * Renders the user profile settings page.

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 
-jest.mock('src/web/design-system/src/components/Card/Card', () => ({
+jest.mock('design-system/components/Card/Card', () => ({
     Card: ({ children, onPress, accessibilityLabel, interactive }: any) => (
         <div data-testid="card" onClick={onPress} aria-label={accessibilityLabel} data-interactive={interactive}>
             {children}
@@ -9,7 +9,7 @@ jest.mock('src/web/design-system/src/components/Card/Card', () => ({
     ),
 }));
 
-jest.mock('src/web/design-system/src/components/Button/Button', () => ({
+jest.mock('design-system/components/Button/Button', () => ({
     Button: ({ children, onPress, accessibilityLabel, size }: any) => (
         <button onClick={onPress} aria-label={accessibilityLabel} data-size={size}>
             {children}
@@ -17,17 +17,17 @@ jest.mock('src/web/design-system/src/components/Button/Button', () => ({
     ),
 }));
 
-jest.mock('src/web/design-system/src/components/Tabs/Tabs', () => ({
+jest.mock('design-system/components/Tabs/Tabs', () => ({
     Tabs: ({ children }: any) => <div data-testid="tabs">{children}</div>,
 }));
 
-Object.assign(require('src/web/design-system/src/components/Tabs/Tabs').Tabs, {
+Object.assign(require('design-system/components/Tabs/Tabs').Tabs, {
     TabList: ({ children }: any) => <div role="tablist">{children}</div>,
     Tab: ({ label }: any) => <button role="tab">{label}</button>,
     Panel: ({ children }: any) => <div role="tabpanel">{children}</div>,
 });
 
-jest.mock('src/web/design-system/src/components/Badge/Badge', () => ({
+jest.mock('design-system/components/Badge/Badge', () => ({
     Badge: ({ children, status }: any) => (
         <span data-testid="badge" data-status={status}>
             {children}
@@ -35,32 +35,32 @@ jest.mock('src/web/design-system/src/components/Badge/Badge', () => ({
     ),
 }));
 
-jest.mock('src/web/design-system/src/components/Input/Input', () => ({
+jest.mock('design-system/components/Input/Input', () => ({
     default: ({ value, onChange, placeholder, 'aria-label': ariaLabel }: any) => (
         <input value={value} onChange={onChange} placeholder={placeholder} aria-label={ariaLabel} />
     ),
 }));
 
-jest.mock('src/web/design-system/src/primitives/Text/Text', () => ({
+jest.mock('design-system/primitives/Text/Text', () => ({
     Text: ({ children, ...props }: any) => <span {...props}>{children}</span>,
 }));
 
-jest.mock('src/web/design-system/src/primitives/Box/Box', () => ({
+jest.mock('design-system/primitives/Box/Box', () => ({
     Box: ({ children, ...props }: any) => <div {...props}>{children}</div>,
 }));
 
-jest.mock('src/web/design-system/src/tokens/colors', () => ({
+jest.mock('design-system/tokens/colors', () => ({
     colors: {
         journeys: { health: { primary: '#1a9e6a', text: '#0d4a2d' } },
         gray: { 40: '#aaa', 50: '#888' },
     },
 }));
 
-jest.mock('src/web/design-system/src/tokens/spacing', () => ({
+jest.mock('design-system/tokens/spacing', () => ({
     spacing: { xs: '8px', sm: '12px', md: '16px', xl: '32px', '3xs': '4px' },
 }));
 
-jest.mock('src/web/shared/constants/routes', () => ({
+jest.mock('shared/constants/routes', () => ({
     WEB_HEALTH_ROUTES: { MEDICATION_ADD: '/health/medications/add' },
 }));
 

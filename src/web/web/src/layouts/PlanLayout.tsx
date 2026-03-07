@@ -1,9 +1,9 @@
 import React from 'react';
-import { Sidebar } from 'src/web/web/src/components/navigation/Sidebar';
-import JourneyHeader from 'src/web/web/src/components/shared/JourneyHeader';
-import { useJourney } from 'src/web/web/src/context/JourneyContext';
-import { JOURNEY_IDS } from 'src/web/shared/constants/journeys.ts';
-import MainLayout from 'src/web/web/src/layouts/MainLayout';
+import { Sidebar } from '@/components/navigation/Sidebar';
+import JourneyHeader from '@/components/shared/JourneyHeader';
+import { useJourney } from '@/context/JourneyContext';
+import { JOURNEY_IDS } from 'shared/constants/journeys';
+import MainLayout from '@/layouts/MainLayout';
 
 /**
  * Provides the layout for the 'My Plan & Benefits' journey.

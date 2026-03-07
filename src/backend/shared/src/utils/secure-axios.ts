@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 import axios, { AxiosInstance } from 'axios';
 
 /**
@@ -29,8 +29,8 @@ export function createSecureAxios(): AxiosInstance {
                 throw new Error('SSRF Protection: Blocked request to private or local network');
             }
         } catch (error) {
-            if (error instanceof Error && (error as any).message.includes('SSRF Protection')) {
-                throw error as any;
+            if (error instanceof Error && error.message.includes('SSRF Protection')) {
+                throw error;
             }
             // If there's an error parsing the URL, continue with the request
         }

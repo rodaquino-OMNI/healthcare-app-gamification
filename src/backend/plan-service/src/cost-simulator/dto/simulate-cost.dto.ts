@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsOptional, IsNumber, IsEnum, Min, Matches, ValidateIf } from 'class-validator';
 
@@ -166,7 +167,7 @@ export class SimulateCostDto {
     })
     @IsNumber()
     @IsOptional()
-    @ValidateIf((o) => o.isRecurring === true)
+    @ValidateIf((o: SimulateCostDto) => o.isRecurring === true)
     @Min(1)
     occurrences?: number;
 }

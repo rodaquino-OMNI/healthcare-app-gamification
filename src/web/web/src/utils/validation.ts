@@ -1,5 +1,3 @@
-import { z } from 'zod'; // v3.22.2 - Schema validation library
-
 /**
  * Validates a Brazilian CPF (Cadastro de Pessoas Físicas) number.
  *

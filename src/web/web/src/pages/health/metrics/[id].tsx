@@ -1,14 +1,14 @@
 import React from 'react';
 import { useRouter } from 'next/router'; // next/router v13.0.0
-import { HealthMetric } from 'src/web/shared/types/health.types.ts';
-import { HealthChart } from 'src/web/design-system/src/charts/index.ts';
-import { useHealthMetrics } from 'src/web/web/src/hooks/useHealthMetrics.ts';
-import { formatRelativeDate } from 'src/web/shared/utils/date.ts';
-import { formatHealthMetric } from 'src/web/shared/utils/format.ts';
-import HealthLayout from 'src/web/web/src/layouts/HealthLayout.tsx';
-import { WEB_HEALTH_ROUTES } from 'src/web/shared/constants/routes.ts';
-import { Text } from 'src/web/design-system/src/components/index.ts';
-import { MetricCard } from 'src/web/design-system/src/health/index.ts';
+import { HealthMetric } from 'shared/types/health.types';
+import { HealthChart } from 'design-system/charts/index';
+import { useHealthMetrics } from '@/hooks/useHealthMetrics';
+import { formatRelativeDate } from 'shared/utils/date';
+import { formatHealthMetric } from 'shared/utils/format';
+import HealthLayout from '@/layouts/HealthLayout';
+import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
+import { Text } from 'design-system/components/index';
+import { MetricCard } from 'design-system/health/index';
 
 /**
  * LD1: MetricDetail component displays detailed information for a specific health metric.

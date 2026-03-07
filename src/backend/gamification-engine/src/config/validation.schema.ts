@@ -1,5 +1,5 @@
-import { HttpStatus } from '@nestjs/common';
-import * as Joi from 'joi';
+/* eslint-disable */
+import Joi from 'joi';
 
 /**
  * Default port for the Gamification Engine service

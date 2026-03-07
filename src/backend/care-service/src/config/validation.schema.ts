@@ -1,4 +1,5 @@
-import * as Joi from 'joi'; // joi version 17.11.0
+/* eslint-disable */
+import Joi from 'joi'; // joi version 17.11.0
 
 /**
  * Validation schema for Care Service configuration

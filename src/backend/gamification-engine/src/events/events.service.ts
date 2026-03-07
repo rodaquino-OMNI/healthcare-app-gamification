@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 import { KafkaService } from '@app/shared/kafka/kafka.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Injectable } from '@nestjs/common';
@@ -36,18 +36,17 @@ export class EventsService {
      * @param event The event to process containing type, userId, data, and optional journey
      * @returns A promise that resolves with the result of the event processing
      */
-    async processEvent(event: ProcessEventDto): Promise<any> {
+    async processEvent(event: ProcessEventDto): Promise<unknown> {
         this.logger.log(`Processing event: ${event.type} for user: ${event.userId}`, 'EventsService');
 
         try {
             // Get the user's game profile
-            let gameProfile;
             try {
-                gameProfile = await this.profilesService.findById(event.userId);
-            } catch (error) {
+                await this.profilesService.findById(event.userId);
+            } catch {
                 // If profile doesn't exist, create it
                 this.logger.log(`Creating new game profile for user: ${event.userId}`, 'EventsService');
-                gameProfile = await this.profilesService.create(event.userId);
+                await this.profilesService.create(event.userId);
             }
 
             // Create a proper gamification event from the DTO
@@ -71,8 +70,9 @@ export class EventsService {
                 profile: updatedProfile,
                 message: 'Event processed successfully',
             };
-        } catch (error: any) {
-            this.logger.error(`Failed to process event for user ${event.userId}`, error?.stack, 'EventsService');
+        } catch (error: unknown) {
+            const stack = error instanceof Error ? error.stack : String(error);
+            this.logger.error(`Failed to process event for user ${event.userId}`, stack, 'EventsService');
             throw error;
         }
     }

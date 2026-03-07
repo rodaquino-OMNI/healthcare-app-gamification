@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { FilterDto } from '@app/shared/dto/filter.dto';
 import { PaginationDto, PaginatedResponse } from '@app/shared/dto/pagination.dto';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
-import { Repository } from '@app/shared/interfaces/repository.interface';
 import { KafkaService } from '@app/shared/kafka/kafka.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Injectable } from '@nestjs/common'; // v10.0.0+
@@ -91,7 +90,7 @@ export class AppointmentsService {
     async findAll(filter?: FilterDto, pagination?: PaginationDto): Promise<PaginatedResponse<Appointment>> {
         try {
             const { page = 1, limit = 10 } = pagination || {};
-            const skip = ((page as number) - 1) * (limit as number);
+            const skip = (page - 1) * limit;
 
             // Prepare where clause from filter
             const where = filter?.where || {};

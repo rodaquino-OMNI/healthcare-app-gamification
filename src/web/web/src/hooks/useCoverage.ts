@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'; // v4.0
-import { Coverage } from 'src/web/shared/types/plan.types';
-import { useAuth } from 'src/web/web/src/context/AuthContext';
+import { Coverage } from 'shared/types/plan.types';
+import { useAuth } from '@/context/AuthContext';
 
 /**
  * A React hook that fetches insurance coverage data for a given plan ID.

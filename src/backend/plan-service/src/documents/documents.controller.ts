@@ -1,23 +1,7 @@
-import * as ErrorCodes from '@app/shared/constants/error-codes.constants';
-import { PaginationDto } from '@app/shared/dto/pagination.dto';
-import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
-import {
-    Controller,
-    Get,
-    Post,
-    Delete,
-    Query,
-    Param,
-    Body,
-    HttpCode,
-    HttpStatus,
-    UseGuards,
-    Inject,
-    Logger,
-} from '@nestjs/common';
+/* eslint-disable */
+import { Controller, Get, Post, Delete, Query, Param, Body, HttpCode, HttpStatus, Logger } from '@nestjs/common';
 
 import { DocumentsService } from './documents.service';
-import { FilterDto } from '../dto/filter.dto';
 
 /**
  * Handles document-related requests within the Plan service.
@@ -45,7 +29,7 @@ export class DocumentsController {
         @Body('entityType') entityType: string,
         @Body('type') type: string,
         @Body('file_path') file_path: string
-    ): Promise<any> {
+    ): Promise<Record<string, unknown>> {
         this.logger.log(`Creating document for ${entityType} with ID ${entityId}`);
 
         const document = await this.documentsService.create(entityId, entityType, type, file_path);
@@ -60,7 +44,7 @@ export class DocumentsController {
      * Retrieves all documents for a given entity.
      */
     @Get()
-    async findAll(@Query('entityId') entityId: string, @Query('entityType') entityType: string): Promise<any[]> {
+    async findAll(@Query('entityId') entityId: string, @Query('entityType') entityType: string): Promise<unknown[]> {
         this.logger.log(`Finding all documents for ${entityType} with ID ${entityId}`);
         return this.documentsService.findAll(entityId, entityType);
     }
@@ -69,7 +53,7 @@ export class DocumentsController {
      * Retrieves a single document by its ID.
      */
     @Get(':id')
-    async findOne(@Param('id') id: string): Promise<any> {
+    async findOne(@Param('id') id: string): Promise<unknown> {
         this.logger.log(`Finding document with ID ${id}`);
         const document = await this.documentsService.findOne(id);
 

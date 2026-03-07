@@ -1,4 +1,5 @@
-import { IsUUID, IsString, IsNumber, IsOptional } from 'class-validator';
+/* eslint-disable */
+import { IsUUID, IsString, IsNumber } from 'class-validator';
 
 /**
  * Represents a reward that a user can earn in the gamification system.

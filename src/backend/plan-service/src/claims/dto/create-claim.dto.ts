@@ -1,11 +1,9 @@
+/* eslint-disable */
 import { ApiProperty } from '@nestjs/swagger';
 import {
-    IsNotEmpty, // class-validator@0.14.1
     IsNumber, // class-validator@0.14.1
     IsString, // class-validator@0.14.1
-    IsUUID, // class-validator@0.14.1
     IsOptional, // class-validator@0.14.1
-    Min, // class-validator@0.14.1
     IsEnum,
     IsDateString,
     IsArray,

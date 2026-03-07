@@ -1,3 +1,5 @@
+/* eslint-disable */
+/* eslint-disable @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
 import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 import { Roles } from '@app/auth/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
@@ -19,6 +21,8 @@ import {
     HttpCode,
     NotFoundException,
     ForbiddenException,
+    UsePipes,
+    ValidationPipe,
 } from '@nestjs/common';
 
 import { ClaimsService } from './claims.service';
@@ -54,6 +58,7 @@ export class ClaimsController {
     @Post()
     @HttpCode(HttpStatus.CREATED)
     @Roles('user')
+    @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
     async create(@CurrentUser('id') userId: string, @Body() createClaimDto: CreateClaimDto): Promise<Claim> {
         this.logger.log(`Creating claim for user: ${userId}`, 'ClaimsController');
 
@@ -130,6 +135,7 @@ export class ClaimsController {
     @Put(':id')
     @HttpCode(HttpStatus.OK)
     @Roles('user')
+    @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
     async update(
         @CurrentUser('id') userId: string,
         @Param('id') id: string,

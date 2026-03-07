@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { typography } from 'src/web/design-system/src/tokens/typography';
-import { spacing } from 'src/web/design-system/src/tokens/spacing';
-import { MainLayout } from 'src/web/web/src/layouts/MainLayout';
-import { WEB_GLOBAL_ROUTES } from 'src/web/shared/constants/routes';
-import { restClient } from 'src/web/web/src/api/client';
+import { colors } from 'design-system/tokens/colors';
+import { typography } from 'design-system/tokens/typography';
+import { spacing } from 'design-system/tokens/spacing';
+import { MainLayout } from '@/layouts/MainLayout';
+import { WEB_GLOBAL_ROUTES } from 'shared/constants/routes';
+import { restClient } from '@/api/client';
 
 const PageContainer = styled.div`
     max-width: 720px;

@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import * as ErrorCodes from '@app/shared/constants/error-codes.constants';
+/* eslint-disable */
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -63,7 +62,7 @@ export class HealthKitAdapter extends WearableAdapter {
      * @param authData Authentication data for the connection
      * @returns A promise that resolves to a DeviceConnection entity representing the successful connection
      */
-    async connect(userId: string, authData: any): Promise<DeviceConnection> {
+    async connect(userId: string, _authData: any): Promise<DeviceConnection> {
         try {
             this.logger.log('info', `Connecting user ${userId} to Apple HealthKit`);
 
@@ -237,7 +236,7 @@ export class HealthKitAdapter extends WearableAdapter {
      * @param deviceConnection The device connection details
      * @returns A promise that resolves when the user's account has been disconnected
      */
-    async disconnect(userId: string, deviceConnection: DeviceConnection): Promise<boolean> {
+    async disconnect(userId: string, _deviceConnection: DeviceConnection): Promise<boolean> {
         try {
             this.logger.log('info', `Disconnecting user ${userId} from Apple HealthKit`);
 

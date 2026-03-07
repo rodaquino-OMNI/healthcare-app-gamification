@@ -1,22 +1,22 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 
-jest.mock('src/web/web/src/hooks/useAuth', () => ({
+jest.mock('@/hooks/useAuth', () => ({
     useAuth: () => ({
         logout: jest.fn(),
         session: { accessToken: 'mock-token' },
     }),
 }));
 
-jest.mock('src/web/web/src/context/AuthContext', () => ({
+jest.mock('@/context/AuthContext', () => ({
     AuthContext: React.createContext({ session: { accessToken: 'mock-token' } }),
 }));
 
-jest.mock('src/web/web/src/components/shared/JourneyHeader', () => ({
+jest.mock('@/components/shared/JourneyHeader', () => ({
     JourneyHeader: ({ title }: any) => <h1 data-testid="journey-header">{title}</h1>,
 }));
 
-jest.mock('src/web/design-system/src/components/Button/Button', () => ({
+jest.mock('design-system/components/Button/Button', () => ({
     Button: ({ children, onPress, disabled }: any) => (
         <button onClick={onPress} disabled={disabled} data-testid="settings-button">
             {children}
@@ -24,7 +24,7 @@ jest.mock('src/web/design-system/src/components/Button/Button', () => ({
     ),
 }));
 
-jest.mock('src/web/design-system/src/components/Input/Input', () => ({
+jest.mock('design-system/components/Input/Input', () => ({
     Input: ({ label, value, onChange, disabled, 'aria-label': ariaLabel }: any) => (
         <div>
             {label && <label>{label}</label>}
@@ -33,7 +33,7 @@ jest.mock('src/web/design-system/src/components/Input/Input', () => ({
     ),
 }));
 
-jest.mock('src/web/shared/constants/routes', () => ({
+jest.mock('shared/constants/routes', () => ({
     WEB_AUTH_ROUTES: { LOGIN: '/auth/login' },
 }));
 

@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 
-import AuthLayout from 'src/web/web/src/layouts/AuthLayout';
-import Button from 'src/web/design-system/src/components/Button/Button';
-import Input from 'src/web/design-system/src/components/Input/Input';
-import { useAuth } from 'src/web/web/src/hooks/useAuth';
-import { API_BASE_URL } from 'src/web/shared/constants/api';
-import ptBR from 'src/web/web/src/i18n/pt-BR';
-import enUS from 'src/web/web/src/i18n/en-US';
+import AuthLayout from '@/layouts/AuthLayout';
+import Button from 'design-system/components/Button/Button';
+import Input from 'design-system/components/Input/Input';
+import { useAuth } from '@/hooks/useAuth';
+import { API_BASE_URL } from 'shared/constants/api';
+import ptBR from '@/i18n/pt-BR';
+import enUS from '@/i18n/en-US';
 
 /**
  * MFA (Multi-Factor Authentication) page component
@@ -57,8 +57,11 @@ const MFAPage = () => {
 
             // Navigate to home page after successful verification
             router.push('/');
-        } catch (err: any) {
-            setError(err?.response?.data?.message || t('errors.unknown_error'));
+        } catch (err: unknown) {
+            setError(
+                (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+                    t('errors.unknown_error')
+            );
         } finally {
             setIsSubmitting(false);
         }

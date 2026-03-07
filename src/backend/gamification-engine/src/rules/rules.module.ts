@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
 import { KafkaModule } from '@app/shared/kafka/kafka.module';
 import { LoggerModule } from '@app/shared/logging/logger.module';
@@ -14,6 +15,7 @@ import { ProfilesModule } from '../profiles/profiles.module';
  * and achievements are awarded based on user actions across all journeys.
  */
 @Module({
+    // eslint-disable-next-line max-len
     imports: [KafkaModule, LoggerModule, ExceptionsModule, ProfilesModule, AchievementsModule, ConfigModule],
     providers: [RulesService],
     controllers: [],

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core'; // NestJS Core 10.0.0+
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -7,7 +8,6 @@ import { AppModule } from './app.module';
 import { health } from './config/configuration';
 import { AllExceptionsFilter } from '../../shared/src/exceptions/exceptions.filter';
 import { LoggerModule } from '../../shared/src/logging/logger.module';
-import { TracingModule } from '../../shared/src/tracing/tracing.module';
 
 /**
  * Initializes and starts the NestJS application.

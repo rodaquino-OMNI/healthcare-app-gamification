@@ -1,8 +1,8 @@
 import { useMutation } from '@apollo/client';
-import { Claim } from 'src/web/shared/types/plan.types';
-import { SUBMIT_CLAIM } from 'src/web/shared/graphql/mutations/plan.mutations';
-import { useAuth } from 'src/web/web/src/context/AuthContext';
-import { useJourneyContext } from 'src/web/web/src/context/JourneyContext';
+import { Claim } from 'shared/types/plan.types';
+import { SUBMIT_CLAIM } from 'shared/graphql/mutations/plan.mutations';
+import { useAuth } from '@/context/AuthContext';
+import { useJourneyContext } from '@/context/JourneyContext';
 
 /**
  * Interface for claim submission data

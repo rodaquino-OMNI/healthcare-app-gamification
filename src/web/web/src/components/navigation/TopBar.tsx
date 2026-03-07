@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components'; // styled-components@^6.0.0
-import { Sidebar } from 'src/web/web/src/components/navigation/Sidebar';
-import { useAuth } from 'src/web/web/src/hooks/useAuth.ts';
-import { AuthSession } from 'src/web/shared/types/auth.types.ts';
-import { Button, ButtonProps } from 'src/web/design-system/src/components/Button/Button.tsx';
-import { Text, TextProps } from 'src/web/design-system/src/primitives/Text/Text.tsx';
-import { Touchable, TouchableProps } from 'src/web/design-system/src/primitives/Touchable/Touchable.tsx';
-import { ALL_JOURNEYS } from 'src/web/shared/constants/journeys.ts';
+import { Sidebar } from '@/components/navigation/Sidebar';
+import { useAuth } from '@/hooks/useAuth';
+import { AuthSession } from 'shared/types/auth.types';
+import { Button, ButtonProps } from 'design-system/components/Button/Button';
+import { Text, TextProps } from 'design-system/primitives/Text/Text';
+import { Touchable, TouchableProps } from 'design-system/primitives/Touchable/Touchable';
+import { ALL_JOURNEYS } from 'shared/constants/journeys';
 
 // LD1: Styled component for the top bar container.
 const TopBarContainer = styled.header`

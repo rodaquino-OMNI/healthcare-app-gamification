@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
-import { enable2FA, disable2FA, configure2FA } from '@web/web/src/api/auth';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import { enable2FA, disable2FA, configure2FA } from '@/api/auth';
 
 /**
  * Two-factor authentication settings page.

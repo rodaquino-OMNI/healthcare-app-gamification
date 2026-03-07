@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Module, Global } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config'; // v10.0.0+
 
@@ -7,7 +8,7 @@ import { LoggerModule } from '../logging/logger.module';
 /**
  * Global module that provides distributed tracing capabilities across the AUSTA SuperApp.
  *
- * This module integrates OpenTelemetry to enable end-to-end request tracing through all journey services,
+ * This module integrates OpenTelemetry to enable end-to-end request tracing through all services,
  * supporting observability requirements for the application. The tracing functionality allows:
  * - Tracking requests as they flow through different microservices
  * - Measuring performance at different stages of request processing

@@ -16,7 +16,7 @@ import {
     truncateText,
     formatPhoneNumber,
     formatCPF,
-} from 'src/web/shared/utils/format';
+} from 'shared/utils/format';
 
 /**
  * Re-export formatting functions for web application use

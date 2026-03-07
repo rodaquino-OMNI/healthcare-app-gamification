@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 
-jest.mock('@web/design-system/src/tokens', () => ({
+jest.mock('design-system/tokens', () => ({
     colors: {
         gray: { 0: '#fff', 20: '#e5e7eb', 40: '#9ca3af', 50: '#888', 60: '#4b5563', 70: '#374151' },
         brand: { primary: '#0066cc' },

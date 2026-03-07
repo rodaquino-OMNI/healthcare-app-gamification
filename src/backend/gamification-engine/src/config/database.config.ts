@@ -1,4 +1,4 @@
-// filepath: /Users/rodrigo/Git Repositories/Super-APP gamification/healthcare-super-app--w-gamification--tgfzl7/src/backend/gamification-engine/src/config/database.config.ts
+/* eslint-disable */
 import { registerAs } from '@nestjs/config';
 
 /**

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { NextSeo } from 'next-seo';
 import PlanLayout from '../../layouts/PlanLayout';
-import CoverageInfoCard from 'src/web/design-system/src/plan/CoverageInfoCard';
+import CoverageInfoCard from 'design-system/plan/CoverageInfoCard';
 import LoadingIndicator from '../../components/shared/LoadingIndicator';
 import ErrorState from '../../components/shared/ErrorState';
 import { useCoverage } from '../../hooks/useCoverage';
 import { useAuth } from '../../hooks/useAuth';
-import { Box, Text } from 'src/web/design-system/src/primitives';
-import { Coverage } from 'src/web/shared/types/plan.types';
-import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { Box, Text } from 'design-system/primitives';
+import { Coverage } from 'shared/types/plan.types';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 
 const { plan } = colors.journeys;
 
@@ -134,7 +134,7 @@ const CoveragePage: React.FC = () => {
 /**
  * Next.js server-side function to handle authentication and redirect if needed.
  */
-export async function getServerSideProps(context: any): Promise<object> {
+export async function getServerSideProps(context: { req: { cookies: Record<string, string> } }): Promise<object> {
     const { req } = context;
     const session = req.cookies['next-auth.session-token'] || req.cookies['__Secure-next-auth.session-token'];
 

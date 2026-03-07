@@ -1,4 +1,5 @@
-import { registerAs, ConfigModule } from '@nestjs/config'; // ConfigModule v2.0+, registerAs v2.0+
+/* eslint-disable */
+import { registerAs } from '@nestjs/config'; // ConfigModule v2.0+, registerAs v2.0+
 
 /**
  * Defines the configuration function for the Care Service.

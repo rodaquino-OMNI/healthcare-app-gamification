@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useJourney } from '../../hooks/useJourney';
-import { JOURNEY_IDS } from '../../../shared/constants/journeys';
+import { JOURNEY_IDS } from 'shared/constants/journeys';
 import HealthLayout from '../../layouts/HealthLayout';
 
 /**

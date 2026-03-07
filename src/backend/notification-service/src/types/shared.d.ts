@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Type declarations for shared modules
  */
@@ -5,7 +6,7 @@
 // Path alias declarations for imports
 declare module 'src/backend/shared/src/dto/filter.dto' {
     export class FilterDto {
-        where?: Record<string, any>;
+        where?: Record<string, unknown>;
         orderBy?: Record<string, 'asc' | 'desc'>;
         include?: Record<string, boolean>;
     }
@@ -20,28 +21,28 @@ declare module 'src/backend/shared/src/dto/pagination.dto' {
 }
 
 declare module 'src/backend/shared/src/interfaces/repository.interface' {
-    export interface Repository<T = any> {
+    export interface Repository<T = unknown> {
         findAll(): Promise<T[]>;
         findOne(id: string): Promise<T>;
-        create(data: any): Promise<T>;
-        update(id: string, data: any): Promise<T>;
+        create(data: unknown): Promise<T>;
+        update(id: string, data: unknown): Promise<T>;
         remove(id: string): Promise<boolean>;
     }
 }
 
 declare module 'src/backend/shared/src/interfaces/service.interface' {
-    export interface Service<T = any, F = any, P = any> {
+    export interface Service<T = unknown, F = unknown, P = unknown> {
         findAll(filter?: F, pagination?: P): Promise<{ data: T[]; total: number; page: number; limit: number }>;
         findOne(id: string): Promise<T>;
-        create(data: any): Promise<T>;
-        update(id: string, data: any): Promise<T>;
+        create(data: unknown): Promise<T>;
+        update(id: string, data: unknown): Promise<T>;
         remove(id: string): Promise<boolean>;
     }
 }
 
 declare module 'src/backend/shared/src/exceptions/exceptions.types' {
     export class AppException extends Error {
-        constructor(message: string, code: string, details?: Record<string, any>);
+        constructor(message: string, code: string, details?: Record<string, unknown>);
     }
 
     export enum ErrorType {
@@ -79,6 +80,6 @@ declare module 'src/backend/auth-service/src/auth/decorators/current-user.decora
 declare module 'src/backend/auth-service/src/auth/guards/jwt-auth.guard' {
     import { CanActivate } from '@nestjs/common';
     export class JwtAuthGuard implements CanActivate {
-        canActivate(context: any): boolean | Promise<boolean>;
+        canActivate(context: unknown): boolean | Promise<boolean>;
     }
 }

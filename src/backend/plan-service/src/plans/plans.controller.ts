@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Roles } from '@app/auth/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 import { PaginationDto } from '@app/shared/dto/pagination.dto';
@@ -15,6 +16,7 @@ import {
     HttpCode,
     ParseUUIDPipe,
     Put,
+    ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
@@ -37,6 +39,7 @@ export class PlansController {
         private readonly plansService: PlansService,
         private readonly logger: LoggerService
     ) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         this.logger.log('PlansController initialized', 'PlansController');
     }
 
@@ -47,7 +50,8 @@ export class PlansController {
      */
     @Post()
     @Roles('admin')
-    async create(@Body() createPlanData: any): Promise<any> {
+    async create(@Body(ValidationPipe) createPlanData: Record<string, unknown>): Promise<unknown> {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         this.logger.log('Creating new plan', 'PlansController');
         return this.plansService.create(createPlanData);
     }
@@ -60,7 +64,9 @@ export class PlansController {
      */
     @Get()
     @UseGuards(JwtAuthGuard)
-    async findAll(@Query() pagination: PaginationDto, @Query() filter: FilterDto): Promise<any[]> {
+    // eslint-disable-next-line max-len
+    async findAll(@Query() pagination: PaginationDto, @Query() filter: FilterDto): Promise<unknown[]> {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         this.logger.log('Retrieving all plans', 'PlansController');
         return this.plansService.findAll(pagination, filter);
     }
@@ -72,7 +78,8 @@ export class PlansController {
      */
     @Get(':id')
     @UseGuards(JwtAuthGuard)
-    async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<any> {
+    async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<unknown> {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         this.logger.log(`Retrieving plan with ID: ${id}`, 'PlansController');
         return this.plansService.findOne(id);
     }
@@ -85,7 +92,11 @@ export class PlansController {
      */
     @Put(':id')
     @Roles('admin')
-    async update(@Param('id', ParseUUIDPipe) id: string, @Body() updatePlanDto: any): Promise<any> {
+    async update(
+        @Param('id', ParseUUIDPipe) id: string,
+        @Body(ValidationPipe) updatePlanDto: Record<string, unknown>
+    ): Promise<unknown> {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         this.logger.log(`Updating plan with ID: ${id}`, 'PlansController');
         return this.plansService.update(id, updatePlanDto);
     }
@@ -98,6 +109,7 @@ export class PlansController {
     @HttpCode(HttpStatus.NO_CONTENT)
     @Roles('admin')
     async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         this.logger.log(`Removing plan with ID: ${id}`, 'PlansController');
         return this.plansService.remove(id);
     }

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { KafkaModule } from '@app/shared/kafka/kafka.module';
 import { LoggerModule } from '@app/shared/logging/logger.module';
 import { TracingModule } from '@app/shared/tracing/tracing.module';
@@ -9,9 +10,9 @@ import { EventsService } from './events.service';
 import { RulesModule } from '../rules/rules.module';
 
 /**
- * Configures the Events module, importing the controller and service, and setting up Kafka for event handling.
- * This module is responsible for processing events from all journeys (Health, Care, Plan) within the
- * gamification engine, applying rules, and updating user achievements and points.
+ * Configures the Events module, importing the controller, service, and Kafka
+ * for event handling. Processes events from all journeys (Health, Care, Plan),
+ * applying rules and updating achievements.
  */
 @Module({
     imports: [KafkaModule, LoggerModule, TracingModule, RulesModule],

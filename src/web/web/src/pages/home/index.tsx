@@ -15,12 +15,12 @@ import {
     ClaimsWidget,
     RecentActivityWidget,
     AchievementsWidget,
-} from 'src/web/web/src/components/index';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { spacing } from 'src/web/design-system/src/tokens/spacing';
-import { typography } from 'src/web/design-system/src/tokens/typography';
-import { borderRadius } from 'src/web/design-system/src/tokens/borderRadius';
-import { shadows } from 'src/web/design-system/src/tokens/shadows';
+} from '@/components/index';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import { borderRadius } from 'design-system/tokens/borderRadius';
+import { shadows } from 'design-system/tokens/shadows';
 
 /**
  * Journey configuration for the three core journeys displayed on the dashboard.

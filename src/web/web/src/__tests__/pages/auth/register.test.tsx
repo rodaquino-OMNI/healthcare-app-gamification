@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 
-jest.mock('src/web/web/src/hooks/useAuth', () => ({
+jest.mock('@/hooks/useAuth', () => ({
     useAuth: () => ({
         register: jest.fn(),
         isLoading: false,
@@ -9,13 +9,13 @@ jest.mock('src/web/web/src/hooks/useAuth', () => ({
     }),
 }));
 
-jest.mock('src/web/web/src/layouts/AuthLayout', () => {
+jest.mock('@/layouts/AuthLayout', () => {
     return function AuthLayout({ children }: { children: React.ReactNode }) {
         return <div data-testid="auth-layout">{children}</div>;
     };
 });
 
-jest.mock('src/web/design-system/src/components/Button', () => ({
+jest.mock('design-system/components/Button', () => ({
     Button: ({ children, onPress, disabled, loading }: any) => (
         <button onClick={onPress} disabled={disabled || loading} data-testid="submit-button">
             {children}
@@ -23,7 +23,7 @@ jest.mock('src/web/design-system/src/components/Button', () => ({
     ),
 }));
 
-jest.mock('src/web/design-system/src/components/Input', () => {
+jest.mock('design-system/components/Input', () => {
     const MockInput = ({ placeholder, onChange, value, type, 'aria-label': ariaLabel, label, error }: any) => (
         <div>
             {label && <label>{label}</label>}
@@ -43,15 +43,15 @@ jest.mock('src/web/design-system/src/components/Input', () => {
     };
 });
 
-jest.mock('src/web/design-system/src/primitives/Box/Box', () => ({
+jest.mock('design-system/primitives/Box/Box', () => ({
     default: ({ children, ...props }: any) => <div {...props}>{children}</div>,
 }));
 
-jest.mock('src/web/design-system/src/primitives/Text/Text', () => ({
+jest.mock('design-system/primitives/Text/Text', () => ({
     default: ({ children, as: Tag = 'span', ...props }: any) => <Tag {...props}>{children}</Tag>,
 }));
 
-jest.mock('src/web/shared/constants/routes', () => ({
+jest.mock('shared/constants/routes', () => ({
     WEB_AUTH_ROUTES: {
         REGISTER: '/auth/register',
         LOGIN: '/auth/login',

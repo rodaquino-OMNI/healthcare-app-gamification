@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 
-jest.mock('src/web/design-system/src/components/Card/Card', () => ({
+jest.mock('design-system/components/Card/Card', () => ({
     Card: ({ children, ...props }: any) => (
         <div data-testid="card" {...props}>
             {children}
@@ -9,7 +9,7 @@ jest.mock('src/web/design-system/src/components/Card/Card', () => ({
     ),
 }));
 
-jest.mock('src/web/design-system/src/components/Button/Button', () => ({
+jest.mock('design-system/components/Button/Button', () => ({
     Button: ({ children, onPress, accessibilityLabel }: any) => (
         <button onClick={onPress} aria-label={accessibilityLabel}>
             {children}
@@ -17,15 +17,15 @@ jest.mock('src/web/design-system/src/components/Button/Button', () => ({
     ),
 }));
 
-jest.mock('src/web/design-system/src/primitives/Text/Text', () => ({
+jest.mock('design-system/primitives/Text/Text', () => ({
     Text: ({ children, ...props }: any) => <span {...props}>{children}</span>,
 }));
 
-jest.mock('src/web/design-system/src/primitives/Box/Box', () => ({
+jest.mock('design-system/primitives/Box/Box', () => ({
     Box: ({ children, ...props }: any) => <div {...props}>{children}</div>,
 }));
 
-jest.mock('src/web/design-system/src/tokens/colors', () => ({
+jest.mock('design-system/tokens/colors', () => ({
     colors: {
         journeys: { health: { primary: '#1a9e6a', text: '#0d4a2d' } },
         neutral: { gray300: '#d1d5db', gray600: '#4b5563', gray700: '#374151' },
@@ -33,7 +33,7 @@ jest.mock('src/web/design-system/src/tokens/colors', () => ({
     },
 }));
 
-jest.mock('src/web/design-system/src/tokens/spacing', () => ({
+jest.mock('design-system/tokens/spacing', () => ({
     spacing: {
         xs: '8px',
         sm: '12px',

@@ -1,13 +1,13 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
-jest.mock('src/web/web/src/layouts/AuthLayout', () => {
+jest.mock('@/layouts/AuthLayout', () => {
     return function AuthLayout({ children }: { children: React.ReactNode }) {
         return <div data-testid="auth-layout">{children}</div>;
     };
 });
 
-jest.mock('src/web/design-system/src/tokens/colors', () => ({
+jest.mock('design-system/tokens/colors', () => ({
     colors: {
         gray: { 20: '#ccc', 40: '#aaa', 50: '#888', 60: '#666', 70: '#333' },
         brand: { primary: '#0066cc' },
@@ -17,7 +17,7 @@ jest.mock('src/web/design-system/src/tokens/colors', () => ({
     },
 }));
 
-jest.mock('src/web/design-system/src/tokens/typography', () => ({
+jest.mock('design-system/tokens/typography', () => ({
     typography: {
         fontFamily: { heading: 'sans-serif', body: 'sans-serif' },
         fontSize: {
@@ -32,7 +32,7 @@ jest.mock('src/web/design-system/src/tokens/typography', () => ({
     },
 }));
 
-jest.mock('src/web/design-system/src/tokens/spacing', () => ({
+jest.mock('design-system/tokens/spacing', () => ({
     spacing: {
         xs: '8px',
         sm: '12px',
@@ -43,7 +43,7 @@ jest.mock('src/web/design-system/src/tokens/spacing', () => ({
     },
 }));
 
-jest.mock('src/web/shared/constants/routes', () => ({
+jest.mock('shared/constants/routes', () => ({
     WEB_AUTH_ROUTES: { LOGIN: '/auth/login' },
 }));
 

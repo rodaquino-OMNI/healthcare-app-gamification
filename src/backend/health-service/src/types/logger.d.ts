@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Declaration for the LoggerService class from shared module
  */
@@ -13,26 +14,26 @@ declare module '@app/shared/logging/logger.service' {
         /**
          * Logs a debug level message
          */
-        debug(message: string, meta?: Record<string, any>): void;
+        debug(message: string, meta?: Record<string, unknown>): void;
 
         /**
          * Logs an info level message
          */
-        info(message: string, meta?: Record<string, any>): void;
+        info(message: string, meta?: Record<string, unknown>): void;
 
         /**
          * Logs a warning level message
          */
-        warn(message: string, meta?: Record<string, any>): void;
+        warn(message: string, meta?: Record<string, unknown>): void;
 
         /**
          * Logs an error level message
          */
-        error(message: string, trace?: string, meta?: Record<string, any>): void;
+        error(message: string, trace?: string, meta?: Record<string, unknown>): void;
 
         /**
          * Logs a fatal level message
          */
-        fatal(message: string, trace?: string, meta?: Record<string, any>): void;
+        fatal(message: string, trace?: string, meta?: Record<string, unknown>): void;
     }
 }

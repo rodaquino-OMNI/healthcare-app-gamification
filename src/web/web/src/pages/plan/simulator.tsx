@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import PlanLayout from '../../layouts/PlanLayout';
-import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 
 const { plan } = colors.journeys;
 

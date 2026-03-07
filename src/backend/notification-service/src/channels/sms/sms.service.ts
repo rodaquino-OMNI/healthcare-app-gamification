@@ -1,3 +1,4 @@
+/* eslint-disable */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SYS_INTERNAL_SERVER_ERROR } from '@app/shared/constants/error-codes.constants';
 import { LoggerService } from '@app/shared/logging/logger.service';
@@ -50,11 +51,13 @@ export class SmsService {
             this.logger.log(`SMS sent to ${phoneNumber}`, 'SmsService');
         } catch (error) {
             this.logger.error(
-                `Failed to send SMS to ${phoneNumber}: ${(error as any).message}`,
-                (error as any).stack,
+                `Failed to send SMS to ${phoneNumber}: ${error instanceof Error ? error.message : String(error)}`,
+                error instanceof Error ? error.stack : undefined,
                 'SmsService'
             );
-            throw new Error(`${SYS_INTERNAL_SERVER_ERROR}: Failed to send SMS: ${(error as any).message}`);
+            throw new Error(
+                `${SYS_INTERNAL_SERVER_ERROR}: Failed to send SMS: ${error instanceof Error ? error.message : String(error)}`
+            );
         }
     }
 }

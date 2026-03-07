@@ -1,10 +1,10 @@
 import React from 'react'; // React v18.0+
-import { MOBILE_HEALTH_ROUTES } from 'src/web/shared/constants/routes.ts';
-import { useDevices } from 'src/web/mobile/src/hooks/useDevices.ts';
-import { DeviceCard } from 'src/web/design-system/src/components/index.ts';
-import HealthLayout from 'src/web/web/src/layouts/HealthLayout.tsx';
-import { useAuth } from 'src/web/web/src/hooks/useAuth.ts';
-import { HealthMetric } from 'src/web/shared/types/health.types.ts';
+import { MOBILE_HEALTH_ROUTES } from 'shared/constants/routes';
+import { useDevices } from '@/hooks/useDevices';
+import { DeviceCard } from 'design-system/components/index';
+import HealthLayout from '@/layouts/HealthLayout';
+import { useAuth } from '@/hooks/useAuth';
+import { HealthMetric } from 'shared/types/health.types';
 
 /**
  * Displays the list of connected devices and allows connecting new ones.

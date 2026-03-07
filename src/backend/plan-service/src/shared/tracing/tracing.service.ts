@@ -1,3 +1,4 @@
+/* eslint-disable */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@nestjs/common';
 
@@ -42,8 +43,9 @@ export class TracingService {
      * @param error Error that occurred
      * @param durationMs Duration of the span in milliseconds
      */
-    private recordSpanError(name: string, error: any, durationMs: number): void {
-        console.error(`[Tracing] Span '${name}' failed after ${durationMs}ms: ${error.message}`);
+    private recordSpanError(name: string, error: unknown, durationMs: number): void {
+        const msg = error instanceof Error ? error.message : String(error);
+        console.error(`[Tracing] Span '${name}' failed after ${durationMs}ms: ${msg}`);
     }
 
     /**

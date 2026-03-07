@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components'; // styled-components@^6.0.0
 import { useRouter } from 'next/router'; // next/router@^13.0.0
-import { Box } from 'src/web/design-system/src/primitives/Box';
-import { Stack } from 'src/web/design-system/src/primitives/Stack';
-import { Sidebar } from 'src/web/web/src/components/navigation/Sidebar';
-import { TopBar } from 'src/web/web/src/components/navigation/TopBar';
-import { GamificationPopup } from 'src/web/web/src/components/shared/GamificationPopup';
-import { useJourney } from 'src/web/web/src/context/JourneyContext';
-import { useGamification } from 'src/web/web/src/context/GamificationContext';
-import { useAuth } from 'src/web/web/src/hooks/useAuth';
+import { Box } from 'design-system/primitives/Box';
+import { Stack } from 'design-system/primitives/Stack';
+import { Sidebar } from '@/components/navigation/Sidebar';
+import { TopBar } from '@/components/navigation/TopBar';
+import { GamificationPopup } from '@/components/shared/GamificationPopup';
+import { useJourney } from '@/context/JourneyContext';
+import { useGamification } from '@/context/GamificationContext';
+import { useAuth } from '@/hooks/useAuth';
 
 // LD1: Styled component for the main layout container.
 const LayoutContainer = styled(Box)`

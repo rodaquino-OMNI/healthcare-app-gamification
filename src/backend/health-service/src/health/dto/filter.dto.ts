@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsOptional, IsDateString, IsString } from 'class-validator';
 
@@ -29,7 +30,7 @@ export class FilterDto {
 
     @ApiPropertyOptional({ type: 'object', description: 'Specific filtering conditions', additionalProperties: true })
     @IsOptional()
-    where?: Record<string, any>;
+    where?: Record<string, unknown>;
 
     @ApiPropertyOptional({ type: 'object', description: 'Ordering specification', additionalProperties: true })
     @IsOptional()

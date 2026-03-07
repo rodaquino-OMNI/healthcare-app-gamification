@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useAppointments } from 'src/web/web/src/hooks/useAppointments';
-import { Appointment } from 'src/web/shared/types/care.types';
-import { Card } from 'src/web/design-system/src/components/Card/Card';
-import { Button } from 'src/web/design-system/src/components/Button/Button';
-import { formatRelativeDate } from 'src/web/shared/utils/date';
-import { MOBILE_CARE_ROUTES } from 'src/web/shared/constants/routes';
-import { useJourney } from 'src/web/web/src/context/JourneyContext';
+import { useAppointments } from '@/hooks/useAppointments';
+import { Appointment } from 'shared/types/care.types';
+import { Card } from 'design-system/components/Card/Card';
+import { Button } from 'design-system/components/Button/Button';
+import { formatRelativeDate } from 'shared/utils/date';
+import { MOBILE_CARE_ROUTES } from 'shared/constants/routes';
+import { useJourney } from '@/context/JourneyContext';
 
 // Styled components for the widget
 const WidgetTitle = styled.h3`

@@ -1,15 +1,15 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 
-jest.mock('src/web/web/src/layouts/PlanLayout', () => ({
+jest.mock('@/layouts/PlanLayout', () => ({
     default: ({ children }: any) => <div data-testid="plan-layout">{children}</div>,
 }));
 
-jest.mock('src/web/web/src/hooks/useAuth', () => ({
+jest.mock('@/hooks/useAuth', () => ({
     useAuth: () => ({ session: { accessToken: 'mock-token' } }),
 }));
 
-jest.mock('src/web/web/src/hooks/useCoverage', () => ({
+jest.mock('@/hooks/useCoverage', () => ({
     useCoverage: () => ({
         data: null,
         isLoading: false,
@@ -18,11 +18,11 @@ jest.mock('src/web/web/src/hooks/useCoverage', () => ({
     }),
 }));
 
-jest.mock('src/web/web/src/components/shared/LoadingIndicator', () => ({
+jest.mock('@/components/shared/LoadingIndicator', () => ({
     default: ({ text }: any) => <div data-testid="loading">{text}</div>,
 }));
 
-jest.mock('src/web/web/src/components/shared/ErrorState', () => ({
+jest.mock('@/components/shared/ErrorState', () => ({
     default: ({ message, onRetry }: any) => (
         <div data-testid="error-state">
             <p>{message}</p>
@@ -35,16 +35,16 @@ jest.mock('next-seo', () => ({
     NextSeo: ({ title }: any) => <title>{title}</title>,
 }));
 
-jest.mock('src/web/design-system/src/plan/CoverageInfoCard', () => ({
+jest.mock('design-system/plan/CoverageInfoCard', () => ({
     default: ({ coverage }: any) => <div data-testid="coverage-card">{coverage.type}</div>,
 }));
 
-jest.mock('src/web/design-system/src/primitives', () => ({
+jest.mock('design-system/primitives', () => ({
     Box: ({ children, ...props }: any) => <div {...props}>{children}</div>,
     Text: ({ children, as: Tag = 'span', ...props }: any) => <Tag {...props}>{children}</Tag>,
 }));
 
-jest.mock('@web/design-system/src/tokens', () => ({
+jest.mock('design-system/tokens', () => ({
     colors: {
         journeys: { plan: { primary: '#7c4dff', text: '#2d1b69' } },
         gray: { 50: '#888' },
@@ -90,7 +90,7 @@ describe('Coverage Page', () => {
 
 describe('Coverage Page - Loading State', () => {
     it('renders loading indicator when loading', () => {
-        const { useCoverage } = require('src/web/web/src/hooks/useCoverage');
+        const { useCoverage } = require('@/hooks/useCoverage');
         useCoverage.mockReturnValue({ data: null, isLoading: true, isError: false, refetch: jest.fn() });
         const { container } = render(<CoveragePage />);
         expect(container).toBeTruthy();
@@ -99,7 +99,7 @@ describe('Coverage Page - Loading State', () => {
 
 describe('Coverage Page - Error State', () => {
     it('renders error state when there is an error', () => {
-        const { useCoverage } = require('src/web/web/src/hooks/useCoverage');
+        const { useCoverage } = require('@/hooks/useCoverage');
         useCoverage.mockReturnValue({ data: null, isLoading: false, isError: true, refetch: jest.fn() });
         const { container } = render(<CoveragePage />);
         expect(container).toBeTruthy();

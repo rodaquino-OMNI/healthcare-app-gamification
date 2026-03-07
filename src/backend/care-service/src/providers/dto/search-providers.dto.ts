@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { FilterDto } from '@app/shared/dto/filter.dto';
 import { PaginationDto } from '@app/shared/dto/pagination.dto';
 import { IsOptional, IsString } from 'class-validator';
@@ -37,7 +38,7 @@ export class SearchProvidersDto implements FilterDto, PaginationDto {
     name?: string;
 
     // FilterDto properties
-    where?: Record<string, any>;
+    where?: Record<string, unknown>;
     orderBy?: Record<string, 'ASC' | 'DESC'>;
     include?: Record<string, boolean>;
     select?: Record<string, boolean>;

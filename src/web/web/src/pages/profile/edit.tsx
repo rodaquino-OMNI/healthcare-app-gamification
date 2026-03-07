@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { typography } from 'src/web/design-system/src/tokens/typography';
-import { spacing } from 'src/web/design-system/src/tokens/spacing';
-import { MainLayout } from 'src/web/web/src/layouts/MainLayout';
+import { colors } from 'design-system/tokens/colors';
+import { typography } from 'design-system/tokens/typography';
+import { spacing } from 'design-system/tokens/spacing';
+import { MainLayout } from '@/layouts/MainLayout';
 import { getProfile } from '../../api/auth';
 import { restClient } from '../../api/client';
 

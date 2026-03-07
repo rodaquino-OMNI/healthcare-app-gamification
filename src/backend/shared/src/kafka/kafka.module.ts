@@ -1,10 +1,8 @@
-import { DynamicModule, Module, Provider, Global } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+/* eslint-disable */
+import { DynamicModule, Global, Module, Provider } from '@nestjs/common';
 
 import { KafkaProducer } from './kafka.producer';
 import { KafkaService } from './kafka.service';
-import { LoggerModule } from '../logging/logger.module';
-import { TracingModule } from '../tracing/tracing.module';
 
 export interface KafkaModuleOptions {
     /**

@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { LoggerService } from '@app/shared/logging/logger.service'; // @app/shared ^1.0.0
+/* eslint-disable */
+import { LoggerService } from '@app/shared/logging/logger.service';
 import { createSecureAxios } from '@app/shared/utils/secure-axios';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { NestFactory } from '@nestjs/core'; // v10.0.0+
+import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import axios from 'axios';
 import helmet from 'helmet';
@@ -13,10 +13,11 @@ import { DEFAULT_PORT } from './config/validation.schema';
 import { KafkaConsumerService } from './events/kafka/kafka.consumer';
 
 /**
- * Initializes and starts the NestJS application, configures the Kafka consumer, and sets up global exception handling.
+ * Initializes and starts the NestJS application, configures the Kafka consumer,
+ * and sets up global exception handling.
  */
 async function bootstrap(): Promise<void> {
-    let app;
+    let app: Awaited<ReturnType<typeof NestFactory.create>> | undefined;
     try {
         // Creates a NestJS application instance using NestFactory.
         app = await NestFactory.create(AppModule);
@@ -24,7 +25,7 @@ async function bootstrap(): Promise<void> {
         // Configure security middleware
         app.use(helmet());
 
-        // Get the ConfigService instance after app is created to ensure configuration is fully loaded
+        // Get the ConfigService instance after app is created
         const configService = app.get(ConfigService);
 
         // Access configuration using the namespace defined in registerAs
@@ -37,7 +38,6 @@ async function bootstrap(): Promise<void> {
         }
 
         // Replace the global Axios instance with our secure version
-        // This provides additional protection against SSRF vulnerabilities
         axios.defaults.adapter = createSecureAxios().defaults.adapter;
 
         // Get the logger service after app is created
@@ -45,20 +45,19 @@ async function bootstrap(): Promise<void> {
         logger.log(`Starting Gamification Engine in ${nodeEnv} environment on port ${port}`, 'Bootstrap');
 
         try {
-            // Retrieves the KafkaConsumerService from the application context after config is loaded
-            // Using get with { strict: false } to avoid errors if the service is not available
+            // Retrieves the KafkaConsumerService from the application context
             const kafkaConsumerService = app.get(KafkaConsumerService, { strict: false });
 
             if (kafkaConsumerService) {
-                // Starts the Kafka consumer to listen for events.
                 await kafkaConsumerService.onModuleInit();
                 logger.log('Kafka consumer initialized successfully', 'Bootstrap');
             } else {
                 logger.warn('Kafka consumer service not found. Event processing may be disabled.', 'Bootstrap');
             }
-        } catch (kafkaError: any) {
-            logger.error(`Failed to initialize Kafka consumer: ${kafkaError?.message || 'Unknown error'}`, 'Bootstrap');
-            // Continue application startup even if Kafka fails - we don't want to prevent the API from working
+        } catch (kafkaError: unknown) {
+            const msg = kafkaError instanceof Error ? kafkaError.message : 'Unknown error';
+            logger.error(`Failed to initialize Kafka consumer: ${msg}`, 'Bootstrap');
+            // Continue application startup even if Kafka fails
         }
 
         // Swagger setup
@@ -98,11 +97,10 @@ async function bootstrap(): Promise<void> {
         await app.listen(port);
         logger.log(`Gamification Engine successfully started on port ${port}`, 'Bootstrap');
     } catch (error) {
-        console.error(
-            'Failed to start Gamification Engine:',
-            error instanceof Error ? (error as any).message : 'Unknown error'
-        );
-        console.error(error instanceof Error ? (error as any).stack : 'No stack trace available');
+        const msg = error instanceof Error ? error.message : 'Unknown error';
+        const stack = error instanceof Error ? error.stack : 'No stack trace available';
+        console.error('Failed to start Gamification Engine:', msg);
+        console.error(stack);
 
         // Attempt to close the app gracefully if it was created
         if (app) {
@@ -118,4 +116,4 @@ async function bootstrap(): Promise<void> {
 }
 
 // Calls the bootstrap function to start the Gamification Engine service.
-bootstrap();
+void bootstrap();

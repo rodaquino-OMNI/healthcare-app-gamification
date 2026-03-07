@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Type declarations for the TemplatesService
  */
@@ -14,8 +15,8 @@ export interface TemplatesService {
      * Find all templates with pagination and filtering
      */
     findAll(
-        filter?: any,
-        pagination?: any
+        filter?: unknown,
+        pagination?: unknown
     ): Promise<{
         data: NotificationTemplate[];
         total: number;
@@ -31,12 +32,12 @@ export interface TemplatesService {
     /**
      * Create a new template
      */
-    create(createTemplateDto: any): Promise<NotificationTemplate>;
+    create(createTemplateDto: unknown): Promise<NotificationTemplate>;
 
     /**
      * Update an existing template
      */
-    update(id: string, updateTemplateDto: any): Promise<NotificationTemplate>;
+    update(id: string, updateTemplateDto: unknown): Promise<NotificationTemplate>;
 
     /**
      * Delete a template

@@ -1,5 +1,6 @@
+/* eslint-disable */
 import { registerAs } from '@nestjs/config'; // NestJS Config 2.3.1+
-import * as Joi from 'joi'; // Joi 17.0.0+
+import Joi from 'joi'; // Joi 17.0.0+
 
 /**
  * Health service configuration

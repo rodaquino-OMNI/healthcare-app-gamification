@@ -1,10 +1,10 @@
 import React from 'react';
-import { Modal, ModalProps } from 'src/web/design-system/src/components/Modal/Modal.tsx'; // v6.0+
-import { Button, ButtonProps } from 'src/web/design-system/src/components/Button/Button.tsx'; // v6.0+
-import { AustaConfirmationModalProps } from 'src/web/shared/types/index.ts';
-import { useI18n } from 'src/web/web/src/i18n/index.ts';
-import { JOURNEY_COLORS } from 'src/web/shared/constants/index.ts';
-import { useJourney } from 'src/web/web/src/context/JourneyContext.tsx';
+import { Modal, ModalProps } from 'design-system/components/Modal/Modal'; // v6.0+
+import { Button, ButtonProps } from 'design-system/components/Button/Button'; // v6.0+
+import { AustaConfirmationModalProps } from 'shared/types/index';
+import { useI18n } from '@/i18n/index';
+import { JOURNEY_COLORS } from 'shared/constants/index';
+import { useJourney } from '@/context/JourneyContext';
 
 /**
  * ConfirmationModal component for the AUSTA SuperApp.

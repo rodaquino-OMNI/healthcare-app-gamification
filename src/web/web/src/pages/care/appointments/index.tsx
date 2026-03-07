@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router'; // next/router v13.0+
 import { format } from 'date-fns'; // date-fns v2.30+
 import { Head } from 'next/head'; // next/head v13.0+
-import { CareLayout } from 'src/web/web/src/layouts/CareLayout';
-import { useAppointments } from 'src/web/web/src/hooks/useAppointments';
-import { Appointment } from 'src/web/shared/types/care.types';
-import { Button, Card } from 'src/web/design-system/src/components';
-import { Box, Text } from 'src/web/design-system/src/primitives';
-import { EmptyState } from 'src/web/web/src/components/shared/EmptyState';
-import { LoadingIndicator } from 'src/web/web/src/components/shared/LoadingIndicator';
-import { ErrorState } from 'src/web/web/src/components/shared/ErrorState';
-import { useJourney } from 'src/web/web/src/hooks/useJourney';
-import { CARE_ROUTES } from 'src/web/shared/constants/routes';
+import { CareLayout } from '@/layouts/CareLayout';
+import { useAppointments } from '@/hooks/useAppointments';
+import { Appointment } from 'shared/types/care.types';
+import { Button, Card } from 'design-system/components';
+import { Box, Text } from 'design-system/primitives';
+import { EmptyState } from '@/components/shared/EmptyState';
+import { LoadingIndicator } from '@/components/shared/LoadingIndicator';
+import { ErrorState } from '@/components/shared/ErrorState';
+import { useJourney } from '@/hooks/useJourney';
+import { CARE_ROUTES } from 'shared/constants/routes';
 
 /**
  * The main component for the appointments index page.
@@ -156,7 +156,7 @@ const AppointmentCard: React.FC<{ appointment: Appointment }> = ({ appointment }
  * @param object context
  * @returns Props to be passed to the page component.
  */
-export const getServerSideProps = async (context: { req: { cookies: any } }) => {
+export const getServerSideProps = async (context: { req: { cookies: Record<string, string> } }) => {
     // LD1: Check if the user is authenticated
     const { req } = context;
     const { auth_session } = req.cookies;

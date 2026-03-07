@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client'; // v3.7.17
-import { DeviceConnection } from 'src/web/shared/types/health.types';
-import { useAuth } from 'src/web/web/src/hooks/useAuth';
-import { getConnectedDevices } from 'src/web/web/src/api/health';
+import { DeviceConnection } from 'shared/types/health.types';
+import { useAuth } from '@/hooks/useAuth';
+import { getConnectedDevices } from '@/api/health';
 
 /**
  * Hook for fetching connected devices for a specific user

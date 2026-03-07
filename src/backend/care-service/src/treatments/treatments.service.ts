@@ -1,11 +1,10 @@
+/* eslint-disable */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CARE_TREATMENT_PLAN_NOT_FOUND } from '@app/shared/constants/error-codes.constants';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { FilterDto } from '@app/shared/dto/filter.dto';
-import { PaginationDto } from '@app/shared/dto/pagination.dto';
 import { ErrorType } from '@app/shared/exceptions/error.types';
 import { AppException } from '@app/shared/exceptions/exceptions.types';
-import { Service } from '@app/shared/interfaces/service.interface';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { TracingService } from '@app/shared/tracing/tracing.service';
 import { Injectable, NotFoundException } from '@nestjs/common';

@@ -1,5 +1,5 @@
 import React from 'react'; // react@18.0.0
-import CareLayout from '../../src/layouts/CareLayout'; // Provides the layout structure specific to the Care Now journey.
+import CareLayout from '@/layouts/CareLayout'; // Provides the layout structure specific to the Care Now journey.
 
 /**
  * This file defines the main entry point for the Care Now journey in the web application.

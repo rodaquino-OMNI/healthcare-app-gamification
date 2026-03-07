@@ -3,11 +3,11 @@ import { NextPage } from 'next';
 import Head from 'next/head';
 import { useQuery } from '@tanstack/react-query';
 import PlanLayout from '../../layouts/PlanLayout';
-import { InsuranceCard } from 'src/web/design-system/src/plan/InsuranceCard';
+import { InsuranceCard } from 'design-system/plan/InsuranceCard';
 import { useAuth } from '../../hooks/useAuth';
 import { getDigitalCard } from '../../api/plan';
-import { Plan } from 'src/web/shared/types/plan.types';
-import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { Plan } from 'shared/types/plan.types';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 
 const { plan } = colors.journeys;
 

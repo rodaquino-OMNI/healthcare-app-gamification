@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 
-jest.mock('src/web/web/src/hooks/useClaims', () => ({
+jest.mock('@/hooks/useClaims', () => ({
     useClaims: () => ({
         submitClaim: jest.fn().mockResolvedValue({}),
         submitting: false,
@@ -9,15 +9,15 @@ jest.mock('src/web/web/src/hooks/useClaims', () => ({
     }),
 }));
 
-jest.mock('src/web/web/src/context/JourneyContext', () => ({
+jest.mock('@/context/JourneyContext', () => ({
     useJourneyContext: () => ({ currentJourney: 'plan' }),
 }));
 
-jest.mock('src/web/web/src/components/shared/FileUploader', () => ({
+jest.mock('@/components/shared/FileUploader', () => ({
     FileUploader: ({ claimId }: any) => <div data-testid="file-uploader" data-claim-id={claimId} />,
 }));
 
-jest.mock('src/web/design-system/src/components/Button/Button', () => ({
+jest.mock('design-system/components/Button/Button', () => ({
     Button: ({ children, type, disabled }: any) => (
         <button type={type} disabled={disabled}>
             {children}
@@ -25,11 +25,11 @@ jest.mock('src/web/design-system/src/components/Button/Button', () => ({
     ),
 }));
 
-jest.mock('src/web/design-system/src/components/Input/Input', () => ({
+jest.mock('design-system/components/Input/Input', () => ({
     default: ({ type, id, ...rest }: any) => <input type={type} id={id} {...rest} />,
 }));
 
-jest.mock('src/web/design-system/src/components/Select/Select', () => ({
+jest.mock('design-system/components/Select/Select', () => ({
     Select: ({ id, options, ...rest }: any) => (
         <select id={id} {...rest}>
             {(options || []).map((opt: any) => (
@@ -41,7 +41,7 @@ jest.mock('src/web/design-system/src/components/Select/Select', () => ({
     ),
 }));
 
-jest.mock('@web/design-system/src/tokens', () => ({
+jest.mock('design-system/tokens', () => ({
     colors: {
         journeys: { plan: { primary: '#7c4dff', text: '#2d1b69' } },
         semantic: { error: '#ef4444' },
@@ -62,11 +62,11 @@ jest.mock('@web/design-system/src/tokens', () => ({
     borderRadius: { md: '8px' },
 }));
 
-jest.mock('src/web/shared/constants/routes', () => ({
+jest.mock('shared/constants/routes', () => ({
     MOBILE_PLAN_ROUTES: { CLAIMS: '/plan/claims' },
 }));
 
-jest.mock('src/web/shared/utils/validation', () => ({
+jest.mock('shared/utils/validation', () => ({
     claimValidationSchema: {
         shape: {},
     },

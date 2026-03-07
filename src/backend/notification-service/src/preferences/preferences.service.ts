@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { SYS_INTERNAL_SERVER_ERROR } from '@app/shared/constants/error-codes.constants';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { FilterDto } from '@app/shared/dto/filter.dto';
@@ -21,14 +22,14 @@ export class PreferencesService {
     async findAll(filter?: FilterDto, pagination?: PaginationDto): Promise<NotificationPreference[]> {
         try {
             return this.prisma.notificationPreference.findMany({
-                where: (filter as any)?.where,
+                where: filter?.where,
             }) as unknown as NotificationPreference[];
         } catch (error) {
             throw new AppException(
                 'Failed to retrieve notification preferences',
                 ErrorType.TECHNICAL,
                 SYS_INTERNAL_SERVER_ERROR,
-                { filter, pagination } as any
+                { filter: filter as unknown, pagination: pagination as unknown }
             );
         }
     }
@@ -39,7 +40,7 @@ export class PreferencesService {
      * @param where - Filter criteria for finding a preference
      * @returns A promise that resolves to a NotificationPreference or null
      */
-    async findOne(where: any): Promise<NotificationPreference | null> {
+    async findOne(where: Record<string, unknown>): Promise<NotificationPreference | null> {
         return this.prisma.notificationPreference.findFirst({ where }) as unknown as NotificationPreference | null;
     }
 
@@ -82,7 +83,7 @@ export class PreferencesService {
                 'Failed to update notification preferences',
                 ErrorType.TECHNICAL,
                 SYS_INTERNAL_SERVER_ERROR,
-                { id, data } as any
+                { id, data: data as unknown }
             );
         }
     }

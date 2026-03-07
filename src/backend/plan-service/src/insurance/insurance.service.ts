@@ -1,16 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import * as ErrorCodes from '@app/shared/constants/error-codes.constants';
+/* eslint-disable */
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
-import { Service } from '@app/shared/interfaces/service.interface';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { TracingService } from '@app/shared/tracing/tracing.service';
-import { Injectable } from '@nestjs/common'; // @nestjs/common 10.0.0+
+import { Injectable } from '@nestjs/common';
 
-import planService from '../config/configuration';
-import { PlansService } from '../plans/plans.service';
 import { VerifyCoverageDto, ProcedureType } from './dto/verify-coverage.dto';
-import { Coverage } from '../plans/entities/coverage.entity';
-import { Plan } from '../plans/entities/plan.entity';
 
 /**
  * Handles the business logic for interacting with insurance systems.
@@ -46,10 +40,6 @@ export class InsuranceService {
             );
 
             try {
-                // In a real implementation, this would make a call to an external insurance API
-                // based on the configuration in planService.insuranceApi
-                const config = planService();
-
                 // Simulate coverage verification with some logic based on procedure type
                 // In production, this would call the actual insurance API
                 let isCovered = false;
@@ -88,8 +78,8 @@ export class InsuranceService {
 
                 return isCovered;
             } catch (error: unknown) {
-                const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
-                const errorStack = error instanceof Error ? (error as any).stack : undefined;
+                const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+                const errorStack = error instanceof Error ? error.stack : undefined;
 
                 this.logger.error(`Error verifying coverage: ${errorMessage}`, errorStack, 'InsuranceService');
 
@@ -98,7 +88,7 @@ export class InsuranceService {
                     ErrorType.EXTERNAL,
                     'PLAN_COVERAGE_VERIFICATION_FAILED',
                     { dto: verifyCoverageDto, error: errorMessage },
-                    (error instanceof Error ? error : new Error(errorMessage)) as any
+                    error instanceof Error ? error : new Error(errorMessage)
                 );
             }
         });

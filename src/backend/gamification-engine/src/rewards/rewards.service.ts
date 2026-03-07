@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 import { PrismaService } from '@app/shared/database/prisma.service';
-import { FilterDto } from '@app/shared/dto/filter.dto';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 import { KafkaService } from '@app/shared/kafka/kafka.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
@@ -49,9 +48,11 @@ export class RewardsService {
                     journey: reward.journey,
                 },
             });
-        } catch (error: any) {
-            this.logger.error(`Failed to create reward: ${error.message}`, error?.stack, 'RewardsService');
-            throw new AppException('Failed to create reward', ErrorType.TECHNICAL, 'REWARD_001', { reward }, error);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            const stack = error instanceof Error ? error.stack : undefined;
+            this.logger.error(`Failed to create reward: ${message}`, stack, 'RewardsService');
+            throw new AppException('Failed to create reward', ErrorType.TECHNICAL, 'REWARD_001', { reward });
         }
     }
 
@@ -63,9 +64,11 @@ export class RewardsService {
         try {
             this.logger.log('Retrieving all rewards', 'RewardsService');
             return await this.prisma.reward.findMany();
-        } catch (error: any) {
-            this.logger.error(`Failed to retrieve rewards: ${error.message}`, error?.stack, 'RewardsService');
-            throw new AppException('Failed to retrieve rewards', ErrorType.TECHNICAL, 'REWARD_002', {}, error);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            const stack = error instanceof Error ? error.stack : undefined;
+            this.logger.error(`Failed to retrieve rewards: ${message}`, stack, 'RewardsService');
+            throw new AppException('Failed to retrieve rewards', ErrorType.TECHNICAL, 'REWARD_002', {});
         }
     }
 
@@ -85,23 +88,17 @@ export class RewardsService {
             }
 
             return reward;
-        } catch (error: any) {
+        } catch (error: unknown) {
             if (error instanceof AppException) {
-                throw error as any;
+                throw error;
             }
 
-            this.logger.error(
-                `Failed to retrieve reward with ID ${id}: ${error.message}`,
-                error?.stack,
-                'RewardsService'
-            );
-            throw new AppException(
-                `Failed to retrieve reward with ID ${id}`,
-                ErrorType.TECHNICAL,
-                'REWARD_004',
-                { id },
-                error
-            );
+            const message = error instanceof Error ? error.message : String(error);
+            const stack = error instanceof Error ? error.stack : undefined;
+            this.logger.error(`Failed to retrieve reward with ID ${id}: ${message}`, stack, 'RewardsService');
+            throw new AppException(`Failed to retrieve reward with ID ${id}`, ErrorType.TECHNICAL, 'REWARD_004', {
+                id,
+            });
         }
     }
 
@@ -145,19 +142,15 @@ export class RewardsService {
             this.logger.log(`Successfully granted reward ${reward.title} to user ${userId}`, 'RewardsService');
 
             return userReward;
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            const stack = error instanceof Error ? error.stack : undefined;
             this.logger.error(
-                `Failed to grant reward ${rewardId} to user ${userId}: ${error.message}`,
-                error?.stack,
+                `Failed to grant reward ${rewardId} to user ${userId}: ${message}`,
+                stack,
                 'RewardsService'
             );
-            throw new AppException(
-                'Failed to grant reward',
-                ErrorType.TECHNICAL,
-                'REWARD_005',
-                { userId, rewardId },
-                error
-            );
+            throw new AppException('Failed to grant reward', ErrorType.TECHNICAL, 'REWARD_005', { userId, rewardId });
         }
     }
 }

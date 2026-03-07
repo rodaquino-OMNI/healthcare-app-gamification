@@ -2,11 +2,11 @@ import React, { useState, useMemo } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 
-import { ClaimCard } from 'src/web/design-system/src/plan/ClaimCard';
-import { useClaims } from 'src/web/web/src/hooks/useClaims';
-import { useJourney } from 'src/web/web/src/hooks/useJourney';
-import { ClaimStatus } from 'src/web/shared/types/plan.types';
-import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { ClaimCard } from 'design-system/plan/ClaimCard/ClaimCard';
+import { useClaims } from '@/hooks/useClaims';
+import { useJourney } from '@/hooks/useJourney';
+import { ClaimStatus } from 'shared/types/plan.types';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 
 const { plan } = colors.journeys;
 

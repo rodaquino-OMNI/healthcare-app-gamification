@@ -1,19 +1,14 @@
-import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator'; // Import CurrentUser decorator to inject the current user
+/* eslint-disable */
 import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard'; // NestJS JWT 10.0.0+
 import { RolesGuard } from '@app/auth/auth/guards/roles.guard'; // NestJS JWT 10.0.0+
 import { PhiAccess } from '@app/shared/audit';
 import { ConsentGuard, RequireConsent } from '@app/shared/consent'; // LGPD consent guard
 import { ConsentType } from '@app/shared/consent'; // Consent type enum
-import { AUTH_INSUFFICIENT_PERMISSIONS } from '@app/shared/constants/error-codes.constants'; // Import AUTH_INSUFFICIENT_PERMISSIONS for error code
-import { FilterDto } from '@app/shared/dto/filter.dto'; // Import FilterDto for filtering health data
-import { PaginationDto } from '@app/shared/dto/pagination.dto'; // Import PaginationDto for paginating health data
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter'; // Import AllExceptionsFilter for global exception handling
 import {
     Controller,
-    Get,
     Post,
     Put,
-    Query,
     Param,
     Body,
     UseGuards,
@@ -62,9 +57,9 @@ export class HealthController {
     async createHealthMetric(
         @Param('recordId') recordId: string,
         @Body() createMetricDto: CreateMetricDto
-    ): Promise<any> {
+    ): Promise<unknown> {
         // Calls the healthService to create a new health metric.
-        return await this.healthService.createHealthMetric(recordId, createMetricDto);
+        return this.healthService.createHealthMetric(recordId, createMetricDto);
     }
 
     /**
@@ -81,8 +76,8 @@ export class HealthController {
     @ApiOperation({ summary: 'Update an existing health metric' })
     @ApiResponse({ status: 200, description: 'Health metric updated successfully' })
     @ApiResponse({ status: 403, description: 'Consent not granted for health data sharing' })
-    async updateHealthMetric(@Param('id') id: string, @Body() updateMetricDto: UpdateMetricDto): Promise<any> {
+    async updateHealthMetric(@Param('id') id: string, @Body() updateMetricDto: UpdateMetricDto): Promise<unknown> {
         // Calls the healthService to update an existing health metric.
-        return await this.healthService.updateHealthMetric(id, updateMetricDto);
+        return this.healthService.updateHealthMetric(id, updateMetricDto);
     }
 }

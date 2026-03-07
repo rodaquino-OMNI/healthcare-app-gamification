@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 import { Injectable, LoggerService } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Tracer, trace, SpanStatusCode, context, Exception } from '@opentelemetry/api';
@@ -34,7 +34,7 @@ export class TracingService {
 
         try {
             // Execute the provided function within the context of the span
-            // Using context.with instead of trace.with (which doesn't exist)
+            // Using context.with to associate the span with the current context
             const result = await context.with(trace.setSpan(context.active(), span), fn);
 
             // If the function completes successfully, set the span status to OK
@@ -51,7 +51,7 @@ export class TracingService {
                     span.recordException(error as unknown as Exception);
                     span.setStatus({
                         code: SpanStatusCode.ERROR,
-                        message: (error as any).message,
+                        message: error.message,
                     });
                 } else {
                     span.setStatus({
@@ -72,7 +72,7 @@ export class TracingService {
                 this.logger.error(`Error in span ${name}: Unknown error`, undefined, 'AustaTracing');
             }
 
-            throw error as any;
+            throw error;
         } finally {
             // Always end the span regardless of success or failure
             span.end();

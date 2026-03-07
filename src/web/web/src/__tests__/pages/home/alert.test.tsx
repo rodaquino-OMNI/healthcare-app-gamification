@@ -1,12 +1,12 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 
-jest.mock('src/web/web/src/components/index', () => ({
+jest.mock('@/components/index', () => ({
     MainLayout: ({ children }: any) => <div data-testid="main-layout">{children}</div>,
     useAuth: () => ({ isAuthenticated: true }),
 }));
 
-jest.mock('src/web/design-system/src/tokens/colors', () => ({
+jest.mock('design-system/tokens/colors', () => ({
     colors: {
         neutral: { white: '#fff', gray900: '#111827', gray600: '#4b5563', gray700: '#374151', gray300: '#d1d5db' },
         semantic: {
@@ -20,7 +20,7 @@ jest.mock('src/web/design-system/src/tokens/colors', () => ({
     },
 }));
 
-jest.mock('src/web/design-system/src/tokens/spacing', () => ({
+jest.mock('design-system/tokens/spacing', () => ({
     spacing: {
         xs: '8px',
         sm: '12px',
@@ -34,7 +34,7 @@ jest.mock('src/web/design-system/src/tokens/spacing', () => ({
     },
 }));
 
-jest.mock('src/web/design-system/src/tokens/typography', () => ({
+jest.mock('design-system/tokens/typography', () => ({
     typography: {
         fontFamily: { heading: 'sans-serif', body: 'sans-serif' },
         fontSize: {
@@ -51,11 +51,11 @@ jest.mock('src/web/design-system/src/tokens/typography', () => ({
     },
 }));
 
-jest.mock('src/web/design-system/src/tokens/borderRadius', () => ({
+jest.mock('design-system/tokens/borderRadius', () => ({
     borderRadius: { md: '8px', sm: '4px', full: '9999px' },
 }));
 
-jest.mock('src/web/design-system/src/tokens/shadows', () => ({
+jest.mock('design-system/tokens/shadows', () => ({
     shadows: { sm: '0 1px 3px rgba(0,0,0,0.1)' },
 }));
 

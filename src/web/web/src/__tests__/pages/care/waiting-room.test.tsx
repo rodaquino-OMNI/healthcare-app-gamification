@@ -1,15 +1,15 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 
-jest.mock('src/web/web/src/layouts/CareLayout', () => ({
+jest.mock('@/layouts/CareLayout', () => ({
     CareLayout: ({ children }: any) => <div data-testid="care-layout">{children}</div>,
 }));
 
-jest.mock('src/web/web/src/components/shared/JourneyHeader', () => ({
+jest.mock('@/components/shared/JourneyHeader', () => ({
     JourneyHeader: ({ title }: any) => <h1 data-testid="journey-header">{title}</h1>,
 }));
 
-jest.mock('src/web/design-system/src/components/Card/Card', () => ({
+jest.mock('design-system/components/Card/Card', () => ({
     Card: ({ children, ...props }: any) => (
         <div data-testid="card" {...props}>
             {children}
@@ -17,7 +17,7 @@ jest.mock('src/web/design-system/src/components/Card/Card', () => ({
     ),
 }));
 
-jest.mock('src/web/design-system/src/components/Button/Button', () => ({
+jest.mock('design-system/components/Button/Button', () => ({
     Button: ({ children, onPress, disabled, accessibilityLabel }: any) => (
         <button onClick={onPress} disabled={disabled} aria-label={accessibilityLabel} data-testid="care-button">
             {children}
@@ -25,22 +25,22 @@ jest.mock('src/web/design-system/src/components/Button/Button', () => ({
     ),
 }));
 
-jest.mock('src/web/design-system/src/primitives/Text/Text', () => ({
+jest.mock('design-system/primitives/Text/Text', () => ({
     Text: ({ children, ...props }: any) => <span {...props}>{children}</span>,
 }));
 
-jest.mock('src/web/design-system/src/primitives/Box/Box', () => ({
+jest.mock('design-system/primitives/Box/Box', () => ({
     Box: ({ children, ...props }: any) => <div {...props}>{children}</div>,
 }));
 
-jest.mock('src/web/design-system/src/tokens/colors', () => ({
+jest.mock('design-system/tokens/colors', () => ({
     colors: {
         journeys: { care: { primary: '#2e7cf6', text: '#1e3a5f' } },
         gray: { 50: '#888' },
     },
 }));
 
-jest.mock('src/web/design-system/src/tokens/spacing', () => ({
+jest.mock('design-system/tokens/spacing', () => ({
     spacing: {
         xs: '8px',
         sm: '12px',

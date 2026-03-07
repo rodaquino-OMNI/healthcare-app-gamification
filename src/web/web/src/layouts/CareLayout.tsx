@@ -1,8 +1,8 @@
 import React from 'react';
-import { JourneyNav } from 'src/web/web/src/components/navigation/JourneyNav';
-import { JourneyContext } from 'src/web/web/src/context/JourneyContext';
-import { useJourney } from 'src/web/web/src/hooks/useJourney';
-import { MainLayout } from 'src/web/web/src/layouts/MainLayout';
+import { JourneyNav } from '@/components/navigation/JourneyNav';
+import { JourneyContext } from '@/context/JourneyContext';
+import { useJourney } from '@/hooks/useJourney';
+import { MainLayout } from '@/layouts/MainLayout';
 
 /**
  * Layout component for the Care Now journey.

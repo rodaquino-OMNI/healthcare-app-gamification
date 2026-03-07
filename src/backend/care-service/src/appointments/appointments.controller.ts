@@ -1,8 +1,9 @@
-import { Roles } from '@app/auth/auth/decorators/roles.decorator';
+/* eslint-disable */
 import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 import { RolesGuard } from '@app/auth/auth/guards/roles.guard';
 import { PhiAccess } from '@app/shared/audit';
-import { AUTH_INSUFFICIENT_PERMISSIONS } from '@app/shared/constants/error-codes.constants';
+import { FilterDto } from '@app/shared/dto/filter.dto';
+import { PaginatedResponse } from '@app/shared/dto/pagination.dto';
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 import {
     Controller,
@@ -22,11 +23,12 @@ import {
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
-import { AppointmentType, AppointmentStatus } from './entities/appointment.entity';
+import { Appointment } from './entities/appointment.entity';
 
 /**
  * Handles incoming requests related to appointments.
- * It uses the AppointmentsService to perform the actual business logic and interacts with the authentication and authorization middleware to ensure proper access control.
+ * Uses AppointmentsService for business logic and authentication middleware
+ * for proper access control.
  */
 @Controller('appointments')
 @UseFilters(AllExceptionsFilter)
@@ -45,10 +47,8 @@ export class AppointmentsController {
     @Post()
     @UseGuards(JwtAuthGuard, RolesGuard)
     @PhiAccess('Appointment')
-    async create(@Body() createAppointmentDto: CreateAppointmentDto) {
-        // Calls the `create` method of the `appointmentsService` to create the appointment.
-        return await this.appointmentsService.create(createAppointmentDto);
-        // Returns the created appointment.
+    async create(@Body() createAppointmentDto: CreateAppointmentDto): Promise<Appointment> {
+        return this.appointmentsService.create(createAppointmentDto);
     }
 
     /**
@@ -59,10 +59,8 @@ export class AppointmentsController {
     @Get()
     @UseGuards(JwtAuthGuard, RolesGuard)
     @PhiAccess('Appointment')
-    async findAll(@Query() query: any) {
-        // Calls the `findAll` method of the `appointmentsService` to retrieve the appointments.
-        return await this.appointmentsService.findAll(query);
-        // Returns the list of appointments.
+    async findAll(@Query() query: FilterDto): Promise<PaginatedResponse<Appointment>> {
+        return this.appointmentsService.findAll(query);
     }
 
     /**
@@ -73,10 +71,8 @@ export class AppointmentsController {
     @Get(':id')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @PhiAccess('Appointment')
-    async findOne(@Param('id') id: string) {
-        // Calls the `findOne` method of the `appointmentsService` to retrieve the appointment.
-        return await this.appointmentsService.findById(id);
-        // Returns the requested appointment.
+    async findOne(@Param('id') id: string): Promise<Appointment | null> {
+        return this.appointmentsService.findById(id);
     }
 
     /**
@@ -88,10 +84,8 @@ export class AppointmentsController {
     @Patch(':id')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @PhiAccess('Appointment')
-    async update(@Param('id') id: string, @Body() updateAppointmentDto: UpdateAppointmentDto) {
-        // Calls the `update` method of the `appointmentsService` to update the appointment.
-        return await this.appointmentsService.update(id, updateAppointmentDto);
-        // Returns the updated appointment.
+    async update(@Param('id') id: string, @Body() updateAppointmentDto: UpdateAppointmentDto): Promise<Appointment> {
+        return this.appointmentsService.update(id, updateAppointmentDto);
     }
 
     /**
@@ -103,9 +97,7 @@ export class AppointmentsController {
     @HttpCode(HttpStatus.NO_CONTENT)
     @UseGuards(JwtAuthGuard, RolesGuard)
     @PhiAccess('Appointment')
-    async remove(@Param('id') id: string) {
-        // Calls the `remove` method of the `appointmentsService` to delete the appointment.
+    async remove(@Param('id') id: string): Promise<void> {
         await this.appointmentsService.delete(id);
-        // Returns no content (204 status code).
     }
 }

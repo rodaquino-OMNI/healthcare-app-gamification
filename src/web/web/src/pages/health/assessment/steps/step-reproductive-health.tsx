@@ -1,12 +1,12 @@
 import React from 'react';
-import { Card } from 'src/web/design-system/src/components/Card/Card';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { spacing } from 'src/web/design-system/src/tokens/spacing';
+import { Card } from 'design-system/components/Card/Card';
+import { Text } from 'design-system/primitives/Text/Text';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
 
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: Record<string, unknown>;
+    onUpdate: (field: string, value: unknown) => void;
 }
 
 const PREGNANCY_OPTIONS = [

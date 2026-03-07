@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import type { NextPage } from 'next';
 import PlanLayout from '../../layouts/PlanLayout';
-import BenefitCard from '@austa/design-system/plan/BenefitCard';
+import BenefitCard from 'design-system/plan/BenefitCard';
 import LoadingIndicator from '../../components/shared/LoadingIndicator';
 import ErrorState from '../../components/shared/ErrorState';
 import { useAuth } from '../../hooks/useAuth';
 import { useJourney } from '../../hooks/useJourney';
-import { Benefit } from '@austa/shared/types/plan.types';
-import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { Benefit } from 'shared/types/plan.types';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 
 const { plan } = colors.journeys;
 
@@ -45,8 +45,8 @@ const BenefitsPage: NextPage = () => {
                 } else {
                     setError('User not authenticated');
                 }
-            } catch (err: any) {
-                setError(err.message || 'Failed to load benefits');
+            } catch (err: unknown) {
+                setError((err instanceof Error ? err.message : null) || 'Failed to load benefits');
             } finally {
                 setLoading(false);
             }
@@ -178,9 +178,9 @@ async function fetchBenefits(userId: string): Promise<Benefit[]> {
 
         const data = await response.json();
         return data as Benefit[];
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('There was an error fetching the benefits:', error);
-        throw new Error(`Failed to fetch benefits: ${error.message}`);
+        throw new Error(`Failed to fetch benefits: ${error instanceof Error ? error.message : String(error)}`);
     }
 }
 

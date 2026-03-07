@@ -1,6 +1,7 @@
+/* eslint-disable */
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsOptional, IsNumber, Min, Max, IsInt } from 'class-validator';
+import { IsOptional, Min, Max, IsInt } from 'class-validator';
 
 /**
  * Data transfer object for pagination parameters

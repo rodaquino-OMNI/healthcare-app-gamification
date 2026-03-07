@@ -2,12 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 
-import { ALL_JOURNEYS } from 'src/web/shared/constants/journeys.ts';
-import { MOBILE_AUTH_ROUTES } from 'src/web/shared/constants/routes.ts';
-import { Button } from 'src/web/design-system/src/components/Button/Button.tsx';
-import { Icon } from 'src/web/design-system/src/primitives/Icon/Icon.tsx';
-import { useJourney } from 'src/web/web/src/hooks/useJourney.ts';
-import { colors } from 'src/web/design-system/src/tokens/colors.ts';
+import { ALL_JOURNEYS } from 'shared/constants/journeys';
+import { MOBILE_AUTH_ROUTES } from 'shared/constants/routes';
+import { Button } from 'design-system/components/Button/Button';
+import { Icon } from 'design-system/primitives/Icon/Icon';
+import { useJourney } from '@/hooks/useJourney';
+import { colors } from 'design-system/tokens/colors';
 
 // Styled container for the mobile navigation bar
 const MobileNavContainer = styled.div`

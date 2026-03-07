@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 
 const mockRouter = { push: jest.fn(), back: jest.fn(), pathname: '/home', query: {}, asPath: '/home' };
 
-jest.mock('src/web/web/src/components/index', () => ({
+jest.mock('@/components/index', () => ({
     JourneyCard: ({ children }: any) => <div data-testid="journey-card">{children}</div>,
     useAuth: () => ({ isAuthenticated: true }),
     useHealthMetrics: () => ({ metrics: [] }),
@@ -19,7 +19,7 @@ jest.mock('src/web/web/src/components/index', () => ({
     AchievementsWidget: () => <div data-testid="achievements-widget" />,
 }));
 
-jest.mock('src/web/design-system/src/tokens/colors', () => ({
+jest.mock('design-system/tokens/colors', () => ({
     colors: {
         journeys: {
             health: { primary: '#1a9e6a', background: '#e8f7f0' },
@@ -32,11 +32,11 @@ jest.mock('src/web/design-system/src/tokens/colors', () => ({
     },
 }));
 
-jest.mock('src/web/design-system/src/tokens/spacing', () => ({
+jest.mock('design-system/tokens/spacing', () => ({
     spacing: { xs: '8px', sm: '12px', md: '16px', lg: '24px', xl: '32px', '2xl': '48px', '4xs': '2px' },
 }));
 
-jest.mock('src/web/design-system/src/tokens/typography', () => ({
+jest.mock('design-system/tokens/typography', () => ({
     typography: {
         fontFamily: { heading: 'sans-serif', body: 'sans-serif' },
         fontSize: {
@@ -51,11 +51,11 @@ jest.mock('src/web/design-system/src/tokens/typography', () => ({
     },
 }));
 
-jest.mock('src/web/design-system/src/tokens/borderRadius', () => ({
+jest.mock('design-system/tokens/borderRadius', () => ({
     borderRadius: { md: '8px' },
 }));
 
-jest.mock('src/web/design-system/src/tokens/shadows', () => ({
+jest.mock('design-system/tokens/shadows', () => ({
     shadows: { sm: '0 1px 3px rgba(0,0,0,0.1)' },
 }));
 

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { Card } from 'src/web/design-system/src/components/Card/Card';
-import { Button } from 'src/web/design-system/src/components/Button/Button';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text';
-import { Box } from 'src/web/design-system/src/primitives/Box/Box';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { spacing } from 'src/web/design-system/src/tokens/spacing';
+import { Card } from 'design-system/components/Card/Card';
+import { Button } from 'design-system/components/Button/Button';
+import { Text } from 'design-system/primitives/Text/Text';
+import { Box } from 'design-system/primitives/Box/Box';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
 
 interface FlowOption {
     id: string;

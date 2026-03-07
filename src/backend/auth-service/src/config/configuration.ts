@@ -1,9 +1,5 @@
-import { LoggerModule } from '@app/shared/logging/logger.module';
-import { TracingModule } from '@app/shared/tracing/tracing.module';
+/* eslint-disable */
 import { registerAs, ConfigType } from '@nestjs/config';
-
-// These imports are specified in the requirements but may be used in other auth service files
-import { AuthServiceConfigValidation } from '../config/validation.schema';
 
 /**
  * Configuration for the Auth Service

@@ -1,9 +1,9 @@
 import React from 'react';
-import { Modal } from 'src/web/design-system/src/components/Modal/Modal';
-import { AchievementBadge } from 'src/web/design-system/src/gamification/AchievementBadge/AchievementBadge';
-import { useGamification } from 'src/web/mobile/src/context/GamificationContext';
-import { formatJourneyValue } from 'src/web/shared/utils/format';
-import { JOURNEY_COLORS } from 'src/web/shared/constants/index';
+import { Modal } from 'design-system/components/Modal/Modal';
+import { AchievementBadge } from 'design-system/gamification/AchievementBadge/AchievementBadge';
+import { useGamification } from '@/context/GamificationContext';
+import { formatJourneyValue } from 'shared/utils/format';
+import { JOURNEY_COLORS } from 'shared/constants/index';
 import styled from 'styled-components';
 
 /**

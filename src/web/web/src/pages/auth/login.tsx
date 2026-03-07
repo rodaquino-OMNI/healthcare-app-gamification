@@ -4,14 +4,14 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 
-import { loginValidationSchema } from 'src/web/shared/utils/validation';
-import { useAuth } from 'src/web/web/src/hooks/useAuth';
-import AuthLayout from 'src/web/web/src/layouts/AuthLayout';
-import { WEB_AUTH_ROUTES } from 'src/web/shared/constants/routes';
-import { Button } from 'src/web/design-system/src/components/Button/Button';
-import { Input } from 'src/web/design-system/src/components/Input/Input';
-import Box from 'src/web/design-system/src/primitives/Box/Box';
-import Text from 'src/web/design-system/src/primitives/Text/Text';
+import { loginValidationSchema } from 'shared/utils/validation';
+import { useAuth } from '@/hooks/useAuth';
+import AuthLayout from '@/layouts/AuthLayout';
+import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
+import { Button } from 'design-system/components/Button/Button';
+import { Input } from 'design-system/components/Input/Input';
+import Box from 'design-system/primitives/Box/Box';
+import Text from 'design-system/primitives/Text/Text';
 
 interface LoginFormData {
     email: string;

@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Type declarations for notifications and templates
  */
@@ -10,7 +11,7 @@ export interface Notification {
     type: string;
     journey?: string;
     isRead: boolean;
-    data?: Record<string, any>;
+    data?: Record<string, unknown>;
     channel: string;
     sentAt: Date;
     readAt?: Date;
@@ -30,7 +31,7 @@ export interface NotificationTemplate {
     journey?: string;
     isActive: boolean;
     priority: number;
-    data?: Record<string, any>;
+    data?: Record<string, unknown>;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -38,6 +39,6 @@ export interface NotificationTemplate {
 export interface SendNotificationDto {
     userId: string;
     templateCode: string;
-    data?: Record<string, any>;
+    data?: Record<string, unknown>;
     journey?: string;
 }

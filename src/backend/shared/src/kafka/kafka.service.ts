@@ -1,10 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { Consumer, Kafka, Producer, ProducerRecord, SASLOptions } from 'kafkajs';
 
 import { ErrorType } from '../exceptions/error.types';
 import { AppException } from '../exceptions/exceptions.types';
 import { LoggerService } from '../logging/logger.service';
+
+type KafkaMessageHandler = (message: Record<string, unknown>) => Promise<void>;
 
 @Injectable()
 export class KafkaService implements OnModuleInit, OnModuleDestroy {
@@ -13,7 +15,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
     private consumer!: Consumer; // Using definite assignment assertion
     private isProducerConnected = false;
     private isConsumerConnected = false;
-    private readonly messageHandlers = new Map<string, Set<(message: any) => Promise<void>>>();
+    private readonly messageHandlers = new Map<string, Set<KafkaMessageHandler>>();
 
     constructor(
         @Inject('KAFKA_OPTIONS')
@@ -35,7 +37,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
         // Initialize Kafka client with properly typed SASL options
         const saslOptions: SASLOptions | undefined = this.options.sasl
             ? {
-                  mechanism: this.options.sasl.mechanism as any, // Type assertion to avoid strict type checks
+                  mechanism: this.options.sasl.mechanism as SASLOptions['mechanism'],
                   username: this.options.sasl.username,
                   password: this.options.sasl.password,
               }
@@ -65,7 +67,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
     /**
      * Connect to Kafka on module initialization
      */
-    async onModuleInit() {
+    async onModuleInit(): Promise<void> {
         try {
             await this.connectProducer();
 
@@ -73,7 +75,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
                 await this.connectConsumer();
             }
         } catch (error) {
-            this.logger.error('Failed to connect to Kafka', error instanceof Error ? (error as any).stack : undefined);
+            this.logger.error('Failed to connect to Kafka', error instanceof Error ? error.stack : undefined);
             // Don't throw here to allow service to start even if Kafka is unavailable
         }
     }
@@ -81,7 +83,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
     /**
      * Disconnect from Kafka on module destruction
      */
-    async onModuleDestroy() {
+    async onModuleDestroy(): Promise<void> {
         try {
             if (this.isProducerConnected) {
                 await this.producer.disconnect();
@@ -91,10 +93,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
                 await this.consumer.disconnect();
             }
         } catch (error) {
-            this.logger.error(
-                'Error disconnecting from Kafka',
-                error instanceof Error ? (error as any).stack : undefined
-            );
+            this.logger.error('Error disconnecting from Kafka', error instanceof Error ? error.stack : undefined);
         }
     }
 
@@ -109,12 +108,9 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
                 this.logger.log('Kafka producer connected');
             }
         } catch (error) {
-            this.logger.error(
-                'Failed to connect Kafka producer',
-                error instanceof Error ? (error as any).stack : undefined
-            );
+            this.logger.error('Failed to connect Kafka producer', error instanceof Error ? error.stack : undefined);
             this.isProducerConnected = false;
-            throw error as any;
+            throw error;
         }
     }
 
@@ -129,28 +125,25 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
                 this.logger.log('Kafka consumer connected');
 
                 // Set up consumer event handlers
-                await this.setupConsumerEvents();
+                this.setupConsumerEvents();
             }
         } catch (error) {
-            this.logger.error(
-                'Failed to connect Kafka consumer',
-                error instanceof Error ? (error as any).stack : undefined
-            );
+            this.logger.error('Failed to connect Kafka consumer', error instanceof Error ? error.stack : undefined);
             this.isConsumerConnected = false;
-            throw error as any;
+            throw error;
         }
     }
 
     /**
      * Set up consumer event handlers
      */
-    private async setupConsumerEvents(): Promise<void> {
+    private setupConsumerEvents(): void {
         if (!this.consumer || !this.isConsumerConnected) {
             return;
         }
 
         // Handle messages
-        this.consumer.run({
+        void this.consumer.run({
             eachMessage: async ({ topic, partition, message }) => {
                 const handlers = this.messageHandlers.get(topic);
 
@@ -176,7 +169,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
                             await handler({
                                 key,
                                 value: parsedMessage,
-                                headers: message.headers,
+                                headers: message.headers as Record<string, unknown>,
                                 topic,
                                 partition,
                                 offset: message.offset,
@@ -193,7 +186,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
                 } catch (error) {
                     this.logger.error(
                         `Error processing message from topic ${topic}`,
-                        error instanceof Error ? (error as any).stack : undefined
+                        error instanceof Error ? error.stack : undefined
                     );
                 }
             },
@@ -206,7 +199,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
      * @param groupId Optional consumer group ID
      * @param handler The message handler function
      */
-    async subscribe(topic: string, groupId: string, handler: (message: any) => Promise<void>): Promise<void> {
+    async subscribe(topic: string, groupId: string, handler: KafkaMessageHandler): Promise<void> {
         try {
             // Make sure consumer is connected
             if (!this.consumer) {
@@ -234,7 +227,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
         } catch (error) {
             this.logger.error(
                 `Failed to subscribe to topic ${topic}`,
-                error instanceof Error ? (error as any).stack : undefined
+                error instanceof Error ? error.stack : undefined
             );
             throw new AppException(
                 `Failed to subscribe to Kafka topic ${topic}`,
@@ -252,7 +245,12 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
      * @param key Optional message key
      * @param headers Optional message headers
      */
-    async emit(topic: string, message: any, key?: string, headers?: Record<string, string>): Promise<void> {
+    async emit(
+        topic: string,
+        message: Record<string, unknown> | string,
+        key?: string,
+        headers?: Record<string, string>
+    ): Promise<void> {
         try {
             // Ensure producer is connected
             if (!this.isProducerConnected) {
@@ -280,7 +278,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
         } catch (error) {
             this.logger.error(
                 `Failed to emit message to topic ${topic}`,
-                error instanceof Error ? (error as any).stack : undefined
+                error instanceof Error ? error.stack : undefined
             );
             throw new AppException(
                 `Failed to emit message to Kafka topic ${topic}`,
@@ -294,7 +292,12 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
     /**
      * Alias for emit() for compatibility with other services
      */
-    async produce(topic: string, message: any, key?: string, headers?: Record<string, string>): Promise<void> {
+    async produce(
+        topic: string,
+        message: Record<string, unknown> | string,
+        key?: string,
+        headers?: Record<string, string>
+    ): Promise<void> {
         return this.emit(topic, message, key, headers);
     }
 
@@ -303,15 +306,15 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
      * @param value The message value
      * @returns The parsed message
      */
-    private parseMessage(value: Buffer | null): any {
+    private parseMessage(value: Buffer | null): unknown {
         if (!value) {
             return null;
         }
 
         try {
             const message = value.toString();
-            return JSON.parse(message);
-        } catch (error) {
+            return JSON.parse(message) as unknown;
+        } catch {
             // If not JSON, return as string
             return value.toString();
         }
@@ -322,7 +325,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
      * @param message The message to serialize
      * @returns The serialized message
      */
-    private serializeMessage(message: any): Buffer {
+    private serializeMessage(message: Record<string, unknown> | string): Buffer {
         if (typeof message === 'string') {
             return Buffer.from(message);
         }

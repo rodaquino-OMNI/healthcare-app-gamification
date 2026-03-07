@@ -1,10 +1,10 @@
 import React from 'react';
-import { Modal, ModalProps } from 'src/web/design-system/src/components/Modal/Modal.tsx'; // version: that matches the design system
-import { AchievementBadge } from 'src/web/design-system/src/gamification/AchievementBadge/AchievementBadge.tsx'; // version: that matches the design system
-import { Achievement } from 'src/web/shared/types/gamification.types.ts';
-import { GET_ACHIEVEMENTS } from 'src/web/shared/graphql/queries/gamification.queries.ts';
-import { useGamification } from 'src/web/web/src/hooks/useGamification.ts';
-import { format } from 'src/web/shared/utils/format.ts'; // Assuming format contains truncateText
+import { Modal, ModalProps } from 'design-system/components/Modal/Modal'; // version: that matches the design system
+import { AchievementBadge } from 'design-system/gamification/AchievementBadge/AchievementBadge'; // version: that matches the design system
+import { Achievement } from 'shared/types/gamification.types';
+import { GET_ACHIEVEMENTS } from 'shared/graphql/queries/gamification.queries';
+import { useGamification } from '@/hooks/useGamification';
+import { format } from 'shared/utils/format'; // Assuming format contains truncateText
 
 /**
  * Props interface for the AchievementModal component

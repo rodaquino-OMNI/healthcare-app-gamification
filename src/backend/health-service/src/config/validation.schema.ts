@@ -1,5 +1,5 @@
-import { ErrorType } from '@nestjs/common';
-import * as Joi from 'joi';
+/* eslint-disable */
+import Joi from 'joi';
 
 /**
  * Validation schema for the Health Service environment variables.

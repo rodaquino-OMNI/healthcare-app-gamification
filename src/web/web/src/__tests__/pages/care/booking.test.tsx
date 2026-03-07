@@ -1,15 +1,15 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 
-jest.mock('src/web/web/src/layouts/CareLayout', () => ({
+jest.mock('@/layouts/CareLayout', () => ({
     CareLayout: ({ children }: any) => <div data-testid="care-layout">{children}</div>,
 }));
 
-jest.mock('src/web/web/src/components/shared/JourneyHeader', () => ({
+jest.mock('@/components/shared/JourneyHeader', () => ({
     JourneyHeader: ({ title }: any) => <h1 data-testid="journey-header">{title}</h1>,
 }));
 
-jest.mock('src/web/web/src/components/forms/AppointmentForm', () => ({
+jest.mock('@/components/forms/AppointmentForm', () => ({
     AppointmentForm: () => (
         <form data-testid="appointment-form">
             <button type="submit">Agendar</button>
@@ -17,7 +17,7 @@ jest.mock('src/web/web/src/components/forms/AppointmentForm', () => ({
     ),
 }));
 
-jest.mock('src/web/web/src/context/JourneyContext', () => ({
+jest.mock('@/context/JourneyContext', () => ({
     JourneyContext: { Consumer: ({ children }: any) => children({ journey: 'care' }) },
     useJourneyContext: () => ({ currentJourney: 'care' }),
 }));

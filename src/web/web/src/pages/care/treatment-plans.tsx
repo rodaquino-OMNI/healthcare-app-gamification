@@ -1,13 +1,13 @@
 import React from 'react'; // React v18.0+
 import { useQuery } from '@apollo/client'; // @apollo/client v3.0+
 import { useRouter } from 'next/router'; // next/router v13.0+
-import { useAuth } from '@auth/react'; // @auth/react v1.0+
-import CareLayout from 'src/web/web/src/layouts/CareLayout.tsx';
-import { Card } from 'src/web/design-system/src/components/Card/Card.tsx';
-import { Button } from 'src/web/design-system/src/components/Button/Button.tsx';
-import { GET_TREATMENT_PLANS } from 'src/web/shared/graphql/queries/care.queries.ts';
-import { TreatmentPlan } from 'src/web/shared/types/care.types.ts';
-import { formatDate } from 'src/web/mobile/src/utils/format.ts';
+import { useAuth } from '@/hooks/useAuth'; // local auth hook
+import CareLayout from '@/layouts/CareLayout';
+import { Card } from 'design-system/components/Card/Card';
+import { Button } from 'design-system/components/Button/Button';
+import { GET_TREATMENT_PLANS } from 'shared/graphql/queries/care.queries';
+import { TreatmentPlan } from 'shared/types/care.types';
+import { formatDate } from '@/utils/date';
 
 /**
  * Renders the Treatment Plans screen, fetching and displaying a list of treatment plans for the user.

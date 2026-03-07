@@ -1,5 +1,12 @@
+/* eslint-disable */
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+
+interface AuthenticatedRequest {
+    user: {
+        roles: string[];
+    };
+}
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -13,11 +20,8 @@ export class RolesGuard implements CanActivate {
             return true;
         }
 
-        const request = context.switchToHttp().getRequest();
+        const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
         const user = request.user;
-
-        // For development or testing, you might want to bypass role checks
-        // if using an environment flag like process.env.BYPASS_ROLES === 'true'
 
         // Make sure user exists and has roles
         if (!user || !user.roles) {

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { logout } from '@web/web/src/api/auth';
+import { logout } from '@/api/auth';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from '@web/design-system/src/tokens';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 
 /**
  * Logout confirmation page.

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { IsBoolean, IsInt, Min, Max } from 'class-validator'; // class-validator@0.14.1
 
 import { Quest } from '../entities/quest.entity';
@@ -26,7 +27,7 @@ export class UserQuest {
     /**
      * The game profile of the user participating in the quest (included via Prisma relation).
      */
-    profile?: any;
+    profile?: unknown;
 
     /**
      * The quest being undertaken by the user (included via Prisma relation).

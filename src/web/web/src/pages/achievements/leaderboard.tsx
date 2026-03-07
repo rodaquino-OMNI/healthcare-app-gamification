@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text';
-import { Box } from 'src/web/design-system/src/primitives/Box/Box';
-import { Card } from 'src/web/design-system/src/components/Card/Card';
-import { Button } from 'src/web/design-system/src/components/Button/Button';
-import { Leaderboard } from 'src/web/design-system/src/gamification/Leaderboard';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { spacing } from 'src/web/design-system/src/tokens/spacing';
+import { Text } from 'design-system/primitives/Text/Text';
+import { Box } from 'design-system/primitives/Box/Box';
+import { Card } from 'design-system/components/Card/Card';
+import { Button } from 'design-system/components/Button/Button';
+import { Leaderboard } from 'design-system/gamification/Leaderboard';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
 
 type Timeframe = 'weekly' | 'monthly' | 'allTime';
 type JourneyFilter = 'all' | 'health' | 'care' | 'plan';

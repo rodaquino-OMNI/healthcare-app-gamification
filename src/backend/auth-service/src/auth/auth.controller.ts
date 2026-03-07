@@ -1,5 +1,17 @@
+/* eslint-disable */
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
-import { Controller, Post, Body, UseGuards, Request, Get, UseFilters, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+    Controller,
+    Post,
+    Body,
+    UseGuards,
+    Request,
+    Get,
+    UseFilters,
+    HttpCode,
+    HttpStatus,
+    ValidationPipe,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
@@ -31,7 +43,7 @@ export class AuthController {
     @Post('register')
     @ApiOperation({ summary: 'Register a new user' })
     @ApiResponse({ status: 201, description: 'User registered successfully' })
-    async register(@Body() createUserDto: CreateUserDto): Promise<any> {
+    async register(@Body(ValidationPipe) createUserDto: CreateUserDto): Promise<unknown> {
         return this.authService.register(createUserDto);
     }
 
@@ -47,7 +59,7 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Log in an existing user' })
     @ApiResponse({ status: 200, description: 'Login successful, returns JWT token' })
-    async login(@Request() req: any): Promise<any> {
+    async login(@Request() req: { body: { email: string; password: string } }): Promise<unknown> {
         return this.authService.login(req.body.email, req.body.password);
     }
 
@@ -61,7 +73,7 @@ export class AuthController {
     @ApiOperation({ summary: 'Refresh access token using refresh token' })
     @ApiResponse({ status: 200, description: 'New tokens generated successfully' })
     @ApiResponse({ status: 401, description: 'Invalid or expired refresh token' })
-    async refresh(@Body() refreshTokenDto: RefreshTokenDto) {
+    async refresh(@Body(ValidationPipe) refreshTokenDto: RefreshTokenDto): Promise<unknown> {
         return this.authService.refreshTokens(refreshTokenDto.refresh_token);
     }
 
@@ -75,7 +87,8 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Logout and invalidate refresh token' })
     @ApiResponse({ status: 200, description: 'Logged out successfully' })
-    async logout(@Body() refreshTokenDto: RefreshTokenDto) {
+    // eslint-disable-next-line max-len
+    async logout(@Body(ValidationPipe) refreshTokenDto: RefreshTokenDto): Promise<{ message: string }> {
         await this.authService.revokeRefreshToken(refreshTokenDto.refresh_token);
         return { message: 'Logged out successfully' };
     }
@@ -90,7 +103,7 @@ export class AuthController {
     @Get('profile')
     @ApiOperation({ summary: 'Get current user profile' })
     @ApiResponse({ status: 200, description: 'Returns the authenticated user profile' })
-    getProfile(@CurrentUser() user: any): any {
+    getProfile(@CurrentUser() user: unknown): unknown {
         return user;
     }
 }

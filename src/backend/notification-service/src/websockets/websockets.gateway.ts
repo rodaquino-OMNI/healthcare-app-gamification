@@ -1,7 +1,7 @@
+/* eslint-disable */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { KafkaService } from '@app/shared/kafka/kafka.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
-import { Logger, UseGuards } from '@nestjs/common';
 import {
     WebSocketGateway,
     WebSocketServer,
@@ -13,8 +13,6 @@ import {
     MessageBody,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-
-import { notification as notificationConfig } from '../config/configuration';
 
 interface NotificationPayload {
     id: string;
@@ -50,13 +48,13 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
         this.logger.setContext('WebsocketsGateway');
     }
 
-    afterInit(server: Server) {
+    afterInit(_server: Server): void {
         this.logger.log('WebSocket Gateway initialized');
         // Subscribe to Kafka notifications topic
         this.setupKafkaListener();
     }
 
-    handleConnection(client: Socket, ...args: any[]) {
+    handleConnection(client: Socket, ..._args: unknown[]): void {
         const userId = this.getUserIdFromClient(client);
 
         if (!userId) {

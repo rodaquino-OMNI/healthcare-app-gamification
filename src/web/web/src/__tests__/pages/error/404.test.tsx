@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 
-jest.mock('src/web/design-system/src/tokens/colors', () => ({
+jest.mock('design-system/tokens/colors', () => ({
     colors: {
         neutral: {
             white: '#ffffff',
@@ -12,7 +12,7 @@ jest.mock('src/web/design-system/src/tokens/colors', () => ({
     },
 }));
 
-jest.mock('src/web/design-system/src/tokens/typography', () => ({
+jest.mock('design-system/tokens/typography', () => ({
     typography: {
         fontFamily: { body: 'sans-serif' },
         fontSize: {
@@ -24,7 +24,7 @@ jest.mock('src/web/design-system/src/tokens/typography', () => ({
     },
 }));
 
-jest.mock('src/web/design-system/src/tokens/spacing', () => ({
+jest.mock('design-system/tokens/spacing', () => ({
     spacing: {
         sm: '12px',
         md: '16px',
@@ -33,7 +33,7 @@ jest.mock('src/web/design-system/src/tokens/spacing', () => ({
     },
 }));
 
-jest.mock('src/web/design-system/src/tokens/borderRadius', () => ({
+jest.mock('design-system/tokens/borderRadius', () => ({
     borderRadius: { md: '8px' },
 }));
 

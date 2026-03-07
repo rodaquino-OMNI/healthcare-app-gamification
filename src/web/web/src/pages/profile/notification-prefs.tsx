@@ -1,11 +1,11 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { typography } from 'src/web/design-system/src/tokens/typography';
-import { spacing } from 'src/web/design-system/src/tokens/spacing';
-import { borderRadius } from 'src/web/design-system/src/tokens/borderRadius';
-import AuthLayout from 'src/web/web/src/layouts/AuthLayout';
+import { colors } from 'design-system/tokens/colors';
+import { typography } from 'design-system/tokens/typography';
+import { spacing } from 'design-system/tokens/spacing';
+import { borderRadius } from 'design-system/tokens/borderRadius';
+import AuthLayout from '@/layouts/AuthLayout';
 
 const ContentContainer = styled.div`
     display: flex;

@@ -7,7 +7,7 @@
  * separate files.
  *
  * Example usage:
- * import { JOURNEY_COLORS, ROUTES, webConfig } from 'src/web/web/src/constants';
+ * import { JOURNEY_COLORS, ROUTES, webConfig } from '@/constants';
  *
  * The constants support three core user journeys:
  * - My Health ("Minha Saúde")

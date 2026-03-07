@@ -1,11 +1,11 @@
-import { Logger, ValidationPipe } from '@nestjs/common';
+/* eslint-disable */
+import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 
 import { AppModule } from './app.module';
-import { configuration } from './config/configuration';
 import { AllExceptionsFilter } from '../../shared/src/exceptions/exceptions.filter';
 import { LoggerService } from '../../shared/src/logging/logger.service';
 
@@ -13,7 +13,7 @@ import { LoggerService } from '../../shared/src/logging/logger.service';
  * Bootstrap function to initialize and configure the NestJS application
  * for the Auth Service in the AUSTA SuperApp.
  */
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
     // Create a NestJS application instance using NestFactory.create with AppModule
     const app = await NestFactory.create(AppModule);
 
@@ -81,4 +81,4 @@ async function bootstrap() {
 }
 
 // Call the bootstrap function
-bootstrap();
+void bootstrap();

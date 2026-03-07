@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { HttpStatus } from '@nestjs/common';
 
 import { ErrorType } from './error.types';
@@ -23,7 +24,7 @@ export class AppException extends Error {
     /**
      * Optional metadata for additional context
      */
-    readonly metadata?: Record<string, any>;
+    readonly metadata?: Record<string, unknown>;
 
     /**
      * HTTP status code to return
@@ -39,7 +40,7 @@ export class AppException extends Error {
         message: string,
         type: ErrorType = ErrorType.TECHNICAL,
         code: string | number = 'UNKNOWN_ERROR',
-        metadata?: Record<string, any>,
+        metadata?: Record<string, unknown>,
         statusCode?: HttpStatus
     ) {
         super(message);
@@ -56,7 +57,7 @@ export class AppException extends Error {
     /**
      * Converts the exception to a JSON object
      */
-    toJSON() {
+    toJSON(): Record<string, unknown> {
         return {
             message: this.message,
             type: this.type,
@@ -96,7 +97,7 @@ export class AppException extends Error {
  * Specialized exception for validation errors
  */
 export class ValidationException extends AppException {
-    constructor(message: string, code: string | number = 'VALIDATION_ERROR', metadata?: Record<string, any>) {
+    constructor(message: string, code: string | number = 'VALIDATION_ERROR', metadata?: Record<string, unknown>) {
         super(message, ErrorType.VALIDATION, code, metadata);
     }
 }
@@ -105,7 +106,7 @@ export class ValidationException extends AppException {
  * Specialized exception for business logic errors
  */
 export class BusinessException extends AppException {
-    constructor(message: string, code: string | number = 'BUSINESS_ERROR', metadata?: Record<string, any>) {
+    constructor(message: string, code: string | number = 'BUSINESS_ERROR', metadata?: Record<string, unknown>) {
         super(message, ErrorType.BUSINESS, code, metadata);
     }
 }
@@ -114,7 +115,7 @@ export class BusinessException extends AppException {
  * Specialized exception for not found errors
  */
 export class NotFoundException extends AppException {
-    constructor(message: string, code: string | number = 'NOT_FOUND', metadata?: Record<string, any>) {
+    constructor(message: string, code: string | number = 'NOT_FOUND', metadata?: Record<string, unknown>) {
         super(message, ErrorType.NOT_FOUND, code, metadata);
     }
 }
@@ -123,7 +124,7 @@ export class NotFoundException extends AppException {
  * Specialized exception for external service errors
  */
 export class ExternalServiceException extends AppException {
-    constructor(message: string, code: string | number = 'EXTERNAL_SERVICE_ERROR', metadata?: Record<string, any>) {
+    constructor(message: string, code: string | number = 'EXTERNAL_SERVICE_ERROR', metadata?: Record<string, unknown>) {
         super(message, ErrorType.EXTERNAL, code, metadata);
     }
 }

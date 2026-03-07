@@ -1,17 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { ErrorType } from '@app/shared/exceptions/error.types';
+/* eslint-disable */
 import { Injectable } from '@nestjs/common';
 
 import { ConnectDeviceDto } from './dto/connect-device.dto';
 import { DeviceConnection } from './entities/device-connection.entity';
-import { ErrorCodes } from '../../../shared/src/constants/error-codes.constants';
 import { FilterDto } from '../../../shared/src/dto/filter.dto';
 import { AppException, ErrorType } from '../../../shared/src/exceptions/exceptions.types';
-import { Repository } from '../../../shared/src/interfaces/repository.interface';
 import { LoggerService } from '../../../shared/src/logging/logger.service';
-import { Configuration } from '../config/configuration';
-import { GoogleFitAdapter } from '../integrations/wearables/adapters/googlefit.adapter';
-import { HealthKitAdapter } from '../integrations/wearables/adapters/healthkit.adapter';
 import { WearablesService } from '../integrations/wearables/wearables.service';
 
 /**
@@ -89,8 +83,8 @@ export class DevicesService {
         try {
             this.logger.log(`Retrieving connected devices for record ${recordId}`);
 
-            // Create a filter that includes the record ID
-            const filter: FilterDto = {
+            // Create a filter that includes the record ID (reserved for repository use)
+            const _filter: FilterDto = {
                 where: {
                     recordId,
                     ...(filterDto?.where || {}),

@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text';
-import { Box } from 'src/web/design-system/src/primitives/Box/Box';
-import { Card } from 'src/web/design-system/src/components/Card/Card';
-import { Button } from 'src/web/design-system/src/components/Button/Button';
-import { RewardCard } from 'src/web/design-system/src/gamification/RewardCard';
-import { XPCounter } from 'src/web/design-system/src/gamification/XPCounter';
-import { useGameProfile } from 'src/web/web/src/hooks/useGamification';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { spacing } from 'src/web/design-system/src/tokens/spacing';
-import type { Reward } from 'src/web/shared/types/gamification.types';
+import { Text } from 'design-system/primitives/Text/Text';
+import { Box } from 'design-system/primitives/Box/Box';
+import { Card } from 'design-system/components/Card/Card';
+import { Button } from 'design-system/components/Button/Button';
+import { RewardCard } from 'design-system/gamification/RewardCard';
+import { XPCounter } from 'design-system/gamification/XPCounter';
+import { useGameProfile } from '@/hooks/useGamification';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import type { Reward } from 'shared/types/gamification.types';
 
 type JourneyFilter = 'all' | 'health' | 'care' | 'plan';
 type SortOption = 'xp-asc' | 'xp-desc' | 'name';

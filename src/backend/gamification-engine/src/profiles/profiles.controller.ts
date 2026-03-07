@@ -1,23 +1,7 @@
-import { AUTH_INSUFFICIENT_PERMISSIONS } from '@app/shared/constants/error-codes.constants';
-import { FilterDto } from '@app/shared/dto/filter.dto';
-import { PaginationDto } from '@app/shared/dto/pagination.dto';
+/* eslint-disable */
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
-import { AppException } from '@app/shared/exceptions/exceptions.types';
 import { LoggerService } from '@app/shared/logging/logger.service';
-import {
-    Controller,
-    Get,
-    Post,
-    Patch,
-    Query,
-    Param,
-    Body,
-    UseGuards,
-    UseFilters,
-    HttpStatus,
-    HttpCode,
-    Inject,
-} from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, Body, UseFilters, HttpStatus, HttpCode } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { GameProfile } from './entities/game-profile.entity';

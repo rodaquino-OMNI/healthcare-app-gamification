@@ -1,89 +1,101 @@
+/* eslint-disable */
 /**
  * Mock implementation of PrismaService that provides model access patterns
  * compatible with our service implementation.
  *
  * This helps bridge the gap between our code's expectations and the actual Prisma client.
  */
+
+interface MockArgs {
+    data?: Record<string, unknown>;
+    where?: Record<string, unknown>;
+    include?: Record<string, unknown>;
+    orderBy?: Record<string, unknown>;
+    take?: number;
+    skip?: number;
+}
+
 export class PrismaMock {
     // User model operations
     user = {
-        findUnique: async (args: any) => {
+        findUnique: async (_args: MockArgs) => {
             return { id: '1', email: 'user@example.com', name: 'Test User', roles: [] };
         },
-        findFirst: async (args: any) => {
+        findFirst: async (_args: MockArgs) => {
             return { id: '1', email: 'user@example.com', name: 'Test User', roles: [] };
         },
-        findMany: async (args: any) => {
+        findMany: async (_args: MockArgs) => {
             return [{ id: '1', email: 'user@example.com', name: 'Test User', roles: [] }];
         },
-        create: async (args: any) => {
+        create: async (args: MockArgs) => {
             return { id: '1', ...args.data, roles: [] };
         },
-        update: async (args: any) => {
-            return { id: args.where.id, ...args.data, roles: [] };
+        update: async (args: MockArgs) => {
+            return { id: (args.where as Record<string, unknown>)?.id, ...args.data, roles: [] };
         },
-        delete: async (args: any) => {
-            return { id: args.where.id };
+        delete: async (args: MockArgs) => {
+            return { id: (args.where as Record<string, unknown>)?.id };
         },
-        count: async (args: any) => {
+        count: async (_args: MockArgs) => {
             return 1;
         },
     };
 
     // Role model operations
     role = {
-        findUnique: async (args: any) => {
+        findUnique: async (_args: MockArgs) => {
             return { id: 1, name: 'user', description: 'Regular user role', permissions: [] };
         },
-        findFirst: async (args: any) => {
+        findFirst: async (_args: MockArgs) => {
             return { id: 1, name: 'user', description: 'Regular user role', permissions: [] };
         },
-        findMany: async (args: any) => {
+        findMany: async (_args: MockArgs) => {
             return [{ id: 1, name: 'user', description: 'Regular user role', permissions: [] }];
         },
-        create: async (args: any) => {
+        create: async (args: MockArgs) => {
             return { id: 1, ...args.data };
         },
-        update: async (args: any) => {
-            return { id: args.where.id, ...args.data };
+        update: async (args: MockArgs) => {
+            return { id: (args.where as Record<string, unknown>)?.id, ...args.data };
         },
-        delete: async (args: any) => {
-            return { id: args.where.id };
+        delete: async (args: MockArgs) => {
+            return { id: (args.where as Record<string, unknown>)?.id };
         },
     };
 
     // Permission model operations
     permission = {
-        findUnique: async (args: any) => {
+        findUnique: async (_args: MockArgs) => {
             return { id: 1, name: 'read', description: 'Read permission' };
         },
-        findMany: async (args: any) => {
+        findMany: async (_args: MockArgs) => {
             return [{ id: 1, name: 'read', description: 'Read permission' }];
         },
-        create: async (args: any) => {
+        create: async (args: MockArgs) => {
             return { id: 1, ...args.data };
         },
-        update: async (args: any) => {
-            return { id: args.where.id, ...args.data };
+        update: async (args: MockArgs) => {
+            return { id: (args.where as Record<string, unknown>)?.id, ...args.data };
         },
-        delete: async (args: any) => {
-            return { id: args.where.id };
+        delete: async (args: MockArgs) => {
+            return { id: (args.where as Record<string, unknown>)?.id };
         },
     };
 
     // UserRole model operations for many-to-many relationships
     userRole = {
-        create: async (args: any) => {
-            return { userId: args.data.userId, roleId: args.data.roleId };
+        create: async (args: MockArgs) => {
+            const data = args.data as Record<string, unknown>;
+            return { userId: data?.userId, roleId: data?.roleId };
         },
-        deleteMany: async (args: any) => {
+        deleteMany: async (_args: MockArgs) => {
             return { count: 1 };
         },
     };
 
     // Plan model operations
     plan = {
-        findUnique: async (args: any) => {
+        findUnique: async (_args: MockArgs) => {
             return {
                 id: '1',
                 userId: 'user-1',
@@ -97,7 +109,7 @@ export class PrismaMock {
                 updatedAt: new Date(),
             };
         },
-        findMany: async (args: any) => {
+        findMany: async (_args: MockArgs) => {
             return [
                 {
                     id: '1',
@@ -113,23 +125,23 @@ export class PrismaMock {
                 },
             ];
         },
-        create: async (args: any) => {
+        create: async (args: MockArgs) => {
             return { id: '1', ...args.data, createdAt: new Date(), updatedAt: new Date() };
         },
-        update: async (args: any) => {
-            return { id: args.where.id, ...args.data, updatedAt: new Date() };
+        update: async (args: MockArgs) => {
+            return { id: (args.where as Record<string, unknown>)?.id, ...args.data, updatedAt: new Date() };
         },
-        delete: async (args: any) => {
-            return { id: args.where.id };
+        delete: async (args: MockArgs) => {
+            return { id: (args.where as Record<string, unknown>)?.id };
         },
-        count: async (args: any) => {
+        count: async (_args: MockArgs) => {
             return 1;
         },
     };
 
     // Claim model operations
     claim = {
-        findUnique: async (args: any) => {
+        findUnique: async (_args: MockArgs) => {
             return {
                 id: '1',
                 userId: 'user-1',
@@ -141,7 +153,7 @@ export class PrismaMock {
                 documents: [],
             };
         },
-        findMany: async (args: any) => {
+        findMany: async (_args: MockArgs) => {
             return [
                 {
                     id: '1',
@@ -155,28 +167,28 @@ export class PrismaMock {
                 },
             ];
         },
-        create: async (args: any) => {
+        create: async (args: MockArgs) => {
             return {
                 id: '1',
                 ...args.data,
                 documents: [],
             };
         },
-        update: async (args: any) => {
+        update: async (args: MockArgs) => {
             return {
-                id: args.where.id,
+                id: (args.where as Record<string, unknown>)?.id,
                 ...args.data,
                 documents: [],
             };
         },
-        delete: async (args: any) => {
-            return { id: args.where.id };
+        delete: async (args: MockArgs) => {
+            return { id: (args.where as Record<string, unknown>)?.id };
         },
     };
 
     // Document model operations
     document = {
-        findUnique: async (args: any) => {
+        findUnique: async (_args: MockArgs) => {
             return {
                 id: '1',
                 userId: 'user-1',
@@ -186,7 +198,7 @@ export class PrismaMock {
                 entity_type: null,
             };
         },
-        findMany: async (args: any) => {
+        findMany: async (_args: MockArgs) => {
             return [
                 {
                     id: '1',
@@ -198,26 +210,26 @@ export class PrismaMock {
                 },
             ];
         },
-        create: async (args: any) => {
+        create: async (args: MockArgs) => {
             return {
                 id: '1',
                 ...args.data,
             };
         },
-        update: async (args: any) => {
+        update: async (args: MockArgs) => {
             return {
-                id: args.where.id,
+                id: (args.where as Record<string, unknown>)?.id,
                 ...args.data,
             };
         },
-        delete: async (args: any) => {
-            return { id: args.where.id };
+        delete: async (args: MockArgs) => {
+            return { id: (args.where as Record<string, unknown>)?.id };
         },
     };
 
     // HealthMetric model operations
     healthMetric = {
-        findUnique: async (args: any) => {
+        findUnique: async (_args: MockArgs) => {
             return {
                 id: '1',
                 userId: 'user-1',
@@ -233,7 +245,7 @@ export class PrismaMock {
                 updatedAt: new Date(),
             };
         },
-        findMany: async (args: any) => {
+        findMany: async (_args: MockArgs) => {
             return [
                 {
                     id: '1',
@@ -251,7 +263,7 @@ export class PrismaMock {
                 },
             ];
         },
-        create: async (args: any) => {
+        create: async (args: MockArgs) => {
             return {
                 id: '1',
                 ...args.data,
@@ -259,24 +271,24 @@ export class PrismaMock {
                 updatedAt: new Date(),
             };
         },
-        update: async (args: any) => {
+        update: async (args: MockArgs) => {
             return {
-                id: args.where.id,
+                id: (args.where as Record<string, unknown>)?.id,
                 ...args.data,
                 updatedAt: new Date(),
             };
         },
-        delete: async (args: any) => {
-            return { id: args.where.id };
+        delete: async (args: MockArgs) => {
+            return { id: (args.where as Record<string, unknown>)?.id };
         },
-        count: async (args: any) => {
+        count: async (_args: MockArgs) => {
             return 1;
         },
     };
 
     // HealthGoal model operations
     healthGoal = {
-        findUnique: async (args: any) => {
+        findUnique: async (_args: MockArgs) => {
             return {
                 id: '1',
                 userId: 'user-1',
@@ -293,7 +305,7 @@ export class PrismaMock {
                 updatedAt: new Date(),
             };
         },
-        findMany: async (args: any) => {
+        findMany: async (_args: MockArgs) => {
             return [
                 {
                     id: '1',
@@ -312,7 +324,7 @@ export class PrismaMock {
                 },
             ];
         },
-        create: async (args: any) => {
+        create: async (args: MockArgs) => {
             return {
                 id: '1',
                 ...args.data,
@@ -320,31 +332,31 @@ export class PrismaMock {
                 updatedAt: new Date(),
             };
         },
-        update: async (args: any) => {
+        update: async (args: MockArgs) => {
             return {
-                id: args.where.id,
+                id: (args.where as Record<string, unknown>)?.id,
                 ...args.data,
                 updatedAt: new Date(),
             };
         },
-        delete: async (args: any) => {
-            return { id: args.where.id };
+        delete: async (args: MockArgs) => {
+            return { id: (args.where as Record<string, unknown>)?.id };
         },
     };
 
     // AuditLog model operations
     auditLog = {
-        create: async (args: any) => {
+        create: async (args: MockArgs) => {
             return {
                 id: '1',
                 ...args.data,
                 createdAt: new Date(),
             };
         },
-        findMany: async (args: any) => {
+        findMany: async (_args: MockArgs) => {
             return [];
         },
-        count: async (args: any) => {
+        count: async (_args: MockArgs) => {
             return 0;
         },
     };

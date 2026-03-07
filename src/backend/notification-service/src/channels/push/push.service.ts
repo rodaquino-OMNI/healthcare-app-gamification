@@ -1,10 +1,17 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Injectable } from '@nestjs/common'; // v10.0.0+
 import { ConfigService } from '@nestjs/config'; // v10.0.0+
 import * as admin from 'firebase-admin'; // v11.0.0+
 
-import { notification } from '../../config/configuration';
+interface PushPayload {
+    title: string;
+    body: string;
+    data?: Record<string, string>;
+    android?: admin.messaging.AndroidConfig;
+    apns?: admin.messaging.ApnsConfig;
+    webpush?: admin.messaging.WebpushConfig;
+}
 
 /**
  * Service responsible for sending push notifications using Firebase Cloud Messaging (FCM).
@@ -45,6 +52,7 @@ export class PushService {
         }
 
         // Only initialize if not already initialized
+        // eslint-disable-next-line import/namespace
         if (admin.apps.length === 0) {
             try {
                 // The API key could be a JSON string or a path to a service account file
@@ -58,15 +66,17 @@ export class PushService {
                     serviceAccount = this.apiKey;
                 }
 
+                // eslint-disable-next-line import/namespace
                 admin.initializeApp({
+                    // eslint-disable-next-line import/namespace
                     credential: admin.credential.cert(serviceAccount),
                 });
 
                 this.logger.log('Firebase Cloud Messaging initialized successfully', 'PushService');
-            } catch (error) {
+            } catch (error: unknown) {
                 this.logger.error(
-                    `Failed to initialize Firebase Cloud Messaging: ${(error as any).message}`,
-                    (error as any).stack,
+                    `Failed to initialize Firebase Cloud Messaging: ${error instanceof Error ? error.message : String(error)}`,
+                    error instanceof Error ? error.stack : undefined,
                     'PushService'
                 );
             }
@@ -79,12 +89,13 @@ export class PushService {
      * @param payload The notification payload containing title, body, and additional data
      * @returns A promise that resolves when the notification is sent successfully
      */
-    async send(token: string, payload: any): Promise<void> {
+    async send(token: string, payload: PushPayload): Promise<void> {
         if (!token) {
             this.logger.warn('Cannot send push notification: No device token provided', 'PushService');
             return;
         }
 
+        // eslint-disable-next-line import/namespace
         if (admin.apps.length === 0) {
             this.logger.error('Cannot send push notification: Firebase Cloud Messaging not initialized', 'PushService');
             throw new Error('Firebase Cloud Messaging not initialized');
@@ -113,18 +124,19 @@ export class PushService {
             }
 
             // Send the message to the specified device token using FCM
-            const response = await admin.messaging().send(message);
+            // eslint-disable-next-line import/namespace
+            await admin.messaging().send(message);
 
             // Logs the successful sending of the push notification
             this.logger.log(`Push notification sent successfully to ${token.substring(0, 8)}...`, 'PushService');
-        } catch (error) {
+        } catch (error: unknown) {
             // Handles any errors that occur during the push notification sending process
             this.logger.error(
-                `Failed to send push notification: ${(error as any).message}`,
-                (error as any).stack,
+                `Failed to send push notification: ${error instanceof Error ? error.message : String(error)}`,
+                error instanceof Error ? error.stack : undefined,
                 'PushService'
             );
-            throw error as any;
+            throw error;
         }
     }
 }

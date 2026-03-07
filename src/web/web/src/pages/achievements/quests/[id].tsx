@@ -1,14 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text';
-import { Box } from 'src/web/design-system/src/primitives/Box/Box';
-import { Card } from 'src/web/design-system/src/components/Card/Card';
-import { Button } from 'src/web/design-system/src/components/Button/Button';
-import { ProgressBar } from 'src/web/design-system/src/components/ProgressBar/ProgressBar';
-import { colors } from 'src/web/design-system/src/tokens/colors';
-import { spacing } from 'src/web/design-system/src/tokens/spacing';
-import type { Quest } from 'src/web/shared/types/gamification.types';
+import { Text } from 'design-system/primitives/Text/Text';
+import { Box } from 'design-system/primitives/Box/Box';
+import { Card } from 'design-system/components/Card/Card';
+import { Button } from 'design-system/components/Button/Button';
+import { ProgressBar } from 'design-system/components/ProgressBar/ProgressBar';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import type { Quest } from 'shared/types/gamification.types';
 
 const MOCK_QUESTS: Record<string, Quest & { requirements: string[]; rewardXp: number }> = {
     q1: {

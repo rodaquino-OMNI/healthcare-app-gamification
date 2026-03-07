@@ -1,10 +1,10 @@
 import { useQuery } from '@apollo/client'; // v3.7.17
-import { GameProfile } from 'src/web/shared/types/gamification.types';
-import { GET_GAME_PROFILE } from 'src/web/shared/graphql/queries/gamification.queries';
-import { API_BASE_URL } from 'src/web/shared/constants/api';
-import { apiConfig } from 'src/web/shared/config/apiConfig';
-import { ALL_JOURNEYS } from 'src/web/shared/constants/journeys';
-import { formatJourneyValue } from 'src/web/shared/utils/index';
+import { GameProfile } from 'shared/types/gamification.types';
+import { GET_GAME_PROFILE } from 'shared/graphql/queries/gamification.queries';
+import { API_BASE_URL } from 'shared/constants/api';
+import { apiConfig } from 'shared/config/apiConfig';
+import { ALL_JOURNEYS } from 'shared/constants/journeys';
+import { formatJourneyValue } from 'shared/utils/index';
 
 /**
  * React hook for accessing and managing the user's game profile data.

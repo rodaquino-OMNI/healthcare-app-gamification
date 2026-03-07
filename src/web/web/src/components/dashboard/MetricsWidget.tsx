@@ -1,11 +1,11 @@
 import React from 'react';
-import { HealthMetric } from 'src/web/shared/types/health.types.ts';
-import { JOURNEY_IDS } from 'src/web/shared/constants/journeys.ts';
-import { Card } from 'src/web/design-system/src/components/Card/Card.tsx';
-import { MetricCard } from 'src/web/design-system/src/health/MetricCard/MetricCard.tsx';
-import { useAuth } from 'src/web/web/src/hooks/useAuth';
-import { useHealthMetrics } from 'src/web/web/src/hooks/useHealthMetrics.ts';
-import { useJourney } from 'src/web/web/src/hooks/useJourney.ts';
+import { HealthMetric } from 'shared/types/health.types';
+import { JOURNEY_IDS } from 'shared/constants/journeys';
+import { Card } from 'design-system/components/Card/Card';
+import { MetricCard } from 'design-system/health/MetricCard/MetricCard';
+import { useAuth } from '@/hooks/useAuth';
+import { useHealthMetrics } from '@/hooks/useHealthMetrics';
+import { useJourney } from '@/hooks/useJourney';
 
 /**
  * A widget component that displays a summary of key health metrics.

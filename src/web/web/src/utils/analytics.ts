@@ -20,8 +20,7 @@ import * as Sentry from '@sentry/nextjs'; // v7.60.1
 import { datadogRum } from '@datadog/browser-rum'; // v4.37.0
 
 import { webConfig } from '../constants/config';
-import { useAuth } from '../hooks/useAuth';
-import { JOURNEY_IDS } from 'src/web/shared/utils/index';
+import { JOURNEY_IDS } from 'shared/utils/index';
 
 // Define application version from environment variables
 const APP_VERSION = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || 'development';
@@ -36,7 +35,7 @@ const ENVIRONMENT = process.env.NEXT_PUBLIC_ENVIRONMENT || 'development';
 export const initAnalytics = async (options?: {
     enableAnalytics?: boolean;
     userId?: string;
-    userProperties?: Record<string, any>;
+    userProperties?: Record<string, unknown>;
 }): Promise<void> => {
     try {
         // Default to enabled in production, disabled in development
@@ -105,7 +104,7 @@ export const initAnalytics = async (options?: {
  * @param journeyId - Optional journey identifier (health, care, plan)
  * @param params - Optional additional parameters to include with the event
  */
-export const trackScreenView = (screenName: string, journeyId?: string, params?: Record<string, any>): void => {
+export const trackScreenView = (screenName: string, journeyId?: string, params?: Record<string, unknown>): void => {
     try {
         if (!screenName) {
             console.warn('Screen name is required for tracking');
@@ -116,7 +115,7 @@ export const trackScreenView = (screenName: string, journeyId?: string, params?:
         ReactGA.set({ page: screenName });
 
         // Prepare event parameters
-        const eventParams: Record<string, any> = {
+        const eventParams: Record<string, unknown> = {
             page_title: screenName,
             page_path: window.location.pathname,
             ...params,
@@ -149,7 +148,7 @@ export const trackScreenView = (screenName: string, journeyId?: string, params?:
  * @param eventName - The name of the event to track
  * @param params - Optional additional parameters to include with the event
  */
-export const trackEvent = (eventName: string, params?: Record<string, any>): void => {
+export const trackEvent = (eventName: string, params?: Record<string, unknown>): void => {
     try {
         if (!eventName) {
             console.warn('Event name is required for tracking');
@@ -181,7 +180,7 @@ export const trackEvent = (eventName: string, params?: Record<string, any>): voi
  * @param eventName - The name of the event to track
  * @param params - Optional additional parameters to include with the event
  */
-export const trackJourneyEvent = (journeyId: string, eventName: string, params?: Record<string, any>): void => {
+export const trackJourneyEvent = (journeyId: string, eventName: string, params?: Record<string, unknown>): void => {
     try {
         if (!journeyId || !eventName) {
             console.warn('Journey ID and event name are required for journey event tracking');
@@ -212,7 +211,7 @@ export const trackJourneyEvent = (journeyId: string, eventName: string, params?:
  * @param eventName - The name of the event to track
  * @param params - Optional additional parameters to include with the event
  */
-export const trackHealthEvent = (eventName: string, params?: Record<string, any>): void => {
+export const trackHealthEvent = (eventName: string, params?: Record<string, unknown>): void => {
     trackJourneyEvent(JOURNEY_IDS.HEALTH, eventName, params);
 };
 
@@ -222,7 +221,7 @@ export const trackHealthEvent = (eventName: string, params?: Record<string, any>
  * @param eventName - The name of the event to track
  * @param params - Optional additional parameters to include with the event
  */
-export const trackCareEvent = (eventName: string, params?: Record<string, any>): void => {
+export const trackCareEvent = (eventName: string, params?: Record<string, unknown>): void => {
     trackJourneyEvent(JOURNEY_IDS.CARE, eventName, params);
 };
 
@@ -232,7 +231,7 @@ export const trackCareEvent = (eventName: string, params?: Record<string, any>):
  * @param eventName - The name of the event to track
  * @param params - Optional additional parameters to include with the event
  */
-export const trackPlanEvent = (eventName: string, params?: Record<string, any>): void => {
+export const trackPlanEvent = (eventName: string, params?: Record<string, unknown>): void => {
     trackJourneyEvent(JOURNEY_IDS.PLAN, eventName, params);
 };
 
@@ -242,7 +241,7 @@ export const trackPlanEvent = (eventName: string, params?: Record<string, any>):
  * @param eventName - The name of the event to track
  * @param params - Optional additional parameters to include with the event
  */
-export const trackGamificationEvent = (eventName: string, params?: Record<string, any>): void => {
+export const trackGamificationEvent = (eventName: string, params?: Record<string, unknown>): void => {
     // Format event name with gamification prefix
     const gamificationEventName = `gamification_${eventName}`;
 
@@ -295,7 +294,7 @@ export const trackLevelUp = (newLevel: number, xpEarned: number): void => {
  * @param error - The error object
  * @param context - Additional context about the error
  */
-export const trackError = (errorName: string, error: Error, context?: Record<string, any>): void => {
+export const trackError = (errorName: string, error: Error, context?: Record<string, unknown>): void => {
     // Report to Sentry
     Sentry.captureException(error, {
         tags: { error_name: errorName },
@@ -318,7 +317,7 @@ export const trackError = (errorName: string, error: Error, context?: Record<str
  * @param value - The numeric value of the metric
  * @param context - Additional context about the metric
  */
-export const trackPerformanceMetric = (metricName: string, value: number, context?: Record<string, any>): void => {
+export const trackPerformanceMetric = (metricName: string, value: number, context?: Record<string, unknown>): void => {
     // Track in Datadog RUM
     datadogRum.addTiming(metricName, value);
 
@@ -335,7 +334,7 @@ export const trackPerformanceMetric = (metricName: string, value: number, contex
  *
  * @param properties - Object containing user properties
  */
-export const setUserProperties = (properties: Record<string, any>): void => {
+export const setUserProperties = (properties: Record<string, unknown>): void => {
     try {
         // Set user properties in GA4
         ReactGA.set(properties);

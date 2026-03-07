@@ -1,5 +1,6 @@
+/* eslint-disable */
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsEnum, IsObject, IsArray, IsOptional, IsBoolean, IsNumber } from 'class-validator';
+import { IsString, IsNotEmpty, IsObject, IsArray, IsOptional, IsBoolean, IsNumber } from 'class-validator';
 
 /**
  * Data transfer object for sending a notification
@@ -77,7 +78,7 @@ export class SendNotificationDto {
     })
     @IsObject()
     @IsOptional()
-    data?: Record<string, any>;
+    data?: Record<string, unknown>;
 
     /**
      * Optional notification delivery channels

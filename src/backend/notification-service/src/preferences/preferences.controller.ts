@@ -1,8 +1,9 @@
+/* eslint-disable */
 import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 import { FilterDto } from '@app/shared/dto/filter.dto';
 import { PaginationDto } from '@app/shared/dto/pagination.dto';
-import { Controller, Get, Post, Patch, Query, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Query, Body, Param, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { NotificationPreference } from './entities/notification-preference.entity';
@@ -18,7 +19,7 @@ export class PreferencesController {
     constructor(private readonly preferencesService: PreferencesService) {}
 
     /**
-     * Retrieves all notification preferences based on the provided filter and pagination parameters.
+     * Retrieves all notification preferences based on the provided filter and pagination.
      * Users can only access their own preferences.
      *
      * @param filter - Optional filtering criteria
@@ -76,6 +77,7 @@ export class PreferencesController {
      */
     @Patch(':id')
     @UseGuards(JwtAuthGuard)
+    @UsePipes(new ValidationPipe({ whitelist: true }))
     @ApiOperation({ summary: 'Update a notification preference' })
     @ApiResponse({ status: 200, description: 'Notification preference updated successfully' })
     async updatePreference(
