@@ -9,10 +9,10 @@ export const ROLES_KEY = 'roles';
 /**
  * Decorator that assigns roles to a route. Works in conjunction with the RolesGuard
  * to enforce role-based access control.
- * 
+ *
  * @param roles - The roles required to access the route
  * @returns A decorator that sets metadata on the route handler
- * 
+ *
  * @example
  * @Roles('admin')
  * @Get('protected')

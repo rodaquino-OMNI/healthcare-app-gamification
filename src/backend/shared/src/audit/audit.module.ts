@@ -1,8 +1,9 @@
 import { Global, Module } from '@nestjs/common';
-import { AuditService } from './audit.service';
+
 import { AuditInterceptor } from './audit.interceptor';
-import { LoggerModule } from '../logging/logger.module';
+import { AuditService } from './audit.service';
 import { PrismaService } from '../database/prisma.service';
+import { LoggerModule } from '../logging/logger.module';
 
 /**
  * Global module providing PHI audit logging capabilities.
@@ -10,8 +11,8 @@ import { PrismaService } from '../database/prisma.service';
  */
 @Global()
 @Module({
-  imports: [LoggerModule],
-  providers: [PrismaService, AuditService, AuditInterceptor],
-  exports: [AuditService, AuditInterceptor],
+    imports: [LoggerModule],
+    providers: [PrismaService, AuditService, AuditInterceptor],
+    exports: [AuditService, AuditInterceptor],
 })
 export class AuditModule {}

@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ConsentService } from './consent.service';
-import { ConsentGuard } from './consent.guard';
+
 import { ConsentController } from './consent.controller';
+import { ConsentGuard } from './consent.guard';
+import { ConsentService } from './consent.service';
 import { PrismaService } from '../database/prisma.service';
 
 /**
@@ -17,8 +18,8 @@ import { PrismaService } from '../database/prisma.service';
  * - Apply @RequireConsent() + ConsentGuard to protected routes
  */
 @Module({
-  controllers: [ConsentController],
-  providers: [ConsentService, ConsentGuard, PrismaService],
-  exports: [ConsentService, ConsentGuard],
+    controllers: [ConsentController],
+    providers: [ConsentService, ConsentGuard, PrismaService],
+    exports: [ConsentService, ConsentGuard],
 })
 export class ConsentModule {}

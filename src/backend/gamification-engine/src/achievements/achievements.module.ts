@@ -1,10 +1,11 @@
-import { Module } from '@nestjs/common'; // @nestjs/common 10.0.0
-import { AchievementsService } from './achievements.service';
-import { AchievementsController } from './achievements.controller';
 import { KafkaModule } from '@app/shared/kafka/kafka.module'; // @app/shared ^1.0.0
 import { LoggerModule } from '@app/shared/logging/logger.module'; // @app/shared ^1.0.0
 import { RedisModule } from '@app/shared/redis/redis.module'; // @app/shared ^1.0.0
 import { TracingModule } from '@app/shared/tracing/tracing.module'; // @app/shared ^1.0.0
+import { Module } from '@nestjs/common'; // @nestjs/common 10.0.0
+
+import { AchievementsController } from './achievements.controller';
+import { AchievementsService } from './achievements.service';
 import { ProfilesModule } from '../profiles/profiles.module';
 
 /**
@@ -13,15 +14,15 @@ import { ProfilesModule } from '../profiles/profiles.module';
  * for working with achievements across all journeys.
  */
 @Module({
-  imports: [
-    KafkaModule,
-    RedisModule,
-    LoggerModule,
-    TracingModule,
-    ProfilesModule // Add ProfilesModule to give AchievementsService access to ProfilesService
-  ],
-  controllers: [AchievementsController],
-  providers: [AchievementsService],
-  exports: [AchievementsService],
+    imports: [
+        KafkaModule,
+        RedisModule,
+        LoggerModule,
+        TracingModule,
+        ProfilesModule, // Add ProfilesModule to give AchievementsService access to ProfilesService
+    ],
+    controllers: [AchievementsController],
+    providers: [AchievementsService],
+    exports: [AchievementsService],
 })
 export class AchievementsModule {}

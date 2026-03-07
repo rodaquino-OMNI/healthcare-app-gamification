@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common'; // 10.0.0
+
 import { RolesService } from './roles.service';
 
 /**
@@ -7,7 +8,7 @@ import { RolesService } from './roles.service';
  * authentication service, making it available to other modules.
  */
 @Module({
-  providers: [RolesService],
-  exports: [RolesService],
+    providers: [RolesService],
+    exports: [RolesService],
 })
 export class RolesModule {}

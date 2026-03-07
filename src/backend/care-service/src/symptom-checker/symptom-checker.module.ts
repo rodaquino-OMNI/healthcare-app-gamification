@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common'; // v10.0.0+
+
 import { SymptomCheckerController } from './symptom-checker.controller';
 import { SymptomCheckerService } from './symptom-checker.service';
 
@@ -8,7 +9,7 @@ import { SymptomCheckerService } from './symptom-checker.service';
  * requirement F-102-RQ-001 allowing users to input symptoms and receive preliminary guidance.
  */
 @Module({
-  controllers: [SymptomCheckerController],
-  providers: [SymptomCheckerService],
+    controllers: [SymptomCheckerController],
+    providers: [SymptomCheckerService],
 })
 export class SymptomCheckerModule {}

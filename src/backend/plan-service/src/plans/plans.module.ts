@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
+
 import { PlansController } from './plans.controller';
 import { PlansService } from './plans.service';
 import { ExceptionsModule } from '../../../shared/src/exceptions/exceptions.module';
-import { LoggerModule } from '../../../shared/src/logging/logger.module';
 import { KafkaModule } from '../../../shared/src/kafka/kafka.module';
+import { LoggerModule } from '../../../shared/src/logging/logger.module';
 
 /**
  * Configures the PlansModule, which is responsible for managing insurance plans
@@ -13,13 +14,9 @@ import { KafkaModule } from '../../../shared/src/kafka/kafka.module';
  * including CRUD operations, coverage verification, and cost calculation.
  */
 @Module({
-  imports: [
-    ExceptionsModule,
-    LoggerModule,
-    KafkaModule
-  ],
-  controllers: [PlansController],
-  providers: [PlansService],
-  exports: [PlansService],
+    imports: [ExceptionsModule, LoggerModule, KafkaModule],
+    controllers: [PlansController],
+    providers: [PlansService],
+    exports: [PlansService],
 })
 export class PlansModule {}

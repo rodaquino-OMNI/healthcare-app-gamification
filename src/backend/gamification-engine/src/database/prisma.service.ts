@@ -7,29 +7,27 @@ import { PrismaClient } from '@prisma/client';
  */
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
-  /**
-   * Constructor initializes the Prisma client with appropriate logging options
-   * based on the environment.
-   */
-  constructor() {
-    super({
-      log: process.env.NODE_ENV === 'development' 
-        ? ['query', 'info', 'warn', 'error'] 
-        : ['error'],
-    });
-  }
+    /**
+     * Constructor initializes the Prisma client with appropriate logging options
+     * based on the environment.
+     */
+    constructor() {
+        super({
+            log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['error'],
+        });
+    }
 
-  /**
-   * Connects to the database when the module initializes.
-   */
-  async onModuleInit() {
-    await this.$connect();
-  }
+    /**
+     * Connects to the database when the module initializes.
+     */
+    async onModuleInit() {
+        await this.$connect();
+    }
 
-  /**
-   * Disconnects from the database when the module is destroyed.
-   */
-  async onModuleDestroy() {
-    await this.$disconnect();
-  }
+    /**
+     * Disconnects from the database when the module is destroyed.
+     */
+    async onModuleDestroy() {
+        await this.$disconnect();
+    }
 }

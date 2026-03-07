@@ -3,8 +3,8 @@ import { SetMetadata } from '@nestjs/common';
 export const PHI_ACCESS_KEY = 'phi_access';
 
 export interface PhiAccessMetadata {
-  resourceType: string;
-  isPhi: true;
+    resourceType: string;
+    isPhi: true;
 }
 
 /**
@@ -14,4 +14,4 @@ export interface PhiAccessMetadata {
  * @param resourceType - The type of PHI resource being accessed (e.g., "HealthMetric", "Appointment")
  */
 export const PhiAccess = (resourceType: string) =>
-  SetMetadata<string, PhiAccessMetadata>(PHI_ACCESS_KEY, { resourceType, isPhi: true });
+    SetMetadata<string, PhiAccessMetadata>(PHI_ACCESS_KEY, { resourceType, isPhi: true });

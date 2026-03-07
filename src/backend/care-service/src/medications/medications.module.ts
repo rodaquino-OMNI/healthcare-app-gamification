@@ -11,7 +11,7 @@ import { MedicationsService } from './medications.service';
  * Note: PrismaService is provided globally via DatabaseModule in the root AppModule.
  */
 @Module({
-  controllers: [MedicationsController],
-  providers: [MedicationsService],
+    controllers: [MedicationsController],
+    providers: [MedicationsService],
 })
 export class MedicationsModule {}

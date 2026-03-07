@@ -1,74 +1,70 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ErrorType } from '@app/shared/exceptions/error.types';
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
-import { TelemedicineService } from './telemedicine.service';
-import { CreateSessionDto } from './dto/create-session.dto';
-import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
+import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
+import { PhiAccess } from '@app/shared/audit';
+import { CARE_TELEMEDICINE_CONNECTION_FAILED } from '@app/shared/constants/error-codes.constants';
+import { ErrorType } from '@app/shared/exceptions/error.types';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 import { LoggerService } from '@app/shared/logging/logger.service';
-import { CARE_TELEMEDICINE_CONNECTION_FAILED } from '@app/shared/constants/error-codes.constants';
-import { PhiAccess } from '@app/shared/audit';
+import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+
+import { CreateSessionDto } from './dto/create-session.dto';
+import { TelemedicineService } from './telemedicine.service';
 
 /**
  * Controller for handling telemedicine session requests.
  */
 @Controller('telemedicine')
 export class TelemedicineController {
-  /**
-   * Initializes the TelemedicineController with required dependencies.
-   * 
-   * @param telemedicineService - Service for handling telemedicine operations
-   * @param logger - Service for structured logging
-   */
-  constructor(
-    private readonly telemedicineService: TelemedicineService,
-    private readonly logger: LoggerService
-  ) {}
+    /**
+     * Initializes the TelemedicineController with required dependencies.
+     *
+     * @param telemedicineService - Service for handling telemedicine operations
+     * @param logger - Service for structured logging
+     */
+    constructor(
+        private readonly telemedicineService: TelemedicineService,
+        private readonly logger: LoggerService
+    ) {}
 
-  /**
-   * Starts a new telemedicine session.
-   * 
-   * @param createSessionDto - Data required to create a telemedicine session
-   * @returns The result of the telemedicine session creation.
-   */
-  @Post('session')
-  @UseGuards(JwtAuthGuard)
-  @PhiAccess('TelemedicineSession')
-  async startTelemedicineSession(
-    @Body() createSessionDto: CreateSessionDto
-  ): Promise<any> {
-    try {
-      // Call the telemedicine service to start a new session
-      const session = await this.telemedicineService.startTelemedicineSession(createSessionDto);
-      
-      this.logger.log(
-        `Telemedicine session started: ${session.id}`,
-        'TelemedicineController'
-      );
-      
-      // Return the result of the session creation
-      return session;
-    } catch (error) {
-      // If it's already an AppException, just rethrow
-      if (error instanceof AppException) {
-        throw error as any;
-      }
-      
-      this.logger.error(
-        `Failed to start telemedicine session: ${(error as any).message}`,
-        (error as any).stack,
-        'TelemedicineController'
-      );
-      
-      // Wrap other errors
-      throw new AppException(
-        'Failed to start telemedicine session',
-        ErrorType.TECHNICAL,
-        CARE_TELEMEDICINE_CONNECTION_FAILED,
-        { dto: createSessionDto },
-        error
-      );
+    /**
+     * Starts a new telemedicine session.
+     *
+     * @param createSessionDto - Data required to create a telemedicine session
+     * @returns The result of the telemedicine session creation.
+     */
+    @Post('session')
+    @UseGuards(JwtAuthGuard)
+    @PhiAccess('TelemedicineSession')
+    async startTelemedicineSession(@Body() createSessionDto: CreateSessionDto): Promise<any> {
+        try {
+            // Call the telemedicine service to start a new session
+            const session = await this.telemedicineService.startTelemedicineSession(createSessionDto);
+
+            this.logger.log(`Telemedicine session started: ${session.id}`, 'TelemedicineController');
+
+            // Return the result of the session creation
+            return session;
+        } catch (error) {
+            // If it's already an AppException, just rethrow
+            if (error instanceof AppException) {
+                throw error as any;
+            }
+
+            this.logger.error(
+                `Failed to start telemedicine session: ${(error as any).message}`,
+                (error as any).stack,
+                'TelemedicineController'
+            );
+
+            // Wrap other errors
+            throw new AppException(
+                'Failed to start telemedicine session',
+                ErrorType.TECHNICAL,
+                CARE_TELEMEDICINE_CONNECTION_FAILED,
+                { dto: createSessionDto },
+                error
+            );
+        }
     }
-  }
 }

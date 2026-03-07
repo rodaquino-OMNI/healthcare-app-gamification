@@ -6,48 +6,48 @@ import { Plan } from './plan.entity';
  * including coverage type, details, limitations, and co-payment requirements.
  */
 export class Coverage {
-  /**
-   * Unique identifier for the coverage record
-   */
-  id!: string;
+    /**
+     * Unique identifier for the coverage record
+     */
+    id!: string;
 
-  /**
-   * ID of the plan this coverage is associated with
-   */
-  planId!: string;
+    /**
+     * ID of the plan this coverage is associated with
+     */
+    planId!: string;
 
-  /**
-   * Type of coverage (e.g., 'medical', 'dental', 'vision', 'prescription')
-   */
-  type!: string;
+    /**
+     * Type of coverage (e.g., 'medical', 'dental', 'vision', 'prescription')
+     */
+    type!: string;
 
-  /**
-   * Detailed description of what is covered
-   */
-  details!: string;
+    /**
+     * Detailed description of what is covered
+     */
+    details!: string;
 
-  /**
-   * Limitations or exclusions for this coverage
-   */
-  limitations!: string;
+    /**
+     * Limitations or exclusions for this coverage
+     */
+    limitations!: string;
 
-  /**
-   * Co-payment amount required for this coverage
-   */
-  coPayment: number = 0;
+    /**
+     * Co-payment amount required for this coverage
+     */
+    coPayment: number = 0;
 
-  /**
-   * Timestamp when the coverage record was created
-   */
-  createdAt!: Date;
+    /**
+     * Timestamp when the coverage record was created
+     */
+    createdAt!: Date;
 
-  /**
-   * Timestamp when the coverage record was last updated
-   */
-  updatedAt!: Date;
+    /**
+     * Timestamp when the coverage record was last updated
+     */
+    updatedAt!: Date;
 
-  /**
-   * Relationship to the Plan entity
-   */
-  plan!: Plan;
+    /**
+     * Relationship to the Plan entity
+     */
+    plan!: Plan;
 }

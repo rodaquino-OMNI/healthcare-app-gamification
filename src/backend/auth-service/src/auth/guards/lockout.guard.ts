@@ -1,12 +1,7 @@
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  HttpStatus,
-} from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { RedisService } from '@app/shared/redis/redis.service';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+import { RedisService } from '@app/shared/redis/redis.service';
+import { Injectable, CanActivate, ExecutionContext, HttpStatus } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 /**
  * Guard that checks if a user account is temporarily locked due to
@@ -18,35 +13,34 @@ import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types
  */
 @Injectable()
 export class LockoutGuard implements CanActivate {
-  constructor(
-    private readonly redisService: RedisService,
-    private readonly configService: ConfigService,
-  ) {}
+    constructor(
+        private readonly redisService: RedisService,
+        private readonly configService: ConfigService
+    ) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
-    const email = request.body?.email;
+    async canActivate(context: ExecutionContext): Promise<boolean> {
+        const request = context.switchToHttp().getRequest();
+        const email = request.body?.email;
 
-    if (!email) {
-      return true;
+        if (!email) {
+            return true;
+        }
+
+        const key = `lockout:${email}`;
+        const raw = await this.redisService.get(key);
+        const attempts = parseInt(raw || '0', 10);
+        const threshold = this.configService.get<number>('authService.password.lockoutThreshold') ?? 5;
+
+        if (attempts >= threshold) {
+            throw new AppException(
+                'Account temporarily locked due to too many failed attempts. Try again later.',
+                ErrorType.RATE_LIMIT_EXCEEDED,
+                'AUTH_007',
+                { email },
+                HttpStatus.TOO_MANY_REQUESTS
+            );
+        }
+
+        return true;
     }
-
-    const key = `lockout:${email}`;
-    const raw = await this.redisService.get(key);
-    const attempts = parseInt(raw || '0', 10);
-    const threshold =
-      this.configService.get<number>('authService.password.lockoutThreshold') ?? 5;
-
-    if (attempts >= threshold) {
-      throw new AppException(
-        'Account temporarily locked due to too many failed attempts. Try again later.',
-        ErrorType.RATE_LIMIT_EXCEEDED,
-        'AUTH_007',
-        { email },
-        HttpStatus.TOO_MANY_REQUESTS,
-      );
-    }
-
-    return true;
-  }
 }

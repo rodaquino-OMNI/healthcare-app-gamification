@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common'; // v10.0+
-import { TelemedicineController } from './telemedicine.controller';
-import { TelemedicineService } from './telemedicine.service';
+import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
 import { KafkaModule } from '@app/shared/kafka/kafka.module';
 import { LoggerModule } from '@app/shared/logging/logger.module';
-import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
+import { Module } from '@nestjs/common'; // v10.0+
+
+import { TelemedicineController } from './telemedicine.controller';
+import { TelemedicineService } from './telemedicine.service';
 
 /**
  * Configures the Telemedicine module, importing the necessary controllers and providers.
@@ -11,8 +12,8 @@ import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
  * enabling real-time video consultations between patients and healthcare providers.
  */
 @Module({
-  imports: [KafkaModule, LoggerModule, ExceptionsModule],
-  controllers: [TelemedicineController],
-  providers: [TelemedicineService],
+    imports: [KafkaModule, LoggerModule, ExceptionsModule],
+    controllers: [TelemedicineController],
+    providers: [TelemedicineService],
 })
 export class TelemedicineModule {}

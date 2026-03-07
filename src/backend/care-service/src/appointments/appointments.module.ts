@@ -11,8 +11,8 @@ import { AppointmentsService } from './appointments.service';
  * Note: PrismaService is provided globally via DatabaseModule in the root AppModule.
  */
 @Module({
-  controllers: [AppointmentsController],
-  providers: [AppointmentsService],
-  exports: [AppointmentsService],
+    controllers: [AppointmentsController],
+    providers: [AppointmentsService],
+    exports: [AppointmentsService],
 })
 export class AppointmentsModule {}

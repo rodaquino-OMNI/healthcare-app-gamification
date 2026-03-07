@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsNumber, IsString, IsDate, IsEnum, IsOptional, Min, Max } from 'class-validator'; // v0.14.0+
+
 import { MetricType, MetricSource } from '../types/health.types';
 
 /**
@@ -7,47 +8,47 @@ import { MetricType, MetricSource } from '../types/health.types';
  * Implements requirement F-101-RQ-001: Structure for health metrics input.
  */
 export class CreateMetricDto {
-  /**
-   * Type of health metric (e.g., HEART_RATE, BLOOD_PRESSURE, etc.)
-   */
-  @IsNotEmpty()
-  @IsEnum(MetricType)
-  type: MetricType;
+    /**
+     * Type of health metric (e.g., HEART_RATE, BLOOD_PRESSURE, etc.)
+     */
+    @IsNotEmpty()
+    @IsEnum(MetricType)
+    type: MetricType;
 
-  /**
-   * Numeric value of the health metric
-   */
-  @IsNotEmpty()
-  @IsNumber()
-  @Min(0, { message: 'Value must be non-negative' })
-  @Max(10000, { message: 'Value exceeds maximum allowed range' })
-  value: number;
+    /**
+     * Numeric value of the health metric
+     */
+    @IsNotEmpty()
+    @IsNumber()
+    @Min(0, { message: 'Value must be non-negative' })
+    @Max(10000, { message: 'Value exceeds maximum allowed range' })
+    value: number;
 
-  /**
-   * Unit of measurement for the health metric (e.g., bpm, mmHg, etc.)
-   */
-  @IsNotEmpty()
-  @IsString()
-  unit: string;
+    /**
+     * Unit of measurement for the health metric (e.g., bpm, mmHg, etc.)
+     */
+    @IsNotEmpty()
+    @IsString()
+    unit: string;
 
-  /**
-   * Timestamp when the metric was recorded
-   */
-  @IsNotEmpty()
-  @IsDate()
-  timestamp: Date;
+    /**
+     * Timestamp when the metric was recorded
+     */
+    @IsNotEmpty()
+    @IsDate()
+    timestamp: Date;
 
-  /**
-   * Source of the health metric data (e.g., MANUAL, DEVICE, API)
-   */
-  @IsNotEmpty()
-  @IsEnum(MetricSource)
-  source: MetricSource;
+    /**
+     * Source of the health metric data (e.g., MANUAL, DEVICE, API)
+     */
+    @IsNotEmpty()
+    @IsEnum(MetricSource)
+    source: MetricSource;
 
-  /**
-   * Optional notes or comments about the health metric
-   */
-  @IsOptional()
-  @IsString()
-  notes: string | null;
+    /**
+     * Optional notes or comments about the health metric
+     */
+    @IsOptional()
+    @IsString()
+    notes: string | null;
 }

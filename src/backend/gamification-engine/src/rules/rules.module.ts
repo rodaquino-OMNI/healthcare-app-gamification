@@ -1,11 +1,12 @@
-import { Module } from '@nestjs/common';
-import { RulesService } from './rules.service';
+import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
 import { KafkaModule } from '@app/shared/kafka/kafka.module';
 import { LoggerModule } from '@app/shared/logging/logger.module';
-import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
-import { ProfilesModule } from '../profiles/profiles.module';
-import { AchievementsModule } from '../achievements/achievements.module';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+
+import { RulesService } from './rules.service';
+import { AchievementsModule } from '../achievements/achievements.module';
+import { ProfilesModule } from '../profiles/profiles.module';
 
 /**
  * Configures the RulesModule, making the RulesService available for dependency injection.
@@ -13,16 +14,9 @@ import { ConfigModule } from '@nestjs/config';
  * and achievements are awarded based on user actions across all journeys.
  */
 @Module({
-  imports: [
-    KafkaModule,
-    LoggerModule,
-    ExceptionsModule,
-    ProfilesModule,
-    AchievementsModule,
-    ConfigModule
-  ],
-  providers: [RulesService],
-  controllers: [],
-  exports: [RulesService],
+    imports: [KafkaModule, LoggerModule, ExceptionsModule, ProfilesModule, AchievementsModule, ConfigModule],
+    providers: [RulesService],
+    controllers: [],
+    exports: [RulesService],
 })
 export class RulesModule {}

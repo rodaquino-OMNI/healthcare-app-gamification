@@ -9,19 +9,19 @@
  * - plan:claim:submit - Submit insurance claims
  */
 export class Permission {
-  /**
-   * Unique identifier for the permission
-   */
-  id: number = 0;
+    /**
+     * Unique identifier for the permission
+     */
+    id: number = 0;
 
-  /**
-   * Name of the permission in the format journey:resource:action
-   * Examples: health:metrics:read, care:appointment:create, plan:claim:submit
-   */
-  name: string = '';
+    /**
+     * Name of the permission in the format journey:resource:action
+     * Examples: health:metrics:read, care:appointment:create, plan:claim:submit
+     */
+    name: string = '';
 
-  /**
-   * Human-readable description of what the permission allows
-   */
-  description: string = '';
+    /**
+     * Human-readable description of what the permission allows
+     */
+    description: string = '';
 }

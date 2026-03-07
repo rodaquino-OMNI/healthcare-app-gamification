@@ -3,9 +3,9 @@
  */
 
 declare module '@app/shared/constants/journey.constants' {
-  export enum Journey {
-    HEALTH = 'health',
-    CARE = 'care',
-    PLAN = 'plan'
-  }
+    export enum Journey {
+        HEALTH = 'health',
+        CARE = 'care',
+        PLAN = 'plan',
+    }
 }

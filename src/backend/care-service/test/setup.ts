@@ -16,16 +16,16 @@ global.afterAll = afterAll;
 
 // Mock console methods in tests
 global.console = {
-  ...console,
-  log: jest.fn(),
-  error: jest.fn(),
-  warn: jest.fn(),
-  info: jest.fn(),
-  debug: jest.fn(),
+    ...console,
+    log: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn(),
 };
 
 // Cleanup after tests
 afterAll(async () => {
-  // Close all open handles
-  await new Promise(resolve => setTimeout(() => resolve(null), 500));
+    // Close all open handles
+    await new Promise((resolve) => setTimeout(() => resolve(null), 500));
 });

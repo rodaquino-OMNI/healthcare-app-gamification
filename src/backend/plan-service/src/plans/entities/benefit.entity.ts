@@ -6,38 +6,38 @@ import { Plan } from './plan.entity';
  * such as wellness programs, discounts, or special services.
  */
 export class Benefit {
-  /**
-   * Unique identifier for the benefit
-   */
-  id!: string;
+    /**
+     * Unique identifier for the benefit
+     */
+    id!: string;
 
-  /**
-   * ID of the plan this benefit is associated with
-   */
-  planId!: string;
+    /**
+     * ID of the plan this benefit is associated with
+     */
+    planId!: string;
 
-  /**
-   * Type of benefit (e.g., 'wellness_program', 'discount', 'telemedicine')
-   */
-  type!: string;
+    /**
+     * Type of benefit (e.g., 'wellness_program', 'discount', 'telemedicine')
+     */
+    type!: string;
 
-  /**
-   * Detailed description of the benefit
-   */
-  description!: string;
+    /**
+     * Detailed description of the benefit
+     */
+    description!: string;
 
-  /**
-   * Limitations or conditions for using the benefit
-   */
-  limitations!: string;
+    /**
+     * Limitations or conditions for using the benefit
+     */
+    limitations!: string;
 
-  /**
-   * Current usage status of the benefit (e.g., 'available', 'used')
-   */
-  usage!: string;
+    /**
+     * Current usage status of the benefit (e.g., 'available', 'used')
+     */
+    usage!: string;
 
-  /**
-   * Relationship to the Plan entity
-   */
-  plan!: Plan;
+    /**
+     * Relationship to the Plan entity
+     */
+    plan!: Plan;
 }

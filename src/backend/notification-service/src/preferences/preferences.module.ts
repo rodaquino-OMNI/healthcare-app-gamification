@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+
 import { PreferencesController } from './preferences.controller';
 import { PreferencesService } from './preferences.service';
 
@@ -8,8 +9,8 @@ import { PreferencesService } from './preferences.service';
  * and exports the service to make it available to other modules.
  */
 @Module({
-  controllers: [PreferencesController],
-  providers: [PreferencesService],
-  exports: [PreferencesService],
+    controllers: [PreferencesController],
+    providers: [PreferencesService],
+    exports: [PreferencesService],
 })
 export class PreferencesModule {}

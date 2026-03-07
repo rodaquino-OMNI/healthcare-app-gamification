@@ -1,91 +1,81 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
-import { UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
-import { CurrentUser } from '../decorators/current-user.decorator';
 import { HttpService } from '@nestjs/axios';
+import { UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { lastValueFrom } from 'rxjs';
+
+import { CurrentUser } from '../decorators/current-user.decorator';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 
 @Resolver()
 export class CareResolvers {
-  private readonly careServiceUrl: string;
+    private readonly careServiceUrl: string;
 
-  constructor(
-    private readonly httpService: HttpService,
-    private readonly configService: ConfigService,
-  ) {
-    this.careServiceUrl = this.configService.get<string>('services.care.url', 'http://care-service:3003');
-  }
+    constructor(
+        private readonly httpService: HttpService,
+        private readonly configService: ConfigService
+    ) {
+        this.careServiceUrl = this.configService.get<string>('services.care.url', 'http://care-service:3003');
+    }
 
-  @Query('getAppointments')
-  @UseGuards(JwtAuthGuard)
-  async getAppointments(
-    @CurrentUser() user: any,
-    @Args('userId') userId: string,
-  ) {
-    const response = await lastValueFrom(
-      this.httpService.get(`${this.careServiceUrl}/appointments?userId=${userId}`),
-    );
-    return response.data;
-  }
+    @Query('getAppointments')
+    @UseGuards(JwtAuthGuard)
+    async getAppointments(@CurrentUser() user: any, @Args('userId') userId: string) {
+        const response = await lastValueFrom(
+            this.httpService.get(`${this.careServiceUrl}/appointments?userId=${userId}`)
+        );
+        return response.data;
+    }
 
-  @Query('getAppointment')
-  @UseGuards(JwtAuthGuard)
-  async getAppointment(
-    @CurrentUser() user: any,
-    @Args('id') id: string,
-  ) {
-    const response = await lastValueFrom(
-      this.httpService.get(`${this.careServiceUrl}/appointments/${id}`),
-    );
-    return response.data;
-  }
+    @Query('getAppointment')
+    @UseGuards(JwtAuthGuard)
+    async getAppointment(@CurrentUser() user: any, @Args('id') id: string) {
+        const response = await lastValueFrom(this.httpService.get(`${this.careServiceUrl}/appointments/${id}`));
+        return response.data;
+    }
 
-  @Query('getProviders')
-  async getProviders(
-    @Args('specialty', { nullable: true }) specialty?: string,
-    @Args('location', { nullable: true }) location?: string,
-  ) {
-    const params = new URLSearchParams();
-    if (specialty) params.append('specialty', specialty);
-    if (location) params.append('location', location);
+    @Query('getProviders')
+    async getProviders(
+        @Args('specialty', { nullable: true }) specialty?: string,
+        @Args('location', { nullable: true }) location?: string
+    ) {
+        const params = new URLSearchParams();
+        if (specialty) {
+            params.append('specialty', specialty);
+        }
+        if (location) {
+            params.append('location', location);
+        }
 
-    const response = await lastValueFrom(
-      this.httpService.get(`${this.careServiceUrl}/providers?${params}`),
-    );
-    return response.data;
-  }
+        const response = await lastValueFrom(this.httpService.get(`${this.careServiceUrl}/providers?${params}`));
+        return response.data;
+    }
 
-  @Mutation('bookAppointment')
-  @UseGuards(JwtAuthGuard)
-  async bookAppointment(
-    @CurrentUser() user: any,
-    @Args('providerId') providerId: string,
-    @Args('dateTime') dateTime: string,
-    @Args('type') type: string,
-    @Args('reason', { nullable: true }) reason?: string,
-  ) {
-    const response = await lastValueFrom(
-      this.httpService.post(`${this.careServiceUrl}/appointments`, {
-        providerId,
-        dateTime,
-        type,
-        reason,
-        userId: user.id,
-      }),
-    );
-    return response.data;
-  }
+    @Mutation('bookAppointment')
+    @UseGuards(JwtAuthGuard)
+    async bookAppointment(
+        @CurrentUser() user: any,
+        @Args('providerId') providerId: string,
+        @Args('dateTime') dateTime: string,
+        @Args('type') type: string,
+        @Args('reason', { nullable: true }) reason?: string
+    ) {
+        const response = await lastValueFrom(
+            this.httpService.post(`${this.careServiceUrl}/appointments`, {
+                providerId,
+                dateTime,
+                type,
+                reason,
+                userId: user.id,
+            })
+        );
+        return response.data;
+    }
 
-  @Mutation('cancelAppointment')
-  @UseGuards(JwtAuthGuard)
-  async cancelAppointment(
-    @CurrentUser() user: any,
-    @Args('id') id: string,
-  ) {
-    const response = await lastValueFrom(
-      this.httpService.delete(`${this.careServiceUrl}/appointments/${id}`),
-    );
-    return response.data;
-  }
+    @Mutation('cancelAppointment')
+    @UseGuards(JwtAuthGuard)
+    async cancelAppointment(@CurrentUser() user: any, @Args('id') id: string) {
+        const response = await lastValueFrom(this.httpService.delete(`${this.careServiceUrl}/appointments/${id}`));
+        return response.data;
+    }
 }

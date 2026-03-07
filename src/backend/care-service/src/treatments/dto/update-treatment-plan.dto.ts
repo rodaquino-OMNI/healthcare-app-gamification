@@ -1,5 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsString, IsOptional, IsDateString, IsNumber, Min, Max, IsUUID } from 'class-validator';
+
 import { CreateTreatmentPlanDto } from './create-treatment-plan.dto';
 
 /**
@@ -7,5 +8,5 @@ import { CreateTreatmentPlanDto } from './create-treatment-plan.dto';
  * Inherits from CreateTreatmentPlanDto but makes all fields optional for partial updates
  */
 export class UpdateTreatmentPlanDto extends PartialType(CreateTreatmentPlanDto) {
-  // All fields from CreateTreatmentPlanDto are inherited but made optional by PartialType
+    // All fields from CreateTreatmentPlanDto are inherited but made optional by PartialType
 }

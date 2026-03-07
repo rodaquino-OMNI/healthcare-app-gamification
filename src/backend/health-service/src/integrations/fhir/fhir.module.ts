@@ -1,5 +1,6 @@
-import { Module } from '@nestjs/common'; // NestJS Common 9.0.0+
 import { ConsentModule } from '@app/shared/consent';
+import { Module } from '@nestjs/common'; // NestJS Common 9.0.0+
+
 import { FhirController } from './fhir.controller';
 import { FhirService } from './fhir.service';
 
@@ -16,9 +17,9 @@ import { FhirService } from './fhir.service';
  * - SEC-03: LGPD consent enforcement on health data endpoints
  */
 @Module({
-  imports: [ConsentModule],
-  controllers: [FhirController],
-  providers: [FhirService],
-  exports: [FhirService],
+    imports: [ConsentModule],
+    controllers: [FhirController],
+    providers: [FhirService],
+    exports: [FhirService],
 })
 export class FhirModule {}

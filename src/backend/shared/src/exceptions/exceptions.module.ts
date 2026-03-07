@@ -1,4 +1,5 @@
 import { Module, Global } from '@nestjs/common';
+
 import { AllExceptionsFilter } from './exceptions.filter';
 import { LoggerModule } from '../logging/logger.module';
 
@@ -9,8 +10,8 @@ import { LoggerModule } from '../logging/logger.module';
  */
 @Global()
 @Module({
-  imports: [LoggerModule],
-  providers: [AllExceptionsFilter],
-  exports: [AllExceptionsFilter],
+    imports: [LoggerModule],
+    providers: [AllExceptionsFilter],
+    exports: [AllExceptionsFilter],
 })
 export class ExceptionsModule {}

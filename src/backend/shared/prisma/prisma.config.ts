@@ -26,14 +26,13 @@
  * Validates DATABASE_URL is set at startup.
  */
 export function validateDatabaseConfig(): void {
-  if (!process.env.DATABASE_URL) {
-    throw new Error(
-      'DATABASE_URL environment variable is required. ' +
-      'Set it in .env or your deployment configuration.'
-    );
-  }
+    if (!process.env.DATABASE_URL) {
+        throw new Error(
+            'DATABASE_URL environment variable is required. ' + 'Set it in .env or your deployment configuration.'
+        );
+    }
 }
 
 export const prismaConfig = {
-  databaseUrl: process.env.DATABASE_URL,
+    databaseUrl: process.env.DATABASE_URL,
 } as const;

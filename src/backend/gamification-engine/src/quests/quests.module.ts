@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'; // @nestjs/common ^9.0.0
-import { QuestsService } from './quests.service';
+
 import { QuestsController } from './quests.controller';
+import { QuestsService } from './quests.service';
 
 /**
  * Module for managing quests within the gamification engine.
@@ -8,8 +9,8 @@ import { QuestsController } from './quests.controller';
  * to enable quest functionality across the application.
  */
 @Module({
-  controllers: [QuestsController],
-  providers: [QuestsService],
-  exports: [QuestsService],
+    controllers: [QuestsController],
+    providers: [QuestsService],
+    exports: [QuestsService],
 })
 export class QuestsModule {}

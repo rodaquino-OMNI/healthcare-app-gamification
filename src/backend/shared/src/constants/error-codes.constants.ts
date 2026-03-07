@@ -64,91 +64,91 @@ export const CARE_TREATMENT_PLAN_NOT_FOUND = 'CARE_TREATMENT_PLAN_NOT_FOUND';
  * Error code enum for strongly typed references
  */
 export enum ErrorCodes {
-  // System codes
-  SYS_INTERNAL_SERVER_ERROR = 'SYS_001',
-  SYS_SERVICE_UNAVAILABLE = 'SYS_002',
-  SYS_BAD_GATEWAY = 'SYS_003',
-  SYS_UNAUTHORIZED = 'SYS_004',
-  SYS_FORBIDDEN = 'SYS_005',
-  SYS_NOT_FOUND = 'SYS_006',
-  SYS_VALIDATION_ERROR = 'SYS_007',
-  SYS_CONFLICT = 'SYS_008',
-  
-  // Health journey codes
-  HEALTH_RECORD_NOT_FOUND = 'HEALTH_RECORD_NOT_FOUND',
-  HEALTH_DEVICE_CONNECTION_FAILED = 'HEALTH_DEVICE_CONNECTION_FAILED',
-  
-  // Care journey codes
-  CARE_PROVIDER_NOT_FOUND = 'CARE_PROVIDER_NOT_FOUND',
-  CARE_TREATMENT_PLAN_NOT_FOUND = 'CARE_TREATMENT_PLAN_NOT_FOUND',
-  
-  // Plan journey codes
-  PLAN_NOT_FOUND = 'PLAN_NOT_FOUND'
+    // System codes
+    SYS_INTERNAL_SERVER_ERROR = 'SYS_001',
+    SYS_SERVICE_UNAVAILABLE = 'SYS_002',
+    SYS_BAD_GATEWAY = 'SYS_003',
+    SYS_UNAUTHORIZED = 'SYS_004',
+    SYS_FORBIDDEN = 'SYS_005',
+    SYS_NOT_FOUND = 'SYS_006',
+    SYS_VALIDATION_ERROR = 'SYS_007',
+    SYS_CONFLICT = 'SYS_008',
+
+    // Health journey codes
+    HEALTH_RECORD_NOT_FOUND = 'HEALTH_RECORD_NOT_FOUND',
+    HEALTH_DEVICE_CONNECTION_FAILED = 'HEALTH_DEVICE_CONNECTION_FAILED',
+
+    // Care journey codes
+    CARE_PROVIDER_NOT_FOUND = 'CARE_PROVIDER_NOT_FOUND',
+    CARE_TREATMENT_PLAN_NOT_FOUND = 'CARE_TREATMENT_PLAN_NOT_FOUND',
+
+    // Plan journey codes
+    PLAN_NOT_FOUND = 'PLAN_NOT_FOUND',
 }
 
 /**
  * Interface for error code details
  */
 export interface ErrorCodeDetails {
-  code: string;
-  message: string;
-  statusCode: number;
+    code: string;
+    message: string;
+    statusCode: number;
 }
 
 /**
  * Interface for error code detail mappings
  */
 export interface ErrorCodeDetail {
-  message: string;
-  statusCode: number;
-  documentation?: string;
+    message: string;
+    statusCode: number;
+    documentation?: string;
 }
 
 /**
  * Detailed information for error codes, including default messages and status codes
  */
 export const ErrorCodeDetails: Record<string, ErrorCodeDetail> = {
-  // System-level errors
-  [ErrorCodes.SYS_INTERNAL_SERVER_ERROR]: {
-    message: 'An internal server error occurred',
-    statusCode: 500,
-    documentation: 'https://docs.austa.health/errors/SYS-001'
-  },
-  
-  // Health journey errors
-  [ErrorCodes.HEALTH_RECORD_NOT_FOUND]: {
-    message: 'Health record not found',
-    statusCode: 404,
-    documentation: 'https://docs.austa.health/errors/HEALTH_RECORD_NOT_FOUND'
-  },
-  [ErrorCodes.HEALTH_DEVICE_CONNECTION_FAILED]: {
-    message: 'Device connection failed',
-    statusCode: 400,
-    documentation: 'https://docs.austa.health/errors/HEALTH_DEVICE_CONNECTION_FAILED'
-  },
-  
-  // Care journey errors
-  [ErrorCodes.CARE_PROVIDER_NOT_FOUND]: {
-    message: 'Provider not found',
-    statusCode: 404,
-    documentation: 'https://docs.austa.health/errors/CARE_PROVIDER_NOT_FOUND'
-  },
-  [ErrorCodes.CARE_TREATMENT_PLAN_NOT_FOUND]: {
-    message: 'Treatment plan not found',
-    statusCode: 404,
-    documentation: 'https://docs.austa.health/errors/CARE_TREATMENT_PLAN_NOT_FOUND'
-  },
-  
-  // Plan journey errors
-  [ErrorCodes.PLAN_NOT_FOUND]: {
-    message: 'Plan not found',
-    statusCode: 404,
-    documentation: 'https://docs.austa.health/errors/PLAN_NOT_FOUND'
-  },
-  
-  // Default fallback
-  'DEFAULT': {
-    message: 'An unknown error occurred',
-    statusCode: 500
-  }
+    // System-level errors
+    [ErrorCodes.SYS_INTERNAL_SERVER_ERROR]: {
+        message: 'An internal server error occurred',
+        statusCode: 500,
+        documentation: 'https://docs.austa.health/errors/SYS-001',
+    },
+
+    // Health journey errors
+    [ErrorCodes.HEALTH_RECORD_NOT_FOUND]: {
+        message: 'Health record not found',
+        statusCode: 404,
+        documentation: 'https://docs.austa.health/errors/HEALTH_RECORD_NOT_FOUND',
+    },
+    [ErrorCodes.HEALTH_DEVICE_CONNECTION_FAILED]: {
+        message: 'Device connection failed',
+        statusCode: 400,
+        documentation: 'https://docs.austa.health/errors/HEALTH_DEVICE_CONNECTION_FAILED',
+    },
+
+    // Care journey errors
+    [ErrorCodes.CARE_PROVIDER_NOT_FOUND]: {
+        message: 'Provider not found',
+        statusCode: 404,
+        documentation: 'https://docs.austa.health/errors/CARE_PROVIDER_NOT_FOUND',
+    },
+    [ErrorCodes.CARE_TREATMENT_PLAN_NOT_FOUND]: {
+        message: 'Treatment plan not found',
+        statusCode: 404,
+        documentation: 'https://docs.austa.health/errors/CARE_TREATMENT_PLAN_NOT_FOUND',
+    },
+
+    // Plan journey errors
+    [ErrorCodes.PLAN_NOT_FOUND]: {
+        message: 'Plan not found',
+        statusCode: 404,
+        documentation: 'https://docs.austa.health/errors/PLAN_NOT_FOUND',
+    },
+
+    // Default fallback
+    DEFAULT: {
+        message: 'An unknown error occurred',
+        statusCode: 500,
+    },
 };

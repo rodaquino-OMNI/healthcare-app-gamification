@@ -5,58 +5,58 @@ import { IsString, IsOptional, IsEnum, IsObject } from 'class-validator';
  * Aligned with HIPAA/LGPD compliance requirements
  */
 export enum AuditAction {
-  READ = 'READ',
-  WRITE = 'WRITE',
-  DELETE = 'DELETE',
-  LOGIN = 'LOGIN',
-  LOGOUT = 'LOGOUT',
-  EXPORT = 'EXPORT',
+    READ = 'READ',
+    WRITE = 'WRITE',
+    DELETE = 'DELETE',
+    LOGIN = 'LOGIN',
+    LOGOUT = 'LOGOUT',
+    EXPORT = 'EXPORT',
 }
 
 /**
  * DTO for creating an audit log entry
  */
 export class CreateAuditLogDto {
-  @IsString()
-  userId!: string;
+    @IsString()
+    userId!: string;
 
-  @IsEnum(AuditAction)
-  action!: AuditAction;
+    @IsEnum(AuditAction)
+    action!: AuditAction;
 
-  @IsString()
-  resourceType!: string;
+    @IsString()
+    resourceType!: string;
 
-  @IsOptional()
-  @IsString()
-  resourceId?: string;
+    @IsOptional()
+    @IsString()
+    resourceId?: string;
 
-  @IsOptional()
-  @IsString()
-  journeyId?: string;
+    @IsOptional()
+    @IsString()
+    journeyId?: string;
 
-  @IsOptional()
-  @IsString()
-  ipAddress?: string;
+    @IsOptional()
+    @IsString()
+    ipAddress?: string;
 
-  @IsOptional()
-  @IsString()
-  userAgent?: string;
+    @IsOptional()
+    @IsString()
+    userAgent?: string;
 
-  @IsOptional()
-  @IsObject()
-  metadata?: Record<string, unknown>;
+    @IsOptional()
+    @IsObject()
+    metadata?: Record<string, unknown>;
 }
 
 /**
  * Interface for audit log entries used internally by AuditService
  */
 export interface AuditLogEntry {
-  userId: string;
-  action: AuditAction | string;
-  resourceType: string;
-  resourceId?: string;
-  journeyId?: string;
-  ipAddress?: string;
-  userAgent?: string;
-  metadata?: Record<string, unknown>;
+    userId: string;
+    action: AuditAction | string;
+    resourceType: string;
+    resourceId?: string;
+    journeyId?: string;
+    ipAddress?: string;
+    userAgent?: string;
+    metadata?: Record<string, unknown>;
 }

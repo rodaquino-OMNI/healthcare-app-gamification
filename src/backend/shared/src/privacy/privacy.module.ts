@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
-import { PrismaService } from '../database/prisma.service';
+
 import { PrivacyController } from './privacy.controller';
 import { PrivacyService } from './privacy.service';
+import { PrismaService } from '../database/prisma.service';
 
 /**
  * Module providing LGPD Data Subject Rights (Art. 18) endpoints.
@@ -10,8 +11,8 @@ import { PrivacyService } from './privacy.service';
  * invoke DSR operations (e.g., scheduled anonymisation jobs).
  */
 @Module({
-  controllers: [PrivacyController],
-  providers: [PrismaService, PrivacyService],
-  exports: [PrivacyService],
+    controllers: [PrivacyController],
+    providers: [PrismaService, PrivacyService],
+    exports: [PrivacyService],
 })
 export class PrivacyModule {}

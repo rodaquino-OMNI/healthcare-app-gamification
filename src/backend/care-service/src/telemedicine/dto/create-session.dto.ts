@@ -6,11 +6,11 @@ import { IsNotEmpty, IsUUID } from 'class-validator'; // class-validator v5.0.1
  * to initiate a telemedicine session in the Care Now journey.
  */
 export class CreateSessionDto {
-  /**
-   * The ID of the user initiating the telemedicine session.
-   * Must be a valid UUID.
-   */
-  @IsNotEmpty()
-  @IsUUID()
-  userId: string;
+    /**
+     * The ID of the user initiating the telemedicine session.
+     * Must be a valid UUID.
+     */
+    @IsNotEmpty()
+    @IsUUID()
+    userId: string;
 }

@@ -6,27 +6,27 @@ import { IsNumber, IsOptional, IsString } from 'class-validator'; // class-valid
  * Used when making partial updates to existing metrics.
  */
 export class UpdateMetricDto {
-  /**
-   * The numeric value of the health metric
-   * @example 120 (for systolic blood pressure)
-   */
-  @IsNumber()
-  @IsOptional()
-  value?: number;
+    /**
+     * The numeric value of the health metric
+     * @example 120 (for systolic blood pressure)
+     */
+    @IsNumber()
+    @IsOptional()
+    value?: number;
 
-  /**
-   * The unit of measurement for the health metric
-   * @example 'mmHg' (for blood pressure)
-   */
-  @IsString()
-  @IsOptional()
-  unit?: string;
+    /**
+     * The unit of measurement for the health metric
+     * @example 'mmHg' (for blood pressure)
+     */
+    @IsString()
+    @IsOptional()
+    unit?: string;
 
-  /**
-   * Additional notes or context for the health metric
-   * @example 'Measured after exercise'
-   */
-  @IsString()
-  @IsOptional()
-  notes?: string;
+    /**
+     * Additional notes or context for the health metric
+     * @example 'Measured after exercise'
+     */
+    @IsString()
+    @IsOptional()
+    notes?: string;
 }

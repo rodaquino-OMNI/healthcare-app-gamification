@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common'; // ^9.0.0
-import { TreatmentsService } from './treatments.service';
-import { TreatmentsController } from './treatments.controller';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { TracingService } from '@app/shared/tracing/tracing.service';
+import { Module } from '@nestjs/common'; // ^9.0.0
+
+import { TreatmentsController } from './treatments.controller';
+import { TreatmentsService } from './treatments.service';
 
 /**
  * Configures the TreatmentsModule in NestJS, which encapsulates the treatment plan-related features
@@ -16,14 +17,9 @@ import { TracingService } from '@app/shared/tracing/tracing.service';
  * Note: PrismaService is also provided globally via DatabaseModule in the root AppModule.
  */
 @Module({
-  imports: [],
-  controllers: [TreatmentsController],
-  providers: [
-    TreatmentsService,
-    PrismaService,
-    LoggerService,
-    TracingService
-  ],
-  exports: [TreatmentsService],
+    imports: [],
+    controllers: [TreatmentsController],
+    providers: [TreatmentsService, PrismaService, LoggerService, TracingService],
+    exports: [TreatmentsService],
 })
 export class TreatmentsModule {}

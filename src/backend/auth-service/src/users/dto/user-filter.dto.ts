@@ -6,10 +6,10 @@ import { IsOptional, IsString } from 'class-validator';
  * Adds search property to the base FilterDto
  */
 export class UserFilterDto extends FilterDto {
-  /**
-   * Search string to filter users by name or email
-   */
-  @IsOptional()
-  @IsString()
-  search?: string;
+    /**
+     * Search string to filter users by name or email
+     */
+    @IsOptional()
+    @IsString()
+    search?: string;
 }
