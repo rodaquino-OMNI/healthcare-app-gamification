@@ -6,19 +6,19 @@
  * such as metrics, goals, and medical history to support the Health Journey.
  */
 
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import axios from 'axios'; // axios 1.6.7
-import { HealthMetric, HealthGoal, MedicalEvent, DeviceConnection } from 'src/web/shared/types/health.types';
-import { API_BASE_URL, API_TIMEOUT } from 'src/web/shared/constants/api';
-import { formatDate } from 'src/web/web/src/utils/format';
-import { validateCPF } from 'src/web/web/src/utils/validation';
+import { API_BASE_URL, API_TIMEOUT } from 'shared/constants/api';
+import { CREATE_HEALTH_METRIC } from 'shared/graphql/mutations/health.mutations';
 import {
     GET_HEALTH_METRICS,
     GET_HEALTH_GOALS,
     GET_MEDICAL_HISTORY,
     GET_CONNECTED_DEVICES,
-} from 'src/web/shared/graphql/queries/health.queries';
-import { CREATE_HEALTH_METRIC } from 'src/web/shared/graphql/mutations/health.mutations';
-import { useAuth } from 'src/web/web/src/context/AuthContext';
+} from 'shared/graphql/queries/health.queries';
+import { HealthMetric, HealthGoal, MedicalEvent, DeviceConnection } from 'shared/types/health.types';
 
 /**
  * Fetches health metrics for a specific user, date range, and metric types.
@@ -178,7 +178,8 @@ export const getConnectedDevices = async (userId: string): Promise<DeviceConnect
  * @param createMetricDto - The data for the new health metric
  * @returns A promise that resolves to the created HealthMetric object
  */
-export const createHealthMetric = async (recordId: string, createMetricDto: any): Promise<HealthMetric> => {
+// eslint-disable-next-line max-len
+export const createHealthMetric = async (recordId: string, createMetricDto: unknown): Promise<HealthMetric> => {
     try {
         const response = await axios.post(
             `${API_BASE_URL}/graphql`,

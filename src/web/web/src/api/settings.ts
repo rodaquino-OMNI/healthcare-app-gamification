@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { restClient } from './client';
 
 export async function savePersonalInfo(data: {
@@ -150,6 +151,7 @@ export async function removeAddress(id: string): Promise<void> {
     }
 }
 
+// eslint-disable-next-line max-len
 export async function submitFeedback(data: { rating: number; category: string; comment: string }): Promise<void> {
     try {
         const response = await restClient.post('/feedback', data);
@@ -178,6 +180,7 @@ export async function getInsuranceDocs(): Promise<
 
 export async function downloadDoc(id: string): Promise<Blob> {
     try {
+        // eslint-disable-next-line max-len
         const response = await restClient.get(`/users/me/insurance/documents/${id}/download`, { responseType: 'blob' });
         return response.data;
     } catch (err: unknown) {

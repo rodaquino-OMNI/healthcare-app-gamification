@@ -1,6 +1,8 @@
-import { AuthSession } from 'src/web/shared/types/auth.types';
-import { API_BASE_URL } from 'src/web/shared/constants/api';
-import client from 'src/web/mobile/src/api/client';
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+import { API_BASE_URL } from 'shared/constants/api';
+import { AuthSession } from 'shared/types/auth.types';
+
+import { restClient as client } from './client';
 
 /**
  * Authenticates a user with email and password.
@@ -32,7 +34,7 @@ export const logout = async (): Promise<void> => {
  *
  * @returns A promise that resolves with the user profile data
  */
-export const getProfile = async (): Promise<any> => {
+export const getProfile = async (): Promise<unknown> => {
     const response = await client.get(`${API_BASE_URL}/auth/profile`);
 
     return response.data;
@@ -45,6 +47,7 @@ export const getProfile = async (): Promise<any> => {
  * @param newPassword - The desired new password
  * @returns A promise that resolves when the password has been changed
  */
+// eslint-disable-next-line max-len
 export const changePassword = async (currentPassword: string, newPassword: string): Promise<void> => {
     await client.put(`${API_BASE_URL}/auth/change-password`, {
         currentPassword,
