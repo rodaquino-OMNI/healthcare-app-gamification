@@ -285,18 +285,7 @@
   },
 
   "ignoreDeps": [
-    "react",
-    "react-dom",
     "react-native",
-    "@types/react",
-    "@types/react-dom",
-    "@nestjs/common",
-    "@nestjs/core",
-    "@nestjs/platform-express",
-    "@prisma/client",
-    "prisma",
-    "rxjs",
-    "graphql",
     "@react-navigation/native",
     "@react-navigation/bottom-tabs",
     "@react-navigation/native-stack",
@@ -307,12 +296,14 @@
     "react-native-screens",
     "metro",
     "metro-react-native-babel-preset",
-    "typescript",
-    "eslint",
     "react-native-webview",
     "react-native-agora",
     "@react-native/typescript-config",
     "@types/react-native",
-    "@react-native-community/cli"
+    "@react-native-community/cli",
+    "rxjs",
+    "graphql",
+    "typescript",
+    "eslint"
   ]
 }
