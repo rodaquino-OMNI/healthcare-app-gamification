@@ -435,7 +435,7 @@ export class ProvidersService {
         }
 
         // Validate email format
-        if (providerData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(providerData.email)) {
+        if (providerData.email && !/^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$/.test(providerData.email)) {
             throw new AppException('Invalid email format', ErrorType.VALIDATION, 'CARE_017', {
                 email: providerData.email,
             });

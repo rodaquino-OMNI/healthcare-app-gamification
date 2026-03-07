@@ -6,7 +6,7 @@ import { Text } from 'src/web/design-system/src/primitives/Text/Text';
 import { Box } from 'src/web/design-system/src/primitives/Box/Box';
 import { colors } from 'src/web/design-system/src/tokens/colors';
 import { spacing } from 'src/web/design-system/src/tokens/spacing';
-import { WEB_CARE_ROUTES } from 'src/web/shared/constants/routes';
+import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
 /** Photo upload page for adding visual evidence to the symptom check. */
 const PhotoUploadPage: React.FC = () => {
@@ -20,7 +20,9 @@ const PhotoUploadPage: React.FC = () => {
         const newPreviews: string[] = [];
         Array.from(files).forEach((file) => {
             const url = URL.createObjectURL(file);
-            newPreviews.push(url);
+            if (url.startsWith('blob:')) {
+                newPreviews.push(url);
+            }
         });
         setPreviews((prev) => [...prev, ...newPreviews].slice(0, 4));
     };

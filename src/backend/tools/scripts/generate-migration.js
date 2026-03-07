@@ -9,7 +9,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { exec } = require('child_process');
+const { execFile } = require('child_process');
 const readline = require('readline');
 const chalk = require('chalk'); // chalk version ^4.1.2
 
@@ -178,9 +178,16 @@ async function generateMigration(name) {
   
   console.log(chalk.blue(`\nGenerating migration: ${formattedName}...`));
   
+  // Allowlist: only lowercase alphanumeric, hyphens, underscores (max 100 chars)
+  const safeName = /^[a-z0-9_-]{1,100}$/.test(formattedName) ? formattedName : null;
+  if (!safeName) {
+    console.error(chalk.red('Error: Migration name contains invalid characters. Use only lowercase letters, numbers, hyphens, and underscores.'));
+    return false;
+  }
+
   return new Promise((resolve) => {
-    // Execute the Prisma migrate command
-    exec(`npx prisma migrate dev --name ${formattedName} --schema ${PRISMA_SCHEMA_PATH}`, (error, stdout, stderr) => {
+    // Execute the Prisma migrate command using execFile to avoid shell injection
+    execFile('npx', ['prisma', 'migrate', 'dev', '--name', safeName, '--schema', PRISMA_SCHEMA_PATH], (error, stdout, stderr) => {
       if (error) {
         console.error(chalk.red(`Error generating migration: ${error.message}`));
         console.error(stderr);

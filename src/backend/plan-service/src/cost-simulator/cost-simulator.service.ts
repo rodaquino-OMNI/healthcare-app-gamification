@@ -36,7 +36,7 @@ enum ErrorCodes {
  */
 class LoggerService {
     error(message: string, trace?: string, context?: string) {
-        console.error(`[${context || 'Application'}] ${message}`, trace);
+        console.error('[%s] %s', context || 'Application', message, trace);
     }
 
     log(message: string, context?: string) {
