@@ -1,4 +1,4 @@
-import { baseTheme, Theme } from './base.theme';
+import { baseTheme } from './base.theme';
 import { colors } from '../tokens/colors';
 import { borderRadius } from '../tokens/borderRadius';
 
@@ -10,108 +10,108 @@ import { borderRadius } from '../tokens/borderRadius';
  * creating a consistent visual identity throughout the user experience.
  */
 export const planTheme = {
-  ...baseTheme,
+    ...baseTheme,
 
-  // Journey identification
-  name: 'Plan Theme',
-  journeyKey: 'plan',
+    // Journey identification
+    name: 'Plan Theme',
+    journeyKey: 'plan',
 
-  // Override some colors with Plan-specific values
-  colors: {
-    ...baseTheme.colors,
-    primary: colors.journeys.plan.primary,
-    secondary: colors.journeys.plan.secondary,
-    accent: colors.journeys.plan.accent,
-    background: {
-      ...baseTheme.colors.background,
-      default: colors.journeys.plan.background,
-    },
-    text: {
-      ...baseTheme.colors.text,
-      default: colors.journeys.plan.text,
-    },
-    border: {
-      ...baseTheme.colors.border,
-      default: colors.journeys.plan.secondary,
-      accent: colors.journeys.plan.primary,
-    },
-    focus: colors.journeys.plan.primary,
-  },
-
-  // Override some shadows with Plan-specific values
-  shadows: {
-    ...baseTheme.shadows,
-    focus: `0 0 0 2px ${colors.journeys.plan.primary}`,
-  },
-
-  // Component-specific styling for the Plan journey
-  components: {
-    button: {
-      primary: {
-        background: colors.journeys.plan.primary,
-        color: colors.neutral.white,
-        hoverBackground: colors.journeys.plan.secondary,
-        activeBackground: colors.journeys.plan.accent,
-      },
-      secondary: {
-        background: 'transparent',
-        color: colors.journeys.plan.primary,
-        border: `1px solid ${colors.journeys.plan.primary}`,
-        hoverBackground: colors.journeys.plan.background,
-        activeBackground: colors.journeys.plan.background,
-      },
+    // Override some colors with Plan-specific values
+    colors: {
+        ...baseTheme.colors,
+        primary: colors.journeys.plan.primary,
+        secondary: colors.journeys.plan.secondary,
+        accent: colors.journeys.plan.accent,
+        background: {
+            ...baseTheme.colors.background,
+            default: colors.journeys.plan.background,
+        },
+        text: {
+            ...baseTheme.colors.text,
+            default: colors.journeys.plan.text,
+        },
+        border: {
+            ...baseTheme.colors.border,
+            default: colors.journeys.plan.secondary,
+            accent: colors.journeys.plan.primary,
+        },
+        focus: colors.journeys.plan.primary,
     },
 
-    card: {
-      background: colors.neutral.white,
-      border: `1px solid ${colors.neutral.gray300}`,
-      borderLeft: `4px solid ${colors.journeys.plan.primary}`,
-      borderRadius: borderRadius.md,
-      shadow: baseTheme.shadows.sm,
+    // Override some shadows with Plan-specific values
+    shadows: {
+        ...baseTheme.shadows,
+        focus: `0 0 0 2px ${colors.journeys.plan.primary}`,
     },
 
-    input: {
-      border: `1px solid ${colors.neutral.gray400}`,
-      focusBorder: `1px solid ${colors.journeys.plan.primary}`,
-      background: colors.neutral.white,
-      placeholderColor: colors.neutral.gray500,
-    },
+    // Component-specific styling for the Plan journey
+    components: {
+        button: {
+            primary: {
+                background: colors.journeys.plan.primary,
+                color: colors.neutral.white,
+                hoverBackground: colors.journeys.plan.secondary,
+                activeBackground: colors.journeys.plan.accent,
+            },
+            secondary: {
+                background: 'transparent',
+                color: colors.journeys.plan.primary,
+                border: `1px solid ${colors.journeys.plan.primary}`,
+                hoverBackground: colors.journeys.plan.background,
+                activeBackground: colors.journeys.plan.background,
+            },
+        },
 
-    progressBar: {
-      background: colors.neutral.gray200,
-      fill: colors.journeys.plan.primary,
-      borderRadius: borderRadius.xs,
-    },
+        card: {
+            background: colors.neutral.white,
+            border: `1px solid ${colors.neutral.gray300}`,
+            borderLeft: `4px solid ${colors.journeys.plan.primary}`,
+            borderRadius: borderRadius.md,
+            shadow: baseTheme.shadows.sm,
+        },
 
-    // Plan journey specific components
-    claimCard: {
-      background: colors.neutral.white,
-      border: `1px solid ${colors.neutral.gray300}`,
-      borderLeft: `4px solid ${colors.journeys.plan.primary}`,
-      borderRadius: borderRadius.md,
-      shadow: baseTheme.shadows.sm,
-      statusColors: {
-        pending: colors.semantic.warning,
-        approved: colors.semantic.success,
-        denied: colors.semantic.error,
-        processing: colors.journeys.plan.primary,
-      },
-    },
+        input: {
+            border: `1px solid ${colors.neutral.gray400}`,
+            focusBorder: `1px solid ${colors.journeys.plan.primary}`,
+            background: colors.neutral.white,
+            placeholderColor: colors.neutral.gray500,
+        },
 
-    insuranceCard: {
-      background: colors.journeys.plan.primary,
-      color: colors.neutral.white,
-      borderRadius: borderRadius.lg,
-      shadow: baseTheme.shadows.md,
-    },
+        progressBar: {
+            background: colors.neutral.gray200,
+            fill: colors.journeys.plan.primary,
+            borderRadius: borderRadius.xs,
+        },
 
-    coverageInfoCard: {
-      background: colors.neutral.white,
-      border: `1px solid ${colors.neutral.gray300}`,
-      borderTop: `4px solid ${colors.journeys.plan.primary}`,
-      borderRadius: borderRadius.md,
-      shadow: baseTheme.shadows.sm,
-      iconColor: colors.journeys.plan.primary,
+        // Plan journey specific components
+        claimCard: {
+            background: colors.neutral.white,
+            border: `1px solid ${colors.neutral.gray300}`,
+            borderLeft: `4px solid ${colors.journeys.plan.primary}`,
+            borderRadius: borderRadius.md,
+            shadow: baseTheme.shadows.sm,
+            statusColors: {
+                pending: colors.semantic.warning,
+                approved: colors.semantic.success,
+                denied: colors.semantic.error,
+                processing: colors.journeys.plan.primary,
+            },
+        },
+
+        insuranceCard: {
+            background: colors.journeys.plan.primary,
+            color: colors.neutral.white,
+            borderRadius: borderRadius.lg,
+            shadow: baseTheme.shadows.md,
+        },
+
+        coverageInfoCard: {
+            background: colors.neutral.white,
+            border: `1px solid ${colors.neutral.gray300}`,
+            borderTop: `4px solid ${colors.journeys.plan.primary}`,
+            borderRadius: borderRadius.md,
+            shadow: baseTheme.shadows.sm,
+            iconColor: colors.journeys.plan.primary,
+        },
     },
-  },
 };

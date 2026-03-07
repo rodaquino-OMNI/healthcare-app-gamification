@@ -124,7 +124,7 @@ describe('EmailService', () => {
         await service.sendEmail('recipient@example.com', 'Subject', '<p>Body</p>');
       } catch (error: any) {
         expect(error).toBeInstanceOf(AppException);
-        expect(error.details).toEqual(
+        expect(error.metadata).toEqual(
           expect.objectContaining({ recipient: 'recipient@example.com' }),
         );
       }

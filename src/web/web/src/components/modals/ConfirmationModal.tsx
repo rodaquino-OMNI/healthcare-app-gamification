@@ -33,50 +33,35 @@ import { useJourney } from 'src/web/web/src/context/JourneyContext.tsx';
  * ```
  */
 export const ConfirmationModal: React.FC<AustaConfirmationModalProps> = ({
-  visible,
-  onConfirm,
-  onCancel,
-  title,
-  message,
-  confirmText,
-  cancelText,
-  journey,
+    visible,
+    onConfirm,
+    onCancel,
+    title,
+    message,
+    confirmText,
+    cancelText,
+    journey,
 }) => {
-  // LD1: Retrieves the translation function using the useI18n hook.
-  const { t } = useI18n();
+    // LD1: Retrieves the translation function using the useI18n hook.
+    const { t } = useI18n();
 
-  // LD1: Retrieves the current journey from the JourneyContext
-  const { journeyData } = useJourney();
+    // LD1: Retrieves the current journey from the JourneyContext
+    const { journeyData } = useJourney();
 
-  // LD1: Renders a Modal component with the visible prop controlling its visibility.
-  // LD1: Sets the title of the modal using the title prop.
-  // LD1: Renders the message content using the message prop.
-  // LD1: Renders two Button components for the confirm and cancel actions.
-  // LD1: Applies journey-specific styling to the buttons using the journey prop.
-  return (
-    <Modal
-      visible={visible}
-      onClose={onCancel}
-      title={title}
-      journey={journey}
-    >
-      <p>{message}</p>
-      <Button
-        onPress={onConfirm}
-        variant="primary"
-        journey={journey}
-        accessibilityLabel={confirmText}
-      >
-        {confirmText}
-      </Button>
-      <Button
-        onPress={onCancel}
-        variant="secondary"
-        journey={journey}
-        accessibilityLabel={cancelText}
-      >
-        {cancelText}
-      </Button>
-    </Modal>
-  );
+    // LD1: Renders a Modal component with the visible prop controlling its visibility.
+    // LD1: Sets the title of the modal using the title prop.
+    // LD1: Renders the message content using the message prop.
+    // LD1: Renders two Button components for the confirm and cancel actions.
+    // LD1: Applies journey-specific styling to the buttons using the journey prop.
+    return (
+        <Modal visible={visible} onClose={onCancel} title={title} journey={journey}>
+            <p>{message}</p>
+            <Button onPress={onConfirm} variant="primary" journey={journey} accessibilityLabel={confirmText}>
+                {confirmText}
+            </Button>
+            <Button onPress={onCancel} variant="secondary" journey={journey} accessibilityLabel={cancelText}>
+                {cancelText}
+            </Button>
+        </Modal>
+    );
 };

@@ -3,74 +3,80 @@ import { Box } from './Box';
 import { colors } from '../../tokens/colors';
 
 const meta: Meta<typeof Box> = {
-  title: 'Primitives/Box',
-  component: Box,
-  tags: ['autodocs'],
-  argTypes: {
-    journey: {
-      control: 'select',
-      options: ['health', 'care', 'plan'],
+    title: 'Primitives/Box',
+    component: Box,
+    tags: ['autodocs'],
+    argTypes: {
+        journey: {
+            control: 'select',
+            options: ['health', 'care', 'plan'],
+        },
+        size: {
+            control: 'select',
+            options: ['xs', 'sm', 'md', 'lg', 'xl'],
+        },
+        display: { control: 'text' },
+        padding: { control: 'text' },
+        margin: { control: 'text' },
+        borderRadius: { control: 'text' },
+        boxShadow: { control: 'text' },
     },
-    size: {
-      control: 'select',
-      options: ['xs', 'sm', 'md', 'lg', 'xl'],
-    },
-    display: { control: 'text' },
-    padding: { control: 'text' },
-    margin: { control: 'text' },
-    borderRadius: { control: 'text' },
-    boxShadow: { control: 'text' },
-  },
 };
 
 export default meta;
 type Story = StoryObj<typeof Box>;
 
 export const Default: Story = {
-  args: {
-    padding: 'md',
-    children: 'Box content',
-  },
+    args: {
+        padding: 'md',
+        children: 'Box content',
+    },
 };
 
 export const WithJourney: Story = {
-  args: {
-    journey: 'health',
-    padding: 'lg',
-    borderRadius: 'md',
-    children: 'Journey-themed Box',
-  },
+    args: {
+        journey: 'health',
+        padding: 'lg',
+        borderRadius: 'md',
+        children: 'Journey-themed Box',
+    },
 };
 
 export const WithSize: Story = {
-  args: {
-    size: 'md',
-    backgroundColor: colors.gray[20],
-    children: null,
-  },
+    args: {
+        size: 'md',
+        backgroundColor: colors.gray[20],
+        children: null,
+    },
 };
 
 export const WithShadow: Story = {
-  args: {
-    padding: 'lg',
-    boxShadow: 'md',
-    borderRadius: 'lg',
-    children: 'Box with shadow',
-  },
+    args: {
+        padding: 'lg',
+        boxShadow: 'md',
+        borderRadius: 'lg',
+        children: 'Box with shadow',
+    },
 };
 
 export const FlexLayout: Story = {
-  args: {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: '16px',
-    padding: 'md',
-    children: (
-      <>
-        <Box padding="sm" backgroundColor={colors.gray[10]}>Item 1</Box>
-        <Box padding="sm" backgroundColor={colors.gray[10]}>Item 2</Box>
-        <Box padding="sm" backgroundColor={colors.gray[10]}>Item 3</Box>
-      </>
-    ),
-  },
+    args: {
+        display: 'flex',
+        flexDirection: 'row',
+        gap: '16px',
+        padding: 'md',
+        children: (
+            <>
+                <Box padding="sm" backgroundColor={colors.gray[10]}>
+                    Item 1
+                </Box>
+                <Box padding="sm" backgroundColor={colors.gray[10]}>
+                    Item 2
+                </Box>
+                <Box padding="sm" backgroundColor={colors.gray[10]}>
+                    Item 3
+                </Box>
+            </>
+        ),
+    },
 };

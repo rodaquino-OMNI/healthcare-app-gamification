@@ -13,64 +13,64 @@ import { Icon, IconProps } from '../../primitives/Icon/Icon';
  * Props interface for the Badge component
  */
 export interface BadgeProps {
-  /**
-   * The size of the badge.
-   * @default 'md'
-   */
-  size?: 'sm' | 'md' | 'lg';
+    /**
+     * The size of the badge.
+     * @default 'md'
+     */
+    size?: 'sm' | 'md' | 'lg';
 
-  /**
-   * Whether the badge is unlocked.
-   * @default false
-   */
-  unlocked?: boolean;
+    /**
+     * Whether the badge is unlocked.
+     * @default false
+     */
+    unlocked?: boolean;
 
-  /**
-   * The journey to which the badge belongs (health, care, or plan).
-   * @default 'health'
-   */
-  journey?: 'health' | 'care' | 'plan';
+    /**
+     * The journey to which the badge belongs (health, care, or plan).
+     * @default 'health'
+     */
+    journey?: 'health' | 'care' | 'plan';
 
-  /**
-   * The content of the badge.
-   */
-  children?: React.ReactNode;
+    /**
+     * The content of the badge.
+     */
+    children?: React.ReactNode;
 
-  /**
-   * Function called when the badge is pressed
-   */
-  onPress?: () => void;
+    /**
+     * Function called when the badge is pressed
+     */
+    onPress?: () => void;
 
-  /**
-   * Accessibility label for screen readers
-   */
-  accessibilityLabel?: string;
+    /**
+     * Accessibility label for screen readers
+     */
+    accessibilityLabel?: string;
 
-  /**
-   * Test ID for testing purposes
-   */
-  testID?: string;
+    /**
+     * Test ID for testing purposes
+     */
+    testID?: string;
 
-  /**
-   * Status indicator type for status badge variant.
-   * Maps to semantic colors (success, warning, error, info, neutral).
-   */
-  status?: 'success' | 'warning' | 'error' | 'info' | 'neutral';
+    /**
+     * Status indicator type for status badge variant.
+     * Maps to semantic colors (success, warning, error, info, neutral).
+     */
+    status?: 'success' | 'warning' | 'error' | 'info' | 'neutral';
 
-  /**
-   * When true, renders as a small dot indicator instead of a label badge.
-   * Only applicable when variant is 'status'.
-   * @default false
-   */
-  dot?: boolean;
+    /**
+     * When true, renders as a small dot indicator instead of a label badge.
+     * Only applicable when variant is 'status'.
+     * @default false
+     */
+    dot?: boolean;
 
-  /**
-   * Badge variant type.
-   * - 'achievement': The original achievement badge (default for backward compatibility)
-   * - 'status': A status indicator badge using semantic colors
-   * @default 'achievement'
-   */
-  variant?: 'achievement' | 'status';
+    /**
+     * Badge variant type.
+     * - 'achievement': The original achievement badge (default for backward compatibility)
+     * - 'status': A status indicator badge using semantic colors
+     * @default 'achievement'
+     */
+    variant?: 'achievement' | 'status';
 }
 
 /**
@@ -79,16 +79,16 @@ export interface BadgeProps {
  * @returns The size of the badge in pixels.
  */
 export function getBadgeSize(size: 'sm' | 'md' | 'lg'): number {
-  switch (size) {
-    case 'sm':
-      return 24;
-    case 'md':
-      return 32;
-    case 'lg':
-      return 40;
-    default:
-      return 32;
-  }
+    switch (size) {
+        case 'sm':
+            return 24;
+        case 'md':
+            return 32;
+        case 'lg':
+            return 40;
+        default:
+            return 32;
+    }
 }
 
 /**
@@ -96,21 +96,17 @@ export function getBadgeSize(size: 'sm' | 'md' | 'lg'): number {
  * Handles sizing, styling, and appearance based on unlocked state and journey.
  */
 export const BadgeContainer = styled(Touchable)<{
-  size: 'sm' | 'md' | 'lg';
-  unlocked: boolean;
-  journey: string;
+    size: 'sm' | 'md' | 'lg';
+    unlocked: boolean;
+    journey: string;
 }>`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: ${(props) => props.theme.borderRadius.md};
-  padding: ${(props) => props.theme.spacing.sm};
-  background-color: ${(props) =>
-    props.unlocked
-      ? colors.journeys[props.journey].primary
-      : colors.neutral.gray200};
-  color: ${(props) =>
-    props.unlocked ? colors.neutral.white : colors.neutral.gray700};
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: ${(props) => props.theme.borderRadius.md};
+    padding: ${(props) => props.theme.spacing.sm};
+    background-color: ${(props) => (props.unlocked ? colors.journeys[props.journey].primary : colors.neutral.gray200)};
+    color: ${(props) => (props.unlocked ? colors.neutral.white : colors.neutral.gray700)};
 `;
 
 /**
@@ -118,38 +114,50 @@ export const BadgeContainer = styled(Touchable)<{
  * Displays the achievement icon with appropriate color and size.
  */
 export const BadgeIcon = styled(Icon)<{
-  color: string;
-  size: number;
+    color: string;
+    size: number;
 }>`
-  margin-right: ${(props) => props.theme.spacing.xs};
+    margin-right: ${(props) => props.theme.spacing.xs};
 `;
 
 /**
  * Returns the appropriate semantic color for a given status.
  */
 const getStatusColor = (status: 'success' | 'warning' | 'error' | 'info' | 'neutral'): string => {
-  switch (status) {
-    case 'success': return colors.semantic.success;
-    case 'warning': return colors.semantic.warning;
-    case 'error': return colors.semantic.error;
-    case 'info': return colors.semantic.info;
-    case 'neutral': return colors.neutral.gray500;
-    default: return colors.neutral.gray500;
-  }
+    switch (status) {
+        case 'success':
+            return colors.semantic.success;
+        case 'warning':
+            return colors.semantic.warning;
+        case 'error':
+            return colors.semantic.error;
+        case 'info':
+            return colors.semantic.info;
+        case 'neutral':
+            return colors.neutral.gray500;
+        default:
+            return colors.neutral.gray500;
+    }
 };
 
 /**
  * Returns the appropriate semantic background color for a given status.
  */
 const getStatusBgColor = (status: 'success' | 'warning' | 'error' | 'info' | 'neutral'): string => {
-  switch (status) {
-    case 'success': return colors.semantic.successBg;
-    case 'warning': return colors.semantic.warningBg;
-    case 'error': return colors.semantic.errorBg;
-    case 'info': return '#eff6ff';
-    case 'neutral': return colors.neutral.gray200;
-    default: return colors.neutral.gray200;
-  }
+    switch (status) {
+        case 'success':
+            return colors.semantic.successBg;
+        case 'warning':
+            return colors.semantic.warningBg;
+        case 'error':
+            return colors.semantic.errorBg;
+        case 'info':
+            return '#eff6ff';
+        case 'neutral':
+            return colors.neutral.gray200;
+        default:
+            return colors.neutral.gray200;
+    }
 };
 
 /**
@@ -157,25 +165,24 @@ const getStatusBgColor = (status: 'success' | 'warning' | 'error' | 'info' | 'ne
  * Renders as a dot indicator or label badge with semantic colors.
  */
 export const StatusBadge = styled.span<{
-  status: string;
-  dot: boolean;
+    status: string;
+    dot: boolean;
 }>`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: ${(props) => props.dot ? borderRadius.full : borderRadius.sm};
-  width: ${(props) => props.dot ? sizing.component['2xs'] : 'auto'};
-  height: ${(props) => props.dot ? sizing.component['2xs'] : 'auto'};
-  min-width: ${(props) => props.dot ? 'auto' : sizing.component['2xs']};
-  padding: ${(props) => props.dot ? '0' : `${spacing['3xs']} ${spacing.xs}`};
-  background-color: ${(props) => props.dot
-    ? getStatusColor(props.status as any)
-    : getStatusBgColor(props.status as any)};
-  color: ${(props) => getStatusColor(props.status as any)};
-  font-family: ${typography.fontFamily.base};
-  font-size: ${typography.fontSize.xs};
-  font-weight: ${typography.fontWeight.medium};
-  line-height: ${typography.lineHeight.base};
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: ${(props) => (props.dot ? borderRadius.full : borderRadius.sm)};
+    width: ${(props) => (props.dot ? sizing.component['2xs'] : 'auto')};
+    height: ${(props) => (props.dot ? sizing.component['2xs'] : 'auto')};
+    min-width: ${(props) => (props.dot ? 'auto' : sizing.component['2xs'])};
+    padding: ${(props) => (props.dot ? '0' : `${spacing['3xs']} ${spacing.xs}`)};
+    background-color: ${(props) =>
+        props.dot ? getStatusColor(props.status as any) : getStatusBgColor(props.status as any)};
+    color: ${(props) => getStatusColor(props.status as any)};
+    font-family: ${typography.fontFamily.base};
+    font-size: ${typography.fontSize.xs};
+    font-weight: ${typography.fontWeight.medium};
+    line-height: ${typography.lineHeight.base};
 `;
 
 /**
@@ -183,44 +190,44 @@ export const StatusBadge = styled.span<{
  * It supports different sizes, styles, and theming based on the AUSTA SuperApp's design system.
  */
 export const Badge: React.FC<BadgeProps> = ({
-  size = 'md',
-  unlocked = false,
-  journey = 'health',
-  children,
-  onPress,
-  accessibilityLabel,
-  testID,
-  status,
-  dot = false,
-  variant = 'achievement',
+    size = 'md',
+    unlocked = false,
+    journey = 'health',
+    children,
+    onPress,
+    accessibilityLabel,
+    testID,
+    status,
+    dot = false,
+    variant = 'achievement',
 }) => {
-  const badgeSize = getBadgeSize(size);
+    const badgeSize = getBadgeSize(size);
 
-  // Render status variant when explicitly set
-  if (variant === 'status' && status) {
+    // Render status variant when explicitly set
+    if (variant === 'status' && status) {
+        return (
+            <StatusBadge
+                status={status}
+                dot={dot}
+                data-testid={testID}
+                aria-label={accessibilityLabel || `${status} status`}
+            >
+                {!dot && children}
+            </StatusBadge>
+        );
+    }
+
+    // Default: render the original achievement badge
     return (
-      <StatusBadge
-        status={status}
-        dot={dot}
-        data-testid={testID}
-        aria-label={accessibilityLabel || `${status} status`}
-      >
-        {!dot && children}
-      </StatusBadge>
+        <BadgeContainer
+            size={size}
+            unlocked={unlocked}
+            journey={journey}
+            onPress={onPress}
+            accessibilityLabel={accessibilityLabel}
+            testID={testID}
+        >
+            {children}
+        </BadgeContainer>
     );
-  }
-
-  // Default: render the original achievement badge
-  return (
-    <BadgeContainer
-      size={size}
-      unlocked={unlocked}
-      journey={journey}
-      onPress={onPress}
-      accessibilityLabel={accessibilityLabel}
-      testID={testID}
-    >
-      {children}
-    </BadgeContainer>
-  );
 };

@@ -9,20 +9,10 @@
 import SymptomSelector from './SymptomSelector';
 
 // Import styled components
-import {
-  SymptomSelectorContainer,
-  SymptomList,
-  SymptomItem,
-  SymptomLabel
-} from './SymptomSelector.styles';
+import { SymptomSelectorContainer, SymptomList, SymptomItem, SymptomLabel } from './SymptomSelector.styles';
 
 // Export styled components for custom styling and extension
-export {
-  SymptomSelectorContainer,
-  SymptomList,
-  SymptomItem,
-  SymptomLabel
-};
+export { SymptomSelectorContainer, SymptomList, SymptomItem, SymptomLabel };
 
 // Export the main component as default
 export default SymptomSelector;

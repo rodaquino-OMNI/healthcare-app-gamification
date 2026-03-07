@@ -1,6 +1,6 @@
 import { User } from '@app/auth/users/entities/user.entity';
 
-import { Appointment } from '../appointments/entities/appointment.entity';
+import { Appointment } from '../../appointments/entities/appointment.entity';
 
 /**
  * Represents a telemedicine session entity.

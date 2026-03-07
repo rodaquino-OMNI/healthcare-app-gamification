@@ -7,17 +7,35 @@ import { saveTheme } from '../../api/settings';
 type ThemeOption = 'light' | 'dark' | 'system';
 
 interface ThemeChoice {
-  value: ThemeOption;
-  label: string;
-  description: string;
-  previewBg: string;
-  previewText: string;
+    value: ThemeOption;
+    label: string;
+    description: string;
+    previewBg: string;
+    previewText: string;
 }
 
 const THEMES: ThemeChoice[] = [
-  { value: 'light', label: 'Claro', description: 'Tema claro para uso diurno', previewBg: colors.gray[0], previewText: colors.gray[70] },
-  { value: 'dark', label: 'Escuro', description: 'Tema escuro para conforto visual', previewBg: colors.gray[70], previewText: colors.gray[5] },
-  { value: 'system', label: 'Sistema', description: 'Seguir configuracao do dispositivo', previewBg: colors.gray[10], previewText: colors.gray[60] },
+    {
+        value: 'light',
+        label: 'Claro',
+        description: 'Tema claro para uso diurno',
+        previewBg: colors.gray[0],
+        previewText: colors.gray[70],
+    },
+    {
+        value: 'dark',
+        label: 'Escuro',
+        description: 'Tema escuro para conforto visual',
+        previewBg: colors.gray[70],
+        previewText: colors.gray[5],
+    },
+    {
+        value: 'system',
+        label: 'Sistema',
+        description: 'Seguir configuracao do dispositivo',
+        previewBg: colors.gray[10],
+        previewText: colors.gray[60],
+    },
 ];
 
 /**
@@ -25,98 +43,152 @@ const THEMES: ThemeChoice[] = [
  * Allows users to choose between Light, Dark, and System themes.
  */
 const ThemePage: NextPage = () => {
-  const router = useRouter();
-  const [selected, setSelected] = useState<ThemeOption>('light');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+    const router = useRouter();
+    const [selected, setSelected] = useState<ThemeOption>('light');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
-  const handleSave = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      await saveTheme(selected);
-      router.push('/settings');
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Erro ao salvar tema.');
-    } finally {
-      setLoading(false);
-    }
-  };
+    const handleSave = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            await saveTheme(selected);
+            router.push('/settings');
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Erro ao salvar tema.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  return (
-    <div style={{ padding: spacing.xl, maxWidth: '480px', margin: '0 auto' }}>
-      <h1 style={titleStyle}>Tema</h1>
-      <p style={subtitleStyle}>Escolha a aparencia do aplicativo.</p>
+    return (
+        <div style={{ padding: spacing.xl, maxWidth: '480px', margin: '0 auto' }}>
+            <h1 style={titleStyle}>Tema</h1>
+            <p style={subtitleStyle}>Escolha a aparencia do aplicativo.</p>
 
-      <div style={cardStyle}>
-        {THEMES.map((theme) => (
-          <div
-            key={theme.value}
-            onClick={() => setSelected(theme.value)}
-            style={{
-              ...optionStyle,
-              borderColor: selected === theme.value ? colors.brand.primary : colors.gray[20],
-            }}
-          >
-            {/* Preview swatch */}
-            <div style={{
-              width: 48, height: 48, borderRadius: borderRadius.md,
-              backgroundColor: theme.previewBg, border: `1px solid ${colors.gray[20]}`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: typography.fontSize['text-xs'], color: theme.previewText,
-              fontFamily: typography.fontFamily.mono, marginRight: spacing.md, flexShrink: 0,
-            }}>
-              Aa
+            <div style={cardStyle}>
+                {THEMES.map((theme) => (
+                    <div
+                        key={theme.value}
+                        onClick={() => setSelected(theme.value)}
+                        style={{
+                            ...optionStyle,
+                            borderColor: selected === theme.value ? colors.brand.primary : colors.gray[20],
+                        }}
+                    >
+                        {/* Preview swatch */}
+                        <div
+                            style={{
+                                width: 48,
+                                height: 48,
+                                borderRadius: borderRadius.md,
+                                backgroundColor: theme.previewBg,
+                                border: `1px solid ${colors.gray[20]}`,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: typography.fontSize['text-xs'],
+                                color: theme.previewText,
+                                fontFamily: typography.fontFamily.mono,
+                                marginRight: spacing.md,
+                                flexShrink: 0,
+                            }}
+                        >
+                            Aa
+                        </div>
+                        <div style={{ flex: 1 }}>
+                            <span style={optionLabelStyle}>{theme.label}</span>
+                            <span style={optionDescStyle}>{theme.description}</span>
+                        </div>
+                        {selected === theme.value && (
+                            <span
+                                style={{
+                                    color: colors.brand.primary,
+                                    fontSize: typography.fontSize['text-lg'],
+                                    flexShrink: 0,
+                                }}
+                            >
+                                &#10003;
+                            </span>
+                        )}
+                    </div>
+                ))}
+
+                {error && (
+                    <p
+                        style={{
+                            color: 'red',
+                            marginBottom: spacing.sm,
+                            fontSize: typography.fontSize['text-sm'],
+                            fontFamily: typography.fontFamily.body,
+                        }}
+                    >
+                        {error}
+                    </p>
+                )}
+                <button onClick={handleSave} disabled={loading} style={primaryButtonStyle}>
+                    {loading ? 'Salvando...' : 'Aplicar Tema'}
+                </button>
             </div>
-            <div style={{ flex: 1 }}>
-              <span style={optionLabelStyle}>{theme.label}</span>
-              <span style={optionDescStyle}>{theme.description}</span>
-            </div>
-            {selected === theme.value && (
-              <span style={{ color: colors.brand.primary, fontSize: typography.fontSize['text-lg'], flexShrink: 0 }}>
-                &#10003;
-              </span>
-            )}
-          </div>
-        ))}
-
-        {error && <p style={{ color: 'red', marginBottom: spacing.sm, fontSize: typography.fontSize['text-sm'], fontFamily: typography.fontFamily.body }}>{error}</p>}
-        <button onClick={handleSave} disabled={loading} style={primaryButtonStyle}>{loading ? 'Salvando...' : 'Aplicar Tema'}</button>
-      </div>
-    </div>
-  );
+        </div>
+    );
 };
 
 const titleStyle: React.CSSProperties = {
-  fontSize: typography.fontSize['heading-xl'], fontWeight: typography.fontWeight.semiBold,
-  color: colors.gray[70], marginBottom: spacing.xs, fontFamily: typography.fontFamily.heading,
+    fontSize: typography.fontSize['heading-xl'],
+    fontWeight: typography.fontWeight.semiBold,
+    color: colors.gray[70],
+    marginBottom: spacing.xs,
+    fontFamily: typography.fontFamily.heading,
 };
 const subtitleStyle: React.CSSProperties = {
-  fontSize: typography.fontSize['text-sm'], color: colors.gray[50],
-  marginBottom: spacing.xl, fontFamily: typography.fontFamily.body,
+    fontSize: typography.fontSize['text-sm'],
+    color: colors.gray[50],
+    marginBottom: spacing.xl,
+    fontFamily: typography.fontFamily.body,
 };
 const cardStyle: React.CSSProperties = {
-  backgroundColor: colors.gray[0], borderRadius: borderRadius.md,
-  padding: spacing.xl, boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+    backgroundColor: colors.gray[0],
+    borderRadius: borderRadius.md,
+    padding: spacing.xl,
+    boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
 };
 const optionStyle: React.CSSProperties = {
-  display: 'flex', alignItems: 'center', padding: spacing.md,
-  borderRadius: borderRadius.md, border: `2px solid ${colors.gray[20]}`,
-  marginBottom: spacing.xs, cursor: 'pointer', transition: 'border-color 0.15s',
+    display: 'flex',
+    alignItems: 'center',
+    padding: spacing.md,
+    borderRadius: borderRadius.md,
+    border: `2px solid ${colors.gray[20]}`,
+    marginBottom: spacing.xs,
+    cursor: 'pointer',
+    transition: 'border-color 0.15s',
 };
 const optionLabelStyle: React.CSSProperties = {
-  display: 'block', fontSize: typography.fontSize['text-md'], fontWeight: typography.fontWeight.medium,
-  color: colors.gray[70], fontFamily: typography.fontFamily.body,
+    display: 'block',
+    fontSize: typography.fontSize['text-md'],
+    fontWeight: typography.fontWeight.medium,
+    color: colors.gray[70],
+    fontFamily: typography.fontFamily.body,
 };
 const optionDescStyle: React.CSSProperties = {
-  display: 'block', fontSize: typography.fontSize['text-xs'], color: colors.gray[40],
-  marginTop: spacing['3xs'], fontFamily: typography.fontFamily.body,
+    display: 'block',
+    fontSize: typography.fontSize['text-xs'],
+    color: colors.gray[40],
+    marginTop: spacing['3xs'],
+    fontFamily: typography.fontFamily.body,
 };
 const primaryButtonStyle: React.CSSProperties = {
-  width: '100%', padding: spacing.sm, backgroundColor: colors.brand.primary,
-  color: colors.neutral.white, border: 'none', borderRadius: borderRadius.md, cursor: 'pointer',
-  fontSize: typography.fontSize['text-md'], fontWeight: typography.fontWeight.semiBold,
-  fontFamily: typography.fontFamily.body, marginTop: spacing.xl,
+    width: '100%',
+    padding: spacing.sm,
+    backgroundColor: colors.brand.primary,
+    color: colors.neutral.white,
+    border: 'none',
+    borderRadius: borderRadius.md,
+    cursor: 'pointer',
+    fontSize: typography.fontSize['text-md'],
+    fontWeight: typography.fontWeight.semiBold,
+    fontFamily: typography.fontFamily.body,
+    marginTop: spacing.xl,
 };
 
 export default ThemePage;

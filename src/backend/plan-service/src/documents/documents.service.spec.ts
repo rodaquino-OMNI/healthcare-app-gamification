@@ -73,10 +73,10 @@ describe('DocumentsService', () => {
       expect(result).toEqual(createdDocument);
       expect(mockPrismaService.document.create).toHaveBeenCalledWith({
         data: {
-          entity_id: entityId,
-          entity_type: entityType,
+          entityId,
+          entityType,
           type,
-          file_path: filePath,
+          filePath,
         },
       });
     });
@@ -132,7 +132,7 @@ describe('DocumentsService', () => {
 
       expect(result).toEqual(documents);
       expect(mockPrismaService.document.findMany).toHaveBeenCalledWith({
-        where: { entity_id: entityId, entity_type: entityType },
+        where: { entityId, entityType },
       });
     });
 

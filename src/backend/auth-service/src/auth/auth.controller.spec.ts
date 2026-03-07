@@ -4,6 +4,10 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+import { LockoutGuard } from './guards/lockout.guard';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { LoggerService } from '@app/shared/logging/logger.service';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -14,15 +18,35 @@ describe('AuthController', () => {
     validateToken: jest.fn(),
   };
 
+  const mockLoggerService = {
+    log: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    debug: jest.fn(),
+    verbose: jest.fn(),
+    setContext: jest.fn(),
+  };
+
+  const mockCanActivate = jest.fn().mockReturnValue(true);
+
   beforeEach(async () => {
     jest.clearAllMocks();
+    mockCanActivate.mockReturnValue(true);
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
       providers: [
         { provide: AuthService, useValue: mockAuthService },
+        { provide: LoggerService, useValue: mockLoggerService },
       ],
-    }).compile();
+    })
+      .overrideGuard(LockoutGuard)
+      .useValue({ canActivate: mockCanActivate })
+      .overrideGuard(LocalAuthGuard)
+      .useValue({ canActivate: mockCanActivate })
+      .overrideGuard(JwtAuthGuard)
+      .useValue({ canActivate: mockCanActivate })
+      .compile();
 
     controller = module.get<AuthController>(AuthController);
   });

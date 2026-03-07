@@ -9,97 +9,81 @@ import { careTheme } from 'src/web/design-system/src/themes/care.theme.ts';
 import { Symptom } from 'src/web/shared/types/care.types.ts';
 
 const symptoms: Symptom[] = [
-  { id: '1', name: 'Fever' },
-  { id: '2', name: 'Cough' },
-  { id: '3', name: 'Headache' },
-  { id: '4', name: 'Sore Throat' },
-  { id: '5', name: 'Fatigue' },
+    { id: '1', name: 'Fever' },
+    { id: '2', name: 'Cough' },
+    { id: '3', name: 'Headache' },
+    { id: '4', name: 'Sore Throat' },
+    { id: '5', name: 'Fatigue' },
 ];
 
 describe('SymptomSelector', () => {
-  it('Renders correctly with a list of symptoms', () => {
-    // Render the SymptomSelector component with a list of symptoms.
-    const { getByText } = render(
-      <SymptomSelector
-        symptoms={symptoms}
-        journey="care"
-        onSymptomsSelected={() => {}}
-      />
-    );
+    it('Renders correctly with a list of symptoms', () => {
+        // Render the SymptomSelector component with a list of symptoms.
+        const { getByText } = render(
+            <SymptomSelector symptoms={symptoms} journey="care" onSymptomsSelected={() => {}} />
+        );
 
-    // Verify that each symptom is displayed as a selectable option.
-    symptoms.forEach((symptom) => {
-      expect(getByText(symptom.name)).toBeDefined();
+        // Verify that each symptom is displayed as a selectable option.
+        symptoms.forEach((symptom) => {
+            expect(getByText(symptom.name)).toBeDefined();
+        });
     });
-  });
 
-  it('Calls onSelect when a symptom is selected', () => {
-    // Render the SymptomSelector component with a list of symptoms and an onSelect function.
-    const onSymptomsSelected = jest.fn();
-    const { getByTestId } = render(
-      <SymptomSelector
-        symptoms={symptoms}
-        journey="care"
-        onSymptomsSelected={onSymptomsSelected}
-      />
-    );
+    it('Calls onSelect when a symptom is selected', () => {
+        // Render the SymptomSelector component with a list of symptoms and an onSelect function.
+        const onSymptomsSelected = jest.fn();
+        const { getByTestId } = render(
+            <SymptomSelector symptoms={symptoms} journey="care" onSymptomsSelected={onSymptomsSelected} />
+        );
 
-    // Simulate selecting a symptom by firing the onChange event on the Checkbox component.
-    const symptomCheckbox = getByTestId('symptom-checkbox-1');
-    fireEvent.press(symptomCheckbox);
+        // Simulate selecting a symptom by firing the onChange event on the Checkbox component.
+        const symptomCheckbox = getByTestId('symptom-checkbox-1');
+        fireEvent.press(symptomCheckbox);
 
-    const submitButton = getByTestId('submit-symptoms-button');
-    fireEvent.press(submitButton);
+        const submitButton = getByTestId('submit-symptoms-button');
+        fireEvent.press(submitButton);
 
-    // The onSelect function is called with an array containing the selected symptom.
-    expect(onSymptomsSelected).toHaveBeenCalledWith([symptoms[0]]);
+        // The onSelect function is called with an array containing the selected symptom.
+        expect(onSymptomsSelected).toHaveBeenCalledWith([symptoms[0]]);
 
-    // Simulate deselecting the symptom
-    fireEvent.press(symptomCheckbox);
-    fireEvent.press(submitButton);
+        // Simulate deselecting the symptom
+        fireEvent.press(symptomCheckbox);
+        fireEvent.press(submitButton);
 
-    // The onSelect function is not called if no symptom is selected.
-    expect(onSymptomsSelected).toHaveBeenCalledWith([]);
-  });
+        // The onSelect function is not called if no symptom is selected.
+        expect(onSymptomsSelected).toHaveBeenCalledWith([]);
+    });
 
-  it('Filters symptoms based on search term', () => {
-    // Render the SymptomSelector component with a list of symptoms.
-    const { getByPlaceholderText, getByText, queryByText } = render(
-      <SymptomSelector
-        symptoms={symptoms}
-        journey="care"
-        onSymptomsSelected={() => {}}
-      />
-    );
+    it('Filters symptoms based on search term', () => {
+        // Render the SymptomSelector component with a list of symptoms.
+        const { getByPlaceholderText, getByText, queryByText } = render(
+            <SymptomSelector symptoms={symptoms} journey="care" onSymptomsSelected={() => {}} />
+        );
 
-    // Simulate typing a search term into the Input component.
-    const searchInput = getByPlaceholderText('Search symptoms...');
-    fireEvent.changeText(searchInput, 'Head');
+        // Simulate typing a search term into the Input component.
+        const searchInput = getByPlaceholderText('Search symptoms...');
+        fireEvent.changeText(searchInput, 'Head');
 
-    // Only symptoms with names that include the search term are rendered.
-    expect(getByText('Headache')).toBeDefined();
-    expect(queryByText('Fever')).toBeNull();
+        // Only symptoms with names that include the search term are rendered.
+        expect(getByText('Headache')).toBeDefined();
+        expect(queryByText('Fever')).toBeNull();
 
-    // The Input component displays the search term.
-    expect(searchInput).toHaveProp('value', 'Head');
-  });
+        // The Input component displays the search term.
+        expect(searchInput).toHaveProp('value', 'Head');
+    });
 
-  it('Applies Care theme correctly', () => {
-    // Render the SymptomSelector component.
-    const { getByText, getByPlaceholderText } = render(
-      <SymptomSelector
-        symptoms={symptoms}
-        journey="care"
-        onSymptomsSelected={() => {}}
-      />
-    );
+    it('Applies Care theme correctly', () => {
+        // Render the SymptomSelector component.
+        const { getByText, getByPlaceholderText } = render(
+            <SymptomSelector symptoms={symptoms} journey="care" onSymptomsSelected={() => {}} />
+        );
 
-    // The component's text color matches the Care theme's text color.
-    const selectSymptomsText = getByText('Select Your Symptoms');
-    expect(selectSymptomsText).toHaveProp('style', { color: careTheme.colors.journeys.care.primary });
+        // The component's text color matches the Care theme's text color.
+        const selectSymptomsText = getByText('Select Your Symptoms');
+        expect(selectSymptomsText).toHaveProp('style', { color: careTheme.colors.journeys.care.primary });
 
-    // The component's background color matches the Care theme's background color.
-    const searchInput = getByPlaceholderText('Search symptoms...');
-    expect(searchInput).toBeDefined();
-  });
+        // The component's background color matches the Care theme's background color.
+        const searchInput = getByPlaceholderText('Search symptoms...');
+        expect(searchInput).toBeDefined();
+    });
 });

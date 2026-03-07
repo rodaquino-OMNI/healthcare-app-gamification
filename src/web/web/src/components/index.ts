@@ -1,5 +1,4 @@
-# src/web/web/src/components/index.ts
-```typescript
+/* eslint-disable */
 // This file serves as the main barrel export for all components in the web application.
 // It centralizes component imports from various categories (dashboard, forms, navigation, shared, modals) and exports them for easy access throughout the application, promoting code organization and reusability.
 
@@ -57,11 +56,33 @@ export const TopBar: React.FC = NavigationComponents.TopBar; // Top navigation b
 export const EmptyState: React.FC = SharedComponents.EmptyState; // Component for displaying empty state placeholders
 export const ErrorState: React.FC = SharedComponents.ErrorState; // Component for displaying error messages
 export const FileUploader: React.FC<{ claimId: string }> = SharedComponents.FileUploader; // Component for uploading files, used in claims submission
-export const GamificationPopup: React.FC<{ visible: boolean; onClose: () => void; achievementId: string }> = SharedComponents.GamificationPopup; // Component for displaying gamification notifications
-export const JourneyHeader: React.FC<{ title?: string; showBreadcrumbs?: boolean; children?: React.ReactNode; className?: string }> = SharedComponents.JourneyHeader; // Header component with journey-specific styling
-export const LoadingIndicator: React.FC<{ size?: string; text?: string; fullScreen?: boolean; testID?: string }> = SharedComponents.LoadingIndicator; // Component for displaying loading states
+export const GamificationPopup: React.FC<{ visible: boolean; onClose: () => void; achievementId: string }> =
+    SharedComponents.GamificationPopup; // Component for displaying gamification notifications
+export const JourneyHeader: React.FC<{
+    title?: string;
+    showBreadcrumbs?: boolean;
+    children?: React.ReactNode;
+    className?: string;
+}> = SharedComponents.JourneyHeader; // Header component with journey-specific styling
+export const LoadingIndicator: React.FC<{ size?: string; text?: string; fullScreen?: boolean; testID?: string }> =
+    SharedComponents.LoadingIndicator; // Component for displaying loading states
 
 // Export modal components
 export { AchievementModal }; // Modal for displaying achievement details
-export const ConfirmationModal: React.FC<{ visible: boolean; onConfirm: () => void; onCancel: () => void; title?: string; message?: string; confirmText?: string; cancelText?: string; journey?: 'health' | 'care' | 'plan' }> = ConfirmationModal; // Modal for confirming user actions
-export const FilterModal: React.FC<{ visible: boolean; onClose: () => void; title: string; options: { id: string; label: string }[]; onApply: (selectedOptions: string[]) => void }> = FilterModal; // Modal for filtering lists of data
+export const ConfirmationModal: React.FC<{
+    visible: boolean;
+    onConfirm: () => void;
+    onCancel: () => void;
+    title?: string;
+    message?: string;
+    confirmText?: string;
+    cancelText?: string;
+    journey?: 'health' | 'care' | 'plan';
+}> = ConfirmationModal; // Modal for confirming user actions
+export const FilterModal: React.FC<{
+    visible: boolean;
+    onClose: () => void;
+    title: string;
+    options: { id: string; label: string }[];
+    onApply: (selectedOptions: string[]) => void;
+}> = FilterModal; // Modal for filtering lists of data

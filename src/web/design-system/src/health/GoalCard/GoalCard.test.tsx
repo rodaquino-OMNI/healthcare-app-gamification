@@ -6,115 +6,78 @@ import { theme } from '../../../theme';
 
 // Create a custom render function that includes the ThemeProvider
 const customRender = (ui, options = {}) => {
-  return render(
-    <ThemeProvider theme={theme}>
-      {ui}
-    </ThemeProvider>,
-    options
-  );
+    return render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>, options);
 };
 
 describe('GoalCard', () => {
-  it('renders goal card with correct title and progress', () => {
-    const title = 'Daily Steps';
-    const progress = 65;
-    
-    customRender(
-      <GoalCard 
-        title={title} 
-        progress={progress} 
-      />
-    );
-    
-    expect(screen.getByText(title)).toBeInTheDocument();
-    expect(screen.getByText(`${progress}%`)).toBeInTheDocument();
-    
-    const progressBar = screen.getByRole('progressbar');
-    expect(progressBar).toHaveAttribute('aria-valuenow', String(progress));
-  });
+    it('renders goal card with correct title and progress', () => {
+        const title = 'Daily Steps';
+        const progress = 65;
 
-  it('renders with description when provided', () => {
-    const title = 'Daily Steps';
-    const description = 'Walk 10,000 steps every day';
-    
-    customRender(
-      <GoalCard 
-        title={title} 
-        description={description}
-        progress={50} 
-      />
-    );
-    
-    expect(screen.getByText(description)).toBeInTheDocument();
-  });
+        customRender(<GoalCard title={title} progress={progress} />);
 
-  it('renders completed state correctly', () => {
-    customRender(
-      <GoalCard 
-        title="Daily Steps" 
-        progress={75}
-        completed={true} 
-      />
-    );
-    
-    expect(screen.getByText('Completed')).toBeInTheDocument();
-    expect(screen.getByText('100%')).toBeInTheDocument();
-    
-    const progressBar = screen.getByRole('progressbar');
-    expect(progressBar).toHaveAttribute('aria-valuenow', '100');
-  });
+        expect(screen.getByText(title)).toBeInTheDocument();
+        expect(screen.getByText(`${progress}%`)).toBeInTheDocument();
 
-  it('normalizes progress values to valid range', () => {
-    // Test negative progress (should be normalized to 0)
-    customRender(
-      <GoalCard 
-        title="Test Goal" 
-        progress={-20}
-      />
-    );
-    
-    expect(screen.getByText('0%')).toBeInTheDocument();
-    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '0');
-    
-    // Cleanup and re-render with progress > 100 (should be normalized to 100)
-    screen.unmount();
-    customRender(
-      <GoalCard 
-        title="Test Goal" 
-        progress={120}
-      />
-    );
-    
-    expect(screen.getByText('100%')).toBeInTheDocument();
-    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '100');
-  });
+        const progressBar = screen.getByRole('progressbar');
+        expect(progressBar).toHaveAttribute('aria-valuenow', String(progress));
+    });
 
-  it('has correct accessibility attributes', () => {
-    customRender(
-      <GoalCard 
-        title="Exercise Goal" 
-        progress={50}
-      />
-    );
-    
-    const card = screen.getByTestId('goal-card');
-    expect(card).toHaveAttribute('aria-label', 'Goal: Exercise Goal, 50% complete');
-    
-    const progressBar = screen.getByRole('progressbar');
-    expect(progressBar).toHaveAttribute('aria-valuemin', '0');
-    expect(progressBar).toHaveAttribute('aria-valuemax', '100');
-    expect(progressBar).toHaveAttribute('aria-valuenow', '50');
-  });
+    it('renders with description when provided', () => {
+        const title = 'Daily Steps';
+        const description = 'Walk 10,000 steps every day';
 
-  // Note: This test would require modifying the GoalCard component to accept a journey prop
-  // and apply different styling based on the journey. This is a placeholder test.
-  it('applies journey-specific styling', () => {
-    // Since the current implementation doesn't support journey-specific styling,
-    // this test is a placeholder for future implementation
-    expect(true).toBeTruthy();
-    
-    // Future implementation would look like this:
-    /*
+        customRender(<GoalCard title={title} description={description} progress={50} />);
+
+        expect(screen.getByText(description)).toBeInTheDocument();
+    });
+
+    it('renders completed state correctly', () => {
+        customRender(<GoalCard title="Daily Steps" progress={75} completed={true} />);
+
+        expect(screen.getByText('Completed')).toBeInTheDocument();
+        expect(screen.getByText('100%')).toBeInTheDocument();
+
+        const progressBar = screen.getByRole('progressbar');
+        expect(progressBar).toHaveAttribute('aria-valuenow', '100');
+    });
+
+    it('normalizes progress values to valid range', () => {
+        // Test negative progress (should be normalized to 0)
+        customRender(<GoalCard title="Test Goal" progress={-20} />);
+
+        expect(screen.getByText('0%')).toBeInTheDocument();
+        expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '0');
+
+        // Cleanup and re-render with progress > 100 (should be normalized to 100)
+        screen.unmount();
+        customRender(<GoalCard title="Test Goal" progress={120} />);
+
+        expect(screen.getByText('100%')).toBeInTheDocument();
+        expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '100');
+    });
+
+    it('has correct accessibility attributes', () => {
+        customRender(<GoalCard title="Exercise Goal" progress={50} />);
+
+        const card = screen.getByTestId('goal-card');
+        expect(card).toHaveAttribute('aria-label', 'Goal: Exercise Goal, 50% complete');
+
+        const progressBar = screen.getByRole('progressbar');
+        expect(progressBar).toHaveAttribute('aria-valuemin', '0');
+        expect(progressBar).toHaveAttribute('aria-valuemax', '100');
+        expect(progressBar).toHaveAttribute('aria-valuenow', '50');
+    });
+
+    // Note: This test would require modifying the GoalCard component to accept a journey prop
+    // and apply different styling based on the journey. This is a placeholder test.
+    it('applies journey-specific styling', () => {
+        // Since the current implementation doesn't support journey-specific styling,
+        // this test is a placeholder for future implementation
+        expect(true).toBeTruthy();
+
+        // Future implementation would look like this:
+        /*
     // Mock custom theme with journey colors
     const mockTheme = {
       ...theme,
@@ -180,5 +143,5 @@ describe('GoalCard', () => {
     // Check that care journey styling is applied
     expect(card).toHaveStyle('border-left-color: #FF8C42');
     */
-  });
+    });
 });

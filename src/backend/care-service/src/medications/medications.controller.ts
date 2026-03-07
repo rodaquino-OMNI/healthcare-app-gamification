@@ -2,10 +2,8 @@ import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 import { PhiAccess } from '@app/shared/audit';
 import { AUTH_INSUFFICIENT_PERMISSIONS } from '@app/shared/constants/error-codes.constants';
-import { ErrorType } from '@app/shared/exceptions/error.types';
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
-import { Service } from '@app/shared/interfaces/service.interface';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import {
     Controller,

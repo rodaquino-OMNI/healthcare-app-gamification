@@ -29,14 +29,16 @@ jest.mock('@nestjs/graphql', () => ({
 // Passport strategy at import time (which would require a full NestJS module).
 // ---------------------------------------------------------------------------
 jest.mock('@nestjs/passport', () => {
-  // Return a base class whose constructor and canActivate are no-ops.
-  const AuthGuard = (_strategy: string) => {
-    return class MockAuthGuard {
-      canActivate() {
-        return true;
-      }
-    };
-  };
+  // Singleton base class so that every call to AuthGuard() returns the same
+  // constructor.  This is required for `instanceof` checks to work correctly
+  // because JwtAuthGuard extends the result of AuthGuard('jwt') at class
+  // definition time, and the test resolves the same value via jest.requireMock.
+  class MockAuthGuard {
+    canActivate() {
+      return true;
+    }
+  }
+  const AuthGuard = (_strategy: string) => MockAuthGuard;
   return { AuthGuard };
 });
 

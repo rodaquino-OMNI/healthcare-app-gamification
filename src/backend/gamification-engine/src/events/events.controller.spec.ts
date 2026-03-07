@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { EventsController } from './events.controller';
 import { EventsService } from './events.service';
 import { ProcessEventDto } from './dto/process-event.dto';
+import { LoggerService } from '../../../shared/src/logging/logger.service';
 
 // Mock the JwtAuthGuard to avoid auth setup in unit tests
 jest.mock('@app/auth/auth/guards/jwt-auth.guard', () => ({
@@ -19,6 +20,13 @@ describe('EventsController', () => {
     processEvent: jest.fn(),
   };
 
+  const mockLoggerService = {
+    log: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    debug: jest.fn(),
+  };
+
   beforeEach(async () => {
     jest.clearAllMocks();
 
@@ -26,6 +34,7 @@ describe('EventsController', () => {
       controllers: [EventsController],
       providers: [
         { provide: EventsService, useValue: mockEventsService },
+        { provide: LoggerService, useValue: mockLoggerService },
       ],
     })
       .overrideGuard(require('@app/auth/auth/guards/jwt-auth.guard').JwtAuthGuard)

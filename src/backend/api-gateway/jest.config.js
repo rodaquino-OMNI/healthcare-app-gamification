@@ -1,4 +1,4 @@
-export default {
+module.exports = {
     moduleFileExtensions: ['js', 'json', 'ts'],
     rootDir: '.',
     testRegex: '.*\\.spec\\.ts$',
@@ -18,7 +18,7 @@ export default {
     testEnvironment: 'node',
     moduleNameMapper: {
         '^@app/shared/(.*)$': '<rootDir>/../shared/src/$1',
-        '^@app/auth/(.*)$': '<rootDir>/src/$1',
+        '^@app/auth/(.*)$': '<rootDir>/../auth-service/src/$1',
         '^@/(.*)$': '<rootDir>/src/$1',
     },
     testTimeout: 10000,

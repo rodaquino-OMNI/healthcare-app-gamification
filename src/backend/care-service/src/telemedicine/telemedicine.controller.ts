@@ -2,8 +2,6 @@
 import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 import { PhiAccess } from '@app/shared/audit';
-import { CARE_TELEMEDICINE_CONNECTION_FAILED } from '@app/shared/constants/error-codes.constants';
-import { ErrorType } from '@app/shared/exceptions/error.types';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Controller, Post, Body, UseGuards } from '@nestjs/common';
@@ -61,9 +59,8 @@ export class TelemedicineController {
             throw new AppException(
                 'Failed to start telemedicine session',
                 ErrorType.TECHNICAL,
-                CARE_TELEMEDICINE_CONNECTION_FAILED,
-                { dto: createSessionDto },
-                error
+                'CARE_TELEMEDICINE_CONNECTION_FAILED',
+                { dto: createSessionDto }
             );
         }
     }

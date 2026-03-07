@@ -4,6 +4,7 @@ import { NotificationsController } from './notifications.controller';
 import { NotificationsService } from './notifications.service';
 import { SendNotificationDto } from './dto/send-notification.dto';
 import { AppException } from '@app/shared/exceptions/exceptions.types';
+import { LoggerService } from '@app/shared/logging/logger.service';
 
 describe('NotificationsController', () => {
   let controller: NotificationsController;
@@ -16,6 +17,13 @@ describe('NotificationsController', () => {
     markAllAsRead: jest.fn(),
     remove: jest.fn(),
     getUnreadCount: jest.fn(),
+  };
+
+  const mockLoggerService = {
+    log: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    debug: jest.fn(),
   };
 
   const mockNotification = {
@@ -39,6 +47,7 @@ describe('NotificationsController', () => {
       controllers: [NotificationsController],
       providers: [
         { provide: NotificationsService, useValue: mockNotificationsService },
+        { provide: LoggerService, useValue: mockLoggerService },
       ],
     }).compile();
 

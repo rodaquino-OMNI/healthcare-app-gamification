@@ -16,36 +16,36 @@ import initEnvironment from 'src/web/web/src/utils/env-init';
  * @returns The rendered App component.
  */
 function _app({ Component, pageProps }: AppProps): JSX.Element {
-  // LD1: Uses the useRouter hook to get the current route.
-  const router = useRouter();
-  
-  // Initialize environment variables for browser compatibility
-  useEffect(() => {
-    initEnvironment();
-  }, []);
-  
-  // LD1: Returns a ThemeProvider component that wraps the entire application with the global theme.
-  // LD1: Applies the I18nProvider for internationalization.
-  // LD1: Applies the AuthProvider for authentication context.
-  // LD1: Applies the GamificationProvider for gamification context.
-  // LD1: Applies the NotificationProvider for notification context.
-  // LD1: Applies the JourneyContext to provide journey-specific theming and context.
-  return (
-    <ThemeProvider theme={theme}>
-      <GlobalStyle />
-      <I18nProvider>
-        <AuthProvider>
-          <GamificationProvider>
-            <NotificationProvider>
-              <JourneyProvider>
-                <Component {...pageProps} key={router.asPath} />
-              </JourneyProvider>
-            </NotificationProvider>
-          </GamificationProvider>
-        </AuthProvider>
-      </I18nProvider>
-    </ThemeProvider>
-  );
+    // LD1: Uses the useRouter hook to get the current route.
+    const router = useRouter();
+
+    // Initialize environment variables for browser compatibility
+    useEffect(() => {
+        initEnvironment();
+    }, []);
+
+    // LD1: Returns a ThemeProvider component that wraps the entire application with the global theme.
+    // LD1: Applies the I18nProvider for internationalization.
+    // LD1: Applies the AuthProvider for authentication context.
+    // LD1: Applies the GamificationProvider for gamification context.
+    // LD1: Applies the NotificationProvider for notification context.
+    // LD1: Applies the JourneyContext to provide journey-specific theming and context.
+    return (
+        <ThemeProvider theme={theme}>
+            <GlobalStyle />
+            <I18nProvider>
+                <AuthProvider>
+                    <GamificationProvider>
+                        <NotificationProvider>
+                            <JourneyProvider>
+                                <Component {...pageProps} key={router.asPath} />
+                            </JourneyProvider>
+                        </NotificationProvider>
+                    </GamificationProvider>
+                </AuthProvider>
+            </I18nProvider>
+        </ThemeProvider>
+    );
 }
 
 export default _app;

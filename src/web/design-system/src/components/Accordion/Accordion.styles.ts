@@ -29,96 +29,99 @@ const collapseAnimation = keyframes`
 `;
 
 interface AccordionHeaderProps {
-  isExpanded?: boolean;
-  journey?: 'health' | 'care' | 'plan';
+    isExpanded?: boolean;
+    journey?: 'health' | 'care' | 'plan';
 }
 
 interface AccordionIconProps {
-  isExpanded?: boolean;
-  journey?: 'health' | 'care' | 'plan';
+    isExpanded?: boolean;
+    journey?: 'health' | 'care' | 'plan';
 }
 
 export const AccordionHeader = styled.div<AccordionHeaderProps>`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: ${spacing.md};
-  background-color: ${colors.neutral.gray100};
-  border-radius: ${borderRadius.md};
-  font-weight: ${typography.fontWeight.medium};
-  cursor: pointer;
-  user-select: none;
-  transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: ${spacing.md};
+    background-color: ${colors.neutral.gray100};
+    border-radius: ${borderRadius.md};
+    font-weight: ${typography.fontWeight.medium};
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease;
 
-  /* Journey-specific styling - safely access journey colors with fallbacks */
-  border-left: 3px solid ${({ journey }) => {
-    if (journey && colors.journeys[journey]) {
-      return colors.journeys[journey].primary;
+    /* Journey-specific styling - safely access journey colors with fallbacks */
+    border-left: 3px solid
+        ${({ journey }) => {
+            if (journey && colors.journeys[journey]) {
+                return colors.journeys[journey].primary;
+            }
+            return colors.brand.primary;
+        }};
+
+    /* Hover state with journey-specific colors */
+    &:hover {
+        background-color: ${({ journey }) => {
+            if (journey && colors.journeys[journey]) {
+                return colors.journeys[journey].background || colors.neutral.gray200;
+            }
+            return colors.neutral.gray200;
+        }};
     }
-    return colors.brand.primary;
-  }};
 
-  /* Hover state with journey-specific colors */
-  &:hover {
-    background-color: ${({ journey }) => {
-      if (journey && colors.journeys[journey]) {
-        return colors.journeys[journey].background || colors.neutral.gray200;
-      }
-      return colors.neutral.gray200;
-    }};
-  }
+    /* Expanded state styling */
+    ${({ isExpanded, journey }) =>
+        isExpanded &&
+        css`
+            background-color: ${(() => {
+                if (journey && colors.journeys[journey]) {
+                    return colors.journeys[journey].background || colors.neutral.gray200;
+                }
+                return colors.neutral.gray200;
+            })()};
+            font-weight: ${typography.fontWeight.bold};
+        `}
 
-  /* Expanded state styling */
-  ${({ isExpanded, journey }) => isExpanded && css`
-    background-color: ${(() => {
-      if (journey && colors.journeys[journey]) {
-        return colors.journeys[journey].background || colors.neutral.gray200;
-      }
-      return colors.neutral.gray200;
-    })()};
-    font-weight: ${typography.fontWeight.bold};
-  `}
-
-  /* Accessibility focus styles */
+    /* Accessibility focus styles */
   &:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 2px ${colors.brand.primary};
-  }
+        outline: none;
+        box-shadow: 0 0 0 2px ${colors.brand.primary};
+    }
 `;
 
 export const AccordionContent = styled.div<AccordionHeaderProps>`
-  overflow: hidden;
-  animation: ${({ isExpanded }) => isExpanded ? expandAnimation : collapseAnimation} 0.3s ease forwards;
-  max-height: ${({ isExpanded }) => isExpanded ? '1000px' : '0'};
-  opacity: ${({ isExpanded }) => isExpanded ? 1 : 0};
-  padding: ${({ isExpanded }) => isExpanded ? spacing.md : '0'};
-  transition: all 0.3s ease;
+    overflow: hidden;
+    animation: ${({ isExpanded }) => (isExpanded ? expandAnimation : collapseAnimation)} 0.3s ease forwards;
+    max-height: ${({ isExpanded }) => (isExpanded ? '1000px' : '0')};
+    opacity: ${({ isExpanded }) => (isExpanded ? 1 : 0)};
+    padding: ${({ isExpanded }) => (isExpanded ? spacing.md : '0')};
+    transition: all 0.3s ease;
 
-  /* Journey-specific styling with safety checks */
-  ${({ journey, isExpanded }) => {
-    if (journey && isExpanded && colors.journeys[journey]) {
-      return css`
-        border-left: 3px solid ${colors.journeys[journey].secondary || 'transparent'};
-        margin-left: ${spacing.xs};
-        padding-left: ${spacing.md};
-      `;
-    }
-    return '';
-  }}
+    /* Journey-specific styling with safety checks */
+    ${({ journey, isExpanded }) => {
+        if (journey && isExpanded && colors.journeys[journey]) {
+            return css`
+                border-left: 3px solid ${colors.journeys[journey].secondary || 'transparent'};
+                margin-left: ${spacing.xs};
+                padding-left: ${spacing.md};
+            `;
+        }
+        return '';
+    }}
 `;
 
 export const AccordionIcon = styled(Icon)<AccordionIconProps>`
-  transition: transform 0.3s ease;
-  transform: ${({ isExpanded }) => isExpanded ? 'rotate(180deg)' : 'rotate(0deg)'};
+    transition: transform 0.3s ease;
+    transform: ${({ isExpanded }) => (isExpanded ? 'rotate(180deg)' : 'rotate(0deg)')};
 
-  /* Journey-specific styling with safety checks */
-  color: ${({ journey }) => {
-    if (journey && colors.journeys[journey]) {
-      return colors.journeys[journey].primary;
-    }
-    return colors.brand.primary;
-  }};
+    /* Journey-specific styling with safety checks */
+    color: ${({ journey }) => {
+        if (journey && colors.journeys[journey]) {
+            return colors.journeys[journey].primary;
+        }
+        return colors.brand.primary;
+    }};
 
-  margin-left: ${spacing.sm};
-  flex-shrink: 0;
+    margin-left: ${spacing.sm};
+    flex-shrink: 0;
 `;

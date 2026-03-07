@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CARE_PROVIDER_UNAVAILABLE } from '@app/shared/constants/error-codes.constants';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+
+const CARE_PROVIDER_UNAVAILABLE = 'CARE_PROVIDER_UNAVAILABLE';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { TracingService } from '@app/shared/tracing/tracing.service';
 import { Injectable } from '@nestjs/common';
@@ -112,13 +113,9 @@ export class SymptomCheckerService {
                     throw error as any;
                 }
 
-                throw new AppException(
-                    'Failed to analyze symptoms',
-                    ErrorType.TECHNICAL,
-                    CARE_PROVIDER_UNAVAILABLE,
-                    { symptoms: checkSymptomsDto.symptoms },
-                    error
-                );
+                throw new AppException('Failed to analyze symptoms', ErrorType.TECHNICAL, CARE_PROVIDER_UNAVAILABLE, {
+                    symptoms: checkSymptomsDto.symptoms,
+                });
             }
         });
     }
@@ -276,8 +273,7 @@ export class SymptomCheckerService {
                 'Failed to connect to symptom analysis service',
                 ErrorType.EXTERNAL,
                 CARE_PROVIDER_UNAVAILABLE,
-                { symptoms },
-                error
+                { symptoms }
             );
         }
     }

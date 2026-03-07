@@ -9,13 +9,13 @@ import { typography } from '../../tokens/typography';
  * Uses the Box primitive for consistent layout and spacing.
  */
 export const ChartContainer = styled(Box)`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
 `;
 
 /**
@@ -23,12 +23,12 @@ export const ChartContainer = styled(Box)`
  * Handles positioning and layout of the chart itself.
  */
 export const ChartWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
 
 /**
@@ -36,15 +36,15 @@ export const ChartWrapper = styled.div`
  * Absolutely positioned to center of the parent chart.
  */
 export const CenterLabel = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 `;
 
 /**
@@ -52,10 +52,10 @@ export const CenterLabel = styled.div`
  * Displays legend items in a column layout below the chart.
  */
 export const LegendContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: ${spacing.md};
-  width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-top: ${spacing.md};
+    width: 100%;
 `;
 
 /**
@@ -63,10 +63,10 @@ export const LegendContainer = styled.div`
  * Displays a color indicator followed by a label.
  */
 export const LegendItem = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: ${spacing.sm};
-  cursor: default;
+    display: flex;
+    align-items: center;
+    margin-bottom: ${spacing.sm};
+    cursor: default;
 `;
 
 /**
@@ -74,11 +74,11 @@ export const LegendItem = styled.div`
  * Displays a colored square representing a data series.
  */
 export const LegendColor = styled.div`
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
-  margin-right: ${spacing.sm};
-  background-color: ${props => props.color || colors.neutral.gray300};
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    margin-right: ${spacing.sm};
+    background-color: ${(props) => props.color || colors.neutral.gray300};
 `;
 
 /**
@@ -86,9 +86,9 @@ export const LegendColor = styled.div`
  * Displays the name and optional value for a data series.
  */
 export const LegendText = styled.div`
-  font-size: ${typography.fontSize.sm};
-  color: ${colors.neutral.gray800};
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
+    font-size: ${typography.fontSize.sm};
+    color: ${colors.neutral.gray800};
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
 `;

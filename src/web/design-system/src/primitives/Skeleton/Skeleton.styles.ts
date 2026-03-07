@@ -4,10 +4,10 @@ import { borderRadius as borderRadiusTokens } from '../../tokens/borderRadius';
 import { animation } from '../../tokens/animation';
 
 interface StyledSkeletonProps {
-  width?: string;
-  height?: string;
-  borderRadius?: string;
-  animated?: boolean;
+    width?: string;
+    height?: string;
+    borderRadius?: string;
+    animated?: boolean;
 }
 
 /**
@@ -29,31 +29,33 @@ const pulse = keyframes`
  * Resolves borderRadius from tokens or passes through custom values
  */
 const resolveBorderRadius = (radius?: string): string => {
-  if (!radius) return borderRadiusTokens.sm;
-  if (radius in borderRadiusTokens) {
-    return borderRadiusTokens[radius as keyof typeof borderRadiusTokens];
-  }
-  return radius;
+    if (!radius) return borderRadiusTokens.sm;
+    if (radius in borderRadiusTokens) {
+        return borderRadiusTokens[radius as keyof typeof borderRadiusTokens];
+    }
+    return radius;
 };
 
 /**
  * Styled component for the Skeleton loading placeholder
  */
 export const StyledSkeleton = styled.div<StyledSkeletonProps>`
-  /* Dimensions */
-  width: ${props => props.width || '100%'};
-  height: ${props => props.height || '16px'};
+    /* Dimensions */
+    width: ${(props) => props.width || '100%'};
+    height: ${(props) => props.height || '16px'};
 
-  /* Visual */
-  background-color: ${colors.gray[10]};
-  border-radius: ${props => resolveBorderRadius(props.borderRadius)};
+    /* Visual */
+    background-color: ${colors.gray[10]};
+    border-radius: ${(props) => resolveBorderRadius(props.borderRadius)};
 
-  /* Animation */
-  ${props => props.animated && css`
-    animation: ${pulse} ${animation.duration.slow} ${animation.easing.easeInOut} infinite;
-  `}
+    /* Animation */
+    ${(props) =>
+        props.animated &&
+        css`
+            animation: ${pulse} ${animation.duration.slow} ${animation.easing.easeInOut} infinite;
+        `}
 
-  /* Prevent content */
+    /* Prevent content */
   overflow: hidden;
-  display: block;
+    display: block;
 `;

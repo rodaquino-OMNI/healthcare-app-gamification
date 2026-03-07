@@ -1,10 +1,10 @@
 /**
  * Charts module for the AUSTA SuperApp design system.
- * 
+ *
  * This module provides reusable chart components for visualizing data across all journeys,
  * with particular focus on health metrics, trends, and analytics. The components support
  * journey-specific theming and responsive design.
- * 
+ *
  * @packageDocumentation
  */
 

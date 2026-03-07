@@ -5,6 +5,26 @@ import { TracingService } from '@app/shared/tracing/tracing.service';
 import { ProcedureType, VerifyCoverageDto } from './dto/verify-coverage.dto';
 import { AppException } from '@app/shared/exceptions/exceptions.types';
 
+// Mock the planService config to prevent validation failures in tests
+// Note: jest.mock is hoisted, so we define the config inline inside the factory
+jest.mock('../config/configuration', () => {
+  const configValue = {
+    server: { port: 3000, host: 'localhost', cors: { origin: [], credentials: true }, timeout: 30000 },
+    database: { url: 'postgresql://localhost/test', schema: 'plan', ssl: false, poolSize: 5 },
+    insuranceApi: { baseUrl: 'http://insurance-api.test', apiKey: 'test-key', timeout: 10000, retries: 3, rateLimit: { windowMs: 60000, maxRequests: 100 } },
+    claims: { supportedDocumentTypes: ['pdf'], maxDocumentSize: 10485760, maxDocumentsPerClaim: 5, autoApprovalThreshold: 100, processingTimeEstimate: { standard: 3, express: 1 }, retentionPeriod: 2555 },
+    storage: { provider: 's3', s3: { bucket: 'test', region: 'sa-east-1', accessKeyId: 'key', secretAccessKey: 'secret', pathPrefix: 'plan' }, local: {} },
+    costSimulator: { currency: 'BRL', procedureCatalog: { source: 'database', refreshInterval: 86400 }, coverageDefaults: { consultations: 80, examinations: 70, procedures: 60, emergencies: 90 } },
+    gamification: { enabled: true, timeout: 5000, events: { claimSubmitted: 'CLAIM_SUBMITTED', claimApproved: 'CLAIM_APPROVED', digitalCardAccessed: 'DIGITAL_CARD_ACCESSED', benefitUsed: 'BENEFIT_USED' } },
+    notifications: { enabled: true, timeout: 5000, templates: { claimStatus: 'plan-claim-status', claimReminder: 'plan-claim-reminder', benefitExpiration: 'plan-benefit-expiration' } },
+    logging: { level: 'info', format: 'json', destination: 'stdout' },
+  };
+  const fn = () => configValue;
+  fn.KEY = 'planService';
+  // __esModule: true is required for ts-jest to correctly handle the default export
+  return { __esModule: true, default: fn, planService: fn };
+});
+
 const mockLoggerService = {
   log: jest.fn(),
   error: jest.fn(),
@@ -13,7 +33,7 @@ const mockLoggerService = {
 };
 
 const mockTracingService = {
-  createSpan: jest.fn().mockImplementation((_name, fn) => fn()),
+  createSpan: jest.fn(),
 };
 
 describe('InsuranceService', () => {
@@ -21,6 +41,7 @@ describe('InsuranceService', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks();
+    mockTracingService.createSpan.mockImplementation((_name: string, fn: () => unknown) => fn());
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [

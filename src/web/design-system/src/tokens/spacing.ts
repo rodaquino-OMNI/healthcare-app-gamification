@@ -24,20 +24,20 @@
  * Sourced from Figma core.json spacing section.
  */
 export const spacingValues = {
-  // Figma 13-step scale
-  '4xs': 2,   // spacing.4xs
-  '3xs': 4,   // spacing.3xs
-  '2xs': 6,   // spacing.2xs
-  xs: 8,      // spacing.xs
-  sm: 12,     // spacing.sm
-  md: 16,     // spacing.md
-  lg: 20,     // spacing.lg
-  xl: 24,     // spacing.xl
-  '2xl': 32,  // spacing.2xl
-  '3xl': 40,  // spacing.3xl
-  '4xl': 48,  // spacing.4xl
-  '5xl': 64,  // spacing.5xl
-  '6xl': 80,  // spacing.6xl
+    // Figma 13-step scale
+    '4xs': 2, // spacing.4xs
+    '3xs': 4, // spacing.3xs
+    '2xs': 6, // spacing.2xs
+    xs: 8, // spacing.xs
+    sm: 12, // spacing.sm
+    md: 16, // spacing.md
+    lg: 20, // spacing.lg
+    xl: 24, // spacing.xl
+    '2xl': 32, // spacing.2xl
+    '3xl': 40, // spacing.3xl
+    '4xl': 48, // spacing.4xl
+    '5xl': 64, // spacing.5xl
+    '6xl': 80, // spacing.6xl
 } as const;
 
 /**
@@ -46,20 +46,20 @@ export const spacingValues = {
  * For direct use in styled-components and CSS.
  */
 export const spacing = {
-  // Figma 13-step scale
-  '4xs': '2px',   // spacing.4xs
-  '3xs': '4px',   // spacing.3xs
-  '2xs': '6px',   // spacing.2xs
-  xs: '8px',      // spacing.xs
-  sm: '12px',     // spacing.sm
-  md: '16px',     // spacing.md
-  lg: '20px',     // spacing.lg
-  xl: '24px',     // spacing.xl
-  '2xl': '32px',  // spacing.2xl
-  '3xl': '40px',  // spacing.3xl
-  '4xl': '48px',  // spacing.4xl
-  '5xl': '64px',  // spacing.5xl
-  '6xl': '80px',  // spacing.6xl
+    // Figma 13-step scale
+    '4xs': '2px', // spacing.4xs
+    '3xs': '4px', // spacing.3xs
+    '2xs': '6px', // spacing.2xs
+    xs: '8px', // spacing.xs
+    sm: '12px', // spacing.sm
+    md: '16px', // spacing.md
+    lg: '20px', // spacing.lg
+    xl: '24px', // spacing.xl
+    '2xl': '32px', // spacing.2xl
+    '3xl': '40px', // spacing.3xl
+    '4xl': '48px', // spacing.4xl
+    '5xl': '64px', // spacing.5xl
+    '6xl': '80px', // spacing.6xl
 } as const;
 
 /**
@@ -77,18 +77,18 @@ export const spacing = {
  *   4xl    -> removed   (96px, no Figma equivalent)
  */
 export const spacingCompat = {
-  /** @deprecated Use spacing['3xs'] (4px) */
-  xs: spacing['3xs'],
-  /** @deprecated Use spacing.xs (8px) */
-  sm: spacing.xs,
-  /** md is unchanged at 16px */
-  md: spacing.md,
-  /** @deprecated Use spacing.xl (24px) */
-  lg: spacing.xl,
-  /** @deprecated Use spacing['2xl'] (32px) */
-  xl: spacing['2xl'],
-  /** @deprecated Use spacing['4xl'] (48px) */
-  '2xl': spacing['4xl'],
-  /** @deprecated Use spacing['5xl'] (64px) */
-  '3xl': spacing['5xl'],
+    /** @deprecated Use spacing['3xs'] (4px) */
+    xs: spacing['3xs'],
+    /** @deprecated Use spacing.xs (8px) */
+    sm: spacing.xs,
+    /** md is unchanged at 16px */
+    md: spacing.md,
+    /** @deprecated Use spacing.xl (24px) */
+    lg: spacing.xl,
+    /** @deprecated Use spacing['2xl'] (32px) */
+    xl: spacing['2xl'],
+    /** @deprecated Use spacing['4xl'] (48px) */
+    '2xl': spacing['4xl'],
+    /** @deprecated Use spacing['5xl'] (64px) */
+    '3xl': spacing['5xl'],
 } as const;

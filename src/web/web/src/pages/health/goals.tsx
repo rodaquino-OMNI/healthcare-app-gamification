@@ -18,38 +18,38 @@ import { JourneyHeader } from 'src/web/web/src/components/shared/JourneyHeader.t
  * @returns {JSX.Element} The rendered Health Goals page.
  */
 const HealthGoalsPage: React.FC = () => {
-  // LD1: Retrieves the user ID from the authentication context using the useAuth hook.
-  const { session } = useAuth();
-  const userId = session?.user.id;
+    // LD1: Retrieves the user ID from the authentication context using the useAuth hook.
+    const { session } = useAuth();
+    const userId = session?.user.id;
 
-  // LD1: Fetches the list of health goals for the user using the GET_HEALTH_GOALS GraphQL query and the useQuery hook.
-  const { loading, error, data } = useQuery(GET_HEALTH_GOALS, {
-    variables: { userId },
-    skip: !userId,
-  });
+    // LD1: Fetches the list of health goals for the user using the GET_HEALTH_GOALS GraphQL query and the useQuery hook.
+    const { loading, error, data } = useQuery(GET_HEALTH_GOALS, {
+        variables: { userId },
+        skip: !userId,
+    });
 
-  // LD1: Manages the state for displaying the HealthGoalForm using the useState hook.
-  const [addGoal, setAddGoal] = useState(false);
+    // LD1: Manages the state for displaying the HealthGoalForm using the useState hook.
+    const [addGoal, setAddGoal] = useState(false);
 
-  // LD1: Renders a JourneyHeader component with the title 'Minhas Metas'.
-  return (
-    <div>
-      <JourneyHeader title="Minhas Metas" />
+    // LD1: Renders a JourneyHeader component with the title 'Minhas Metas'.
+    return (
+        <div>
+            <JourneyHeader title="Minhas Metas" />
 
-      {/* LD1: Renders a list of HealthGoal components, displaying each goal's details. */}
-      {data?.getHealthGoals?.map((goal: HealthGoal) => (
-        <Card key={goal.id}>
-          {goal.type} - {goal.target}
-        </Card>
-      ))}
+            {/* LD1: Renders a list of HealthGoal components, displaying each goal's details. */}
+            {data?.getHealthGoals?.map((goal: HealthGoal) => (
+                <Card key={goal.id}>
+                    {goal.type} - {goal.target}
+                </Card>
+            ))}
 
-      {/* LD1: Renders a Button component to allow the user to add a new health goal. */}
-      <Button onPress={() => setAddGoal(true)}>Add Goal</Button>
+            {/* LD1: Renders a Button component to allow the user to add a new health goal. */}
+            <Button onPress={() => setAddGoal(true)}>Add Goal</Button>
 
-      {/* LD1: Renders a HealthGoalForm component when the 'addGoal' state is true, allowing the user to create a new goal. */}
-      {addGoal && <HealthGoalForm />}
-    </div>
-  );
+            {/* LD1: Renders a HealthGoalForm component when the 'addGoal' state is true, allowing the user to create a new goal. */}
+            {addGoal && <HealthGoalForm />}
+        </div>
+    );
 };
 
 export default HealthGoalsPage;

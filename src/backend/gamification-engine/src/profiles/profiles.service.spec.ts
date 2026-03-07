@@ -144,8 +144,7 @@ describe('ProfilesService', () => {
     it('should update and return the modified game profile', async () => {
       const updatedProfile = { ...mockGameProfile, xp: 150, level: 2 };
       mockPrismaService.gameProfile.findUnique
-        .mockResolvedValueOnce(mockGameProfile)  // findById call
-        .mockResolvedValueOnce(updatedProfile);   // not used, but defensive
+        .mockResolvedValueOnce(mockGameProfile);  // findById call
       mockPrismaService.gameProfile.update.mockResolvedValue(updatedProfile);
 
       const result = await service.update('user-1', { xp: 150, level: 2 });

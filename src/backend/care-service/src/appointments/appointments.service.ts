@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AuthService } from '@app/auth/auth/auth.service';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { FilterDto } from '@app/shared/dto/filter.dto';
 import { PaginationDto, PaginatedResponse } from '@app/shared/dto/pagination.dto';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 import { Repository } from '@app/shared/interfaces/repository.interface';
-import { Service } from '@app/shared/interfaces/service.interface';
 import { KafkaService } from '@app/shared/kafka/kafka.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Injectable } from '@nestjs/common'; // v10.0.0+
@@ -26,7 +24,7 @@ import { configuration } from '../config/configuration';
  * Implements the requirements for appointment booking and management in the Care Now journey.
  */
 @Injectable()
-export class AppointmentsService implements Service<Appointment, CreateAppointmentDto, UpdateAppointmentDto> {
+export class AppointmentsService {
     private readonly logger = new LoggerService();
     private readonly config = configuration();
 
@@ -77,13 +75,9 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
                 (error as any).stack,
                 'AppointmentsService'
             );
-            throw new AppException(
-                `Failed to retrieve appointment with ID ${id}`,
-                ErrorType.TECHNICAL,
-                'CARE_101',
-                { id },
-                error
-            );
+            throw new AppException(`Failed to retrieve appointment with ID ${id}`, ErrorType.TECHNICAL, 'CARE_101', {
+                id,
+            });
         }
     }
 
@@ -94,10 +88,10 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
      * @param filter Filter criteria for appointments
      * @returns Paginated list of appointments
      */
-    async findAll(pagination?: PaginationDto, filter?: FilterDto): Promise<PaginatedResponse<Appointment>> {
+    async findAll(filter?: FilterDto, pagination?: PaginationDto): Promise<PaginatedResponse<Appointment>> {
         try {
             const { page = 1, limit = 10 } = pagination || {};
-            const skip = (page - 1) * limit;
+            const skip = ((page as number) - 1) * (limit as number);
 
             // Prepare where clause from filter
             const where = filter?.where || {};
@@ -107,7 +101,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
                 where,
                 skip,
                 take: limit,
-                orderBy: filter?.orderBy || { dateTime: 'desc' },
+                orderBy: filter?.orderBy || { dateTime: 'DESC' },
                 include: {
                     provider: true,
                     user: {
@@ -128,12 +122,13 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
             return {
                 data: appointments,
                 meta: {
-                    currentPage: page,
-                    itemsPerPage: limit,
-                    totalItems,
+                    page,
+                    limit,
+                    total: totalItems,
                     totalPages,
-                    hasNextPage: page < totalPages,
-                    hasPreviousPage: page > 1,
+                    offset: skip,
+                    hasNext: page < totalPages,
+                    hasPrev: page > 1,
                 },
             };
         } catch (error) {
@@ -142,13 +137,10 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
                 (error as any).stack,
                 'AppointmentsService'
             );
-            throw new AppException(
-                'Failed to retrieve appointments',
-                ErrorType.TECHNICAL,
-                'CARE_102',
-                { pagination, filter },
-                error
-            );
+            throw new AppException('Failed to retrieve appointments', ErrorType.TECHNICAL, 'CARE_102', {
+                pagination,
+                filter,
+            });
         }
     }
 
@@ -258,7 +250,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
                 (error as any).stack,
                 'AppointmentsService'
             );
-            throw new AppException('Failed to create appointment', ErrorType.TECHNICAL, 'CARE_107', { data }, error);
+            throw new AppException('Failed to create appointment', ErrorType.TECHNICAL, 'CARE_107', { data });
         }
     }
 
@@ -351,9 +343,9 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
             }
 
             // Check if cancelling an appointment
+            const currentStatus = existingAppointment.status as AppointmentStatus;
             const isCancelling =
-                data.status === AppointmentStatus.CANCELLED &&
-                existingAppointment.status !== AppointmentStatus.CANCELLED;
+                data.status === AppointmentStatus.CANCELLED && currentStatus !== AppointmentStatus.CANCELLED;
 
             // Apply cancellation policy if applicable
             let xpLoss = 0;
@@ -421,13 +413,10 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
                 (error as any).stack,
                 'AppointmentsService'
             );
-            throw new AppException(
-                `Failed to update appointment with ID ${id}`,
-                ErrorType.TECHNICAL,
-                'CARE_114',
-                { id, data },
-                error
-            );
+            throw new AppException(`Failed to update appointment with ID ${id}`, ErrorType.TECHNICAL, 'CARE_114', {
+                id,
+                data,
+            });
         }
     }
 
@@ -462,13 +451,9 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
                 (error as any).stack,
                 'AppointmentsService'
             );
-            throw new AppException(
-                `Failed to delete appointment with ID ${id}`,
-                ErrorType.TECHNICAL,
-                'CARE_116',
-                { id },
-                error
-            );
+            throw new AppException(`Failed to delete appointment with ID ${id}`, ErrorType.TECHNICAL, 'CARE_116', {
+                id,
+            });
         }
     }
 
@@ -488,7 +473,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
                 (error as any).stack,
                 'AppointmentsService'
             );
-            throw new AppException('Failed to count appointments', ErrorType.TECHNICAL, 'CARE_117', { filter }, error);
+            throw new AppException('Failed to count appointments', ErrorType.TECHNICAL, 'CARE_117', { filter });
         }
     }
 
@@ -552,13 +537,9 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
                 (error as any).stack,
                 'AppointmentsService'
             );
-            throw new AppException(
-                `Failed to complete appointment with ID ${id}`,
-                ErrorType.TECHNICAL,
-                'CARE_120',
-                { id },
-                error
-            );
+            throw new AppException(`Failed to complete appointment with ID ${id}`, ErrorType.TECHNICAL, 'CARE_120', {
+                id,
+            });
         }
     }
 
@@ -573,14 +554,17 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
         try {
             const now = new Date();
 
-            return this.findAll(pagination, {
-                where: {
-                    userId,
-                    dateTime: { gte: now },
-                    status: { in: [AppointmentStatus.SCHEDULED, AppointmentStatus.CONFIRMED] },
+            return this.findAll(
+                {
+                    where: {
+                        userId,
+                        dateTime: { gte: now },
+                        status: { in: [AppointmentStatus.SCHEDULED] },
+                    },
+                    orderBy: { dateTime: 'ASC' },
                 },
-                orderBy: { dateTime: 'asc' },
-            });
+                pagination
+            );
         } catch (error) {
             this.logger.error(
                 `Failed to get upcoming appointments: ${(error as any).message}`,
@@ -591,8 +575,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
                 `Failed to retrieve upcoming appointments for user ${userId}`,
                 ErrorType.TECHNICAL,
                 'CARE_121',
-                { userId, pagination },
-                error
+                { userId, pagination }
             );
         }
     }
@@ -608,16 +591,19 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
         try {
             const now = new Date();
 
-            return this.findAll(pagination, {
-                where: {
-                    userId,
-                    OR: [
-                        { dateTime: { lt: now } },
-                        { status: { in: [AppointmentStatus.COMPLETED, AppointmentStatus.CANCELLED] } },
-                    ],
+            return this.findAll(
+                {
+                    where: {
+                        userId,
+                        OR: [
+                            { dateTime: { lt: now } },
+                            { status: { in: [AppointmentStatus.COMPLETED, AppointmentStatus.CANCELLED] } },
+                        ],
+                    },
+                    orderBy: { dateTime: 'DESC' },
                 },
-                orderBy: { dateTime: 'desc' },
-            });
+                pagination
+            );
         } catch (error) {
             this.logger.error(
                 `Failed to get past appointments: ${(error as any).message}`,
@@ -628,8 +614,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
                 `Failed to retrieve past appointments for user ${userId}`,
                 ErrorType.TECHNICAL,
                 'CARE_122',
-                { userId, pagination },
-                error
+                { userId, pagination }
             );
         }
     }
@@ -659,9 +644,9 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
                 );
             }
 
-            // Update appointment status
+            // Update appointment status (CONFIRMED not in enum; keep as SCHEDULED to indicate confirmed booking)
             const confirmedAppointment = await this.update(id, {
-                status: AppointmentStatus.CONFIRMED,
+                status: AppointmentStatus.SCHEDULED,
             });
 
             // Publish event for appointment confirmation
@@ -689,13 +674,9 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
                 (error as any).stack,
                 'AppointmentsService'
             );
-            throw new AppException(
-                `Failed to confirm appointment with ID ${id}`,
-                ErrorType.TECHNICAL,
-                'CARE_125',
-                { id },
-                error
-            );
+            throw new AppException(`Failed to confirm appointment with ID ${id}`, ErrorType.TECHNICAL, 'CARE_125', {
+                id,
+            });
         }
     }
 
@@ -745,7 +726,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
                 userId,
                 appointmentId,
                 providerId: appointment.providerId,
-            });
+            } as any);
 
             this.logger.log(`Telemedicine session started for appointment: ${appointmentId}`, 'AppointmentsService');
             return session;
@@ -763,8 +744,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
                 `Failed to start telemedicine session for appointment ${appointmentId}`,
                 ErrorType.TECHNICAL,
                 'CARE_129',
-                { appointmentId, userId },
-                error
+                { appointmentId, userId }
             );
         }
     }
@@ -793,7 +773,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
                         lte: endTime,
                     },
                     status: {
-                        in: [AppointmentStatus.SCHEDULED, AppointmentStatus.CONFIRMED],
+                        in: [AppointmentStatus.SCHEDULED],
                     },
                 },
             });
@@ -809,8 +789,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
                 `Failed to check appointment conflict for user ${userId}`,
                 ErrorType.TECHNICAL,
                 'CARE_130',
-                { userId, dateTime },
-                error
+                { userId, dateTime }
             );
         }
     }
@@ -837,7 +816,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
                 },
             };
 
-            return this.findAll(pagination, providerFilter);
+            return this.findAll(providerFilter, pagination);
         } catch (error) {
             this.logger.error(
                 `Failed to get provider appointments: ${(error as any).message}`,
@@ -848,8 +827,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
                 `Failed to retrieve appointments for provider ${providerId}`,
                 ErrorType.TECHNICAL,
                 'CARE_131',
-                { providerId, pagination, filter },
-                error
+                { providerId, pagination, filter }
             );
         }
     }
@@ -869,7 +847,6 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
             tomorrow.setDate(tomorrow.getDate() + 1);
 
             const result = await this.findAll(
-                { limit: 100 }, // Higher limit to get all of today's appointments
                 {
                     where: {
                         providerId,
@@ -878,11 +855,12 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
                             lt: tomorrow,
                         },
                         status: {
-                            in: [AppointmentStatus.SCHEDULED, AppointmentStatus.CONFIRMED],
+                            in: [AppointmentStatus.SCHEDULED],
                         },
                     },
-                    orderBy: { dateTime: 'asc' },
-                }
+                    orderBy: { dateTime: 'ASC' },
+                },
+                { limit: 100 } // Higher limit to get all of today's appointments
             );
 
             return result.data;
@@ -896,8 +874,7 @@ export class AppointmentsService implements Service<Appointment, CreateAppointme
                 `Failed to retrieve today's appointments for provider ${providerId}`,
                 ErrorType.TECHNICAL,
                 'CARE_132',
-                { providerId },
-                error
+                { providerId }
             );
         }
     }

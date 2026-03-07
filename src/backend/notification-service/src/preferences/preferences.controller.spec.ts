@@ -2,6 +2,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PreferencesController } from './preferences.controller';
 import { PreferencesService } from './preferences.service';
+import { LoggerService } from '@app/shared/logging/logger.service';
 
 describe('PreferencesController', () => {
   let controller: PreferencesController;
@@ -11,6 +12,13 @@ describe('PreferencesController', () => {
     findOne: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),
+  };
+
+  const mockLoggerService = {
+    log: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    debug: jest.fn(),
   };
 
   const mockPreference = {
@@ -31,6 +39,7 @@ describe('PreferencesController', () => {
       controllers: [PreferencesController],
       providers: [
         { provide: PreferencesService, useValue: mockPreferencesService },
+        { provide: LoggerService, useValue: mockLoggerService },
       ],
     }).compile();
 

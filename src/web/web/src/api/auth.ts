@@ -4,38 +4,38 @@ import client from 'src/web/mobile/src/api/client';
 
 /**
  * Authenticates a user with email and password.
- * 
+ *
  * @param email - The user's email address
  * @param password - The user's password
  * @returns A promise that resolves with the authentication session data
  */
 export const login = async (email: string, password: string): Promise<AuthSession> => {
-  const response = await client.post(`${API_BASE_URL}/auth/login`, {
-    email,
-    password,
-  });
-  
-  return response.data;
+    const response = await client.post(`${API_BASE_URL}/auth/login`, {
+        email,
+        password,
+    });
+
+    return response.data;
 };
 
 /**
  * Logs out the current user.
- * 
+ *
  * @returns A promise that resolves when the logout is complete
  */
 export const logout = async (): Promise<void> => {
-  await client.post(`${API_BASE_URL}/auth/logout`);
+    await client.post(`${API_BASE_URL}/auth/logout`);
 };
 
 /**
  * Retrieves the profile of the currently authenticated user.
- * 
+ *
  * @returns A promise that resolves with the user profile data
  */
 export const getProfile = async (): Promise<any> => {
-  const response = await client.get(`${API_BASE_URL}/auth/profile`);
+    const response = await client.get(`${API_BASE_URL}/auth/profile`);
 
-  return response.data;
+    return response.data;
 };
 
 /**
@@ -46,10 +46,10 @@ export const getProfile = async (): Promise<any> => {
  * @returns A promise that resolves when the password has been changed
  */
 export const changePassword = async (currentPassword: string, newPassword: string): Promise<void> => {
-  await client.put(`${API_BASE_URL}/auth/change-password`, {
-    currentPassword,
-    newPassword,
-  });
+    await client.put(`${API_BASE_URL}/auth/change-password`, {
+        currentPassword,
+        newPassword,
+    });
 };
 
 /**
@@ -58,9 +58,9 @@ export const changePassword = async (currentPassword: string, newPassword: strin
  * @returns A promise that resolves with the QR code and secret for 2FA setup
  */
 export const enable2FA = async (): Promise<{ qrCode?: string; secret?: string }> => {
-  const response = await client.post(`${API_BASE_URL}/auth/2fa/enable`);
+    const response = await client.post(`${API_BASE_URL}/auth/2fa/enable`);
 
-  return response.data;
+    return response.data;
 };
 
 /**
@@ -69,7 +69,7 @@ export const enable2FA = async (): Promise<{ qrCode?: string; secret?: string }>
  * @returns A promise that resolves when 2FA has been disabled
  */
 export const disable2FA = async (): Promise<void> => {
-  await client.post(`${API_BASE_URL}/auth/2fa/disable`);
+    await client.post(`${API_BASE_URL}/auth/2fa/disable`);
 };
 
 /**
@@ -80,10 +80,10 @@ export const disable2FA = async (): Promise<void> => {
  * @returns A promise that resolves when 2FA has been configured
  */
 export const configure2FA = async (method: string, phone?: string): Promise<void> => {
-  await client.put(`${API_BASE_URL}/auth/2fa/configure`, {
-    method,
-    phone,
-  });
+    await client.put(`${API_BASE_URL}/auth/2fa/configure`, {
+        method,
+        phone,
+    });
 };
 
 /**
@@ -94,7 +94,7 @@ export const configure2FA = async (method: string, phone?: string): Promise<void
  * @returns A promise that resolves when the account has been deleted
  */
 export const deleteAccount = async (password: string, reason?: string): Promise<void> => {
-  await client.delete(`${API_BASE_URL}/users/me`, {
-    data: { password, reason },
-  });
+    await client.delete(`${API_BASE_URL}/users/me`, {
+        data: { password, reason },
+    });
 };

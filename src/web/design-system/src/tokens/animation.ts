@@ -2,7 +2,7 @@
  * Animation design tokens for the AUSTA SuperApp
  * Provides consistent animation timing and easing functions across the application
  * Used in transitions, micro-interactions, and gamification elements
- * 
+ *
  * @version 1.0.0
  */
 
@@ -13,9 +13,9 @@
  * - slow: Emphasis animations and celebrations (500ms)
  */
 const duration = {
-  fast: '150ms',
-  normal: '300ms',
-  slow: '500ms',
+    fast: '150ms',
+    normal: '300ms',
+    slow: '500ms',
 };
 
 /**
@@ -25,9 +25,9 @@ const duration = {
  * - easeInOut: Acceleration until halfway, then deceleration
  */
 const easing = {
-  easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
-  easeOut: 'cubic-bezier(0, 0, 0.2, 1)',
-  easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
+    easeOut: 'cubic-bezier(0, 0, 0.2, 1)',
+    easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
 };
 
 /**
@@ -35,8 +35,8 @@ const easing = {
  * Used in journey transitions, feedback animations, and gamification elements
  */
 export const animation = {
-  duration,
-  easing,
+    duration,
+    easing,
 };
 
 export default animation;

@@ -5,6 +5,8 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { LoggerService } from '@app/shared/logging/logger.service';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -24,6 +26,15 @@ describe('UsersController', () => {
     roles: [{ name: 'user' }],
   };
 
+  const mockLoggerService = {
+    log: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    debug: jest.fn(),
+    verbose: jest.fn(),
+    setContext: jest.fn(),
+  };
+
   beforeEach(async () => {
     jest.clearAllMocks();
 
@@ -31,8 +42,12 @@ describe('UsersController', () => {
       controllers: [UsersController],
       providers: [
         { provide: UsersService, useValue: mockUsersService },
+        { provide: LoggerService, useValue: mockLoggerService },
       ],
-    }).compile();
+    })
+      .overrideGuard(RolesGuard)
+      .useValue({ canActivate: jest.fn().mockReturnValue(true) })
+      .compile();
 
     controller = module.get<UsersController>(UsersController);
   });

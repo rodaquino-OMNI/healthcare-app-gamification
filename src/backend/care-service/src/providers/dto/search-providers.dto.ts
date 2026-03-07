@@ -38,8 +38,8 @@ export class SearchProvidersDto implements FilterDto, PaginationDto {
 
     // FilterDto properties
     where?: Record<string, any>;
-    orderBy?: Record<string, 'asc' | 'desc'>;
-    include?: Record<string, boolean | Record<string, any>>;
+    orderBy?: Record<string, 'ASC' | 'DESC'>;
+    include?: Record<string, boolean>;
     select?: Record<string, boolean>;
     journey?: string;
 

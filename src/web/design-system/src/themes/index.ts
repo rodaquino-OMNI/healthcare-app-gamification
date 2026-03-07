@@ -14,11 +14,11 @@ import { darkTheme } from './dark.theme';
 
 // Export all themes
 export {
-  baseTheme,    // Base theme with common styles
-  healthTheme,  // Health Journey theme (green)
-  careTheme,    // Care Now Journey theme (orange)
-  planTheme,    // My Plan & Benefits Journey theme (blue)
-  darkTheme,    // Dark mode theme
+    baseTheme, // Base theme with common styles
+    healthTheme, // Health Journey theme (green)
+    careTheme, // Care Now Journey theme (orange)
+    planTheme, // My Plan & Benefits Journey theme (blue)
+    darkTheme, // Dark mode theme
 };
 
 // Re-export the Theme interface for consumers

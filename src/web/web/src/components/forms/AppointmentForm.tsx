@@ -8,12 +8,7 @@ import { Appointment } from 'src/web/shared/types/care.types';
 import { API_BASE_URL } from 'src/web/shared/constants/index';
 import { useAppointments } from 'src/web/web/src/hooks/useAppointments';
 import { useJourney } from 'src/web/web/src/context/JourneyContext.tsx';
-import {
-    Input,
-    Select,
-    Button,
-    DatePicker,
-} from 'src/web/design-system/src/components';
+import { Input, Select, Button, DatePicker } from 'src/web/design-system/src/components';
 
 /**
  * Interface defining the props for the AppointmentForm component.
@@ -48,7 +43,11 @@ const appointmentValidationSchema: yup.ObjectSchema<AppointmentFormValues> = yup
  */
 export const AppointmentForm: React.FC<AppointmentFormProps> = () => {
     // Uses the `useForm` hook to manage form state and validation.
-    const { register, handleSubmit, formState: { errors } } = useForm<AppointmentFormValues>({
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<AppointmentFormValues>({
         resolver: yupResolver(appointmentValidationSchema),
         defaultValues: {
             provider: '',
@@ -91,7 +90,7 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = () => {
             <Input
                 label="Provider"
                 placeholder="Enter provider name"
-                {...register("provider")}
+                {...register('provider')}
                 error={errors.provider?.message}
             />
 
@@ -99,26 +98,23 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = () => {
                 label="Date"
                 placeholder="Select date"
                 dateFormat="MM/dd/yyyy"
-                {...register("date")}
+                {...register('date')}
                 error={errors.date?.message}
             />
 
-            <Select
-                label="Time"
-                options={timeOptions}
-                placeholder="Select time"
-                {...register("time")}
-            />
+            <Select label="Time" options={timeOptions} placeholder="Select time" {...register('time')} />
 
             <Input
                 label="Reason"
                 placeholder="Enter reason for appointment"
-                {...register("reason")}
+                {...register('reason')}
                 error={errors.reason?.message}
             />
 
             {/* Handles form submission and API interaction. */}
-            <Button type="submit" journey={currentJourney}>Book Appointment</Button>
+            <Button type="submit" journey={currentJourney}>
+                Book Appointment
+            </Button>
         </form>
     );
 };

@@ -2,9 +2,17 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { InsuranceController } from './insurance.controller';
 import { InsuranceService } from '../insurance/insurance.service';
 import { ProcedureType, VerifyCoverageDto } from './dto/verify-coverage.dto';
+import { LoggerService } from '@app/shared/logging/logger.service';
 
 const mockInsuranceService = {
   verifyCoverage: jest.fn(),
+};
+
+const mockLoggerService = {
+  log: jest.fn(),
+  error: jest.fn(),
+  warn: jest.fn(),
+  debug: jest.fn(),
 };
 
 describe('InsuranceController', () => {
@@ -17,6 +25,7 @@ describe('InsuranceController', () => {
       controllers: [InsuranceController],
       providers: [
         { provide: InsuranceService, useValue: mockInsuranceService },
+        { provide: LoggerService, useValue: mockLoggerService },
       ],
     }).compile();
 

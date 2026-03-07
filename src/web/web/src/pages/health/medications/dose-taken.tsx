@@ -15,8 +15,8 @@ import { WEB_HEALTH_ROUTES } from 'src/web/shared/constants/routes';
  * Format the current time as HH:MM.
  */
 const formatCurrentTime = (): string => {
-  const now = new Date();
-  return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const now = new Date();
+    return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 };
 
 /**
@@ -24,125 +24,120 @@ const formatCurrentTime = (): string => {
  * with timestamp, notes, and optional side effects flag.
  */
 const MedicationDoseTakenPage: React.FC = () => {
-  const router = useRouter();
-  const { name, dosage, scheduledTime } = router.query;
+    const router = useRouter();
+    const { name, dosage, scheduledTime } = router.query;
 
-  const medicationName = (name as string) || 'Medication';
-  const medicationDosage = (dosage as string) || '';
-  const scheduled = (scheduledTime as string) || '';
+    const medicationName = (name as string) || 'Medication';
+    const medicationDosage = (dosage as string) || '';
+    const scheduled = (scheduledTime as string) || '';
 
-  const [timestamp, setTimestamp] = useState(formatCurrentTime());
-  const [notes, setNotes] = useState('');
-  const [hasSideEffects, setHasSideEffects] = useState(false);
+    const [timestamp, setTimestamp] = useState(formatCurrentTime());
+    const [notes, setNotes] = useState('');
+    const [hasSideEffects, setHasSideEffects] = useState(false);
 
-  const handleConfirm = () => {
-    // In a real app, persist the dose record via API
-    router.push(WEB_HEALTH_ROUTES.MEDICATIONS);
-  };
+    const handleConfirm = () => {
+        // In a real app, persist the dose record via API
+        router.push(WEB_HEALTH_ROUTES.MEDICATIONS);
+    };
 
-  const handleCancel = () => {
-    router.back();
-  };
+    const handleCancel = () => {
+        router.back();
+    };
 
-  return (
-    <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
-      <Text fontSize="2xl" fontWeight="bold" color={colors.journeys.health.text}>
-        Log Dose Taken
-      </Text>
-      <Text fontSize="md" color={colors.gray[50]} style={{ marginTop: spacing.xs, marginBottom: spacing.xl }}>
-        Record that you have taken your medication
-      </Text>
+    return (
+        <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+            <Text fontSize="2xl" fontWeight="bold" color={colors.journeys.health.text}>
+                Log Dose Taken
+            </Text>
+            <Text fontSize="md" color={colors.gray[50]} style={{ marginTop: spacing.xs, marginBottom: spacing.xl }}>
+                Record that you have taken your medication
+            </Text>
 
-      {/* Medication Info */}
-      <Card journey="health" elevation="md" padding="lg">
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box>
-            <Text fontWeight="semiBold" fontSize="xl">{medicationName}</Text>
-            {scheduled && (
-              <Text fontSize="sm" color={colors.gray[50]} style={{ marginTop: spacing.xs }}>
-                Scheduled: {scheduled}
-              </Text>
-            )}
-          </Box>
-          {medicationDosage && (
-            <Badge variant="status" status="info">{medicationDosage}</Badge>
-          )}
-        </Box>
-      </Card>
+            {/* Medication Info */}
+            <Card journey="health" elevation="md" padding="lg">
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                    <Box>
+                        <Text fontWeight="semiBold" fontSize="xl">
+                            {medicationName}
+                        </Text>
+                        {scheduled && (
+                            <Text fontSize="sm" color={colors.gray[50]} style={{ marginTop: spacing.xs }}>
+                                Scheduled: {scheduled}
+                            </Text>
+                        )}
+                    </Box>
+                    {medicationDosage && (
+                        <Badge variant="status" status="info">
+                            {medicationDosage}
+                        </Badge>
+                    )}
+                </Box>
+            </Card>
 
-      {/* Timestamp */}
-      <Card journey="health" elevation="sm" padding="lg" style={{ marginTop: spacing.md }}>
-        <Text fontWeight="medium" fontSize="md" style={{ marginBottom: spacing.sm }}>
-          Time Taken
-        </Text>
-        <Input
-          label="Time"
-          value={timestamp}
-          onChange={(e) => setTimestamp(e.target.value)}
-          placeholder="HH:MM"
-          journey="health"
-          testID="timestamp-input"
-        />
-      </Card>
+            {/* Timestamp */}
+            <Card journey="health" elevation="sm" padding="lg" style={{ marginTop: spacing.md }}>
+                <Text fontWeight="medium" fontSize="md" style={{ marginBottom: spacing.sm }}>
+                    Time Taken
+                </Text>
+                <Input
+                    label="Time"
+                    value={timestamp}
+                    onChange={(e) => setTimestamp(e.target.value)}
+                    placeholder="HH:MM"
+                    journey="health"
+                    testID="timestamp-input"
+                />
+            </Card>
 
-      {/* Notes */}
-      <Card journey="health" elevation="sm" padding="lg" style={{ marginTop: spacing.md }}>
-        <Text fontWeight="medium" fontSize="md" style={{ marginBottom: spacing.sm }}>
-          Notes (optional)
-        </Text>
-        <Input
-          label="Notes"
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          placeholder="Any observations about this dose..."
-          journey="health"
-          testID="notes-input"
-        />
-      </Card>
+            {/* Notes */}
+            <Card journey="health" elevation="sm" padding="lg" style={{ marginTop: spacing.md }}>
+                <Text fontWeight="medium" fontSize="md" style={{ marginBottom: spacing.sm }}>
+                    Notes (optional)
+                </Text>
+                <Input
+                    label="Notes"
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    placeholder="Any observations about this dose..."
+                    journey="health"
+                    testID="notes-input"
+                />
+            </Card>
 
-      {/* Side Effects Toggle */}
-      <Card journey="health" elevation="sm" padding="lg" style={{ marginTop: spacing.md }}>
-        <Checkbox
-          id="side-effects-checkbox"
-          name="sideEffects"
-          value="sideEffects"
-          label="I experienced side effects"
-          checked={hasSideEffects}
-          onChange={() => setHasSideEffects(!hasSideEffects)}
-          journey="health"
-          testID="side-effects-checkbox"
-        />
-        {hasSideEffects && (
-          <Text
-            fontSize="sm"
-            color={colors.journeys.health.primary}
-            style={{ marginTop: spacing.sm, cursor: 'pointer' }}
-          >
-            Report side effects in detail
-          </Text>
-        )}
-      </Card>
+            {/* Side Effects Toggle */}
+            <Card journey="health" elevation="sm" padding="lg" style={{ marginTop: spacing.md }}>
+                <Checkbox
+                    id="side-effects-checkbox"
+                    name="sideEffects"
+                    value="sideEffects"
+                    label="I experienced side effects"
+                    checked={hasSideEffects}
+                    onChange={() => setHasSideEffects(!hasSideEffects)}
+                    journey="health"
+                    testID="side-effects-checkbox"
+                />
+                {hasSideEffects && (
+                    <Text
+                        fontSize="sm"
+                        color={colors.journeys.health.primary}
+                        style={{ marginTop: spacing.sm, cursor: 'pointer' }}
+                    >
+                        Report side effects in detail
+                    </Text>
+                )}
+            </Card>
 
-      {/* Action Buttons */}
-      <Box display="flex" justifyContent="space-between" style={{ marginTop: spacing['2xl'] }}>
-        <Button
-          variant="secondary"
-          journey="health"
-          onPress={handleCancel}
-          accessibilityLabel="Cancel"
-        >
-          Cancel
-        </Button>
-        <Button
-          journey="health"
-          onPress={handleConfirm}
-          accessibilityLabel="Confirm dose taken"
-        >
-          Confirm Dose Taken
-        </Button>
-      </Box>
-    </div>
-  );
+            {/* Action Buttons */}
+            <Box display="flex" justifyContent="space-between" style={{ marginTop: spacing['2xl'] }}>
+                <Button variant="secondary" journey="health" onPress={handleCancel} accessibilityLabel="Cancel">
+                    Cancel
+                </Button>
+                <Button journey="health" onPress={handleConfirm} accessibilityLabel="Confirm dose taken">
+                    Confirm Dose Taken
+                </Button>
+            </Box>
+        </div>
+    );
 };
 
 export default MedicationDoseTakenPage;

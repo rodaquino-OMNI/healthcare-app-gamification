@@ -21,10 +21,10 @@ interface HealthGoalFormProps {}
  * Includes fields for goal type, target value, start date, and end date.
  */
 interface HealthGoalFormValues {
-  type: string;
-  target: number;
-  startDate: Date | null;
-  endDate: Date | null;
+    type: string;
+    target: number;
+    startDate: Date | null;
+    endDate: Date | null;
 }
 
 /**
@@ -33,92 +33,87 @@ interface HealthGoalFormValues {
  * @returns {JSX.Element} Rendered HealthGoalForm component
  */
 export const HealthGoalForm: React.FC<HealthGoalFormProps> = () => {
-  // 1. Uses the useForm hook to manage the form state and submission.
-  const { register, handleSubmit, setValue, formState: { errors, isSubmitting, isValid } } = useForm<HealthGoalFormValues>({
-    // 2. Defines a validation schema using Yup to ensure the form data is valid.
-    resolver: yupResolver(
-      yup.object().shape({
-        type: yup.string().required('Goal type is required'),
-        target: yup.number().required('Target value is required').positive('Target must be positive'),
-        startDate: yup.date().required('Start date is required').nullable(),
-        endDate: yup.date().required('End date is required').min(yup.ref('startDate'), 'End date must be after start date').nullable(),
-      })
-    ),
-    defaultValues: {
-      type: '',
-      target: 0,
-      startDate: null,
-      endDate: null,
-    },
-  });
+    // 1. Uses the useForm hook to manage the form state and submission.
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        formState: { errors, isSubmitting, isValid },
+    } = useForm<HealthGoalFormValues>({
+        // 2. Defines a validation schema using Yup to ensure the form data is valid.
+        resolver: yupResolver(
+            yup.object().shape({
+                type: yup.string().required('Goal type is required'),
+                target: yup.number().required('Target value is required').positive('Target must be positive'),
+                startDate: yup.date().required('Start date is required').nullable(),
+                endDate: yup
+                    .date()
+                    .required('End date is required')
+                    .min(yup.ref('startDate'), 'End date must be after start date')
+                    .nullable(),
+            })
+        ),
+        defaultValues: {
+            type: '',
+            target: 0,
+            startDate: null,
+            endDate: null,
+        },
+    });
 
-  // 3. Fetches the user ID using the useAuth hook.
-  const { session } = useAuth();
-  const userId = session?.user.id;
+    // 3. Fetches the user ID using the useAuth hook.
+    const { session } = useAuth();
+    const userId = session?.user.id;
 
-  // Define options for the goal type select component
-  const goalTypeOptions = [
-    { label: 'Weight Loss', value: 'weightLoss' },
-    { label: 'Increase Steps', value: 'increaseSteps' },
-    { label: 'Improve Sleep', value: 'improveSleep' },
-  ];
+    // Define options for the goal type select component
+    const goalTypeOptions = [
+        { label: 'Weight Loss', value: 'weightLoss' },
+        { label: 'Increase Steps', value: 'increaseSteps' },
+        { label: 'Improve Sleep', value: 'improveSleep' },
+    ];
 
-  // 4. Renders a form with input fields for goal type, target, start date, and end date.
-  return (
-    <form onSubmit={handleSubmit((data) => {
-      // 8. Handles form submission and API calls to create or update the health goal.
-      console.log('Form data:', data);
-      // TODO: Implement API call to create/update health goal
-    })}>
-      {/* 5. Uses the Select component for the goal type field. */}
-      <div>
-        <label htmlFor="type">Goal Type:</label>
-        <Select
-          id="type"
-          options={goalTypeOptions}
-          value={""}
-          onChange={() => {}}
-          label="Select Goal Type"
-        />
-      </div>
+    // 4. Renders a form with input fields for goal type, target, start date, and end date.
+    return (
+        <form
+            onSubmit={handleSubmit((data) => {
+                // 8. Handles form submission and API calls to create or update the health goal.
+                console.log('Form data:', data);
+                // TODO: Implement API call to create/update health goal
+            })}
+        >
+            {/* 5. Uses the Select component for the goal type field. */}
+            <div>
+                <label htmlFor="type">Goal Type:</label>
+                <Select id="type" options={goalTypeOptions} value={''} onChange={() => {}} label="Select Goal Type" />
+            </div>
 
-      {/* 6. Uses the DatePicker component for the start and end date fields. */}
-      <div>
-        <label htmlFor="startDate">Start Date:</label>
-        <DatePicker
-          id="startDate"
-          value={null}
-          onChange={() => {}}
-          label="Select Start Date"
-        />
-      </div>
+            {/* 6. Uses the DatePicker component for the start and end date fields. */}
+            <div>
+                <label htmlFor="startDate">Start Date:</label>
+                <DatePicker id="startDate" value={null} onChange={() => {}} label="Select Start Date" />
+            </div>
 
-      <div>
-        <label htmlFor="endDate">End Date:</label>
-        <DatePicker
-          id="endDate"
-          value={null}
-          onChange={() => {}}
-          label="Select End Date"
-        />
-      </div>
+            <div>
+                <label htmlFor="endDate">End Date:</label>
+                <DatePicker id="endDate" value={null} onChange={() => {}} label="Select End Date" />
+            </div>
 
-      {/* 7. Uses the Input component for the target field. */}
-      <div>
-        <label htmlFor="target">Target Value:</label>
-        <Input
-          type="number"
-          placeholder="Enter target value"
-          value={""}
-          onChange={() => {}}
-          aria-label="Target Value"
-        />
-      </div>
+            {/* 7. Uses the Input component for the target field. */}
+            <div>
+                <label htmlFor="target">Target Value:</label>
+                <Input
+                    type="number"
+                    placeholder="Enter target value"
+                    value={''}
+                    onChange={() => {}}
+                    aria-label="Target Value"
+                />
+            </div>
 
-      {/* 8. Renders a submit button to create or update the health goal. */}
-      <Button type="submit" disabled={!isValid || isSubmitting}>
-        {isSubmitting ? 'Submitting...' : 'Create Goal'}
-      </Button>
-    </form>
-  );
+            {/* 8. Renders a submit button to create or update the health goal. */}
+            <Button type="submit" disabled={!isValid || isSubmitting}>
+                {isSubmitting ? 'Submitting...' : 'Create Goal'}
+            </Button>
+        </form>
+    );
 };

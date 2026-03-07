@@ -93,8 +93,8 @@ export class LeaderboardService {
             // Use the ProfilesService to get all game profiles
             const profiles = await this.profilesService.getAllProfiles();
 
-            // Sort by XP in descending order
-            return profiles.sort((a, b) => b.xp - a.xp);
+            // Sort by XP in descending order (copy first to avoid mutating the original array)
+            return [...profiles].sort((a, b) => b.xp - a.xp);
         } catch (error) {
             this.logger.error(
                 `Failed to calculate leaderboard: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,

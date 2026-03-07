@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Injectable } from '@nestjs/common';
 
 import { CreateSessionDto } from './dto/create-session.dto';
 import { TelemedicineSession } from './entities/telemedicine-session.entity';
-import { CARE_TELEMEDICINE_CONNECTION_FAILED } from '../../../shared/src/constants/error-codes.constants';
 import { PrismaService } from '../../../shared/src/database/prisma.service';
 import { AppException, ErrorType } from '../../../shared/src/exceptions/exceptions.types';
+
+const CARE_TELEMEDICINE_CONNECTION_FAILED = 'CARE_TELEMEDICINE_CONNECTION_FAILED';
 import { KafkaService } from '../../../shared/src/kafka/kafka.service';
 import { LoggerService } from '../../../shared/src/logging/logger.service';
 import { AppointmentType, AppointmentStatus } from '../appointments/entities/appointment.entity';
@@ -60,7 +60,7 @@ export class TelemedicineService {
             }
 
             // Validate that the provider offers telemedicine
-            const provider = await this.providersService.findById(createSessionDto.providerId);
+            const provider = await this.providersService.findById((createSessionDto as any).providerId);
 
             if (!provider.telemedicineAvailable) {
                 throw new AppException(
@@ -96,10 +96,7 @@ export class TelemedicineService {
             }
 
             // Validate appointment status
-            if (
-                appointment.status !== AppointmentStatus.SCHEDULED &&
-                appointment.status !== AppointmentStatus.CONFIRMED
-            ) {
+            if (appointment.status !== AppointmentStatus.SCHEDULED) {
                 throw new AppException(
                     `Cannot start telemedicine session for appointment with status ${appointment.status}`,
                     ErrorType.BUSINESS,
@@ -158,8 +155,7 @@ export class TelemedicineService {
                 'Failed to start telemedicine session',
                 ErrorType.TECHNICAL,
                 CARE_TELEMEDICINE_CONNECTION_FAILED,
-                { dto: createSessionDto },
-                error
+                { dto: createSessionDto }
             );
         }
     }

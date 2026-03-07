@@ -5,94 +5,94 @@ import { Notification, NotificationStatus } from 'src/web/shared/types';
 
 /**
  * A custom React hook for managing and interacting with user notifications.
- * 
+ *
  * @returns An object containing the notifications, isLoading state, unread count, and functions to mark notifications as read.
  */
 export const useNotifications = () => {
-  // State for storing notifications
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  // Loading state
-  const [isLoading, setIsLoading] = useState(true);
-  // Count of unread notifications
-  const [unreadCount, setUnreadCount] = useState(0);
-  
-  // Reference to store subscription for cleanup
-  const subscriptionRef = useRef<any>(null);
-  
-  // Get the current user ID from auth
-  const { userId } = useAuth();
+    // State for storing notifications
+    const [notifications, setNotifications] = useState<Notification[]>([]);
+    // Loading state
+    const [isLoading, setIsLoading] = useState(true);
+    // Count of unread notifications
+    const [unreadCount, setUnreadCount] = useState(0);
 
-  // Function to mark a notification as read
-  const markAsRead = useCallback(async (notificationId: string) => {
-    try {
-      await markNotificationAsRead(notificationId);
-      
-      // Update the notifications state
-      setNotifications(prev => 
-        prev.map(notification => 
-          notification.id === notificationId 
-            ? { ...notification, status: NotificationStatus.READ, readAt: new Date() } 
-            : notification
-        )
-      );
-    } catch (error) {
-      console.error('Error marking notification as read:', error);
-    }
-  }, []);
+    // Reference to store subscription for cleanup
+    const subscriptionRef = useRef<any>(null);
 
-  // Calculate unread count
-  const calculateUnreadCount = useCallback((notificationsList: Notification[]) => {
-    return notificationsList.filter(notification => notification.status !== NotificationStatus.READ).length;
-  }, []);
+    // Get the current user ID from auth
+    const { userId } = useAuth();
 
-  // Handle new notification from real-time updates
-  const handleNewNotification = useCallback((notification: Notification) => {
-    setNotifications(prev => [notification, ...prev]);
-  }, []);
+    // Function to mark a notification as read
+    const markAsRead = useCallback(async (notificationId: string) => {
+        try {
+            await markNotificationAsRead(notificationId);
 
-  // Fetch notifications on component mount and when user ID changes
-  useEffect(() => {
-    if (!userId) return;
+            // Update the notifications state
+            setNotifications((prev) =>
+                prev.map((notification) =>
+                    notification.id === notificationId
+                        ? { ...notification, status: NotificationStatus.READ, readAt: new Date() }
+                        : notification
+                )
+            );
+        } catch (error) {
+            console.error('Error marking notification as read:', error);
+        }
+    }, []);
 
-    const fetchNotifications = async () => {
-      setIsLoading(true);
-      try {
-        const data = await getNotifications(userId);
-        setNotifications(data);
-      } catch (error) {
-        console.error('Error fetching notifications:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    // Calculate unread count
+    const calculateUnreadCount = useCallback((notificationsList: Notification[]) => {
+        return notificationsList.filter((notification) => notification.status !== NotificationStatus.READ).length;
+    }, []);
 
-    fetchNotifications();
-  }, [userId]);
+    // Handle new notification from real-time updates
+    const handleNewNotification = useCallback((notification: Notification) => {
+        setNotifications((prev) => [notification, ...prev]);
+    }, []);
 
-  // Subscribe to real-time notifications
-  useEffect(() => {
-    if (!userId) return;
+    // Fetch notifications on component mount and when user ID changes
+    useEffect(() => {
+        if (!userId) return;
+
+        const fetchNotifications = async () => {
+            setIsLoading(true);
+            try {
+                const data = await getNotifications(userId);
+                setNotifications(data);
+            } catch (error) {
+                console.error('Error fetching notifications:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchNotifications();
+    }, [userId]);
 
     // Subscribe to real-time notifications
-    subscriptionRef.current = subscribeToNotifications(userId, handleNewNotification);
+    useEffect(() => {
+        if (!userId) return;
 
-    // Cleanup function
-    return () => {
-      if (subscriptionRef.current) {
-        subscriptionRef.current();
-      }
+        // Subscribe to real-time notifications
+        subscriptionRef.current = subscribeToNotifications(userId, handleNewNotification);
+
+        // Cleanup function
+        return () => {
+            if (subscriptionRef.current) {
+                subscriptionRef.current();
+            }
+        };
+    }, [userId, handleNewNotification]);
+
+    // Update unread count whenever notifications change
+    useEffect(() => {
+        setUnreadCount(calculateUnreadCount(notifications));
+    }, [notifications, calculateUnreadCount]);
+
+    return {
+        notifications,
+        isLoading,
+        unreadCount,
+        markAsRead,
     };
-  }, [userId, handleNewNotification]);
-
-  // Update unread count whenever notifications change
-  useEffect(() => {
-    setUnreadCount(calculateUnreadCount(notifications));
-  }, [notifications, calculateUnreadCount]);
-
-  return {
-    notifications,
-    isLoading,
-    unreadCount,
-    markAsRead
-  };
 };

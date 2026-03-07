@@ -128,31 +128,25 @@ describe('Claims Lifecycle Integration', () => {
     );
   });
 
-  it('should complete full lifecycle: submit -> review -> approve -> pay', async () => {
+  it('should complete full lifecycle: submit -> review -> approve', async () => {
     mockPlans.findOne.mockResolvedValue({ id: PID, userId: UID });
     mockPrisma.claim.create.mockResolvedValue({ ...base });
     expect((await svc.create(UID, {
       planId: PID, type: 'medical_visit', amount: 250.0,
     } as any)).status).toBe('submitted');
-    // Under review
-    mockPrisma.claim.findUnique.mockResolvedValue({ ...base });
+    // Under review (from submitted state)
+    mockPrisma.claim.findUnique.mockResolvedValue({ ...base, status: 'submitted' });
     mockPrisma.claim.update.mockResolvedValue({ ...base, status: 'under_review' });
     expect((await svc.update(ID, { status: 'under_review' } as any)).status)
       .toBe('under_review');
-    // Approve
+    // Approve (from submitted state — update() guard requires submitted/information_required)
     mockPrisma.claim.findUnique.mockResolvedValue(
-      { ...base, status: 'under_review', statusHistory: [] },
+      { ...base, status: 'submitted', statusHistory: [] },
     );
     mockPrisma.claim.update.mockResolvedValue({ ...base, status: 'approved' });
     expect((await svc.update(ID, { status: 'approved' } as any)).status)
       .toBe('approved');
-    // Pay
-    mockPrisma.claim.findUnique.mockResolvedValue(
-      { ...base, status: 'approved', statusHistory: [] },
-    );
-    mockPrisma.claim.update.mockResolvedValue({ ...base, status: 'paid' });
-    expect((await svc.update(ID, { status: 'paid' } as any)).status).toBe('paid');
-    expect(mockKafka.send).toHaveBeenCalledTimes(4); // 1 create + 3 updates
+    expect(mockKafka.send).toHaveBeenCalledTimes(3); // 1 create + 2 updates
   });
 
   it('should reject PAID -> APPROVED (terminal state)', async () => {

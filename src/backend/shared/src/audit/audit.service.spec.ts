@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Prisma } from '@prisma/client';
 import { AuditService } from './audit.service';
 import { PrismaService } from '../database/prisma.service';
 import { LoggerService } from '../logging/logger.service';
@@ -100,7 +101,7 @@ describe('AuditService', () => {
           journeyId: null,
           ipAddress: null,
           userAgent: null,
-          metadata: null,
+          metadata: Prisma.JsonNull,
         },
       });
     });

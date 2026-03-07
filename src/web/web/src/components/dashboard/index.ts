@@ -1,5 +1,4 @@
-# src/web/web/src/components/dashboard/index.ts
-```typescript
+/* eslint-disable import/no-unresolved, max-len */
 // This file serves as a barrel file, exporting all components related to the dashboard.
 // It provides a single point of import for dashboard components, simplifying imports throughout the application.
 

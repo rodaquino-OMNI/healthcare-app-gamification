@@ -54,15 +54,12 @@ export class TreatmentsService {
                         startDate: createTreatmentDto.startDate,
                         endDate: createTreatmentDto.endDate,
                         progress: createTreatmentDto.progress || 0,
-                        careActivity: {
-                            connect: { id: createTreatmentDto.careActivityId },
-                        },
                         // Associate the treatment plan with the user
                         user: userId ? { connect: { id: userId } } : undefined,
                     },
                 });
 
-                return treatmentPlan as TreatmentPlan;
+                return treatmentPlan as unknown as TreatmentPlan;
             } catch (error) {
                 this.logger.error(
                     `Failed to create treatment plan: ${(error as any).message}`,
@@ -89,12 +86,6 @@ export class TreatmentsService {
             );
 
             try {
-                // Calculate skip value from pagination parameters
-                const pagination = filter.pagination || {};
-                const skip =
-                    pagination?.skip ||
-                    (pagination?.page && pagination?.limit ? (pagination.page - 1) * pagination.limit : undefined);
-
                 // Get treatment plans with filtering and pagination
                 const treatmentPlans = await this.prisma.treatmentPlan.findMany({
                     where: {
@@ -102,14 +93,11 @@ export class TreatmentsService {
                         // Add userId filter when present
                         ...(userId ? { userId } : {}),
                     },
-                    orderBy: filter?.orderBy,
+                    orderBy: filter?.orderBy as any,
                     include: filter?.include,
-                    select: filter?.select,
-                    skip,
-                    take: pagination?.limit,
                 });
 
-                return treatmentPlans as TreatmentPlan[];
+                return treatmentPlans as unknown as TreatmentPlan[];
             } catch (error) {
                 this.logger.error(
                     `Failed to retrieve treatment plans: ${(error as any).message}`,
@@ -136,20 +124,18 @@ export class TreatmentsService {
                 // Find the treatment plan by ID
                 const treatmentPlan = await this.prisma.treatmentPlan.findUnique({
                     where: { id },
-                    include: { careActivity: true },
                 });
 
                 // Throw an exception if the treatment plan is not found
                 if (!treatmentPlan) {
-                    const error = new AppException(
+                    throw new AppException(
                         `Treatment plan with ID ${id} not found`,
                         ErrorType.NOT_FOUND,
                         CARE_TREATMENT_PLAN_NOT_FOUND
                     );
-                    throw error.toHttpException();
                 }
 
-                return treatmentPlan as TreatmentPlan;
+                return treatmentPlan as unknown as TreatmentPlan;
             } catch (error) {
                 if (error instanceof NotFoundException) {
                     throw error;
@@ -199,19 +185,17 @@ export class TreatmentsService {
                 const treatmentPlan = await this.prisma.treatmentPlan.update({
                     where: { id },
                     data,
-                    include: { careActivity: true },
                 });
 
-                return treatmentPlan as TreatmentPlan;
+                return treatmentPlan as unknown as TreatmentPlan;
             } catch (error) {
                 // Handle Prisma's "not found" error
                 if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-                    const notFoundError = new AppException(
+                    throw new AppException(
                         `Treatment plan with ID ${id} not found`,
                         ErrorType.NOT_FOUND,
                         CARE_TREATMENT_PLAN_NOT_FOUND
                     );
-                    throw notFoundError.toHttpException();
                 }
                 this.logger.error(
                     `Failed to update treatment plan: ${(error as any).message}`,
@@ -238,19 +222,17 @@ export class TreatmentsService {
                 // Delete the treatment plan
                 const treatmentPlan = await this.prisma.treatmentPlan.delete({
                     where: { id },
-                    include: { careActivity: true },
                 });
 
-                return treatmentPlan as TreatmentPlan;
+                return treatmentPlan as unknown as TreatmentPlan;
             } catch (error) {
                 // Handle Prisma's "not found" error
                 if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-                    const notFoundError = new AppException(
+                    throw new AppException(
                         `Treatment plan with ID ${id} not found`,
                         ErrorType.NOT_FOUND,
                         CARE_TREATMENT_PLAN_NOT_FOUND
                     );
-                    throw notFoundError.toHttpException();
                 }
                 this.logger.error(
                     `Failed to delete treatment plan: ${(error as any).message}`,

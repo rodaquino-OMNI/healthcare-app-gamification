@@ -1,16 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { FilterDto } from '@app/shared/dto/filter.dto';
 import { PaginationDto } from '@app/shared/dto/pagination.dto';
-import { ErrorType } from '@app/shared/exceptions/error.types';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
-import { Service } from '@app/shared/interfaces/service.interface';
 import { KafkaService } from '@app/shared/kafka/kafka.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Injectable } from '@nestjs/common'; // v10.0.0+
 
-import { Configuration } from '@app/care/config/configuration';
+import { configuration } from '../config/configuration';
 
 import { CreateMedicationDto } from './dto/create-medication.dto';
 import { Medication } from './entities/medication.entity';
@@ -22,18 +19,18 @@ import { Medication } from './entities/medication.entity';
  */
 @Injectable()
 export class MedicationsService {
+    private readonly config = configuration();
+
     /**
      * Constructor for MedicationsService.
      * @param prisma The Prisma database service
      * @param logger The logging service
      * @param kafkaService The Kafka service for event publishing
-     * @param configService The configuration service
      */
     constructor(
         private readonly prisma: PrismaService,
         private readonly logger: LoggerService,
-        private readonly kafkaService: KafkaService,
-        private readonly configService: Configuration
+        private readonly kafkaService: KafkaService
     ) {
         // Initializes the logger
         this.logger.log('MedicationsService initialized', 'MedicationsService');
@@ -58,16 +55,20 @@ export class MedicationsService {
             });
 
             // Publish event for gamification if enabled
-            if (this.configService.gamification?.enabled) {
+            if (this.config.gamification?.enabled) {
                 try {
-                    await this.kafkaService.produce(this.configService.gamification.defaultEvents.medicationAdherence, {
+                    await this.kafkaService.produce(this.config.gamification.defaultEvents.medicationAdherence, {
                         eventType: 'MEDICATION_CREATED',
                         userId,
                         medicationId: savedMedication.id,
                         timestamp: new Date().toISOString(),
                     });
                 } catch (error) {
-                    this.logger.error('Failed to publish medication creation event', error, 'MedicationsService');
+                    this.logger.error(
+                        'Failed to publish medication creation event',
+                        (error as any).stack,
+                        'MedicationsService'
+                    );
                     // Continue despite Kafka error
                 }
             }
@@ -77,14 +78,8 @@ export class MedicationsService {
             // Returns the created medication
             return savedMedication as Medication;
         } catch (error) {
-            this.logger.error('Failed to create medication', error, 'MedicationsService');
-            throw new AppException(
-                'Failed to create medication record',
-                ErrorType.TECHNICAL,
-                'CARE_001',
-                { userId },
-                error
-            );
+            this.logger.error('Failed to create medication', (error as any).stack, 'MedicationsService');
+            throw new AppException('Failed to create medication record', ErrorType.TECHNICAL, 'CARE_001', { userId });
         }
     }
 
@@ -131,14 +126,11 @@ export class MedicationsService {
 
             return medications as Medication[];
         } catch (error) {
-            this.logger.error('Failed to fetch medications', error, 'MedicationsService');
-            throw new AppException(
-                'Failed to retrieve medications',
-                ErrorType.TECHNICAL,
-                'CARE_002',
-                { filter: filterDto, pagination: paginationDto },
-                error
-            );
+            this.logger.error('Failed to fetch medications', (error as any).stack, 'MedicationsService');
+            throw new AppException('Failed to retrieve medications', ErrorType.TECHNICAL, 'CARE_002', {
+                filter: filterDto,
+                pagination: paginationDto,
+            });
         }
     }
 
@@ -163,8 +155,8 @@ export class MedicationsService {
                 throw error as any;
             }
 
-            this.logger.error(`Failed to fetch medication with ID ${id}`, error, 'MedicationsService');
-            throw new AppException(`Failed to retrieve medication`, ErrorType.TECHNICAL, 'CARE_004', { id }, error);
+            this.logger.error(`Failed to fetch medication with ID ${id}`, (error as any).stack, 'MedicationsService');
+            throw new AppException(`Failed to retrieve medication`, ErrorType.TECHNICAL, 'CARE_004', { id });
         }
     }
 
@@ -203,8 +195,8 @@ export class MedicationsService {
                 throw error as any;
             }
 
-            this.logger.error(`Failed to update medication with ID ${id}`, error, 'MedicationsService');
-            throw new AppException(`Failed to update medication`, ErrorType.TECHNICAL, 'CARE_005', { id }, error);
+            this.logger.error(`Failed to update medication with ID ${id}`, (error as any).stack, 'MedicationsService');
+            throw new AppException(`Failed to update medication`, ErrorType.TECHNICAL, 'CARE_005', { id });
         }
     }
 
@@ -226,8 +218,8 @@ export class MedicationsService {
                 throw error as any;
             }
 
-            this.logger.error(`Failed to delete medication with ID ${id}`, error, 'MedicationsService');
-            throw new AppException(`Failed to delete medication`, ErrorType.TECHNICAL, 'CARE_006', { id }, error);
+            this.logger.error(`Failed to delete medication with ID ${id}`, (error as any).stack, 'MedicationsService');
+            throw new AppException(`Failed to delete medication`, ErrorType.TECHNICAL, 'CARE_006', { id });
         }
     }
 }

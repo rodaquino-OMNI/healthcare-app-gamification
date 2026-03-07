@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Controller, Get, Post, Put, Delete, Param, Query, Body, UseGuards, HttpStatus, Logger } from '@nestjs/common';
-import { JwtAuthGuard, RolesGuard } from '@nestjs/jwt';
 
 import { SearchProvidersDto } from './dto/search-providers.dto';
 import { Provider } from './entities/provider.entity';
@@ -15,7 +13,6 @@ import { AppException, ErrorType } from '../../../shared/src/exceptions/exceptio
  * Controller for managing healthcare provider-related endpoints in the Care Now journey.
  */
 @Controller('providers')
-@UseGuards(JwtAuthGuard, RolesGuard)
 export class ProvidersController {
     private readonly logger = new Logger(ProvidersController.name);
 
@@ -134,13 +131,10 @@ export class ProvidersController {
             }
 
             this.logger.error(`Error checking availability: ${(error as any).message}`, (error as any).stack);
-            throw new AppException(
-                'Failed to check provider availability',
-                ErrorType.TECHNICAL,
-                'CARE_020',
-                { id, dateTime },
-                error
-            );
+            throw new AppException('Failed to check provider availability', ErrorType.TECHNICAL, 'CARE_020', {
+                id,
+                dateTime,
+            });
         }
     }
 
@@ -173,13 +167,7 @@ export class ProvidersController {
             }
 
             this.logger.error(`Error getting time slots: ${(error as any).message}`, (error as any).stack);
-            throw new AppException(
-                'Failed to get provider time slots',
-                ErrorType.TECHNICAL,
-                'CARE_022',
-                { id, date },
-                error
-            );
+            throw new AppException('Failed to get provider time slots', ErrorType.TECHNICAL, 'CARE_022', { id, date });
         }
     }
 

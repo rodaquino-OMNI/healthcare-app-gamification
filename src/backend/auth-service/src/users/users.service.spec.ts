@@ -104,7 +104,7 @@ describe('UsersService', () => {
       mockPrismaService.user.findUnique.mockResolvedValue(null);
       mockPrismaService.user.create.mockResolvedValue(rawUser);
       mockPrismaService.role.findFirst.mockResolvedValue({ id: 1, name: 'user' });
-      mockPrismaService.userRole.create.mockResolvedValue({});
+      mockPrismaService.user.update.mockResolvedValue(rawUser);
 
       const result = await service.create(createUserDto);
 
@@ -124,9 +124,14 @@ describe('UsersService', () => {
       expect(mockPrismaService.role.findFirst).toHaveBeenCalledWith({
         where: { name: 'user' },
       });
-      expect(mockPrismaService.userRole.create).toHaveBeenCalledWith({
-        data: { userId: rawUser.id, roleId: 1 },
-      });
+      expect(mockPrismaService.user.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: rawUser.id },
+          data: expect.objectContaining({
+            roles: expect.objectContaining({ connect: expect.objectContaining({ id: 1 }) }),
+          }),
+        }),
+      );
       expect(result).not.toHaveProperty('password');
       expect(result).toMatchObject({
         id: rawUser.id,

@@ -1,15 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ErrorType } from '@app/shared/exceptions/error.types';
 import { Injectable, Logger } from '@nestjs/common';
 
 import { SearchProvidersDto } from './dto/search-providers.dto';
 import { Provider } from './entities/provider.entity';
 import { PrismaService } from '../../../shared/src/database/prisma.service';
-import { FilterDto } from '../../../shared/src/dto/filter.dto';
 import { PaginationDto } from '../../../shared/src/dto/pagination.dto';
 import { AppException, ErrorType } from '../../../shared/src/exceptions/exceptions.types';
-import { Repository } from '../../../shared/src/interfaces/repository.interface';
-import { Service } from '../../../shared/src/interfaces/service.interface';
 
 /**
  * Service responsible for managing healthcare providers, including search,
@@ -75,9 +71,7 @@ export class ProvidersService {
                 where,
                 skip,
                 take: limit,
-                orderBy: searchDto.orderBy || { name: 'asc' },
-                include: searchDto.include,
-                select: searchDto.select,
+                orderBy: (searchDto.orderBy as any) || { name: 'asc' },
             });
 
             // Count total for pagination
@@ -86,13 +80,10 @@ export class ProvidersService {
             return { providers, total };
         } catch (error) {
             this.logger.error(`Failed to find providers: ${(error as any).message}`, (error as any).stack);
-            throw new AppException(
-                'Failed to retrieve providers',
-                ErrorType.TECHNICAL,
-                'CARE_004',
-                { searchDto, paginationDto },
-                error
-            );
+            throw new AppException('Failed to retrieve providers', ErrorType.TECHNICAL, 'CARE_004', {
+                searchDto,
+                paginationDto,
+            });
         }
     }
 
@@ -119,13 +110,9 @@ export class ProvidersService {
             }
 
             this.logger.error(`Failed to find provider: ${(error as any).message}`, (error as any).stack);
-            throw new AppException(
-                `Failed to retrieve provider with ID ${id}`,
-                ErrorType.TECHNICAL,
-                'CARE_006',
-                { id },
-                error
-            );
+            throw new AppException(`Failed to retrieve provider with ID ${id}`, ErrorType.TECHNICAL, 'CARE_006', {
+                id,
+            });
         }
     }
 
@@ -153,13 +140,7 @@ export class ProvidersService {
             }
 
             this.logger.error(`Failed to create provider: ${(error as any).message}`, (error as any).stack);
-            throw new AppException(
-                'Failed to create provider',
-                ErrorType.TECHNICAL,
-                'CARE_007',
-                { providerData },
-                error
-            );
+            throw new AppException('Failed to create provider', ErrorType.TECHNICAL, 'CARE_007', { providerData });
         }
     }
 
@@ -189,13 +170,10 @@ export class ProvidersService {
             }
 
             this.logger.error(`Failed to update provider: ${(error as any).message}`, (error as any).stack);
-            throw new AppException(
-                `Failed to update provider with ID ${id}`,
-                ErrorType.TECHNICAL,
-                'CARE_008',
-                { id, providerData },
-                error
-            );
+            throw new AppException(`Failed to update provider with ID ${id}`, ErrorType.TECHNICAL, 'CARE_008', {
+                id,
+                providerData,
+            });
         }
     }
 
@@ -242,13 +220,7 @@ export class ProvidersService {
             }
 
             this.logger.error(`Failed to delete provider: ${(error as any).message}`, (error as any).stack);
-            throw new AppException(
-                `Failed to delete provider with ID ${id}`,
-                ErrorType.TECHNICAL,
-                'CARE_010',
-                { id },
-                error
-            );
+            throw new AppException(`Failed to delete provider with ID ${id}`, ErrorType.TECHNICAL, 'CARE_010', { id });
         }
     }
 
@@ -292,8 +264,7 @@ export class ProvidersService {
                 `Failed to check availability for provider with ID ${providerId}`,
                 ErrorType.TECHNICAL,
                 'CARE_011',
-                { providerId, dateTime },
-                error
+                { providerId, dateTime }
             );
         }
     }
@@ -367,8 +338,7 @@ export class ProvidersService {
                 `Failed to retrieve time slots for provider with ID ${providerId}`,
                 ErrorType.TECHNICAL,
                 'CARE_012',
-                { providerId, date },
-                error
+                { providerId, date }
             );
         }
     }
@@ -436,13 +406,9 @@ export class ProvidersService {
             return { providers, total };
         } catch (error) {
             this.logger.error(`Failed to find telemedicine providers: ${(error as any).message}`, (error as any).stack);
-            throw new AppException(
-                'Failed to retrieve telemedicine providers',
-                ErrorType.TECHNICAL,
-                'CARE_013',
-                { paginationDto },
-                error
-            );
+            throw new AppException('Failed to retrieve telemedicine providers', ErrorType.TECHNICAL, 'CARE_013', {
+                paginationDto,
+            });
         }
     }
 
