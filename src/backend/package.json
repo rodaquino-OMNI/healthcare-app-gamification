@@ -76,7 +76,7 @@
         "typescript": "5.3.3"
     },
     "dependencies": {
-        "@apollo/server": "^4.13.0",
+        "@apollo/server": "^5.0.0",
         "@apollo/subgraph": "^2.13.1",
         "@apollo/usage-reporting-protobuf": "^4.0.0",
         "@apollo/utils.fetcher": "^2.0.0",
@@ -209,7 +209,7 @@
         "nodemailer": "7.0.13",
         "tar": "7.5.10",
         "jws": "3.2.3",
-        "@apollo/server": "4.13.0",
+        "@apollo/server": "5.4.0",
         "fast-xml-parser": "5.4.1",
         "multer": "2.1.1",
         "fastify": "5.8.1",
@@ -331,7 +331,7 @@
         "nodemailer": "7.0.13",
         "tar": "7.5.10",
         "jws": "3.2.3",
-        "@apollo/server": "4.13.0",
+        "@apollo/server": "^5.0.0",
         "fast-xml-parser": "5.4.1",
         "multer": "2.1.1",
         "fastify": "5.8.1",
