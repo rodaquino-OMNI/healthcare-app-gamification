@@ -36,6 +36,16 @@ interface CancelAppointmentData {
     cancelAppointment: Appointment;
 }
 
+/** Local typed wrapper for Apollo query results */
+interface QueryResult<T> {
+    data: T;
+}
+
+/** Local typed wrapper for Apollo mutation results */
+interface MutationResult<T> {
+    data: T | null | undefined;
+}
+
 // Apollo client instance for making GraphQL requests
 const client = new ApolloClient({
     uri: apiConfig.journeys.care,
@@ -60,10 +70,10 @@ const client = new ApolloClient({
  */
 export async function getAppointments(userId: string): Promise<Appointment[]> {
     try {
-        const { data } = await client.query<GetAppointmentsData>({
+        const { data } = (await client.query({
             query: GET_APPOINTMENTS,
             variables: { userId },
-        });
+        })) as unknown as QueryResult<GetAppointmentsData>;
 
         return data.getAppointments;
     } catch (error) {
@@ -80,10 +90,10 @@ export async function getAppointments(userId: string): Promise<Appointment[]> {
  */
 export async function getAppointment(id: string): Promise<Appointment> {
     try {
-        const { data } = await client.query<GetAppointmentData>({
+        const { data } = (await client.query({
             query: GET_APPOINTMENT,
             variables: { id },
-        });
+        })) as unknown as QueryResult<GetAppointmentData>;
 
         return data.getAppointment;
     } catch (error) {
@@ -101,10 +111,10 @@ export async function getAppointment(id: string): Promise<Appointment> {
  */
 export async function getProviders(specialty: string, location: string): Promise<unknown[]> {
     try {
-        const { data } = await client.query<GetProvidersData>({
+        const { data } = (await client.query({
             query: GET_PROVIDERS,
             variables: { specialty, location },
-        });
+        })) as unknown as QueryResult<GetProvidersData>;
 
         return data.getProviders;
     } catch (error) {
@@ -129,10 +139,10 @@ export async function bookAppointment(
     reason: string
 ): Promise<Appointment> {
     try {
-        const { data } = await client.mutate<BookAppointmentData>({
+        const { data } = (await client.mutate({
             mutation: BOOK_APPOINTMENT,
             variables: { providerId, dateTime, type, reason },
-        });
+        })) as unknown as MutationResult<BookAppointmentData>;
 
         return data!.bookAppointment;
     } catch (error) {
@@ -149,10 +159,10 @@ export async function bookAppointment(
  */
 export async function cancelAppointment(id: string): Promise<Appointment> {
     try {
-        const { data } = await client.mutate<CancelAppointmentData>({
+        const { data } = (await client.mutate({
             mutation: CANCEL_APPOINTMENT,
             variables: { id },
-        });
+        })) as unknown as MutationResult<CancelAppointmentData>;
 
         return data!.cancelAppointment;
     } catch (error) {

@@ -35,7 +35,7 @@ const MedicalHistoryPage: React.FC = () => {
         setEnabled((prev) => ({ ...prev, [id]: !prev[id] }));
     };
 
-    const categories = [...new Set(HISTORY_ITEMS.map((item) => item.category))];
+    const categories = Array.from(new Set(HISTORY_ITEMS.map((item) => item.category)));
 
     const handleContinue = (): void => {
         const selected = Object.keys(enabled).filter((k) => enabled[k]);

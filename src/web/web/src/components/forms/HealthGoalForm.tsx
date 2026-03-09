@@ -4,7 +4,7 @@ import { DatePicker } from 'design-system/components/DatePicker/DatePicker';
 import { Input } from 'design-system/components/Input/Input';
 import { Select } from 'design-system/components/Select/Select';
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, type Resolver } from 'react-hook-form';
 import * as yup from 'yup';
 
 import { useAuth } from '@/hooks/useAuth';
@@ -49,7 +49,7 @@ export const HealthGoalForm: React.FC<HealthGoalFormProps> = () => {
                     .min(yup.ref('startDate'), 'End date must be after start date')
                     .nullable(),
             })
-        ),
+        ) as Resolver<HealthGoalFormValues>,
         defaultValues: {
             type: '',
             target: 0,

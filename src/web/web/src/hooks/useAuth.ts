@@ -31,6 +31,23 @@ interface AxiosErrorShape {
     };
 }
 
+/** Typed interceptor config matching axios InternalAxiosRequestConfig */
+interface InterceptorConfig {
+    headers: Record<string, string | number | boolean>;
+    [key: string]: unknown;
+}
+
+/** Typed interceptor manager matching axios AxiosInterceptorManager */
+interface InterceptorManager<V> {
+    use(onFulfilled: (value: V) => V | Promise<V>, onRejected?: (error: unknown) => unknown): number;
+    eject(id: number): void;
+}
+
+/** Typed interceptors matching axios Axios.interceptors */
+interface AxiosInterceptors {
+    request: InterceptorManager<InterceptorConfig>;
+}
+
 /**
  * Hook that provides authentication-related functionality
  * including login, registration, logout, and session management
@@ -142,7 +159,8 @@ export const useAuth = (): UseAuthReturn => {
 
     // Set up axios interceptor to add authorization header
     useEffect(() => {
-        const interceptor = axios.interceptors.request.use((config) => {
+        const interceptors = axios.interceptors as AxiosInterceptors;
+        const interceptor: number = interceptors.request.use((config: InterceptorConfig): InterceptorConfig => {
             if (auth.session?.accessToken) {
                 config.headers.Authorization = `Bearer ${auth.session.accessToken}`;
             }
@@ -150,7 +168,7 @@ export const useAuth = (): UseAuthReturn => {
         });
 
         return () => {
-            axios.interceptors.request.eject(interceptor);
+            interceptors.request.eject(interceptor);
         };
     }, [auth.session]);
 

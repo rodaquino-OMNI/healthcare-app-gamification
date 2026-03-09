@@ -52,7 +52,7 @@ const PreVisitPage: React.FC = () => {
     const allDone = completedCount === totalCount;
     const progressPercent = Math.round((completedCount / totalCount) * 100);
 
-    const sections = [...new Set(checklist.map((item) => item.section))];
+    const sections = Array.from(new Set(checklist.map((item) => item.section)));
 
     return (
         <CareLayout>

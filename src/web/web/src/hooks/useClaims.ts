@@ -29,6 +29,11 @@ interface SubmitClaimData {
     submitClaim: Claim;
 }
 
+/** Typed mutation result shape */
+interface MutationResult<TData> {
+    data?: TData | null;
+}
+
 /** Shape returned by the useClaims hook */
 interface UseClaimsReturn {
     claims: Claim[];
@@ -77,20 +82,20 @@ export const useClaims = (): UseClaimsReturn => {
     const submitClaim = async (claimData: ClaimSubmissionData): Promise<Claim> => {
         try {
             // Execute the mutation with the provided claim data
-            const { data } = await submitClaimMutation({
+            const result = (await submitClaimMutation({
                 variables: claimData,
                 context: {
                     headers: {
                         Authorization: `Bearer ${session?.accessToken}`,
                     },
                 },
-            });
+            })) as MutationResult<SubmitClaimData>;
 
             // Refetch claims after successful submission
             void refetch();
 
             // Return the submitted claim from the response
-            return data!.submitClaim;
+            return result.data!.submitClaim;
         } catch (err) {
             // Log and re-throw the error for handling by the caller
             console.error('Error submitting claim:', err);
