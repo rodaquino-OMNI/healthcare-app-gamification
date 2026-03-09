@@ -13,14 +13,14 @@
 
 | Métrica | Valor verificado |
 |---|---|
-| **Arquivos fonte totais** | 2.441 |
-| **Arquivos TypeScript / TSX** | 1.368 (576 `.ts` + 792 `.tsx`) — excluindo testes |
-| **Arquivos TS/TSX (incluindo testes)** | 1.619 |
-| **Linhas de código TS/JS** | ~494.000 |
-| — Backend (serviços NestJS) | ~46.300 |
-| — Frontend (Next.js + React Native + Design System) | ~223.600 |
-| **Documentação Markdown** | 264 arquivos / ~100.300 linhas |
-| **Terraform IaC** | 29 arquivos / ~3.100 linhas |
+| **Arquivos fonte totais** | ~2.100 |
+| **Arquivos TypeScript / TSX** | 1.369 (577 `.ts` + 792 `.tsx`) — excluindo testes |
+| **Arquivos TS/TSX (incluindo testes)** | 1.620 |
+| **Linhas de código TS/JS** | ~332.000 |
+| — Backend (serviços NestJS) | ~46.400 |
+| — Frontend (Next.js + React Native + Design System) | ~234.200 |
+| **Documentação Markdown** | 261 arquivos / ~99.400 linhas |
+| **Terraform IaC** | 28 arquivos / ~3.076 linhas |
 | **Manifestos Kubernetes** | 40 arquivos YAML em 8 namespaces |
 | **Arquivos de teste** | 251 (79 `.spec.ts` + 1 `.test.ts` + 12 `.e2e-spec.ts` + 159 `.test.tsx`) |
 | **Pipelines GitHub Actions** | 12 workflows |
@@ -171,7 +171,7 @@ Jornada de saúde expandida com módulos dedicados:
 healthcare-super-app/
 ├── src/
 │   ├── backend/                        # Monorepo NestJS (Lerna)
-│   │   ├── api-gateway/                # Entry point GraphQL + REST       25 TS / 2.777 linhas
+│   │   ├── api-gateway/                # Entry point GraphQL + REST       26 TS / 2.798 linhas
 │   │   ├── auth-service/               # OAuth2, JWT, MFA, biométrico     43 TS / 4.833 linhas
 │   │   ├── care-service/               # Consultas, telemedicina, Rx      50 TS / 6.647 linhas
 │   │   ├── gamification-engine/        # XP, conquistas, quests           58 TS / 6.544 linhas
@@ -183,17 +183,17 @@ healthcare-super-app/
 │   │   │       ├── rules/              # Rules engine orientado a eventos
 │   │   │       ├── profiles/           # Perfis de gamificação
 │   │   │       └── events/             # Consumers/producers Kafka
-│   │   ├── health-service/             # Sinais vitais, metas, wearables  50 TS / 6.707 linhas
+│   │   ├── health-service/             # Sinais vitais, metas, wearables  51 TS / 6.742 linhas
 │   │   ├── notification-service/       # Push, SMS, e-mail, in-app        36 TS / 4.311 linhas
 │   │   ├── plan-service/               # Seguro, sinistros, benefícios    55 TS / 6.767 linhas
-│   │   ├── shared/                     # Utilitários e DTOs cross-service 60 TS / 7.685 linhas
+│   │   ├── shared/                     # Utilitários e DTOs cross-service 60 TS / 7.690 linhas
 │   │   │   └── prisma/schema.prisma    # 30 models, 11 enums
 │   │   └── packages/
 │   │       ├── auth/                   # Guards e decorators compartilhados
 │   │       └── shared/                 # Módulos NestJS compartilhados
 │   │
 │   └── web/                            # Monorepo Turborepo
-│       ├── web/                        # App web Next.js 15               403 arquivos / 66.461 linhas
+│       ├── web/                        # App web Next.js 15               412 arquivos / 66.396 linhas
 │       │   └── src/
 │       │       ├── pages/
 │       │       │   ├── auth/           # Login, cadastro, MFA
@@ -219,7 +219,7 @@ healthcare-super-app/
 │       │       ├── context/            # React context providers
 │       │       └── utils/              # Helpers e hooks
 │       │
-│       ├── mobile/                     # React Native 0.73 + Expo        486 arquivos / 123.196 linhas
+│       ├── mobile/                     # React Native 0.73 + Expo        489 arquivos / 123.965 linhas
 │       │   └── src/
 │       │       ├── screens/
 │       │       │   ├── auth/           # Login, cadastro, biométrico
@@ -266,9 +266,9 @@ healthcare-super-app/
 │       │       ├── context/            # Context global do app
 │       │       └── utils/              # Helpers específicos RN
 │       │
-│       ├── design-system/              # Biblioteca de componentes (Storybook 8)  309 TS / 29.735 linhas
+│       ├── design-system/              # Biblioteca de componentes (Storybook 8)  548 TS/TSX / 39.728 linhas
 │       │   └── src/
-│       │       ├── components/         # 25 componentes UI (Tabs, Input, Button,
+│       │       ├── components/         # 26 componentes UI (Tabs, Input, Button,
 │       │       │                       # Modal, Toast, Card, Table, etc.)
 │       │       ├── primitives/         # 7 primitivos (Box, Text, Stack, Icon, etc.)
 │       │       ├── charts/             # 4 gráficos (Bar, Line, Radial, Donut)
@@ -283,7 +283,7 @@ healthcare-super-app/
 │       │       │                       # BenefitCard, InsuranceCard)
 │       │       ├── themes/             # Temas claro/escuro
 │       │       └── tokens/             # Design tokens
-│       ├── shared/                     # Hooks, utils, schema GraphQL     39 arquivos / 4.085 linhas
+│       ├── shared/                     # Hooks, utils, schema GraphQL     40 arquivos / 4.093 linhas
 │       └── types/                      # Definições TypeScript globais
 │
 ├── infrastructure/
@@ -296,7 +296,7 @@ healthcare-super-app/
 │   │   ├── monitoring/                # Prometheus, Grafana, Loki
 │   │   ├── notification-service/
 │   │   └── plan-journey/
-│   ├── terraform/                      # 29 arquivos .tf / ~3.100 linhas
+│   ├── terraform/                      # 28 arquivos .tf / ~3.076 linhas
 │   │   ├── modules/
 │   │   │   ├── eks/                    # Cluster EKS
 │   │   │   ├── network/                # VPC, subnets, security groups
@@ -686,7 +686,7 @@ Estas tarefas **não podem** ser completadas apenas por ferramentas de IA. Reque
 | # | Problema | Severidade | Status / Solução |
 |---|---|---|---|
 | 1 | **~3.700 erros TypeScript no mobile** | Média | App roda; `noImplicitAny: false`. Causas: build do design-system quebrado, types RN 0.73, types compartilhados ausentes |
-| 2 | **Build do Design System quebrado** | Alta | Conflito ESM/CJS em `rollup.config.js` no Node 22. Fix recomendado: migrar para Vite |
+| 2 | **Build do Design System quebrado** | Alta | Conflito ESM/CJS em `rollup.config.mjs` no Node 22. Fix recomendado: migrar para Vite |
 | 3 | **Alinhamento de portas K8s** | — | ✅ Resolvido (portas 3000-3006 alinhadas) |
 | 4 | **Mismatch estrutural i18n** | Baixa | `en-US.ts` usa chaves aninhadas, `pt-BR.ts` usa nível superior em alguns pontos. Verificar: `npx tsx scripts/check-i18n-parity.ts` |
 
