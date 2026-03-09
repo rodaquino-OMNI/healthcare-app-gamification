@@ -2,7 +2,7 @@ import { PrismaService } from '@app/shared/database/prisma.service';
 import { describe, it, beforeEach, afterEach, expect } from '@jest/globals'; // 29.0.0
 import { HttpStatus, INestApplication } from '@nestjs/common'; // 10.0.0
 import { Test } from '@nestjs/testing'; // 10.0.0
-import * as request from 'supertest'; // 6.3.3
+import request from 'supertest'; // 6.3.3
 
 import { AppModule } from '@app/plan/app.module';
 import { CreateClaimDto } from '@app/plan/claims/dto/create-claim.dto';
@@ -49,6 +49,7 @@ describe('ClaimsModule (e2e)', () => {
      */
     it('should create a new claim', async () => {
         const createClaimDto: CreateClaimDto = {
+            userId: 'test-user-id',
             planId: '3fa85f64-5717-4562-b3fc-2c963f66afa6', // Example UUID
             type: 'MEDICAL_VISIT',
             amount: 100.0,
@@ -85,6 +86,7 @@ describe('ClaimsModule (e2e)', () => {
     it('should retrieve a single claim by ID', async () => {
         // First, create a claim to ensure there's data to retrieve
         const createClaimDto: CreateClaimDto = {
+            userId: 'test-user-id',
             planId: '3fa85f64-5717-4562-b3fc-2c963f66afa6', // Example UUID
             type: 'MEDICAL_VISIT',
             amount: 100.0,
@@ -108,6 +110,7 @@ describe('ClaimsModule (e2e)', () => {
     it('should update an existing claim', async () => {
         // First, create a claim to ensure there's data to update
         const createClaimDto: CreateClaimDto = {
+            userId: 'test-user-id',
             planId: '3fa85f64-5717-4562-b3fc-2c963f66afa6', // Example UUID
             type: 'MEDICAL_VISIT',
             amount: 100.0,
@@ -138,6 +141,7 @@ describe('ClaimsModule (e2e)', () => {
     it('should delete a claim', async () => {
         // First, create a claim to ensure there's data to delete
         const createClaimDto: CreateClaimDto = {
+            userId: 'test-user-id',
             planId: '3fa85f64-5717-4562-b3fc-2c963f66afa6', // Example UUID
             type: 'MEDICAL_VISIT',
             amount: 100.0,

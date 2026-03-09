@@ -32,7 +32,7 @@ export class QuestsService {
      */
     async findAll(): Promise<Quest[]> {
         try {
-            return await this.prisma.quest.findMany();
+            return (await this.prisma.quest.findMany()) as unknown as Quest[];
         } catch (error: unknown) {
             const stack = error instanceof Error ? error.stack : String(error);
             this.logger.error('Failed to retrieve quests', stack, 'QuestsService');
@@ -53,7 +53,7 @@ export class QuestsService {
                 throw new NotFoundException(`Quest with ID ${id} not found`);
             }
 
-            return quest;
+            return quest as unknown as Quest;
         } catch (error: unknown) {
             if (error instanceof NotFoundException) {
                 throw error;
@@ -88,7 +88,7 @@ export class QuestsService {
             });
 
             if (existingUserQuest) {
-                return existingUserQuest;
+                return existingUserQuest as unknown as UserQuest;
             }
 
             // Create a new UserQuest instance
@@ -112,7 +112,7 @@ export class QuestsService {
                 timestamp: new Date().toISOString(),
             });
 
-            return savedUserQuest;
+            return savedUserQuest as unknown as UserQuest;
         } catch (error: unknown) {
             if (error instanceof NotFoundException) {
                 throw error;
@@ -156,12 +156,13 @@ export class QuestsService {
             }
 
             if (userQuest.completed) {
-                return userQuest; // Already completed
+                return userQuest as unknown as UserQuest; // Already completed
             }
 
             // Update the UserQuest to mark it as completed
+            // The shared schema uses `id` as PK; use findFirst result's id
             const updatedUserQuest = await this.prisma.userQuest.update({
-                where: { profileId_questId: { profileId: profile.id, questId } },
+                where: { id: userQuest.id } as any,
                 data: {
                     progress: 100,
                     completed: true,
@@ -173,27 +174,29 @@ export class QuestsService {
 
             // Award XP to the user
             await this.profilesService.update(userId, {
-                xp: profile.xp + userQuest.quest.xpReward,
+                xp: profile.xp + (userQuest as any).quest.xpReward,
             });
 
             // Check if completing this quest unlocks any achievements
             // This is a placeholder for actual achievement checking logic
             // which would likely be implemented in the AchievementsService
-            const _unlockedAchievements = await this.achievementsService.findByJourney(userQuest.quest.journey);
+            const _unlockedAchievements = await this.achievementsService.findByJourney(
+                (userQuest as any).quest.journey
+            );
 
             // Log and publish event
             this.logger.log(
-                `User ${userId} completed quest ${questId} and earned ${userQuest.quest.xpReward} XP`,
+                `User ${userId} completed quest ${questId} and earned ${(userQuest as any).quest.xpReward} XP`,
                 'QuestsService'
             );
             await this.kafkaService.produce('quest.completed', {
                 userId,
                 questId,
-                xpAwarded: userQuest.quest.xpReward,
+                xpAwarded: (userQuest as any).quest.xpReward,
                 timestamp: new Date().toISOString(),
             });
 
-            return updatedUserQuest;
+            return updatedUserQuest as unknown as UserQuest;
         } catch (error: unknown) {
             if (error instanceof NotFoundException) {
                 throw error;

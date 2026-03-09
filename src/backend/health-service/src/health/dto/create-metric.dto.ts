@@ -13,7 +13,7 @@ export class CreateMetricDto {
      */
     @IsNotEmpty()
     @IsEnum(MetricType)
-    type: MetricType;
+    type!: MetricType;
 
     /**
      * Numeric value of the health metric
@@ -22,33 +22,33 @@ export class CreateMetricDto {
     @IsNumber()
     @Min(0, { message: 'Value must be non-negative' })
     @Max(10000, { message: 'Value exceeds maximum allowed range' })
-    value: number;
+    value!: number;
 
     /**
      * Unit of measurement for the health metric (e.g., bpm, mmHg, etc.)
      */
     @IsNotEmpty()
     @IsString()
-    unit: string;
+    unit!: string;
 
     /**
      * Timestamp when the metric was recorded
      */
     @IsNotEmpty()
     @IsDate()
-    timestamp: Date;
+    timestamp!: Date;
 
     /**
      * Source of the health metric data (e.g., MANUAL, DEVICE, API)
      */
     @IsNotEmpty()
     @IsEnum(MetricSource)
-    source: MetricSource;
+    source!: MetricSource;
 
     /**
      * Optional notes or comments about the health metric
      */
     @IsOptional()
     @IsString()
-    notes: string | null;
+    notes!: string | null;
 }

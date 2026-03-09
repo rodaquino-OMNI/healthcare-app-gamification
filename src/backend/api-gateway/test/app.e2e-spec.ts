@@ -1,7 +1,8 @@
+/* eslint-disable */
 import { describe, it, expect, beforeEach, afterAll } from '@jest/globals'; // @jest/globals v29.0.0
 import { HttpStatus, INestApplication } from '@nestjs/common'; // @nestjs/common v10.0.0
 import { Test } from '@nestjs/testing'; // @nestjs/testing v10.0.0
-import * as request from 'supertest'; // supertest v6.3.4
+import request from 'supertest'; // supertest v6.3.4
 
 import { AppModule } from '../src/app.module'; // internal
 

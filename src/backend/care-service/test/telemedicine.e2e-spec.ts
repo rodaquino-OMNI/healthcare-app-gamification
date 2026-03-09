@@ -1,11 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { JwtAuthGuard } from '@app/shared/auth/guards/jwt-auth.guard';
+/* eslint-disable */
 import { PrismaService } from '@app/shared/database/prisma.service';
-import { AppExceptionFilter } from '@app/shared/exceptions/exceptions.filter';
+import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
+import { AuthGuard } from '@nestjs/passport';
+
+const JwtAuthGuard = AuthGuard('jwt');
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import * as request from 'supertest';
+import request from 'supertest';
 
 import { CreateSessionDto } from '@app/care/telemedicine/dto/create-session.dto';
 import { TelemedicineController } from '@app/care/telemedicine/telemedicine.controller';
@@ -35,10 +37,12 @@ describe('Telemedicine E2E Tests', () => {
         prismaService = moduleRef.get<PrismaService>(PrismaService);
 
         // Apply global exception filter
-        app.useGlobalFilters(new AppExceptionFilter());
+        app.useGlobalFilters(
+            new AllExceptionsFilter({ log: () => {}, error: () => {}, warn: () => {}, debug: () => {} } as any)
+        );
 
         // Add user to request
-        app.use((req, res, next) => {
+        app.use((req: any, res: any, next: any) => {
             req.user = mockUser;
             next();
         });
@@ -59,7 +63,20 @@ describe('Telemedicine E2E Tests', () => {
 
     // Helper function to seed the database with necessary test data
     async function seedDatabase() {
-        // Seed appointment
+        // Seed provider first (appointment references it)
+        await prismaService.provider.create({
+            data: {
+                id: 'test-provider-id',
+                name: 'Dr. Test Provider',
+                specialty: 'Test Specialty',
+                location: 'Test Location',
+                phone: '+5511999999999',
+                email: 'provider@test.com',
+                telemedicineAvailable: true,
+            } as any,
+        });
+
+        // Seed appointment (no 'reason' field in schema)
         await prismaService.appointment.create({
             data: {
                 id: 'test-appointment-id',
@@ -68,26 +85,7 @@ describe('Telemedicine E2E Tests', () => {
                 dateTime: new Date(),
                 status: 'SCHEDULED',
                 type: 'TELEMEDICINE',
-                reason: 'Test appointment',
-            },
-        });
-
-        // Seed provider
-        await prismaService.provider.create({
-            data: {
-                id: 'test-provider-id',
-                name: 'Dr. Test Provider',
-                specialtyId: 'test-specialty-id',
-                active: true,
-            },
-        });
-
-        // Seed specialty
-        await prismaService.specialty.create({
-            data: {
-                id: 'test-specialty-id',
-                name: 'Test Specialty',
-            },
+            } as any,
         });
     }
 
@@ -96,13 +94,13 @@ describe('Telemedicine E2E Tests', () => {
         await prismaService.telemedicineSession.deleteMany({});
         await prismaService.appointment.deleteMany({});
         await prismaService.provider.deleteMany({});
-        await prismaService.specialty.deleteMany({});
     }
 
     describe('POST /telemedicine/session', () => {
         it('should create a telemedicine session', async () => {
             // Create valid DTO for session creation
-            const createSessionDto: CreateSessionDto = {
+            const createSessionDto = {
+                userId: mockUser.id,
                 appointmentId: 'test-appointment-id',
                 providerId: 'test-provider-id',
             };
@@ -116,7 +114,7 @@ describe('Telemedicine E2E Tests', () => {
             // Validate the response
             expect(response.body).toBeDefined();
             expect(response.body.id).toBeDefined();
-            expect(response.body.appointmentId).toEqual((createSessionDto as any).appointmentId);
+            expect(response.body.appointmentId).toEqual(createSessionDto.appointmentId);
             expect(response.body.providerId).toEqual(createSessionDto.providerId);
             expect(response.body.status).toEqual('CREATED');
         });
@@ -132,12 +130,15 @@ describe('Telemedicine E2E Tests', () => {
                 .compile();
 
             const unauthApp = unauthModuleRef.createNestApplication();
-            unauthApp.useGlobalFilters(new AppExceptionFilter());
+            unauthApp.useGlobalFilters(
+                new AllExceptionsFilter({ log: () => {}, error: () => {}, warn: () => {}, debug: () => {} } as any)
+            );
             await unauthApp.init();
 
             try {
                 // Create valid DTO for session creation
-                const createSessionDto: CreateSessionDto = {
+                const createSessionDto = {
+                    userId: mockUser.id,
                     appointmentId: 'test-appointment-id',
                     providerId: 'test-provider-id',
                 };

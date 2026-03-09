@@ -7,37 +7,37 @@ export class Medication {
     /**
      * Unique identifier for the medication
      */
-    id: string;
+    id!: string;
 
     /**
      * ID of the user who owns this medication record
      */
-    userId: string;
+    userId!: string;
 
     /**
      * Name of the medication
      */
-    name: string;
+    name!: string;
 
     /**
      * Dosage amount (e.g., 500 for 500mg)
      */
-    dosage: number;
+    dosage!: number;
 
     /**
      * Frequency of medication (e.g., "daily", "twice daily", "every 8 hours")
      */
-    frequency: string;
+    frequency!: string;
 
     /**
      * Date when the medication regimen starts
      */
-    startDate: Date;
+    startDate!: Date;
 
     /**
      * Optional end date for the medication regimen
      */
-    endDate: Date;
+    endDate!: Date;
 
     /**
      * Whether reminders are enabled for this medication
@@ -47,7 +47,7 @@ export class Medication {
     /**
      * Any additional notes or instructions
      */
-    notes: string;
+    notes!: string;
 
     /**
      * Whether the medication is currently active
@@ -57,10 +57,10 @@ export class Medication {
     /**
      * Record creation timestamp
      */
-    createdAt: Date;
+    createdAt!: Date;
 
     /**
      * Record update timestamp
      */
-    updatedAt: Date;
+    updatedAt!: Date;
 }

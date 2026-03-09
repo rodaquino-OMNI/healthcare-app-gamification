@@ -46,37 +46,37 @@ export class HealthGoal {
     /**
      * Unique identifier for the health goal.
      */
-    id: string;
+    id!: string;
 
     /**
      * Reference to the health record this goal belongs to.
      */
-    recordId: string;
+    recordId!: string;
 
     /**
      * Type of health goal (e.g., steps, sleep, weight).
      */
-    type: GoalType;
+    type!: GoalType;
 
     /**
      * Title or name of the goal.
      */
-    title: string;
+    title!: string;
 
     /**
      * Optional description of the goal.
      */
-    description: string;
+    description!: string;
 
     /**
      * Target value to achieve for this goal.
      */
-    targetValue: number;
+    targetValue!: number;
 
     /**
      * Unit of measurement for the goal (e.g., steps, hours, kg).
      */
-    unit: string;
+    unit!: string;
 
     /**
      * Current progress value toward the goal.
@@ -91,30 +91,30 @@ export class HealthGoal {
     /**
      * Period for the goal (daily, weekly, monthly, custom).
      */
-    period: GoalPeriod;
+    period!: GoalPeriod;
 
     /**
      * Date when the goal was started or became active.
      */
-    startDate: Date;
+    startDate!: Date;
 
     /**
      * Optional target end date for the goal.
      */
-    endDate: Date;
+    endDate!: Date;
 
     /**
      * Date when the goal was completed, if applicable.
      */
-    completedDate: Date;
+    completedDate!: Date;
 
     /**
      * Date when the goal was created in the system.
      */
-    createdAt: Date;
+    createdAt!: Date;
 
     /**
      * Date when the goal was last updated.
      */
-    updatedAt: Date;
+    updatedAt!: Date;
 }

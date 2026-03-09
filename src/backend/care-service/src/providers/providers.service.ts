@@ -321,7 +321,7 @@ export class ProvidersService {
                 });
 
                 // Check if there's an appointment at this time slot
-                const isBooked = appointments.some((appointment) => {
+                const isBooked = appointments.some((appointment: any) => {
                     const apptHour = appointment.dateTime.getHours();
                     return apptHour === hour;
                 });

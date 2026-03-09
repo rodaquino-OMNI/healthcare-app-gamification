@@ -12,5 +12,5 @@ export class CreateSessionDto {
      */
     @IsNotEmpty()
     @IsUUID()
-    userId: string;
+    userId!: string;
 }

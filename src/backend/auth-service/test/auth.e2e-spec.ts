@@ -1,13 +1,14 @@
+/* eslint-disable */
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/client';
-import * as request from 'supertest';
+import request from 'supertest';
 import { agent, SuperAgentTest } from 'supertest';
 
-import { AuthService } from '../../src/auth/auth.service';
-import { PrismaService } from '../../src/database/prisma.service';
-import { CreateUserDto } from '../../src/users/dto/create-user.dto';
+import { AuthService } from '../src/auth/auth.service';
+import { PrismaService } from '@app/shared/database/prisma.service';
+import { CreateUserDto } from '../src/users/dto/create-user.dto';
 
 describe('Auth Module (e2e)', () => {
     let app: INestApplication;

@@ -493,9 +493,9 @@ export class HealthService {
      */
     async createHealthMetric(userId: string, metricData: Partial<CreateMetricDto>): Promise<HealthMetric> {
         const metricDto: CreateMetricDto = {
-            type: metricData.type,
-            value: metricData.value,
-            unit: metricData.unit,
+            type: metricData.type!,
+            value: metricData.value!,
+            unit: metricData.unit!,
             timestamp: metricData.timestamp || new Date(),
             source: metricData.source || MetricSource.USER_INPUT,
             notes: metricData.notes || null,

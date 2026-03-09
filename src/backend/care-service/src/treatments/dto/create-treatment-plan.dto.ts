@@ -10,7 +10,7 @@ export class CreateTreatmentPlanDto {
         example: 'Diabetes Management Plan',
     })
     @IsString()
-    name: string;
+    name!: string;
 
     @ApiProperty({
         description: 'A detailed description of the treatment plan',
@@ -26,7 +26,7 @@ export class CreateTreatmentPlanDto {
         example: '2023-09-01T00:00:00.000Z',
     })
     @IsDateString()
-    startDate: Date;
+    startDate!: Date;
 
     @ApiProperty({
         description: 'The end date of the treatment plan',
@@ -55,5 +55,5 @@ export class CreateTreatmentPlanDto {
         example: '550e8400-e29b-41d4-a716-446655440000',
     })
     @IsUUID()
-    careActivityId: string;
+    careActivityId!: string;
 }

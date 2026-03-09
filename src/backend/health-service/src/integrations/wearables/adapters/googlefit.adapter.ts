@@ -54,7 +54,7 @@ export class GoogleFitAdapter implements WearableAdapter {
             const redirectUri = this.configService.get<string>('GOOGLE_FIT_REDIRECT_URI');
 
             if (!clientId || !clientSecret || !redirectUri) {
-                this.logger.error(`Missing Google Fit API credentials`, null, 'GoogleFitAdapter');
+                this.logger.error(`Missing Google Fit API credentials`, undefined, 'GoogleFitAdapter');
                 throw new AppException('Missing Google Fit API credentials', ErrorType.TECHNICAL, 'CONFIG_ERROR', {
                     service: 'GoogleFitAdapter',
                 });
@@ -116,17 +116,13 @@ export class GoogleFitAdapter implements WearableAdapter {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             this.logger.error(
                 `Failed to connect to Google Fit: ${errorMessage}`,
-                error instanceof Error ? error.stack : null,
+                error instanceof Error ? error.stack : undefined,
                 'GoogleFitAdapter'
             );
 
-            throw new AppException(
-                `Failed to connect to Google Fit`,
-                ErrorType.TECHNICAL,
-                'API_INTEGRATION_ERROR',
-                { userId },
-                error
-            );
+            throw new AppException(`Failed to connect to Google Fit`, ErrorType.TECHNICAL, 'API_INTEGRATION_ERROR', {
+                userId,
+            });
         }
     }
 
@@ -152,7 +148,7 @@ export class GoogleFitAdapter implements WearableAdapter {
             }
 
             if (retryCount >= maxRetries) {
-                this.logger.error(`Request failed after ${maxRetries} retries`, null, 'GoogleFitAdapter');
+                this.logger.error(`Request failed after ${maxRetries} retries`, undefined, 'GoogleFitAdapter');
                 throw error;
             }
 
@@ -189,14 +185,18 @@ export class GoogleFitAdapter implements WearableAdapter {
                     String(deviceConnection.metadata?.connectionData ?? '{}')
                 ) as GoogleFitConnectionData;
             } catch (e) {
-                this.logger.error(`Invalid connection data format for user ${userId}`, null, 'GoogleFitAdapter');
+                this.logger.error(`Invalid connection data format for user ${userId}`, undefined, 'GoogleFitAdapter');
                 throw new AppException('Invalid connection data format', ErrorType.TECHNICAL, 'DATA_FORMAT_ERROR', {
                     userId,
                 });
             }
 
             if (!connectionData || !connectionData.accessToken) {
-                this.logger.error(`Missing connection data for Google Fit user ${userId}`, null, 'GoogleFitAdapter');
+                this.logger.error(
+                    `Missing connection data for Google Fit user ${userId}`,
+                    undefined,
+                    'GoogleFitAdapter'
+                );
                 throw new AppException('Missing connection data', ErrorType.BUSINESS, 'INVALID_CONNECTION', { userId });
             }
 
@@ -261,34 +261,34 @@ export class GoogleFitAdapter implements WearableAdapter {
                                     metric.userId = userId;
                                     metric.type = metricType;
                                     metric.timestamp = new Date(parseInt(point.startTimeNanos) / 1000000);
-                                    metric.source = 'GOOGLE_FIT' as MetricSource;
+                                    metric.source = MetricSource.GOOGLE_FIT;
 
                                     switch (metricType) {
-                                        case 'STEPS':
+                                        case MetricType.STEPS:
                                             metric.value = value.intVal || 0;
                                             metric.unit = 'steps';
                                             break;
-                                        case 'HEART_RATE':
+                                        case MetricType.HEART_RATE:
                                             metric.value = value.fpVal || 0;
                                             metric.unit = 'bpm';
                                             break;
-                                        case 'WEIGHT':
+                                        case MetricType.WEIGHT:
                                             metric.value = value.fpVal || 0;
                                             metric.unit = 'kg';
                                             break;
-                                        case 'BLOOD_PRESSURE_SYSTOLIC':
+                                        case MetricType.BLOOD_PRESSURE_SYSTOLIC:
                                             metric.value = this.extractSystolicBP(value);
                                             metric.unit = 'mmHg';
                                             break;
-                                        case 'BLOOD_PRESSURE_DIASTOLIC':
+                                        case MetricType.BLOOD_PRESSURE_DIASTOLIC:
                                             metric.value = this.extractDiastolicBP(value);
                                             metric.unit = 'mmHg';
                                             break;
-                                        case 'BLOOD_GLUCOSE':
+                                        case MetricType.BLOOD_GLUCOSE:
                                             metric.value = value.fpVal || 0;
                                             metric.unit = 'mg/dL';
                                             break;
-                                        case 'SLEEP':
+                                        case MetricType.SLEEP:
                                             metric.value = value.intVal || 0;
                                             metric.unit = 'stage';
                                             break;
@@ -307,7 +307,7 @@ export class GoogleFitAdapter implements WearableAdapter {
                     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
                     this.logger.error(
                         `Failed to retrieve ${dataSource} data: ${errorMessage}`,
-                        error instanceof Error ? error.stack : null,
+                        error instanceof Error ? error.stack : undefined,
                         'GoogleFitAdapter'
                     );
                 }
@@ -328,17 +328,13 @@ export class GoogleFitAdapter implements WearableAdapter {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             this.logger.error(
                 `Failed to retrieve Google Fit metrics: ${errorMessage}`,
-                error instanceof Error ? error.stack : null,
+                error instanceof Error ? error.stack : undefined,
                 'GoogleFitAdapter'
             );
 
-            throw new AppException(
-                'Failed to retrieve health metrics',
-                ErrorType.TECHNICAL,
-                'API_INTEGRATION_ERROR',
-                { userId },
-                error
-            );
+            throw new AppException('Failed to retrieve health metrics', ErrorType.TECHNICAL, 'API_INTEGRATION_ERROR', {
+                userId,
+            });
         }
     }
 
@@ -356,7 +352,7 @@ export class GoogleFitAdapter implements WearableAdapter {
             const clientSecret = this.configService.get<string>('GOOGLE_FIT_CLIENT_SECRET');
 
             if (!clientId || !clientSecret) {
-                this.logger.error(`Missing Google Fit API credentials`, null, 'GoogleFitAdapter');
+                this.logger.error(`Missing Google Fit API credentials`, undefined, 'GoogleFitAdapter');
                 throw new AppException('Missing Google Fit API credentials', ErrorType.TECHNICAL, 'CONFIG_ERROR', {
                     service: 'GoogleFitAdapter',
                 });
@@ -369,14 +365,18 @@ export class GoogleFitAdapter implements WearableAdapter {
                     String(deviceConnection.metadata?.connectionData ?? '{}')
                 ) as GoogleFitConnectionData;
             } catch (e) {
-                this.logger.error(`Invalid connection data format for user ${userId}`, null, 'GoogleFitAdapter');
+                this.logger.error(`Invalid connection data format for user ${userId}`, undefined, 'GoogleFitAdapter');
                 throw new AppException('Invalid connection data format', ErrorType.TECHNICAL, 'DATA_FORMAT_ERROR', {
                     userId,
                 });
             }
 
             if (!connectionData || !connectionData.accessToken) {
-                this.logger.error(`Missing connection data for Google Fit user ${userId}`, null, 'GoogleFitAdapter');
+                this.logger.error(
+                    `Missing connection data for Google Fit user ${userId}`,
+                    undefined,
+                    'GoogleFitAdapter'
+                );
                 throw new AppException('Missing connection data', ErrorType.BUSINESS, 'INVALID_CONNECTION', { userId });
             }
 
@@ -385,7 +385,7 @@ export class GoogleFitAdapter implements WearableAdapter {
                 firstValueFrom(
                     this.httpService.post(
                         'https://oauth2.googleapis.com/revoke',
-                        `token=${connectionData.accessToken}`,
+                        `token=${connectionData!.accessToken}`,
                         {
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -399,7 +399,7 @@ export class GoogleFitAdapter implements WearableAdapter {
             deviceConnection.status = DeviceConnectionStatus.DISCONNECTED;
             deviceConnection.metadata = {
                 ...deviceConnection.metadata,
-                connectionData: null,
+                connectionData: undefined,
             };
 
             this.logger.log(`Successfully disconnected from Google Fit for user ${userId}`, 'GoogleFitAdapter');
@@ -412,7 +412,7 @@ export class GoogleFitAdapter implements WearableAdapter {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             this.logger.error(
                 `Failed to disconnect from Google Fit: ${errorMessage}`,
-                error instanceof Error ? error.stack : null,
+                error instanceof Error ? error.stack : undefined,
                 'GoogleFitAdapter'
             );
 
@@ -420,8 +420,7 @@ export class GoogleFitAdapter implements WearableAdapter {
                 'Failed to disconnect from Google Fit',
                 ErrorType.TECHNICAL,
                 'API_INTEGRATION_ERROR',
-                { userId },
-                error
+                { userId }
             );
         }
     }
@@ -438,7 +437,7 @@ export class GoogleFitAdapter implements WearableAdapter {
         const redirectUri = this.configService.get<string>('GOOGLE_FIT_REDIRECT_URI');
 
         if (!clientId || !redirectUri) {
-            this.logger.error(`Missing Google Fit API credentials`, null, 'GoogleFitAdapter');
+            this.logger.error(`Missing Google Fit API credentials`, undefined, 'GoogleFitAdapter');
             return '';
         }
 
@@ -465,7 +464,7 @@ export class GoogleFitAdapter implements WearableAdapter {
             const clientSecret = this.configService.get<string>('GOOGLE_FIT_CLIENT_SECRET');
 
             if (!clientId || !clientSecret) {
-                this.logger.error(`Missing Google Fit API credentials`, null, 'GoogleFitAdapter');
+                this.logger.error(`Missing Google Fit API credentials`, undefined, 'GoogleFitAdapter');
                 throw new AppException('Missing Google Fit API credentials', ErrorType.TECHNICAL, 'CONFIG_ERROR', {
                     service: 'GoogleFitAdapter',
                 });
@@ -487,7 +486,7 @@ export class GoogleFitAdapter implements WearableAdapter {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             this.logger.error(
                 `Failed to refresh access token: ${errorMessage}`,
-                error instanceof Error ? error.stack : null,
+                error instanceof Error ? error.stack : undefined,
                 'GoogleFitAdapter'
             );
 
@@ -509,8 +508,7 @@ export class GoogleFitAdapter implements WearableAdapter {
                 'Failed to refresh access token',
                 ErrorType.TECHNICAL,
                 SYS_INTERNAL_SERVER_ERROR,
-                null,
-                error
+                undefined
             );
         }
     }
@@ -518,22 +516,22 @@ export class GoogleFitAdapter implements WearableAdapter {
     /**
      * Maps Google Fit data types to standardized metric types used in the application.
      */
-    private mapGoogleFitTypeToMetricType(googleFitType: string): MetricType | null {
+    private mapGoogleFitTypeToMetricType(googleFitType: string): MetricType | undefined {
         if (googleFitType.includes('step_count')) {
-            return 'STEPS' as MetricType;
+            return MetricType.STEPS;
         } else if (googleFitType.includes('heart_rate')) {
-            return 'HEART_RATE' as MetricType;
+            return MetricType.HEART_RATE;
         } else if (googleFitType.includes('weight')) {
-            return 'WEIGHT' as MetricType;
+            return MetricType.WEIGHT;
         } else if (googleFitType.includes('blood_pressure')) {
             // Return systolic by default, we'll handle diastolic in data processing
-            return 'BLOOD_PRESSURE_SYSTOLIC' as MetricType;
+            return MetricType.BLOOD_PRESSURE_SYSTOLIC;
         } else if (googleFitType.includes('blood_glucose')) {
-            return 'BLOOD_GLUCOSE' as MetricType;
+            return MetricType.BLOOD_GLUCOSE;
         } else if (googleFitType.includes('sleep')) {
-            return 'SLEEP' as MetricType;
+            return MetricType.SLEEP;
         }
-        return null;
+        return undefined;
     }
 
     /**
@@ -574,7 +572,7 @@ export class GoogleFitAdapter implements WearableAdapter {
                     String(deviceConnection.metadata?.connectionData ?? '{}')
                 ) as GoogleFitConnectionData;
             } catch (e) {
-                this.logger.error('Invalid connection data format', null, 'GoogleFitAdapter');
+                this.logger.error('Invalid connection data format', undefined, 'GoogleFitAdapter');
                 throw new AppException('Invalid connection data format', ErrorType.TECHNICAL, 'DATA_FORMAT_ERROR', {
                     userId: deviceConnection.userId,
                 });
@@ -627,7 +625,7 @@ export class GoogleFitAdapter implements WearableAdapter {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             this.logger.error(
                 `Error refreshing token: ${errorMessage}`,
-                error instanceof Error ? error.stack : null,
+                error instanceof Error ? error.stack : undefined,
                 'GoogleFitAdapter'
             );
 
@@ -639,8 +637,7 @@ export class GoogleFitAdapter implements WearableAdapter {
                 'Token refresh failed, reauthentication required',
                 ErrorType.BUSINESS,
                 'AUTH_ERROR',
-                { userId: deviceConnection.userId },
-                error
+                { userId: deviceConnection.userId }
             );
         }
     }

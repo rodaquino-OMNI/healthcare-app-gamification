@@ -11,28 +11,28 @@ export class CreateMedicationDto {
      * @example "Amoxicillin"
      */
     @IsString()
-    name: string;
+    name!: string;
 
     /**
      * Dosage amount in appropriate units (e.g., mg, ml)
      * @example 500
      */
     @IsNumber()
-    dosage: number;
+    dosage!: number;
 
     /**
      * How often the medication should be taken
      * @example "Twice daily" or "Every 8 hours"
      */
     @IsString()
-    frequency: string;
+    frequency!: string;
 
     /**
      * Date when the medication regimen starts
      * @example "2023-04-15"
      */
     @IsDateString()
-    startDate: string;
+    startDate!: string;
 
     /**
      * Optional date when the medication regimen ends
@@ -40,14 +40,14 @@ export class CreateMedicationDto {
      */
     @IsOptional()
     @IsDateString()
-    endDate: string;
+    endDate!: string;
 
     /**
      * Whether reminders should be enabled for this medication
      * @example true
      */
     @IsBoolean()
-    reminderEnabled: boolean;
+    reminderEnabled!: boolean;
 
     /**
      * Optional additional notes about the medication
@@ -55,5 +55,5 @@ export class CreateMedicationDto {
      */
     @IsOptional()
     @IsString()
-    notes: string;
+    notes!: string;
 }

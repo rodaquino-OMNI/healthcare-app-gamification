@@ -1,10 +1,14 @@
+/* eslint-disable */
 import { describe, it, expect } from '@jest/globals';
 import { HttpStatus, INestApplication } from '@nestjs/common';
-import { JwtAuthGuard, RolesGuard } from '@nestjs/passport';
-import { Test } from '@nestjs/testing';
-import * as request from 'supertest';
+import { AuthGuard } from '@nestjs/passport';
 
-import { AppModule } from '../app.module';
+const JwtAuthGuard = AuthGuard('jwt');
+const RolesGuard = { canActivate: () => true };
+import { Test } from '@nestjs/testing';
+import request from 'supertest';
+
+import { AppModule } from '../src/app.module';
 
 describe('AchievementsController (e2e)', () => {
     let app: INestApplication;
@@ -35,7 +39,7 @@ describe('AchievementsController (e2e)', () => {
         return request(app.getHttpServer())
             .get('/achievements')
             .expect(HttpStatus.OK)
-            .expect((res) => {
+            .expect((res: any) => {
                 expect(Array.isArray(res.body)).toBe(true);
                 // We expect there to be at least one achievement in the database
                 expect(res.body.length).toBeGreaterThan(0);
@@ -57,7 +61,7 @@ describe('AchievementsController (e2e)', () => {
         return request(app.getHttpServer())
             .get(`/achievements/${firstAchievement.id}`)
             .expect(HttpStatus.OK)
-            .expect((res) => {
+            .expect((res: any) => {
                 expect(typeof res.body).toBe('object');
                 expect(res.body.id).toBe(firstAchievement.id);
             });

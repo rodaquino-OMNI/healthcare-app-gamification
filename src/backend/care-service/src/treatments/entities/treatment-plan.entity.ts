@@ -8,27 +8,27 @@ export class TreatmentPlan {
     /**
      * Unique identifier for the treatment plan.
      */
-    id: string;
+    id!: string;
 
     /**
      * Name of the treatment plan.
      */
-    name: string;
+    name!: string;
 
     /**
      * Description of the treatment plan.
      */
-    description: string;
+    description!: string;
 
     /**
      * Start date of the treatment plan.
      */
-    startDate: Date;
+    startDate!: Date;
 
     /**
      * End date of the treatment plan.
      */
-    endDate: Date;
+    endDate!: Date;
 
     /**
      * Progress of the treatment plan (percentage from 0 to 100).
@@ -38,15 +38,15 @@ export class TreatmentPlan {
     /**
      * Reference to the care activity this treatment plan is associated with.
      */
-    careActivity: unknown;
+    careActivity!: unknown;
 
     /**
      * Date and time when the treatment plan was created.
      */
-    createdAt: Date;
+    createdAt!: Date;
 
     /**
      * Date and time when the treatment plan was last updated.
      */
-    updatedAt: Date;
+    updatedAt!: Date;
 }

@@ -20,8 +20,8 @@ import { MedicalEvent } from '@app/health/health/entities/medical-event.entity';
  */
 @Injectable()
 export class FHIRAdapter {
-    private fhirClient: FhirClient;
-    private config: Record<string, any>;
+    private fhirClient!: FhirClient;
+    private config!: Record<string, any>;
 
     /**
      * Initializes the FHIRAdapter.
@@ -290,8 +290,8 @@ export class FHIRAdapter {
 
             // Extract contact information
             const telecom = fhirPatient.telecom || [];
-            const phone = telecom.find((t) => t.system === 'phone')?.value || '';
-            const email = telecom.find((t) => t.system === 'email')?.value || '';
+            const phone = telecom.find((t: any) => t.system === 'phone')?.value || '';
+            const email = telecom.find((t: any) => t.system === 'email')?.value || '';
 
             // Extract address information
             const address = fhirPatient.address && fhirPatient.address.length > 0 ? fhirPatient.address[0] : null;
@@ -302,7 +302,7 @@ export class FHIRAdapter {
 
             // Extract identifiers (like CPF in Brazil)
             const identifiers =
-                fhirPatient.identifier?.map((id) => ({
+                fhirPatient.identifier?.map((id: any) => ({
                     system: id.system,
                     value: id.value,
                 })) || [];
@@ -329,7 +329,7 @@ export class FHIRAdapter {
                 maritalStatus: fhirPatient.maritalStatus?.text || '',
                 identifiers,
                 communication:
-                    fhirPatient.communication?.map((comm) => ({
+                    fhirPatient.communication?.map((comm: any) => ({
                         language: comm.language?.text || '',
                     })) || [],
                 source: 'FHIR',
@@ -365,8 +365,8 @@ export class FHIRAdapter {
 
             // Map each condition to a medical event
             return fhirResponse.entry
-                .filter((entry) => entry.resource && entry.resource.resourceType === 'Condition')
-                .map((entry) => {
+                .filter((entry: any) => entry.resource && entry.resource.resourceType === 'Condition')
+                .map((entry: any) => {
                     const condition = entry.resource;
 
                     // Extract clinical status (reserved for future use)
@@ -393,7 +393,7 @@ export class FHIRAdapter {
                     const provider = condition.asserter?.display || '';
 
                     // Extract notes (reserved for future use)
-                    const _notes = condition.note?.map((n) => n.text).join('\n') || '';
+                    const _notes = condition.note?.map((n: any) => n.text).join('\n') || '';
 
                     // Create a new MedicalEvent entity
                     const medicalEvent = new MedicalEvent();
@@ -402,7 +402,7 @@ export class FHIRAdapter {
                     medicalEvent.description = truncate(description, 255);
                     medicalEvent.date = recordedDate;
                     medicalEvent.provider = truncate(provider, 255);
-                    medicalEvent.documents = condition.supportingInfo?.map((info) => info.reference) || [];
+                    medicalEvent.documents = condition.supportingInfo?.map((info: any) => info.reference) || [];
                     medicalEvent.createdAt = new Date();
                     medicalEvent.updatedAt = new Date();
 

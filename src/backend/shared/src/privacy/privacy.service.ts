@@ -126,7 +126,7 @@ export class PrivacyService {
         });
 
         // Observation resources from HealthMetrics
-        for (const metric of data.healthMetrics as unknown[]) {
+        for (const metric of data.healthMetrics as Record<string, unknown>[]) {
             entries.push({
                 fullUrl: `urn:uuid:${metric.id}`,
                 resource: {
@@ -137,7 +137,7 @@ export class PrivacyService {
                         coding: [
                             {
                                 system: 'http://loinc.org',
-                                code: this.mapMetricTypeToLoinc(metric.type),
+                                code: this.mapMetricTypeToLoinc(metric.type as string),
                                 display: metric.type,
                             },
                         ],
@@ -153,7 +153,7 @@ export class PrivacyService {
         }
 
         // MedicationStatement resources
-        for (const med of data.medications as unknown[]) {
+        for (const med of data.medications as Record<string, unknown>[]) {
             entries.push({
                 fullUrl: `urn:uuid:${med.id}`,
                 resource: {
@@ -178,13 +178,13 @@ export class PrivacyService {
         }
 
         // Appointment resources
-        for (const appt of data.appointments as unknown[]) {
+        for (const appt of data.appointments as Record<string, unknown>[]) {
             entries.push({
                 fullUrl: `urn:uuid:${appt.id}`,
                 resource: {
                     resourceType: 'Appointment',
                     id: appt.id,
-                    status: this.mapAppointmentStatus(appt.status),
+                    status: this.mapAppointmentStatus(appt.status as string),
                     start: appt.dateTime,
                     participant: [
                         {
@@ -223,7 +223,7 @@ export class PrivacyService {
 
         const deletedCounts: Record<string, number> = {};
 
-        await this.prisma.$transaction(async (tx: Record<string, unknown>) => {
+        await this.prisma.$transaction(async (tx) => {
             // 1. Gamification child tables (via gameProfile)
             const gameProfile = await tx.gameProfile.findUnique({
                 where: { userId },
@@ -317,7 +317,7 @@ export class PrivacyService {
                 where: { userId },
                 select: { id: true },
             });
-            const planIds = userPlans.map((p: Record<string, unknown>) => p.id);
+            const planIds = userPlans.map((p) => p.id);
 
             if (planIds.length > 0) {
                 const delBenefits = await tx.benefit.deleteMany({

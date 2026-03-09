@@ -12,5 +12,5 @@ export class CheckSymptomsDto {
     @IsArray()
     @ArrayNotEmpty()
     @IsString({ each: true }) // Validates each element in the array is a string
-    symptoms: string[];
+    symptoms!: string[];
 }

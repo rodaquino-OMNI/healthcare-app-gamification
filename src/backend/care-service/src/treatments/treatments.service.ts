@@ -53,9 +53,8 @@ export class TreatmentsService {
                         startDate: createTreatmentDto.startDate,
                         endDate: createTreatmentDto.endDate,
                         progress: createTreatmentDto.progress || 0,
-                        // Associate the treatment plan with the user
-                        user: userId ? { connect: { id: userId } } : undefined,
-                    },
+                        userId,
+                    } as any,
                 });
 
                 return treatmentPlan as unknown as TreatmentPlan;

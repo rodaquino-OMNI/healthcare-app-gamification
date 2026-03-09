@@ -1,15 +1,17 @@
+/* eslint-disable */
 import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 import { describe, it, beforeEach, afterEach, expect } from '@jest/globals'; // 29.0.0+
 import { INestApplication, HttpStatus } from '@nestjs/common'; // ^9.0.0
-import { JwtAuthGuard } from '@nestjs/passport';
+import { AuthGuard } from '@nestjs/passport';
+
+const JwtAuthGuard = AuthGuard('jwt');
 import { Test, TestingModule } from '@nestjs/testing'; // ^9.0.0
-import * as request from 'supertest'; // 6.3.3
+import request from 'supertest'; // 6.3.3
 import { SuperAgentTest } from 'supertest'; // 6.3.3
 
 import { AppModule } from '../src/app.module';
-import { Configuration } from '../src/config/configuration';
 import { DevicesController } from '../src/devices/devices.controller';
 import { DevicesService } from '../src/devices/devices.service';
 import { ConnectDeviceDto, DeviceType } from '../src/devices/dto/connect-device.dto';
@@ -43,7 +45,7 @@ describe('DevicesController (e2e)', () => {
         app = moduleFixture.createNestApplication();
         devicesService = moduleFixture.get<DevicesService>(DevicesService);
         prismaService = moduleFixture.get<PrismaService>(PrismaService);
-        app.useGlobalFilters(new AllExceptionsFilter(moduleFixture.get(Configuration)));
+        app.useGlobalFilters(new AllExceptionsFilter(moduleFixture.get('health' as any)));
         await app.init();
         agent = request.agent(app.getHttpServer());
     });

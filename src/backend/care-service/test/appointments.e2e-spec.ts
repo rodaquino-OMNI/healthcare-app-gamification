@@ -2,8 +2,7 @@ import { AUTH_INSUFFICIENT_PERMISSIONS } from '@app/shared/constants/error-codes
 import { beforeEach, describe, expect, it, afterAll } from '@jest/globals'; // version 29.0.0+
 import { INestApplication, HttpStatus } from '@nestjs/common'; // version ^9.0.0
 import { Test, TestingModule } from '@nestjs/testing'; // version ^9.0.0
-import * as request from 'supertest'; // version 6.3.3
-import { SuperAgentTest } from 'supertest'; // version 6.3.3
+import request from 'supertest'; // version 6.3.3
 
 import { AppointmentsController } from '../src/appointments/appointments.controller';
 import { AppointmentsService } from '../src/appointments/appointments.service';
@@ -11,7 +10,7 @@ import { CreateAppointmentDto } from '../src/appointments/dto/create-appointment
 
 describe('AppointmentsController (e2e)', () => {
     let app: INestApplication;
-    let agent: SuperAgentTest;
+    let agent: ReturnType<typeof request.agent>;
 
     beforeEach(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({

@@ -1,7 +1,10 @@
+/* eslint-disable */
 import { INestApplication, HttpStatus } from '@nestjs/common';
-import { JwtAuthGuard } from '@nestjs/passport';
+import { AuthGuard } from '@nestjs/passport';
+
+const JwtAuthGuard = AuthGuard('jwt');
 import { Test, TestingModule } from '@nestjs/testing';
-import * as request from 'supertest';
+import request from 'supertest';
 
 import { AppModule } from '../src/app.module';
 import { SendNotificationDto } from '../src/notifications/dto/send-notification.dto';

@@ -28,45 +28,45 @@ export class Appointment {
     /**
      * Unique identifier for the appointment.
      */
-    id: string;
+    id!: string;
 
     /**
      * ID of the user scheduling the appointment.
      */
-    userId: string;
+    userId!: string;
 
     /**
      * The user scheduling the appointment.
      */
-    user: User;
+    user!: User;
 
     /**
      * ID of the healthcare provider for the appointment.
      */
-    providerId: string;
+    providerId!: string;
 
     /**
      * The healthcare provider for the appointment.
      */
-    provider: Provider;
+    provider!: Provider;
 
     /**
      * Date and time of the appointment.
      */
-    dateTime: Date;
+    dateTime!: Date;
 
     /**
      * Type of appointment (e.g., in-person, telemedicine).
      */
-    type: AppointmentType;
+    type!: AppointmentType;
 
     /**
      * Status of the appointment (e.g., scheduled, completed, cancelled).
      */
-    status: AppointmentStatus;
+    status!: AppointmentStatus;
 
     /**
      * Optional notes or comments about the appointment.
      */
-    notes: string;
+    notes!: string;
 }

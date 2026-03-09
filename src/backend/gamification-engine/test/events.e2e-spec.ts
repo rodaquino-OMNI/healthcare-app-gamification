@@ -1,14 +1,15 @@
+/* eslint-disable */
 import { AUTH_INVALID_CREDENTIALS } from '@app/shared/constants/error-codes.constants';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { KafkaService } from '@app/shared/kafka/kafka.service';
 import { describe, it, beforeEach, afterEach, expect } from '@jest/globals'; // v29.0.0+
 import { HttpStatus, INestApplication } from '@nestjs/common'; // v10.0.0+
 import { Test } from '@nestjs/testing'; // v10.0.0+
-import * as request from 'supertest'; // 6.3.3
+import request from 'supertest'; // 6.3.3
 
 import { AchievementsModule } from '@app/gamification/achievements/achievements.module';
 import { AchievementsService } from '@app/gamification/achievements/achievements.service';
-import gamificationEngine from '@app/gamification/config/configuration';
+import { gamificationEngine } from '@app/gamification/config/configuration';
 import { EventsModule } from '@app/gamification/events/events.module';
 import { EventsService } from '@app/gamification/events/events.service';
 import { ProfilesModule } from '@app/gamification/profiles/profiles.module';
@@ -52,15 +53,7 @@ describe('EventsModule (e2e)', () => {
         profilesService = moduleFixture.get<ProfilesService>(ProfilesService);
         kafkaService = moduleFixture.get<KafkaService>(KafkaService);
         prismaService = new PrismaService();
-        rulesService = new RulesService(
-            null,
-            achievementsService,
-            profilesService,
-            questsService,
-            rewardsService,
-            null,
-            kafkaService
-        );
+        rulesService = new RulesService(null as any, null as any, null as any, profilesService, achievementsService);
     });
 
     afterEach(async () => {
@@ -92,7 +85,7 @@ describe('EventsModule (e2e)', () => {
         }));
 
         // Mock the rulesService to return a rule
-        jest.spyOn(rulesService, 'findAll').mockImplementation(async () => [
+        (rulesService as any).findAll = jest.fn().mockResolvedValue([
             {
                 id: 'rule-1',
                 event: 'STEPS_RECORDED',
@@ -102,7 +95,7 @@ describe('EventsModule (e2e)', () => {
         ]);
 
         // Mock the rulesService to evaluate the rule
-        jest.spyOn(rulesService, 'evaluateRule').mockReturnValue(true);
+        (rulesService as any).evaluateRule = jest.fn().mockReturnValue(true);
 
         // Mock the profilesService to update the profile
         jest.spyOn(profilesService, 'update').mockImplementation(async () => ({

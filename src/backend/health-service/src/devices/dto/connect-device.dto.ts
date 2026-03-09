@@ -26,7 +26,7 @@ export class ConnectDeviceDto {
      */
     @IsNotEmpty({ message: 'Device ID is required' })
     @IsString({ message: 'Device ID must be a string' })
-    deviceId: string;
+    deviceId!: string;
 
     /**
      * Type of wearable device being connected
@@ -37,5 +37,5 @@ export class ConnectDeviceDto {
         message:
             'Invalid device type. Supported types: SMARTWATCH, FITNESS_TRACKER, HEART_RATE_MONITOR, BLOOD_PRESSURE_MONITOR, GLUCOSE_MONITOR, SCALE, SLEEP_TRACKER, OTHER',
     })
-    deviceType: DeviceType;
+    deviceType!: DeviceType;
 }

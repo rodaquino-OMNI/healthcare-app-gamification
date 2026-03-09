@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, HttpStatus } from '@nestjs/common';
-import * as request from 'supertest';
+import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../../shared/src/database/prisma.service';
 import { CreateUserDto } from '../src/users/dto/create-user.dto';

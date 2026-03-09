@@ -12,21 +12,21 @@ export class CreateAppointmentDto {
      */
     @IsNotEmpty()
     @IsUUID()
-    userId: string;
+    userId!: string;
 
     /**
      * ID of the healthcare provider for the appointment.
      */
     @IsNotEmpty()
     @IsUUID()
-    providerId: string;
+    providerId!: string;
 
     /**
      * Date and time of the appointment.
      */
     @IsNotEmpty()
     @IsDate()
-    dateTime: Date;
+    dateTime!: Date;
 
     /**
      * Type of appointment (e.g., in-person, telemedicine).
@@ -34,7 +34,7 @@ export class CreateAppointmentDto {
     @IsNotEmpty()
     @IsString()
     @IsIn(['in-person', 'telemedicine'])
-    type: string;
+    type!: string;
 
     /**
      * Optional reason for the appointment.

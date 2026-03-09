@@ -5,37 +5,37 @@ export class Provider {
     /**
      * Unique identifier for the provider.
      */
-    id: string;
+    id!: string;
 
     /**
      * Name of the provider.
      */
-    name: string;
+    name!: string;
 
     /**
      * Medical specialty of the provider.
      */
-    specialty: string;
+    specialty!: string;
 
     /**
      * Location of the provider's practice.
      */
-    location: string;
+    location!: string;
 
     /**
      * Contact phone number of the provider.
      */
-    phone: string;
+    phone!: string;
 
     /**
      * Contact email address of the provider.
      */
-    email: string;
+    email!: string;
 
     /**
      * Indicates whether the provider offers telemedicine services.
      */
-    telemedicineAvailable: boolean;
+    telemedicineAvailable!: boolean;
 
     /**
      * The constructor for the Provider class.

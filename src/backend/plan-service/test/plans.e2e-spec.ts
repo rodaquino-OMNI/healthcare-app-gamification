@@ -1,10 +1,10 @@
+/* eslint-disable */
 import { RolesGuard } from '@app/auth/auth/guards/roles.guard';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals'; // v29.0.0+
 import { HttpStatus, INestApplication } from '@nestjs/common'; // v10.0.0+
 import { Test } from '@nestjs/testing'; // v10.0.0+
-import { AuthMiddleware } from 'src/backend/api-gateway/src/middleware/auth.middleware';
-import * as request from 'supertest'; // v6.3.3
+import request from 'supertest'; // v6.3.3
 
 import { AppModule } from '@app/plan/app.module';
 
@@ -33,7 +33,7 @@ describe('Plans - E2E', () => {
         prismaService = moduleRef.get<PrismaService>(PrismaService);
 
         // Mock AuthMiddleware to set user context
-        app.use((req, res, next) => {
+        app.use((req: any, res: any, next: any) => {
             req.user = {
                 id: 'test-user-id',
                 email: 'test@example.com',
@@ -64,6 +64,7 @@ describe('Plans - E2E', () => {
                 id: 'test-user-id',
                 email: 'test@example.com',
                 name: 'Test User',
+                password: 'test-password-hash',
             },
         });
 
@@ -118,7 +119,7 @@ describe('Plans - E2E', () => {
             return request(app.getHttpServer())
                 .get('/plans')
                 .expect(HttpStatus.OK)
-                .expect((res) => {
+                .expect((res: any) => {
                     expect(Array.isArray(res.body)).toBeTruthy();
                     expect(res.body.length).toBeGreaterThan(0);
                     expect(res.body[0]).toHaveProperty('id');
@@ -136,7 +137,7 @@ describe('Plans - E2E', () => {
             return request(app.getHttpServer())
                 .get(`/plans/${testPlanId}`)
                 .expect(HttpStatus.OK)
-                .expect((res) => {
+                .expect((res: any) => {
                     expect(res.body).toHaveProperty('id', testPlanId);
                     expect(res.body).toHaveProperty('planNumber', 'TEST-PLAN-123');
                     expect(res.body).toHaveProperty('type', 'HEALTH');
@@ -155,6 +156,7 @@ describe('Plans - E2E', () => {
                 data: {
                     email: 'another@example.com',
                     name: 'Another User',
+                    password: 'test-password-hash',
                 },
             });
 
@@ -203,7 +205,7 @@ describe('Plans - E2E', () => {
                 .post('/plans')
                 .send(newPlan)
                 .expect(HttpStatus.CREATED)
-                .expect((res) => {
+                .expect((res: any) => {
                     expect(res.body).toHaveProperty('id');
                     expect(res.body).toHaveProperty('planNumber', 'NEW-PLAN-456');
                     expect(res.body).toHaveProperty('type', 'DENTAL');
@@ -246,7 +248,7 @@ describe('Plans - E2E', () => {
                 .put(`/plans/${testPlanId}`)
                 .send(updatedDetails)
                 .expect(HttpStatus.OK)
-                .expect((res) => {
+                .expect((res: any) => {
                     expect(res.body).toHaveProperty('id', testPlanId);
                     expect(res.body).toHaveProperty('planNumber', 'TEST-PLAN-123-UPDATED');
                     expect(res.body.coverageDetails).toHaveProperty('network', 'VIP');
@@ -267,6 +269,7 @@ describe('Plans - E2E', () => {
                 data: {
                     email: 'another-update@example.com',
                     name: 'Another Update User',
+                    password: 'test-password-hash',
                 },
             });
 
@@ -332,6 +335,7 @@ describe('Plans - E2E', () => {
                 data: {
                     email: 'another-delete@example.com',
                     name: 'Another Delete User',
+                    password: 'test-password-hash',
                 },
             });
 
@@ -365,7 +369,7 @@ describe('Plans - E2E', () => {
             return request(app.getHttpServer())
                 .get(`/plans/${testPlanId}/coverage`)
                 .expect(HttpStatus.OK)
-                .expect((res) => {
+                .expect((res: any) => {
                     expect(res.body).toHaveProperty('network', 'VIP'); // Updated value from previous test
                     expect(res.body).toHaveProperty('hospital', true);
                     expect(res.body).toHaveProperty('dental', true);
@@ -389,14 +393,14 @@ describe('Plans - E2E', () => {
                         type: 'WELLNESS',
                         description: 'Annual wellness check-up',
                         limitations: 'Once per year',
-                        usage: 0,
+                        usage: '0',
                     },
                     {
                         planId: testPlanId,
                         type: 'GYM',
                         description: 'Gym membership discount',
                         limitations: 'Up to $50 per month',
-                        usage: 2,
+                        usage: '2',
                     },
                 ],
             });
@@ -404,7 +408,7 @@ describe('Plans - E2E', () => {
             return request(app.getHttpServer())
                 .get(`/plans/${testPlanId}/benefits`)
                 .expect(HttpStatus.OK)
-                .expect((res) => {
+                .expect((res: any) => {
                     expect(Array.isArray(res.body)).toBeTruthy();
                     expect(res.body.length).toBe(2);
                     expect(res.body[0]).toHaveProperty('type');
@@ -435,7 +439,7 @@ describe('Plans - E2E', () => {
             await request(app.getHttpServer())
                 .get(`/plans/${emptyPlan.id}/benefits`)
                 .expect(HttpStatus.OK)
-                .expect((res) => {
+                .expect((res: any) => {
                     expect(Array.isArray(res.body)).toBeTruthy();
                     expect(res.body.length).toBe(0);
                 });
@@ -463,7 +467,7 @@ describe('Plans - E2E', () => {
                 .post(`/plans/${testPlanId}/benefits`)
                 .send(newBenefit)
                 .expect(HttpStatus.CREATED)
-                .expect((res) => {
+                .expect((res: any) => {
                     expect(res.body).toHaveProperty('id');
                     expect(res.body).toHaveProperty('planId', testPlanId);
                     expect(res.body).toHaveProperty('type', 'NUTRITION');
@@ -497,6 +501,7 @@ describe('Plans - E2E', () => {
                 data: {
                     email: 'another-benefit@example.com',
                     name: 'Another Benefit User',
+                    password: 'test-password-hash',
                 },
             });
 

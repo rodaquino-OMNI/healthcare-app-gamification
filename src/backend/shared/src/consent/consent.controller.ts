@@ -34,7 +34,7 @@ export class ConsentController {
     @ApiOperation({ summary: 'List all consent records for the authenticated user' })
     @ApiResponse({ status: 200, description: 'List of consent records returned.' })
     async getUserConsents(@Req() req: AuthRequest): Promise<unknown> {
-        const userId = req.user?.id || req.user?.sub;
+        const userId = req.user?.id || req.user?.sub || '';
         return this.consentService.getUserConsents(userId);
     }
 
@@ -44,7 +44,7 @@ export class ConsentController {
     @ApiResponse({ status: 400, description: 'Invalid consent data.' })
     // eslint-disable-next-line max-len
     async createConsent(@Req() req: AuthRequest, @Body(ValidationPipe) dto: CreateConsentDto): Promise<unknown> {
-        const userId = req.user?.id || req.user?.sub;
+        const userId = req.user?.id || req.user?.sub || '';
         const ip = req.ip || req.headers?.['x-forwarded-for'];
         const userAgent = req.headers?.['user-agent'];
         return this.consentService.createConsent(userId, dto, ip, userAgent);
@@ -56,7 +56,7 @@ export class ConsentController {
     @ApiResponse({ status: 404, description: 'Consent record not found.' })
     @ApiResponse({ status: 403, description: 'Cannot revoke consent belonging to another user.' })
     async revokeConsent(@Req() req: AuthRequest, @Param('id') id: string): Promise<unknown> {
-        const userId = req.user?.id || req.user?.sub;
+        const userId = req.user?.id || req.user?.sub || '';
         return this.consentService.revokeConsent(userId, id);
     }
 
@@ -67,7 +67,7 @@ export class ConsentController {
         @Req() req: AuthRequest,
         @Param('type') type: string
     ): Promise<{ consentType: ConsentType; hasConsent: boolean }> {
-        const userId = req.user?.id || req.user?.sub;
+        const userId = req.user?.id || req.user?.sub || '';
         const consentType = type as ConsentType;
         const hasConsent = await this.consentService.hasActiveConsent(userId, consentType);
         return { consentType, hasConsent };
