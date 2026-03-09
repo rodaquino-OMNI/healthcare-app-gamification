@@ -25,7 +25,7 @@
     "publish": "turbo run build && changeset publish"
   },
   "dependencies": {
-    "@apollo/client": "^3.8.10",
+    "@apollo/client": "^4.0.0",
     "@changesets/cli": "^2.27.1",
     "@datadog/browser-rum": "^5.5.0",
     "@expo/vector-icons": "14.0.0",
