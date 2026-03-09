@@ -1,57 +1,57 @@
-import React from 'react';
-import { useForm } from 'react-hook-form'; // react-hook-form 7.0+
-import { yupResolver } from '@hookform/resolvers/yup'; // @hookform/resolvers 3.0+
-import { useMutation } from '@apollo/client'; // @apollo/client 3.7.17
-import { HealthMetricType } from 'shared/types/health.types';
-import Input from 'design-system/components/Input/Input';
+import { useMutation } from '@apollo/client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Input } from 'design-system/components/Input/Input';
 import { Select } from 'design-system/components/Select/Select';
-import { useAuth } from '@/hooks/useAuth';
-import { claimValidationSchema } from 'shared/utils/validation';
+import React from 'react';
+import { useForm } from 'react-hook-form';
 import { CREATE_HEALTH_METRIC } from 'shared/graphql/mutations/health.mutations';
 import { GET_HEALTH_METRICS } from 'shared/graphql/queries/health.queries';
+import { HealthMetricType } from 'shared/types/health.types';
+import { claimValidationSchema } from 'shared/utils/validation';
+
+import { useAuth } from '@/hooks/useAuth';
 
 /**
  * A form component for creating and updating health metrics.
  */
 export const HealthMetricForm: React.FC = () => {
-    // Initialize the form state using React Hook Form and Yup for validation.
+    // Initialize the form state using React Hook Form and Zod for validation.
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm({
-        resolver: yupResolver(claimValidationSchema),
+        resolver: zodResolver(claimValidationSchema),
     });
 
     // Retrieve the current user's ID using the useAuth hook.
     const { session } = useAuth();
     const userId = session?.user?.id;
 
+    // Define the CREATE_HEALTH_METRIC mutation using the useMutation hook.
+    const [createHealthMetric] = useMutation(CREATE_HEALTH_METRIC);
+
     // Define the onSubmit function to handle form submission.
-    const onSubmit = async (data: Record<string, unknown>) => {
+    const onSubmit = (data: Record<string, unknown>): void => {
         if (!userId) {
-            console.error('User ID is not available.');
             return;
         }
 
         // Execute the CREATE_HEALTH_METRIC mutation to create a new health metric.
-        createHealthMetric({
+        void createHealthMetric({
             variables: {
-                recordId: userId, // Assuming recordId is the same as userId
+                recordId: userId,
                 createMetricDto: {
-                    type: data.procedureType,
-                    value: parseFloat(data.amount),
+                    type: String(data.procedureType),
+                    value: parseFloat(String(data.amount)),
                     timestamp: new Date().toISOString(),
-                    unit: 'units', // Replace with actual unit
+                    unit: 'units',
                     source: 'manual',
                 },
             },
             refetchQueries: [{ query: GET_HEALTH_METRICS, variables: { userId } }],
         });
     };
-
-    // Define the CREATE_HEALTH_METRIC mutation using the useMutation hook.
-    const [createHealthMetric] = useMutation(gql(CREATE_HEALTH_METRIC));
 
     // Define options for the Select component
     const healthMetricOptions = Object.values(HealthMetricType).map((type) => ({
@@ -61,15 +61,20 @@ export const HealthMetricForm: React.FC = () => {
 
     // Render the form with input fields for metric type, value, and timestamp.
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form
+            onSubmit={(e) => {
+                void handleSubmit(onSubmit)(e);
+            }}
+        >
             <div>
                 <Select
                     label="Metric Type"
                     options={healthMetricOptions}
-                    {...register('procedureType')}
+                    value=""
+                    onChange={() => {}}
                     aria-label="Select metric type"
                 />
-                {errors.procedureType && <span>{errors.procedureType.message}</span>}
+                {errors.procedureType && <span>{String(errors.procedureType.message ?? '')}</span>}
             </div>
 
             <div>
@@ -79,7 +84,7 @@ export const HealthMetricForm: React.FC = () => {
                     {...register('amount')}
                     aria-label="Enter metric value"
                 />
-                {errors.amount && <span>{errors.amount.message}</span>}
+                {errors.amount && <span>{String(errors.amount.message ?? '')}</span>}
             </div>
 
             <button type="submit">Submit</button>

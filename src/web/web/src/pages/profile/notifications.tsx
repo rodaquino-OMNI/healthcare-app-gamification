@@ -1,9 +1,11 @@
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
+
 import { MainLayout } from '@/layouts/MainLayout';
+
 import { restClient } from '../../api/client';
 
 const PageContainer = styled.div`
@@ -137,7 +139,7 @@ interface NotificationPreference {
  * Notification preferences page - allows users to configure notification settings.
  * Mirrors the mobile SettingsNotifications screen.
  */
-export default function NotificationPreferencesPage() {
+export default function NotificationPreferencesPage(): React.ReactElement {
     const [preferences, setPreferences] = useState<NotificationPreference[]>([
         {
             key: 'push',
@@ -189,14 +191,14 @@ export default function NotificationPreferencesPage() {
         },
     ]);
 
-    const togglePreference = (key: string) => {
+    const togglePreference = (key: string): void => {
         setPreferences((prev) => prev.map((pref) => (pref.key === key ? { ...pref, enabled: !pref.enabled } : pref)));
     };
 
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const handleSave = async () => {
+    const handleSave = async (): Promise<void> => {
         setSaving(true);
         setError(null);
         try {
@@ -220,7 +222,7 @@ export default function NotificationPreferencesPage() {
     const healthPrefs = preferences.filter((p) => ['medications', 'appointments', 'health_goals'].includes(p.key));
     const otherPrefs = preferences.filter((p) => ['plan_updates', 'achievements', 'marketing'].includes(p.key));
 
-    const renderToggle = (pref: NotificationPreference) => (
+    const renderToggle = (pref: NotificationPreference): React.ReactNode => (
         <ToggleRow key={pref.key}>
             <div>
                 <ToggleLabel>{pref.label}</ToggleLabel>
@@ -261,7 +263,7 @@ export default function NotificationPreferencesPage() {
 
                 {error && <Subtitle style={{ color: colors.semantic?.error || '#dc2626' }}>{error}</Subtitle>}
 
-                <SaveButton onClick={handleSave} disabled={saving}>
+                <SaveButton onClick={() => void handleSave()} disabled={saving}>
                     {saving ? 'Salvando...' : 'Salvar Preferencias'}
                 </SaveButton>
             </PageContainer>

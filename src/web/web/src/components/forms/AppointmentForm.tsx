@@ -1,14 +1,11 @@
-import React, { useCallback } from 'react'; // react ^18.0.0
-import { useRouter } from 'next/router'; // next/router latest
-import { useForm } from 'react-hook-form'; // react-hook-form 7.0+
-import { yupResolver } from '@hookform/resolvers/yup'; // @hookform/resolvers/yup latest
-import * as yup from 'yup'; // yup latest
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Input, Select, Button } from 'design-system/components';
+import { useRouter } from 'next/router';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
-import { Appointment } from 'shared/types/care.types';
-import { API_BASE_URL } from 'shared/constants/index';
-import { useAppointments } from '@/hooks/useAppointments';
 import { useJourney } from '@/context/JourneyContext';
-import { Input, Select, Button, DatePicker } from 'design-system/components';
 
 /**
  * Interface defining the props for the AppointmentForm component.
@@ -24,13 +21,13 @@ interface AppointmentFormValues {
     provider: string;
     date: Date | null;
     time: string;
-    reason: string;
+    reason?: string;
 }
 
 /**
  * Defines the validation schema for the appointment form using Yup.
  */
-const appointmentValidationSchema: yup.ObjectSchema<AppointmentFormValues> = yup.object().shape({
+const appointmentValidationSchema = yup.object().shape({
     provider: yup.string().required('Provider is required'),
     date: yup.date().required('Date is required').nullable(),
     time: yup.string().required('Time is required'),
@@ -48,6 +45,7 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = () => {
         handleSubmit,
         formState: { errors },
     } = useForm<AppointmentFormValues>({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         resolver: yupResolver(appointmentValidationSchema),
         defaultValues: {
             provider: '',
@@ -64,13 +62,13 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = () => {
     const router = useRouter();
 
     // Mock appointment submission handler
-    const onSubmit = async (data: AppointmentFormValues) => {
+    const onSubmit = async (data: AppointmentFormValues): Promise<void> => {
         // Mock API call
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         // Redirect to a confirmation page or display a success message
         alert(`Appointment booked with ${data.provider} on ${data.date?.toLocaleDateString()} at ${data.time}`);
-        router.push('/care/appointments');
+        void router.push('/care/appointments');
     };
 
     // Define options for the time select
@@ -85,7 +83,11 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = () => {
 
     // Renders a form with fields for provider, date, time, and reason.
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form
+            onSubmit={(e) => {
+                void handleSubmit(onSubmit)(e);
+            }}
+        >
             {/* Uses design system components for input fields and buttons. */}
             <Input
                 label="Provider"
@@ -94,15 +96,15 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = () => {
                 error={errors.provider?.message}
             />
 
-            <DatePicker
+            <Input
                 label="Date"
+                type="date"
                 placeholder="Select date"
-                dateFormat="MM/dd/yyyy"
                 {...register('date')}
                 error={errors.date?.message}
             />
 
-            <Select label="Time" options={timeOptions} placeholder="Select time" {...register('time')} />
+            <Select label="Time" options={timeOptions} placeholder="Select time" value="" onChange={() => {}} />
 
             <Input
                 label="Reason"
@@ -112,7 +114,14 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = () => {
             />
 
             {/* Handles form submission and API interaction. */}
-            <Button type="submit" journey={currentJourney}>
+            <Button
+                type="submit"
+                journey={
+                    currentJourney === 'health' || currentJourney === 'care' || currentJourney === 'plan'
+                        ? currentJourney
+                        : undefined
+                }
+            >
                 Book Appointment
             </Button>
         </form>

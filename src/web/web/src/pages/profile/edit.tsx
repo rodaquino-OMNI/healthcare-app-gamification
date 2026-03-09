@@ -1,10 +1,12 @@
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useRouter } from 'next/navigation';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
+
 import { MainLayout } from '@/layouts/MainLayout';
+
 import { getProfile } from '../../api/auth';
 import { restClient } from '../../api/client';
 
@@ -128,7 +130,7 @@ interface ProfileData {
  * Profile edit page - allows users to update their personal information.
  * Mirrors the mobile SettingsEdit screen.
  */
-export default function ProfileEditPage() {
+export default function ProfileEditPage(): React.ReactElement {
     const router = useRouter();
     const [saving, setSaving] = useState(false);
     const [form, setForm] = useState<ProfileData>({
@@ -140,10 +142,10 @@ export default function ProfileEditPage() {
     });
 
     const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [_loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchProfile = async () => {
+        const fetchProfile = async (): Promise<void> => {
             setLoading(true);
             try {
                 const data = await getProfile();
@@ -160,14 +162,14 @@ export default function ProfileEditPage() {
                 setLoading(false);
             }
         };
-        fetchProfile();
+        void fetchProfile();
     }, []);
 
     const handleChange = (field: keyof ProfileData) => (e: React.ChangeEvent<HTMLInputElement>) => {
         setForm((prev) => ({ ...prev, [field]: e.target.value }));
     };
 
-    const handleSave = async (e: React.FormEvent) => {
+    const handleSave = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
         setSaving(true);
         setError(null);
@@ -189,7 +191,7 @@ export default function ProfileEditPage() {
 
                 {error && <Subtitle style={{ color: colors.semantic.error }}>{error}</Subtitle>}
 
-                <form onSubmit={handleSave}>
+                <form onSubmit={(e) => void handleSave(e)}>
                     <FieldGroup>
                         <Label htmlFor="name">Nome Completo</Label>
                         <StyledInput

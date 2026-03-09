@@ -1,5 +1,5 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
 
 jest.mock('@/hooks/useGamification', () => ({
     useGameProfile: () => ({
@@ -40,8 +40,30 @@ jest.mock('@/hooks/useGamification', () => ({
     }),
 }));
 
+interface MockSpreadProps {
+    children?: React.ReactNode;
+    [key: string]: unknown;
+}
+
+interface MockAchievementBadgeProps {
+    achievement: { id: string; title: string };
+    size?: string;
+    showProgress?: boolean;
+}
+
+interface MockLevelIndicatorProps {
+    level: number;
+    currentXp?: number;
+    nextLevelXp?: number;
+}
+
+interface MockXPCounterProps {
+    value: number;
+    size?: string;
+}
+
 jest.mock('design-system/components/Card/Card', () => ({
-    Card: ({ children, ...props }: any) => (
+    Card: ({ children, ...props }: MockSpreadProps) => (
         <div data-testid="card" {...props}>
             {children}
         </div>
@@ -49,7 +71,7 @@ jest.mock('design-system/components/Card/Card', () => ({
 }));
 
 jest.mock('design-system/gamification/AchievementBadge', () => ({
-    AchievementBadge: ({ achievement, size, showProgress }: any) => (
+    AchievementBadge: ({ achievement, size, showProgress: _showProgress }: MockAchievementBadgeProps) => (
         <div data-testid="achievement-badge" data-id={achievement.id} data-size={size}>
             {achievement.title}
         </div>
@@ -57,13 +79,13 @@ jest.mock('design-system/gamification/AchievementBadge', () => ({
 }));
 
 jest.mock('design-system/gamification/LevelIndicator', () => ({
-    LevelIndicator: ({ level, currentXp, nextLevelXp }: any) => (
+    LevelIndicator: ({ level, currentXp: _currentXp, nextLevelXp: _nextLevelXp }: MockLevelIndicatorProps) => (
         <div data-testid="level-indicator" data-level={level} />
     ),
 }));
 
 jest.mock('design-system/gamification/XPCounter', () => ({
-    XPCounter: ({ value, size }: any) => (
+    XPCounter: ({ value, size }: MockXPCounterProps) => (
         <div data-testid="xp-counter" data-value={value} data-size={size}>
             {value} XP
         </div>
@@ -71,11 +93,11 @@ jest.mock('design-system/gamification/XPCounter', () => ({
 }));
 
 jest.mock('design-system/primitives/Text/Text', () => ({
-    Text: ({ children, ...props }: any) => <span {...props}>{children}</span>,
+    Text: ({ children, ...props }: MockSpreadProps) => <span {...props}>{children}</span>,
 }));
 
 jest.mock('design-system/primitives/Box/Box', () => ({
-    Box: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+    Box: ({ children, ...props }: MockSpreadProps) => <div {...props}>{children}</div>,
 }));
 
 jest.mock('design-system/tokens/colors', () => ({

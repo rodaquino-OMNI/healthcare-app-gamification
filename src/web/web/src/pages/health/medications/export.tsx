@@ -1,11 +1,11 @@
-import React, { useState, useMemo } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState, useMemo } from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
 /**
@@ -86,11 +86,11 @@ const ExportPage: React.FC = () => {
         }
     }, [selectedScope]);
 
-    const handleExport = () => {
+    const handleExport = (): void => {
         window.alert(`Exporting ${exportCount} medications as ${selectedFormat.toUpperCase()}`);
     };
 
-    const handleShare = () => {
+    const handleShare = (): void => {
         window.alert('Share exported file feature coming soon.');
     };
 
@@ -98,7 +98,7 @@ const ExportPage: React.FC = () => {
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <Box display="flex" style={{ alignItems: 'center', marginBottom: spacing.xl }}>
                 <button
-                    onClick={() => router.push(WEB_HEALTH_ROUTES.MEDICATIONS)}
+                    onClick={() => void router.push(WEB_HEALTH_ROUTES.MEDICATIONS)}
                     style={{
                         background: 'none',
                         border: 'none',

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 interface MedicationField {
     label: string;
@@ -27,7 +27,7 @@ const OCRReviewPage: React.FC = () => {
         { label: 'Prescritor', value: 'Dr. João Silva', editable: false },
     ]);
 
-    const handleFieldChange = (index: number, newValue: string) => {
+    const handleFieldChange = (index: number, newValue: string): void => {
         const updated = [...fields];
         updated[index].value = newValue;
         setFields(updated);
@@ -64,7 +64,7 @@ const OCRReviewPage: React.FC = () => {
                                     borderRadius: '8px',
                                     border: `1px solid ${colors.neutral.gray300}`,
                                     fontSize: '14px',
-                                    backgroundColor: field.editable ? '#fff' : colors.gray[100],
+                                    backgroundColor: field.editable ? '#fff' : colors.gray[10],
                                     color: colors.neutral.gray900,
                                     fontFamily: 'inherit',
                                 }}

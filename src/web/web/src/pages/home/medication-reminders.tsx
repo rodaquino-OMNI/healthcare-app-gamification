@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
 import { borderRadius } from 'design-system/tokens/borderRadius';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import React, { useState } from 'react';
 
 interface MedicationReminder {
     id: string;
@@ -20,11 +20,11 @@ const INITIAL_REMINDERS: MedicationReminder[] = [
 const MedicationRemindersPage: React.FC = () => {
     const [reminders, setReminders] = useState(INITIAL_REMINDERS);
 
-    const handleTake = (id: string) => {
+    const handleTake = (id: string): void => {
         setReminders((prev) => prev.filter((r) => r.id !== id));
     };
 
-    const handleSkip = (id: string) => {
+    const handleSkip = (id: string): void => {
         setReminders((prev) => prev.filter((r) => r.id !== id));
     };
 

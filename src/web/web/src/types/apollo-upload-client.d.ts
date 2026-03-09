@@ -1,6 +1,6 @@
-declare module 'apollo-upload-client' {
+declare module 'apollo-upload-client/createUploadLink.mjs' {
     import { ApolloLink } from '@apollo/client';
-    export function createUploadLink(options?: {
+    export default function createUploadLink(options?: {
         uri?: string;
         credentials?: string;
         headers?: Record<string, string>;

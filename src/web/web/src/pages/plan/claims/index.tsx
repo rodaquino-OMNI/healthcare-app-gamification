@@ -1,12 +1,12 @@
-import React, { useState, useMemo } from 'react';
+import { ClaimCard } from 'design-system/plan/ClaimCard/ClaimCard';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
+import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Claim, ClaimStatus } from 'shared/types/plan.types';
 
-import { ClaimCard } from 'design-system/plan/ClaimCard/ClaimCard';
 import { useClaims } from '@/hooks/useClaims';
-import { useJourney } from '@/hooks/useJourney';
-import { ClaimStatus } from 'shared/types/plan.types';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 
 const { plan } = colors.journeys;
 
@@ -24,22 +24,26 @@ const FILTER_TABS: { key: FilterTab; label: string }[] = [
  */
 const Claims: NextPage = () => {
     const { claims, loading, error } = useClaims();
-    const { journey, t } = useJourney();
+    const { t } = useTranslation();
     const router = useRouter();
     const [activeFilter, setActiveFilter] = useState<FilterTab>('all');
 
     const filteredClaims = useMemo(() => {
-        if (!claims) return [];
-        if (activeFilter === 'all') return claims;
-        return claims.filter((c) => c.status === activeFilter);
+        if (!claims) {
+            return [];
+        }
+        if (activeFilter === 'all') {
+            return claims;
+        }
+        return claims.filter((c: Claim) => c.status === activeFilter);
     }, [claims, activeFilter]);
 
-    const handleViewClaimDetails = (claimId: string) => {
-        router.push(`/plan/claims/${claimId}`);
+    const handleViewClaimDetails = (claimId: string): void => {
+        void router.push(`/plan/claims/${claimId}`);
     };
 
-    const handleAddClaim = () => {
-        router.push('/plan/claims/submit');
+    const handleAddClaim = (): void => {
+        void router.push('/plan/claims/submit');
     };
 
     if (loading) {
@@ -150,7 +154,7 @@ const Claims: NextPage = () => {
             {/* Claims List */}
             {filteredClaims.length > 0 ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
-                    {filteredClaims.map((claim) => (
+                    {filteredClaims.map((claim: Claim) => (
                         <ClaimCard
                             key={claim.id}
                             claim={claim}

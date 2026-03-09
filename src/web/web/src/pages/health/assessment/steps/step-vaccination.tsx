@@ -1,8 +1,8 @@
-import React from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -65,7 +65,7 @@ const StepVaccinationPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                 </Text>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
                     {COVID_OPTIONS.map(({ key, label }) => {
-                        const isActive = data.covidStatus === key;
+                        const isActive = (data.covidStatus as string) === key;
                         return (
                             <button
                                 key={key}
@@ -118,8 +118,8 @@ const StepVaccinationPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                         <button
                             key={opt}
                             onClick={() => onUpdate('fluVaccine', opt)}
-                            style={chipStyle(data.fluVaccine === opt)}
-                            aria-pressed={data.fluVaccine === opt}
+                            style={chipStyle((data.fluVaccine as string) === opt)}
+                            aria-pressed={(data.fluVaccine as string) === opt}
                             aria-label={opt === 'yes' ? 'Yes' : 'No'}
                         >
                             {opt === 'yes' ? 'Yes' : 'No'}
@@ -146,8 +146,8 @@ const StepVaccinationPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                         <button
                             key={key}
                             onClick={() => onUpdate('otherVaccines', key)}
-                            style={chipStyle(data.otherVaccines === key)}
-                            aria-pressed={data.otherVaccines === key}
+                            style={chipStyle((data.otherVaccines as string) === key)}
+                            aria-pressed={(data.otherVaccines as string) === key}
                             aria-label={label}
                         >
                             {label}
@@ -170,8 +170,8 @@ const StepVaccinationPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                         <button
                             key={opt}
                             onClick={() => onUpdate('vaccinationCard', opt)}
-                            style={chipStyle(data.vaccinationCard === opt)}
-                            aria-pressed={data.vaccinationCard === opt}
+                            style={chipStyle((data.vaccinationCard as string) === opt)}
+                            aria-pressed={(data.vaccinationCard as string) === opt}
                             aria-label={opt === 'yes' ? 'Yes' : 'No'}
                         >
                             {opt === 'yes' ? 'Yes' : 'No'}

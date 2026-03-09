@@ -1,8 +1,8 @@
+import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
 
 jest.mock('@/layouts/PlanLayout', () => ({
-    default: ({ children }: any) => <div data-testid="plan-layout">{children}</div>,
+    default: ({ children }: { children: React.ReactNode }) => <div data-testid="plan-layout">{children}</div>,
 }));
 
 jest.mock('@/hooks/useAuth', () => ({
@@ -19,11 +19,11 @@ jest.mock('@/hooks/useCoverage', () => ({
 }));
 
 jest.mock('@/components/shared/LoadingIndicator', () => ({
-    default: ({ text }: any) => <div data-testid="loading">{text}</div>,
+    default: ({ text }: { text?: string }) => <div data-testid="loading">{text}</div>,
 }));
 
 jest.mock('@/components/shared/ErrorState', () => ({
-    default: ({ message, onRetry }: any) => (
+    default: ({ message, onRetry }: { message?: string; onRetry?: () => void }) => (
         <div data-testid="error-state">
             <p>{message}</p>
             <button onClick={onRetry}>Retry</button>
@@ -32,16 +32,26 @@ jest.mock('@/components/shared/ErrorState', () => ({
 }));
 
 jest.mock('next-seo', () => ({
-    NextSeo: ({ title }: any) => <title>{title}</title>,
+    NextSeo: ({ title }: { title?: string }) => <title>{title}</title>,
 }));
 
 jest.mock('design-system/plan/CoverageInfoCard', () => ({
-    default: ({ coverage }: any) => <div data-testid="coverage-card">{coverage.type}</div>,
+    default: ({ coverage }: { coverage: { type: string } }) => <div data-testid="coverage-card">{coverage.type}</div>,
 }));
 
 jest.mock('design-system/primitives', () => ({
-    Box: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-    Text: ({ children, as: Tag = 'span', ...props }: any) => <Tag {...props}>{children}</Tag>,
+    Box: ({ children, ...props }: React.HTMLAttributes<HTMLDivElement> & { children?: React.ReactNode }) => (
+        <div {...props}>{children}</div>
+    ),
+    Text: ({
+        children,
+        as: Tag = 'span',
+        ...props
+    }: {
+        children?: React.ReactNode;
+        as?: keyof JSX.IntrinsicElements;
+        [key: string]: unknown;
+    }) => <Tag {...(props as React.HTMLAttributes<HTMLElement>)}>{children}</Tag>,
 }));
 
 jest.mock('design-system/tokens', () => ({
@@ -90,8 +100,8 @@ describe('Coverage Page', () => {
 
 describe('Coverage Page - Loading State', () => {
     it('renders loading indicator when loading', () => {
-        const { useCoverage } = require('@/hooks/useCoverage');
-        useCoverage.mockReturnValue({ data: null, isLoading: true, isError: false, refetch: jest.fn() });
+        const coverageModule: { useCoverage: jest.Mock } = jest.requireMock('@/hooks/useCoverage');
+        coverageModule.useCoverage.mockReturnValue({ data: null, isLoading: true, isError: false, refetch: jest.fn() });
         const { container } = render(<CoveragePage />);
         expect(container).toBeTruthy();
     });
@@ -99,8 +109,8 @@ describe('Coverage Page - Loading State', () => {
 
 describe('Coverage Page - Error State', () => {
     it('renders error state when there is an error', () => {
-        const { useCoverage } = require('@/hooks/useCoverage');
-        useCoverage.mockReturnValue({ data: null, isLoading: false, isError: true, refetch: jest.fn() });
+        const coverageModule: { useCoverage: jest.Mock } = jest.requireMock('@/hooks/useCoverage');
+        coverageModule.useCoverage.mockReturnValue({ data: null, isLoading: false, isError: true, refetch: jest.fn() });
         const { container } = render(<CoveragePage />);
         expect(container).toBeTruthy();
     });

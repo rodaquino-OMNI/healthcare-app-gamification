@@ -1,11 +1,12 @@
+import { borderRadius } from 'design-system/tokens/borderRadius';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/navigation';
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
-import { useRouter } from 'next/navigation';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
-import { borderRadius } from 'design-system/tokens/borderRadius';
-import AuthLayout from '@/layouts/AuthLayout';
+
+import { AuthLayout } from '@/layouts/AuthLayout';
 
 const ContentContainer = styled.div`
     display: flex;
@@ -181,7 +182,7 @@ const PREFS: PrefItem[] = [
  * Notification Preferences page - allows users to configure
  * which notifications they want to receive.
  */
-export default function NotificationPrefsPage() {
+export default function NotificationPrefsPage(): React.ReactElement {
     const router = useRouter();
 
     const [prefs, setPrefs] = useState<Record<string, boolean>>(() => {
@@ -199,7 +200,7 @@ export default function NotificationPrefsPage() {
         }));
     }, []);
 
-    const handleSave = () => {
+    const handleSave = (): void => {
         router.push('/profile/confirmation');
     };
 

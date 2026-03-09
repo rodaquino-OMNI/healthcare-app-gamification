@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router'; // next/router v13.0+
 import { format } from 'date-fns'; // date-fns v2.30+
-import { Head } from 'next/head'; // next/head v13.0+
-import { CareLayout } from '@/layouts/CareLayout';
-import { useAppointments } from '@/hooks/useAppointments';
-import { Appointment } from 'shared/types/care.types';
 import { Button, Card } from 'design-system/components';
 import { Box, Text } from 'design-system/primitives';
-import { EmptyState } from '@/components/shared/EmptyState';
-import { LoadingIndicator } from '@/components/shared/LoadingIndicator';
-import { ErrorState } from '@/components/shared/ErrorState';
-import { useJourney } from '@/hooks/useJourney';
+import Head from 'next/head'; // next/head v13.0+
+import { useRouter } from 'next/router'; // next/router v13.0+
+import React, { useState } from 'react';
 import { CARE_ROUTES } from 'shared/constants/routes';
+import { Appointment } from 'shared/types/care.types';
+
+import { EmptyState } from '@/components/shared/EmptyState';
+import { ErrorState } from '@/components/shared/ErrorState';
+import { LoadingIndicator } from '@/components/shared/LoadingIndicator';
+import { useAppointments } from '@/hooks/useAppointments';
+import { useJourney } from '@/hooks/useJourney';
+import { CareLayout } from '@/layouts/CareLayout';
 
 /**
  * The main component for the appointments index page.
@@ -19,17 +20,17 @@ import { CARE_ROUTES } from 'shared/constants/routes';
  */
 const AppointmentsPage: React.FC = () => {
     // LD1: Use the useAppointments hook to fetch the user's appointments
-    const { appointments, loading, error, refetch } = useAppointments();
+    const { appointments, loading, error } = useAppointments();
+    const refetch = (): void => {
+        window.location.reload();
+    };
 
     // LD1: Use the useRouter hook to access the Next.js router
     const router = useRouter();
 
-    // LD1: Use the useJourney hook to get the current journey context
-    const { journey } = useJourney();
-
     // LD1: Define state for filtering and sorting appointments
-    const [filter, setFilter] = useState<'upcoming' | 'past' | 'cancelled'>('upcoming');
-    const [sort, setSort] = useState<'date' | 'provider'>('date');
+    const [filter, _setFilter] = useState<'upcoming' | 'past' | 'cancelled'>('upcoming');
+    const [sort, _setSort] = useState<'date' | 'provider'>('date');
 
     // LD1: Handle loading state with LoadingIndicator component
     if (loading) {
@@ -58,14 +59,14 @@ const AppointmentsPage: React.FC = () => {
                     description="Agende sua primeira consulta agora mesmo."
                     journey="care"
                     actionLabel="Agendar consulta"
-                    onAction={() => router.push(CARE_ROUTES.BOOK_APPOINTMENT)}
+                    onAction={() => void router.push(CARE_ROUTES.WEB_CARE_APPOINTMENT_BOOK)}
                 />
             </CareLayout>
         );
     }
 
     // LD1: Implement filtering and sorting functionality for appointments
-    const filteredAppointments = appointments.filter((appointment) => {
+    const filteredAppointments = appointments.filter((appointment: Appointment) => {
         if (filter === 'upcoming') {
             return new Date(appointment.dateTime) >= new Date();
         } else if (filter === 'past') {
@@ -100,7 +101,11 @@ const AppointmentsPage: React.FC = () => {
                     <AppointmentCard key={appointment.id} appointment={appointment} />
                 ))}
                 {/* LD1: Provide a button to navigate to the appointment booking page */}
-                <Button variant="primary" journey="care" onPress={() => router.push(CARE_ROUTES.BOOK_APPOINTMENT)}>
+                <Button
+                    variant="primary"
+                    journey="care"
+                    onPress={() => void router.push(CARE_ROUTES.WEB_CARE_APPOINTMENT_BOOK)}
+                >
                     Agendar Nova Consulta
                 </Button>
             </Box>
@@ -119,7 +124,7 @@ const AppointmentCard: React.FC<{ appointment: Appointment }> = ({ appointment }
     const formattedTime = format(new Date(appointment.dateTime), 'HH:mm');
 
     // LD1: Apply journey-specific styling using the care journey theme
-    const { journey } = useJourney();
+    useJourney();
 
     return (
         <Card journey="care" marginBottom="sm">
@@ -156,7 +161,9 @@ const AppointmentCard: React.FC<{ appointment: Appointment }> = ({ appointment }
  * @param object context
  * @returns Props to be passed to the page component.
  */
-export const getServerSideProps = async (context: { req: { cookies: Record<string, string> } }) => {
+export const getServerSideProps = (context: {
+    req: { cookies: Record<string, string> };
+}): { redirect: { destination: string; permanent: boolean } } | { props: Record<string, never> } => {
     // LD1: Check if the user is authenticated
     const { req } = context;
     const { auth_session } = req.cookies;

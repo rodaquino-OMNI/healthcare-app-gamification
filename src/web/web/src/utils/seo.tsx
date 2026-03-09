@@ -1,4 +1,5 @@
 import { NextSeo } from 'next-seo'; // next-seo 5.15.0
+import React from 'react';
 
 /**
  * Generates SEO metadata for a given page, including title, description, and Open Graph properties.
@@ -14,7 +15,7 @@ export const generateSeoMetadata = (
     description: string,
     imageUrl: string,
     route: string
-): JSX.Element => {
+): React.ReactElement => {
     // Ensure the route has a leading slash
     const normalizedRoute = route.startsWith('/') ? route : `/${route}`;
 

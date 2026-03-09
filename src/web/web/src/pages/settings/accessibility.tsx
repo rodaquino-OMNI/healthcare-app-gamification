@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import React, { useState } from 'react';
+
 import { saveAccessibility } from '../../api/settings';
 
 /**
@@ -44,12 +45,12 @@ const AccessibilityPage: NextPage = () => {
         },
     ];
 
-    const handleSave = async () => {
+    const handleSave = async (): Promise<void> => {
         setLoading(true);
         setError('');
         try {
             await saveAccessibility({ fontSize, highContrast, reducedMotion, screenReader });
-            router.push('/settings');
+            void router.push('/settings');
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : 'Erro inesperado.');
         } finally {
@@ -137,7 +138,7 @@ const AccessibilityPage: NextPage = () => {
             </div>
 
             <button
-                onClick={handleSave}
+                onClick={() => void handleSave()}
                 disabled={loading}
                 style={{ ...primaryButtonStyle, opacity: loading ? 0.7 : 1 }}
             >

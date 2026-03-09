@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
-import { CareLayout } from '@/layouts/CareLayout';
+
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { CareLayout } from '@/layouts/CareLayout';
 
 /** Filter state for doctor search */
 interface FilterState {
@@ -56,8 +57,8 @@ const DoctorFiltersPage: React.FC = () => {
         acceptsInsurance: true,
     });
 
-    const handleApplyFilters = () => {
-        router.push({
+    const handleApplyFilters = (): void => {
+        void router.push({
             pathname: WEB_CARE_ROUTES.DOCTOR_SEARCH,
             query: {
                 specialty: filters.specialty,
@@ -68,7 +69,7 @@ const DoctorFiltersPage: React.FC = () => {
         });
     };
 
-    const handleClearFilters = () => {
+    const handleClearFilters = (): void => {
         setFilters({
             specialty: 'Todas',
             maxDistance: 20,
@@ -98,11 +99,20 @@ const DoctorFiltersPage: React.FC = () => {
                             {SPECIALTIES.map((spec) => (
                                 <button
                                     key={spec}
-                                    onClick={() => setFilters((prev) => ({ ...prev, specialty: spec }))}
+                                    onClick={() =>
+                                        setFilters((prev) => ({
+                                            ...prev,
+                                            specialty: spec,
+                                        }))
+                                    }
                                     style={{
                                         padding: `${spacing.xs} ${spacing.sm}`,
                                         borderRadius: '20px',
-                                        border: `1px solid ${filters.specialty === spec ? colors.journeys.care.primary : colors.neutral.gray300}`,
+                                        border: `1px solid ${
+                                            filters.specialty === spec
+                                                ? colors.journeys.care.primary
+                                                : colors.neutral.gray300
+                                        }`,
                                         backgroundColor:
                                             filters.specialty === spec
                                                 ? colors.journeys.care.background
@@ -138,11 +148,20 @@ const DoctorFiltersPage: React.FC = () => {
                             {DISTANCE_OPTIONS.map((dist) => (
                                 <button
                                     key={dist}
-                                    onClick={() => setFilters((prev) => ({ ...prev, maxDistance: dist }))}
+                                    onClick={() =>
+                                        setFilters((prev) => ({
+                                            ...prev,
+                                            maxDistance: dist,
+                                        }))
+                                    }
                                     style={{
                                         padding: `${spacing.xs} ${spacing.md}`,
                                         borderRadius: '8px',
-                                        border: `1px solid ${filters.maxDistance === dist ? colors.journeys.care.primary : colors.neutral.gray300}`,
+                                        border: `1px solid ${
+                                            filters.maxDistance === dist
+                                                ? colors.journeys.care.primary
+                                                : colors.neutral.gray300
+                                        }`,
                                         backgroundColor:
                                             filters.maxDistance === dist
                                                 ? colors.journeys.care.background
@@ -178,11 +197,20 @@ const DoctorFiltersPage: React.FC = () => {
                             {[0, 3, 4, 4.5].map((rating) => (
                                 <button
                                     key={rating}
-                                    onClick={() => setFilters((prev) => ({ ...prev, minRating: rating }))}
+                                    onClick={() =>
+                                        setFilters((prev) => ({
+                                            ...prev,
+                                            minRating: rating,
+                                        }))
+                                    }
                                     style={{
                                         padding: `${spacing.xs} ${spacing.md}`,
                                         borderRadius: '8px',
-                                        border: `1px solid ${filters.minRating === rating ? colors.journeys.care.primary : colors.neutral.gray300}`,
+                                        border: `1px solid ${
+                                            filters.minRating === rating
+                                                ? colors.journeys.care.primary
+                                                : colors.neutral.gray300
+                                        }`,
                                         backgroundColor:
                                             filters.minRating === rating
                                                 ? colors.journeys.care.background
@@ -227,7 +255,11 @@ const DoctorFiltersPage: React.FC = () => {
                                     style={{
                                         padding: `${spacing.xs} ${spacing.sm}`,
                                         borderRadius: '20px',
-                                        border: `1px solid ${filters.availability === opt.value ? colors.journeys.care.primary : colors.neutral.gray300}`,
+                                        border: `1px solid ${
+                                            filters.availability === opt.value
+                                                ? colors.journeys.care.primary
+                                                : colors.neutral.gray300
+                                        }`,
                                         backgroundColor:
                                             filters.availability === opt.value
                                                 ? colors.journeys.care.background
@@ -256,7 +288,10 @@ const DoctorFiltersPage: React.FC = () => {
                         </Text>
                         <button
                             onClick={() =>
-                                setFilters((prev) => ({ ...prev, acceptsInsurance: !prev.acceptsInsurance }))
+                                setFilters((prev) => ({
+                                    ...prev,
+                                    acceptsInsurance: !prev.acceptsInsurance,
+                                }))
                             }
                             style={{
                                 width: '48px',

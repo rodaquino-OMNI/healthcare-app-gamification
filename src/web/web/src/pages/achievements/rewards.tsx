@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { Text } from 'design-system/primitives/Text/Text';
-import { Box } from 'design-system/primitives/Box/Box';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { RewardCard } from 'design-system/gamification/RewardCard';
 import { XPCounter } from 'design-system/gamification/XPCounter';
-import { useGameProfile } from '@/hooks/useGamification';
+import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import Link from 'next/link';
+import React, { useState } from 'react';
 import type { Reward } from 'shared/types/gamification.types';
+
+import { useGameProfile } from '@/hooks/useGamification';
 
 type JourneyFilter = 'all' | 'health' | 'care' | 'plan';
 type SortOption = 'xp-asc' | 'xp-desc' | 'name';
@@ -105,12 +106,17 @@ const RewardsPage: React.FC = () => {
     const [sortBy, setSortBy] = useState<SortOption>('xp-asc');
 
     const userXp = data?.gameProfile?.xp ?? 0;
+    const claimableCount = MOCK_REWARDS.filter((r) => r.xp <= userXp).length;
 
     const filteredRewards = MOCK_REWARDS.filter(
         (reward) => journeyFilter === 'all' || reward.journey === journeyFilter
     ).sort((a, b) => {
-        if (sortBy === 'xp-asc') return a.xp - b.xp;
-        if (sortBy === 'xp-desc') return b.xp - a.xp;
+        if (sortBy === 'xp-asc') {
+            return a.xp - b.xp;
+        }
+        if (sortBy === 'xp-desc') {
+            return b.xp - a.xp;
+        }
         return a.title.localeCompare(b.title);
     });
 
@@ -135,9 +141,9 @@ const RewardsPage: React.FC = () => {
                 <Text fontSize="sm" color={colors.gray[50]} style={{ marginBottom: spacing.xs }}>
                     Your XP Balance
                 </Text>
-                <XPCounter value={userXp} size="lg" animated />
+                <XPCounter currentXP={userXp} nextLevelXP={10000} journey="health" />
                 <Text fontSize="sm" color={colors.gray[50]} style={{ marginTop: spacing.xs }}>
-                    {filteredRewards.filter((r) => r.xp <= userXp).length} rewards available to claim
+                    {claimableCount} rewards available to claim
                 </Text>
             </Card>
 
@@ -193,7 +199,17 @@ const RewardsPage: React.FC = () => {
                 {filteredRewards.map((reward) => (
                     <Link key={reward.id} href={`/achievements/rewards/${reward.id}`} passHref>
                         <div style={{ cursor: 'pointer', flex: '1 1 calc(50% - 12px)', minWidth: '280px' }}>
-                            <RewardCard reward={reward} isEarned={reward.xp <= userXp} journey={reward.journey} />
+                            <RewardCard
+                                reward={{
+                                    ...reward,
+                                    journey:
+                                        reward.journey === 'health' ||
+                                        reward.journey === 'care' ||
+                                        reward.journey === 'plan'
+                                            ? reward.journey
+                                            : 'health',
+                                }}
+                            />
                         </div>
                     </Link>
                 ))}

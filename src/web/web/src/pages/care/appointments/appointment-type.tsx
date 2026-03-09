@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { CareLayout } from '@/layouts/CareLayout';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { CareLayout } from '@/layouts/CareLayout';
 
 interface AppointmentTypeOption {
     id: string;
@@ -45,9 +46,12 @@ const AppointmentTypePage: React.FC = () => {
     const router = useRouter();
     const [selected, setSelected] = useState<string | null>(null);
 
-    const handleContinue = () => {
+    const handleContinue = (): void => {
         if (selected) {
-            router.push({ pathname: '/care/appointments/reason-for-visit', query: { type: selected } });
+            void router.push({
+                pathname: '/care/appointments/reason-for-visit',
+                query: { type: selected },
+            });
         }
     };
 
@@ -67,7 +71,13 @@ const AppointmentTypePage: React.FC = () => {
                     Escolha como deseja realizar sua consulta medica.
                 </Text>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: spacing.md }}>
+                <div
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(3, 1fr)',
+                        gap: spacing.md,
+                    }}
+                >
                     {TYPES.map((t) => {
                         const isSelected = selected === t.id;
                         return (
@@ -139,7 +149,13 @@ const AppointmentTypePage: React.FC = () => {
                     })}
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: spacing['2xl'] }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        marginTop: spacing['2xl'],
+                    }}
+                >
                     <Button journey="care" onPress={handleContinue} disabled={!selected} accessibilityLabel="Continuar">
                         Continuar
                     </Button>

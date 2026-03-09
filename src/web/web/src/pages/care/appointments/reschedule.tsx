@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { CareLayout } from '@/layouts/CareLayout';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { CareLayout } from '@/layouts/CareLayout';
 
 const DAYS = Array.from({ length: 28 }, (_, i) => i + 1);
 const TIME_SLOTS = ['08:00', '09:00', '10:00', '11:00', '14:00', '15:00', '16:00', '17:00'];
@@ -21,8 +22,8 @@ const ReschedulePage: React.FC = () => {
 
     const canConfirm = selectedDay !== null && selectedTime !== null && selectedReason !== '';
 
-    const handleConfirm = () => {
-        router.push('/care/appointments/list');
+    const handleConfirm = (): void => {
+        void router.push('/care/appointments/list');
     };
 
     return (

@@ -1,8 +1,8 @@
-import React from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -53,7 +53,7 @@ const ContactFields: React.FC<{
                 style={inputStyle}
                 type="text"
                 placeholder="Contact full name"
-                value={data[`${prefix}Name`] || ''}
+                value={(data[`${prefix}Name`] as string) || ''}
                 onChange={(e) => onUpdate(`${prefix}Name`, e.target.value)}
                 aria-label={`${prefix} contact name`}
             />
@@ -69,7 +69,7 @@ const ContactFields: React.FC<{
             </Text>
             <select
                 style={selectStyle}
-                value={data[`${prefix}Relationship`] || ''}
+                value={(data[`${prefix}Relationship`] as string) || ''}
                 onChange={(e) => onUpdate(`${prefix}Relationship`, e.target.value)}
                 aria-label={`${prefix} contact relationship`}
             >
@@ -94,7 +94,7 @@ const ContactFields: React.FC<{
                 style={inputStyle}
                 type="tel"
                 placeholder="(00) 00000-0000"
-                value={data[`${prefix}Phone`] || ''}
+                value={(data[`${prefix}Phone`] as string) || ''}
                 onChange={(e) => onUpdate(`${prefix}Phone`, e.target.value)}
                 aria-label={`${prefix} contact phone`}
             />
@@ -127,7 +127,7 @@ const StepEmergencyContactsPage: React.FC<StepProps> = ({ data, onUpdate }) => {
 
             {/* Add Secondary Toggle */}
             <button
-                onClick={() => onUpdate('showSecondary', !data.showSecondary)}
+                onClick={() => onUpdate('showSecondary', !(data.showSecondary as boolean))}
                 style={{
                     padding: spacing.sm,
                     border: 'none',
@@ -138,13 +138,13 @@ const StepEmergencyContactsPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                     fontWeight: 600,
                     textAlign: 'center',
                 }}
-                aria-label={data.showSecondary ? 'Remove secondary contact' : 'Add secondary contact'}
+                aria-label={(data.showSecondary as boolean) ? 'Remove secondary contact' : 'Add secondary contact'}
             >
-                {data.showSecondary ? '- Remove Secondary Contact' : '+ Add Secondary Contact'}
+                {(data.showSecondary as boolean) ? '- Remove Secondary Contact' : '+ Add Secondary Contact'}
             </button>
 
             {/* Secondary Contact */}
-            {data.showSecondary && (
+            {(data.showSecondary as boolean) && (
                 <Card journey="health" elevation="sm" padding="lg">
                     <Text
                         fontSize="md"

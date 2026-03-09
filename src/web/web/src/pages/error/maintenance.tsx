@@ -1,7 +1,7 @@
-import React from 'react';
 import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
 import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import React from 'react';
 
 const MaintenancePage: React.FC = () => {
     const estimatedTime = '2 horas';

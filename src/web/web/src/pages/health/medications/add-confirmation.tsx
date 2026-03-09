@@ -1,11 +1,11 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
 /**
@@ -76,7 +76,7 @@ const MedicationAddConfirmationPage: React.FC = () => {
                 <Box style={{ marginTop: spacing['2xl'], width: '100%', maxWidth: 400 }}>
                     <Button
                         journey="health"
-                        onPress={() => router.push(WEB_HEALTH_ROUTES.MEDICATION_REMINDER)}
+                        onPress={() => void router.push(WEB_HEALTH_ROUTES.MEDICATION_REMINDER)}
                         accessibilityLabel="Set up reminders for this medication"
                     >
                         Set Up Reminders
@@ -87,7 +87,7 @@ const MedicationAddConfirmationPage: React.FC = () => {
                     <Button
                         variant="secondary"
                         journey="health"
-                        onPress={() => router.push(WEB_HEALTH_ROUTES.MEDICATIONS)}
+                        onPress={() => void router.push(WEB_HEALTH_ROUTES.MEDICATIONS)}
                         accessibilityLabel="Back to medications list"
                     >
                         Back to Medications

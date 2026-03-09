@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
-import styled from 'styled-components';
-import { useRouter } from 'next/navigation';
 import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
 import { spacing } from 'design-system/tokens/spacing';
-import AuthLayout from '@/layouts/AuthLayout';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, useRef } from 'react';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
+import styled from 'styled-components';
+
+import { AuthLayout } from '@/layouts/AuthLayout';
 
 const Title = styled.h2`
     font-family: ${typography.fontFamily.heading};
@@ -126,7 +127,7 @@ const OTP_LENGTH = 6;
  * Email verification page with 6-digit OTP input.
  * Includes countdown timer and resend functionality.
  */
-export default function EmailVerifyPage() {
+export default function EmailVerifyPage(): React.ReactElement {
     const router = useRouter();
     const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(''));
     const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS);
@@ -139,10 +140,13 @@ export default function EmailVerifyPage() {
             const timer = setTimeout(() => setCountdown((prev) => prev - 1), 1000);
             return () => clearTimeout(timer);
         }
+        return undefined;
     }, [countdown]);
 
-    const handleInputChange = (index: number, value: string) => {
-        if (!/^\d*$/.test(value)) return;
+    const handleInputChange = (index: number, value: string): void => {
+        if (!/^\d*$/.test(value)) {
+            return;
+        }
 
         const newOtp = [...otp];
         newOtp[index] = value.slice(-1);
@@ -154,13 +158,13 @@ export default function EmailVerifyPage() {
         }
     };
 
-    const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>): void => {
         if (e.key === 'Backspace' && !otp[index] && index > 0) {
             inputRefs.current[index - 1]?.focus();
         }
     };
 
-    const handlePaste = (e: React.ClipboardEvent) => {
+    const handlePaste = (e: React.ClipboardEvent): void => {
         e.preventDefault();
         const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, OTP_LENGTH);
         const newOtp = [...otp];
@@ -172,7 +176,7 @@ export default function EmailVerifyPage() {
         inputRefs.current[nextIndex]?.focus();
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (): Promise<void> => {
         const code = otp.join('');
         if (code.length < OTP_LENGTH) {
             setFeedback({ type: 'error', message: 'Por favor, insira todos os 6 digitos.' });
@@ -192,14 +196,14 @@ export default function EmailVerifyPage() {
         }
     };
 
-    const handleResend = () => {
+    const handleResend = (): void => {
         setCountdown(COUNTDOWN_SECONDS);
         setOtp(Array(OTP_LENGTH).fill(''));
         setFeedback({ type: 'success', message: 'Novo codigo enviado para seu e-mail.' });
         inputRefs.current[0]?.focus();
     };
 
-    const formatCountdown = (seconds: number) => {
+    const formatCountdown = (seconds: number): string => {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
         return `${mins}:${secs.toString().padStart(2, '0')}`;
@@ -228,7 +232,6 @@ export default function EmailVerifyPage() {
                         onKeyDown={(e) => handleKeyDown(index, e)}
                         onPaste={index === 0 ? handlePaste : undefined}
                         aria-label={`Digito ${index + 1}`}
-                        autoFocus={index === 0}
                     />
                 ))}
             </OtpContainer>
@@ -237,7 +240,10 @@ export default function EmailVerifyPage() {
 
             {feedback && <FeedbackMessage variant={feedback.type}>{feedback.message}</FeedbackMessage>}
 
-            <SubmitButton onClick={handleSubmit} disabled={isSubmitting || otp.join('').length < OTP_LENGTH}>
+            <SubmitButton
+                onClick={() => void handleSubmit()}
+                disabled={isSubmitting || otp.join('').length < OTP_LENGTH}
+            >
                 {isSubmitting ? 'Verificando...' : 'Verificar'}
             </SubmitButton>
 

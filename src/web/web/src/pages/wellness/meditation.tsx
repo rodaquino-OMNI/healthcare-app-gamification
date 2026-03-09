@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 const CATEGORIES = ['All', 'Sleep', 'Focus', 'Calm', 'Energy'];
 
@@ -75,7 +75,7 @@ const SESSION_HISTORY: SessionRecord[] = [
     { id: '3', track: 'Calm Waters', date: 'Yesterday', duration: '12 min' },
 ];
 
-const chipStyle = (selected: boolean) => ({
+const chipStyle = (selected: boolean): React.CSSProperties => ({
     padding: `${spacing.xs} ${spacing.md}`,
     borderRadius: '20px',
     border: `1px solid ${selected ? colors.journeys.health.primary : colors.gray[20]}`,
@@ -97,7 +97,7 @@ const MeditationPage: React.FC = () => {
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/wellness')}
+                onClick={() => void router.push('/wellness')}
                 style={{
                     background: 'none',
                     border: 'none',

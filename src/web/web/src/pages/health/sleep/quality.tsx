@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 const QUALITY_OPTIONS = [
     { emoji: '\ud83d\ude29', label: 'Terrible', value: 1 },
@@ -29,11 +29,11 @@ const SleepQualityPage: React.FC = () => {
     const [selected, setSelected] = useState(0);
     const [factors, setFactors] = useState<string[]>([]);
 
-    const toggleFactor = (id: string) => {
+    const toggleFactor = (id: string): void => {
         setFactors((prev) => (prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]));
     };
 
-    const handleSave = () => {
+    const handleSave = (): void => {
         const quality = QUALITY_OPTIONS.find((o) => o.value === selected);
         window.alert(`Quality: ${quality?.label || 'None'}, Factors: ${factors.join(', ') || 'None'}`);
     };
@@ -41,7 +41,7 @@ const SleepQualityPage: React.FC = () => {
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/sleep')}
+                onClick={() => void router.push('/health/sleep')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -79,7 +79,9 @@ const SleepQualityPage: React.FC = () => {
                             aria-label={opt.label}
                             tabIndex={0}
                             onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') setSelected(opt.value);
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    setSelected(opt.value);
+                                }
                             }}
                             style={{
                                 cursor: 'pointer',
@@ -122,7 +124,9 @@ const SleepQualityPage: React.FC = () => {
                         aria-checked={factors.includes(factor.id)}
                         tabIndex={0}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') toggleFactor(factor.id);
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                toggleFactor(factor.id);
+                            }
                         }}
                         style={{ cursor: 'pointer' }}
                     >

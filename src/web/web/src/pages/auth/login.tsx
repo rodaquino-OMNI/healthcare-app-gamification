@@ -1,17 +1,16 @@
-/* eslint-disable */
-import React, { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
-
-import { loginValidationSchema } from 'shared/utils/validation';
-import { useAuth } from '@/hooks/useAuth';
-import AuthLayout from '@/layouts/AuthLayout';
-import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 import { Button } from 'design-system/components/Button/Button';
 import { Input } from 'design-system/components/Input/Input';
-import Box from 'design-system/primitives/Box/Box';
-import Text from 'design-system/primitives/Text/Text';
+import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
+import { loginValidationSchema } from 'shared/utils/validation';
+
+import { useAuth } from '@/hooks/useAuth';
+import { AuthLayout } from '@/layouts/AuthLayout';
 
 interface LoginFormData {
     email: string;
@@ -35,13 +34,14 @@ export const Login: React.FC = () => {
         },
     });
 
-    const onSubmit = async (data: LoginFormData) => {
+    const onSubmit = async (data: LoginFormData): Promise<void> => {
         setSubmitError(null);
         try {
             await login(data);
             // Navigation is handled by the useAuth hook
-        } catch (err: any) {
-            setSubmitError(err.response?.data?.message || 'Login failed. Please check your credentials.');
+        } catch (err: unknown) {
+            const errorObj = err as { response?: { data?: { message?: string } } };
+            setSubmitError(errorObj.response?.data?.message || 'Login failed. Please check your credentials.');
         }
     };
 
@@ -56,7 +56,11 @@ export const Login: React.FC = () => {
                 </Text>
             </Box>
 
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form
+                onSubmit={(e) => {
+                    void handleSubmit(onSubmit)(e);
+                }}
+            >
                 <Box marginBottom="md">
                     <Controller
                         name="email"
@@ -115,7 +119,9 @@ export const Login: React.FC = () => {
                         journey="health"
                         loading={isLoading}
                         disabled={isLoading}
-                        onPress={handleSubmit(onSubmit)}
+                        onPress={() => {
+                            void handleSubmit(onSubmit)();
+                        }}
                     >
                         Sign In
                     </Button>
@@ -123,9 +129,9 @@ export const Login: React.FC = () => {
 
                 <Box display="flex" justifyContent="center">
                     <Text fontSize="sm">
-                        Don't have an account?{' '}
+                        Don&apos;t have an account?{' '}
                         <Text
-                            as="a"
+                            as="span"
                             fontSize="sm"
                             color="journeys.health.primary"
                             style={{ cursor: 'pointer' }}

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import React, { useState } from 'react';
+
 import { changePassword } from '@/api/auth';
 
 /**
@@ -17,7 +18,7 @@ const ChangePasswordPage: NextPage = () => {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (): Promise<void> => {
         setError('');
         setSuccess(false);
         if (!currentPassword || !newPassword || !confirmPassword) {
@@ -36,7 +37,7 @@ const ChangePasswordPage: NextPage = () => {
         try {
             await changePassword(currentPassword, newPassword);
             setSuccess(true);
-            setTimeout(() => router.push('/settings'), 1500);
+            setTimeout(() => void router.push('/settings'), 1500);
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : 'Erro ao alterar senha. Tente novamente.');
         } finally {
@@ -68,8 +69,11 @@ const ChangePasswordPage: NextPage = () => {
                 )}
 
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>Senha Atual</label>
+                    <label htmlFor="current-password" style={labelStyle}>
+                        Senha Atual
+                    </label>
                     <input
+                        id="current-password"
                         type="password"
                         value={currentPassword}
                         onChange={(e) => setCurrentPassword(e.target.value)}
@@ -79,8 +83,11 @@ const ChangePasswordPage: NextPage = () => {
                 </div>
 
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>Nova Senha</label>
+                    <label htmlFor="new-password" style={labelStyle}>
+                        Nova Senha
+                    </label>
                     <input
+                        id="new-password"
                         type="password"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
@@ -90,8 +97,11 @@ const ChangePasswordPage: NextPage = () => {
                 </div>
 
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>Confirmar Nova Senha</label>
+                    <label htmlFor="confirm-password" style={labelStyle}>
+                        Confirmar Nova Senha
+                    </label>
                     <input
+                        id="confirm-password"
                         type="password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
@@ -108,7 +118,7 @@ const ChangePasswordPage: NextPage = () => {
                 </ul>
 
                 <button
-                    onClick={handleSubmit}
+                    onClick={() => void handleSubmit()}
                     disabled={loading}
                     style={{ ...primaryButtonStyle, opacity: loading ? 0.6 : 1 }}
                 >

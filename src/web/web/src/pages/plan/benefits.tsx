@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { BenefitCard } from 'design-system/plan/BenefitCard';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
-import PlanLayout from '../../layouts/PlanLayout';
-import BenefitCard from 'design-system/plan/BenefitCard';
-import LoadingIndicator from '../../components/shared/LoadingIndicator';
-import ErrorState from '../../components/shared/ErrorState';
+import React, { useState, useEffect } from 'react';
+import { Benefit } from 'shared/types/plan.types';
+
+import { ErrorState } from '../../components/shared/ErrorState';
+import { LoadingIndicator } from '../../components/shared/LoadingIndicator';
 import { useAuth } from '../../hooks/useAuth';
 import { useJourney } from '../../hooks/useJourney';
-import { Benefit } from 'shared/types/plan.types';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import PlanLayout from '../../layouts/PlanLayout';
 
 const { plan } = colors.journeys;
 
@@ -31,10 +32,10 @@ const BenefitsPage: NextPage = () => {
     const [activeFilter, setActiveFilter] = useState<FilterTab>('all');
 
     const { session } = useAuth();
-    const { journey } = useJourney();
+    useJourney();
 
     useEffect(() => {
-        const loadBenefits = async () => {
+        const loadBenefits = async (): Promise<void> => {
             setLoading(true);
             setError(null);
 
@@ -52,7 +53,7 @@ const BenefitsPage: NextPage = () => {
             }
         };
 
-        loadBenefits();
+        void loadBenefits();
     }, [session]);
 
     const filteredBenefits = activeFilter === 'all' ? benefits : benefits.filter((b) => b.type === activeFilter);
@@ -67,7 +68,7 @@ const BenefitsPage: NextPage = () => {
                 onRetry={() => {
                     setLoading(true);
                     setError(null);
-                    fetchBenefits(session?.accessToken || '');
+                    void fetchBenefits(session?.accessToken || '');
                 }}
             />
         );
@@ -176,8 +177,8 @@ async function fetchBenefits(userId: string): Promise<Benefit[]> {
             throw new Error(`Failed to fetch benefits: ${response.status}`);
         }
 
-        const data = await response.json();
-        return data as Benefit[];
+        const data: Benefit[] = (await response.json()) as Benefit[];
+        return data;
     } catch (error: unknown) {
         console.error('There was an error fetching the benefits:', error);
         throw new Error(`Failed to fetch benefits: ${error instanceof Error ? error.message : String(error)}`);

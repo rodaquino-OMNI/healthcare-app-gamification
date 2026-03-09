@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import React, { useState, useEffect } from 'react';
+
 import { getDependents, removeDependent } from '../../api/settings';
 
 interface Dependent {
@@ -24,7 +25,7 @@ const DependentsPage: NextPage = () => {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        const fetchDependents = async () => {
+        const fetchDependents = async (): Promise<void> => {
             setLoading(true);
             try {
                 const data = await getDependents();
@@ -35,10 +36,10 @@ const DependentsPage: NextPage = () => {
                 setLoading(false);
             }
         };
-        fetchDependents();
+        void fetchDependents();
     }, []);
 
-    const handleRemove = async (id: string) => {
+    const handleRemove = async (id: string): Promise<void> => {
         try {
             await removeDependent(id);
             setDependents((prev) => prev.filter((d) => d.id !== id));
@@ -85,14 +86,14 @@ const DependentsPage: NextPage = () => {
                                 <span style={detailValueStyle}>{dep.cpf}</span>
                             </div>
                         </div>
-                        <button onClick={() => handleRemove(dep.id)} style={removeBtnStyle}>
+                        <button onClick={() => void handleRemove(dep.id)} style={removeBtnStyle}>
                             Remover Dependente
                         </button>
                     </div>
                 ))
             )}
 
-            <button onClick={() => router.push('/settings/add-dependent')} style={addBtnStyle}>
+            <button onClick={() => void router.push('/settings/add-dependent')} style={addBtnStyle}>
                 + Adicionar Dependente
             </button>
         </div>

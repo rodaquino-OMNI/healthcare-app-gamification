@@ -1,8 +1,8 @@
-import React from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -71,7 +71,7 @@ const StepDietPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                 </Text>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
                     {DIET_TYPES.map((diet) => {
-                        const isActive = data.dietType === diet;
+                        const isActive = (data.dietType as string) === diet;
                         return (
                             <button
                                 key={diet}
@@ -99,7 +99,7 @@ const StepDietPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                 </Text>
                 <div style={{ display: 'flex', gap: spacing.xs, flexWrap: 'wrap' }}>
                     {MEAL_FREQUENCY.map((opt) => {
-                        const isActive = data.mealFrequency === opt.value;
+                        const isActive = (data.mealFrequency as string) === opt.value;
                         return (
                             <button
                                 key={opt.value}
@@ -138,7 +138,7 @@ const StepDietPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                 </Text>
                 <div style={{ display: 'flex', gap: spacing.xs, flexWrap: 'wrap' }}>
                     {PRODUCE_INTAKE.map((opt) => {
-                        const isActive = data.produceIntake === opt.value;
+                        const isActive = (data.produceIntake as string) === opt.value;
                         return (
                             <button
                                 key={opt.value}

@@ -1,12 +1,11 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { ALL_JOURNEYS } from 'shared/constants/journeys';
-import { MOBILE_CARE_ROUTES } from 'shared/constants/routes';
 import { Card } from 'design-system/components/Card/Card';
-import { Text } from 'design-system/primitives/Text/Text';
 import { Icon } from 'design-system/primitives/Icon/Icon';
+import { Text } from 'design-system/primitives/Text/Text';
+import { useRouter } from 'next/router';
+import React from 'react';
+import { ALL_JOURNEYS } from 'shared/constants/journeys';
+
 import { useJourney } from '@/hooks/useJourney';
-import { useJourneyContext } from '@/context/JourneyContext';
 
 /**
  * A navigation component that displays the available journeys in the AUSTA SuperApp.
@@ -33,16 +32,16 @@ export const JourneyNav: React.FC = () => {
                         // Navigate to the appropriate route based on journey
                         switch (journeyItem.id) {
                             case 'health':
-                                router.push('/health/dashboard');
+                                void router.push('/health/dashboard');
                                 break;
                             case 'care':
-                                router.push('/care/appointments');
+                                void router.push('/care/appointments');
                                 break;
                             case 'plan':
-                                router.push('/plan');
+                                void router.push('/plan');
                                 break;
                             default:
-                                router.push('/');
+                                void router.push('/');
                         }
                     }}
                     accessibilityLabel={`Navigate to ${journeyItem.name} journey`}

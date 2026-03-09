@@ -6,9 +6,6 @@
  * such as metrics, goals, and medical history to support the Health Journey.
  */
 
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import axios from 'axios'; // axios 1.6.7
 import { API_BASE_URL, API_TIMEOUT } from 'shared/constants/api';
 import { CREATE_HEALTH_METRIC } from 'shared/graphql/mutations/health.mutations';
@@ -20,11 +17,49 @@ import {
 } from 'shared/graphql/queries/health.queries';
 import { HealthMetric, HealthGoal, MedicalEvent, DeviceConnection } from 'shared/types/health.types';
 
+/** Typed GraphQL response shapes */
+interface GraphQLError {
+    message: string;
+}
+
+interface GraphQLResponse<T> {
+    data: T;
+    errors?: GraphQLError[];
+}
+
+interface HealthMetricsData {
+    getHealthMetrics: HealthMetric[];
+}
+
+interface HealthGoalsData {
+    getHealthGoals: HealthGoal[];
+}
+
+interface MedicalHistoryData {
+    getMedicalHistory: MedicalEvent[];
+}
+
+interface ConnectedDevicesData {
+    getConnectedDevices: DeviceConnection[];
+}
+
+interface CreateHealthMetricData {
+    createHealthMetric: HealthMetric;
+}
+
+interface CreateMetricDto {
+    type: string;
+    value: number;
+    unit: string;
+    source?: string;
+    timestamp?: string;
+}
+
 /**
  * Fetches health metrics for a specific user, date range, and metric types.
  *
  * @param userId - The ID of the user whose metrics to fetch
- * @param types - Array of metric types to fetch (e.g., HEART_RATE, BLOOD_PRESSURE)
+ * @param types - Array of metric types to fetch
  * @param startDate - The start date for the range of metrics to fetch
  * @param endDate - The end date for the range of metrics to fetch
  * @returns A promise that resolves to an array of HealthMetric objects
@@ -36,7 +71,7 @@ export const getHealthMetrics = async (
     endDate: string
 ): Promise<HealthMetric[]> => {
     try {
-        const response = await axios.post(
+        const response = await axios.post<GraphQLResponse<HealthMetricsData>>(
             `${API_BASE_URL}/graphql`,
             {
                 query: GET_HEALTH_METRICS,
@@ -74,13 +109,11 @@ export const getHealthMetrics = async (
  */
 export const getHealthGoals = async (userId: string): Promise<HealthGoal[]> => {
     try {
-        const response = await axios.post(
+        const response = await axios.post<GraphQLResponse<HealthGoalsData>>(
             `${API_BASE_URL}/graphql`,
             {
                 query: GET_HEALTH_GOALS,
-                variables: {
-                    userId,
-                },
+                variables: { userId },
             },
             {
                 timeout: API_TIMEOUT,
@@ -109,13 +142,11 @@ export const getHealthGoals = async (userId: string): Promise<HealthGoal[]> => {
  */
 export const getMedicalHistory = async (userId: string): Promise<MedicalEvent[]> => {
     try {
-        const response = await axios.post(
+        const response = await axios.post<GraphQLResponse<MedicalHistoryData>>(
             `${API_BASE_URL}/graphql`,
             {
                 query: GET_MEDICAL_HISTORY,
-                variables: {
-                    userId,
-                },
+                variables: { userId },
             },
             {
                 timeout: API_TIMEOUT,
@@ -144,13 +175,11 @@ export const getMedicalHistory = async (userId: string): Promise<MedicalEvent[]>
  */
 export const getConnectedDevices = async (userId: string): Promise<DeviceConnection[]> => {
     try {
-        const response = await axios.post(
+        const response = await axios.post<GraphQLResponse<ConnectedDevicesData>>(
             `${API_BASE_URL}/graphql`,
             {
                 query: GET_CONNECTED_DEVICES,
-                variables: {
-                    userId,
-                },
+                variables: { userId },
             },
             {
                 timeout: API_TIMEOUT,
@@ -178,10 +207,9 @@ export const getConnectedDevices = async (userId: string): Promise<DeviceConnect
  * @param createMetricDto - The data for the new health metric
  * @returns A promise that resolves to the created HealthMetric object
  */
-// eslint-disable-next-line max-len
-export const createHealthMetric = async (recordId: string, createMetricDto: unknown): Promise<HealthMetric> => {
+export const createHealthMetric = async (recordId: string, createMetricDto: CreateMetricDto): Promise<HealthMetric> => {
     try {
-        const response = await axios.post(
+        const response = await axios.post<GraphQLResponse<CreateHealthMetricData>>(
             `${API_BASE_URL}/graphql`,
             {
                 query: CREATE_HEALTH_METRIC,

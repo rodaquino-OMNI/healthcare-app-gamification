@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 interface FAQDetail {
     id: string;
@@ -86,7 +86,7 @@ const FAQDetailPage: React.FC = () => {
         );
     }
 
-    const handleHelpful = (isHelpful: boolean) => {
+    const handleHelpful = (isHelpful: boolean): void => {
         setHelpful(isHelpful);
         alert(
             isHelpful

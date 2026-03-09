@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useRouter } from 'next/router';
 import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
 import { spacing } from 'design-system/tokens/spacing';
-import { MainLayout } from '@/layouts/MainLayout';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import { WEB_GLOBAL_ROUTES } from 'shared/constants/routes';
+import styled from 'styled-components';
+
+import { MainLayout } from '@/layouts/MainLayout';
 
 const PageContainer = styled.div`
     max-width: 720px;
@@ -137,19 +138,19 @@ const categories = [
  * Search page - allows the user to search across all app content.
  * Mirrors the mobile Search screen.
  */
-export default function SearchPage() {
+export default function SearchPage(): React.ReactElement {
     const router = useRouter();
     const [query, setQuery] = useState('');
 
-    const handleSearch = (e: React.FormEvent) => {
+    const handleSearch = (e: React.FormEvent): void => {
         e.preventDefault();
         if (query.trim()) {
-            router.push(`${WEB_GLOBAL_ROUTES.SEARCH_RESULTS}?q=${encodeURIComponent(query.trim())}`);
+            void router.push(`${WEB_GLOBAL_ROUTES.SEARCH_RESULTS}?q=${encodeURIComponent(query.trim())}`);
         }
     };
 
-    const handleCategoryClick = (categoryQuery: string) => {
-        router.push(`${WEB_GLOBAL_ROUTES.SEARCH_RESULTS}?q=${encodeURIComponent(categoryQuery)}`);
+    const handleCategoryClick = (categoryQuery: string): void => {
+        void router.push(`${WEB_GLOBAL_ROUTES.SEARCH_RESULTS}?q=${encodeURIComponent(categoryQuery)}`);
     };
 
     return (
@@ -164,7 +165,6 @@ export default function SearchPage() {
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         aria-label="Campo de busca"
-                        autoFocus
                     />
                     <SearchButton type="submit" disabled={!query.trim()}>
                         Buscar

@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
-import { Button } from 'design-system/components/Button/Button';
-import { Tabs } from 'design-system/components/Tabs/Tabs';
 import { Badge } from 'design-system/components/Badge/Badge';
-import Input from 'design-system/components/Input/Input';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
+import { Input } from 'design-system/components/Input/Input';
+import { Tabs } from 'design-system/components/Tabs/Tabs';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
 /** Medication data type */
@@ -77,15 +77,15 @@ const MedicationsPage: React.FC = () => {
     const activeMeds = filteredMedications.filter((m) => m.status === 'active');
     const completedMeds = filteredMedications.filter((m) => m.status === 'completed');
 
-    const handleAddMedication = () => {
-        router.push(WEB_HEALTH_ROUTES.MEDICATION_ADD);
+    const handleAddMedication = (): void => {
+        void router.push(WEB_HEALTH_ROUTES.MEDICATION_ADD);
     };
 
-    const handleViewDetail = (id: string) => {
-        router.push(`/health/medications/${id}`);
+    const handleViewDetail = (id: string): void => {
+        void router.push(`/health/medications/${id}`);
     };
 
-    const renderMedicationCard = (med: Medication) => (
+    const renderMedicationCard = (med: Medication): React.ReactNode => (
         <Card
             key={med.id}
             journey="health"
@@ -141,7 +141,7 @@ const MedicationsPage: React.FC = () => {
             <Box style={{ marginTop: spacing.md, marginBottom: spacing.md }}>
                 <Input
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
                     placeholder="Search medications..."
                     journey="health"
                     aria-label="Search medications"

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import React, { useState } from 'react';
+
 import { enable2FA, disable2FA, configure2FA } from '@/api/auth';
 
 /**
@@ -16,7 +17,7 @@ const TwoFactorPage: NextPage = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    const handleToggle = async () => {
+    const handleToggle = async (): Promise<void> => {
         setLoading(true);
         setError('');
         try {
@@ -34,12 +35,12 @@ const TwoFactorPage: NextPage = () => {
         }
     };
 
-    const handleSave = async () => {
+    const handleSave = async (): Promise<void> => {
         setLoading(true);
         setError('');
         try {
             await configure2FA(method, method === 'sms' ? phone : undefined);
-            router.push('/settings');
+            void router.push('/settings');
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : 'Erro ao salvar configuracao.');
         } finally {
@@ -74,7 +75,7 @@ const TwoFactorPage: NextPage = () => {
                         <span style={toggleDescStyle}>Exigir codigo de verificacao ao fazer login</span>
                     </div>
                     <button
-                        onClick={handleToggle}
+                        onClick={() => void handleToggle()}
                         disabled={loading}
                         style={{
                             ...toggleBtnStyle,
@@ -95,10 +96,17 @@ const TwoFactorPage: NextPage = () => {
                     <>
                         {/* Method selection */}
                         <div style={{ marginTop: spacing.xl }}>
-                            <label style={labelStyle}>Metodo de Verificacao</label>
+                            <span style={labelStyle}>Metodo de Verificacao</span>
 
                             <div
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => setMethod('sms')}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        setMethod('sms');
+                                    }
+                                }}
                                 style={{
                                     ...optionStyle,
                                     borderColor: method === 'sms' ? colors.brand.primary : colors.gray[20],
@@ -109,7 +117,14 @@ const TwoFactorPage: NextPage = () => {
                             </div>
 
                             <div
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => setMethod('authenticator')}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        setMethod('authenticator');
+                                    }
+                                }}
                                 style={{
                                     ...optionStyle,
                                     borderColor: method === 'authenticator' ? colors.brand.primary : colors.gray[20],
@@ -123,8 +138,11 @@ const TwoFactorPage: NextPage = () => {
                         {/* SMS phone input */}
                         {method === 'sms' && (
                             <div style={{ marginTop: spacing.lg }}>
-                                <label style={labelStyle}>Numero de Telefone</label>
+                                <label htmlFor="tfa-phone" style={labelStyle}>
+                                    Numero de Telefone
+                                </label>
                                 <input
+                                    id="tfa-phone"
                                     type="tel"
                                     value={phone}
                                     onChange={(e) => setPhone(e.target.value)}
@@ -144,7 +162,7 @@ const TwoFactorPage: NextPage = () => {
                         )}
 
                         <button
-                            onClick={handleSave}
+                            onClick={() => void handleSave()}
                             disabled={loading}
                             style={{ ...primaryButtonStyle, opacity: loading ? 0.6 : 1 }}
                         >

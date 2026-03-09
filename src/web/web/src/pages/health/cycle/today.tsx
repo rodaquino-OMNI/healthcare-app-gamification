@@ -1,11 +1,11 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 const PHASE_INFO = {
     luteal: {
@@ -30,7 +30,7 @@ const TodayPage: React.FC = () => {
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/cycle')}
+                onClick={() => void router.push('/health/cycle')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -126,7 +126,7 @@ const TodayPage: React.FC = () => {
             <div style={{ display: 'flex', gap: spacing.sm }}>
                 <Button
                     journey="health"
-                    onPress={() => router.push('/health/cycle/log-period')}
+                    onPress={() => void router.push('/health/cycle/log-period')}
                     accessibilityLabel="Log period"
                 >
                     Log Period
@@ -134,7 +134,7 @@ const TodayPage: React.FC = () => {
                 <Button
                     variant="secondary"
                     journey="health"
-                    onPress={() => router.push('/health/cycle/log-symptoms')}
+                    onPress={() => void router.push('/health/cycle/log-symptoms')}
                     accessibilityLabel="Log symptoms"
                 >
                     Log Symptoms

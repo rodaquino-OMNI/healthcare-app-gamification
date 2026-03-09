@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 type TimePeriod = 'week' | 'month';
 
@@ -53,7 +53,7 @@ const InsightsPage: React.FC = () => {
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/wellness')}
+                onClick={() => void router.push('/wellness')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -143,13 +143,15 @@ const InsightsPage: React.FC = () => {
                 {WELLNESS_TIPS.map((tip) => (
                     <div
                         key={tip.id}
-                        onClick={() => router.push(`/wellness/tip/${tip.id}`)}
+                        onClick={() => void router.push(`/wellness/tip/${tip.id}`)}
                         style={{ cursor: 'pointer' }}
                         role="link"
                         tabIndex={0}
                         aria-label={tip.title}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter') router.push(`/wellness/tip/${tip.id}`);
+                            if (e.key === 'Enter') {
+                                void router.push(`/wellness/tip/${tip.id}`);
+                            }
                         }}
                     >
                         <Card journey="health" elevation="sm" padding="md">
@@ -173,7 +175,7 @@ const InsightsPage: React.FC = () => {
                 <Button
                     variant="secondary"
                     journey="health"
-                    onPress={() => router.push('/wellness/goals')}
+                    onPress={() => void router.push('/wellness/goals')}
                     accessibilityLabel="View goals"
                 >
                     View Goals

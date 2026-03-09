@@ -1,11 +1,11 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 const CATEGORIES = [
     { label: 'Articles', description: 'Expert health articles', href: '/health/wellness-resources/articles' },
@@ -31,7 +31,7 @@ const WellnessResourcesHomePage: React.FC = () => {
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health')}
+                onClick={() => void router.push('/health')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -81,7 +81,7 @@ const WellnessResourcesHomePage: React.FC = () => {
                         elevation="sm"
                         padding="md"
                         style={{ cursor: 'pointer' }}
-                        onClick={() => router.push(cat.href)}
+                        onClick={() => void router.push(cat.href)}
                     >
                         <Text fontSize="md" fontWeight="bold" color={colors.journeys.health.primary}>
                             {cat.label}
@@ -117,7 +117,7 @@ const WellnessResourcesHomePage: React.FC = () => {
                         elevation="sm"
                         padding="md"
                         style={{ minWidth: 200, flexShrink: 0, cursor: 'pointer' }}
-                        onClick={() => router.push(`/health/wellness-resources/${item.id}`)}
+                        onClick={() => void router.push(`/health/wellness-resources/${item.id}`)}
                     >
                         <Text fontSize="xs" fontWeight="semiBold" color={colors.journeys.health.primary}>
                             {item.type}
@@ -144,7 +144,7 @@ const WellnessResourcesHomePage: React.FC = () => {
                 <Button
                     variant="secondary"
                     journey="health"
-                    onPress={() => router.push('/health/wellness-resources/bookmarks')}
+                    onPress={() => void router.push('/health/wellness-resources/bookmarks')}
                     accessibilityLabel="View bookmarks"
                 >
                     Bookmarks

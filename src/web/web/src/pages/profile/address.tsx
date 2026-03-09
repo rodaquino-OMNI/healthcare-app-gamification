@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useRouter } from 'next/navigation';
 import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
 import { spacing } from 'design-system/tokens/spacing';
-import AuthLayout from '@/layouts/AuthLayout';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 import { WEB_PROFILE_ROUTES } from 'shared/constants/routes';
+import styled from 'styled-components';
+
+import { AuthLayout } from '@/layouts/AuthLayout';
 
 const Title = styled.h2`
     font-family: ${typography.fontFamily.heading};
@@ -172,7 +173,7 @@ interface AddressFormData {
 /**
  * Profile Address page - collects Brazilian address with CEP auto-fill.
  */
-export default function ProfileAddressPage() {
+export default function ProfileAddressPage(): React.ReactElement {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoadingCep, setIsLoadingCep] = useState(false);
@@ -191,14 +192,22 @@ export default function ProfileAddressPage() {
             setForm((prev) => ({ ...prev, [field]: e.target.value }));
         };
 
-    const handleCepBlur = async () => {
+    const handleCepBlur = async (): Promise<void> => {
         const cleanCep = form.cep.replace(/\D/g, '');
-        if (cleanCep.length !== 8) return;
+        if (cleanCep.length !== 8) {
+            return;
+        }
 
         setIsLoadingCep(true);
         try {
             const res = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
-            const data = await res.json();
+            const data = (await res.json()) as {
+                erro?: boolean;
+                logradouro?: string;
+                bairro?: string;
+                localidade?: string;
+                uf?: string;
+            };
             if (!data.erro) {
                 setForm((prev) => ({
                     ...prev,
@@ -223,9 +232,11 @@ export default function ProfileAddressPage() {
         form.city.trim() &&
         form.state.trim();
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
-        if (!isValid) return;
+        if (!isValid) {
+            return;
+        }
 
         setIsSubmitting(true);
         try {
@@ -241,7 +252,7 @@ export default function ProfileAddressPage() {
             <Title>Endereco</Title>
             <Subtitle>Informe seu endereco de correspondencia.</Subtitle>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={(e) => void handleSubmit(e)}>
                 <FormGrid>
                     <FieldGroup>
                         <Label htmlFor="cep">CEP</Label>
@@ -251,7 +262,7 @@ export default function ProfileAddressPage() {
                             placeholder="00000-000"
                             value={form.cep}
                             onChange={handleChange('cep')}
-                            onBlur={handleCepBlur}
+                            onBlur={() => void handleCepBlur()}
                             maxLength={9}
                             aria-label="CEP"
                         />

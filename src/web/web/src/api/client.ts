@@ -1,5 +1,5 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client'; // v3.7.17
-import { createUploadLink } from 'apollo-upload-client'; // v17.0.0
+import createUploadLink from 'apollo-upload-client/createUploadLink.mjs'; // v18.0.1
 import axios, { AxiosInstance } from 'axios'; // v1.4.0
 import { apiConfig } from 'shared/config/apiConfig';
 

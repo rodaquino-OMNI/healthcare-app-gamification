@@ -6,8 +6,9 @@
  * export point for authentication, gamification, journey, and notification contexts.
  */
 
-// Authentication Context - Provides secure authentication with OAuth 2.0, MFA, and biometric support
-export { AuthProvider, useAuth } from './AuthContext';
+// Authentication Context - Provides secure auth with OAuth 2.0, MFA, biometric
+export { AuthProvider, AuthContext } from './AuthContext';
+export { useAuth } from '@/hooks/useAuth';
 
 // Gamification Context - Processes user actions and assigns points/achievements based on rules
 export { GamificationProvider, useGamification } from './GamificationContext';

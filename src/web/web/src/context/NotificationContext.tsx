@@ -1,6 +1,7 @@
-import { createContext, useContext, ReactNode } from 'react'; // react 18.0+
-import { useNotifications } from '../hooks/useNotifications';
+import React, { createContext, useContext, ReactNode } from 'react'; // react 18.0+
 import { Notification } from 'shared/types';
+
+import { useNotifications } from '../hooks/useNotifications';
 
 /**
  * Type definition for the notification context
@@ -14,7 +15,7 @@ interface NotificationContextType {
     isLoading: boolean;
 
     /** Function to mark a notification as read */
-    markAsRead: (notificationId: string) => void;
+    markAsRead: (notificationId: string) => Promise<void>;
 
     /** Count of unread notifications */
     unreadCount: number | undefined;
@@ -22,6 +23,7 @@ interface NotificationContextType {
 
 // Create the context with a default value of undefined
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
+const CtxProvider = NotificationContext.Provider;
 
 /**
  * Props for the NotificationProvider component
@@ -36,7 +38,7 @@ interface NotificationProviderProps {
  * This provider should be placed within the application's component tree, typically near the root
  * but below the AuthProvider since it depends on authentication state.
  */
-export const NotificationProvider = ({ children }: NotificationProviderProps) => {
+export const NotificationProvider: React.FC<NotificationProviderProps> = ({ children }) => {
     // Use the useNotifications hook to get notification functionality
     const { notifications, isLoading, markAsRead, unreadCount } = useNotifications();
 
@@ -48,7 +50,7 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
         unreadCount,
     };
 
-    return <NotificationContext.Provider value={contextValue}>{children}</NotificationContext.Provider>;
+    return <CtxProvider value={contextValue}>{children}</CtxProvider>;
 };
 
 /**

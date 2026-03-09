@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { CareLayout } from '@/layouts/CareLayout';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { CareLayout } from '@/layouts/CareLayout';
 
 interface ChecklistItem {
     id: string;
@@ -17,7 +18,12 @@ interface ChecklistItem {
 }
 
 const INITIAL_CHECKLIST: ChecklistItem[] = [
-    { id: '1', label: 'Documento de identidade (RG ou CNH)', section: 'Documentos', checked: false },
+    {
+        id: '1',
+        label: 'Documento de identidade (RG ou CNH)',
+        section: 'Documentos',
+        checked: false,
+    },
     { id: '2', label: 'Carteira do convenio', section: 'Documentos', checked: false },
     { id: '3', label: 'Pedido medico / encaminhamento', section: 'Documentos', checked: false },
     { id: '4', label: 'Resultados de exames anteriores', section: 'Exames', checked: false },
@@ -25,14 +31,19 @@ const INITIAL_CHECKLIST: ChecklistItem[] = [
     { id: '6', label: 'Anotar sintomas e duvidas', section: 'Preparacao', checked: false },
     { id: '7', label: 'Jejum (se necessario)', section: 'Preparacao', checked: false },
     { id: '8', label: 'Confirmar endereco da clinica', section: 'Logistica', checked: false },
-    { id: '9', label: 'Verificar transporte / estacionamento', section: 'Logistica', checked: false },
+    {
+        id: '9',
+        label: 'Verificar transporte / estacionamento',
+        section: 'Logistica',
+        checked: false,
+    },
 ];
 
 const PreVisitPage: React.FC = () => {
     const router = useRouter();
     const [checklist, setChecklist] = useState(INITIAL_CHECKLIST);
 
-    const toggleItem = (id: string) => {
+    const toggleItem = (id: string): void => {
         setChecklist((prev) => prev.map((item) => (item.id === id ? { ...item, checked: !item.checked } : item)));
     };
 
@@ -69,7 +80,13 @@ const PreVisitPage: React.FC = () => {
 
                 {/* Progress */}
                 <div style={{ marginBottom: spacing.xl }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: spacing.xs }}>
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            marginBottom: spacing.xs,
+                        }}
+                    >
                         <Text fontSize="sm" color={colors.gray[50]}>
                             Progresso
                         </Text>
@@ -77,7 +94,13 @@ const PreVisitPage: React.FC = () => {
                             {completedCount}/{totalCount} ({progressPercent}%)
                         </Text>
                     </div>
-                    <div style={{ height: '8px', backgroundColor: colors.neutral.gray100, borderRadius: '4px' }}>
+                    <div
+                        style={{
+                            height: '8px',
+                            backgroundColor: colors.neutral.gray100,
+                            borderRadius: '4px',
+                        }}
+                    >
                         <div
                             style={{
                                 width: `${progressPercent}%`,
@@ -115,7 +138,9 @@ const PreVisitPage: React.FC = () => {
                                             backgroundColor: item.checked
                                                 ? colors.semantic.successBg
                                                 : colors.neutral.white,
-                                            border: `1px solid ${item.checked ? colors.semantic.success : colors.neutral.gray300}`,
+                                            border: `1px solid ${
+                                                item.checked ? colors.semantic.success : colors.neutral.gray300
+                                            }`,
                                             cursor: 'pointer',
                                         }}
                                     >
@@ -129,7 +154,9 @@ const PreVisitPage: React.FC = () => {
                                         <Text
                                             fontSize="sm"
                                             color={item.checked ? colors.semantic.success : colors.journeys.care.text}
-                                            style={{ textDecoration: item.checked ? 'line-through' : 'none' }}
+                                            style={{
+                                                textDecoration: item.checked ? 'line-through' : 'none',
+                                            }}
                                         >
                                             {item.label}
                                         </Text>
@@ -143,7 +170,10 @@ const PreVisitPage: React.FC = () => {
                     <Card
                         journey="care"
                         elevation="md"
-                        style={{ borderLeft: `4px solid ${colors.semantic.success}`, marginBottom: spacing.xl }}
+                        style={{
+                            borderLeft: `4px solid ${colors.semantic.success}`,
+                            marginBottom: spacing.xl,
+                        }}
                     >
                         <Box padding="md" style={{ textAlign: 'center' }}>
                             <Text fontWeight="bold" fontSize="lg" color={colors.semantic.success}>

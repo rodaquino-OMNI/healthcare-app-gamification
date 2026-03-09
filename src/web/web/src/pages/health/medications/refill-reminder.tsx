@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { ProgressBar } from 'design-system/components/ProgressBar/ProgressBar';
-import { Text } from 'design-system/primitives/Text/Text';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 const getCountdownColor = (days: number): string => {
-    if (days > 14) return colors.semantic.success;
-    if (days >= 7) return colors.semantic.warning;
+    if (days > 14) {
+        return colors.semantic.success;
+    }
+    if (days >= 7) {
+        return colors.semantic.warning;
+    }
     return colors.semantic.error;
 };
 
@@ -44,7 +48,7 @@ const MedicationRefillReminderPage: React.FC = () => {
     const supplyLevel = getSupplyLevel(daysRemaining);
     const countdownColor = getCountdownColor(daysRemaining);
 
-    const handleSnooze = (option: SnoozeOption) => {
+    const handleSnooze = (option: SnoozeOption): void => {
         setSnoozed(true);
         alert(`Reminder snoozed for ${option.label}`);
     };

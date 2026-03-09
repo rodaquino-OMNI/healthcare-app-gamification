@@ -1,10 +1,10 @@
-import React from 'react';
-import styled from 'styled-components';
-import { useRouter } from 'next/navigation';
 import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
 import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/navigation';
+import React from 'react';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
+import styled from 'styled-components';
 
 const PageContainer = styled.div`
     display: flex;
@@ -107,7 +107,7 @@ const SecondaryButton = styled.button`
  * Welcome page - the first screen users see when visiting the app.
  * Features a brand gradient hero section with login and sign-up CTAs.
  */
-export default function WelcomePage() {
+export default function WelcomePage(): React.ReactElement {
     const router = useRouter();
 
     return (

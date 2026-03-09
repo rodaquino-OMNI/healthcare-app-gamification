@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Select } from 'design-system/components/Select/Select';
+import { Card } from 'design-system/components/Card/Card';
 import { Checkbox } from 'design-system/components/Checkbox/Checkbox';
 import { DatePicker } from 'design-system/components/DatePicker/DatePicker';
-import Input from 'design-system/components/Input/Input';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Input } from 'design-system/components/Input/Input';
+import { Select } from 'design-system/components/Select/Select';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
 const FREQUENCY_OPTIONS = [
@@ -38,7 +38,7 @@ interface EditFormState {
  */
 const MedicationEditPage: React.FC = () => {
     const router = useRouter();
-    const { id, name, dosage, frequency, notes } = router.query;
+    const { name, dosage, frequency, notes } = router.query;
 
     const [form, setForm] = useState<EditFormState>({
         name: (name as string) || '',
@@ -51,7 +51,7 @@ const MedicationEditPage: React.FC = () => {
     });
     const [errors, setErrors] = useState<Partial<Record<keyof EditFormState, string>>>({});
 
-    const updateField = <K extends keyof EditFormState>(field: K, value: EditFormState[K]) => {
+    const updateField = <K extends keyof EditFormState>(field: K, value: EditFormState[K]): void => {
         setForm((prev) => ({ ...prev, [field]: value }));
         if (errors[field]) {
             setErrors((prev) => ({ ...prev, [field]: undefined }));
@@ -60,21 +60,31 @@ const MedicationEditPage: React.FC = () => {
 
     const validate = (): boolean => {
         const newErrors: Partial<Record<keyof EditFormState, string>> = {};
-        if (!form.name.trim()) newErrors.name = 'Medication name is required';
-        if (!form.dosage.trim()) newErrors.dosage = 'Dosage is required';
-        if (!form.frequency) newErrors.frequency = 'Frequency is required';
-        if (!form.startDate) newErrors.startDate = 'Start date is required';
+        if (!form.name.trim()) {
+            newErrors.name = 'Medication name is required';
+        }
+        if (!form.dosage.trim()) {
+            newErrors.dosage = 'Dosage is required';
+        }
+        if (!form.frequency) {
+            newErrors.frequency = 'Frequency is required';
+        }
+        if (!form.startDate) {
+            newErrors.startDate = 'Start date is required';
+        }
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSave = () => {
-        if (!validate()) return;
+    const handleSave = (): void => {
+        if (!validate()) {
+            return;
+        }
         // In a real app, call API to update the medication
-        router.push(WEB_HEALTH_ROUTES.MEDICATIONS);
+        void router.push(WEB_HEALTH_ROUTES.MEDICATIONS);
     };
 
-    const handleCancel = () => {
+    const handleCancel = (): void => {
         router.back();
     };
 
@@ -92,7 +102,7 @@ const MedicationEditPage: React.FC = () => {
                     <Input
                         label="Medication Name"
                         value={form.name}
-                        onChange={(e) => updateField('name', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField('name', e.target.value)}
                         placeholder="e.g., Losartan"
                         journey="health"
                         error={errors.name}
@@ -104,7 +114,7 @@ const MedicationEditPage: React.FC = () => {
                     <Input
                         label="Dosage"
                         value={form.dosage}
-                        onChange={(e) => updateField('dosage', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField('dosage', e.target.value)}
                         placeholder="e.g., 50mg"
                         journey="health"
                         error={errors.dosage}
@@ -160,7 +170,7 @@ const MedicationEditPage: React.FC = () => {
                     <Input
                         label="Notes (optional)"
                         value={form.notes}
-                        onChange={(e) => updateField('notes', e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField('notes', e.target.value)}
                         placeholder="Any additional notes..."
                         journey="health"
                         testID="edit-notes-input"

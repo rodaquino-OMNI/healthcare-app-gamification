@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
 import { borderRadius } from 'design-system/tokens/borderRadius';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import React, { useState } from 'react';
 
 type NotificationType = 'care' | 'health' | 'plan' | 'system';
 
@@ -63,7 +63,7 @@ const MOCK_UNREAD: UnreadNotification[] = [
 const UnreadNotificationsPage: React.FC = () => {
     const [notifications, setNotifications] = useState(MOCK_UNREAD);
 
-    const handleMarkAllRead = () => setNotifications([]);
+    const handleMarkAllRead = (): void => setNotifications([]);
 
     return (
         <div style={styles.container}>

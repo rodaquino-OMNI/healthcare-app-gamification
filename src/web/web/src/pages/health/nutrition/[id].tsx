@@ -1,11 +1,11 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 const NUTRIENTS = [
     { label: 'Calories', value: '420 kcal' },
@@ -22,19 +22,19 @@ const MealDetailPage: React.FC = () => {
     const router = useRouter();
     const { id } = router.query;
 
-    const handleEdit = () => {
-        router.push('/health/nutrition/meal-log');
+    const handleEdit = (): void => {
+        void router.push('/health/nutrition/meal-log');
     };
 
-    const handleDelete = () => {
-        window.alert(`Meal #${id} deleted`);
-        router.push('/health/nutrition/food-diary');
+    const handleDelete = (): void => {
+        window.alert(`Meal #${String(id)} deleted`);
+        void router.push('/health/nutrition/food-diary');
     };
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/nutrition/food-diary')}
+                onClick={() => void router.push('/health/nutrition/food-diary')}
                 style={{
                     background: 'none',
                     border: 'none',

@@ -1,8 +1,8 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
 
 jest.mock('@/components/index', () => ({
-    MainLayout: ({ children }: any) => <div data-testid="main-layout">{children}</div>,
+    MainLayout: ({ children }: { children: React.ReactNode }) => <div data-testid="main-layout">{children}</div>,
     useHealthMetrics: () => ({ metrics: [] }),
     useAuth: () => ({ isAuthenticated: true }),
 }));

@@ -1,12 +1,12 @@
-import React from 'react';
-import styled from 'styled-components';
-import { useAppointments } from '@/hooks/useAppointments';
-import { Appointment } from 'shared/types/care.types';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { formatRelativeDate } from 'shared/utils/date';
+import { Card } from 'design-system/components/Card/Card';
+import React from 'react';
 import { MOBILE_CARE_ROUTES } from 'shared/constants/routes';
-import { useJourney } from '@/context/JourneyContext';
+import { Appointment } from 'shared/types/care.types';
+import { formatRelativeDate } from 'shared/utils/date';
+import styled from 'styled-components';
+
+import { useAppointments } from '@/hooks/useAppointments';
 
 // Styled components for the widget
 const WidgetTitle = styled.h3`
@@ -72,21 +72,26 @@ const ButtonContainer = styled.div`
  * with a button to navigate to the full appointments page.
  */
 export const AppointmentsWidget: React.FC = () => {
-    const { currentJourney } = useJourney();
-    const { appointments, loading, error } = useAppointments();
+    const { appointments: rawAppointments, loading, error } = useAppointments();
 
     // Get upcoming appointments, sorted by date (nearest first)
-    const upcomingAppointments = React.useMemo(() => {
-        if (!appointments?.length) return [];
+    const upcomingAppointments = React.useMemo((): Appointment[] => {
+        const appointments: Appointment[] = rawAppointments ?? [];
+        if (!appointments.length) {
+            return [];
+        }
 
+        const now = new Date();
+        const byDateAsc = (a: Appointment, b: Appointment): number =>
+            new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime();
         return [...appointments]
-            .filter((appointment) => new Date(appointment.dateTime) >= new Date())
-            .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime())
-            .slice(0, 3); // Show at most 3 appointments
-    }, [appointments]);
+            .filter((apt: Appointment) => new Date(apt.dateTime) >= now)
+            .sort(byDateAsc)
+            .slice(0, 3);
+    }, [rawAppointments]);
 
     // Format appointment time (HH:MM)
-    const formatAppointmentTime = (dateTimeStr: string) => {
+    const formatAppointmentTime = (dateTimeStr: string): string => {
         const date = new Date(dateTimeStr);
         return date.toLocaleTimeString(['pt-BR', 'en-US'], {
             hour: '2-digit',
@@ -98,12 +103,12 @@ export const AppointmentsWidget: React.FC = () => {
     // Handle navigation to appointments page
     // In a real implementation, this would use the appropriate navigation method
     // depending on platform (router.push for web, navigation.navigate for mobile)
-    const handleViewAllAppointments = () => {
+    const handleViewAllAppointments = (): void => {
         // For web implementation, we would use Next.js router:
         // router.push('/care/appointments');
 
-        // For demonstration purposes, just log the navigation intent
-        console.log(`Navigate to: ${MOBILE_CARE_ROUTES.APPOINTMENTS}`);
+        // Navigation intent: navigate to appointments page
+        void MOBILE_CARE_ROUTES.APPOINTMENTS;
     };
 
     return (
@@ -112,7 +117,7 @@ export const AppointmentsWidget: React.FC = () => {
 
             {loading && <LoadingMessage>Loading appointments...</LoadingMessage>}
 
-            {error && <ErrorMessage>Failed to load appointments. Please try again later.</ErrorMessage>}
+            {error && <ErrorMessage>{'Failed to load appointments. Please try again later.'}</ErrorMessage>}
 
             {!loading && !error && upcomingAppointments.length === 0 && (
                 <NoAppointmentsMessage>You have no upcoming appointments.</NoAppointmentsMessage>
@@ -120,7 +125,7 @@ export const AppointmentsWidget: React.FC = () => {
 
             {!loading && !error && upcomingAppointments.length > 0 && (
                 <AppointmentList>
-                    {upcomingAppointments.map((appointment) => (
+                    {upcomingAppointments.map((appointment: Appointment) => (
                         <AppointmentItem key={appointment.id}>
                             <AppointmentDate>
                                 {formatRelativeDate(appointment.dateTime)},{' '}

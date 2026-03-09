@@ -1,6 +1,6 @@
-import React from 'react';
-import { Box, Text, Icon } from 'design-system/primitives/index';
 import { Button } from 'design-system/components/Button/Button';
+import { Box, Text, Icon } from 'design-system/primitives/index';
+import React from 'react';
 import { JOURNEY_ICONS } from 'shared/constants/index';
 
 /**

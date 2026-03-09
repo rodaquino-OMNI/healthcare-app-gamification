@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
 import { Text } from 'design-system/primitives/Text/Text';
-import { Box } from 'design-system/primitives/Box/Box';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 type ShareMethod = 'email' | 'app' | 'link';
 
@@ -14,12 +13,12 @@ const ShareReportPage: React.FC = () => {
     const [shareMethod, setShareMethod] = useState<ShareMethod>('email');
     const [isSending, setIsSending] = useState(false);
 
-    const handleShare = async () => {
+    const handleShare = (): void => {
         setIsSending(true);
         // Simulate share operation
         setTimeout(() => {
             setIsSending(false);
-            router.push('/care/symptom-checker/conditions-list');
+            void router.push('/care/symptom-checker/conditions-list');
         }, 1000);
     };
 
@@ -49,7 +48,7 @@ const ShareReportPage: React.FC = () => {
                     display: 'flex',
                     gap: spacing.md,
                     padding: spacing.md,
-                    backgroundColor: colors.neutral.gray50,
+                    backgroundColor: colors.neutral.gray100,
                     borderRadius: '8px',
                 }}
             >
@@ -63,7 +62,9 @@ const ShareReportPage: React.FC = () => {
                             backgroundColor:
                                 shareMethod === method ? colors.journeys.care.primary : colors.neutral.white,
                             color: shareMethod === method ? colors.neutral.white : colors.journeys.care.text,
-                            border: `1px solid ${shareMethod === method ? colors.journeys.care.primary : colors.neutral.gray300}`,
+                            border: `1px solid ${
+                                shareMethod === method ? colors.journeys.care.primary : colors.neutral.gray300
+                            }`,
                             borderRadius: '6px',
                             cursor: 'pointer',
                             fontSize: '13px',
@@ -173,7 +174,7 @@ const ShareReportPage: React.FC = () => {
                                 key={app}
                                 style={{
                                     padding: spacing.md,
-                                    backgroundColor: colors.neutral.gray50,
+                                    backgroundColor: colors.neutral.gray100,
                                     border: `1px solid ${colors.neutral.gray300}`,
                                     borderRadius: '6px',
                                     cursor: 'pointer',
@@ -218,7 +219,7 @@ const ShareReportPage: React.FC = () => {
                                 borderRadius: '6px',
                                 fontSize: '12px',
                                 fontFamily: 'monospace',
-                                backgroundColor: colors.neutral.gray50,
+                                backgroundColor: colors.neutral.gray100,
                             }}
                             data-testid="share-link-input"
                         />
@@ -234,7 +235,9 @@ const ShareReportPage: React.FC = () => {
                                 fontWeight: '500',
                             }}
                             data-testid="copy-share-link"
-                            onClick={() => navigator.clipboard.writeText('https://app.exemplo.com/report/abc123xyz')}
+                            onClick={() =>
+                                void navigator.clipboard.writeText('https://app.exemplo.com/report/abc123xyz')
+                            }
                         >
                             Copiar
                         </button>
@@ -250,7 +253,7 @@ const ShareReportPage: React.FC = () => {
                 }}
             >
                 <button
-                    onClick={handleShare}
+                    onClick={() => void handleShare()}
                     disabled={isSending || (shareMethod === 'email' && !doctorEmail)}
                     style={{
                         flex: 1,

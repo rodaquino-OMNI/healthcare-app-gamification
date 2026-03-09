@@ -1,8 +1,8 @@
-import React from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -40,9 +40,11 @@ const StepMentalScreeningPage: React.FC<StepProps> = ({ data, onUpdate }) => {
     const getScore = (): number => {
         let total = 0;
         QUESTIONS.forEach((q) => {
-            const answer = data[`phq2_${q.key}`];
+            const answer = data[`phq2_${q.key}`] as string | undefined;
             const opt = OPTIONS.find((o) => o.key === answer);
-            if (opt) total += opt.score;
+            if (opt) {
+                total += opt.score;
+            }
         });
         return total;
     };
@@ -71,7 +73,7 @@ const StepMentalScreeningPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                     </Text>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
                         {OPTIONS.map((option) => {
-                            const isActive = data[`phq2_${question.key}`] === option.key;
+                            const isActive = (data[`phq2_${question.key}`] as string) === option.key;
                             return (
                                 <button
                                     key={option.key}

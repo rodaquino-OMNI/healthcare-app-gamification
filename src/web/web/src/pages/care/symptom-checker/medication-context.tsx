@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 interface Medication {
     id: string;
@@ -29,15 +29,18 @@ const MedicationContextPage: React.FC = () => {
     const router = useRouter();
     const [active, setActive] = useState<Record<string, boolean>>({});
 
-    const toggle = (id: string) => {
+    const toggle = (id: string): void => {
         setActive((prev) => ({ ...prev, [id]: !prev[id] }));
     };
 
-    const handleContinue = () => {
+    const handleContinue = (): void => {
         const selected = Object.keys(active).filter((k) => active[k]);
-        router.push({
+        void router.push({
             pathname: '/care/symptom-checker/vitals',
-            query: { ...router.query, medications: selected.join(',') },
+            query: {
+                ...router.query,
+                medications: selected.join(','),
+            },
         });
     };
 

@@ -1,13 +1,13 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
-import { Button } from 'design-system/components/Button/Button';
 import { Badge } from 'design-system/components/Badge/Badge';
+import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { ProgressBar } from 'design-system/components/ProgressBar/ProgressBar';
-import { Text } from 'design-system/primitives/Text/Text';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
 /** Condition assessment result type */
@@ -62,8 +62,8 @@ const getSeverityStatus = (severity: string): 'success' | 'warning' | 'error' =>
 const SymptomResultPage: React.FC = () => {
     const router = useRouter();
 
-    const handleViewRecommendations = () => {
-        router.push({
+    const handleViewRecommendations = (): void => {
+        void router.push({
             pathname: WEB_CARE_ROUTES.SYMPTOM_RECOMMENDATION,
             query: router.query,
         });

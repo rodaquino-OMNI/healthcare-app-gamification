@@ -1,15 +1,17 @@
-import React from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { Text } from 'design-system/primitives/Text/Text';
-import { Box } from 'design-system/primitives/Box/Box';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { AchievementBadge } from 'design-system/gamification/AchievementBadge';
+import { Card } from 'design-system/components/Card/Card';
 import { ProgressBar } from 'design-system/components/ProgressBar/ProgressBar';
-import { useGameProfile } from '@/hooks/useGamification';
+import { AchievementBadge } from 'design-system/gamification/AchievementBadge';
+import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React from 'react';
+import type { Achievement } from 'shared/types/gamification.types';
+
+import { useGameProfile } from '@/hooks/useGamification';
 
 const JOURNEY_COLORS: Record<string, string> = {
     health: colors.journeys?.health?.primary ?? '#0ACF83',
@@ -51,7 +53,7 @@ const AchievementDetailPage: React.FC = () => {
         );
     }
 
-    const achievement = data?.gameProfile?.achievements?.find((a) => a.id === id);
+    const achievement = data?.gameProfile?.achievements?.find((a: Achievement) => a.id === id);
 
     if (!achievement) {
         return (
@@ -60,7 +62,7 @@ const AchievementDetailPage: React.FC = () => {
                     Achievement not found.
                 </Text>
                 <Link href="/achievements">
-                    <Button variant="secondary" onPress={() => router.push('/achievements')}>
+                    <Button variant="secondary" onPress={() => void router.push('/achievements')}>
                         Back to Achievements
                     </Button>
                 </Link>
@@ -68,7 +70,8 @@ const AchievementDetailPage: React.FC = () => {
         );
     }
 
-    const progressPercent = achievement.total > 0 ? Math.round((achievement.progress / achievement.total) * 100) : 0;
+    const ratio = achievement.progress / achievement.total;
+    const progressPercent = achievement.total > 0 ? Math.round(ratio * 100) : 0;
 
     const journeyColor = JOURNEY_COLORS[achievement.journey] ?? colors.gray[50];
 
@@ -76,7 +79,7 @@ const AchievementDetailPage: React.FC = () => {
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <Button
                 variant="secondary"
-                onPress={() => router.push('/achievements')}
+                onPress={() => void router.push('/achievements')}
                 accessibilityLabel="Back to achievements"
                 style={{ marginBottom: spacing.lg }}
             >
@@ -113,7 +116,17 @@ const AchievementDetailPage: React.FC = () => {
                 <Text fontWeight="bold" fontSize="lg" style={{ marginBottom: spacing.md }}>
                     Progress
                 </Text>
-                <ProgressBar progress={progressPercent} journey={achievement.journey} showLabel />
+                <ProgressBar
+                    current={achievement.progress}
+                    total={achievement.total}
+                    journey={
+                        achievement.journey === 'health' ||
+                        achievement.journey === 'care' ||
+                        achievement.journey === 'plan'
+                            ? achievement.journey
+                            : undefined
+                    }
+                />
                 <Text fontSize="sm" color={colors.gray[50]} style={{ marginTop: spacing.sm }}>
                     {achievement.progress} / {achievement.total} completed ({progressPercent}%)
                 </Text>

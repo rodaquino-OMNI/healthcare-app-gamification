@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 /**
  * Account deletion confirmation page.
@@ -16,13 +16,13 @@ const DeleteConfirmPage: React.FC = () => {
     const [confirmationText, setConfirmationText] = useState('');
     const requiredText = 'EXCLUIR';
 
-    const handleDelete = () => {
+    const handleDelete = (): void => {
         if (confirmationText !== requiredText) {
             alert(`Por favor, digite "${requiredText}" para confirmar a exclusão.`);
             return;
         }
         alert('Sua conta foi excluída permanentemente.');
-        router.push('/');
+        void router.push('/');
     };
 
     const isConfirmed = confirmationText === requiredText;
@@ -72,7 +72,7 @@ const DeleteConfirmPage: React.FC = () => {
             {/* Confirmation Input */}
             <Card journey="health" elevation="sm" padding="lg">
                 <Text fontSize="sm" color={colors.gray[50]} style={{ marginBottom: spacing.md }}>
-                    Para confirmar, digite "<strong>{requiredText}</strong>" no campo abaixo:
+                    Para confirmar, digite &quot;<strong>{requiredText}</strong>&quot; no campo abaixo:
                 </Text>
                 <input
                     type="text"

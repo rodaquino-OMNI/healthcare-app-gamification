@@ -1,14 +1,15 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
-import { CareLayout } from '@/layouts/CareLayout';
+
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { CareLayout } from '@/layouts/CareLayout';
 
 /** Mock doctor data for the profile page */
 interface DoctorProfile {
@@ -85,8 +86,8 @@ const DoctorProfilePage: React.FC = () => {
     const { id } = router.query;
     const doctor = MOCK_DOCTOR; // In production, fetch by id
 
-    const handleBookAppointment = () => {
-        router.push({
+    const handleBookAppointment = (): void => {
+        void router.push({
             pathname: WEB_CARE_ROUTES.DOCTOR_AVAILABILITY,
             query: { doctorId: id },
         });
@@ -137,7 +138,13 @@ const DoctorProfilePage: React.FC = () => {
                                 <Text fontSize="sm" color={colors.gray[50]} style={{ marginTop: spacing.xs }}>
                                     {doctor.crm} | {doctor.yearsExperience} anos de experiencia
                                 </Text>
-                                <div style={{ display: 'flex', gap: spacing.md, marginTop: spacing.sm }}>
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        gap: spacing.md,
+                                        marginTop: spacing.sm,
+                                    }}
+                                >
                                     <Text fontSize="sm" fontWeight="bold" color={colors.journeys.care.primary}>
                                         {doctor.rating} estrelas ({doctor.reviewCount} avaliacoes)
                                     </Text>
@@ -175,7 +182,13 @@ const DoctorProfilePage: React.FC = () => {
                         >
                             Informacoes
                         </Text>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: spacing.sm }}>
+                        <div
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: '1fr 1fr',
+                                gap: spacing.sm,
+                            }}
+                        >
                             <div>
                                 <Text fontSize="xs" color={colors.gray[50]}>
                                     Formacao

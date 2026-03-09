@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 interface FAQItem {
     id: string;
@@ -49,7 +49,7 @@ const FAQCategoryPage: React.FC = () => {
     const router = useRouter();
     const [expandedId, setExpandedId] = useState<string | null>(null);
 
-    const toggleExpand = (id: string) => {
+    const toggleExpand = (id: string): void => {
         setExpandedId(expandedId === id ? null : id);
     };
 
@@ -73,7 +73,14 @@ const FAQCategoryPage: React.FC = () => {
                         style={{ marginBottom: spacing.lg, cursor: 'pointer' }}
                     >
                         <div
+                            role="button"
+                            tabIndex={0}
                             onClick={() => toggleExpand(item.id)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    toggleExpand(item.id);
+                                }
+                            }}
                             style={{
                                 display: 'flex',
                                 justifyContent: 'space-between',
@@ -119,7 +126,7 @@ const FAQCategoryPage: React.FC = () => {
                                 <Button
                                     variant="tertiary"
                                     journey="health"
-                                    onPress={() => router.push(`/help/faq/${item.id}`)}
+                                    onPress={() => void router.push(`/help/faq/${item.id}`)}
                                     accessibilityLabel="Ver mais detalhes"
                                     style={{ marginTop: spacing.md }}
                                 >

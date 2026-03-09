@@ -11,8 +11,13 @@ interface FileUploaderProps {
  * A reusable file uploader component with drag and drop support.
  * Used for uploading claim documents and other files.
  */
-export const FileUploader: React.FC<FileUploaderProps> = ({ claimId, onUpload, accept, multiple }) => {
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+export const FileUploader: React.FC<FileUploaderProps> = ({
+    claimId,
+    onUpload,
+    accept,
+    multiple,
+}): React.ReactElement => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const files = Array.from(event.target.files || []);
         if (onUpload && files.length > 0) {
             onUpload(files);

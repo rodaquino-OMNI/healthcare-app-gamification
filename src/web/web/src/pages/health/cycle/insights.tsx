@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
 import { Card } from 'design-system/components/Card/Card';
-import { Text } from 'design-system/primitives/Text/Text';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 const CATEGORIES = ['All', 'Menstrual Health', 'Fertility', 'Wellness', 'Nutrition'];
 
@@ -84,7 +84,7 @@ const ARTICLES: Article[] = [
     },
 ];
 
-const chipStyle = (selected: boolean) => ({
+const chipStyle = (selected: boolean): React.CSSProperties => ({
     padding: `${spacing.xs} ${spacing.md}`,
     borderRadius: '20px',
     border: `1px solid ${selected ? colors.journeys.health.primary : colors.gray[20]}`,
@@ -107,7 +107,7 @@ const InsightsPage: React.FC = () => {
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/cycle')}
+                onClick={() => void router.push('/health/cycle')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -155,13 +155,15 @@ const InsightsPage: React.FC = () => {
                         {featured.map((a) => (
                             <div
                                 key={a.id}
-                                onClick={() => router.push(`/health/cycle/article/${a.id}`)}
+                                onClick={() => void router.push(`/health/cycle/article/${a.id}`)}
                                 style={{ cursor: 'pointer' }}
                                 role="link"
                                 tabIndex={0}
                                 aria-label={a.title}
                                 onKeyDown={(e) => {
-                                    if (e.key === 'Enter') router.push(`/health/cycle/article/${a.id}`);
+                                    if (e.key === 'Enter') {
+                                        void router.push(`/health/cycle/article/${a.id}`);
+                                    }
                                 }}
                             >
                                 <Card journey="health" elevation="sm" padding="md">
@@ -215,13 +217,15 @@ const InsightsPage: React.FC = () => {
                 {filtered.map((a) => (
                     <div
                         key={a.id}
-                        onClick={() => router.push(`/health/cycle/article/${a.id}`)}
+                        onClick={() => void router.push(`/health/cycle/article/${a.id}`)}
                         style={{ cursor: 'pointer' }}
                         role="link"
                         tabIndex={0}
                         aria-label={a.title}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter') router.push(`/health/cycle/article/${a.id}`);
+                            if (e.key === 'Enter') {
+                                void router.push(`/health/cycle/article/${a.id}`);
+                            }
                         }}
                     >
                         <Card journey="health" elevation="sm" padding="md">

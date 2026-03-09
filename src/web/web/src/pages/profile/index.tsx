@@ -1,17 +1,15 @@
-import React, { useState, useEffect, useContext } from 'react'; // react latest
 import { useRouter } from 'next/navigation'; // next/navigation latest
+import React, { useState } from 'react'; // react latest
 
-import { useAuth } from '@/hooks/useAuth';
-import ProfileForm from '@/components/forms/ProfileForm';
-import JourneyHeader from '@/components/shared/JourneyHeader';
-import { AuthContext } from '@/context/AuthContext';
-import { ConfirmationModal } from '@/components/modals/ConfirmationModal';
-import { ErrorState } from '@/components/shared/ErrorState';
-import { LoadingIndicator } from '@/components/shared/LoadingIndicator';
-import { EmptyState } from '@/components/shared/EmptyState';
-import MainLayout from '@/layouts/MainLayout';
-import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 import { restClient } from '@/api/client';
+import { ProfileForm } from '@/components/forms/ProfileForm';
+import { ConfirmationModal } from '@/components/modals/ConfirmationModal';
+import { EmptyState } from '@/components/shared/EmptyState';
+import { ErrorState } from '@/components/shared/ErrorState';
+import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { LoadingIndicator } from '@/components/shared/LoadingIndicator';
+import { useAuth } from '@/hooks/useAuth';
+import { MainLayout } from '@/layouts/MainLayout';
 
 /**
  * A page component that displays and allows users to edit their profile information.
@@ -19,15 +17,15 @@ import { restClient } from '@/api/client';
  */
 const ProfilePage: React.FC = () => {
     // LD1: Uses the useAuth hook to get the authentication status and user data.
-    const { isLoading, isAuthenticated, error, session } = useAuth();
+    const { isLoading, isAuthenticated, error: authError, session } = useAuth();
 
     // LD1: Uses the useRouter hook to handle navigation.
     const router = useRouter();
 
     // LD1: Defines a state variable for managing the confirmation modal visibility.
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [_loading, setLoading] = useState(false);
+    const [, setDeleteError] = useState<string | null>(null);
 
     // LD1: If the authentication status is loading, renders a loading indicator.
     if (isLoading) {
@@ -39,7 +37,7 @@ const ProfilePage: React.FC = () => {
     }
 
     // LD1: If there is an error fetching user data, renders an error state component.
-    if (error) {
+    if (authError) {
         return (
             <MainLayout>
                 <ErrorState message="Falha ao carregar perfil." onRetry={() => router.refresh()} />
@@ -59,7 +57,8 @@ const ProfilePage: React.FC = () => {
         );
     }
 
-    // LD1: If there is user data, renders the main layout with the profile form and a confirmation modal for account deletion.
+    // LD1: If there is user data, renders the main layout with the profile form
+    // and a confirmation modal for account deletion.
     return (
         <MainLayout>
             <JourneyHeader title="Perfil" />
@@ -68,17 +67,20 @@ const ProfilePage: React.FC = () => {
             {/* LD1: Confirmation modal for account deletion */}
             <ConfirmationModal
                 visible={isModalVisible}
-                onConfirm={async () => {
+                onConfirm={() => {
                     setLoading(true);
-                    try {
-                        await restClient.delete('/auth/account');
-                        window.location.href = '/login';
-                    } catch (err: unknown) {
-                        setError(err instanceof Error ? err.message : 'Erro ao excluir conta');
-                    } finally {
-                        setLoading(false);
-                    }
-                    setIsModalVisible(false);
+                    restClient
+                        .delete('/auth/account')
+                        .then(() => {
+                            window.location.href = '/login';
+                        })
+                        .catch((err: unknown) => {
+                            setDeleteError(err instanceof Error ? err.message : 'Erro ao excluir conta');
+                        })
+                        .finally(() => {
+                            setLoading(false);
+                            setIsModalVisible(false);
+                        });
                 }}
                 onCancel={() => setIsModalVisible(false)}
                 title="Excluir Conta"

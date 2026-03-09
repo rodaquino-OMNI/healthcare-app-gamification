@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { CareLayout } from '@/layouts/CareLayout';
+import { useRouter } from 'next/router';
+import React, { useState, useEffect, useRef } from 'react';
+
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { CareLayout } from '@/layouts/CareLayout';
 
 /** Equipment check item for pre-consultation verification */
 interface EquipmentCheck {
@@ -17,6 +18,34 @@ interface EquipmentCheck {
     status: 'checking' | 'ok' | 'error';
 }
 
+/** Initial equipment checks defined outside component to avoid deps issues */
+const INITIAL_EQUIPMENT_CHECKS: EquipmentCheck[] = [
+    {
+        id: 'internet',
+        label: 'Conexao de Internet',
+        description: 'Verificando velocidade...',
+        status: 'checking',
+    },
+    {
+        id: 'camera',
+        label: 'Camera',
+        description: 'Verificando acesso...',
+        status: 'checking',
+    },
+    {
+        id: 'microphone',
+        label: 'Microfone',
+        description: 'Verificando acesso...',
+        status: 'checking',
+    },
+    {
+        id: 'speaker',
+        label: 'Alto-falante',
+        description: 'Verificando saida de audio...',
+        status: 'checking',
+    },
+];
+
 /**
  * Pre-consultation waiting room page.
  * Runs equipment checks (camera, microphone, internet) and shows
@@ -24,27 +53,32 @@ interface EquipmentCheck {
  */
 const WaitingRoomPage: React.FC = () => {
     const router = useRouter();
-    const { doctorId, date, time } = router.query;
+    const { time } = router.query;
 
-    const [equipmentChecks, setEquipmentChecks] = useState<EquipmentCheck[]>([
-        { id: 'internet', label: 'Conexao de Internet', description: 'Verificando velocidade...', status: 'checking' },
-        { id: 'camera', label: 'Camera', description: 'Verificando acesso...', status: 'checking' },
-        { id: 'microphone', label: 'Microfone', description: 'Verificando acesso...', status: 'checking' },
-        { id: 'speaker', label: 'Alto-falante', description: 'Verificando saida de audio...', status: 'checking' },
-    ]);
+    const [equipmentChecks, setEquipmentChecks] = useState<EquipmentCheck[]>(INITIAL_EQUIPMENT_CHECKS);
 
     const [queuePosition, setQueuePosition] = useState(2);
     const [estimatedWait, setEstimatedWait] = useState('5 minutos');
+    const hasRunChecks = useRef(false);
 
-    // Simulate equipment checks completing
+    // Simulate equipment checks completing (mount-only)
     useEffect(() => {
-        const timers = equipmentChecks.map((check, index) =>
+        if (hasRunChecks.current) {
+            return;
+        }
+        hasRunChecks.current = true;
+
+        const timers = INITIAL_EQUIPMENT_CHECKS.map((check, index) =>
             setTimeout(
                 () => {
                     setEquipmentChecks((prev) =>
                         prev.map((c) =>
                             c.id === check.id
-                                ? { ...c, status: 'ok' as const, description: 'Funcionando corretamente' }
+                                ? {
+                                      ...c,
+                                      status: 'ok' as const,
+                                      description: 'Funcionando corretamente',
+                                  }
                                 : c
                         )
                     );
@@ -54,15 +88,15 @@ const WaitingRoomPage: React.FC = () => {
         );
 
         return () => timers.forEach(clearTimeout);
-        // Only run on mount
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Simulate queue position decreasing
     useEffect(() => {
         const interval = setInterval(() => {
             setQueuePosition((prev) => {
-                if (prev <= 0) return 0;
+                if (prev <= 0) {
+                    return 0;
+                }
                 const newPos = prev - 1;
                 setEstimatedWait(newPos === 0 ? 'Agora' : `${newPos * 3} minutos`);
                 return newPos;
@@ -75,28 +109,28 @@ const WaitingRoomPage: React.FC = () => {
     const allChecksOk = equipmentChecks.every((c) => c.status === 'ok');
     const isReady = allChecksOk && queuePosition === 0;
 
-    const handleJoinConsultation = () => {
+    const handleJoinConsultation = (): void => {
         // In production, this would connect to the video consultation
-        router.push('/care/telemedicine');
+        void router.push('/care/telemedicine');
     };
 
-    const handleCancelWaiting = () => {
+    const handleCancelWaiting = (): void => {
         router.back();
     };
 
-    const getStatusColor = (status: EquipmentCheck['status']) => {
+    const getStatusColor = (status: EquipmentCheck['status']): string => {
         switch (status) {
             case 'ok':
-                return '#22C55E';
+                return colors.semantic.success;
             case 'error':
-                return '#EF4444';
+                return colors.semantic.error;
             case 'checking':
             default:
                 return colors.journeys.care.primary;
         }
     };
 
-    const getStatusLabel = (status: EquipmentCheck['status']) => {
+    const getStatusLabel = (status: EquipmentCheck['status']): string => {
         switch (status) {
             case 'ok':
                 return 'OK';
@@ -140,7 +174,7 @@ const WaitingRoomPage: React.FC = () => {
                         <Text
                             fontSize="2xl"
                             fontWeight="bold"
-                            color={queuePosition === 0 ? '#22C55E' : colors.journeys.care.primary}
+                            color={queuePosition === 0 ? colors.semantic.success : colors.journeys.care.primary}
                             style={{ marginTop: spacing.xs }}
                         >
                             {queuePosition === 0 ? 'Sua vez!' : `#${queuePosition}`}

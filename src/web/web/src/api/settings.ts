@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { restClient } from './client';
 
 export async function savePersonalInfo(data: {
@@ -8,8 +7,7 @@ export async function savePersonalInfo(data: {
     bloodType: string;
 }): Promise<void> {
     try {
-        const response = await restClient.put('/users/me/personal-info', data);
-        return response.data;
+        await restClient.put('/users/me/personal-info', data);
     } catch (err: unknown) {
         throw err instanceof Error ? err : new Error('Unexpected error');
     }
@@ -23,25 +21,24 @@ export async function addDependent(data: {
     gender: string;
 }): Promise<void> {
     try {
-        const response = await restClient.post('/users/me/dependents', data);
-        return response.data;
+        await restClient.post('/users/me/dependents', data);
     } catch (err: unknown) {
         throw err instanceof Error ? err : new Error('Unexpected error');
     }
 }
 
-export async function getDependents(): Promise<
-    Array<{
-        id: string;
-        name: string;
-        cpf: string;
-        dob: string;
-        relationship: string;
-        gender: string;
-    }>
-> {
+interface Dependent {
+    id: string;
+    name: string;
+    cpf: string;
+    dob: string;
+    relationship: string;
+    gender: string;
+}
+
+export async function getDependents(): Promise<Dependent[]> {
     try {
-        const response = await restClient.get('/users/me/dependents');
+        const response = await restClient.get<Dependent[]>('/users/me/dependents');
         return response.data;
     } catch (err: unknown) {
         throw err instanceof Error ? err : new Error('Unexpected error');
@@ -50,8 +47,7 @@ export async function getDependents(): Promise<
 
 export async function removeDependent(id: string): Promise<void> {
     try {
-        const response = await restClient.delete(`/users/me/dependents/${id}`);
-        return response.data;
+        await restClient.delete(`/users/me/dependents/${id}`);
     } catch (err: unknown) {
         throw err instanceof Error ? err : new Error('Unexpected error');
     }
@@ -59,8 +55,7 @@ export async function removeDependent(id: string): Promise<void> {
 
 export async function saveTheme(theme: string): Promise<void> {
     try {
-        const response = await restClient.put('/users/me/preferences/theme', { theme });
-        return response.data;
+        await restClient.put('/users/me/preferences/theme', { theme });
     } catch (err: unknown) {
         throw err instanceof Error ? err : new Error('Unexpected error');
     }
@@ -68,8 +63,7 @@ export async function saveTheme(theme: string): Promise<void> {
 
 export async function saveLanguage(lang: string): Promise<void> {
     try {
-        const response = await restClient.put('/users/me/preferences/language', { lang });
-        return response.data;
+        await restClient.put('/users/me/preferences/language', { lang });
     } catch (err: unknown) {
         throw err instanceof Error ? err : new Error('Unexpected error');
     }
@@ -82,21 +76,22 @@ export async function saveAccessibility(prefs: {
     screenReader: boolean;
 }): Promise<void> {
     try {
-        const response = await restClient.put('/users/me/preferences/accessibility', prefs);
-        return response.data;
+        await restClient.put('/users/me/preferences/accessibility', prefs);
     } catch (err: unknown) {
         throw err instanceof Error ? err : new Error('Unexpected error');
     }
 }
 
-export async function lookupCep(cep: string): Promise<{
+interface CepResult {
     logradouro: string;
     bairro: string;
     localidade: string;
     uf: string;
-}> {
+}
+
+export async function lookupCep(cep: string): Promise<CepResult> {
     try {
-        const response = await restClient.get(`https://viacep.com.br/ws/${cep}/json/`);
+        const response = await restClient.get<CepResult>(`https://viacep.com.br/ws/${cep}/json/`);
         return response.data;
     } catch (err: unknown) {
         throw err instanceof Error ? err : new Error('Unexpected error');
@@ -114,28 +109,27 @@ export async function saveAddress(data: {
     state: string;
 }): Promise<void> {
     try {
-        const response = await restClient.post('/users/me/addresses', data);
-        return response.data;
+        await restClient.post('/users/me/addresses', data);
     } catch (err: unknown) {
         throw err instanceof Error ? err : new Error('Unexpected error');
     }
 }
 
-export async function getAddresses(): Promise<
-    Array<{
-        id: string;
-        label: string;
-        cep: string;
-        street: string;
-        number: string;
-        complement?: string;
-        neighborhood: string;
-        city: string;
-        state: string;
-    }>
-> {
+interface Address {
+    id: string;
+    label: string;
+    cep: string;
+    street: string;
+    number: string;
+    complement?: string;
+    neighborhood: string;
+    city: string;
+    state: string;
+}
+
+export async function getAddresses(): Promise<Address[]> {
     try {
-        const response = await restClient.get('/users/me/addresses');
+        const response = await restClient.get<Address[]>('/users/me/addresses');
         return response.data;
     } catch (err: unknown) {
         throw err instanceof Error ? err : new Error('Unexpected error');
@@ -144,34 +138,31 @@ export async function getAddresses(): Promise<
 
 export async function removeAddress(id: string): Promise<void> {
     try {
-        const response = await restClient.delete(`/users/me/addresses/${id}`);
-        return response.data;
+        await restClient.delete(`/users/me/addresses/${id}`);
     } catch (err: unknown) {
         throw err instanceof Error ? err : new Error('Unexpected error');
     }
 }
 
-// eslint-disable-next-line max-len
 export async function submitFeedback(data: { rating: number; category: string; comment: string }): Promise<void> {
     try {
-        const response = await restClient.post('/feedback', data);
-        return response.data;
+        await restClient.post('/feedback', data);
     } catch (err: unknown) {
         throw err instanceof Error ? err : new Error('Unexpected error');
     }
 }
 
-export async function getInsuranceDocs(): Promise<
-    Array<{
-        id: string;
-        name: string;
-        type: string;
-        url: string;
-        uploadedAt: string;
-    }>
-> {
+interface InsuranceDoc {
+    id: string;
+    name: string;
+    type: string;
+    url: string;
+    uploadedAt: string;
+}
+
+export async function getInsuranceDocs(): Promise<InsuranceDoc[]> {
     try {
-        const response = await restClient.get('/users/me/insurance/documents');
+        const response = await restClient.get<InsuranceDoc[]>('/users/me/insurance/documents');
         return response.data;
     } catch (err: unknown) {
         throw err instanceof Error ? err : new Error('Unexpected error');
@@ -180,8 +171,9 @@ export async function getInsuranceDocs(): Promise<
 
 export async function downloadDoc(id: string): Promise<Blob> {
     try {
-        // eslint-disable-next-line max-len
-        const response = await restClient.get(`/users/me/insurance/documents/${id}/download`, { responseType: 'blob' });
+        const response = await restClient.get<Blob>(`/users/me/insurance/documents/${id}/download`, {
+            responseType: 'blob',
+        });
         return response.data;
     } catch (err: unknown) {
         throw err instanceof Error ? err : new Error('Unexpected error');

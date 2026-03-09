@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import type { NextPage } from 'next';
-import PlanLayout from '../../layouts/PlanLayout';
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import type { NextPage } from 'next';
+import React, { useState } from 'react';
+
+import PlanLayout from '../../layouts/PlanLayout';
 
 const { plan } = colors.journeys;
 
@@ -38,13 +39,17 @@ const CostSimulatorPage: NextPage = () => {
     const [customAmount, setCustomAmount] = useState('');
     const [result, setResult] = useState<SimulationResult | null>(null);
 
-    const handleSimulate = () => {
+    const handleSimulate = (): void => {
         const procedure = PROCEDURE_OPTIONS.find((p) => p.value === procedureType);
         const provider = PROVIDER_OPTIONS.find((p) => p.value === providerType);
-        if (!procedure || !provider) return;
+        if (!procedure || !provider) {
+            return;
+        }
 
         const baseCost = customAmount ? parseFloat(customAmount) : procedure.baseCost;
-        if (isNaN(baseCost) || baseCost <= 0) return;
+        if (isNaN(baseCost) || baseCost <= 0) {
+            return;
+        }
 
         const coveragePercent = Math.min(100, Math.max(0, 80 + provider.coverageBonus));
         const planCoverage = baseCost * (coveragePercent / 100);
@@ -58,7 +63,7 @@ const CostSimulatorPage: NextPage = () => {
         });
     };
 
-    const formatCurrency = (value: number) => `R$ ${value.toFixed(2).replace('.', ',')}`;
+    const formatCurrency = (value: number): string => `R$ ${value.toFixed(2).replace('.', ',')}`;
 
     return (
         <PlanLayout>
@@ -97,8 +102,11 @@ const CostSimulatorPage: NextPage = () => {
                 >
                     {/* Procedure Type */}
                     <div style={{ marginBottom: spacing.lg }}>
-                        <label style={labelStyle}>Tipo de Procedimento</label>
+                        <label htmlFor="procedureType" style={labelStyle}>
+                            Tipo de Procedimento
+                        </label>
                         <select
+                            id="procedureType"
                             value={procedureType}
                             onChange={(e) => setProcedureType(e.target.value)}
                             style={selectStyle}
@@ -114,8 +122,11 @@ const CostSimulatorPage: NextPage = () => {
 
                     {/* Provider Type */}
                     <div style={{ marginBottom: spacing.lg }}>
-                        <label style={labelStyle}>Tipo de Prestador</label>
+                        <label htmlFor="providerType" style={labelStyle}>
+                            Tipo de Prestador
+                        </label>
                         <select
+                            id="providerType"
                             value={providerType}
                             onChange={(e) => setProviderType(e.target.value)}
                             style={selectStyle}
@@ -131,8 +142,11 @@ const CostSimulatorPage: NextPage = () => {
 
                     {/* Custom Amount */}
                     <div style={{ marginBottom: spacing.lg }}>
-                        <label style={labelStyle}>Valor Customizado (opcional)</label>
+                        <label htmlFor="customAmount" style={labelStyle}>
+                            Valor Customizado (opcional)
+                        </label>
                         <input
+                            id="customAmount"
                             type="number"
                             value={customAmount}
                             onChange={(e) => setCustomAmount(e.target.value)}

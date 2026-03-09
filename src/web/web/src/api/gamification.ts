@@ -5,19 +5,11 @@
  * of the AUSTA SuperApp. It includes methods for retrieving user game profiles,
  * achievements, quests, and rewards.
  */
-// Type declaration for process.env
-declare const process: {
-    env: {
-        NEXT_PUBLIC_API_BASE_URL?: string;
-        [key: string]: string | undefined;
-    };
-};
 
-// TypeScript will ignore the import error when we add the @ts-ignore comment
-// @ts-ignore - axios will be available at runtime
 import axios from 'axios'; // version 1.6.8 with security enhancements
 
-// Define interfaces directly in this file until TypeScript can find the proper module
+// Define interfaces directly in this file until TypeScript can find
+// the proper module
 interface GameProfile {
     id: string;
     userId: string;
@@ -65,6 +57,15 @@ interface Reward {
     expiresAt?: string;
 }
 
+interface GamificationEventResponse {
+    achievements?: Achievement[];
+    rewards?: Reward[];
+}
+
+interface GamificationEventData {
+    [key: string]: unknown;
+}
+
 /**
  * Base URL for the gamification API endpoints
  * Using a direct string instead of importing from an unavailable module
@@ -80,7 +81,7 @@ const GAMIFICATION_API_URL = `${API_BASE_URL}/gamification`;
  */
 export const getGameProfile = async (userId: string): Promise<GameProfile> => {
     try {
-        const response = await axios.get(`${GAMIFICATION_API_URL}/profiles/${userId}`);
+        const response = await axios.get<GameProfile>(`${GAMIFICATION_API_URL}/profiles/${userId}`);
         return response.data;
     } catch (error) {
         console.error('Failed to fetch game profile:', error);
@@ -96,7 +97,7 @@ export const getGameProfile = async (userId: string): Promise<GameProfile> => {
  */
 export const getUserAchievements = async (userId: string): Promise<Achievement[]> => {
     try {
-        const response = await axios.get(`${GAMIFICATION_API_URL}/users/${userId}/achievements`);
+        const response = await axios.get<Achievement[]>(`${GAMIFICATION_API_URL}/users/${userId}/achievements`);
         return response.data;
     } catch (error) {
         console.error('Failed to fetch user achievements:', error);
@@ -112,7 +113,7 @@ export const getUserAchievements = async (userId: string): Promise<Achievement[]
  */
 export const getUserQuests = async (userId: string): Promise<Quest[]> => {
     try {
-        const response = await axios.get(`${GAMIFICATION_API_URL}/users/${userId}/quests`);
+        const response = await axios.get<Quest[]>(`${GAMIFICATION_API_URL}/users/${userId}/quests`);
         return response.data;
     } catch (error) {
         console.error('Failed to fetch user quests:', error);
@@ -128,7 +129,7 @@ export const getUserQuests = async (userId: string): Promise<Quest[]> => {
  */
 export const getUserRewards = async (userId: string): Promise<Reward[]> => {
     try {
-        const response = await axios.get(`${GAMIFICATION_API_URL}/users/${userId}/rewards`);
+        const response = await axios.get<Reward[]>(`${GAMIFICATION_API_URL}/users/${userId}/rewards`);
         return response.data;
     } catch (error) {
         console.error('Failed to fetch user rewards:', error);
@@ -145,11 +146,12 @@ export const getUserRewards = async (userId: string): Promise<Reward[]> => {
  */
 export const getJourneyAchievements = async (userId: string, journey: string): Promise<Achievement[]> => {
     try {
-        const response = await axios.get(`${GAMIFICATION_API_URL}/users/${userId}/journeys/${journey}/achievements`);
+        const url = `${GAMIFICATION_API_URL}/users/${userId}` + `/journeys/${journey}/achievements`;
+        const response = await axios.get<Achievement[]>(url);
         return response.data;
     } catch (error) {
         console.error(`Failed to fetch ${journey} journey achievements:`, error);
-        throw new Error(`Failed to retrieve ${journey} journey achievements. Please try again later.`);
+        throw new Error(`Failed to retrieve ${journey} journey achievements.` + ' Please try again later.');
     }
 };
 
@@ -162,10 +164,11 @@ export const getJourneyAchievements = async (userId: string, journey: string): P
  */
 export const acknowledgeAchievement = async (userId: string, achievementId: string): Promise<void> => {
     try {
-        await axios.post(`${GAMIFICATION_API_URL}/users/${userId}/achievements/${achievementId}/acknowledge`);
+        const url = `${GAMIFICATION_API_URL}/users/${userId}` + `/achievements/${achievementId}/acknowledge`;
+        await axios.post(url);
     } catch (error) {
         console.error('Failed to acknowledge achievement:', error);
-        throw new Error('Failed to acknowledge achievement. Please try again later.');
+        throw new Error('Failed to acknowledge achievement.' + ' Please try again later.');
     }
 };
 
@@ -176,15 +179,15 @@ export const acknowledgeAchievement = async (userId: string, achievementId: stri
  * @param userId - The unique identifier of the user
  * @param eventType - The type of event that occurred
  * @param eventData - Additional data related to the event
- * @returns A promise that resolves to any new achievements or rewards triggered by the event
+ * @returns A promise resolving to any new achievements or rewards
  */
 export const triggerGamificationEvent = async (
     userId: string,
     eventType: string,
-    eventData: unknown
-): Promise<{ achievements?: Achievement[]; rewards?: Reward[] }> => {
+    eventData: GamificationEventData
+): Promise<GamificationEventResponse> => {
     try {
-        const response = await axios.post(`${GAMIFICATION_API_URL}/events`, {
+        const response = await axios.post<GamificationEventResponse>(`${GAMIFICATION_API_URL}/events`, {
             userId,
             eventType,
             eventData,
@@ -192,7 +195,7 @@ export const triggerGamificationEvent = async (
         return response.data;
     } catch (error) {
         console.error('Failed to trigger gamification event:', error);
-        throw new Error('Failed to record your activity. Please try again later.');
+        throw new Error('Failed to record your activity.' + ' Please try again later.');
     }
 };
 

@@ -1,12 +1,12 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
-import { Button } from 'design-system/components/Button/Button';
 import { Badge } from 'design-system/components/Badge/Badge';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
 interface Section {
@@ -22,22 +22,40 @@ const CONDITION_DETAIL = {
         {
             title: 'Overview',
             content:
-                'An upper respiratory infection (URI) is a viral illness that affects the nose, throat, and airways. It is one of the most common reasons for medical visits and typically resolves without treatment.',
+                'An upper respiratory infection (URI) is a ' +
+                'viral illness that affects the nose, throat, ' +
+                'and airways. It is one of the most common ' +
+                'reasons for medical visits and typically ' +
+                'resolves without treatment.',
         },
         {
             title: 'Common Causes',
             content:
-                'Rhinoviruses are the most common cause. Other causes include coronavirus, adenovirus, and influenza virus. Transmission occurs through respiratory droplets or contaminated surfaces.',
+                'Rhinoviruses are the most common cause. ' +
+                'Other causes include coronavirus, adenovirus, ' +
+                'and influenza virus. Transmission occurs ' +
+                'through respiratory droplets or contaminated ' +
+                'surfaces.',
         },
         {
             title: 'Treatment Options',
             content:
-                'Rest and fluids are the primary treatment. Over-the-counter medications like acetaminophen, ibuprofen, decongestants, and antihistamines can help manage symptoms. Antibiotics are not effective against viral infections.',
+                'Rest and fluids are the primary treatment. ' +
+                'Over-the-counter medications like ' +
+                'acetaminophen, ibuprofen, decongestants, and ' +
+                'antihistamines can help manage symptoms. ' +
+                'Antibiotics are not effective against viral ' +
+                'infections.',
         },
         {
             title: 'When to Worry',
             content:
-                'Seek medical attention if symptoms worsen after 10 days, you develop a high fever (above 39.4C), experience difficulty breathing, chest pain, severe headache with stiff neck, or symptoms significantly impact daily activities.',
+                'Seek medical attention if symptoms worsen ' +
+                'after 10 days, you develop a high fever ' +
+                '(above 39.4C), experience difficulty ' +
+                'breathing, chest pain, severe headache with ' +
+                'stiff neck, or symptoms significantly impact ' +
+                'daily activities.',
         },
     ] as Section[],
 };
@@ -95,7 +113,7 @@ const ConditionDetailPage: React.FC = () => {
                 <Box display="flex" style={{ gap: spacing.md, flexWrap: 'wrap' }}>
                     <Button
                         journey="care"
-                        onPress={() => router.push(WEB_CARE_ROUTES.BOOK_APPOINTMENT)}
+                        onPress={() => void router.push(WEB_CARE_ROUTES.BOOK_APPOINTMENT)}
                         accessibilityLabel="Book an appointment"
                         data-testid="condition-detail-book-btn"
                     >
@@ -104,7 +122,7 @@ const ConditionDetailPage: React.FC = () => {
                     <Button
                         variant="secondary"
                         journey="care"
-                        onPress={() => router.push(WEB_CARE_ROUTES.TELEMEDICINE)}
+                        onPress={() => void router.push(WEB_CARE_ROUTES.TELEMEDICINE)}
                         accessibilityLabel="Start telemedicine"
                         data-testid="condition-detail-tele-btn"
                     >

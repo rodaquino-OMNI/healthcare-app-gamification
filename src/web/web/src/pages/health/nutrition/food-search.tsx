@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 const RECENT_SEARCHES = ['Chicken breast', 'Brown rice', 'Avocado', 'Greek yogurt', 'Almonds'];
 
@@ -30,13 +30,15 @@ const FoodSearchPage: React.FC = () => {
     const [query, setQuery] = useState('');
     const [searched, setSearched] = useState(false);
 
-    const handleSearch = () => {
-        if (query.trim()) setSearched(true);
+    const handleSearch = (): void => {
+        if (query.trim()) {
+            setSearched(true);
+        }
     };
 
-    const handleAdd = (name: string) => {
+    const handleAdd = (name: string): void => {
         window.alert(`Added ${name} to meal log`);
-        router.push('/health/nutrition/meal-log');
+        void router.push('/health/nutrition/meal-log');
     };
 
     const results = searched
@@ -46,7 +48,7 @@ const FoodSearchPage: React.FC = () => {
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/nutrition')}
+                onClick={() => void router.push('/health/nutrition')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -86,7 +88,9 @@ const FoodSearchPage: React.FC = () => {
                         aria-label="Search foods"
                         style={{ ...inputStyle, flex: 1 }}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter') handleSearch();
+                            if (e.key === 'Enter') {
+                                handleSearch();
+                            }
                         }}
                     />
                     <Button journey="health" onPress={handleSearch} accessibilityLabel="Search">

@@ -1,10 +1,10 @@
-import React from 'react';
-import { useRouter } from 'next/router';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
 /**
@@ -55,7 +55,7 @@ const MedicationEmptyPage: React.FC = () => {
                 <Box style={{ marginTop: spacing['2xl'], width: '100%', maxWidth: 300 }}>
                     <Button
                         journey="health"
-                        onPress={() => router.push(WEB_HEALTH_ROUTES.MEDICATION_ADD)}
+                        onPress={() => void router.push(WEB_HEALTH_ROUTES.MEDICATION_ADD)}
                         accessibilityLabel="Add your first medication"
                     >
                         Add Your First Medication
@@ -66,7 +66,7 @@ const MedicationEmptyPage: React.FC = () => {
                     <Button
                         variant="secondary"
                         journey="health"
-                        onPress={() => router.push(WEB_HEALTH_ROUTES.MEDICATIONS)}
+                        onPress={() => void router.push(WEB_HEALTH_ROUTES.MEDICATIONS)}
                         accessibilityLabel="Back to medications"
                     >
                         Back to Medications

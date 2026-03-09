@@ -1,5 +1,5 @@
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import React from 'react';
 
 jest.mock('@/layouts/AuthLayout', () => {
     return function AuthLayout({ children }: { children: React.ReactNode }) {
@@ -94,7 +94,7 @@ describe('ForgotPassword Page', () => {
 
     it('updates email input on change', () => {
         render(<ForgotPasswordPage />);
-        const emailInput = screen.getByLabelText(/e-mail/i) as HTMLInputElement;
+        const emailInput: HTMLInputElement = screen.getByLabelText(/e-mail/i);
         fireEvent.change(emailInput, { target: { value: 'test@email.com' } });
         expect(emailInput.value).toBe('test@email.com');
     });
@@ -104,7 +104,9 @@ describe('ForgotPassword Page', () => {
         const emailInput = screen.getByLabelText(/e-mail/i);
         fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
         const form = emailInput.closest('form');
-        if (form) fireEvent.submit(form);
+        if (form) {
+            fireEvent.submit(form);
+        }
         await waitFor(() => {
             expect(screen.getByText(/e-mail valido/i)).toBeTruthy();
         });

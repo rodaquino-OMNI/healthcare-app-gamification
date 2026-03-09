@@ -1,8 +1,9 @@
-import React from 'react';
-import { HealthMetric } from 'shared/types/health.types';
-import { JOURNEY_IDS } from 'shared/constants/journeys';
 import { Card } from 'design-system/components/Card/Card';
 import { MetricCard } from 'design-system/health/MetricCard/MetricCard';
+import React from 'react';
+import { JOURNEY_IDS } from 'shared/constants/journeys';
+import { HealthMetric } from 'shared/types/health.types';
+
 import { useAuth } from '@/hooks/useAuth';
 import { useHealthMetrics } from '@/hooks/useHealthMetrics';
 import { useJourney } from '@/hooks/useJourney';
@@ -14,7 +15,7 @@ import { useJourney } from '@/hooks/useJourney';
  */
 export const MetricsWidget: React.FC = () => {
     // LD1: Call the `useJourney` hook to get the current journey context.
-    const { journey } = useJourney();
+    useJourney();
 
     // Get authenticated user ID for personalized metrics
     const { user } = useAuth();
@@ -25,9 +26,15 @@ export const MetricsWidget: React.FC = () => {
 
     // Compute trend from metrics history
     const computeTrend = (metric: HealthMetric): 'up' | 'down' | 'stable' => {
-        if (metric.previousValue === undefined) return 'stable';
-        if (metric.value > metric.previousValue) return 'up';
-        if (metric.value < metric.previousValue) return 'down';
+        if (metric.previousValue === undefined) {
+            return 'stable';
+        }
+        if (metric.value > metric.previousValue) {
+            return 'up';
+        }
+        if (metric.value < metric.previousValue) {
+            return 'down';
+        }
         return 'stable';
     };
 

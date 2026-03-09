@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { useRouter } from 'next/router';
 import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
 import { spacing } from 'design-system/tokens/spacing';
-import { MainLayout } from '@/layouts/MainLayout';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/router';
+import React, { useState, useEffect } from 'react';
 import { WEB_GLOBAL_ROUTES } from 'shared/constants/routes';
+import styled from 'styled-components';
+
 import { restClient } from '@/api/client';
+import { MainLayout } from '@/layouts/MainLayout';
 
 const PageContainer = styled.div`
     max-width: 720px;
@@ -128,7 +129,7 @@ interface SearchResult {
  * Search results page - displays results from a search query.
  * Mirrors the mobile SearchResults screen.
  */
-export default function SearchResultsPage() {
+export default function SearchResultsPage(): React.ReactElement {
     const router = useRouter();
     const query = (router.query.q as string) || '';
     const [results, setResults] = useState<SearchResult[]>([]);
@@ -149,7 +150,9 @@ export default function SearchResultsPage() {
     };
 
     useEffect(() => {
-        if (!query) return;
+        if (!query) {
+            return;
+        }
 
         const controller = new AbortController();
         setLoading(true);
@@ -163,8 +166,10 @@ export default function SearchResultsPage() {
             .then((res) => {
                 setResults(res.data.results ?? []);
             })
-            .catch((err) => {
-                if (err.name !== 'CanceledError') {
+            .catch((err: unknown) => {
+                if (err instanceof Error && err.name !== 'CanceledError') {
+                    setError('Erro ao buscar resultados. Tente novamente.');
+                } else if (!(err instanceof Error)) {
                     setError('Erro ao buscar resultados. Tente novamente.');
                 }
             })
@@ -178,10 +183,10 @@ export default function SearchResultsPage() {
     return (
         <MainLayout>
             <PageContainer>
-                <BackLink onClick={() => router.push(WEB_GLOBAL_ROUTES.SEARCH)}>Voltar para busca</BackLink>
+                <BackLink onClick={() => void router.push(WEB_GLOBAL_ROUTES.SEARCH)}>Voltar para busca</BackLink>
 
                 <SearchHeader>
-                    <QueryText>Resultados para "{query}"</QueryText>
+                    <QueryText>Resultados para &quot;{query}&quot;</QueryText>
                     <ResultCount>{loading ? 'Buscando...' : `${results.length} resultados encontrados`}</ResultCount>
                 </SearchHeader>
 
@@ -200,7 +205,7 @@ export default function SearchResultsPage() {
                 ) : (
                     <ResultsList>
                         {results.map((result) => (
-                            <ResultCard key={result.id} onClick={() => router.push(result.deepLink)}>
+                            <ResultCard key={result.id} onClick={() => void router.push(result.deepLink)}>
                                 <ResultJourney color={getJourneyColor(result.journey)}>{result.journey}</ResultJourney>
                                 <ResultTitle>{result.title}</ResultTitle>
                                 <ResultDescription>{result.description}</ResultDescription>

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import React, { useState } from 'react';
 
 interface HelpCategory {
     id: string;
@@ -76,7 +76,14 @@ const HelpHomePage: NextPage = () => {
                 {filteredCategories.map((cat) => (
                     <div
                         key={cat.id}
-                        onClick={() => router.push(`/help/faq?category=${cat.id}`)}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => void router.push(`/help/faq?category=${cat.id}`)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                void router.push(`/help/faq?category=${cat.id}`);
+                            }
+                        }}
                         style={categoryCardStyle}
                     >
                         <div style={categoryIconStyle}>{cat.icon}</div>
@@ -91,13 +98,13 @@ const HelpHomePage: NextPage = () => {
             <div style={{ marginTop: spacing['2xl'] }}>
                 <h2 style={sectionTitleStyle}>Precisa de mais ajuda?</h2>
                 <div style={{ display: 'flex', gap: spacing.xs, flexWrap: 'wrap' as const }}>
-                    <button onClick={() => router.push('/help/contact')} style={quickLinkStyle}>
+                    <button onClick={() => void router.push('/help/contact')} style={quickLinkStyle}>
                         Falar com Suporte
                     </button>
-                    <button onClick={() => router.push('/help/chat')} style={quickLinkStyle}>
+                    <button onClick={() => void router.push('/help/chat')} style={quickLinkStyle}>
                         Chat ao Vivo
                     </button>
-                    <button onClick={() => router.push('/help/report')} style={quickLinkStyle}>
+                    <button onClick={() => void router.push('/help/report')} style={quickLinkStyle}>
                         Reportar Problema
                     </button>
                 </div>

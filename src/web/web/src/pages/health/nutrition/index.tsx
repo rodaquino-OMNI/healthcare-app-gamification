@@ -1,11 +1,11 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 const QUICK_STATS = [
     { label: 'Calories Today', value: '1,840 kcal' },
@@ -31,7 +31,7 @@ const NutritionHomePage: React.FC = () => {
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health')}
+                onClick={() => void router.push('/health')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -116,7 +116,7 @@ const NutritionHomePage: React.FC = () => {
                         key={link.href}
                         variant="secondary"
                         journey="health"
-                        onPress={() => router.push(link.href)}
+                        onPress={() => void router.push(link.href)}
                         accessibilityLabel={link.label}
                     >
                         {link.label}

@@ -1,8 +1,8 @@
-import React from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -63,7 +63,7 @@ const StepMoodAssessmentPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                 </Text>
                 <div style={{ display: 'flex', gap: spacing.xs, justifyContent: 'space-between' }}>
                     {MOOD_LEVELS.map(({ key, emoji, label }) => {
-                        const isActive = data.moodRating === key;
+                        const isActive = (data.moodRating as number) === key;
                         return (
                             <button
                                 key={key}
@@ -111,8 +111,8 @@ const StepMoodAssessmentPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                         <button
                             key={key}
                             onClick={() => onUpdate('moodFrequency', key)}
-                            style={chipStyle(data.moodFrequency === key)}
-                            aria-pressed={data.moodFrequency === key}
+                            style={chipStyle((data.moodFrequency as string) === key)}
+                            aria-pressed={(data.moodFrequency as string) === key}
                             aria-label={label}
                         >
                             {label}
@@ -136,8 +136,8 @@ const StepMoodAssessmentPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                         <button
                             key={opt}
                             onClick={() => onUpdate('recentMoodChanges', opt)}
-                            style={chipStyle(data.recentMoodChanges === opt)}
-                            aria-pressed={data.recentMoodChanges === opt}
+                            style={chipStyle((data.recentMoodChanges as string) === opt)}
+                            aria-pressed={(data.recentMoodChanges as string) === opt}
                             aria-label={opt === 'yes' ? 'Yes' : 'No'}
                         >
                             {opt === 'yes' ? 'Yes' : 'No'}
@@ -161,8 +161,8 @@ const StepMoodAssessmentPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                         <button
                             key={key}
                             onClick={() => onUpdate('sleepImpact', key)}
-                            style={chipStyle(data.sleepImpact === key)}
-                            aria-pressed={data.sleepImpact === key}
+                            style={chipStyle((data.sleepImpact as string) === key)}
+                            aria-pressed={(data.sleepImpact as string) === key}
                             aria-label={label}
                         >
                             {label}

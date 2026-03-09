@@ -1,8 +1,8 @@
-import React from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -23,20 +23,28 @@ const CATEGORIES: CategoryConfig[] = [
 ];
 
 const getScoreColor = (score: number): string => {
-    if (score >= 80) return colors.semantic.success;
-    if (score >= 60) return colors.semantic.warning;
+    if (score >= 80) {
+        return colors.semantic.success;
+    }
+    if (score >= 60) {
+        return colors.semantic.warning;
+    }
     return colors.semantic.error;
 };
 
 const getScoreLabel = (score: number): string => {
-    if (score >= 80) return 'Excellent';
-    if (score >= 60) return 'Good';
+    if (score >= 80) {
+        return 'Excellent';
+    }
+    if (score >= 60) {
+        return 'Good';
+    }
     return 'Needs Improvement';
 };
 
 const StepResultsHealthScorePage: React.FC<StepProps> = ({ data, onUpdate }) => {
-    const overallScore: number = data.overallScore ?? 0;
-    const categoryScores: Record<string, number> = data.categoryScores ?? {};
+    const overallScore: number = (data.overallScore as number) ?? 0;
+    const categoryScores: Record<string, number> = (data.categoryScores as Record<string, number>) ?? {};
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg, alignItems: 'center' }}>

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 type SeverityLevel = 'mild' | 'moderate' | 'severe';
 
@@ -51,19 +51,25 @@ const MedicationSideEffectFormPage: React.FC = () => {
 
     const validate = (): boolean => {
         const newErrors: { effect?: string; severity?: string } = {};
-        if (!selectedEffect) newErrors.effect = 'Please select a side effect type';
-        if (!severity) newErrors.severity = 'Please select a severity level';
+        if (!selectedEffect) {
+            newErrors.effect = 'Please select a side effect type';
+        }
+        if (!severity) {
+            newErrors.severity = 'Please select a severity level';
+        }
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = () => {
-        if (!validate()) return;
+    const handleSubmit = (): void => {
+        if (!validate()) {
+            return;
+        }
         // In production, send to API
         router.back();
     };
 
-    const handleCancel = () => {
+    const handleCancel = (): void => {
         router.back();
     };
 
@@ -93,7 +99,9 @@ const MedicationSideEffectFormPage: React.FC = () => {
                             key={effect.id}
                             onClick={() => {
                                 setSelectedEffect(effect.id);
-                                if (errors.effect) setErrors((e) => ({ ...e, effect: undefined }));
+                                if (errors.effect) {
+                                    setErrors((e) => ({ ...e, effect: undefined }));
+                                }
                             }}
                             style={{
                                 padding: `${spacing.sm} ${spacing.md}`,
@@ -144,7 +152,9 @@ const MedicationSideEffectFormPage: React.FC = () => {
                             key={option.key}
                             onClick={() => {
                                 setSeverity(option.key);
-                                if (errors.severity) setErrors((e) => ({ ...e, severity: undefined }));
+                                if (errors.severity) {
+                                    setErrors((e) => ({ ...e, severity: undefined }));
+                                }
                             }}
                             style={{
                                 flex: 1,

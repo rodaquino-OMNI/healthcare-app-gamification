@@ -1,11 +1,12 @@
+import { borderRadius } from 'design-system/tokens/borderRadius';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useRouter } from 'next/navigation';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
-import { borderRadius } from 'design-system/tokens/borderRadius';
-import AuthLayout from '@/layouts/AuthLayout';
+
+import { AuthLayout } from '@/layouts/AuthLayout';
 
 const ContentContainer = styled.div`
     display: flex;
@@ -177,14 +178,14 @@ const RELATIONSHIPS = [
  * Emergency Contact page - form to add an emergency contact
  * during the profile onboarding flow.
  */
-export default function EmergencyContactPage() {
+export default function EmergencyContactPage(): React.ReactElement {
     const router = useRouter();
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [relationship, setRelationship] = useState<string | null>(null);
     const [isPrimary, setIsPrimary] = useState(true);
 
-    const handleSave = () => {
+    const handleSave = (): void => {
         router.push('/profile/confirmation');
     };
 

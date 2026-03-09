@@ -1,7 +1,7 @@
-import React from 'react';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import React from 'react';
 
 interface ContactChannel {
     id: string;
@@ -54,9 +54,9 @@ const CHANNELS: ContactChannel[] = [
 const ContactPage: NextPage = () => {
     const router = useRouter();
 
-    const handleChannelClick = (channel: ContactChannel) => {
+    const handleChannelClick = (channel: ContactChannel): void => {
         if (channel.action.startsWith('/')) {
-            router.push(channel.action);
+            void router.push(channel.action);
         } else {
             // External links (tel:, mailto:, https://)
             window.open(channel.action, '_blank');
@@ -69,7 +69,18 @@ const ContactPage: NextPage = () => {
             <p style={subtitleStyle}>Escolha o canal de sua preferencia para entrar em contato.</p>
 
             {CHANNELS.map((channel) => (
-                <div key={channel.id} onClick={() => handleChannelClick(channel)} style={channelCardStyle}>
+                <div
+                    key={channel.id}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => handleChannelClick(channel)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            handleChannelClick(channel);
+                        }
+                    }}
+                    style={channelCardStyle}
+                >
                     <div style={iconStyle}>{channel.icon}</div>
                     <div style={{ flex: 1 }}>
                         <h3 style={channelTitleStyle}>{channel.title}</h3>
@@ -96,7 +107,7 @@ const ContactPage: NextPage = () => {
                 </p>
             </div>
 
-            <button onClick={() => router.push('/help')} style={backBtnStyle}>
+            <button onClick={() => void router.push('/help')} style={backBtnStyle}>
                 &larr; Voltar para Central de Ajuda
             </button>
         </div>

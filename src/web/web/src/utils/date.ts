@@ -3,13 +3,10 @@ import {
     parse,
     isValid,
     addDays,
-    addMonths,
-    addYears,
     subDays,
     subMonths,
     subYears,
     differenceInDays,
-    differenceInMonths,
     differenceInYears,
     startOfDay,
     endOfDay,
@@ -32,7 +29,7 @@ export const DEFAULT_DATETIME_FORMAT = 'dd/MM/yyyy HH:mm';
 export const DEFAULT_LOCALE = 'pt-BR';
 
 // Locale map
-const LOCALE_MAP = {
+const LOCALE_MAP: Record<string, typeof ptBR> = {
     'pt-BR': ptBR,
     'en-US': enUS,
 };
@@ -126,7 +123,7 @@ export const parseDate = (
  * @param date The date to validate
  * @returns True if the date is valid, false otherwise
  */
-export const isValidDate = (date: unknown): boolean => {
+export const isValidDate = (date: Date | string | number | null | undefined): boolean => {
     if (date === null || date === undefined) {
         return false;
     }
@@ -166,45 +163,49 @@ export const getDateRange = (
                 startDate: startOfDay(today),
                 endDate: endOfDay(today),
             };
-        case 'yesterday':
+        case 'yesterday': {
             const yesterday = subDays(today, 1);
             return {
                 startDate: startOfDay(yesterday),
                 endDate: endOfDay(yesterday),
             };
+        }
         case 'thisWeek':
             return {
                 startDate: startOfWeek(today, { weekStartsOn: 0 }),
                 endDate: endOfWeek(today, { weekStartsOn: 0 }),
             };
-        case 'lastWeek':
+        case 'lastWeek': {
             const lastWeek = subDays(today, 7);
             return {
                 startDate: startOfWeek(lastWeek, { weekStartsOn: 0 }),
                 endDate: endOfWeek(lastWeek, { weekStartsOn: 0 }),
             };
+        }
         case 'thisMonth':
             return {
                 startDate: startOfMonth(today),
                 endDate: endOfMonth(today),
             };
-        case 'lastMonth':
+        case 'lastMonth': {
             const lastMonth = subMonths(today, 1);
             return {
                 startDate: startOfMonth(lastMonth),
                 endDate: endOfMonth(lastMonth),
             };
+        }
         case 'thisYear':
             return {
                 startDate: startOfYear(today),
                 endDate: endOfYear(today),
             };
-        case 'lastYear':
+        case 'lastYear': {
             const lastYear = subYears(today, 1);
             return {
                 startDate: startOfYear(lastYear),
                 endDate: endOfYear(lastYear),
             };
+        }
         case 'last7Days':
             return {
                 startDate: startOfDay(subDays(today, 6)),

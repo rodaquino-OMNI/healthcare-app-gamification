@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 /**
  * Medication alarm notification page.
@@ -22,18 +22,18 @@ const MedicationAlarmPage: React.FC = () => {
         instructions: 'Tomar com água após as refeições',
     };
 
-    const handleTake = () => {
+    const handleTake = (): void => {
         alert('Medicamento marcado como tomado!');
         router.back();
     };
 
-    const handleSnooze = () => {
+    const handleSnooze = (): void => {
         setSnoozed(true);
         alert('Lembrete adiado para 30 minutos depois.');
         setTimeout(() => router.back(), 2000);
     };
 
-    const handleSkip = () => {
+    const handleSkip = (): void => {
         alert('Medicamento marcado como pulado.');
         router.back();
     };

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import React, { useState } from 'react';
+
 import { saveLanguage } from '../../api/settings';
 
 interface LanguageOption {
@@ -26,12 +27,12 @@ const LanguagePage: NextPage = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    const handleSave = async () => {
+    const handleSave = async (): Promise<void> => {
         setLoading(true);
         setError('');
         try {
             await saveLanguage(selected);
-            router.push('/settings');
+            void router.push('/settings');
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : 'Erro ao salvar idioma.');
         } finally {
@@ -48,7 +49,14 @@ const LanguagePage: NextPage = () => {
                 {LANGUAGES.map((lang) => (
                     <div
                         key={lang.code}
+                        role="button"
+                        tabIndex={0}
                         onClick={() => setSelected(lang.code)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                setSelected(lang.code);
+                            }
+                        }}
                         style={{
                             ...optionStyle,
                             borderColor: selected === lang.code ? colors.brand.primary : colors.gray[20],
@@ -79,7 +87,7 @@ const LanguagePage: NextPage = () => {
                         {error}
                     </p>
                 )}
-                <button onClick={handleSave} disabled={loading} style={primaryButtonStyle}>
+                <button onClick={() => void handleSave()} disabled={loading} style={primaryButtonStyle}>
                     {loading ? 'Salvando...' : 'Salvar Idioma'}
                 </button>
             </div>

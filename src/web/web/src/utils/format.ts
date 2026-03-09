@@ -35,3 +35,9 @@ export {
     formatPhoneNumber,
     formatCPF,
 };
+
+/**
+ * Formats a date using the web app's date utilities.
+ * Re-exported here for consumers that import { formatDate } from '@/utils/format'.
+ */
+export { formatDate } from '@/utils/date';

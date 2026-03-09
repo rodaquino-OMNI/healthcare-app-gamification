@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import { borderRadius } from 'design-system/tokens/borderRadius';
 import { colors } from 'design-system/tokens/colors';
+import { shadows } from 'design-system/tokens/shadows';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import { borderRadius } from 'design-system/tokens/borderRadius';
-import { shadows } from 'design-system/tokens/shadows';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
-import { MainLayout, useAuth } from '@/components/index';
+import { MainLayout } from '@/components/index';
 
 /**
  * Severity levels for health alerts with associated styling.
@@ -119,10 +119,16 @@ const formatTimestamp = (timestamp: string): string => {
     const diffMs = now.getTime() - date.getTime();
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
 
-    if (diffHours < 1) return 'Agora mesmo';
-    if (diffHours < 24) return `Ha ${diffHours}h`;
+    if (diffHours < 1) {
+        return 'Agora mesmo';
+    }
+    if (diffHours < 24) {
+        return `Ha ${diffHours}h`;
+    }
     const diffDays = Math.floor(diffHours / 24);
-    if (diffDays === 1) return 'Ontem';
+    if (diffDays === 1) {
+        return 'Ontem';
+    }
     return `Ha ${diffDays} dias`;
 };
 
@@ -136,11 +142,11 @@ const AlertPage: React.FC = () => {
 
     const activeAlerts = alerts.filter((a) => !a.dismissed);
 
-    const handleDismiss = (alertId: string) => {
+    const handleDismiss = (alertId: string): void => {
         setAlerts((prev) => prev.map((a) => (a.id === alertId ? { ...a, dismissed: true } : a)));
     };
 
-    const handleDismissAll = () => {
+    const handleDismissAll = (): void => {
         setAlerts((prev) => prev.map((a) => ({ ...a, dismissed: true })));
     };
 
@@ -199,7 +205,7 @@ const AlertPage: React.FC = () => {
                                 {alert.actionLabel && alert.actionHref && (
                                     <button
                                         style={pageStyles.actionButton}
-                                        onClick={() => router.push(alert.actionHref!)}
+                                        onClick={() => void router.push(alert.actionHref!)}
                                     >
                                         {alert.actionLabel}
                                     </button>

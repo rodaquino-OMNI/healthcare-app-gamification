@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import React, { useState, useEffect } from 'react';
+
 import { getAddresses, removeAddress } from '../../api/settings';
 
 interface Address {
@@ -9,12 +10,12 @@ interface Address {
     label: string;
     street: string;
     number: string;
-    complement: string;
+    complement?: string;
     neighborhood: string;
     city: string;
     state: string;
     cep: string;
-    isPrimary: boolean;
+    isPrimary?: boolean;
 }
 
 /**
@@ -28,7 +29,7 @@ const AddressesPage: NextPage = () => {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        const fetchAddresses = async () => {
+        const fetchAddresses = async (): Promise<void> => {
             setLoading(true);
             setError('');
             try {
@@ -40,10 +41,10 @@ const AddressesPage: NextPage = () => {
                 setLoading(false);
             }
         };
-        fetchAddresses();
+        void fetchAddresses();
     }, []);
 
-    const handleRemove = async (id: string) => {
+    const handleRemove = async (id: string): Promise<void> => {
         setError('');
         try {
             await removeAddress(id);
@@ -97,14 +98,14 @@ const AddressesPage: NextPage = () => {
 
                         <div style={{ display: 'flex', gap: spacing.xs, marginTop: spacing.md }}>
                             <button style={editBtnStyle}>Editar</button>
-                            <button onClick={() => handleRemove(addr.id)} style={removeBtnStyle}>
+                            <button onClick={() => void handleRemove(addr.id)} style={removeBtnStyle}>
                                 Remover
                             </button>
                         </div>
                     </div>
                 ))}
 
-            <button onClick={() => router.push('/settings/add-address')} style={addBtnStyle}>
+            <button onClick={() => void router.push('/settings/add-address')} style={addBtnStyle}>
                 + Adicionar Endereco
             </button>
         </div>

@@ -1,9 +1,9 @@
-import React from 'react';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -31,26 +31,26 @@ const inputStyle: React.CSSProperties = {
 const FREQUENCY_OPTIONS = ['Once daily', 'Twice daily', 'Three times daily', 'Weekly', 'As needed'];
 
 const StepMedicationsPage: React.FC<StepProps> = ({ data, onUpdate }) => {
-    const takesMedication: boolean = data.takesMedication ?? false;
-    const medications: MedicationEntry[] = data.medications || [];
+    const takesMedication: boolean = (data.takesMedication as boolean) ?? false;
+    const medications: MedicationEntry[] = (data.medications as MedicationEntry[]) || [];
 
-    const toggleMedication = (value: boolean) => {
+    const toggleMedication = (value: boolean): void => {
         onUpdate('takesMedication', value);
         if (!value) {
             onUpdate('medications', []);
         }
     };
 
-    const addMedication = () => {
+    const addMedication = (): void => {
         onUpdate('medications', [...medications, { name: '', dosage: '', frequency: '' }]);
     };
 
-    const updateMedication = (index: number, field: keyof MedicationEntry, value: string) => {
+    const updateMedication = (index: number, field: keyof MedicationEntry, value: string): void => {
         const updated = medications.map((med, i) => (i === index ? { ...med, [field]: value } : med));
         onUpdate('medications', updated);
     };
 
-    const removeMedication = (index: number) => {
+    const removeMedication = (index: number): void => {
         onUpdate(
             'medications',
             medications.filter((_, i) => i !== index)

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 const MOOD_OPTIONS = [
     { emoji: '1', label: 'Very Bad', value: 1 },
@@ -44,7 +44,7 @@ const WellnessHomePage: React.FC = () => {
     const router = useRouter();
     const [selectedMood, setSelectedMood] = useState<number | null>(null);
 
-    const handleMoodSelect = (value: number) => {
+    const handleMoodSelect = (value: number): void => {
         setSelectedMood(value);
     };
 
@@ -101,7 +101,7 @@ const WellnessHomePage: React.FC = () => {
                 <Button
                     variant="primary"
                     journey="health"
-                    onPress={() => router.push('/wellness/chat')}
+                    onPress={() => void router.push('/wellness/chat')}
                     accessibilityLabel="Start new chat"
                 >
                     Start New Chat
@@ -109,7 +109,7 @@ const WellnessHomePage: React.FC = () => {
                 <Button
                     variant="secondary"
                     journey="health"
-                    onPress={() => router.push('/wellness/mood')}
+                    onPress={() => void router.push('/wellness/mood')}
                     accessibilityLabel="View mood history"
                 >
                     Mood History
@@ -128,13 +128,15 @@ const WellnessHomePage: React.FC = () => {
                 {RECENT_CHATS.map((chat) => (
                     <div
                         key={chat.id}
-                        onClick={() => router.push('/wellness/chat')}
+                        onClick={() => void router.push('/wellness/chat')}
                         style={{ cursor: 'pointer' }}
                         role="link"
                         tabIndex={0}
                         aria-label={`Chat: ${chat.preview}`}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter') router.push('/wellness/chat');
+                            if (e.key === 'Enter') {
+                                void router.push('/wellness/chat');
+                            }
                         }}
                     >
                         <Card journey="health" elevation="sm" padding="md">
@@ -170,7 +172,7 @@ const WellnessHomePage: React.FC = () => {
                         key={link.href}
                         variant="secondary"
                         journey="health"
-                        onPress={() => router.push(link.href)}
+                        onPress={() => void router.push(link.href)}
                         accessibilityLabel={link.label}
                     >
                         {link.label}

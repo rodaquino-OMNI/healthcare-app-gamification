@@ -1,8 +1,8 @@
-import React from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -56,10 +56,10 @@ const chipStyle = (selected: boolean): React.CSSProperties => ({
 });
 
 const StepStressPage: React.FC<StepProps> = ({ data, onUpdate }) => {
-    const selectedSources: string[] = data.stressSources || [];
-    const selectedCoping: string[] = data.copingMechanisms || [];
+    const selectedSources: string[] = (data.stressSources as string[]) || [];
+    const selectedCoping: string[] = (data.copingMechanisms as string[]) || [];
 
-    const toggleItem = (field: string, list: string[], item: string) => {
+    const toggleItem = (field: string, list: string[], item: string): void => {
         const updated = list.includes(item) ? list.filter((i) => i !== item) : [...list, item];
         onUpdate(field, updated);
     };
@@ -85,7 +85,7 @@ const StepStressPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                 </Text>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
                     {STRESS_LEVELS.map((level) => {
-                        const isActive = data.stressLevel === level.value;
+                        const isActive = (data.stressLevel as string) === level.value;
                         return (
                             <button
                                 key={level.value}

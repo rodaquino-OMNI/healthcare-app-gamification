@@ -1,20 +1,19 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
 import { borderRadius } from 'design-system/tokens/borderRadius';
-import { WEB_GLOBAL_ROUTES } from 'shared/constants/routes';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 const ServerErrorPage: React.FC = () => {
     const router = useRouter();
 
-    const handleRetry = () => {
+    const handleRetry = (): void => {
         window.location.reload();
     };
 
-    const handleHome = () => {
-        router.push(WEB_GLOBAL_ROUTES.HOME);
+    const handleHome = (): void => {
+        void router.push('/');
     };
 
     return (

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { logout } from '@/api/auth';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import React, { useState } from 'react';
+
+import { logout } from '@/api/auth';
 
 /**
  * Logout confirmation page.
@@ -12,7 +13,7 @@ const LogoutPage: NextPage = () => {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
 
-    const handleLogout = async () => {
+    const handleLogout = async (): Promise<void> => {
         setLoading(true);
         try {
             await logout();
@@ -23,7 +24,7 @@ const LogoutPage: NextPage = () => {
         document.cookie.split(';').forEach((c) => {
             document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
         });
-        router.push('/auth/login');
+        void router.push('/auth/login');
     };
 
     return (
@@ -49,7 +50,7 @@ const LogoutPage: NextPage = () => {
                 </div>
 
                 <button
-                    onClick={handleLogout}
+                    onClick={() => void handleLogout()}
                     disabled={loading}
                     style={{ ...logoutBtnStyle, opacity: loading ? 0.6 : 1 }}
                 >

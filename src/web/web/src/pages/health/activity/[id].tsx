@@ -1,11 +1,11 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 const STATS = [
     { label: 'Duration', value: '45 min' },
@@ -18,15 +18,15 @@ const WorkoutDetailPage: React.FC = () => {
     const router = useRouter();
     const { id } = router.query;
 
-    const handleDelete = () => {
+    const handleDelete = (): void => {
         window.alert('Workout deleted');
-        router.push('/health/activity/workout-history');
+        void router.push('/health/activity/workout-history');
     };
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/activity/workout-history')}
+                onClick={() => void router.push('/health/activity/workout-history')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -116,7 +116,7 @@ const WorkoutDetailPage: React.FC = () => {
                 <Box style={{ flex: 1 }}>
                     <Button
                         journey="health"
-                        onPress={() => router.push('/health/activity/workout-log')}
+                        onPress={() => void router.push('/health/activity/workout-log')}
                         accessibilityLabel="Log another workout"
                     >
                         Log Another

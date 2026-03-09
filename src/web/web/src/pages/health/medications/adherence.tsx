@@ -1,11 +1,11 @@
-import React, { useState, useMemo } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState, useMemo } from 'react';
 
 type TimeRange = 'daily' | 'weekly' | 'monthly';
 
@@ -43,8 +43,12 @@ const MONTHLY_DATA: ChartDataPoint[] = [
 const MAX_BAR_HEIGHT = 180;
 
 const getBarColor = (adherence: number): string => {
-    if (adherence >= 80) return colors.semantic.success;
-    if (adherence >= 50) return colors.semantic.warning;
+    if (adherence >= 80) {
+        return colors.semantic.success;
+    }
+    if (adherence >= 50) {
+        return colors.semantic.warning;
+    }
     return colors.semantic.error;
 };
 
@@ -76,7 +80,9 @@ const MedicationAdherencePage: React.FC = () => {
     }, [activeTab]);
 
     const overallAdherence = useMemo(() => {
-        if (chartData.length === 0) return 0;
+        if (chartData.length === 0) {
+            return 0;
+        }
         const sum = chartData.reduce((acc, d) => acc + d.adherence, 0);
         return Math.round(sum / chartData.length);
     }, [chartData]);

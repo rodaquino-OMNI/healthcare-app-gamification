@@ -9,29 +9,45 @@
  * through appointment booking, telemedicine, and other care-related features.
  */
 
-import { ApolloClient } from '@apollo/client'; // v3.7.0
+import { ApolloClient, InMemoryCache } from '@apollo/client'; // v3.7.0
 import { apiConfig } from 'shared/config/apiConfig';
-import { API_TIMEOUT } from 'shared/constants/index';
-import { Appointment } from 'shared/types/care.types';
-import { GET_APPOINTMENTS, GET_APPOINTMENT, GET_PROVIDERS } from 'shared/graphql/queries/care.queries';
 import { BOOK_APPOINTMENT, CANCEL_APPOINTMENT } from 'shared/graphql/mutations/care.mutations';
+import { GET_APPOINTMENTS, GET_APPOINTMENT, GET_PROVIDERS } from 'shared/graphql/queries/care.queries';
+import { Appointment } from 'shared/types/care.types';
+
+/** Typed response shapes for Apollo queries */
+interface GetAppointmentsData {
+    getAppointments: Appointment[];
+}
+
+interface GetAppointmentData {
+    getAppointment: Appointment;
+}
+
+interface GetProvidersData {
+    getProviders: unknown[];
+}
+
+interface BookAppointmentData {
+    bookAppointment: Appointment;
+}
+
+interface CancelAppointmentData {
+    cancelAppointment: Appointment;
+}
 
 // Apollo client instance for making GraphQL requests
-// This would typically be imported from a central client configuration
-// but is created here for the purposes of this file
 const client = new ApolloClient({
     uri: apiConfig.journeys.care,
-    cache: new (ApolloClient as unknown as { InMemoryCache: new () => unknown }).InMemoryCache(),
+    cache: new InMemoryCache(),
     defaultOptions: {
         query: {
             fetchPolicy: 'network-only',
             errorPolicy: 'all',
-            timeout: API_TIMEOUT,
         },
         mutate: {
             fetchPolicy: 'no-cache',
             errorPolicy: 'all',
-            timeout: API_TIMEOUT,
         },
     },
 });
@@ -44,7 +60,7 @@ const client = new ApolloClient({
  */
 export async function getAppointments(userId: string): Promise<Appointment[]> {
     try {
-        const { data } = await client.query({
+        const { data } = await client.query<GetAppointmentsData>({
             query: GET_APPOINTMENTS,
             variables: { userId },
         });
@@ -64,7 +80,7 @@ export async function getAppointments(userId: string): Promise<Appointment[]> {
  */
 export async function getAppointment(id: string): Promise<Appointment> {
     try {
-        const { data } = await client.query({
+        const { data } = await client.query<GetAppointmentData>({
             query: GET_APPOINTMENT,
             variables: { id },
         });
@@ -85,7 +101,7 @@ export async function getAppointment(id: string): Promise<Appointment> {
  */
 export async function getProviders(specialty: string, location: string): Promise<unknown[]> {
     try {
-        const { data } = await client.query({
+        const { data } = await client.query<GetProvidersData>({
             query: GET_PROVIDERS,
             variables: { specialty, location },
         });
@@ -113,12 +129,12 @@ export async function bookAppointment(
     reason: string
 ): Promise<Appointment> {
     try {
-        const { data } = await client.mutate({
+        const { data } = await client.mutate<BookAppointmentData>({
             mutation: BOOK_APPOINTMENT,
             variables: { providerId, dateTime, type, reason },
         });
 
-        return data.bookAppointment;
+        return data!.bookAppointment;
     } catch (error) {
         console.error('Error booking appointment:', error);
         throw error;
@@ -133,12 +149,12 @@ export async function bookAppointment(
  */
 export async function cancelAppointment(id: string): Promise<Appointment> {
     try {
-        const { data } = await client.mutate({
+        const { data } = await client.mutate<CancelAppointmentData>({
             mutation: CANCEL_APPOINTMENT,
             variables: { id },
         });
 
-        return data.cancelAppointment;
+        return data!.cancelAppointment;
     } catch (error) {
         console.error('Error cancelling appointment:', error);
         throw error;

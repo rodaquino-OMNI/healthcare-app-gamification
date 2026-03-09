@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { CareLayout } from '@/layouts/CareLayout';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { CareLayout } from '@/layouts/CareLayout';
 
 const CATEGORIES = [
     { id: 'punctuality', label: 'Pontualidade' },
@@ -52,12 +53,12 @@ const RateVisitPage: React.FC = () => {
     const [review, setReview] = useState('');
     const [recommend, setRecommend] = useState<boolean | null>(null);
 
-    const handleCategoryChange = (id: string, value: number) => {
+    const handleCategoryChange = (id: string, value: number): void => {
         setCategoryRatings((prev) => ({ ...prev, [id]: value }));
     };
 
-    const handleSubmit = () => {
-        router.push('/care/appointments/list');
+    const handleSubmit = (): void => {
+        void router.push('/care/appointments/list');
     };
 
     return (
@@ -115,7 +116,11 @@ const RateVisitPage: React.FC = () => {
                     {CATEGORIES.map((cat) => (
                         <div
                             key={cat.id}
-                            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                            }}
                         >
                             <Text fontSize="sm" color={colors.journeys.care.text}>
                                 {cat.label}
@@ -174,7 +179,9 @@ const RateVisitPage: React.FC = () => {
                                 flex: 1,
                                 padding: spacing.sm,
                                 borderRadius: '8px',
-                                border: `2px solid ${recommend === val ? colors.journeys.care.primary : colors.neutral.gray300}`,
+                                border: `2px solid ${
+                                    recommend === val ? colors.journeys.care.primary : colors.neutral.gray300
+                                }`,
                                 backgroundColor:
                                     recommend === val ? colors.journeys.care.background : colors.neutral.white,
                                 color: recommend === val ? colors.journeys.care.primary : colors.journeys.care.text,
@@ -192,7 +199,7 @@ const RateVisitPage: React.FC = () => {
                     <Button
                         journey="care"
                         variant="outlined"
-                        onPress={() => router.push('/care/appointments/list')}
+                        onPress={() => void router.push('/care/appointments/list')}
                         accessibilityLabel="Pular"
                     >
                         Pular

@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { HealthGoal } from 'shared/types/health.types'; // Import HealthGoal interface from shared types
-import Input from 'design-system/components/Input/Input'; // Import Input component from design system
-import Button from 'design-system/components/Button/Button'; // Import Button component from design system
-import { Select } from 'design-system/components/Select/Select'; // Import Select component from design system
-import { DatePicker } from 'design-system/components/DatePicker/DatePicker'; // Import DatePicker component from design system
-import { useForm } from 'react-hook-form'; // version: latest
-import { yupResolver } from '@hookform/resolvers/yup'; // version: latest
-import * as yup from 'yup'; // version: latest
-import { useHealthMetrics } from '@/hooks/useHealthMetrics'; // Import useHealthMetrics hook
-import { useAuth } from '@/hooks/useAuth'; // Import useAuth hook
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Button } from 'design-system/components/Button/Button';
+import { DatePicker } from 'design-system/components/DatePicker/DatePicker';
+import { Input } from 'design-system/components/Input/Input';
+import { Select } from 'design-system/components/Select/Select';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+
+import { useAuth } from '@/hooks/useAuth';
 
 /**
  * Interface for the properties of the HealthGoalForm component.
@@ -35,10 +34,8 @@ interface HealthGoalFormValues {
 export const HealthGoalForm: React.FC<HealthGoalFormProps> = () => {
     // 1. Uses the useForm hook to manage the form state and submission.
     const {
-        register,
         handleSubmit,
-        setValue,
-        formState: { errors, isSubmitting, isValid },
+        formState: { isSubmitting, isValid },
     } = useForm<HealthGoalFormValues>({
         // 2. Defines a validation schema using Yup to ensure the form data is valid.
         resolver: yupResolver(
@@ -62,8 +59,7 @@ export const HealthGoalForm: React.FC<HealthGoalFormProps> = () => {
     });
 
     // 3. Fetches the user ID using the useAuth hook.
-    const { session } = useAuth();
-    const userId = session?.user.id;
+    const { session: _session } = useAuth();
 
     // Define options for the goal type select component
     const goalTypeOptions = [
@@ -75,27 +71,29 @@ export const HealthGoalForm: React.FC<HealthGoalFormProps> = () => {
     // 4. Renders a form with input fields for goal type, target, start date, and end date.
     return (
         <form
-            onSubmit={handleSubmit((data) => {
-                // 8. Handles form submission and API calls to create or update the health goal.
-                console.log('Form data:', data);
-                // TODO: Implement API call to create/update health goal
-            })}
+            onSubmit={(e) => {
+                void handleSubmit((data) => {
+                    // Handles form submission and API calls to create or update the health goal.
+                    // TODO: Implement API call to create/update health goal
+                    void data;
+                })(e);
+            }}
         >
             {/* 5. Uses the Select component for the goal type field. */}
             <div>
                 <label htmlFor="type">Goal Type:</label>
-                <Select id="type" options={goalTypeOptions} value={''} onChange={() => {}} label="Select Goal Type" />
+                <Select options={goalTypeOptions} value={''} onChange={() => {}} label="Select Goal Type" />
             </div>
 
             {/* 6. Uses the DatePicker component for the start and end date fields. */}
             <div>
                 <label htmlFor="startDate">Start Date:</label>
-                <DatePicker id="startDate" value={null} onChange={() => {}} label="Select Start Date" />
+                <DatePicker value={null} onChange={() => {}} label="Select Start Date" testID="startDate" />
             </div>
 
             <div>
                 <label htmlFor="endDate">End Date:</label>
-                <DatePicker id="endDate" value={null} onChange={() => {}} label="Select End Date" />
+                <DatePicker value={null} onChange={() => {}} label="Select End Date" testID="endDate" />
             </div>
 
             {/* 7. Uses the Input component for the target field. */}

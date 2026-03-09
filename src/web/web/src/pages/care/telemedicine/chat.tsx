@@ -1,12 +1,12 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
-import { Button } from 'design-system/components/Button/Button';
 import { Badge } from 'design-system/components/Badge/Badge';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 interface ChatMessage {
     id: string;
@@ -17,14 +17,24 @@ interface ChatMessage {
 
 const MOCK_MESSAGES: ChatMessage[] = [
     { id: 'm1', sender: 'doctor', text: 'Hello! How are you feeling today?', time: '10:01' },
-    { id: 'm2', sender: 'patient', text: 'I have been having headaches for the past 3 days.', time: '10:02' },
+    {
+        id: 'm2',
+        sender: 'patient',
+        text: 'I have been having headaches for the past 3 days.',
+        time: '10:02',
+    },
     {
         id: 'm3',
         sender: 'doctor',
         text: 'I see. Can you describe the pain? Is it constant or intermittent?',
         time: '10:03',
     },
-    { id: 'm4', sender: 'patient', text: 'It comes and goes, mostly in the afternoon.', time: '10:04' },
+    {
+        id: 'm4',
+        sender: 'patient',
+        text: 'It comes and goes, mostly in the afternoon.',
+        time: '10:04',
+    },
 ];
 
 const QUICK_REPLIES = ['Yes, that is correct', 'I have a question', 'Can you repeat that?'];
@@ -45,7 +55,14 @@ const ChatPage: React.FC = () => {
             </Box>
 
             <Card journey="care" elevation="md" padding="lg" style={{ marginBottom: spacing.lg }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm, minHeight: '300px' }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: spacing.sm,
+                        minHeight: '300px',
+                    }}
+                >
                     {MOCK_MESSAGES.map((msg) => (
                         <div
                             key={msg.id}
@@ -77,7 +94,14 @@ const ChatPage: React.FC = () => {
                 </div>
             </Card>
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: spacing.xs, marginBottom: spacing.md }}>
+            <div
+                style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: spacing.xs,
+                    marginBottom: spacing.md,
+                }}
+            >
                 {QUICK_REPLIES.map((reply) => (
                     <Button
                         key={reply}

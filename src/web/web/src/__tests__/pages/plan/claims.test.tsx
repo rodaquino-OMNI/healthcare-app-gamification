@@ -1,5 +1,5 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
 
 jest.mock('@/hooks/useClaims', () => ({
     useClaims: () => ({
@@ -36,7 +36,7 @@ jest.mock('@/hooks/useJourney', () => ({
 }));
 
 jest.mock('design-system/plan/ClaimCard', () => ({
-    ClaimCard: ({ claim, onViewDetails }: any) => (
+    ClaimCard: ({ claim, onViewDetails }: { claim: { status: string; type: string }; onViewDetails: () => void }) => (
         <div data-testid="claim-card" data-status={claim.status}>
             <span>{claim.type}</span>
             <button onClick={onViewDetails}>View</button>

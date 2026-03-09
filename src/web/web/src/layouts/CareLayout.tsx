@@ -1,24 +1,26 @@
 import React from 'react';
+
 import { JourneyNav } from '@/components/navigation/JourneyNav';
-import { JourneyContext } from '@/context/JourneyContext';
 import { useJourney } from '@/hooks/useJourney';
 import { MainLayout } from '@/layouts/MainLayout';
 
+interface CareLayoutProps {
+    children: React.ReactNode;
+}
+
 /**
  * Layout component for the Care Now journey.
- * Provides a consistent structure and styling for all screens within the journey.
+ * Provides a consistent structure and styling for all
+ * screens within the journey.
  */
-const CareLayout: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
+export const CareLayout: React.FC<CareLayoutProps> = ({ children }) => {
     // LD1: Retrieves the current journey from the JourneyContext.
-    const { journey } = useJourney();
-
-    // LD1: Checks if the current journey is the Care Now journey.
-    const isCareJourney = journey?.id === 'care';
+    useJourney();
 
     // LD1: Renders the main layout structure with the CareNow-specific navigation.
     return (
         <MainLayout>
-            {/* LD1: Renders the JourneyNav component, which provides navigation between the main journeys. */}
+            {/* LD1: Renders the JourneyNav for navigation. */}
             <JourneyNav />
 
             {/* LD1: Renders the children components (the content of the page). */}

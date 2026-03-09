@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
-import { Box } from 'design-system/primitives/Box/Box';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 interface QuickReply {
     id: string;
@@ -33,7 +32,7 @@ const QUICK_REPLIES: QuickReply[] = [
     { id: '16', text: 'Anti-inflammatory foods', category: 'Nutrition' },
 ];
 
-const chipStyle = (selected: boolean) => ({
+const chipStyle = (selected: boolean): React.CSSProperties => ({
     padding: `${spacing.xs} ${spacing.md}`,
     borderRadius: '20px',
     border: `1px solid ${selected ? colors.journeys.health.primary : colors.gray[20]}`,
@@ -52,14 +51,14 @@ const QuickRepliesPage: React.FC = () => {
     const filtered =
         activeCategory === 'All' ? QUICK_REPLIES : QUICK_REPLIES.filter((r) => r.category === activeCategory);
 
-    const handleSelect = (reply: QuickReply) => {
-        router.push({ pathname: '/wellness/chat', query: { message: reply.text } });
+    const handleSelect = (reply: QuickReply): void => {
+        void router.push({ pathname: '/wellness/chat', query: { message: reply.text } });
     };
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/wellness')}
+                onClick={() => void router.push('/wellness')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -120,7 +119,9 @@ const QuickRepliesPage: React.FC = () => {
                         tabIndex={0}
                         aria-label={reply.text}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter') handleSelect(reply);
+                            if (e.key === 'Enter') {
+                                handleSelect(reply);
+                            }
                         }}
                     >
                         <Card journey="health" elevation="sm" padding="md">

@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react';
-import { useRouter } from 'next/router';
 import { Card } from 'design-system/components/Card/Card';
-import { Text } from 'design-system/primitives/Text/Text';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useMemo } from 'react';
 
 const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -26,7 +26,7 @@ const INFO_ITEMS = [
     },
 ];
 
-const generateMonthDays = () => {
+const generateMonthDays = (): { key: string; day: number }[] => {
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth();
@@ -44,20 +44,26 @@ const FertilityPage: React.FC = () => {
     const monthName = new Date().toLocaleString('en-US', { month: 'long', year: 'numeric' });
 
     const getDayBg = (day: number): string => {
-        if (day === OVULATION_DAY) return `${colors.semantic.warning}40`;
-        if (FERTILE_DAYS.includes(day)) return `${colors.journeys.health.primary}22`;
+        if (day === OVULATION_DAY) {
+            return `${colors.semantic.warning}40`;
+        }
+        if (FERTILE_DAYS.includes(day)) {
+            return `${colors.journeys.health.primary}22`;
+        }
         return 'transparent';
     };
 
     const getDayBorder = (day: number): string => {
-        if (day === OVULATION_DAY) return `2px solid ${colors.semantic.warning}`;
+        if (day === OVULATION_DAY) {
+            return `2px solid ${colors.semantic.warning}`;
+        }
         return '2px solid transparent';
     };
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/cycle')}
+                onClick={() => void router.push('/health/cycle')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -101,7 +107,7 @@ const FertilityPage: React.FC = () => {
                             {d}
                         </Text>
                     ))}
-                    {calendarDays.map((cell) => (
+                    {calendarDays.map((cell: { key: string; day: number }) => (
                         <div
                             key={cell.key}
                             style={{

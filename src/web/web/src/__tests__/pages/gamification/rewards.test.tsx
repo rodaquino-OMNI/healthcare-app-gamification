@@ -1,7 +1,7 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
 
-jest.mock('@/hooks/useGamification', () => ({
+jest.mock('src/web/web/src/hooks/useGamification', () => ({
     useGameProfile: () => ({
         data: {
             gameProfile: {
@@ -16,24 +16,47 @@ jest.mock('@/hooks/useGamification', () => ({
     }),
 }));
 
-jest.mock('design-system/components/Card/Card', () => ({
-    Card: ({ children, ...props }: any) => (
+interface MockSpreadProps {
+    children?: React.ReactNode;
+    [key: string]: unknown;
+}
+
+interface MockButtonProps {
+    children: React.ReactNode;
+    onPress?: () => void;
+    variant?: string;
+}
+
+interface MockRewardCardProps {
+    reward: { id: string; title: string; xp: number };
+    isEarned?: boolean;
+    journey?: string;
+}
+
+interface MockXPCounterProps {
+    value: number;
+    size?: string;
+    animated?: boolean;
+}
+
+jest.mock('src/web/design-system/src/components/Card/Card', () => ({
+    Card: ({ children, ...props }: MockSpreadProps) => (
         <div data-testid="card" {...props}>
             {children}
         </div>
     ),
 }));
 
-jest.mock('design-system/components/Button/Button', () => ({
-    Button: ({ children, onPress, variant }: any) => (
+jest.mock('src/web/design-system/src/components/Button/Button', () => ({
+    Button: ({ children, onPress, variant }: MockButtonProps) => (
         <button onClick={onPress} data-variant={variant}>
             {children}
         </button>
     ),
 }));
 
-jest.mock('design-system/gamification/RewardCard', () => ({
-    RewardCard: ({ reward, isEarned, journey }: any) => (
+jest.mock('src/web/design-system/src/gamification/RewardCard', () => ({
+    RewardCard: ({ reward, isEarned, journey }: MockRewardCardProps) => (
         <div data-testid="reward-card" data-id={reward.id} data-earned={isEarned} data-journey={journey}>
             <span>{reward.title}</span>
             <span>{reward.xp} XP</span>
@@ -41,29 +64,29 @@ jest.mock('design-system/gamification/RewardCard', () => ({
     ),
 }));
 
-jest.mock('design-system/gamification/XPCounter', () => ({
-    XPCounter: ({ value, size, animated }: any) => (
+jest.mock('src/web/design-system/src/gamification/XPCounter', () => ({
+    XPCounter: ({ value, size, animated: _animated }: MockXPCounterProps) => (
         <div data-testid="xp-counter" data-value={value} data-size={size}>
             {value} XP
         </div>
     ),
 }));
 
-jest.mock('design-system/primitives/Text/Text', () => ({
-    Text: ({ children, ...props }: any) => <span {...props}>{children}</span>,
+jest.mock('src/web/design-system/src/primitives/Text/Text', () => ({
+    Text: ({ children, ...props }: MockSpreadProps) => <span {...props}>{children}</span>,
 }));
 
-jest.mock('design-system/primitives/Box/Box', () => ({
-    Box: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+jest.mock('src/web/design-system/src/primitives/Box/Box', () => ({
+    Box: ({ children, ...props }: MockSpreadProps) => <div {...props}>{children}</div>,
 }));
 
-jest.mock('design-system/tokens/colors', () => ({
+jest.mock('src/web/design-system/src/tokens/colors', () => ({
     colors: {
         gray: { 50: '#888', 70: '#333' },
     },
 }));
 
-jest.mock('design-system/tokens/spacing', () => ({
+jest.mock('src/web/design-system/src/tokens/spacing', () => ({
     spacing: {
         xs: '8px',
         sm: '12px',

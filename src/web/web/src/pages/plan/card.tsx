@@ -1,13 +1,14 @@
-import React from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { InsuranceCard } from 'design-system/plan/InsuranceCard';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import { NextPage } from 'next';
 import Head from 'next/head';
-import { useQuery } from '@tanstack/react-query';
-import PlanLayout from '../../layouts/PlanLayout';
-import { InsuranceCard } from 'design-system/plan/InsuranceCard';
-import { useAuth } from '../../hooks/useAuth';
-import { getDigitalCard } from '../../api/plan';
+import React from 'react';
 import { Plan } from 'shared/types/plan.types';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+
+import { getDigitalCard } from '../../api/plan';
+import { useAuth } from '../../hooks/useAuth';
+import PlanLayout from '../../layouts/PlanLayout';
 
 const { plan } = colors.journeys;
 
@@ -22,13 +23,11 @@ const DigitalCardPage: NextPage = () => {
         isLoading,
         error,
         data: digitalCardData,
-    } = useQuery(
-        ['digitalCard', session?.accessToken],
-        () => getDigitalCard(session?.accessToken, session?.accessToken),
-        {
-            enabled: isAuthenticated && !!session?.accessToken,
-        }
-    );
+    } = useQuery<{ plan: Plan }>({
+        queryKey: ['digitalCard', session?.accessToken],
+        queryFn: () => getDigitalCard(session?.accessToken, session?.accessToken),
+        enabled: isAuthenticated && !!session?.accessToken,
+    });
 
     if (status === 'loading' || isLoading || authIsLoading) {
         return (
@@ -64,7 +63,7 @@ const DigitalCardPage: NextPage = () => {
                         fontSize: typography.fontSize['text-md'],
                     }}
                 >
-                    Erro ao carregar cartao digital: {(error as Error).message}
+                    Erro ao carregar cartao digital: {error.message}
                 </div>
             </PlanLayout>
         );
@@ -106,7 +105,14 @@ const DigitalCardPage: NextPage = () => {
                 {digitalCardData && session?.accessToken && (
                     <div style={{ marginBottom: spacing.xl }}>
                         <InsuranceCard
-                            plan={digitalCardData.plan as Plan}
+                            plan={{
+                                id: digitalCardData.plan.id,
+                                name: digitalCardData.plan.planNumber,
+                                planNumber: digitalCardData.plan.planNumber,
+                                type: digitalCardData.plan.type,
+                                validityStart: digitalCardData.plan.validityStart,
+                                validityEnd: digitalCardData.plan.validityEnd,
+                            }}
                             user={{
                                 id: session.accessToken,
                                 name: session.accessToken,
@@ -189,7 +195,7 @@ const DigitalCardPage: NextPage = () => {
 /**
  * Function to share the digital insurance card via Web Share API.
  */
-const shareCard = () => {
+const shareCard = (): void => {
     if (navigator.share) {
         navigator
             .share({
@@ -210,7 +216,7 @@ const shareCard = () => {
 /**
  * Function to trigger PDF download of the digital card.
  */
-const downloadCard = () => {
+const downloadCard = (): void => {
     // In a real implementation, this would call an API to generate a PDF
     window.print();
 };

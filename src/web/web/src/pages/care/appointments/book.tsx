@@ -1,9 +1,8 @@
-import React from 'react'; // React v18.0+
 import { useRouter } from 'next/router'; // next/router latest
+import React from 'react'; // React v18.0+
 
-import { JourneyHeader } from '@/components/shared/JourneyHeader';
 import { AppointmentForm } from '@/components/forms/AppointmentForm';
-import { JourneyContext } from '@/context/JourneyContext';
+import { JourneyHeader } from '@/components/shared/JourneyHeader';
 import { CareLayout } from '@/layouts/CareLayout';
 
 /**
@@ -12,14 +11,15 @@ import { CareLayout } from '@/layouts/CareLayout';
  */
 const AppointmentBookingPage: React.FC = () => {
     // LD1: Uses the useRouter hook to get the router object.
-    const router = useRouter();
+    useRouter();
 
     // LD1: Renders the CareLayout component to provide the basic layout for the Care Now journey.
     return (
         <CareLayout>
             {/* LD1: Renders the JourneyHeader component with the title 'Agendar Consulta'. */}
             <JourneyHeader title="Agendar Consulta" />
-            {/* LD1: Renders the AppointmentForm component to handle the appointment booking process. */}
+            {/* LD1: Renders the AppointmentForm component
+                to handle the appointment booking process. */}
             <AppointmentForm />
         </CareLayout>
     );

@@ -1,5 +1,5 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
 
 jest.mock('@/hooks/useAuth', () => ({
     useAuth: () => ({
@@ -13,11 +13,19 @@ jest.mock('@/context/AuthContext', () => ({
 }));
 
 jest.mock('@/components/shared/JourneyHeader', () => ({
-    JourneyHeader: ({ title }: any) => <h1 data-testid="journey-header">{title}</h1>,
+    JourneyHeader: ({ title }: { title: string }) => <h1 data-testid="journey-header">{title}</h1>,
 }));
 
 jest.mock('design-system/components/Button/Button', () => ({
-    Button: ({ children, onPress, disabled }: any) => (
+    Button: ({
+        children,
+        onPress,
+        disabled,
+    }: {
+        children: React.ReactNode;
+        onPress?: () => void;
+        disabled?: boolean;
+    }) => (
         <button onClick={onPress} disabled={disabled} data-testid="settings-button">
             {children}
         </button>
@@ -25,7 +33,19 @@ jest.mock('design-system/components/Button/Button', () => ({
 }));
 
 jest.mock('design-system/components/Input/Input', () => ({
-    Input: ({ label, value, onChange, disabled, 'aria-label': ariaLabel }: any) => (
+    Input: ({
+        label,
+        value,
+        onChange,
+        disabled,
+        'aria-label': ariaLabel,
+    }: {
+        label?: string;
+        value?: string;
+        onChange?: React.ChangeEventHandler;
+        disabled?: boolean;
+        'aria-label'?: string;
+    }) => (
         <div>
             {label && <label>{label}</label>}
             <input value={value} onChange={onChange} disabled={disabled} aria-label={ariaLabel} />

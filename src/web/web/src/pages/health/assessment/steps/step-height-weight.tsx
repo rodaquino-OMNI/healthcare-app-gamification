@@ -1,8 +1,8 @@
-import React, { useMemo } from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React, { useMemo } from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -27,20 +27,28 @@ const labelStyle: React.CSSProperties = {
 };
 
 const getBmiCategory = (bmi: number): { label: string; color: string } => {
-    if (bmi < 18.5) return { label: 'Underweight', color: colors.semantic.warning };
-    if (bmi < 25) return { label: 'Normal', color: colors.semantic.success };
-    if (bmi < 30) return { label: 'Overweight', color: colors.semantic.warning };
+    if (bmi < 18.5) {
+        return { label: 'Underweight', color: colors.semantic.warning };
+    }
+    if (bmi < 25) {
+        return { label: 'Normal', color: colors.semantic.success };
+    }
+    if (bmi < 30) {
+        return { label: 'Overweight', color: colors.semantic.warning };
+    }
     return { label: 'Obese', color: colors.semantic.error };
 };
 
 const StepHeightWeightPage: React.FC<StepProps> = ({ data, onUpdate }) => {
-    const useImperial = data.useImperial || false;
+    const useImperial = (data.useImperial as boolean) || false;
 
     const bmi = useMemo(() => {
         const heightCm = useImperial
-            ? (Number(data.heightFt) || 0) * 30.48 + (Number(data.heightIn) || 0) * 2.54
-            : Number(data.heightCm) || 0;
-        const weightKg = useImperial ? (Number(data.weightLbs) || 0) * 0.453592 : Number(data.weightKg) || 0;
+            ? (Number(data.heightFt as string) || 0) * 30.48 + (Number(data.heightIn as string) || 0) * 2.54
+            : Number(data.heightCm as string) || 0;
+        const weightKg = useImperial
+            ? (Number(data.weightLbs as string) || 0) * 0.453592
+            : Number(data.weightKg as string) || 0;
         if (heightCm > 0 && weightKg > 0) {
             const heightM = heightCm / 100;
             return weightKg / (heightM * heightM);
@@ -98,7 +106,7 @@ const StepHeightWeightPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                                     style={inputStyle}
                                     type="number"
                                     placeholder="5"
-                                    value={data.heightFt || ''}
+                                    value={(data.heightFt as string) || ''}
                                     onChange={(e) => onUpdate('heightFt', e.target.value)}
                                     aria-label="Height in feet"
                                 />
@@ -111,7 +119,7 @@ const StepHeightWeightPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                                     style={inputStyle}
                                     type="number"
                                     placeholder="10"
-                                    value={data.heightIn || ''}
+                                    value={(data.heightIn as string) || ''}
                                     onChange={(e) => onUpdate('heightIn', e.target.value)}
                                     aria-label="Height in inches"
                                 />
@@ -126,7 +134,7 @@ const StepHeightWeightPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                                 style={inputStyle}
                                 type="number"
                                 placeholder="170"
-                                value={data.heightCm || ''}
+                                value={(data.heightCm as string) || ''}
                                 onChange={(e) => onUpdate('heightCm', e.target.value)}
                                 aria-label="Height in centimeters"
                             />
@@ -141,7 +149,7 @@ const StepHeightWeightPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                             style={inputStyle}
                             type="number"
                             placeholder={useImperial ? '160' : '70'}
-                            value={useImperial ? data.weightLbs || '' : data.weightKg || ''}
+                            value={useImperial ? (data.weightLbs as string) || '' : (data.weightKg as string) || ''}
                             onChange={(e) => onUpdate(useImperial ? 'weightLbs' : 'weightKg', e.target.value)}
                             aria-label={`Weight in ${useImperial ? 'pounds' : 'kilograms'}`}
                         />

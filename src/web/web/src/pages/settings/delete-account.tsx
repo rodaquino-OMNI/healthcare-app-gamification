@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import React, { useState } from 'react';
+
 import { deleteAccount } from '@/api/auth';
 
 /**
@@ -24,14 +25,16 @@ const DeleteAccountPage: NextPage = () => {
         'Esta acao nao pode ser desfeita',
     ];
 
-    const handleDelete = async () => {
-        if (!confirmed || !password) return;
+    const handleDelete = async (): Promise<void> => {
+        if (!confirmed || !password) {
+            return;
+        }
         setLoading(true);
         setError('');
         try {
             await deleteAccount(password, reason || undefined);
             localStorage.clear();
-            router.push('/auth/login');
+            void router.push('/auth/login');
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : 'Erro ao excluir conta. Tente novamente.');
         } finally {
@@ -74,8 +77,15 @@ const DeleteAccountPage: NextPage = () => {
 
             {/* Reason */}
             <div style={{ ...cardStyle, marginTop: spacing.md }}>
-                <label style={labelStyle}>Motivo (opcional)</label>
-                <select value={reason} onChange={(e) => setReason(e.target.value)} style={selectStyle}>
+                <label htmlFor="delete-reason" style={labelStyle}>
+                    Motivo (opcional)
+                </label>
+                <select
+                    id="delete-reason"
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
+                    style={selectStyle}
+                >
                     <option value="">Selecione um motivo...</option>
                     <option value="privacy">Preocupacoes com privacidade</option>
                     <option value="not-using">Nao uso mais o app</option>
@@ -87,8 +97,11 @@ const DeleteAccountPage: NextPage = () => {
 
             {/* Confirmation */}
             <div style={{ ...cardStyle, marginTop: spacing.md }}>
-                <label style={labelStyle}>Confirme sua senha</label>
+                <label htmlFor="delete-password" style={labelStyle}>
+                    Confirme sua senha
+                </label>
                 <input
+                    id="delete-password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -107,7 +120,7 @@ const DeleteAccountPage: NextPage = () => {
                 </label>
 
                 <button
-                    onClick={handleDelete}
+                    onClick={() => void handleDelete()}
                     disabled={!confirmed || !password}
                     style={{
                         ...dangerButtonStyle,

@@ -1,11 +1,11 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 const STAR_RATINGS = [1, 2, 3, 4, 5];
 
@@ -116,7 +116,7 @@ const EndPage: React.FC = () => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
                 <Button
                     journey="care"
-                    onPress={() => router.push('/care/visits/summary')}
+                    onPress={() => void router.push('/care/visits/summary')}
                     accessibilityLabel="View visit summary"
                     data-testid="end-view-summary-btn"
                 >
@@ -125,7 +125,7 @@ const EndPage: React.FC = () => {
                 <Button
                     variant="secondary"
                     journey="care"
-                    onPress={() => router.push('/care/visits/follow-up')}
+                    onPress={() => void router.push('/care/visits/follow-up')}
                     accessibilityLabel="Book follow-up appointment"
                     data-testid="end-book-followup-btn"
                 >
@@ -134,7 +134,7 @@ const EndPage: React.FC = () => {
                 <Button
                     variant="tertiary"
                     journey="care"
-                    onPress={() => router.push('/care')}
+                    onPress={() => void router.push('/care')}
                     accessibilityLabel="Return to care dashboard"
                     data-testid="end-return-dashboard-btn"
                 >

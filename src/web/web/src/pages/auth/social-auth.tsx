@@ -1,10 +1,10 @@
+import { borderRadius } from 'design-system/tokens/borderRadius';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/router';
 import React from 'react';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
-import { borderRadius } from 'design-system/tokens/borderRadius';
 
 const PageContainer = styled.div`
     display: flex;
@@ -69,7 +69,7 @@ const SocialButton = styled.button<{ variant: 'google' | 'apple' | 'facebook' }>
           color: ${colors.neutral.gray900};
 
           &:hover {
-            background-color: ${colors.neutral.gray50};
+            background-color: ${colors.neutral.gray100};
             border-color: ${colors.neutral.gray400};
           }
         `;
@@ -135,7 +135,7 @@ const EmailLink = styled.button`
     transition: all 0.15s ease;
 
     &:hover {
-        background-color: ${colors.neutral.gray50};
+        background-color: ${colors.neutral.gray100};
         border-color: ${colors.neutral.gray400};
     }
 `;
@@ -164,31 +164,40 @@ const LegalLink = styled.button`
     }
 `;
 
-const OAUTH_CONFIG: Record<string, { authUrl: string; clientId: string; scope: string; redirectUri: string }> = {
+interface OAuthProviderConfig {
+    authUrl: string;
+    clientId: string;
+    scope: string;
+    redirectUri: string;
+}
+
+const getRedirectUri = (): string => (typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : '');
+
+const OAUTH_CONFIG: Record<string, OAuthProviderConfig> = {
     google: {
         authUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
         clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
         scope: 'openid email profile',
-        redirectUri: typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : '',
+        redirectUri: getRedirectUri(),
     },
     apple: {
         authUrl: 'https://appleid.apple.com/auth/authorize',
         clientId: process.env.NEXT_PUBLIC_APPLE_CLIENT_ID || '',
         scope: 'name email',
-        redirectUri: typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : '',
+        redirectUri: getRedirectUri(),
     },
     facebook: {
         authUrl: 'https://www.facebook.com/v18.0/dialog/oauth',
         clientId: process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_ID || '',
         scope: 'email public_profile',
-        redirectUri: typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : '',
+        redirectUri: getRedirectUri(),
     },
 };
 
-export default function SocialAuthPage() {
+export default function SocialAuthPage(): React.ReactElement {
     const router = useRouter();
 
-    const handleSocialAuth = (provider: string) => {
+    const handleSocialAuth = (provider: string): void => {
         const config = OAUTH_CONFIG[provider.toLowerCase()];
         if (!config?.clientId) {
             console.warn(`OAuth not configured for ${provider}`);
@@ -209,12 +218,12 @@ export default function SocialAuthPage() {
         window.location.href = `${config.authUrl}?${params.toString()}`;
     };
 
-    const handleEmailLogin = () => {
-        router.push('/auth/login');
+    const handleEmailLogin = (): void => {
+        void router.push('/auth/login');
     };
 
-    const handleLegalLink = (page: string) => {
-        router.push(`/${page}`);
+    const handleLegalLink = (page: string): void => {
+        void router.push(`/${page}`);
     };
 
     return (

@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { CareLayout } from '@/layouts/CareLayout';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { CareLayout } from '@/layouts/CareLayout';
 
 type TabKey = 'upcoming' | 'past' | 'cancelled';
 
@@ -129,7 +130,7 @@ const ListPage: React.FC = () => {
                     </div>
                     <Button
                         journey="care"
-                        onPress={() => router.push('/care/appointments/search')}
+                        onPress={() => void router.push('/care/appointments/search')}
                         accessibilityLabel="Nova consulta"
                     >
                         Nova Consulta
@@ -158,7 +159,7 @@ const ListPage: React.FC = () => {
                                 journey="care"
                                 elevation="sm"
                                 interactive
-                                onPress={() => router.push(`/care/appointments/${apt.id}`)}
+                                onPress={() => void router.push(`/care/appointments/${apt.id}`)}
                                 accessibilityLabel={`Consulta com ${apt.doctor}`}
                             >
                                 <Box padding="md">

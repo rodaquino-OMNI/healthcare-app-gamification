@@ -1,14 +1,13 @@
-import React from 'react';
-import { useRouter } from 'next/router';
 import { Text } from 'design-system/primitives/Text/Text';
-import { Box } from 'design-system/primitives/Box/Box';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 const HistoryDetailPage: React.FC = () => {
     const router = useRouter();
 
-    const getSeverityColor = (severity: string) => {
+    const getSeverityColor = (severity: string): string => {
         switch (severity) {
             case 'Leve':
                 return colors.semantic.warning;
@@ -242,7 +241,7 @@ const HistoryDetailPage: React.FC = () => {
                         fontWeight: '500',
                     }}
                     data-testid="view-full-report-button"
-                    onClick={() => router.push('/care/symptom-checker')}
+                    onClick={() => void router.push('/care/symptom-checker')}
                 >
                     Ver Relatorio Completo
                 </button>
@@ -259,7 +258,7 @@ const HistoryDetailPage: React.FC = () => {
                         fontWeight: '500',
                     }}
                     data-testid="share-detail-button"
-                    onClick={() => router.push('/care/symptom-checker/share-report')}
+                    onClick={() => void router.push('/care/symptom-checker/share-report')}
                 >
                     Compartilhar
                 </button>

@@ -1,10 +1,9 @@
+import { Modal } from 'design-system/components/Modal/Modal';
+import { AchievementBadge } from 'design-system/gamification/AchievementBadge/AchievementBadge';
 import React from 'react';
-import { Modal, ModalProps } from 'design-system/components/Modal/Modal'; // version: that matches the design system
-import { AchievementBadge } from 'design-system/gamification/AchievementBadge/AchievementBadge'; // version: that matches the design system
 import { Achievement } from 'shared/types/gamification.types';
-import { GET_ACHIEVEMENTS } from 'shared/graphql/queries/gamification.queries';
+
 import { useGamification } from '@/hooks/useGamification';
-import { format } from 'shared/utils/format'; // Assuming format contains truncateText
 
 /**
  * Props interface for the AchievementModal component
@@ -29,10 +28,10 @@ interface AchievementModalProps {
  */
 export const AchievementModal: React.FC<AchievementModalProps> = ({ achievementId, visible, onClose }) => {
     // Retrieve the achievement data using the `useGamification` hook.
-    const { data, loading, error } = useGamification();
+    const { data, loading, error } = useGamification('');
 
     // Find the achievement by ID
-    const achievement: Achievement | undefined = data?.gameProfile?.achievements?.find((a) => a.id === achievementId);
+    const achievement = data?.gameProfile?.achievements?.find((a: Achievement) => a.id === achievementId);
 
     if (loading) {
         return (
@@ -60,7 +59,16 @@ export const AchievementModal: React.FC<AchievementModalProps> = ({ achievementI
 
     // Renders a `Modal` component.
     return (
-        <Modal visible={visible} onClose={onClose} title="Achievement Details" journey={achievement.journey}>
+        <Modal
+            visible={visible}
+            onClose={onClose}
+            title="Achievement Details"
+            journey={
+                achievement.journey === 'health' || achievement.journey === 'care' || achievement.journey === 'plan'
+                    ? achievement.journey
+                    : undefined
+            }
+        >
             {/* Displays the achievement badge using the `AchievementBadge` component. */}
             <AchievementBadge achievement={achievement} size="lg" showProgress={!achievement.unlocked} />
             {/* Displays the achievement title and description. */}

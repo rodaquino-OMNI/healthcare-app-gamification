@@ -1,18 +1,13 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Input, Button, Select } from 'design-system/components/index';
+import { useRouter } from 'next/router';
 import React from 'react';
-import { useForm } from 'react-hook-form'; // 7.0+
-import { yupResolver } from '@hookform/resolvers/yup'; // latest
-import { z } from 'zod'; // latest
-import { ClaimType } from 'shared/types/plan.types';
-import { claimValidationSchema } from 'shared/utils/validation';
-import { useClaims } from '@/hooks/useClaims';
-import { useJourneyContext } from '@/context/JourneyContext';
-import { Button } from 'design-system/components/index';
-import Input from 'design-system/components/index';
-import { Select } from 'design-system/components/index';
-import { useRouter } from 'next/router'; // 13.0+
+import { useForm } from 'react-hook-form';
 import { MOBILE_PLAN_ROUTES } from 'shared/constants/routes';
-import { useMutation } from '@apollo/client'; // 3.7.17
-import { SUBMIT_CLAIM } from 'shared/graphql/mutations/plan.mutations';
+import { claimValidationSchema } from 'shared/utils/validation';
+
+import { useJourneyContext } from '@/context/JourneyContext';
+import { useClaims } from '@/hooks/useClaims';
 
 /**
  * A React component that renders a form for submitting insurance claims.
@@ -20,7 +15,7 @@ import { SUBMIT_CLAIM } from 'shared/graphql/mutations/plan.mutations';
  */
 export const ClaimForm: React.FC = () => {
     // Retrieves the journey context using `useJourneyContext`.
-    const { currentJourney } = useJourneyContext();
+    const { currentJourney: _currentJourney } = useJourneyContext();
 
     // Initializes the form using `useForm` with default values and the `claimValidationSchema` for validation.
     const {
@@ -34,11 +29,11 @@ export const ClaimForm: React.FC = () => {
             provider: '',
             amount: '',
         },
-        resolver: yupResolver(claimValidationSchema),
+        resolver: zodResolver(claimValidationSchema),
     });
 
     // Defines the `handleSubmit` function to handle form submission:
-    const { submitClaim, submitting, submitError } = useClaims();
+    const { submitClaim } = useClaims();
     const router = useRouter();
 
     const procedureTypeOptions = [
@@ -49,23 +44,23 @@ export const ClaimForm: React.FC = () => {
         { label: 'Other', value: 'other' },
     ];
 
-    const onSubmit = async (data: Record<string, unknown>) => {
+    const onSubmit = async (data: Record<string, unknown>): Promise<void> => {
         try {
             // Calls the `submitClaim` function from the `useClaims` hook to submit the claim data to the backend.
             const result = await submitClaim({
                 planId: 'your_plan_id', // Replace with actual plan ID
-                type: data.procedureType,
+                type: String(data.procedureType),
                 procedureCode: 'procedure_code', // Replace with actual procedure code
-                providerName: data.provider,
-                serviceDate: data.date,
-                amount: parseFloat(data.amount),
+                providerName: String(data.provider),
+                serviceDate: String(data.date),
+                amount: parseFloat(String(data.amount)),
                 documents: [], // Implement file upload later
             });
 
             // Displays a success or error toast message based on the result.
             if (result) {
                 // Navigates to the claim confirmation screen on success.
-                router.push(MOBILE_PLAN_ROUTES.CLAIMS);
+                void router.push(MOBILE_PLAN_ROUTES.CLAIMS);
                 alert('Claim submitted successfully!');
             } else {
                 alert('Claim submission failed.');
@@ -80,10 +75,14 @@ export const ClaimForm: React.FC = () => {
     // Uses design system components for input fields and button.
     // Applies form validation and submission handling using React Hook Form.
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form
+            onSubmit={(e) => {
+                void handleSubmit(onSubmit)(e);
+            }}
+        >
             <div>
                 <label htmlFor="procedureType">Procedure Type</label>
-                <Select id="procedureType" options={procedureTypeOptions} {...register('procedureType')} />
+                <Select label="Procedure Type" options={procedureTypeOptions} value="" onChange={() => {}} />
                 {errors.procedureType && <span>{errors.procedureType.message}</span>}
             </div>
 

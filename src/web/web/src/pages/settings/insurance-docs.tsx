@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import type { NextPage } from 'next';
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import type { NextPage } from 'next';
+import React, { useState, useEffect } from 'react';
+
 import { getInsuranceDocs, downloadDoc } from '../../api/settings';
 
 interface InsuranceDoc {
@@ -21,7 +22,7 @@ const InsuranceDocsPage: NextPage = () => {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        const fetchDocs = async () => {
+        const fetchDocs = async (): Promise<void> => {
             setLoading(true);
             try {
                 const data = await getInsuranceDocs();
@@ -32,10 +33,10 @@ const InsuranceDocsPage: NextPage = () => {
                 setLoading(false);
             }
         };
-        fetchDocs();
+        void fetchDocs();
     }, []);
 
-    const handleDownload = async (doc: { id: string; name: string }) => {
+    const handleDownload = async (doc: { id: string; name: string }): Promise<void> => {
         try {
             const blob = await downloadDoc(doc.id);
             const url = URL.createObjectURL(blob);
@@ -93,7 +94,7 @@ const InsuranceDocsPage: NextPage = () => {
                                 <span style={docMetaStyle}>{doc.uploadedAt}</span>
                             </div>
                             <button
-                                onClick={() => handleDownload(doc)}
+                                onClick={() => void handleDownload(doc)}
                                 style={downloadBtnStyle}
                                 aria-label={`Baixar ${doc.name}`}
                             >

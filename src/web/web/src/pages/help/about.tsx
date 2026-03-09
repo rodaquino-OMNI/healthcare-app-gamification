@@ -1,7 +1,7 @@
-import React from 'react';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import React from 'react';
 
 /**
  * About the app page.
@@ -48,7 +48,7 @@ const AboutPage: NextPage = () => {
             <div style={{ ...cardStyle, marginTop: spacing.md }}>
                 <h2 style={sectionTitleStyle}>Legal e Suporte</h2>
                 {legalLinks.map((link) => (
-                    <button key={link.label} onClick={() => router.push(link.path)} style={legalLinkStyle}>
+                    <button key={link.label} onClick={() => void router.push(link.path)} style={legalLinkStyle}>
                         <span>{link.label}</span>
                         <span style={{ color: colors.gray[30] }}>&rsaquo;</span>
                     </button>

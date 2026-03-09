@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
-import { CareLayout } from '@/layouts/CareLayout';
+
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { CareLayout } from '@/layouts/CareLayout';
 
 /** Date entry for the calendar view */
 interface CalendarDate {
@@ -57,10 +58,10 @@ const DoctorAvailabilityPage: React.FC = () => {
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
 
-    const handleConfirm = () => {
+    const handleConfirm = (): void => {
         if (selectedDate && selectedSlot) {
             const slot = MOCK_TIME_SLOTS.find((s) => s.id === selectedSlot);
-            router.push({
+            void router.push({
                 pathname: WEB_CARE_ROUTES.BOOKING_CONFIRMATION,
                 query: {
                     doctorId: doctorId as string,
@@ -102,7 +103,14 @@ const DoctorAvailabilityPage: React.FC = () => {
                 >
                     Selecione uma data
                 </Text>
-                <div style={{ display: 'flex', gap: spacing.sm, overflowX: 'auto', paddingBottom: spacing.sm }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        gap: spacing.sm,
+                        overflowX: 'auto',
+                        paddingBottom: spacing.sm,
+                    }}
+                >
                     {MOCK_DATES.map((dateEntry) => (
                         <button
                             key={dateEntry.date}

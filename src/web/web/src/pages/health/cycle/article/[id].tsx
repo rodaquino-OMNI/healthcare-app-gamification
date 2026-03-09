@@ -1,11 +1,11 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 interface ArticleData {
     title: string;
@@ -64,18 +64,18 @@ const ArticleDetailPage: React.FC = () => {
     const articleId = typeof id === 'string' ? id : '';
     const article = ARTICLES_DB[articleId] ?? DEFAULT_ARTICLE;
 
-    const handleShare = () => {
+    const handleShare = (): void => {
         window.alert('Share feature coming soon.');
     };
 
-    const handleBookmark = () => {
+    const handleBookmark = (): void => {
         window.alert('Article bookmarked.');
     };
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/cycle/insights')}
+                onClick={() => void router.push('/health/cycle/insights')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -145,13 +145,15 @@ const ArticleDetailPage: React.FC = () => {
                         {article.relatedIds.map((rid, i) => (
                             <div
                                 key={rid}
-                                onClick={() => router.push(`/health/cycle/article/${rid}`)}
+                                onClick={() => void router.push(`/health/cycle/article/${rid}`)}
                                 style={{ cursor: 'pointer' }}
                                 role="link"
                                 tabIndex={0}
                                 aria-label={article.relatedTitles[i]}
                                 onKeyDown={(e) => {
-                                    if (e.key === 'Enter') router.push(`/health/cycle/article/${rid}`);
+                                    if (e.key === 'Enter') {
+                                        void router.push(`/health/cycle/article/${rid}`);
+                                    }
                                 }}
                             >
                                 <Card journey="health" elevation="sm" padding="md">

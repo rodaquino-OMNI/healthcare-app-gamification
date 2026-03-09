@@ -1,12 +1,12 @@
+import { borderRadius } from 'design-system/tokens/borderRadius';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/router';
 import React from 'react';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
-import { borderRadius } from 'design-system/tokens/borderRadius';
+
 import { MainLayout } from '@/layouts/MainLayout';
-import { WEB_GLOBAL_ROUTES } from 'shared/constants/routes';
 
 const PageContainer = styled.div`
     max-width: 720px;
@@ -70,7 +70,7 @@ const SuggestionItem = styled.li`
     font-size: ${typography.fontSize['text-sm']};
     color: ${colors.neutral.gray600};
     padding: ${spacing.sm};
-    background-color: ${colors.neutral.gray50};
+    background-color: ${colors.neutral.gray100};
     border-radius: ${borderRadius.sm};
 `;
 
@@ -128,15 +128,15 @@ const HomeButton = styled.button`
     }
 `;
 
-export default function NoResultsPage() {
+export default function NoResultsPage(): React.ReactElement {
     const router = useRouter();
 
-    const handlePopularSearch = (tag: string) => {
-        router.push(`/search/results?q=${encodeURIComponent(tag)}`);
+    const handlePopularSearch = (tag: string): void => {
+        void router.push(`/search/results?q=${encodeURIComponent(tag)}`);
     };
 
-    const handleHome = () => {
-        router.push(WEB_GLOBAL_ROUTES.HOME);
+    const handleHome = (): void => {
+        void router.push('/');
     };
 
     return (

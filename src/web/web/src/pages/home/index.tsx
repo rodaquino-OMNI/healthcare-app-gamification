@@ -1,8 +1,12 @@
-import React from 'react';
+import { borderRadius } from 'design-system/tokens/borderRadius';
+import { colors } from 'design-system/tokens/colors';
+import { shadows } from 'design-system/tokens/shadows';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
 import { useRouter } from 'next/router'; // next/router 13.0+
+import React from 'react';
 
 import {
-    JourneyCard,
     useAuth,
     useHealthMetrics,
     useAppointments,
@@ -15,12 +19,7 @@ import {
     ClaimsWidget,
     RecentActivityWidget,
     AchievementsWidget,
-} from '@/components/index';
-import { colors } from 'design-system/tokens/colors';
-import { spacing } from 'design-system/tokens/spacing';
-import { typography } from 'design-system/tokens/typography';
-import { borderRadius } from 'design-system/tokens/borderRadius';
-import { shadows } from 'design-system/tokens/shadows';
+} from '@/components';
 
 /**
  * Journey configuration for the three core journeys displayed on the dashboard.
@@ -68,12 +67,12 @@ const QUICK_ACTIONS = [
  */
 const Home: React.FC = () => {
     const router = useRouter();
-    const { isAuthenticated } = useAuth();
-    const { metrics } = useHealthMetrics('user-123', []);
-    const { appointments } = useAppointments();
-    const { claims } = useClaims();
+    useAuth();
+    useHealthMetrics('user-123', []);
+    useAppointments();
+    useClaims();
     const { gameProfile } = useGamification('user-123');
-    const { journey } = useJourney();
+    useJourney();
 
     return (
         <MainLayout>
@@ -103,10 +102,14 @@ const Home: React.FC = () => {
                                 borderLeft: `4px solid ${j.color}`,
                                 backgroundColor: j.background,
                             }}
-                            onClick={() => router.push(j.href)}
+                            onClick={() => void router.push(j.href)}
                             role="button"
                             tabIndex={0}
-                            onKeyDown={(e) => e.key === 'Enter' && router.push(j.href)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    void router.push(j.href);
+                                }
+                            }}
                         >
                             <h3 style={{ ...pageStyles.journeyTitle, color: j.color }}>{j.title}</h3>
                             <p style={pageStyles.journeyDescription}>{j.description}</p>
@@ -124,25 +127,25 @@ const Home: React.FC = () => {
                         style={pageStyles.viewAllLink}
                         onClick={(e) => {
                             e.preventDefault();
-                            router.push('/home/metrics');
+                            void router.push('/home/metrics');
                         }}
                     >
                         Ver todas
                     </a>
                 </div>
-                <MetricsWidget metrics={metrics} />
+                <MetricsWidget />
             </section>
 
             {/* Appointments */}
             <section style={pageStyles.section}>
                 <h2 style={pageStyles.sectionTitle}>Proximas Consultas</h2>
-                <AppointmentsWidget appointments={appointments} />
+                <AppointmentsWidget />
             </section>
 
             {/* Claims */}
             <section style={pageStyles.section}>
                 <h2 style={pageStyles.sectionTitle}>Sinistros Recentes</h2>
-                <ClaimsWidget claims={claims} />
+                <ClaimsWidget />
             </section>
 
             {/* Quick Actions */}
@@ -153,10 +156,14 @@ const Home: React.FC = () => {
                         <div
                             key={action.label}
                             style={pageStyles.quickActionCard}
-                            onClick={() => router.push(action.href)}
+                            onClick={() => void router.push(action.href)}
                             role="button"
                             tabIndex={0}
-                            onKeyDown={(e) => e.key === 'Enter' && router.push(action.href)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    void router.push(action.href);
+                                }
+                            }}
                         >
                             <span style={pageStyles.quickActionIcon}>{action.icon}</span>
                             <span style={pageStyles.quickActionLabel}>{action.label}</span>
@@ -174,7 +181,7 @@ const Home: React.FC = () => {
             {/* Achievements */}
             <section style={pageStyles.section}>
                 <h2 style={pageStyles.sectionTitle}>Conquistas</h2>
-                <AchievementsWidget achievements={gameProfile?.achievements} />
+                <AchievementsWidget />
             </section>
         </MainLayout>
     );

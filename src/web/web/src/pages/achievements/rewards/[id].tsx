@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { Text } from 'design-system/primitives/Text/Text';
-import { Box } from 'design-system/primitives/Box/Box';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { XPCounter } from 'design-system/gamification/XPCounter';
-import { useGameProfile } from '@/hooks/useGamification';
+import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import type { Reward } from 'shared/types/gamification.types';
+
+import { useGameProfile } from '@/hooks/useGamification';
 
 const MOCK_REWARDS: Record<string, Reward & { terms: string; category: string }> = {
     r1: {
@@ -137,7 +138,7 @@ const RewardDetailPage: React.FC = () => {
                     Reward not found.
                 </Text>
                 <Link href="/achievements/rewards">
-                    <Button variant="secondary" onPress={() => router.push('/achievements/rewards')}>
+                    <Button variant="secondary" onPress={() => void router.push('/achievements/rewards')}>
                         Back to Rewards
                     </Button>
                 </Link>
@@ -148,7 +149,7 @@ const RewardDetailPage: React.FC = () => {
     const canClaim = userXp >= reward.xp && !claimed;
     const journeyColor = JOURNEY_COLORS[reward.journey] ?? '#6C63FF';
 
-    const handleClaim = () => {
+    const handleClaim = (): void => {
         if (canClaim) {
             setClaimed(true);
         }
@@ -158,7 +159,7 @@ const RewardDetailPage: React.FC = () => {
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <Button
                 variant="secondary"
-                onPress={() => router.push('/achievements/rewards')}
+                onPress={() => void router.push('/achievements/rewards')}
                 accessibilityLabel="Back to rewards"
                 style={{ marginBottom: spacing.lg }}
             >
@@ -216,7 +217,7 @@ const RewardDetailPage: React.FC = () => {
                         <Text fontSize="sm" color={colors.gray[50]}>
                             Your Balance
                         </Text>
-                        <XPCounter value={userXp} size="md" />
+                        <XPCounter currentXP={userXp} nextLevelXP={10000} journey="health" />
                     </Box>
                 </Box>
 

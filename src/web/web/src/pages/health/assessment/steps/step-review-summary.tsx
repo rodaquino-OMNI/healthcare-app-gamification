@@ -1,8 +1,8 @@
-import React from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -60,8 +60,12 @@ const SECTIONS: SectionConfig[] = [
 ];
 
 const formatValue = (value: unknown): string => {
-    if (value === undefined || value === null || value === '') return '--';
-    if (Array.isArray(value)) return value.length > 0 ? value.join(', ') : '--';
+    if (value === undefined || value === null || value === '') {
+        return '--';
+    }
+    if (Array.isArray(value)) {
+        return value.length > 0 ? value.join(', ') : '--';
+    }
     return String(value);
 };
 

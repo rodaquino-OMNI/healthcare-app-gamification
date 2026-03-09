@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 const DAILY_TARGET = 8;
 const HISTORY = [
@@ -20,7 +20,7 @@ const WaterIntakePage: React.FC = () => {
     const router = useRouter();
     const [current, setCurrent] = useState(6);
 
-    const handleAdd = (amount: number) => {
+    const handleAdd = (amount: number): void => {
         setCurrent((prev) => Math.min(prev + amount, DAILY_TARGET + 4));
     };
 
@@ -29,7 +29,7 @@ const WaterIntakePage: React.FC = () => {
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/nutrition')}
+                onClick={() => void router.push('/health/nutrition')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -63,7 +63,7 @@ const WaterIntakePage: React.FC = () => {
                 style={{ textAlign: 'center', marginBottom: spacing.xl }}
             >
                 <Text fontSize="sm" color={colors.gray[50]}>
-                    Today's Hydration
+                    Today&apos;s Hydration
                 </Text>
                 <Text
                     fontSize="2xl"
@@ -124,7 +124,7 @@ const WaterIntakePage: React.FC = () => {
                 color={colors.journeys.health.text}
                 style={{ marginBottom: spacing.sm }}
             >
-                Today's History
+                Today&apos;s History
             </Text>
             <Card journey="health" elevation="sm" padding="md" style={{ marginBottom: spacing.xl }}>
                 {HISTORY.map((entry, idx) => (

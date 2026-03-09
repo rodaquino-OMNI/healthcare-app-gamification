@@ -1,8 +1,25 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+
+interface MockSpreadProps {
+    children?: React.ReactNode;
+    [key: string]: unknown;
+}
+
+interface MockButtonProps {
+    children: React.ReactNode;
+    onPress?: () => void;
+    variant?: string;
+}
+
+interface MockQuestCardProps {
+    quest: { id: string; title: string };
+    progress?: number;
+    journey?: string;
+}
 
 jest.mock('design-system/components/Card/Card', () => ({
-    Card: ({ children, ...props }: any) => (
+    Card: ({ children, ...props }: MockSpreadProps) => (
         <div data-testid="card" {...props}>
             {children}
         </div>
@@ -10,7 +27,7 @@ jest.mock('design-system/components/Card/Card', () => ({
 }));
 
 jest.mock('design-system/components/Button/Button', () => ({
-    Button: ({ children, onPress, variant }: any) => (
+    Button: ({ children, onPress, variant }: MockButtonProps) => (
         <button onClick={onPress} data-variant={variant}>
             {children}
         </button>
@@ -18,7 +35,7 @@ jest.mock('design-system/components/Button/Button', () => ({
 }));
 
 jest.mock('design-system/gamification/QuestCard', () => ({
-    QuestCard: ({ quest, progress, journey }: any) => (
+    QuestCard: ({ quest, progress, journey }: MockQuestCardProps) => (
         <div data-testid="quest-card" data-id={quest.id} data-journey={journey}>
             <span>{quest.title}</span>
             <span data-testid="quest-progress">{progress}</span>
@@ -27,11 +44,11 @@ jest.mock('design-system/gamification/QuestCard', () => ({
 }));
 
 jest.mock('design-system/primitives/Text/Text', () => ({
-    Text: ({ children, ...props }: any) => <span {...props}>{children}</span>,
+    Text: ({ children, ...props }: MockSpreadProps) => <span {...props}>{children}</span>,
 }));
 
 jest.mock('design-system/primitives/Box/Box', () => ({
-    Box: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+    Box: ({ children, ...props }: MockSpreadProps) => <div {...props}>{children}</div>,
 }));
 
 jest.mock('design-system/tokens/colors', () => ({

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import type { NextPage } from 'next';
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import type { NextPage } from 'next';
+import React, { useState } from 'react';
 
 interface Device {
     id: string;
@@ -31,11 +31,11 @@ const MOCK_DEVICES: Device[] = [
 const ConnectedDevicesPage: NextPage = () => {
     const [devices, setDevices] = useState<Device[]>(MOCK_DEVICES);
 
-    const toggleDevice = (id: string) => {
+    const toggleDevice = (id: string): void => {
         setDevices((prev) => prev.map((d) => (d.id === id ? { ...d, connected: !d.connected } : d)));
     };
 
-    const removeDevice = (id: string) => {
+    const removeDevice = (id: string): void => {
         setDevices((prev) => prev.filter((d) => d.id !== id));
     };
 

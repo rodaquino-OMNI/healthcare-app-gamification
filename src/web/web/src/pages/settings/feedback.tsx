@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import React, { useState } from 'react';
+
 import { submitFeedback } from '../../api/settings';
 
 /**
@@ -26,8 +27,10 @@ const FeedbackPage: NextPage = () => {
         { value: 'other', label: 'Outro' },
     ];
 
-    const handleSubmit = async () => {
-        if (rating === 0) return;
+    const handleSubmit = async (): Promise<void> => {
+        if (rating === 0) {
+            return;
+        }
         setLoading(true);
         setError('');
         try {
@@ -62,7 +65,7 @@ const FeedbackPage: NextPage = () => {
                 >
                     Sua opiniao nos ajuda a melhorar continuamente.
                 </p>
-                <button onClick={() => router.push('/settings')} style={primaryButtonStyle}>
+                <button onClick={() => void router.push('/settings')} style={primaryButtonStyle}>
                     Voltar para Configuracoes
                 </button>
             </div>
@@ -77,7 +80,7 @@ const FeedbackPage: NextPage = () => {
             <div style={cardStyle}>
                 {/* Star rating */}
                 <div style={{ marginBottom: spacing.xl }}>
-                    <label style={labelStyle}>Avaliacao Geral</label>
+                    <span style={labelStyle}>Avaliacao Geral</span>
                     <div style={{ display: 'flex', gap: spacing.xs, justifyContent: 'center' }}>
                         {[1, 2, 3, 4, 5].map((star) => (
                             <button
@@ -117,8 +120,15 @@ const FeedbackPage: NextPage = () => {
 
                 {/* Category */}
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>Categoria (opcional)</label>
-                    <select value={category} onChange={(e) => setCategory(e.target.value)} style={selectStyle}>
+                    <label htmlFor="feedback-category" style={labelStyle}>
+                        Categoria (opcional)
+                    </label>
+                    <select
+                        id="feedback-category"
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        style={selectStyle}
+                    >
                         <option value="">Selecione...</option>
                         {categories.map((cat) => (
                             <option key={cat.value} value={cat.value}>
@@ -130,8 +140,11 @@ const FeedbackPage: NextPage = () => {
 
                 {/* Comment */}
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>Comentario (opcional)</label>
+                    <label htmlFor="feedback-comment" style={labelStyle}>
+                        Comentario (opcional)
+                    </label>
                     <textarea
+                        id="feedback-comment"
                         value={comment}
                         onChange={(e) => setComment(e.target.value)}
                         style={textareaStyle}
@@ -153,7 +166,7 @@ const FeedbackPage: NextPage = () => {
                     </p>
                 )}
                 <button
-                    onClick={handleSubmit}
+                    onClick={() => void handleSubmit()}
                     disabled={rating === 0 || loading}
                     style={{
                         ...primaryButtonStyle,

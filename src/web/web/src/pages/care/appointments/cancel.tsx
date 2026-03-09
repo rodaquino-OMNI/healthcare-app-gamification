@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { CareLayout } from '@/layouts/CareLayout';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { CareLayout } from '@/layouts/CareLayout';
 
 const CANCEL_REASONS = [
     'Nao preciso mais da consulta',
@@ -24,8 +25,8 @@ const CancelPage: React.FC = () => {
 
     const canCancel = reason !== '' && acknowledged;
 
-    const handleCancel = () => {
-        router.push('/care/appointments/cancelled');
+    const handleCancel = (): void => {
+        void router.push('/care/appointments/cancelled');
     };
 
     return (
@@ -49,7 +50,10 @@ const CancelPage: React.FC = () => {
                 <Card
                     journey="care"
                     elevation="sm"
-                    style={{ marginBottom: spacing.xl, borderLeft: `4px solid ${colors.semantic.warning}` }}
+                    style={{
+                        marginBottom: spacing.xl,
+                        borderLeft: `4px solid ${colors.semantic.warning}`,
+                    }}
                 >
                     <Box padding="md">
                         <Text

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 const SYMPTOM_CATEGORIES = [
     { id: 'cramps', label: 'Cramps' },
@@ -35,7 +35,7 @@ const ENERGY_LEVELS = [
     { id: 'high', label: 'High' },
 ];
 
-const chipStyle = (selected: boolean) => ({
+const chipStyle = (selected: boolean): React.CSSProperties => ({
     padding: `${spacing.xs} ${spacing.md}`,
     borderRadius: '20px',
     border: `1px solid ${selected ? colors.journeys.health.primary : colors.gray[20]}`,
@@ -56,19 +56,19 @@ const LogSymptomsPage: React.FC = () => {
     const [energyLevel, setEnergyLevel] = useState('');
     const [notes, setNotes] = useState('');
 
-    const toggleSymptom = (id: string) => {
+    const toggleSymptom = (id: string): void => {
         setSelectedSymptoms((prev) => (prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]));
     };
 
-    const handleSave = () => {
+    const handleSave = (): void => {
         window.alert(`Symptoms logged for ${date}`);
-        router.push('/health/cycle');
+        void router.push('/health/cycle');
     };
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/cycle')}
+                onClick={() => void router.push('/health/cycle')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -225,7 +225,7 @@ const LogSymptomsPage: React.FC = () => {
                 <Button
                     variant="secondary"
                     journey="health"
-                    onPress={() => router.push('/health/cycle')}
+                    onPress={() => void router.push('/health/cycle')}
                     accessibilityLabel="Cancel"
                 >
                     Cancel

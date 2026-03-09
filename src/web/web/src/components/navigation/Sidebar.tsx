@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React from 'react';
 
 interface SidebarProps {
@@ -12,16 +13,16 @@ export const Sidebar: React.FC<SidebarProps> = () => {
         <nav data-testid="sidebar">
             <ul>
                 <li>
-                    <a href="/">Home</a>
+                    <Link href="/">Home</Link>
                 </li>
                 <li>
-                    <a href="/health">Saude</a>
+                    <Link href="/health">Saude</Link>
                 </li>
                 <li>
-                    <a href="/care">Cuidados</a>
+                    <Link href="/care">Cuidados</Link>
                 </li>
                 <li>
-                    <a href="/plan">Plano</a>
+                    <Link href="/plan">Plano</Link>
                 </li>
             </ul>
         </nav>

@@ -1,14 +1,14 @@
-import React from 'react';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
 import { borderRadius } from 'design-system/tokens/borderRadius';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import React from 'react';
 
 const ForceUpdatePage: React.FC = () => {
     const currentVersion = '1.0.0';
     const requiredVersion = '1.1.0';
 
-    const handleUpdate = () => {
+    const handleUpdate = (): void => {
         window.location.reload();
     };
 

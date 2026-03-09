@@ -1,17 +1,17 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
 
-const mockRouter = { push: jest.fn(), back: jest.fn(), pathname: '/home', query: {}, asPath: '/home' };
+const _mockRouter = { push: jest.fn(), back: jest.fn(), pathname: '/home', query: {}, asPath: '/home' };
 
 jest.mock('@/components/index', () => ({
-    JourneyCard: ({ children }: any) => <div data-testid="journey-card">{children}</div>,
+    JourneyCard: ({ children }: { children: React.ReactNode }) => <div data-testid="journey-card">{children}</div>,
     useAuth: () => ({ isAuthenticated: true }),
     useHealthMetrics: () => ({ metrics: [] }),
     useAppointments: () => ({ appointments: [] }),
     useClaims: () => ({ claims: [] }),
     useGamification: () => ({ gameProfile: null }),
     useJourney: () => ({ journey: 'health' }),
-    MainLayout: ({ children }: any) => <div data-testid="main-layout">{children}</div>,
+    MainLayout: ({ children }: { children: React.ReactNode }) => <div data-testid="main-layout">{children}</div>,
     MetricsWidget: () => <div data-testid="metrics-widget" />,
     AppointmentsWidget: () => <div data-testid="appointments-widget" />,
     ClaimsWidget: () => <div data-testid="claims-widget" />,

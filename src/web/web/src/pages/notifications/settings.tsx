@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
 import { borderRadius } from 'design-system/tokens/borderRadius';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import React, { useState } from 'react';
 
 interface NotificationToggles {
     healthUpdates: boolean;
@@ -21,7 +21,7 @@ const NotificationSettingsPage: React.FC = () => {
         quietHours: false,
     });
 
-    const handleToggle = (key: keyof NotificationToggles) => {
+    const handleToggle = (key: keyof NotificationToggles): void => {
         setToggles((prev) => ({ ...prev, [key]: !prev[key] }));
     };
 
@@ -64,7 +64,7 @@ const NotificationSettingsPage: React.FC = () => {
                             <p style={styles.toggleLabel}>{cat.label}</p>
                             <p style={styles.toggleDesc}>{cat.desc}</p>
                         </div>
-                        <label style={styles.switch}>
+                        <label style={styles.switch} aria-label={cat.label}>
                             <input
                                 type="checkbox"
                                 checked={toggles[cat.key]}
@@ -89,7 +89,7 @@ const NotificationSettingsPage: React.FC = () => {
                         <p style={styles.toggleLabel}>Ativar horario silencioso</p>
                         <p style={styles.toggleDesc}>Silenciar notificacoes durante o periodo noturno</p>
                     </div>
-                    <label style={styles.switch}>
+                    <label style={styles.switch} aria-label="Ativar horario silencioso">
                         <input
                             type="checkbox"
                             checked={toggles.quietHours}

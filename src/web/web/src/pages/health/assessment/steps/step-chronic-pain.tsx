@@ -1,8 +1,8 @@
-import React from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -37,16 +37,20 @@ const chipStyle = (selected: boolean): React.CSSProperties => ({
 });
 
 const getSeverityColor = (level: number): string => {
-    if (level <= 3) return colors.semantic.success;
-    if (level <= 6) return colors.semantic.warning;
+    if (level <= 3) {
+        return colors.semantic.success;
+    }
+    if (level <= 6) {
+        return colors.semantic.warning;
+    }
     return colors.semantic.error;
 };
 
 const StepChronicPainPage: React.FC<StepProps> = ({ data, onUpdate }) => {
-    const hasPain = data.hasPain;
-    const selectedLocations: string[] = data.painLocations || [];
+    const hasPain = data.hasPain as string | undefined;
+    const selectedLocations: string[] = (data.painLocations as string[]) || [];
 
-    const toggleLocation = (location: string) => {
+    const toggleLocation = (location: string): void => {
         const updated = selectedLocations.includes(location)
             ? selectedLocations.filter((l) => l !== location)
             : [...selectedLocations, location];
@@ -140,7 +144,7 @@ const StepChronicPainPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                         </Text>
                         <div style={{ display: 'flex', gap: 4 }}>
                             {Array.from({ length: 10 }, (_, i) => i + 1).map((level) => {
-                                const isActive = data.painSeverity === level;
+                                const isActive = (data.painSeverity as number) === level;
                                 const activeColor = getSeverityColor(level);
                                 return (
                                     <button
@@ -179,7 +183,7 @@ const StepChronicPainPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                         </Text>
                         <div style={{ display: 'flex', gap: spacing.xs }}>
                             {FREQUENCIES.map(({ key, label }) => {
-                                const isActive = data.painFrequency === key;
+                                const isActive = (data.painFrequency as string) === key;
                                 return (
                                     <button
                                         key={key}
@@ -218,7 +222,7 @@ const StepChronicPainPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                         </Text>
                         <div style={{ display: 'flex', gap: spacing.xs }}>
                             {IMPACTS.map(({ key, label }) => {
-                                const isActive = data.painImpact === key;
+                                const isActive = (data.painImpact as string) === key;
                                 return (
                                     <button
                                         key={key}

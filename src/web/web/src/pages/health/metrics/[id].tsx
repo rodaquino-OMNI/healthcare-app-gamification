@@ -1,35 +1,36 @@
-import React from 'react';
-import { useRouter } from 'next/router'; // next/router v13.0.0
-import { HealthMetric } from 'shared/types/health.types';
 import { HealthChart } from 'design-system/charts/index';
-import { useHealthMetrics } from '@/hooks/useHealthMetrics';
-import { formatRelativeDate } from 'shared/utils/date';
-import { formatHealthMetric } from 'shared/utils/format';
-import HealthLayout from '@/layouts/HealthLayout';
-import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 import { Text } from 'design-system/components/index';
 import { MetricCard } from 'design-system/health/index';
+import { useRouter } from 'next/router'; // next/router v13.0.0
+import React from 'react';
+import { HealthMetric } from 'shared/types/health.types';
+import { formatRelativeDate } from 'shared/utils/date';
+import { formatHealthMetric } from 'shared/utils/format';
+
+import { useHealthMetrics } from '@/hooks/useHealthMetrics';
+import HealthLayout from '@/layouts/HealthLayout';
 
 /**
  * LD1: MetricDetail component displays detailed information for a specific health metric.
  * It fetches the metric ID from the URL and uses the useHealthMetrics hook to retrieve data.
  */
-const MetricDetail = () => {
+const MetricDetail: React.FC = () => {
     // IE1: Access the Next.js router object
     const router = useRouter();
     // IE1: Extract the metric ID from the dynamic route
     const { id } = router.query;
+    const metricId = typeof id === 'string' ? id : '';
+
+    // IE1: Fetch health metrics data using the useHealthMetrics hook
+    const { loading, error, metrics } = useHealthMetrics(metricId);
 
     // Check if the ID is valid before proceeding
-    if (!id || typeof id !== 'string') {
+    if (!metricId) {
         return <div>Invalid metric ID</div>;
     }
 
-    // IE1: Fetch health metrics data using the useHealthMetrics hook
-    const { loading, error, metrics } = useHealthMetrics(id);
-
     // Find the specific metric based on the ID
-    const metric = metrics.find((m) => m.id === id);
+    const metric = metrics.find((m: HealthMetric) => m.id === metricId);
 
     // Handle loading state
     if (loading) {

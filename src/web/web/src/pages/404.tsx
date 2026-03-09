@@ -1,8 +1,8 @@
-import React from 'react';
+import { borderRadius } from 'design-system/tokens/borderRadius';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import { borderRadius } from 'design-system/tokens/borderRadius';
+import React from 'react';
 
 const NotFoundPage: React.FC = () => {
     return (

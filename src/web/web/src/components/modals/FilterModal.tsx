@@ -1,8 +1,8 @@
+import { Button } from 'design-system/components/Button/Button';
+import { Checkbox } from 'design-system/components/Checkbox/Checkbox';
+import { Modal } from 'design-system/components/Modal/Modal';
 import React, { useCallback } from 'react';
-import { Modal, ModalProps } from 'design-system/components/Modal/Modal'; // version 18.0+
-import { Button, ButtonProps } from 'design-system/components/Button/Button'; // version 18.0+
-import { Checkbox } from 'design-system/components/Checkbox/Checkbox'; // version 18.0+
-import { ALL_JOURNEYS, Journey } from 'shared/utils/index';
+
 import { useJourney } from '@/hooks/useJourney';
 
 /**
@@ -37,6 +37,8 @@ interface FilterModalProps {
 export const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, title, options, onApply }) => {
     // Retrieves the current journey using the `useJourney` hook.
     const { journey } = useJourney();
+    const journeyId =
+        journey?.id === 'health' || journey?.id === 'care' || journey?.id === 'plan' ? journey.id : undefined;
     const [selectedOptions, setSelectedOptions] = React.useState<string[]>([]);
 
     // Handles checkbox change
@@ -51,19 +53,19 @@ export const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, titl
     }, []);
 
     // Handles the 'Apply' button click to apply the selected filters.
-    const handleApply = () => {
+    const handleApply = (): void => {
         onApply(selectedOptions);
         onClose();
     };
 
     // Handles the 'Cancel' button click to close the modal without applying filters.
-    const handleCancel = () => {
+    const handleCancel = (): void => {
         onClose();
     };
 
     return (
         // Renders a Modal component with a title and close button.
-        <Modal visible={visible} onClose={onClose} title={title} journey={journey?.id as string}>
+        <Modal visible={visible} onClose={onClose} title={title} journey={journeyId}>
             {/* Renders a list of Checkbox components for each filter option. */}
             {options &&
                 options.map((option) => (
@@ -75,15 +77,15 @@ export const FilterModal: React.FC<FilterModalProps> = ({ visible, onClose, titl
                         label={option.label}
                         checked={selectedOptions.includes(option.id)}
                         onChange={() => handleCheckboxChange(option.id)}
-                        journey={journey?.id as string}
+                        journey={journeyId}
                     />
                 ))}
 
             {/* Renders 'Apply' and 'Cancel' buttons. */}
-            <Button onPress={handleApply} journey={journey?.id as string}>
+            <Button onPress={handleApply} journey={journeyId}>
                 Apply
             </Button>
-            <Button variant="secondary" onPress={handleCancel} journey={journey?.id as string}>
+            <Button variant="secondary" onPress={handleCancel} journey={journeyId}>
                 Cancel
             </Button>
         </Modal>

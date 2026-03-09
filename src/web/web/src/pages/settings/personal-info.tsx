@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import React, { useState } from 'react';
+
 import { savePersonalInfo } from '../../api/settings';
 
 /**
@@ -18,12 +19,12 @@ const PersonalInfoPage: NextPage = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    const handleSave = async () => {
+    const handleSave = async (): Promise<void> => {
         setLoading(true);
         setError('');
         try {
             await savePersonalInfo({ name, dob, gender, bloodType });
-            router.push('/settings');
+            void router.push('/settings');
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : 'Erro ao salvar dados pessoais.');
         } finally {
@@ -38,18 +39,41 @@ const PersonalInfoPage: NextPage = () => {
 
             <div style={cardStyle}>
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>Nome Completo</label>
-                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} style={inputStyle} />
+                    <label htmlFor="pi-name" style={labelStyle}>
+                        Nome Completo
+                    </label>
+                    <input
+                        id="pi-name"
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        style={inputStyle}
+                    />
                 </div>
 
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>Data de Nascimento</label>
-                    <input type="date" value={dob} onChange={(e) => setDob(e.target.value)} style={inputStyle} />
+                    <label htmlFor="pi-dob" style={labelStyle}>
+                        Data de Nascimento
+                    </label>
+                    <input
+                        id="pi-dob"
+                        type="date"
+                        value={dob}
+                        onChange={(e) => setDob(e.target.value)}
+                        style={inputStyle}
+                    />
                 </div>
 
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>Genero</label>
-                    <select value={gender} onChange={(e) => setGender(e.target.value)} style={selectStyle}>
+                    <label htmlFor="pi-gender" style={labelStyle}>
+                        Genero
+                    </label>
+                    <select
+                        id="pi-gender"
+                        value={gender}
+                        onChange={(e) => setGender(e.target.value)}
+                        style={selectStyle}
+                    >
                         <option value="feminino">Feminino</option>
                         <option value="masculino">Masculino</option>
                         <option value="outro">Outro</option>
@@ -58,8 +82,15 @@ const PersonalInfoPage: NextPage = () => {
                 </div>
 
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>Tipo Sanguineo</label>
-                    <select value={bloodType} onChange={(e) => setBloodType(e.target.value)} style={selectStyle}>
+                    <label htmlFor="pi-bloodtype" style={labelStyle}>
+                        Tipo Sanguineo
+                    </label>
+                    <select
+                        id="pi-bloodtype"
+                        value={bloodType}
+                        onChange={(e) => setBloodType(e.target.value)}
+                        style={selectStyle}
+                    >
                         {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((t) => (
                             <option key={t} value={t}>
                                 {t}
@@ -69,8 +100,11 @@ const PersonalInfoPage: NextPage = () => {
                 </div>
 
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>CPF</label>
+                    <label htmlFor="pi-cpf" style={labelStyle}>
+                        CPF
+                    </label>
                     <input
+                        id="pi-cpf"
                         type="text"
                         value={cpf}
                         onChange={(e) => setCpf(e.target.value)}
@@ -92,7 +126,7 @@ const PersonalInfoPage: NextPage = () => {
                         {error}
                     </p>
                 )}
-                <button onClick={handleSave} disabled={loading} style={primaryButtonStyle}>
+                <button onClick={() => void handleSave()} disabled={loading} style={primaryButtonStyle}>
                     {loading ? 'Salvando...' : 'Salvar Alteracoes'}
                 </button>
                 <button onClick={() => router.back()} style={secondaryButtonStyle}>

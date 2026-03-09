@@ -18,7 +18,11 @@
  *
  * @example
  * // Returns "12/04/2023" for pt-BR or "4/12/2023" for en-US
- * formatDate(new Date(2023, 3, 12), 'pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+ * formatDate(
+ *   new Date(2023, 3, 12),
+ *   'pt-BR',
+ *   { day: '2-digit', month: '2-digit', year: 'numeric' }
+ * );
  */
 export function formatDate(
     date: Date,

@@ -1,12 +1,12 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
-import { Button } from 'design-system/components/Button/Button';
 import { Badge } from 'design-system/components/Badge/Badge';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 interface SelfCareTip {
     id: string;
@@ -20,7 +20,8 @@ const SELF_CARE_TIPS: SelfCareTip[] = [
         id: 't1',
         category: 'Hydration',
         title: 'Drink Plenty of Fluids',
-        description: 'Aim for 8-10 glasses of water daily. Warm beverages like tea with honey can soothe the throat.',
+        description:
+            'Aim for 8-10 glasses of water daily. ' + 'Warm beverages like tea with honey ' + 'can soothe the throat.',
     },
     {
         id: 't2',
@@ -44,13 +45,15 @@ const SELF_CARE_TIPS: SelfCareTip[] = [
         id: 't5',
         category: 'Nutrition',
         title: 'Eat Nutrient-Rich Foods',
-        description: 'Focus on fruits, vegetables, and lean proteins. Vitamin C and zinc may support recovery.',
+        description:
+            'Focus on fruits, vegetables, and lean ' + 'proteins. Vitamin C and zinc may ' + 'support recovery.',
     },
     {
         id: 't6',
         category: 'Nutrition',
         title: 'Warm Soups and Broths',
-        description: 'Chicken soup and bone broth provide hydration and nutrients while being easy to digest.',
+        description:
+            'Chicken soup and bone broth provide ' + 'hydration and nutrients while being ' + 'easy to digest.',
     },
     {
         id: 't7',
@@ -127,7 +130,7 @@ const SelfCarePage: React.FC = () => {
                 </Button>
                 <Button
                     journey="care"
-                    onPress={() => router.push('/care/symptom-checker/book-appointment')}
+                    onPress={() => void router.push('/care/symptom-checker/book-appointment')}
                     accessibilityLabel="Book an appointment if needed"
                     data-testid="self-care-book-btn"
                 >

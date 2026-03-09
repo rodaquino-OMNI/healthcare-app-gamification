@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import React, { useState } from 'react';
+
 import { addDependent } from '../../api/settings';
 
 /**
@@ -18,13 +19,15 @@ const AddDependentPage: NextPage = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    const handleSubmit = async () => {
-        if (!name || !cpf || !dob || !relationship) return;
+    const handleSubmit = async (): Promise<void> => {
+        if (!name || !cpf || !dob || !relationship) {
+            return;
+        }
         setLoading(true);
         setError('');
         try {
             await addDependent({ name, cpf, dob, relationship, gender });
-            router.push('/settings/dependents');
+            void router.push('/settings/dependents');
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : 'Erro ao adicionar dependente.');
         } finally {
@@ -41,8 +44,11 @@ const AddDependentPage: NextPage = () => {
 
             <div style={cardStyle}>
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>Nome Completo *</label>
+                    <label htmlFor="dep-name" style={labelStyle}>
+                        Nome Completo *
+                    </label>
                     <input
+                        id="dep-name"
                         type="text"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
@@ -52,8 +58,11 @@ const AddDependentPage: NextPage = () => {
                 </div>
 
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>CPF *</label>
+                    <label htmlFor="dep-cpf" style={labelStyle}>
+                        CPF *
+                    </label>
                     <input
+                        id="dep-cpf"
                         type="text"
                         value={cpf}
                         onChange={(e) => setCpf(e.target.value)}
@@ -63,13 +72,28 @@ const AddDependentPage: NextPage = () => {
                 </div>
 
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>Data de Nascimento *</label>
-                    <input type="date" value={dob} onChange={(e) => setDob(e.target.value)} style={inputStyle} />
+                    <label htmlFor="dep-dob" style={labelStyle}>
+                        Data de Nascimento *
+                    </label>
+                    <input
+                        id="dep-dob"
+                        type="date"
+                        value={dob}
+                        onChange={(e) => setDob(e.target.value)}
+                        style={inputStyle}
+                    />
                 </div>
 
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>Parentesco *</label>
-                    <select value={relationship} onChange={(e) => setRelationship(e.target.value)} style={selectStyle}>
+                    <label htmlFor="dep-relationship" style={labelStyle}>
+                        Parentesco *
+                    </label>
+                    <select
+                        id="dep-relationship"
+                        value={relationship}
+                        onChange={(e) => setRelationship(e.target.value)}
+                        style={selectStyle}
+                    >
                         <option value="">Selecione...</option>
                         <option value="conjuge">Conjuge</option>
                         <option value="filho">Filho(a)</option>
@@ -80,8 +104,15 @@ const AddDependentPage: NextPage = () => {
                 </div>
 
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>Genero</label>
-                    <select value={gender} onChange={(e) => setGender(e.target.value)} style={selectStyle}>
+                    <label htmlFor="dep-gender" style={labelStyle}>
+                        Genero
+                    </label>
+                    <select
+                        id="dep-gender"
+                        value={gender}
+                        onChange={(e) => setGender(e.target.value)}
+                        style={selectStyle}
+                    >
                         <option value="">Selecione...</option>
                         <option value="feminino">Feminino</option>
                         <option value="masculino">Masculino</option>
@@ -92,7 +123,7 @@ const AddDependentPage: NextPage = () => {
                 {error ? <p style={errorStyle}>{error}</p> : null}
 
                 <button
-                    onClick={handleSubmit}
+                    onClick={() => void handleSubmit()}
                     disabled={!isValid || loading}
                     style={{
                         ...primaryButtonStyle,

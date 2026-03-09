@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { Text } from 'design-system/primitives/Text/Text';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState, useEffect } from 'react';
 
 interface AnalysisStep {
     id: string;
@@ -27,7 +27,7 @@ const AnalyzingPage: React.FC = () => {
     useEffect(() => {
         if (activeStep >= ANALYSIS_STEPS.length) {
             const timer = setTimeout(() => {
-                router.push({
+                void router.push({
                     pathname: '/care/symptom-checker/conditions-list',
                     query: router.query,
                 });
@@ -88,7 +88,13 @@ const AnalyzingPage: React.FC = () => {
             </div>
 
             <div
-                style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm, width: '100%', maxWidth: '400px' }}
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: spacing.sm,
+                    width: '100%',
+                    maxWidth: '400px',
+                }}
             >
                 {ANALYSIS_STEPS.map((step, index) => {
                     const isComplete = index < activeStep;

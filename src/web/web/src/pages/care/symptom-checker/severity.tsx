@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
-import { Box } from 'design-system/primitives/Box/Box';
+import { Card } from 'design-system/components/Card/Card';
 import { Slider } from 'design-system/components/Slider/Slider';
+import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
 /** Severity level thresholds and their labels */
@@ -41,7 +41,9 @@ const SEVERITY_LABELS = [
     },
 ];
 
-const getSeverityInfo = (value: number) => {
+const getSeverityInfo = (
+    value: number
+): { min: number; max: number; label: string; description: string; color: string } => {
     return SEVERITY_LABELS.find((s) => value >= s.min && value <= s.max) || SEVERITY_LABELS[0];
 };
 
@@ -55,8 +57,8 @@ const SymptomSeverityPage: React.FC = () => {
 
     const severityInfo = getSeverityInfo(overallSeverity);
 
-    const handleAnalyze = () => {
-        router.push({
+    const handleAnalyze = (): void => {
+        void router.push({
             pathname: WEB_CARE_ROUTES.SYMPTOM_RESULT,
             query: {
                 ...router.query,

@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from 'react';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
 import { borderRadius } from 'design-system/tokens/borderRadius';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import React, { useState, useMemo } from 'react';
 
 type CategoryType = 'all' | 'health' | 'care' | 'plan' | 'system';
 
@@ -98,7 +98,9 @@ const CategoryFilterPage: React.FC = () => {
     const [active, setActive] = useState<CategoryType>('all');
 
     const filtered = useMemo(() => {
-        if (active === 'all') return MOCK_NOTIFICATIONS;
+        if (active === 'all') {
+            return MOCK_NOTIFICATIONS;
+        }
         return MOCK_NOTIFICATIONS.filter((n) => n.category === active);
     }, [active]);
 

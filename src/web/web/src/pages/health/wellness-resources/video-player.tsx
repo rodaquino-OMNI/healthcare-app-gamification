@@ -1,11 +1,11 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 const RELATED_VIDEOS = [
     { id: 'rv1', title: 'Gentle Morning Stretch', duration: '10 min' },
@@ -20,7 +20,7 @@ const VideoPlayerPage: React.FC = () => {
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/wellness-resources/videos')}
+                onClick={() => void router.push('/health/wellness-resources/videos')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -61,7 +61,7 @@ const VideoPlayerPage: React.FC = () => {
                         opacity: 0.9,
                     }}
                 >
-                    <Text fontSize="2xl" color={colors.white}>
+                    <Text fontSize="2xl" color={colors.neutral.white}>
                         &#9654;
                     </Text>
                 </div>

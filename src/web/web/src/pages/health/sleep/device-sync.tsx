@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 const DATA_SOURCES = [
     { id: 'apple_health', label: 'Apple Health', description: 'Sync via HealthKit integration' },
@@ -18,11 +18,11 @@ const DeviceSyncPage: React.FC = () => {
     const [source, setSource] = useState('manual');
     const [connected, setConnected] = useState(false);
 
-    const handleSync = () => {
+    const handleSync = (): void => {
         window.alert('Syncing sleep data from device...');
     };
 
-    const handleConnect = () => {
+    const handleConnect = (): void => {
         if (source === 'manual') {
             window.alert('Manual entry is always available.');
             return;
@@ -33,7 +33,7 @@ const DeviceSyncPage: React.FC = () => {
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/sleep')}
+                onClick={() => void router.push('/health/sleep')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -131,7 +131,9 @@ const DeviceSyncPage: React.FC = () => {
                         aria-checked={source === opt.id}
                         tabIndex={0}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') setSource(opt.id);
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                setSource(opt.id);
+                            }
                         }}
                         style={{ cursor: 'pointer' }}
                     >

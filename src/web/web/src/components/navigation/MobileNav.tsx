@@ -1,13 +1,11 @@
-import React from 'react';
-import styled from 'styled-components';
+import { Button } from 'design-system/components/Button/Button';
 import { useRouter } from 'next/router';
-
+import React from 'react';
 import { ALL_JOURNEYS } from 'shared/constants/journeys';
 import { MOBILE_AUTH_ROUTES } from 'shared/constants/routes';
-import { Button } from 'design-system/components/Button/Button';
-import { Icon } from 'design-system/primitives/Icon/Icon';
+import styled from 'styled-components';
+
 import { useJourney } from '@/hooks/useJourney';
-import { colors } from 'design-system/tokens/colors';
 
 // Styled container for the mobile navigation bar
 const MobileNavContainer = styled.div`
@@ -39,25 +37,25 @@ const NavItem = styled.div`
  */
 const MobileNav: React.FC = () => {
     const router = useRouter();
-    const { journey, setJourney } = useJourney();
+    const { setJourney } = useJourney();
 
     // Handle journey navigation when a nav item is pressed
-    const handleNavigateToJourney = (journeyId: string) => {
+    const handleNavigateToJourney = (journeyId: string): void => {
         setJourney(journeyId);
 
         // Navigate to the appropriate journey dashboard
         switch (journeyId) {
             case 'health':
-                router.push('/health/dashboard');
+                void router.push('/health/dashboard');
                 break;
             case 'care':
-                router.push('/care/appointments');
+                void router.push('/care/appointments');
                 break;
             case 'plan':
-                router.push('/plan');
+                void router.push('/plan');
                 break;
             default:
-                router.push('/');
+                void router.push('/');
         }
     };
 
@@ -72,7 +70,6 @@ const MobileNav: React.FC = () => {
     return (
         <MobileNavContainer>
             {ALL_JOURNEYS.map((journeyItem) => {
-                const isActive = journey?.id === journeyItem.id;
                 const journeyId = journeyItem.id as 'health' | 'care' | 'plan';
 
                 return (

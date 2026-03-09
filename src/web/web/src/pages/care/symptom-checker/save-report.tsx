@@ -1,21 +1,20 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
 import { Text } from 'design-system/primitives/Text/Text';
-import { Box } from 'design-system/primitives/Box/Box';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 const SaveReportPage: React.FC = () => {
     const router = useRouter();
     const [reportTitle, setReportTitle] = useState('Symptom Assessment Report');
     const [isSaving, setIsSaving] = useState(false);
 
-    const handleSave = async () => {
+    const handleSave = (): void => {
         setIsSaving(true);
         // Simulate save operation
         setTimeout(() => {
             setIsSaving(false);
-            router.push('/care/symptom-checker/conditions-list');
+            void router.push('/care/symptom-checker/conditions-list');
         }, 1000);
     };
 
@@ -75,7 +74,7 @@ const SaveReportPage: React.FC = () => {
             <div
                 style={{
                     padding: spacing.lg,
-                    backgroundColor: colors.neutral.gray50,
+                    backgroundColor: colors.neutral.gray100,
                     borderRadius: '8px',
                     borderLeft: `4px solid ${colors.journeys.care.primary}`,
                 }}
@@ -131,7 +130,7 @@ const SaveReportPage: React.FC = () => {
                             borderRadius: '6px',
                             fontSize: '12px',
                             fontFamily: 'monospace',
-                            backgroundColor: colors.neutral.gray50,
+                            backgroundColor: colors.neutral.gray100,
                         }}
                         data-testid="share-link"
                     />
@@ -147,7 +146,7 @@ const SaveReportPage: React.FC = () => {
                             fontWeight: '500',
                         }}
                         data-testid="copy-link-button"
-                        onClick={() => navigator.clipboard.writeText('https://app.exemplo.com/report/abc123')}
+                        onClick={() => void navigator.clipboard.writeText('https://app.exemplo.com/report/abc123')}
                     >
                         Copiar
                     </button>
@@ -162,7 +161,7 @@ const SaveReportPage: React.FC = () => {
                 }}
             >
                 <button
-                    onClick={handleSave}
+                    onClick={() => void handleSave()}
                     disabled={isSaving}
                     style={{
                         flex: 1,

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 const STAR_LABELS = ['Terrible', 'Poor', 'Fair', 'Good', 'Excellent'];
 
@@ -25,14 +25,14 @@ const LogSleepPage: React.FC = () => {
     const [rating, setRating] = useState(0);
     const [notes, setNotes] = useState('');
 
-    const handleSave = () => {
+    const handleSave = (): void => {
         window.alert(`Sleep logged: ${bedtime} - ${wakeTime}, Rating: ${rating}/5`);
     };
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/sleep')}
+                onClick={() => void router.push('/health/sleep')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -107,7 +107,9 @@ const LogSleepPage: React.FC = () => {
                             aria-label={label}
                             tabIndex={0}
                             onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') setRating(i + 1);
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    setRating(i + 1);
+                                }
                             }}
                             style={{ cursor: 'pointer', textAlign: 'center' }}
                         >

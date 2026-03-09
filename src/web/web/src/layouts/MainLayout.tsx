@@ -1,12 +1,11 @@
+import { Box } from 'design-system/primitives/Box';
+import { useRouter } from 'next/router'; // next/router@^13.0.0
 import React from 'react';
 import styled from 'styled-components'; // styled-components@^6.0.0
-import { useRouter } from 'next/router'; // next/router@^13.0.0
-import { Box } from 'design-system/primitives/Box';
-import { Stack } from 'design-system/primitives/Stack';
+
 import { Sidebar } from '@/components/navigation/Sidebar';
 import { TopBar } from '@/components/navigation/TopBar';
 import { GamificationPopup } from '@/components/shared/GamificationPopup';
-import { useJourney } from '@/context/JourneyContext';
 import { useGamification } from '@/context/GamificationContext';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -53,12 +52,15 @@ const MobileTopBarContainer = styled(Box)`
     }
 `;
 
+interface MainLayoutProps {
+    children: React.ReactNode;
+}
+
 /**
- * Main layout component that provides the structure for the application
+ * Main layout component that provides the structure
+ * for the application
  */
-export const MainLayout: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
-    // LD1: Retrieves the current journey from the JourneyContext.
-    const { currentJourney } = useJourney();
+export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     // LD1: Retrieves the authentication status from the AuthContext.
     const { isAuthenticated } = useAuth();
     // LD1: Retrieves the gamification state to check for unlocked achievements.
@@ -98,8 +100,8 @@ export const MainLayout: React.FC<React.PropsWithChildren<{}>> = ({ children }) 
             <GamificationPopup
                 visible={!!achievementId}
                 onClose={() => {
-                    // LD1: After closing the popup, refresh the page to update the achievement status.
-                    router.replace(router.asPath);
+                    // LD1: Refresh page to update achievement status.
+                    void router.replace(router.asPath);
                 }}
                 achievementId={achievementId || ''}
             />

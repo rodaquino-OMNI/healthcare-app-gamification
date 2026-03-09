@@ -1,17 +1,37 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
+
+interface MockChildrenProps {
+    children: React.ReactNode;
+}
+
+interface MockTitleProps {
+    title: string;
+}
+
+interface MockButtonProps {
+    children: React.ReactNode;
+    onPress?: () => void;
+    disabled?: boolean;
+    accessibilityLabel?: string;
+}
+
+interface MockSpreadProps {
+    children?: React.ReactNode;
+    [key: string]: unknown;
+}
 
 jest.mock('@/layouts/CareLayout', () => ({
-    CareLayout: ({ children }: any) => <div data-testid="care-layout">{children}</div>,
+    CareLayout: ({ children }: MockChildrenProps) => <div data-testid="care-layout">{children}</div>,
 }));
 
 // The telemedicine index is empty (1 line), test the chat page instead
 jest.mock('design-system/components/Card/Card', () => ({
-    Card: ({ children }: any) => <div data-testid="card">{children}</div>,
+    Card: ({ children }: MockChildrenProps) => <div data-testid="card">{children}</div>,
 }));
 
 jest.mock('design-system/components/Button/Button', () => ({
-    Button: ({ children, onPress, disabled, accessibilityLabel }: any) => (
+    Button: ({ children, onPress, disabled, accessibilityLabel }: MockButtonProps) => (
         <button onClick={onPress} disabled={disabled} aria-label={accessibilityLabel}>
             {children}
         </button>
@@ -19,11 +39,11 @@ jest.mock('design-system/components/Button/Button', () => ({
 }));
 
 jest.mock('design-system/primitives/Text/Text', () => ({
-    Text: ({ children, ...props }: any) => <span {...props}>{children}</span>,
+    Text: ({ children, ...props }: MockSpreadProps) => <span {...props}>{children}</span>,
 }));
 
 jest.mock('design-system/primitives/Box/Box', () => ({
-    Box: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+    Box: ({ children, ...props }: MockSpreadProps) => <div {...props}>{children}</div>,
 }));
 
 jest.mock('design-system/tokens/colors', () => ({
@@ -45,7 +65,7 @@ jest.mock('design-system/tokens/spacing', () => ({
 }));
 
 jest.mock('@/components/shared/JourneyHeader', () => ({
-    JourneyHeader: ({ title }: any) => <h1>{title}</h1>,
+    JourneyHeader: ({ title }: MockTitleProps) => <h1>{title}</h1>,
 }));
 
 // Test the waiting room page since the telemedicine index is empty

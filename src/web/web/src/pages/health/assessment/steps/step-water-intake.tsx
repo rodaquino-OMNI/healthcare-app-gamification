@@ -1,8 +1,8 @@
-import React from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -52,7 +52,7 @@ const StepWaterIntakePage: React.FC<StepProps> = ({ data, onUpdate }) => {
                 </Text>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
                     {WATER_INTAKE.map((opt) => {
-                        const isActive = data.waterIntake === opt.value;
+                        const isActive = (data.waterIntake as string) === opt.value;
                         return (
                             <button
                                 key={opt.value}
@@ -108,7 +108,7 @@ const StepWaterIntakePage: React.FC<StepProps> = ({ data, onUpdate }) => {
                 </Text>
                 <div style={{ display: 'flex', gap: spacing.xs, flexWrap: 'wrap' }}>
                     {CAFFEINE_INTAKE.map((opt) => {
-                        const isActive = data.caffeineIntake === opt.value;
+                        const isActive = (data.caffeineIntake as string) === opt.value;
                         return (
                             <button
                                 key={opt.value}
@@ -147,7 +147,7 @@ const StepWaterIntakePage: React.FC<StepProps> = ({ data, onUpdate }) => {
                 </Text>
                 <div style={{ display: 'flex', gap: spacing.xs, flexWrap: 'wrap' }}>
                     {SUGARY_DRINKS.map((opt) => {
-                        const isActive = data.sugaryDrinks === opt.value;
+                        const isActive = (data.sugaryDrinks as string) === opt.value;
                         return (
                             <button
                                 key={opt.value}

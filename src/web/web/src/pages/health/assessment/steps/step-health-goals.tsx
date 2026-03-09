@@ -1,8 +1,8 @@
-import React from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -38,10 +38,10 @@ const chipStyle = (selected: boolean): React.CSSProperties => ({
 });
 
 const StepHealthGoalsPage: React.FC<StepProps> = ({ data, onUpdate }) => {
-    const selectedGoals: string[] = data.healthGoals || [];
-    const priorities: string[] = data.goalPriorities || [];
+    const selectedGoals: string[] = (data.healthGoals as string[]) || [];
+    const priorities: string[] = (data.goalPriorities as string[]) || [];
 
-    const toggleGoal = (key: string) => {
+    const toggleGoal = (key: string): void => {
         const updated = selectedGoals.includes(key) ? selectedGoals.filter((g) => g !== key) : [...selectedGoals, key];
         onUpdate('healthGoals', updated);
         if (selectedGoals.includes(key)) {
@@ -52,8 +52,10 @@ const StepHealthGoalsPage: React.FC<StepProps> = ({ data, onUpdate }) => {
         }
     };
 
-    const togglePriority = (key: string) => {
-        if (!selectedGoals.includes(key)) return;
+    const togglePriority = (key: string): void => {
+        if (!selectedGoals.includes(key)) {
+            return;
+        }
         if (priorities.includes(key)) {
             onUpdate(
                 'goalPriorities',

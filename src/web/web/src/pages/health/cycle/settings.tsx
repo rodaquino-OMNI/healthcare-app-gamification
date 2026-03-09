@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 const inputStyle: React.CSSProperties = {
     width: 80,
@@ -59,28 +59,28 @@ const SettingsPage: React.FC = () => {
         insights: true,
     });
 
-    const toggleNotification = (id: string) => {
+    const toggleNotification = (id: string): void => {
         setNotifications((prev) => ({ ...prev, [id]: !prev[id] }));
     };
 
-    const handleSave = () => {
+    const handleSave = (): void => {
         window.alert('Settings saved successfully.');
     };
 
-    const handleClearData = () => {
+    const handleClearData = (): void => {
         if (window.confirm('Are you sure you want to delete all cycle data? This cannot be undone.')) {
             window.alert('Cycle data cleared.');
         }
     };
 
-    const handleExport = () => {
-        router.push('/health/cycle/export');
+    const handleExport = (): void => {
+        void router.push('/health/cycle/export');
     };
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/cycle')}
+                onClick={() => void router.push('/health/cycle')}
                 style={{
                     background: 'none',
                     border: 'none',

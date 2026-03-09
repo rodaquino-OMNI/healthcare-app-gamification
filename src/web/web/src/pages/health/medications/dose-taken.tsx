@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
-import { Button } from 'design-system/components/Button/Button';
 import { Badge } from 'design-system/components/Badge/Badge';
+import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { Checkbox } from 'design-system/components/Checkbox/Checkbox';
-import Input from 'design-system/components/Input/Input';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Input } from 'design-system/components/Input/Input';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
 /**
@@ -35,12 +35,12 @@ const MedicationDoseTakenPage: React.FC = () => {
     const [notes, setNotes] = useState('');
     const [hasSideEffects, setHasSideEffects] = useState(false);
 
-    const handleConfirm = () => {
+    const handleConfirm = (): void => {
         // In a real app, persist the dose record via API
-        router.push(WEB_HEALTH_ROUTES.MEDICATIONS);
+        void router.push(WEB_HEALTH_ROUTES.MEDICATIONS);
     };
 
-    const handleCancel = () => {
+    const handleCancel = (): void => {
         router.back();
     };
 
@@ -82,7 +82,7 @@ const MedicationDoseTakenPage: React.FC = () => {
                 <Input
                     label="Time"
                     value={timestamp}
-                    onChange={(e) => setTimestamp(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTimestamp(e.target.value)}
                     placeholder="HH:MM"
                     journey="health"
                     testID="timestamp-input"
@@ -97,7 +97,7 @@ const MedicationDoseTakenPage: React.FC = () => {
                 <Input
                     label="Notes"
                     value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNotes(e.target.value)}
                     placeholder="Any observations about this dose..."
                     journey="health"
                     testID="notes-input"

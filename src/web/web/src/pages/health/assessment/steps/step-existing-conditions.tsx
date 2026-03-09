@@ -1,8 +1,8 @@
-import React from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -38,10 +38,10 @@ const checkboxStyle = (checked: boolean): React.CSSProperties => ({
 });
 
 const StepExistingConditionsPage: React.FC<StepProps> = ({ data, onUpdate }) => {
-    const selectedConditions: string[] = data.existingConditions || [];
-    const otherText: string = data.otherCondition || '';
+    const selectedConditions: string[] = (data.existingConditions as string[]) || [];
+    const otherText: string = (data.otherCondition as string) || '';
 
-    const toggleCondition = (condition: string) => {
+    const toggleCondition = (condition: string): void => {
         const updated = selectedConditions.includes(condition)
             ? selectedConditions.filter((c) => c !== condition)
             : [...selectedConditions, condition];

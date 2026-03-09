@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 const INITIAL_BOOKMARKS = [
     { id: 'b1', title: 'Building a Consistent Exercise Habit', type: 'Article', savedAt: 'Feb 20, 2026' },
@@ -25,14 +25,14 @@ const WellnessBookmarksPage: React.FC = () => {
     const router = useRouter();
     const [bookmarks, setBookmarks] = useState(INITIAL_BOOKMARKS);
 
-    const removeBookmark = (id: string) => {
+    const removeBookmark = (id: string): void => {
         setBookmarks((prev) => prev.filter((b) => b.id !== id));
     };
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/wellness-resources')}
+                onClick={() => void router.push('/health/wellness-resources')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -66,7 +66,7 @@ const WellnessBookmarksPage: React.FC = () => {
                     </Text>
                     <Button
                         journey="health"
-                        onPress={() => router.push('/health/wellness-resources')}
+                        onPress={() => void router.push('/health/wellness-resources')}
                         accessibilityLabel="Browse resources"
                     >
                         Browse Resources
@@ -90,7 +90,7 @@ const WellnessBookmarksPage: React.FC = () => {
                                                 backgroundColor: TYPE_COLORS[bookmark.type] || colors.gray[20],
                                             }}
                                         >
-                                            <Text fontSize="xs" fontWeight="semiBold" color={colors.white}>
+                                            <Text fontSize="xs" fontWeight="semiBold" color={colors.neutral.white}>
                                                 {bookmark.type}
                                             </Text>
                                         </div>

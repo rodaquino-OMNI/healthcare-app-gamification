@@ -1,11 +1,11 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 const EMERGENCY_SYMPTOMS = [
     'Difficulty breathing or shortness of breath',
@@ -22,11 +22,11 @@ const EMERGENCY_SYMPTOMS = [
 const EmergencyWarningPage: React.FC = () => {
     const router = useRouter();
 
-    const handleCallEmergency = () => {
+    const handleCallEmergency = (): void => {
         window.open('tel:192', '_self');
     };
 
-    const handleCallSAMU = () => {
+    const handleCallSAMU = (): void => {
         window.open('tel:192', '_self');
     };
 
@@ -66,7 +66,14 @@ const EmergencyWarningPage: React.FC = () => {
                     following, call emergency services or go to the nearest emergency room.
                 </Text>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm, marginBottom: spacing.xl }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: spacing.sm,
+                        marginBottom: spacing.xl,
+                    }}
+                >
                     {EMERGENCY_SYMPTOMS.map((symptom, index) => (
                         <Box key={index} display="flex" alignItems="flex-start" style={{ gap: spacing.xs }}>
                             <div
@@ -115,7 +122,7 @@ const EmergencyWarningPage: React.FC = () => {
                 <Button
                     variant="secondary"
                     journey="care"
-                    onPress={() => router.push('/care/symptom-checker/er-locator')}
+                    onPress={() => void router.push('/care/symptom-checker/er-locator')}
                     accessibilityLabel="Find nearest emergency room"
                     data-testid="emergency-er-locator-btn"
                 >

@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { CareLayout } from '@/layouts/CareLayout';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { CareLayout } from '@/layouts/CareLayout';
 
 interface Review {
     id: string;
@@ -32,7 +33,13 @@ const MOCK_REVIEWS: Review[] = [
         comment: 'Bom atendimento, explicou tudo com clareza.',
         date: '05/01/2026',
     },
-    { id: '3', reviewer: 'Ana R.', rating: 5, comment: 'Medica incrivel! Recomendo a todos.', date: '28/12/2025' },
+    {
+        id: '3',
+        reviewer: 'Ana R.',
+        rating: 5,
+        comment: 'Medica incrivel! Recomendo a todos.',
+        date: '28/12/2025',
+    },
     {
         id: '4',
         reviewer: 'Carlos M.',
@@ -40,7 +47,13 @@ const MOCK_REVIEWS: Review[] = [
         comment: 'Atendimento ok, mas a espera foi longa.',
         date: '15/12/2025',
     },
-    { id: '5', reviewer: 'Lucia F.', rating: 4, comment: 'Muito competente, consulta detalhada.', date: '10/12/2025' },
+    {
+        id: '5',
+        reviewer: 'Lucia F.',
+        rating: 4,
+        comment: 'Muito competente, consulta detalhada.',
+        date: '10/12/2025',
+    },
 ];
 
 const SORT_OPTIONS = ['Mais Recentes', 'Maior Nota', 'Menor Nota'];
@@ -53,7 +66,7 @@ const STAR_DISTRIBUTION = [
     { stars: 1, count: 1 },
 ];
 
-const renderStars = (rating: number) =>
+const renderStars = (rating: number): string =>
     Array.from({ length: 5 }, (_, i) => (i < rating ? '\u2605' : '\u2606')).join('');
 
 const ReviewsPage: React.FC = () => {
@@ -63,8 +76,12 @@ const ReviewsPage: React.FC = () => {
     const avgRating = (STAR_DISTRIBUTION.reduce((sum, d) => sum + d.stars * d.count, 0) / totalReviews).toFixed(1);
 
     const sortedReviews = [...MOCK_REVIEWS].sort((a, b) => {
-        if (sortBy === 'Maior Nota') return b.rating - a.rating;
-        if (sortBy === 'Menor Nota') return a.rating - b.rating;
+        if (sortBy === 'Maior Nota') {
+            return b.rating - a.rating;
+        }
+        if (sortBy === 'Menor Nota') {
+            return a.rating - b.rating;
+        }
         return 0;
     });
 

@@ -1,13 +1,12 @@
-import React from 'react';
+import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
+import { AchievementBadge } from 'design-system/gamification/AchievementBadge/AchievementBadge';
 import { useRouter } from 'next/router'; // latest
+import React from 'react';
+import type { Achievement } from 'shared/types/gamification.types';
+
 import { useAuth } from '@/hooks/useAuth';
 import { useGameProfile } from '@/hooks/useGamification';
-import { Card, CardProps } from 'design-system/components/Card/Card';
-import { Button } from 'design-system/components/Button/Button';
-import { AchievementBadge } from 'design-system/gamification/AchievementBadge/AchievementBadge';
-import { ALL_JOURNEYS } from 'shared/constants/journeys';
-import { GameProfile } from 'shared/types/gamification.types';
-import { useJourney } from '@/context/JourneyContext';
 
 /**
  * Displays a list of recent achievements with a link to the full achievement gallery.
@@ -25,7 +24,6 @@ export const AchievementsWidget: React.FC = () => {
 
     // LA4: Renders a `Card` component to display the achievements.
     const router = useRouter();
-    const { journeyData } = useJourney();
 
     if (isLoading) {
         return (
@@ -39,10 +37,10 @@ export const AchievementsWidget: React.FC = () => {
     // LA6: Renders a `Button` component to link to the full achievement gallery.
     return (
         <Card title="Recent Achievements">
-            {achievements.map((achievement) => (
+            {achievements.map((achievement: Achievement) => (
                 <AchievementBadge key={achievement.id} achievement={achievement} size="sm" />
             ))}
-            <Button variant="tertiary" size="sm" onPress={() => router.push('/achievements')}>
+            <Button variant="tertiary" size="sm" onPress={() => void router.push('/achievements')}>
                 View All Achievements
             </Button>
         </Card>

@@ -1,11 +1,12 @@
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/router';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
-import { MainLayout } from '@/layouts/MainLayout';
+
 import { restClient } from '@/api/client';
+import { MainLayout } from '@/layouts/MainLayout';
 
 const PageContainer = styled.div`
     max-width: 720px;
@@ -94,7 +95,7 @@ const ActionButton = styled.button`
  * Notification detail page - displays a single notification with full content.
  * Mirrors the mobile NotificationDetail screen.
  */
-export default function NotificationDetailPage() {
+export default function NotificationDetailPage(): React.ReactElement {
     const router = useRouter();
     const { id } = router.query;
 
@@ -109,13 +110,28 @@ export default function NotificationDetailPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    // Validate id to prevent SSRF — only allow alphanumeric and hyphens (UUIDs, numeric IDs)
+    const rawId = Array.isArray(id) ? id[0] : id;
+    const safeId = typeof rawId === 'string' && /^[a-zA-Z0-9-]+$/.test(rawId) ? rawId : null;
+
     useEffect(() => {
-        if (!id) return;
+        if (!safeId) {
+            return;
+        }
 
         restClient
-            .get(`/notifications/${id}`)
+            .get(`/notifications/${safeId}`)
             .then((res) => {
-                setNotification(res.data);
+                setNotification(
+                    res.data as {
+                        id: string;
+                        title: string;
+                        body: string;
+                        journey: string;
+                        createdAt: string;
+                        deepLink: string | null;
+                    }
+                );
             })
             .catch(() => {
                 setError('Erro ao carregar notificacao.');
@@ -123,7 +139,7 @@ export default function NotificationDetailPage() {
             .finally(() => {
                 setLoading(false);
             });
-    }, [id]);
+    }, [safeId]);
 
     const getJourneyColor = (journey: string): string => {
         switch (journey) {
@@ -168,7 +184,9 @@ export default function NotificationDetailPage() {
                         <Body>{notification.body}</Body>
 
                         {notification.deepLink && (
-                            <ActionButton onClick={() => router.push(notification.deepLink!)}>Ver mais</ActionButton>
+                            <ActionButton onClick={() => void router.push(notification.deepLink!)}>
+                                Ver mais
+                            </ActionButton>
                         )}
                     </NotificationCard>
                 )}
