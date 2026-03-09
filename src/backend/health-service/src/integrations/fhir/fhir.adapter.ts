@@ -3,7 +3,7 @@ import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { TracingService } from '@app/shared/tracing/tracing.service';
 import { truncate } from '@app/shared/utils/string.util';
-import { Injectable } from '@nestjs/common'; // NestJS Common 9.0.0+
+import { HttpStatus, Injectable } from '@nestjs/common'; // NestJS Common 9.0.0+
 import FhirClient from 'fhir-kit-client'; // FHIR Kit Client 4.0.0+
 
 import { health } from '@app/health/config/configuration';
@@ -63,8 +63,8 @@ export class FHIRAdapter {
                 'Failed to initialize FHIR adapter',
                 ErrorType.TECHNICAL,
                 'HEALTH_002',
-                undefined,
-                error
+                { detail: (error as Error).message },
+                HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
     }
@@ -181,8 +181,8 @@ export class FHIRAdapter {
                         'Failed to fetch patient record',
                         ErrorType.EXTERNAL,
                         'HEALTH_004',
-                        { patientId },
-                        error
+                        { patientId, error: (error as Error).message },
+                        HttpStatus.BAD_GATEWAY
                     );
                 }
             });
@@ -195,8 +195,8 @@ export class FHIRAdapter {
                 'Error in patient record retrieval',
                 ErrorType.TECHNICAL,
                 'HEALTH_004',
-                { patientId },
-                error
+                { patientId, error: (error as Error).message },
+                HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
     }
@@ -250,8 +250,8 @@ export class FHIRAdapter {
                         'Failed to fetch medical history',
                         ErrorType.EXTERNAL,
                         'HEALTH_005',
-                        { patientId },
-                        error
+                        { patientId, error: (error as Error).message },
+                        HttpStatus.BAD_GATEWAY
                     );
                 }
             });
@@ -264,8 +264,8 @@ export class FHIRAdapter {
                 'Error in medical history retrieval',
                 ErrorType.TECHNICAL,
                 'HEALTH_005',
-                { patientId },
-                error
+                { patientId, error: (error as Error).message },
+                HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
     }
@@ -344,8 +344,8 @@ export class FHIRAdapter {
                 'Failed to process patient data',
                 ErrorType.TECHNICAL,
                 'HEALTH_006',
-                undefined,
-                error
+                { detail: (error as Error).message },
+                HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
     }
@@ -414,8 +414,8 @@ export class FHIRAdapter {
                 'Failed to process medical history data',
                 ErrorType.TECHNICAL,
                 'HEALTH_007',
-                undefined,
-                error
+                { detail: (error as Error).message },
+                HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
     }

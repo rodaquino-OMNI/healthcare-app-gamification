@@ -3,6 +3,7 @@ import { JOURNEY_IDS } from '@app/shared/constants/journey.constants';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 
 import { NotificationTemplate } from './entities/notification-template.entity';
 
@@ -123,7 +124,7 @@ export class TemplatesService {
         this.logger.log(`Creating template with templateId: ${template.templateId}`, 'TemplatesService');
 
         return this.prisma.notificationTemplate.create({
-            data: template as Record<string, unknown>,
+            data: template as unknown as Prisma.NotificationTemplateCreateInput,
         }) as unknown as NotificationTemplate;
     }
 
@@ -138,7 +139,7 @@ export class TemplatesService {
 
         return this.prisma.notificationTemplate.update({
             where: { id },
-            data: template as Record<string, unknown>,
+            data: template as unknown as Prisma.NotificationTemplateUpdateInput,
         }) as unknown as NotificationTemplate;
     }
 

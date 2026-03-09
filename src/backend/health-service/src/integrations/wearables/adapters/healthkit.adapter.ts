@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 
 import { DeviceConnection } from '../../../devices/entities/device-connection.entity';
 import { HealthMetric } from '../../../health/entities/health-metric.entity';
-import { MetricType } from '../../../health/types/health.types';
+import { MetricType, MetricSource } from '../../../health/types/health.types';
 import { WearableAdapter } from '../wearables.service';
 
 // HealthKit data type identifiers

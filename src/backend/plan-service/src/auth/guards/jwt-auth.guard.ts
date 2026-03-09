@@ -16,17 +16,17 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         // For local development or testing you can bypass token validation
         // if using an environment flag like process.env.BYPASS_AUTH === 'true'
 
-        return super.canActivate(context);
+        return super.canActivate(context) as boolean | Promise<boolean>;
     }
 
     /**
      * Custom error handling for authentication failures
      * @param error Error thrown during authentication
      */
-    handleRequest(err: unknown, user: unknown, _info: unknown): unknown {
+    handleRequest<TUser = any>(err: any, user: any, info: any, context: ExecutionContext, status?: any): TUser {
         if (err || !user) {
             throw err instanceof Error ? err : new UnauthorizedException('Authentication failed');
         }
-        return user;
+        return user as TUser;
     }
 }

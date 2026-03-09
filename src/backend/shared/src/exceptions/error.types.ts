@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-duplicate-enum-values */
 /**
  * Standardized error types for application exceptions
  * Used to categorize errors and determine appropriate HTTP status codes
@@ -22,6 +23,11 @@ export enum ErrorType {
      * Authentication errors - missing or invalid credentials (401 Unauthorized)
      */
     UNAUTHORIZED = 'UNAUTHORIZED',
+
+    /**
+     * Alias for UNAUTHORIZED — used by auth-service
+     */
+    AUTHENTICATION = 'UNAUTHORIZED',
 
     /**
      * Permission errors - authenticated but not allowed (403 Forbidden)

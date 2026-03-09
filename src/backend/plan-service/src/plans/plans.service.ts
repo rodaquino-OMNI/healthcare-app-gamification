@@ -13,6 +13,7 @@ import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { TracingService } from '@app/shared/tracing/tracing.service';
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 
 import { FilterDto } from '../dto/filter.dto';
 
@@ -44,7 +45,7 @@ export class PlansService {
         return this.tracingService.createSpan('PlansService.create', async () => {
             this.logger.log(`Creating new plan`, 'PlansService');
             try {
-                return await this.prisma.plan.create({ data: plan });
+                return await this.prisma.plan.create({ data: plan as Prisma.PlanCreateInput });
             } catch (error: unknown) {
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error';
                 const errorStack = error instanceof Error ? error.stack : undefined;
@@ -176,7 +177,7 @@ export class PlansService {
                 // Update and return the plan in one operation
                 return await this.prisma.plan.update({
                     where: { id },
-                    data: plan,
+                    data: plan as Prisma.PlanUpdateInput,
                 });
             } catch (error: unknown) {
                 if (error instanceof AppException) {

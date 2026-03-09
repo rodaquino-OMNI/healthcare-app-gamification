@@ -26,8 +26,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
      * @param info Additional info from Passport
      * @returns The authenticated user
      */
-    // eslint-disable-next-line max-len
-    handleRequest(err: unknown, user: unknown, info: { message?: string } | null, context: ExecutionContext): unknown {
+    handleRequest<TUser = any>(err: any, user: any, info: any, context: ExecutionContext, status?: any): TUser {
         // If there was an error or no user was found, throw an exception
         if (err || !user) {
             const request = this.getRequest(context) as { url: string; method: string };
@@ -37,19 +36,15 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
                 url: request.url,
                 method: request.method,
                 info: info?.message,
+                detail: 'Authentication required',
             };
 
             this.logger.warn(`Authentication failed: ${errorMessage}`, 'JwtAuthGuard');
 
-            throw new AppException(
-                'Authentication required',
-                ErrorType.UNAUTHORIZED, // Use UNAUTHORIZED instead of VALIDATION
-                'AUTH_006',
-                errorDetails
-            );
+            throw new AppException('Authentication required', ErrorType.UNAUTHORIZED, 'AUTH_006', errorDetails);
         }
 
         // Otherwise return the authenticated user
-        return user;
+        return user as TUser;
     }
 }

@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { Consumer, Kafka, Producer, ProducerRecord, SASLOptions } from 'kafkajs';
+import { Consumer, Kafka, Producer, ProducerRecord, SASLMechanism, SASLOptions } from 'kafkajs';
 
 import { ErrorType } from '../exceptions/error.types';
 import { AppException } from '../exceptions/exceptions.types';
@@ -24,7 +24,7 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
             brokers: string[];
             ssl?: boolean;
             sasl?: {
-                mechanism: string;
+                mechanism: SASLMechanism;
                 username: string;
                 password: string;
             };
@@ -36,11 +36,11 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
 
         // Initialize Kafka client with properly typed SASL options
         const saslOptions: SASLOptions | undefined = this.options.sasl
-            ? {
-                  mechanism: this.options.sasl.mechanism as SASLOptions['mechanism'],
+            ? ({
+                  mechanism: this.options.sasl.mechanism,
                   username: this.options.sasl.username,
                   password: this.options.sasl.password,
-              }
+              } as SASLOptions)
             : undefined;
 
         this.kafka = new Kafka({

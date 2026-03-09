@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { ConnectDeviceDto } from './dto/connect-device.dto';
 import { DeviceConnection } from './entities/device-connection.entity';
@@ -62,12 +62,12 @@ export class DevicesService {
             throw new AppException(
                 `Failed to connect device: ${(error as any).message}`,
                 ErrorType.TECHNICAL,
-                ErrorCodes.HEALTH_DEVICE_CONNECTION_FAILED,
+                'HEALTH_DEVICE_CONNECTION_FAILED',
                 {
                     deviceType: connectDeviceDto.deviceType,
                     recordId,
                 },
-                error
+                HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
     }
@@ -111,11 +111,11 @@ export class DevicesService {
             throw new AppException(
                 `Failed to retrieve devices: ${(error as any).message}`,
                 ErrorType.TECHNICAL,
-                ErrorCodes.SYS_INTERNAL_SERVER_ERROR,
+                'SYS_INTERNAL_SERVER_ERROR',
                 {
                     recordId,
                 },
-                error
+                HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
     }

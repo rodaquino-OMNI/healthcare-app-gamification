@@ -1,7 +1,6 @@
 /* eslint-disable */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { ErrorType } from '@app/shared/exceptions/error.types';
-import { Service } from '@app/shared/interfaces/service.interface';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Injectable } from '@nestjs/common';
 
@@ -29,7 +28,7 @@ export abstract class WearableAdapter {
  * Service for integrating with wearable devices and health tracking platforms
  */
 @Injectable()
-export class WearablesService implements Service<any, any, any> {
+export class WearablesService {
     private readonly logger: LoggerService;
     private readonly adapters: Map<string, WearableAdapter> = new Map();
 

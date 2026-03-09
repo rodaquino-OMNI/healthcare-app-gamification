@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 import { LoggerService } from '@app/shared/logging/logger.service';
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, HttpStatus, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from 'eventemitter2';
 
 import { FHIRAdapter } from '@app/health/integrations/fhir/fhir.adapter';
@@ -67,8 +67,8 @@ export class FhirService {
                 'Failed to retrieve patient record',
                 ErrorType.EXTERNAL,
                 'HEALTH_004',
-                { patientId },
-                error
+                { patientId, error: (error as Error).message },
+                HttpStatus.BAD_GATEWAY
             );
         }
     }
@@ -110,8 +110,8 @@ export class FhirService {
                 'Failed to retrieve medical history',
                 ErrorType.EXTERNAL,
                 'HEALTH_005',
-                { patientId },
-                error
+                { patientId, error: (error as Error).message },
+                HttpStatus.BAD_GATEWAY
             );
         }
     }
@@ -175,8 +175,8 @@ export class FhirService {
                 'Failed to retrieve health metrics',
                 ErrorType.EXTERNAL,
                 'HEALTH_006',
-                { patientId, metricType },
-                error
+                { patientId, metricType, error: (error as Error).message },
+                HttpStatus.BAD_GATEWAY
             );
         }
     }

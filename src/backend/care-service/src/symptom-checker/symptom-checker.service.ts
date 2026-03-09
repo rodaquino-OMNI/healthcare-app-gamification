@@ -62,7 +62,7 @@ export class SymptomCheckerService {
      * @returns Promise resolving to preliminary guidance based on the symptoms
      */
     async checkSymptoms(checkSymptomsDto: CheckSymptomsDto): Promise<SymptomCheckerResponse> {
-        return this.tracingService.createSpan('symptom-checker.check-symptoms', () => {
+        return this.tracingService.createSpan('symptom-checker.check-symptoms', async () => {
             this.logger.log(`Checking symptoms: ${JSON.stringify(checkSymptomsDto.symptoms)}`, 'SymptomCheckerService');
 
             try {

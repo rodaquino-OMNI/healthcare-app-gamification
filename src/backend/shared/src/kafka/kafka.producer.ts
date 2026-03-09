@@ -16,7 +16,12 @@ export class KafkaProducer {
      * @param headers Optional message headers
      * @returns Promise that resolves when the message is sent
      */
-    async send(topic: string, message: unknown, key?: string, headers?: Record<string, string>): Promise<void> {
+    async send(
+        topic: string,
+        message: string | Record<string, unknown>,
+        key?: string,
+        headers?: Record<string, string>
+    ): Promise<void> {
         return this.kafkaService.emit(topic, message, key, headers);
     }
 
@@ -28,7 +33,7 @@ export class KafkaProducer {
      */
     async sendBatch(
         topic: string,
-        messages: Array<{ message: unknown; key?: string; headers?: Record<string, string> }>
+        messages: Array<{ message: string | Record<string, unknown>; key?: string; headers?: Record<string, string> }>
     ): Promise<void> {
         const promises = messages.map(({ message, key, headers }) =>
             this.kafkaService.emit(topic, message, key, headers)

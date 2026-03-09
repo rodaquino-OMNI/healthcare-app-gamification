@@ -1,31 +1,12 @@
 /* eslint-disable */
+import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
+import { LoggerService } from '@app/shared/logging/logger.service';
+import { TracingService } from '@app/shared/tracing/tracing.service';
 import { Injectable } from '@nestjs/common';
 
 import { SimulateCostDto, ProcedureType } from './dto/simulate-cost.dto';
 
-// Define the error types and exceptions for now, to be replaced with proper imports later
-class AppException extends Error {
-    constructor(
-        message: string,
-        public readonly errorType: string,
-        public readonly errorCode: string,
-        public readonly context?: Record<string, unknown>,
-        public readonly originalError?: Error
-    ) {
-        super(message);
-        this.name = 'AppException';
-    }
-}
-
-enum ErrorType {
-    VALIDATION = 'VALIDATION',
-    NOT_FOUND = 'NOT_FOUND',
-    BUSINESS = 'BUSINESS',
-    TECHNICAL = 'TECHNICAL',
-    SECURITY = 'SECURITY',
-}
-
-// Temporary error codes enum
+// Error codes for cost simulator domain
 enum ErrorCodes {
     COST_SIMULATION_FAILED = 'PLAN_001',
     PROCEDURE_NOT_COVERED = 'PLAN_002',
@@ -33,37 +14,14 @@ enum ErrorCodes {
 }
 
 /**
- * Mock LoggerService for error logging
- */
-class LoggerService {
-    error(message: string, trace?: string, context?: string) {
-        console.error('[%s] %s', context || 'Application', message, trace);
-    }
-
-    log(message: string, context?: string) {
-        console.log(`[${context || 'Application'}] ${message}`);
-    }
-}
-
-/**
- * Mock TracingService for telemetry
- */
-class TracingService {
-    startSpan(_name: string) {
-        return {
-            end: () => {},
-            setTag: (_key: string, _value: unknown) => {},
-        };
-    }
-}
-
-/**
  * Service for simulating healthcare costs based on insurance plan coverage
  */
 @Injectable()
 export class CostSimulatorService {
-    private readonly logger = new LoggerService();
-    private readonly tracingService = new TracingService();
+    constructor(
+        private readonly logger: LoggerService,
+        private readonly tracingService: TracingService
+    ) {}
 
     /**
      * Simulates the cost of a medical procedure based on plan coverage
@@ -72,92 +30,86 @@ export class CostSimulatorService {
      * @returns Cost simulation result including coverage and out-of-pocket expenses
      */
     async simulateCost(simulateCostDto: SimulateCostDto) {
-        const span = this.tracingService.startSpan('CostSimulatorService.simulateCost');
-
-        try {
+        return this.tracingService.createSpan('CostSimulatorService.simulateCost', async () => {
             this.logger.log(
                 `Simulating cost for procedure ${simulateCostDto.procedureCode} (${simulateCostDto.codingStandard || 'unknown standard'}) for plan ${simulateCostDto.planId}`,
                 'CostSimulatorService'
             );
 
-            // Get base coverage percentage based on procedure type
-            const baseCoveragePercentage = this.getMockCoveragePercentage(simulateCostDto.procedureType);
+            try {
+                // Get base coverage percentage based on procedure type
+                const baseCoveragePercentage = this.getMockCoveragePercentage(simulateCostDto.procedureType);
 
-            // Apply network adjustment
-            const networkAdjustment = simulateCostDto.networkType === 'out-of-network' ? -20 : 0;
+                // Apply network adjustment
+                const networkAdjustment = simulateCostDto.networkType === 'out-of-network' ? -20 : 0;
 
-            // Apply facility adjustment if applicable
-            const facilityAdjustment = simulateCostDto.facilityId
-                ? this.getFacilityAdjustment(simulateCostDto.facilityId)
-                : 0;
-
-            // Apply recurring procedure discount if applicable
-            const recurringDiscount =
-                simulateCostDto.isRecurring && simulateCostDto.occurrences && simulateCostDto.occurrences > 1
-                    ? Math.min((simulateCostDto.occurrences - 1) * 2, 10) // 2% discount per occurrence, max 10%
+                // Apply facility adjustment if applicable
+                const facilityAdjustment = simulateCostDto.facilityId
+                    ? this.getFacilityAdjustment(simulateCostDto.facilityId)
                     : 0;
 
-            // Calculate final coverage percentage
-            const coveragePercentage = Math.min(
-                Math.max(baseCoveragePercentage + networkAdjustment + facilityAdjustment + recurringDiscount, 0),
-                100
-            );
+                // Apply recurring procedure discount if applicable
+                const recurringDiscount =
+                    simulateCostDto.isRecurring && simulateCostDto.occurrences && simulateCostDto.occurrences > 1
+                        ? Math.min((simulateCostDto.occurrences - 1) * 2, 10) // 2% discount per occurrence, max 10%
+                        : 0;
 
-            // Calculate costs
-            const coveredAmount = simulateCostDto.estimatedFullCost * (coveragePercentage / 100);
-            const outOfPocketAmount = simulateCostDto.estimatedFullCost - coveredAmount;
+                // Calculate final coverage percentage
+                const coveragePercentage = Math.min(
+                    Math.max(baseCoveragePercentage + networkAdjustment + facilityAdjustment + recurringDiscount, 0),
+                    100
+                );
 
-            // Set telemetry data
-            span.setTag('procedureCode', simulateCostDto.procedureCode);
-            span.setTag('codingStandard', simulateCostDto.codingStandard);
-            span.setTag('planId', simulateCostDto.planId);
-            span.setTag('networkType', simulateCostDto.networkType);
+                // Calculate costs
+                const coveredAmount = simulateCostDto.estimatedFullCost * (coveragePercentage / 100);
+                const outOfPocketAmount = simulateCostDto.estimatedFullCost - coveredAmount;
 
-            // Determine cost breakdown
-            const costBreakdown = this.getCostBreakdown(
-                simulateCostDto.procedureType,
-                simulateCostDto.estimatedFullCost
-            );
+                // Determine cost breakdown
+                const costBreakdown = this.getCostBreakdown(
+                    simulateCostDto.procedureType,
+                    simulateCostDto.estimatedFullCost
+                );
 
-            // Build and return result
-            return {
-                procedureCode: simulateCostDto.procedureCode,
-                codingStandard: simulateCostDto.codingStandard || 'Unknown',
-                procedureType: simulateCostDto.procedureType,
-                estimatedFullCost: simulateCostDto.estimatedFullCost,
-                coveragePercentage,
-                coveredAmount,
-                outOfPocketAmount,
-                networkType: simulateCostDto.networkType,
-                planId: simulateCostDto.planId,
-                facilityId: simulateCostDto.facilityId,
-                isRecurring: simulateCostDto.isRecurring || false,
-                occurrences: simulateCostDto.occurrences || 1,
-                costBreakdown,
-                coverageAdjustments: {
-                    networkAdjustment,
-                    facilityAdjustment,
-                    recurringDiscount,
-                },
-                simulatedAt: new Date().toISOString(),
-            };
-        } catch (error: unknown) {
-            this.logger.error(
-                `Error simulating cost for procedure ${simulateCostDto.procedureCode}: ${(error as Error).message}`,
-                (error as Error).stack,
-                'CostSimulatorService'
-            );
+                // Build and return result
+                return {
+                    procedureCode: simulateCostDto.procedureCode,
+                    codingStandard: simulateCostDto.codingStandard || 'Unknown',
+                    procedureType: simulateCostDto.procedureType,
+                    estimatedFullCost: simulateCostDto.estimatedFullCost,
+                    coveragePercentage,
+                    coveredAmount,
+                    outOfPocketAmount,
+                    networkType: simulateCostDto.networkType,
+                    planId: simulateCostDto.planId,
+                    facilityId: simulateCostDto.facilityId,
+                    isRecurring: simulateCostDto.isRecurring || false,
+                    occurrences: simulateCostDto.occurrences || 1,
+                    costBreakdown,
+                    coverageAdjustments: {
+                        networkAdjustment,
+                        facilityAdjustment,
+                        recurringDiscount,
+                    },
+                    simulatedAt: new Date().toISOString(),
+                };
+            } catch (error: unknown) {
+                const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+                const errorStack = error instanceof Error ? error.stack : undefined;
 
-            throw new AppException(
-                'Failed to simulate procedure cost',
-                ErrorType.TECHNICAL,
-                ErrorCodes.COST_SIMULATION_FAILED,
-                { dto: simulateCostDto, error: (error as Error).message },
-                error as Error
-            );
-        } finally {
-            span.end();
-        }
+                this.logger.error(
+                    `Error simulating cost for procedure ${simulateCostDto.procedureCode}: ${errorMessage}`,
+                    errorStack,
+                    'CostSimulatorService'
+                );
+
+                throw new AppException(
+                    'Failed to simulate procedure cost',
+                    ErrorType.TECHNICAL,
+                    ErrorCodes.COST_SIMULATION_FAILED,
+                    { dto: simulateCostDto, error: errorMessage }
+                );
+            }
+        });
     }
 
     /**

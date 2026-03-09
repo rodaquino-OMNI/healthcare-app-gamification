@@ -5,6 +5,7 @@ import { FilterDto } from '@app/shared/dto/filter.dto';
 import { PaginationDto } from '@app/shared/dto/pagination.dto';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 
 import { NotificationPreference } from './entities/notification-preference.entity';
 
@@ -76,7 +77,7 @@ export class PreferencesService {
         try {
             return this.prisma.notificationPreference.update({
                 where: { id: parseInt(id) },
-                data,
+                data: data as Prisma.NotificationPreferenceUpdateInput,
             }) as unknown as NotificationPreference;
         } catch (error) {
             throw new AppException(

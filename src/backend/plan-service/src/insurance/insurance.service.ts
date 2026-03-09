@@ -87,8 +87,7 @@ export class InsuranceService {
                     'Failed to verify insurance coverage',
                     ErrorType.EXTERNAL,
                     'PLAN_COVERAGE_VERIFICATION_FAILED',
-                    { dto: verifyCoverageDto, error: errorMessage },
-                    error instanceof Error ? error : new Error(errorMessage)
+                    { dto: verifyCoverageDto, error: errorMessage }
                 );
             }
         });

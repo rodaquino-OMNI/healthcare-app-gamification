@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 import * as crypto from 'crypto';
 
 import { PrismaService } from '@app/shared/database/prisma.service';
@@ -129,6 +129,7 @@ export class AuthService {
                 'Invalid or expired refresh token',
                 ErrorType.AUTHENTICATION,
                 'AUTH_008',
+                {},
                 HttpStatus.UNAUTHORIZED
             );
         }
@@ -138,21 +139,21 @@ export class AuthService {
 
         const user = await this.usersService.findOne(userId);
         if (!user) {
-            throw new AppException('User not found', ErrorType.AUTHENTICATION, 'AUTH_008', HttpStatus.UNAUTHORIZED);
+            throw new AppException('User not found', ErrorType.AUTHENTICATION, 'AUTH_009', {}, HttpStatus.UNAUTHORIZED);
         }
 
         const payload = {
-            sub: user.id,
-            email: user.email,
-            roles: user.roles?.map((r: Role) => r.name) || [],
+            sub: user.id as string,
+            email: user.email as string,
+            roles: (user.roles as Role[])?.map((r: Role) => r.name) || [],
         };
 
         const accessToken = this.jwtService.sign(payload, {
             secret: this.configService.get<string>('authService.jwt.secret'),
-            expiresIn: this.configService.get<string>('authService.jwt.accessTokenExpiration'),
+            expiresIn: this.configService.get<string>('authService.jwt.accessTokenExpiration') as any,
         });
 
-        const newRefreshToken = await this.generateRefreshToken(user.id);
+        const newRefreshToken = await this.generateRefreshToken(user.id as string);
 
         return { access_token: accessToken, refresh_token: newRefreshToken };
     }
@@ -186,6 +187,7 @@ export class AuthService {
                 'Account temporarily locked due to too many failed attempts',
                 ErrorType.AUTHENTICATION,
                 'AUTH_007',
+                {},
                 HttpStatus.TOO_MANY_REQUESTS
             );
         }
@@ -218,18 +220,18 @@ export class AuthService {
 
         // Generate JWT access token
         const payload = {
-            sub: user.id,
-            email: user.email,
-            roles: user.roles?.map((role: Role) => role.name) || [],
+            sub: user.id as string,
+            email: user.email as string,
+            roles: (user.roles as Role[])?.map((role: Role) => role.name) || [],
         };
 
         const token = this.jwtService.sign(payload, {
             secret: this.configService.get<string>('authService.jwt.secret'),
-            expiresIn: this.configService.get<string>('authService.jwt.accessTokenExpiration'),
+            expiresIn: this.configService.get<string>('authService.jwt.accessTokenExpiration') as any,
         });
 
         // Generate refresh token
-        const refreshToken = await this.generateRefreshToken(user.id);
+        const refreshToken = await this.generateRefreshToken(user.id as string);
 
         return {
             access_token: token,

@@ -477,7 +477,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
             // Use type assertion to fix the typing issue
             // Use typed wrapper to avoid unsafe member access
             type ZrangeFn = (k: string, s: number, e: number, ...a: string[]) => Promise<string[]>;
-            const zrangeFn = this.client.zrange.bind(this.client) as ZrangeFn;
+            const zrangeFn = this.client.zrange.bind(this.client) as unknown as ZrangeFn;
             const result = await zrangeFn(key, start, stop, ...args);
             this.logger.debug(
                 `Redis ZRANGE: ${key} ${start} ${stop}${withScores ? ' WITHSCORES' : ''}`,

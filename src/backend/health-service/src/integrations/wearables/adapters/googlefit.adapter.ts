@@ -7,7 +7,11 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
 
-import { DeviceConnection } from '../../../devices/entities/device-connection.entity';
+import {
+    DeviceConnection,
+    DeviceType,
+    DeviceConnectionStatus,
+} from '../../../devices/entities/device-connection.entity';
 import { HealthMetric } from '../../../health/entities/health-metric.entity';
 import { MetricType, MetricSource } from '../../../health/types/health.types';
 import { WearableAdapter } from '../interfaces/wearable-adapter.interface';
@@ -78,8 +82,8 @@ export class GoogleFitAdapter implements WearableAdapter {
                 retryCount: 0,
             };
 
-            deviceConnection.deviceType = 'FITNESS_TRACKER';
-            deviceConnection.status = 'CONNECTED';
+            deviceConnection.deviceType = DeviceType.GOOGLE_FIT;
+            deviceConnection.status = DeviceConnectionStatus.CONNECTED;
             deviceConnection.deviceId = `google-fit-${userId}`;
             deviceConnection.lastSync = new Date();
             deviceConnection.userId = userId;
@@ -182,7 +186,7 @@ export class GoogleFitAdapter implements WearableAdapter {
             let connectionData: GoogleFitConnectionData | null = null;
             try {
                 connectionData = JSON.parse(
-                    deviceConnection.metadata?.connectionData || '{}'
+                    String(deviceConnection.metadata?.connectionData ?? '{}')
                 ) as GoogleFitConnectionData;
             } catch (e) {
                 this.logger.error(`Invalid connection data format for user ${userId}`, null, 'GoogleFitAdapter');
@@ -199,7 +203,9 @@ export class GoogleFitAdapter implements WearableAdapter {
             // Ensure token is valid
             await this.refreshTokenIfNeeded(deviceConnection);
             // Get the updated connection data after refresh
-            connectionData = JSON.parse(deviceConnection.metadata?.connectionData || '{}') as GoogleFitConnectionData;
+            connectionData = JSON.parse(
+                String(deviceConnection.metadata?.connectionData ?? '{}')
+            ) as GoogleFitConnectionData;
             const accessToken = connectionData.accessToken;
 
             const dataSources = [
@@ -360,7 +366,7 @@ export class GoogleFitAdapter implements WearableAdapter {
             let connectionData: GoogleFitConnectionData | null = null;
             try {
                 connectionData = JSON.parse(
-                    deviceConnection.metadata?.connectionData || '{}'
+                    String(deviceConnection.metadata?.connectionData ?? '{}')
                 ) as GoogleFitConnectionData;
             } catch (e) {
                 this.logger.error(`Invalid connection data format for user ${userId}`, null, 'GoogleFitAdapter');
@@ -390,7 +396,7 @@ export class GoogleFitAdapter implements WearableAdapter {
             );
 
             // Update device connection status
-            deviceConnection.status = 'DISCONNECTED';
+            deviceConnection.status = DeviceConnectionStatus.DISCONNECTED;
             deviceConnection.metadata = {
                 ...deviceConnection.metadata,
                 connectionData: null,
@@ -565,7 +571,7 @@ export class GoogleFitAdapter implements WearableAdapter {
             let connectionData: GoogleFitConnectionData | null = null;
             try {
                 connectionData = JSON.parse(
-                    deviceConnection.metadata?.connectionData || '{}'
+                    String(deviceConnection.metadata?.connectionData ?? '{}')
                 ) as GoogleFitConnectionData;
             } catch (e) {
                 this.logger.error('Invalid connection data format', null, 'GoogleFitAdapter');
@@ -605,7 +611,7 @@ export class GoogleFitAdapter implements WearableAdapter {
                     };
                 } catch (error: any) {
                     // If token refresh fails, mark the connection as requiring reauthentication
-                    deviceConnection.status = 'AUTHENTICATION_REQUIRED';
+                    deviceConnection.status = DeviceConnectionStatus.EXPIRED;
 
                     // Update retry count
                     connectionData.retryCount = (connectionData.retryCount || 0) + 1;

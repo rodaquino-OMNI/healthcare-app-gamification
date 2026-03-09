@@ -4,6 +4,7 @@ import { FilterDto } from '@app/shared/dto/filter.dto';
 import { PaginationDto } from '@app/shared/dto/pagination.dto';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 
 import { Role } from './entities/role.entity';
 
@@ -35,7 +36,7 @@ export class RolesService {
 
         // Creates the role using Prisma.
         const role = await this.prisma.role.create({
-            data: createRoleDto,
+            data: createRoleDto as Prisma.RoleCreateInput,
             include: { permissions: true },
         });
 
@@ -103,7 +104,7 @@ export class RolesService {
         // Updates the role in the database using Prisma.
         const role = await this.prisma.role.update({
             where: { id: parseInt(id) },
-            data: updateRoleDto,
+            data: updateRoleDto as Prisma.RoleUpdateInput,
             include: { permissions: true },
         });
 
