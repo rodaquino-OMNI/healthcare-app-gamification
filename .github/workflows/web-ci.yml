@@ -36,7 +36,21 @@ jobs:
     - name: Install dependencies for Web Monorepo
       working-directory: src/web
       run: yarn install --frozen-lockfile
-      
+
+    - name: Verify lockfile resolution integrity
+      working-directory: src/web
+      run: |
+        echo "Checking for known vulnerable lockfile resolutions..."
+        if grep -q '"next@15\.4\.[0-7]:' yarn.lock 2>/dev/null; then
+          echo "::error::Lockfile drift: next resolves to a version below 15.4.8 (vulnerable)"
+          exit 1
+        fi
+        if grep -q 'esbuild@0\.2[0-4]\.' yarn.lock 2>/dev/null; then
+          echo "::error::Lockfile drift: esbuild resolves to a version below 0.25.0 (vulnerable)"
+          exit 1
+        fi
+        echo "Lockfile resolution integrity verified."
+
     - name: Validate package.json files
       run: node scripts/validate-package-json.js
       

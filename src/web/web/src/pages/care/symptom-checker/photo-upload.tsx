@@ -5,13 +5,20 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 /** Photo upload page for adding visual evidence to the symptom check. */
 const PhotoUploadPage: React.FC = () => {
     const router = useRouter();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [previews, setPreviews] = useState<string[]>([]);
+
+    // Revoke all blob URLs on unmount to prevent memory leaks
+    useEffect(() => {
+        return () => {
+            previews.forEach((url) => URL.revokeObjectURL(url));
+        };
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
     const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -29,13 +36,22 @@ const PhotoUploadPage: React.FC = () => {
             if (file.size > MAX_FILE_SIZE) {
                 return;
             }
-            newPreviews.push(URL.createObjectURL(file));
+            const objectUrl = URL.createObjectURL(file);
+            // Validate blob: protocol (defense-in-depth for CWE-79)
+            if (!objectUrl.startsWith('blob:')) {
+                URL.revokeObjectURL(objectUrl);
+                return;
+            }
+            newPreviews.push(objectUrl);
         });
         setPreviews((prev) => [...prev, ...newPreviews].slice(0, 4));
     };
 
     const removePhoto = (index: number): void => {
-        setPreviews((prev) => prev.filter((_, i) => i !== index));
+        setPreviews((prev) => {
+            URL.revokeObjectURL(prev[index]);
+            return prev.filter((_, i) => i !== index);
+        });
     };
 
     const handleContinue = (): void => {
