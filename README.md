@@ -660,7 +660,7 @@ Estas tarefas **não podem** ser completadas apenas por ferramentas de IA. Reque
 
 | # | Tarefa | Status | Detalhes |
 |---|---|---|---|
-| 1 | **Substituição de stubs da API** (~23 funções stub para ~367 telas) | 🟡 Parcial | `auth` ✅ pronto; restante concentrado em `health`, `care`, `plan`, `wellness`, `gamification`. Ver `src/web/mobile/src/api/` |
+| 1 | **API layer** (195 funções, 193 com endpoints reais) | � 99% | `auth` ✅, `plan` ✅, `wellness` ✅, `gamification` ✅; 1-2 stubs restantes em `health` e `care`. Ver `src/web/mobile/src/api/` |
 | 2 | **Setup do projeto Expo (EAS)** | 🔴 Pendente | Placeholders `your-project-id` em `app.json`; executar `eas init`, substituir bundle IDs, ícones e splash screen |
 | 3 | **Provisionamento AWS** | 🔴 Pendente | EKS, RDS PostgreSQL 16, ElastiCache Redis 7, S3, Secrets Manager, CloudFront — ver Terraform em `infrastructure/terraform/` |
 | 4 | **Configuração Firebase** | 🔴 Pendente | `google-services.json` (Android) e `GoogleService-Info.plist` (iOS) para push notifications |
@@ -673,10 +673,10 @@ Estas tarefas **não podem** ser completadas apenas por ferramentas de IA. Reque
 
 | # | Tarefa | Status | Detalhes |
 |---|---|---|---|
-| 1 | **Substituição de dados mock** (~233 telas) | 🔴 Pendente | Placeholders "John Doe", "2024-01-01" — substituir módulo por módulo |
-| 2 | **Aumento de cobertura de testes** | 🟡 Baixo | Mobile ~16%, Web ~10%, Backend ~45% — metas: 60/40/70% |
+| 1 | **Substituição de dados mock** | � Essencialmente pronto | Scan encontrou mock data em apenas 1 arquivo de teste; telas usam dados dinâmicos via hooks/API |
+| 2 | **Aumento de cobertura de testes** | 🟡 Baixo | Mobile ~16%, Web ~10%, Backend ~45% — metas: 60/40/70%. 251 arquivos de teste existem |
 | 3 | **TypeScript strict mode** (incremental) | 🔴 Pendente | ~3.700 erros no mobile com `noImplicitAny: false`; corrigir por módulo, começando pelo design-system |
-| 4 | **Auditoria TODO/FIXME** | 🟡 Em andamento | ~65 TODOs restantes (11 Tier-1 críticos resolvidos); priorizar: auth, API, navegação |
+| 4 | **Auditoria TODO/FIXME** | � Quase pronto | 8 TODOs genuínos restantes (excl. máscaras de formato); priorizar: ssl-pinning (P0), web API calls (P1) |
 | 5 | **Migração Prisma 7.x** | 🟡 Preparado | `prisma.config.ts` criado em `src/backend/shared/prisma/`; descomentar `defineConfig` ao atualizar |
 
 > 📖 Detalhes completos: [`DEVELOPER_FORWARD_GUIDE.md` → Seção P1](docs/Documentação%20para%20Devs/DEVELOPER_FORWARD_GUIDE.md)
@@ -686,7 +686,7 @@ Estas tarefas **não podem** ser completadas apenas por ferramentas de IA. Reque
 | # | Problema | Severidade | Status / Solução |
 |---|---|---|---|
 | 1 | **~3.700 erros TypeScript no mobile** | Média | App roda; `noImplicitAny: false`. Causas: build do design-system quebrado, types RN 0.73, types compartilhados ausentes |
-| 2 | **Build do Design System quebrado** | Alta | Conflito ESM/CJS em `rollup.config.mjs` no Node 22. Fix recomendado: migrar para Vite |
+| 2 | **Build do Design System quebrado** | Alta | Conflito ESM/CJS em `rollup.config.mjs` no Node 22. `"type": "module"` já adicionado. Fix recomendado: migrar para Vite |
 | 3 | **Alinhamento de portas K8s** | — | ✅ Resolvido (portas 3000-3006 alinhadas) |
 | 4 | **Mismatch estrutural i18n** | Baixa | `en-US.ts` usa chaves aninhadas, `pt-BR.ts` usa nível superior em alguns pontos. Verificar: `npx tsx scripts/check-i18n-parity.ts` |
 

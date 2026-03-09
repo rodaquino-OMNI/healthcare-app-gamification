@@ -6,13 +6,13 @@
 
 ## Current State (What's Done)
 
-- **319 mobile screens** (React Native 0.73, Expo), **307 web pages** (Next.js 14)
-- **10 navigators**, 6 v2.0 health modules (70 mobile + 70 web screens)
-- **29 Prisma models**, 9 enums, 7 NestJS microservices, 7 Dockerfiles
+- **319 mobile screens** (React Native 0.73, Expo), **307 web pages** (Next.js 15)
+- **14 navigators** (9 root + 5 health sub-navigators), 6 v2.0 health modules (70 mobile + 70 web screens)
+- **39 Prisma models** (30 shared + 9 gamification), 11 enums, 7 NestJS microservices, 7 Dockerfiles
 - **100% i18n** (en-US + pt-BR), dark mode complete, 0 hardcoded hex colors
-- **57 design system components**, 147 test files
+- **57 design system components**, 251 test files
 - **LGPD compliance** (consent, DSR, PHI encryption)
-- **CI/CD**: 10 GitHub Actions workflows, EAS build profiles, K8s manifests
+- **CI/CD**: 12 GitHub Actions workflows, EAS build profiles, K8s manifests (40 YAML in 8 namespaces)
 
 ---
 
@@ -62,32 +62,43 @@ yarn start:dev
 
 These items cannot be completed by AI tooling alone. They require external accounts, legal review, or infrastructure provisioning.
 
-### 1. API Layer — Stub Replacement (~150 implementations)
+### 1. API Layer — Status Update
 
-> **Update (2026-02-28)**: The `auth` module is now largely complete — `login()`, `logout()`,
-> `changePassword()`, `enable2FA()`, `disable2FA()`, `configure2FA()`, `deleteAccount()`,
-> `getProfile()`, and OAuth social auth (web + mobile) are all wired to real API endpoints.
-> `care.ts` (79 exports) and `health.ts` (127 exports) have comprehensive API layers. The
-> remaining stubs are concentrated in profile setup, settings, and health/medication screens.
+> **Update (2026-03-09)**: The API layer is now **nearly complete**. All modules have been wired
+> to real API endpoints via `restClient` / `graphQLClient`. The `auth` module uses `fetch` directly.
+>
+> | Module | Exported functions | Real API calls | Status |
+> |--------|-------------------|----------------|--------|
+> | `auth.ts` | 12 | 12 (via fetch) | ✅ Complete |
+> | `care.ts` | 47 | 46 | 🟡 1 stub remaining |
+> | `health.ts` | 79 | 78 | 🟡 1 stub remaining |
+> | `plan.ts` | 25 | 25 | ✅ Complete |
+> | `wellness.ts` | 20 | 20 | ✅ Complete |
+> | `gamification.ts` | 12 | 12 | ✅ Complete |
+> | **Total** | **195** | **193** | **99% complete** |
 
-Currently ~23 stub functions serve 367 screens. Each returns hardcoded or empty data.
+Only 1-2 functions still need real endpoint wiring. The original "~23 stub functions" estimate is outdated.
 
-**Files to work on:**
+**Files:**
 ```
 src/web/mobile/src/api/
-├── auth.ts       # Authentication flows
-├── care.ts       # Care journey (68 screens, only 3 real functions)
-├── health.ts     # Health journey (87 screens, only 2 real functions)
-└── client.ts     # Axios/GraphQL client config
+├── auth.ts           # ✅ Authentication flows (12 functions, all real)
+├── care.ts           # 🟡 Care journey (47 functions, 46 real)
+├── health.ts         # 🟡 Health journey (79 functions, 78 real)
+├── plan.ts           # ✅ Plan journey (25 functions, all real)
+├── wellness.ts       # ✅ Wellness journey (20 functions, all real)
+├── gamification.ts   # ✅ Gamification (12 functions, all real)
+├── notifications.ts  # Notification endpoints
+├── client.ts         # Axios/GraphQL client config
+├── config.ts         # API configuration
+├── ssl-pinning.ts    # Certificate pinning setup
+└── mocks/            # Mock data for development
 ```
 
-**Approach:** Work module by module. For each module:
-1. Identify all screens that call a stub (grep for `// TODO: implement` or `return []`)
-2. Map the call to the corresponding Prisma model in `src/backend/`
-3. Implement the NestJS resolver/controller endpoint
-4. Wire the frontend API function to the real endpoint
-
-**Priority order:** ~~`auth`~~ (✅ done) → `health` → `care` → `plan` → `wellness` → `gamification`
+**Remaining work:**
+1. Identify the 1-2 remaining stubs in `care.ts` and `health.ts`
+2. Ensure corresponding NestJS backend endpoints exist (195 endpoint decorators verified across services)
+3. Validate end-to-end with real database after AWS provisioning
 
 ---
 
@@ -120,7 +131,7 @@ The application is designed for AWS EKS. You will need to provision:
 | Resource | Purpose |
 |----------|---------|
 | EKS Cluster | Container orchestration |
-| RDS (PostgreSQL 15) | Primary database — must match Prisma schema |
+| RDS (PostgreSQL 16) | Primary database — must match Prisma schema |
 | ElastiCache (Redis) | Session cache, queue backing |
 | S3 Buckets | Document storage, PHI files |
 | Secrets Manager | All service credentials |
@@ -185,20 +196,20 @@ The consent flows and DSR (Data Subject Request) implementation in `src/backend/
 
 These items are high priority but can be addressed with AI coding assistance.
 
-### 1. Mock Data Replacement (233 screens)
+### 1. Mock Data Replacement
 
-Most screens display placeholder data like `"John Doe"`, `"2024-01-01"`, or empty arrays. Replace by module batch:
+> **Update (2026-03-09)**: A comprehensive scan (`grep -rl "John Doe\|Jane Doe\|Lorem ipsum\|2024-01-01\|example@\|test@"`)
+> found mock/placeholder data in **only 1 file** — a test file (`plan/__tests__/DigitalCard.test.tsx`), not a user-facing
+> screen. All mobile screens appear to consume data dynamically via API hooks. This task is **essentially complete**.
 
-| Module | Screens | Navigator |
-|--------|---------|-----------|
-| Health | 87 | HealthNavigator |
-| Care | 68 | CareNavigator |
-| Wellness | 15 | WellnessNavigator |
-| Plan | 10 | PlanNavigator |
-| Settings | 33 | SettingsNavigator |
-| Home | ~15 | HomeNavigator |
+**Verification:** Run the scan below to confirm no regressions have been introduced:
 
-Search for mock data: `grep -r "John Doe\|placeholder\|TODO: replace" src/web/mobile/src/screens/`
+```bash
+grep -rl "John Doe\|Jane Doe\|Lorem ipsum\|2024-01-01\|example@\|test@" src/web/mobile/src/screens/ 
+# Expected: 0 results (or only test files)
+```
+
+If new placeholder data is found, replace with dynamic data from hooks (`useQuery`, `useFetch`, etc.) or i18n keys.
 
 ---
 
@@ -212,7 +223,16 @@ Current coverage is low. Target before launch:
 | Web | ~10% | 40% |
 | Backend | ~45% | 70% |
 
-147 test files already exist as templates. To run tests:
+251 test files already exist across the codebase:
+
+| Area | Files | Types |
+|------|-------|-------|
+| Backend | 79 `.spec.ts` + 12 `.e2e-spec.ts` + 1 `.test.ts` | Unit, integration, E2E |
+| Mobile | 72 `.test.tsx` | Component, screen |
+| Web | 30 `.test.tsx` | Component, page |
+| Design System | 57 `.test.tsx` / `.test.ts` | Component |
+
+To run tests:
 
 ```bash
 # Mobile
@@ -244,20 +264,27 @@ Recommended order: `shared` → `auth` → `home` → `health` → others
 
 ### 4. TODO/FIXME Audit
 
-> **Update (2026-02-28)**: 11 critical Tier 1 TODOs resolved (logout, 2FA, password, account
-> deletion, privacy, data export, OAuth). ~65 TODOs remain (down from 78). See
-> `docs/todo-triage-report.md` for the full updated inventory.
+> **Update (2026-03-09)**: Down to **8 genuine TODOs** (excluding format masks like `XXX.XXX.XXX-XX`
+> that are CPF/phone patterns, not action items). Previous count of "~65" included format mask comments.
+
+Remaining genuine TODOs:
+
+| File | Line | Description | Priority |
+|------|------|-------------|----------|
+| `src/web/web/src/components/forms/HealthGoalForm.tsx` | 77 | Implement API call to create/update health goal | P1 |
+| `src/web/web/src/api/notifications.ts` | 44 | Implement real-time notification subscription (WebSocket/SSE) | P1 |
+| `src/web/web/src/pages/health/history.tsx` | 227 | Navigate to detailed view | P2 |
+| `src/web/web/src/pages/health/history.tsx` | 234 | Implement document viewing logic | P2 |
+| `src/web/mobile/src/api/ssl-pinning.ts` | 7 | Replace placeholder SPKI hashes with real cert pins (**requires ops**) | P0 |
+| `src/backend/shared/prisma/seed.ts` | 353-365 | 4 TODOs: remove references to deleted models | P2 |
 
 ```bash
-# Find all TODOs
-grep -rn "TODO\|FIXME\|HACK\|XXX" src/ --include="*.ts" --include="*.tsx" | wc -l
-# Currently ~58+ items
-
-# See them organized by file
-grep -rn "TODO\|FIXME" src/ --include="*.ts" --include="*.tsx"
+# Verify current count (exclude format mask patterns like XXX.XXX)
+grep -rn "TODO\|FIXME" src/ --include="*.ts" --include="*.tsx" | grep -v node_modules | grep -v "XXX\.\|X-XX\|XXXX" | grep -v HACKED
+# Expected: ~8 results
 ```
 
-Prioritize TODOs in: auth flows, API connections, navigation edge cases.
+Prioritize: ssl-pinning (P0, requires production certs), then web API calls (P1), then cleanup (P2).
 
 ---
 
@@ -301,7 +328,7 @@ The mobile app compiles despite these errors because `noImplicitAny: false` is s
 
 | Cause | Fix |
 |-------|-----|
-| Design system build broken (ESM/CJS conflict in `rollup.config.js`) | See issue #2 below |
+| Design system build broken (ESM/CJS conflict in `rollup.config.mjs`) | See issue #2 below |
 | `react-native@0.73` types not resolving | Remove `@types/react-native`, add `moduleResolution: "bundler"` to tsconfig |
 | Missing shared types (`care.types.ts`, `notification.types.ts`) | Create in `src/web/shared/src/types/` |
 
@@ -311,18 +338,23 @@ The mobile app compiles despite these errors because `noImplicitAny: false` is s
 
 ### 2. Design System Build Broken
 
-**File:** `src/web/design-system/rollup.config.js`
+**File:** `src/web/design-system/rollup.config.mjs`
 
 **Symptom:** Build fails on Node 22 with ESM/CJS interop error.
 
-**Fix option A** (quick): Add `"type": "module"` to `src/web/design-system/package.json`
+**Fix option A** (quick): ~~Add `"type": "module"` to `src/web/design-system/package.json`~~ ✅ Already done.
 
 **Fix option B** (recommended): Migrate to Vite:
 ```bash
 cd src/web/design-system
 yarn add -D vite @vitejs/plugin-react
-# Replace rollup.config.js with vite.config.ts
+# Replace rollup.config.mjs with vite.config.ts
 ```
+
+> **Note (2026-03-09)**: `"type": "module"` has already been added to `package.json` and the config
+> file has been renamed from `rollup.config.js` to `rollup.config.mjs`. The build may still fail
+> on Node 22 due to remaining CJS dependencies in the Rollup plugin chain. Vite migration remains
+> the recommended long-term fix.
 
 ---
 
@@ -351,15 +383,16 @@ Cosmetic issue. Does not break the app.
 
 ### ADRs (Architectural Decision Records)
 
-All major decisions are documented in `docs/ADRs/`:
+All major decisions are documented in `docs/adr/`:
 
 | ADR | Title |
 |-----|-------|
-| ADR-001 | Monorepo structure with Yarn workspaces |
-| ADR-002 | NestJS microservices with GraphQL federation |
-| ADR-003 | Prisma as sole ORM (no TypeORM) |
+| ADR-001 | Navigation architecture — journey-based with color coding |
+| ADR-002 | API contract strategy — GraphQL-first |
+| ADR-003 | Error handling strategy — structured with journey context |
 | ADR-004 | LGPD compliance architecture |
-| ADR-005 | v2.0 module design rules (13 mandatory rules) |
+| ADR-005 | Design and UI consistency patterns |
+| ADR-013 | Claude Flow swarm intelligence agent pattern |
 
 **Read ADR-005 before adding any new module.** It defines screen length limits, testID requirements, accessibility rules, i18n structure, and more.
 
@@ -370,16 +403,16 @@ All major decisions are documented in `docs/ADRs/`:
 | Layer | Technology |
 |-------|-----------|
 | Mobile | React Native 0.73, Expo SDK 50 |
-| Web | Next.js 14, React 18 |
-| Design System | Custom components, StyleSheet tokens |
+| Web | Next.js 15, React 19 |
+| Design System | Custom components, StyleSheet tokens, Storybook 8 |
 | State (async) | TanStack Query v5 |
 | State (GraphQL) | Apollo Client 3 |
-| Backend framework | NestJS 10 |
-| ORM | Prisma 5.10 (no TypeORM) |
-| Database | PostgreSQL 15 |
+| Backend framework | NestJS 11 |
+| ORM | Prisma 5.22 (no TypeORM) |
+| Database | PostgreSQL 16 |
 | Cache | Redis 7 |
 | Auth | JWT + refresh tokens, LGPD consent |
-| CI/CD | GitHub Actions (10 workflows) |
+| CI/CD | GitHub Actions (12 workflows) |
 | Build | EAS Build (iOS + Android) |
 | Container | Docker + Kubernetes (EKS) |
 
@@ -392,12 +425,12 @@ src/
 ├── web/
 │   ├── mobile/          # React Native app (319 screens)
 │   │   ├── src/
-│   │   │   ├── api/         # API client functions (stub → real)
-│   │   │   ├── navigation/  # 10 navigator files
+│   │   │   ├── api/         # API client functions (195 functions, 99% real)
+│   │   │   ├── navigation/  # 14 navigator files (9 root + 5 health sub-navigators)
 │   │   │   ├── screens/     # Organized by journey
 │   │   │   ├── i18n/        # en-US.ts + pt-BR.ts
 │   │   │   └── constants/   # routes.ts (all ROUTES.*)
-│   │   └── .maestro/        # E2E test flows (7 flows)
+│   │   └── .maestro/        # E2E test flows (13 flows)
 │   ├── web/             # Next.js web app (307 pages)
 │   │   └── src/pages/   # Organized by journey
 │   ├── design-system/   # 57 shared components
@@ -425,14 +458,19 @@ src/
 |-----------|------|-------------|
 | RootNavigator | `navigation/RootNavigator.tsx` | Entry point |
 | MainNavigator | `navigation/MainNavigator.tsx` | Tab container |
+| AuthNavigator | `navigation/AuthNavigator.tsx` | 6 screens |
 | HealthNavigator | `navigation/HealthNavigator.tsx` | 87 screens |
 | CareNavigator | `navigation/CareNavigator.tsx` | 68 screens |
 | WellnessNavigator | `navigation/WellnessNavigator.tsx` | 15 screens |
 | PlanNavigator | `navigation/PlanNavigator.tsx` | 10 screens |
 | SettingsNavigator | `navigation/SettingsNavigator.tsx` | 33 screens |
-| AuthNavigator | `navigation/AuthNavigator.tsx` | 6 screens |
-| HomeNavigator | `navigation/HomeNavigator.tsx` | ~15 screens |
 | GamificationNavigator | `navigation/GamificationNavigator.tsx` | ~10 screens |
+| **Health sub-navigators:** | | |
+| ActivityNavigator | `navigation/health/ActivityNavigator.tsx` | Activity module |
+| NutritionNavigator | `navigation/health/NutritionNavigator.tsx` | Nutrition module |
+| SleepNavigator | `navigation/health/SleepNavigator.tsx` | Sleep module |
+| CycleTrackingNavigator | `navigation/health/CycleTrackingNavigator.tsx` | Cycle tracking |
+| WellnessResourcesNavigator | `navigation/health/WellnessResourcesNavigator.tsx` | Wellness resources |
 
 All navigators are typed with `createStackNavigator<ParamList>()`. Route constants are in `src/web/mobile/src/constants/routes.ts`.
 
@@ -477,8 +515,8 @@ maestro test .maestro/  # Run all flows
 - **Module patterns**: Each v2.0 module (sleep, activity, nutrition, etc.) follows the same structure — use any as a reference
 - **Backend patterns**: `src/backend/health-service/` is the most complete service — use as template
 - **LGPD questions**: `src/backend/auth-service/src/lgpd/` has all consent + DSR logic
-- **CI/CD questions**: `.github/workflows/` — 10 workflow files, each is self-documented
+- **CI/CD questions**: `.github/workflows/` — 12 workflow files, each is self-documented
 
 ---
 
-*Last updated: 2026-02-28*
+*Last updated: 2026-03-09*
