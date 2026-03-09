@@ -7,10 +7,16 @@ const path = require('path');
 const supportedLocales = ['pt-BR', 'en-US'];
 const defaultLocale = 'pt-BR';
 
+const reactDir = path.dirname(require.resolve('react', { paths: [path.resolve(__dirname, '..')] }));
+const reactDomDir = path.dirname(require.resolve('react-dom', { paths: [path.resolve(__dirname, '..')] }));
+
 /**
  * Next.js configuration for AUSTA SuperApp
  */
 const nextConfig = {
+    // Transpile design system package (resolves webpack parse failure)
+    transpilePackages: ['@austa/design-system', 'apollo-upload-client'],
+
     // Enable React Strict Mode for better development experience
     reactStrictMode: true,
 
@@ -46,13 +52,32 @@ const nextConfig = {
     // Disable X-Powered-By header for security
     poweredByHeader: false,
 
-    // Webpack configuration to resolve shared package
+    // Webpack configuration to resolve shared package and react-native
     webpack: (config, { isServer }) => {
-        // Add shared package resolution
         config.resolve.alias = {
             ...config.resolve.alias,
+            react: reactDir,
+            'react-dom': reactDomDir,
             '@shared': path.resolve(__dirname, '../shared'),
+            'react-native$': 'react-native-web',
         };
+
+        // On the server, Next.js externalizes react-native before the alias
+        // resolves. Intercept the externals pipeline to redirect react-native
+        // to react-native-web so Node.js never loads Flow-typed source.
+        if (isServer) {
+            const orig = config.externals;
+            config.externals = [
+                ({ request }, callback) => {
+                    if (request === 'react-native' || /^react-native\//.test(request)) {
+                        const mapped = request.replace(/^react-native(\/|$)/, 'react-native-web$1');
+                        return callback(null, `commonjs ${mapped}`);
+                    }
+                    return callback();
+                },
+                ...(Array.isArray(orig) ? orig : [orig]),
+            ];
+        }
 
         return config;
     },

@@ -1,9 +1,9 @@
+import { useRouter } from 'next/router';
 import { createContext, useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // next/navigation 13.0+
+import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
+import { AuthSession } from 'shared/types/auth.types';
 
 import { login, logout, getProfile } from '@/api/auth';
-import { AuthSession } from 'shared/types/auth.types';
-import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 
 /**
  * Authentication context interface
@@ -54,14 +54,14 @@ const defaultContext: AuthContextType = {
     session: null,
     status: 'loading',
     setSession: () => {},
-    login: async () => {
-        throw new Error('AuthContext not initialized');
+    login: () => {
+        return Promise.reject(new Error('AuthContext not initialized'));
     },
-    logout: async () => {
-        throw new Error('AuthContext not initialized');
+    logout: () => {
+        return Promise.reject(new Error('AuthContext not initialized'));
     },
-    getProfile: async () => {
-        throw new Error('AuthContext not initialized');
+    getProfile: () => {
+        return Promise.reject(new Error('AuthContext not initialized'));
     },
 };
 
@@ -92,7 +92,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     /**
      * Updates the authentication session and status
      */
-    const setSession = (newSession: AuthSession | null) => {
+    const setSession = (newSession: AuthSession | null): void => {
         setSessionState(newSession);
         setStatus(newSession ? 'authenticated' : 'unauthenticated');
 
@@ -158,7 +158,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             console.error('Logout error:', error);
         } finally {
             setSession(null);
-            router.push(WEB_AUTH_ROUTES.LOGIN);
+            void router.push(WEB_AUTH_ROUTES.LOGIN);
         }
     };
 
@@ -171,7 +171,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
 
         try {
-            return await getProfile();
+            const profile: unknown = await getProfile();
+            return profile;
         } catch (error) {
             // If we get an unauthorized error, clear the session
             if ((error as { response?: { status?: number } })?.response?.status === 401) {
