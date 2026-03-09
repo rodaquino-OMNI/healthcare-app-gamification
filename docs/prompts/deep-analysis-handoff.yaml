@@ -1,0 +1,933 @@
+# =============================================================================
+# AGENT HANDOFF — AUSTA SuperApp AI Agent Tasks (Forward-Only)
+# =============================================================================
+# Updated: 2026-03-09
+# Backend: 0 TS errors. 0 ESLint errors. 0 launch blockers.
+# This document contains ONLY pending AI agent work.
+# Human/infrastructure tasks are tracked in a separate document.
+# =============================================================================
+
+meta:
+  handoff_id: "forward-path-008"
+  updated: "2026-03-09T22:00Z"
+  branch: main
+  guide_ref: "docs/prompts/013-agent-guide.yaml"
+
+# =============================================================================
+# CURRENT PLATFORM STATE
+# =============================================================================
+platform:
+  frontend:
+    mobile_screens: 319
+    web_pages: 307
+    navigators: 14
+    ds_components: 57
+    i18n: "100% pt-BR + en-US"
+    hardcoded_hex: 0
+    as_never_casts: 0
+    files_over_500L: 0
+  backend:
+    prisma_models: 39  # 30 shared + 9 gamification
+    services: 7
+    dockerfiles: 7
+    test_files: 92  # 79 .spec.ts + 12 .e2e-spec.ts + 1 .test.ts
+    typescript_errors: 0
+    eslint_errors: 0
+  testing:
+    frontend_tests: 159  # 72 mobile + 30 web + 57 design-system
+    maestro_e2e: 13
+  security:
+    codeql_alerts_open: 1
+    dependabot_alerts_open: 1
+    launch_blockers: 0
+
+# =============================================================================
+# OPEN SECURITY ALERTS (AI-actionable)
+# =============================================================================
+open_alerts:
+
+  - id: CQL-05
+    source: CodeQL
+    number: 5
+    rule: "js/xss-through-dom"
+    severity: high
+    file: "src/web/web/src/pages/care/symptom-checker/photo-upload.tsx"
+    analysis: "FALSE POSITIVE — blob: URL in React JSX img src, not innerHTML"
+    recommendation: "Add blob: URL validation + URL.revokeObjectURL cleanup"
+
+  - id: DEP-465
+    source: Dependabot
+    number: 465
+    package: esbuild
+    severity: medium
+    risk: "Dev-only — not in production bundle"
+    fix: "Add \"esbuild\": \">=0.25.0\" to resolutions in src/web/package.json"
+    task_ref: AI-P1-6  # Covered by ai_agent_tasks
+
+# =============================================================================
+# COMPLETED ITEMS (verified 2026-03-09 — no further AI work needed)
+# =============================================================================
+completed_items:
+
+  - id: MASVS-STORAGE-1
+    title: "Encrypted token storage wired into AuthContext"
+    source: "README § Segurança Mobile, mobile-security-guide.md"
+    evidence:
+      - "secureTokenStorage imported in AuthContext.tsx line 3"
+      - "secureTokenStorage.getSession() called at line 67"
+      - "secureTokenStorage.setSession() called at line 107"
+      - "secureTokenStorage.removeSession() called at lines 81, 109, 194"
+      - "migrateFromAsyncStorage() called at line 281"
+    status: "DONE — no AI work needed. Update README/mobile-security-guide to reflect."
+
+  - id: MASVS-RESILIENCE-1
+    title: "Root/jailbreak detection wired into App.tsx"
+    source: "README § Segurança Mobile, mobile-security-guide.md"
+    evidence:
+      - "import { warnIfCompromised } from './src/utils/device-security' at App.tsx line 11"
+      - "warnIfCompromised() called at App.tsx line 40"
+    status: "DONE — no AI work needed. Update README/mobile-security-guide to reflect."
+
+# =============================================================================
+# AI AGENT TASKS — Ordered by recommended execution priority
+# =============================================================================
+# Execution order rationale:
+#   1. Quick wins first (high AI%, low effort) → close items fast
+#   2. High-impact automation next (test coverage, TS strict)
+#   3. Supporting tasks last (docs, validation scripts)
+# =============================================================================
+
+ai_agent_tasks:
+
+  # ---------------------------------------------------------------------------
+  # PRIORITY 1: Quick wins (execute first — close in minutes)
+  # ---------------------------------------------------------------------------
+
+  - id: AI-P1-4
+    title: "TODO/FIXME Audit — Resolve 7 genuine TODOs"
+    priority: P1
+    effort: S
+    ai_coverage: 95%
+    swarm_topology: hierarchical
+    workers: 4  # 1 RECON + 2 CODER + 1 VERIFIER
+    description: "Only 8 genuine TODOs exist (guide says ~65 — outdated). 7 are AI-resolvable."
+    targets:
+      - file: "src/web/web/src/pages/health/HealthGoalForm.tsx"
+        line: 77
+        todo: "Implement API call"
+        fix: "Wire to restClient.post('/health/goals', data) — pattern exists in adjacent files"
+      - file: "src/web/web/src/api/notifications.ts"
+        line: 44
+        todo: "Implement real-time subscription"
+        fix: "Wire to WebSocket or SSE endpoint using existing notification service patterns"
+      - file: "src/web/web/src/pages/health/history.tsx"
+        line: 227
+        todo: "Navigate to detailed view"
+        fix: "Add router.push(`/health/metrics/${metricId}`) — route exists"
+      - file: "src/web/web/src/pages/health/history.tsx"
+        line: 234
+        todo: "Document viewing logic"
+        fix: "Add router.push(`/health/documents/${documentId}`) — route exists"
+      - file: "src/backend/shared/prisma/seed.ts"
+        lines: "353-365"
+        todo: "4 TODOs about models removed from schema"
+        fix: "Delete the dead code blocks referencing non-existent models"
+    not_ai:
+      - file: "src/web/mobile/src/api/ssl-pinning.ts"
+        line: 7
+        todo: "Replace placeholder cert pins"
+        reason: "Requires real SPKI hashes from production certificates"
+    exit_criteria:
+      - "grep -rn 'TODO' src/web/web/src/pages/health/ | wc -l → 0"
+      - "grep -rn 'TODO' src/web/web/src/api/notifications.ts | wc -l → 0"
+      - "grep -rn 'TODO.*model' src/backend/shared/prisma/seed.ts | wc -l → 0"
+
+  - id: AI-P1-1
+    title: "Mock Data Scan — Confirm screens use dynamic data"
+    priority: P1
+    effort: S
+    ai_coverage: 90%
+    swarm_topology: hierarchical
+    workers: 3  # 1 RECON + 1 CODER + 1 VERIFIER
+    description: |
+      Guide says "~233 screens need mock replacement" — forensic analysis shows this is
+      ALREADY DONE. Only 1 file with mock data found, and it's a test file.
+      181 of 183 API functions already make real restClient/graphQLClient calls.
+      AI agent confirms with automated scan and closes the item.
+    steps:
+      - step: "RECON — Scan for hardcoded mock patterns"
+        commands:
+          - "grep -rn '\"John Doe\"\\|\"Jane Doe\"\\|\"2024-01-01\"\\|\"example@\"\\|\"Lorem ipsum\"\\|\"mock\"\\|\"dummy\"' src/web/web/src/pages/ src/web/mobile/src/screens/ --include='*.tsx' --include='*.ts' -l"
+          - "grep -rn 'mockData\\|MOCK_\\|sampleData\\|dummyData\\|placeholder.*data' src/web/web/src/pages/ src/web/mobile/src/screens/ --include='*.tsx' -l"
+      - step: "RECON — Verify API layer completeness"
+        commands:
+          - "grep -c 'restClient\\|graphQLClient\\|fetch(' src/web/shared/src/api/care.ts"
+          - "grep -c 'restClient\\|graphQLClient\\|fetch(' src/web/shared/src/api/health.ts"
+          - "grep -c 'restClient\\|graphQLClient\\|fetch(' src/web/shared/src/api/plan.ts"
+          - "grep -c 'restClient\\|graphQLClient\\|fetch(' src/web/shared/src/api/wellness.ts"
+          - "grep -c 'restClient\\|graphQLClient\\|fetch(' src/web/shared/src/api/gamification.ts"
+          - "grep -c 'restClient\\|graphQLClient\\|fetch(' src/web/shared/src/api/auth.ts"
+      - step: "CODER — Fix any remaining stubs found"
+        pattern: "Replace stub return with restClient.get/post call matching backend endpoint"
+      - step: "VERIFIER — Confirm 0 stubs remain"
+        command: "grep -rn 'return.*\\[\\]\\|return.*{}\\|return.*null.*//.*stub\\|return.*mock' src/web/shared/src/api/*.ts | grep -v test | wc -l → 0"
+    exit_criteria:
+      - "grep -rn 'stub\\|mock.*data\\|dummy' src/web/shared/src/api/*.ts | grep -v test | wc -l → 0"
+      - "All 6 API files have >90% real restClient/graphQLClient calls"
+
+  - id: AI-P1-6
+    title: "Dependabot DEP-465 — Fix esbuild resolution"
+    priority: P1
+    effort: XS
+    ai_coverage: 100%
+    swarm_topology: hierarchical
+    workers: 2  # 1 CODER + 1 VERIFIER
+    description: |
+      esbuild has a medium-severity vulnerability (DEP-465). Dev-only dependency,
+      not in production bundle. Fix: add resolutions override.
+    steps:
+      - step: "CODER — Add esbuild resolution"
+        action: 'Add "esbuild": ">=0.25.0" to "resolutions" in src/web/package.json'
+      - step: "CODER — Reinstall"
+        command: "cd src/web && yarn install"
+      - step: "VERIFIER — Confirm no vulnerable version remains"
+        command: "cd src/web && yarn why esbuild | grep -v '>=0.25'"
+    exit_criteria:
+      - "grep 'esbuild' src/web/package.json | grep '0.25'"
+      - "cd src/web && yarn audit --groups dependencies --level moderate 2>&1 | grep -i esbuild | wc -l → 0"
+
+  - id: AI-P1-7
+    title: "NestJS Prometheus Instrumentation — Enable /metrics in all services"
+    priority: P1
+    effort: S
+    ai_coverage: 90%
+    swarm_topology: hierarchical
+    workers: 3  # 1 RECON + 1 CODER + 1 VERIFIER
+    description: |
+      @willsoto/nestjs-prometheus is already a dependency. Prometheus scraping config
+      exists in docker-compose.scale.yml and prometheus.yml. Need to import
+      PrometheusModule.register() in each service's AppModule for /metrics to return data.
+      Gamification engine already has ENABLE_METRICS config.
+    steps:
+      - step: "RECON — List all service AppModules"
+        commands:
+          - "find src/backend -name 'app.module.ts' -not -path '*/node_modules/*'"
+          - "grep -rn 'PrometheusModule' src/backend/ --include='*.ts' -l"
+      - step: "CODER — Add PrometheusModule.register() to each AppModule"
+        pattern: |
+          // In each service's app.module.ts imports array:
+          import { PrometheusModule } from '@willsoto/nestjs-prometheus';
+          @Module({
+            imports: [
+              PrometheusModule.register(),
+              // ... existing imports
+            ],
+          })
+        targets:
+          - "src/backend/api-gateway/src/app.module.ts"
+          - "src/backend/auth-service/src/app.module.ts"
+          - "src/backend/care-service/src/app.module.ts"
+          - "src/backend/health-service/src/app.module.ts"
+          - "src/backend/notification-service/src/app.module.ts"
+          - "src/backend/plan-service/src/app.module.ts"
+          - "src/backend/gamification-engine/src/app.module.ts"
+      - step: "VERIFIER — Confirm /metrics returns Prometheus format"
+        commands:
+          - "cd src/backend && npx tsc --noEmit 2>&1 | grep 'error TS' | wc -l → 0"
+          - "curl -s http://localhost:3000/metrics | head -5  # after docker-compose up"
+    exit_criteria:
+      - "grep -rn 'PrometheusModule' src/backend/*/src/app.module.ts | wc -l >= 7"
+      - "cd src/backend && npx tsc --noEmit 2>&1 | grep 'error TS' | wc -l → 0"
+
+  - id: AI-P1-8
+    title: "i18n Structural Parity Fix — Align pt-BR with en-US key structure"
+    priority: P1
+    effort: S
+    ai_coverage: 85%
+    swarm_topology: hierarchical
+    workers: 3  # 1 RECON + 1 CODER + 1 VERIFIER
+    description: |
+      en-US.ts uses nested keys (journeys.health.sleep.title), pt-BR.ts uses some
+      top-level keys. Parity check script already exists: scripts/check-i18n-parity.ts.
+      Run it, then fix all mismatches so both files have identical key structures.
+    steps:
+      - step: "RECON — Run parity check"
+        command: "npx tsx scripts/check-i18n-parity.ts"
+      - step: "CODER — Fix structural mismatches"
+        pattern: |
+          // For each key present in en-US but missing in pt-BR:
+          // Add the key path with Portuguese translation
+          // For each key present in pt-BR but missing in en-US:
+          // Either nest it to match en-US structure or add to en-US
+      - step: "VERIFIER — Confirm 0 mismatches"
+        command: "npx tsx scripts/check-i18n-parity.ts 2>&1 | grep -i 'missing\\|mismatch' | wc -l → 0"
+    exit_criteria:
+      - "npx tsx scripts/check-i18n-parity.ts exits 0 with no missing keys"
+      - "Both en-US.ts and pt-BR.ts export objects with identical key structures"
+
+  # ---------------------------------------------------------------------------
+  # PRIORITY 2: High-impact automation (bulk work, high AI leverage)
+  # ---------------------------------------------------------------------------
+
+  - id: AI-P1-2
+    title: "Test Coverage Increase — Generate tests for all layers"
+    priority: P1
+    effort: XL
+    ai_coverage: 85%
+    swarm_topology: hierarchical-mesh
+    workers: 10  # 1 RECON + 7 CODER + 1 SYNTHESIZER + 1 VERIFIER
+    description: |
+      Current coverage: Mobile ~16%, Web ~10%, Backend ~45%.
+      Target: Mobile 40-50%, Web 25-35%, Backend 60-65%.
+      AI generates bulk tests using existing patterns, human reviews edge cases.
+    current_state:
+      backend: { files: 78, spec: ".spec.ts", e2e: 12, coverage: "~45%" }
+      mobile: { files: 72, spec: ".test.tsx", coverage: "~16%" }
+      web: { files: 30, spec: ".test.tsx", coverage: "~10%" }
+      design_system: { files: 57, spec: ".test.tsx/.test.ts" }
+    workers_detail:
+      - id: CODER-1
+        scope: "Frontend API unit tests"
+        target: "src/web/shared/src/api/*.ts"
+        count: "195 exported functions"
+        pattern: "jest.mock restClient, test each function returns expected shape"
+        output_dir: "src/web/shared/src/api/__tests__/"
+      - id: CODER-2
+        scope: "Mobile screen snapshot tests"
+        target: "src/web/mobile/src/screens/**/*.tsx"
+        count: "~319 screens, ~72 already tested → ~247 new"
+        pattern: "render(<Screen />), expect(toJSON()).toMatchSnapshot()"
+        output_dir: "src/web/mobile/src/screens/**/__tests__/"
+      - id: CODER-3
+        scope: "Web page component tests"
+        target: "src/web/web/src/pages/**/*.tsx"
+        count: "~307 pages, ~30 tested → ~277 new"
+        pattern: "render(<Page />), screen.getByTestId, userEvent"
+        output_dir: "src/web/web/src/pages/**/__tests__/"
+      - id: CODER-4
+        scope: "Backend service unit tests"
+        target: "src/backend/*/src/**/*.service.ts"
+        count: "195 endpoints, ~78 tested → ~117 new"
+        pattern: "mock PrismaService, test service method returns/throws correctly"
+        output_dir: "src/backend/*/src/**/*.spec.ts"
+      - id: CODER-5
+        scope: "Backend controller tests"
+        target: "src/backend/*/src/**/*.controller.ts"
+        pattern: "mock service, test HTTP status codes + response shapes"
+        output_dir: "src/backend/*/src/**/*.controller.spec.ts"
+      - id: CODER-6
+        scope: "Design system component tests (untested)"
+        target: "src/web/design-system/src/components/**/*.tsx"
+        pattern: "render, check a11y props, test variant props"
+        output_dir: "src/web/design-system/src/components/**/__tests__/"
+      - id: CODER-7
+        scope: "Maestro E2E flows (additional scenarios)"
+        target: "src/web/mobile/.maestro/flows/"
+        current: 13
+        new_flows:
+          - "cycle-tracking-log.yaml"
+          - "wellness-companion-chat.yaml"
+          - "sleep-tracking-log.yaml"
+          - "health-metrics-entry.yaml"
+          - "provider-search-book.yaml"
+    exit_criteria:
+      - "find src/web/shared/src/api/__tests__ -name '*.test.ts' | wc -l >= 6"
+      - "find src/web/mobile/src/screens -name '*.test.tsx' | wc -l >= 150"
+      - "find src/web/web/src/pages -name '*.test.tsx' | wc -l >= 100"
+      - "find src/backend -name '*.spec.ts' | wc -l >= 120"
+      - "find src/web/mobile/.maestro/flows -name '*.yaml' | wc -l >= 18"
+
+  - id: AI-P1-3
+    title: "TypeScript Strict Mode — Frontend incremental strictness"
+    priority: P1
+    effort: L
+    ai_coverage: 80%
+    swarm_topology: hierarchical-mesh
+    workers: 8  # 1 RECON + 5 CODER + 1 SYNTHESIZER + 1 VERIFIER
+    description: |
+      Backend is now 0 errors (tsc --noEmit clean). Frontend has ~3,700 errors
+      under strict flags (noImplicitAny, strictNullChecks). Fix module by module
+      in dependency order: shared → auth → home → health → care → plan → rest.
+    steps:
+      - step: "RECON — Catalog all frontend TS errors"
+        commands:
+          - "cd src/web && npx tsc --noEmit --noImplicitAny 2>&1 | grep 'error TS' | wc -l"
+          - "cd src/web && npx tsc --noEmit --noImplicitAny 2>&1 | grep 'error TS' | sed 's/(.*//' | sed 's|/[^/]*$||' | sort | uniq -c | sort -rn"
+      - step: "CODER — Fix by module (dependency order)"
+        modules:
+          - { name: "shared", path: "src/web/shared/src/", priority: 1, reason: "All modules depend on shared" }
+          - { name: "design-system", path: "src/web/design-system/src/", priority: 2 }
+          - { name: "mobile/api", path: "src/web/mobile/src/api/", priority: 3 }
+          - { name: "mobile/screens", path: "src/web/mobile/src/screens/", priority: 4, note: "Largest volume" }
+          - { name: "web/pages", path: "src/web/web/src/pages/", priority: 5 }
+        fix_patterns:
+          - { error: "TS7006 (implicit any)", fix: "Add explicit type annotation" }
+          - { error: "TS2322 (type mismatch)", fix: "Add proper interface or narrow type" }
+          - { error: "TS2345 (argument type)", fix: "Add type guard or assertion" }
+          - { error: "TS18046 (unknown type)", fix: "Add type narrowing with typeof/instanceof" }
+          - { error: "TS2532 (possibly undefined)", fix: "Add null check or optional chaining" }
+      - step: "CODER — Create missing shared type files"
+        files_to_create:
+          - "src/web/shared/src/types/care.types.ts"
+          - "src/web/shared/src/types/notification.types.ts"
+          - "src/web/shared/src/types/wellness.types.ts"
+        pattern: "Export interfaces matching backend DTO shapes from Prisma schema"
+    exit_criteria:
+      - "cd src/web && npx tsc --noEmit 2>&1 | grep 'error TS' | wc -l → 0"
+      - "No new /* eslint-disable */ added"
+      - "All new interfaces exported from shared/src/types/"
+
+  # ---------------------------------------------------------------------------
+  # PRIORITY 3: Supporting automation (prep work for human tasks)
+  # ---------------------------------------------------------------------------
+
+  - id: AI-P0-1
+    title: "API Stub Verification — Confirm + fix remaining 1-2 stubs"
+    priority: P0
+    effort: S
+    ai_coverage: 70%
+    swarm_topology: hierarchical
+    workers: 4  # 1 RECON + 2 CODER + 1 VERIFIER
+    description: |
+      Forensic analysis: 181 of 183 API functions already make real calls.
+      Only care.ts has 1 stub remaining. Verify and fix.
+    steps:
+      - step: "RECON — Identify exact remaining stubs"
+        commands:
+          - "grep -n 'return \\[\\]\\|return {}\\|Promise.resolve(\\[\\])\\|Promise.resolve({})' src/web/shared/src/api/*.ts"
+          - "grep -n 'stub\\|TODO.*api\\|FIXME.*api' src/web/shared/src/api/*.ts"
+      - step: "RECON — Verify backend endpoints exist"
+        commands:
+          - "grep -rn '@Get\\|@Post\\|@Put\\|@Patch\\|@Delete' src/backend/*/src/**/*.controller.ts | wc -l"
+          - "Cross-reference: for each stub function, find matching backend controller endpoint"
+      - step: "CODER — Wire remaining stubs to real endpoints"
+        pattern: |
+          // BEFORE (stub):
+          export async function getXyz(): Promise<XyzResponse> {
+            return [];
+          }
+          // AFTER (real):
+          export async function getXyz(): Promise<XyzResponse> {
+            return restClient.get<XyzResponse>('/care/xyz');
+          }
+      - step: "CODER — Generate integration test for each wired endpoint"
+        pattern: "jest.mock('restClient'), verify function calls correct URL + method"
+    exit_criteria:
+      - "grep -rn 'return \\[\\]\\|return {}' src/web/shared/src/api/*.ts | grep -v test | grep -v '//' | wc -l → 0"
+      - "All 6 API files: every exported function calls restClient/graphQLClient/fetch"
+
+  - id: AI-P0-6
+    title: "LGPD Compliance Extraction — Prepare legal review package"
+    priority: P0
+    effort: M
+    ai_coverage: 25%
+    swarm_topology: hierarchical
+    workers: 4  # 1 RECON + 2 CODER + 1 VERIFIER
+    description: |
+      Extract all consent texts, map PHI collection points, verify decorator coverage.
+      Output: structured document for legal team review.
+    steps:
+      - step: "RECON — Extract all consent texts from i18n"
+        commands:
+          - "grep -A2 'lgpd\\.' src/web/shared/src/i18n/en-US.ts"
+          - "grep -A2 'lgpd\\.' src/web/shared/src/i18n/pt-BR.ts"
+          - "Extract all keys under consent.*, privacy.*, lgpd.* namespaces"
+      - step: "RECON — Map all PHI collection/processing points"
+        commands:
+          - "grep -rn '@PhiAccess()' src/backend/ -l"
+          - "grep -rn 'encrypt\\|decrypt\\|hashPhi\\|phi' src/backend/ --include='*.ts' -l"
+          - "grep -rn 'cpf\\|rg\\|health.*data\\|medical.*record\\|diagnosis' src/backend/ --include='*.ts' -l"
+      - step: "CODER — Generate LGPD compliance checklist"
+        output: "docs/security/lgpd-compliance-checklist.yaml"
+        contents:
+          - "All PHI endpoints mapped with @PhiAccess() decorator status"
+          - "All consent text keys with pt-BR and en-US values"
+          - "Data retention policies per model"
+          - "DSR (Data Subject Request) flow verification"
+          - "Encryption-at-rest verification per table"
+      - step: "CODER — Verify @PhiAccess coverage"
+        check: "Every controller endpoint that reads/writes to health, medical, or PII tables MUST have @PhiAccess()"
+    exit_criteria:
+      - "docs/security/lgpd-compliance-checklist.yaml exists and has > 100 lines"
+      - "Every PHI endpoint has @PhiAccess() decorator or is flagged for review"
+
+  - id: AI-P0-3
+    title: "Terraform Validation — Review IaC for errors + generate docs"
+    priority: P0
+    effort: M
+    ai_coverage: 30%
+    swarm_topology: hierarchical
+    workers: 5  # 1 RECON + 3 CODER + 1 VERIFIER
+    description: |
+      28 Terraform files (~3,076 lines) exist. AI reviews for best practices,
+      generates .env.example, and creates validation scripts.
+    steps:
+      - step: "RECON — Inventory all Terraform resources"
+        commands:
+          - "find . -name '*.tf' -o -name '*.tfvars' | head -40"
+          - "grep -rn 'resource \"' infrastructure/ --include='*.tf'"
+          - "grep -rn 'variable \"' infrastructure/ --include='*.tf'"
+      - step: "CODER-1 — Review Terraform for security best practices"
+        checks:
+          - "No hardcoded secrets in .tf files"
+          - "encryption_configuration on RDS, S3, EBS"
+          - "VPC with private subnets for databases"
+          - "Security groups with least-privilege ingress"
+          - "IAM roles with minimal permissions"
+          - "Logging enabled (CloudTrail, ALB access logs)"
+        output: "docs/infrastructure/terraform-review.yaml"
+      - step: "CODER-2 — Generate complete .env.example"
+        source_scan:
+          - "grep -rn 'process.env\\.' src/backend/ --include='*.ts' -h | sort -u"
+          - "grep -rn 'process.env\\.' src/web/ --include='*.ts' --include='*.tsx' -h | sort -u"
+          - "grep -rn 'variable \"' infrastructure/ --include='*.tf'"
+        output: ".env.example"
+        format: |
+          # === Backend Services ===
+          # Auth Service
+          JWT_SECRET=                    # Required. 256-bit secret for JWT signing
+          JWT_EXPIRATION=3600            # Optional. Token TTL in seconds (default: 3600)
+      - step: "CODER-3 — Create post-provisioning validation script"
+        output: "scripts/validate-infrastructure.sh"
+        checks:
+          - "RDS connectivity (pg_isready)"
+          - "Redis connectivity (redis-cli ping)"
+          - "S3 bucket exists and is accessible"
+          - "ECS service is running"
+          - "ALB returns 200 on health endpoint"
+    exit_criteria:
+      - ".env.example exists with all process.env.* variables documented"
+      - "docs/infrastructure/terraform-review.yaml exists"
+      - "scripts/validate-infrastructure.sh exists and is executable"
+      - "grep -rn 'password\\|secret\\|key' infrastructure/ --include='*.tf' | grep -v variable | grep -v data. | wc -l → 0"
+
+  - id: AI-P0-5
+    title: "Environment Validation Script — Startup credential checker"
+    priority: P0
+    effort: S
+    ai_coverage: 20%
+    swarm_topology: hierarchical
+    workers: 3  # 1 RECON + 1 CODER + 1 VERIFIER
+    description: "Create a startup script that validates all required env vars exist before app boots."
+    steps:
+      - step: "RECON — Scan all process.env references"
+        commands:
+          - "grep -rhn 'process\\.env\\.[A-Z_]*' src/backend/ --include='*.ts' -o | sort -u"
+          - "grep -rhn 'process\\.env\\.[A-Z_]*' src/web/ --include='*.ts' --include='*.tsx' -o | sort -u"
+      - step: "CODER — Generate validation module"
+        output: "src/backend/shared/src/config/env-validator.ts"
+        pattern: |
+          import { z } from 'zod';
+          const envSchema = z.object({
+            DATABASE_URL: z.string().url(),
+            JWT_SECRET: z.string().min(32),
+            REDIS_URL: z.string().url(),
+            // ... all required vars with validation
+          });
+          export function validateEnv() {
+            const result = envSchema.safeParse(process.env);
+            if (!result.success) {
+              console.error('Missing env vars:', result.error.flatten().fieldErrors);
+              process.exit(1);
+            }
+          }
+    exit_criteria:
+      - "src/backend/shared/src/config/env-validator.ts exists"
+      - "All process.env.* refs from RECON are covered in schema"
+
+  # ---------------------------------------------------------------------------
+  # PRIORITY 3.5: Mobile Security (MASVS gaps — AI scaffolds, human finalizes)
+  # ---------------------------------------------------------------------------
+  # NOTE: Two MASVS items are ALREADY COMPLETE (verified 2026-03-09):
+  #   - MASVS-STORAGE-1: secureTokenStorage wired into AuthContext.tsx (lines 3,67,81,107,109,194)
+  #   - MASVS-RESILIENCE-1: warnIfCompromised() imported+called in App.tsx (lines 11,40)
+  # These do NOT need AI agent work. Update README/mobile-security-guide accordingly.
+  # ---------------------------------------------------------------------------
+
+  - id: AI-SEC-01
+    title: "MASVS-NETWORK-2 — Native SSL Pinning Implementation"
+    priority: P1
+    effort: M
+    ai_coverage: 60%
+    swarm_topology: hierarchical
+    workers: 4  # 1 RECON + 2 CODER + 1 VERIFIER
+    description: |
+      Current state: ssl-pinning.ts uses header-based signaling (not real pinning).
+      A MitM attacker can bypass it. Need native TLS pinning via react-native-ssl-pinning
+      or TrustKit. AI scaffolds the integration; human provides real SPKI hashes from
+      production certificates.
+    steps:
+      - step: "RECON — Audit current pinning implementation"
+        commands:
+          - "cat src/web/mobile/src/api/ssl-pinning.ts"
+          - "cat src/web/mobile/src/api/client.ts | head -50"
+          - "grep -rn 'ssl\\|pinning\\|certificate' src/web/mobile/ --include='*.ts' --include='*.tsx' -l"
+      - step: "CODER-1 — Install and integrate react-native-ssl-pinning"
+        actions:
+          - "cd src/web/mobile && yarn add react-native-ssl-pinning"
+          - "Create src/web/mobile/src/api/native-ssl-pinning.ts with fetch wrapper"
+          - "Update client.ts to use pinned fetch for all API calls"
+          - "Add pin configuration with placeholder SPKI hashes (clearly marked for ops)"
+      - step: "CODER-2 — Add Android network_security_config.xml pin entries"
+        file: "src/web/mobile/android/app/src/main/res/xml/network_security_config.xml"
+        action: "Add <pin-set> entries for API domain with placeholder hashes"
+      - step: "VERIFIER — Confirm compilation"
+        command: "cd src/web/mobile && npx tsc --noEmit 2>&1 | grep 'ssl-pinning\\|native-ssl' | wc -l → 0"
+    not_ai:
+      - "Real SPKI hashes — requires production TLS certificates (ops team)"
+      - "iOS ATS configuration — requires real domain"
+    exit_criteria:
+      - "src/web/mobile/src/api/native-ssl-pinning.ts exists"
+      - "grep 'react-native-ssl-pinning' src/web/mobile/package.json"
+      - "Placeholder SPKI hashes clearly marked with TODO for ops"
+
+  - id: AI-SEC-02
+    title: "MASVS-AUTH-2 — Server-Side Biometric Challenge Verification"
+    priority: P1
+    effort: M
+    ai_coverage: 50%
+    swarm_topology: hierarchical
+    workers: 4  # 1 RECON + 2 CODER + 1 VERIFIER
+    description: |
+      ProfileBiometricSetup.tsx has real biometric integration via
+      react-native-biometrics, but server-side challenge verification
+      (createKeys() / createSignature()) is not yet implemented. The server
+      trusts the client boolean. Need key-pair generation + backend challenge endpoint.
+    steps:
+      - step: "RECON — Audit current biometric flow"
+        commands:
+          - "grep -rn 'biometric\\|createKeys\\|createSignature\\|simplePrompt' src/web/mobile/ --include='*.ts' --include='*.tsx' -l"
+          - "cat src/web/mobile/src/screens/settings/ProfileBiometricSetup.tsx | head -80"
+          - "grep -rn 'biometric' src/backend/ --include='*.ts' -l"
+      - step: "CODER-1 — Mobile: Add key-pair generation flow"
+        actions:
+          - "In ProfileBiometricSetup.tsx: call rnBiometrics.createKeys() on enable"
+          - "Send publicKey to backend POST /auth/biometric/register"
+          - "On login: request challenge from GET /auth/biometric/challenge"
+          - "Sign challenge with createSignature(payload)"
+          - "Send signature to POST /auth/biometric/verify"
+      - step: "CODER-2 — Backend: Add biometric challenge endpoints"
+        files:
+          - "src/backend/auth-service/src/biometric/biometric.controller.ts"
+          - "src/backend/auth-service/src/biometric/biometric.service.ts"
+          - "src/backend/auth-service/src/biometric/biometric.module.ts"
+        endpoints:
+          - "POST /auth/biometric/register — store user's public key"
+          - "GET /auth/biometric/challenge — generate + store nonce"
+          - "POST /auth/biometric/verify — verify signature with stored public key"
+    exit_criteria:
+      - "src/backend/auth-service/src/biometric/ directory exists with 3 files"
+      - "grep 'createKeys\\|createSignature' src/web/mobile/src/screens/settings/ProfileBiometricSetup.tsx | wc -l >= 2"
+      - "cd src/backend && npx tsc --noEmit 2>&1 | grep 'error TS' | wc -l → 0"
+
+  - id: AI-SEC-03
+    title: "MASVS-RESILIENCE-2 — Anti-Tampering / Play Integrity Integration"
+    priority: P2
+    effort: M
+    ai_coverage: 40%
+    swarm_topology: hierarchical
+    workers: 4  # 1 RECON + 2 CODER + 1 VERIFIER
+    description: |
+      No anti-tampering or integrity checks (SafetyNet/Play Integrity for Android,
+      DeviceCheck/App Attest for iOS). AI scaffolds the integration; human configures
+      Google Cloud project and Apple entitlements.
+    steps:
+      - step: "RECON — Check existing device security"
+        commands:
+          - "cat src/web/mobile/src/utils/device-security.ts"
+          - "grep -rn 'integrity\\|attestation\\|safetynet\\|DeviceCheck' src/web/mobile/ --include='*.ts' --include='*.tsx'"
+      - step: "CODER-1 — Mobile: Add Play Integrity / App Attest check"
+        actions:
+          - "Install react-native-google-play-integrity or equivalent"
+          - "Create src/web/mobile/src/utils/app-integrity.ts"
+          - "Add integrity token request on app launch"
+          - "Send token to backend for server-side verification"
+      - step: "CODER-2 — Backend: Add integrity verification endpoint"
+        actions:
+          - "Create src/backend/auth-service/src/integrity/integrity.service.ts"
+          - "Verify Play Integrity token via Google API"
+          - "Verify App Attest token via Apple API"
+          - "Return pass/fail to mobile client"
+    not_ai:
+      - "Google Cloud project setup + Play Integrity API key"
+      - "Apple Developer account entitlements for App Attest"
+    exit_criteria:
+      - "src/web/mobile/src/utils/app-integrity.ts exists"
+      - "src/backend/auth-service/src/integrity/ directory exists"
+      - "cd src/backend && npx tsc --noEmit 2>&1 | grep 'error TS' | wc -l → 0"
+
+  - id: AI-SEC-04
+    title: "MASVS-CODE-1 — Enable minifyEnabled + Verify ProGuard Rules"
+    priority: P2
+    effort: S
+    ai_coverage: 80%
+    swarm_topology: hierarchical
+    workers: 2  # 1 CODER + 1 VERIFIER
+    description: |
+      proguard-rules.pro already created at android/app/proguard-rules.pro with keep rules
+      for Hermes, RN 0.73, and native deps. minifyEnabled cannot be set until the project
+      is ejected from Expo managed workflow or uses EAS custom build. AI prepares the
+      build.gradle changes; human triggers after Expo eject/EAS setup.
+    steps:
+      - step: "CODER — Prepare build.gradle for R8 obfuscation"
+        actions:
+          - "Verify proguard-rules.pro has all necessary keep rules"
+          - "Create/update android/app/build.gradle release block:"
+          - |
+            release {
+                minifyEnabled true
+                shrinkResources true
+                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            }
+          - "Add comment: // Activate after Expo eject or EAS custom native build"
+      - step: "VERIFIER — Validate ProGuard rules completeness"
+        checks:
+          - "Keep rules for Hermes engine"
+          - "Keep rules for react-native-reanimated"
+          - "Keep rules for react-native-mmkv"
+          - "Keep rules for react-native-biometrics"
+    not_ai:
+      - "Expo eject or EAS custom native build configuration"
+    exit_criteria:
+      - "grep 'minifyEnabled true' android/app/build.gradle || echo 'ready in build.gradle'"
+      - "grep -c 'keep' android/app/proguard-rules.pro >= 10"
+
+  # ---------------------------------------------------------------------------
+  # PRIORITY 4: Post-launch improvements (non-blocking)
+  # ---------------------------------------------------------------------------
+
+  - id: AI-P1-5
+    title: "Prisma 7.x Migration"
+    priority: P1
+    effort: S
+    ai_coverage: 70%
+    swarm_topology: hierarchical
+    workers: 3  # 1 RECON + 1 CODER + 1 VERIFIER
+    description: "prisma.config.ts already created and ready to uncomment."
+    steps:
+      - step: "RECON — Check current Prisma version + config state"
+        commands:
+          - "grep '\"prisma\"' src/backend/package.json"
+          - "cat src/backend/prisma.config.ts"
+          - "cat src/backend/shared/prisma/schema.prisma | head -20"
+      - step: "CODER — Execute migration"
+        actions:
+          - "Uncomment defineConfig in prisma.config.ts"
+          - "Remove url from datasource block in schema.prisma (moved to config)"
+          - "Run npx prisma generate to verify"
+          - "Update any prisma client imports if API changed"
+    exit_criteria:
+      - "npx prisma generate exits 0"
+      - "npx prisma validate exits 0"
+      - "cd src/backend && npx tsc --noEmit 2>&1 | grep 'error TS' | wc -l → 0"
+
+  - id: AI-PL-07
+    title: "CodeQL False Positive — photo-upload.tsx XSS alert"
+    priority: P2
+    effort: S
+    ai_coverage: 100%
+    swarm_topology: hierarchical
+    workers: 3
+    file: "src/web/web/src/pages/care/symptom-checker/photo-upload.tsx"
+    steps:
+      - step: "CODER — Add blob: URL protocol validation"
+        pattern: |
+          // BEFORE:
+          const url = URL.createObjectURL(file);
+          // AFTER:
+          const url = URL.createObjectURL(file);
+          if (!url.startsWith('blob:')) {
+            throw new Error('Invalid URL protocol');
+          }
+      - step: "CODER — Add URL.revokeObjectURL cleanup"
+        actions:
+          - "Add useEffect import"
+          - "Add cleanup effect that revokes all blob URLs on unmount"
+          - "Call URL.revokeObjectURL in removePhoto before filtering"
+      - step: "CODER — Add useEffect cleanup"
+        pattern: |
+          useEffect(() => {
+            return () => {
+              photos.forEach(photo => URL.revokeObjectURL(photo.preview));
+            };
+          }, []);
+    exit_criteria:
+      - "grep 'revokeObjectURL' src/web/web/src/pages/care/symptom-checker/photo-upload.tsx | wc -l >= 2"
+      - "grep 'blob:' src/web/web/src/pages/care/symptom-checker/photo-upload.tsx | wc -l >= 1"
+
+  - id: AI-PL-08
+    title: "Remove /* eslint-disable */ from backend files"
+    priority: P2
+    effort: M
+    ai_coverage: 100%
+    swarm_topology: hierarchical-mesh
+    workers: 6  # 1 RECON + 4 CODER + 1 VERIFIER
+    description: |
+      ~25 backend files have blanket /* eslint-disable */ added during TS error
+      fix swarms. Replace with targeted rule disables or fix the underlying violations.
+    steps:
+      - step: "RECON — List all files with blanket eslint-disable"
+        command: "grep -rn '^\\/\\* eslint-disable \\*\\/' src/backend/ --include='*.ts' -l"
+      - step: "CODER — Per file: remove blanket disable, run eslint, fix or add targeted disables"
+        pattern: |
+          // BEFORE:
+          /* eslint-disable */
+          import { ... } from '...';
+          // AFTER (targeted):
+          /* eslint-disable @typescript-eslint/no-unsafe-assignment, max-len */
+          import { ... } from '...';
+          // OR: fix the actual violations (preferred)
+    exit_criteria:
+      - "grep -rn '^\\/\\* eslint-disable \\*\\/' src/backend/ --include='*.ts' | wc -l → 0"
+      - "cd src/backend && npx eslint . --ext .ts 2>&1 | grep 'error' | wc -l → 0"
+      - "cd src/backend && npx tsc --noEmit 2>&1 | grep 'error TS' | wc -l → 0"
+
+  - id: AI-PL-02
+    title: "@sentry/nextjs v8 upgrade"
+    priority: P2
+    effort: L
+    ai_coverage: 70%
+    swarm_topology: hierarchical
+    workers: 5
+    description: "Upgrade Sentry SDK. Fixes 2 high vulns (rollup transitive)."
+    steps:
+      - step: "RECON — Inventory current Sentry usage"
+        commands:
+          - "grep -rn '@sentry' src/web/ --include='*.ts' --include='*.tsx' -l"
+          - "grep '@sentry/nextjs' src/web/web/package.json"
+          - "cat src/web/web/sentry.client.config.ts"
+          - "cat src/web/web/sentry.server.config.ts"
+      - step: "CODER — Execute upgrade"
+        actions:
+          - "Update @sentry/nextjs to ^8.x in package.json"
+          - "Update sentry.client.config.ts for v8 API changes"
+          - "Update sentry.server.config.ts for v8 API changes"
+          - "Update next.config.js withSentryConfig if API changed"
+          - "Run yarn install && yarn build to verify"
+    exit_criteria:
+      - "grep '@sentry/nextjs' src/web/web/package.json shows ^8."
+      - "cd src/web && yarn build exits 0"
+      - "No @sentry/nextjs v7 in yarn.lock"
+
+# =============================================================================
+# EXECUTION SUMMARY
+# =============================================================================
+#
+# | ID        | Title                    | Effort | AI%  | Est. AI Time |
+# |-----------|--------------------------|--------|------|--------------|
+# | AI-P1-4   | TODO/FIXME audit         | S      | 95%  | 0.5d         |
+# | AI-P1-1   | Mock data scan           | S      | 90%  | 0.5d         |
+# | AI-P1-6   | esbuild resolution fix   | XS     | 100% | 0.1d         |
+# | AI-P1-7   | Prometheus instrumentation| S      | 90%  | 0.5d         |
+# | AI-P1-8   | i18n parity fix          | S      | 85%  | 0.5d         |
+# | AI-P1-2   | Test coverage increase   | XL     | 85%  | 3-5d         |
+# | AI-P1-3   | TS strict (frontend)     | L      | 80%  | 2-3d         |
+# | AI-P0-1   | API stub verification    | S      | 70%  | 1-2d         |
+# | AI-P0-6   | LGPD extraction          | M      | 25%  | 1d           |
+# | AI-P0-3   | Terraform validation     | M      | 30%  | 1d           |
+# | AI-P0-5   | Env validator script     | S      | 20%  | 0.5d         |
+# | AI-SEC-01 | SSL pinning (MASVS-NET2) | M      | 60%  | 1d           |
+# | AI-SEC-02 | Biometric challenge      | M      | 50%  | 1-2d         |
+# | AI-SEC-03 | Anti-tampering (Play Int)| M      | 40%  | 1d           |
+# | AI-SEC-04 | minifyEnabled + ProGuard | S      | 80%  | 0.5d         |
+# | AI-P1-5   | Prisma 7.x migration     | S      | 70%  | 0.5d         |
+# | AI-PL-07  | CodeQL false positive    | S      | 100% | 0.5d         |
+# | AI-PL-08  | Remove eslint-disable    | M      | 100% | 1d           |
+# | AI-PL-02  | Sentry v8 upgrade        | L      | 70%  | 1-2d         |
+# |-----------|--------------------------|--------|------|--------------|
+# | TOTAL     | 19 tasks                 |        |      | ~16-22d      |
+#
+# Parallel execution with 4 swarms can compress to ~6-8 calendar days.
+#
+# ALREADY COMPLETE (verified 2026-03-09 — no AI work needed):
+#   - MASVS-STORAGE-1: secureTokenStorage wired into AuthContext.tsx ✅
+#   - MASVS-RESILIENCE-1: warnIfCompromised() called in App.tsx ✅
+#
+# =============================================================================
+
+# =============================================================================
+# RESIDUAL VULNERABILITIES — Accepted risks
+# =============================================================================
+residual_vulns:
+  backend:
+    total: 1
+    details:
+      - pkg: "serialize-javascript"
+        severity: high
+        path: "@nestjs/cli > webpack > terser-webpack-plugin > serialize-javascript"
+        risk: "Dev-only, not in production runtime"
+        fix: "Requires @nestjs/cli major bump to v11"
+        accepted: true
+  web:
+    total: 2
+    details:
+      - pkg: "esbuild"
+        severity: medium
+        fix: "Bump to >=0.25.0 — dev-only"
+        accepted: true
+      - pkg: "ip"
+        severity: medium
+        count: 2
+        fix: "No patch — react-native transitive"
+        accepted: true
+
+# =============================================================================
+# SWARM WORKFLOW — Compact reference (full: 013-agent-guide.yaml)
+# =============================================================================
+workflow:
+
+  bootstrap: # Run ONCE per session
+    - "npx @claude-flow/cli@latest daemon start"
+    - "npx @claude-flow/cli@latest doctor --verbose"
+    - "npx @claude-flow/cli@latest memory init --force --verbose"
+    - "npx @claude-flow/cli@latest hooks pretrain --verbose"
+    - "npx @claude-flow/cli@latest hooks build-agents --verbose"
+    - "npx @claude-flow/cli@latest hooks worker dispatch --trigger map"
+    - "npx @claude-flow/cli@latest hooks worker dispatch --trigger deepdive"
+    - "npx @claude-flow/cli@latest hooks worker dispatch --trigger ultralearn"
+    - "npx @claude-flow/cli@latest neural train --modelType moe --epochs 10"
+    - "npx @claude-flow/cli@latest neural train --modelType transformer --epochs 10"
+    - "npx @claude-flow/cli@latest neural train --modelType classifier --epochs 10"
+
+  per_swarm:
+    1_pre_task: "hooks pre-task --task-id {id} --description {desc}"
+    2_store_scope: "memory store --key {id}-scope --value {scope} --namespace healthcare-platform"
+    3_hive_init: "hive-mind init --topology hierarchical-mesh --max-agents 15 --consensus byzantine"
+    4_spawn: "Display command. STOP. Wait for user."
+    5_wait: "User runs in separate terminal. Do NOT poll."
+    6_verify: "Run exit criteria commands."
+    7_post_task: "hooks post-task --task-id {id} --success true --store-results true"
+    8_neural: "hooks post-edit --file {f} --train-neural true"
+    9_store: "memory store --key {id}-complete --value {results} --namespace healthcare-platform"
+
+  spawn_flags: |
+    npx @claude-flow/cli@latest hive-mind spawn \
+      --workers {N} \
+      --topology hierarchical-mesh \
+      --consensus byzantine \
+      --claude \
+      --model-routing intelligent \
+      --namespace healthcare-platform \
+      --use-memory --use-patterns --use-vectors --use-learning \
+      --objective '{OBJECTIVE}'
+
+  queen_role_rules: |
+    CRITICAL: The queen is the EXECUTION ENGINE, not the orchestrator.
+    - Queen uses Edit/Read/Task tools directly
+    - Queen delegates to workers via Task tool for parallel sub-tasks
+    - Queen MUST NOT display hive-mind spawn commands for the user
+    - Queen MUST NOT wait for user input — execute autonomously
+    - AP10 (queen_as_orchestrator) = CRITICAL anti-pattern (WEIGHT=0.95)
+
+  anti_drift:
+    topology: hierarchical-mesh
+    max_agents: 15
+    consensus: byzantine
+    rules:
+      - "3-phase RECON→CODER→VERIFIER"
+      - "EXIT GATE per worker (self-verification)"
+      - "UPSTREAM GATE on verifier (blocks without data)"
+      - "max 8 workers per swarm for tight coordination"
+      - "AP10: queen NEVER displays spawn commands — she IS the executor"
+
+  cli_prefix: "npx @claude-flow/cli@latest"
