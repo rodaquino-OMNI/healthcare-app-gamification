@@ -1,9 +1,10 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
 import { ThemeProvider } from 'styled-components';
+
 import { Avatar } from './Avatar';
-import { colors } from '../../tokens/colors';
 import { baseTheme } from '../../themes/base.theme';
+import { colors } from '../../tokens/colors';
 
 // Helper function to render components with the theme provider
 const renderWithTheme = (ui: React.ReactNode, theme = baseTheme) => {

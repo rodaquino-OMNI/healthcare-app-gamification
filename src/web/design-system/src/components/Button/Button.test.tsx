@@ -1,13 +1,8 @@
-import React from 'react';
 import { describe, it, expect } from '@jest/globals';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+
 import Button from './Button';
-import { colors } from '../../tokens/colors';
-import { baseTheme } from '../../themes/base.theme';
-import { healthTheme } from '../../themes/health.theme';
-import { careTheme } from '../../themes/care.theme';
-import { planTheme } from '../../themes/plan.theme';
-import { spacing } from '../../tokens/spacing';
 
 // Mock react-native components
 jest.mock('react-native', () => ({

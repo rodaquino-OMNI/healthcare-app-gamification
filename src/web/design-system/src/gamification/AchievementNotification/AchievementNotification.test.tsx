@@ -1,8 +1,8 @@
+import { describe, it, expect } from '@jest/globals';
+import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react'; // Version ^14.0.0
-import { describe, it, expect } from '@jest/globals'; // Version ^29.0.0
+
 import { AchievementNotification } from './AchievementNotification';
-import { AchievementNotificationProps } from './AchievementNotification'; // Component being tested.
 
 describe('AchievementNotification', () => {
     it('renders correctly with achievement details', () => {
@@ -49,7 +49,7 @@ describe('AchievementNotification', () => {
         // Create a mock onClose function.
         const onCloseMock = jest.fn();
 
-        // Action: Render the AchievementNotification component with the achievement object and the mock onClose function.
+        // Render the AchievementNotification with the achievement and mock onClose.
         render(<AchievementNotification achievement={achievement} onClose={onCloseMock} />);
 
         // Simulate a click on the close button.

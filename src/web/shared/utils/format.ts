@@ -331,6 +331,21 @@ export function formatPhoneNumber(phoneNumber: string): string {
  * @param cpf - The CPF number to format
  * @returns The formatted CPF string
  */
+/**
+ * Generic format namespace re-export for consumers that import { format } from shared/utils/format.
+ * Provides the core formatting functions as a single object.
+ */
+export const format = {
+  number: formatNumber,
+  currency: formatCurrency,
+  percent: formatPercent,
+  journeyValue: formatJourneyValue,
+  healthMetric: formatHealthMetric,
+  compact: formatCompactNumber,
+  truncate: truncateText,
+  phone: formatPhoneNumber,
+};
+
 export function formatCPF(cpf: string): string {
   if (!cpf) {
     return '';

@@ -1,6 +1,7 @@
-import React from 'react';
 import { describe, it, expect } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
+
 import { Divider } from './Divider';
 
 // Mock the styled component to render as a plain div with passed props

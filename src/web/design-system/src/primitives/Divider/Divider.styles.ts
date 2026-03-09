@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { colors } from '../../tokens/colors';
 import { spacing as spacingTokens } from '../../tokens/spacing';
 
@@ -14,8 +15,12 @@ interface StyledDividerProps {
  * Resolves the divider color from props
  */
 const getDividerColor = (props: StyledDividerProps): string => {
-    if (props.color) return props.color;
-    if (props.journey) return colors.journeys[props.journey].primary;
+    if (props.color) {
+        return props.color;
+    }
+    if (props.journey) {
+        return colors.journeys[props.journey].primary;
+    }
     return colors.gray[20]; // Default border color
 };
 
@@ -23,8 +28,12 @@ const getDividerColor = (props: StyledDividerProps): string => {
  * Resolves spacing token to actual value
  */
 const getSpacing = (space?: string): string => {
-    if (!space) return '0';
-    if (space in spacingTokens) return spacingTokens[space as keyof typeof spacingTokens];
+    if (!space) {
+        return '0';
+    }
+    if (space in spacingTokens) {
+        return spacingTokens[space as keyof typeof spacingTokens];
+    }
     return space;
 };
 

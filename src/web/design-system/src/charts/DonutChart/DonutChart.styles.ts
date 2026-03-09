@@ -1,8 +1,9 @@
 import styled from 'styled-components';
+
+import { borderRadius } from '../../tokens/borderRadius';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
 import { typography } from '../../tokens/typography';
-import { borderRadius } from '../../tokens/borderRadius';
 
 export const ChartContainer = styled.div`
     width: 100%;

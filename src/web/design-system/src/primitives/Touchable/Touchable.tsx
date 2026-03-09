@@ -1,7 +1,8 @@
 import React, { forwardRef } from 'react';
+
 import { StyledTouchableOpacity } from './Touchable.styles';
-import { colors } from '../../tokens/colors';
 import { borderRadius as borderRadiusTokens } from '../../tokens/borderRadius';
+import { colors } from '../../tokens/colors';
 
 /**
  * Props interface for the Touchable component
@@ -99,9 +100,9 @@ export interface TouchableProps extends React.ButtonHTMLAttributes<HTMLButtonEle
 export const Touchable = forwardRef<HTMLButtonElement, TouchableProps>((props, ref) => {
     const {
         onPress,
-        onLongPress,
+        onLongPress: _onLongPress,
         disabled = false,
-        activeOpacity,
+        activeOpacity: _activeOpacity,
         testID,
         journey,
         children,
@@ -111,7 +112,7 @@ export const Touchable = forwardRef<HTMLButtonElement, TouchableProps>((props, r
         accessibilityLabel,
         accessibilityHint,
         accessibilityRole,
-        accessible,
+        accessible: _accessible,
         accessibilityState,
         ...rest
     } = props;

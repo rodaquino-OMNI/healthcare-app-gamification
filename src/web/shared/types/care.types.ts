@@ -9,6 +9,18 @@
 import { z } from 'zod'; // v3.22.4
 
 /**
+ * Literal union for appointment types.
+ * Aligned with DS AppointmentCard interface.
+ */
+export type AppointmentType = 'telemedicine' | 'in_person';
+
+/**
+ * Literal union for appointment statuses.
+ * Aligned with DS AppointmentCard interface.
+ */
+export type AppointmentStatus = 'upcoming' | 'completed' | 'cancelled';
+
+/**
  * Represents a scheduled appointment between a user and a provider
  * Used for appointment booking and management in the Care Journey
  */
@@ -17,8 +29,8 @@ export interface Appointment {
   userId: string;
   providerId: string;
   dateTime: string;
-  type: string;
-  status: string;
+  type: AppointmentType;
+  status: AppointmentStatus;
   reason?: string;
   notes?: string;
 }
@@ -39,6 +51,12 @@ export interface Medication {
 }
 
 /**
+ * Literal union for telemedicine session statuses.
+ * Aligned with DS VideoConsultation component call states.
+ */
+export type TelemedicineSessionStatus = 'connecting' | 'connected' | 'reconnecting' | 'disconnected';
+
+/**
  * Represents an active telemedicine session between a user and a provider
  * Used for virtual consultations in the Care Journey
  */
@@ -47,11 +65,16 @@ export interface TelemedicineSession {
   appointmentId: string;
   userId: string;
   providerId: string;
-  status: string;
+  status: TelemedicineSessionStatus;
   startTime?: string;
   endTime?: string;
   roomUrl?: string;
 }
+
+/**
+ * Literal union for treatment plan statuses.
+ */
+export type TreatmentPlanStatus = 'active' | 'completed' | 'cancelled' | 'paused';
 
 /**
  * Represents a treatment plan created by a provider for a user
@@ -61,11 +84,14 @@ export interface TreatmentPlan {
   id: string;
   userId: string;
   providerId: string;
+  name?: string;
+  description?: string;
   diagnosis: string;
   treatments: string[];
   startDate: string;
   endDate?: string;
-  status: string;
+  status: TreatmentPlanStatus;
+  progress?: number;
 }
 
 /**
@@ -91,8 +117,8 @@ export const appointmentSchema = z.object({
   userId: z.string().uuid(),
   providerId: z.string().uuid(),
   dateTime: z.string().datetime(),
-  type: z.string(),
-  status: z.string(),
+  type: z.enum(['telemedicine', 'in_person']),
+  status: z.enum(['upcoming', 'completed', 'cancelled']),
   reason: z.string().optional(),
   notes: z.string().optional(),
 });
@@ -121,7 +147,7 @@ export const telemedicineSessionSchema = z.object({
   appointmentId: z.string().uuid(),
   userId: z.string().uuid(),
   providerId: z.string().uuid(),
-  status: z.string(),
+  status: z.enum(['connecting', 'connected', 'reconnecting', 'disconnected']),
   startTime: z.string().datetime().optional(),
   endTime: z.string().datetime().optional(),
   roomUrl: z.string().url().optional(),
@@ -139,7 +165,7 @@ export const treatmentPlanSchema = z.object({
   treatments: z.array(z.string()),
   startDate: z.string().datetime(),
   endDate: z.string().datetime().optional(),
-  status: z.string(),
+  status: z.enum(['active', 'completed', 'cancelled', 'paused']),
 });
 
 /**

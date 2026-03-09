@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+
 import { BarChart } from './BarChart';
 import { colors } from '../../tokens/colors';
 

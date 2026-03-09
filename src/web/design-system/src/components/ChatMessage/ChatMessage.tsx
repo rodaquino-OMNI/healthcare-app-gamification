@@ -1,10 +1,11 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
+
 import { borderRadius } from '../../tokens/borderRadius';
+import { colors } from '../../tokens/colors';
 import { shadows } from '../../tokens/shadows';
+import { spacing } from '../../tokens/spacing';
+import { typography } from '../../tokens/typography';
 
 export interface ChatMessageProps {
     message: string;
@@ -21,7 +22,7 @@ export interface TypingIndicatorProps {
     journey?: 'health' | 'care' | 'plan';
 }
 
-const getJourneyColor = (journey?: string) => {
+const getJourneyColor = (journey?: string): string => {
     if (journey && colors.journeys[journey as keyof typeof colors.journeys]) {
         return colors.journeys[journey as keyof typeof colors.journeys].primary;
     }
@@ -142,7 +143,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
     journey,
     accessibilityLabel,
 }) => {
-    const getInitials = (name: string) => name.charAt(0).toUpperCase();
+    const getInitials = (name: string): string => name.charAt(0).toUpperCase();
 
     return (
         <MessageWrapper

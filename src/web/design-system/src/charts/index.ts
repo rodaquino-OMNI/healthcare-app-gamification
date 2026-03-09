@@ -9,13 +9,20 @@
  */
 
 // Export BarChart and its props
-export { BarChart, BarChartProps } from './BarChart';
+export { BarChart } from './BarChart';
+export type { BarChartProps } from './BarChart';
 
 // Import and re-export LineChart and its props
-import LineChart, { LineChartProps } from './LineChart';
-export { LineChartProps };
+import LineChart, { type LineChartProps } from './LineChart';
+export type { LineChartProps };
 export { LineChart };
 
 // Export RadialChart and its props
-export { RadialChart, RadialChartProps } from './RadialChart';
-export { DonutChart, DonutChartProps } from './DonutChart';
+export { RadialChart } from './RadialChart';
+export type { RadialChartProps } from './RadialChart';
+export { DonutChart } from './DonutChart';
+export type { DonutChartProps } from './DonutChart';
+
+// Re-export HealthChart from health module for consumers that import from charts/index
+export { HealthChart } from '../health/HealthChart';
+export type { HealthChartProps } from '../health/HealthChart';

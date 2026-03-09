@@ -1,9 +1,8 @@
-import React, { forwardRef, useState, useCallback, useEffect, useImperativeHandle } from 'react';
-import { Box } from '../../primitives/Box';
-import { Text } from '../../primitives/Text';
+import React, { forwardRef, useState, useCallback, useEffect } from 'react';
+
 import { baseTheme } from '../../themes';
-import { colors } from '../../tokens/colors';
 import { borderRadiusValues } from '../../tokens/borderRadius';
+import { colors } from '../../tokens/colors';
 import { spacingValues } from '../../tokens/spacing';
 
 /**
@@ -71,7 +70,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((props, ref)
     }, [checked]);
 
     // Get journey-specific styling
-    const getJourneyColor = () => {
+    const getJourneyColor = (): string => {
         if (journey && theme.colors.journeys[journey]) {
             return theme.colors.journeys[journey].primary;
         }

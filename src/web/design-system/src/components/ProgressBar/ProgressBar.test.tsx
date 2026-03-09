@@ -1,6 +1,7 @@
+import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
+
 import ProgressBar from './ProgressBar';
 import { healthTheme, careTheme, planTheme } from '../../themes';
 

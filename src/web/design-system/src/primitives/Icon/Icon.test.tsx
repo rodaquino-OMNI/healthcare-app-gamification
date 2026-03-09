@@ -1,12 +1,13 @@
-import React from 'react';
 import { describe, it, expect } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
+
 import { Icon } from './Icon';
 
 // Mock styled-components to render a plain span
 jest.mock('styled-components', () => {
     const styled = {
-        span: (strings: any, ...args: any[]) => {
+        span: (_strings: any, ..._args: any[]) => {
             return ({ children, size, color, ...props }: any) => (
                 <span data-testid="icon-container" data-size={size} data-color={color} {...props}>
                     {children}

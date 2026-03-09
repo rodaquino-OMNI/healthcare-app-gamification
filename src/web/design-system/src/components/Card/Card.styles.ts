@@ -1,8 +1,9 @@
-import styled, { ThemeProps, DefaultTheme } from 'styled-components';
+import styled from 'styled-components';
+
 import { borderRadius } from '../../tokens/borderRadius';
+import { colors } from '../../tokens/colors';
 import { shadows } from '../../tokens/shadows';
 import { spacing } from '../../tokens/spacing';
-import { colors } from '../../tokens/colors';
 
 /**
  * The main container for the Card component.

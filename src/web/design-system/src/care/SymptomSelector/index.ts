@@ -5,10 +5,7 @@
  * symptom checker feature (F-102-RQ-001).
  */
 
-// Import the main component
 import SymptomSelector from './SymptomSelector';
-
-// Import styled components
 import { SymptomSelectorContainer, SymptomList, SymptomItem, SymptomLabel } from './SymptomSelector.styles';
 
 // Export styled components for custom styling and extension

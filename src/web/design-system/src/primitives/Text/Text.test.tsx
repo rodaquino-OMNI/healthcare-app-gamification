@@ -1,14 +1,15 @@
-import React from 'react';
 import { describe, it, expect } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
+
 import { Text } from './Text';
 
 // Mock styled-components to render a plain element
 jest.mock('styled-components', () => {
     const styled = {
-        span: (strings: any, ...args: any[]) => {
+        span: (_strings: any, ..._args: any[]) => {
             const Component = ({ children, as: Tag = 'span', ...props }: any) => {
-                const DomTag = Tag as any;
+                const DomTag = Tag;
                 return (
                     <DomTag
                         data-testid="text-element"

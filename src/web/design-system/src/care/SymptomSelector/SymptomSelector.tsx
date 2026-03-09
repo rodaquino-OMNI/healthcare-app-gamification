@@ -1,18 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { colors } from '../../tokens/colors';
-import { Box } from '../../primitives/Box/Box';
-import { Text } from '../../primitives/Text/Text';
-import { Input } from '../../components/Input/Input';
+
 import { Button } from '../../components/Button/Button';
 import { Card } from '../../components/Card/Card';
 import { Checkbox } from '../../components/Checkbox/Checkbox';
-
-// Local type stub for Symptom (shared package not available at build time)
-interface Symptom {
-    id: string;
-    name: string;
-    description?: string;
-}
+import { Input } from '../../components/Input/Input';
+import { Box } from '../../primitives/Box/Box';
+import { Text } from '../../primitives/Text/Text';
 
 /**
  * A component that allows users to select symptoms from a predefined list.
@@ -64,7 +57,7 @@ export const SymptomSelector: React.FC<{
     }, [symptoms, searchTerm]);
 
     // Handle checkbox change
-    const handleSymptomToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSymptomToggle = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const symptomId = e.target.value;
         const isChecked = e.target.checked;
 
@@ -78,12 +71,12 @@ export const SymptomSelector: React.FC<{
     };
 
     // Handle search input change
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setSearchTerm(e.target.value);
     };
 
     // Handle form submission
-    const handleSubmit = () => {
+    const handleSubmit = (): void => {
         const selectedSymptoms = symptoms.filter((symptom) => selectedSymptomIds.includes(symptom.id));
 
         onSymptomsSelected(selectedSymptoms);
@@ -109,7 +102,7 @@ export const SymptomSelector: React.FC<{
             <Card journey={journey} elevation="md">
                 <Box padding="md" maxHeight="300px" overflowY="auto" data-testid="symptom-list">
                     {filteredSymptoms.length === 0 ? (
-                        <Text>No symptoms found matching "{searchTerm}"</Text>
+                        <Text>No symptoms found matching &quot;{searchTerm}&quot;</Text>
                     ) : (
                         filteredSymptoms.map((symptom) => (
                             <Box key={symptom.id} marginBottom="sm">

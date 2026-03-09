@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { StyledSkeleton } from './Skeleton.styles';
 
 /**

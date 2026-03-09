@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
-import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
+
 import { borderRadius } from '../../tokens/borderRadius';
+import { colors } from '../../tokens/colors';
 import { shadows } from '../../tokens/shadows';
+import { spacing } from '../../tokens/spacing';
+import { typography } from '../../tokens/typography';
 
 export interface TooltipProps {
     content: React.ReactNode;
@@ -92,17 +93,23 @@ export const Tooltip: React.FC<TooltipProps> = ({
     const [visible, setVisible] = useState(false);
     const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    const show = () => {
-        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    const show = (): void => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
         timeoutRef.current = setTimeout(() => setVisible(true), delay);
     };
 
-    const hide = () => {
-        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    const hide = (): void => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
         setVisible(false);
     };
 
-    const toggle = () => setVisible((prev) => !prev);
+    const toggle = (): void => {
+        setVisible((prev) => !prev);
+    };
 
     const triggerProps =
         trigger === 'hover'

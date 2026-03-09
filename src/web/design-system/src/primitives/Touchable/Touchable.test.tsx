@@ -1,22 +1,27 @@
-import React from 'react';
 import { describe, it, expect } from '@jest/globals';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+
 import { Touchable } from './Touchable';
 
 // Mock react-native
-jest.mock('react-native', () => ({
-    TouchableOpacity: React.forwardRef(({ children, ...props }: any, ref: any) => (
+jest.mock('react-native', () => {
+    const MockTouchableOpacity = React.forwardRef(({ children, ...props }: any, ref: any) => (
         <button ref={ref} {...props}>
             {children}
         </button>
-    )),
-    GestureResponderEvent: {},
-    Platform: { OS: 'web' },
-}));
+    ));
+    MockTouchableOpacity.displayName = 'MockTouchableOpacity';
+    return {
+        TouchableOpacity: MockTouchableOpacity,
+        GestureResponderEvent: {},
+        Platform: { OS: 'web' },
+    };
+});
 
 // Mock styled Touchable to render a button
-jest.mock('./Touchable.styles', () => ({
-    StyledTouchableOpacity: React.forwardRef(
+jest.mock('./Touchable.styles', () => {
+    const MockStyledTouchableOpacity = React.forwardRef(
         ({ children, fullWidth, onPress, disabled, testID, ...props }: any, ref: any) => (
             <button
                 ref={ref}
@@ -29,8 +34,10 @@ jest.mock('./Touchable.styles', () => ({
                 {children}
             </button>
         )
-    ),
-}));
+    );
+    MockStyledTouchableOpacity.displayName = 'MockStyledTouchableOpacity';
+    return { StyledTouchableOpacity: MockStyledTouchableOpacity };
+});
 
 // Mock tokens
 jest.mock('../../tokens/colors', () => ({

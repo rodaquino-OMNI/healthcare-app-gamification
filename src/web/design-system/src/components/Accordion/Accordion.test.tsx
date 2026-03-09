@@ -1,12 +1,8 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, expect, it } from '@jest/globals';
+import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
 
 import Accordion from './Accordion';
-import Box from '../../primitives/Box/Box';
-import Text from '../../primitives/Text/Text';
-import Touchable from '../../primitives/Touchable/Touchable';
-import { tokens } from '../../tokens';
 
 describe('Accordion Component', () => {
     it('Renders children', () => {

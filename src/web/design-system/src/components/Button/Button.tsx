@@ -1,15 +1,16 @@
 import React from 'react';
-import styled from 'styled-components';
 import { ActivityIndicator } from 'react-native'; // v0.71+
-import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
-import { shadows } from '../../tokens/shadows';
-import { borderRadius } from '../../tokens/borderRadius';
-import { sizing } from '../../tokens/sizing';
-import { Touchable } from '../../primitives/Touchable/Touchable';
-import { Text } from '../../primitives/Text/Text';
+import styled from 'styled-components';
+
 import { Icon } from '../../primitives/Icon/Icon';
+import { Text } from '../../primitives/Text/Text';
+import { Touchable } from '../../primitives/Touchable/Touchable';
+import { borderRadius } from '../../tokens/borderRadius';
+import { colors } from '../../tokens/colors';
+import { shadows } from '../../tokens/shadows';
+import { sizing } from '../../tokens/sizing';
+import { spacing } from '../../tokens/spacing';
+import { typography } from '../../tokens/typography';
 
 /**
  * Props interface for the Button component
@@ -19,7 +20,7 @@ export interface ButtonProps {
      * Button style variant
      * @default 'primary'
      */
-    variant?: 'primary' | 'secondary' | 'tertiary' | string;
+    variant?: string;
 
     /**
      * Button size
@@ -47,7 +48,7 @@ export interface ButtonProps {
     /**
      * Function called when the button is pressed
      */
-    onPress?: (() => void) | (() => Promise<void>);
+    onPress?: () => void;
 
     /**
      * Accessibility label for screen readers
@@ -123,7 +124,8 @@ const StyledButton = styled(Touchable)<{
     pointer-events: ${(props) => (props.disabled ? 'none' : 'auto')};
 
     background-color: ${(props) => {
-        const journeyColors = colors.journeys[props.journey];
+        const journeyKey = (props.journey || 'health') as 'health' | 'care' | 'plan';
+        const journeyColors = colors.journeys[journeyKey];
         switch (props.variant) {
             case 'secondary':
                 return colors.neutral.white;
@@ -135,7 +137,8 @@ const StyledButton = styled(Touchable)<{
     }};
 
     color: ${(props) => {
-        const journeyColors = colors.journeys[props.journey];
+        const journeyKey = (props.journey || 'health') as 'health' | 'care' | 'plan';
+        const journeyColors = colors.journeys[journeyKey];
         switch (props.variant) {
             case 'secondary':
                 return journeyColors.primary;
@@ -146,8 +149,10 @@ const StyledButton = styled(Touchable)<{
         }
     }};
 
-    border: ${(props) =>
-        props.variant === 'secondary' ? `1px solid ${colors.journeys[props.journey].primary}` : 'none'};
+    border: ${(props) => {
+        const journeyKey = (props.journey || 'health') as 'health' | 'care' | 'plan';
+        return props.variant === 'secondary' ? `1px solid ${colors.journeys[journeyKey].primary}` : 'none';
+    }};
 
     &:hover {
         ${(props) => !props.disabled && `box-shadow: ${shadows.lg}`}
@@ -178,13 +183,13 @@ export const Button: React.FC<ButtonProps> = ({
     accessibilityLabel,
     children,
     journey = 'health',
-    iconOnly = false,
+    iconOnly: _iconOnly = false,
 }) => {
     // Determine if there's content other than just an icon
     const hasContent = React.Children.count(children) > 0;
 
     // Determine icon size based on button size using sizing tokens
-    const getIconSize = () => {
+    const getIconSize = (): string => {
         switch (size) {
             case 'sm':
                 return sizing.icon.xs; // 16px
@@ -196,7 +201,7 @@ export const Button: React.FC<ButtonProps> = ({
     };
 
     // Determine font size based on button size
-    const getFontSize = () => {
+    const getFontSize = (): string => {
         switch (size) {
             case 'sm':
                 return 'sm';
@@ -208,7 +213,7 @@ export const Button: React.FC<ButtonProps> = ({
     };
 
     // Calculate text color for loading indicator
-    const getTextColor = () => {
+    const getTextColor = (): string => {
         if (variant === 'primary') {
             return colors.neutral.white;
         }

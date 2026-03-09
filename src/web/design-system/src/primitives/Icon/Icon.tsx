@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import { colors } from '../../tokens/colors';
 import { sizing } from '../../tokens/sizing';
 
@@ -10,7 +11,7 @@ export interface IconProps {
     /** The name of the icon to display (e.g., 'heart', 'calendar'). */
     name: string;
     /** The size of the icon — either a sizing.icon token key or a custom CSS value. */
-    size?: keyof typeof sizing.icon | string | number;
+    size?: string | number;
     /** The color of the icon, using a color token from the design system. */
     color?: string;
     /** Whether the icon should be hidden from screen readers. Accepts boolean or string "true"/"false". */
@@ -22,9 +23,13 @@ export interface IconProps {
 /**
  * Resolves icon size from sizing.icon tokens or passes through custom values
  */
-const resolveIconSize = (size: keyof typeof sizing.icon | string | number): string => {
-    if (typeof size === 'number') return `${size}px`;
-    if (size in sizing.icon) return sizing.icon[size as keyof typeof sizing.icon];
+const resolveIconSize = (size: string | number): string => {
+    if (typeof size === 'number') {
+        return `${size}px`;
+    }
+    if (size in sizing.icon) {
+        return sizing.icon[size as keyof typeof sizing.icon];
+    }
     return String(size);
 };
 

@@ -1,7 +1,9 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+
 import '@testing-library/jest-dom';
-import BenefitCard, { BenefitCardProps } from './BenefitCard';
+import BenefitCard from './BenefitCard';
+// eslint-disable-next-line import/no-unresolved
 import { Benefit } from '../../../shared/types/plan.types';
 import { ThemeProvider } from '../../themes';
 

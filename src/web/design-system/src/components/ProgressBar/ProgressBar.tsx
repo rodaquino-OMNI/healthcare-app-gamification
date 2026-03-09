@@ -1,9 +1,7 @@
 import React from 'react';
 import { useTheme } from 'styled-components';
+
 import { ProgressBarContainer, ProgressBarFill } from './ProgressBar.styles';
-import { colors } from '../../tokens/colors';
-import { spacing } from '../../tokens/spacing';
-import { borderRadius } from '../../tokens/borderRadius';
 
 /**
  * Props for the ProgressBar component
@@ -38,7 +36,9 @@ export interface ProgressBarProps {
  * @returns Percentage value between 0 and 100
  */
 const calculatePercentage = (current: number, total: number): number => {
-    if (total <= 0) return 0;
+    if (total <= 0) {
+        return 0;
+    }
     const percentage = (current / total) * 100;
     return Math.min(Math.max(percentage, 0), 100);
 };
@@ -56,13 +56,13 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
     levelMarkers = [],
     size = 'md',
     testId,
-    animated = true,
+    animated: _animated = true,
 }) => {
     const theme = useTheme();
     const progressPercentage = calculatePercentage(current, total);
 
     // Determine height based on size
-    const getHeight = () => {
+    const getHeight = (): string => {
         switch (size) {
             case 'sm':
                 return theme.spacing.xs;
@@ -78,7 +78,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
     const accessibilityLabel = ariaLabel || `Progress: ${Math.round(progressPercentage)}%`;
 
     // Get marker color based on journey
-    const getMarkerColor = () => {
+    const getMarkerColor = (): string => {
         if (journey && theme.colors.journeys[journey]) {
             return theme.colors.journeys[journey].secondary;
         }

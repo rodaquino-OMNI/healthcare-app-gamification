@@ -6,4 +6,5 @@
  */
 import { MedicationCard, MedicationCardProps } from './MedicationCard';
 
-export { MedicationCard, MedicationCardProps };
+export { MedicationCard };
+export type { MedicationCardProps };

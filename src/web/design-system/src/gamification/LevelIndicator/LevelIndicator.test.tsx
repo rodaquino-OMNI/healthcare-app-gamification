@@ -1,12 +1,14 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from '@jest/globals';
+import { render, screen } from '@testing-library/react';
+import React from 'react';
+
 import { LevelIndicator } from './LevelIndicator';
 
 // Mock styled-components
 jest.mock('styled-components', () => {
     const originalModule = jest.requireActual('styled-components');
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return {
         ...originalModule,
         ThemeProvider: ({ children }: { children: React.ReactNode }) => children,

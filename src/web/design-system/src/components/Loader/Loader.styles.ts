@@ -1,7 +1,8 @@
 import styled, { keyframes } from 'styled-components';
+
+import { borderRadius } from '../../tokens/borderRadius';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
-import { borderRadius } from '../../tokens/borderRadius';
 
 export const spin = keyframes`
   0% { transform: rotate(0deg); }

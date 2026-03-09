@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+
 import { AccordionHeader, AccordionContent, AccordionIcon } from './Accordion.styles';
 import { Box } from '../../primitives/Box/Box';
 import { Text } from '../../primitives/Text/Text';

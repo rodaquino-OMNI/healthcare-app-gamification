@@ -1,8 +1,9 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
+
+import { borderRadius } from '../../tokens/borderRadius';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
-import { borderRadius } from '../../tokens/borderRadius';
 
 export interface LoaderProps {
     variant?: 'spinner' | 'skeleton' | 'progress';

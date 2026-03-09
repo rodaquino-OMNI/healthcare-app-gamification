@@ -1,9 +1,10 @@
 import React from 'react';
+
+import { Button } from '../../components/Button';
 import { Box } from '../../primitives/Box';
+import { Icon } from '../../primitives/Icon';
 import { Stack } from '../../primitives/Stack';
 import { Text } from '../../primitives/Text';
-import { Icon } from '../../primitives/Icon';
-import { Button } from '../../components/Button';
 import { colors } from '../../tokens/colors';
 import { sizing } from '../../tokens/sizing';
 
@@ -50,7 +51,7 @@ export const ProviderCard: React.FC<ProviderCardProps> = ({ provider, onPress })
     const careColors = colors.journeys.care;
 
     // Render star rating
-    const renderRating = () => {
+    const renderRating = (): React.ReactElement => {
         // Create filled stars based on rating
         const stars = [];
         for (let i = 0; i < 5; i++) {

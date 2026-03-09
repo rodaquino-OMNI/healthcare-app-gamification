@@ -4,5 +4,6 @@
  * from the design system.
  */
 
-export { Toast, ToastProps } from './Toast';
+export { Toast } from './Toast';
+export type { ToastProps } from './Toast';
 export { Toast as default } from './Toast';

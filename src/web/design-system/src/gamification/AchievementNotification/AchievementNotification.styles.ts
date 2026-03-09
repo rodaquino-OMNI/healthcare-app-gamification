@@ -1,8 +1,9 @@
 import styled from 'styled-components'; // version 6.1.8
+
+import { borderRadius } from '../../tokens/borderRadius';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
 import { typography } from '../../tokens/typography';
-import { borderRadius } from '../../tokens/borderRadius';
 
 export const NotificationContainer = styled.div`
     position: fixed;

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import React, { useState } from 'react';
+
 import Accordion from './Accordion';
 
 const meta: Meta<typeof Accordion> = {
@@ -38,7 +39,7 @@ export const Expanded: Story = {
 };
 
 export const WithJourney: Story = {
-    render: () => (
+    render: (): React.ReactElement => (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <Accordion
                 journey="health"
@@ -59,16 +60,18 @@ export const WithJourney: Story = {
     ),
 };
 
+const ControlledAccordion = (): React.ReactElement => {
+    const [expanded, setExpanded] = useState(false);
+    return (
+        <Accordion
+            title={expanded ? 'Click to collapse' : 'Click to expand'}
+            content="This is a controlled accordion. The parent component manages the expanded state."
+            isExpanded={expanded}
+            onToggle={(next) => setExpanded(next)}
+        />
+    );
+};
+
 export const Controlled: Story = {
-    render: () => {
-        const [expanded, setExpanded] = useState(false);
-        return (
-            <Accordion
-                title={expanded ? 'Click to collapse' : 'Click to expand'}
-                content="This is a controlled accordion. The parent component manages the expanded state."
-                isExpanded={expanded}
-                onToggle={(next) => setExpanded(next)}
-            />
-        );
-    },
+    render: () => <ControlledAccordion />,
 };

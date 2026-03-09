@@ -1,12 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import React from 'react';
+
 import { ClaimCard } from './ClaimCard';
 
 // Provide a minimal i18next mock so the component renders without a full i18n setup.
 // react-i18next's useTranslation hook is expected to be configured via the Storybook
 // i18next decorator in preview.tsx or via an alias. This fallback wraps the story
 // with a simple translation stub if the global setup is absent.
-const i18nDecorator = (Story: React.ComponentType) => <Story />;
+const i18nDecorator = (Story: React.ComponentType): React.ReactElement => <Story />;
 
 const meta: Meta<typeof ClaimCard> = {
     title: 'Plan/ClaimCard',

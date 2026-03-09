@@ -1,16 +1,19 @@
-import React from 'react';
 import { describe, it, expect } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
+
 import { Box } from './Box';
 
 // Mock the styled BoxContainer to render as a plain div
-jest.mock('./Box.styles', () => ({
-    BoxContainer: React.forwardRef(({ children, ...props }: any, ref: any) => (
+jest.mock('./Box.styles', () => {
+    const MockBoxContainer = React.forwardRef(({ children, ...props }: any, ref: any) => (
         <div ref={ref} data-testid="box-container" {...props}>
             {children}
         </div>
-    )),
-}));
+    ));
+    MockBoxContainer.displayName = 'MockBoxContainer';
+    return { BoxContainer: MockBoxContainer };
+});
 
 // Mock token modules
 jest.mock('../../tokens/spacing', () => ({

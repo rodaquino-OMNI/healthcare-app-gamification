@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
-import { shadows } from '../../tokens/shadows';
+
 import { borderRadius } from '../../tokens/borderRadius';
+import { colors } from '../../tokens/colors';
+import { shadows } from '../../tokens/shadows';
+import { spacing } from '../../tokens/spacing';
+import { typography } from '../../tokens/typography';
 
 // ======= Header =======
 export interface HeaderProps {
@@ -15,7 +16,7 @@ export interface HeaderProps {
     accessibilityLabel?: string;
 }
 
-const getJourneyColor = (journey?: string) => {
+const getJourneyColor = (journey?: string): string => {
     if (journey && colors.journeys[journey as keyof typeof colors.journeys]) {
         return colors.journeys[journey as keyof typeof colors.journeys].primary;
     }
@@ -84,7 +85,9 @@ const Tab = styled.button<{ isActive: boolean; journey?: string; disabled?: bool
     font-size: ${typography.fontSize.sm};
     font-weight: ${(props) => (props.isActive ? typography.fontWeight.semiBold : typography.fontWeight.regular)};
     color: ${(props) => {
-        if (props.disabled) return colors.neutral.gray500;
+        if (props.disabled) {
+            return colors.neutral.gray500;
+        }
         return props.isActive ? getJourneyColor(props.journey) : colors.neutral.gray600;
     }};
     background-color: transparent;

@@ -1,1 +1,2 @@
-export { RadioButton, RadioButtonProps } from './RadioButton';
+export { RadioButton } from './RadioButton';
+export type { RadioButtonProps } from './RadioButton';

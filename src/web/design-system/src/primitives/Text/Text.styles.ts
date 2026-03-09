@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { typography, colors, mediaQueries } from '../../tokens';
 
 /**
@@ -73,7 +74,9 @@ export interface TextStyleProps {
 const calculateResponsiveSize = (size: string, breakpoint: string): string => {
     // Extract numeric value and unit
     const matches = size.match(/^([\d.]+)(\w+)$/);
-    if (!matches) return size;
+    if (!matches) {
+        return size;
+    }
 
     const [, valueStr, unit] = matches;
     const value = parseFloat(valueStr);
@@ -152,13 +155,14 @@ export const StyledText = styled.span<TextStyleProps>`
             : props.letterSpacing || typography.letterSpacing.normal};
 
     color: ${(props) => {
-        if (props.color && props.journey) {
+        if (props.color && props.journey && props.journey in colors.journeys) {
+            const journeyColors = colors.journeys[props.journey as keyof typeof colors.journeys];
             if (props.color === 'journey') {
-                return colors.journeys[props.journey].primary;
+                return journeyColors.primary;
             }
             if (props.color.startsWith('journey.')) {
-                const journeyProperty = props.color.split('.')[1];
-                return colors.journeys[props.journey][journeyProperty] || colors.neutral.gray900;
+                const journeyProperty = props.color.split('.')[1] as keyof typeof journeyColors;
+                return journeyColors[journeyProperty] || colors.neutral.gray900;
             }
         }
         return props.color || colors.neutral.gray900;

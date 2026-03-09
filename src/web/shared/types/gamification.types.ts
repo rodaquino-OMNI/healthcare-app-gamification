@@ -1,4 +1,10 @@
 /**
+ * Literal union for journey identifiers used in the gamification system.
+ * Aligned with DS component interfaces (QuestCard, RewardCard, LevelIndicator).
+ */
+export type GamificationJourney = 'health' | 'care' | 'plan';
+
+/**
  * Defines the structure for an achievement in the gamification system.
  * Achievements represent milestones that users can unlock by performing
  * specific actions or reaching certain thresholds.
@@ -53,7 +59,7 @@ export interface Quest {
   /** Detailed description of what the quest involves */
   description: string;
   /** Which journey this quest belongs to (health, care, plan) */
-  journey: string;
+  journey: GamificationJourney;
   /** Icon identifier for visual representation */
   icon: string;
   /** Current progress toward completing the quest */
@@ -93,7 +99,7 @@ export interface Reward {
   /** Detailed description of what the reward provides */
   description: string;
   /** Which journey this reward is associated with */
-  journey: string;
+  journey: GamificationJourney;
   /** Icon identifier for visual representation */
   icon: string;
   /** Experience points value of the reward */

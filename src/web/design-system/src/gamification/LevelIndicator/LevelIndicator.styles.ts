@@ -1,9 +1,10 @@
 import styled from 'styled-components';
-import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
+
 import { borderRadius } from '../../tokens/borderRadius';
+import { colors } from '../../tokens/colors';
 import { sizing } from '../../tokens/sizing';
+import { spacing } from '../../tokens/spacing';
+import { typography } from '../../tokens/typography';
 
 /**
  * Container for the entire LevelIndicator component.

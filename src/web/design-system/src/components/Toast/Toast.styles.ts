@@ -1,7 +1,8 @@
 import styled from 'styled-components';
+
 import { colors } from '../../tokens/colors';
-import { spacing } from '../../tokens/spacing';
 import { shadows } from '../../tokens/shadows';
+import { spacing } from '../../tokens/spacing';
 import { typography } from '../../tokens/typography';
 
 // Define types for Toast variations
@@ -19,7 +20,7 @@ interface ToastContainerProps {
 /**
  * Get background color based on variant and journey
  */
-const getBackgroundColor = (variant: ToastVariant = 'info', journey?: JourneyType) => {
+const getBackgroundColor = (variant: ToastVariant = 'info', journey?: JourneyType): string => {
     // If journey is provided, use journey colors
     if (journey) {
         return colors.journeys[journey].background;
@@ -42,7 +43,7 @@ const getBackgroundColor = (variant: ToastVariant = 'info', journey?: JourneyTyp
 /**
  * Get border color based on variant and journey
  */
-const getBorderColor = (variant: ToastVariant = 'info', journey?: JourneyType) => {
+const getBorderColor = (variant: ToastVariant = 'info', journey?: JourneyType): string => {
     // If journey is provided, use journey colors
     if (journey) {
         return colors.journeys[journey].primary;
@@ -65,7 +66,7 @@ const getBorderColor = (variant: ToastVariant = 'info', journey?: JourneyType) =
 /**
  * Get position styles based on position prop
  */
-const getPositionStyles = (position: ToastPosition = 'bottom') => {
+const getPositionStyles = (position: ToastPosition = 'bottom'): string => {
     switch (position) {
         case 'top':
             return `
@@ -106,7 +107,7 @@ const getPositionStyles = (position: ToastPosition = 'bottom') => {
 /**
  * Get animation styles based on position and visibility
  */
-const getAnimationStyles = (position: ToastPosition = 'bottom', visible: boolean = false) => {
+const getAnimationStyles = (position: ToastPosition = 'bottom', visible: boolean = false): string => {
     // Determine the initial transform direction based on position
     const yDirection = position.startsWith('top') ? '-20px' : '20px';
 

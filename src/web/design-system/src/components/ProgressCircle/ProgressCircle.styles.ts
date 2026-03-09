@@ -1,6 +1,7 @@
-import styled, { css } from 'styled-components';
-import { colors } from '../../tokens/colors';
+import styled from 'styled-components';
+
 import { animation } from '../../tokens/animation';
+import { colors } from '../../tokens/colors';
 
 /**
  * Props for the circle container
@@ -89,11 +90,13 @@ export const CircleProgress = styled.circle<CircleProgressProps>`
     fill: none;
     stroke: ${({ color, journey }) => {
         // Use provided color if available
-        if (color) return color;
+        if (color) {
+            return color;
+        }
 
         // Otherwise use journey color if valid journey provided
-        if (journey && colors.journeys[journey]) {
-            return colors.journeys[journey].primary;
+        if (journey && journey in colors.journeys) {
+            return colors.journeys[journey as keyof typeof colors.journeys].primary;
         }
 
         // Fallback to default color

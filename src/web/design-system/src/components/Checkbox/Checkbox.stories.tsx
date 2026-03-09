@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import React, { useState } from 'react';
+
 import { Checkbox } from './Checkbox';
 
 const meta: Meta<typeof Checkbox> = {
@@ -20,24 +21,26 @@ const meta: Meta<typeof Checkbox> = {
 export default meta;
 type Story = StoryObj<typeof Checkbox>;
 
+const DefaultCheckbox = (): React.ReactElement => {
+    const [checked, setChecked] = useState(false);
+    return (
+        <Checkbox
+            id="default"
+            name="default"
+            value="default"
+            label="I agree to the terms"
+            checked={checked}
+            onChange={() => setChecked(!checked)}
+        />
+    );
+};
+
 export const Default: Story = {
-    render: () => {
-        const [checked, setChecked] = useState(false);
-        return (
-            <Checkbox
-                id="default"
-                name="default"
-                value="default"
-                label="I agree to the terms"
-                checked={checked}
-                onChange={() => setChecked(!checked)}
-            />
-        );
-    },
+    render: () => <DefaultCheckbox />,
 };
 
 export const Checked: Story = {
-    render: () => (
+    render: (): React.ReactElement => (
         <Checkbox
             id="checked"
             name="checked"
@@ -50,7 +53,7 @@ export const Checked: Story = {
 };
 
 export const Disabled: Story = {
-    render: () => (
+    render: (): React.ReactElement => (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <Checkbox
                 id="dis1"
@@ -74,41 +77,43 @@ export const Disabled: Story = {
     ),
 };
 
+const JourneyCheckboxes = (): React.ReactElement => {
+    const [h, setH] = useState(false);
+    const [c, setC] = useState(false);
+    const [p, setP] = useState(false);
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <Checkbox
+                id="h"
+                name="h"
+                value="h"
+                label="Health option"
+                checked={h}
+                journey="health"
+                onChange={() => setH(!h)}
+            />
+            <Checkbox
+                id="c"
+                name="c"
+                value="c"
+                label="Care option"
+                checked={c}
+                journey="care"
+                onChange={() => setC(!c)}
+            />
+            <Checkbox
+                id="p"
+                name="p"
+                value="p"
+                label="Plan option"
+                checked={p}
+                journey="plan"
+                onChange={() => setP(!p)}
+            />
+        </div>
+    );
+};
+
 export const WithJourney: Story = {
-    render: () => {
-        const [h, setH] = useState(false);
-        const [c, setC] = useState(false);
-        const [p, setP] = useState(false);
-        return (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <Checkbox
-                    id="h"
-                    name="h"
-                    value="h"
-                    label="Health option"
-                    checked={h}
-                    journey="health"
-                    onChange={() => setH(!h)}
-                />
-                <Checkbox
-                    id="c"
-                    name="c"
-                    value="c"
-                    label="Care option"
-                    checked={c}
-                    journey="care"
-                    onChange={() => setC(!c)}
-                />
-                <Checkbox
-                    id="p"
-                    name="p"
-                    value="p"
-                    label="Plan option"
-                    checked={p}
-                    journey="plan"
-                    onChange={() => setP(!p)}
-                />
-            </div>
-        );
-    },
+    render: () => <JourneyCheckboxes />,
 };

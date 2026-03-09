@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
+
 import { borderRadius } from '../../tokens/borderRadius';
+import { spacing } from '../../tokens/spacing';
 
 // Styled components for the GoalCard
 const Card = styled.div<{ completed?: boolean }>`

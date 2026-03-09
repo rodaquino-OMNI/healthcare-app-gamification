@@ -1,26 +1,29 @@
+import { format, type Locale } from 'date-fns';
+import { pt } from 'date-fns/locale';
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import ReactDatePicker, { registerLocale, setDefaultLocale, CalendarContainerProps } from 'react-datepicker';
 import styled from 'styled-components';
-import { pt } from 'date-fns/locale';
-import { format, parse } from 'date-fns';
 
-import { colors } from '../../tokens/colors';
-import { spacing } from '../../tokens/spacing';
-import { typography } from '../../tokens/typography';
-import { borderRadius } from '../../tokens/borderRadius';
-import { shadows } from '../../tokens/shadows';
+import { Button } from '../../components/Button/Button';
+import { Modal } from '../../components/Modal/Modal';
 import { Box } from '../../primitives/Box/Box';
 import { Text } from '../../primitives/Text/Text';
 import { Touchable } from '../../primitives/Touchable/Touchable';
-import { Modal } from '../../components/Modal/Modal';
-import { Button } from '../../components/Button/Button';
+import { borderRadius } from '../../tokens/borderRadius';
+import { colors } from '../../tokens/colors';
+import { shadows } from '../../tokens/shadows';
+import { spacing } from '../../tokens/spacing';
+import { typography } from '../../tokens/typography';
 
 // Local utility replacing shared package import
 const isValidDate = (date: unknown): date is Date => date instanceof Date && !isNaN(date.getTime());
 
 // Register the Brazilian Portuguese locale for the datepicker
-registerLocale('pt-BR', pt);
-setDefaultLocale('pt-BR');
+const ptLocale: Locale = pt as unknown as Locale;
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+registerLocale('pt-BR', ptLocale);
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+(setDefaultLocale as (locale: string) => void)('pt-BR');
 
 /**
  * Props for the DatePicker component
@@ -102,14 +105,20 @@ const DateInputContainer = styled(Box)<{ hasError?: boolean; journey?: string }>
             props.hasError
                 ? colors.semantic.error
                 : props.journey
-                  ? colors.journeys[props.journey].primary
+                  ? colors.journeys[props.journey as keyof typeof colors.journeys].primary
                   : colors.neutral.gray300};
     background-color: ${colors.neutral.white};
 
     &:focus-within {
-        border-color: ${(props) => (props.journey ? colors.journeys[props.journey].accent : colors.brand.primary)};
+        border-color: ${(props) =>
+            props.journey
+                ? colors.journeys[props.journey as keyof typeof colors.journeys].accent
+                : colors.brand.primary};
         box-shadow: 0 0 0 2px
-            ${(props) => (props.journey ? `${colors.journeys[props.journey].primary}33` : `${colors.brand.primary}33`)};
+            ${(props) =>
+                props.journey
+                    ? `${colors.journeys[props.journey as keyof typeof colors.journeys].primary}33`
+                    : `${colors.brand.primary}33`};
     }
 `;
 
@@ -151,12 +160,17 @@ const CalendarContainer = styled.div<{ journey?: string }>`
 
     .react-datepicker__day--selected,
     .react-datepicker__day--keyboard-selected {
-        background-color: ${(props) => (props.journey ? colors.journeys[props.journey].primary : colors.brand.primary)};
+        background-color: ${(props) =>
+            props.journey
+                ? colors.journeys[props.journey as keyof typeof colors.journeys].primary
+                : colors.brand.primary};
         color: ${colors.neutral.white};
 
         &:hover {
             background-color: ${(props) =>
-                props.journey ? colors.journeys[props.journey].accent : colors.brand.secondary};
+                props.journey
+                    ? colors.journeys[props.journey as keyof typeof colors.journeys].accent
+                    : colors.brand.secondary};
         }
     }
 `;
@@ -208,24 +222,24 @@ export const DatePicker = forwardRef<any, DatePickerProps>((props, ref) => {
     }));
 
     // Handle date change from the picker
-    const handleDateChange = (date: Date | null) => {
+    const handleDateChange = (date: Date | null): void => {
         setTempDate(date);
     };
 
     // Handle confirm button in modal
-    const handleConfirm = () => {
+    const handleConfirm = (): void => {
         onChange?.(tempDate);
         setIsOpen(false);
     };
 
     // Handle cancel button in modal
-    const handleCancel = () => {
-        setTempDate(value);
+    const handleCancel = (): void => {
+        setTempDate(value ?? null);
         setIsOpen(false);
     };
 
     // Custom input to display the selected date
-    const CustomInput = () => {
+    const CustomInput = (): React.ReactElement => {
         // Format the date according to the specified format
         const formattedDate = value && isValidDate(value) ? format(value, dateFormat) : '';
 
@@ -261,8 +275,9 @@ export const DatePicker = forwardRef<any, DatePickerProps>((props, ref) => {
     };
 
     // Render calendar container with custom styling and actions
-    const renderCalendarContainer = ({ className, children }: CalendarContainerProps) => (
+    const renderCalendarContainer = ({ className, children }: CalendarContainerProps): React.ReactElement => (
         <Box padding="md">
+            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
             <CalendarContainer journey={journey} className={className}>
                 {children}
             </CalendarContainer>

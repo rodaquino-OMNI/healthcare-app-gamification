@@ -1,6 +1,6 @@
 import { baseTheme } from './base.theme';
-import { colors } from '../tokens/colors';
 import { borderRadius } from '../tokens/borderRadius';
+import { colors } from '../tokens/colors';
 
 /**
  * Plan Journey Theme

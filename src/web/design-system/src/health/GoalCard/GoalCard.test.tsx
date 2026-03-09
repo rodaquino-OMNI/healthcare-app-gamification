@@ -1,12 +1,13 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
-import GoalCard from './GoalCard';
+import React from 'react';
 import { ThemeProvider } from 'styled-components';
-import { theme } from '../../../theme';
+
+import GoalCard from './GoalCard';
+import { baseTheme as theme } from '../../themes';
 
 // Create a custom render function that includes the ThemeProvider
-const customRender = (ui, options = {}) => {
-    return render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>, options);
+const customRender = (ui: React.ReactElement) => {
+    return render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
 };
 
 describe('GoalCard', () => {

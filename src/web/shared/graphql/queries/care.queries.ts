@@ -46,3 +46,23 @@ export const GET_PROVIDERS = gql`
   }
   ${ProviderFragment}
 `;
+
+/**
+ * GraphQL query to retrieve treatment plans for a user
+ */
+export const GET_TREATMENT_PLANS = gql`
+  query GetTreatmentPlans($userId: ID!) {
+    treatmentPlans(userId: $userId) {
+      id
+      title
+      description
+      status
+      startDate
+      endDate
+      provider {
+        ...ProviderFragment
+      }
+    }
+  }
+  ${ProviderFragment}
+`;

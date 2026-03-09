@@ -1,33 +1,40 @@
-import React from 'react';
 import { describe, it, expect } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
+
 import { Stack } from './Stack';
 
 // Mock Stack.styles to render a plain div
-jest.mock('./Stack.styles', () => ({
-    StackContainer: React.forwardRef(({ direction, spacing, wrap, align, children, ...props }: any, ref: any) => (
-        <div
-            ref={ref}
-            data-testid="stack-container"
-            data-direction={direction}
-            data-spacing={typeof spacing === 'object' ? JSON.stringify(spacing) : spacing}
-            data-wrap={String(wrap)}
-            data-align={align}
-            {...props}
-        >
-            {children}
-        </div>
-    )),
-}));
+jest.mock('./Stack.styles', () => {
+    const MockStackContainer = React.forwardRef(
+        ({ direction, spacing, wrap, align, children, ...props }: any, ref: any) => (
+            <div
+                ref={ref}
+                data-testid="stack-container"
+                data-direction={direction}
+                data-spacing={typeof spacing === 'object' ? JSON.stringify(spacing) : spacing}
+                data-wrap={String(wrap)}
+                data-align={align}
+                {...props}
+            >
+                {children}
+            </div>
+        )
+    );
+    MockStackContainer.displayName = 'MockStackContainer';
+    return { StackContainer: MockStackContainer };
+});
 
 // Mock Box (used by Stack.styles internally, but since we mock Stack.styles fully this is a safety net)
-jest.mock('../Box/Box', () => ({
-    Box: React.forwardRef(({ children, ...props }: any, ref: any) => (
+jest.mock('../Box/Box', () => {
+    const MockBox = React.forwardRef(({ children, ...props }: any, ref: any) => (
         <div ref={ref} {...props}>
             {children}
         </div>
-    )),
-}));
+    ));
+    MockBox.displayName = 'MockBox';
+    return { Box: MockBox };
+});
 
 jest.mock('../../tokens/spacing', () => ({
     spacing: { xs: '4px', sm: '8px', md: '16px', lg: '24px' },

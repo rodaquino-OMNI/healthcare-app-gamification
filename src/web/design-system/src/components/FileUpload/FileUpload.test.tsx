@@ -1,6 +1,7 @@
-import React from 'react';
 import { describe, it, expect } from '@jest/globals';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+
 import { FileUpload, UploadProgress } from './FileUpload';
 
 describe('FileUpload', () => {
@@ -16,7 +17,7 @@ describe('FileUpload', () => {
 
     it('opens file dialog on click', () => {
         render(<FileUpload onFilesSelected={jest.fn()} />);
-        const input = screen.getByTestId('file-upload-input') as HTMLInputElement;
+        const input = screen.getByTestId('file-upload-input');
         const clickSpy = jest.spyOn(input, 'click');
         fireEvent.click(screen.getByTestId('file-upload'));
         expect(clickSpy).toHaveBeenCalled();
@@ -24,7 +25,7 @@ describe('FileUpload', () => {
 
     it('does not open file dialog when disabled', () => {
         render(<FileUpload onFilesSelected={jest.fn()} disabled />);
-        const input = screen.getByTestId('file-upload-input') as HTMLInputElement;
+        const input = screen.getByTestId('file-upload-input');
         const clickSpy = jest.spyOn(input, 'click');
         fireEvent.click(screen.getByTestId('file-upload'));
         expect(clickSpy).not.toHaveBeenCalled();

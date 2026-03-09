@@ -1,9 +1,10 @@
 import styled, { keyframes, css } from 'styled-components';
+
 import { Icon } from '../../primitives/Icon/Icon';
-import { spacing } from '../../tokens/spacing';
 import { borderRadius } from '../../tokens/borderRadius';
-import { typography } from '../../tokens/typography';
 import { colors } from '../../tokens/colors';
+import { spacing } from '../../tokens/spacing';
+import { typography } from '../../tokens/typography';
 
 // Animation for expanding and collapsing accordion content
 const expandAnimation = keyframes`

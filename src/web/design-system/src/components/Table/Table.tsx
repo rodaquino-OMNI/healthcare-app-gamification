@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
+
 import { borderRadius } from '../../tokens/borderRadius';
+import { colors } from '../../tokens/colors';
+import { spacing } from '../../tokens/spacing';
+import { typography } from '../../tokens/typography';
 
 export interface TableColumn {
     key: string;
@@ -115,8 +116,10 @@ export const Table: React.FC<TableProps> = ({
     const [sortKey, setSortKey] = useState<string | null>(null);
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
-    const handleSort = (column: TableColumn) => {
-        if (!column.sortable || !onSort) return;
+    const handleSort = (column: TableColumn): void => {
+        if (!column.sortable || !onSort) {
+            return;
+        }
         const newDirection = sortKey === column.key && sortDirection === 'asc' ? 'desc' : 'asc';
         setSortKey(column.key);
         setSortDirection(newDirection);

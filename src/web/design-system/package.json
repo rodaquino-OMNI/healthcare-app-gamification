@@ -32,7 +32,7 @@
         "react": "19.0.0",
         "react-dom": "19.0.0",
         "styled-components": "6.0.5",
-        "react-native-web": "0.19.9",
+        "react-native-web": "0.20.0",
         "victory-native": "36.6.11",
         "react-native-reanimated": "3.4.0",
         "react-native-gesture-handler": "2.12.0",

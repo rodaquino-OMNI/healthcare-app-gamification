@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { colors } from '../../tokens/colors';
 import { sizing } from '../../tokens/sizing';
 
@@ -22,8 +23,12 @@ export const IconContainer = styled.svg.attrs({
 
     /* Coloring with support for custom colors and journey-specific theming */
     fill: ${({ color, journey }) => {
-        if (color) return color;
-        if (journey) return colors.journeys[journey].primary;
+        if (color) {
+            return color;
+        }
+        if (journey) {
+            return colors.journeys[journey].primary;
+        }
         return colors.neutral.gray700; // Default from neutral palette
     }};
 

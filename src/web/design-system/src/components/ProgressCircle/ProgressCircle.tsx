@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Box } from '../../primitives/Box';
 import { Text } from '../../primitives/Text';
 import { colors } from '../../tokens/colors';
@@ -82,8 +83,12 @@ export const ProgressCircle: React.FC<ProgressCircleProps> = ({
 
     // Resolve color to an actual hex value instead of a token path string
     const getProgressColor = (): string => {
-        if (color) return color;
-        if (journey && colors.journeys[journey]) return colors.journeys[journey].primary;
+        if (color) {
+            return color;
+        }
+        if (journey && colors.journeys[journey]) {
+            return colors.journeys[journey].primary;
+        }
         return colors.brand.primary;
     };
     const progressColor = getProgressColor();

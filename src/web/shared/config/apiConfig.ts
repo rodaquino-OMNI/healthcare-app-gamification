@@ -48,6 +48,12 @@ interface ApiConfig {
  * Configuration object for API endpoints and related settings.
  * Centralizes API URL management and journey-specific endpoints.
  */
+/**
+ * Base URL for API requests, exported individually for consumers that
+ * import { baseURL } directly.
+ */
+export const baseURL: string = env.API_BASE_URL || 'http://localhost:3000/api';
+
 export const apiConfig: ApiConfig = {
   /**
    * Base URL for all API requests

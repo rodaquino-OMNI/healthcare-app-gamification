@@ -1,15 +1,11 @@
 import React from 'react';
-import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
-import { borderRadius } from '../../tokens/borderRadius';
-import { sizing } from '../../tokens/sizing';
+
+import { BarChart } from '../../charts/BarChart/BarChart';
+import { LineChart as LineChartComponent } from '../../charts/LineChart/LineChart';
+import { RadialChart } from '../../charts/RadialChart/RadialChart';
 import { Box } from '../../primitives/Box/Box';
 import { Text } from '../../primitives/Text/Text';
-import { LineChart as LineChartComponent } from '../../charts/LineChart/LineChart';
-import { BarChart } from '../../charts/BarChart/BarChart';
-import { RadialChart } from '../../charts/RadialChart/RadialChart';
-import { baseTheme } from '../../themes';
+import { colors } from '../../tokens/colors';
 
 // Local type stub for HealthMetric (shared package not available at build time)
 interface HealthMetric {
@@ -121,7 +117,7 @@ export const HealthChart: React.FC<HealthChartProps> = ({
             return (
                 <Box role="figure" aria-label={chartDescription}>
                     <LineChartComponent
-                        data={data}
+                        data={data as unknown as Array<Record<string, unknown>>}
                         xAxisKey={xAxisKey}
                         yAxisKey={yAxisKey}
                         xAxisLabel={xAxisLabel}
@@ -132,10 +128,10 @@ export const HealthChart: React.FC<HealthChartProps> = ({
                 </Box>
             );
 
-        case 'bar':
+        case 'bar': {
             // Transform data for BarChart
-            const values = data.map((item) => Number(item[yAxisKey]));
-            const labels = data.map((item) => String(item[xAxisKey]));
+            const values = data.map((item) => Number(item[yAxisKey as keyof HealthMetric]));
+            const labels = data.map((item) => String(item[xAxisKey as keyof HealthMetric]));
             const journeyColor = colors.journeys[journey].primary;
 
             return (
@@ -149,12 +145,13 @@ export const HealthChart: React.FC<HealthChartProps> = ({
                     />
                 </Box>
             );
+        }
 
-        case 'radial':
+        case 'radial': {
             // Transform data for RadialChart
             const pieData = data.map((item) => ({
-                x: String(item[xAxisKey]),
-                y: Number(item[yAxisKey]),
+                x: String(item[xAxisKey as keyof HealthMetric]),
+                y: Number(item[yAxisKey as keyof HealthMetric]),
             }));
 
             return (
@@ -162,6 +159,7 @@ export const HealthChart: React.FC<HealthChartProps> = ({
                     <RadialChart data={pieData} journey={journey} labelType="percentage" />
                 </Box>
             );
+        }
 
         default:
             // This should never happen due to TypeScript, but added for safety

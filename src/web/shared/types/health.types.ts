@@ -33,6 +33,8 @@ export interface HealthMetric {
   unit: string;
   timestamp: string;
   source: string;
+  /** Optional previous value for computing trend comparisons */
+  previousValue?: number;
   /** Optional trend indicator (e.g. 'up', 'down', 'stable') for UI display */
   trend?: string;
 }
@@ -52,6 +54,11 @@ export interface MedicalEvent {
 }
 
 /**
+ * Literal union for health goal statuses.
+ */
+export type HealthGoalStatus = 'active' | 'completed' | 'paused' | 'cancelled';
+
+/**
  * Represents a health goal set by the user
  * Used for goal tracking and gamification in the My Health journey
  */
@@ -62,8 +69,13 @@ export interface HealthGoal {
   target: number;
   startDate: string;
   endDate: string;
-  status: string;
+  status: HealthGoalStatus;
 }
+
+/**
+ * Literal union for device connection statuses.
+ */
+export type DeviceConnectionStatus = 'connected' | 'disconnected' | 'syncing' | 'error';
 
 /**
  * Represents a connection to a health tracking device
@@ -72,10 +84,16 @@ export interface HealthGoal {
 export interface DeviceConnection {
   id: string;
   userId: string;
+  /** Display name for the device */
+  name?: string;
+  /** Device type category (e.g. 'smartwatch', 'blood_pressure') */
+  type?: string;
   deviceType: string;
   deviceId: string;
   lastSync: string;
-  status: string;
+  status: DeviceConnectionStatus;
+  /** Whether the device is currently connected */
+  connected?: boolean;
 }
 
 /**
@@ -117,7 +135,7 @@ export const healthGoalSchema = z.object({
   target: z.number(),
   startDate: z.string().datetime(),
   endDate: z.string().datetime(),
-  status: z.string(),
+  status: z.enum(['active', 'completed', 'paused', 'cancelled']),
 });
 
 /**
@@ -130,5 +148,5 @@ export const deviceConnectionSchema = z.object({
   deviceType: z.string(),
   deviceId: z.string(),
   lastSync: z.string().datetime(),
-  status: z.string(),
+  status: z.enum(['connected', 'disconnected', 'syncing', 'error']),
 });

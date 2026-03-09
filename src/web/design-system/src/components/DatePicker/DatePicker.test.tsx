@@ -1,8 +1,9 @@
-import React from 'react';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
-import { ThemeProvider } from 'styled-components';
-import DatePicker, { DatePickerProps } from '../DatePicker';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { format } from 'date-fns';
+import React from 'react';
+import { ThemeProvider } from 'styled-components';
+
+import DatePicker, { DatePickerProps } from '../DatePicker';
 
 // Create a mock theme for testing
 const mockTheme = {
@@ -65,8 +66,8 @@ const mockTheme = {
 };
 
 // Helper function to render components with theme
-const renderWithTheme = (ui: React.ReactElement, options = {}) => {
-    return render(<ThemeProvider theme={mockTheme}>{ui}</ThemeProvider>, options);
+const renderWithTheme = (ui: React.ReactElement) => {
+    return render(<ThemeProvider theme={mockTheme}>{ui}</ThemeProvider>);
 };
 
 // Helper function to set up the component with props
@@ -82,7 +83,7 @@ const setup = (props: Partial<DatePickerProps> = {}) => {
 
 // Mock Modal component
 jest.mock('../../components/Modal/Modal', () => {
-    return ({ children, visible, onClose, title }) =>
+    const MockModal = ({ children, visible, onClose, title }: any) =>
         visible ? (
             <div role="dialog" aria-modal="true" data-testid="mock-modal">
                 <div>{title}</div>
@@ -92,11 +93,13 @@ jest.mock('../../components/Modal/Modal', () => {
                 </button>
             </div>
         ) : null;
+    MockModal.displayName = 'MockModal';
+    return MockModal;
 });
 
 // Mock Button component
 jest.mock('../../components/Button/Button', () => {
-    return ({ children, onPress, variant, journey, accessibilityLabel }) => (
+    const MockButton = ({ children, onPress, variant, journey, accessibilityLabel }: any) => (
         <button
             onClick={onPress}
             data-testid={`button-${variant || 'primary'}`}
@@ -106,24 +109,18 @@ jest.mock('../../components/Button/Button', () => {
             {children}
         </button>
     );
+    MockButton.displayName = 'MockButton';
+    return MockButton;
 });
 
 // Mock react-datepicker
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 jest.mock('react-datepicker', () => {
     const actual = jest.requireActual('react-datepicker');
     return {
         __esModule: true,
         ...actual,
-        default: ({
-            onChange,
-            selected,
-            minDate,
-            maxDate,
-            inline,
-            calendarContainer: CalendarContainer,
-            locale,
-            ...props
-        }) => {
+        default: ({ onChange, minDate, maxDate, calendarContainer: CalendarContainer, locale }: any) => {
             // Mock calendar component
             const calendar = (
                 <div data-testid="mock-date-picker">
@@ -166,6 +163,7 @@ jest.mock('react-datepicker', () => {
         },
     };
 });
+/* eslint-enable @typescript-eslint/no-unsafe-return */
 
 describe('DatePicker', () => {
     it('renders correctly with default props', () => {
@@ -176,7 +174,7 @@ describe('DatePicker', () => {
         expect(screen.getByText('Selecione uma data')).toBeInTheDocument();
     });
 
-    it('handles date selection', async () => {
+    it('handles date selection', () => {
         const { getByTestId, onChange } = setup();
         const input = getByTestId('date-picker-input');
 
@@ -203,14 +201,14 @@ describe('DatePicker', () => {
 
     it('displays the selected date in the correct format', () => {
         const testDate = new Date(2023, 3, 15); // April 15, 2023
-        const { getByTestId } = setup({ value: testDate });
+        setup({ value: testDate });
 
         const formattedDate = format(testDate, 'dd/MM/yyyy');
         const textElement = screen.getByTestId('date-picker-text');
         expect(textElement).toHaveTextContent(formattedDate);
     });
 
-    it('respects min and max date constraints', async () => {
+    it('respects min and max date constraints', () => {
         const minDate = new Date(2023, 3, 12); // April 12, 2023
         const maxDate = new Date(2023, 3, 18); // April 18, 2023
         const { getByTestId, onChange } = setup({ minDate, maxDate });

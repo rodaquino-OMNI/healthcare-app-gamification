@@ -1,9 +1,10 @@
 import styled from 'styled-components';
-import { spacing } from '../../tokens/spacing';
-import { colors } from '../../tokens/colors';
-import { breakpoints } from '../../tokens/breakpoints';
+
 import { borderRadius } from '../../tokens/borderRadius';
+import { breakpoints } from '../../tokens/breakpoints';
+import { colors } from '../../tokens/colors';
 import { sizing } from '../../tokens/sizing';
+import { spacing } from '../../tokens/spacing';
 import { typography } from '../../tokens/typography';
 
 type JourneyType = 'health' | 'care' | 'plan';

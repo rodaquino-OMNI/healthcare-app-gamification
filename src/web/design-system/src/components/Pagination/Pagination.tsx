@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
+
 import { borderRadius } from '../../tokens/borderRadius';
+import { colors } from '../../tokens/colors';
+import { spacing } from '../../tokens/spacing';
+import { typography } from '../../tokens/typography';
 
 export interface PaginationProps {
     totalPages: number;
@@ -14,7 +15,7 @@ export interface PaginationProps {
     accessibilityLabel?: string;
 }
 
-const getJourneyColor = (journey?: string) => {
+const getJourneyColor = (journey?: string): string => {
     if (journey && colors.journeys[journey as keyof typeof colors.journeys]) {
         return colors.journeys[journey as keyof typeof colors.journeys].primary;
     }
@@ -95,7 +96,9 @@ export const Pagination: React.FC<PaginationProps> = ({
     journey,
     accessibilityLabel = 'Pagination',
 }) => {
-    if (totalPages <= 1) return null;
+    if (totalPages <= 1) {
+        return null;
+    }
 
     if (variant === 'dots') {
         return (
@@ -120,11 +123,17 @@ export const Pagination: React.FC<PaginationProps> = ({
             return Array.from({ length: totalPages }, (_, i) => i + 1);
         }
         const pages: (number | 'ellipsis')[] = [1];
-        if (currentPage > 3) pages.push('ellipsis');
+        if (currentPage > 3) {
+            pages.push('ellipsis');
+        }
         const start = Math.max(2, currentPage - 1);
         const end = Math.min(totalPages - 1, currentPage + 1);
-        for (let i = start; i <= end; i++) pages.push(i);
-        if (currentPage < totalPages - 2) pages.push('ellipsis');
+        for (let i = start; i <= end; i++) {
+            pages.push(i);
+        }
+        if (currentPage < totalPages - 2) {
+            pages.push('ellipsis');
+        }
         pages.push(totalPages);
         return pages;
     };

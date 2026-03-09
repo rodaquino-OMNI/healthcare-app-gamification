@@ -1,16 +1,18 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { describe, it, expect } from '@jest/globals';
 import { render, screen, fireEvent, act } from '@testing-library/react';
+import React from 'react';
 import { ThemeProvider } from 'styled-components';
-import { JourneyProvider } from '../../context/JourneyContext';
 
 import VideoConsultation from './VideoConsultation';
+// eslint-disable-next-line import/no-unresolved
+import { JourneyProvider } from '../../context/JourneyContext';
 import { careTheme } from '../../themes/care.theme';
 
 // Mock dependencies
 jest.mock('react-native', () => ({
     ActivityIndicator: () => <div data-testid="activity-indicator" />,
-    View: ({ children, ...props }) => (
+    View: ({ children, ...props }: any) => (
         <div data-testid="view" {...props}>
             {children}
         </div>
@@ -18,7 +20,7 @@ jest.mock('react-native', () => ({
 }));
 
 jest.mock('react-native-agora', () => ({
-    AgoraRendererView: ({ canvas }) => <div data-testid={`agora-renderer-${canvas?.uid || 'default'}`} />,
+    AgoraRendererView: ({ canvas }: any) => <div data-testid={`agora-renderer-${canvas?.uid || 'default'}`} />,
 }));
 
 // Mock navigation and route
@@ -27,7 +29,7 @@ const mockNavigation = () => ({
     goBack: jest.fn(),
 });
 
-const mockRoute = (params = {}) => ({
+const mockRoute = (params: Record<string, string> = {}) => ({
     params: {
         sessionId: 'test-session',
         channelName: 'test-channel',
@@ -40,7 +42,7 @@ const mockRoute = (params = {}) => ({
 });
 
 // Helper function to render with providers
-const renderWithProviders = (ui) => {
+const renderWithProviders = (ui: React.ReactElement) => {
     return render(
         <ThemeProvider theme={careTheme}>
             <JourneyProvider journey="care">{ui}</JourneyProvider>

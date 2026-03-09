@@ -6,10 +6,8 @@
  * of a user's insurance card with plan and member details.
  */
 
-// Import component and types from implementation file
-import { InsuranceCard, InsuranceCardProps } from './InsuranceCard';
-
-// Import styled components
+// Import component, types, and styled components from implementation files
+import { InsuranceCard, type InsuranceCardProps } from './InsuranceCard';
 import {
     InsuranceCardContainer,
     InsuranceCardHeader,
@@ -17,15 +15,11 @@ import {
     InsuranceCardFooter,
 } from './InsuranceCard.styles';
 
-// Re-export component and types
-export {
-    InsuranceCard,
-    InsuranceCardProps,
-    InsuranceCardContainer,
-    InsuranceCardHeader,
-    InsuranceCardBody,
-    InsuranceCardFooter,
-};
+// Re-export component and styled components
+export { InsuranceCard, InsuranceCardContainer, InsuranceCardHeader, InsuranceCardBody, InsuranceCardFooter };
+
+// Re-export types
+export type { InsuranceCardProps };
 
 // Export default component for convenience
 export default InsuranceCard;

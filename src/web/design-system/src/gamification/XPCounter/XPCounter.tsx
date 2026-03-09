@@ -1,10 +1,8 @@
 import React from 'react';
 import { useTheme } from 'styled-components';
+
 import { XPContainer, XPLabel, XPRemaining } from './XPCounter.styles';
 import { ProgressBar } from '../../components/ProgressBar';
-import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
 
 /**
  * Props for the XPCounter component
@@ -46,7 +44,9 @@ export const calculateRemainingXP = (currentXP: number, nextLevelXP: number): nu
  */
 export const calculateProgress = (currentXP: number, levelXP: number, nextLevelXP: number): number => {
     const totalXPForLevel = nextLevelXP - levelXP;
-    if (totalXPForLevel <= 0) return 100; // Avoid division by zero
+    if (totalXPForLevel <= 0) {
+        return 100;
+    } // Avoid division by zero
 
     const progressInLevel = currentXP - levelXP;
     let percentage = (progressInLevel / totalXPForLevel) * 100;
@@ -69,7 +69,7 @@ export const XPCounter: React.FC<XPCounterProps> = ({
     className,
     testId,
 }) => {
-    const theme = useTheme();
+    useTheme();
 
     // Calculate remaining XP and progress percentage
     const remainingXP = calculateRemainingXP(currentXP, nextLevelXP);

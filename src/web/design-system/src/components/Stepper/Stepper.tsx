@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
+
 import { borderRadius } from '../../tokens/borderRadius';
+import { colors } from '../../tokens/colors';
+import { spacing } from '../../tokens/spacing';
+import { typography } from '../../tokens/typography';
 
 export interface StepItem {
     label: string;
@@ -19,7 +20,7 @@ export interface StepperProps {
     accessibilityLabel?: string;
 }
 
-const getJourneyColor = (journey?: string) => {
+const getJourneyColor = (journey?: string): string => {
     if (journey && colors.journeys[journey as keyof typeof colors.journeys]) {
         return colors.journeys[journey as keyof typeof colors.journeys].primary;
     }
@@ -59,12 +60,18 @@ const StepCircle = styled.button<{ status: 'completed' | 'active' | 'pending'; j
             return colors.neutral.gray300;
         }};
     background-color: ${(props) => {
-        if (props.status === 'completed') return getJourneyColor(props.journey);
+        if (props.status === 'completed') {
+            return getJourneyColor(props.journey);
+        }
         return colors.neutral.white;
     }};
     color: ${(props) => {
-        if (props.status === 'completed') return colors.neutral.white;
-        if (props.status === 'active') return getJourneyColor(props.journey);
+        if (props.status === 'completed') {
+            return colors.neutral.white;
+        }
+        if (props.status === 'active') {
+            return getJourneyColor(props.journey);
+        }
         return colors.neutral.gray500;
     }};
     cursor: pointer;
@@ -110,8 +117,12 @@ export const Stepper: React.FC<StepperProps> = ({
     accessibilityLabel = 'Progress stepper',
 }) => {
     const getStepStatus = (index: number): 'completed' | 'active' | 'pending' => {
-        if (index < activeStep) return 'completed';
-        if (index === activeStep) return 'active';
+        if (index < activeStep) {
+            return 'completed';
+        }
+        if (index === activeStep) {
+            return 'active';
+        }
         return 'pending';
     };
 

@@ -16,9 +16,9 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "design-system/*": ["../design-system/src/*"],
-      "shared/*": ["../shared/*"]
+      "@/*": ["./web/src/*"],
+      "design-system/*": ["./design-system/src/*"],
+      "shared/*": ["./shared/*"]
     },
     "typeRoots": ["./node_modules/@types", "./types"],
     "types": ["node", "react", "react-dom", "jest", "styled-components", "testing-library__jest-dom"]

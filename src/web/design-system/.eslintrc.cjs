@@ -1,4 +1,10 @@
+const path = require('path');
+
 module.exports = {
+  parserOptions: {
+    project: [path.join(__dirname, 'tsconfig.json')],
+    tsconfigRootDir: __dirname,
+  },
   rules: {
     '@next/next/no-html-link-for-pages': 'off',
   },
@@ -6,7 +12,8 @@ module.exports = {
     {
       files: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx', '**/*.stories.tsx'],
       parserOptions: {
-        project: ['./tsconfig.eslint.json'],
+        project: [path.join(__dirname, 'tsconfig.eslint.json')],
+        tsconfigRootDir: __dirname,
       },
       rules: {
         '@typescript-eslint/no-unsafe-call': 'off',

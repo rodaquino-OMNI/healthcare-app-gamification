@@ -1,8 +1,4 @@
 import styled from 'styled-components';
-import { colors } from '../../tokens/colors';
-import { spacing } from '../../tokens/spacing';
-import { typography } from '../../tokens/typography';
-import { borderRadius } from '../../tokens/borderRadius';
 
 /**
  * Container for the GoalCard component.
@@ -28,7 +24,7 @@ export const GoalCardContainer = styled.div`
         box-shadow: ${(props) => props.theme.shadows.md};
     }
 
-    @media (min-width: ${(props) => props.theme.breakpoints.md}) {
+    @media (min-width: ${(props) => props.theme.breakpoints?.md}) {
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
@@ -46,7 +42,7 @@ export const GoalTitle = styled.h3`
     color: ${(props) => props.theme.colors.neutral.gray900};
     margin: 0 0 ${(props) => props.theme.spacing.sm} 0;
 
-    @media (min-width: ${(props) => props.theme.breakpoints.md}) {
+    @media (min-width: ${(props) => props.theme.breakpoints?.md}) {
         margin-bottom: 0;
         margin-right: ${(props) => props.theme.spacing.md};
     }
@@ -60,7 +56,7 @@ export const GoalProgress = styled.div`
     margin-top: ${(props) => props.theme.spacing.sm};
     width: 100%;
 
-    @media (min-width: ${(props) => props.theme.breakpoints.md}) {
+    @media (min-width: ${(props) => props.theme.breakpoints?.md}) {
         margin-top: 0;
         flex: 1;
         max-width: 60%;

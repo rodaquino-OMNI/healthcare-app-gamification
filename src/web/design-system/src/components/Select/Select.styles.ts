@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import { colors, spacing, typography, borderRadius, shadows } from '../../tokens';
+
+import { colors, spacing, typography, borderRadius } from '../../tokens';
 
 // Container component that wraps the entire Select component
 export const SelectContainer = styled.div`

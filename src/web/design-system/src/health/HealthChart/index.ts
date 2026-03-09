@@ -1,2 +1,3 @@
-export { HealthChart, HealthChartProps } from './HealthChart';
+export { HealthChart } from './HealthChart';
+export type { HealthChartProps } from './HealthChart';
 export { default } from './HealthChart';

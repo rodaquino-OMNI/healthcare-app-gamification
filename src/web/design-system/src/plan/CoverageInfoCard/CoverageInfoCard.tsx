@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import { Card } from '../../components/Card/Card';
+import { borderRadius } from '../../tokens/borderRadius';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
 import { typography } from '../../tokens/typography';
-import { borderRadius } from '../../tokens/borderRadius';
 
 // Local type stub for Coverage (shared package not available at build time)
 interface Coverage {

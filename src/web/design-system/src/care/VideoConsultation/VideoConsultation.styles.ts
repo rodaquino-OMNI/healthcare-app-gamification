@@ -1,8 +1,9 @@
 import styled, { css } from 'styled-components';
+
 import { Box } from '../../primitives/Box';
+import { borderRadius } from '../../tokens/borderRadius';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
-import { borderRadius } from '../../tokens/borderRadius';
 
 // Shared styles for video containers
 const videoContainerStyles = css`

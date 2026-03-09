@@ -1,21 +1,22 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
 import { expect, describe, it } from '@jest/globals';
+import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
 import '@testing-library/jest-dom';
 import { ThemeProvider } from 'styled-components';
-import { baseTheme } from '../../themes';
+
 import { DeviceCard } from './DeviceCard';
+import { baseTheme } from '../../themes';
 
 // Mock the Icon component
 jest.mock('../../primitives/Icon', () => ({
-    Icon: ({ name, size, color, ...props }) => (
+    Icon: ({ name, size: _size, color, ...props }: any) => (
         <div data-testid="icon" data-icon-name={name} data-icon-color={color} {...props} />
     ),
 }));
 
 describe('DeviceCard', () => {
     // Helper function to render component with ThemeProvider
-    const renderWithTheme = (ui) => {
+    const renderWithTheme = (ui: React.ReactElement) => {
         return render(<ThemeProvider theme={baseTheme}>{ui}</ThemeProvider>);
     };
 

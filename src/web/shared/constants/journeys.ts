@@ -30,6 +30,14 @@ export const JOURNEY_ICONS = {
   wellness: 'leaf',
 } as const;
 
-export const ALL_JOURNEYS = ['health', 'care', 'plan', 'gamification', 'wellness'] as const;
+export const ALL_JOURNEY_IDS = ['health', 'care', 'plan', 'gamification', 'wellness'] as const;
 
-export type JourneyId = typeof ALL_JOURNEYS[number];
+export type JourneyId = typeof ALL_JOURNEY_IDS[number];
+
+export const ALL_JOURNEYS = [
+  { id: 'health' as const, name: JOURNEY_NAMES.health, icon: JOURNEY_ICONS.health, color: JOURNEY_COLORS.health },
+  { id: 'care' as const, name: JOURNEY_NAMES.care, icon: JOURNEY_ICONS.care, color: JOURNEY_COLORS.care },
+  { id: 'plan' as const, name: JOURNEY_NAMES.plan, icon: JOURNEY_ICONS.plan, color: JOURNEY_COLORS.plan },
+  { id: 'gamification' as const, name: JOURNEY_NAMES.gamification, icon: JOURNEY_ICONS.gamification, color: JOURNEY_COLORS.gamification },
+  { id: 'wellness' as const, name: JOURNEY_NAMES.wellness, icon: JOURNEY_ICONS.wellness, color: JOURNEY_COLORS.wellness },
+] as const;

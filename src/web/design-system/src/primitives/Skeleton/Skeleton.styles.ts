@@ -1,7 +1,8 @@
 import styled, { keyframes, css } from 'styled-components';
-import { colors } from '../../tokens/colors';
-import { borderRadius as borderRadiusTokens } from '../../tokens/borderRadius';
+
 import { animation } from '../../tokens/animation';
+import { borderRadius as borderRadiusTokens } from '../../tokens/borderRadius';
+import { colors } from '../../tokens/colors';
 
 interface StyledSkeletonProps {
     width?: string;
@@ -29,7 +30,9 @@ const pulse = keyframes`
  * Resolves borderRadius from tokens or passes through custom values
  */
 const resolveBorderRadius = (radius?: string): string => {
-    if (!radius) return borderRadiusTokens.sm;
+    if (!radius) {
+        return borderRadiusTokens.sm;
+    }
     if (radius in borderRadiusTokens) {
         return borderRadiusTokens[radius as keyof typeof borderRadiusTokens];
     }

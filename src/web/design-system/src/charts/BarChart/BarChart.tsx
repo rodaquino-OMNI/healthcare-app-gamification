@@ -1,9 +1,21 @@
-import React from 'react';
-import { ComposedChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useMediaQuery } from '@mui/material';
+import React from 'react';
+import {
+    ComposedChart as RechartsComposedChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+} from 'recharts';
+
 import { Box } from '../../primitives/Box/Box';
 import { Text } from '../../primitives/Text/Text';
 import { breakpoints, colors, typography } from '../../tokens';
+
+// Cast to work around recharts class component type incompatibility with React 18
+const ComposedChart = RechartsComposedChart as unknown as React.ComponentType<Record<string, unknown>>;
 
 export interface BarChartProps {
     /**
@@ -129,7 +141,7 @@ export const BarChart: React.FC<BarChartProps> = ({ data, labels, colors: colorP
                         tickMargin={10}
                         axisLine={false}
                         tickLine={false}
-                        tickFormatter={(value) => value.toLocaleString()}
+                        tickFormatter={(value: number) => value.toLocaleString()}
                     />
                     <Tooltip
                         formatter={(value: number) => [`${value.toLocaleString()}`, '']}

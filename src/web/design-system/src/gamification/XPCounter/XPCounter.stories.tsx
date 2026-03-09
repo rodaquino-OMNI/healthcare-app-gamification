@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+
 import { XPCounter } from './XPCounter';
 
 const meta: Meta<typeof XPCounter> = {

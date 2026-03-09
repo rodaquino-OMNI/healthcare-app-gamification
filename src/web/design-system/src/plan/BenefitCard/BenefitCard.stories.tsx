@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+
 import { BenefitCard } from './BenefitCard';
 
 const meta: Meta<typeof BenefitCard> = {

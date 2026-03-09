@@ -1,14 +1,11 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+
 import { Box } from '../../primitives/Box/Box';
 import { Text } from '../../primitives/Text/Text';
 import { Touchable } from '../../primitives/Touchable/Touchable';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
-import { borderRadius } from '../../tokens/borderRadius';
-import { typography } from '../../tokens/typography';
-import { shadows } from '../../tokens/shadows';
-import { baseTheme } from '../../themes';
 
 /**
  * Props for the Toast component
@@ -108,12 +105,15 @@ export const Toast: React.FC<ToastProps> = ({
             const timer = setTimeout(onDismiss, duration);
             return () => clearTimeout(timer);
         }
+        return undefined;
     }, [visible, onDismiss, duration]);
 
-    if (!visible) return null;
+    if (!visible) {
+        return null;
+    }
 
     // Get color and icon based on toast type
-    const getToastProperties = () => {
+    const getToastProperties = (): { color: string; icon: string } => {
         switch (type) {
             case 'success':
                 return {
@@ -142,7 +142,7 @@ export const Toast: React.FC<ToastProps> = ({
     const { color, icon } = getToastProperties();
 
     // Get semantic background color based on toast type
-    const getBackgroundColor = () => {
+    const getBackgroundColor = (): string => {
         switch (type) {
             case 'success':
                 return colors.semantic.successBg;

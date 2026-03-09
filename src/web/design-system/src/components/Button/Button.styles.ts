@@ -1,15 +1,11 @@
 import styled from 'styled-components';
-import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
-import { shadows } from '../../tokens/shadows';
-import { breakpoints } from '../../tokens/breakpoints';
+
 import { borderRadius } from '../../tokens/borderRadius';
-import { sizing } from '../../tokens/sizing';
-import { baseTheme } from '../../themes/base.theme';
-import { healthTheme } from '../../themes/health.theme';
-import { careTheme } from '../../themes/care.theme';
-import { planTheme } from '../../themes/plan.theme';
+import { breakpoints } from '../../tokens/breakpoints';
+import { colors } from '../../tokens/colors';
+import { shadows } from '../../tokens/shadows';
+import { spacing } from '../../tokens/spacing';
+import { typography } from '../../tokens/typography';
 
 /**
  * Props interface for all button components
@@ -27,7 +23,7 @@ interface ButtonProps {
 const getJourneyColor = (
     journey: 'health' | 'care' | 'plan' | undefined,
     colorType: 'primary' | 'secondary' | 'accent' | 'background'
-) => {
+): string => {
     if (journey && colors.journeys[journey]) {
         return colors.journeys[journey][colorType];
     }

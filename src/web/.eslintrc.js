@@ -3,6 +3,8 @@
  * This configuration enforces code quality, consistency, and best practices
  * across all frontend components, including web, mobile, and shared packages.
  */
+const path = require('path');
+
 module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -142,7 +144,7 @@ module.exports = {
     'max-len': [
       'error',
       {
-        code: 100,
+        code: 120,
         ignoreUrls: true,
         ignoreStrings: true,
         ignoreTemplateLiterals: true,
@@ -164,6 +166,15 @@ module.exports = {
   overrides: [
     {
       files: ['*.spec.ts', '*.spec.tsx', '*.test.ts', '*.test.tsx'],
+      parserOptions: {
+        tsconfigRootDir: __dirname,
+        project: [
+          path.join(__dirname, 'web/tsconfig.test.json'),
+          path.join(__dirname, 'mobile/tsconfig.json'),
+          path.join(__dirname, 'design-system/tsconfig.build.json'),
+          path.join(__dirname, 'tsconfig.json')
+        ]
+      },
       rules: {
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/explicit-function-return-type': 'off'

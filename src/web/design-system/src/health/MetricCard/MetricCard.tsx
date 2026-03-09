@@ -1,14 +1,13 @@
 import React from 'react';
+
 import { Card } from '../../components/Card/Card';
-import { Text } from '../../primitives/Text/Text';
-import { Icon } from '../../primitives/Icon/Icon';
-import { HealthChart } from '../HealthChart/HealthChart';
 import { AchievementBadge } from '../../gamification/AchievementBadge/AchievementBadge';
+import { Icon } from '../../primitives/Icon/Icon';
+import { Text } from '../../primitives/Text/Text';
 import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
-import { borderRadius } from '../../tokens/borderRadius';
 import { sizing } from '../../tokens/sizing';
+import { spacing } from '../../tokens/spacing';
+import { HealthChart } from '../HealthChart/HealthChart';
 
 /**
  * Props for the MetricCard component
@@ -97,7 +96,9 @@ export const MetricCard: React.FC<MetricCardProps> = ({
 
     // Get trend icon and color
     const getTrendIcon = (trendValue?: string): { icon: string; color: string } => {
-        if (!trendValue) return { icon: '', color: '' };
+        if (!trendValue) {
+            return { icon: '', color: '' };
+        }
 
         const lowerTrend = trendValue.toLowerCase();
         if (lowerTrend.includes('up') || lowerTrend.includes('increase')) {

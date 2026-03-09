@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import {
     BadgeContainer,
     BadgeIcon,
@@ -25,7 +26,8 @@ import { colors } from '../../tokens/colors';
  */
 export interface AchievementBadgeProps {
     /**
-     * The achievement object containing details like id, title, description, icon, progress, total, unlocked, and journey.
+     * The achievement object containing details like id, title,
+     * description, icon, progress, total, unlocked, and journey.
      */
     achievement: Achievement;
 
@@ -48,7 +50,8 @@ export interface AchievementBadgeProps {
 }
 
 /**
- * A component that displays an achievement badge with appropriate styling based on its state (locked/unlocked) and journey.
+ * A component that displays an achievement badge with appropriate styling
+ * based on its state (locked/unlocked) and journey.
  */
 export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
     achievement,

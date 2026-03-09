@@ -1,14 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import { Box } from '../../primitives/Box';
+import { Icon } from '../../primitives/Icon';
 import { Text } from '../../primitives/Text';
 import { Touchable } from '../../primitives/Touchable';
-import { Icon } from '../../primitives/Icon';
 // useJourneyTheme removed — using styled-components theme prop instead
-import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
-import { borderRadius } from '../../tokens/borderRadius';
 import { sizing } from '../../tokens/sizing';
 
 /**
@@ -136,12 +133,24 @@ export const DeviceCard: React.FC<DeviceCardProps> = ({ deviceName, deviceType, 
 const getDeviceIconName = (deviceType: string): string => {
     const type = deviceType.toLowerCase();
 
-    if (type.includes('watch') || type.includes('band')) return 'steps'; // Use steps icon for wearables
-    if (type.includes('scale')) return 'weight';
-    if (type.includes('heart') || type.includes('pulse')) return 'heart';
-    if (type.includes('glucose')) return 'glucose';
-    if (type.includes('blood pressure')) return 'pulse';
-    if (type.includes('sleep')) return 'sleep';
+    if (type.includes('watch') || type.includes('band')) {
+        return 'steps';
+    } // Use steps icon for wearables
+    if (type.includes('scale')) {
+        return 'weight';
+    }
+    if (type.includes('heart') || type.includes('pulse')) {
+        return 'heart';
+    }
+    if (type.includes('glucose')) {
+        return 'glucose';
+    }
+    if (type.includes('blood pressure')) {
+        return 'pulse';
+    }
+    if (type.includes('sleep')) {
+        return 'sleep';
+    }
 
     // Default icon
     return 'heart-outline'; // Use as a generic device icon

@@ -1,11 +1,11 @@
 import React from 'react';
-import { spacing } from '../../tokens/spacing';
+
+import { BoxContainer } from './Box.styles';
+import { borderRadius as borderRadiusTokens } from '../../tokens/borderRadius';
 import { colors } from '../../tokens/colors';
 import { shadows } from '../../tokens/shadows';
-import { breakpoints } from '../../tokens/breakpoints';
-import { borderRadius as borderRadiusTokens } from '../../tokens/borderRadius';
 import { sizing } from '../../tokens/sizing';
-import { BoxContainer } from './Box.styles';
+import { spacing } from '../../tokens/spacing';
 
 /**
  * Props for the Box component, extending the BoxContainer props
@@ -88,7 +88,9 @@ export const Box = React.forwardRef<HTMLDivElement, BoxProps>(
 
         // Helper function to resolve token values to their actual values
         const resolveToken = (value: string | undefined, tokenMap: Record<string, unknown>): string | undefined => {
-            if (!value) return undefined;
+            if (!value) {
+                return undefined;
+            }
             const resolved = tokenMap[value];
             return typeof resolved === 'string' ? resolved : value;
         };
