@@ -7,6 +7,12 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState, useRef } from 'react';
 
+/**
+ * Validates that a preview URL is a safe blob: or data:image/ URL.
+ * Prevents DOM-based XSS by rejecting arbitrary strings as image sources.
+ */
+const isSafeImageSrc = (url: string): boolean => url.startsWith('blob:') || url.startsWith('data:image/');
+
 /** Photo upload page for adding visual evidence to the symptom check. */
 const PhotoUploadPage: React.FC = () => {
     const router = useRouter();
@@ -35,7 +41,14 @@ const PhotoUploadPage: React.FC = () => {
     };
 
     const removePhoto = (index: number): void => {
-        setPreviews((prev) => prev.filter((_, i) => i !== index));
+        setPreviews((prev) => {
+            // Revoke the object URL to free memory
+            const urlToRevoke = prev[index];
+            if (urlToRevoke?.startsWith('blob:')) {
+                URL.revokeObjectURL(urlToRevoke);
+            }
+            return prev.filter((_, i) => i !== index);
+        });
     };
 
     const handleContinue = (): void => {
@@ -108,7 +121,7 @@ const PhotoUploadPage: React.FC = () => {
                         marginTop: spacing.lg,
                     }}
                 >
-                    {previews.map((src, index) => (
+                    {previews.filter(isSafeImageSrc).map((src, index) => (
                         <div key={index} style={{ position: 'relative' }}>
                             <img
                                 src={src}

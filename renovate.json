@@ -319,6 +319,7 @@
     "rxjs",
     "graphql",
     "typescript",
-    "eslint"
+    "eslint",
+    "com.facebook.react:react-native-gradle-plugin"
   ]
 }
