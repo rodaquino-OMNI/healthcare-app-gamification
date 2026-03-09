@@ -18,7 +18,7 @@
         "test:e2e": "jest --config ./test/jest-e2e.json"
     },
     "dependencies": {
-        "@apollo/server": "^4.10.0",
+        "@apollo/server": "^5.0.0",
         "@apollo/subgraph": "^2.13.1",
         "@apollo/utils.fetcher": "^2.0.0",
         "@apollo/usage-reporting-protobuf": "^4.0.0",
