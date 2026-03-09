@@ -20,7 +20,7 @@
     "dependencies": {
         "@apollo/server": "^4.10.0",
         "@apollo/subgraph": "^2.13.1",
-        "@apollo/utils.fetcher": "^2.0.0",
+        "@apollo/utils.fetcher": "^3.0.0",
         "@apollo/usage-reporting-protobuf": "^4.0.0",
         "@nestjs/apollo": "^12.0.11",
         "@nestjs/common": "^11.0.0",
