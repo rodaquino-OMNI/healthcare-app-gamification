@@ -1,12 +1,9 @@
+import { Button } from 'design-system/components/Button/Button';
+import { Text } from 'design-system/primitives/Text/Text';
 import React from 'react';
-import styled from 'styled-components'; // styled-components@^6.0.0
-import { Sidebar } from '@/components/navigation/Sidebar';
+import styled from 'styled-components';
+
 import { useAuth } from '@/hooks/useAuth';
-import { AuthSession } from 'shared/types/auth.types';
-import { Button, ButtonProps } from 'design-system/components/Button/Button';
-import { Text, TextProps } from 'design-system/primitives/Text/Text';
-import { Touchable, TouchableProps } from 'design-system/primitives/Touchable/Touchable';
-import { ALL_JOURNEYS } from 'shared/constants/journeys';
 
 // LD1: Styled component for the top bar container.
 const TopBarContainer = styled.header`
@@ -44,7 +41,8 @@ const UserName = styled(Text)`
     margin-right: 16px;
 `;
 
-// LD1: A top navigation bar component that displays the application title, user profile information, and a settings button.
+// LD1: A top navigation bar component that displays the application title,
+// user profile information, and a settings button.
 export const TopBar: React.FC = () => {
     // LD1: Retrieves the authentication status and session from the useAuth hook.
     const { session, isAuthenticated } = useAuth();

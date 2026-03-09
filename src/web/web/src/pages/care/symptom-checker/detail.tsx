@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
-import { Box } from 'design-system/primitives/Box/Box';
-import { Slider } from 'design-system/components/Slider/Slider';
+import { Card } from 'design-system/components/Card/Card';
+import { Input } from 'design-system/components/Input/Input';
 import { Select } from 'design-system/components/Select/Select';
-import Input from 'design-system/components/Input/Input';
+import { Slider } from 'design-system/components/Slider/Slider';
+import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
 const DURATION_OPTIONS = [
@@ -40,8 +40,8 @@ const SymptomDetailPage: React.FC = () => {
     const [onset, setOnset] = useState('');
     const [notes, setNotes] = useState('');
 
-    const handleContinue = () => {
-        router.push({
+    const handleContinue = (): void => {
+        void router.push({
             pathname: WEB_CARE_ROUTES.SYMPTOM_QUESTIONS,
             query: {
                 regions,
@@ -119,7 +119,7 @@ const SymptomDetailPage: React.FC = () => {
                     <Input
                         label="Additional notes (optional)"
                         value={notes}
-                        onChange={(e) => setNotes(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNotes(e.target.value)}
                         placeholder="Describe anything else about your symptoms..."
                         journey="care"
                         testID="notes-input"

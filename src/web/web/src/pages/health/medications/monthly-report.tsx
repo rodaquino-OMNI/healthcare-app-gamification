@@ -1,12 +1,12 @@
-import React, { useState, useMemo } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
-import { Button } from 'design-system/components/Button/Button';
 import { Badge } from 'design-system/components/Badge/Badge';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState, useMemo } from 'react';
 
 interface MedicationSummary {
     id: string;
@@ -77,7 +77,7 @@ const MedicationMonthlyReportPage: React.FC = () => {
         return { totalDoses, takenDoses, missedDoses, adherence };
     }, []);
 
-    const handlePrevMonth = () => {
+    const handlePrevMonth = (): void => {
         if (month === 0) {
             setMonth(11);
             setYear((y) => y - 1);
@@ -86,7 +86,7 @@ const MedicationMonthlyReportPage: React.FC = () => {
         }
     };
 
-    const handleNextMonth = () => {
+    const handleNextMonth = (): void => {
         if (month === 11) {
             setMonth(0);
             setYear((y) => y + 1);
@@ -97,7 +97,9 @@ const MedicationMonthlyReportPage: React.FC = () => {
 
     const gridCells = useMemo(() => {
         const cells: (DayStatus | null)[] = [];
-        for (let i = 0; i < firstDay; i++) cells.push(null);
+        for (let i = 0; i < firstDay; i++) {
+            cells.push(null);
+        }
         dayStatuses.forEach((ds) => cells.push(ds));
         return cells;
     }, [firstDay, dayStatuses]);

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 type FilterPeriod = 'week' | 'month' | 'all';
 
@@ -37,9 +37,15 @@ const DIARY_ENTRIES = [
 const FILTERS: FilterPeriod[] = ['week', 'month', 'all'];
 
 const typeColor = (type: string): string => {
-    if (type === 'Breakfast') return colors.semantic.warning;
-    if (type === 'Lunch') return colors.journeys.health.primary;
-    if (type === 'Dinner') return colors.journeys.health.secondary;
+    if (type === 'Breakfast') {
+        return colors.semantic.warning;
+    }
+    if (type === 'Lunch') {
+        return colors.journeys.health.primary;
+    }
+    if (type === 'Dinner') {
+        return colors.journeys.health.secondary;
+    }
     return colors.gray[40];
 };
 
@@ -52,7 +58,7 @@ const FoodDiaryPage: React.FC = () => {
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/nutrition')}
+                onClick={() => void router.push('/health/nutrition')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -108,7 +114,14 @@ const FoodDiaryPage: React.FC = () => {
                             {entry.meals.map((meal) => (
                                 <div
                                     key={meal.id}
-                                    onClick={() => router.push(`/health/nutrition/${meal.id}`)}
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={() => void router.push(`/health/nutrition/${meal.id}`)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            void router.push(`/health/nutrition/${meal.id}`);
+                                        }
+                                    }}
                                     style={{ cursor: 'pointer' }}
                                 >
                                     <Card journey="health" elevation="sm" padding="md">

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+
 import { HealthChart } from './HealthChart';
 
 const meta: Meta<typeof HealthChart> = {

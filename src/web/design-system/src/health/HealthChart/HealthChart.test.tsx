@@ -1,8 +1,11 @@
-import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, jest } from '@jest/globals';
+import { render, screen } from '@testing-library/react';
+import React from 'react';
+
 import HealthChart from './HealthChart';
+// eslint-disable-next-line import/no-unresolved
 import { JourneyProvider } from '../../../mobile/src/context/JourneyContext';
+// eslint-disable-next-line import/no-unresolved
 import { JOURNEY_IDS } from '../../../shared/constants/journeys';
 
 // Mock health data for testing
@@ -54,6 +57,7 @@ jest.mock('../../charts/RadialChart/RadialChart', () => ({
 }));
 
 // Mock the useJourneyContext hook
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 jest.mock('../../../mobile/src/context/JourneyContext', () => {
     const original = jest.requireActual('../../../mobile/src/context/JourneyContext');
     return {
@@ -64,9 +68,10 @@ jest.mock('../../../mobile/src/context/JourneyContext', () => {
         }),
     };
 });
+/* eslint-enable @typescript-eslint/no-unsafe-return */
 
 // Helper function to render a component with the JourneyProvider
-const renderWithJourney = (ui, journeyId = JOURNEY_IDS.HEALTH) => {
+const renderWithJourney = (ui: React.ReactElement, journeyId = JOURNEY_IDS.HEALTH) => {
     return render(<JourneyProvider>{React.cloneElement(ui, { journey: journeyId })}</JourneyProvider>);
 };
 
@@ -159,7 +164,7 @@ describe('HealthChart', () => {
         expect(chart).toHaveAttribute('aria-label', expect.stringContaining('Bar chart'));
     });
 
-    it('renders bar chart correctly', async () => {
+    it('renders bar chart correctly', () => {
         renderWithJourney(
             <HealthChart
                 type="bar"

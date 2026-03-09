@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 interface Message {
     id: string;
@@ -38,8 +38,10 @@ const ChatPage: React.FC = () => {
     const [input, setInput] = useState('');
     const [isTyping, setIsTyping] = useState(false);
 
-    const handleSend = () => {
-        if (!input.trim()) return;
+    const handleSend = (): void => {
+        if (!input.trim()) {
+            return;
+        }
         const userMsg: Message = {
             id: `u-${Date.now()}`,
             sender: 'user',
@@ -61,7 +63,7 @@ const ChatPage: React.FC = () => {
         }, 1500);
     };
 
-    const handleQuickSuggestion = (suggestion: string) => {
+    const handleQuickSuggestion = (suggestion: string): void => {
         setInput(suggestion);
     };
 
@@ -78,7 +80,7 @@ const ChatPage: React.FC = () => {
         >
             <Box display="flex" alignItems="center" style={{ marginBottom: spacing.lg }}>
                 <button
-                    onClick={() => router.push('/wellness')}
+                    onClick={() => void router.push('/wellness')}
                     style={{
                         background: 'none',
                         border: 'none',
@@ -177,7 +179,9 @@ const ChatPage: React.FC = () => {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => {
-                        if (e.key === 'Enter') handleSend();
+                        if (e.key === 'Enter') {
+                            handleSend();
+                        }
                     }}
                     placeholder="Type a message..."
                     aria-label="Message input"

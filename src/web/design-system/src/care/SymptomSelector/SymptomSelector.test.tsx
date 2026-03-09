@@ -1,12 +1,13 @@
-import { describe, expect, it } from '@jest/globals'; // Version 29.0+
-import { fireEvent, render, screen } from '@testing-library/react-native'; // Version ^11.0.0
+import { describe, expect, it } from '@jest/globals';
+import { fireEvent, render } from '@testing-library/react-native';
 import React from 'react';
-import SymptomSelector from 'src/web/design-system/src/care/SymptomSelector/SymptomSelector.tsx';
-import { Text } from 'src/web/design-system/src/primitives/Text/Text.tsx';
-import { Box } from 'src/web/design-system/src/primitives/Box/Box.tsx';
-import Select from 'src/web/design-system/src/components/Select/Select.tsx';
-import { careTheme } from 'src/web/design-system/src/themes/care.theme.ts';
-import { Symptom } from 'src/web/shared/types/care.types.ts';
+
+// eslint-disable-next-line import/no-unresolved
+import SymptomSelector from './SymptomSelector';
+// eslint-disable-next-line import/no-unresolved
+import type { Symptom } from '../../../shared/types/care.types';
+// eslint-disable-next-line import/no-unresolved
+import { careTheme } from '../../themes/care.theme';
 
 const symptoms: Symptom[] = [
     { id: '1', name: 'Fever' },
@@ -25,7 +26,7 @@ describe('SymptomSelector', () => {
 
         // Verify that each symptom is displayed as a selectable option.
         symptoms.forEach((symptom) => {
-            expect(getByText(symptom.name)).toBeDefined();
+            expect(getByText(String(symptom.name))).toBeDefined();
         });
     });
 
@@ -80,6 +81,7 @@ describe('SymptomSelector', () => {
 
         // The component's text color matches the Care theme's text color.
         const selectSymptomsText = getByText('Select Your Symptoms');
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         expect(selectSymptomsText).toHaveProp('style', { color: careTheme.colors.journeys.care.primary });
 
         // The component's background color matches the Care theme's background color.

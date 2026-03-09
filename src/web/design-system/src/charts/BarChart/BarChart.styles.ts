@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { colors, typography } from '../../tokens';
 
 /**
@@ -41,7 +42,9 @@ export const Bar = styled.div<{
     min-width: 20px;
     height: ${(props) => props.height};
     background-color: ${(props) => {
-        if (props.color) return props.color;
+        if (props.color) {
+            return props.color;
+        }
         if (props.journey && props.theme.colors?.journeys?.[props.journey]?.primary) {
             return props.theme.colors.journeys[props.journey].primary;
         }

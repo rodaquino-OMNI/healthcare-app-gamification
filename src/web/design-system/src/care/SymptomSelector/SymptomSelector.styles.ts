@@ -1,8 +1,4 @@
 import styled from 'styled-components';
-import type { ThemeType } from 'styled-components';
-import { colors } from '../../tokens/colors';
-import { spacing } from '../../tokens/spacing';
-import { borderRadius } from '../../tokens/borderRadius';
 
 export const SymptomSelectorContainer = styled.div`
     display: flex;
@@ -14,7 +10,7 @@ export const SymptomSelectorContainer = styled.div`
     box-shadow: ${({ theme }) => theme.shadows.sm};
     width: 100%;
 
-    @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    @media (min-width: ${({ theme }) => theme.breakpoints?.md}) {
         padding: ${({ theme }) => theme.spacing.lg};
     }
 `;
@@ -44,7 +40,7 @@ export const SymptomList = styled.ul`
         border-radius: 4px;
     }
 
-    @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    @media (min-width: ${({ theme }) => theme.breakpoints?.md}) {
         max-height: 400px;
     }
 `;
@@ -90,7 +86,7 @@ export const SymptomItem = styled.li<{ selected?: boolean }>`
     }
   `}
 
-    @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    @media (max-width: ${({ theme }) => theme.breakpoints?.sm}) {
         padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
     }
 `;
@@ -102,7 +98,7 @@ export const SymptomLabel = styled.span`
     margin-left: ${({ theme }) => theme.spacing.sm};
     flex: 1;
 
-    @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    @media (max-width: ${({ theme }) => theme.breakpoints?.sm}) {
         font-size: ${({ theme }) => theme.typography.fontSize.sm};
     }
 `;

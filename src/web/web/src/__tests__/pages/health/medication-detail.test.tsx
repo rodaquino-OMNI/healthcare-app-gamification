@@ -1,8 +1,32 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+
+interface MockSpreadProps {
+    children?: React.ReactNode;
+    [key: string]: unknown;
+}
+
+interface MockButtonProps {
+    children: React.ReactNode;
+    onPress?: () => void;
+    accessibilityLabel?: string;
+    disabled?: boolean;
+}
+
+interface MockBadgeProps {
+    children?: React.ReactNode;
+    status?: string;
+    variant?: string;
+}
+
+interface MockProgressBarProps {
+    current: number;
+    total: number;
+    ariaLabel?: string;
+}
 
 jest.mock('design-system/components/Card/Card', () => ({
-    Card: ({ children, ...props }: any) => (
+    Card: ({ children, ...props }: MockSpreadProps) => (
         <div data-testid="card" {...props}>
             {children}
         </div>
@@ -10,7 +34,7 @@ jest.mock('design-system/components/Card/Card', () => ({
 }));
 
 jest.mock('design-system/components/Button/Button', () => ({
-    Button: ({ children, onPress, accessibilityLabel, disabled }: any) => (
+    Button: ({ children, onPress, accessibilityLabel, disabled }: MockButtonProps) => (
         <button onClick={onPress} aria-label={accessibilityLabel} disabled={disabled} data-testid="button">
             {children}
         </button>
@@ -18,7 +42,7 @@ jest.mock('design-system/components/Button/Button', () => ({
 }));
 
 jest.mock('design-system/components/Badge/Badge', () => ({
-    Badge: ({ children, status, variant }: any) => (
+    Badge: ({ children, status, variant }: MockBadgeProps) => (
         <span data-testid="badge" data-status={status} data-variant={variant}>
             {children}
         </span>
@@ -26,17 +50,17 @@ jest.mock('design-system/components/Badge/Badge', () => ({
 }));
 
 jest.mock('design-system/components/ProgressBar/ProgressBar', () => ({
-    ProgressBar: ({ current, total, ariaLabel }: any) => (
+    ProgressBar: ({ current, total, ariaLabel }: MockProgressBarProps) => (
         <div role="progressbar" aria-label={ariaLabel} aria-valuenow={current} aria-valuemax={total} />
     ),
 }));
 
 jest.mock('design-system/primitives/Text/Text', () => ({
-    Text: ({ children, ...props }: any) => <span {...props}>{children}</span>,
+    Text: ({ children, ...props }: MockSpreadProps) => <span {...props}>{children}</span>,
 }));
 
 jest.mock('design-system/primitives/Box/Box', () => ({
-    Box: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+    Box: ({ children, ...props }: MockSpreadProps) => <div {...props}>{children}</div>,
 }));
 
 jest.mock('design-system/tokens/colors', () => ({

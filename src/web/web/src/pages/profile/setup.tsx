@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useRouter } from 'next/navigation';
 import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
 import { spacing } from 'design-system/tokens/spacing';
-import AuthLayout from '@/layouts/AuthLayout';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 import { WEB_PROFILE_ROUTES } from 'shared/constants/routes';
+import styled from 'styled-components';
+
+import { AuthLayout } from '@/layouts/AuthLayout';
 
 const Title = styled.h2`
     font-family: ${typography.fontFamily.heading};
@@ -114,7 +115,7 @@ interface ProfileFormData {
  * Profile setup page - collects basic user information (name, email, phone, DOB).
  * Uses a two-column grid layout for desktop screens.
  */
-export default function ProfileSetupPage() {
+export default function ProfileSetupPage(): React.ReactElement {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [form, setForm] = useState<ProfileFormData>({
@@ -131,9 +132,11 @@ export default function ProfileSetupPage() {
 
     const isValid = form.firstName.trim() && form.lastName.trim() && form.email.trim() && form.phone.trim();
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
-        if (!isValid) return;
+        if (!isValid) {
+            return;
+        }
 
         setIsSubmitting(true);
         try {
@@ -149,7 +152,7 @@ export default function ProfileSetupPage() {
             <Title>Configurar Perfil</Title>
             <Subtitle>Preencha seus dados pessoais para continuar.</Subtitle>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={(e) => void handleSubmit(e)}>
                 <FormGrid>
                     <FieldGroup>
                         <Label htmlFor="firstName">Nome</Label>

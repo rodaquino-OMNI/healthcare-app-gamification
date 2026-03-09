@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import React from 'react';
+
 import { FileUpload, UploadProgress } from './FileUpload';
 
 const meta: Meta<typeof FileUpload> = {
@@ -47,26 +48,22 @@ export const Disabled: Story = {
     },
 };
 
+const WithProgressDemo = (): React.ReactElement => {
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxWidth: '480px' }}>
+            <FileUpload journey="health" onFilesSelected={() => {}} />
+            <UploadProgress
+                fileName="medical-report.pdf"
+                progress={65}
+                status="uploading"
+                onCancel={() => console.log('cancelled')}
+            />
+            <UploadProgress fileName="blood-test.pdf" progress={100} status="completed" />
+            <UploadProgress fileName="xray.png" progress={30} status="error" onRetry={() => console.log('retrying')} />
+        </div>
+    );
+};
+
 export const WithProgress: Story = {
-    render: () => {
-        const [files, setFiles] = useState<File[]>([]);
-        return (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxWidth: '480px' }}>
-                <FileUpload journey="health" onFilesSelected={setFiles} />
-                <UploadProgress
-                    fileName="medical-report.pdf"
-                    progress={65}
-                    status="uploading"
-                    onCancel={() => console.log('cancelled')}
-                />
-                <UploadProgress fileName="blood-test.pdf" progress={100} status="completed" />
-                <UploadProgress
-                    fileName="xray.png"
-                    progress={30}
-                    status="error"
-                    onRetry={() => console.log('retrying')}
-                />
-            </div>
-        );
-    },
+    render: () => <WithProgressDemo />,
 };

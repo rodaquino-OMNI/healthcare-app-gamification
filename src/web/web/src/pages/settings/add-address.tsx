@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import React, { useState } from 'react';
+
 import { lookupCep, saveAddress } from '../../api/settings';
 
 /**
@@ -21,8 +22,10 @@ const AddAddressPage: NextPage = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    const handleCepLookup = async () => {
-        if (!cep || cep.length < 8) return;
+    const handleCepLookup = async (): Promise<void> => {
+        if (!cep || cep.length < 8) {
+            return;
+        }
         setLoading(true);
         setError('');
         try {
@@ -38,13 +41,15 @@ const AddAddressPage: NextPage = () => {
         }
     };
 
-    const handleSubmit = async () => {
-        if (!label || !cep || !street || !number || !city || !state) return;
+    const handleSubmit = async (): Promise<void> => {
+        if (!label || !cep || !street || !number || !city || !state) {
+            return;
+        }
         setLoading(true);
         setError('');
         try {
             await saveAddress({ label, cep, street, number, complement, neighborhood, city, state });
-            router.push('/settings/addresses');
+            void router.push('/settings/addresses');
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : 'Erro inesperado.');
         } finally {
@@ -63,8 +68,11 @@ const AddAddressPage: NextPage = () => {
 
             <div style={cardStyle}>
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>Apelido do Endereco *</label>
+                    <label htmlFor="addr-label" style={labelStyle}>
+                        Apelido do Endereco *
+                    </label>
                     <input
+                        id="addr-label"
                         type="text"
                         value={label}
                         onChange={(e) => setLabel(e.target.value)}
@@ -74,9 +82,12 @@ const AddAddressPage: NextPage = () => {
                 </div>
 
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>CEP *</label>
+                    <label htmlFor="addr-cep" style={labelStyle}>
+                        CEP *
+                    </label>
                     <div style={{ display: 'flex', gap: spacing.xs }}>
                         <input
+                            id="addr-cep"
                             type="text"
                             value={cep}
                             onChange={(e) => setCep(e.target.value)}
@@ -84,21 +95,32 @@ const AddAddressPage: NextPage = () => {
                             placeholder="00000-000"
                             maxLength={9}
                         />
-                        <button onClick={handleCepLookup} disabled={loading} style={lookupBtnStyle}>
+                        <button onClick={() => void handleCepLookup()} disabled={loading} style={lookupBtnStyle}>
                             {loading ? 'Buscando...' : 'Buscar'}
                         </button>
                     </div>
                 </div>
 
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>Rua *</label>
-                    <input type="text" value={street} onChange={(e) => setStreet(e.target.value)} style={inputStyle} />
+                    <label htmlFor="addr-street" style={labelStyle}>
+                        Rua *
+                    </label>
+                    <input
+                        id="addr-street"
+                        type="text"
+                        value={street}
+                        onChange={(e) => setStreet(e.target.value)}
+                        style={inputStyle}
+                    />
                 </div>
 
                 <div style={{ display: 'flex', gap: spacing.xs, marginBottom: spacing.lg }}>
                     <div style={{ flex: 1 }}>
-                        <label style={labelStyle}>Numero *</label>
+                        <label htmlFor="addr-number" style={labelStyle}>
+                            Numero *
+                        </label>
                         <input
+                            id="addr-number"
                             type="text"
                             value={number}
                             onChange={(e) => setNumber(e.target.value)}
@@ -106,8 +128,11 @@ const AddAddressPage: NextPage = () => {
                         />
                     </div>
                     <div style={{ flex: 2 }}>
-                        <label style={labelStyle}>Complemento</label>
+                        <label htmlFor="addr-complement" style={labelStyle}>
+                            Complemento
+                        </label>
                         <input
+                            id="addr-complement"
                             type="text"
                             value={complement}
                             onChange={(e) => setComplement(e.target.value)}
@@ -118,8 +143,11 @@ const AddAddressPage: NextPage = () => {
                 </div>
 
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>Bairro</label>
+                    <label htmlFor="addr-neighborhood" style={labelStyle}>
+                        Bairro
+                    </label>
                     <input
+                        id="addr-neighborhood"
                         type="text"
                         value={neighborhood}
                         onChange={(e) => setNeighborhood(e.target.value)}
@@ -129,12 +157,23 @@ const AddAddressPage: NextPage = () => {
 
                 <div style={{ display: 'flex', gap: spacing.xs, marginBottom: spacing.lg }}>
                     <div style={{ flex: 3 }}>
-                        <label style={labelStyle}>Cidade *</label>
-                        <input type="text" value={city} onChange={(e) => setCity(e.target.value)} style={inputStyle} />
+                        <label htmlFor="addr-city" style={labelStyle}>
+                            Cidade *
+                        </label>
+                        <input
+                            id="addr-city"
+                            type="text"
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)}
+                            style={inputStyle}
+                        />
                     </div>
                     <div style={{ flex: 1 }}>
-                        <label style={labelStyle}>UF *</label>
+                        <label htmlFor="addr-uf" style={labelStyle}>
+                            UF *
+                        </label>
                         <input
+                            id="addr-uf"
                             type="text"
                             value={state}
                             onChange={(e) => setState(e.target.value)}
@@ -145,7 +184,7 @@ const AddAddressPage: NextPage = () => {
                 </div>
 
                 <button
-                    onClick={handleSubmit}
+                    onClick={() => void handleSubmit()}
                     disabled={!isValid || loading}
                     style={{
                         ...primaryButtonStyle,

@@ -10,13 +10,13 @@ import {
     VictoryLabel,
 } from 'victory';
 
+import { ChartContainer, ChartWrapper } from './LineChart.styles';
 import { Box } from '../../primitives/Box/Box';
 import { Text } from '../../primitives/Text/Text';
 import { colors, typography } from '../../tokens/index';
-import { ChartContainer, ChartWrapper } from './LineChart.styles';
 
 // Local utility replacing @web/shared import
-const useJourneyColor = (journey?: string) => {
+const useJourneyColor = (journey?: string): (typeof colors.journeys)[keyof typeof colors.journeys] => {
     const key = journey && ['health', 'care', 'plan'].includes(journey) ? journey : 'health';
     return colors.journeys[key as keyof typeof colors.journeys];
 };
@@ -28,7 +28,7 @@ export interface LineChartProps {
     /**
      * The data to display in the chart
      */
-    data: Array<any>;
+    data: Array<Record<string, unknown>>;
 
     /**
      * The key in data objects to use for x-axis values
@@ -107,9 +107,9 @@ export const LineChart: React.FC<LineChartProps> = ({
     }
 
     // Format data for Victory
-    const formattedData = data.map((item) => ({
-        x: item[xAxisKey],
-        y: item[yAxisKey],
+    const formattedData = data.map((item: Record<string, unknown>) => ({
+        x: item[xAxisKey] as Date | string | number,
+        y: item[yAxisKey] as number,
         // Include original data for tooltip
         original: item,
     }));
@@ -118,14 +118,16 @@ export const LineChart: React.FC<LineChartProps> = ({
     const isDateXAxis = formattedData.length > 0 && formattedData[0].x instanceof Date;
 
     // Format date for display
-    const formatDate = (date: Date): string => {
-        if (!(date instanceof Date)) return String(date);
-        return date.toLocaleDateString();
+    const formatDate = (date: Date | string | number): string => {
+        if (date instanceof Date) {
+            return date.toLocaleDateString();
+        }
+        return String(date);
     };
 
     // Custom tooltip content
-    const tooltipContent = (d: any) => {
-        const xValue = isDateXAxis ? formatDate(d.datum.x) : d.datum.x;
+    const tooltipContent = (d: { datum: { x: Date | string | number; y: number } }): string => {
+        const xValue = isDateXAxis ? formatDate(d.datum.x) : String(d.datum.x);
         return `${xValue}: ${d.datum.y}`;
     };
 
@@ -193,7 +195,7 @@ export const LineChart: React.FC<LineChartProps> = ({
                                 strokeDasharray: '4, 4',
                             },
                         }}
-                        tickFormat={(t) => String(t)}
+                        tickFormat={(t: string | number) => String(t)}
                         axisLabelComponent={<VictoryLabel dy={-40} />}
                         label={yAxisLabel}
                     />

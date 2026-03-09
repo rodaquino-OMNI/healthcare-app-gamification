@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
+import { Card } from 'design-system/components/Card/Card';
+import React, { useState } from 'react';
+import { GET_MEDICAL_HISTORY } from 'shared/graphql/queries/health.queries';
 import { MedicalEvent } from 'shared/types/health.types';
-import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 import { formatRelativeDate } from 'shared/utils/date';
 import { truncateText } from 'shared/utils/format';
-import { GET_MEDICAL_HISTORY } from 'shared/graphql/queries/health.queries';
-import { Card } from 'design-system/components/Card/Card';
-import HealthLayout from '@/layouts/HealthLayout';
 import styled from 'styled-components';
+
 import { useAuth } from '@/hooks/useAuth';
+import HealthLayout from '@/layouts/HealthLayout';
 
 // Styled components for the Medical History Timeline page
 const PageTitle = styled.h1`
@@ -42,7 +42,7 @@ const TimelineHeader = styled.div`
     margin-bottom: ${({ theme }) => theme.spacing.md};
     flex-wrap: wrap;
 
-    @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    @media (max-width: ${({ theme }) => theme.breakpoints?.sm ?? '768px'}) {
         flex-direction: column;
         align-items: flex-start;
         gap: ${({ theme }) => theme.spacing.md};
@@ -55,7 +55,7 @@ const FilterContainer = styled.div`
     align-items: center;
     flex-wrap: wrap;
 
-    @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    @media (max-width: ${({ theme }) => theme.breakpoints?.sm ?? '768px'}) {
         width: 100%;
     }
 `;
@@ -190,7 +190,7 @@ const HistoryPage: React.FC = () => {
     const [timePeriod, setTimePeriod] = useState('all');
 
     // Calculate date range based on selected time period
-    const getDateRange = () => {
+    const getDateRange = (): { startDate: string | undefined; endDate: string | undefined } => {
         if (timePeriod === 'all') {
             return {
                 startDate: undefined,
@@ -216,26 +216,22 @@ const HistoryPage: React.FC = () => {
     };
 
     // Query for medical history data
-    const { loading, error, data } = useQuery(GET_MEDICAL_HISTORY, {
+    const { loading, error, data } = useQuery<{ getMedicalHistory: MedicalEvent[] }>(GET_MEDICAL_HISTORY, {
         variables: queryVariables,
         skip: !userId, // Skip the query if we don't have a userId
         fetchPolicy: 'cache-and-network',
     });
 
     // Function to handle clicking on an event card
-    const handleEventClick = (event: MedicalEvent) => {
-        // This could navigate to a detailed view of the event
-        console.log(`Viewing details for event: ${event.id}`);
-        // Navigation could be implemented here, e.g.:
+    const handleEventClick = (_event: MedicalEvent): void => {
+        // TODO: Navigate to detailed view, e.g.:
         // router.push(`${WEB_HEALTH_ROUTES.HISTORY}/${event.id}`);
     };
 
     // Function to handle clicking on a document
-    const handleDocumentClick = (documentId: string, eventId: string, e: React.MouseEvent) => {
+    const handleDocumentClick = (_documentId: string, _eventId: string, e: React.MouseEvent): void => {
         e.stopPropagation(); // Prevent triggering the card click
-        console.log(`Opening document ${documentId} from event ${eventId}`);
-        // Implement document viewing logic here
-        // For example, open a modal with the document preview
+        // TODO: Implement document viewing logic (e.g., open a modal with the document preview)
     };
 
     return (

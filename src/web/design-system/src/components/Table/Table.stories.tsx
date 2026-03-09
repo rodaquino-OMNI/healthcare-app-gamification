@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import React, { useState } from 'react';
+
 import { Table } from './Table';
 
 const columns = [
@@ -49,24 +50,26 @@ export const Striped: Story = {
     },
 };
 
+const SortableTable = (): React.ReactElement => {
+    const [sorted, setSorted] = useState<typeof data>(data);
+    return (
+        <Table
+            columns={columns}
+            data={sorted}
+            hoverable
+            onSort={(key, dir) => {
+                const copy = [...sorted].sort((a, b) => {
+                    const v = a[key as keyof typeof a] < b[key as keyof typeof b] ? -1 : 1;
+                    return dir === 'asc' ? v : -v;
+                });
+                setSorted(copy);
+            }}
+        />
+    );
+};
+
 export const Sortable: Story = {
-    render: () => {
-        const [sorted, setSorted] = useState<typeof data>(data);
-        return (
-            <Table
-                columns={columns}
-                data={sorted}
-                hoverable
-                onSort={(key, dir) => {
-                    const copy = [...sorted].sort((a, b) => {
-                        const v = a[key as keyof typeof a] < b[key as keyof typeof b] ? -1 : 1;
-                        return dir === 'asc' ? v : -v;
-                    });
-                    setSorted(copy);
-                }}
-            />
-        );
-    },
+    render: () => <SortableTable />,
 };
 
 export const Compact: Story = {

@@ -42,7 +42,7 @@ class MyDocument extends Document {
         }
     }
 
-    render() {
+    render(): React.ReactElement {
         return (
             // Set primary language to Brazilian Portuguese
             <Html lang="pt-BR">

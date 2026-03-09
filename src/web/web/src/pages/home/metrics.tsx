@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import { borderRadius } from 'design-system/tokens/borderRadius';
 import { colors } from 'design-system/tokens/colors';
+import { shadows } from 'design-system/tokens/shadows';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import { borderRadius } from 'design-system/tokens/borderRadius';
-import { shadows } from 'design-system/tokens/shadows';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
-import { MainLayout, useHealthMetrics, useAuth } from '@/components/index';
+import { MainLayout, useHealthMetrics } from '@/components/index';
 
 /**
  * Filter options for the metrics view.
@@ -105,12 +105,12 @@ const WEEKLY_DATA = [
 const MetricsPage: React.FC = () => {
     const router = useRouter();
     const [activeFilter, setActiveFilter] = useState<string>('all');
-    const { metrics } = useHealthMetrics('user-123', []);
+    useHealthMetrics('user-123', []);
 
     const filteredCards =
         activeFilter === 'all' ? METRIC_CARDS : METRIC_CARDS.filter((card) => card.category === activeFilter);
 
-    const getTrendArrow = (trend: string) => {
+    const getTrendArrow = (trend: string): string => {
         switch (trend) {
             case 'up':
                 return '↑';
@@ -121,7 +121,7 @@ const MetricsPage: React.FC = () => {
         }
     };
 
-    const getTrendColor = (trend: string) => {
+    const getTrendColor = (trend: string): string => {
         switch (trend) {
             case 'up':
                 return colors.semantic.success;
@@ -140,7 +140,7 @@ const MetricsPage: React.FC = () => {
                     <h1 style={pageStyles.pageTitle}>Minhas Metricas</h1>
                     <p style={pageStyles.pageSubtitle}>Acompanhe seus indicadores de saude ao longo do tempo.</p>
                 </div>
-                <button style={pageStyles.addButton} onClick={() => router.push('/health/add-metric')}>
+                <button style={pageStyles.addButton} onClick={() => void router.push('/health/add-metric')}>
                     + Adicionar Metrica
                 </button>
             </div>

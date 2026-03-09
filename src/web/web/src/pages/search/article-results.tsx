@@ -1,9 +1,10 @@
+import { borderRadius } from 'design-system/tokens/borderRadius';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
-import { borderRadius } from 'design-system/tokens/borderRadius';
+
 import { MainLayout } from '@/layouts/MainLayout';
 
 const PageContainer = styled.div`
@@ -135,7 +136,7 @@ const mockArticles: Article[] = [
     },
 ];
 
-export default function ArticleResultsPage() {
+export default function ArticleResultsPage(): React.ReactElement {
     const [selectedFilter, setSelectedFilter] = useState('todos');
 
     return (

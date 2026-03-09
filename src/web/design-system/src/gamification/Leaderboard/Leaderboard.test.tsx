@@ -1,8 +1,8 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from '@jest/globals';
+import { render, screen } from '@testing-library/react';
+import React from 'react';
+
 import { Leaderboard } from './Leaderboard';
-import { Card } from '../../components/Card/Card';
 import { colors } from '../../tokens';
 
 describe('Leaderboard', () => {

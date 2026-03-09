@@ -1,10 +1,10 @@
-import React from 'react';
-import { useRouter } from 'next/router';
 import { Card } from 'design-system/components/Card/Card';
-import { Text } from 'design-system/primitives/Text/Text';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 const STAGES = [
     { label: 'Deep Sleep', hours: '1h 32m', pct: 20, color: colors.journeys.health.accent },
@@ -26,7 +26,7 @@ const SleepDetailPage: React.FC = () => {
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/sleep/diary')}
+                onClick={() => void router.push('/health/sleep/diary')}
                 style={{
                     background: 'none',
                     border: 'none',

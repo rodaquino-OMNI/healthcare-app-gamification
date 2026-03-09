@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import React, { useState } from 'react';
+
 import { Toast } from './Toast';
 import { Button } from '../Button/Button';
 
@@ -71,35 +72,37 @@ export const WithAction: Story = {
     },
 };
 
-export const Interactive: Story = {
-    render: () => {
-        const [visible, setVisible] = useState(false);
-        const [type, setType] = useState<'success' | 'error' | 'warning' | 'info'>('success');
-        return (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                    {(['success', 'error', 'warning', 'info'] as const).map((t) => (
-                        <Button
-                            key={t}
-                            journey="health"
-                            size="sm"
-                            onPress={() => {
-                                setType(t);
-                                setVisible(true);
-                            }}
-                        >
-                            {t}
-                        </Button>
-                    ))}
-                </div>
-                <Toast
-                    type={type}
-                    message={`This is a ${type} toast message.`}
-                    visible={visible}
-                    onDismiss={() => setVisible(false)}
-                    duration={4000}
-                />
+const InteractiveToast = (): React.ReactElement => {
+    const [visible, setVisible] = useState(false);
+    const [type, setType] = useState<'success' | 'error' | 'warning' | 'info'>('success');
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                {(['success', 'error', 'warning', 'info'] as const).map((t) => (
+                    <Button
+                        key={t}
+                        journey="health"
+                        size="sm"
+                        onPress={() => {
+                            setType(t);
+                            setVisible(true);
+                        }}
+                    >
+                        {t}
+                    </Button>
+                ))}
             </div>
-        );
-    },
+            <Toast
+                type={type}
+                message={`This is a ${type} toast message.`}
+                visible={visible}
+                onDismiss={() => setVisible(false)}
+                duration={4000}
+            />
+        </div>
+    );
+};
+
+export const Interactive: Story = {
+    render: () => <InteractiveToast />,
 };

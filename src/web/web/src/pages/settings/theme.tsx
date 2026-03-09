@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import React, { useState } from 'react';
+
 import { saveTheme } from '../../api/settings';
 
 type ThemeOption = 'light' | 'dark' | 'system';
@@ -48,12 +49,12 @@ const ThemePage: NextPage = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    const handleSave = async () => {
+    const handleSave = async (): Promise<void> => {
         setLoading(true);
         setError('');
         try {
             await saveTheme(selected);
-            router.push('/settings');
+            void router.push('/settings');
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : 'Erro ao salvar tema.');
         } finally {
@@ -70,7 +71,14 @@ const ThemePage: NextPage = () => {
                 {THEMES.map((theme) => (
                     <div
                         key={theme.value}
+                        role="button"
+                        tabIndex={0}
                         onClick={() => setSelected(theme.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                setSelected(theme.value);
+                            }
+                        }}
                         style={{
                             ...optionStyle,
                             borderColor: selected === theme.value ? colors.brand.primary : colors.gray[20],
@@ -126,7 +134,7 @@ const ThemePage: NextPage = () => {
                         {error}
                     </p>
                 )}
-                <button onClick={handleSave} disabled={loading} style={primaryButtonStyle}>
+                <button onClick={() => void handleSave()} disabled={loading} style={primaryButtonStyle}>
                     {loading ? 'Salvando...' : 'Aplicar Tema'}
                 </button>
             </div>

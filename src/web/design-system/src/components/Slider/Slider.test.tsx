@@ -1,6 +1,7 @@
-import React from 'react';
 import { describe, it, expect } from '@jest/globals';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+
 import { Slider } from './Slider';
 
 describe('Slider', () => {
@@ -11,7 +12,7 @@ describe('Slider', () => {
 
     it('renders with correct value', () => {
         render(<Slider value={75} onChange={jest.fn()} />);
-        const input = screen.getByTestId('slider-input') as HTMLInputElement;
+        const input = screen.getByTestId('slider-input');
         expect(input.value).toBe('75');
     });
 

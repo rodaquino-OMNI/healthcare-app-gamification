@@ -23,6 +23,7 @@
  * ```
  */
 
-import { Icon, IconProps } from './Icon';
+import { Icon, type IconProps } from './Icon';
 
-export { Icon, IconProps };
+export { Icon };
+export type { IconProps };

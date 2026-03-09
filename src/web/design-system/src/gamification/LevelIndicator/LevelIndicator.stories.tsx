@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+
 import { LevelIndicator } from './LevelIndicator';
 
 const meta: Meta<typeof LevelIndicator> = {

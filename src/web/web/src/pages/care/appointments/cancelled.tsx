@@ -1,13 +1,14 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { CareLayout } from '@/layouts/CareLayout';
+import { useRouter } from 'next/router';
+import React from 'react';
+
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { CareLayout } from '@/layouts/CareLayout';
 
 const CancelledPage: React.FC = () => {
     const router = useRouter();
@@ -138,18 +139,24 @@ const CancelledPage: React.FC = () => {
                     </Box>
                 </Card>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: spacing['2xl'] }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        marginTop: spacing['2xl'],
+                    }}
+                >
                     <Button
                         journey="care"
                         variant="outlined"
-                        onPress={() => router.push('/care/appointments/list')}
+                        onPress={() => void router.push('/care/appointments/list')}
                         accessibilityLabel="Voltar as consultas"
                     >
                         Minhas Consultas
                     </Button>
                     <Button
                         journey="care"
-                        onPress={() => router.push('/care/appointments/search')}
+                        onPress={() => void router.push('/care/appointments/search')}
                         accessibilityLabel="Agendar nova consulta"
                     >
                         Agendar Nova Consulta

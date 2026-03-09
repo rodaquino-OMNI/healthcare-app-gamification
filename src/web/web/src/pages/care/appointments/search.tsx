@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
-import { CareLayout } from '@/layouts/CareLayout';
+
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { CareLayout } from '@/layouts/CareLayout';
 
 /** Specialty option for the search filter */
 interface Specialty {
@@ -83,12 +84,12 @@ const DoctorSearchPage: React.FC = () => {
         return matchesQuery && matchesSpecialty;
     });
 
-    const handleDoctorSelect = (doctorId: string) => {
-        router.push(`/care/appointments/doctor/${doctorId}`);
+    const handleDoctorSelect = (doctorId: string): void => {
+        void router.push(`/care/appointments/doctor/${doctorId}`);
     };
 
-    const handleOpenFilters = () => {
-        router.push(WEB_CARE_ROUTES.DOCTOR_FILTERS);
+    const handleOpenFilters = (): void => {
+        void router.push(WEB_CARE_ROUTES.DOCTOR_FILTERS);
     };
 
     return (
@@ -117,7 +118,14 @@ const DoctorSearchPage: React.FC = () => {
                 </div>
 
                 {/* Specialty quick filters */}
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: spacing.xs, marginBottom: spacing.xl }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: spacing.xs,
+                        marginBottom: spacing.xl,
+                    }}
+                >
                     {SPECIALTIES.map((spec) => (
                         <button
                             key={spec.id}
@@ -125,7 +133,11 @@ const DoctorSearchPage: React.FC = () => {
                             style={{
                                 padding: `${spacing.xs} ${spacing.sm}`,
                                 borderRadius: '20px',
-                                border: `1px solid ${selectedSpecialty === spec.id ? colors.journeys.care.primary : colors.neutral.gray300}`,
+                                border: `1px solid ${
+                                    selectedSpecialty === spec.id
+                                        ? colors.journeys.care.primary
+                                        : colors.neutral.gray300
+                                }`,
                                 backgroundColor:
                                     selectedSpecialty === spec.id ? colors.journeys.care.background : 'transparent',
                                 color:
@@ -176,7 +188,11 @@ const DoctorSearchPage: React.FC = () => {
                                     {doctor.specialty}
                                 </Text>
                                 <div
-                                    style={{ display: 'flex', justifyContent: 'space-between', marginTop: spacing.sm }}
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        marginTop: spacing.sm,
+                                    }}
                                 >
                                     <Text fontSize="sm" color={colors.journeys.care.primary}>
                                         {doctor.rating} estrelas

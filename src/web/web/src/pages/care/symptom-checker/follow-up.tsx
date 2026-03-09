@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
 import { Text } from 'design-system/primitives/Text/Text';
-import { Box } from 'design-system/primitives/Box/Box';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 type StatusOption = 'Melhor' | 'Igual' | 'Pior';
 
@@ -13,12 +12,12 @@ const FollowUpPage: React.FC = () => {
     const [notes, setNotes] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleSubmit = async () => {
+    const handleSubmit = (): void => {
         setIsSubmitting(true);
         // Simulate form submission
         setTimeout(() => {
             setIsSubmitting(false);
-            router.push('/care/symptom-checker/history-detail');
+            void router.push('/care/symptom-checker/history-detail');
         }, 1000);
     };
 
@@ -46,7 +45,7 @@ const FollowUpPage: React.FC = () => {
             <div
                 style={{
                     padding: spacing.lg,
-                    backgroundColor: colors.neutral.gray50,
+                    backgroundColor: colors.neutral.gray100,
                     borderRadius: '8px',
                     border: `1px solid ${colors.neutral.gray200}`,
                 }}
@@ -91,7 +90,9 @@ const FollowUpPage: React.FC = () => {
                                 backgroundColor:
                                     status === option ? colors.journeys.care.primary : colors.neutral.white,
                                 color: status === option ? colors.neutral.white : colors.journeys.care.text,
-                                border: `2px solid ${status === option ? colors.journeys.care.primary : colors.neutral.gray300}`,
+                                border: `2px solid ${
+                                    status === option ? colors.journeys.care.primary : colors.neutral.gray300
+                                }`,
                                 borderRadius: '6px',
                                 cursor: 'pointer',
                                 fontSize: '14px',
@@ -128,7 +129,11 @@ const FollowUpPage: React.FC = () => {
                 <textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    placeholder="Descreva como voce esta se sentindo, qualquer mudanca nos sintomas, ou medicamentos que tomou..."
+                    placeholder={
+                        'Descreva como voce esta se sentindo, ' +
+                        'qualquer mudanca nos sintomas, ' +
+                        'ou medicamentos que tomou...'
+                    }
                     style={{
                         width: '100%',
                         minHeight: '120px',
@@ -168,7 +173,7 @@ const FollowUpPage: React.FC = () => {
                 }}
             >
                 <button
-                    onClick={handleSubmit}
+                    onClick={() => void handleSubmit()}
                     disabled={isSubmitting}
                     style={{
                         flex: 1,

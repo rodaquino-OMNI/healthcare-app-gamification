@@ -1,11 +1,13 @@
 import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { ALL_JOURNEYS } from 'shared/constants/journeys';
+
 import { useAuth } from '@/hooks/useAuth';
 
 /**
  * Type for a journey object as defined in journeys.ts
  */
 export type Journey = (typeof ALL_JOURNEYS)[number];
+export type JourneyId = Journey['id'];
 
 /**
  * Context for managing the current user journey
@@ -45,9 +47,9 @@ interface JourneyProviderProps {
  * Provider component for the JourneyContext
  * Manages the current journey state and provides methods to update it
  */
-export const JourneyProvider = ({ children }: JourneyProviderProps) => {
+export const JourneyProvider = ({ children }: JourneyProviderProps): React.ReactElement => {
     // Default to the first journey
-    const [currentJourney, setCurrentJourney] = useState(ALL_JOURNEYS[0].id);
+    const [currentJourney, setCurrentJourney] = useState<string>(ALL_JOURNEYS[0].id);
     const { isAuthenticated } = useAuth();
 
     // Set initial journey or handle authentication changes
@@ -64,7 +66,7 @@ export const JourneyProvider = ({ children }: JourneyProviderProps) => {
     const journeyData = ALL_JOURNEYS.find((journey) => journey.id === currentJourney);
 
     // Handle journey changes with validation
-    const handleSetCurrentJourney = (journeyId: string) => {
+    const handleSetCurrentJourney = (journeyId: string): void => {
         // Validate that the journey ID is valid
         if (ALL_JOURNEYS.some((journey) => journey.id === journeyId)) {
             setCurrentJourney(journeyId);
@@ -95,3 +97,9 @@ export const useJourney = (): JourneyContextType => {
     }
     return context;
 };
+
+/**
+ * Alias for useJourney — provides backward compatibility for consumers
+ * that import useJourneyContext.
+ */
+export const useJourneyContext = useJourney;

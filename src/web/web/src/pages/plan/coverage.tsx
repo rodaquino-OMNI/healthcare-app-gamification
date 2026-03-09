@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { NextSeo } from 'next-seo';
-import PlanLayout from '../../layouts/PlanLayout';
-import CoverageInfoCard from 'design-system/plan/CoverageInfoCard';
-import LoadingIndicator from '../../components/shared/LoadingIndicator';
-import ErrorState from '../../components/shared/ErrorState';
-import { useCoverage } from '../../hooks/useCoverage';
-import { useAuth } from '../../hooks/useAuth';
+import { CoverageInfoCard } from 'design-system/plan/CoverageInfoCard';
 import { Box, Text } from 'design-system/primitives';
-import { Coverage } from 'shared/types/plan.types';
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import { NextSeo } from 'next-seo';
+import React, { useState } from 'react';
+import { Coverage } from 'shared/types/plan.types';
+
+import { ErrorState } from '../../components/shared/ErrorState';
+import { LoadingIndicator } from '../../components/shared/LoadingIndicator';
+import { useAuth } from '../../hooks/useAuth';
+import { useCoverage } from '../../hooks/useCoverage';
+import PlanLayout from '../../layouts/PlanLayout';
 
 const { plan } = colors.journeys;
 
@@ -17,13 +18,13 @@ const { plan } = colors.journeys;
  */
 const CoveragePage: React.FC = () => {
     const { session } = useAuth();
-    const planId = session?.accessToken;
+    const planId = session?.accessToken ?? '';
     const { data: coverageData, isLoading, isError, refetch } = useCoverage(planId);
 
     // Track expanded sections
     const [expandedTypes, setExpandedTypes] = useState<Record<string, boolean>>({});
 
-    const toggleType = (type: string) => {
+    const toggleType = (type: string): void => {
         setExpandedTypes((prev) => ({ ...prev, [type]: !prev[type] }));
     };
 
@@ -40,7 +41,7 @@ const CoveragePage: React.FC = () => {
             <PlanLayout>
                 <ErrorState
                     message="Erro ao carregar informacoes de cobertura. Tente novamente."
-                    onRetry={() => refetch()}
+                    onRetry={() => void refetch()}
                 />
             </PlanLayout>
         );
@@ -134,7 +135,7 @@ const CoveragePage: React.FC = () => {
 /**
  * Next.js server-side function to handle authentication and redirect if needed.
  */
-export async function getServerSideProps(context: { req: { cookies: Record<string, string> } }): Promise<object> {
+export function getServerSideProps(context: { req: { cookies: Record<string, string> } }): object {
     const { req } = context;
     const session = req.cookies['next-auth.session-token'] || req.cookies['__Secure-next-auth.session-token'];
 

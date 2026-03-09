@@ -1,5 +1,6 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+
 import { QuestCard } from './QuestCard';
 import { ThemeProvider } from '../../themes';
 
@@ -7,6 +8,7 @@ import { ThemeProvider } from '../../themes';
 jest.mock('styled-components', () => {
     const originalModule = jest.requireActual('styled-components');
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return {
         ...originalModule,
         ThemeProvider: ({ children }: { children: React.ReactNode }) => children,

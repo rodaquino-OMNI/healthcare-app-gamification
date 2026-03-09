@@ -1,10 +1,9 @@
-import React from 'react'; // React v18.0+
-import { MOBILE_HEALTH_ROUTES } from 'shared/constants/routes';
-import { useDevices } from '@/hooks/useDevices';
 import { DeviceCard } from 'design-system/components/index';
+import React from 'react'; // React v18.0+
+import { DeviceConnection } from 'shared/types/health.types';
+
+import { useDevices } from '@/hooks/useDevices';
 import HealthLayout from '@/layouts/HealthLayout';
-import { useAuth } from '@/hooks/useAuth';
-import { HealthMetric } from 'shared/types/health.types';
 
 /**
  * Displays the list of connected devices and allows connecting new ones.
@@ -12,11 +11,8 @@ import { HealthMetric } from 'shared/types/health.types';
  */
 const Devices: React.FC = () => {
     // LD1: Retrieves the user ID from the authentication context using the `useAuth` hook.
-    const { session } = useAuth();
-    const userId = session?.accessToken ? useAuth().getUserFromToken(session.accessToken)?.sub : undefined;
-
     // LD1: Fetches the list of connected devices using the `useDevices` hook.
-    const { devices, loading, error, connect } = useDevices();
+    const { data: devices, loading, error } = useDevices();
 
     // LD1: Renders a list of `DeviceCard` components for each connected device.
     // LD1: Provides a button to connect a new device.
@@ -26,7 +22,15 @@ const Devices: React.FC = () => {
             {loading && <p>Loading devices...</p>}
             {error && <p>Error: {error.message}</p>}
             {devices && devices.length > 0 ? (
-                devices.map((device) => <DeviceCard key={device.id} device={device} />)
+                devices.map((device: DeviceConnection) => (
+                    <DeviceCard
+                        key={device.id}
+                        deviceName={device.name ?? device.deviceType}
+                        deviceType={device.type ?? device.deviceType}
+                        lastSync={device.lastSync ?? ''}
+                        status={device.connected ? 'Connected' : 'Disconnected'}
+                    />
+                ))
             ) : (
                 <p>No devices connected.</p>
             )}
@@ -35,5 +39,4 @@ const Devices: React.FC = () => {
     );
 };
 
-// LD1: Exports the Devices page component.
-export { Devices };
+export default Devices;

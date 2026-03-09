@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import React, { useState } from 'react';
+
 import { Pagination } from './Pagination';
 
 const meta: Meta<typeof Pagination> = {
@@ -24,30 +25,38 @@ const meta: Meta<typeof Pagination> = {
 export default meta;
 type Story = StoryObj<typeof Pagination>;
 
+const DefaultPagination = (): React.ReactElement => {
+    const [page, setPage] = useState(1);
+    return <Pagination totalPages={10} currentPage={page} onPageChange={setPage} journey="health" />;
+};
+
 export const Default: Story = {
-    render: () => {
-        const [page, setPage] = useState(1);
-        return <Pagination totalPages={10} currentPage={page} onPageChange={setPage} journey="health" />;
-    },
+    render: () => <DefaultPagination />,
+};
+
+const DotsPagination = (): React.ReactElement => {
+    const [page, setPage] = useState(1);
+    return <Pagination totalPages={5} currentPage={page} onPageChange={setPage} variant="dots" journey="care" />;
 };
 
 export const Dots: Story = {
-    render: () => {
-        const [page, setPage] = useState(1);
-        return <Pagination totalPages={5} currentPage={page} onPageChange={setPage} variant="dots" journey="care" />;
-    },
+    render: () => <DotsPagination />,
+};
+
+const ManyPagesPagination = (): React.ReactElement => {
+    const [page, setPage] = useState(5);
+    return <Pagination totalPages={20} currentPage={page} onPageChange={setPage} journey="plan" />;
 };
 
 export const ManyPages: Story = {
-    render: () => {
-        const [page, setPage] = useState(5);
-        return <Pagination totalPages={20} currentPage={page} onPageChange={setPage} journey="plan" />;
-    },
+    render: () => <ManyPagesPagination />,
+};
+
+const FewPagesPagination = (): React.ReactElement => {
+    const [page, setPage] = useState(2);
+    return <Pagination totalPages={3} currentPage={page} onPageChange={setPage} journey="health" />;
 };
 
 export const FewPages: Story = {
-    render: () => {
-        const [page, setPage] = useState(2);
-        return <Pagination totalPages={3} currentPage={page} onPageChange={setPage} journey="health" />;
-    },
+    render: () => <FewPagesPagination />,
 };

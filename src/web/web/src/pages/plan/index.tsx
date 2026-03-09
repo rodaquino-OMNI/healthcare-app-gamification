@@ -1,13 +1,14 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { PlanLayout } from '@/layouts/PlanLayout';
-import { InsuranceCard } from 'design-system/plan/InsuranceCard/InsuranceCard';
 import { ClaimCard } from 'design-system/plan/ClaimCard/ClaimCard';
+import { InsuranceCard } from 'design-system/plan/InsuranceCard/InsuranceCard';
 import { Text } from 'design-system/primitives';
-import { WEB_PLAN_ROUTES } from 'shared/constants/routes';
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
-import { useAuth } from '@/hooks/useAuth';
+import { useRouter } from 'next/router';
+import React from 'react';
+import { WEB_PLAN_ROUTES } from 'shared/constants/routes';
 import { Claim } from 'shared/types/plan.types';
+
+import { useAuth } from '@/hooks/useAuth';
+import PlanLayout from '@/layouts/PlanLayout';
 
 const { plan } = colors.journeys;
 
@@ -134,20 +135,21 @@ const PlanDashboard: React.FC = () => {
                     <InsuranceCard
                         plan={{
                             id: 'plan-001',
-                            userId: session?.accessToken || '',
+                            name: 'AUSTA Health PPO',
                             planNumber: 'AUSTA-2026-001',
                             type: 'PPO',
                             validityStart: '2026-01-01',
                             validityEnd: '2026-12-31',
-                            coverageDetails: {},
-                            coverages: [],
-                            benefits: [],
-                            claims: [],
                         }}
                         user={{
                             id: session?.accessToken || '',
                             name: 'Usuario AUSTA',
                             cpf: '***.***.***-**',
+                        }}
+                        onShare={() => {
+                            if (navigator.share) {
+                                void navigator.share({ title: 'Cartao Digital AUSTA', url: window.location.href });
+                            }
                         }}
                     />
                 </div>
@@ -190,7 +192,7 @@ const PlanDashboard: React.FC = () => {
                             <ClaimCard
                                 key={claim.id}
                                 claim={claim}
-                                onViewDetails={() => router.push(`/plan/claims/${claim.id}`)}
+                                onViewDetails={() => void router.push(`/plan/claims/${claim.id}`)}
                             />
                         ))}
                     </div>

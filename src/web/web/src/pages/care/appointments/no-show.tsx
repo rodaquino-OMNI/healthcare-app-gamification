@@ -1,13 +1,14 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { CareLayout } from '@/layouts/CareLayout';
+import { useRouter } from 'next/router';
+import React from 'react';
+
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { CareLayout } from '@/layouts/CareLayout';
 
 const NoShowPage: React.FC = () => {
     const router = useRouter();
@@ -84,7 +85,10 @@ const NoShowPage: React.FC = () => {
                 <Card
                     journey="care"
                     elevation="sm"
-                    style={{ borderLeft: `4px solid ${colors.semantic.error}`, marginBottom: spacing.md }}
+                    style={{
+                        borderLeft: `4px solid ${colors.semantic.error}`,
+                        marginBottom: spacing.md,
+                    }}
                 >
                     <Box padding="md">
                         <Text
@@ -140,11 +144,17 @@ const NoShowPage: React.FC = () => {
                     </Box>
                 </Card>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: spacing['2xl'] }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        marginTop: spacing['2xl'],
+                    }}
+                >
                     <Button
                         journey="care"
                         variant="outlined"
-                        onPress={() => router.push('/care/appointments/reschedule')}
+                        onPress={() => void router.push('/care/appointments/reschedule')}
                         accessibilityLabel="Reagendar"
                     >
                         Reagendar Consulta

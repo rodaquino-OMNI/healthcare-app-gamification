@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import type { NextPage } from 'next';
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import type { NextPage } from 'next';
+import React, { useState } from 'react';
 
 /**
  * Biometric preferences page.

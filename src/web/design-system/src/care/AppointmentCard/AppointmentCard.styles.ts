@@ -1,8 +1,4 @@
 import styled from 'styled-components';
-import type { ThemeProps } from 'styled-components';
-import { colors } from '../../tokens/colors';
-import { spacing } from '../../tokens/spacing';
-import { borderRadius } from '../../tokens/borderRadius';
 
 export const AppointmentCardContainer = styled.div`
     display: flex;
@@ -19,7 +15,7 @@ export const AppointmentCardContainer = styled.div`
         box-shadow: ${(props) => props.theme.shadows.md};
     }
 
-    @media (max-width: ${(props) => props.theme.breakpoints.sm}) {
+    @media (max-width: ${(props) => props.theme.breakpoints?.sm ?? '768px'}) {
         padding: ${(props) => props.theme.spacing.sm};
     }
 `;
@@ -82,7 +78,7 @@ export const AppointmentActions = styled.div`
     display: flex;
     gap: ${(props) => props.theme.spacing.sm};
 
-    @media (max-width: ${(props) => props.theme.breakpoints.sm}) {
+    @media (max-width: ${(props) => props.theme.breakpoints?.sm ?? '768px'}) {
         flex-direction: column;
         width: 100%;
 

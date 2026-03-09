@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+
 import { Box } from './Box';
 import { colors } from '../../tokens/colors';
 

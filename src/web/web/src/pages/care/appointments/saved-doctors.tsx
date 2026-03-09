@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { CareLayout } from '@/layouts/CareLayout';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { CareLayout } from '@/layouts/CareLayout';
 
 interface SavedDoctor {
     id: string;
@@ -61,7 +62,7 @@ const MOCK_SAVED: SavedDoctor[] = [
     },
 ];
 
-const renderStars = (rating: number) =>
+const renderStars = (rating: number): string =>
     Array.from({ length: 5 }, (_, i) => (i < Math.round(rating) ? '\u2605' : '\u2606')).join('');
 
 const SavedDoctorsPage: React.FC = () => {
@@ -141,7 +142,13 @@ const SavedDoctorsPage: React.FC = () => {
                                             marginBottom: spacing.sm,
                                         }}
                                     >
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: spacing.sm,
+                                            }}
+                                        >
                                             <div
                                                 style={{
                                                     width: '48px',
@@ -199,7 +206,7 @@ const SavedDoctorsPage: React.FC = () => {
                                     <Button
                                         journey="care"
                                         size="sm"
-                                        onPress={() => router.push(`/care/appointments/doctor/${doc.id}`)}
+                                        onPress={() => void router.push(`/care/appointments/doctor/${doc.id}`)}
                                         accessibilityLabel={`Agendar com ${doc.name}`}
                                     >
                                         Agendar Rapido

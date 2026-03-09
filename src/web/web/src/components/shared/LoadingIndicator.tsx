@@ -1,9 +1,10 @@
-import React from 'react';
+import { ProgressCircle } from 'design-system/components/ProgressCircle';
 import { Box } from 'design-system/primitives/Box';
 import { Text } from 'design-system/primitives/Text';
-import { ProgressCircle } from 'design-system/components/ProgressCircle';
-import { useJourney } from '@/context/JourneyContext';
+import React from 'react';
 import { JOURNEY_COLORS } from 'shared/constants/journeys';
+
+import { useJourney } from '@/context/JourneyContext';
 
 /**
  * Props for the LoadingIndicator component
@@ -46,18 +47,15 @@ export const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
     const { currentJourney } = useJourney();
 
     // Determine color based on current journey
-    let journeyColor = JOURNEY_COLORS.HEALTH; // Default to health color
-
-    if (currentJourney === 'health') {
-        journeyColor = JOURNEY_COLORS.HEALTH;
-    } else if (currentJourney === 'care') {
-        journeyColor = JOURNEY_COLORS.CARE;
-    } else if (currentJourney === 'plan') {
-        journeyColor = JOURNEY_COLORS.PLAN;
-    }
+    const journeyColor =
+        currentJourney === 'care'
+            ? JOURNEY_COLORS.care
+            : currentJourney === 'plan'
+              ? JOURNEY_COLORS.plan
+              : JOURNEY_COLORS.health;
 
     // Determine size in pixels
-    const getSizeInPx = () => {
+    const getSizeInPx = (): string => {
         switch (size) {
             case 'sm':
                 return '32px';

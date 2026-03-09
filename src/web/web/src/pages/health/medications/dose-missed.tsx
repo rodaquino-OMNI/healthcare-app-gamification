@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
-import { Button } from 'design-system/components/Button/Button';
 import { Badge } from 'design-system/components/Badge/Badge';
-import Input from 'design-system/components/Input/Input';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
+import { Input } from 'design-system/components/Input/Input';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
 /** Missed dose reason options */
@@ -34,13 +34,13 @@ const MedicationDoseMissedPage: React.FC = () => {
     const [showReschedule, setShowReschedule] = useState(false);
     const [rescheduleTime, setRescheduleTime] = useState('');
 
-    const handleSkip = () => {
+    const handleSkip = (): void => {
         // In a real app, persist the skip record via API
-        router.push(WEB_HEALTH_ROUTES.MEDICATIONS);
+        void router.push(WEB_HEALTH_ROUTES.MEDICATIONS);
     };
 
-    const handleTakeNow = () => {
-        router.push({
+    const handleTakeNow = (): void => {
+        void router.push({
             pathname: '/health/medications/dose-taken',
             query: { name: medicationName, dosage: medicationDosage, scheduledTime: scheduled },
         });
@@ -163,7 +163,7 @@ const MedicationDoseMissedPage: React.FC = () => {
                         <Input
                             label="Reschedule Time"
                             value={rescheduleTime}
-                            onChange={(e) => setRescheduleTime(e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRescheduleTime(e.target.value)}
                             placeholder="HH:MM"
                             journey="health"
                             testID="reschedule-time-input"

@@ -1,5 +1,4 @@
-import styled from 'styled-components';
-import type { ThemeType } from 'styled-components';
+import styled, { type ThemeType } from 'styled-components';
 
 export const ChartContainer = styled.div`
     width: 100%;
@@ -13,7 +12,7 @@ export const ChartContainer = styled.div`
     margin-bottom: ${({ theme }: { theme: ThemeType }) => theme.spacing.md};
     overflow: hidden;
 
-    @media (min-width: ${({ theme }: { theme: ThemeType }) => theme.breakpoints.md}) {
+    @media (min-width: ${({ theme }: { theme: ThemeType }) => theme.breakpoints?.md ?? '992px'}) {
         padding: ${({ theme }: { theme: ThemeType }) => theme.spacing.lg};
     }
 `;
@@ -24,11 +23,11 @@ export const ChartWrapper = styled.div`
     min-height: 200px;
     position: relative;
 
-    @media (min-width: ${({ theme }: { theme: ThemeType }) => theme.breakpoints.md}) {
+    @media (min-width: ${({ theme }: { theme: ThemeType }) => theme.breakpoints?.md ?? '992px'}) {
         min-height: 250px;
     }
 
-    @media (min-width: ${({ theme }: { theme: ThemeType }) => theme.breakpoints.lg}) {
+    @media (min-width: ${({ theme }: { theme: ThemeType }) => theme.breakpoints?.lg ?? '1200px'}) {
         min-height: 300px;
     }
 

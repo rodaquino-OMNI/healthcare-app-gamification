@@ -1,8 +1,8 @@
-import React from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -49,7 +49,7 @@ const StepPersonalInfoPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                             style={inputStyle}
                             type="text"
                             placeholder="Enter your full name"
-                            value={data.fullName || ''}
+                            value={(data.fullName as string) || ''}
                             onChange={(e) => onUpdate('fullName', e.target.value)}
                             aria-label="Full name"
                         />
@@ -62,7 +62,7 @@ const StepPersonalInfoPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                         <input
                             style={inputStyle}
                             type="date"
-                            value={data.dateOfBirth || ''}
+                            value={(data.dateOfBirth as string) || ''}
                             onChange={(e) => onUpdate('dateOfBirth', e.target.value)}
                             aria-label="Date of birth"
                         />
@@ -74,7 +74,7 @@ const StepPersonalInfoPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                         </Text>
                         <select
                             style={inputStyle}
-                            value={data.gender || ''}
+                            value={(data.gender as string) || ''}
                             onChange={(e) => onUpdate('gender', e.target.value)}
                             aria-label="Gender"
                         >
@@ -93,7 +93,7 @@ const StepPersonalInfoPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                         </Text>
                         <select
                             style={inputStyle}
-                            value={data.bloodType || ''}
+                            value={(data.bloodType as string) || ''}
                             onChange={(e) => onUpdate('bloodType', e.target.value)}
                             aria-label="Blood type"
                         >

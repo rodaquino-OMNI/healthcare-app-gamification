@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import React, { useState } from 'react';
+
 import { DatePicker } from './DatePicker';
 
 const meta: Meta<typeof DatePicker> = {
@@ -22,53 +23,59 @@ const meta: Meta<typeof DatePicker> = {
 export default meta;
 type Story = StoryObj<typeof DatePicker>;
 
+const DefaultDatePicker = (): React.ReactElement => {
+    const [date, setDate] = useState<Date | null>(null);
+    return (
+        <div style={{ maxWidth: '320px' }}>
+            <DatePicker value={date} onChange={setDate} placeholder="Select a date" journey="health" />
+        </div>
+    );
+};
+
 export const Default: Story = {
-    render: () => {
-        const [date, setDate] = useState<Date | null>(null);
-        return (
-            <div style={{ maxWidth: '320px' }}>
-                <DatePicker value={date} onChange={setDate} placeholder="Select a date" journey="health" />
-            </div>
-        );
-    },
+    render: () => <DefaultDatePicker />,
+};
+
+const WithLabelDatePicker = (): React.ReactElement => {
+    const [date, setDate] = useState<Date | null>(null);
+    return (
+        <div style={{ maxWidth: '320px' }}>
+            <DatePicker
+                value={date}
+                onChange={setDate}
+                label="Appointment Date"
+                placeholder="dd/MM/yyyy"
+                journey="care"
+            />
+        </div>
+    );
 };
 
 export const WithLabel: Story = {
-    render: () => {
-        const [date, setDate] = useState<Date | null>(null);
-        return (
-            <div style={{ maxWidth: '320px' }}>
-                <DatePicker
-                    value={date}
-                    onChange={setDate}
-                    label="Appointment Date"
-                    placeholder="dd/MM/yyyy"
-                    journey="care"
-                />
-            </div>
-        );
-    },
+    render: () => <WithLabelDatePicker />,
+};
+
+const WithErrorDatePicker = (): React.ReactElement => {
+    const [date, setDate] = useState<Date | null>(null);
+    return (
+        <div style={{ maxWidth: '320px' }}>
+            <DatePicker
+                value={date}
+                onChange={setDate}
+                label="Birth Date"
+                error="Please select a valid date"
+                journey="health"
+            />
+        </div>
+    );
 };
 
 export const WithError: Story = {
-    render: () => {
-        const [date, setDate] = useState<Date | null>(null);
-        return (
-            <div style={{ maxWidth: '320px' }}>
-                <DatePicker
-                    value={date}
-                    onChange={setDate}
-                    label="Birth Date"
-                    error="Please select a valid date"
-                    journey="health"
-                />
-            </div>
-        );
-    },
+    render: () => <WithErrorDatePicker />,
 };
 
 export const Disabled: Story = {
-    render: () => (
+    render: (): React.ReactElement => (
         <div style={{ maxWidth: '320px' }}>
             <DatePicker value={new Date()} onChange={() => {}} label="Locked Date" disabled journey="plan" />
         </div>

@@ -1,5 +1,6 @@
-import React from 'react';
 import { format } from 'date-fns';
+import React from 'react';
+
 import {
     AppointmentCardContainer,
     AppointmentCardHeader,
@@ -10,7 +11,6 @@ import {
     AppointmentActions,
 } from './AppointmentCard.styles';
 import { Button } from '../../components/Button/Button';
-import { Card } from '../../components/Card/Card';
 import { Icon } from '../../primitives/Icon/Icon';
 import { Text } from '../../primitives/Text/Text';
 import { sizing } from '../../tokens/sizing';
@@ -142,7 +142,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
     const appointmentDescription = `Consulta ${appointment.type === 'telemedicine' ? 'por telemedicina' : 'presencial'} com ${provider.name}, ${provider.specialty}, ${formattedDate}, status: ${appointment.status === 'upcoming' ? 'agendada' : appointment.status === 'completed' ? 'concluída' : 'cancelada'}`;
 
     // Get status text
-    const getStatusText = () => {
+    const getStatusText = (): string => {
         switch (appointment.status) {
             case 'upcoming':
                 return 'Agendada';

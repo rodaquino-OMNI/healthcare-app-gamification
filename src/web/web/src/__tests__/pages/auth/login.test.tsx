@@ -1,5 +1,5 @@
+import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
 jest.mock('@/hooks/useAuth', () => ({
     useAuth: () => ({
@@ -21,16 +21,31 @@ jest.mock('shared/utils/validation', () => ({
     },
 }));
 
+interface MockButtonProps {
+    children: React.ReactNode;
+    onPress?: () => void;
+    disabled?: boolean;
+    loading?: boolean;
+}
+
 jest.mock('design-system/components/Button/Button', () => ({
-    Button: ({ children, onPress, disabled, loading }: any) => (
+    Button: ({ children, onPress, disabled, loading }: MockButtonProps) => (
         <button onClick={onPress} disabled={disabled || loading} data-testid="button">
             {loading ? 'Loading...' : children}
         </button>
     ),
 }));
 
+interface MockInputProps {
+    placeholder?: string;
+    onChange?: React.ChangeEventHandler<HTMLInputElement>;
+    value?: string;
+    type?: string;
+    'aria-label'?: string;
+}
+
 jest.mock('design-system/components/Input/Input', () => ({
-    Input: ({ placeholder, onChange, value, type, 'aria-label': ariaLabel }: any) => (
+    Input: ({ placeholder, onChange, value, type, 'aria-label': ariaLabel }: MockInputProps) => (
         <input
             type={type || 'text'}
             placeholder={placeholder}
@@ -41,12 +56,26 @@ jest.mock('design-system/components/Input/Input', () => ({
     ),
 }));
 
+interface MockBoxProps {
+    children?: React.ReactNode;
+    [key: string]: unknown;
+}
+
 jest.mock('design-system/primitives/Box/Box', () => ({
-    default: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+    default: ({ children, ...props }: MockBoxProps) => <div {...props}>{children}</div>,
 }));
 
+interface MockTextProps {
+    children?: React.ReactNode;
+    as?: React.ElementType;
+    [key: string]: unknown;
+}
+
 jest.mock('design-system/primitives/Text/Text', () => ({
-    default: ({ children, as: Tag = 'span', ...props }: any) => <Tag {...props}>{children}</Tag>,
+    default: ({ children, as: Tag = 'span', ...props }: MockTextProps) => {
+        const Component = Tag;
+        return <Component {...props}>{children}</Component>;
+    },
 }));
 
 jest.mock('shared/constants/routes', () => ({

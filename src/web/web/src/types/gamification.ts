@@ -6,6 +6,11 @@
  */
 
 /**
+ * Literal union for journey identifiers in the gamification system.
+ */
+type GamificationJourney = 'health' | 'care' | 'plan';
+
+/**
  * User's game profile containing level, XP, and other gamification data
  */
 export interface GameProfile {
@@ -27,7 +32,7 @@ export interface Achievement {
     title: string;
     description: string;
     icon: string;
-    journey?: string;
+    journey?: GamificationJourney;
     xpReward: number;
     unlockedAt?: string;
     progress?: number;
@@ -42,7 +47,7 @@ export interface Quest {
     title: string;
     description: string;
     icon: string;
-    journey?: string;
+    journey?: GamificationJourney;
     xpReward: number;
     progress: number;
     completed: boolean;
@@ -57,7 +62,7 @@ export interface Reward {
     title: string;
     description: string;
     icon: string;
-    journey?: string;
+    journey?: GamificationJourney;
     earnedAt?: string;
     redeemedAt?: string;
     isRedeemed: boolean;
@@ -70,7 +75,7 @@ export interface Reward {
 export interface GamificationEvent {
     userId: string;
     type: string;
-    journey?: string;
+    journey?: GamificationJourney;
     data: Record<string, unknown>;
     timestamp?: string;
 }

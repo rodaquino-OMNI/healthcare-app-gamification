@@ -1,11 +1,12 @@
 /**
  * Analytics Utility
  *
- * Provides comprehensive analytics tracking functionality for the AUSTA SuperApp,
- * enabling tracking of user interactions, journey-specific events, and
+ * Provides comprehensive analytics tracking functionality
+ * for the AUSTA SuperApp, enabling tracking of user
+ * interactions, journey-specific events, and
  * gamification-related activities.
  *
- * This utility supports tracking through multiple analytics platforms:
+ * This utility supports tracking through multiple platforms:
  * - Google Analytics 4 for behavior tracking
  * - Datadog RUM for performance monitoring
  * - Sentry for error tracking
@@ -15,12 +16,14 @@
  * @package @datadog/browser-rum ^4.37.0
  */
 
-import ReactGA from 'react-ga4'; // v2.1.0
-import * as Sentry from '@sentry/nextjs'; // v7.60.1
 import { datadogRum } from '@datadog/browser-rum'; // v4.37.0
+import * as Sentry from '@sentry/nextjs'; // v7.60.1
+import ReactGA from 'react-ga4'; // v2.1.0
+import { JOURNEY_IDS } from 'shared/utils/index';
 
 import { webConfig } from '../constants/config';
-import { JOURNEY_IDS } from 'shared/utils/index';
+
+type AnalyticsParams = Record<string, unknown>;
 
 // Define application version from environment variables
 const APP_VERSION = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || 'development';
@@ -29,16 +32,16 @@ const ENVIRONMENT = process.env.NEXT_PUBLIC_ENVIRONMENT || 'development';
 /**
  * Initializes analytics services with proper configuration
  *
- * @param options - Configuration options for analytics initialization
- * @returns A promise that resolves when all analytics services are initialized
+ * @param options - Configuration options for analytics init
+ * @returns A promise that resolves when services initialize
  */
-export const initAnalytics = async (options?: {
+export const initAnalytics = (options?: {
     enableAnalytics?: boolean;
     userId?: string;
-    userProperties?: Record<string, unknown>;
-}): Promise<void> => {
+    userProperties?: AnalyticsParams;
+}): void => {
     try {
-        // Default to enabled in production, disabled in development
+        // Default to enabled in production
         const analyticsEnabled = options?.enableAnalytics ?? webConfig.analytics.enabled;
 
         // Initialize Google Analytics
@@ -58,8 +61,7 @@ export const initAnalytics = async (options?: {
             service: 'austa-superapp-web',
             env: ENVIRONMENT,
             version: APP_VERSION,
-            sampleRate: 100,
-            trackInteractions: true,
+            trackUserInteractions: true,
             trackResources: true,
             trackLongTasks: true,
             defaultPrivacyLevel: 'mask-user-input',
@@ -72,7 +74,6 @@ export const initAnalytics = async (options?: {
         if (options?.userId) {
             setUserId(options.userId);
 
-            // Set additional user properties if provided
             if (options?.userProperties) {
                 setUserProperties(options.userProperties);
             }
@@ -89,10 +90,7 @@ export const initAnalytics = async (options?: {
             enabled: analyticsEnabled,
             timestamp: new Date().toISOString(),
         });
-
-        console.log('Analytics initialized successfully');
     } catch (error) {
-        console.error('Error initializing analytics:', error);
         Sentry.captureException(error);
     }
 };
@@ -100,14 +98,13 @@ export const initAnalytics = async (options?: {
 /**
  * Tracks when a user views a screen in the application
  *
- * @param screenName - The name of the screen or page being viewed
- * @param journeyId - Optional journey identifier (health, care, plan)
- * @param params - Optional additional parameters to include with the event
+ * @param screenName - The name of the screen being viewed
+ * @param journeyId - Optional journey identifier
+ * @param params - Optional additional parameters
  */
-export const trackScreenView = (screenName: string, journeyId?: string, params?: Record<string, unknown>): void => {
+export const trackScreenView = (screenName: string, journeyId?: string, params?: AnalyticsParams): void => {
     try {
         if (!screenName) {
-            console.warn('Screen name is required for tracking');
             return;
         }
 
@@ -115,7 +112,7 @@ export const trackScreenView = (screenName: string, journeyId?: string, params?:
         ReactGA.set({ page: screenName });
 
         // Prepare event parameters
-        const eventParams: Record<string, unknown> = {
+        const eventParams: AnalyticsParams = {
             page_title: screenName,
             page_path: window.location.pathname,
             ...params,
@@ -124,7 +121,7 @@ export const trackScreenView = (screenName: string, journeyId?: string, params?:
         // Add journey context if provided
         if (journeyId) {
             eventParams.journey_id = journeyId;
-            eventParams.journey = journeyId; // For backward compatibility
+            eventParams.journey = journeyId;
         }
 
         // Log page_view event
@@ -137,7 +134,6 @@ export const trackScreenView = (screenName: string, journeyId?: string, params?:
             ...params,
         });
     } catch (error) {
-        console.error('Error tracking screen view:', error);
         Sentry.captureException(error);
     }
 };
@@ -146,17 +142,15 @@ export const trackScreenView = (screenName: string, journeyId?: string, params?:
  * Tracks a custom event with the analytics services
  *
  * @param eventName - The name of the event to track
- * @param params - Optional additional parameters to include with the event
+ * @param params - Optional additional parameters
  */
-export const trackEvent = (eventName: string, params?: Record<string, unknown>): void => {
+export const trackEvent = (eventName: string, params?: AnalyticsParams): void => {
     try {
         if (!eventName) {
-            console.warn('Event name is required for tracking');
             return;
         }
 
-        // Format event name to comply with GA4 naming conventions
-        // Convert to snake_case if not already
+        // Format event name to comply with GA4 conventions
         const formattedEventName = eventName
             .replace(/([A-Z])/g, '_$1')
             .toLowerCase()
@@ -168,7 +162,6 @@ export const trackEvent = (eventName: string, params?: Record<string, unknown>):
         // Track in Datadog RUM
         datadogRum.addAction(formattedEventName, params);
     } catch (error) {
-        console.error('Error tracking event:', error);
         Sentry.captureException(error);
     }
 };
@@ -176,14 +169,13 @@ export const trackEvent = (eventName: string, params?: Record<string, unknown>):
 /**
  * Tracks a journey-specific event with appropriate context
  *
- * @param journeyId - The journey identifier (health, care, plan)
+ * @param journeyId - The journey identifier
  * @param eventName - The name of the event to track
- * @param params - Optional additional parameters to include with the event
+ * @param params - Optional additional parameters
  */
-export const trackJourneyEvent = (journeyId: string, eventName: string, params?: Record<string, unknown>): void => {
+export const trackJourneyEvent = (journeyId: string, eventName: string, params?: AnalyticsParams): void => {
     try {
         if (!journeyId || !eventName) {
-            console.warn('Journey ID and event name are required for journey event tracking');
             return;
         }
 
@@ -191,16 +183,15 @@ export const trackJourneyEvent = (journeyId: string, eventName: string, params?:
         const journeyParams = {
             ...params,
             journey_id: journeyId,
-            journey: journeyId, // For backward compatibility
+            journey: journeyId,
         };
 
-        // Format event name with journey prefix for better categorization
+        // Format event name with journey prefix
         const journeyEventName = `${journeyId}_${eventName}`;
 
         // Track the event with journey context
         trackEvent(journeyEventName, journeyParams);
     } catch (error) {
-        console.error('Error tracking journey event:', error);
         Sentry.captureException(error);
     }
 };
@@ -209,9 +200,9 @@ export const trackJourneyEvent = (journeyId: string, eventName: string, params?:
  * Tracks a health journey-specific event
  *
  * @param eventName - The name of the event to track
- * @param params - Optional additional parameters to include with the event
+ * @param params - Optional additional parameters
  */
-export const trackHealthEvent = (eventName: string, params?: Record<string, unknown>): void => {
+export const trackHealthEvent = (eventName: string, params?: AnalyticsParams): void => {
     trackJourneyEvent(JOURNEY_IDS.HEALTH, eventName, params);
 };
 
@@ -219,9 +210,9 @@ export const trackHealthEvent = (eventName: string, params?: Record<string, unkn
  * Tracks a care journey-specific event
  *
  * @param eventName - The name of the event to track
- * @param params - Optional additional parameters to include with the event
+ * @param params - Optional additional parameters
  */
-export const trackCareEvent = (eventName: string, params?: Record<string, unknown>): void => {
+export const trackCareEvent = (eventName: string, params?: AnalyticsParams): void => {
     trackJourneyEvent(JOURNEY_IDS.CARE, eventName, params);
 };
 
@@ -229,9 +220,9 @@ export const trackCareEvent = (eventName: string, params?: Record<string, unknow
  * Tracks a plan journey-specific event
  *
  * @param eventName - The name of the event to track
- * @param params - Optional additional parameters to include with the event
+ * @param params - Optional additional parameters
  */
-export const trackPlanEvent = (eventName: string, params?: Record<string, unknown>): void => {
+export const trackPlanEvent = (eventName: string, params?: AnalyticsParams): void => {
     trackJourneyEvent(JOURNEY_IDS.PLAN, eventName, params);
 };
 
@@ -239,23 +230,20 @@ export const trackPlanEvent = (eventName: string, params?: Record<string, unknow
  * Tracks a gamification-related event
  *
  * @param eventName - The name of the event to track
- * @param params - Optional additional parameters to include with the event
+ * @param params - Optional additional parameters
  */
-export const trackGamificationEvent = (eventName: string, params?: Record<string, unknown>): void => {
-    // Format event name with gamification prefix
+export const trackGamificationEvent = (eventName: string, params?: AnalyticsParams): void => {
     const gamificationEventName = `gamification_${eventName}`;
-
-    // Track the event
     trackEvent(gamificationEventName, params);
 };
 
 /**
  * Tracks when a user unlocks an achievement
  *
- * @param achievementId - The unique identifier of the achievement
+ * @param achievementId - The unique identifier
  * @param achievementName - The name of the achievement
- * @param journeyId - The journey associated with the achievement
- * @param xpEarned - The amount of XP earned for this achievement
+ * @param journeyId - The associated journey
+ * @param xpEarned - The amount of XP earned
  */
 export const trackAchievementUnlocked = (
     achievementId: string,
@@ -267,17 +255,17 @@ export const trackAchievementUnlocked = (
         achievement_id: achievementId,
         achievement_name: achievementName,
         journey_id: journeyId,
-        journey: journeyId, // For backward compatibility
+        journey: journeyId,
         xp_earned: xpEarned,
         timestamp: new Date().toISOString(),
     });
 };
 
 /**
- * Tracks when a user levels up in the gamification system
+ * Tracks when a user levels up in gamification
  *
  * @param newLevel - The new level achieved
- * @param xpEarned - The amount of XP earned for this level up
+ * @param xpEarned - The amount of XP earned
  */
 export const trackLevelUp = (newLevel: number, xpEarned: number): void => {
     trackGamificationEvent('level_up', {
@@ -294,7 +282,7 @@ export const trackLevelUp = (newLevel: number, xpEarned: number): void => {
  * @param error - The error object
  * @param context - Additional context about the error
  */
-export const trackError = (errorName: string, error: Error, context?: Record<string, unknown>): void => {
+export const trackError = (errorName: string, error: Error, context?: AnalyticsParams): void => {
     // Report to Sentry
     Sentry.captureException(error, {
         tags: { error_name: errorName },
@@ -317,7 +305,7 @@ export const trackError = (errorName: string, error: Error, context?: Record<str
  * @param value - The numeric value of the metric
  * @param context - Additional context about the metric
  */
-export const trackPerformanceMetric = (metricName: string, value: number, context?: Record<string, unknown>): void => {
+export const trackPerformanceMetric = (metricName: string, value: number, context?: AnalyticsParams): void => {
     // Track in Datadog RUM
     datadogRum.addTiming(metricName, value);
 
@@ -334,7 +322,7 @@ export const trackPerformanceMetric = (metricName: string, value: number, contex
  *
  * @param properties - Object containing user properties
  */
-export const setUserProperties = (properties: Record<string, unknown>): void => {
+export const setUserProperties = (properties: AnalyticsParams): void => {
     try {
         // Set user properties in GA4
         ReactGA.set(properties);
@@ -345,7 +333,6 @@ export const setUserProperties = (properties: Record<string, unknown>): void => 
             ...properties,
         });
     } catch (error) {
-        console.error('Error setting user properties:', error);
         Sentry.captureException(error);
     }
 };
@@ -358,7 +345,6 @@ export const setUserProperties = (properties: Record<string, unknown>): void => 
 export const setUserId = (userId: string): void => {
     try {
         if (!userId) {
-            console.warn('User ID is required for user identification');
             return;
         }
 
@@ -368,10 +354,9 @@ export const setUserId = (userId: string): void => {
         // Set user ID in Datadog RUM
         datadogRum.setUser({ id: userId });
 
-        // Set user ID in Sentry for error reporting context
+        // Set user ID in Sentry
         Sentry.setUser({ id: userId });
     } catch (error) {
-        console.error('Error setting user ID:', error);
         Sentry.captureException(error);
     }
 };
@@ -393,9 +378,12 @@ export const resetAnalyticsData = (): void => {
         Sentry.setUser(null);
 
         // Reset Datadog RUM user
-        datadogRum.removeUser();
+        if ('removeUser' in datadogRum) {
+            (datadogRum as { removeUser: () => void }).removeUser();
+        } else {
+            datadogRum.setUser({});
+        }
     } catch (error) {
-        console.error('Error resetting analytics data:', error);
         Sentry.captureException(error);
     }
 };

@@ -1,10 +1,11 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
-import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
+
 import { borderRadius } from '../../tokens/borderRadius';
+import { colors } from '../../tokens/colors';
 import { shadows } from '../../tokens/shadows';
+import { spacing } from '../../tokens/spacing';
+import { typography } from '../../tokens/typography';
 
 export interface SliderProps {
     min?: number;
@@ -18,7 +19,7 @@ export interface SliderProps {
     accessibilityLabel?: string;
 }
 
-const getJourneyColor = (journey?: string) => {
+const getJourneyColor = (journey?: string): string => {
     if (journey && colors.journeys[journey as keyof typeof colors.journeys]) {
         return colors.journeys[journey as keyof typeof colors.journeys].primary;
     }

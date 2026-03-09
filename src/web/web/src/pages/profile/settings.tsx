@@ -1,14 +1,12 @@
-import React, { useState, useContext, useEffect } from 'react';
+import { Button } from 'design-system/components/Button/Button';
+import { Input } from 'design-system/components/Input/Input';
 import { useRouter } from 'next/router'; // next/router v13.0+
-import { format } from 'date-fns'; // date-fns v2.30+
-import { ptBR } from 'date-fns/locale'; // date-fns/locale v2.30+
-
+import React, { useState, useContext, useEffect } from 'react';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
-import { useAuth } from '@/hooks/useAuth';
+
+import { JourneyHeader } from '@/components/shared/JourneyHeader';
 import { AuthContext } from '@/context/AuthContext';
-import { Button, ButtonProps } from 'design-system/components/Button/Button';
-import { Input, InputProps } from 'design-system/components/Input/Input';
-import { JourneyHeader, JourneyHeaderProps } from '@/components/shared/JourneyHeader';
+import { useAuth } from '@/hooks/useAuth';
 
 /**
  * Renders the user profile settings page.
@@ -54,21 +52,21 @@ const Settings: React.FC = () => {
             <Input
                 label="Nome"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
                 disabled={loading}
                 aria-label="Nome"
             />
             <Input
                 label="Email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                 disabled={loading}
                 aria-label="Email"
             />
             <Input
                 label="Telefone"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
                 disabled={loading}
                 aria-label="Telefone"
             />
@@ -88,11 +86,11 @@ const Settings: React.FC = () => {
                 Gerenciar Notificações
             </Button>
 
-            {/* LD1: Renders a button to log out the user. On click, calls the logout function and redirects to the login page. */}
+            {/* LD1: Renders a button to log out the user.
+                On click, calls the logout function and redirects to the login page. */}
             <Button
-                onPress={async () => {
-                    await logout();
-                    router.push(WEB_AUTH_ROUTES.LOGIN);
+                onPress={() => {
+                    void logout().then(() => router.push(WEB_AUTH_ROUTES.LOGIN));
                 }}
                 disabled={loading}
             >

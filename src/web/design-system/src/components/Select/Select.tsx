@@ -1,17 +1,17 @@
 import React, { useState, useCallback, useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet } from 'react-native';
+
+import { Checkbox } from '../../components/Checkbox/Checkbox';
+import { Input } from '../../components/Input/Input';
+import { Modal } from '../../components/Modal/Modal';
+import { RadioButton } from '../../components/RadioButton/RadioButton';
 import { Box } from '../../primitives/Box/Box';
 import { Text } from '../../primitives/Text/Text';
 import { Touchable } from '../../primitives/Touchable/Touchable';
-import { Modal } from '../../components/Modal/Modal';
-import { Checkbox } from '../../components/Checkbox/Checkbox';
-import { RadioButton } from '../../components/RadioButton/RadioButton';
-import { Input } from '../../components/Input/Input';
 import { tokens } from '../../tokens';
+import { borderRadiusValues } from '../../tokens/borderRadius';
 import { colors } from '../../tokens/colors';
-import { spacing, spacingValues } from '../../tokens/spacing';
-import { typography } from '../../tokens/typography';
-import { borderRadius, borderRadiusValues } from '../../tokens/borderRadius';
+import { spacingValues } from '../../tokens/spacing';
 
 /**
  * Interface defining the props for the Select component.
@@ -92,7 +92,7 @@ export const Select = forwardRef<any, SelectProps>((props, ref) => {
     // State for managing dropdown visibility and search functionality
     const [isOpen, setIsOpen] = useState(false);
     const [searchText, setSearchText] = useState('');
-    const inputRef = useRef<any>(null);
+    const inputRef = useRef<HTMLButtonElement | null>(null);
 
     // Expose the focus method to parent components
     useImperativeHandle(ref, () => ({
@@ -130,7 +130,7 @@ export const Select = forwardRef<any, SelectProps>((props, ref) => {
     );
 
     // Toggle dropdown visibility
-    const handleToggle = useCallback(() => {
+    const handleToggle = useCallback((): void => {
         if (!disabled) {
             setIsOpen((prev) => !prev);
         }
@@ -143,11 +143,13 @@ export const Select = forwardRef<any, SelectProps>((props, ref) => {
             : options;
 
     // Get display value for the select
-    const getDisplayValue = () => {
+    const getDisplayValue = (): string => {
         if (multiple) {
             // For multi-select, show count of selected items
             const selectedValues = Array.isArray(value) ? value : [];
-            if (selectedValues.length === 0) return placeholder;
+            if (selectedValues.length === 0) {
+                return placeholder;
+            }
             if (selectedValues.length === 1) {
                 const selectedOption = options.find((opt) => opt.value === selectedValues[0]);
                 return selectedOption ? selectedOption.label : placeholder;
@@ -162,9 +164,11 @@ export const Select = forwardRef<any, SelectProps>((props, ref) => {
 
     // Add keyboard event listener for accessibility
     useEffect(() => {
-        if (!isOpen) return;
+        if (!isOpen) {
+            return;
+        }
 
-        const handleKeydown = (event: KeyboardEvent) => {
+        const handleKeydown = (event: KeyboardEvent): void => {
             // Close on Escape key
             if (event.key === 'Escape') {
                 setIsOpen(false);
@@ -178,7 +182,7 @@ export const Select = forwardRef<any, SelectProps>((props, ref) => {
     }, [isOpen]);
 
     // Get journey-specific color
-    const getJourneyColor = () => {
+    const getJourneyColor = (): string => {
         if (journey && tokens.colors.journeys[journey]) {
             return tokens.colors.journeys[journey].primary;
         }

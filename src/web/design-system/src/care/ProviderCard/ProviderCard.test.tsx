@@ -1,9 +1,10 @@
-import React from 'react';
 import { describe, it, expect } from '@jest/globals';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
 import { ThemeProvider } from 'styled-components';
+
 import { ProviderCard } from './ProviderCard';
-import { careTheme } from '../../../themes/care.theme';
+import { careTheme } from '../../themes/care.theme';
 
 // Helper function to render components with the Care journey theme
 const renderWithTheme = (ui: React.ReactElement) => {

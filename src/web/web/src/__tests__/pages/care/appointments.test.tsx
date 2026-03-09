@@ -1,8 +1,33 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
+
+interface MockChildrenProps {
+    children: React.ReactNode;
+}
+
+interface MockEmptyStateProps {
+    title: string;
+    description: string;
+    actionLabel: string;
+    onAction: () => void;
+}
+
+interface MockLoadingProps {
+    text: string;
+}
+
+interface MockErrorProps {
+    message: string;
+    onRetry: () => void;
+}
+
+interface MockButtonProps {
+    children: React.ReactNode;
+    onPress?: () => void;
+}
 
 jest.mock('@/layouts/CareLayout', () => ({
-    CareLayout: ({ children }: any) => <div data-testid="care-layout">{children}</div>,
+    CareLayout: ({ children }: MockChildrenProps) => <div data-testid="care-layout">{children}</div>,
 }));
 
 jest.mock('@/hooks/useAppointments', () => ({
@@ -19,7 +44,7 @@ jest.mock('@/hooks/useJourney', () => ({
 }));
 
 jest.mock('@/components/shared/EmptyState', () => ({
-    EmptyState: ({ title, description, actionLabel, onAction }: any) => (
+    EmptyState: ({ title, description, actionLabel, onAction }: MockEmptyStateProps) => (
         <div data-testid="empty-state">
             <h2>{title}</h2>
             <p>{description}</p>
@@ -29,11 +54,11 @@ jest.mock('@/components/shared/EmptyState', () => ({
 }));
 
 jest.mock('@/components/shared/LoadingIndicator', () => ({
-    LoadingIndicator: ({ text }: any) => <div data-testid="loading-indicator">{text}</div>,
+    LoadingIndicator: ({ text }: MockLoadingProps) => <div data-testid="loading-indicator">{text}</div>,
 }));
 
 jest.mock('@/components/shared/ErrorState', () => ({
-    ErrorState: ({ message, onRetry }: any) => (
+    ErrorState: ({ message, onRetry }: MockErrorProps) => (
         <div data-testid="error-state">
             <p>{message}</p>
             <button onClick={onRetry}>Retry</button>
@@ -42,13 +67,18 @@ jest.mock('@/components/shared/ErrorState', () => ({
 }));
 
 jest.mock('design-system/components', () => ({
-    Button: ({ children, onPress }: any) => <button onClick={onPress}>{children}</button>,
-    Card: ({ children }: any) => <div data-testid="card">{children}</div>,
+    Button: ({ children, onPress }: MockButtonProps) => <button onClick={onPress}>{children}</button>,
+    Card: ({ children }: MockChildrenProps) => <div data-testid="card">{children}</div>,
 }));
 
+interface MockSpreadProps {
+    children?: React.ReactNode;
+    [key: string]: unknown;
+}
+
 jest.mock('design-system/primitives', () => ({
-    Box: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-    Text: ({ children, ...props }: any) => <span {...props}>{children}</span>,
+    Box: ({ children, ...props }: MockSpreadProps) => <div {...props}>{children}</div>,
+    Text: ({ children, ...props }: MockSpreadProps) => <span {...props}>{children}</span>,
 }));
 
 jest.mock('shared/constants/routes', () => ({
@@ -56,11 +86,11 @@ jest.mock('shared/constants/routes', () => ({
 }));
 
 jest.mock('date-fns', () => ({
-    format: (date: Date, formatStr: string) => date.toISOString().split('T')[0],
+    format: (date: Date, _formatStr: string) => date.toISOString().split('T')[0],
 }));
 
 jest.mock('next/head', () => ({
-    Head: ({ children }: any) => <>{children}</>,
+    Head: ({ children }: MockChildrenProps) => <>{children}</>,
 }));
 
 import AppointmentsPage from '../../../pages/care/appointments/index';
@@ -100,9 +130,14 @@ describe('Appointments Page - Loading State', () => {
         }));
     });
 
-    it('shows loading indicator when loading', async () => {
-        const { useAppointments } = require('@/hooks/useAppointments');
-        useAppointments.mockReturnValue({ appointments: [], loading: true, error: null, refetch: jest.fn() });
+    it('shows loading indicator when loading', () => {
+        const useAppointmentsMod: { useAppointments: jest.Mock } = jest.requireMock('@/hooks/useAppointments');
+        useAppointmentsMod.useAppointments.mockReturnValue({
+            appointments: [],
+            loading: true,
+            error: null,
+            refetch: jest.fn(),
+        });
         const { container } = render(<AppointmentsPage />);
         expect(container).toBeTruthy();
     });

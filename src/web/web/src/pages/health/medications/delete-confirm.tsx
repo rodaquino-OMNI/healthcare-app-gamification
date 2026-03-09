@@ -1,11 +1,11 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
 /**
@@ -14,17 +14,17 @@ import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
  */
 const MedicationDeleteConfirmPage: React.FC = () => {
     const router = useRouter();
-    const { name, id } = router.query;
+    const { name } = router.query;
 
     const medicationName = (name as string) || 'this medication';
 
-    const handleCancel = () => {
+    const handleCancel = (): void => {
         router.back();
     };
 
-    const handleDelete = () => {
+    const handleDelete = (): void => {
         // In a real app, call API to delete the medication by id
-        router.push(WEB_HEALTH_ROUTES.MEDICATIONS);
+        void router.push(WEB_HEALTH_ROUTES.MEDICATIONS);
     };
 
     return (

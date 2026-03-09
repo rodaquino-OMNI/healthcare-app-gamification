@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import type { NextPage } from 'next';
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import type { NextPage } from 'next';
+import React, { useState } from 'react';
+
 import { restClient } from '../../api/client';
 
 interface ExportCategory {
@@ -35,13 +36,13 @@ const DataExportPage: NextPage = () => {
     const [format, setFormat] = useState<'json' | 'csv' | 'pdf'>('json');
     const [requested, setRequested] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [_error, setError] = useState<string | null>(null);
 
-    const toggleCategory = (key: string) => {
+    const toggleCategory = (key: string): void => {
         setCategories((prev) => prev.map((c) => (c.key === key ? { ...c, selected: !c.selected } : c)));
     };
 
-    const handleRequest = async () => {
+    const handleRequest = async (): Promise<void> => {
         setLoading(true);
         setError(null);
         try {
@@ -87,7 +88,7 @@ const DataExportPage: NextPage = () => {
                     <div style={cardStyle}>
                         <h2 style={sectionTitleStyle}>Categorias de Dados</h2>
                         {categories.map((cat) => (
-                            <label key={cat.key} style={checkRowStyle}>
+                            <label key={cat.key} style={checkRowStyle} aria-label={cat.label}>
                                 <input
                                     type="checkbox"
                                     checked={cat.selected}
@@ -137,7 +138,7 @@ const DataExportPage: NextPage = () => {
                     </div>
 
                     <button
-                        onClick={handleRequest}
+                        onClick={() => void handleRequest()}
                         disabled={!anySelected || loading}
                         style={{
                             ...primaryButtonStyle,

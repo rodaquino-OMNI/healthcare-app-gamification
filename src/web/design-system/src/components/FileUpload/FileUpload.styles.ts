@@ -1,9 +1,10 @@
 import styled from 'styled-components';
-import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
+
 import { borderRadius } from '../../tokens/borderRadius';
+import { colors } from '../../tokens/colors';
 import { shadows } from '../../tokens/shadows';
+import { spacing } from '../../tokens/spacing';
+import { typography } from '../../tokens/typography';
 
 export const DropZone = styled.div<{ isDragging: boolean }>`
     display: flex;

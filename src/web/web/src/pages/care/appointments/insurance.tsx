@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { CareLayout } from '@/layouts/CareLayout';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { CareLayout } from '@/layouts/CareLayout';
 
 interface InsurancePlan {
     id: string;
@@ -26,14 +27,14 @@ const InsurancePage: React.FC = () => {
     const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
     const [verified, setVerified] = useState(false);
 
-    const handleVerify = () => {
+    const handleVerify = (): void => {
         setVerified(true);
     };
 
     const isCovered = selectedPlan !== '3';
 
-    const handleContinue = () => {
-        router.push('/care/appointments/success');
+    const handleContinue = (): void => {
+        void router.push('/care/appointments/success');
     };
 
     return (
@@ -167,7 +168,13 @@ const InsurancePage: React.FC = () => {
                     </Card>
                 )}
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: spacing.xl }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        marginTop: spacing.xl,
+                    }}
+                >
                     <Button journey="care" variant="outlined" onPress={() => router.back()} accessibilityLabel="Voltar">
                         Voltar
                     </Button>

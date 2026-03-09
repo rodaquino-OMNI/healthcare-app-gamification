@@ -1,10 +1,9 @@
-import React from 'react';
-import { useRouter } from 'next/router'; // next/router 13.0+
-import { Appointment } from 'shared/types/care.types';
-import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 import { AppointmentCard } from 'design-system/care/AppointmentCard/AppointmentCard';
-import { useAppointments } from '@/hooks/useAppointments';
+import { useRouter } from 'next/router'; // next/router 13.0+
+import React from 'react';
+
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { useAppointments } from '@/hooks/useAppointments';
 
 /**
  * Renders the details of a specific appointment.
@@ -29,7 +28,7 @@ const AppointmentDetail: React.FC = () => {
     }
 
     // LD1: Filters the appointments array to find the appointment with the matching ID.
-    const appointment = appointments.find((appt: Appointment) => appt.id === id);
+    const appointment = appointments.find((appt) => appt.id === id);
 
     // LD1: Renders a message if the appointment is not found.
     if (!appointment) {
@@ -40,7 +39,7 @@ const AppointmentDetail: React.FC = () => {
     return (
         <div>
             {/* LD1: Renders the JourneyHeader component for the Care journey. */}
-            <JourneyHeader title="Appointment Details" showBreadcrumbs />
+            <JourneyHeader title="Appointment Details" />
             {/* LD1: Renders the AppointmentCard component with the fetched appointment data. */}
             <AppointmentCard
                 appointment={appointment}

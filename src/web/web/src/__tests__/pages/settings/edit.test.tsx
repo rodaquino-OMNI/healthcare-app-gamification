@@ -1,8 +1,8 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
 
 jest.mock('@/layouts/MainLayout', () => ({
-    MainLayout: ({ children }: any) => <div data-testid="main-layout">{children}</div>,
+    MainLayout: ({ children }: { children: React.ReactNode }) => <div data-testid="main-layout">{children}</div>,
 }));
 
 jest.mock('design-system/tokens/colors', () => ({
@@ -77,7 +77,7 @@ describe('Profile Edit Page', () => {
 
     it('renders CPF input (disabled)', () => {
         render(<ProfileEditPage />);
-        const cpfInput = screen.getByLabelText(/cpf/i) as HTMLInputElement;
+        const cpfInput: HTMLInputElement = screen.getByLabelText(/cpf/i);
         expect(cpfInput.disabled).toBe(true);
     });
 
@@ -98,7 +98,7 @@ describe('Profile Edit Page', () => {
 
     it('allows changing the name input', () => {
         render(<ProfileEditPage />);
-        const nameInput = screen.getByLabelText(/nome completo/i) as HTMLInputElement;
+        const nameInput: HTMLInputElement = screen.getByLabelText(/nome completo/i);
         fireEvent.change(nameInput, { target: { value: 'Novo Nome' } });
         expect(nameInput.value).toBe('Novo Nome');
     });

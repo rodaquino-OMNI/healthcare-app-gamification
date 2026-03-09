@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 /**
  * Share medication access with caregiver page.
@@ -17,7 +17,7 @@ const ShareCaregiverPage: React.FC = () => {
     const [caregiverEmail, setCaregiverEmail] = useState('');
     const [permission, setPermission] = useState<'view' | 'edit'>('view');
 
-    const handleShare = () => {
+    const handleShare = (): void => {
         if (!caregiverName || !caregiverEmail) {
             alert('Por favor, preencha todos os campos.');
             return;

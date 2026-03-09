@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import { Card } from '../../components/Card/Card';
-import { Text } from '../../primitives/Text/Text';
 import { Icon } from '../../primitives/Icon/Icon';
+import { Text } from '../../primitives/Text/Text';
 import { colors } from '../../tokens/colors';
 import { sizing } from '../../tokens/sizing';
 

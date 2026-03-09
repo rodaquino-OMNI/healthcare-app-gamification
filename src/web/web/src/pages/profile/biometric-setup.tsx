@@ -1,11 +1,13 @@
+import { borderRadius } from 'design-system/tokens/borderRadius';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useRouter } from 'next/navigation';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
-import { borderRadius } from 'design-system/tokens/borderRadius';
-import AuthLayout from '@/layouts/AuthLayout';
+
+import { AuthLayout } from '@/layouts/AuthLayout';
+
 import { restClient } from '../../api/client';
 
 const ContentContainer = styled.div`
@@ -132,12 +134,12 @@ const BENEFITS = [
  * Biometric Setup page - allows users to enable biometric
  * authentication (Face ID / Touch ID) during profile setup.
  */
-export default function BiometricSetupPage() {
+export default function BiometricSetupPage(): React.ReactElement {
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
     const [enrolling, setEnrolling] = useState(false);
 
-    const handleEnable = async () => {
+    const handleEnable = async (): Promise<void> => {
         setEnrolling(true);
         setError(null);
         try {
@@ -167,7 +169,7 @@ export default function BiometricSetupPage() {
         }
     };
 
-    const handleSkip = () => {
+    const handleSkip = (): void => {
         router.push('/profile/confirmation');
     };
 
@@ -192,7 +194,7 @@ export default function BiometricSetupPage() {
 
                 {error && <Subtitle style={{ color: colors.semantic?.error || '#dc2626' }}>{error}</Subtitle>}
 
-                <PrimaryButton onClick={handleEnable} disabled={enrolling}>
+                <PrimaryButton onClick={() => void handleEnable()} disabled={enrolling}>
                     {enrolling ? 'Ativando...' : 'Ativar Face ID / Touch ID'}
                 </PrimaryButton>
 

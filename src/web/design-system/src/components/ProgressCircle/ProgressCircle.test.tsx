@@ -1,13 +1,12 @@
 import { describe, it, expect } from '@jest/globals';
-import React from 'react';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
 import { ThemeProvider } from 'styled-components';
 
 import ProgressCircle from './ProgressCircle';
-import { colors } from '../../tokens/colors';
 import { baseTheme } from '../../themes/base.theme';
-import { healthTheme } from '../../themes/health.theme';
 import { careTheme } from '../../themes/care.theme';
+import { healthTheme } from '../../themes/health.theme';
 import { planTheme } from '../../themes/plan.theme';
 
 // Helper function to render components with theme context
@@ -64,7 +63,6 @@ describe('ProgressCircle', () => {
 
     it('renders with custom colors', () => {
         const testColor = '#FF0000'; // Red color for testing
-        const emptyColor = '#CCCCCC'; // Light gray for empty track
 
         renderWithTheme(<ProgressCircle progress={50} color={testColor} />);
 

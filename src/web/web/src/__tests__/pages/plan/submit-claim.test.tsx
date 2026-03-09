@@ -1,5 +1,5 @@
+import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
 
 jest.mock('@/hooks/useClaims', () => ({
     useClaims: () => ({
@@ -14,25 +14,35 @@ jest.mock('@/context/JourneyContext', () => ({
 }));
 
 jest.mock('@/components/shared/FileUploader', () => ({
-    FileUploader: ({ claimId }: any) => <div data-testid="file-uploader" data-claim-id={claimId} />,
+    FileUploader: ({ claimId }: { claimId: string }) => <div data-testid="file-uploader" data-claim-id={claimId} />,
 }));
 
 jest.mock('design-system/components/Button/Button', () => ({
-    Button: ({ children, type, disabled }: any) => (
-        <button type={type} disabled={disabled}>
+    Button: ({ children, type, disabled }: { children: React.ReactNode; type?: string; disabled?: boolean }) => (
+        <button type={type as 'button' | 'submit' | 'reset'} disabled={disabled}>
             {children}
         </button>
     ),
 }));
 
 jest.mock('design-system/components/Input/Input', () => ({
-    default: ({ type, id, ...rest }: any) => <input type={type} id={id} {...rest} />,
+    default: ({ type, id, ...rest }: React.InputHTMLAttributes<HTMLInputElement>) => (
+        <input type={type} id={id} {...rest} />
+    ),
 }));
 
 jest.mock('design-system/components/Select/Select', () => ({
-    Select: ({ id, options, ...rest }: any) => (
-        <select id={id} {...rest}>
-            {(options || []).map((opt: any) => (
+    Select: ({
+        id,
+        options,
+        ...rest
+    }: {
+        id?: string;
+        options?: Array<{ value: string; label: string }>;
+        [key: string]: unknown;
+    }) => (
+        <select id={id} {...(rest as React.SelectHTMLAttributes<HTMLSelectElement>)}>
+            {(options ?? []).map((opt) => (
                 <option key={opt.value} value={opt.value}>
                     {opt.label}
                 </option>

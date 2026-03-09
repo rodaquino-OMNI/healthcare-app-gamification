@@ -118,3 +118,7 @@ export type { TextProps } from '../primitives/Text';
 export { Icon } from '../primitives/Icon';
 export type { IconProps } from '../primitives/Icon';
 export { Stack } from '../primitives/Stack';
+
+// Re-export health components for consumers that import from components/index
+export { DeviceCard } from '../health/DeviceCard';
+export { HealthChart } from '../health/HealthChart';

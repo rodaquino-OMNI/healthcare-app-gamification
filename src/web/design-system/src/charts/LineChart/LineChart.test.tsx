@@ -1,10 +1,8 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from '@jest/globals';
+import { render, screen } from '@testing-library/react';
+import React from 'react';
+
 import { LineChart as LineChartComponent } from './LineChart';
-import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
 
 // Sample data for testing
 const sampleData = [

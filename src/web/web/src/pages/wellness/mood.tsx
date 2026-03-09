@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 const MOOD_SCALE = [
     { value: 1, label: 'Very Bad', color: colors.semantic.error },
@@ -39,8 +39,10 @@ const MoodCheckInPage: React.FC = () => {
     const [selectedMood, setSelectedMood] = useState<number | null>(null);
     const [note, setNote] = useState('');
 
-    const handleSave = () => {
-        if (selectedMood === null) return;
+    const handleSave = (): void => {
+        if (selectedMood === null) {
+            return;
+        }
         window.alert(`Mood logged: ${MOOD_SCALE[selectedMood - 1].label}`);
         setSelectedMood(null);
         setNote('');
@@ -49,7 +51,7 @@ const MoodCheckInPage: React.FC = () => {
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/wellness')}
+                onClick={() => void router.push('/wellness')}
                 style={{
                     background: 'none',
                     border: 'none',

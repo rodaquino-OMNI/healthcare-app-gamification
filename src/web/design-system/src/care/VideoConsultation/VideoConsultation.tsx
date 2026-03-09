@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 // AgoraRendererView — stub for web build (React Native only)
 const AgoraRendererView = (_props: {
     uid?: number;
     style?: React.CSSProperties;
     canvas?: { uid: number; renderMode?: number; mirrorMode?: number };
-}) => null;
+}): null => null;
 // useJourney — stub for web build
-const useJourney = () => ({ journey: 'care' as const });
+const useJourney = (): { journey: 'care' } => ({ journey: 'care' as const });
 
 import {
     VideoContainer,
@@ -20,8 +20,8 @@ import {
     ConnectionQualityIndicator,
 } from './VideoConsultation.styles';
 import { Box } from '../../primitives/Box/Box';
-import { Text } from '../../primitives/Text/Text';
 import { Icon } from '../../primitives/Icon/Icon';
+import { Text } from '../../primitives/Text/Text';
 import { colors } from '../../tokens/colors';
 import { sizing } from '../../tokens/sizing';
 
@@ -35,7 +35,7 @@ const VideoConsultation: React.FC = () => {
     // Get route parameters, navigation, and journey context
     const route = useRoute();
     const navigation = useNavigation();
-    const { journey } = useJourney();
+    const { journey: _journey } = useJourney();
 
     // Extract consultation parameters from route
     const params = (route.params || {}) as {
@@ -51,7 +51,7 @@ const VideoConsultation: React.FC = () => {
         sessionId,
         channelName,
         token,
-        providerId,
+        providerId: _providerId,
         providerName = 'Dr. Silva',
         providerSpecialty = 'Cardiologista',
         providerAvatar,
@@ -68,7 +68,7 @@ const VideoConsultation: React.FC = () => {
     const [connectionQuality, setConnectionQuality] = useState<'excellent' | 'good' | 'fair' | 'poor'>('good');
 
     // Provider information state
-    const [provider, setProvider] = useState({
+    const [provider, _setProvider] = useState({
         name: providerName,
         specialty: providerSpecialty,
         avatar: providerAvatar,
@@ -84,7 +84,7 @@ const VideoConsultation: React.FC = () => {
     // Initialize video call session
     useEffect(() => {
         // Initialize Agora RTC engine and join the channel
-        const initializeAgoraEngine = async () => {
+        const initializeAgoraEngine = (): (() => void) | undefined => {
             try {
                 // This would initialize the actual Agora RTC engine in production
                 // and join the channel using the provided token and channel name
@@ -103,6 +103,7 @@ const VideoConsultation: React.FC = () => {
             } catch (error) {
                 console.error('Failed to initialize Agora engine:', error);
                 setCallStatus('disconnected');
+                return undefined;
             }
         };
 
@@ -132,7 +133,7 @@ const VideoConsultation: React.FC = () => {
         }, 10000);
 
         // Initialize Agora engine and join channel
-        initializeAgoraEngine();
+        void initializeAgoraEngine();
 
         // Cleanup on component unmount
         return () => {
@@ -158,21 +159,21 @@ const VideoConsultation: React.FC = () => {
     }, []);
 
     // Toggle local video
-    const toggleVideo = useCallback(() => {
+    const toggleVideo = useCallback((): void => {
         // In a production implementation, this would call the Agora SDK to enable/disable video
         // engineRef.current?.muteLocalVideoStream(!localVideoEnabled);
         setLocalVideoEnabled((prev) => !prev);
     }, [localVideoEnabled]);
 
     // Toggle audio mute
-    const toggleAudio = useCallback(() => {
+    const toggleAudio = useCallback((): void => {
         // In a production implementation, this would call the Agora SDK to mute/unmute audio
         // engineRef.current?.muteLocalAudioStream(!audioMuted);
         setAudioMuted((prev) => !prev);
     }, [audioMuted]);
 
     // End the call
-    const endCall = useCallback(() => {
+    const endCall = useCallback((): void => {
         // In a production implementation, this would leave the channel and clean up resources
         // engineRef.current?.leaveChannel();
 

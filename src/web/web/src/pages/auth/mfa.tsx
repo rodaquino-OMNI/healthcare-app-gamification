@@ -1,24 +1,21 @@
-import { useState } from 'react';
+import { Button } from 'design-system/components/Button/Button';
+import { Input } from 'design-system/components/Input/Input';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import AuthLayout from '@/layouts/AuthLayout';
-import Button from 'design-system/components/Button/Button';
-import Input from 'design-system/components/Input/Input';
 import { useAuth } from '@/hooks/useAuth';
-import { API_BASE_URL } from 'shared/constants/api';
-import ptBR from '@/i18n/pt-BR';
-import enUS from '@/i18n/en-US';
+import { AuthLayout } from '@/layouts/AuthLayout';
 
 /**
  * MFA (Multi-Factor Authentication) page component
  * Allows users to verify their identity by entering a verification code
  * sent to their registered device to complete the login process.
  */
-const MFAPage = () => {
+const MFAPage = (): React.ReactElement => {
     const { t } = useTranslation();
     const router = useRouter();
-    const auth = useAuth();
+    useAuth();
 
     const [verificationCode, setVerificationCode] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -27,7 +24,7 @@ const MFAPage = () => {
     /**
      * Handles verification code input changes
      */
-    const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setVerificationCode(e.target.value);
 
         // Clear error when user types
@@ -39,7 +36,7 @@ const MFAPage = () => {
     /**
      * Handles verification code submission
      */
-    const handleSubmit = async () => {
+    const handleSubmit = async (): Promise<void> => {
         if (!verificationCode.trim()) {
             setError(t('errors.required'));
             return;
@@ -70,7 +67,7 @@ const MFAPage = () => {
     /**
      * Handles resending the verification code
      */
-    const handleResendCode = async () => {
+    const handleResendCode = async (): Promise<void> => {
         try {
             // In a real implementation, this would call the auth service to resend the MFA code
             // For example: await auth.resendMFA();
@@ -103,13 +100,18 @@ const MFAPage = () => {
                 {error && <div style={{ color: 'red', marginTop: '8px' }}>{error}</div>}
 
                 <div style={{ marginTop: '24px' }}>
-                    <Button onPress={handleSubmit} disabled={isSubmitting} loading={isSubmitting} journey="plan">
+                    <Button
+                        onPress={() => void handleSubmit()}
+                        disabled={isSubmitting}
+                        loading={isSubmitting}
+                        journey="plan"
+                    >
                         {t('auth.mfa.verifyCode')}
                     </Button>
                 </div>
 
                 <div style={{ marginTop: '16px', textAlign: 'center' }}>
-                    <Button variant="tertiary" onPress={handleResendCode} journey="plan">
+                    <Button variant="tertiary" onPress={() => void handleResendCode()} journey="plan">
                         {t('auth.mfa.resendCode')}
                     </Button>
                 </div>

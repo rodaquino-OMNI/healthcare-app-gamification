@@ -1,14 +1,12 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from 'design-system/components/Button/Button';
+import { Input } from 'design-system/components/Input/Input';
 import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useContext } from 'react';
-
-import Input from 'design-system/components/Input/Input';
-import Button from 'design-system/components/Button/Button';
 import { isValidCPF } from 'shared/utils/validation';
+import { z } from 'zod';
+
 import { useAuth } from '@/hooks/useAuth';
-import { AuthContext } from '@/context/AuthContext';
 
 // Create a validation schema specifically for profile updates
 const profileUpdateSchema = z.object({
@@ -48,28 +46,28 @@ export const ProfileForm: React.FC = () => {
 
     // Fetch user profile data on component mount
     useEffect(() => {
-        const fetchProfile = async () => {
+        const fetchProfile = async (): Promise<void> => {
             try {
-                const profileData = await getProfile();
+                const rawProfile: unknown = await getProfile();
+                const profileData = rawProfile as Record<string, unknown>;
 
                 // Reset form with profile data
                 reset({
-                    name: profileData.name || '',
-                    email: profileData.email || '',
-                    phone: profileData.phone || '',
-                    cpf: profileData.cpf || '',
+                    name: (typeof profileData?.name === 'string' ? profileData.name : '') || '',
+                    email: (typeof profileData?.email === 'string' ? profileData.email : '') || '',
+                    phone: (typeof profileData?.phone === 'string' ? profileData.phone : '') || '',
+                    cpf: (typeof profileData?.cpf === 'string' ? profileData.cpf : '') || '',
                 });
-            } catch (err) {
-                console.error('Failed to fetch profile data:', err);
+            } catch (_err) {
                 setError('Failed to load profile data');
             }
         };
 
-        fetchProfile();
+        void fetchProfile();
     }, [getProfile, reset]);
 
     // Handle form submission
-    const onSubmit = async (data: ProfileFormData) => {
+    const onSubmit = async (data: ProfileFormData): Promise<void> => {
         setLoading(true);
         setError(null);
         setSuccess(false);
@@ -79,10 +77,10 @@ export const ProfileForm: React.FC = () => {
             // For now, we'll simulate a successful update
             await new Promise((resolve) => setTimeout(resolve, 1000));
 
-            console.log('Profile data to update:', data);
+            // Profile data would be sent to the API here
+            void data;
             setSuccess(true);
-        } catch (err) {
-            console.error('Failed to update profile:', err);
+        } catch (_err) {
             setError('Failed to update profile. Please try again.');
         } finally {
             setLoading(false);
@@ -90,7 +88,11 @@ export const ProfileForm: React.FC = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form
+            onSubmit={(e) => {
+                void handleSubmit(onSubmit)(e);
+            }}
+        >
             <div style={{ marginBottom: '16px' }}>
                 <label htmlFor="name">Name</label>
                 <Controller
@@ -99,7 +101,7 @@ export const ProfileForm: React.FC = () => {
                     render={({ field }) => (
                         <Input
                             value={field.value}
-                            onChange={(e) => field.onChange(e)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.onChange(e)}
                             placeholder="Your name"
                             aria-label="Name"
                             journey="health"
@@ -117,7 +119,7 @@ export const ProfileForm: React.FC = () => {
                     render={({ field }) => (
                         <Input
                             value={field.value}
-                            onChange={(e) => field.onChange(e)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.onChange(e)}
                             placeholder="Your email"
                             aria-label="Email"
                             type="email"
@@ -136,7 +138,7 @@ export const ProfileForm: React.FC = () => {
                     render={({ field }) => (
                         <Input
                             value={field.value}
-                            onChange={(e) => field.onChange(e)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.onChange(e)}
                             placeholder="Your phone number"
                             aria-label="Phone Number"
                             journey="health"
@@ -154,7 +156,7 @@ export const ProfileForm: React.FC = () => {
                     render={({ field }) => (
                         <Input
                             value={field.value}
-                            onChange={(e) => field.onChange(e)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => field.onChange(e)}
                             placeholder="Your CPF"
                             aria-label="CPF"
                             journey="health"
@@ -167,7 +169,14 @@ export const ProfileForm: React.FC = () => {
             {error && <div style={{ color: 'red', marginBottom: '16px' }}>{error}</div>}
             {success && <div style={{ color: 'green', marginBottom: '16px' }}>Profile updated successfully!</div>}
 
-            <Button onPress={() => handleSubmit(onSubmit)()} disabled={loading} loading={loading} journey="health">
+            <Button
+                onPress={() => {
+                    void handleSubmit(onSubmit)();
+                }}
+                disabled={loading}
+                loading={loading}
+                journey="health"
+            >
                 Update Profile
             </Button>
         </form>

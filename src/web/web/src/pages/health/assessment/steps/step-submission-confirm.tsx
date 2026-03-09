@@ -1,8 +1,8 @@
-import React from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -27,7 +27,7 @@ const NEXT_STEPS = [
     },
 ];
 
-const StepSubmissionConfirmPage: React.FC<StepProps> = ({ data, onUpdate }) => {
+const StepSubmissionConfirmPage: React.FC<StepProps> = ({ onUpdate }) => {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg, alignItems: 'center' }}>
             {/* Success Icon */}

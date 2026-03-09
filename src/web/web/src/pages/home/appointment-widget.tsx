@@ -1,8 +1,8 @@
-import React from 'react';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
 import { borderRadius } from 'design-system/tokens/borderRadius';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import React from 'react';
 
 interface Appointment {
     id: string;

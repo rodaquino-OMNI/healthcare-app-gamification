@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 const FLOW_OPTIONS = [
     { id: 'light', label: 'Light', description: 'Spotting or light flow' },
@@ -20,15 +20,15 @@ const LogPeriodPage: React.FC = () => {
     const [flowIntensity, setFlowIntensity] = useState('medium');
     const [notes, setNotes] = useState('');
 
-    const handleSave = () => {
+    const handleSave = (): void => {
         window.alert(`Period logged: ${startDate}, Flow: ${flowIntensity}`);
-        router.push('/health/cycle');
+        void router.push('/health/cycle');
     };
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/cycle')}
+                onClick={() => void router.push('/health/cycle')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -98,7 +98,9 @@ const LogPeriodPage: React.FC = () => {
                         aria-checked={flowIntensity === option.id}
                         tabIndex={0}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') setFlowIntensity(option.id);
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                setFlowIntensity(option.id);
+                            }
                         }}
                         style={{ cursor: 'pointer' }}
                     >
@@ -174,7 +176,7 @@ const LogPeriodPage: React.FC = () => {
                 <Button
                     variant="secondary"
                     journey="health"
-                    onPress={() => router.push('/health/cycle')}
+                    onPress={() => void router.push('/health/cycle')}
                     accessibilityLabel="Cancel"
                 >
                     Cancel

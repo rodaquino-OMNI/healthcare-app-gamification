@@ -1,24 +1,25 @@
-import React, { useState, useCallback } from 'react';
-import { useRouter } from 'next/router';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
-import { Box } from 'design-system/primitives/Box/Box';
 import { Stepper } from 'design-system/components/Stepper/Stepper';
+import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState, useCallback } from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
-import StepIntroduction from './steps/step-introduction';
-import StepPersonalInfo from './steps/step-personal-info';
-import StepHeightWeight from './steps/step-height-weight';
-import StepExistingConditions from './steps/step-existing-conditions';
-import StepMedications from './steps/step-medications';
+
+import StepAlcoholTobacco from './steps/step-alcohol-tobacco';
 import StepAllergies from './steps/step-allergies';
-import StepFamilyHistory from './steps/step-family-history';
-import StepExercise from './steps/step-exercise';
 import StepDiet from './steps/step-diet';
+import StepExercise from './steps/step-exercise';
+import StepExistingConditions from './steps/step-existing-conditions';
+import StepFamilyHistory from './steps/step-family-history';
+import StepHeightWeight from './steps/step-height-weight';
+import StepIntroduction from './steps/step-introduction';
+import StepMedications from './steps/step-medications';
+import StepPersonalInfo from './steps/step-personal-info';
 import StepSleep from './steps/step-sleep';
 import StepStress from './steps/step-stress';
-import StepAlcoholTobacco from './steps/step-alcohol-tobacco';
 import StepWaterIntake from './steps/step-water-intake';
 
 /** Step configuration for the wizard Stepper */
@@ -72,33 +73,33 @@ const HealthAssessmentPage: React.FC = () => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     }, []);
 
-    const handleNext = () => {
+    const handleNext = (): void => {
         if (activeStep < TOTAL_STEPS - 1) {
             setActiveStep((prev) => prev + 1);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
-    const handleBack = () => {
+    const handleBack = (): void => {
         if (activeStep > 0) {
             setActiveStep((prev) => prev - 1);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
-    const handleStepPress = (index: number) => {
+    const handleStepPress = (index: number): void => {
         if (index <= activeStep) {
             setActiveStep(index);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (): Promise<void> => {
         setIsSubmitting(true);
         // Simulate submission delay
         await new Promise((resolve) => setTimeout(resolve, 1500));
         setIsSubmitting(false);
-        router.push(WEB_HEALTH_ROUTES.DASHBOARD);
+        void router.push(WEB_HEALTH_ROUTES.DASHBOARD);
     };
 
     const isLastStep = activeStep === TOTAL_STEPS - 1;
@@ -182,7 +183,9 @@ const HealthAssessmentPage: React.FC = () => {
                     {isLastStep ? (
                         <Button
                             journey="health"
-                            onPress={handleSubmit}
+                            onPress={() => {
+                                void handleSubmit();
+                            }}
                             accessibilityLabel="Submit health assessment"
                             disabled={isSubmitting}
                         >

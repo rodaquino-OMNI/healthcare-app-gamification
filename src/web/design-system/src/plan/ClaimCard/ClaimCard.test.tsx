@@ -1,21 +1,30 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+
 import ClaimCard from './ClaimCard';
-import { colors } from '../../tokens/colors';
-import { spacing } from '../../tokens/spacing';
+// eslint-disable-next-line import/no-unresolved
 import { Claim, ClaimStatus } from '../../../shared/types/plan.types';
-import { formatRelativeDate } from '../../../shared/utils/date';
 
 // Mock the i18next hook
 jest.mock('react-i18next', () => ({
     useTranslation: () => ({
         t: (key: string, options) => {
             // Mock implementation to simulate translation
-            if (key.startsWith('claim.type.')) return key.split('.').pop();
-            if (key.startsWith('claim.status.')) return key.split('.').pop();
-            if (key === 'claim.submittedOn') return 'Submitted on';
-            if (key === 'claim.viewDetails') return 'View Details';
-            if (key === 'claim.track') return 'Track Claim';
+            if (key.startsWith('claim.type.')) {
+                return key.split('.').pop();
+            }
+            if (key.startsWith('claim.status.')) {
+                return key.split('.').pop();
+            }
+            if (key === 'claim.submittedOn') {
+                return 'Submitted on';
+            }
+            if (key === 'claim.viewDetails') {
+                return 'View Details';
+            }
+            if (key === 'claim.track') {
+                return 'Track Claim';
+            }
             if (key.startsWith('claim.documents')) {
                 const count = options?.count || 0;
                 return `${count} Documents`;

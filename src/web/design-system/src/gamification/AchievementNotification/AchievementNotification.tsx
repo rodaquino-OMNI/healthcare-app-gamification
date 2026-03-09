@@ -1,15 +1,16 @@
 import React from 'react';
-import { AchievementBadge } from '../AchievementBadge/AchievementBadge';
+
 import {
     NotificationContainer,
     NotificationContent,
     NotificationTitle,
     NotificationMessage,
 } from './AchievementNotification.styles';
+import { borderRadius } from '../../tokens/borderRadius';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
 import { typography } from '../../tokens/typography';
-import { borderRadius } from '../../tokens/borderRadius';
+import { AchievementBadge } from '../AchievementBadge/AchievementBadge';
 
 /**
  * Achievement data structure used by the AchievementNotification component
@@ -74,7 +75,6 @@ export const AchievementNotification: React.FC<AchievementNotificationProps> = (
                 <NotificationMessage>{achievement.description}</NotificationMessage>
 
                 <button
-                    role="button"
                     onClick={onClose}
                     onTouchEnd={onClose}
                     aria-label="OK"

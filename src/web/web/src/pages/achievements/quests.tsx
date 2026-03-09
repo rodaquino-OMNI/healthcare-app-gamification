@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { Text } from 'design-system/primitives/Text/Text';
-import { Box } from 'design-system/primitives/Box/Box';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { QuestCard } from 'design-system/gamification/QuestCard';
+import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import Link from 'next/link';
+import React, { useState } from 'react';
 import type { Quest } from 'shared/types/gamification.types';
 
 type QuestFilter = 'all' | 'active' | 'completed';
@@ -117,9 +117,15 @@ const QuestsPage: React.FC = () => {
     const [journeyFilter, setJourneyFilter] = useState<JourneyFilter>('all');
 
     const filteredQuests = MOCK_QUESTS.filter((quest) => {
-        if (statusFilter === 'active' && quest.completed) return false;
-        if (statusFilter === 'completed' && !quest.completed) return false;
-        if (journeyFilter !== 'all' && quest.journey !== journeyFilter) return false;
+        if (statusFilter === 'active' && quest.completed) {
+            return false;
+        }
+        if (statusFilter === 'completed' && !quest.completed) {
+            return false;
+        }
+        if (journeyFilter !== 'all' && quest.journey !== journeyFilter) {
+            return false;
+        }
         return true;
     });
 
@@ -217,9 +223,15 @@ const QuestsPage: React.FC = () => {
                     <Link key={quest.id} href={`/achievements/quests/${quest.id}`} passHref>
                         <div style={{ cursor: 'pointer' }}>
                             <QuestCard
-                                quest={quest}
-                                progress={quest.total > 0 ? quest.progress / quest.total : 0}
-                                journey={quest.journey}
+                                quest={{
+                                    ...quest,
+                                    journey:
+                                        quest.journey === 'health' ||
+                                        quest.journey === 'care' ||
+                                        quest.journey === 'plan'
+                                            ? quest.journey
+                                            : 'health',
+                                }}
                             />
                         </div>
                     </Link>

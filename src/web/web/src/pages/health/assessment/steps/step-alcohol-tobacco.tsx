@@ -1,8 +1,8 @@
-import React from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -70,7 +70,7 @@ const StepAlcoholTobaccoPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                 </Text>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
                     {SMOKING_STATUS.map((opt) => {
-                        const isActive = data.smokingStatus === opt.value;
+                        const isActive = (data.smokingStatus as string) === opt.value;
                         return (
                             <button
                                 key={opt.value}
@@ -92,9 +92,9 @@ const StepAlcoholTobaccoPage: React.FC<StepProps> = ({ data, onUpdate }) => {
             </Card>
 
             {/* Years smoked (conditional) */}
-            {(data.smokingStatus === 'former' ||
-                data.smokingStatus === 'occasional' ||
-                data.smokingStatus === 'daily') && (
+            {((data.smokingStatus as string) === 'former' ||
+                (data.smokingStatus as string) === 'occasional' ||
+                (data.smokingStatus as string) === 'daily') && (
                 <Card journey="health" elevation="sm" padding="md">
                     <Text
                         fontSize="sm"
@@ -102,7 +102,7 @@ const StepAlcoholTobaccoPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                         color={colors.gray[60]}
                         style={{ marginBottom: spacing['3xs'] }}
                     >
-                        {data.smokingStatus === 'former'
+                        {(data.smokingStatus as string) === 'former'
                             ? 'How many years did you smoke?'
                             : 'How many years have you smoked?'}
                     </Text>
@@ -120,7 +120,7 @@ const StepAlcoholTobaccoPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                         }}
                         type="number"
                         placeholder="Number of years"
-                        value={data.smokingYears || ''}
+                        value={(data.smokingYears as string) || ''}
                         onChange={(e) => onUpdate('smokingYears', e.target.value)}
                         aria-label="Years of smoking"
                     />
@@ -139,7 +139,7 @@ const StepAlcoholTobaccoPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                 </Text>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
                     {ALCOHOL_FREQUENCY.map((opt) => {
-                        const isActive = data.alcoholFrequency === opt.value;
+                        const isActive = (data.alcoholFrequency as string) === opt.value;
                         return (
                             <button
                                 key={opt.value}
@@ -172,7 +172,7 @@ const StepAlcoholTobaccoPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                 </Text>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
                     {SUBSTANCE_SCREENING.map((opt) => {
-                        const isActive = data.substanceUse === opt.value;
+                        const isActive = (data.substanceUse as string) === opt.value;
                         return (
                             <button
                                 key={opt.value}

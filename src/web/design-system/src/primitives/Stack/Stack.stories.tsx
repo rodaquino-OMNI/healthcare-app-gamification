@@ -1,5 +1,6 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import React from 'react';
+
 import { Stack } from './Stack';
 import { colors } from '../../tokens/colors';
 
@@ -24,7 +25,7 @@ const meta: Meta<typeof Stack> = {
 export default meta;
 type Story = StoryObj<typeof Stack>;
 
-const Item = ({ label }: { label: string }) => (
+const Item = ({ label }: { label: string }): React.ReactElement => (
     <div
         style={{
             padding: '12px 16px',

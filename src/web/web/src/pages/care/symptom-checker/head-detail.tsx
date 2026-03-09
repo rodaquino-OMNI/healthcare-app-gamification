@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
 interface HeadRegion {
@@ -30,14 +30,17 @@ const HeadDetailPage: React.FC = () => {
     const router = useRouter();
     const [selected, setSelected] = useState<string[]>([]);
 
-    const toggle = (id: string) => {
+    const toggle = (id: string): void => {
         setSelected((prev) => (prev.includes(id) ? prev.filter((r) => r !== id) : [...prev, id]));
     };
 
-    const handleContinue = () => {
-        router.push({
+    const handleContinue = (): void => {
+        void router.push({
             pathname: WEB_CARE_ROUTES.SYMPTOM_DETAIL,
-            query: { ...router.query, headRegions: selected.join(',') },
+            query: {
+                ...router.query,
+                headRegions: selected.join(','),
+            },
         });
     };
 

@@ -1,12 +1,12 @@
-import React, { useState, useMemo } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import Input from 'design-system/components/Input/Input';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
+import { Input } from 'design-system/components/Input/Input';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState, useMemo } from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
 /**
@@ -82,18 +82,20 @@ const PharmacyLocatorPage: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
 
     const filteredPharmacies = useMemo(() => {
-        if (!searchQuery.trim()) return MOCK_PHARMACIES;
+        if (!searchQuery.trim()) {
+            return MOCK_PHARMACIES;
+        }
         const query = searchQuery.toLowerCase();
         return MOCK_PHARMACIES.filter(
             (p) => p.name.toLowerCase().includes(query) || p.address.toLowerCase().includes(query)
         );
     }, [searchQuery]);
 
-    const handleGetDirections = (pharmacy: Pharmacy) => {
+    const handleGetDirections = (pharmacy: Pharmacy): void => {
         window.alert(`Opening directions to ${pharmacy.name}`);
     };
 
-    const handleCall = (pharmacy: Pharmacy) => {
+    const handleCall = (pharmacy: Pharmacy): void => {
         window.location.href = `tel:${pharmacy.phone.replace(/[^\d+]/g, '')}`;
     };
 
@@ -101,7 +103,7 @@ const PharmacyLocatorPage: React.FC = () => {
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <Box display="flex" style={{ alignItems: 'center', marginBottom: spacing.xl }}>
                 <button
-                    onClick={() => router.push(WEB_HEALTH_ROUTES.MEDICATIONS)}
+                    onClick={() => void router.push(WEB_HEALTH_ROUTES.MEDICATIONS)}
                     style={{
                         background: 'none',
                         border: 'none',
@@ -127,7 +129,7 @@ const PharmacyLocatorPage: React.FC = () => {
             <Box style={{ marginBottom: spacing.xl }}>
                 <Input
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                     placeholder="Search by pharmacy name or address..."
                     journey="health"
                     testID="pharmacy-search-input"

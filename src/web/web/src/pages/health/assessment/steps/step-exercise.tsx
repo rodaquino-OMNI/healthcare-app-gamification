@@ -1,8 +1,8 @@
-import React from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -51,9 +51,9 @@ const chipStyle = (selected: boolean): React.CSSProperties => ({
 });
 
 const StepExercisePage: React.FC<StepProps> = ({ data, onUpdate }) => {
-    const selectedTypes: string[] = data.exerciseTypes || [];
+    const selectedTypes: string[] = (data.exerciseTypes as string[]) || [];
 
-    const toggleType = (type: string) => {
+    const toggleType = (type: string): void => {
         const updated = selectedTypes.includes(type)
             ? selectedTypes.filter((t) => t !== type)
             : [...selectedTypes, type];
@@ -81,7 +81,7 @@ const StepExercisePage: React.FC<StepProps> = ({ data, onUpdate }) => {
                 </Text>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
                     {FREQUENCY_OPTIONS.map((opt) => {
-                        const isActive = data.exerciseFrequency === opt.value;
+                        const isActive = (data.exerciseFrequency as string) === opt.value;
                         return (
                             <button
                                 key={opt.value}
@@ -150,7 +150,7 @@ const StepExercisePage: React.FC<StepProps> = ({ data, onUpdate }) => {
                 </Text>
                 <div style={{ display: 'flex', gap: spacing.xs, flexWrap: 'wrap' }}>
                     {DURATION_OPTIONS.map((opt) => {
-                        const isActive = data.exerciseDuration === opt.value;
+                        const isActive = (data.exerciseDuration as string) === opt.value;
                         return (
                             <button
                                 key={opt.value}

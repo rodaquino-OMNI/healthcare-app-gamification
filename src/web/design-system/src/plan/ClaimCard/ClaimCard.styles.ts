@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import { Text } from '../../primitives/Text';
+
 import { Box } from '../../primitives/Box';
+import { Text } from '../../primitives/Text';
 import { tokens as theme } from '../../tokens';
 
 /**

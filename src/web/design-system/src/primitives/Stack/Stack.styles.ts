@@ -1,20 +1,27 @@
 import styled, { css } from 'styled-components';
-import { Box } from '../Box/Box';
-import { spacing, spacingValues } from '../../tokens/spacing';
+
 import { breakpoints } from '../../tokens/breakpoints';
+import { spacing } from '../../tokens/spacing';
+import { Box } from '../Box/Box';
 
 /**
  * Helper function to get the appropriate spacing value based on the spacing prop.
  * Resolves spacing tokens to actual values.
  */
 const getSpacingValue = (space?: string | number): string => {
-    if (space === undefined) return '0';
+    if (space === undefined) {
+        return '0';
+    }
 
     // If it's a number, assume pixels
-    if (typeof space === 'number') return `${space}px`;
+    if (typeof space === 'number') {
+        return `${space}px`;
+    }
 
     // Check if it's a token key in the spacing object
-    if (space in spacing) return spacing[space as keyof typeof spacing];
+    if (space in spacing) {
+        return spacing[space as keyof typeof spacing];
+    }
 
     // Otherwise, return the space value as is
     return String(space);
@@ -28,7 +35,7 @@ const getStackStyles = (props: {
     spacing?: string | number;
     wrap?: boolean;
     align?: 'flex-start' | 'center' | 'flex-end' | 'stretch' | 'baseline';
-}) => {
+}): ReturnType<typeof css> => {
     const { direction = 'column', spacing: stackSpacing, wrap, align } = props;
 
     return css`
@@ -51,7 +58,7 @@ const getStackStyles = (props: {
             /* Responsive spacing using media queries */
             ${Object.entries(breakpoints)
                 .map(
-                    ([breakpoint, value]) => `
+                    ([_breakpoint, value]) => `
         @media (min-width: ${value}) {
           gap: ${getSpacingValue(stackSpacing)};
         }
@@ -76,6 +83,8 @@ export interface StackStyleProps {
  * The main styled component for the Stack primitive that arranges its children in a stack layout.
  * Extends the Box component to inherit all its styling capabilities.
  */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 export const StackContainer = styled(Box)<StackStyleProps>`
-    ${(props) => getStackStyles(props)}
+    ${(props: StackStyleProps) => getStackStyles(props)}
 `;
+/* eslint-enable @typescript-eslint/no-unsafe-return */

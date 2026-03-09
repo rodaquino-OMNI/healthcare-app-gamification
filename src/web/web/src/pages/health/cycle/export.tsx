@@ -1,11 +1,11 @@
-import React, { useState, useMemo } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState, useMemo } from 'react';
 
 type ExportFormat = 'pdf' | 'csv';
 
@@ -35,13 +35,13 @@ const ExportPage: React.FC = () => {
     const [endDate, setEndDate] = useState('2026-02-22');
     const [selectedContent, setSelectedContent] = useState<string[]>(['cycle_dates', 'symptoms', 'flow_data']);
 
-    const toggleContent = (id: string) => {
+    const toggleContent = (id: string): void => {
         setSelectedContent((prev) => (prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]));
     };
 
     const selectedCount = useMemo(() => selectedContent.length, [selectedContent]);
 
-    const handleGenerate = () => {
+    const handleGenerate = (): void => {
         window.alert(
             `Generating ${format.toUpperCase()} with ${selectedCount} data sections for ${startDate} to ${endDate}`
         );
@@ -50,7 +50,7 @@ const ExportPage: React.FC = () => {
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/cycle')}
+                onClick={() => void router.push('/health/cycle')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -145,7 +145,9 @@ const ExportPage: React.FC = () => {
                         aria-checked={selectedContent.includes(opt.id)}
                         tabIndex={0}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') toggleContent(opt.id);
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                toggleContent(opt.id);
+                            }
                         }}
                         style={{ cursor: 'pointer' }}
                     >
@@ -196,7 +198,9 @@ const ExportPage: React.FC = () => {
                         aria-checked={format === opt.id}
                         tabIndex={0}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') setFormat(opt.id);
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                setFormat(opt.id);
+                            }
                         }}
                         style={{ cursor: 'pointer' }}
                     >

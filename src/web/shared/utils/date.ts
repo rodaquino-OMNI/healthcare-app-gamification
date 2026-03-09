@@ -69,3 +69,41 @@ export function getAge(dateOfBirth: Date | string | number): number {
 export function isValidDate(date: any): boolean {
   return date instanceof Date && !isNaN(date.getTime());
 }
+
+/**
+ * Formats a date according to journey-specific requirements.
+ *
+ * @param date - The date to format, can be a Date object, string, or timestamp
+ * @param journeyId - Journey identifier (health, care, plan)
+ * @param locale - Optional locale override
+ * @returns The journey-specific formatted date string
+ */
+export function formatJourneyDate(
+  date: Date | string | number,
+  journeyId: string,
+  locale?: string
+): string {
+  const inputDate = new Date(date);
+  if (!isValidDate(inputDate)) {
+    return i18next.t('common:dates.invalid_date', 'Invalid date');
+  }
+
+  const userLocale = locale || i18next.language || 'pt-BR';
+  let options: Intl.DateTimeFormatOptions;
+
+  switch (journeyId) {
+    case 'health':
+      options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+      break;
+    case 'care':
+      options = { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+      break;
+    case 'plan':
+      options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+      break;
+    default:
+      options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+  }
+
+  return new Intl.DateTimeFormat(userLocale, options).format(inputDate);
+}

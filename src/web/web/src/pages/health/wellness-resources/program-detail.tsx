@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 const STEPS = [
     { id: 1, title: 'Introduction & Goal Setting', done: true },
@@ -25,14 +25,14 @@ const ProgramDetailPage: React.FC = () => {
     const completed = steps.filter((s) => s.done).length;
     const progress = Math.round((completed / steps.length) * 100);
 
-    const toggleStep = (stepId: number) => {
+    const toggleStep = (stepId: number): void => {
         setSteps((prev) => prev.map((s) => (s.id === stepId ? { ...s, done: !s.done } : s)));
     };
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/wellness-resources/programs')}
+                onClick={() => void router.push('/health/wellness-resources/programs')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -127,7 +127,7 @@ const ProgramDetailPage: React.FC = () => {
                                 }}
                             >
                                 {step.done && (
-                                    <Text fontSize="sm" color={colors.white}>
+                                    <Text fontSize="sm" color={colors.neutral.white}>
                                         &#10003;
                                     </Text>
                                 )}

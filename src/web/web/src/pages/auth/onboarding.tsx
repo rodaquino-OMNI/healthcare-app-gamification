@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useRouter } from 'next/navigation';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
 import { Stepper } from 'design-system/components/Stepper/Stepper';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
+import styled from 'styled-components';
 
 const PageContainer = styled.div`
     display: flex;
@@ -163,13 +163,13 @@ const ONBOARDING_STEPS = [
  * Onboarding page with a 5-step wizard introducing the app features.
  * Uses the Stepper component for step navigation and a progress bar.
  */
-export default function OnboardingPage() {
+export default function OnboardingPage(): React.ReactElement {
     const router = useRouter();
     const [activeStep, setActiveStep] = useState(0);
     const currentStep = ONBOARDING_STEPS[activeStep];
     const progressPercent = ((activeStep + 1) / ONBOARDING_STEPS.length) * 100;
 
-    const handleNext = () => {
+    const handleNext = (): void => {
         if (activeStep < ONBOARDING_STEPS.length - 1) {
             setActiveStep((prev) => prev + 1);
         } else {
@@ -177,13 +177,13 @@ export default function OnboardingPage() {
         }
     };
 
-    const handlePrevious = () => {
+    const handlePrevious = (): void => {
         if (activeStep > 0) {
             setActiveStep((prev) => prev - 1);
         }
     };
 
-    const handleSkip = () => {
+    const handleSkip = (): void => {
         router.push(WEB_AUTH_ROUTES.REGISTER);
     };
 

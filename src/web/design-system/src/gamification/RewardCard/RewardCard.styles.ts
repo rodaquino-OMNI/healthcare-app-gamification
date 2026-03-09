@@ -1,8 +1,9 @@
 import styled from 'styled-components';
-import { colors, spacing, shadows, animation, typography, borderRadius, sizing } from '../../tokens';
+
 import { Card } from '../../components/Card';
-import { Text } from '../../primitives/Text';
 import { Icon } from '../../primitives/Icon';
+import { Text } from '../../primitives/Text';
+import { colors, spacing, shadows, animation, typography, borderRadius, sizing } from '../../tokens';
 
 /**
  * Utility function to get journey-specific colors for theming
@@ -10,7 +11,15 @@ import { Icon } from '../../primitives/Icon';
  * @param journey The journey identifier ('health', 'care', 'plan')
  * @returns The color palette for the specified journey, or a default if not found
  */
-export const useJourneyColor = (journey?: string) => {
+interface JourneyColorPalette {
+    primary: string;
+    secondary: string;
+    accent: string;
+    background: string;
+    text: string;
+}
+
+export const useJourneyColor = (journey?: string): JourneyColorPalette => {
     if (journey && journey in colors.journeys) {
         return colors.journeys[journey as keyof typeof colors.journeys];
     }

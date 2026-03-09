@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useRouter } from 'next/navigation';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
 import { FileUpload } from 'design-system/components/FileUpload/FileUpload';
-import AuthLayout from '@/layouts/AuthLayout';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 import { WEB_PROFILE_ROUTES } from 'shared/constants/routes';
+import styled from 'styled-components';
+
+import { AuthLayout } from '@/layouts/AuthLayout';
 
 const Title = styled.h2`
     font-family: ${typography.fontFamily.heading};
@@ -132,7 +133,7 @@ const StepIndicator = styled.p`
 /**
  * Profile Documents page - collects CPF/RG and allows document upload.
  */
-export default function ProfileDocumentsPage() {
+export default function ProfileDocumentsPage(): React.ReactElement {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [cpf, setCpf] = useState('');
@@ -140,13 +141,13 @@ export default function ProfileDocumentsPage() {
     const [docType, setDocType] = useState('cpf');
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
-    const handleFilesSelected = (files: File[]) => {
+    const handleFilesSelected = (files: File[]): void => {
         if (files.length > 0) {
             setUploadedFile(files[0]);
         }
     };
 
-    const formatCpf = (value: string) => {
+    const formatCpf = (value: string): string => {
         const digits = value.replace(/\D/g, '').slice(0, 11);
         return digits
             .replace(/(\d{3})(\d)/, '$1.$2')
@@ -156,9 +157,11 @@ export default function ProfileDocumentsPage() {
 
     const isValid = cpf.replace(/\D/g, '').length === 11 && rg.trim();
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
-        if (!isValid) return;
+        if (!isValid) {
+            return;
+        }
 
         setIsSubmitting(true);
         try {
@@ -174,7 +177,7 @@ export default function ProfileDocumentsPage() {
             <Title>Documentos</Title>
             <Subtitle>Informe seus documentos de identificacao.</Subtitle>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={(e) => void handleSubmit(e)}>
                 <FieldGroup>
                     <Label htmlFor="cpf">CPF</Label>
                     <StyledInput

@@ -1,8 +1,8 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
 
 jest.mock('@/layouts/MainLayout', () => ({
-    MainLayout: ({ children }: any) => <div data-testid="main-layout">{children}</div>,
+    MainLayout: ({ children }: { children: React.ReactNode }) => <div data-testid="main-layout">{children}</div>,
 }));
 
 jest.mock('design-system/tokens/colors', () => ({
@@ -109,7 +109,7 @@ describe('Privacy Settings Page', () => {
 
     it('toggles a setting when clicked', () => {
         render(<PrivacySettingsPage />);
-        const analyticsToggle = screen.getByLabelText(/dados de uso anonimizados/i) as HTMLInputElement;
+        const analyticsToggle: HTMLInputElement = screen.getByLabelText(/dados de uso anonimizados/i);
         const initialChecked = analyticsToggle.checked;
         fireEvent.click(analyticsToggle);
         expect(analyticsToggle.checked).toBe(!initialChecked);

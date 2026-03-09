@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+
 import { QuestCard } from './QuestCard';
 
 const meta: Meta<typeof QuestCard> = {

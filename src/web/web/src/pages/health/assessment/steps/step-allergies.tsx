@@ -1,8 +1,8 @@
-import React from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -44,10 +44,10 @@ const chipStyle = (selected: boolean): React.CSSProperties => ({
 });
 
 const StepAllergiesPage: React.FC<StepProps> = ({ data, onUpdate }) => {
-    const selectedAllergens: string[] = data.allergens || [];
-    const allergySeverity: string = data.allergySeverity || '';
+    const selectedAllergens: string[] = (data.allergens as string[]) || [];
+    const allergySeverity: string = (data.allergySeverity as string) || '';
 
-    const toggleAllergen = (allergen: string) => {
+    const toggleAllergen = (allergen: string): void => {
         const updated = selectedAllergens.includes(allergen)
             ? selectedAllergens.filter((a) => a !== allergen)
             : [...selectedAllergens, allergen];
@@ -115,7 +115,7 @@ const StepAllergiesPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                     }}
                     type="text"
                     placeholder="Type any additional allergens"
-                    value={data.otherAllergen || ''}
+                    value={(data.otherAllergen as string) || ''}
                     onChange={(e) => onUpdate('otherAllergen', e.target.value)}
                     aria-label="Other allergens"
                 />

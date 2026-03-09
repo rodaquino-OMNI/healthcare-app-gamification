@@ -1,12 +1,12 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
-import { Button } from 'design-system/components/Button/Button';
 import { Badge } from 'design-system/components/Badge/Badge';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
 /** Recommendation action type */
@@ -24,7 +24,10 @@ const MOCK_RECOMMENDATIONS: Recommendation[] = [
         id: 'r1',
         type: 'self-care',
         title: 'Rest and Hydration',
-        description: 'Get plenty of rest and drink fluids. Most upper respiratory infections resolve within 7-10 days.',
+        description:
+            'Get plenty of rest and drink fluids. ' +
+            'Most upper respiratory infections ' +
+            'resolve within 7-10 days.',
         urgency: 'routine',
     },
     {
@@ -32,7 +35,9 @@ const MOCK_RECOMMENDATIONS: Recommendation[] = [
         type: 'medication',
         title: 'Over-the-Counter Relief',
         description:
-            'Consider acetaminophen or ibuprofen for fever and pain. Decongestants may help with nasal symptoms.',
+            'Consider acetaminophen or ibuprofen ' +
+            'for fever and pain. Decongestants may ' +
+            'help with nasal symptoms.',
         urgency: 'routine',
     },
     {
@@ -40,7 +45,10 @@ const MOCK_RECOMMENDATIONS: Recommendation[] = [
         type: 'doctor',
         title: 'Schedule a Visit',
         description:
-            'If symptoms persist beyond 10 days or worsen significantly, schedule an appointment with your primary care provider.',
+            'If symptoms persist beyond 10 days or ' +
+            'worsen significantly, schedule an ' +
+            'appointment with your primary care ' +
+            'provider.',
         urgency: 'soon',
     },
     {
@@ -48,7 +56,9 @@ const MOCK_RECOMMENDATIONS: Recommendation[] = [
         type: 'emergency',
         title: 'Seek Immediate Care If...',
         description:
-            'Go to the emergency room if you experience difficulty breathing, chest pain, persistent high fever (above 39.4C/103F), or confusion.',
+            'Go to the emergency room if you experience ' +
+            'difficulty breathing, chest pain, persistent ' +
+            'high fever (above 39.4C/103F), or confusion.',
         urgency: 'immediate',
     },
 ];
@@ -97,16 +107,16 @@ const getUrgencyLabel = (urgency: string): string => {
 const SymptomRecommendationPage: React.FC = () => {
     const router = useRouter();
 
-    const handleDone = () => {
-        router.push(WEB_CARE_ROUTES.SYMPTOM_CHECKER);
+    const handleDone = (): void => {
+        void router.push(WEB_CARE_ROUTES.SYMPTOM_CHECKER);
     };
 
-    const handleBookAppointment = () => {
-        router.push(WEB_CARE_ROUTES.BOOK_APPOINTMENT);
+    const handleBookAppointment = (): void => {
+        void router.push(WEB_CARE_ROUTES.BOOK_APPOINTMENT);
     };
 
-    const handleTelemedicine = () => {
-        router.push(WEB_CARE_ROUTES.TELEMEDICINE);
+    const handleTelemedicine = (): void => {
+        void router.push(WEB_CARE_ROUTES.TELEMEDICINE);
     };
 
     return (

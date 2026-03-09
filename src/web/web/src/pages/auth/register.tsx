@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useAuth } from '@/hooks/useAuth';
-import Input from 'design-system/components/Input';
 import { Button } from 'design-system/components/Button';
 import FormField from 'design-system/components/Input';
-import AuthLayout from '@/layouts/AuthLayout';
+import { Input } from 'design-system/components/Input/Input';
+import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
-import Box from 'design-system/primitives/Box/Box';
-import Text from 'design-system/primitives/Text/Text';
+import * as yup from 'yup';
+
+import { useAuth } from '@/hooks/useAuth';
+import { AuthLayout } from '@/layouts/AuthLayout';
 
 // Define the form values interface
 interface RegisterFormValues {
@@ -63,24 +64,27 @@ const Register: React.FC = () => {
     });
 
     // Handle form submission
-    const onSubmit = async (data: RegisterFormValues) => {
+    const onSubmit = async (data: RegisterFormValues): Promise<void> => {
         try {
             setSubmitError(null);
             // Only send name, email, and password to the API
             const { name, email, password } = data;
             await registerUser({ name, email, password });
-            router.push(WEB_AUTH_ROUTES.LOGIN);
+            void router.push(WEB_AUTH_ROUTES.LOGIN);
         } catch (error: unknown) {
             setSubmitError(
-                (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-                    'Erro ao criar conta. Tente novamente.'
+                (
+                    error as {
+                        response?: { data?: { message?: string } };
+                    }
+                )?.response?.data?.message || 'Erro ao criar conta. Tente novamente.'
             );
         }
     };
 
     return (
         <AuthLayout>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={(e) => void handleSubmit(onSubmit)(e)}>
                 <Text as="h2" fontSize="xl" fontWeight="bold" marginBottom="lg" textAlign="center">
                     Criar Nova Conta
                 </Text>
@@ -149,14 +153,21 @@ const Register: React.FC = () => {
                 />
 
                 {submitError && (
-                    <Box marginY="md" padding="sm" backgroundColor="semantic.error" borderRadius="md">
+                    <div
+                        style={{
+                            margin: '16px 0',
+                            padding: '8px',
+                            backgroundColor: '#DC3545',
+                            borderRadius: '8px',
+                        }}
+                    >
                         <Text color="neutral.white">{submitError}</Text>
-                    </Box>
+                    </div>
                 )}
 
                 <Box marginTop="lg">
                     <Button
-                        onPress={handleSubmit(onSubmit)}
+                        onPress={() => void handleSubmit(onSubmit)()}
                         variant="primary"
                         journey="health"
                         loading={isSubmitting}

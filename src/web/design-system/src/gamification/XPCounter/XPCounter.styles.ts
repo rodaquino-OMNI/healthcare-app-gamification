@@ -1,7 +1,4 @@
 import styled from 'styled-components';
-import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
 
 type JourneyProps = {
     journey?: 'health' | 'care' | 'plan';

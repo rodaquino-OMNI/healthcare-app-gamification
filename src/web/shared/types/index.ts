@@ -11,14 +11,25 @@ export type { AuthSession, AuthState } from './auth.types';
 
 // Health Journey types
 export { HealthMetricType } from './health.types';
-export type { HealthMetric, MedicalEvent, HealthGoal, DeviceConnection } from './health.types';
+export type {
+  HealthMetric,
+  MedicalEvent,
+  HealthGoal,
+  HealthGoalStatus,
+  DeviceConnection,
+  DeviceConnectionStatus,
+} from './health.types';
 
 // Care Journey types
-export type { 
-  Appointment, 
-  Medication, 
-  TelemedicineSession, 
-  TreatmentPlan 
+export type {
+  Appointment,
+  AppointmentType,
+  AppointmentStatus,
+  Medication,
+  TelemedicineSession,
+  TelemedicineSessionStatus,
+  TreatmentPlan,
+  TreatmentPlanStatus,
 } from './care.types';
 
 // Plan Journey types
@@ -34,11 +45,12 @@ export type {
 } from './plan.types';
 
 // Gamification types
-export type { 
-  Achievement, 
-  Quest, 
-  Reward, 
-  GameProfile 
+export type {
+  GamificationJourney,
+  Achievement,
+  Quest,
+  Reward,
+  GameProfile,
 } from './gamification.types';
 
 // Notification types
@@ -49,16 +61,37 @@ export {
   NotificationPriority 
 } from './notification.types';
 
-export type { 
-  Notification, 
-  NotificationPreference, 
-  JourneyNotificationPreference, 
-  SendNotificationRequest, 
-  NotificationTemplate, 
-  NotificationFilter, 
-  NotificationCount, 
-  AchievementNotificationData, 
-  LevelUpNotificationData, 
-  AppointmentReminderData, 
-  ClaimStatusUpdateData 
+export type {
+  Notification,
+  NotificationPreference,
+  JourneyNotificationPreference,
+  SendNotificationRequest,
+  NotificationTemplate,
+  NotificationFilter,
+  NotificationCount,
+  AchievementNotificationData,
+  LevelUpNotificationData,
+  AppointmentReminderData,
+  ClaimStatusUpdateData
 } from './notification.types';
+
+// Journey types
+export type { JourneyId } from '../constants/journeys';
+
+// Journey as an object type (element of ALL_JOURNEYS array)
+import type { ALL_JOURNEYS } from '../constants/journeys';
+export type Journey = (typeof ALL_JOURNEYS)[number];
+
+/**
+ * Props for the confirmation modal used across journeys.
+ */
+export interface AustaConfirmationModalProps {
+  title: string;
+  message: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+  visible?: boolean;
+  journey?: string;
+  confirmText?: string;
+  cancelText?: string;
+}

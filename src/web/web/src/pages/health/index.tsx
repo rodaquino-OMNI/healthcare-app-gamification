@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useJourney } from '../../hooks/useJourney';
+import React, { useEffect } from 'react';
 import { JOURNEY_IDS } from 'shared/constants/journeys';
+
+import { useJourney } from '../../hooks/useJourney';
 import HealthLayout from '../../layouts/HealthLayout';
 
 /**
@@ -15,7 +16,7 @@ const HealthJourneyIndex: React.FC = () => {
     // Set the current journey to Health and redirect to the dashboard
     useEffect(() => {
         setJourney(JOURNEY_IDS.HEALTH);
-        router.push('/health/dashboard');
+        void router.push('/health/dashboard');
     }, [router, setJourney]);
 
     // Minimal content since we're redirecting

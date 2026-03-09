@@ -1,12 +1,12 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
-import { Button } from 'design-system/components/Button/Button';
 import { Badge } from 'design-system/components/Badge/Badge';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 const MOCK_RECEIPT = {
     transactionId: 'TXN-2026-0221-7834',
@@ -100,7 +100,10 @@ const ReceiptPage: React.FC = () => {
                     <Box
                         display="flex"
                         justifyContent="space-between"
-                        style={{ paddingTop: spacing.xs, borderTop: `1px solid ${colors.gray[20]}` }}
+                        style={{
+                            paddingTop: spacing.xs,
+                            borderTop: `1px solid ${colors.gray[20]}`,
+                        }}
                     >
                         <Text fontSize="md" fontWeight="bold" color={colors.journeys.care.text}>
                             Amount Paid
@@ -181,7 +184,7 @@ const ReceiptPage: React.FC = () => {
                 <Button
                     variant="tertiary"
                     journey="care"
-                    onPress={() => router.push('/care')}
+                    onPress={() => void router.push('/care')}
                     accessibilityLabel="Return to care dashboard"
                     data-testid="receipt-back-btn"
                 >

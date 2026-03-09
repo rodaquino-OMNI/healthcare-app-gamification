@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 interface PrivacyOption {
     id: string;
@@ -54,22 +54,22 @@ const PartnerSharingPage: React.FC = () => {
     });
     const [partnerConnected] = useState(false);
 
-    const togglePrivacy = (id: string) => {
+    const togglePrivacy = (id: string): void => {
         setPrivacySettings((prev) => ({ ...prev, [id]: !prev[id] }));
     };
 
-    const handleGenerateLink = () => {
+    const handleGenerateLink = (): void => {
         window.alert('Invite link copied to clipboard.');
     };
 
-    const handleDisconnect = () => {
+    const handleDisconnect = (): void => {
         window.alert('Partner disconnected.');
     };
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/cycle')}
+                onClick={() => void router.push('/health/cycle')}
                 style={{
                     background: 'none',
                     border: 'none',

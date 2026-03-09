@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 const MACRO_SPLITS = [
     { label: 'Carbohydrates', pct: 45, color: colors.semantic.warning },
@@ -26,18 +26,18 @@ const DietaryGoalsPage: React.FC = () => {
     const router = useRouter();
     const [calorieTarget, setCalorieTarget] = useState('2000');
 
-    const handleSave = () => {
+    const handleSave = (): void => {
         window.alert(`Goals saved: ${calorieTarget} kcal/day`);
     };
 
-    const handleReset = () => {
+    const handleReset = (): void => {
         setCalorieTarget('2000');
     };
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/nutrition')}
+                onClick={() => void router.push('/health/nutrition')}
                 style={{
                     background: 'none',
                     border: 'none',

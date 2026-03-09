@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
+
 import { AvatarContainer, AvatarImage, AvatarFallback } from './Avatar.styles';
 import { Icon } from '../../primitives/Icon/Icon';
 import { Text } from '../../primitives/Text/Text';
 import { colors } from '../../tokens/colors';
 import { sizing } from '../../tokens/sizing';
-import { borderRadius } from '../../tokens/borderRadius';
 
 /**
  * Props for the Avatar component
@@ -72,7 +72,9 @@ export interface AvatarProps {
  * @returns The extracted initials (up to 2 characters)
  */
 const getInitials = (name?: string): string => {
-    if (!name) return '';
+    if (!name) {
+        return '';
+    }
 
     const nameParts = name.trim().split(' ');
     const firstInitial = nameParts[0] ? nameParts[0][0] : '';
@@ -100,7 +102,7 @@ export const Avatar: React.FC<AvatarProps> = ({
     const [hasError, setHasError] = useState(false);
 
     // Handle image loading errors
-    const handleImageError = () => {
+    const handleImageError = (): void => {
         setHasError(true);
         if (onImageError) {
             onImageError();
@@ -117,8 +119,10 @@ export const Avatar: React.FC<AvatarProps> = ({
     const actualSize = sizePreset ? sizing.component[sizePreset] : size;
 
     // Get the background color based on journey using design tokens
-    const getBackgroundColor = () => {
-        if (!journey) return undefined;
+    const getBackgroundColor = (): string | undefined => {
+        if (!journey) {
+            return undefined;
+        }
         return colors.journeys[journey].primary;
     };
 

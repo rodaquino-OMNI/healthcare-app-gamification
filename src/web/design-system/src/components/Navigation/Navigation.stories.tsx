@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import React, { useState } from 'react';
+
 import { Header, TabBar, BottomNav } from './Navigation';
 
 const meta: Meta = {
@@ -11,11 +12,11 @@ export default meta;
 
 // ---- Header Stories ----
 export const HeaderDefault: StoryObj<typeof Header> = {
-    render: () => <Header title="Health Dashboard" journey="health" />,
+    render: (): React.ReactElement => <Header title="Health Dashboard" journey="health" />,
 };
 
 export const HeaderWithActions: StoryObj<typeof Header> = {
-    render: () => (
+    render: (): React.ReactElement => (
         <Header
             title="My Profile"
             journey="care"
@@ -26,60 +27,66 @@ export const HeaderWithActions: StoryObj<typeof Header> = {
 };
 
 // ---- TabBar Stories ----
+const TabBarDefaultDemo = (): React.ReactElement => {
+    const [active, setActive] = useState('overview');
+    return (
+        <TabBar
+            tabs={[
+                { label: 'Overview', value: 'overview' },
+                { label: 'Activity', value: 'activity' },
+                { label: 'Nutrition', value: 'nutrition' },
+                { label: 'Sleep', value: 'sleep', disabled: true },
+            ]}
+            activeTab={active}
+            onTabChange={setActive}
+            journey="health"
+        />
+    );
+};
+
 export const TabBarDefault: StoryObj<typeof TabBar> = {
-    render: () => {
-        const [active, setActive] = useState('overview');
-        return (
-            <TabBar
-                tabs={[
-                    { label: 'Overview', value: 'overview' },
-                    { label: 'Activity', value: 'activity' },
-                    { label: 'Nutrition', value: 'nutrition' },
-                    { label: 'Sleep', value: 'sleep', disabled: true },
-                ]}
-                activeTab={active}
-                onTabChange={setActive}
-                journey="health"
-            />
-        );
-    },
+    render: () => <TabBarDefaultDemo />,
+};
+
+const TabBarCareDemo = (): React.ReactElement => {
+    const [active, setActive] = useState('appointments');
+    return (
+        <TabBar
+            tabs={[
+                { label: 'Appointments', value: 'appointments' },
+                { label: 'Medications', value: 'medications' },
+                { label: 'Messages', value: 'messages' },
+            ]}
+            activeTab={active}
+            onTabChange={setActive}
+            journey="care"
+        />
+    );
 };
 
 export const TabBarCare: StoryObj<typeof TabBar> = {
-    render: () => {
-        const [active, setActive] = useState('appointments');
-        return (
-            <TabBar
-                tabs={[
-                    { label: 'Appointments', value: 'appointments' },
-                    { label: 'Medications', value: 'medications' },
-                    { label: 'Messages', value: 'messages' },
-                ]}
-                activeTab={active}
-                onTabChange={setActive}
-                journey="care"
-            />
-        );
-    },
+    render: () => <TabBarCareDemo />,
 };
 
 // ---- BottomNav Stories ----
+const BottomNavDefaultDemo = (): React.ReactElement => {
+    const [active, setActive] = useState('home');
+    return (
+        <BottomNav
+            items={[
+                { label: 'Home', value: 'home', icon: '🏠' },
+                { label: 'Health', value: 'health', icon: '❤️' },
+                { label: 'Care', value: 'care', icon: '👨‍⚕️' },
+                { label: 'Plan', value: 'plan', icon: '📋' },
+                { label: 'Profile', value: 'profile', icon: '👤' },
+            ]}
+            activeItem={active}
+            onItemPress={setActive}
+            journey="health"
+        />
+    );
+};
+
 export const BottomNavDefault: StoryObj<typeof BottomNav> = {
-    render: () => {
-        const [active, setActive] = useState('home');
-        return (
-            <BottomNav
-                items={[
-                    { label: 'Home', value: 'home', icon: '🏠' },
-                    { label: 'Health', value: 'health', icon: '❤️' },
-                    { label: 'Care', value: 'care', icon: '👨‍⚕️' },
-                    { label: 'Plan', value: 'plan', icon: '📋' },
-                    { label: 'Profile', value: 'profile', icon: '👤' },
-                ]}
-                activeItem={active}
-                onItemPress={setActive}
-                journey="health"
-            />
-        );
-    },
+    render: () => <BottomNavDefaultDemo />,
 };

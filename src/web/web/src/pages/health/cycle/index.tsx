@@ -1,11 +1,11 @@
-import React, { useState, useMemo } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState, useMemo } from 'react';
 
 const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -32,17 +32,22 @@ const NAV_LINKS = [
     { label: 'Settings', href: '/health/cycle/settings' },
 ];
 
-const generateMonthDays = (year: number, month: number) => {
+const generateMonthDays = (year: number, month: number): { key: string; day: number; phase: string }[] => {
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const blanks = Array.from({ length: firstDay }, (_, i) => ({ key: `b-${i}`, day: 0, phase: '' }));
     const days = Array.from({ length: daysInMonth }, (_, i) => {
         const d = i + 1;
         let phase = '';
-        if (d >= 1 && d <= 5) phase = 'menstrual';
-        else if (d >= 6 && d <= 12) phase = 'follicular';
-        else if (d >= 13 && d <= 15) phase = 'ovulation';
-        else phase = 'luteal';
+        if (d >= 1 && d <= 5) {
+            phase = 'menstrual';
+        } else if (d >= 6 && d <= 12) {
+            phase = 'follicular';
+        } else if (d >= 13 && d <= 15) {
+            phase = 'ovulation';
+        } else {
+            phase = 'luteal';
+        }
         return { key: `d-${d}`, day: d, phase };
     });
     return [...blanks, ...days];
@@ -103,7 +108,7 @@ const CycleHomePage: React.FC = () => {
                             {d}
                         </Text>
                     ))}
-                    {calendarDays.map((cell) => (
+                    {calendarDays.map((cell: { key: string; day: number; phase: string }) => (
                         <div
                             key={cell.key}
                             style={{
@@ -188,7 +193,7 @@ const CycleHomePage: React.FC = () => {
                         key={link.href}
                         variant="secondary"
                         journey="health"
-                        onPress={() => router.push(link.href)}
+                        onPress={() => void router.push(link.href)}
                         accessibilityLabel={link.label}
                     >
                         {link.label}

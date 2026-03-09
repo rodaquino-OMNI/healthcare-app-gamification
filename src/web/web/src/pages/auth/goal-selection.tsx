@@ -1,11 +1,12 @@
+import { borderRadius } from 'design-system/tokens/borderRadius';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/navigation';
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
-import { useRouter } from 'next/navigation';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
-import { borderRadius } from 'design-system/tokens/borderRadius';
-import AuthLayout from '@/layouts/AuthLayout';
+
+import { AuthLayout } from '@/layouts/AuthLayout';
 
 const ContentContainer = styled.div`
     display: flex;
@@ -140,11 +141,31 @@ interface GoalItem {
 }
 
 const GOALS: GoalItem[] = [
-    { id: 'weight', icon: '\u2696\uFE0F', title: 'Controle de Peso', description: 'Gerencie seu peso' },
-    { id: 'chronic', icon: '\u2764\uFE0F', title: 'Doencas Cronicas', description: 'Acompanhe condicoes' },
-    { id: 'fitness', icon: '\uD83C\uDFC3', title: 'Fitness e Exercicio', description: 'Melhore sua forma' },
+    {
+        id: 'weight',
+        icon: '\u2696\uFE0F',
+        title: 'Controle de Peso',
+        description: 'Gerencie seu peso',
+    },
+    {
+        id: 'chronic',
+        icon: '\u2764\uFE0F',
+        title: 'Doencas Cronicas',
+        description: 'Acompanhe condicoes',
+    },
+    {
+        id: 'fitness',
+        icon: '\uD83C\uDFC3',
+        title: 'Fitness e Exercicio',
+        description: 'Melhore sua forma',
+    },
     { id: 'mental', icon: '\uD83E\uDDE0', title: 'Saude Mental', description: 'Cuide da mente' },
-    { id: 'nutrition', icon: '\uD83E\uDD57', title: 'Nutricao e Dieta', description: 'Coma melhor' },
+    {
+        id: 'nutrition',
+        icon: '\uD83E\uDD57',
+        title: 'Nutricao e Dieta',
+        description: 'Coma melhor',
+    },
     { id: 'sleep', icon: '\uD83C\uDF19', title: 'Qualidade do Sono', description: 'Durma melhor' },
 ];
 
@@ -152,7 +173,7 @@ const GOALS: GoalItem[] = [
  * Goal Selection page - allows users to choose their health goals
  * during the personalization onboarding flow.
  */
-export default function GoalSelectionPage() {
+export default function GoalSelectionPage(): React.ReactElement {
     const router = useRouter();
     const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
 

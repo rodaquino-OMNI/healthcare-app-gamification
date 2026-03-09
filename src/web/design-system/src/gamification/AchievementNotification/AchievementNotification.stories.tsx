@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+
 import { AchievementNotification } from './AchievementNotification';
 
 const meta: Meta<typeof AchievementNotification> = {

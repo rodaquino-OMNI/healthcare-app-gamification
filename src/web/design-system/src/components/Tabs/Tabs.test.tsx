@@ -1,15 +1,14 @@
-import React from 'react';
 import { describe, it, expect } from '@jest/globals';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
 import { ThemeProvider } from 'styled-components';
+
 import Tabs from './Tabs';
 import { baseTheme } from '../../themes/base.theme';
 import { healthTheme } from '../../themes/health.theme';
-import { careTheme } from '../../themes/care.theme';
-import { planTheme } from '../../themes/plan.theme';
 
 // Helper function to render a component with a theme
-const renderWithTheme = (ui, theme = baseTheme) => {
+const renderWithTheme = (ui: React.ReactElement, theme = baseTheme) => {
     return render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
 };
 

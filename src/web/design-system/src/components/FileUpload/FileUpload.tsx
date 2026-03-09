@@ -1,10 +1,11 @@
 import React, { useRef, useState, useCallback } from 'react';
 import styled from 'styled-components';
-import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
+
 import { borderRadius } from '../../tokens/borderRadius';
+import { colors } from '../../tokens/colors';
 import { shadows } from '../../tokens/shadows';
+import { spacing } from '../../tokens/spacing';
+import { typography } from '../../tokens/typography';
 
 export interface FileUploadProps {
     onFilesSelected: (files: File[]) => void;
@@ -24,7 +25,7 @@ export interface UploadProgressProps {
     onRetry?: () => void;
 }
 
-const getJourneyColor = (journey?: string) => {
+const getJourneyColor = (journey?: string): string => {
     if (journey && colors.journeys[journey as keyof typeof colors.journeys]) {
         return colors.journeys[journey as keyof typeof colors.journeys].primary;
     }
@@ -110,8 +111,12 @@ const ProgressBarFill = styled.div<{ progress: number; status: string }>`
     height: 100%;
     width: ${(props) => props.progress}%;
     background-color: ${(props) => {
-        if (props.status === 'error') return colors.semantic.error;
-        if (props.status === 'completed') return colors.semantic.success;
+        if (props.status === 'error') {
+            return colors.semantic.error;
+        }
+        if (props.status === 'completed') {
+            return colors.semantic.success;
+        }
         return colors.brand.primary;
     }};
     border-radius: ${borderRadius.full};
@@ -122,8 +127,12 @@ const StatusText = styled.span<{ status: string }>`
     font-family: ${typography.fontFamily.body};
     font-size: ${typography.fontSize.xs};
     color: ${(props) => {
-        if (props.status === 'error') return colors.semantic.error;
-        if (props.status === 'completed') return colors.semantic.success;
+        if (props.status === 'error') {
+            return colors.semantic.error;
+        }
+        if (props.status === 'completed') {
+            return colors.semantic.success;
+        }
         return colors.neutral.gray500;
     }};
 `;
@@ -157,7 +166,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
     const handleFiles = useCallback(
         (fileList: FileList | null) => {
-            if (!fileList) return;
+            if (!fileList) {
+                return;
+            }
             let files = Array.from(fileList);
             if (maxSize) {
                 files = files.filter((f) => f.size <= maxSize);
@@ -169,20 +180,24 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         [onFilesSelected, maxSize]
     );
 
-    const handleDragOver = (e: React.DragEvent) => {
+    const handleDragOver = (e: React.DragEvent): void => {
         e.preventDefault();
-        if (!disabled) setIsDragging(true);
+        if (!disabled) {
+            setIsDragging(true);
+        }
     };
 
-    const handleDragLeave = (e: React.DragEvent) => {
+    const handleDragLeave = (e: React.DragEvent): void => {
         e.preventDefault();
         setIsDragging(false);
     };
 
-    const handleDrop = (e: React.DragEvent) => {
+    const handleDrop = (e: React.DragEvent): void => {
         e.preventDefault();
         setIsDragging(false);
-        if (!disabled) handleFiles(e.dataTransfer.files);
+        if (!disabled) {
+            handleFiles(e.dataTransfer.files);
+        }
     };
 
     return (

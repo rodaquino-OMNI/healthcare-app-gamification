@@ -1,11 +1,12 @@
-import React, { useState, useRef } from 'react';
-import styled from 'styled-components';
-import { useRouter } from 'next/navigation';
 import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
 import { spacing } from 'design-system/tokens/spacing';
-import AuthLayout from '@/layouts/AuthLayout';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/navigation';
+import React, { useState, useRef } from 'react';
 import { WEB_PROFILE_ROUTES } from 'shared/constants/routes';
+import styled from 'styled-components';
+
+import { AuthLayout } from '@/layouts/AuthLayout';
 
 const Title = styled.h2`
     font-family: ${typography.fontFamily.heading};
@@ -143,21 +144,27 @@ const StepIndicator = styled.p`
  * Profile Photo page - allows users to upload and preview a profile photo.
  * Displays a circular avatar preview with upload functionality.
  */
-export default function ProfilePhotoPage() {
+export default function ProfilePhotoPage(): React.ReactElement {
     const router = useRouter();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const file = e.target.files?.[0];
-        if (!file) return;
+        if (!file) {
+            return;
+        }
 
         // Validate file type
-        if (!file.type.startsWith('image/')) return;
+        if (!file.type.startsWith('image/')) {
+            return;
+        }
 
         // Validate file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) return;
+        if (file.size > 5 * 1024 * 1024) {
+            return;
+        }
 
         const reader = new FileReader();
         reader.onload = () => {
@@ -166,11 +173,11 @@ export default function ProfilePhotoPage() {
         reader.readAsDataURL(file);
     };
 
-    const handleAvatarClick = () => {
+    const handleAvatarClick = (): void => {
         fileInputRef.current?.click();
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (): Promise<void> => {
         setIsSubmitting(true);
         try {
             await new Promise((resolve) => setTimeout(resolve, 500));
@@ -180,7 +187,7 @@ export default function ProfilePhotoPage() {
         }
     };
 
-    const handleSkip = () => {
+    const handleSkip = (): void => {
         router.push(WEB_PROFILE_ROUTES.CONFIRMATION);
     };
 
@@ -217,7 +224,7 @@ export default function ProfilePhotoPage() {
                 {previewUrl && <ChangePhotoButton onClick={handleAvatarClick}>Alterar foto</ChangePhotoButton>}
             </AvatarContainer>
 
-            <SubmitButton onClick={handleSubmit} disabled={isSubmitting || !previewUrl}>
+            <SubmitButton onClick={() => void handleSubmit()} disabled={isSubmitting || !previewUrl}>
                 {isSubmitting ? 'Salvando...' : 'Continuar'}
             </SubmitButton>
 

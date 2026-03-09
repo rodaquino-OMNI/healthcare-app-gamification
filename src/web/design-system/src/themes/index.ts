@@ -7,10 +7,10 @@
 
 // Import all themes
 import { baseTheme } from './base.theme';
-import { healthTheme } from './health.theme';
 import { careTheme } from './care.theme';
-import { planTheme } from './plan.theme';
 import { darkTheme } from './dark.theme';
+import { healthTheme } from './health.theme';
+import { planTheme } from './plan.theme';
 
 // Export all themes
 export {

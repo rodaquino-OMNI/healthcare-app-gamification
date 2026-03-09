@@ -1,13 +1,13 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
-import { Button } from 'design-system/components/Button/Button';
 import { Badge } from 'design-system/components/Badge/Badge';
+import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { ProgressBar } from 'design-system/components/ProgressBar/ProgressBar';
-import { Text } from 'design-system/primitives/Text/Text';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 interface Condition {
     id: string;
@@ -56,8 +56,12 @@ const MOCK_CONDITIONS: Condition[] = [
 ];
 
 const getSeverityStatus = (s: string): 'success' | 'warning' | 'error' => {
-    if (s === 'high') return 'error';
-    if (s === 'moderate') return 'warning';
+    if (s === 'high') {
+        return 'error';
+    }
+    if (s === 'moderate') {
+        return 'warning';
+    }
     return 'success';
 };
 
@@ -65,8 +69,8 @@ const getSeverityStatus = (s: string): 'success' | 'warning' | 'error' => {
 const ConditionsListPage: React.FC = () => {
     const router = useRouter();
 
-    const handleViewDetail = (id: string) => {
-        router.push({
+    const handleViewDetail = (id: string): void => {
+        void router.push({
             pathname: '/care/symptom-checker/condition-detail',
             query: { ...router.query, conditionId: id },
         });
@@ -145,7 +149,7 @@ const ConditionsListPage: React.FC = () => {
                 </Button>
                 <Button
                     journey="care"
-                    onPress={() => router.push('/care/symptom-checker/self-care')}
+                    onPress={() => void router.push('/care/symptom-checker/self-care')}
                     accessibilityLabel="View self-care recommendations"
                     data-testid="conditions-recommendations-btn"
                 >

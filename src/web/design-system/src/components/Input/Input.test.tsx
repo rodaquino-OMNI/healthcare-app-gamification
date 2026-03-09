@@ -1,11 +1,12 @@
-import React from 'react';
 import { describe, it, expect } from '@jest/globals';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
 import { ThemeProvider } from 'styled-components';
+
 import Input from './Input';
 import { baseTheme } from '../../themes/base.theme';
-import { healthTheme } from '../../themes/health.theme';
 import { careTheme } from '../../themes/care.theme';
+import { healthTheme } from '../../themes/health.theme';
 import { planTheme } from '../../themes/plan.theme';
 
 /**
@@ -112,7 +113,9 @@ describe('Input component', () => {
         // Test with a label (via aria-labelledby)
         renderWithTheme(
             <>
-                <label id="input-label">Labeled Input</label>
+                <label id="input-label" htmlFor="labeled-input-element">
+                    Labeled Input
+                </label>
                 <Input
                     value=""
                     onChange={() => {}}

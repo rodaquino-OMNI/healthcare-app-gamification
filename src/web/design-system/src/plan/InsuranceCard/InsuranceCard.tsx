@@ -1,18 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
+
+import {} from './InsuranceCard.styles';
 import { Card } from '../../components/Card/Card';
-import { Text } from '../../primitives/Text/Text';
 import { Box } from '../../primitives/Box/Box';
+import { Text } from '../../primitives/Text/Text';
+import { borderRadius } from '../../tokens/borderRadius';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
 import { typography } from '../../tokens/typography';
-import { borderRadius } from '../../tokens/borderRadius';
-import {
-    InsuranceCardContainer,
-    InsuranceCardHeader,
-    InsuranceCardBody,
-    InsuranceCardFooter,
-} from './InsuranceCard.styles';
 
 /**
  * Plan data for the insurance card
@@ -109,7 +105,11 @@ const InstructionsText = styled.p`
  *
  * @example
  * <InsuranceCard
- *   plan={{ id: '1', name: 'Plano Essencial', type: 'Individual', planNumber: '123456', validityStart: '2023-01-01', validityEnd: '2023-12-31' }}
+ *   plan={{
+ *     id: '1', name: 'Plano Essencial', type: 'Individual',
+ *     planNumber: '123456', validityStart: '2023-01-01',
+ *     validityEnd: '2023-12-31',
+ *   }}
  *   user={{ id: '1', name: 'Maria Silva', cpf: '123.456.789-00' }}
  *   onShare={() => handleShare()}
  * />

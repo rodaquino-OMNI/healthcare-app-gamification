@@ -1,17 +1,19 @@
-import React from 'react';
 import { describe, it, expect } from '@jest/globals';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+
 import { Select } from './Select';
 
 // Mock react-native
 jest.mock('react-native', () => ({
-    StyleSheet: { create: (styles: any) => styles },
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    StyleSheet: { create: (styles: Record<string, unknown>) => styles },
     Platform: { OS: 'web' },
 }));
 
 // Mock DS primitives
 jest.mock('../../primitives/Box/Box', () => ({
-    Box: ({ children, style, ...props }: any) => (
+    Box: ({ children, style: _style, ...props }: any) => (
         <div data-testid="box" {...props}>
             {children}
         </div>
@@ -19,15 +21,15 @@ jest.mock('../../primitives/Box/Box', () => ({
 }));
 
 jest.mock('../../primitives/Text/Text', () => ({
-    Text: ({ children, style, ...props }: any) => (
+    Text: ({ children, style: _style, ...props }: any) => (
         <span data-testid="text" {...props}>
             {children}
         </span>
     ),
 }));
 
-jest.mock('../../primitives/Touchable/Touchable', () => ({
-    Touchable: React.forwardRef(({ children, onPress, disabled, testID, ...props }: any, ref: any) => (
+jest.mock('../../primitives/Touchable/Touchable', () => {
+    const MockTouchable = React.forwardRef(({ children, onPress, disabled, testID, ...props }: any, ref: any) => (
         <button
             ref={ref}
             data-testid={testID || 'select-trigger'}
@@ -37,15 +39,19 @@ jest.mock('../../primitives/Touchable/Touchable', () => ({
         >
             {children}
         </button>
-    )),
-}));
+    ));
+    MockTouchable.displayName = 'MockTouchable';
+    return { Touchable: MockTouchable };
+});
 
 // Track modal visibility for assertions
-let modalVisible = false;
+let _modalVisible = false;
 jest.mock('../../components/Modal/Modal', () => ({
-    Modal: ({ visible, onClose, title, children, ...props }: any) => {
-        modalVisible = visible;
-        if (!visible) return null;
+    Modal: ({ visible, onClose, title, children }: any) => {
+        _modalVisible = visible;
+        if (!visible) {
+            return null;
+        }
         return (
             <div data-testid="modal" role="dialog">
                 <span data-testid="modal-title">{title}</span>
@@ -59,7 +65,7 @@ jest.mock('../../components/Modal/Modal', () => ({
 }));
 
 jest.mock('../../components/Checkbox/Checkbox', () => ({
-    Checkbox: ({ label, checked, onChange, testID, ...props }: any) => (
+    Checkbox: ({ label, checked, onChange, testID }: any) => (
         <label data-testid={testID || 'checkbox'}>
             <input
                 type="checkbox"
@@ -73,7 +79,7 @@ jest.mock('../../components/Checkbox/Checkbox', () => ({
 }));
 
 jest.mock('../../components/RadioButton/RadioButton', () => ({
-    RadioButton: ({ label, checked, onChange, testID, ...props }: any) => (
+    RadioButton: ({ label, checked, onChange, testID }: any) => (
         <label data-testid={testID || 'radio'}>
             <input type="radio" checked={checked} onChange={onChange} data-testid={`${testID || 'radio'}-input`} />
             {label}
@@ -82,7 +88,7 @@ jest.mock('../../components/RadioButton/RadioButton', () => ({
 }));
 
 jest.mock('../../components/Input/Input', () => ({
-    Input: ({ value, onChange, placeholder, testID, ...props }: any) => (
+    Input: ({ value, onChange, placeholder, testID }: any) => (
         <input data-testid={testID || 'input'} value={value} onChange={onChange} placeholder={placeholder} />
     ),
 }));
@@ -130,7 +136,7 @@ const defaultOptions = [
 
 describe('Select', () => {
     beforeEach(() => {
-        modalVisible = false;
+        _modalVisible = false;
     });
 
     it('renders with label', () => {

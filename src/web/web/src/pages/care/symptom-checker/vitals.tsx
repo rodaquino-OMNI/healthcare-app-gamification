@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 interface VitalField {
     id: string;
@@ -17,9 +17,21 @@ interface VitalField {
 
 const VITAL_FIELDS: VitalField[] = [
     { id: 'temperature', label: 'Temperature', unit: 'C', placeholder: '36.5', type: 'number' },
-    { id: 'blood-pressure', label: 'Blood Pressure', unit: 'mmHg', placeholder: '120/80', type: 'text' },
+    {
+        id: 'blood-pressure',
+        label: 'Blood Pressure',
+        unit: 'mmHg',
+        placeholder: '120/80',
+        type: 'text',
+    },
     { id: 'heart-rate', label: 'Heart Rate', unit: 'bpm', placeholder: '72', type: 'number' },
-    { id: 'oxygen', label: 'Oxygen Saturation (SpO2)', unit: '%', placeholder: '98', type: 'number' },
+    {
+        id: 'oxygen',
+        label: 'Oxygen Saturation (SpO2)',
+        unit: '%',
+        placeholder: '98',
+        type: 'number',
+    },
 ];
 
 /** Vitals input page for recording basic vital signs during symptom check. */
@@ -27,12 +39,12 @@ const VitalsPage: React.FC = () => {
     const router = useRouter();
     const [values, setValues] = useState<Record<string, string>>({});
 
-    const handleChange = (id: string, value: string) => {
+    const handleChange = (id: string, value: string): void => {
         setValues((prev) => ({ ...prev, [id]: value }));
     };
 
-    const handleContinue = () => {
-        router.push({
+    const handleContinue = (): void => {
+        void router.push({
             pathname: '/care/symptom-checker/analyzing',
             query: { ...router.query, ...values },
         });

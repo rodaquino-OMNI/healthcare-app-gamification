@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { StackContainer } from './Stack.styles';
 
 /**

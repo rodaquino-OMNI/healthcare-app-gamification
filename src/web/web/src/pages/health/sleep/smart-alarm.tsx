@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 const WINDOW_OPTIONS = [
     { id: '10', label: '10 min' },
@@ -25,14 +25,14 @@ const SmartAlarmPage: React.FC = () => {
     const [vibration, setVibration] = useState(true);
     const [sound, setSound] = useState('gentle');
 
-    const handleSave = () => {
+    const handleSave = (): void => {
         globalThis.alert(`Smart alarm: ${wakeWindow}min window, Sound: ${sound}, Vibration: ${vibration}`);
     };
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/sleep')}
+                onClick={() => void router.push('/health/sleep')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -76,7 +76,9 @@ const SmartAlarmPage: React.FC = () => {
                             aria-checked={wakeWindow === opt.id}
                             tabIndex={0}
                             onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') setWakeWindow(opt.id);
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    setWakeWindow(opt.id);
+                                }
                             }}
                             style={{ cursor: 'pointer' }}
                         >
@@ -112,7 +114,9 @@ const SmartAlarmPage: React.FC = () => {
                     aria-checked={vibration}
                     tabIndex={0}
                     onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') setVibration(!vibration);
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            setVibration(!vibration);
+                        }
                     }}
                     style={{ cursor: 'pointer' }}
                 >
@@ -166,7 +170,9 @@ const SmartAlarmPage: React.FC = () => {
                         aria-checked={sound === opt.id}
                         tabIndex={0}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') setSound(opt.id);
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                setSound(opt.id);
+                            }
                         }}
                         style={{ cursor: 'pointer' }}
                     >

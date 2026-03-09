@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { Text } from 'design-system/primitives/Text/Text';
-import { Box } from 'design-system/primitives/Box/Box';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { Leaderboard } from 'design-system/gamification/Leaderboard';
+import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import Link from 'next/link';
+import React, { useState } from 'react';
 
 type Timeframe = 'weekly' | 'monthly' | 'allTime';
 type JourneyFilter = 'all' | 'health' | 'care' | 'plan';
@@ -108,10 +108,14 @@ const LeaderboardPage: React.FC = () => {
             {/* Leaderboard */}
             <Card elevation="md" padding="lg">
                 <Leaderboard
-                    users={MOCK_USERS}
-                    currentUserId="user-123"
-                    journey={journeyFilter === 'all' ? undefined : journeyFilter}
-                    title={`${TIMEFRAME_LABELS[timeframe]} Rankings`}
+                    leaderboardData={MOCK_USERS.map((u, i) => ({
+                        userId: u.id,
+                        username: u.name,
+                        score: u.xp,
+                        rank: i + 1,
+                        isCurrentUser: u.id === 'user-123',
+                    }))}
+                    journey={journeyFilter === 'all' ? 'health' : journeyFilter}
                 />
             </Card>
 

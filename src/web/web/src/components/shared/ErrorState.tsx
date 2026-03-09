@@ -1,7 +1,8 @@
-import React from 'react';
 import { Button } from 'design-system/components/Button';
-import { Text } from 'design-system/primitives/Text';
 import { Box } from 'design-system/primitives/Box';
+import { Text } from 'design-system/primitives/Text';
+import React from 'react';
+
 import { useJourney } from '@/hooks/useJourney';
 
 interface ErrorStateProps {
@@ -27,6 +28,8 @@ interface ErrorStateProps {
 export const ErrorState: React.FC<ErrorStateProps> = ({ message, onRetry }) => {
     // Get the current journey for theming
     const { journey } = useJourney();
+    const journeyId =
+        journey?.id === 'health' || journey?.id === 'care' || journey?.id === 'plan' ? journey.id : undefined;
 
     return (
         <Box
@@ -35,16 +38,16 @@ export const ErrorState: React.FC<ErrorStateProps> = ({ message, onRetry }) => {
             alignItems="center"
             justifyContent="center"
             padding="lg"
-            journey={journey}
+            journey={journeyId}
             data-testid="error-state"
         >
             <Box marginBottom="lg">
-                <Text fontSize="lg" fontWeight="medium" textAlign="center" journey={journey}>
+                <Text fontSize="lg" fontWeight="medium" textAlign="center" journey={journeyId}>
                     {message}
                 </Text>
             </Box>
 
-            <Button variant="primary" onPress={onRetry} journey={journey} accessibilityLabel="Tentar novamente">
+            <Button variant="primary" onPress={onRetry} journey={journeyId} accessibilityLabel="Tentar novamente">
                 Tentar novamente
             </Button>
         </Box>

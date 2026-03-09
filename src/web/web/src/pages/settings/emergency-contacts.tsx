@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import type { NextPage } from 'next';
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import type { NextPage } from 'next';
+import React, { useState } from 'react';
 
 interface Contact {
     id: string;
@@ -26,8 +26,10 @@ const EmergencyContactsPage: NextPage = () => {
     const [newPhone, setNewPhone] = useState('');
     const [newRelationship, setNewRelationship] = useState('');
 
-    const handleAdd = () => {
-        if (!newName || !newPhone || !newRelationship) return;
+    const handleAdd = (): void => {
+        if (!newName || !newPhone || !newRelationship) {
+            return;
+        }
         const contact: Contact = {
             id: String(Date.now()),
             name: newName,
@@ -42,11 +44,11 @@ const EmergencyContactsPage: NextPage = () => {
         setShowForm(false);
     };
 
-    const handleRemove = (id: string) => {
+    const handleRemove = (id: string): void => {
         setContacts(contacts.filter((c) => c.id !== id));
     };
 
-    const setPrimary = (id: string) => {
+    const setPrimary = (id: string): void => {
         setContacts(contacts.map((c) => ({ ...c, isPrimary: c.id === id })));
     };
 
@@ -82,8 +84,11 @@ const EmergencyContactsPage: NextPage = () => {
                 <div style={{ ...cardStyle, marginTop: spacing.md }}>
                     <h3 style={sectionTitleStyle}>Novo Contato</h3>
                     <div style={fieldGroup}>
-                        <label style={labelStyle}>Nome</label>
+                        <label htmlFor="ec-name" style={labelStyle}>
+                            Nome
+                        </label>
                         <input
+                            id="ec-name"
                             type="text"
                             value={newName}
                             onChange={(e) => setNewName(e.target.value)}
@@ -92,8 +97,11 @@ const EmergencyContactsPage: NextPage = () => {
                         />
                     </div>
                     <div style={fieldGroup}>
-                        <label style={labelStyle}>Telefone</label>
+                        <label htmlFor="ec-phone" style={labelStyle}>
+                            Telefone
+                        </label>
                         <input
+                            id="ec-phone"
                             type="tel"
                             value={newPhone}
                             onChange={(e) => setNewPhone(e.target.value)}
@@ -102,8 +110,11 @@ const EmergencyContactsPage: NextPage = () => {
                         />
                     </div>
                     <div style={fieldGroup}>
-                        <label style={labelStyle}>Parentesco</label>
+                        <label htmlFor="ec-relationship" style={labelStyle}>
+                            Parentesco
+                        </label>
                         <input
+                            id="ec-relationship"
                             type="text"
                             value={newRelationship}
                             onChange={(e) => setNewRelationship(e.target.value)}

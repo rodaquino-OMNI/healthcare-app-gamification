@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import React, { useState } from 'react';
 
 interface FaqArticle {
     id: string;
@@ -55,7 +55,7 @@ const FaqArticlePage: NextPage = () => {
 
     return (
         <div style={{ padding: spacing.xl, maxWidth: '720px', margin: '0 auto' }}>
-            <button onClick={() => router.push('/help/faq')} style={backLinkStyle}>
+            <button onClick={() => void router.push('/help/faq')} style={backLinkStyle}>
                 &larr; Voltar para FAQ
             </button>
 
@@ -105,11 +105,13 @@ const FaqArticlePage: NextPage = () => {
                     <h2 style={sectionTitleStyle}>Artigos Relacionados</h2>
                     {article.relatedIds.map((relId) => {
                         const related = ARTICLES[relId];
-                        if (!related) return null;
+                        if (!related) {
+                            return null;
+                        }
                         return (
                             <button
                                 key={relId}
-                                onClick={() => router.push(`/help/faq/${relId}`)}
+                                onClick={() => void router.push(`/help/faq/${relId}`)}
                                 style={relatedLinkStyle}
                             >
                                 {related.question}

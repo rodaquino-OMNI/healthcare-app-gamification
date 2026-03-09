@@ -1,14 +1,15 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
-import { CareLayout } from '@/layouts/CareLayout';
+
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { CareLayout } from '@/layouts/CareLayout';
 
 /**
  * Booking confirmation page showing appointment summary after successful scheduling.
@@ -29,15 +30,15 @@ const BookingConfirmationPage: React.FC = () => {
 
     const isTelemedicine = type === 'telemedicina';
 
-    const handleGoToWaitingRoom = () => {
-        router.push({
+    const handleGoToWaitingRoom = (): void => {
+        void router.push({
             pathname: WEB_CARE_ROUTES.WAITING_ROOM,
             query: { doctorId, date, time },
         });
     };
 
-    const handleBackToAppointments = () => {
-        router.push(WEB_CARE_ROUTES.APPOINTMENTS);
+    const handleBackToAppointments = (): void => {
+        void router.push(WEB_CARE_ROUTES.APPOINTMENTS);
     };
 
     return (

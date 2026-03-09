@@ -1,24 +1,13 @@
 import React from 'react';
+
 import { InputContainer, InputField, InputLabel } from './Input.styles';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
-import { borderRadius } from '../../tokens/borderRadius';
 
 /**
  * Supported input types for the Input component
  */
-type InputType =
-    | 'text'
-    | 'password'
-    | 'email'
-    | 'number'
-    | 'tel'
-    | 'url'
-    | 'search'
-    | 'date'
-    | 'datetime-local'
-    | 'time'
-    | string;
+type InputType = string;
 
 /**
  * Journey identifier for journey-specific styling

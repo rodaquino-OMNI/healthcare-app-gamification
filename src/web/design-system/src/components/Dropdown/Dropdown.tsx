@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
-import { spacing } from '../../tokens/spacing';
-import { shadows } from '../../tokens/shadows';
+
 import { borderRadius } from '../../tokens/borderRadius';
+import { colors } from '../../tokens/colors';
+import { shadows } from '../../tokens/shadows';
+import { spacing } from '../../tokens/spacing';
+import { typography } from '../../tokens/typography';
 
 export interface DropdownOption {
     label: string;
@@ -23,7 +24,7 @@ export interface DropdownProps {
     accessibilityLabel?: string;
 }
 
-const getJourneyColor = (journey?: string) => {
+const getJourneyColor = (journey?: string): string => {
     if (journey && colors.journeys[journey as keyof typeof colors.journeys]) {
         return colors.journeys[journey as keyof typeof colors.journeys].primary;
     }
@@ -137,7 +138,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
             : options;
 
     useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
+        const handleClickOutside = (event: MouseEvent): void => {
             if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
                 setIsOpen(false);
                 setSearchQuery('');
@@ -147,8 +148,10 @@ export const Dropdown: React.FC<DropdownProps> = ({
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const handleSelect = (option: DropdownOption) => {
-        if (option.disabled) return;
+    const handleSelect = (option: DropdownOption): void => {
+        if (option.disabled) {
+            return;
+        }
         onChange?.(option.value);
         setIsOpen(false);
         setSearchQuery('');
@@ -179,6 +182,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Search..."
+                            // eslint-disable-next-line jsx-a11y/no-autofocus
                             autoFocus
                             aria-label="Search options"
                             data-testid="dropdown-search"

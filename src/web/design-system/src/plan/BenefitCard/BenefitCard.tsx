@@ -1,8 +1,9 @@
 import React from 'react';
-import { colors } from '../../tokens/colors';
+
 import { Card } from '../../components/Card/Card';
-import { Text } from '../../primitives/Text/Text';
 import { Stack } from '../../primitives/Stack/Stack';
+import { Text } from '../../primitives/Text/Text';
+import { colors } from '../../tokens/colors';
 
 // Local type stub for Benefit (shared package not available at build time)
 interface Benefit {

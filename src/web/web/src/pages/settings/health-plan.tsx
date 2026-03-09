@@ -1,7 +1,7 @@
-import React from 'react';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import React from 'react';
 
 const { plan } = colors.journeys;
 
@@ -82,10 +82,10 @@ const HealthPlanPage: NextPage = () => {
 
             {/* Actions */}
             <div style={{ display: 'flex', gap: spacing.xs, marginTop: spacing.xl }}>
-                <button onClick={() => router.push('/plan/coverage')} style={linkBtnStyle}>
+                <button onClick={() => void router.push('/plan/coverage')} style={linkBtnStyle}>
                     Ver Cobertura
                 </button>
-                <button onClick={() => router.push('/plan/card')} style={linkBtnStyle}>
+                <button onClick={() => void router.push('/plan/card')} style={linkBtnStyle}>
                     Carteirinha Digital
                 </button>
             </div>

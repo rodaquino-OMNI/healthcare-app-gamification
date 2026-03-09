@@ -1,10 +1,11 @@
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import styled from 'styled-components';
-import { useRouter } from 'next/navigation';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
-import AuthLayout from '@/layouts/AuthLayout';
+
+import { AuthLayout } from '@/layouts/AuthLayout';
 
 const SuccessContainer = styled.div`
     display: flex;
@@ -83,13 +84,6 @@ const SummaryLabel = styled.span`
     color: ${colors.gray[50]};
 `;
 
-const SummaryValue = styled.span`
-    font-family: ${typography.fontFamily.body};
-    font-size: ${typography.fontSize['text-sm']};
-    font-weight: ${typography.fontWeight.medium};
-    color: ${colors.gray[70]};
-`;
-
 const StatusBadge = styled.span<{ variant: 'complete' | 'pending' }>`
     font-family: ${typography.fontFamily.body};
     font-size: ${typography.fontSize['text-xs']};
@@ -145,10 +139,10 @@ const StepIndicator = styled.p`
  * Profile Confirmation page - shows success message and profile summary.
  * Final step in the onboarding flow before entering the dashboard.
  */
-export default function ProfileConfirmationPage() {
+export default function ProfileConfirmationPage(): React.ReactElement {
     const router = useRouter();
 
-    const handleContinue = () => {
+    const handleContinue = (): void => {
         router.push('/home');
     };
 

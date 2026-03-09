@@ -1,8 +1,8 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
 
 jest.mock('@/layouts/PlanLayout', () => ({
-    PlanLayout: ({ children }: any) => <div data-testid="plan-layout">{children}</div>,
+    PlanLayout: ({ children }: { children: React.ReactNode }) => <div data-testid="plan-layout">{children}</div>,
 }));
 
 jest.mock('@/hooks/useAuth', () => ({
@@ -12,7 +12,7 @@ jest.mock('@/hooks/useAuth', () => ({
 }));
 
 jest.mock('design-system/plan/InsuranceCard/InsuranceCard', () => ({
-    InsuranceCard: ({ plan, user }: any) => (
+    InsuranceCard: ({ plan, user }: { plan: { planNumber: string }; user: { name: string } }) => (
         <div data-testid="insurance-card">
             <span>{plan.planNumber}</span>
             <span>{user.name}</span>
@@ -21,7 +21,7 @@ jest.mock('design-system/plan/InsuranceCard/InsuranceCard', () => ({
 }));
 
 jest.mock('design-system/plan/ClaimCard/ClaimCard', () => ({
-    ClaimCard: ({ claim, onViewDetails }: any) => (
+    ClaimCard: ({ claim, onViewDetails }: { claim: { id: string }; onViewDetails: () => void }) => (
         <div data-testid="claim-card">
             <span>{claim.id}</span>
             <button onClick={onViewDetails}>View Details</button>
@@ -30,7 +30,9 @@ jest.mock('design-system/plan/ClaimCard/ClaimCard', () => ({
 }));
 
 jest.mock('design-system/primitives', () => ({
-    Text: ({ children, ...props }: any) => <span {...props}>{children}</span>,
+    Text: ({ children, ...props }: { children?: React.ReactNode; [key: string]: unknown }) => (
+        <span {...(props as React.HTMLAttributes<HTMLSpanElement>)}>{children}</span>
+    ),
 }));
 
 jest.mock('design-system/tokens', () => ({

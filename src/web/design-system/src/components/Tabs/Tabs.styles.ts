@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { ThemeType } from 'styled-components';
 
 interface TabsItemProps {
     selected?: boolean;

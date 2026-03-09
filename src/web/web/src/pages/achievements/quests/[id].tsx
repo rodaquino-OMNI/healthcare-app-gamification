@@ -1,13 +1,13 @@
-import React from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { Text } from 'design-system/primitives/Text/Text';
-import { Box } from 'design-system/primitives/Box/Box';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { ProgressBar } from 'design-system/components/ProgressBar/ProgressBar';
+import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React from 'react';
 import type { Quest } from 'shared/types/gamification.types';
 
 const MOCK_QUESTS: Record<string, Quest & { requirements: string[]; rewardXp: number }> = {
@@ -158,7 +158,7 @@ const QuestDetailPage: React.FC = () => {
                     Quest not found.
                 </Text>
                 <Link href="/achievements/quests">
-                    <Button variant="secondary" onPress={() => router.push('/achievements/quests')}>
+                    <Button variant="secondary" onPress={() => void router.push('/achievements/quests')}>
                         Back to Quests
                     </Button>
                 </Link>
@@ -174,7 +174,7 @@ const QuestDetailPage: React.FC = () => {
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <Button
                 variant="secondary"
-                onPress={() => router.push('/achievements/quests')}
+                onPress={() => void router.push('/achievements/quests')}
                 accessibilityLabel="Back to quests"
                 style={{ marginBottom: spacing.lg }}
             >
@@ -226,7 +226,15 @@ const QuestDetailPage: React.FC = () => {
                 <Text fontWeight="bold" fontSize="lg" style={{ marginBottom: spacing.md }}>
                     Progress
                 </Text>
-                <ProgressBar progress={progressPercent} journey={quest.journey} showLabel />
+                <ProgressBar
+                    current={quest.progress}
+                    total={quest.total}
+                    journey={
+                        quest.journey === 'health' || quest.journey === 'care' || quest.journey === 'plan'
+                            ? quest.journey
+                            : undefined
+                    }
+                />
                 <Text fontSize="sm" color={colors.gray[50]} style={{ marginTop: spacing.sm }}>
                     {quest.progress} / {quest.total} steps completed ({progressPercent}%)
                 </Text>

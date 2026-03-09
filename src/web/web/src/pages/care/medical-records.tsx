@@ -1,12 +1,12 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
-import { Button } from 'design-system/components/Button/Button';
 import { Badge } from 'design-system/components/Badge/Badge';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 type RecordType = 'visit' | 'lab' | 'prescription' | 'imaging';
 type FilterTab = 'all' | 'visit' | 'lab' | 'prescription';
@@ -88,7 +88,7 @@ const getTypeBadge = (type: RecordType): { status: 'info' | 'success' | 'warning
 /** Medical records page with filter tabs and downloadable record list. */
 const MedicalRecordsPage: React.FC = () => {
     const router = useRouter();
-    const [activeTab, setActiveTab] = React.useState<FilterTab>('all');
+    const [activeTab, setActiveTab] = useState<FilterTab>('all');
 
     const filteredRecords = activeTab === 'all' ? MOCK_RECORDS : MOCK_RECORDS.filter((r) => r.type === activeTab);
 
@@ -116,7 +116,14 @@ const MedicalRecordsPage: React.FC = () => {
                 ))}
             </Box>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md, marginBottom: spacing.xl }}>
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: spacing.md,
+                    marginBottom: spacing.xl,
+                }}
+            >
                 {filteredRecords.map((record) => {
                     const badge = getTypeBadge(record.type);
                     return (

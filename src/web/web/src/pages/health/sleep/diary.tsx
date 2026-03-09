@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 type FilterPeriod = 'week' | 'month' | 'all';
 
@@ -33,8 +33,12 @@ const MOCK_ENTRIES = [
 const FILTERS: FilterPeriod[] = ['week', 'month', 'all'];
 
 const scoreColor = (score: number): string => {
-    if (score >= 80) return colors.semantic.success;
-    if (score >= 60) return colors.semantic.warning;
+    if (score >= 80) {
+        return colors.semantic.success;
+    }
+    if (score >= 60) {
+        return colors.semantic.warning;
+    }
     return colors.semantic.error;
 };
 
@@ -47,7 +51,7 @@ const SleepDiaryPage: React.FC = () => {
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/sleep')}
+                onClick={() => void router.push('/health/sleep')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -92,7 +96,14 @@ const SleepDiaryPage: React.FC = () => {
                 {filtered.map((entry) => (
                     <div
                         key={entry.id}
-                        onClick={() => router.push(`/health/sleep/${entry.id}`)}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => void router.push(`/health/sleep/${entry.id}`)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                void router.push(`/health/sleep/${entry.id}`);
+                            }
+                        }}
                         style={{ cursor: 'pointer' }}
                     >
                         <Card journey="health" elevation="sm" padding="md">

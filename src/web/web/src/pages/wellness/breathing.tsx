@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState, useEffect, useRef } from 'react';
 
 type Phase = 'idle' | 'breatheIn' | 'hold' | 'breatheOut';
 
@@ -30,7 +30,9 @@ const BreathingPage: React.FC = () => {
     const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     useEffect(() => {
-        if (!isRunning) return;
+        if (!isRunning) {
+            return;
+        }
         timerRef.current = setInterval(() => {
             setCountdown((prev) => {
                 if (prev <= 1) {
@@ -53,11 +55,13 @@ const BreathingPage: React.FC = () => {
             });
         }, 1000);
         return () => {
-            if (timerRef.current) clearInterval(timerRef.current);
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
+            }
         };
     }, [isRunning, selectedDuration]);
 
-    const handleStartPause = () => {
+    const handleStartPause = (): void => {
         if (isRunning) {
             setIsRunning(false);
         } else {
@@ -77,7 +81,7 @@ const BreathingPage: React.FC = () => {
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/wellness')}
+                onClick={() => void router.push('/wellness')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -141,7 +145,9 @@ const BreathingPage: React.FC = () => {
                         <button
                             key={mins}
                             onClick={() => {
-                                if (!isRunning) setSelectedDuration(mins);
+                                if (!isRunning) {
+                                    setSelectedDuration(mins);
+                                }
                             }}
                             style={{
                                 flex: 1,

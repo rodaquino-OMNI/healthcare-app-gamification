@@ -1,12 +1,12 @@
-import React, { useState, useMemo } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
-import { Button } from 'design-system/components/Button/Button';
 import { Badge } from 'design-system/components/Badge/Badge';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState, useMemo } from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
 /** Dose slot for a single medication time */
@@ -203,7 +203,7 @@ const MedicationCalendarPage: React.FC = () => {
                 <Button
                     variant="secondary"
                     journey="health"
-                    onPress={() => router.push(WEB_HEALTH_ROUTES.MEDICATIONS)}
+                    onPress={() => void router.push(WEB_HEALTH_ROUTES.MEDICATIONS)}
                     accessibilityLabel="View monthly calendar"
                 >
                     View Monthly

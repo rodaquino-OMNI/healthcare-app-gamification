@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
-import { Box } from 'design-system/primitives/Box/Box';
-import { RadioButton } from 'design-system/components/RadioButton/RadioButton';
+import { Card } from 'design-system/components/Card/Card';
 import { Checkbox } from 'design-system/components/Checkbox/Checkbox';
+import { RadioButton } from 'design-system/components/RadioButton/RadioButton';
+import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
 /** Follow-up question type definition */
@@ -71,14 +71,14 @@ const SymptomQuestionsPage: React.FC = () => {
             ? typeof currentAnswer === 'string' && currentAnswer !== ''
             : Array.isArray(currentAnswer) && currentAnswer.length > 0;
 
-    const handleSingleAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSingleAnswer = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setAnswers((prev) => ({
             ...prev,
             [currentQuestion.id]: e.target.value,
         }));
     };
 
-    const handleMultipleAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleMultipleAnswer = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const val = e.target.value;
         const checked = e.target.checked;
         setAnswers((prev) => {
@@ -88,9 +88,9 @@ const SymptomQuestionsPage: React.FC = () => {
         });
     };
 
-    const handleNext = () => {
+    const handleNext = (): void => {
         if (isLastQuestion) {
-            router.push({
+            void router.push({
                 pathname: WEB_CARE_ROUTES.SYMPTOM_SEVERITY,
                 query: router.query,
             });
@@ -99,7 +99,7 @@ const SymptomQuestionsPage: React.FC = () => {
         }
     };
 
-    const handlePrevious = () => {
+    const handlePrevious = (): void => {
         if (currentIndex > 0) {
             setCurrentIndex((prev) => prev - 1);
         } else {

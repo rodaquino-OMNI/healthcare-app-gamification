@@ -1,10 +1,11 @@
-import React from 'react';
 import { Modal } from 'design-system/components/Modal/Modal';
 import { AchievementBadge } from 'design-system/gamification/AchievementBadge/AchievementBadge';
-import { useGamification } from '@/context/GamificationContext';
-import { formatJourneyValue } from 'shared/utils/format';
+import React from 'react';
 import { JOURNEY_COLORS } from 'shared/constants/index';
+import { formatJourneyValue } from 'shared/utils/format';
 import styled from 'styled-components';
+
+import { useGamification } from '@/context/GamificationContext';
 
 /**
  * Props for the GamificationPopup component

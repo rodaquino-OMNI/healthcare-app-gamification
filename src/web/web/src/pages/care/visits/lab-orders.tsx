@@ -1,12 +1,12 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
-import { Button } from 'design-system/components/Button/Button';
 import { Badge } from 'design-system/components/Badge/Badge';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 interface LabOrder {
     id: string;
@@ -89,7 +89,14 @@ const LabOrdersPage: React.FC = () => {
                 Tests ordered by Dr. Maria Santos on Feb 21, 2026.
             </Text>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md, marginBottom: spacing.xl }}>
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: spacing.md,
+                    marginBottom: spacing.xl,
+                }}
+            >
                 {MOCK_ORDERS.map((order) => (
                     <Card key={order.id} journey="care" elevation="md" padding="lg">
                         <Box
@@ -126,7 +133,14 @@ const LabOrdersPage: React.FC = () => {
                 Nearby Labs
             </Text>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md, marginBottom: spacing.xl }}>
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: spacing.md,
+                    marginBottom: spacing.xl,
+                }}
+            >
                 {MOCK_LABS.map((lab) => (
                     <Card key={lab.id} journey="care" elevation="sm" padding="lg">
                         <Box

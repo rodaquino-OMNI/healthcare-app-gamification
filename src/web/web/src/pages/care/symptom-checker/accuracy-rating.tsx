@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
 const STAR_COUNT = 5;
@@ -18,7 +18,7 @@ const AccuracyRatingPage: React.FC = () => {
     const [feedback, setFeedback] = useState('');
     const [submitted, setSubmitted] = useState(false);
 
-    const handleSubmit = () => {
+    const handleSubmit = (): void => {
         setSubmitted(true);
     };
 
@@ -66,7 +66,7 @@ const AccuracyRatingPage: React.FC = () => {
                     </Text>
                     <Button
                         journey="care"
-                        onPress={() => router.push(WEB_CARE_ROUTES.SYMPTOM_CHECKER)}
+                        onPress={() => void router.push(WEB_CARE_ROUTES.SYMPTOM_CHECKER)}
                         accessibilityLabel="Return to symptom checker"
                         data-testid="rating-done-btn"
                     >
@@ -153,7 +153,7 @@ const AccuracyRatingPage: React.FC = () => {
                 <Button
                     variant="tertiary"
                     journey="care"
-                    onPress={() => router.push(WEB_CARE_ROUTES.SYMPTOM_CHECKER)}
+                    onPress={() => void router.push(WEB_CARE_ROUTES.SYMPTOM_CHECKER)}
                     accessibilityLabel="Skip rating"
                     data-testid="rating-skip-btn"
                 >

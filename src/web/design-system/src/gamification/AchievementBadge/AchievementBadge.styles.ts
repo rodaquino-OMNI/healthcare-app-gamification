@@ -1,9 +1,9 @@
 import styled from 'styled-components';
+
 import { Icon } from '../../primitives/Icon/Icon';
 import { colors } from '../../tokens/colors';
+import { sizingValues } from '../../tokens/sizing';
 import { spacing } from '../../tokens/spacing';
-import { sizing, sizingValues } from '../../tokens/sizing';
-import { borderRadius } from '../../tokens/borderRadius';
 
 /**
  * Determines the size of the badge based on the provided size prop.
@@ -29,7 +29,7 @@ export function getBadgeSize(size: 'sm' | 'md' | 'lg'): number {
  * @param journey The journey identifier ('health', 'care', or 'plan')
  * @returns The color palette for the specified journey
  */
-export function useJourneyColor(journey: string) {
+export function useJourneyColor(journey: string): (typeof colors.journeys)[keyof typeof colors.journeys] {
     // Default to health journey if invalid journey specified
     const journeyKey = ['health', 'care', 'plan'].includes(journey) ? journey : 'health';
     return colors.journeys[journeyKey as keyof typeof colors.journeys];

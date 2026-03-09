@@ -1,8 +1,8 @@
-import React from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -100,7 +100,7 @@ const StepReproductiveHealthPage: React.FC<StepProps> = ({ data, onUpdate }) => 
                 </Text>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
                     {PREGNANCY_OPTIONS.map(({ key, label }) => {
-                        const isActive = data.pregnancyStatus === key;
+                        const isActive = (data.pregnancyStatus as string) === key;
                         return (
                             <button
                                 key={key}
@@ -150,7 +150,7 @@ const StepReproductiveHealthPage: React.FC<StepProps> = ({ data, onUpdate }) => 
                 </Text>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: spacing.xs }}>
                     {CHECKUP_OPTIONS.map(({ key, label }) => {
-                        const isActive = data.lastReproductiveCheckup === key;
+                        const isActive = (data.lastReproductiveCheckup as string) === key;
                         return (
                             <button
                                 key={key}
@@ -192,8 +192,8 @@ const StepReproductiveHealthPage: React.FC<StepProps> = ({ data, onUpdate }) => 
                         <button
                             key={key}
                             onClick={() => onUpdate('contraception', key)}
-                            style={chipStyle(data.contraception === key)}
-                            aria-pressed={data.contraception === key}
+                            style={chipStyle((data.contraception as string) === key)}
+                            aria-pressed={(data.contraception as string) === key}
                             aria-label={label}
                         >
                             {label}
@@ -216,8 +216,8 @@ const StepReproductiveHealthPage: React.FC<StepProps> = ({ data, onUpdate }) => 
                         <button
                             key={key}
                             onClick={() => onUpdate('menstrualRegularity', key)}
-                            style={chipStyle(data.menstrualRegularity === key)}
-                            aria-pressed={data.menstrualRegularity === key}
+                            style={chipStyle((data.menstrualRegularity as string) === key)}
+                            aria-pressed={(data.menstrualRegularity as string) === key}
                             aria-label={label}
                         >
                             {label}

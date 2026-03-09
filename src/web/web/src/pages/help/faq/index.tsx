@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import React, { useState } from 'react';
 
 interface FaqItem {
     id: string;
@@ -93,7 +93,7 @@ const FaqIndexPage: NextPage = () => {
         privacy: 'Privacidade e LGPD',
     };
 
-    const toggleItem = (id: string) => {
+    const toggleItem = (id: string): void => {
         setExpandedId(expandedId === id ? null : id);
     };
 
@@ -128,7 +128,7 @@ const FaqIndexPage: NextPage = () => {
                         {expandedId === item.id && (
                             <div style={accordionBodyStyle}>
                                 <p style={answerStyle}>{item.answer}</p>
-                                <button onClick={() => router.push(`/help/faq/${item.id}`)} style={readMoreStyle}>
+                                <button onClick={() => void router.push(`/help/faq/${item.id}`)} style={readMoreStyle}>
                                     Ver artigo completo
                                 </button>
                             </div>
@@ -138,7 +138,7 @@ const FaqIndexPage: NextPage = () => {
             </div>
 
             {category && (
-                <button onClick={() => router.push('/help')} style={backBtnStyle}>
+                <button onClick={() => void router.push('/help')} style={backBtnStyle}>
                     Voltar para Central de Ajuda
                 </button>
             )}

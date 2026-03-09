@@ -193,6 +193,21 @@
     },
 
     {
+      "description": "Group 4b — Babel plugin patches: bundle all @babel/* patch updates into one PR",
+      "groupName": "babel plugin patches",
+      "matchUpdateTypes": ["patch"],
+      "matchPackageNames": [
+        "/^@babel/"
+      ],
+      "automerge": true,
+      "automergeType": "pr",
+      "automergeStrategy": "squash",
+      "minimumReleaseAge": "3 days",
+      "labels": ["dependencies", "renovate", "frontend"],
+      "prPriority": 4
+    },
+
+    {
       "description": "Group 5 — Infrastructure minor bumps: GitHub Actions (digest-pinned)",
       "groupName": "github actions minor bumps",
       "matchManagers": ["github-actions"],

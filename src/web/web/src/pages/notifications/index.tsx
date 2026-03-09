@@ -1,15 +1,16 @@
 import React from 'react'; // react ^18.0.0
+import { Notification } from 'shared/types';
+
 import { EmptyState, LoadingIndicator, JourneyHeader } from '@/components/shared';
-import { MainLayout } from '@/layouts/MainLayout';
 import { useNotifications } from '@/hooks/useNotifications';
-import { ALL_JOURNEYS } from 'shared/constants/journeys';
+import { MainLayout } from '@/layouts/MainLayout';
 
 /**
  * This component renders the notifications page, displaying a list of notifications or appropriate placeholders.
  */
 const NotificationsPage: React.FC = () => {
     // LD1: Uses the `useNotifications` hook to fetch notifications and related state.
-    const { notifications, isLoading, markAsRead } = useNotifications();
+    const { notifications, isLoading } = useNotifications();
 
     // LD1: Renders the `MainLayout` component to provide the overall page structure.
     return (
@@ -30,7 +31,7 @@ const NotificationsPage: React.FC = () => {
                         />
                     ) : (
                         <ul>
-                            {notifications.map((notification) => (
+                            {notifications.map((notification: Notification) => (
                                 <li key={notification.id}>
                                     {notification.title} - {notification.body}
                                 </li>

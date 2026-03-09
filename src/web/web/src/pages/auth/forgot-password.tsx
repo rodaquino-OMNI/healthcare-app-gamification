@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useRouter } from 'next/navigation';
 import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
 import { spacing } from 'design-system/tokens/spacing';
-import AuthLayout from '@/layouts/AuthLayout';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
+import styled from 'styled-components';
+
+import { AuthLayout } from '@/layouts/AuthLayout';
 
 const Title = styled.h2`
     font-family: ${typography.fontFamily.heading};
@@ -135,7 +136,7 @@ const ErrorText = styled.p`
 /**
  * Forgot Password page - allows users to request a password reset link via email.
  */
-export default function ForgotPasswordPage() {
+export default function ForgotPasswordPage(): React.ReactElement {
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -144,7 +145,7 @@ export default function ForgotPasswordPage() {
 
     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
         if (!isValidEmail) {
             setError('Por favor, insira um e-mail valido.');
@@ -184,7 +185,7 @@ export default function ForgotPasswordPage() {
             <Title>Esqueceu a Senha?</Title>
             <Subtitle>Insira seu e-mail e enviaremos um link para redefinir sua senha.</Subtitle>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={(e) => void handleSubmit(e)}>
                 <FieldGroup>
                     <Label htmlFor="email">E-mail</Label>
                     <StyledInput

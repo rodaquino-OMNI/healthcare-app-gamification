@@ -1,11 +1,12 @@
-import React, { useState, useMemo } from 'react';
-import styled from 'styled-components';
-import { useRouter } from 'next/navigation';
 import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
 import { spacing } from 'design-system/tokens/spacing';
-import AuthLayout from '@/layouts/AuthLayout';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/navigation';
+import React, { useState, useMemo } from 'react';
 import { WEB_PROFILE_ROUTES } from 'shared/constants/routes';
+import styled from 'styled-components';
+
+import { AuthLayout } from '@/layouts/AuthLayout';
 
 const Title = styled.h2`
     font-family: ${typography.fontFamily.heading};
@@ -163,17 +164,25 @@ function evaluatePassword(password: string): PasswordRules {
 
 function getStrength(rules: PasswordRules): { level: number; label: string; color: string } {
     const met = Object.values(rules).filter(Boolean).length;
-    if (met <= 1) return { level: 1, label: 'Fraca', color: colors.semantic.error };
-    if (met <= 2) return { level: 2, label: 'Razoavel', color: colors.semantic.warning };
-    if (met <= 3) return { level: 3, label: 'Boa', color: colors.brand.primary };
-    if (met <= 4) return { level: 4, label: 'Forte', color: colors.semantic.success };
+    if (met <= 1) {
+        return { level: 1, label: 'Fraca', color: colors.semantic.error };
+    }
+    if (met <= 2) {
+        return { level: 2, label: 'Razoavel', color: colors.semantic.warning };
+    }
+    if (met <= 3) {
+        return { level: 3, label: 'Boa', color: colors.brand.primary };
+    }
+    if (met <= 4) {
+        return { level: 4, label: 'Forte', color: colors.semantic.success };
+    }
     return { level: 5, label: 'Excelente', color: colors.semantic.success };
 }
 
 /**
  * Set Password page with password strength indicator and validation rules.
  */
-export default function SetPasswordPage() {
+export default function SetPasswordPage(): React.ReactElement {
     const router = useRouter();
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -185,12 +194,14 @@ export default function SetPasswordPage() {
     const allRulesMet = Object.values(rules).every(Boolean);
     const passwordsMatch = password === confirmPassword;
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (): Promise<void> => {
         if (!passwordsMatch) {
             setConfirmError('As senhas nao coincidem.');
             return;
         }
-        if (!allRulesMet) return;
+        if (!allRulesMet) {
+            return;
+        }
 
         setIsSubmitting(true);
         try {
@@ -276,7 +287,10 @@ export default function SetPasswordPage() {
                 {confirmError && <ErrorText>{confirmError}</ErrorText>}
             </FieldGroup>
 
-            <SubmitButton onClick={handleSubmit} disabled={isSubmitting || !allRulesMet || !confirmPassword}>
+            <SubmitButton
+                onClick={() => void handleSubmit()}
+                disabled={isSubmitting || !allRulesMet || !confirmPassword}
+            >
                 {isSubmitting ? 'Salvando...' : 'Definir Senha'}
             </SubmitButton>
         </AuthLayout>

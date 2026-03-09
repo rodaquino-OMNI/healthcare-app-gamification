@@ -1,8 +1,9 @@
 import React from 'react';
 import { VictoryPie } from 'victory';
+
+import { ChartContainer, ChartWrapper } from './RadialChart.styles';
 import { colors } from '../../tokens/colors';
 import { typography } from '../../tokens/typography';
-import { ChartContainer, ChartWrapper } from './RadialChart.styles';
 
 export interface RadialChartProps {
     data: Array<{ x: string; y: number }>;
@@ -44,18 +45,20 @@ export const RadialChart: React.FC<RadialChartProps> = ({
     const total = data.reduce((sum, item) => sum + item.y, 0);
     const effectiveColorScale = colorScale || journeyColorScales[journey] || journeyColorScales.health;
 
-    const getLabels = () => {
+    const getLabels = (): (({ datum }: { datum: { x: string; y: number } }) => string) => {
         switch (labelType) {
             case 'percentage':
-                return ({ datum }: any) => (total > 0 ? `${Math.round((datum.y / total) * 100)}%` : '0%');
+                return ({ datum }: { datum: { x: string; y: number } }) =>
+                    total > 0 ? `${Math.round((datum.y / total) * 100)}%` : '0%';
             case 'value':
-                return ({ datum }: any) => String(datum.y);
+                return ({ datum }: { datum: { x: string; y: number } }) => String(datum.y);
             case 'label':
-                return ({ datum }: any) => datum.x;
+                return ({ datum }: { datum: { x: string; y: number } }) => datum.x;
             case 'none':
                 return () => '';
             default:
-                return ({ datum }: any) => (total > 0 ? `${Math.round((datum.y / total) * 100)}%` : '0%');
+                return ({ datum }: { datum: { x: string; y: number } }) =>
+                    total > 0 ? `${Math.round((datum.y / total) * 100)}%` : '0%';
         }
     };
 

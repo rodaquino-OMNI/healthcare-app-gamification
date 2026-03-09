@@ -1,12 +1,12 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
-import { Button } from 'design-system/components/Button/Button';
 import { Badge } from 'design-system/components/Badge/Badge';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
 interface SpecialtySuggestion {
@@ -17,24 +17,39 @@ interface SpecialtySuggestion {
 }
 
 const SUGGESTED_SPECIALTIES: SpecialtySuggestion[] = [
-    { id: 'gp', name: 'General Practitioner', reason: 'Initial evaluation and referral if needed', urgency: 'routine' },
-    { id: 'ent', name: 'Ear, Nose & Throat (ENT)', reason: 'Persistent sinus or throat symptoms', urgency: 'soon' },
-    { id: 'allergist', name: 'Allergist', reason: 'If allergies are suspected as root cause', urgency: 'routine' },
+    {
+        id: 'gp',
+        name: 'General Practitioner',
+        reason: 'Initial evaluation and referral if needed',
+        urgency: 'routine',
+    },
+    {
+        id: 'ent',
+        name: 'Ear, Nose & Throat (ENT)',
+        reason: 'Persistent sinus or throat symptoms',
+        urgency: 'soon',
+    },
+    {
+        id: 'allergist',
+        name: 'Allergist',
+        reason: 'If allergies are suspected as root cause',
+        urgency: 'routine',
+    },
 ];
 
 /** Book appointment page with specialty suggestions based on the symptom check. */
 const BookAppointmentPage: React.FC = () => {
     const router = useRouter();
 
-    const handleBookSpecialty = (specialtyId: string) => {
-        router.push({
+    const handleBookSpecialty = (specialtyId: string): void => {
+        void router.push({
             pathname: WEB_CARE_ROUTES.DOCTOR_SEARCH,
             query: { specialty: specialtyId },
         });
     };
 
-    const handleTelemedicine = () => {
-        router.push(WEB_CARE_ROUTES.TELEMEDICINE);
+    const handleTelemedicine = (): void => {
+        void router.push(WEB_CARE_ROUTES.TELEMEDICINE);
     };
 
     return (

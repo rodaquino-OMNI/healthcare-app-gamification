@@ -57,8 +57,10 @@ export const ROUTES = {
     },
 
     // Helper function to generate fully qualified route paths with parameters
-    getRoutePath: (route: string, params?: Record<string, string>) => {
-        if (!params) return route;
+    getRoutePath: (route: string, params?: Record<string, string>): string => {
+        if (!params) {
+            return route;
+        }
 
         let path = route;
         Object.entries(params).forEach(([key, value]) => {
@@ -70,9 +72,15 @@ export const ROUTES = {
 
     // Get journey title by route path
     getJourneyTitle: (path: string): string => {
-        if (path.startsWith('/health')) return JOURNEY_NAMES.HEALTH;
-        if (path.startsWith('/care')) return JOURNEY_NAMES.CARE;
-        if (path.startsWith('/plan')) return JOURNEY_NAMES.PLAN;
+        if (path.startsWith('/health')) {
+            return JOURNEY_NAMES.health;
+        }
+        if (path.startsWith('/care')) {
+            return JOURNEY_NAMES.care;
+        }
+        if (path.startsWith('/plan')) {
+            return JOURNEY_NAMES.plan;
+        }
         return 'AUSTA SuperApp';
     },
 };

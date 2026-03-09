@@ -1,10 +1,11 @@
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
-import { MainLayout } from '@/layouts/MainLayout';
+
 import { restClient } from '@/api/client';
+import { MainLayout } from '@/layouts/MainLayout';
 
 const PageContainer = styled.div`
     max-width: 600px;
@@ -243,9 +244,9 @@ interface PrivacySetting {
  * Privacy settings page - allows users to manage their data sharing and privacy options.
  * Mirrors the mobile SettingsPrivacy screen.
  */
-export default function PrivacySettingsPage() {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+export default function PrivacySettingsPage(): React.ReactElement {
+    const [_loading, setLoading] = useState(false);
+    const [_error, setError] = useState<string | null>(null);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [settings, setSettings] = useState<PrivacySetting[]>([
         {
@@ -274,11 +275,11 @@ export default function PrivacySettingsPage() {
         },
     ]);
 
-    const toggleSetting = (key: string) => {
+    const toggleSetting = (key: string): void => {
         setSettings((prev) => prev.map((s) => (s.key === key ? { ...s, enabled: !s.enabled } : s)));
     };
 
-    const handleSave = async () => {
+    const handleSave = async (): Promise<void> => {
         setLoading(true);
         try {
             await restClient.patch('/privacy/my-data', { settings });
@@ -289,7 +290,7 @@ export default function PrivacySettingsPage() {
         }
     };
 
-    const handleExportData = async () => {
+    const handleExportData = async (): Promise<void> => {
         setLoading(true);
         try {
             await restClient.get('/privacy/export');
@@ -300,7 +301,7 @@ export default function PrivacySettingsPage() {
         }
     };
 
-    const handleDeleteAccount = async () => {
+    const handleDeleteAccount = async (): Promise<void> => {
         setLoading(true);
         try {
             await restClient.delete('/privacy/my-data');
@@ -373,10 +374,10 @@ export default function PrivacySettingsPage() {
                     <SectionDescription>
                         Voce tem o direito de acessar, exportar ou excluir seus dados pessoais a qualquer momento.
                     </SectionDescription>
-                    <LinkButton onClick={handleExportData}>Exportar Meus Dados</LinkButton>
+                    <LinkButton onClick={() => void handleExportData()}>Exportar Meus Dados</LinkButton>
                 </Section>
 
-                <SaveButton onClick={handleSave}>Salvar Configuracoes</SaveButton>
+                <SaveButton onClick={() => void handleSave()}>Salvar Configuracoes</SaveButton>
 
                 <Section style={{ marginTop: '40px' }}>
                     <SectionTitle>Zona de Perigo</SectionTitle>
@@ -395,7 +396,9 @@ export default function PrivacySettingsPage() {
                             </DialogMessage>
                             <DialogActions>
                                 <DialogCancelBtn onClick={() => setShowDeleteConfirm(false)}>Cancelar</DialogCancelBtn>
-                                <DialogConfirmBtn onClick={handleDeleteAccount}>Sim, Excluir</DialogConfirmBtn>
+                                <DialogConfirmBtn onClick={() => void handleDeleteAccount()}>
+                                    Sim, Excluir
+                                </DialogConfirmBtn>
                             </DialogActions>
                         </DialogCard>
                     </DialogOverlay>

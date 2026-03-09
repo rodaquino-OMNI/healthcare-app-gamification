@@ -1,7 +1,8 @@
-import React from 'react'; // react 18.0.0
-import { useJourney } from '../hooks/useJourney';
+import React, { useEffect } from 'react'; // react 18.0.0
 import { JOURNEY_IDS } from 'shared/constants/journeys';
 import styled from 'styled-components'; // styled-components 6.0.0+
+
+import { useJourney } from '../hooks/useJourney';
 
 /**
  * Container component for the Health Journey layout with appropriate theming
@@ -53,11 +54,11 @@ const HealthFooter = styled.footer`
  * @param {React.PropsWithChildren} props - Component props with children
  * @returns {React.ReactElement} The Health Journey layout with the provided children
  */
-const HealthLayout: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
+const HealthLayout: React.FC<React.PropsWithChildren<Record<string, unknown>>> = ({ children }) => {
     const { journey, setJourney } = useJourney();
 
     // Ensure we're in the Health journey context
-    React.useEffect(() => {
+    useEffect(() => {
         if (journey?.id !== JOURNEY_IDS.HEALTH) {
             setJourney(JOURNEY_IDS.HEALTH);
         }
@@ -69,7 +70,7 @@ const HealthLayout: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
                 <h1>Minha Saúde</h1>
             </HealthHeader>
             <HealthContent>{children}</HealthContent>
-            <HealthFooter>&copy; {new Date().getFullYear()} AUSTA SuperApp - Minha Saúde</HealthFooter>
+            <HealthFooter>&copy; {new Date().getFullYear()} AUSTA SuperApp</HealthFooter>
         </HealthContainer>
     );
 };

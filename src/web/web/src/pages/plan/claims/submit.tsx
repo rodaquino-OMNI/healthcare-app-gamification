@@ -1,17 +1,16 @@
-import React, { useState, useCallback } from 'react';
-import { useRouter } from 'next/router';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { ClaimType } from 'shared/types/plan.types';
-import { claimValidationSchema } from 'shared/utils/validation';
-import { useClaims } from '@/hooks/useClaims';
-import { useJourneyContext } from '@/context/JourneyContext';
-import { MOBILE_PLAN_ROUTES } from 'shared/constants/routes';
-import { FileUploader } from '@/components/shared/FileUploader';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from 'design-system/components/Button/Button';
-import Input from 'design-system/components/Input/Input';
+import { Input } from 'design-system/components/Input/Input';
 import { Select } from 'design-system/components/Select/Select';
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { claimValidationSchema } from 'shared/utils/validation';
+
+import { FileUploader } from '@/components/shared/FileUploader';
+import { useJourneyContext } from '@/context/JourneyContext';
+import { useClaims } from '@/hooks/useClaims';
 
 const { plan } = colors.journeys;
 
@@ -21,19 +20,19 @@ const STEPS = ['Tipo', 'Detalhes', 'Documentos', 'Revisar'];
  * A React component that renders a multi-step form for submitting insurance claims.
  */
 export const ClaimForm: React.FC = () => {
-    const { currentJourney } = useJourneyContext();
+    useJourneyContext();
     const [currentStep, setCurrentStep] = useState(0);
 
     const {
         register,
         handleSubmit,
         watch,
-        formState: { errors, isSubmitting, isValid },
+        formState: { errors, isValid },
     } = useForm({
-        resolver: yupResolver(claimValidationSchema),
+        resolver: zodResolver(claimValidationSchema),
         defaultValues: {
-            procedureType: '',
-            date: '',
+            procedureType: '' as 'medical' | 'dental' | 'vision' | 'prescription' | 'other',
+            date: undefined as unknown as Date,
             provider: '',
             amount: 0,
         },
@@ -51,18 +50,23 @@ export const ClaimForm: React.FC = () => {
         { label: 'Outro', value: 'other' },
     ];
 
-    const onSubmit = async (data: Record<string, unknown>) => {
+    const onSubmit = async (data: {
+        procedureType: string;
+        date: Date;
+        provider: string;
+        amount: number;
+    }): Promise<void> => {
         try {
             await submitClaim({
                 planId: 'plan-001',
                 type: data.procedureType,
                 procedureCode: 'procedure_code',
                 providerName: data.provider,
-                serviceDate: data.date,
-                amount: parseFloat(data.amount),
+                serviceDate: data.date instanceof Date ? data.date.toISOString() : String(data.date),
+                amount: data.amount,
                 documents: [],
             });
-            router.push(MOBILE_PLAN_ROUTES.CLAIMS);
+            void router.push('/plan/claims');
         } catch (error) {
             console.error('Claim submission failed', error);
         }
@@ -135,7 +139,7 @@ export const ClaimForm: React.FC = () => {
                 ))}
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={(e) => void handleSubmit(onSubmit)(e)}>
                 {/* Step 0: Type */}
                 {currentStep === 0 && (
                     <div>
@@ -162,7 +166,16 @@ export const ClaimForm: React.FC = () => {
                         >
                             Selecione o tipo
                         </label>
-                        <Select id="procedureType" options={procedureTypeOptions} {...register('procedureType')} />
+                        <Select
+                            label="Tipo de Procedimento"
+                            options={procedureTypeOptions}
+                            value={formValues.procedureType ?? ''}
+                            onChange={(val) => {
+                                void register('procedureType').onChange({
+                                    target: { name: 'procedureType', value: val },
+                                });
+                            }}
+                        />
                         {errors.procedureType && (
                             <span style={{ color: colors.semantic.error, fontSize: typography.fontSize['text-xs'] }}>
                                 {errors.procedureType.message}
@@ -269,7 +282,15 @@ export const ClaimForm: React.FC = () => {
                                         procedureTypeOptions.find((o) => o.value === formValues.procedureType)?.label ||
                                         '-',
                                 },
-                                { label: 'Data', value: formValues.date || '-' },
+                                {
+                                    label: 'Data',
+                                    value:
+                                        formValues.date instanceof Date
+                                            ? formValues.date.toLocaleDateString('pt-BR')
+                                            : formValues.date
+                                              ? String(formValues.date)
+                                              : '-',
+                                },
                                 { label: 'Profissional', value: formValues.provider || '-' },
                                 { label: 'Valor', value: `R$ ${(formValues.amount || 0).toFixed(2)}` },
                             ].map((row) => (
@@ -392,3 +413,5 @@ const errorStyle: React.CSSProperties = {
     fontSize: typography.fontSize['text-xs'],
     fontFamily: typography.fontFamily.body,
 };
+
+export default ClaimForm;

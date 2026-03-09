@@ -1,8 +1,4 @@
 import styled from 'styled-components'; // styled-components@6.1.8
-import { colors } from '../../tokens/colors';
-import { spacing } from '../../tokens/spacing';
-import { typography } from '../../tokens/typography';
-import { borderRadius } from '../../tokens/borderRadius';
 
 export const ChartContainer = styled.div`
     display: flex;

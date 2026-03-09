@@ -1,8 +1,8 @@
-import React from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -52,9 +52,9 @@ const chipStyle = (selected: boolean): React.CSSProperties => ({
 });
 
 const StepSleepPage: React.FC<StepProps> = ({ data, onUpdate }) => {
-    const selectedIssues: string[] = data.sleepIssues || [];
+    const selectedIssues: string[] = (data.sleepIssues as string[]) || [];
 
-    const toggleIssue = (issue: string) => {
+    const toggleIssue = (issue: string): void => {
         if (issue === 'None of the above') {
             onUpdate('sleepIssues', selectedIssues.includes(issue) ? [] : [issue]);
             return;
@@ -85,7 +85,7 @@ const StepSleepPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                 </Text>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: spacing.xs }}>
                     {SLEEP_HOURS.map((opt) => {
-                        const isActive = data.sleepHours === opt.value;
+                        const isActive = (data.sleepHours as string) === opt.value;
                         return (
                             <button
                                 key={opt.value}
@@ -122,7 +122,7 @@ const StepSleepPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                 </Text>
                 <div style={{ display: 'flex', gap: spacing.xs }}>
                     {QUALITY_OPTIONS.map((opt) => {
-                        const isActive = data.sleepQuality === opt.value;
+                        const isActive = (data.sleepQuality as string) === opt.value;
                         return (
                             <button
                                 key={opt.value}

@@ -1,11 +1,12 @@
 import React from 'react';
+
 import { Card } from '../../components/Card/Card';
 import { ProgressBar } from '../../components/ProgressBar/ProgressBar';
-import { Text } from '../../primitives/Text/Text';
 import { Icon } from '../../primitives/Icon/Icon';
-import { AchievementBadge } from '../AchievementBadge/AchievementBadge';
+import { Text } from '../../primitives/Text/Text';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
+import { AchievementBadge } from '../AchievementBadge/AchievementBadge';
 // Local type stub for Quest (shared package not available at build time)
 interface Quest {
     id: string;
@@ -19,7 +20,7 @@ interface Quest {
 }
 
 // Local utility replacing shared theme import
-const useJourneyTheme = (journey?: string) => {
+const useJourneyTheme = (journey?: string): (typeof colors.journeys)[keyof typeof colors.journeys] => {
     const key =
         journey && ['health', 'care', 'plan'].includes(journey) ? (journey as 'health' | 'care' | 'plan') : 'health';
     return colors.journeys[key];

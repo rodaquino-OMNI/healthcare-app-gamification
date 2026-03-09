@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import React, { useState } from 'react';
+
 import { Dropdown } from './Dropdown';
 
 const sampleOptions = [
@@ -30,50 +31,56 @@ const meta: Meta<typeof Dropdown> = {
 export default meta;
 type Story = StoryObj<typeof Dropdown>;
 
+const DefaultDropdown = (): React.ReactElement => {
+    const [value, setValue] = useState<string | undefined>();
+    return (
+        <div style={{ maxWidth: '320px' }}>
+            <Dropdown
+                options={sampleOptions}
+                value={value}
+                placeholder="Select specialty"
+                onChange={setValue}
+                journey="health"
+            />
+        </div>
+    );
+};
+
 export const Default: Story = {
-    render: () => {
-        const [value, setValue] = useState<string | undefined>();
-        return (
-            <div style={{ maxWidth: '320px' }}>
-                <Dropdown
-                    options={sampleOptions}
-                    value={value}
-                    placeholder="Select specialty"
-                    onChange={setValue}
-                    journey="health"
-                />
-            </div>
-        );
-    },
+    render: () => <DefaultDropdown />,
+};
+
+const WithOptionsDropdown = (): React.ReactElement => {
+    const [value, setValue] = useState('cardiology');
+    return (
+        <div style={{ maxWidth: '320px' }}>
+            <Dropdown options={sampleOptions} value={value} onChange={setValue} journey="care" />
+        </div>
+    );
 };
 
 export const WithOptions: Story = {
-    render: () => {
-        const [value, setValue] = useState('cardiology');
-        return (
-            <div style={{ maxWidth: '320px' }}>
-                <Dropdown options={sampleOptions} value={value} onChange={setValue} journey="care" />
-            </div>
-        );
-    },
+    render: () => <WithOptionsDropdown />,
+};
+
+const SearchableDropdown = (): React.ReactElement => {
+    const [value, setValue] = useState<string | undefined>();
+    return (
+        <div style={{ maxWidth: '320px' }}>
+            <Dropdown
+                options={sampleOptions}
+                value={value}
+                placeholder="Search specialties..."
+                onChange={setValue}
+                searchable
+                journey="health"
+            />
+        </div>
+    );
 };
 
 export const Searchable: Story = {
-    render: () => {
-        const [value, setValue] = useState<string | undefined>();
-        return (
-            <div style={{ maxWidth: '320px' }}>
-                <Dropdown
-                    options={sampleOptions}
-                    value={value}
-                    placeholder="Search specialties..."
-                    onChange={setValue}
-                    searchable
-                    journey="health"
-                />
-            </div>
-        );
-    },
+    render: () => <SearchableDropdown />,
 };
 
 export const Disabled: Story = {

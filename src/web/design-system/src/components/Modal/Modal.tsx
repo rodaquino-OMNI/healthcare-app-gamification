@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+
+import { Box } from '../../primitives/Box/Box';
+import { Text } from '../../primitives/Text/Text';
+import { Touchable } from '../../primitives/Touchable/Touchable';
 import { tokens } from '../../tokens';
 import { borderRadius } from '../../tokens/borderRadius';
 import { colors } from '../../tokens/colors';
 import { shadows } from '../../tokens/shadows';
-import { Box } from '../../primitives/Box/Box';
-import { Text } from '../../primitives/Text/Text';
-import { Touchable } from '../../primitives/Touchable/Touchable';
-import { Button } from '../../components/Button/Button';
 
 /**
  * Props interface for the Modal component
@@ -130,7 +130,7 @@ export const Modal: React.FC<ModalProps> = ({
 }) => {
     // Handle escape key for accessibility
     useEffect(() => {
-        const handleEscKey = (event: KeyboardEvent) => {
+        const handleEscKey = (event: KeyboardEvent): void => {
             if (event.key === 'Escape' && visible) {
                 onClose();
             }

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 interface HistoryItem {
     id: string;
@@ -31,17 +31,20 @@ const MedicalHistoryPage: React.FC = () => {
     const router = useRouter();
     const [enabled, setEnabled] = useState<Record<string, boolean>>({});
 
-    const toggleItem = (id: string) => {
+    const toggleItem = (id: string): void => {
         setEnabled((prev) => ({ ...prev, [id]: !prev[id] }));
     };
 
     const categories = [...new Set(HISTORY_ITEMS.map((item) => item.category))];
 
-    const handleContinue = () => {
+    const handleContinue = (): void => {
         const selected = Object.keys(enabled).filter((k) => enabled[k]);
-        router.push({
+        void router.push({
             pathname: '/care/symptom-checker/medication-context',
-            query: { ...router.query, history: selected.join(',') },
+            query: {
+                ...router.query,
+                history: selected.join(','),
+            },
         });
     };
 
@@ -60,7 +63,11 @@ const MedicalHistoryPage: React.FC = () => {
                         fontSize="sm"
                         fontWeight="bold"
                         color={colors.gray[50]}
-                        style={{ marginBottom: spacing.xs, textTransform: 'uppercase', letterSpacing: '0.5px' }}
+                        style={{
+                            marginBottom: spacing.xs,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.5px',
+                        }}
                     >
                         {category}
                     </Text>

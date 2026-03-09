@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+
 import { SymptomSelector } from './SymptomSelector';
 
 const meta: Meta<typeof SymptomSelector> = {

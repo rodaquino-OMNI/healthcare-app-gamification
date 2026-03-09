@@ -1,6 +1,7 @@
 /**
  * Central export file for all utility functions in the AUSTA SuperApp web application.
- * This barrel file provides a single, convenient import point for utilities used throughout the application.
+ * This barrel file provides a single, convenient import point
+ * for utilities used throughout the application.
  */
 
 // Re-export date utility functions

@@ -1,11 +1,12 @@
-import styled from 'styled-components';
-import { colors } from '../../tokens/colors';
-import { spacing } from '../../tokens/spacing';
-import { typography } from '../../tokens/typography';
-import { borderRadius } from '../../tokens/borderRadius';
-import { sizing } from '../../tokens/sizing';
+import styled, { DefaultTheme } from 'styled-components';
+
 import { Card } from '../../components/Card';
 import { ProgressBar } from '../../components/ProgressBar';
+import { borderRadius } from '../../tokens/borderRadius';
+import { colors } from '../../tokens/colors';
+import { sizing } from '../../tokens/sizing';
+
+type JourneyKey = 'health' | 'care' | 'plan';
 
 /**
  * Returns the appropriate color for the specified journey.
@@ -83,21 +84,21 @@ export const QuestProgressText = styled.span`
 /**
  * Styled component for the quest icon with journey-specific coloring
  */
-export const QuestIcon = styled.div<{ journey?: string }>`
+export const QuestIcon = styled.div<{ journey?: JourneyKey }>`
     display: flex;
     align-items: center;
     justify-content: center;
     width: ${sizing.component.sm};
     height: ${sizing.component.sm};
     border-radius: ${borderRadius.full};
-    background-color: ${({ journey, theme }) =>
+    background-color: ${({ journey, theme }: { journey?: JourneyKey; theme: DefaultTheme }) =>
         journey
             ? `${theme.colors.journeys[journey].primary}20` // Using 20 as hex opacity (12.5%)
             : theme.colors.neutral.gray200};
     margin-bottom: ${(props) => props.theme.spacing.sm};
 
     svg {
-        color: ${({ journey, theme }) =>
+        color: ${({ journey, theme }: { journey?: JourneyKey; theme: DefaultTheme }) =>
             journey ? theme.colors.journeys[journey].primary : theme.colors.neutral.gray700};
         width: ${sizing.icon.xs};
         height: ${sizing.icon.xs};

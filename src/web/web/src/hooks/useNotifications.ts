@@ -1,14 +1,25 @@
 import { useState, useEffect, useCallback, useRef } from 'react'; // react 18.2.0
-import { useAuth } from '../hooks/useAuth';
-import { getNotifications, markNotificationAsRead, subscribeToNotifications } from '../api/notifications';
 import { Notification, NotificationStatus } from 'shared/types';
 
+import { getNotifications, markNotificationAsRead, subscribeToNotifications } from '../api/notifications';
+import { useAuth } from '../hooks/useAuth';
+
+/** Shape returned by the useNotifications hook */
+interface UseNotificationsReturn {
+    notifications: Notification[];
+    isLoading: boolean;
+    unreadCount: number;
+    markAsRead: (notificationId: string) => Promise<void>;
+}
+
 /**
- * A custom React hook for managing and interacting with user notifications.
+ * A custom React hook for managing and interacting
+ * with user notifications.
  *
- * @returns An object containing the notifications, isLoading state, unread count, and functions to mark notifications as read.
+ * @returns An object containing the notifications, isLoading,
+ *   unread count, and markAsRead function.
  */
-export const useNotifications = () => {
+export const useNotifications = (): UseNotificationsReturn => {
     // State for storing notifications
     const [notifications, setNotifications] = useState<Notification[]>([]);
     // Loading state
@@ -17,7 +28,7 @@ export const useNotifications = () => {
     const [unreadCount, setUnreadCount] = useState(0);
 
     // Reference to store subscription for cleanup
-    const subscriptionRef = useRef<unknown>(null);
+    const subscriptionRef = useRef<(() => void) | null>(null);
 
     // Get the current user ID from auth
     const { userId } = useAuth();
@@ -31,7 +42,11 @@ export const useNotifications = () => {
             setNotifications((prev) =>
                 prev.map((notification) =>
                     notification.id === notificationId
-                        ? { ...notification, status: NotificationStatus.READ, readAt: new Date() }
+                        ? {
+                              ...notification,
+                              status: NotificationStatus.READ,
+                              readAt: new Date().toISOString(),
+                          }
                         : notification
                 )
             );
@@ -52,12 +67,14 @@ export const useNotifications = () => {
 
     // Fetch notifications on component mount and when user ID changes
     useEffect(() => {
-        if (!userId) return;
+        if (!userId) {
+            return;
+        }
 
-        const fetchNotifications = async () => {
+        const fetchNotifications = async (): Promise<void> => {
             setIsLoading(true);
             try {
-                const data = await getNotifications(userId);
+                const data: Notification[] = await getNotifications(userId);
                 setNotifications(data);
             } catch (error) {
                 console.error('Error fetching notifications:', error);
@@ -66,15 +83,20 @@ export const useNotifications = () => {
             }
         };
 
-        fetchNotifications();
+        void fetchNotifications();
     }, [userId]);
 
     // Subscribe to real-time notifications
     useEffect(() => {
-        if (!userId) return;
+        if (!userId) {
+            return;
+        }
 
         // Subscribe to real-time notifications
-        subscriptionRef.current = subscribeToNotifications(userId, handleNewNotification);
+        subscriptionRef.current = subscribeToNotifications(
+            userId,
+            handleNewNotification as (notification: unknown) => void
+        );
 
         // Cleanup function
         return () => {

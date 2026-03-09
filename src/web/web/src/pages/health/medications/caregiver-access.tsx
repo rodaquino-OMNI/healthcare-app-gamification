@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 interface Caregiver {
     id: string;
@@ -38,7 +38,7 @@ const CaregiverAccessPage: React.FC = () => {
         },
     ]);
 
-    const handleRemove = (id: string) => {
+    const handleRemove = (id: string): void => {
         setCaregivers(caregivers.filter((c) => c.id !== id));
         alert('Cuidador removido.');
     };
@@ -115,7 +115,7 @@ const CaregiverAccessPage: React.FC = () => {
                 <Button
                     variant="primary"
                     journey="health"
-                    onPress={() => router.push('/health/medications/share-caregiver')}
+                    onPress={() => void router.push('/health/medications/share-caregiver')}
                     accessibilityLabel="Adicionar cuidador"
                 >
                     Adicionar Cuidador

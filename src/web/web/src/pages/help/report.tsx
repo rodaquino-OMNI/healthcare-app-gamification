@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import React, { useState } from 'react';
+
 import { restClient } from '@/api/client';
 
 /**
@@ -35,8 +36,10 @@ const ReportPage: NextPage = () => {
         { value: 'critical', label: 'Critica', desc: 'Dados ou seguranca afetados' },
     ];
 
-    const handleSubmit = async () => {
-        if (!category || !title || !description) return;
+    const handleSubmit = async (): Promise<void> => {
+        if (!category || !title || !description) {
+            return;
+        }
 
         setSubmitting(true);
         setSubmitError(null);
@@ -78,7 +81,7 @@ const ReportPage: NextPage = () => {
                 >
                     Recebemos seu relato. Nossa equipe analisara e responderemos em ate 48 horas.
                 </p>
-                <button onClick={() => router.push('/help')} style={primaryButtonStyle}>
+                <button onClick={() => void router.push('/help')} style={primaryButtonStyle}>
                     Voltar para Central de Ajuda
                 </button>
             </div>
@@ -94,8 +97,15 @@ const ReportPage: NextPage = () => {
 
             <div style={cardStyle}>
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>Categoria *</label>
-                    <select value={category} onChange={(e) => setCategory(e.target.value)} style={selectStyle}>
+                    <label htmlFor="report-category" style={labelStyle}>
+                        Categoria *
+                    </label>
+                    <select
+                        id="report-category"
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        style={selectStyle}
+                    >
                         <option value="">Selecione o tipo de problema...</option>
                         {categories.map((cat) => (
                             <option key={cat.value} value={cat.value}>
@@ -106,8 +116,11 @@ const ReportPage: NextPage = () => {
                 </div>
 
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>Titulo *</label>
+                    <label htmlFor="report-title" style={labelStyle}>
+                        Titulo *
+                    </label>
                     <input
+                        id="report-title"
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
@@ -117,8 +130,11 @@ const ReportPage: NextPage = () => {
                 </div>
 
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>Descricao *</label>
+                    <label htmlFor="report-description" style={labelStyle}>
+                        Descricao *
+                    </label>
                     <textarea
+                        id="report-description"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         style={textareaStyle}
@@ -128,7 +144,9 @@ const ReportPage: NextPage = () => {
                 </div>
 
                 <div style={fieldGroup}>
-                    <label style={labelStyle}>Gravidade</label>
+                    <label htmlFor="report-severity" style={labelStyle}>
+                        Gravidade
+                    </label>
                     <div style={{ display: 'flex', gap: spacing.xs, flexWrap: 'wrap' as const }}>
                         {severities.map((sev) => (
                             <button
@@ -161,7 +179,7 @@ const ReportPage: NextPage = () => {
                     </p>
                 )}
                 <button
-                    onClick={handleSubmit}
+                    onClick={() => void handleSubmit()}
                     disabled={!isValid || submitting}
                     style={{
                         ...primaryButtonStyle,

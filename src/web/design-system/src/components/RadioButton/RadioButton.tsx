@@ -1,9 +1,10 @@
 import React, { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
+
 import { baseTheme } from '../../themes';
+import { borderRadiusValues } from '../../tokens/borderRadius';
 import { colors } from '../../tokens/colors';
 import { spacingValues } from '../../tokens/spacing';
 import { typography } from '../../tokens/typography';
-import { borderRadiusValues } from '../../tokens/borderRadius';
 
 /**
  * Interface defining the props for the RadioButton component.
@@ -78,7 +79,7 @@ export const RadioButton = forwardRef<HTMLInputElement, RadioButtonProps>((props
     );
 
     // Get the appropriate color based on journey
-    const getJourneyColor = () => {
+    const getJourneyColor = (): string => {
         if (journey && theme.colors.journeys[journey]) {
             return theme.colors.journeys[journey].primary;
         }

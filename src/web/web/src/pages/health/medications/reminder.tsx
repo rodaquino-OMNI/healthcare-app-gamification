@@ -1,11 +1,12 @@
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
-import { colors } from 'design-system/tokens/colors';
-import { typography } from 'design-system/tokens/typography';
-import { spacing } from 'design-system/tokens/spacing';
-import { MainLayout } from '@/layouts/MainLayout';
+
 import { restClient } from '@/api/client';
+import { MainLayout } from '@/layouts/MainLayout';
 
 const PageContainer = styled.div`
     max-width: 600px;
@@ -317,7 +318,7 @@ const SecondaryButton = styled.button`
 const ErrorMessage = styled.p`
     font-family: ${typography.fontFamily.body};
     font-size: ${typography.fontSize['text-sm']};
-    color: ${colors.feedback.error.pure};
+    color: ${colors.semantic.error};
     text-align: center;
     margin: 0 0 ${spacing.sm} 0;
 `;
@@ -352,7 +353,7 @@ const SNOOZE_OPTIONS = [
  * Medication reminder configuration page - allows users to set up reminders.
  * Mirrors the mobile MedicationReminder screen.
  */
-export default function MedicationReminderPage() {
+export default function MedicationReminderPage(): React.ReactElement {
     const router = useRouter();
     const medicationName = (router.query.name as string) || 'Medicamento';
 
@@ -365,7 +366,7 @@ export default function MedicationReminderPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const toggleDay = (day: string) => {
+    const toggleDay = (day: string): void => {
         setSelectedDays((prev) => (prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]));
     };
 
@@ -388,7 +389,7 @@ export default function MedicationReminderPage() {
         }
     };
 
-    const handleSave = async () => {
+    const handleSave = async (): Promise<void> => {
         setLoading(true);
         setError(null);
         try {
@@ -523,7 +524,7 @@ export default function MedicationReminderPage() {
                 {/* Buttons */}
                 <ButtonRow>
                     {error && <ErrorMessage>{error}</ErrorMessage>}
-                    <PrimaryButton onClick={handleSave} disabled={loading}>
+                    <PrimaryButton onClick={() => void handleSave()} disabled={loading}>
                         {loading ? 'Salvando...' : 'Salvar Lembrete'}
                     </PrimaryButton>
                     <SecondaryButton onClick={() => router.back()} disabled={loading}>

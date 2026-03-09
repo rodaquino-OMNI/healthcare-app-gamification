@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import React, { useState } from 'react';
+
 import { Stepper } from './Stepper';
 
 const appointmentSteps = [
@@ -57,24 +58,26 @@ export const WithDescriptions: Story = {
     },
 };
 
-export const Interactive: Story = {
-    render: () => {
-        const [active, setActive] = useState(0);
-        return (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                <Stepper steps={appointmentSteps} activeStep={active} journey="health" onStepPress={setActive} />
-                <div style={{ display: 'flex', gap: '8px' }}>
-                    <button onClick={() => setActive(Math.max(0, active - 1))} disabled={active === 0}>
-                        Previous
-                    </button>
-                    <button
-                        onClick={() => setActive(Math.min(appointmentSteps.length - 1, active + 1))}
-                        disabled={active === appointmentSteps.length - 1}
-                    >
-                        Next
-                    </button>
-                </div>
+const InteractiveStepper = (): React.ReactElement => {
+    const [active, setActive] = useState(0);
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <Stepper steps={appointmentSteps} activeStep={active} journey="health" onStepPress={setActive} />
+            <div style={{ display: 'flex', gap: '8px' }}>
+                <button onClick={() => setActive(Math.max(0, active - 1))} disabled={active === 0}>
+                    Previous
+                </button>
+                <button
+                    onClick={() => setActive(Math.min(appointmentSteps.length - 1, active + 1))}
+                    disabled={active === appointmentSteps.length - 1}
+                >
+                    Next
+                </button>
             </div>
-        );
-    },
+        </div>
+    );
+};
+
+export const Interactive: Story = {
+    render: () => <InteractiveStepper />,
 };

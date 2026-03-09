@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import React, { useState } from 'react';
+
 import { Select } from './Select';
 
 const specialtyOptions = [
@@ -30,61 +31,67 @@ const meta: Meta<typeof Select> = {
 export default meta;
 type Story = StoryObj<typeof Select>;
 
+const DefaultSelect = (): React.ReactElement => {
+    const [value, setValue] = useState('');
+    return (
+        <div style={{ maxWidth: '320px' }}>
+            <Select
+                options={specialtyOptions}
+                value={value}
+                onChange={(v) => setValue(v as string)}
+                label="Specialty"
+                journey="health"
+            />
+        </div>
+    );
+};
+
 export const Default: Story = {
-    render: () => {
-        const [value, setValue] = useState('');
-        return (
-            <div style={{ maxWidth: '320px' }}>
-                <Select
-                    options={specialtyOptions}
-                    value={value}
-                    onChange={(v) => setValue(v as string)}
-                    label="Specialty"
-                    journey="health"
-                />
-            </div>
-        );
-    },
+    render: () => <DefaultSelect />,
+};
+
+const MultipleSelect = (): React.ReactElement => {
+    const [values, setValues] = useState<string[]>([]);
+    return (
+        <div style={{ maxWidth: '320px' }}>
+            <Select
+                options={specialtyOptions}
+                value={values}
+                onChange={(v) => setValues(v as string[])}
+                label="Select Specialties"
+                multiple
+                journey="care"
+            />
+        </div>
+    );
 };
 
 export const Multiple: Story = {
-    render: () => {
-        const [values, setValues] = useState<string[]>([]);
-        return (
-            <div style={{ maxWidth: '320px' }}>
-                <Select
-                    options={specialtyOptions}
-                    value={values}
-                    onChange={(v) => setValues(v as string[])}
-                    label="Select Specialties"
-                    multiple
-                    journey="care"
-                />
-            </div>
-        );
-    },
+    render: () => <MultipleSelect />,
+};
+
+const SearchableSelect = (): React.ReactElement => {
+    const [value, setValue] = useState('');
+    return (
+        <div style={{ maxWidth: '320px' }}>
+            <Select
+                options={specialtyOptions}
+                value={value}
+                onChange={(v) => setValue(v as string)}
+                label="Search Specialty"
+                searchable
+                journey="health"
+            />
+        </div>
+    );
 };
 
 export const Searchable: Story = {
-    render: () => {
-        const [value, setValue] = useState('');
-        return (
-            <div style={{ maxWidth: '320px' }}>
-                <Select
-                    options={specialtyOptions}
-                    value={value}
-                    onChange={(v) => setValue(v as string)}
-                    label="Search Specialty"
-                    searchable
-                    journey="health"
-                />
-            </div>
-        );
-    },
+    render: () => <SearchableSelect />,
 };
 
 export const Disabled: Story = {
-    render: () => (
+    render: (): React.ReactElement => (
         <div style={{ maxWidth: '320px' }}>
             <Select
                 options={specialtyOptions}

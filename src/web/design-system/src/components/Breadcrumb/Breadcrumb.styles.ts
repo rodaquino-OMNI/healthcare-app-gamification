@@ -1,7 +1,8 @@
 import styled from 'styled-components';
+
 import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
+import { typography } from '../../tokens/typography';
 
 export const BreadcrumbContainer = styled.nav`
     display: flex;

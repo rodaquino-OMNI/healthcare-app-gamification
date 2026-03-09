@@ -1,11 +1,11 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 interface TipData {
     title: string;
@@ -58,14 +58,14 @@ const TipDetailPage: React.FC = () => {
     const tipId = typeof id === 'string' ? id : '';
     const tip = TIPS_DB[tipId] ?? DEFAULT_TIP;
 
-    const handleShare = () => {
+    const handleShare = (): void => {
         window.alert('Share feature coming soon.');
     };
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/wellness/insights')}
+                onClick={() => void router.push('/wellness/insights')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -127,13 +127,15 @@ const TipDetailPage: React.FC = () => {
                         {tip.relatedIds.map((rid, i) => (
                             <div
                                 key={rid}
-                                onClick={() => router.push(`/wellness/tip/${rid}`)}
+                                onClick={() => void router.push(`/wellness/tip/${rid}`)}
                                 style={{ cursor: 'pointer' }}
                                 role="link"
                                 tabIndex={0}
                                 aria-label={tip.relatedTitles[i]}
                                 onKeyDown={(e) => {
-                                    if (e.key === 'Enter') router.push(`/wellness/tip/${rid}`);
+                                    if (e.key === 'Enter') {
+                                        void router.push(`/wellness/tip/${rid}`);
+                                    }
                                 }}
                             >
                                 <Card journey="health" elevation="sm" padding="md">

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import React, { useState } from 'react';
+
 import { Slider } from './Slider';
 
 const meta: Meta<typeof Slider> = {
@@ -23,50 +24,56 @@ const meta: Meta<typeof Slider> = {
 export default meta;
 type Story = StoryObj<typeof Slider>;
 
+const DefaultSlider = (): React.ReactElement => {
+    const [value, setValue] = useState(50);
+    return (
+        <div style={{ maxWidth: '400px', padding: '16px' }}>
+            <Slider value={value} onChange={setValue} min={0} max={100} journey="health" />
+        </div>
+    );
+};
+
 export const Default: Story = {
-    render: () => {
-        const [value, setValue] = useState(50);
-        return (
-            <div style={{ maxWidth: '400px', padding: '16px' }}>
-                <Slider value={value} onChange={setValue} min={0} max={100} journey="health" />
-            </div>
-        );
-    },
+    render: () => <DefaultSlider />,
+};
+
+const WithValueSlider = (): React.ReactElement => {
+    const [value, setValue] = useState(30);
+    return (
+        <div style={{ maxWidth: '400px', padding: '16px' }}>
+            <Slider value={value} onChange={setValue} min={0} max={100} showValue journey="health" />
+        </div>
+    );
 };
 
 export const WithValue: Story = {
-    render: () => {
-        const [value, setValue] = useState(30);
-        return (
-            <div style={{ maxWidth: '400px', padding: '16px' }}>
-                <Slider value={value} onChange={setValue} min={0} max={100} showValue journey="health" />
-            </div>
-        );
-    },
+    render: () => <WithValueSlider />,
 };
 
 export const Disabled: Story = {
-    render: () => (
+    render: (): React.ReactElement => (
         <div style={{ maxWidth: '400px', padding: '16px' }}>
             <Slider value={40} onChange={() => {}} min={0} max={100} disabled showValue journey="health" />
         </div>
     ),
 };
 
+const CustomRangeSlider = (): React.ReactElement => {
+    const [value, setValue] = useState(120);
+    return (
+        <div style={{ maxWidth: '400px', padding: '16px' }}>
+            <p style={{ margin: '0 0 8px', fontSize: '14px' }}>Heart Rate (bpm)</p>
+            <Slider value={value} onChange={setValue} min={60} max={200} step={5} showValue journey="health" />
+        </div>
+    );
+};
+
 export const CustomRange: Story = {
-    render: () => {
-        const [value, setValue] = useState(120);
-        return (
-            <div style={{ maxWidth: '400px', padding: '16px' }}>
-                <p style={{ margin: '0 0 8px', fontSize: '14px' }}>Heart Rate (bpm)</p>
-                <Slider value={value} onChange={setValue} min={60} max={200} step={5} showValue journey="health" />
-            </div>
-        );
-    },
+    render: () => <CustomRangeSlider />,
 };
 
 export const JourneyVariants: Story = {
-    render: () => (
+    render: (): React.ReactElement => (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxWidth: '400px', padding: '16px' }}>
             <Slider value={40} onChange={() => {}} journey="health" showValue />
             <Slider value={60} onChange={() => {}} journey="care" showValue />

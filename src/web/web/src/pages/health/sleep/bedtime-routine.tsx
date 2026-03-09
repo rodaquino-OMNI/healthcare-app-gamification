@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 interface RoutineStep {
     id: string;
@@ -29,14 +29,14 @@ const BedtimeRoutinePage: React.FC = () => {
 
     const totalMinutes = steps.reduce((sum, s) => sum + parseInt(s.duration, 10), 0);
 
-    const handleSave = () => {
+    const handleSave = (): void => {
         window.alert(`Routine saved: ${steps.length} steps, ${totalMinutes} min total`);
     };
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/sleep')}
+                onClick={() => void router.push('/health/sleep')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -129,7 +129,9 @@ const BedtimeRoutinePage: React.FC = () => {
                             aria-checked={toggle.value}
                             tabIndex={0}
                             onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') toggle.toggle();
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    toggle.toggle();
+                                }
                             }}
                             style={{ cursor: 'pointer' }}
                         >

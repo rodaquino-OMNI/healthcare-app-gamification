@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
-import { Button } from 'design-system/components/Button/Button';
 import { Badge } from 'design-system/components/Badge/Badge';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
 type FilterTab = 'all' | 'recent' | 'resolved' | 'ongoing';
 
@@ -70,8 +71,12 @@ const FILTER_TABS: { key: FilterTab; label: string }[] = [
 ];
 
 const getSeverityStatus = (s: string): 'success' | 'warning' | 'error' => {
-    if (s === 'high') return 'error';
-    if (s === 'moderate') return 'warning';
+    if (s === 'high') {
+        return 'error';
+    }
+    if (s === 'moderate') {
+        return 'warning';
+    }
     return 'success';
 };
 
@@ -81,7 +86,9 @@ const HistoryPage: React.FC = () => {
     const [activeFilter, setActiveFilter] = useState<FilterTab>('all');
 
     const filteredHistory = MOCK_HISTORY.filter((item) => {
-        if (activeFilter === 'all') return true;
+        if (activeFilter === 'all') {
+            return true;
+        }
         if (activeFilter === 'recent') {
             const thirtyDaysAgo = new Date();
             thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -139,7 +146,7 @@ const HistoryPage: React.FC = () => {
                             padding="lg"
                             interactive
                             onPress={() =>
-                                router.push({
+                                void router.push({
                                     pathname: '/care/symptom-checker/condition-detail',
                                     query: { checkId: item.id },
                                 })
@@ -191,7 +198,7 @@ const HistoryPage: React.FC = () => {
                 </Button>
                 <Button
                     journey="care"
-                    onPress={() => router.push(WEB_CARE_ROUTES.SYMPTOM_BODY_MAP)}
+                    onPress={() => void router.push(WEB_CARE_ROUTES.SYMPTOM_BODY_MAP)}
                     accessibilityLabel="Start new symptom check"
                     data-testid="history-new-check-btn"
                 >

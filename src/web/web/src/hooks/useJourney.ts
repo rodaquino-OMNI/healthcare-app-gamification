@@ -1,7 +1,14 @@
 import { useRouter } from 'next/router'; // next/router 13.0+
 import { ALL_JOURNEYS } from 'shared/constants/journeys';
 import { Journey } from 'shared/types/index';
+
 import { useJourneyContext } from '@/context/JourneyContext';
+
+/** Shape returned by the useJourney hook */
+interface UseJourneyReturn {
+    journey: Journey | null;
+    setJourney: (journeyOrId: Journey | string | null) => void;
+}
 
 /**
  * Custom hook that provides access to the current user journey in the AUSTA SuperApp.
@@ -10,7 +17,7 @@ import { useJourneyContext } from '@/context/JourneyContext';
  *
  * @returns An object containing the current journey and a function to set the journey
  */
-export const useJourney = () => {
+export const useJourney = (): UseJourneyReturn => {
     const { currentJourney, setCurrentJourney, journeyData } = useJourneyContext();
     const router = useRouter();
 
@@ -21,8 +28,8 @@ export const useJourney = () => {
     const pathSegments = routePath.split('/').filter(Boolean);
     const journeyIdFromRoute = pathSegments.length > 0 ? pathSegments[0] : null;
 
-    // If a valid journey ID is found in the route and it's different from the current journey,
-    // update the current journey
+    // If a valid journey ID is found in the route and it's different
+    // from the current journey, update the current journey
     if (
         journeyIdFromRoute &&
         ALL_JOURNEYS.some((journey) => journey.id === journeyIdFromRoute) &&

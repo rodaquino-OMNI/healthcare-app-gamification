@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { CareLayout } from '@/layouts/CareLayout';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { CareLayout } from '@/layouts/CareLayout';
 
 const COMMON_REASONS = [
     'Check-up de rotina',
@@ -26,12 +27,12 @@ const ReasonForVisitPage: React.FC = () => {
     const [reason, setReason] = useState('');
     const [selectedChips, setSelectedChips] = useState<string[]>([]);
 
-    const toggleChip = (chip: string) => {
+    const toggleChip = (chip: string): void => {
         setSelectedChips((prev) => (prev.includes(chip) ? prev.filter((c) => c !== chip) : [...prev, chip]));
     };
 
-    const handleContinue = () => {
-        router.push({ pathname: '/care/appointments/documents', query: { type, reason } });
+    const handleContinue = (): void => {
+        void router.push({ pathname: '/care/appointments/documents', query: { type, reason } });
     };
 
     const hasContent = reason.trim().length > 0 || selectedChips.length > 0;
@@ -86,7 +87,9 @@ const ReasonForVisitPage: React.FC = () => {
                                 style={{
                                     padding: `${spacing.xs} ${spacing.sm}`,
                                     borderRadius: '20px',
-                                    border: `1px solid ${isActive ? colors.journeys.care.primary : colors.neutral.gray300}`,
+                                    border: `1px solid ${
+                                        isActive ? colors.journeys.care.primary : colors.neutral.gray300
+                                    }`,
                                     backgroundColor: isActive ? colors.journeys.care.background : 'transparent',
                                     color: isActive ? colors.journeys.care.primary : colors.journeys.care.text,
                                     cursor: 'pointer',
@@ -118,7 +121,13 @@ const ReasonForVisitPage: React.FC = () => {
                     </Box>
                 </Card>
 
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: spacing['2xl'] }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        marginTop: spacing['2xl'],
+                    }}
+                >
                     <Button
                         journey="care"
                         onPress={handleContinue}

@@ -1,16 +1,8 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
 import { Text } from 'design-system/primitives/Text/Text';
-import { Box } from 'design-system/primitives/Box/Box';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-
-interface DiaryEntry {
-    date: string;
-    severity: number;
-    symptoms: string[];
-    notes: string;
-}
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 const DiaryPage: React.FC = () => {
     const router = useRouter();
@@ -21,13 +13,13 @@ const DiaryPage: React.FC = () => {
 
     const symptomOptions = ['Dor', 'Fadiga', 'Febre', 'Tosse', 'Congestao', 'Dor de Garganta'];
 
-    const toggleSymptom = (symptom: string) => {
+    const toggleSymptom = (symptom: string): void => {
         setSelectedSymptoms((prev) =>
             prev.includes(symptom) ? prev.filter((s) => s !== symptom) : [...prev, symptom]
         );
     };
 
-    const handleSave = async () => {
+    const handleSave = (): void => {
         setIsSaving(true);
         setTimeout(() => {
             setIsSaving(false);
@@ -37,9 +29,13 @@ const DiaryPage: React.FC = () => {
         }, 1000);
     };
 
-    const getSeverityColor = (value: number) => {
-        if (value <= 3) return colors.semantic.warning;
-        if (value <= 6) return colors.journeys.care.primary;
+    const getSeverityColor = (value: number): string => {
+        if (value <= 3) {
+            return colors.semantic.warning;
+        }
+        if (value <= 6) {
+            return colors.journeys.care.primary;
+        }
         return colors.semantic.error;
     };
 
@@ -220,7 +216,7 @@ const DiaryPage: React.FC = () => {
             <div
                 style={{
                     padding: spacing.lg,
-                    backgroundColor: colors.neutral.gray50,
+                    backgroundColor: colors.neutral.gray100,
                     borderRadius: '8px',
                     border: `1px solid ${colors.neutral.gray200}`,
                 }}
@@ -283,7 +279,7 @@ const DiaryPage: React.FC = () => {
                 }}
             >
                 <button
-                    onClick={handleSave}
+                    onClick={() => void handleSave()}
                     disabled={isSaving}
                     style={{
                         flex: 1,

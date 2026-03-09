@@ -1,6 +1,7 @@
-import React from 'react';
 import { describe, it, expect } from '@jest/globals';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+
 import { Header, TabBar, BottomNav } from './Navigation';
 
 describe('Header', () => {

@@ -1,8 +1,8 @@
-import React from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -42,9 +42,9 @@ const selectStyle: React.CSSProperties = {
 };
 
 const StepFamilyHistoryPage: React.FC<StepProps> = ({ data, onUpdate }) => {
-    const familyHistory: FamilyConditionEntry[] = data.familyHistory || [];
+    const familyHistory: FamilyConditionEntry[] = (data.familyHistory as FamilyConditionEntry[]) || [];
 
-    const toggleCondition = (condition: string) => {
+    const toggleCondition = (condition: string): void => {
         const exists = familyHistory.find((fh) => fh.condition === condition);
         if (exists) {
             onUpdate(
@@ -56,13 +56,14 @@ const StepFamilyHistoryPage: React.FC<StepProps> = ({ data, onUpdate }) => {
         }
     };
 
-    const updateRelation = (condition: string, relation: string) => {
+    const updateRelation = (condition: string, relation: string): void => {
         const updated = familyHistory.map((fh) => (fh.condition === condition ? { ...fh, relation } : fh));
         onUpdate('familyHistory', updated);
     };
 
-    const isSelected = (condition: string) => familyHistory.some((fh) => fh.condition === condition);
-    const getRelation = (condition: string) => familyHistory.find((fh) => fh.condition === condition)?.relation || '';
+    const isSelected = (condition: string): boolean => familyHistory.some((fh) => fh.condition === condition);
+    const getRelation = (condition: string): string =>
+        familyHistory.find((fh) => fh.condition === condition)?.relation || '';
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.lg }}>

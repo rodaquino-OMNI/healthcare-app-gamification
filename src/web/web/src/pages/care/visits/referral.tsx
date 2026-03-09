@@ -1,12 +1,12 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
-import { Button } from 'design-system/components/Button/Button';
 import { Badge } from 'design-system/components/Badge/Badge';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 const MOCK_REFERRAL = {
     referringDoctor: 'Dr. Maria Santos',
@@ -138,7 +138,7 @@ const ReferralPage: React.FC = () => {
             <div style={{ display: 'flex', gap: spacing.sm }}>
                 <Button
                     journey="care"
-                    onPress={() => router.push('/care/appointments/search')}
+                    onPress={() => void router.push('/care/appointments/search')}
                     accessibilityLabel="Book with specialist"
                     data-testid="referral-book-btn"
                 >

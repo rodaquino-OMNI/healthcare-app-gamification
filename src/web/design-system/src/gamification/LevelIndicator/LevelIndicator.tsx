@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
-import { ProgressBar } from '../../components/ProgressBar/ProgressBar';
-import { XPCounter } from '../XPCounter/XPCounter';
+import { typography } from '../../tokens/typography';
 import { AchievementBadge } from '../AchievementBadge/AchievementBadge';
+import { XPCounter } from '../XPCounter/XPCounter';
 // Local type stub for Achievement (shared package not available at build time)
 interface Achievement {
     id: string;
@@ -143,11 +143,21 @@ export const LevelIndicator: React.FC<LevelIndicatorProps> = ({
 }) => {
     // Get level title based on level
     const getLevelTitle = (level: number): string => {
-        if (level < 5) return 'Iniciante';
-        if (level < 10) return 'Aventureiro';
-        if (level < 15) return 'Explorador';
-        if (level < 20) return 'Especialista';
-        if (level < 25) return 'Mestre';
+        if (level < 5) {
+            return 'Iniciante';
+        }
+        if (level < 10) {
+            return 'Aventureiro';
+        }
+        if (level < 15) {
+            return 'Explorador';
+        }
+        if (level < 20) {
+            return 'Especialista';
+        }
+        if (level < 25) {
+            return 'Mestre';
+        }
         return 'Lendário';
     };
 

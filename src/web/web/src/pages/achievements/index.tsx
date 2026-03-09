@@ -1,15 +1,16 @@
-import React from 'react';
-import Link from 'next/link';
-import { Text } from 'design-system/primitives/Text/Text';
-import { Box } from 'design-system/primitives/Box/Box';
 import { Card } from 'design-system/components/Card/Card';
 import { AchievementBadge } from 'design-system/gamification/AchievementBadge';
 import { LevelIndicator } from 'design-system/gamification/LevelIndicator';
 import { XPCounter } from 'design-system/gamification/XPCounter';
-import { useGameProfile } from '@/hooks/useGamification';
+import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import type { Achievement } from 'shared/types/gamification.types';
+import Link from 'next/link';
+import React from 'react';
+import type { Achievement, Quest } from 'shared/types/gamification.types';
+
+import { useGameProfile } from '@/hooks/useGamification';
 
 const JOURNEY_LABELS: Record<string, string> = {
     health: 'My Health',
@@ -46,16 +47,20 @@ const AchievementsPage: React.FC = () => {
     const profile = data?.gameProfile;
     const achievements = profile?.achievements ?? [];
 
-    const achievementsByJourney = achievements.reduce<Record<string, Achievement[]>>((acc, achievement) => {
-        const key = achievement.journey;
-        if (!acc[key]) {
-            acc[key] = [];
-        }
-        acc[key].push(achievement);
-        return acc;
-    }, {});
+    const achievementsByJourney = achievements.reduce<Record<string, Achievement[]>>(
+        (acc: Record<string, Achievement[]>, achievement: Achievement) => {
+            const key = achievement.journey;
+            if (!acc[key]) {
+                acc[key] = [];
+            }
+            acc[key].push(achievement);
+            return acc;
+        },
+        {}
+    );
 
     const xpForNextLevel = (profile?.level ?? 1) * 1000;
+    const activeQuestCount = profile?.quests?.filter((q: Quest) => !q.completed).length ?? 0;
 
     return (
         <div style={{ maxWidth: '960px', margin: '0 auto', padding: spacing.xl }}>
@@ -71,12 +76,13 @@ const AchievementsPage: React.FC = () => {
                         level={profile?.level ?? 1}
                         currentXp={profile?.xp ?? 0}
                         nextLevelXp={xpForNextLevel}
+                        journey="health"
                     />
                     <Box>
                         <Text fontSize="lg" fontWeight="bold">
                             Level {profile?.level ?? 1}
                         </Text>
-                        <XPCounter value={profile?.xp ?? 0} size="md" />
+                        <XPCounter currentXP={profile?.xp ?? 0} nextLevelXP={xpForNextLevel} journey="health" />
                         <Text fontSize="sm" color={colors.gray[50]} style={{ marginTop: spacing.xs }}>
                             {xpForNextLevel - (profile?.xp ?? 0)} XP to next level
                         </Text>
@@ -108,7 +114,7 @@ const AchievementsPage: React.FC = () => {
                             Quests
                         </Text>
                         <Text fontSize="sm" color={colors.gray[50]}>
-                            {profile?.quests?.filter((q) => !q.completed).length ?? 0} active quests
+                            {activeQuestCount} active quests
                         </Text>
                     </Card>
                 </Link>
@@ -134,7 +140,7 @@ const AchievementsPage: React.FC = () => {
                         {JOURNEY_LABELS[journey] ?? journey} Achievements
                     </Text>
                     <Box display="flex" style={{ gap: spacing.md, flexWrap: 'wrap' }}>
-                        {journeyAchievements.map((achievement) => (
+                        {journeyAchievements.map((achievement: Achievement) => (
                             <Link key={achievement.id} href={`/achievements/${achievement.id}`} passHref>
                                 <div style={{ cursor: 'pointer' }}>
                                     <AchievementBadge achievement={achievement} size="md" showProgress />

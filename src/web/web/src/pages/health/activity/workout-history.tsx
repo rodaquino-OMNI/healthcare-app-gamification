@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 type Filter = 'all' | 'running' | 'cycling' | 'gym';
 
@@ -34,7 +34,7 @@ const WorkoutHistoryPage: React.FC = () => {
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/activity')}
+                onClick={() => void router.push('/health/activity')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -79,11 +79,13 @@ const WorkoutHistoryPage: React.FC = () => {
                 {filtered.map((w) => (
                     <div
                         key={w.id}
-                        onClick={() => router.push(`/health/activity/${w.id}`)}
+                        onClick={() => void router.push(`/health/activity/${w.id}`)}
                         role="link"
                         tabIndex={0}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter') router.push(`/health/activity/${w.id}`);
+                            if (e.key === 'Enter') {
+                                void router.push(`/health/activity/${w.id}`);
+                            }
                         }}
                         style={{ cursor: 'pointer' }}
                     >

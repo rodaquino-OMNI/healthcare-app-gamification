@@ -1,14 +1,10 @@
-import React from 'react';
 import { describe, it, expect } from '@jest/globals';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
 import { ThemeProvider } from 'styled-components';
+
 import Card from './Card';
-import { colors } from '../../tokens/colors';
-import { shadows } from '../../tokens/shadows';
 import { baseTheme } from '../../themes/base.theme';
-import { healthTheme } from '../../themes/health.theme';
-import { careTheme } from '../../themes/care.theme';
-import { planTheme } from '../../themes/plan.theme';
 
 /**
  * Helper function to render a component with a specific theme

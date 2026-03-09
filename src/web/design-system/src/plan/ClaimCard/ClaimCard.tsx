@@ -1,22 +1,13 @@
-import React from 'react';
 import { format } from 'date-fns';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Card } from '../../components/Card';
-import { Text } from '../../primitives/Text/Text';
-import { Icon } from '../../primitives/Icon/Icon';
+import { ClaimCardHeader, ClaimCardBody, ClaimCardFooter, ClaimStatusText } from './ClaimCard.styles';
 import { Button } from '../../components/Button';
-import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
+import { Card } from '../../components/Card';
+import { Icon } from '../../primitives/Icon/Icon';
+import { Text } from '../../primitives/Text/Text';
 import { spacing } from '../../tokens/spacing';
-import { borderRadius } from '../../tokens/borderRadius';
-import {
-    ClaimCardContainer,
-    ClaimCardHeader,
-    ClaimCardBody,
-    ClaimCardFooter,
-    ClaimStatusText,
-} from './ClaimCard.styles';
 
 export interface ClaimCardProps {
     /**
@@ -124,7 +115,7 @@ export const ClaimCard: React.FC<ClaimCardProps> = ({
 }) => {
     const { t } = useTranslation();
     const statusIcon = getStatusIcon(claim.status);
-    const statusColor = getStatusColor(claim.status);
+    getStatusColor(claim.status);
 
     const formattedAmount = formatCurrency(claim.amount);
     const formattedDate = format(new Date(claim.submittedAt), 'dd/MM/yyyy');

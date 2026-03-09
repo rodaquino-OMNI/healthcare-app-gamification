@@ -1,12 +1,20 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
+import React from 'react';
+
+interface MockChildrenProps {
+    children: React.ReactNode;
+}
+
+interface MockTitleProps {
+    title: string;
+}
 
 jest.mock('@/layouts/CareLayout', () => ({
-    CareLayout: ({ children }: any) => <div data-testid="care-layout">{children}</div>,
+    CareLayout: ({ children }: MockChildrenProps) => <div data-testid="care-layout">{children}</div>,
 }));
 
 jest.mock('@/components/shared/JourneyHeader', () => ({
-    JourneyHeader: ({ title }: any) => <h1 data-testid="journey-header">{title}</h1>,
+    JourneyHeader: ({ title }: MockTitleProps) => <h1 data-testid="journey-header">{title}</h1>,
 }));
 
 jest.mock('@/components/forms/AppointmentForm', () => ({
@@ -18,7 +26,10 @@ jest.mock('@/components/forms/AppointmentForm', () => ({
 }));
 
 jest.mock('@/context/JourneyContext', () => ({
-    JourneyContext: { Consumer: ({ children }: any) => children({ journey: 'care' }) },
+    JourneyContext: {
+        Consumer: ({ children }: { children: (value: { journey: string }) => React.ReactNode }) =>
+            children({ journey: 'care' }),
+    },
     useJourneyContext: () => ({ currentJourney: 'care' }),
 }));
 

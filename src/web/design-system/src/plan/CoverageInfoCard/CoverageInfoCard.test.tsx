@@ -1,9 +1,9 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { axe } from 'jest-axe';
+import React from 'react';
+
 import { CoverageInfoCard } from './CoverageInfoCard';
-import { ThemeProvider } from '../../themes';
-import { planTheme } from '../../themes';
+import { ThemeProvider, planTheme } from '../../themes';
 
 // Helper function to render components with the Plan theme
 const renderWithTheme = (ui: React.ReactElement) => {
@@ -23,13 +23,6 @@ const fullCoverageProps = {
     details: 'Full coverage for emergency care services',
     limitations: 'No limitations for emergency care',
     coPayment: 0,
-};
-
-const partialCoverageProps = {
-    type: 'dental_procedures',
-    details: 'Partial coverage for dental procedures',
-    limitations: 'Only basic procedures covered',
-    coPayment: 50,
 };
 
 describe('CoverageInfoCard component', () => {

@@ -1,13 +1,11 @@
-import React, { useState, useEffect, createContext, useContext, useCallback } from 'react';
+import React, { useState, createContext, useContext, useCallback } from 'react';
 import styled from 'styled-components';
+
+import { Box } from '../../primitives/Box/Box';
+import { Text } from '../../primitives/Text/Text';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
 import { typography } from '../../tokens/typography';
-import { borderRadius } from '../../tokens/borderRadius';
-import { Box } from '../../primitives/Box/Box';
-import { Text } from '../../primitives/Text/Text';
-import { Button } from '../../components/Button/Button';
-import { Card } from '../../components/Card/Card';
 
 // Context to manage the tab state across components
 interface TabsContextType {
@@ -20,7 +18,7 @@ interface TabsContextType {
 const TabsContext = createContext<TabsContextType | undefined>(undefined);
 
 // Hook to use the tabs context
-const useTabsContext = () => {
+const useTabsContext = (): TabsContextType => {
     const context = useContext(TabsContext);
     if (!context) {
         throw new Error('Tabs components must be used within a Tabs provider');
@@ -180,9 +178,12 @@ const StyledTab = styled.button<{
         }
     }};
     border: none;
-    border-bottom: 2px solid ${(props) => (props.active ? colors.journeys[props.journey].primary : 'transparent')};
+    border-bottom: 2px solid
+        ${(props) =>
+            props.active ? colors.journeys[props.journey as keyof typeof colors.journeys].primary : 'transparent'};
     background-color: transparent;
-    color: ${(props) => (props.active ? colors.journeys[props.journey].primary : colors.neutral.gray700)};
+    color: ${(props) =>
+        props.active ? colors.journeys[props.journey as keyof typeof colors.journeys].primary : colors.neutral.gray700};
     font-weight: ${(props) => (props.active ? typography.fontWeight.medium : typography.fontWeight.regular)};
     font-size: ${(props) => {
         switch (props.size) {
@@ -200,12 +201,12 @@ const StyledTab = styled.button<{
     transition: all 0.2s ease-in-out;
 
     &:hover {
-        color: ${(props) => !props.disabled && colors.journeys[props.journey].primary};
+        color: ${(props) => !props.disabled && colors.journeys[props.journey as keyof typeof colors.journeys].primary};
     }
 
     &:focus {
         outline: none;
-        box-shadow: 0 0 0 2px ${(props) => colors.journeys[props.journey].secondary};
+        box-shadow: 0 0 0 2px ${(props) => colors.journeys[props.journey as keyof typeof colors.journeys].secondary};
     }
 `;
 
@@ -223,11 +224,11 @@ export const Tabs: React.FC<TabsProps> & {
     Tab: React.FC<TabProps>;
     Panel: React.FC<TabPanelProps>;
 } = ({
-    variant = 'primary',
-    size = 'md',
+    variant: _variant = 'primary',
+    size: _size = 'md',
     disabled = false,
     loading = false,
-    icon,
+    icon: _icon,
     onPress,
     accessibilityLabel,
     children,
@@ -280,7 +281,7 @@ const TabList: React.FC<TabListProps> = ({ children }) => {
     return (
         <StyledTabList role="tablist">
             {React.Children.map(children, (child, index) => {
-                if (React.isValidElement(child)) {
+                if (React.isValidElement<Record<string, unknown>>(child)) {
                     return React.cloneElement(child, {
                         ...child.props,
                         index,
@@ -298,7 +299,7 @@ const Tab: React.FC<TabProps & { index?: number }> = ({ label, icon, disabled = 
     const isActive = index === activeTab;
     const isDisabled = disabled || tabsDisabled;
 
-    const handleClick = () => {
+    const handleClick = (): void => {
         if (!isDisabled && index !== undefined) {
             setActiveTab(index);
         }
@@ -333,7 +334,7 @@ const Tab: React.FC<TabProps & { index?: number }> = ({ label, icon, disabled = 
 
 // TabPanel component for tab content
 const Panel: React.FC<TabPanelProps> = ({ children, index }) => {
-    const { activeTab, journey } = useTabsContext();
+    const { activeTab, journey: _panelJourney } = useTabsContext();
     const isActive = index === activeTab;
 
     return (

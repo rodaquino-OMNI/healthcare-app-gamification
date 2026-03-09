@@ -1,24 +1,60 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
+
+interface MockChildrenProps {
+    children: React.ReactNode;
+}
+
+interface MockTitleProps {
+    title: string;
+}
+
+interface MockCardProps {
+    children: React.ReactNode;
+    onPress?: () => void;
+    accessibilityLabel?: string;
+}
+
+interface MockButtonProps {
+    children: React.ReactNode;
+    onPress?: () => void;
+    variant?: string;
+}
+
+interface MockSpreadProps {
+    children?: React.ReactNode;
+    [key: string]: unknown;
+}
 
 jest.mock('@/layouts/CareLayout', () => ({
-    CareLayout: ({ children }: any) => <div data-testid="care-layout">{children}</div>,
+    CareLayout: ({ children }: MockChildrenProps) => <div data-testid="care-layout">{children}</div>,
 }));
 
 jest.mock('@/components/shared/JourneyHeader', () => ({
-    JourneyHeader: ({ title }: any) => <h1 data-testid="journey-header">{title}</h1>,
+    JourneyHeader: ({ title }: MockTitleProps) => <h1 data-testid="journey-header">{title}</h1>,
 }));
 
 jest.mock('design-system/components/Card/Card', () => ({
-    Card: ({ children, onPress, accessibilityLabel }: any) => (
-        <div data-testid="card" onClick={onPress} aria-label={accessibilityLabel}>
+    Card: ({ children, onPress, accessibilityLabel }: MockCardProps) => (
+        <div
+            data-testid="card"
+            onClick={onPress}
+            onKeyDown={(e: React.KeyboardEvent) => {
+                if (e.key === 'Enter' && onPress) {
+                    onPress();
+                }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label={accessibilityLabel}
+        >
             {children}
         </div>
     ),
 }));
 
 jest.mock('design-system/components/Button/Button', () => ({
-    Button: ({ children, onPress, variant }: any) => (
+    Button: ({ children, onPress, variant }: MockButtonProps) => (
         <button onClick={onPress} data-variant={variant}>
             {children}
         </button>
@@ -26,11 +62,11 @@ jest.mock('design-system/components/Button/Button', () => ({
 }));
 
 jest.mock('design-system/primitives/Text/Text', () => ({
-    Text: ({ children, ...props }: any) => <span {...props}>{children}</span>,
+    Text: ({ children, ...props }: MockSpreadProps) => <span {...props}>{children}</span>,
 }));
 
 jest.mock('design-system/primitives/Box/Box', () => ({
-    Box: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+    Box: ({ children, ...props }: MockSpreadProps) => <div {...props}>{children}</div>,
 }));
 
 jest.mock('design-system/tokens/colors', () => ({

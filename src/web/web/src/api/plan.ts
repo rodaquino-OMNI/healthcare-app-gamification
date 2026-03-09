@@ -1,11 +1,12 @@
-import { restClient } from './client';
 import type { Plan, Claim, Coverage, Benefit } from 'shared/types/plan.types';
+
+import { restClient } from './client';
 
 /**
  * Fetches the user's insurance plan details.
  */
 export const getPlan = async (userId: string): Promise<Plan> => {
-    const response = await restClient.get(`/plan?userId=${userId}`);
+    const response = await restClient.get<Plan>(`/plan?userId=${userId}`);
     return response.data;
 };
 
@@ -13,7 +14,7 @@ export const getPlan = async (userId: string): Promise<Plan> => {
  * Fetches all claims for the user.
  */
 export const getClaims = async (userId: string): Promise<Claim[]> => {
-    const response = await restClient.get(`/plan/claims?userId=${userId}`);
+    const response = await restClient.get<Claim[]>(`/plan/claims?userId=${userId}`);
     return response.data;
 };
 
@@ -21,7 +22,7 @@ export const getClaims = async (userId: string): Promise<Claim[]> => {
  * Fetches the user's coverage information.
  */
 export const getCoverage = async (userId: string): Promise<Coverage> => {
-    const response = await restClient.get(`/plan/coverage?userId=${userId}`);
+    const response = await restClient.get<Coverage>(`/plan/coverage?userId=${userId}`);
     return response.data;
 };
 
@@ -29,7 +30,7 @@ export const getCoverage = async (userId: string): Promise<Coverage> => {
  * Fetches all benefits for the user's plan.
  */
 export const getBenefits = async (userId: string): Promise<Benefit[]> => {
-    const response = await restClient.get(`/plan/benefits?userId=${userId}`);
+    const response = await restClient.get<Benefit[]>(`/plan/benefits?userId=${userId}`);
     return response.data;
 };
 
@@ -37,7 +38,7 @@ export const getBenefits = async (userId: string): Promise<Benefit[]> => {
  * Submits a new insurance claim.
  */
 export const submitClaim = async (claimData: Partial<Claim>): Promise<Claim> => {
-    const response = await restClient.post('/plan/claims', claimData);
+    const response = await restClient.post<Claim>('/plan/claims', claimData);
     return response.data;
 };
 
@@ -45,7 +46,7 @@ export const submitClaim = async (claimData: Partial<Claim>): Promise<Claim> => 
  * Updates an existing claim.
  */
 export const updateClaim = async (claimId: string, claimData: Partial<Claim>): Promise<Claim> => {
-    const response = await restClient.put(`/plan/claims/${claimId}`, claimData);
+    const response = await restClient.put<Claim>(`/plan/claims/${claimId}`, claimData);
     return response.data;
 };
 
@@ -60,7 +61,7 @@ export const cancelClaim = async (claimId: string): Promise<void> => {
  * Uploads a document for a claim.
  */
 export const uploadClaimDocument = async (claimId: string, _file: File): Promise<string> => {
-    const response = await restClient.post(`/plan/claims/${claimId}/documents`);
+    const response = await restClient.post<{ url: string }>(`/plan/claims/${claimId}/documents`);
     return response.data.url;
 };
 
@@ -68,7 +69,9 @@ export const uploadClaimDocument = async (claimId: string, _file: File): Promise
  * Simulates the cost of a healthcare procedure.
  */
 export const simulateCost = async (procedureCode: string): Promise<{ estimatedCost: number }> => {
-    const response = await restClient.get(`/plan/cost-simulator?procedureCode=${procedureCode}`);
+    const response = await restClient.get<{
+        estimatedCost: number;
+    }>(`/plan/cost-simulator?procedureCode=${procedureCode}`);
     return response.data;
 };
 
@@ -76,6 +79,6 @@ export const simulateCost = async (procedureCode: string): Promise<{ estimatedCo
  * Fetches the user's digital insurance card data.
  */
 export const getDigitalCard = async (_userId?: string, _token?: string): Promise<{ plan: Plan }> => {
-    const response = await restClient.get('/plan/digital-card');
+    const response = await restClient.get<{ plan: Plan }>('/plan/digital-card');
     return response.data;
 };

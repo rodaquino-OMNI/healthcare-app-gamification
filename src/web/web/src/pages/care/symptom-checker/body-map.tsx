@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
 /** Body region definition for the interactive body map */
@@ -36,14 +36,14 @@ const SymptomBodyMapPage: React.FC = () => {
     const router = useRouter();
     const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
 
-    const toggleRegion = (regionId: string) => {
+    const toggleRegion = (regionId: string): void => {
         setSelectedRegions((prev) =>
             prev.includes(regionId) ? prev.filter((id) => id !== regionId) : [...prev, regionId]
         );
     };
 
-    const handleContinue = () => {
-        router.push({
+    const handleContinue = (): void => {
+        void router.push({
             pathname: WEB_CARE_ROUTES.SYMPTOM_DETAIL,
             query: { regions: selectedRegions.join(',') },
         });

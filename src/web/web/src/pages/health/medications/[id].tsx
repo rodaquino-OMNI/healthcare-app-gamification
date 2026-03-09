@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
-import { Button } from 'design-system/components/Button/Button';
 import { Badge } from 'design-system/components/Badge/Badge';
+import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { ProgressBar } from 'design-system/components/ProgressBar/ProgressBar';
-import { Text } from 'design-system/primitives/Text/Text';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
 /** Mock medication detail data */
@@ -57,19 +57,18 @@ const MOCK_DETAIL: MedicationDetail = {
  */
 const MedicationDetailPage: React.FC = () => {
     const router = useRouter();
-    const { id } = router.query;
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     // In a real app, fetch medication detail by id
     const medication = MOCK_DETAIL;
 
-    const handleBack = () => {
-        router.push(WEB_HEALTH_ROUTES.MEDICATIONS);
+    const handleBack = (): void => {
+        void router.push(WEB_HEALTH_ROUTES.MEDICATIONS);
     };
 
-    const handleDelete = () => {
+    const handleDelete = (): void => {
         // In a real app, call API to delete
-        router.push(WEB_HEALTH_ROUTES.MEDICATIONS);
+        void router.push(WEB_HEALTH_ROUTES.MEDICATIONS);
     };
 
     return (

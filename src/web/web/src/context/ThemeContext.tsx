@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { ThemeProvider as SCThemeProvider } from 'styled-components';
-import { baseTheme, darkTheme } from '../../../design-system/src/themes';
-import type { Theme } from '../../../design-system/src/themes';
+
+import { baseTheme, darkTheme, Theme } from '../../../design-system/src/themes';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
 
@@ -21,7 +21,7 @@ const ThemeContext = createContext<ThemeContextValue>({
     theme: baseTheme,
 });
 
-export const useAppTheme = () => useContext(ThemeContext);
+export const useAppTheme = (): ThemeContextValue => useContext(ThemeContext);
 
 const getSystemPreference = (): boolean => {
     if (typeof window !== 'undefined' && window.matchMedia) {
@@ -44,14 +44,16 @@ export const AppThemeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const [systemIsDark, setSystemIsDark] = useState(getSystemPreference);
 
     useEffect(() => {
-        if (typeof window === 'undefined' || !window.matchMedia) return;
+        if (typeof window === 'undefined' || !window.matchMedia) {
+            return;
+        }
         const mql = window.matchMedia('(prefers-color-scheme: dark)');
-        const handler = (e: MediaQueryListEvent) => setSystemIsDark(e.matches);
+        const handler = (e: MediaQueryListEvent): void => setSystemIsDark(e.matches);
         mql.addEventListener('change', handler);
         return () => mql.removeEventListener('change', handler);
     }, []);
 
-    const setThemeMode = useCallback((mode: ThemeMode) => {
+    const setThemeMode = useCallback((mode: ThemeMode): void => {
         setThemeModeState(mode);
         if (typeof window !== 'undefined') {
             localStorage.setItem(STORAGE_KEY, mode);

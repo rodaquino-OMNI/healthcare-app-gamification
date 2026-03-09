@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
+import React, { useState } from 'react';
 
 interface ChatMessage {
     id: string;
@@ -28,8 +28,10 @@ const ChatPage: NextPage = () => {
     const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
     const [input, setInput] = useState('');
 
-    const handleSend = () => {
-        if (!input.trim()) return;
+    const handleSend = (): void => {
+        if (!input.trim()) {
+            return;
+        }
         const now = new Date();
         const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
 
@@ -54,7 +56,7 @@ const ChatPage: NextPage = () => {
         }, 1000);
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent) => {
+    const handleKeyDown = (e: React.KeyboardEvent): void => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             handleSend();
@@ -74,7 +76,7 @@ const ChatPage: NextPage = () => {
         >
             {/* Header */}
             <div style={headerStyle}>
-                <button onClick={() => router.push('/help')} style={backBtnStyle}>
+                <button onClick={() => void router.push('/help')} style={backBtnStyle}>
                     &larr;
                 </button>
                 <div>

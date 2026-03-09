@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
 import { Text } from 'design-system/primitives/Text/Text';
-import { Box } from 'design-system/primitives/Box/Box';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 interface ComparisonData {
     symptom: string;
@@ -23,7 +22,7 @@ const ComparisonPage: React.FC = () => {
         { symptom: 'Rigidez no Pescoco', date1Severity: 4, date2Severity: 3, trend: 'improved' },
     ];
 
-    const getTrendIcon = (trend: 'improved' | 'worsened' | 'stable') => {
+    const getTrendIcon = (trend: 'improved' | 'worsened' | 'stable'): string => {
         switch (trend) {
             case 'improved':
                 return '📉';
@@ -34,7 +33,7 @@ const ComparisonPage: React.FC = () => {
         }
     };
 
-    const getTrendColor = (trend: 'improved' | 'worsened' | 'stable') => {
+    const getTrendColor = (trend: 'improved' | 'worsened' | 'stable'): string => {
         switch (trend) {
             case 'improved':
                 return colors.semantic.success;
@@ -45,7 +44,7 @@ const ComparisonPage: React.FC = () => {
         }
     };
 
-    const getTrendLabel = (trend: 'improved' | 'worsened' | 'stable') => {
+    const getTrendLabel = (trend: 'improved' | 'worsened' | 'stable'): string => {
         switch (trend) {
             case 'improved':
                 return 'Melhorou';
@@ -56,7 +55,7 @@ const ComparisonPage: React.FC = () => {
         }
     };
 
-    const SeverityBar = ({ severity }: { severity: number }) => (
+    const SeverityBar = ({ severity }: { severity: number }): React.ReactElement => (
         <div
             style={{
                 display: 'flex',
@@ -147,7 +146,7 @@ const ComparisonPage: React.FC = () => {
                     gridTemplateColumns: '1fr 1fr',
                     gap: spacing.md,
                     padding: spacing.lg,
-                    backgroundColor: colors.neutral.gray50,
+                    backgroundColor: colors.neutral.gray100,
                     borderRadius: '8px',
                     border: `1px solid ${colors.neutral.gray200}`,
                 }}
@@ -302,7 +301,7 @@ const ComparisonPage: React.FC = () => {
                         fontWeight: '500',
                     }}
                     data-testid="share-comparison-button"
-                    onClick={() => router.push('/care/symptom-checker/share-report')}
+                    onClick={() => void router.push('/care/symptom-checker/share-report')}
                 >
                     Compartilhar
                 </button>

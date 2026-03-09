@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import type { ThemeProps } from 'styled-components';
+
+import { borderRadius } from '../../tokens/borderRadius';
 import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
-import { borderRadius } from '../../tokens/borderRadius';
 import { typography } from '../../tokens/typography';
 
 export const MedicationCardContainer = styled.div`

@@ -1,12 +1,12 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
-import { Button } from 'design-system/components/Button/Button';
 import { Badge } from 'design-system/components/Badge/Badge';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Button } from 'design-system/components/Button/Button';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 interface EmergencyRoom {
     id: string;
@@ -61,11 +61,11 @@ const MOCK_ERS: EmergencyRoom[] = [
 const ERLocatorPage: React.FC = () => {
     const router = useRouter();
 
-    const handleCall = (phone: string) => {
+    const handleCall = (phone: string): void => {
         window.open(`tel:${phone.replace(/\D/g, '')}`, '_self');
     };
 
-    const handleDirections = (address: string) => {
+    const handleDirections = (address: string): void => {
         window.open(`https://maps.google.com/?q=${encodeURIComponent(address)}`, '_blank');
     };
 
@@ -102,7 +102,11 @@ const ERLocatorPage: React.FC = () => {
 
                         <Box
                             display="flex"
-                            style={{ gap: spacing.lg, marginTop: spacing.sm, marginBottom: spacing.md }}
+                            style={{
+                                gap: spacing.lg,
+                                marginTop: spacing.sm,
+                                marginBottom: spacing.md,
+                            }}
                         >
                             <div>
                                 <Text fontSize="xs" color={colors.gray[40]}>

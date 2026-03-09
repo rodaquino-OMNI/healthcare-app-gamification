@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+
+import { Card } from '../../components/Card/Card';
 import { colors } from '../../tokens/colors';
 import { typography } from '../../tokens/typography';
-import { Card } from '../../components/Card/Card';
 import { AchievementBadge } from '../AchievementBadge/AchievementBadge';
 
 /**

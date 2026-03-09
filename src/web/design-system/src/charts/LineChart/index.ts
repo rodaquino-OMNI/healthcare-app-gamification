@@ -9,10 +9,10 @@
  * @packageVersion 1.0.0
  */
 
-import LineChart, { LineChartProps } from './LineChart';
+import LineChart, { type LineChartProps } from './LineChart';
 
 // Export the LineChart props interface for type checking and documentation
-export { LineChartProps };
+export type { LineChartProps };
 
 // Export the LineChart component as the default export
 export default LineChart;

@@ -1,4 +1,4 @@
-import styled, { ThemeProps, css } from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const CheckboxContainer = styled.div<{ disabled?: boolean }>`
     display: flex;
@@ -35,22 +35,40 @@ export const StyledCheckbox = styled.div<{
     border-radius: ${({ theme }) => theme.borderRadius.sm};
     border: 2px solid
         ${({ theme, error, checked, disabled, journey }) => {
-            if (disabled) return theme.colors.neutral.gray400;
-            if (error) return theme.colors.semantic.error;
+            if (disabled) {
+                return theme.colors.neutral.gray400;
+            }
+            if (error) {
+                return theme.colors.semantic.error;
+            }
             if (checked) {
-                if (journey === 'health') return theme.colors.journeys.health.primary;
-                if (journey === 'care') return theme.colors.journeys.care.primary;
-                if (journey === 'plan') return theme.colors.journeys.plan.primary;
+                if (journey === 'health') {
+                    return theme.colors.journeys.health.primary;
+                }
+                if (journey === 'care') {
+                    return theme.colors.journeys.care.primary;
+                }
+                if (journey === 'plan') {
+                    return theme.colors.journeys.plan.primary;
+                }
                 return theme.colors.brand.primary;
             }
             return theme.colors.neutral.gray500;
         }};
     background-color: ${({ theme, checked, disabled, journey }) => {
-        if (disabled) return theme.colors.neutral.gray100;
+        if (disabled) {
+            return theme.colors.neutral.gray100;
+        }
         if (checked) {
-            if (journey === 'health') return theme.colors.journeys.health.primary;
-            if (journey === 'care') return theme.colors.journeys.care.primary;
-            if (journey === 'plan') return theme.colors.journeys.plan.primary;
+            if (journey === 'health') {
+                return theme.colors.journeys.health.primary;
+            }
+            if (journey === 'care') {
+                return theme.colors.journeys.care.primary;
+            }
+            if (journey === 'plan') {
+                return theme.colors.journeys.plan.primary;
+            }
             return theme.colors.brand.primary;
         }
         return theme.colors.neutral.white;

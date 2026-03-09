@@ -1,5 +1,5 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import React from 'react';
 
 jest.mock('design-system/tokens', () => ({
     colors: {
@@ -90,11 +90,13 @@ describe('Contact Page', () => {
     });
 
     it('clicking chat channel routes internally', () => {
-        const { useRouter } = require('next/router');
-        const pushSpy = useRouter().push;
+        const routerModule: { useRouter: () => { push: jest.Mock } } = jest.requireMock('next/router');
+        const pushSpy = routerModule.useRouter().push;
         render(<ContactPage />);
         const chatCard = screen.getByText(/chat ao vivo/i).closest('div');
-        if (chatCard) fireEvent.click(chatCard);
+        if (chatCard) {
+            fireEvent.click(chatCard);
+        }
         expect(pushSpy).toHaveBeenCalledWith('/help/chat');
     });
 });

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 
 type Category = 'All' | 'Yoga' | 'Meditation' | 'Fitness' | 'Nutrition';
 const CATEGORIES: Category[] = ['All', 'Yoga', 'Meditation', 'Fitness', 'Nutrition'];
@@ -28,7 +28,7 @@ const VideoLibraryPage: React.FC = () => {
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <button
-                onClick={() => router.push('/health/wellness-resources')}
+                onClick={() => void router.push('/health/wellness-resources')}
                 style={{
                     background: 'none',
                     border: 'none',
@@ -104,7 +104,7 @@ const VideoLibraryPage: React.FC = () => {
                                     opacity: 0.9,
                                 }}
                             >
-                                <Text fontSize="md" color={colors.white}>
+                                <Text fontSize="md" color={colors.neutral.white}>
                                     &#9654;
                                 </Text>
                             </div>

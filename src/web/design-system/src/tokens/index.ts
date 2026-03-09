@@ -20,14 +20,14 @@
  */
 
 // Import all token categories
-import { colors, brandPalette } from './colors';
-import { typography, fontSizeValues, fontSize } from './typography';
-import { spacing, spacingValues, spacingCompat } from './spacing';
-import { breakpoints, breakpointValues, mediaQueries } from './breakpoints';
-import { shadows } from './shadows';
 import { animation } from './animation';
 import { borderRadius, borderRadiusValues } from './borderRadius';
+import { breakpoints, breakpointValues, mediaQueries } from './breakpoints';
+import { colors, brandPalette } from './colors';
+import { shadows } from './shadows';
 import { sizing, sizingValues } from './sizing';
+import { spacing, spacingValues, spacingCompat } from './spacing';
+import { typography, fontSizeValues, fontSize } from './typography';
 
 // Export individual token categories for granular imports
 export { colors, brandPalette };

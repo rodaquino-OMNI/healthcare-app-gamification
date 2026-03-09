@@ -45,68 +45,70 @@ const ServerErrorPage: NextPage = () => {
                     </button>
                 </div>
             </div>
-            <style jsx>{`
+            <style
+                dangerouslySetInnerHTML={{
+                    __html: `
                 .error-container {
                     display: flex;
                     flex-direction: column;
                     align-items: center;
                     justify-content: center;
                     min-height: 100vh;
-                    padding: 16px; /* md spacing */
-                    background-color: #fff8f0; /* Care journey background */
+                    padding: 16px;
+                    background-color: #fff8f0;
                 }
                 .error-content {
                     max-width: 600px;
-                    padding: 24px; /* lg spacing */
+                    padding: 24px;
                     background-color: white;
-                    border-radius: 8px; /* md border-radius */
-                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* md shadow */
+                    border-radius: 8px;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
                     border-left: 4px solid ${careJourneyColor};
                     text-align: center;
                 }
                 .error-icon {
                     display: flex;
                     justify-content: center;
-                    margin-bottom: 16px; /* md spacing */
+                    margin-bottom: 16px;
                 }
-                h1 {
-                    color: #212121; /* neutral.gray900 */
-                    font-size: 24px; /* 2xl font size */
-                    font-weight: 700; /* bold */
-                    margin-bottom: 16px; /* md spacing */
+                .error-container h1 {
+                    color: #212121;
+                    font-size: 24px;
+                    font-weight: 700;
+                    margin-bottom: 16px;
                 }
-                p {
-                    color: #616161; /* neutral.gray700 */
-                    margin-bottom: 8px; /* sm spacing */
-                    font-size: 16px; /* md font size */
-                    line-height: 1.5; /* base line height */
+                .error-container p {
+                    color: #616161;
+                    margin-bottom: 8px;
+                    font-size: 16px;
+                    line-height: 1.5;
                 }
                 .error-actions {
                     display: flex;
                     flex-direction: column;
-                    gap: 8px; /* sm spacing */
-                    margin-top: 24px; /* lg spacing */
+                    gap: 8px;
+                    margin-top: 24px;
                 }
                 .primary-button {
                     background-color: ${careJourneyColor};
                     color: white;
                     border: none;
                     padding: 12px 24px;
-                    border-radius: 8px; /* md border-radius */
-                    font-weight: 500; /* medium */
+                    border-radius: 8px;
+                    font-weight: 500;
                     cursor: pointer;
                     transition: background-color 0.3s;
                 }
                 .primary-button:hover {
-                    background-color: #f17c3a; /* care.secondary */
+                    background-color: #f17c3a;
                 }
                 .secondary-button {
                     background-color: transparent;
                     color: ${careJourneyColor};
                     border: 1px solid ${careJourneyColor};
                     padding: 12px 24px;
-                    border-radius: 8px; /* md border-radius */
-                    font-weight: 500; /* medium */
+                    border-radius: 8px;
+                    font-weight: 500;
                     cursor: pointer;
                     transition: background-color 0.3s;
                 }
@@ -117,10 +119,12 @@ const ServerErrorPage: NextPage = () => {
                     .error-actions {
                         flex-direction: row;
                         justify-content: center;
-                        gap: 16px; /* md spacing */
+                        gap: 16px;
                     }
                 }
-            `}</style>
+            `,
+                }}
+            />
         </div>
     );
 };

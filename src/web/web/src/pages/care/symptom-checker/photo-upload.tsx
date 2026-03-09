@@ -1,12 +1,11 @@
-import React, { useState, useRef } from 'react';
-import { useRouter } from 'next/router';
-import { Card } from 'design-system/components/Card/Card';
 import { Button } from 'design-system/components/Button/Button';
-import { Text } from 'design-system/primitives/Text/Text';
+import { Card } from 'design-system/components/Card/Card';
 import { Box } from 'design-system/primitives/Box/Box';
+import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { WEB_CARE_ROUTES } from 'shared/constants/routes';
+import { useRouter } from 'next/router';
+import React, { useState, useRef } from 'react';
 
 /** Photo upload page for adding visual evidence to the symptom check. */
 const PhotoUploadPage: React.FC = () => {
@@ -14,32 +13,40 @@ const PhotoUploadPage: React.FC = () => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [previews, setPreviews] = useState<string[]>([]);
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const files = e.target.files;
-        if (!files) return;
+        if (!files) {
+            return;
+        }
         const newPreviews: string[] = [];
         Array.from(files).forEach((file) => {
-            const url = URL.createObjectURL(file);
-            if (url.startsWith('blob:')) {
-                newPreviews.push(url);
+            if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+                return;
             }
+            if (file.size > MAX_FILE_SIZE) {
+                return;
+            }
+            newPreviews.push(URL.createObjectURL(file));
         });
         setPreviews((prev) => [...prev, ...newPreviews].slice(0, 4));
     };
 
-    const removePhoto = (index: number) => {
+    const removePhoto = (index: number): void => {
         setPreviews((prev) => prev.filter((_, i) => i !== index));
     };
 
-    const handleContinue = () => {
-        router.push({
+    const handleContinue = (): void => {
+        void router.push({
             pathname: '/care/symptom-checker/medical-history',
             query: router.query,
         });
     };
 
-    const handleSkip = () => {
-        router.push({
+    const handleSkip = (): void => {
+        void router.push({
             pathname: '/care/symptom-checker/medical-history',
             query: router.query,
         });
@@ -57,7 +64,14 @@ const PhotoUploadPage: React.FC = () => {
             <Card journey="care" elevation="sm" padding="lg">
                 <div
                     data-testid="photo-upload-dropzone"
+                    role="button"
+                    tabIndex={0}
                     onClick={() => fileInputRef.current?.click()}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            fileInputRef.current?.click();
+                        }
+                    }}
                     style={{
                         border: `2px dashed ${colors.journeys.care.primary}`,
                         borderRadius: '8px',

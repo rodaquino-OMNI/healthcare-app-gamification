@@ -1,8 +1,8 @@
-import React from 'react';
 import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import React from 'react';
 
 interface StepProps {
     data: Record<string, unknown>;
@@ -34,9 +34,9 @@ const inputStyle: React.CSSProperties = {
 };
 
 const StepInsuranceInfoPage: React.FC<StepProps> = ({ data, onUpdate }) => {
-    const coverageSelected: string[] = data.coverageDetails || [];
+    const coverageSelected: string[] = (data.coverageDetails as string[]) || [];
 
-    const toggleCoverage = (value: string) => {
+    const toggleCoverage = (value: string): void => {
         const updated = coverageSelected.includes(value)
             ? coverageSelected.filter((c) => c !== value)
             : [...coverageSelected, value];
@@ -64,7 +64,7 @@ const StepInsuranceInfoPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                 </Text>
                 <div style={{ display: 'flex', gap: spacing.xs }}>
                     {['yes', 'no'].map((opt) => {
-                        const isActive = data.hasInsurance === opt;
+                        const isActive = (data.hasInsurance as string) === opt;
                         return (
                             <button
                                 key={opt}
@@ -90,7 +90,7 @@ const StepInsuranceInfoPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                 </div>
             </Card>
 
-            {data.hasInsurance === 'yes' && (
+            {(data.hasInsurance as string) === 'yes' && (
                 <>
                     {/* Provider Name */}
                     <Card journey="health" elevation="sm" padding="lg">
@@ -106,7 +106,7 @@ const StepInsuranceInfoPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                             style={inputStyle}
                             type="text"
                             placeholder="e.g. SulAmerica, Unimed, Bradesco Saude"
-                            value={data.providerName || ''}
+                            value={(data.providerName as string) || ''}
                             onChange={(e) => onUpdate('providerName', e.target.value)}
                             aria-label="Insurance provider name"
                         />
@@ -124,7 +124,7 @@ const StepInsuranceInfoPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                         </Text>
                         <div style={{ display: 'flex', gap: spacing.xs }}>
                             {PLAN_TYPES.map((opt) => {
-                                const isActive = data.planType === opt.value;
+                                const isActive = (data.planType as string) === opt.value;
                                 return (
                                     <button
                                         key={opt.value}
@@ -166,7 +166,7 @@ const StepInsuranceInfoPage: React.FC<StepProps> = ({ data, onUpdate }) => {
                             style={inputStyle}
                             type="text"
                             placeholder="Enter your member ID"
-                            value={data.memberId || ''}
+                            value={(data.memberId as string) || ''}
                             onChange={(e) => onUpdate('memberId', e.target.value)}
                             aria-label="Insurance member ID"
                         />

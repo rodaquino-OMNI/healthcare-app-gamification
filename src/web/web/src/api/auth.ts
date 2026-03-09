@@ -1,8 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { API_BASE_URL } from 'shared/constants/api';
 import { AuthSession } from 'shared/types/auth.types';
 
-import { restClient as client } from './client';
+import { restClient as client } from '@/api/client';
+
+/** User profile data returned by the profile endpoint */
+export interface UserProfile {
+    name?: string;
+    email?: string;
+    phone?: string;
+    cpf?: string;
+    dob?: string;
+    [key: string]: unknown;
+}
 
 /**
  * Authenticates a user with email and password.
@@ -12,10 +21,7 @@ import { restClient as client } from './client';
  * @returns A promise that resolves with the authentication session data
  */
 export const login = async (email: string, password: string): Promise<AuthSession> => {
-    const response = await client.post(`${API_BASE_URL}/auth/login`, {
-        email,
-        password,
-    });
+    const response = await client.post<AuthSession>(`${API_BASE_URL}/auth/login`, { email, password });
 
     return response.data;
 };
@@ -34,8 +40,8 @@ export const logout = async (): Promise<void> => {
  *
  * @returns A promise that resolves with the user profile data
  */
-export const getProfile = async (): Promise<unknown> => {
-    const response = await client.get(`${API_BASE_URL}/auth/profile`);
+export const getProfile = async (): Promise<UserProfile> => {
+    const response = await client.get<UserProfile>(`${API_BASE_URL}/auth/profile`);
 
     return response.data;
 };
@@ -47,7 +53,6 @@ export const getProfile = async (): Promise<unknown> => {
  * @param newPassword - The desired new password
  * @returns A promise that resolves when the password has been changed
  */
-// eslint-disable-next-line max-len
 export const changePassword = async (currentPassword: string, newPassword: string): Promise<void> => {
     await client.put(`${API_BASE_URL}/auth/change-password`, {
         currentPassword,
@@ -60,8 +65,14 @@ export const changePassword = async (currentPassword: string, newPassword: strin
  *
  * @returns A promise that resolves with the QR code and secret for 2FA setup
  */
-export const enable2FA = async (): Promise<{ qrCode?: string; secret?: string }> => {
-    const response = await client.post(`${API_BASE_URL}/auth/2fa/enable`);
+export const enable2FA = async (): Promise<{
+    qrCode?: string;
+    secret?: string;
+}> => {
+    const response = await client.post<{
+        qrCode?: string;
+        secret?: string;
+    }>(`${API_BASE_URL}/auth/2fa/enable`);
 
     return response.data;
 };

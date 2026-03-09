@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
+
+import { Icon } from '../../primitives/Icon/Icon';
+import { Touchable } from '../../primitives/Touchable/Touchable';
+import { borderRadius } from '../../tokens/borderRadius';
 import { colors } from '../../tokens/colors';
+import { sizing } from '../../tokens/sizing';
 import { spacing } from '../../tokens/spacing';
 import { typography } from '../../tokens/typography';
-import { borderRadius } from '../../tokens/borderRadius';
-import { sizing } from '../../tokens/sizing';
-import { Text, TextProps } from '../../primitives/Text/Text';
-import { Touchable, TouchableProps } from '../../primitives/Touchable/Touchable';
-import { Icon, IconProps } from '../../primitives/Icon/Icon';
 
 /**
  * Props interface for the Badge component
@@ -105,7 +105,10 @@ export const BadgeContainer = styled(Touchable)<{
     justify-content: center;
     border-radius: ${(props) => props.theme.borderRadius.md};
     padding: ${(props) => props.theme.spacing.sm};
-    background-color: ${(props) => (props.unlocked ? colors.journeys[props.journey].primary : colors.neutral.gray200)};
+    background-color: ${(props) =>
+        props.unlocked
+            ? colors.journeys[props.journey as keyof typeof colors.journeys].primary
+            : colors.neutral.gray200};
     color: ${(props) => (props.unlocked ? colors.neutral.white : colors.neutral.gray700)};
 `;
 
@@ -177,8 +180,10 @@ export const StatusBadge = styled.span<{
     min-width: ${(props) => (props.dot ? 'auto' : sizing.component['2xs'])};
     padding: ${(props) => (props.dot ? '0' : `${spacing['3xs']} ${spacing.xs}`)};
     background-color: ${(props) =>
-        props.dot ? getStatusColor(props.status as any) : getStatusBgColor(props.status as any)};
-    color: ${(props) => getStatusColor(props.status as any)};
+        props.dot
+            ? getStatusColor(props.status as 'success' | 'warning' | 'error' | 'info' | 'neutral')
+            : getStatusBgColor(props.status as 'success' | 'warning' | 'error' | 'info' | 'neutral')};
+    color: ${(props) => getStatusColor(props.status as 'success' | 'warning' | 'error' | 'info' | 'neutral')};
     font-family: ${typography.fontFamily.base};
     font-size: ${typography.fontSize.xs};
     font-weight: ${typography.fontWeight.medium};
@@ -201,7 +206,7 @@ export const Badge: React.FC<BadgeProps> = ({
     dot = false,
     variant = 'achievement',
 }) => {
-    const badgeSize = getBadgeSize(size);
+    getBadgeSize(size);
 
     // Render status variant when explicitly set
     if (variant === 'status' && status) {

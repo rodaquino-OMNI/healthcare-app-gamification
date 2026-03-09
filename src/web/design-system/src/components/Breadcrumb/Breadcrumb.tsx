@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import { colors } from '../../tokens/colors';
-import { typography } from '../../tokens/typography';
 import { spacing } from '../../tokens/spacing';
+import { typography } from '../../tokens/typography';
 
 export interface BreadcrumbItem {
     label: string;
