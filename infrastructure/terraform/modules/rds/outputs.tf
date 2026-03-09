@@ -3,6 +3,11 @@ output "endpoint" {
   value       = aws_db_instance.rds_instance.endpoint
 }
 
+output "db_endpoint" {
+  description = "The connection endpoint for the RDS instance (alias)"
+  value       = aws_db_instance.rds_instance.endpoint
+}
+
 output "address" {
   description = "The hostname of the RDS instance"
   value       = aws_db_instance.rds_instance.address
@@ -30,11 +35,22 @@ output "resource_id" {
 
 output "name" {
   description = "The database name"
-  value       = aws_db_instance.rds_instance.name
+  value       = aws_db_instance.rds_instance.db_name
+}
+
+output "db_name" {
+  description = "The database name (alias)"
+  value       = aws_db_instance.rds_instance.db_name
 }
 
 output "username" {
   description = "The master username for the database"
+  value       = aws_db_instance.rds_instance.username
+  sensitive   = true
+}
+
+output "db_username" {
+  description = "The master username for the database (alias)"
   value       = aws_db_instance.rds_instance.username
   sensitive   = true
 }
@@ -51,7 +67,7 @@ output "engine_version" {
 
 output "connection_string" {
   description = "PostgreSQL connection string for the database"
-  value       = format("postgresql://%s:%s@%s:%s/%s", aws_db_instance.rds_instance.username, var.db_password, aws_db_instance.rds_instance.address, aws_db_instance.rds_instance.port, aws_db_instance.rds_instance.name)
+  value       = format("postgresql://%s:%s@%s:%s/%s", aws_db_instance.rds_instance.username, var.db_password, aws_db_instance.rds_instance.address, aws_db_instance.rds_instance.port, aws_db_instance.rds_instance.db_name)
   sensitive   = true
 }
 

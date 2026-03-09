@@ -1,16 +1,6 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 5.0.0"
-    }
-  }
-  required_version = ">= 1.5"
-}
-
 # VPC
 resource "aws_vpc" "austa_vpc" {
-  cidr_block           = "10.0.0.0/16"
+  cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
   enable_dns_support   = true
   
@@ -125,57 +115,80 @@ resource "aws_security_group" "allow_ssh" {
     from_port        = 22
     to_port          = 22
     protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
+    cidr_blocks      = [var.vpc_cidr]
     ipv6_cidr_blocks = []
     prefix_list_ids  = []
     security_groups  = []
     self             = false
   }
-  
+
   tags = {
     Name        = "allow_ssh"
     Environment = var.environment
   }
 }
 
-# Variables
-variable "environment" {
-  type        = string
-  description = "The environment name (e.g., dev, staging, prod)"
+# NAT Gateway - Enables private subnets to reach the internet (for EKS image pulls, etc.)
+resource "aws_eip" "nat" {
+  count  = var.enable_nat_gateway ? (var.single_nat_gateway ? 1 : length(var.availability_zones)) : 0
+  domain = "vpc"
+
+  tags = {
+    Name        = "austa-nat-eip-${count.index + 1}"
+    Environment = var.environment
+  }
 }
 
-variable "availability_zones" {
-  type        = list(string)
-  description = "A list of availability zones to use in the region"
+resource "aws_nat_gateway" "main" {
+  count         = var.enable_nat_gateway ? (var.single_nat_gateway ? 1 : length(var.availability_zones)) : 0
+  allocation_id = aws_eip.nat[count.index].id
+  subnet_id     = aws_subnet.public_subnets[count.index].id
+
+  tags = {
+    Name        = "austa-nat-gw-${count.index + 1}"
+    Environment = var.environment
+  }
+
+  depends_on = [aws_internet_gateway.austa_igw]
 }
 
-# Outputs
-output "vpc_id" {
-  value       = aws_vpc.austa_vpc.id
-  description = "The ID of the VPC"
+# Route Table for Private Subnets - Directs traffic through NAT gateway
+resource "aws_route_table" "private_route_table" {
+  count  = var.enable_nat_gateway ? (var.single_nat_gateway ? 1 : length(var.availability_zones)) : 0
+  vpc_id = aws_vpc.austa_vpc.id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.main[var.single_nat_gateway ? 0 : count.index].id
+  }
+
+  tags = {
+    Name        = "austa-private-rt-${count.index + 1}"
+    Environment = var.environment
+  }
 }
 
-output "public_subnet_ids" {
-  value       = aws_subnet.public_subnets.*.id
-  description = "A list of IDs for the public subnets"
+# Associate Private App Subnets with Private Route Table
+resource "aws_route_table_association" "private_app_subnet_associations" {
+  count          = var.enable_nat_gateway ? length(var.availability_zones) : 0
+  subnet_id      = aws_subnet.private_app_subnets[count.index].id
+  route_table_id = aws_route_table.private_route_table[var.single_nat_gateway ? 0 : count.index].id
 }
 
-output "private_app_subnet_ids" {
-  value       = aws_subnet.private_app_subnets.*.id
-  description = "A list of IDs for the private application subnets"
+# Associate Private Data Subnets with Private Route Table
+resource "aws_route_table_association" "private_data_subnet_associations" {
+  count          = var.enable_nat_gateway ? length(var.availability_zones) : 0
+  subnet_id      = aws_subnet.private_data_subnets[count.index].id
+  route_table_id = aws_route_table.private_route_table[var.single_nat_gateway ? 0 : count.index].id
 }
 
-output "private_data_subnet_ids" {
-  value       = aws_subnet.private_data_subnets.*.id
-  description = "A list of IDs for the private data subnets"
-}
+# ElastiCache subnet group - uses private data subnets
+resource "aws_elasticache_subnet_group" "cache" {
+  name       = "austa-cache-subnet-group-${var.environment}"
+  subnet_ids = aws_subnet.private_data_subnets[*].id
 
-output "allow_all_outbound_sg_id" {
-  value       = aws_security_group.allow_all_outbound.id
-  description = "The ID of the security group allowing all outbound traffic"
-}
-
-output "allow_ssh_sg_id" {
-  value       = aws_security_group.allow_ssh.id
-  description = "The ID of the security group allowing SSH traffic"
+  tags = {
+    Name        = "austa-cache-subnet-group"
+    Environment = var.environment
+  }
 }

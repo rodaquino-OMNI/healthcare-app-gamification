@@ -1,3 +1,20 @@
+variable "project_name" {
+  type        = string
+  description = "The project name for resource naming and tagging."
+  default     = "austa"
+}
+
+variable "environment" {
+  type        = string
+  description = "The environment name (e.g., dev, staging, production)."
+  default     = "dev"
+}
+
+variable "vpc_id" {
+  type        = string
+  description = "The VPC ID where the MSK security group will be created."
+}
+
 variable "cluster_name" {
   type        = string
   description = "The name of the MSK cluster."
@@ -37,12 +54,12 @@ variable "security_group_id" {
 variable "ebs_volume_size" {
   type        = number
   description = "The size of the EBS volume for each broker node, in GiB."
-  default     = 100
+  default     = 1000
 }
 
 variable "enhanced_monitoring" {
   type        = string
-  description = "Specifies the level of monitoring for the MSK cluster. Valid values: DEFAULT, PER_BROKER, PER_TOPIC_PER_BROKER, PER_PARTITION_PER_BROKER."
+  description = "Specifies the level of monitoring for the MSK cluster."
   default     = "DEFAULT"
 }
 

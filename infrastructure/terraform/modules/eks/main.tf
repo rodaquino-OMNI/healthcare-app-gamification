@@ -61,9 +61,9 @@ resource "aws_security_group" "eks_cluster_sg" {
   description = "Security group for EKS cluster"
   vpc_id      = var.vpc_id
 
-  tags = merge(var.map_roles, {
+  tags = {
     Name = "${var.cluster_name}-cluster-sg"
-  })
+  }
 }
 
 # Security group rule to allow API server access
@@ -107,21 +107,21 @@ resource "aws_eks_cluster" "this" {
 
   enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
-  # Add any cluster addons if specified
-  dynamic "addon" {
-    for_each = var.cluster_addons
-    content {
-      addon_name               = addon.key
-      addon_version            = addon.value.version
-      resolve_conflicts        = addon.value.resolve_conflicts
-      configuration_values     = addon.value.configuration_values
-    }
-  }
-
   depends_on = [
     aws_iam_role_policy_attachment.eks_cluster_policy,
     aws_iam_role_policy_attachment.eks_service_policy
   ]
+}
+
+# EKS cluster addons (managed separately from the cluster resource)
+resource "aws_eks_addon" "this" {
+  for_each = var.cluster_addons
+
+  cluster_name             = aws_eks_cluster.this.name
+  addon_name               = each.key
+  addon_version            = each.value.version
+  resolve_conflicts_on_update = each.value.resolve_conflicts
+  configuration_values     = each.value.configuration_values
 }
 
 #######################
@@ -169,9 +169,9 @@ resource "aws_security_group" "eks_nodes_sg" {
   description = "Security group for EKS worker nodes"
   vpc_id      = var.vpc_id
 
-  tags = merge(var.map_roles, {
+  tags = {
     Name = "${var.cluster_name}-nodes-sg"
-  })
+  }
 }
 
 # Security group rule to allow nodes to communicate with each other
@@ -240,10 +240,10 @@ resource "aws_eks_node_group" "health_journey" {
     journey = "health"
   }
 
-  tags = merge(var.map_roles, {
+  tags = {
     Name    = "${var.cluster_name}-health-journey"
     Journey = "health"
-  })
+  }
 
   depends_on = [
     aws_iam_role_policy_attachment.eks_worker_node_policy,
@@ -270,10 +270,10 @@ resource "aws_eks_node_group" "care_journey" {
     journey = "care"
   }
 
-  tags = merge(var.map_roles, {
+  tags = {
     Name    = "${var.cluster_name}-care-journey"
     Journey = "care"
-  })
+  }
 
   depends_on = [
     aws_iam_role_policy_attachment.eks_worker_node_policy,
@@ -300,10 +300,10 @@ resource "aws_eks_node_group" "plan_journey" {
     journey = "plan"
   }
 
-  tags = merge(var.map_roles, {
+  tags = {
     Name    = "${var.cluster_name}-plan-journey"
     Journey = "plan"
-  })
+  }
 
   depends_on = [
     aws_iam_role_policy_attachment.eks_worker_node_policy,
@@ -330,10 +330,10 @@ resource "aws_eks_node_group" "gamification" {
     journey = "gamification"
   }
 
-  tags = merge(var.map_roles, {
+  tags = {
     Name    = "${var.cluster_name}-gamification"
     Journey = "gamification"
-  })
+  }
 
   depends_on = [
     aws_iam_role_policy_attachment.eks_worker_node_policy,
@@ -360,10 +360,10 @@ resource "aws_eks_node_group" "shared_services" {
     service = "shared"
   }
 
-  tags = merge(var.map_roles, {
+  tags = {
     Name    = "${var.cluster_name}-shared-services"
     Service = "shared"
-  })
+  }
 
   depends_on = [
     aws_iam_role_policy_attachment.eks_worker_node_policy,

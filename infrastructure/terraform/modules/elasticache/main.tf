@@ -1,60 +1,28 @@
-# ElastiCache cluster resource
-resource "aws_elasticache_cluster" "elasticache_cluster" {
-  cluster_id           = var.cluster_name
-  engine               = "redis"
+# ElastiCache Redis replication group for high availability
+resource "aws_elasticache_replication_group" "redis" {
+  replication_group_id = var.cluster_name
+  description          = "Redis replication group for AUSTA SuperApp"
+
   node_type            = var.node_type
-  num_cache_nodes      = 1
+  num_cache_clusters   = var.num_cache_nodes
   engine_version       = var.engine_version
   port                 = var.port
+  parameter_group_name = var.parameter_group_name
   subnet_group_name    = var.subnet_group_name
-  security_group_names = var.security_group_names
-  
-  tags = {
-    Name = var.cluster_name
-  }
-}
+  security_group_ids   = var.security_group_ids
 
-# Variables
-variable "cluster_name" {
-  description = "The name of the ElastiCache cluster."
-  type        = string
-}
+  automatic_failover_enabled = var.multi_az_enabled
+  multi_az_enabled           = var.multi_az_enabled
 
-variable "engine_version" {
-  description = "The version of the Redis engine to use."
-  type        = string
-  default     = "7.0"
-}
+  at_rest_encryption_enabled = var.at_rest_encryption_enabled
+  transit_encryption_enabled = var.transit_encryption_enabled
 
-variable "node_type" {
-  description = "The type of node to use for the ElastiCache cluster."
-  type        = string
-  default     = "cache.m5.large"
-}
+  maintenance_window       = var.maintenance_window
+  snapshot_retention_limit = var.snapshot_retention_limit
+  snapshot_window          = var.snapshot_window
 
-variable "port" {
-  description = "The port number to use for the ElastiCache cluster."
-  type        = number
-  default     = 6379
-}
+  auto_minor_version_upgrade = var.auto_minor_version_upgrade
+  apply_immediately          = var.apply_immediately
 
-variable "subnet_group_name" {
-  description = "The name of the subnet group to use for the ElastiCache cluster."
-  type        = string
-}
-
-variable "security_group_names" {
-  description = "A list of security group names to associate with the ElastiCache cluster."
-  type        = list(string)
-}
-
-# Outputs
-output "cluster_address" {
-  description = "The address of the ElastiCache cluster."
-  value       = aws_elasticache_cluster.elasticache_cluster.cache_nodes.0.address
-}
-
-output "cluster_port" {
-  description = "The port of the ElastiCache cluster."
-  value       = aws_elasticache_cluster.elasticache_cluster.port
+  tags = var.tags
 }

@@ -6,9 +6,10 @@
 module "network" {
   source = "./modules/network"
 
-  vpc_cidr             = "10.0.0.0/16"
-  public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  private_subnet_cidrs = ["10.0.11.0/24", "10.0.12.0/24", "10.0.13.0/24"]
+  environment          = var.environment
+  vpc_cidr             = var.vpc_cidr
+  public_subnet_cidrs  = var.public_subnet_cidrs
+  private_subnet_cidrs = var.private_subnet_cidrs
   availability_zones   = ["sa-east-1a", "sa-east-1b", "sa-east-1c"]
 }
 
@@ -34,12 +35,10 @@ module "eks" {
 module "rds" {
   source = "./modules/rds"
 
-  # Corrected parameters based on the module's variables.tf
-  name                    = "austa-db"
-  db_name                 = "austa_db"
-  db_username             = "austa"
-  db_password             = "ComplexPassword!" # Note: In production, use AWS Secrets Manager
-  instance_class          = "db.m5.2xlarge"
+  db_name                 = var.database_name
+  db_username             = var.database_username
+  db_password             = var.database_password
+  instance_class          = var.database_instance_class
   engine                  = "postgres"
   engine_version          = "14.6"
   allocated_storage       = 100
@@ -47,20 +46,20 @@ module "rds" {
   backup_retention_period = 30
 
   vpc_id             = module.network.vpc_id
-  subnet_ids         = module.network.private_subnet_ids
+  subnet_ids         = module.network.private_data_subnet_ids
   security_group_ids = [module.eks.worker_security_group_id]
 }
 
-# ElastiCache module - Creates Redis cluster for caching and real-time data
+# ElastiCache module - Creates Redis replication group for caching and real-time data
 module "elasticache" {
   source = "./modules/elasticache"
 
   cluster_name         = "austa-redis"
-  node_type            = "cache.m5.large"
-  num_cache_nodes      = 3
+  node_type            = var.redis_node_type
+  num_cache_nodes      = var.redis_num_cache_nodes
   subnet_group_name    = module.network.cache_subnet_group_name
   security_group_ids   = [module.eks.worker_security_group_id]
-  parameter_group_name = "default.redis7.cluster.on"
+  parameter_group_name = "default.redis7"
   engine_version       = "7.0"
 }
 
@@ -68,23 +67,26 @@ module "elasticache" {
 module "msk" {
   source = "./modules/msk"
 
-  cluster_name         = "austa-kafka"
-  kafka_version        = "3.4.0"
-  broker_count         = 3
-  broker_instance_type = "kafka.m5.large"
+  cluster_name           = "austa-kafka"
+  kafka_version          = "3.4.0"
+  number_of_broker_nodes = var.kafka_brokers
+  broker_instance_type   = "kafka.m5.large"
 
-  vpc_id            = module.network.vpc_id
-  broker_subnet_ids = module.network.private_subnet_ids
-  security_groups   = [module.eks.worker_security_group_id]
+  project_name   = var.project_name
+  environment    = var.environment
+  vpc_id         = module.network.vpc_id
+  client_subnets = module.network.private_subnet_ids
 }
 
 # S3 module - Creates buckets for document storage and other assets
 module "s3" {
   source = "./modules/s3"
 
-  bucket_name = "austa-superapp-documents-${terraform.workspace}"
-  acl         = "private"
-  versioning  = true
+  bucket_name        = "austa-superapp-documents"
+  environment        = var.environment
+  acl                = "private"
+  versioning_enabled = true
+  encryption_enabled = true
 
   lifecycle_rules = [{
     prefix  = "health/"
@@ -105,17 +107,6 @@ module "s3" {
       days = 1825 # 5 years retention for plan documents
     }
   }]
-
-  cors_rules = [{
-    allowed_headers = ["*"]
-    allowed_methods = ["GET", "PUT", "POST"]
-    allowed_origins = ["https://*.austa.com.br"]
-    max_age_seconds = 3000
-  }]
-
-  # Server-side encryption configuration
-  encryption_enabled = true
-  encryption_type    = "AES256"
 }
 
 # Additional resources for monitoring, security, and compliance
