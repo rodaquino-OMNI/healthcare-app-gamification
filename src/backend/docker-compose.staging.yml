@@ -64,7 +64,7 @@ services:
           cpus: '0.5'
 
   kafka:
-    image: confluentinc/cp-kafka:7.5.0
+    image: confluentinc/cp-kafka:8.1.1
     container_name: kafka-staging
     restart: unless-stopped
     environment:

@@ -44,7 +44,7 @@ services:
       retries: 5
 
   kafka:
-    image: confluentinc/cp-kafka:7.3.0
+    image: confluentinc/cp-kafka:8.1.1
     ports:
       - '9092:9092'
     depends_on:
@@ -64,7 +64,7 @@ services:
       retries: 5
 
   kafka-setup:
-    image: confluentinc/cp-kafka:7.3.0
+    image: confluentinc/cp-kafka:8.1.1
     depends_on:
       - kafka
     entrypoint: [ '/bin/sh', '-c' ]

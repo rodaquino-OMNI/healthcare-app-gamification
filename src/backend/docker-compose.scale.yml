@@ -292,7 +292,7 @@ services:
       - austa-network
 
   kafka:
-    image: confluentinc/cp-kafka:7.0.1
+    image: confluentinc/cp-kafka:8.1.1
     container_name: kafka
     ports:
       - "9092:9092"
