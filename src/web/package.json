@@ -211,7 +211,7 @@
       "@babel/plugin-proposal-export-namespace-from": "@babel/plugin-transform-export-namespace-from",
       "@babel/plugin-proposal-logical-assignment-operators": "@babel/plugin-transform-logical-assignment-operators"
     },
-    "cookie": "0.7.2",
+    "cookie": "1.1.1",
     "send": "0.19.2",
     "serve-static": "1.16.3",
     "tar": "7.5.11",
@@ -287,7 +287,7 @@
     "lodash.set": "4.3.2",
     "lodash.get": "4.4.2",
     "cross-fetch": "4.1.0",
-    "cookie": "0.7.2",
+    "cookie": "1.1.1",
     "send": "0.19.2",
     "serve-static": "1.16.3",
     "tar": "7.5.11",
