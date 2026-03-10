@@ -227,7 +227,7 @@ services:
       - austa-network
 
   kafka:
-    image: confluentinc/cp-kafka:7.0.1
+    image: confluentinc/cp-kafka:7.9.5
     container_name: kafka
     ports:
       - "9092:9092"
@@ -242,7 +242,7 @@ services:
       - austa-network
 
   zookeeper:
-    image: confluentinc/cp-zookeeper:7.0.1
+    image: confluentinc/cp-zookeeper:7.9.5
     container_name: zookeeper
     ports:
       - "2181:2181"
