@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { ValidationPipe } from '@nestjs/common'; // @nestjs/common 10.0.0+
 import { ConfigService } from '@nestjs/config'; // @nestjs/config 10.0.0+
 import { NestFactory } from '@nestjs/core'; // @nestjs/core 10.0.0+

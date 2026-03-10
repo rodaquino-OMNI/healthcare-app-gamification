@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 interface AuthenticatedRequest {

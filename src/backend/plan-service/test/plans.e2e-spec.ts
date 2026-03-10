@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RolesGuard } from '@app/auth/auth/guards/roles.guard';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals'; // v29.0.0+

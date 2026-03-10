@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Prisma } from '@prisma/client';
 
 import { EncryptionService } from './encryption.service';

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { FilterDto } from '@app/shared/dto/filter.dto';
 import { PaginationDto } from '@app/shared/dto/pagination.dto';
@@ -32,6 +31,7 @@ export class RolesService {
      * @param createRoleDto The role creation data
      * @returns The newly created role.
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async create(createRoleDto: any): Promise<Role> {
         // Logs the creation attempt.
         this.logger.log(`Creating role: ${createRoleDto.name}`);
@@ -99,6 +99,7 @@ export class RolesService {
      * @param updateRoleDto The role update data
      * @returns The updated role.
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async update(id: string, updateRoleDto: any): Promise<Role> {
         // Logs the attempt to update a role.
         this.logger.log(`Updating role with ID: ${id}`);

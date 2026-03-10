@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Roles } from '@app/auth/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 import { PaginationDto } from '@app/shared/dto/pagination.dto';

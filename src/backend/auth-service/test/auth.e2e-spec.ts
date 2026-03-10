@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';

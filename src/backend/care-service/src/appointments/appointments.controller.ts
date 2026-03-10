@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 import { RolesGuard } from '@app/auth/auth/guards/roles.guard';
 import { PhiAccess } from '@app/shared/audit';

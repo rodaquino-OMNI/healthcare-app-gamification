@@ -1,0 +1,850 @@
+review_metadata:
+  date: "2026-03-09"
+  reviewer: "Worker-2 (TERRAFORM-REVIEWER) / V3 Security Architecture Agent"
+  scope: "infrastructure/terraform/"
+  total_files: 28
+  total_resources: 63
+  methodology: "STRIDE + DREAD threat modeling, HIPAA/LGPD compliance checks"
+  risk_summary: "3 critical, 8 high, 9 medium, 5 low findings"
+
+findings:
+  critical:
+    - id: TF-CRIT-001
+      title: "Hardcoded database password in root main.tf"
+      file: "main.tf"
+      line: 41
+      severity: critical
+      cvss: 9.1
+      dread_score:
+        damage: 10
+        reproducibility: 10
+        exploitability: 9
+        affected_users: 10
+        discoverability: 8
+        total: 9.4
+      description: >
+        The root main.tf contains a hardcoded database password on line 41:
+        db_password = "ComplexPassword!". This password is stored in plaintext
+        in version control. Anyone with repository access (including CI/CD logs,
+        terraform state files, and plan outputs) can extract this credential.
+        For a healthcare application handling PHI/PII under LGPD, this is a
+        compliance violation and a direct path to data breach.
+      affected_resources:
+        - "module.rds (aws_db_instance)"
+      recommendation: >
+        Use AWS Secrets Manager with aws_secretsmanager_secret_version data source
+        to retrieve the password at plan/apply time. Alternatively, use
+        random_password resource combined with aws_secretsmanager_secret to
+        auto-generate and store credentials. Remove the hardcoded value immediately,
+        rotate the password, and audit access logs for any unauthorized usage.
+      remediation_priority: "immediate"
+      compliance_impact:
+        - "LGPD Art. 46 (security measures)"
+        - "HIPAA 164.312(a)(1) (access control)"
+        - "HIPAA 164.312(d) (person/entity authentication)"
+
+    - id: TF-CRIT-002
+      title: "Hardcoded database password in staging environment"
+      file: "environments/staging/variables.tf"
+      line: 96
+      severity: critical
+      cvss: 8.5
+      dread_score:
+        damage: 9
+        reproducibility: 10
+        exploitability: 9
+        affected_users: 8
+        discoverability: 8
+        total: 8.8
+      description: >
+        The staging variables.tf contains a default password value of "admin123"
+        on line 96 for the db_password variable. Although marked sensitive, the
+        default value is stored in plaintext in the Terraform source files. This
+        is an extremely weak password that would be trivially brute-forced.
+        Additionally, environments/staging/main.tf line 83 also hardcodes
+        db_password = "changeme" directly in the RDS module call.
+      affected_resources:
+        - "module.rds in environments/staging/main.tf"
+      recommendation: >
+        Remove all default values for sensitive variables. Require passwords to be
+        provided via terraform.tfvars (excluded from version control), environment
+        variables (TF_VAR_db_password), or AWS Secrets Manager data sources. Never
+        set default values for credentials.
+      remediation_priority: "immediate"
+      compliance_impact:
+        - "LGPD Art. 46"
+        - "CIS AWS Foundations Benchmark 2.3.3"
+
+    - id: TF-CRIT-003
+      title: "EKS API server endpoint publicly accessible with 0.0.0.0/0"
+      file: "modules/eks/main.tf"
+      line: 70-77
+      severity: critical
+      cvss: 8.8
+      dread_score:
+        damage: 9
+        reproducibility: 8
+        exploitability: 8
+        affected_users: 10
+        discoverability: 9
+        total: 8.8
+      description: >
+        The EKS cluster security group allows ingress on port 443 from 0.0.0.0/0
+        (line 76), making the Kubernetes API server accessible from any IP address
+        on the internet. Combined with endpoint_public_access = true (line 105),
+        this exposes the entire cluster control plane to the public internet.
+        Attackers can enumerate the API, attempt credential stuffing, or exploit
+        any unpatched Kubernetes vulnerabilities.
+      affected_resources:
+        - "aws_security_group_rule.eks_cluster_ingress"
+        - "aws_eks_cluster.this (vpc_config)"
+      recommendation: >
+        1. Set endpoint_public_access = false or restrict to specific CIDR blocks
+        using public_access_cidrs in the EKS cluster vpc_config.
+        2. Replace the 0.0.0.0/0 ingress rule with a list of trusted CIDR blocks
+        (VPN, bastion host, CI/CD runner IPs).
+        3. Use a bastion host or AWS SSM Session Manager for cluster access.
+        4. Consider using AWS PrivateLink for API server access.
+      remediation_priority: "immediate"
+      compliance_impact:
+        - "HIPAA 164.312(e)(1) (transmission security)"
+        - "CIS EKS Benchmark 5.4.1"
+
+  high:
+    - id: TF-HIGH-001
+      title: "SSH security group allows access from 0.0.0.0/0"
+      file: "modules/network/main.tf"
+      line: 119-139
+      severity: high
+      cvss: 7.5
+      dread_score:
+        damage: 8
+        reproducibility: 9
+        exploitability: 7
+        affected_users: 8
+        discoverability: 8
+        total: 8.0
+      description: >
+        The network module creates a security group named "allow_ssh" that permits
+        SSH (port 22) inbound traffic from 0.0.0.0/0. This exposes any attached
+        instances to SSH brute-force attacks from the entire internet. SSH should
+        never be open to 0.0.0.0/0 in a healthcare environment.
+      affected_resources:
+        - "aws_security_group.allow_ssh"
+      recommendation: >
+        1. Remove the allow_ssh security group entirely. Use AWS SSM Session Manager
+        for instance access (no SSH key management, full audit trail).
+        2. If SSH is required, restrict to VPN or bastion host CIDR blocks only.
+        3. Implement fail2ban or AWS Network Firewall IPS rules.
+
+    - id: TF-HIGH-002
+      title: "S3 uses AES256 instead of KMS CMK for healthcare/PHI data"
+      file: "modules/s3/main.tf"
+      line: 28-37
+      severity: high
+      cvss: 6.5
+      dread_score:
+        damage: 7
+        reproducibility: 5
+        exploitability: 5
+        affected_users: 9
+        discoverability: 4
+        total: 6.0
+      description: >
+        The S3 module uses AES256 (SSE-S3) server-side encryption instead of
+        AWS KMS Customer Managed Key (SSE-KMS). For healthcare data containing
+        PHI under LGPD, KMS CMK provides essential capabilities: audit trail
+        of all key usage via CloudTrail, key rotation control, granular access
+        policies via KMS key policies, and the ability to revoke access by
+        disabling the key. AES256 provides encryption but lacks these governance
+        features required for compliance.
+      affected_resources:
+        - "aws_s3_bucket_server_side_encryption_configuration.main"
+      recommendation: >
+        1. Create a dedicated KMS CMK for healthcare data encryption.
+        2. Change sse_algorithm from "AES256" to "aws:kms".
+        3. Add kms_master_key_id referencing the CMK.
+        4. Enable automatic key rotation on the CMK.
+        5. Configure KMS key policy with least-privilege access.
+
+    - id: TF-HIGH-003
+      title: "Hardcoded SNS ARN with dummy AWS account ID"
+      file: "main.tf"
+      line: 128
+      severity: high
+      cvss: 5.5
+      dread_score:
+        damage: 6
+        reproducibility: 10
+        exploitability: 3
+        affected_users: 7
+        discoverability: 9
+        total: 7.0
+      description: >
+        The monitoring module uses a hardcoded SNS topic ARN containing a
+        placeholder AWS account ID (123456789012):
+        "arn:aws:sns:sa-east-1:123456789012:austa-alarms". This means
+        alarm notifications will fail silently because the topic does not exist.
+        Critical security and availability alerts will never be delivered,
+        leaving the team blind to incidents.
+      affected_resources:
+        - "module.monitoring"
+      recommendation: >
+        1. Create the SNS topic as a Terraform resource (aws_sns_topic).
+        2. Reference it dynamically: alarm_sns_topic = aws_sns_topic.alarms.arn
+        3. Configure SNS subscriptions for the operations team.
+        4. Use data.aws_caller_identity.current.account_id for dynamic ARN construction.
+
+    - id: TF-HIGH-004
+      title: "No NAT Gateway provisioned for private subnets"
+      file: "modules/network/main.tf"
+      line: 1-180
+      severity: high
+      cvss: 6.0
+      dread_score:
+        damage: 7
+        reproducibility: 10
+        exploitability: 3
+        affected_users: 10
+        discoverability: 5
+        total: 7.0
+      description: >
+        The network module defines private subnets (private_app_subnets and
+        private_data_subnets) but does not create NAT Gateways or NAT instances
+        to provide outbound internet connectivity. The variable enable_nat_gateway
+        exists in variables.tf with default true, but the main.tf does not
+        implement any NAT Gateway resources. Private subnets have no route table
+        association for internet-bound traffic. This means EKS worker nodes,
+        RDS instances, and other private resources cannot reach external services,
+        download container images, or receive security patches.
+      affected_resources:
+        - "aws_subnet.private_app_subnets"
+        - "aws_subnet.private_data_subnets"
+        - "EKS worker nodes in private subnets"
+      recommendation: >
+        1. Add aws_eip and aws_nat_gateway resources (one per AZ for HA, or
+        single for cost savings).
+        2. Create private route tables with 0.0.0.0/0 -> NAT Gateway routes.
+        3. Associate private subnets with private route tables.
+        4. Use the existing enable_nat_gateway and single_nat_gateway variables.
+
+    - id: TF-HIGH-005
+      title: "RDS instance missing encryption at rest configuration"
+      file: "modules/rds/main.tf"
+      line: 27-53
+      severity: high
+      cvss: 7.0
+      dread_score:
+        damage: 8
+        reproducibility: 5
+        exploitability: 4
+        affected_users: 10
+        discoverability: 3
+        total: 6.0
+      description: >
+        The aws_db_instance resource in the RDS module does not set
+        storage_encrypted = true or specify a kms_key_id. By default, RDS
+        instances are NOT encrypted at rest. For a healthcare application
+        storing patient health records, this violates LGPD data protection
+        requirements and HIPAA encryption mandates. Unencrypted database
+        storage means that physical media theft, snapshot exposure, or backup
+        compromise would expose PHI in cleartext.
+      affected_resources:
+        - "aws_db_instance.rds_instance"
+      recommendation: >
+        1. Add storage_encrypted = true to the RDS instance resource.
+        2. Create and reference a KMS CMK via kms_key_id for key governance.
+        3. Note: Encryption cannot be enabled on an existing unencrypted instance;
+        a snapshot-restore migration is required.
+
+    - id: TF-HIGH-006
+      title: "RDS skip_final_snapshot enabled - data loss risk"
+      file: "modules/rds/main.tf"
+      line: 37
+      severity: high
+      cvss: 6.5
+      dread_score:
+        damage: 9
+        reproducibility: 10
+        exploitability: 2
+        affected_users: 10
+        discoverability: 3
+        total: 6.8
+      description: >
+        The RDS instance has skip_final_snapshot = true. If the instance is
+        accidentally or intentionally destroyed via terraform destroy, no final
+        snapshot will be taken. This could result in permanent loss of all
+        healthcare data. Combined with deletion_protection defaulting to false
+        in the module, accidental data destruction is likely.
+      affected_resources:
+        - "aws_db_instance.rds_instance"
+      recommendation: >
+        1. Set skip_final_snapshot = false.
+        2. Configure final_snapshot_identifier with a meaningful name.
+        3. Set deletion_protection = true (especially for production).
+        4. Implement cross-region automated backups for DR.
+
+    - id: TF-HIGH-007
+      title: "ElastiCache missing encryption at rest and in transit"
+      file: "modules/elasticache/main.tf"
+      line: 2-15
+      severity: high
+      cvss: 7.0
+      dread_score:
+        damage: 7
+        reproducibility: 5
+        exploitability: 5
+        affected_users: 8
+        discoverability: 4
+        total: 5.8
+      description: >
+        The ElastiCache cluster resource (aws_elasticache_cluster) does not
+        configure at_rest_encryption_enabled or transit_encryption_enabled.
+        Although these variables exist in variables.tf with defaults of true,
+        they are NOT referenced in the main.tf resource definition. This means
+        Redis data (which may contain cached PHI, session tokens, or PII)
+        is stored and transmitted in cleartext. Additionally, the resource uses
+        num_cache_nodes = 1 (hardcoded), ignoring the variable, which means
+        no high availability.
+      affected_resources:
+        - "aws_elasticache_cluster.elasticache_cluster"
+      recommendation: >
+        1. Add at_rest_encryption_enabled = var.at_rest_encryption_enabled.
+        2. Add transit_encryption_enabled = var.transit_encryption_enabled.
+        3. Use aws_elasticache_replication_group instead of aws_elasticache_cluster
+        for multi-node HA with automatic failover.
+        4. Reference num_cache_nodes = var.num_cache_nodes instead of hardcoding 1.
+        5. Add auth_token for Redis AUTH password.
+
+    - id: TF-HIGH-008
+      title: "MSK allows plaintext Kafka traffic alongside TLS"
+      file: "modules/msk/main.tf"
+      line: 118-121
+      severity: high
+      cvss: 6.8
+      dread_score:
+        damage: 7
+        reproducibility: 7
+        exploitability: 6
+        affected_users: 8
+        discoverability: 5
+        total: 6.6
+      description: >
+        The MSK cluster encryption_in_transit configuration uses
+        client_broker = "TLS_PLAINTEXT" which allows BOTH TLS and plaintext
+        connections. This means any misconfigured client could send healthcare
+        event data over unencrypted channels. Additionally, the MSK security
+        group allows plaintext Kafka traffic on port 9092 (lines 7-13). The
+        Kafka configuration also sets unclean.leader.election.enable = "true"
+        (line 94), which can cause data loss.
+      affected_resources:
+        - "aws_msk_cluster.main"
+        - "aws_security_group.msk_broker (port 9092 ingress)"
+      recommendation: >
+        1. Change client_broker from "TLS_PLAINTEXT" to "TLS" to enforce
+        encrypted connections only.
+        2. Remove the port 9092 (plaintext) ingress rule from the security group.
+        3. Set unclean.leader.election.enable = "false" to prevent data loss.
+        4. Enable SASL/SCRAM or mTLS authentication for client connections.
+
+  medium:
+    - id: TF-MED-001
+      title: "Inconsistent AWS provider version constraints"
+      file: "multiple files"
+      severity: medium
+      description: >
+        Provider version constraints are inconsistent across the codebase:
+        - Root providers.tf: aws ~> 5.0
+        - modules/eks/main.tf: aws ~> 5.0
+        - modules/rds/main.tf: aws ~> 4.0
+        - modules/network/main.tf: aws >= 5.0.0
+        - environments/production/main.tf: aws ~> 4.0
+        - environments/staging/main.tf: aws ~> 4.0
+        This can cause version conflicts, unexpected behavior, and security
+        patches not being applied uniformly.
+      recommendation: >
+        Standardize all modules to a single version constraint (aws ~> 5.0).
+        Use a shared versions.tf or terraform.lock.hcl to pin exact versions.
+
+    - id: TF-MED-002
+      title: "Duplicate variable definitions in RDS module"
+      file: "modules/rds/main.tf and modules/rds/variables.tf"
+      severity: medium
+      description: >
+        The RDS module defines variables in BOTH main.tf (lines 56-161) and
+        variables.tf. Several variables appear in both files with different
+        defaults (e.g., db_username defaults to "austa" in main.tf but
+        "austa_admin" in variables.tf). This causes Terraform errors or
+        unpredictable behavior depending on which file is parsed first.
+      recommendation: >
+        Consolidate all variable definitions into variables.tf only. Remove
+        all variable blocks from main.tf. Ensure consistent default values.
+
+    - id: TF-MED-003
+      title: "Duplicate output definitions in RDS and network modules"
+      file: "modules/rds/main.tf, modules/rds/outputs.tf, modules/network/main.tf, modules/network/outputs.tf"
+      severity: medium
+      description: >
+        The RDS module defines outputs (address, port, arn) in both main.tf
+        and outputs.tf. The network module defines outputs (vpc_id,
+        public_subnet_ids) in both main.tf and outputs.tf with different
+        resource references (outputs.tf references aws_vpc.main.id while
+        main.tf references aws_vpc.austa_vpc.id). These inconsistencies
+        indicate the modules may not function correctly and could break
+        dependent modules.
+      recommendation: >
+        Consolidate all outputs into outputs.tf only. Ensure resource names
+        are consistent across the module.
+
+    - id: TF-MED-004
+      title: "WAF only implements one of three specified managed rule groups"
+      file: "modules/waf/main.tf"
+      line: 21-60
+      severity: medium
+      description: >
+        The root main.tf specifies three managed rule groups for WAF:
+        AWSManagedRulesCommonRuleSet, AWSManagedRulesKnownBadInputsRuleSet,
+        and AWSManagedRulesSQLiRuleSet. However, the WAF module only implements
+        AWSManagedRulesCommonRuleSet. The managed_rule_groups variable is accepted
+        but never iterated over using a dynamic block. This leaves the
+        application without SQL injection protection and known-bad-input
+        filtering at the WAF layer.
+      recommendation: >
+        1. Replace the static rule block with a dynamic block iterating over
+        var.managed_rule_groups.
+        2. Add AWSManagedRulesAmazonIpReputationList for IP reputation filtering.
+        3. Add rate-limiting rules to prevent DDoS and brute-force attacks.
+        4. Consider adding custom rules for healthcare-specific patterns.
+
+    - id: TF-MED-005
+      title: "No VPC Flow Logs configured"
+      file: "modules/network/main.tf"
+      severity: medium
+      description: >
+        The network module does not configure VPC Flow Logs. Without flow
+        logs, there is no visibility into network traffic patterns, failed
+        connection attempts, or potential data exfiltration. This is a
+        compliance requirement for LGPD (auditability) and essential for
+        incident response.
+      recommendation: >
+        1. Add aws_flow_log resource for the VPC with log_destination_type
+        set to "cloud-watch-logs" or "s3".
+        2. Set traffic_type = "ALL" to capture both accepted and rejected traffic.
+        3. Configure appropriate retention period (minimum 90 days for compliance).
+        4. Create CloudWatch alarms for suspicious traffic patterns.
+
+    - id: TF-MED-006
+      title: "Monitoring module is a stub with no real alerting"
+      file: "modules/monitoring/main.tf"
+      severity: medium
+      description: >
+        The monitoring module only creates a single CloudWatch Log Group and
+        passes through the SNS ARN. There are no CloudWatch alarms, no metric
+        filters, no dashboards, and no alerting rules defined. The SNS topic
+        itself is not created as a Terraform resource. For a healthcare
+        application, comprehensive monitoring with alerting on security events,
+        error rates, latency, and resource utilization is essential.
+      recommendation: >
+        1. Create the SNS topic as a resource with proper subscriptions.
+        2. Add CloudWatch alarms for: CPU/memory utilization, error rates,
+        API latency, failed authentication attempts, unauthorized access.
+        3. Add metric filters for security-relevant log patterns.
+        4. Create CloudWatch dashboards per journey namespace.
+        5. Configure AWS GuardDuty and SecurityHub integration.
+
+    - id: TF-MED-007
+      title: "EKS cluster version 1.25 is end-of-life"
+      file: "modules/eks/variables.tf"
+      line: 8-11
+      severity: medium
+      description: >
+        The EKS cluster defaults to Kubernetes version 1.25, which reached
+        end of standard support in February 2024 and extended support ends
+        in February 2025. Running an unsupported Kubernetes version means no
+        security patches for control plane vulnerabilities.
+      recommendation: >
+        Upgrade to a supported EKS version (1.29 or 1.30 as of 2026).
+        Plan a rolling upgrade path: 1.25 -> 1.26 -> 1.27 -> 1.28 -> 1.29 -> 1.30.
+        Test workload compatibility at each version step.
+
+    - id: TF-MED-008
+      title: "RDS PostgreSQL version 14.6 is outdated"
+      file: "main.tf"
+      line: 44
+      severity: medium
+      description: >
+        The RDS instance uses PostgreSQL 14.6, which has known security
+        vulnerabilities fixed in later minor versions. PostgreSQL 14 itself
+        will reach end-of-life in November 2026, requiring upgrade planning.
+      recommendation: >
+        1. Upgrade to the latest PostgreSQL 14.x minor version for security fixes.
+        2. Plan migration to PostgreSQL 15 or 16 for long-term support.
+        3. Test application compatibility before upgrading.
+
+    - id: TF-MED-009
+      title: "Terraform state backend lacks DynamoDB encryption and point-in-time recovery"
+      file: "backend.tf"
+      severity: medium
+      description: >
+        The backend S3 bucket has encrypt = true for the state file, which is
+        good. However, the DynamoDB lock table configuration does not specify
+        encryption or point-in-time recovery. The Terraform state file contains
+        all infrastructure secrets (including the hardcoded database password)
+        in plaintext. If the state file is compromised, all secrets are exposed.
+      recommendation: >
+        1. Ensure the state S3 bucket uses KMS CMK encryption (not just AES256).
+        2. Enable versioning on the state bucket.
+        3. Enable DynamoDB point-in-time recovery for the lock table.
+        4. Restrict bucket access with a strict bucket policy.
+        5. Enable S3 access logging on the state bucket.
+
+  low:
+    - id: TF-LOW-001
+      title: "EKS node groups use all outbound 0.0.0.0/0 egress"
+      file: "modules/eks/main.tf"
+      line: 211-219
+      severity: low
+      description: >
+        Worker node security group allows all outbound traffic (0.0.0.0/0).
+        While common for EKS, restricting egress to known endpoints
+        (ECR, S3, CloudWatch, API server) would reduce data exfiltration risk.
+      recommendation: >
+        Consider restricting egress to required AWS service endpoints using
+        VPC endpoints (PrivateLink) and security group rules.
+
+    - id: TF-LOW-002
+      title: "No resource tagging strategy enforced at module level"
+      file: "multiple modules"
+      severity: low
+      description: >
+        Tagging is inconsistent across modules. Some use var.tags (s3, staging),
+        some use hardcoded tags (rds, elasticache), and some use var.map_roles
+        (eks - which is actually a role mapping variable being misused as tags).
+        The EKS module uses var.map_roles for tags, which is semantically incorrect.
+      recommendation: >
+        1. Standardize on a var.tags map passed to all modules.
+        2. Include mandatory tags: Environment, Project, ManagedBy, DataClassification,
+        Compliance (LGPD/HIPAA).
+        3. Use AWS Config rules to enforce tag compliance.
+
+    - id: TF-LOW-003
+      title: "S3 CORS allows DELETE method"
+      file: "modules/s3/main.tf"
+      line: 197-203
+      severity: low
+      description: >
+        The S3 CORS configuration allows the DELETE method from web origins.
+        While public access is blocked, allowing DELETE via CORS could be
+        exploited if credentials are compromised via XSS.
+      recommendation: >
+        Remove DELETE from allowed_methods in CORS unless explicitly required
+        by the application. Use pre-signed URLs with specific permissions instead.
+
+    - id: TF-LOW-004
+      title: "Kubeconfig file written to module directory"
+      file: "modules/eks/main.tf"
+      line: 481-489
+      severity: low
+      description: >
+        The EKS module writes a kubeconfig file to the module directory with
+        chmod 0600. While the permissions are appropriate, storing credentials
+        in the filesystem during terraform apply could leave sensitive data
+        on CI/CD runners or developer machines.
+      recommendation: >
+        Use aws eks update-kubeconfig command instead of generating the file
+        via Terraform. If file generation is needed, use local_sensitive_file
+        and ensure cleanup in CI/CD pipelines.
+
+    - id: TF-LOW-005
+      title: "Production environment module source uses relative path to non-standard location"
+      file: "environments/production/main.tf"
+      line: 27-28
+      severity: low
+      description: >
+        Production main.tf references modules via "../modules/..." which is
+        a relative path going up to a sibling directory. This can break
+        when the directory structure changes and lacks version pinning.
+      recommendation: >
+        Use a Terraform module registry or Git source with version tags for
+        production module references to ensure immutable, versioned deployments.
+
+module_reviews:
+  network:
+    status: "reviewed"
+    findings_count: 3
+    encryption_at_rest: "n/a"
+    encryption_in_transit: "n/a"
+    least_privilege: false
+    private_subnets: true
+    nat_gateway: false
+    vpc_flow_logs: false
+    notes: >
+      Network module creates VPC with 3-tier subnet architecture (public, private-app,
+      private-data) which is good. However: (1) No NAT Gateway implemented despite
+      variable existing. (2) SSH security group allows 0.0.0.0/0 ingress - critical
+      violation. (3) No VPC Flow Logs for network audit trail. (4) Duplicate outputs
+      between main.tf and outputs.tf reference different resource names
+      (aws_vpc.austa_vpc vs aws_vpc.main), indicating broken module.
+
+  eks:
+    status: "reviewed"
+    findings_count: 4
+    encryption_at_rest: "partial"
+    encryption_in_transit: true
+    least_privilege: false
+    notes: >
+      EKS module is comprehensive with 5 journey-specific node groups, OIDC provider,
+      Kubernetes namespaces, and proper IAM roles. However: (1) API server open to
+      0.0.0.0/0 - critical. (2) Cluster version 1.25 is EOL. (3) endpoint_public_access
+      = true without CIDR restriction. (4) map_roles variable misused as tags parameter.
+      (5) Cluster logging enabled for all types - good. (6) OIDC provider for IRSA - good.
+
+  rds:
+    status: "reviewed"
+    findings_count: 5
+    encryption_at_rest: false
+    encryption_in_transit: false
+    least_privilege: "partial"
+    multi_az: "configurable (default false in module, true in root)"
+    backup_retention: "configurable (default 7 days)"
+    deletion_protection: "configurable (default false in module)"
+    notes: >
+      RDS module has critical issues: (1) No storage_encrypted attribute - PHI stored
+      unencrypted. (2) Hardcoded password in root main.tf. (3) skip_final_snapshot = true
+      risks data loss. (4) Duplicate variable and output definitions between main.tf
+      and variables.tf/outputs.tf. (5) apply_immediately = true could cause downtime.
+      (6) No SSL enforcement for database connections. (7) publicly_accessible defaults
+      to false - good. (8) Performance Insights available but defaults to off.
+
+  elasticache:
+    status: "reviewed"
+    findings_count: 2
+    encryption_at_rest: false
+    encryption_in_transit: false
+    least_privilege: "partial"
+    multi_az: "not configured"
+    notes: >
+      ElastiCache module has a significant gap between variables.tf and main.tf.
+      Variables define at_rest_encryption_enabled, transit_encryption_enabled,
+      multi_az_enabled, snapshot_retention_limit, and parameter_group_name, but
+      NONE of these are referenced in the actual resource definition in main.tf.
+      The resource uses hardcoded num_cache_nodes = 1 despite the variable existing.
+      Additionally, uses security_group_names instead of security_group_ids
+      (deprecated attribute). Single node = no HA for caching layer.
+
+  msk:
+    status: "reviewed"
+    findings_count: 2
+    encryption_at_rest: true
+    encryption_in_transit: "partial (TLS_PLAINTEXT allows unencrypted)"
+    least_privilege: "partial"
+    notes: >
+      MSK module is the most security-mature module: KMS CMK encryption at rest,
+      CloudWatch logging, Prometheus monitoring, and proper security groups scoped
+      to VPC CIDR. However: (1) TLS_PLAINTEXT mode allows unencrypted client
+      connections - should be TLS only. (2) unclean.leader.election.enable = true
+      can cause data loss. (3) No SASL/SCRAM or mTLS client authentication.
+      (4) Variable names in main.tf don't match variables.tf (uses private_subnet_ids
+      vs client_subnets, msk_kafka_version vs kafka_version, etc.).
+
+  s3:
+    status: "reviewed"
+    findings_count: 2
+    encryption_at_rest: "partial (AES256, not KMS CMK)"
+    encryption_in_transit: "enforced via HTTPS (implicit)"
+    least_privilege: true
+    versioning: true
+    public_access_blocked: true
+    cross_region_replication: "available but disabled by default"
+    notes: >
+      S3 module is well-structured with: public access block (all four settings true),
+      versioning, lifecycle rules, cross-region replication support, and CORS
+      configuration. Main issues: (1) Uses AES256 instead of KMS CMK - insufficient
+      key governance for PHI. (2) outputs.tf references aws_s3_bucket.s3_bucket
+      while main.tf uses aws_s3_bucket.main - module will not plan/apply successfully.
+      (3) CORS allows DELETE method. (4) No bucket policy enforcing HTTPS-only access.
+
+  monitoring:
+    status: "reviewed"
+    findings_count: 1
+    encryption_at_rest: "n/a"
+    encryption_in_transit: "n/a"
+    least_privilege: "n/a"
+    notes: >
+      Monitoring module is a minimal stub. Only creates one CloudWatch Log Group
+      and passes through the SNS ARN. No alarms, no metrics, no dashboards.
+      For healthcare compliance, this needs substantial expansion: GuardDuty,
+      SecurityHub, CloudTrail, Config Rules, and journey-specific alerting.
+
+  waf:
+    status: "reviewed"
+    findings_count: 1
+    encryption_at_rest: "n/a"
+    encryption_in_transit: "n/a"
+    least_privilege: "n/a"
+    notes: >
+      WAF module is a partial implementation. Only AWSManagedRulesCommonRuleSet
+      is configured despite three rule groups being specified in the root module
+      call. The managed_rule_groups variable is accepted but never used in a
+      dynamic block. Missing: rate limiting, IP reputation list, bot control,
+      and custom healthcare API protection rules.
+
+  environments_production:
+    status: "reviewed"
+    findings_count: 1
+    notes: >
+      Production environment properly uses var.db_password (no hardcoded value in
+      module call), which is good. However, it lacks many parameters compared
+      to the root main.tf (no monitoring module, no WAF module, no lifecycle
+      rules for S3). The aws provider version ~> 4.0 is inconsistent with root
+      module requiring ~> 5.0. Missing: multi_az, backup_retention, encryption
+      settings for RDS.
+
+  environments_staging:
+    status: "reviewed"
+    findings_count: 2
+    notes: >
+      Staging environment has hardcoded db_password = "changeme" in the RDS module
+      call and default password "admin123" in variables.tf. Uses a comprehensive
+      set of variables but references outputs that may not exist in the network
+      module (private_data_subnet_ids, cache_security_group_id, kafka_security_group_id,
+      db_security_group_id). These mismatches suggest the staging config has
+      never been successfully applied.
+
+recommendations:
+  immediate:
+    - title: "Remove all hardcoded credentials"
+      description: >
+        Remove hardcoded passwords from main.tf (line 41), staging/main.tf (line 83),
+        and staging/variables.tf (line 96). Implement AWS Secrets Manager integration
+        for all database credentials. Rotate all exposed passwords immediately.
+      effort: "2-4 hours"
+      impact: "Eliminates 2 critical findings (TF-CRIT-001, TF-CRIT-002)"
+
+    - title: "Restrict EKS API server and SSH access"
+      description: >
+        Replace 0.0.0.0/0 CIDR blocks in EKS cluster ingress and SSH security group
+        with specific trusted CIDR blocks. Set endpoint_public_access = false or
+        configure public_access_cidrs. Remove the allow_ssh security group entirely
+        and use SSM Session Manager.
+      effort: "1-2 hours"
+      impact: "Eliminates 1 critical + 1 high finding (TF-CRIT-003, TF-HIGH-001)"
+
+    - title: "Enable encryption at rest for RDS and ElastiCache"
+      description: >
+        Add storage_encrypted = true and kms_key_id to RDS. Add
+        at_rest_encryption_enabled and transit_encryption_enabled to ElastiCache.
+        Note: RDS encryption requires snapshot-restore migration for existing instances.
+      effort: "4-8 hours (including migration)"
+      impact: "Eliminates 2 high findings (TF-HIGH-005, TF-HIGH-007)"
+
+  short_term:
+    - title: "Upgrade S3 encryption to KMS CMK"
+      description: >
+        Create a KMS CMK for healthcare data. Change S3 encryption from AES256
+        to aws:kms. Add S3 bucket policy enforcing ssl-only access (aws:SecureTransport).
+      effort: "2-3 hours"
+
+    - title: "Implement NAT Gateways for private subnets"
+      description: >
+        Add NAT Gateway resources, EIPs, and private route tables to the network
+        module. Support both single (cost-saving) and per-AZ (HA) configurations
+        using the existing variables.
+      effort: "3-4 hours"
+
+    - title: "Fix module inconsistencies"
+      description: >
+        Resolve duplicate variable/output definitions in RDS and network modules.
+        Fix resource name mismatches in outputs.tf files (s3: s3_bucket vs main,
+        network: main vs austa_vpc). Standardize provider version constraints
+        to aws ~> 5.0 across all modules.
+      effort: "4-6 hours"
+
+    - title: "Enforce TLS-only for MSK"
+      description: >
+        Change MSK client_broker from TLS_PLAINTEXT to TLS. Remove port 9092
+        ingress rule. Set unclean.leader.election.enable = false. Add SASL/SCRAM
+        authentication.
+      effort: "2-3 hours"
+
+    - title: "Complete WAF rule implementation"
+      description: >
+        Convert static WAF rule to dynamic block using var.managed_rule_groups.
+        Add rate limiting, IP reputation, and bot control rules.
+      effort: "3-4 hours"
+
+    - title: "Set skip_final_snapshot = false and enable deletion protection"
+      description: >
+        Configure RDS with skip_final_snapshot = false, final_snapshot_identifier,
+        and deletion_protection = true for all non-dev environments.
+      effort: "30 minutes"
+
+  long_term:
+    - title: "Implement comprehensive monitoring and alerting"
+      description: >
+        Expand monitoring module with: CloudWatch alarms for all critical metrics,
+        metric filters for security events, dashboards per journey, GuardDuty
+        integration, SecurityHub, AWS Config rules for compliance, and CloudTrail
+        with organization-level trail.
+      effort: "2-3 weeks"
+
+    - title: "Upgrade EKS and RDS versions"
+      description: >
+        Plan and execute rolling upgrade of EKS from 1.25 to latest supported
+        version. Upgrade PostgreSQL to 15+ or 16+. Test all workloads at each
+        version step.
+      effort: "1-2 weeks"
+
+    - title: "Implement VPC Flow Logs and network segmentation"
+      description: >
+        Add VPC Flow Logs to S3 and CloudWatch. Implement network ACLs for
+        additional defense-in-depth. Create dedicated security groups per service
+        tier with minimal required ports.
+      effort: "1 week"
+
+    - title: "Add Terraform state security hardening"
+      description: >
+        Implement KMS CMK for state encryption, state bucket versioning, access
+        logging, strict IAM policies, and DynamoDB point-in-time recovery for
+        lock table. Consider using Terraform Cloud or Spacelift for managed
+        state with audit trails.
+      effort: "1 week"
+
+    - title: "Implement infrastructure-as-code testing"
+      description: >
+        Add tflint, tfsec, checkov, and terrascan to CI/CD pipeline. Implement
+        Terratest for integration testing. Add OPA/Sentinel policies for
+        governance guardrails.
+      effort: "1-2 weeks"
+
+compliance_summary:
+  lgpd:
+    status: "non-compliant"
+    gaps:
+      - "Hardcoded credentials in source control (Art. 46)"
+      - "No encryption at rest for RDS database storing PHI (Art. 46)"
+      - "No VPC Flow Logs for audit trail (Art. 50)"
+      - "Monitoring insufficient for breach detection (Art. 48)"
+      - "S3 uses AES256 instead of KMS CMK - no key governance (Art. 46)"
+  hipaa:
+    status: "non-compliant"
+    gaps:
+      - "PHI stored unencrypted in RDS (164.312(a)(2)(iv))"
+      - "ElastiCache cache data unencrypted (164.312(a)(2)(iv))"
+      - "Insufficient access controls - 0.0.0.0/0 rules (164.312(a)(1))"
+      - "Inadequate audit logging - no flow logs, minimal CloudWatch (164.312(b))"
+      - "No encryption key management via KMS CMK (164.312(a)(2)(iv))"
+
+resource_inventory:
+  total: 63
+  by_module:
+    network: 8
+    eks: 22
+    rds: 3
+    elasticache: 2
+    msk: 7
+    s3: 9
+    monitoring: 1
+    waf: 1
+    root: 8
+    environments: 2

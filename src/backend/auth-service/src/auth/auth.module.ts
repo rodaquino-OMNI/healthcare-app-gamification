@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
 import { LoggerModule } from '@app/shared/logging/logger.module';
@@ -32,6 +31,7 @@ import { RolesModule } from '../roles/roles.module';
             useFactory: async (configService: ConfigService) => ({
                 secret: configService.get<string>('authService.jwt.secret', 'fallback-secret-change-me'),
                 signOptions: {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     expiresIn: configService.get<string>('authService.jwt.accessTokenExpiration', '1h') as any,
                 },
             }),

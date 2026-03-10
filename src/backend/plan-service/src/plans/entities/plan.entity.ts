@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Coverage } from './coverage.entity';
 
 // Define a constant for journey IDs as a temporary fix

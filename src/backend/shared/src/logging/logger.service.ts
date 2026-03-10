@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Injectable, ConsoleLogger, LogLevel } from '@nestjs/common';
 
 @Injectable()

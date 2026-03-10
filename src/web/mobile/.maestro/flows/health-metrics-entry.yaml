@@ -1,0 +1,56 @@
+appId: com.austa.superapp
+tags:
+  - regression
+  - health-metrics
+  - health
+  - core
+---
+# ── Login ──
+- launchApp
+- tapOn:
+    id: "welcome-cta-login"
+- tapOn:
+    id: "login-email-input"
+- inputText: "test@austa.health"
+- tapOn:
+    id: "login-password-input"
+- inputText: "Test123!@#"
+- tapOn:
+    id: "login-submit-button"
+- assertVisible:
+    id: "home-screen"
+    timeout: 10000
+
+# ── Navigate to Health tab ──
+- tapOn:
+    text: "Health"
+
+# ── Navigate to Add Metric screen ──
+- tapOn:
+    text: "Add Metric"
+    timeout: 5000
+
+# ── Fill in metric type (blood pressure) ──
+- tapOn:
+    label: "Metric Type"
+    timeout: 5000
+- inputText: "blood_pressure"
+
+# ── Fill in metric value ──
+- tapOn:
+    label: "Metric Value"
+- inputText: "120"
+
+# ── Fill in timestamp ──
+- tapOn:
+    label: "Timestamp"
+- inputText: "2026-03-09T08:00:00Z"
+
+# ── Submit the form ──
+- tapOn:
+    text: "Add Metric"
+
+# ── Verify navigation back to Health dashboard ──
+- assertVisible:
+    text: "Health"
+    timeout: 5000

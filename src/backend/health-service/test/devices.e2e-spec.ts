@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
@@ -45,6 +44,7 @@ describe('DevicesController (e2e)', () => {
         app = moduleFixture.createNestApplication();
         devicesService = moduleFixture.get<DevicesService>(DevicesService);
         prismaService = moduleFixture.get<PrismaService>(PrismaService);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         app.useGlobalFilters(new AllExceptionsFilter(moduleFixture.get('health' as any)));
         await app.init();
         agent = request.agent(app.getHttpServer());

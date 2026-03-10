@@ -1,0 +1,65 @@
+appId: com.austa.superapp
+tags:
+  - regression
+  - provider-search
+  - care
+  - core
+---
+# ── Login ──
+- launchApp
+- tapOn:
+    id: "welcome-cta-login"
+- tapOn:
+    id: "login-email-input"
+- inputText: "test@austa.health"
+- tapOn:
+    id: "login-password-input"
+- inputText: "Test123!@#"
+- tapOn:
+    id: "login-submit-button"
+- assertVisible:
+    id: "home-screen"
+    timeout: 10000
+
+# ── Navigate to Care tab ──
+- tapOn:
+    text: "Care"
+
+# ── Search for a provider by specialty ──
+- assertVisible:
+    id: "doctor-search-input"
+    timeout: 5000
+- tapOn:
+    id: "doctor-search-input"
+- inputText: "cardiologist"
+
+# ── Select first result from the list ──
+- assertVisible:
+    id: "doctor-results-list"
+    timeout: 5000
+- tapOn:
+    id: "doctor-results-list"
+    index: 0
+
+# ── Assert Doctor Profile loaded ──
+- assertVisible:
+    id: "doctor-name"
+    timeout: 5000
+- assertVisible:
+    id: "about-heading"
+- assertVisible:
+    id: "doctor-bio"
+
+# ── Tap Book Appointment CTA ──
+- scrollUntilVisible:
+    element:
+      id: "book-appointment-cta"
+    direction: DOWN
+    timeout: 5000
+- tapOn:
+    id: "book-appointment-cta"
+
+# ── Assert booking flow initiated ──
+- assertVisible:
+    text: "Book"
+    timeout: 5000

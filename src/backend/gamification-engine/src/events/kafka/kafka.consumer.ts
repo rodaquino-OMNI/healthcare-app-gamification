@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { KafkaService } from '@app/shared/kafka/kafka.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Injectable, OnModuleInit } from '@nestjs/common';

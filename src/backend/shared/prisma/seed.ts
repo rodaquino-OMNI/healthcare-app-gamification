@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { faker } from '@faker-js/faker';
 import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
@@ -349,22 +349,11 @@ async function seedUsers(prisma: PrismaClient): Promise<void> {
  *
  * @param prisma - The Prisma client instance
  */
-async function seedJourneyData(prisma: PrismaClient): Promise<void> {
-    // TODO: Model removed from schema — healthMetricType, deviceType no longer exist
-    // Health metric types are now handled via the MetricType enum in the schema.
-    console.log('Skipping health metric types and device types (models removed from schema)');
-
-    // TODO: Model removed from schema — providerSpecialty no longer exists
-    // Provider specialty is now a string field on the Provider model.
-    console.log('Skipping provider specialties (model removed from schema)');
-
-    // TODO: Model removed from schema — insurancePlanType, claimType no longer exist
-    // Plan type and claim type are now string fields on the Plan and Claim models.
-    console.log('Skipping insurance plan types and claim types (models removed from schema)');
-
-    // TODO: Model removed from schema — achievementType no longer exists
-    // Use the Achievement model directly instead.
-    console.log('Skipping achievement types (model removed from schema)');
+async function seedJourneyData(_prisma: PrismaClient): Promise<void> {
+    // Models healthMetricType, deviceType, providerSpecialty, insurancePlanType,
+    // claimType, and achievementType were removed from the schema.
+    // Their data is now handled via enums and string fields on existing models.
+    console.log('Journey-specific seed data: no additional seeding required (models consolidated into enums/fields).');
 }
 
 // Run the seed function

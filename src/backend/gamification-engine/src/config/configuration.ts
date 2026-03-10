@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { registerAs } from '@nestjs/config'; // v10.0.0+
 
 import { DEFAULT_PORT } from './validation.schema';

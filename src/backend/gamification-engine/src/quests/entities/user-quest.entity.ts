@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { IsBoolean, IsInt, Min, Max } from 'class-validator'; // class-validator@0.14.1
 
 import { Quest } from '../entities/quest.entity';

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { KafkaService } from '@app/shared/kafka/kafka.service';
 import { RedisService } from '@app/shared/redis/redis.service';

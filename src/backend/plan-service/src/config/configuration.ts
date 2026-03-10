@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { registerAs } from '@nestjs/config'; // @nestjs/config 10.0.0+
 
 import validationSchema from './validation.schema';

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { registerAs } from '@nestjs/config'; // NestJS Config 2.3.1+
 import Joi from 'joi'; // Joi 17.0.0+
 

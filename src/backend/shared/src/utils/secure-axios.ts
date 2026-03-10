@@ -1,4 +1,3 @@
-/* eslint-disable */
 import axios, { AxiosInstance } from 'axios';
 
 /**

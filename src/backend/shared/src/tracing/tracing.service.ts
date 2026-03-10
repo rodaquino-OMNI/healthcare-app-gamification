@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Injectable, LoggerService } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Tracer, trace, SpanStatusCode, context, Exception } from '@opentelemetry/api';
@@ -63,11 +62,7 @@ export class TracingService {
 
             // Safe error logging with proper type checking
             if (error instanceof Error) {
-                this.logger.error(
-                    `Error in span ${name}: ${(error as any).message}`,
-                    (error as any).stack,
-                    'AustaTracing'
-                );
+                this.logger.error(`Error in span ${name}: ${error.message}`, error.stack, 'AustaTracing');
             } else {
                 this.logger.error(`Error in span ${name}: Unknown error`, undefined, 'AustaTracing');
             }

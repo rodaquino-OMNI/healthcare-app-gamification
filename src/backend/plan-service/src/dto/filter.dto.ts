@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * DTO for filtering and pagination across plan service endpoints
  */

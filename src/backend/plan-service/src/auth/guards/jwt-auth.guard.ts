@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Injectable, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -23,6 +22,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
      * Custom error handling for authentication failures
      * @param error Error thrown during authentication
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     handleRequest<TUser = any>(err: any, user: any, info: any, context: ExecutionContext, status?: any): TUser {
         if (err || !user) {
             throw err instanceof Error ? err : new UnauthorizedException('Authentication failed');

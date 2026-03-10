@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Module, Global } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config'; // v10.0.0+
 

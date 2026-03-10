@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { INestApplication, HttpStatus } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { registerAs } from '@nestjs/config'; // ConfigModule v2.0+, registerAs v2.0+
 
 /**

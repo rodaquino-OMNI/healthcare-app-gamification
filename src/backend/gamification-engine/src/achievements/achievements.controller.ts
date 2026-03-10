@@ -1,4 +1,3 @@
-/* eslint-disable */
 /* eslint-disable @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, max-len */
 import { FilterDto } from '@app/shared/dto/filter.dto'; // @app/shared ^1.0.0
 import { PaginationDto } from '@app/shared/dto/pagination.dto'; // @app/shared ^1.0.0

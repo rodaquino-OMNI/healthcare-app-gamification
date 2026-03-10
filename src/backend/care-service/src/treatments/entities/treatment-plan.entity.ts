@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Represents a treatment plan for a patient.
  * This entity is part of the Care Journey and allows tracking and display

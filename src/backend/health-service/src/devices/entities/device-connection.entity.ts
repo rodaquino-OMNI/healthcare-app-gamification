@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Represents the connection status of a wearable device
  */

@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * DTO for filtering entities in list operations
  */

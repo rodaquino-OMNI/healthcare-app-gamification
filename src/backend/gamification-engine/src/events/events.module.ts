@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { KafkaModule } from '@app/shared/kafka/kafka.module';
 import { LoggerModule } from '@app/shared/logging/logger.module';
 import { TracingModule } from '@app/shared/tracing/tracing.module';

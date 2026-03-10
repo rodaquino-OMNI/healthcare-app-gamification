@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Mock implementation of PrismaService that provides model access patterns
  * compatible with our service implementation.

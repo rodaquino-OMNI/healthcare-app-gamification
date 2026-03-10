@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Controller, Get } from '@nestjs/common';
 
 interface HealthResponse {

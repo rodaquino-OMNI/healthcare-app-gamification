@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsOptional, Min, Max, IsInt } from 'class-validator';

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Controller, Get, Post, Patch, Param, Body, UseFilters, HttpStatus, HttpCode } from '@nestjs/common';

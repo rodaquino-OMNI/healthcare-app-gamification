@@ -1,0 +1,64 @@
+appId: com.austa.superapp
+tags:
+  - regression
+  - wellness
+  - companion
+  - p2
+---
+# ── Login ──
+- launchApp
+- tapOn:
+    id: "welcome-cta-login"
+- tapOn:
+    id: "login-email-input"
+- inputText: "test@austa.health"
+- tapOn:
+    id: "login-password-input"
+- inputText: "Test123!@#"
+- tapOn:
+    id: "login-submit-button"
+- assertVisible:
+    id: "home-screen"
+    timeout: 10000
+
+# ── Navigate to Wellness tab ──
+- tapOn:
+    text: "Wellness"
+
+# ── Assert Companion Chat screen loads ──
+- assertVisible:
+    id: "wellness-chat-screen"
+    timeout: 5000
+
+# ── Check mood prompt is visible ──
+- assertVisible:
+    id: "wellness-mood-prompt"
+    timeout: 3000
+
+# ── Start a new conversation ──
+- tapOn:
+    id: "new-chat-button"
+
+# ── Assert active chat screen loads ──
+- assertVisible:
+    id: "wellness-chat-active-screen"
+    timeout: 5000
+
+# ── Type a message ──
+- tapOn:
+    id: "chat-input"
+- inputText: "I want to improve my sleep habits"
+
+# ── Send the message ──
+- tapOn:
+    id: "send-button"
+
+# ── Assert messages list is visible (response area) ──
+- assertVisible:
+    id: "messages-list"
+    timeout: 10000
+
+# ── Verify quick replies button is available ──
+- assertVisible:
+    id: "quick-replies-button"
+    timeout: 5000

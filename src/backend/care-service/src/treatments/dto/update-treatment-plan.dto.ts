@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { PartialType } from '@nestjs/swagger';
 
 import { CreateTreatmentPlanDto } from './create-treatment-plan.dto';

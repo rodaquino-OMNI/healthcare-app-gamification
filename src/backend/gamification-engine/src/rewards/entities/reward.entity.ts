@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { IsUUID, IsString, IsNumber } from 'class-validator';
 
 /**

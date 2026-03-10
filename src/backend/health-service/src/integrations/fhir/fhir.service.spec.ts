@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Test, TestingModule } from '@nestjs/testing';
 import { ForbiddenException } from '@nestjs/common';
 import { FhirService } from './fhir.service';
@@ -106,6 +105,7 @@ describe('FhirService', () => {
         });
 
         it('should re-throw AppException if adapter throws one', async () => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const originalException = new AppException('Custom FHIR error', 'EXTERNAL' as any, 'HEALTH_004', {});
             mockFhirAdapter.getPatientRecord.mockRejectedValue(originalException);
 

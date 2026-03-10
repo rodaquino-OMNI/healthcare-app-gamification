@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { SetMetadata } from '@nestjs/common';
 
 export const PHI_ACCESS_KEY = 'phi_access';

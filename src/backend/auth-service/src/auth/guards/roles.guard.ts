@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';

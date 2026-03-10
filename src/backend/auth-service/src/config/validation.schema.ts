@@ -1,4 +1,3 @@
-/* eslint-disable */
 import * as Joi from 'joi';
 
 /**

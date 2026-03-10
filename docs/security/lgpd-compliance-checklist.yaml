@@ -1,0 +1,1029 @@
+# LGPD Compliance Checklist — AUSTA Healthcare SuperApp
+# Generated: 2026-03-09
+# Scope: Full platform (backend services, web, mobile)
+
+metadata:
+  law: "Lei Geral de Protecao de Dados (LGPD) - Lei no 13.709/2018"
+  platform: "AUSTA Healthcare SuperApp"
+  date: "2026-03-09"
+  version: "1.0"
+  services:
+    - auth-service
+    - care-service
+    - health-service
+    - plan-service
+    - gamification-engine
+    - notification-service
+  prisma_schema: "src/backend/shared/prisma/schema.prisma"
+
+# ============================================================
+# 1. PHI ENDPOINT MAP
+# ============================================================
+phi_endpoints:
+  # ----------------------------------------------------------
+  # Endpoints decorated with @PhiAccess (audit-logged as PHI)
+  # ----------------------------------------------------------
+  protected:
+    care_service:
+      appointments:
+        - endpoint: "POST /appointments"
+          method: create
+          controller: "appointments.controller.ts"
+          phi_resource_type: "Appointment"
+          phi_fields: ["notes"]
+          guards: [JwtAuthGuard, RolesGuard]
+        - endpoint: "GET /appointments"
+          method: findAll
+          controller: "appointments.controller.ts"
+          phi_resource_type: "Appointment"
+          phi_fields: ["notes"]
+          guards: [JwtAuthGuard, RolesGuard]
+        - endpoint: "GET /appointments/:id"
+          method: findOne
+          controller: "appointments.controller.ts"
+          phi_resource_type: "Appointment"
+          phi_fields: ["notes"]
+          guards: [JwtAuthGuard, RolesGuard]
+        - endpoint: "PATCH /appointments/:id"
+          method: update
+          controller: "appointments.controller.ts"
+          phi_resource_type: "Appointment"
+          phi_fields: ["notes"]
+          guards: [JwtAuthGuard, RolesGuard]
+        - endpoint: "DELETE /appointments/:id"
+          method: remove
+          controller: "appointments.controller.ts"
+          phi_resource_type: "Appointment"
+          phi_fields: ["notes"]
+          guards: [JwtAuthGuard, RolesGuard]
+
+      medications:
+        - endpoint: "POST /medications"
+          method: create
+          controller: "medications.controller.ts"
+          phi_resource_type: "Medication"
+          phi_fields: ["name", "notes"]
+          guards: [JwtAuthGuard]
+          ownership_check: true
+        - endpoint: "GET /medications"
+          method: findAll
+          controller: "medications.controller.ts"
+          phi_resource_type: "Medication"
+          phi_fields: ["name", "notes"]
+          guards: [JwtAuthGuard]
+        - endpoint: "GET /medications/:id"
+          method: findOne
+          controller: "medications.controller.ts"
+          phi_resource_type: "Medication"
+          phi_fields: ["name", "notes"]
+          guards: [JwtAuthGuard]
+          ownership_check: true
+        - endpoint: "PUT /medications/:id"
+          method: update
+          controller: "medications.controller.ts"
+          phi_resource_type: "Medication"
+          phi_fields: ["name", "notes"]
+          guards: [JwtAuthGuard]
+          ownership_check: true
+        - endpoint: "DELETE /medications/:id"
+          method: remove
+          controller: "medications.controller.ts"
+          phi_resource_type: "Medication"
+          phi_fields: ["name", "notes"]
+          guards: [JwtAuthGuard]
+          ownership_check: true
+
+      treatments:
+        - endpoint: "POST /treatments"
+          method: create
+          controller: "treatments.controller.ts"
+          phi_resource_type: "TreatmentPlan"
+          guards: [JwtAuthGuard]
+        - endpoint: "GET /treatments"
+          method: findAll
+          controller: "treatments.controller.ts"
+          phi_resource_type: "TreatmentPlan"
+          guards: [JwtAuthGuard]
+        - endpoint: "GET /treatments/:id"
+          method: findOne
+          controller: "treatments.controller.ts"
+          phi_resource_type: "TreatmentPlan"
+          guards: [JwtAuthGuard]
+        - endpoint: "PUT /treatments/:id"
+          method: update
+          controller: "treatments.controller.ts"
+          phi_resource_type: "TreatmentPlan"
+          guards: [JwtAuthGuard]
+        - endpoint: "DELETE /treatments/:id"
+          method: remove
+          controller: "treatments.controller.ts"
+          phi_resource_type: "TreatmentPlan"
+          guards: [JwtAuthGuard]
+
+      symptom_checker:
+        - endpoint: "POST /symptom-checker"
+          method: checkSymptoms
+          controller: "symptom-checker.controller.ts"
+          phi_resource_type: "SymptomCheck"
+          guards: [JwtAuthGuard]
+
+      telemedicine:
+        - endpoint: "POST /telemedicine/session"
+          method: startTelemedicineSession
+          controller: "telemedicine.controller.ts"
+          phi_resource_type: "TelemedicineSession"
+          guards: [JwtAuthGuard]
+
+    health_service:
+      health_metrics:
+        - endpoint: "POST /health/:recordId"
+          method: createHealthMetric
+          controller: "health.controller.ts"
+          phi_resource_type: "HealthMetric"
+          phi_fields: ["value", "notes"]
+          guards: [JwtAuthGuard, RolesGuard, ConsentGuard]
+          consent_required: "HEALTH_DATA_SHARING"
+        - endpoint: "PUT /health/:id"
+          method: updateHealthMetric
+          controller: "health.controller.ts"
+          phi_resource_type: "HealthMetric"
+          phi_fields: ["value", "notes"]
+          guards: [JwtAuthGuard, RolesGuard, ConsentGuard]
+          consent_required: "HEALTH_DATA_SHARING"
+
+      fhir_interoperability:
+        - endpoint: "GET /fhir/Patient/:id"
+          controller: "fhir.controller.ts"
+          guards: [JwtAuthGuard, ConsentGuard]
+          consent_required: "HEALTH_DATA_SHARING"
+        - endpoint: "GET /fhir/Observation"
+          controller: "fhir.controller.ts"
+          guards: [JwtAuthGuard, ConsentGuard]
+          consent_required: "HEALTH_DATA_SHARING"
+        - endpoint: "GET /fhir/Bundle/:patientId"
+          controller: "fhir.controller.ts"
+          guards: [JwtAuthGuard, ConsentGuard]
+          consent_required: "HEALTH_DATA_SHARING"
+
+  # ----------------------------------------------------------
+  # Endpoints that handle sensitive data but LACK @PhiAccess
+  # ----------------------------------------------------------
+  unprotected_requiring_review:
+    plan_service:
+      - endpoint: "POST /claims"
+        controller: "claims.controller.ts"
+        guards: [JwtAuthGuard, RolesGuard]
+        ownership_check: true
+        reason: "Claims contain procedureCode and amount fields which are encrypted as PHI in Prisma middleware, but the endpoint lacks @PhiAccess audit decoration"
+        recommendation: "Add @PhiAccess('Claim') to all 5 claims endpoints"
+
+      - endpoint: "GET /claims"
+        controller: "claims.controller.ts"
+        reason: "Returns claim data including procedure codes and amounts"
+        recommendation: "Add @PhiAccess('Claim')"
+
+      - endpoint: "GET /claims/:id"
+        controller: "claims.controller.ts"
+        reason: "Returns individual claim with PHI fields"
+        recommendation: "Add @PhiAccess('Claim')"
+
+      - endpoint: "PUT /claims/:id"
+        controller: "claims.controller.ts"
+        reason: "Modifies claim data containing medical procedure info"
+        recommendation: "Add @PhiAccess('Claim')"
+
+      - endpoint: "DELETE /claims/:id"
+        controller: "claims.controller.ts"
+        reason: "Deletes PHI data without PHI audit trail"
+        recommendation: "Add @PhiAccess('Claim')"
+
+      - endpoint: "POST /documents"
+        controller: "documents.controller.ts"
+        guards: []  # NO AUTH GUARDS
+        reason: "Document upload has no JwtAuthGuard and no @PhiAccess. Documents may contain medical images, lab results, or prescriptions"
+        recommendation: "Add JwtAuthGuard, ownership checks, and @PhiAccess('Document')"
+
+      - endpoint: "GET /documents"
+        controller: "documents.controller.ts"
+        guards: []
+        reason: "Document listing is completely unauthenticated"
+        recommendation: "Add JwtAuthGuard and ownership enforcement"
+
+      - endpoint: "GET /documents/:id"
+        controller: "documents.controller.ts"
+        guards: []
+        reason: "Individual document retrieval is unauthenticated"
+        recommendation: "Add JwtAuthGuard and ownership enforcement"
+
+      - endpoint: "DELETE /documents/:id"
+        controller: "documents.controller.ts"
+        guards: []
+        reason: "Document deletion is unauthenticated and unaudited"
+        recommendation: "Add JwtAuthGuard, ownership check, and @PhiAccess('Document')"
+
+    privacy_service:
+      - endpoint: "GET /api/privacy/my-data"
+        controller: "privacy.controller.ts"
+        guards: [JwtAuthGuard]
+        reason: "Returns ALL user data including PHI but lacks @PhiAccess decoration"
+        recommendation: "Add @PhiAccess('UserData') for complete audit trail of bulk data access"
+
+      - endpoint: "GET /api/privacy/export"
+        controller: "privacy.controller.ts"
+        guards: [JwtAuthGuard]
+        reason: "FHIR export of all PHI should be PHI-audit-logged"
+        recommendation: "Add @PhiAccess('UserDataExport')"
+
+# ============================================================
+# 2. DATA SUBJECT RIGHTS (DSR) FLOW — LGPD Art. 18
+# ============================================================
+dsr_flow:
+  right_to_access:
+    lgpd_article: "Art. 18-II"
+    endpoint: "GET /api/privacy/my-data"
+    controller: "src/backend/shared/src/privacy/privacy.controller.ts"
+    service_method: "PrivacyService.getMyData(userId)"
+    implementation: |
+      Queries 13 Prisma models in parallel: user, appointments, medications,
+      healthMetrics, healthGoals, claims, plans, deviceConnections, notifications,
+      gameProfile (with achievements/quests/rewards), medicalEvents, treatmentPlans,
+      telemedicineSessions. Returns structured JSON object.
+    data_categories_returned:
+      - user (id, name, email, phone, cpf, createdAt, updatedAt)
+      - appointments
+      - medications
+      - healthMetrics
+      - healthGoals
+      - claims
+      - plans
+      - deviceConnections
+      - notifications
+      - gameProfile (with achievements, quests, rewards)
+      - medicalEvents
+      - treatmentPlans
+      - telemedicineSessions
+    status: "implemented"
+    gaps:
+      - "No @PhiAccess audit decoration on this bulk-data-access endpoint"
+      - "No rate limiting to prevent abuse of bulk data retrieval"
+
+  right_to_portability:
+    lgpd_article: "Art. 18-V"
+    endpoint: "GET /api/privacy/export"
+    controller: "src/backend/shared/src/privacy/privacy.controller.ts"
+    service_method: "PrivacyService.exportAsFhirBundle(userId)"
+    format: "FHIR R4 Bundle (type: collection)"
+    fhir_resource_types:
+      - "Patient (with CPF as identifier via urn:oid:2.16.840.1.113883.13.236)"
+      - "Observation (health metrics mapped to LOINC codes)"
+      - "MedicationStatement"
+      - "Appointment"
+    loinc_mappings:
+      HEART_RATE: "8867-4"
+      BLOOD_PRESSURE_SYSTOLIC: "8480-6"
+      BLOOD_PRESSURE_DIASTOLIC: "8462-4"
+      BLOOD_GLUCOSE: "2339-0"
+      WEIGHT: "29463-7"
+      STEPS: "41950-7"
+      BODY_TEMPERATURE: "8310-5"
+      OXYGEN_SATURATION: "2708-6"
+      RESPIRATORY_RATE: "9279-1"
+      SLEEP: "93832-4"
+      CALORIES: "41981-2"
+      DISTANCE: "41953-1"
+    status: "implemented"
+    gaps:
+      - "Export does not include claims, treatmentPlans, or telemedicineSessions as FHIR resources"
+      - "No download format option (only JSON, no CSV/PDF)"
+      - "No @PhiAccess audit decoration"
+
+  right_to_deletion:
+    lgpd_article: "Art. 18-VI"
+    endpoint: "DELETE /api/privacy/my-data"
+    controller: "src/backend/shared/src/privacy/privacy.controller.ts"
+    service_method: "PrivacyService.deleteMyData(userId)"
+    implementation: |
+      Executes cascading deletion in a single Prisma $transaction, respecting
+      foreign key constraints. Deletes in dependency order: gamification children,
+      gameProfile, notifications, notificationPreferences, telemedicineSessions,
+      appointments, medications, treatmentPlans, deviceConnections, healthMetrics,
+      healthGoals, medicalEvents, claims, benefits, coverages, plans, documents,
+      consentRecords, and finally the user record.
+    cascade_order:
+      - userAchievement
+      - userQuest
+      - userReward
+      - gameProfile
+      - notification
+      - notificationPreference
+      - telemedicineSession
+      - appointment
+      - medication
+      - treatmentPlan
+      - deviceConnection
+      - healthMetric
+      - healthGoal
+      - medicalEvent
+      - claim
+      - benefit
+      - coverage
+      - plan
+      - document
+      - consentRecord
+      - user
+    audit_anonymization: |
+      Audit log entries are anonymized (userId set to 'DELETED_USER')
+      rather than deleted, preserving the regulatory audit trail.
+    status: "implemented"
+    gaps:
+      - "No confirmation step or cooling-off period before irreversible deletion"
+      - "No notification to DPO or admin when deletion is executed"
+      - "ConsentRecord deletion wrapped in try/catch due to model availability uncertainty"
+
+  right_to_rectification:
+    lgpd_article: "Art. 18-III"
+    endpoint: "PATCH /api/privacy/my-data"
+    controller: "src/backend/shared/src/privacy/privacy.controller.ts"
+    service_method: "PrivacyService.rectifyMyData(userId, updates)"
+    allowed_fields: ["name", "email", "phone"]
+    restricted_fields: ["cpf", "password"]
+    validation:
+      - "At least one field must be provided"
+      - "Email uniqueness check before update"
+    status: "implemented"
+    gaps:
+      - "CPF rectification is not supported (may be needed for legal name/document changes)"
+      - "No audit trail entry for rectification events"
+
+  right_to_revoke_consent:
+    lgpd_article: "Art. 18-IX / Art. 8, para. 5"
+    endpoint: "DELETE /api/consents/:id"
+    controller: "src/backend/shared/src/consent/consent.controller.ts"
+    service_method: "ConsentService.revokeConsent(userId, consentId)"
+    implementation: |
+      Verifies consent belongs to the requesting user (ownership check).
+      Updates status to REVOKED and sets revokedAt timestamp.
+      Bulk revocation available via ConsentService.revokeAllConsents(userId)
+      for right-to-be-forgotten requests.
+    status: "implemented"
+    gaps:
+      - "No cascade effect: revoking HEALTH_DATA_SHARING consent does not block existing active sessions"
+      - "No notification to data processors when consent is revoked"
+
+  right_to_information:
+    lgpd_article: "Art. 18-I"
+    implementation: "Partially implemented via i18n consent texts and privacy policy screen"
+    status: "partial"
+    gaps:
+      - "No dedicated endpoint to list all data processors and third parties"
+      - "Privacy policy content is static in i18n, not dynamically generated from actual data flows"
+
+# ============================================================
+# 3. CONSENT MANAGEMENT
+# ============================================================
+consent_management:
+  prisma_model: "ConsentRecord"
+  schema_location: "src/backend/shared/prisma/schema.prisma (line 691)"
+  model_fields:
+    - "id: String (UUID)"
+    - "userId: String"
+    - "consentType: ConsentType enum"
+    - "status: ConsentStatus (ACTIVE | REVOKED | EXPIRED)"
+    - "purpose: String"
+    - "dataCategories: String[]"
+    - "grantedAt: DateTime"
+    - "expiresAt: DateTime? (nullable, null = indefinite)"
+    - "revokedAt: DateTime?"
+    - "ipAddress: String? (audit trail)"
+    - "userAgent: String? (audit trail)"
+    - "version: Int (default 1)"
+
+  consent_types:
+    - type: "DATA_PROCESSING"
+      description: "General data processing consent for platform operations"
+      lgpd_basis: "Art. 7-I (consentimento do titular)"
+
+    - type: "HEALTH_DATA_SHARING"
+      description: "Consent to share health data with healthcare team"
+      lgpd_basis: "Art. 11-I (consentimento especifico para dados sensiveis)"
+      enforced_by: "ConsentGuard on health-service endpoints"
+      endpoints_enforced:
+        - "POST /health/:recordId"
+        - "PUT /health/:id"
+        - "GET /fhir/Patient/:id"
+        - "GET /fhir/Observation"
+        - "GET /fhir/Bundle/:patientId"
+
+    - type: "MARKETING"
+      description: "Consent for marketing communications"
+      lgpd_basis: "Art. 7-I"
+
+    - type: "RESEARCH"
+      description: "Consent for anonymized health data research use"
+      lgpd_basis: "Art. 7-IV (pesquisa) / Art. 11-II-c"
+
+    - type: "TELEMEDICINE"
+      description: "Consent for telemedicine session recording and data sharing"
+      lgpd_basis: "Art. 11-I"
+
+    - type: "THIRD_PARTY_SHARING"
+      description: "Consent to share data with third-party providers"
+      lgpd_basis: "Art. 7-I / Art. 33 (transferencia internacional)"
+
+  api_endpoints:
+    - method: "GET"
+      path: "/api/consents"
+      description: "List all consent records for the authenticated user"
+      controller: "consent.controller.ts"
+
+    - method: "POST"
+      path: "/api/consents"
+      description: "Grant a new consent (type, purpose, dataCategories, optional expiresAt)"
+      controller: "consent.controller.ts"
+      records_audit: true
+      audit_fields: ["ipAddress", "userAgent"]
+
+    - method: "DELETE"
+      path: "/api/consents/:id"
+      description: "Revoke a specific consent"
+      controller: "consent.controller.ts"
+      ownership_verified: true
+
+    - method: "GET"
+      path: "/api/consents/check/:type"
+      description: "Check if user has active consent for a specific type"
+      controller: "consent.controller.ts"
+
+  consent_guard:
+    file: "src/backend/shared/src/consent/consent.guard.ts"
+    decorator: "@RequireConsent(ConsentType.HEALTH_DATA_SHARING)"
+    behavior: |
+      Reads consent type from handler metadata via Reflector.
+      Extracts userId from JWT. Checks ConsentService.hasActiveConsent().
+      Throws FORBIDDEN (CONSENT_004) if consent is missing or expired.
+      Allows access if no consent metadata is set on the handler.
+
+  consent_texts:
+    pt_BR:
+      - key: "socialAuth.lgpdConsent"
+        text: "Eu concordo com o tratamento dos meus dados pessoais conforme a"
+      - key: "socialAuth.privacyPolicy"
+        text: "Politica de Privacidade"
+      - key: "socialAuth.consentRequired"
+        text: "Consentimento Necessario"
+      - key: "socialAuth.consentMessage"
+        text: "Por favor, aceite os termos de privacidade antes de continuar com o login social."
+      - key: "socialAuth.disclaimer"
+        text: "Ao entrar, voce concorda com nossos Termos de Servico e Politica de Privacidade. Seus dados sao protegidos pela LGPD (Lei Geral de Protecao de Dados)."
+      - key: "onboarding.consentPrivacy.title"
+        text: "Consentimento e Privacidade"
+      - key: "onboarding.consentPrivacy.subtitle"
+        text: "Seus dados estao protegidos"
+      - key: "onboarding.consentPrivacy.consent1"
+        text: "Concordo em compartilhar meus dados de saude com minha equipe medica"
+      - key: "onboarding.consentPrivacy.consent2"
+        text: "Aceito receber insights e recomendacoes de saude"
+      - key: "onboarding.consentPrivacy.consent3"
+        text: "Entendo que meus dados sao protegidos pela LGPD"
+      - key: "onboarding.consentPrivacy.dataUsage"
+        text: "Como seus dados serao usados"
+      - key: "onboarding.consentPrivacy.dataUsageText"
+        text: "Seus dados de saude sao criptografados e usados apenas para gerar recomendacoes personalizadas."
+      - key: "settings.dataExport.info"
+        text: "De acordo com a LGPD, voce tem direito de solicitar uma copia dos seus dados pessoais."
+
+    en_US:
+      - key: "socialAuth.lgpdConsent"
+        text: "I agree to the processing of my personal data in accordance with the"
+      - key: "socialAuth.privacyPolicy"
+        text: "Privacy Policy"
+      - key: "socialAuth.consentRequired"
+        text: "Consent Required"
+      - key: "socialAuth.consentMessage"
+        text: "Please accept the privacy terms before continuing with social login."
+      - key: "socialAuth.disclaimer"
+        text: "By signing in, you agree to our Terms of Service and Privacy Policy. Your data is protected under LGPD (Lei Geral de Protecao de Dados)."
+      - key: "onboarding.consentPrivacy.title"
+        text: "Consent and Privacy"
+      - key: "onboarding.consentPrivacy.consent1"
+        text: "I consent to share my health data with my healthcare team"
+      - key: "onboarding.consentPrivacy.consent2"
+        text: "I agree to receive health insights and recommendations"
+      - key: "onboarding.consentPrivacy.consent3"
+        text: "I understand my data is protected under LGPD/HIPAA"
+      - key: "settings.dataExport.info"
+        text: "Under LGPD, you have the right to request a copy of your personal data."
+
+# ============================================================
+# 4. ENCRYPTION STATUS
+# ============================================================
+encryption:
+  at_rest:
+    mechanism: "AES-256-GCM with per-record random salt"
+    implementation_file: "src/backend/shared/src/encryption/encryption.service.ts"
+    key_derivation: "scrypt (32-byte salt, 32-byte key output)"
+    encrypted_format: "salt:iv:authTag:ciphertext (all hex-encoded)"
+    key_source: "ENCRYPTION_KEY environment variable"
+    middleware_file: "src/backend/shared/src/encryption/prisma-encryption.middleware.ts"
+    middleware_behavior: |
+      Prisma middleware automatically encrypts on write (create, update, upsert,
+      createMany, updateMany) and decrypts on read (findUnique, findFirst,
+      findMany). Idempotent: skips already-encrypted values. Graceful degradation:
+      legacy unencrypted data passes through without error.
+    status: "implemented"
+
+    phi_fields_encrypted:
+      User:
+        - "cpf"
+        - "phone"
+        - "email"
+      HealthMetric:
+        - "value"
+        - "notes"
+      HealthGoal:
+        - "targetValue"
+        - "currentValue"
+      Claim:
+        - "procedureCode"
+        - "amount"
+      Document:
+        - "filename"
+      Medication:
+        - "name"
+        - "notes"
+      Notification:
+        - "body"
+      Appointment:
+        - "notes"
+      DeviceConnection:
+        - "authToken"
+        - "refreshToken"
+
+    phi_fields_not_encrypted:
+      User:
+        - "password (hashed, not encrypted — acceptable)"
+        - "name (PII, not currently encrypted)"
+      Appointment:
+        - "type (could reveal medical specialty)"
+      TreatmentPlan:
+        - "all fields (no entry in PHI_FIELDS map despite @PhiAccess on controller)"
+      TelemedicineSession:
+        - "all fields (no entry in PHI_FIELDS map despite @PhiAccess on controller)"
+      MedicalEvent:
+        - "all fields (no entry in PHI_FIELDS map)"
+
+  in_transit:
+    api: "HTTPS (TLS) — all API URLs use https://api.austa.com.br"
+    mobile_ssl_pinning:
+      file: "src/web/mobile/src/api/client.ts"
+      notes: |
+        Comment in client.ts references native-ssl-pinning.ts and
+        Android network_security_config.xml. Implementation exists but
+        certificates are placeholders requiring production certs.
+    status: "partial"
+    gaps:
+      - "SSL pinning uses placeholder certificates, not production certs"
+      - "No explicit TLS version enforcement (should enforce TLS 1.2+)"
+
+  key_management:
+    status: "basic"
+    current: "ENCRYPTION_KEY from environment variable"
+    gaps:
+      - "No key rotation mechanism"
+      - "No HSM or KMS integration (AWS KMS / Azure Key Vault recommended for production)"
+      - "Key compromise would require re-encryption of all PHI fields"
+
+# ============================================================
+# 5. DATA RETENTION
+# ============================================================
+data_retention:
+  health_metrics:
+    config_key: "METRICS_RETENTION_DAYS"
+    default_days: 730  # 2 years
+    validation: "Joi.number().integer().min(1).max(3650)"
+    source: "src/backend/health-service/src/config/validation.schema.ts"
+
+  auth_data:
+    config_key: "DATA_RETENTION_DAYS"
+    default_days: 730  # 2 years
+    source: "src/backend/auth-service/src/config/validation.schema.ts"
+
+  care_recordings:
+    config_key: "CARE_SERVICE_RECORDING_RETENTION_DAYS"
+    default_days: 90
+    source: "src/backend/care-service/src/config/configuration.ts"
+
+  plan_documents:
+    config_key: "CLAIMS_RETENTION_PERIOD"
+    default_days: 2555  # 7 years (regulatory requirement for insurance)
+    source: "src/backend/plan-service/src/config/configuration.ts"
+    validation: "Joi.number() with description 'Document retention period in days'"
+
+  audit_logs:
+    retention: "indefinite (no TTL configured)"
+    note: "Audit logs are anonymized on user deletion (userId -> 'DELETED_USER') but never purged"
+
+  consent_records:
+    retention: "indefinite"
+    note: "Consent records are deleted during right-to-be-forgotten but otherwise have no expiry TTL"
+
+  gaps:
+    - "No automated purge jobs for expired retention periods"
+    - "Audit log retention is indefinite — should have configurable TTL per LGPD Art. 16"
+    - "No documented retention policy for gamification data"
+
+# ============================================================
+# 6. AUDIT LOGGING
+# ============================================================
+audit:
+  implementation_file: "src/backend/shared/src/audit/audit.service.ts"
+  interceptor_file: "src/backend/shared/src/audit/audit.interceptor.ts"
+  decorator_file: "src/backend/shared/src/audit/phi-access.decorator.ts"
+  prisma_model: "AuditLog (mapped to 'audit_logs' table)"
+
+  general_audit:
+    trigger: "AuditInterceptor on every controller action"
+    logged_fields:
+      - "userId (from JWT)"
+      - "action (READ/WRITE/DELETE, mapped from HTTP method)"
+      - "resourceType (derived from controller class name)"
+      - "resourceId (from URL params)"
+      - "ipAddress (from request.ip or x-forwarded-for)"
+      - "userAgent"
+      - "metadata: { handler, path, statusCode }"
+    behavior: "Fire-and-forget (async, never blocks response)"
+
+  phi_audit:
+    trigger: "When @PhiAccess metadata is present on handler"
+    additional_logging: "AuditService.logPHIAccess() with phiAccess:true in metadata"
+    logged_fields:
+      - "userId"
+      - "resourceType (from @PhiAccess parameter, e.g., 'HealthMetric')"
+      - "resourceId"
+      - "action"
+      - "metadata: { method, path, handler, ipAddress, userAgent, phiAccess: true }"
+
+  database_indexes:
+    - "@@index([userId])"
+    - "@@index([resourceType, resourceId])"
+    - "@@index([createdAt])"
+
+  status: "implemented"
+  gaps:
+    - "No query/export endpoint for audit logs (admins cannot review audit trail via API)"
+    - "No alerting on suspicious PHI access patterns"
+    - "No separate audit database — audit logs share the same DB as application data"
+    - "Failed access attempts (403/401) are not explicitly logged as security events"
+    - "Consent changes (grant/revoke) are not audit-logged via AuditInterceptor"
+
+# ============================================================
+# 7. FRONTEND PRIVACY SCREENS
+# ============================================================
+frontend:
+  mobile:
+    settings_privacy:
+      file: "src/web/mobile/src/screens/home/SettingsPrivacy.tsx"
+      features:
+        - "LGPD consent toggles (serviceImprovement, marketing, analytics)"
+        - "Data export trigger (calls /privacy/export)"
+        - "Account deletion trigger"
+        - "Consent revocation with visual feedback"
+      i18n_keys_used:
+        - "settings.privacy.lgpdConsent"
+        - "settings.privacy.serviceImprovement"
+        - "settings.privacy.marketing"
+        - "settings.privacy.analytics"
+        - "settings.privacy.lgpdInfo"
+        - "settings.privacy.exportTitle"
+        - "settings.privacy.exportMessage"
+      test_ids:
+        - "settings-privacy-service"
+        - "settings-privacy-marketing"
+        - "settings-privacy-analytics"
+        - "consent-revoked-message"
+
+    data_export:
+      file: "src/web/mobile/src/screens/home/DataExport.tsx"
+      i18n_key: "settings.dataExport.info"
+      categories: ["profile", "health", "appointments", "medications", "claims"]
+
+    privacy_policy:
+      file: "src/web/mobile/src/screens/home/PrivacyPolicy.tsx"
+
+    onboarding_consent:
+      file: "src/web/mobile/src/screens/onboarding/StepConsentPrivacy.tsx"
+      consent_checkboxes:
+        - "Health data sharing with medical team"
+        - "Health insights and recommendations"
+        - "LGPD data protection acknowledgment"
+
+    social_auth:
+      file: "src/web/mobile/src/screens/auth/SocialAuth.tsx"
+      lgpd_consent_gate: "Blocks social login until LGPD consent checkbox is checked"
+
+  web:
+    privacy:
+      file: "src/web/web/src/pages/profile/privacy.tsx"
+    data_export:
+      file: "src/web/web/src/pages/settings/data-export.tsx"
+    delete_account:
+      file: "src/web/web/src/pages/settings/delete-account.tsx"
+    privacy_help:
+      file: "src/web/web/src/pages/help/privacy.tsx"
+
+  lgpd_settings:
+    e2e_test: "src/web/mobile/.maestro/lgpd-settings.yaml"
+    status: "Maestro E2E flow exists"
+
+# ============================================================
+# 8. DATA PROCESSING LEGAL BASES — LGPD Art. 7 & 11
+# ============================================================
+legal_bases:
+  - category: "User account data (name, email, phone)"
+    basis: "Art. 7-V (execucao de contrato)"
+    justification: "Necessary for service delivery"
+
+  - category: "CPF (Cadastro de Pessoa Fisica)"
+    basis: "Art. 7-II (cumprimento de obrigacao legal)"
+    justification: "Required by ANS (Agencia Nacional de Saude Suplementar) for health plan identification"
+
+  - category: "Health metrics, medical records, diagnoses"
+    basis: "Art. 11-I (consentimento especifico do titular)"
+    justification: "Sensitive health data requires explicit, specific consent"
+    enforcement: "ConsentGuard with RequireConsent(HEALTH_DATA_SHARING)"
+
+  - category: "Insurance claims and procedure codes"
+    basis: "Art. 7-V / Art. 11-II-f (tutela da saude)"
+    justification: "Health insurance contract execution and healthcare provision"
+
+  - category: "Gamification data (achievements, quests, rewards)"
+    basis: "Art. 7-V (execucao de contrato)"
+    justification: "Part of platform features agreed to in terms of service"
+
+  - category: "Audit logs"
+    basis: "Art. 7-II (cumprimento de obrigacao legal)"
+    justification: "Regulatory compliance for healthcare data access tracking"
+
+  - category: "Marketing communications"
+    basis: "Art. 7-I (consentimento)"
+    justification: "Optional, consent-based"
+    enforcement: "ConsentType.MARKETING"
+
+  - category: "Telemedicine recordings"
+    basis: "Art. 11-I (consentimento especifico)"
+    justification: "Medical consultation recordings are sensitive health data"
+    enforcement: "ConsentType.TELEMEDICINE"
+
+# ============================================================
+# 9. COMPLIANCE GAPS
+# ============================================================
+gaps:
+  critical:
+    - id: "LGPD-GAP-001"
+      title: "Documents controller has no authentication"
+      lgpd_article: "Art. 46 (medidas de seguranca)"
+      description: |
+        The DocumentsController (plan-service) has zero authentication guards.
+        All 4 endpoints (POST, GET, GET/:id, DELETE/:id) are publicly accessible.
+        Documents may contain medical images, prescriptions, and lab results.
+      affected_file: "src/backend/plan-service/src/documents/documents.controller.ts"
+      recommendation: |
+        Add @UseGuards(JwtAuthGuard, RolesGuard) at controller level.
+        Add ownership verification (entityId == userId check).
+        Add @PhiAccess('Document') decorator.
+      severity: "critical"
+
+    - id: "LGPD-GAP-002"
+      title: "No DPO (Encarregado) designation or contact endpoint"
+      lgpd_article: "Art. 41"
+      description: |
+        LGPD requires appointment of a Data Protection Officer (Encarregado)
+        whose identity and contact information must be publicly available.
+        No DPO designation exists in the codebase or public-facing pages.
+      recommendation: |
+        Designate a DPO, create a /api/dpo or /dpo public endpoint with
+        contact information, and add DPO details to the privacy policy.
+      severity: "critical"
+
+    - id: "LGPD-GAP-003"
+      title: "No data breach notification mechanism"
+      lgpd_article: "Art. 48"
+      description: |
+        LGPD Art. 48 requires notification to ANPD and affected data subjects
+        within a reasonable timeframe when a security incident affects personal
+        data. No incident response or breach notification system exists.
+      recommendation: |
+        Implement a breach notification workflow: detection, assessment,
+        ANPD notification template, user notification via email/push,
+        and incident response logging.
+      severity: "critical"
+
+  high:
+    - id: "LGPD-GAP-004"
+      title: "Claims endpoints lack @PhiAccess audit decoration"
+      lgpd_article: "Art. 46 / Art. 37"
+      description: |
+        All 5 claims endpoints handle PHI data (procedureCode, amount are
+        encrypted as PHI by Prisma middleware) but lack @PhiAccess decoration,
+        meaning PHI access to claims is not logged in the PHI audit trail.
+      affected_file: "src/backend/plan-service/src/claims/claims.controller.ts"
+      recommendation: "Add @PhiAccess('Claim') to all claims controller methods"
+      severity: "high"
+
+    - id: "LGPD-GAP-005"
+      title: "TreatmentPlan and TelemedicineSession fields not encrypted"
+      lgpd_article: "Art. 46"
+      description: |
+        TreatmentPlan and TelemedicineSession models have @PhiAccess on their
+        controller endpoints but are not listed in the PHI_FIELDS map of the
+        Prisma encryption middleware. Their fields are stored unencrypted.
+      affected_file: "src/backend/shared/src/encryption/prisma-encryption.middleware.ts"
+      recommendation: |
+        Add TreatmentPlan and TelemedicineSession to PHI_FIELDS with
+        appropriate sensitive fields (e.g., diagnosis, notes, recordingUrl).
+      severity: "high"
+
+    - id: "LGPD-GAP-006"
+      title: "No encryption key rotation mechanism"
+      lgpd_article: "Art. 46"
+      description: |
+        The ENCRYPTION_KEY is a single static environment variable with no
+        rotation support. Key compromise would require manual re-encryption
+        of all PHI fields across all models.
+      recommendation: |
+        Implement key versioning (encrypt with version tag), scheduled key
+        rotation, and a migration script to re-encrypt under new keys.
+        Consider integration with AWS KMS or Azure Key Vault.
+      severity: "high"
+
+    - id: "LGPD-GAP-007"
+      title: "SSL certificate pinning uses placeholder certificates"
+      lgpd_article: "Art. 46"
+      description: |
+        Mobile app references native-ssl-pinning.ts and Android
+        network_security_config.xml but uses placeholder certificates.
+        In production, this effectively disables certificate pinning.
+      recommendation: |
+        Replace placeholder certificates with production API server
+        certificates. Implement certificate backup pins for rotation.
+      severity: "high"
+
+    - id: "LGPD-GAP-008"
+      title: "Privacy/export endpoints lack @PhiAccess audit logging"
+      lgpd_article: "Art. 37 (registros de operacoes)"
+      description: |
+        GET /api/privacy/my-data and GET /api/privacy/export return all
+        user PHI but are not decorated with @PhiAccess, so bulk data
+        access events are not captured in the PHI audit trail.
+      affected_file: "src/backend/shared/src/privacy/privacy.controller.ts"
+      recommendation: "Add @PhiAccess('UserData') to getMyData and exportData methods"
+      severity: "high"
+
+    - id: "LGPD-GAP-009"
+      title: "MedicalEvent model has no PHI field encryption"
+      lgpd_article: "Art. 46"
+      description: |
+        MedicalEvent stores medical event data but has no entry in the
+        PHI_FIELDS map and no @PhiAccess on any controller endpoint.
+        This data is neither encrypted nor audit-logged.
+      recommendation: |
+        Add MedicalEvent to PHI_FIELDS with relevant sensitive fields.
+        Add a controller with @PhiAccess if direct access endpoints exist.
+      severity: "high"
+
+  medium:
+    - id: "LGPD-GAP-010"
+      title: "No automated data retention purge jobs"
+      lgpd_article: "Art. 16 (eliminacao dos dados)"
+      description: |
+        Retention periods are configured (730 days for health, 90 for recordings,
+        2555 for claims) but no automated cron/scheduled job exists to purge
+        data that exceeds retention periods.
+      recommendation: |
+        Implement scheduled purge jobs (NestJS @Cron or external scheduler)
+        that delete or anonymize records exceeding their retention period.
+      severity: "medium"
+
+    - id: "LGPD-GAP-011"
+      title: "No DPIA (RIPD) documentation"
+      lgpd_article: "Art. 38 (relatorio de impacto)"
+      description: |
+        No Data Protection Impact Assessment (RIPD - Relatorio de Impacto
+        a Protecao de Dados Pessoais) document exists. ANPD may require
+        this for health data processing at scale.
+      recommendation: |
+        Create a RIPD document covering: data flows, risks, mitigation
+        measures, necessity and proportionality assessment.
+      severity: "medium"
+
+    - id: "LGPD-GAP-012"
+      title: "Consent texts lack versioning"
+      lgpd_article: "Art. 8 (consentimento)"
+      description: |
+        Consent texts in i18n files are static strings without version
+        tracking. If consent wording changes, there is no way to know
+        which version a user consented to.
+      recommendation: |
+        Add version field to consent texts. Store the consent text version
+        in ConsentRecord. Require re-consent when text version changes.
+      severity: "medium"
+
+    - id: "LGPD-GAP-013"
+      title: "No data processing record (ROPA)"
+      lgpd_article: "Art. 37"
+      description: |
+        LGPD requires controllers to maintain records of processing activities.
+        No structured ROPA (Record of Processing Activities) document exists.
+      recommendation: |
+        Create a ROPA document listing: processing purposes, data categories,
+        data subjects, recipients, retention periods, and security measures
+        for each processing activity.
+      severity: "medium"
+
+    - id: "LGPD-GAP-014"
+      title: "User.name field stored unencrypted"
+      lgpd_article: "Art. 46"
+      description: |
+        The User model encrypts cpf, phone, and email but the name field
+        is stored in plaintext. Full names are personal data under LGPD.
+      recommendation: |
+        Add 'name' to the User entry in PHI_FIELDS or justify the decision
+        with a documented risk assessment.
+      severity: "medium"
+
+    - id: "LGPD-GAP-015"
+      title: "No international data transfer safeguards"
+      lgpd_article: "Art. 33-35"
+      description: |
+        If the platform uses cloud providers with data centers outside Brazil,
+        LGPD Art. 33 requires adequate safeguards for international transfers.
+        No data residency configuration or transfer impact assessment exists.
+      recommendation: |
+        Document cloud provider data residency. If data leaves Brazil,
+        implement Standard Contractual Clauses or verify adequacy decisions.
+        Configure cloud storage to use Brazil (sa-east-1) regions.
+      severity: "medium"
+
+  low:
+    - id: "LGPD-GAP-016"
+      title: "No granular consent for each data category"
+      lgpd_article: "Art. 8, para. 4"
+      description: |
+        The onboarding consent flow uses 3 broad checkboxes rather than
+        granular per-category consent (e.g., separate consent for medications
+        vs. health metrics vs. telemedicine).
+      recommendation: |
+        Consider adding more granular consent options aligned with the
+        6 ConsentType enum values already defined in the backend.
+      severity: "low"
+
+    - id: "LGPD-GAP-017"
+      title: "FHIR export incomplete — missing resource types"
+      lgpd_article: "Art. 18-V (portabilidade)"
+      description: |
+        The FHIR R4 Bundle export includes Patient, Observation,
+        MedicationStatement, and Appointment but omits claims, treatment
+        plans, telemedicine sessions, and gamification data.
+      recommendation: |
+        Add FHIR resource mappings for Claim (ExplanationOfBenefit),
+        CarePlan (TreatmentPlan), and Encounter (TelemedicineSession).
+      severity: "low"
+
+    - id: "LGPD-GAP-018"
+      title: "No right to data anonymization"
+      lgpd_article: "Art. 18-IV (anonimizacao)"
+      description: |
+        LGPD provides a right to anonymization of unnecessary data.
+        The platform only supports full deletion, not anonymization
+        as an alternative.
+      recommendation: |
+        Implement an anonymization endpoint that replaces PII with
+        pseudonymized values while preserving non-identifying data
+        for analytics and research purposes.
+      severity: "low"
+
+# ============================================================
+# 10. SUMMARY SCORECARD
+# ============================================================
+summary:
+  total_phi_endpoints_protected: 19
+  total_phi_endpoints_unprotected: 11
+  dsr_rights_implemented: 5  # access, portability, deletion, rectification, consent revocation
+  dsr_rights_partial: 1      # right to information
+  dsr_rights_missing: 1      # right to anonymization (Art. 18-IV)
+  consent_types_defined: 6
+  consent_guard_enforced_endpoints: 5
+  phi_models_encrypted: 9
+  phi_models_not_encrypted: 3  # TreatmentPlan, TelemedicineSession, MedicalEvent
+  critical_gaps: 3
+  high_gaps: 6
+  medium_gaps: 6
+  low_gaps: 3
+  overall_compliance_estimate: "65-70%"
+  next_priority_actions:
+    - "Fix LGPD-GAP-001: Add authentication to DocumentsController (critical)"
+    - "Fix LGPD-GAP-002: Designate DPO and publish contact info (critical)"
+    - "Fix LGPD-GAP-003: Implement breach notification workflow (critical)"
+    - "Fix LGPD-GAP-004: Add @PhiAccess to claims controller (high)"
+    - "Fix LGPD-GAP-005: Encrypt TreatmentPlan/TelemedicineSession fields (high)"
+    - "Fix LGPD-GAP-006: Implement key rotation mechanism (high)"

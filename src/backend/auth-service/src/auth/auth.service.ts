@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as crypto from 'crypto';
 
 import { PrismaService } from '@app/shared/database/prisma.service';

@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect } from '@jest/globals';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';

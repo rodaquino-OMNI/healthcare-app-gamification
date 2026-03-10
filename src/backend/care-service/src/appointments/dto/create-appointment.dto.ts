@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { IsString, IsNotEmpty, IsDate, IsOptional, IsUUID, IsIn } from 'class-validator'; // version 0.14.0
 
 /**

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { PaginationDto, PaginatedResponse } from '@app/shared/dto/pagination.dto';
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 import {

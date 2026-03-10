@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { ApiProperty } from '@nestjs/swagger';
 
 /**

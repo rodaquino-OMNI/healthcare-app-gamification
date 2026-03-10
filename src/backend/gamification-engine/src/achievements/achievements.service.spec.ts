@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Test, TestingModule } from '@nestjs/testing';
 import { AchievementsService } from './achievements.service';
 import { PrismaService } from '../../../shared/src/database/prisma.service';

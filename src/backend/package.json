@@ -138,6 +138,8 @@
         "socket.io": "^4.8.3",
         "twilio": "^4.22.0",
         "uuid": "^9.0.1",
+        "@willsoto/nestjs-prometheus": "^6.0.1",
+        "prom-client": "^15.1.0",
         "winston": "^3.19.0",
         "zod": "^3.25.76"
     },

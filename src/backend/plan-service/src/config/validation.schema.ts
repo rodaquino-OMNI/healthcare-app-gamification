@@ -1,4 +1,3 @@
-/* eslint-disable */
 import Joi from 'joi'; // joi 17.9.1
 
 /**

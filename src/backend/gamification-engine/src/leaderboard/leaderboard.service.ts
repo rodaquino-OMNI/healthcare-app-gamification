@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { RedisService } from '@app/shared/redis/redis.service';
 import { Injectable } from '@nestjs/common';

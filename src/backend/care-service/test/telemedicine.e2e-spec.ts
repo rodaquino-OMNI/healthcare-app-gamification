@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 import { AuthGuard } from '@nestjs/passport';

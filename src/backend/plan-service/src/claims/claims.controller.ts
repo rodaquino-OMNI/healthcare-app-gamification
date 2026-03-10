@@ -1,4 +1,3 @@
-/* eslint-disable */
 /* eslint-disable @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
 import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 import { Roles } from '@app/auth/auth/decorators/roles.decorator';

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 import { PhiAccess } from '@app/shared/audit';
 import { Controller, Post, Body, UseGuards } from '@nestjs/common'; // v10.0.0+
@@ -30,6 +29,7 @@ export class SymptomCheckerController {
     @Post()
     @UseGuards(JwtAuthGuard)
     @PhiAccess('SymptomCheck')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async checkSymptoms(@Body() checkSymptomsDto: CheckSymptomsDto): Promise<any> {
         return this.symptomCheckerService.checkSymptoms(checkSymptomsDto);
     }

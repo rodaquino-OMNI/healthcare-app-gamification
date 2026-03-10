@@ -1,0 +1,80 @@
+appId: com.austa.superapp
+tags:
+  - regression
+  - sleep
+  - health
+  - p2
+---
+# ── Login ──
+- launchApp
+- tapOn:
+    id: "welcome-cta-login"
+- tapOn:
+    id: "login-email-input"
+- inputText: "test@austa.health"
+- tapOn:
+    id: "login-password-input"
+- inputText: "Test123!@#"
+- tapOn:
+    id: "login-submit-button"
+- assertVisible:
+    id: "home-screen"
+    timeout: 10000
+
+# ── Navigate to Health tab ──
+- tapOn:
+    text: "Health"
+
+# ── Open Sleep Tracking ──
+- tapOn:
+    text: "Sleep"
+    timeout: 5000
+
+# ── Assert SleepHome screen elements ──
+- assertVisible:
+    id: "sleep-home-log-button"
+    timeout: 5000
+- assertVisible:
+    id: "sleep-home-trends-button"
+
+# ── Navigate to Sleep Log ──
+- tapOn:
+    id: "sleep-home-log-button"
+
+# ── Fill in bedtime ──
+- assertVisible:
+    id: "sleep-log-bedtime-input"
+    timeout: 5000
+- tapOn:
+    id: "sleep-log-bedtime-input"
+- inputText: "22:30"
+
+# ── Fill in wake time ──
+- tapOn:
+    id: "sleep-log-wake-input"
+- inputText: "06:45"
+
+# ── Rate sleep quality (tap 4th star) ──
+- tapOn:
+    id: "sleep-log-quality-4"
+
+# ── Add notes ──
+- tapOn:
+    id: "sleep-log-notes-input"
+- inputText: "E2E test sleep log entry"
+
+# ── Save sleep log ──
+- tapOn:
+    id: "sleep-log-save-button"
+
+# ── Navigate back and verify SleepHome ──
+- assertVisible:
+    id: "sleep-home-log-button"
+    timeout: 5000
+
+# ── Navigate to trends to verify data ──
+- tapOn:
+    id: "sleep-home-trends-button"
+- assertVisible:
+    id: "sleep-trends-chart"
+    timeout: 5000

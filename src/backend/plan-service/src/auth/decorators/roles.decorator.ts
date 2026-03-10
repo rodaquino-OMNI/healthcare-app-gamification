@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { CustomDecorator, SetMetadata } from '@nestjs/common';
 
 /**

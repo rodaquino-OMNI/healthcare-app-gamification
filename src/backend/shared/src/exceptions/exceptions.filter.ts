@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as Sentry from '@sentry/node';
 

@@ -1,5 +1,5 @@
-/* eslint-disable */
 import { AuditModule, AuditInterceptor } from '@app/shared/audit';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { Module } from '@nestjs/common'; // NestJS Common 10.0.0+
 import { ConfigModule } from '@nestjs/config'; // NestJS Config 2.3.1+
 import { APP_INTERCEPTOR } from '@nestjs/core';
@@ -31,6 +31,7 @@ import { TracingModule } from '../../shared/src/tracing/tracing.module'; // Enab
             validationSchema, // Joi validation schema for environment variables.
             isGlobal: true, // Makes the ConfigModule globally available.
         }),
+        PrometheusModule.register(),
         LoggerModule, // Imports the LoggerModule for application-wide logging.
         ExceptionsModule, // Imports the ExceptionsModule for global exception handling.
         KafkaModule, // Imports the KafkaModule for event streaming.

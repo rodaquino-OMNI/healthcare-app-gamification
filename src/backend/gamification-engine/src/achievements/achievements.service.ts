@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { FilterDto } from '@app/shared/dto/filter.dto';
 import { PaginatedResponse, PaginationDto, PaginationMeta } from '@app/shared/dto/pagination.dto';

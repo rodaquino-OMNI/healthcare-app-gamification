@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
 import { LoggerModule } from '@app/shared/logging/logger.module';
 import { Module } from '@nestjs/common'; // v10.0.0+

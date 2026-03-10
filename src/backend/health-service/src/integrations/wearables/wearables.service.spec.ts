@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Test, TestingModule } from '@nestjs/testing';
 import { WearablesService } from './wearables.service';
 import { PrismaService } from '@app/shared/database/prisma.service';

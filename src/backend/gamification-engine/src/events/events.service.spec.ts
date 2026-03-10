@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Test, TestingModule } from '@nestjs/testing';
 import { EventsService } from './events.service';
 import { AchievementsService } from '../achievements/achievements.service';

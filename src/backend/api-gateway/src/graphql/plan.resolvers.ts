@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { HttpService } from '@nestjs/axios';
 import { UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';

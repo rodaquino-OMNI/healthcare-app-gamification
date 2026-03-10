@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Controller, Get, Post, Delete, Query, Param, Body, HttpCode, HttpStatus, Logger } from '@nestjs/common';
 
 import { DocumentsService } from './documents.service';

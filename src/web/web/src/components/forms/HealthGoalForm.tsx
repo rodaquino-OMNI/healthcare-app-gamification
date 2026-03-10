@@ -7,6 +7,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
+import { restClient } from '@/api/client';
 import { useAuth } from '@/hooks/useAuth';
 
 /**
@@ -72,10 +73,15 @@ export const HealthGoalForm: React.FC<HealthGoalFormProps> = () => {
     return (
         <form
             onSubmit={(e) => {
-                void handleSubmit((data) => {
-                    // Handles form submission and API calls to create or update the health goal.
-                    // TODO: Implement API call to create/update health goal
-                    void data;
+                void handleSubmit(async (data) => {
+                    try {
+                        await restClient.post('/health/goals', {
+                            ...data,
+                            userId: _session?.userId,
+                        });
+                    } catch (error) {
+                        console.error('Failed to create health goal:', error);
+                    }
                 })(e);
             }}
         >

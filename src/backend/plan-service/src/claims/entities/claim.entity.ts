@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Document } from '../../documents/entities/document.entity';
 
 /**

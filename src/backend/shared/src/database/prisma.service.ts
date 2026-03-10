@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Injectable, OnModuleInit, OnModuleDestroy, Optional } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 

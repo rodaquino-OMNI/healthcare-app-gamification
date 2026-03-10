@@ -1,4 +1,3 @@
-/* eslint-disable */
 import {
     format,
     parse,

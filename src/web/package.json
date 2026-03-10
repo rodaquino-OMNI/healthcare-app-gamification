@@ -302,7 +302,7 @@
     "serialize-javascript": "7.0.3",
     "path-to-regexp": "0.1.12",
     "@nestjs/common": "11.0.16",
-    "esbuild": "0.25.0"
+    "esbuild": ">=0.25.0"
   },
   "engines": {
     "node": ">=18.0.0"

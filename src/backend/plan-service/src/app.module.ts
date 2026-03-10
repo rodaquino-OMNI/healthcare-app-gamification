@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { AuditModule, AuditInterceptor } from '@app/shared/audit';
 import { DatabaseModule } from '@app/shared/database/database.module';
 import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
@@ -6,6 +5,7 @@ import { KafkaModule } from '@app/shared/kafka/kafka.module';
 import { LoggerModule } from '@app/shared/logging/logger.module';
 import { RedisModule } from '@app/shared/redis/redis.module';
 import { TracingModule } from '@app/shared/tracing/tracing.module';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
@@ -29,6 +29,7 @@ import { PlansModule } from './plans/plans.module';
             load: [planService],
             isGlobal: true,
         }),
+        PrometheusModule.register(),
         LoggerModule,
         ExceptionsModule,
         KafkaModule,

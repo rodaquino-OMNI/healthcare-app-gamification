@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Type declarations for notifications and templates
  */

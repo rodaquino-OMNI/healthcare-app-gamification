@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { ConnectDeviceDto } from './dto/connect-device.dto';

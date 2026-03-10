@@ -1,10 +1,10 @@
-/* eslint-disable */
 import { AuditModule, AuditInterceptor } from '@app/shared/audit';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
 import { KafkaModule } from '@app/shared/kafka/kafka.module';
 import { LoggerModule } from '@app/shared/logging/logger.module';
 import { RedisModule } from '@app/shared/redis/redis.module';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { Module } from '@nestjs/common'; // v10.0.0+
 import { ConfigModule } from '@nestjs/config'; // v10.0.0+
 import { APP_INTERCEPTOR } from '@nestjs/core';
@@ -40,6 +40,7 @@ import { TreatmentsModule } from './treatments/treatments.module';
             validationSchema: validationSchema,
             isGlobal: true,
         }),
+        PrometheusModule.register(),
         // AppointmentsModule: Provides appointment booking and management functionality.
         AppointmentsModule,
         // MedicationsModule: Provides medication tracking and reminder functionality.

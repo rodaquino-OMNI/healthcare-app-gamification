@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable no-console */
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -158,6 +158,7 @@ async function main() {
                 journey: 'health',
                 icon: 'health-tracker',
                 xpReward: 150,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } as any,
         }),
         // Care Journey Quest
@@ -171,6 +172,7 @@ async function main() {
                 journey: 'care',
                 icon: 'wellness-journey',
                 xpReward: 200,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } as any,
         }),
         // Plan Journey Quest
@@ -184,6 +186,7 @@ async function main() {
                 journey: 'plan',
                 icon: 'plan-mastery',
                 xpReward: 150,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } as any,
         }),
     ]);

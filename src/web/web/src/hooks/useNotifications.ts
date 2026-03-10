@@ -60,7 +60,7 @@ export const useNotifications = (): UseNotificationsReturn => {
         return notificationsList.filter((notification) => notification.status !== NotificationStatus.READ).length;
     }, []);
 
-    // Handle new notification from real-time updates
+    // Handle new notification from polling updates
     const handleNewNotification = useCallback((notification: Notification) => {
         setNotifications((prev) => [notification, ...prev]);
     }, []);
@@ -86,17 +86,14 @@ export const useNotifications = (): UseNotificationsReturn => {
         void fetchNotifications();
     }, [userId]);
 
-    // Subscribe to real-time notifications
+    // Subscribe to notification updates (polling-based)
     useEffect(() => {
         if (!userId) {
             return;
         }
 
-        // Subscribe to real-time notifications
-        subscriptionRef.current = subscribeToNotifications(
-            userId,
-            handleNewNotification as (notification: unknown) => void
-        );
+        // Subscribe to notification updates via polling
+        subscriptionRef.current = subscribeToNotifications(userId, handleNewNotification);
 
         // Cleanup function
         return () => {

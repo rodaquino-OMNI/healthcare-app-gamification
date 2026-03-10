@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';

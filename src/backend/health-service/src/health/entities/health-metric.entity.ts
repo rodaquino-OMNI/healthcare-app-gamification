@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { MetricType, MetricSource } from '../types/health.types';
 
 /**

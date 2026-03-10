@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 import {
     Controller,

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { DynamicModule, Global, Module, Provider } from '@nestjs/common';
 
 import { KafkaProducer } from './kafka.producer';

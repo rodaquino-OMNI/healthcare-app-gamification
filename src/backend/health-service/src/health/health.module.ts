@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { ConsentModule } from '@app/shared/consent';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';

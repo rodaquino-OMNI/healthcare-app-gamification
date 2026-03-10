@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { HttpStatus } from '@nestjs/common';
 
 import { ErrorType } from './error.types';

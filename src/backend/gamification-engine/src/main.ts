@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { createSecureAxios } from '@app/shared/utils/secure-axios';
 import { ValidationPipe } from '@nestjs/common';

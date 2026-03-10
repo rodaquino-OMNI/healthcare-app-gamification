@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { ApiProperty } from '@nestjs/swagger';
 import {
     IsNumber, // class-validator@0.14.1

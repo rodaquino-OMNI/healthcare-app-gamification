@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 import { Controller, Post, Body, UseGuards, UseFilters } from '@nestjs/common';

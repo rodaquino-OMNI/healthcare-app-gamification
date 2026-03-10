@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { Consumer, Kafka, Producer, ProducerRecord, SASLMechanism, SASLOptions } from 'kafkajs';
 

@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { ErrorType } from '@app/shared/exceptions/error.types'; // Import directly from error.types
 import { AppException } from '@app/shared/exceptions/exceptions.types';
 import { LoggerService } from '@app/shared/logging/logger.service';
@@ -26,6 +25,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
      * @param info Additional info from Passport
      * @returns The authenticated user
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     handleRequest<TUser = any>(err: any, user: any, info: any, context: ExecutionContext, status?: any): TUser {
         // If there was an error or no user was found, throw an exception
         if (err || !user) {

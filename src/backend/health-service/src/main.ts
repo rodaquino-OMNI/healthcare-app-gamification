@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core'; // NestJS Core 10.0.0+
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';

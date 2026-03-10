@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { FilterDto } from '@app/shared/dto/filter.dto';
 import { PaginationDto } from '@app/shared/dto/pagination.dto';
 import { IsOptional, IsString } from 'class-validator';

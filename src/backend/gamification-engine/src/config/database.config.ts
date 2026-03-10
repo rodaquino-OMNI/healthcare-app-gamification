@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { registerAs } from '@nestjs/config';
 
 /**

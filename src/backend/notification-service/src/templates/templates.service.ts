@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { JOURNEY_IDS } from '@app/shared/constants/journey.constants';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { LoggerService } from '@app/shared/logging/logger.service';

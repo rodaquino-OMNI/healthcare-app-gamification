@@ -7,6 +7,8 @@ import { formatRelativeDate } from 'shared/utils/date';
 import { truncateText } from 'shared/utils/format';
 import styled from 'styled-components';
 
+import { useRouter } from 'next/router';
+
 import { useAuth } from '@/hooks/useAuth';
 import HealthLayout from '@/layouts/HealthLayout';
 
@@ -184,6 +186,7 @@ const HistoryPage: React.FC = () => {
     // Get the authenticated user
     const { session } = useAuth();
     const userId = session?.userId || '';
+    const router = useRouter();
 
     // State for filter options
     const [eventType, setEventType] = useState('');
@@ -223,15 +226,14 @@ const HistoryPage: React.FC = () => {
     });
 
     // Function to handle clicking on an event card
-    const handleEventClick = (_event: MedicalEvent): void => {
-        // TODO: Navigate to detailed view, e.g.:
-        // router.push(`${WEB_HEALTH_ROUTES.HISTORY}/${event.id}`);
+    const handleEventClick = (event: MedicalEvent): void => {
+        void router.push(`/health/history/${event.id}`);
     };
 
     // Function to handle clicking on a document
-    const handleDocumentClick = (_documentId: string, _eventId: string, e: React.MouseEvent): void => {
+    const handleDocumentClick = (documentId: string, eventId: string, e: React.MouseEvent): void => {
         e.stopPropagation(); // Prevent triggering the card click
-        // TODO: Implement document viewing logic (e.g., open a modal with the document preview)
+        void router.push(`/health/history/${eventId}/documents/${documentId}`);
     };
 
     return (

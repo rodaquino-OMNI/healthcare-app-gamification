@@ -1,4 +1,3 @@
-/* eslint-disable */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CARE_TREATMENT_PLAN_NOT_FOUND } from '@app/shared/constants/error-codes.constants';
 import { PrismaService } from '@app/shared/database/prisma.service';

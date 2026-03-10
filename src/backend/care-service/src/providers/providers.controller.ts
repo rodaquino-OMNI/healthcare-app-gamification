@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Controller, Get, Post, Put, Delete, Param, Query, Body, Logger } from '@nestjs/common';
 
 import { SearchProvidersDto } from './dto/search-providers.dto';

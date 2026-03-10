@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Controller, Post, Get, Body, Param, Query } from '@nestjs/common'; // NestJS Common 9.0.0+
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 

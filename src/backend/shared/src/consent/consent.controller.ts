@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Controller, Get, Post, Delete, Body, Param, Req, ValidationPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 
