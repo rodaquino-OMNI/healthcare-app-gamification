@@ -30,7 +30,7 @@
         "@opentelemetry/exporter-trace-otlp-grpc": "^0.213.0",
         "@opentelemetry/sdk-node": "^0.213.0",
         "@opentelemetry/sdk-trace-base": "^1.15.2",
-        "@prisma/client": "5.22.0",
+        "@prisma/client": "^7.0.0",
         "@austa/shared": "^1.0.0",
         "bcrypt": "^5.1.1",
         "class-transformer": "^0.5.1",

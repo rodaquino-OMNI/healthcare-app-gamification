@@ -64,7 +64,7 @@ const OCRReviewPage: React.FC = () => {
                                     borderRadius: '8px',
                                     border: `1px solid ${colors.neutral.gray300}`,
                                     fontSize: '14px',
-                                    backgroundColor: field.editable ? '#fff' : colors.gray[10],
+                                    backgroundColor: field.editable ? colors.gray[0] : colors.gray[10],
                                     color: colors.neutral.gray900,
                                     fontFamily: 'inherit',
                                 }}

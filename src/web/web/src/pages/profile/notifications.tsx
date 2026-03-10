@@ -261,7 +261,7 @@ export default function NotificationPreferencesPage(): React.ReactElement {
                     {otherPrefs.map(renderToggle)}
                 </Section>
 
-                {error && <Subtitle style={{ color: colors.semantic?.error || '#dc2626' }}>{error}</Subtitle>}
+                {error && <Subtitle style={{ color: colors.semantic.error }}>{error}</Subtitle>}
 
                 <SaveButton onClick={() => void handleSave()} disabled={saving}>
                     {saving ? 'Salvando...' : 'Salvar Preferencias'}

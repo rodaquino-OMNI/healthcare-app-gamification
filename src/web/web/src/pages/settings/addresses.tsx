@@ -113,10 +113,10 @@ const AddressesPage: NextPage = () => {
 };
 
 const errorStyle: React.CSSProperties = {
-    backgroundColor: '#fef2f2',
-    border: '1px solid #fecaca',
+    backgroundColor: colors.semantic.errorBg,
+    border: `1px solid ${colors.semantic.error}`,
     borderRadius: 6,
-    color: '#b91c1c',
+    color: colors.semantic.error,
     fontSize: 14,
     padding: '10px 14px',
     marginBottom: 16,

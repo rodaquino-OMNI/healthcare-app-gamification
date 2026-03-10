@@ -93,7 +93,7 @@ const CostSimulatorPage: NextPage = () => {
                 {/* Form */}
                 <div
                     style={{
-                        backgroundColor: '#ffffff',
+                        backgroundColor: colors.gray[0],
                         borderRadius: borderRadius.md,
                         padding: spacing.xl,
                         boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
@@ -163,7 +163,7 @@ const CostSimulatorPage: NextPage = () => {
                             width: '100%',
                             padding: spacing.sm,
                             backgroundColor: procedureType && providerType ? plan.primary : colors.gray[30],
-                            color: '#ffffff',
+                            color: colors.gray[0],
                             border: 'none',
                             borderRadius: borderRadius.md,
                             cursor: procedureType && providerType ? 'pointer' : 'not-allowed',
@@ -180,7 +180,7 @@ const CostSimulatorPage: NextPage = () => {
                 {result && (
                     <div
                         style={{
-                            backgroundColor: '#ffffff',
+                            backgroundColor: colors.gray[0],
                             borderRadius: borderRadius.md,
                             padding: spacing.xl,
                             boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
@@ -281,7 +281,7 @@ const selectStyle: React.CSSProperties = {
     fontSize: typography.fontSize['text-md'],
     fontFamily: typography.fontFamily.body,
     color: plan.text,
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.gray[0],
 };
 
 const inputStyle: React.CSSProperties = {

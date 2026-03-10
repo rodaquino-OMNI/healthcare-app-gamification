@@ -54,7 +54,7 @@ const ShareCaregiverPage: React.FC = () => {
                             borderRadius: '8px',
                             border: `1px solid ${colors.neutral.gray300}`,
                             fontSize: '14px',
-                            backgroundColor: '#fff',
+                            backgroundColor: colors.gray[0],
                             color: colors.neutral.gray900,
                             fontFamily: 'inherit',
                         }}
@@ -78,7 +78,7 @@ const ShareCaregiverPage: React.FC = () => {
                             borderRadius: '8px',
                             border: `1px solid ${colors.neutral.gray300}`,
                             fontSize: '14px',
-                            backgroundColor: '#fff',
+                            backgroundColor: colors.gray[0],
                             color: colors.neutral.gray900,
                             fontFamily: 'inherit',
                         }}
@@ -100,7 +100,7 @@ const ShareCaregiverPage: React.FC = () => {
                             borderRadius: '8px',
                             border: `1px solid ${colors.neutral.gray300}`,
                             fontSize: '14px',
-                            backgroundColor: '#fff',
+                            backgroundColor: colors.gray[0],
                             color: colors.neutral.gray900,
                             fontFamily: 'inherit',
                         }}

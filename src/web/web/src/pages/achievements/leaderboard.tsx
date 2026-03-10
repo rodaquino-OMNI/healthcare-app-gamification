@@ -70,11 +70,8 @@ const LeaderboardPage: React.FC = () => {
                             border: 'none',
                             cursor: 'pointer',
                             fontWeight: timeframe === tf ? 700 : 400,
-                            backgroundColor:
-                                timeframe === tf
-                                    ? (colors.brand?.primary ?? '#6C63FF')
-                                    : (colors.gray[10] ?? '#f0f0f0'),
-                            color: timeframe === tf ? '#fff' : (colors.gray[70] ?? '#333'),
+                            backgroundColor: timeframe === tf ? colors.brand.primary : colors.gray[10],
+                            color: timeframe === tf ? colors.gray[0] : colors.gray[70],
                             fontSize: '14px',
                         }}
                     >
@@ -92,10 +89,13 @@ const LeaderboardPage: React.FC = () => {
                         style={{
                             padding: `${spacing.xs} ${spacing.md}`,
                             borderRadius: '16px',
-                            border: journeyFilter === jf ? '2px solid #6C63FF' : '1px solid #e0e0e0',
+                            border:
+                                journeyFilter === jf
+                                    ? `2px solid ${colors.gamification.primary}`
+                                    : `1px solid ${colors.gray[20]}`,
                             cursor: 'pointer',
-                            backgroundColor: journeyFilter === jf ? '#f0eeff' : '#fff',
-                            color: journeyFilter === jf ? '#6C63FF' : (colors.gray[70] ?? '#333'),
+                            backgroundColor: journeyFilter === jf ? colors.gamification.background : colors.gray[0],
+                            color: journeyFilter === jf ? colors.gamification.primary : colors.gray[70],
                             fontSize: '13px',
                             fontWeight: journeyFilter === jf ? 600 : 400,
                         }}
@@ -120,10 +120,10 @@ const LeaderboardPage: React.FC = () => {
             </Card>
 
             {/* Your position highlight */}
-            <Card padding="md" style={{ marginTop: spacing.lg, backgroundColor: '#f0eeff' }}>
+            <Card padding="md" style={{ marginTop: spacing.lg, backgroundColor: colors.gamification.background }}>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Text fontWeight="bold">Your Position</Text>
-                    <Text fontSize="xl" fontWeight="bold" color="#6C63FF">
+                    <Text fontSize="xl" fontWeight="bold" color={colors.gamification.primary}>
                         #4
                     </Text>
                 </Box>

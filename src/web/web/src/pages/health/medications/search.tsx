@@ -63,7 +63,7 @@ const MedicationSearchPage: React.FC = () => {
                         borderRadius: '8px',
                         border: `1px solid ${colors.neutral.gray300}`,
                         fontSize: '14px',
-                        backgroundColor: '#fff',
+                        backgroundColor: colors.gray[0],
                         color: colors.neutral.gray900,
                         fontFamily: 'inherit',
                     }}
@@ -91,7 +91,8 @@ const MedicationSearchPage: React.FC = () => {
                             border: `1px solid ${
                                 selectedCategory === category ? colors.journeys.health.primary : colors.neutral.gray300
                             }`,
-                            backgroundColor: selectedCategory === category ? colors.journeys.health.background : '#fff',
+                            backgroundColor:
+                                selectedCategory === category ? colors.journeys.health.background : colors.gray[0],
                             color:
                                 selectedCategory === category ? colors.journeys.health.primary : colors.neutral.gray600,
                             fontWeight: selectedCategory === category ? 600 : 400,

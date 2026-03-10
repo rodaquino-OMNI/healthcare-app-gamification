@@ -136,7 +136,11 @@ const RewardsPage: React.FC = () => {
             {/* XP Balance header */}
             <Card
                 padding="lg"
-                style={{ marginBottom: spacing['2xl'], textAlign: 'center', backgroundColor: '#f0eeff' }}
+                style={{
+                    marginBottom: spacing['2xl'],
+                    textAlign: 'center',
+                    backgroundColor: colors.gamification.background,
+                }}
             >
                 <Text fontSize="sm" color={colors.gray[50]} style={{ marginBottom: spacing.xs }}>
                     Your XP Balance
@@ -156,10 +160,13 @@ const RewardsPage: React.FC = () => {
                         style={{
                             padding: `${spacing.xs} ${spacing.md}`,
                             borderRadius: '16px',
-                            border: journeyFilter === jf ? '2px solid #6C63FF' : '1px solid #e0e0e0',
+                            border:
+                                journeyFilter === jf
+                                    ? `2px solid ${colors.gamification.primary}`
+                                    : `1px solid ${colors.gray[20]}`,
                             cursor: 'pointer',
-                            backgroundColor: journeyFilter === jf ? '#f0eeff' : '#fff',
-                            color: journeyFilter === jf ? '#6C63FF' : (colors.gray[70] ?? '#333'),
+                            backgroundColor: journeyFilter === jf ? colors.gamification.background : colors.gray[0],
+                            color: journeyFilter === jf ? colors.gamification.primary : colors.gray[70],
                             fontSize: '13px',
                             fontWeight: journeyFilter === jf ? 600 : 400,
                         }}
@@ -184,8 +191,8 @@ const RewardsPage: React.FC = () => {
                             border: 'none',
                             cursor: 'pointer',
                             fontWeight: sortBy === s ? 700 : 400,
-                            backgroundColor: sortBy === s ? '#6C63FF' : 'transparent',
-                            color: sortBy === s ? '#fff' : (colors.gray[50] ?? '#666'),
+                            backgroundColor: sortBy === s ? colors.gamification.primary : 'transparent',
+                            color: sortBy === s ? colors.gray[0] : colors.gray[50],
                             fontSize: '12px',
                         }}
                     >

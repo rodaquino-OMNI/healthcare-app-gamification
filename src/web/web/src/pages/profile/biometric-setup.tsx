@@ -192,7 +192,7 @@ export default function BiometricSetupPage(): React.ReactElement {
                     ))}
                 </BenefitsList>
 
-                {error && <Subtitle style={{ color: colors.semantic?.error || '#dc2626' }}>{error}</Subtitle>}
+                {error && <Subtitle style={{ color: colors.semantic.error }}>{error}</Subtitle>}
 
                 <PrimaryButton onClick={() => void handleEnable()} disabled={enrolling}>
                     {enrolling ? 'Ativando...' : 'Ativar Face ID / Touch ID'}

@@ -42,7 +42,7 @@ const DeleteConfirmPage: React.FC = () => {
                 elevation="sm"
                 padding="lg"
                 style={{
-                    backgroundColor: '#fff3cd',
+                    backgroundColor: colors.semantic.warningBg,
                     borderLeft: `4px solid ${colors.semantic.error}`,
                     marginBottom: spacing.xl,
                 }}
@@ -91,7 +91,7 @@ const DeleteConfirmPage: React.FC = () => {
                                   : colors.semantic.error
                         }`,
                         fontSize: '14px',
-                        backgroundColor: '#fff',
+                        backgroundColor: colors.gray[0],
                         color: colors.neutral.gray900,
                         fontFamily: 'inherit',
                         fontWeight: 'bold',

@@ -68,7 +68,7 @@ const CoveragePage: React.FC = () => {
                             key={type}
                             style={{
                                 marginTop: spacing.lg,
-                                backgroundColor: '#ffffff',
+                                backgroundColor: colors.gray[0],
                                 borderRadius: borderRadius.md,
                                 overflow: 'hidden',
                                 boxShadow: '0 1px 3px rgba(0,0,0,0.06)',

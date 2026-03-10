@@ -139,6 +139,15 @@ export const colors = {
     },
 
     /**
+     * Gamification color palette.
+     * Code-only extension — used across achievements, quests, rewards, and leaderboard pages.
+     */
+    gamification: {
+        primary: '#6C63FF', // Main gamification accent (purple)
+        background: '#f0eeff', // Light highlight background
+    },
+
+    /**
      * Neutral colors — kept as backward-compatible aliases pointing to Figma gray values.
      * @deprecated Use colors.gray scale or semantic tokens directly.
      * These will be removed in a future major version.

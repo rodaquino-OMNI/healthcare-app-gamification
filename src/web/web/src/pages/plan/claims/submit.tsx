@@ -109,7 +109,7 @@ export const ClaimForm: React.FC = () => {
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 backgroundColor: i <= currentStep ? plan.primary : colors.gray[20],
-                                color: i <= currentStep ? '#ffffff' : colors.gray[50],
+                                color: i <= currentStep ? colors.gray[0] : colors.gray[50],
                                 fontSize: typography.fontSize['text-sm'],
                                 fontWeight: typography.fontWeight.semiBold,
                                 fontFamily: typography.fontFamily.body,
@@ -269,7 +269,7 @@ export const ClaimForm: React.FC = () => {
                         </h2>
                         <div
                             style={{
-                                backgroundColor: '#ffffff',
+                                backgroundColor: colors.gray[0],
                                 borderRadius: borderRadius.md,
                                 padding: spacing.lg,
                                 border: `1px solid ${colors.gray[20]}`,
@@ -378,7 +378,7 @@ export const ClaimForm: React.FC = () => {
                                 flex: 2,
                                 padding: spacing.sm,
                                 backgroundColor: canProceed() ? plan.primary : colors.gray[30],
-                                color: '#ffffff',
+                                color: colors.gray[0],
                                 border: 'none',
                                 borderRadius: borderRadius.md,
                                 cursor: canProceed() ? 'pointer' : 'not-allowed',

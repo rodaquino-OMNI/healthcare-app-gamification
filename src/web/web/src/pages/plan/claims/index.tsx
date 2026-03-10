@@ -105,7 +105,7 @@ const Claims: NextPage = () => {
                     style={{
                         padding: `${spacing.xs} ${spacing.lg}`,
                         backgroundColor: plan.primary,
-                        color: '#ffffff',
+                        color: colors.gray[0],
                         border: 'none',
                         borderRadius: borderRadius.md,
                         cursor: 'pointer',
@@ -136,8 +136,8 @@ const Claims: NextPage = () => {
                                 padding: `${spacing.xs} ${spacing.md}`,
                                 borderRadius: borderRadius.full,
                                 border: `1px solid ${isActive ? plan.primary : colors.gray[20]}`,
-                                backgroundColor: isActive ? plan.primary : '#ffffff',
-                                color: isActive ? '#ffffff' : colors.gray[50],
+                                backgroundColor: isActive ? plan.primary : colors.gray[0],
+                                color: isActive ? colors.gray[0] : colors.gray[50],
                                 cursor: 'pointer',
                                 fontSize: typography.fontSize['text-sm'],
                                 fontWeight: typography.fontWeight.medium,
@@ -184,7 +184,7 @@ const Claims: NextPage = () => {
                         style={{
                             padding: `${spacing.xs} ${spacing.lg}`,
                             backgroundColor: plan.primary,
-                            color: '#ffffff',
+                            color: colors.gray[0],
                             border: 'none',
                             borderRadius: borderRadius.md,
                             cursor: 'pointer',

@@ -62,7 +62,7 @@ const MedicationAlarmPage: React.FC = () => {
                     borderColor: colors.semantic.warning,
                 }}
             >
-                <Text fontSize="lg" color="#fff" style={{ textAlign: 'center', marginBottom: spacing.md }}>
+                <Text fontSize="lg" color={colors.gray[0]} style={{ textAlign: 'center', marginBottom: spacing.md }}>
                     Hora de tomar seu medicamento
                 </Text>
 
@@ -78,7 +78,7 @@ const MedicationAlarmPage: React.FC = () => {
                     <Text
                         fontSize="heading-2xl"
                         fontWeight="bold"
-                        color="#fff"
+                        color={colors.gray[0]}
                         style={{ textAlign: 'center', marginBottom: spacing.sm }}
                     >
                         {medication.name}

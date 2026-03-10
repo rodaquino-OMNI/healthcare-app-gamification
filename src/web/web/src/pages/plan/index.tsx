@@ -87,7 +87,7 @@ const PlanDashboard: React.FC = () => {
                         <div
                             key={stat.label}
                             style={{
-                                backgroundColor: '#ffffff',
+                                backgroundColor: colors.gray[0],
                                 borderRadius: borderRadius.md,
                                 padding: spacing.lg,
                                 boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
@@ -230,7 +230,7 @@ const PlanDashboard: React.FC = () => {
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: spacing.sm,
-                                    backgroundColor: '#ffffff',
+                                    backgroundColor: colors.gray[0],
                                     borderRadius: borderRadius.md,
                                     padding: spacing.md,
                                     textDecoration: 'none',
