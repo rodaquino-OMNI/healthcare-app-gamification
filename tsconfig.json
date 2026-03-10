@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./.tsbuildinfo",
+    "noEmit": true
+  },
+  "include": [
+    "src/**/*",
+    "scripts/**/*",
+    "agents/**/*",
+    "docs/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    ".swarm",
+    ".claude"
+  ]
+}
