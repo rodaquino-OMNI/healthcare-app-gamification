@@ -148,7 +148,7 @@
     "postcss": "8.5.8",
     "webpack": "5.104.1",
     "terser": "5.46.0",
-    "node-fetch": "2.7.0",
+    "node-fetch": "3.3.2",
     "shelljs": "8.4.31",
     "minimist": "1.2.8",
     "next/webpack": "8.4.31",
