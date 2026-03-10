@@ -11,6 +11,8 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
+import { useMedications } from '@/hooks';
+
 /**
  * Format the current time as HH:MM.
  */
@@ -24,6 +26,7 @@ const formatCurrentTime = (): string => {
  * with timestamp, notes, and optional side effects flag.
  */
 const MedicationDoseTakenPage: React.FC = () => {
+    const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const { name, dosage, scheduledTime } = router.query;
 
@@ -34,6 +37,25 @@ const MedicationDoseTakenPage: React.FC = () => {
     const [timestamp, setTimestamp] = useState(formatCurrentTime());
     const [notes, setNotes] = useState('');
     const [hasSideEffects, setHasSideEffects] = useState(false);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void medications;
 
     const handleConfirm = (): void => {
         // In a real app, persist the dose record via API

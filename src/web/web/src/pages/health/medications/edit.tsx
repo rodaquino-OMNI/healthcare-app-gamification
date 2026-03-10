@@ -12,6 +12,8 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
+import { useMedications } from '@/hooks';
+
 const FREQUENCY_OPTIONS = [
     { label: 'Once daily', value: 'once-daily' },
     { label: 'Twice daily', value: 'twice-daily' },
@@ -37,6 +39,7 @@ interface EditFormState {
  * the user to update medication details.
  */
 const MedicationEditPage: React.FC = () => {
+    const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const { name, dosage, frequency, notes } = router.query;
 
@@ -50,6 +53,25 @@ const MedicationEditPage: React.FC = () => {
         reminders: true,
     });
     const [errors, setErrors] = useState<Partial<Record<keyof EditFormState, string>>>({});
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void medications;
 
     const updateField = <K extends keyof EditFormState>(field: K, value: EditFormState[K]): void => {
         setForm((prev) => ({ ...prev, [field]: value }));

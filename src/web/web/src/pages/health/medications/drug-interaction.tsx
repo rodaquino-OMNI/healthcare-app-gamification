@@ -8,6 +8,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useMedications } from '@/hooks';
+
 type SeverityLevel = 'minor' | 'moderate' | 'severe';
 
 interface DrugInteraction {
@@ -64,8 +66,28 @@ const MOCK_INTERACTIONS: DrugInteraction[] = [
  * interaction descriptions, and recommendations for each drug pair.
  */
 const MedicationDrugInteractionPage: React.FC = () => {
+    const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const medicationName = (router.query.name as string) || 'Metformin';
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void medications;
 
     const highestSeverity: SeverityLevel = MOCK_INTERACTIONS.reduce<SeverityLevel>((highest, interaction) => {
         const order: SeverityLevel[] = ['minor', 'moderate', 'severe'];

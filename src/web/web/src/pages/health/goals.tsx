@@ -1,13 +1,11 @@
-import { useQuery } from '@apollo/client'; // 3.7.17
 import { Button } from 'design-system/components/Button/Button';
 import { Card } from 'design-system/components/Card/Card';
 import React, { useState } from 'react'; // react 18.0+
-import { GET_HEALTH_GOALS } from 'shared/graphql/queries/health.queries';
 import { HealthGoal } from 'shared/types/health.types';
 
 import { HealthGoalForm } from '@/components/forms/HealthGoalForm';
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth, useHealthMetrics } from '@/hooks';
 
 /**
  * Renders the Health Goals page, displaying a list of current goals and providing
@@ -17,14 +15,10 @@ import { useAuth } from '@/hooks/useAuth';
 const HealthGoalsPage: React.FC = () => {
     // LD1: Retrieves the user ID from the authentication context using the useAuth hook.
     const { session } = useAuth();
-    const userId = session?.user?.id;
+    const userId = session?.user?.id || '';
 
-    // LD1: Fetches health goals using the GET_HEALTH_GOALS GraphQL query
-    // and the useQuery hook.
-    const { data } = useQuery<{ getHealthGoals: HealthGoal[] }>(GET_HEALTH_GOALS, {
-        variables: { userId },
-        skip: !userId,
-    });
+    // LD1: Fetches health goals using the useHealthMetrics hook.
+    const { metrics: goals, loading: _loading, error: _error, refetch: _refetch } = useHealthMetrics(userId, ['goal']);
 
     // LD1: Manages the state for displaying the HealthGoalForm using the useState hook.
     const [addGoal, setAddGoal] = useState(false);
@@ -35,7 +29,7 @@ const HealthGoalsPage: React.FC = () => {
             <JourneyHeader title="Minhas Metas" />
 
             {/* LD1: Renders a list of HealthGoal components, displaying each goal's details. */}
-            {data?.getHealthGoals?.map((goal: HealthGoal) => (
+            {goals?.map((goal: HealthGoal) => (
                 <Card key={goal.id}>
                     {goal.type} - {goal.target}
                 </Card>

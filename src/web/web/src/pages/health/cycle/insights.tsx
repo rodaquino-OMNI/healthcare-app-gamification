@@ -6,6 +6,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useCycle } from '@/hooks';
+
 const CATEGORIES = ['All', 'Menstrual Health', 'Fertility', 'Wellness', 'Nutrition'];
 
 interface Article {
@@ -98,7 +100,27 @@ const chipStyle = (selected: boolean): React.CSSProperties => ({
 
 const InsightsPage: React.FC = () => {
     const router = useRouter();
+    const { data: cycleData, loading, error, refetch } = useCycle();
     const [activeCategory, setActiveCategory] = useState('All');
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void cycleData;
 
     const filtered = activeCategory === 'All' ? ARTICLES : ARTICLES.filter((a) => a.category === activeCategory);
 

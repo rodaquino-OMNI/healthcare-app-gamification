@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useSleep } from '@/hooks';
+
 const WINDOW_OPTIONS = [
     { id: '10', label: '10 min' },
     { id: '20', label: '20 min' },
@@ -20,10 +22,30 @@ const SOUND_OPTIONS = [
 ];
 
 const SmartAlarmPage: React.FC = () => {
+    const { data: sleepData, loading, error, refetch } = useSleep();
     const router = useRouter();
     const [wakeWindow, setWakeWindow] = useState('20');
     const [vibration, setVibration] = useState(true);
     const [sound, setSound] = useState('gentle');
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void sleepData;
 
     const handleSave = (): void => {
         globalThis.alert(`Smart alarm: ${wakeWindow}min window, Sound: ${sound}, Vibration: ${vibration}`);

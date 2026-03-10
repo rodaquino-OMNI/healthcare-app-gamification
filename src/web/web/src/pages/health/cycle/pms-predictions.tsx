@@ -6,6 +6,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useCycle } from '@/hooks';
+
 const PMS_TIMELINE = [
     { day: 'Day 22', status: 'current', label: 'Today' },
     { day: 'Day 23', status: 'upcoming', label: 'Mild symptoms may begin' },
@@ -31,6 +33,26 @@ const SELF_CARE = [
 
 const PmsPredictionsPage: React.FC = () => {
     const router = useRouter();
+    const { data: cycleData, loading, error, refetch } = useCycle();
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void cycleData;
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>

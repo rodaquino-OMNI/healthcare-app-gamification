@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState, useMemo } from 'react';
 
+import { useCycle } from '@/hooks';
+
 const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 const PHASE_COLORS: Record<string, string> = {
@@ -55,11 +57,32 @@ const generateMonthDays = (year: number, month: number): { key: string; day: num
 
 const CycleHomePage: React.FC = () => {
     const router = useRouter();
+    const { data: cycleData, loading, error, refetch } = useCycle();
     const today = new Date();
     const [month] = useState(today.getMonth());
     const [year] = useState(today.getFullYear());
     const monthName = new Date(year, month).toLocaleString('en-US', { month: 'long', year: 'numeric' });
     const calendarDays = useMemo(() => generateMonthDays(year, month), [year, month]);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void cycleData;
+
     const currentPhase = 'luteal';
 
     return (

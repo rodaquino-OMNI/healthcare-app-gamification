@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useActivity } from '@/hooks';
+
 type Filter = 'all' | 'running' | 'cycling' | 'gym';
 
 const FILTERS: Array<{ id: Filter; label: string }> = [
@@ -27,7 +29,27 @@ const WORKOUTS = [
 
 const WorkoutHistoryPage: React.FC = () => {
     const router = useRouter();
+    const { data: activityData, loading, error, refetch } = useActivity();
     const [filter, setFilter] = useState<Filter>('all');
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void activityData;
 
     const filtered = filter === 'all' ? WORKOUTS : WORKOUTS.filter((w) => w.category === filter);
 

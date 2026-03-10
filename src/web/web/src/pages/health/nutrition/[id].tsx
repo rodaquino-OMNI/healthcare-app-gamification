@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useNutrition } from '@/hooks';
+
 const NUTRIENTS = [
     { label: 'Calories', value: '420 kcal' },
     { label: 'Protein', value: '32g' },
@@ -19,8 +21,28 @@ const NUTRIENTS = [
 const INGREDIENTS = ['Chicken breast (150g)', 'Brown rice (80g)', 'Broccoli (100g)', 'Olive oil (10ml)'];
 
 const MealDetailPage: React.FC = () => {
+    const { data: nutritionData, loading, error, refetch } = useNutrition();
     const router = useRouter();
     const { id } = router.query;
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void nutritionData;
 
     const handleEdit = (): void => {
         void router.push('/health/nutrition/meal-log');

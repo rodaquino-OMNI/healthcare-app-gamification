@@ -8,6 +8,8 @@ import { useRouter } from 'next/router';
 import React, { useState, useCallback } from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
+import { useAssessment } from '@/hooks';
+
 import StepAlcoholTobacco from './steps/step-alcohol-tobacco';
 import StepAllergies from './steps/step-allergies';
 import StepDiet from './steps/step-diet';
@@ -65,6 +67,7 @@ const TOTAL_STEPS = STEPS.length;
  */
 const HealthAssessmentPage: React.FC = () => {
     const router = useRouter();
+    const _assessment = useAssessment();
     const [activeStep, setActiveStep] = useState(0);
     const [formData, setFormData] = useState<Record<string, unknown>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);

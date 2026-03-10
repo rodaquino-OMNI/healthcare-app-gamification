@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useSleep } from '@/hooks';
+
 const DATA_SOURCES = [
     { id: 'apple_health', label: 'Apple Health', description: 'Sync via HealthKit integration' },
     { id: 'fitbit', label: 'Fitbit', description: 'Connect your Fitbit account' },
@@ -14,9 +16,29 @@ const DATA_SOURCES = [
 ];
 
 const DeviceSyncPage: React.FC = () => {
+    const { data: sleepData, loading, error, refetch } = useSleep();
     const router = useRouter();
     const [source, setSource] = useState('manual');
     const [connected, setConnected] = useState(false);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void sleepData;
 
     const handleSync = (): void => {
         window.alert('Syncing sleep data from device...');

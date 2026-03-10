@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useCycle } from '@/hooks';
+
 interface PrivacyOption {
     id: string;
     label: string;
@@ -45,6 +47,7 @@ const toggleKnobStyle = (enabled: boolean): React.CSSProperties => ({
 
 const PartnerSharingPage: React.FC = () => {
     const router = useRouter();
+    const { data: cycleData, loading, error, refetch } = useCycle();
     const [sharingEnabled, setSharingEnabled] = useState(false);
     const [privacySettings, setPrivacySettings] = useState<Record<string, boolean>>({
         cycle_phase: true,
@@ -53,6 +56,25 @@ const PartnerSharingPage: React.FC = () => {
         symptoms: false,
     });
     const [partnerConnected] = useState(false);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void cycleData;
 
     const togglePrivacy = (id: string): void => {
         setPrivacySettings((prev) => ({ ...prev, [id]: !prev[id] }));

@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useAuth, useHealthMetrics } from '@/hooks';
+
 type Filter = 'All' | 'Fitness' | 'Nutrition' | 'Mental Health';
 const FILTERS: Filter[] = ['All', 'Fitness', 'Nutrition', 'Mental Health'];
 
@@ -59,6 +61,9 @@ const inputStyle: React.CSSProperties = {
 
 const ArticleListPage: React.FC = () => {
     const router = useRouter();
+    const { session } = useAuth();
+    const userId = session?.userId || '';
+    const { metrics: _metrics, loading: _metricsLoading } = useHealthMetrics(userId, []);
     const [search, setSearch] = useState('');
     const [filter, setFilter] = useState<Filter>('All');
 

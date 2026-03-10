@@ -8,6 +8,8 @@ import { useRouter } from 'next/router';
 import React, { useRef, useCallback } from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
+import { useMedications } from '@/hooks';
+
 /**
  * Tips for uploading a good prescription photo
  */
@@ -24,6 +26,7 @@ const UPLOAD_TIPS = [
  * Uses file input instead of camera, mirrors mobile MedicationPrescriptionPhoto.
  */
 const PrescriptionPhotoPage: React.FC = () => {
+    const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -41,6 +44,25 @@ const PrescriptionPhotoPage: React.FC = () => {
     const handleSkipManual = useCallback(() => {
         void router.push(WEB_HEALTH_ROUTES.MEDICATION_ADD);
     }, [router]);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void medications;
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>

@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useSleep } from '@/hooks';
+
 const inputStyle: React.CSSProperties = {
     width: '100%',
     padding: spacing.xs,
@@ -17,6 +19,7 @@ const inputStyle: React.CSSProperties = {
 };
 
 const SleepGoalsPage: React.FC = () => {
+    const { data: sleepData, loading, error, refetch } = useSleep();
     const router = useRouter();
     const [targetBedtime, setTargetBedtime] = useState('23:00');
     const [targetWake, setTargetWake] = useState('07:00');
@@ -29,6 +32,25 @@ const SleepGoalsPage: React.FC = () => {
     const totalMinutes = (wakeH * 60 + wakeM - (bedH * 60 + bedM) + 1440) % 1440;
     const durationHours = Math.floor(totalMinutes / 60);
     const durationMins = totalMinutes % 60;
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void sleepData;
 
     const handleSave = (): void => {
         window.alert(`Goals saved: ${targetBedtime} - ${targetWake} (${durationHours}h ${durationMins}m)`);

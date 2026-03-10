@@ -8,6 +8,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useMedications } from '@/hooks';
+
 const getCountdownColor = (days: number): string => {
     if (days > 14) {
         return colors.semantic.success;
@@ -38,12 +40,32 @@ const SNOOZE_OPTIONS: SnoozeOption[] = [
  * progress bar, and actions to find pharmacy or order refill.
  */
 const MedicationRefillReminderPage: React.FC = () => {
+    const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const medicationName = (router.query.name as string) || 'Metformin';
     const initialDays = parseInt(router.query.days as string, 10) || 10;
 
     const [daysRemaining] = useState(initialDays);
     const [snoozed, setSnoozed] = useState(false);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void medications;
 
     const supplyLevel = getSupplyLevel(daysRemaining);
     const countdownColor = getCountdownColor(daysRemaining);

@@ -9,6 +9,8 @@ import { useRouter } from 'next/router';
 import React, { useState, useMemo } from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
+import { useMedications } from '@/hooks';
+
 /**
  * Pharmacy data model
  */
@@ -78,6 +80,7 @@ const MOCK_PHARMACIES: Pharmacy[] = [
  * Mirrors the mobile MedicationPharmacyLocator screen.
  */
 const PharmacyLocatorPage: React.FC = () => {
+    const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -90,6 +93,25 @@ const PharmacyLocatorPage: React.FC = () => {
             (p) => p.name.toLowerCase().includes(query) || p.address.toLowerCase().includes(query)
         );
     }, [searchQuery]);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void medications;
 
     const handleGetDirections = (pharmacy: Pharmacy): void => {
         window.alert(`Opening directions to ${pharmacy.name}`);

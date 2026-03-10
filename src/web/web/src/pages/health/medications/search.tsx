@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState, useMemo } from 'react';
 
+import { useMedications } from '@/hooks';
+
 interface Medication {
     id: string;
     name: string;
@@ -29,6 +31,7 @@ const CATEGORIES = ['Todos', 'Antibiótico', 'Analgésico', 'Anti-inflamatório'
  * Display results as searchable cards with view/add actions.
  */
 const MedicationSearchPage: React.FC = () => {
+    const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('Todos');
@@ -40,6 +43,25 @@ const MedicationSearchPage: React.FC = () => {
             return matchesQuery && matchesCategory;
         });
     }, [searchQuery, selectedCategory]);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void medications;
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>

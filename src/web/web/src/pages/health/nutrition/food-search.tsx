@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useNutrition } from '@/hooks';
+
 const RECENT_SEARCHES = ['Chicken breast', 'Brown rice', 'Avocado', 'Greek yogurt', 'Almonds'];
 
 const MOCK_RESULTS = [
@@ -26,9 +28,29 @@ const inputStyle: React.CSSProperties = {
 };
 
 const FoodSearchPage: React.FC = () => {
+    const { data: nutritionData, loading, error, refetch } = useNutrition();
     const router = useRouter();
     const [query, setQuery] = useState('');
     const [searched, setSearched] = useState(false);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void nutritionData;
 
     const handleSearch = (): void => {
         if (query.trim()) {

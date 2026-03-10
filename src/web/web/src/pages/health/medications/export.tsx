@@ -8,6 +8,8 @@ import { useRouter } from 'next/router';
 import React, { useState, useMemo } from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
+import { useMedications } from '@/hooks';
+
 /**
  * Export format type
  */
@@ -71,6 +73,7 @@ const EXPORT_SUMMARY = {
  * Mirrors the mobile MedicationExport screen.
  */
 const ExportPage: React.FC = () => {
+    const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const [selectedFormat, setSelectedFormat] = useState<ExportFormat>('pdf');
     const [selectedScope, setSelectedScope] = useState<DataScope>('all');
@@ -85,6 +88,25 @@ const ExportPage: React.FC = () => {
                 return EXPORT_SUMMARY.totalMedications;
         }
     }, [selectedScope]);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void medications;
 
     const handleExport = (): void => {
         window.alert(`Exporting ${exportCount} medications as ${selectedFormat.toUpperCase()}`);

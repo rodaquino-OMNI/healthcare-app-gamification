@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useSleep } from '@/hooks';
+
 const QUALITY_OPTIONS = [
     { emoji: '\ud83d\ude29', label: 'Terrible', value: 1 },
     { emoji: '\ud83d\ude1f', label: 'Poor', value: 2 },
@@ -25,6 +27,7 @@ const FACTORS = [
 ];
 
 const SleepQualityPage: React.FC = () => {
+    const { data: sleepData, loading, error, refetch } = useSleep();
     const router = useRouter();
     const [selected, setSelected] = useState(0);
     const [factors, setFactors] = useState<string[]>([]);
@@ -32,6 +35,25 @@ const SleepQualityPage: React.FC = () => {
     const toggleFactor = (id: string): void => {
         setFactors((prev) => (prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]));
     };
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void sleepData;
 
     const handleSave = (): void => {
         const quality = QUALITY_OPTIONS.find((o) => o.value === selected);

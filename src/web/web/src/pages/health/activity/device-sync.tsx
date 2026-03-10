@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useActivity } from '@/hooks';
+
 const DATA_SOURCES = [
     { id: 'apple_health', label: 'Apple Health', description: 'Sync via HealthKit integration' },
     { id: 'google_fit', label: 'Google Fit', description: 'Connect your Google Fit account' },
@@ -15,8 +17,28 @@ const DATA_SOURCES = [
 
 const DeviceSyncPage: React.FC = () => {
     const router = useRouter();
+    const { data: activityData, loading, error, refetch } = useActivity();
     const [source, setSource] = useState('manual');
     const [connected, setConnected] = useState(false);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void activityData;
 
     const handleSync = (): void => {
         window.alert('Syncing activity data from device...');

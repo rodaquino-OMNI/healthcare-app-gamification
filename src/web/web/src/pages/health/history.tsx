@@ -1,15 +1,12 @@
-import { useQuery } from '@apollo/client';
 import { Card } from 'design-system/components/Card/Card';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import { GET_MEDICAL_HISTORY } from 'shared/graphql/queries/health.queries';
 import { MedicalEvent } from 'shared/types/health.types';
 import { formatRelativeDate } from 'shared/utils/date';
 import { truncateText } from 'shared/utils/format';
 import styled from 'styled-components';
 
-import { useRouter } from 'next/router';
-
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth, useHealthMetrics } from '@/hooks';
 import HealthLayout from '@/layouts/HealthLayout';
 
 // Styled components for the Medical History Timeline page
@@ -188,42 +185,15 @@ const HistoryPage: React.FC = () => {
     const userId = session?.userId || '';
     const router = useRouter();
 
+    // Fetch medical history using useHealthMetrics hook
+    const { metrics: history, loading, error } = useHealthMetrics(userId, ['history']);
+
     // State for filter options
     const [eventType, setEventType] = useState('');
     const [timePeriod, setTimePeriod] = useState('all');
 
-    // Calculate date range based on selected time period
-    const getDateRange = (): { startDate: string | undefined; endDate: string | undefined } => {
-        if (timePeriod === 'all') {
-            return {
-                startDate: undefined,
-                endDate: undefined,
-            };
-        }
-
-        const endDate = new Date();
-        const startDate = new Date();
-        startDate.setDate(startDate.getDate() - parseInt(timePeriod));
-
-        return {
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
-        };
-    };
-
-    // Prepare query variables
-    const queryVariables = {
-        userId,
-        types: eventType ? [eventType] : undefined,
-        ...getDateRange(),
-    };
-
-    // Query for medical history data
-    const { loading, error, data } = useQuery<{ getMedicalHistory: MedicalEvent[] }>(GET_MEDICAL_HISTORY, {
-        variables: queryVariables,
-        skip: !userId, // Skip the query if we don't have a userId
-        fetchPolicy: 'cache-and-network',
-    });
+    // Derive filtered data from history metrics
+    const data = history ? { getMedicalHistory: history as unknown as MedicalEvent[] } : undefined;
 
     // Function to handle clicking on an event card
     const handleEventClick = (event: MedicalEvent): void => {

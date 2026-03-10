@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useAuth, useHealthMetrics } from '@/hooks';
+
 const INITIAL_BOOKMARKS = [
     { id: 'b1', title: 'Building a Consistent Exercise Habit', type: 'Article', savedAt: 'Feb 20, 2026' },
     { id: 'b2', title: 'Morning Yoga Flow', type: 'Video', savedAt: 'Feb 18, 2026' },
@@ -23,6 +25,9 @@ const TYPE_COLORS: Record<string, string> = {
 
 const WellnessBookmarksPage: React.FC = () => {
     const router = useRouter();
+    const { session } = useAuth();
+    const userId = session?.userId || '';
+    const { metrics: _metrics, loading: _metricsLoading } = useHealthMetrics(userId, []);
     const [bookmarks, setBookmarks] = useState(INITIAL_BOOKMARKS);
 
     const removeBookmark = (id: string): void => {

@@ -7,12 +7,7 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
-const QUICK_STATS = [
-    { label: 'Calories Today', value: '1,840 kcal' },
-    { label: 'Protein', value: '82g' },
-    { label: 'Hydration', value: '6 / 8 glasses' },
-    { label: 'Streak', value: '9 days' },
-];
+import { useNutrition } from '@/hooks';
 
 const NAV_LINKS = [
     { label: 'Log Meal', href: '/health/nutrition/meal-log' },
@@ -26,7 +21,50 @@ const NAV_LINKS = [
 ];
 
 const NutritionHomePage: React.FC = () => {
+    const { data: nutritionData, loading, error, refetch } = useNutrition();
     const router = useRouter();
+
+    const stats = nutritionData
+        ? [
+              {
+                  label: 'Calories Today',
+                  value: String(nutritionData.find((m) => String(m.type) === 'calories')?.value ?? '—') + ' kcal',
+              },
+              {
+                  label: 'Protein',
+                  value: String(nutritionData.find((m) => String(m.type) === 'protein')?.value ?? '—') + 'g',
+              },
+              {
+                  label: 'Hydration',
+                  value: String(nutritionData.find((m) => String(m.type) === 'hydration')?.value ?? '—'),
+              },
+              {
+                  label: 'Streak',
+                  value:
+                      String(nutritionData.find((m) => String(m.type) === 'nutrition_streak')?.value ?? '—') + ' days',
+              },
+          ]
+        : [];
+
+    const calorieTarget = nutritionData?.find((m) => String(m.type) === 'calorie_target')?.value;
+    const calorieProgress = nutritionData?.find((m) => String(m.type) === 'calorie_progress')?.value;
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
@@ -74,7 +112,7 @@ const NutritionHomePage: React.FC = () => {
                     marginBottom: spacing['2xl'],
                 }}
             >
-                {QUICK_STATS.map((stat) => (
+                {stats.map((stat) => (
                     <Card key={stat.label} journey="health" elevation="sm" padding="md">
                         <Text fontSize="sm" color={colors.gray[50]}>
                             {stat.label}
@@ -93,11 +131,11 @@ const NutritionHomePage: React.FC = () => {
                             Today&apos;s Goal
                         </Text>
                         <Text fontSize="sm" color={colors.gray[50]}>
-                            2,000 kcal target
+                            {calorieTarget ? `${String(calorieTarget)} kcal target` : '2,000 kcal target'}
                         </Text>
                     </Box>
                     <Text fontSize="lg" fontWeight="bold" color={colors.semantic.success}>
-                        92%
+                        {calorieProgress ? `${String(calorieProgress)}%` : '—'}
                     </Text>
                 </Box>
             </Card>

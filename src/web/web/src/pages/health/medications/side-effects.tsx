@@ -8,6 +8,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useMedications } from '@/hooks';
+
 type SeverityLevel = 'mild' | 'moderate' | 'severe';
 
 interface SideEffectEntry {
@@ -67,7 +69,27 @@ const MOCK_SIDE_EFFECTS: SideEffectEntry[] = [
  * with severity badges, dates, and notes. Links to the report form.
  */
 const MedicationSideEffectsPage: React.FC = () => {
+    const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void medications;
 
     const handleAddSideEffect = (): void => {
         void router.push('/health/medications/side-effect-form');

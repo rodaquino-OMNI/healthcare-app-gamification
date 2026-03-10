@@ -8,13 +8,35 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
+import { useMedications } from '@/hooks';
+
 /**
  * Success page displayed after successfully adding a medication.
  * Shows the medication name/dosage and provides next step CTAs.
  */
 const MedicationAddConfirmationPage: React.FC = () => {
+    const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const { name, dosage } = router.query;
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void medications;
 
     const medicationName = (name as string) || 'Medication';
     const medicationDosage = (dosage as string) || '';
