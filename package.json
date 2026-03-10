@@ -87,7 +87,7 @@
     "@remix-run/router": "1.23.2",
     "rollup": "2.80.0",
     "express-rate-limit": "8.3.1",
-    "hono": "4.12.6",
+    "hono": "4.12.7",
     "@hono/node-server": "1.19.11"
   },
   "scripts": {
