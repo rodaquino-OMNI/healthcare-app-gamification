@@ -36,7 +36,7 @@
         "class-transformer": "^0.5.1",
         "class-validator": "^0.15.1",
         "compression": "^1.8.1",
-        "date-fns": "^3.3.1",
+        "date-fns": "^4.0.0",
         "helmet": "^8.0.0",
         "ioredis": "^5.10.0",
         "joi": "^17.12.2",
