@@ -8,12 +8,13 @@ import { TracingModule } from '@app/shared/tracing/tracing.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config'; // 10.0.0+
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 import { AuthModule } from './auth/auth.module';
 import { BiometricModule } from './biometric/biometric.module';
 import { configuration } from './config/configuration';
-import { IntegrityModule } from './integrity/integrity.module';
 import { HealthModule } from './health/health.module';
+import { IntegrityModule } from './integrity/integrity.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { RolesModule } from './roles/roles.module';
 import { UsersModule } from './users/users.module';
@@ -43,6 +44,7 @@ import { UsersModule } from './users/users.module';
         RedisModule,
         AuditModule,
         HealthModule,
+        PrometheusModule.register(),
     ],
     providers: [PrismaService, { provide: APP_INTERCEPTOR, useClass: AuditInterceptor }],
 })
