@@ -1,6 +1,7 @@
 const path = require('path');
 
 module.exports = {
+  ignorePatterns: ['vite.config.ts'],
   parserOptions: {
     project: [path.join(__dirname, 'tsconfig.json')],
     tsconfigRootDir: __dirname,
