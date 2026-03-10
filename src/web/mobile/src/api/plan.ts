@@ -3,7 +3,8 @@
  * @description API functions for the Plan journey: plan details, claims, coverage, and benefits.
  */
 
-import { ReactNativeFile } from 'apollo-upload-client'; // v17.0.0
+// ReactNativeFile removed in apollo-upload-client v19; plain RN file objects are
+// handled via the custom isExtractableFile predicate configured in api/client.ts
 import { graphQLClient, restClient } from './client';
 import { GET_PLAN, GET_CLAIMS } from '@shared/graphql/queries/plan.queries';
 import {
@@ -155,7 +156,7 @@ export const uploadClaimDocument = async (
   claimId: string,
   file: { uri: string; name: string; type: string }
 ): Promise<{ id: string; fileName: string; fileType: string; fileSize: number; uploadedAt: string }> => {
-  const uploadFile = new ReactNativeFile({ uri: file.uri, name: file.name, type: file.type });
+  const uploadFile = { uri: file.uri, name: file.name, type: file.type }; // plain RN file object (apollo-upload-client v19)
   const { data } = await graphQLClient.mutate({
     mutation: UPLOAD_CLAIM_DOCUMENT,
     variables: { claimId, file: uploadFile },
