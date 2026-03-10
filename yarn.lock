@@ -4079,10 +4079,10 @@
     path-to-regexp "8.3.0"
     tslib "2.8.1"
 
-"@nestjs/event-emitter@^2.0.4":
-  version "2.1.1"
-  resolved "https://registry.npmjs.org/@nestjs/event-emitter/-/event-emitter-2.1.1.tgz"
-  integrity sha512-6L6fBOZTyfFlL7Ih/JDdqlCzZeCW0RjCX28wnzGyg/ncv5F/EOeT1dfopQr1loBRQ3LTgu8OWM7n4zLN4xigsg==
+"@nestjs/event-emitter@^3.0.0":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@nestjs/event-emitter/-/event-emitter-3.0.1.tgz#6c286f3b46a3d22093397a35015de427972bacfb"
+  integrity sha512-0Ln/x+7xkU6AJFOcQI9tIhUMXVF7D5itiaQGOyJbXtlAfAIt8gzDdJm+Im7cFzKoWkiW5nCXCPh6GSvdQd/3Dw==
   dependencies:
     eventemitter2 "6.4.9"
 
