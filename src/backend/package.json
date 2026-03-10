@@ -215,7 +215,7 @@
         "fast-xml-parser": "5.4.2",
         "multer": "2.1.1",
         "fastify": "5.8.2",
-        "@fastify/middie": "9.2.0",
+        "@fastify/middie": "9.3.1",
         "@nestjs/platform-fastify": "^11.0.0",
         "immutable": "4.3.8",
         "babel-preset-fbjs": {
@@ -337,6 +337,6 @@
         "fast-xml-parser": "5.4.2",
         "multer": "2.1.1",
         "fastify": "5.8.2",
-        "@fastify/middie": "9.2.0"
+        "@fastify/middie": "9.3.1"
     }
 }
