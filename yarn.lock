@@ -4210,10 +4210,10 @@
   dependencies:
     tslib "2.8.1"
 
-"@nestjs/throttler@^5.1.1":
-  version "5.2.0"
-  resolved "https://registry.npmjs.org/@nestjs/throttler/-/throttler-5.2.0.tgz"
-  integrity sha512-G/G/MV3xf6sy1DwmnJsgeL+d2tQ/xGRNa9ZhZjm9Kyxp+3+ylGzwJtcnhWlN82PMEp3TiDQpTt+9waOIg/bpPg==
+"@nestjs/throttler@^6.0.0":
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/throttler/-/throttler-6.5.0.tgz#1ee550a258c4ae697d3978f2c8932adff927439e"
+  integrity sha512-9j0ZRfH0QE1qyrj9JjIRDz5gQLPqq9yVC2nHsrosDVAfI5HHw08/aUAWx9DZLSdQf4HDkmhTTEGLrRFHENvchQ==
 
 "@nestjs/websockets@^11.0.0":
   version "11.1.16"
