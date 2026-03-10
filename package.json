@@ -73,7 +73,7 @@
     "js-yaml": "4.1.1",
     "fast-xml-parser": "4.5.4",
     "multer": "2.1.1",
-    "body-parser": "1.20.4",
+    "body-parser": "2.2.2",
     "serialize-javascript": "7.0.4",
     "path-to-regexp": "8.3.0",
     "immutable": "4.3.8",
