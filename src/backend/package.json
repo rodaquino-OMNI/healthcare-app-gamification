@@ -285,7 +285,7 @@
         "send": "0.19.2",
         "serve-static": "1.16.3",
         "on-headers": "1.1.0",
-        "brace-expansion": "1.1.12",
+        "brace-expansion": "5.0.4",
         "js-yaml": "4.1.1",
         "express": "5.2.1",
         "path-to-regexp": "8.3.0",
