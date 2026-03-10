@@ -367,7 +367,7 @@
     relay-runtime "12.0.0"
     signedsource "^1.0.0"
 
-"@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.16.7", "@babel/code-frame@^7.18.6", "@babel/code-frame@^7.22.13", "@babel/code-frame@^7.22.5", "@babel/code-frame@^7.27.1", "@babel/code-frame@^7.28.6", "@babel/code-frame@^7.29.0":
+"@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.16.7", "@babel/code-frame@^7.22.13", "@babel/code-frame@^7.22.5", "@babel/code-frame@^7.27.1", "@babel/code-frame@^7.28.6", "@babel/code-frame@^7.29.0":
   version "7.29.0"
   resolved "https://registry.npmjs.org/@babel/code-frame/-/code-frame-7.29.0.tgz"
   integrity sha512-9NhCeYjq9+3uxgdtp20LSiJXJvN0FeCtNGpJxuMFZ1Kv3cWUNb6DOhJwUvcVCzKGR66cw4njwM6hrJLqgOwbcw==
@@ -6487,10 +6487,10 @@
   resolved "https://registry.npmjs.org/@redis/time-series/-/time-series-1.1.0.tgz"
   integrity sha512-c1Q99M5ljsIuc4YdaCwfUEXsofakb9c8+Zse2qxTadu8TalLXuAESzLvFAvNVbkmSlvlzIQOLpBCmWI9wTOt+g==
 
-"@reduxjs/toolkit@1.9.5":
-  version "1.9.5"
-  resolved "https://registry.npmjs.org/@reduxjs/toolkit/-/toolkit-1.9.5.tgz"
-  integrity sha512-Rt97jHmfTeaxL4swLRNPD/zV4OxTes4la07Xc4hetpUW/vc75t5m1ANyxG6ymnEQ2FsLQsoMlYB2vV1sO3m8tQ==
+"@reduxjs/toolkit@1.9.7":
+  version "1.9.7"
+  resolved "https://registry.yarnpkg.com/@reduxjs/toolkit/-/toolkit-1.9.7.tgz#7fc07c0b0ebec52043f8cb43510cf346405f78a6"
+  integrity sha512-t7v8ZPxhhKgOKtU+uyJT13lu4vL7az5aFi4IdoDs/eS548edn2M8Ik9h8fxgvMjGoAUVFSt6ZC1P5cWmQ014QQ==
   dependencies:
     immer "^9.0.21"
     redux "^4.2.1"
@@ -6527,17 +6527,17 @@
     is-reference "1.2.1"
     magic-string "^0.27.0"
 
-"@rollup/plugin-commonjs@25.0.3":
-  version "25.0.3"
-  resolved "https://registry.npmjs.org/@rollup/plugin-commonjs/-/plugin-commonjs-25.0.3.tgz"
-  integrity sha512-uBdtWr/H3BVcgm97MUdq2oJmqBR23ny1hOrWe2PKo9FTbjsGqg32jfasJUKYAI5ouqacjRnj65mBB/S79F+GQA==
+"@rollup/plugin-commonjs@25.0.8":
+  version "25.0.8"
+  resolved "https://registry.yarnpkg.com/@rollup/plugin-commonjs/-/plugin-commonjs-25.0.8.tgz#c77e608ab112a666b7f2a6bea625c73224f7dd34"
+  integrity sha512-ZEZWTK5n6Qde0to4vS9Mr5x/0UZoqCxPVR9KRUjU4kA2sO7GEUn1fop0DAwpO6z0Nw/kJON9bDmSxdWxO/TT1A==
   dependencies:
     "@rollup/pluginutils" "^5.0.1"
     commondir "^1.0.1"
     estree-walker "^2.0.2"
     glob "^8.0.3"
     is-reference "1.2.1"
-    magic-string "^0.27.0"
+    magic-string "^0.30.3"
 
 "@rollup/plugin-commonjs@28.0.1":
   version "28.0.1"
@@ -6572,15 +6572,15 @@
     smob "^1.0.0"
     terser "^5.17.4"
 
-"@rollup/plugin-typescript@11.1.2":
-  version "11.1.2"
-  resolved "https://registry.npmjs.org/@rollup/plugin-typescript/-/plugin-typescript-11.1.2.tgz"
-  integrity sha512-0ghSOCMcA7fl1JM+0gYRf+Q/HWyg+zg7/gDSc+fRLmlJWcW5K1I+CLRzaRhXf4Y3DRyPnnDo4M2ktw+a6JcDEg==
+"@rollup/plugin-typescript@11.1.6":
+  version "11.1.6"
+  resolved "https://registry.yarnpkg.com/@rollup/plugin-typescript/-/plugin-typescript-11.1.6.tgz#724237d5ec12609ec01429f619d2a3e7d4d1b22b"
+  integrity sha512-R92yOmIACgYdJ7dJ97p4K69I8gg6IEHt8M7dUBxN3W6nrO8uUxX5ixl0yU/N3aZTi8WhPuICvOHXQvF6FaykAA==
   dependencies:
-    "@rollup/pluginutils" "^5.0.1"
+    "@rollup/pluginutils" "^5.1.0"
     resolve "^1.22.1"
 
-"@rollup/pluginutils@^5.0.1", "@rollup/pluginutils@^5.0.2":
+"@rollup/pluginutils@^5.0.1", "@rollup/pluginutils@^5.0.2", "@rollup/pluginutils@^5.1.0":
   version "5.3.0"
   resolved "https://registry.npmjs.org/@rollup/pluginutils/-/pluginutils-5.3.0.tgz"
   integrity sha512-5EdhGZtnu3V88ces7s53hhfK5KSASnJZv8Lulpc04cWO3REESroJXg73DFsOmgbU2BhwV0E20bu2IDZb3VKW4Q==
@@ -8829,10 +8829,10 @@
     "@react-native/virtualized-lists" "^0.72.4"
     "@types/react" "*"
 
-"@types/react-redux@7.1.25":
-  version "7.1.25"
-  resolved "https://registry.npmjs.org/@types/react-redux/-/react-redux-7.1.25.tgz"
-  integrity sha512-bAGh4e+w5D8dajd6InASVIyCo4pZLJ66oLb80F9OBLO1gKESbZcRCJpTT6uLXX+HAB57zw1WTdwJdAsewuTweg==
+"@types/react-redux@7.1.34":
+  version "7.1.34"
+  resolved "https://registry.yarnpkg.com/@types/react-redux/-/react-redux-7.1.34.tgz#83613e1957c481521e6776beeac4fd506d11bd0e"
+  integrity sha512-GdFaVjEbYv4Fthm2ZLvj1VSCedV7TqE5y1kNwnjSdBOTXuRSgowux6J8TAct15T3CKBr63UMk+2CO7ilRhyrAQ==
   dependencies:
     "@types/hoist-non-react-statics" "^3.3.0"
     "@types/react" "*"
@@ -8930,14 +8930,14 @@
   resolved "https://registry.npmjs.org/@types/stack-utils/-/stack-utils-2.0.3.tgz"
   integrity sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==
 
-"@types/styled-components@5.1.26":
-  version "5.1.26"
-  resolved "https://registry.npmjs.org/@types/styled-components/-/styled-components-5.1.26.tgz"
-  integrity sha512-KuKJ9Z6xb93uJiIyxo/+ksS7yLjS1KzG6iv5i78dhVg/X3u5t1H7juRWqVmodIdz6wGVaIApo1u01kmFRdJHVw==
+"@types/styled-components@5.1.36":
+  version "5.1.36"
+  resolved "https://registry.yarnpkg.com/@types/styled-components/-/styled-components-5.1.36.tgz#d63db8ad9005afc82f173012036c4c101dc93d57"
+  integrity sha512-pGMRNY5G2rNDKEv2DOiFYa7Ft1r0jrhmgBwHhOMzPTgCjO76bCot0/4uEfqj7K0Jf1KdQmDtAuaDk9EAs9foSw==
   dependencies:
     "@types/hoist-non-react-statics" "*"
     "@types/react" "*"
-    csstype "^3.0.2"
+    csstype "^3.2.2"
 
 "@types/stylis@4.2.7":
   version "4.2.7"
@@ -12167,7 +12167,7 @@ cssstyle@^2.3.0:
   dependencies:
     cssom "~0.3.6"
 
-csstype@3.2.3, csstype@^3.0.2, csstype@^3.1.2, csstype@^3.1.3:
+csstype@3.2.3, csstype@^3.0.2, csstype@^3.1.2, csstype@^3.1.3, csstype@^3.2.2:
   version "3.2.3"
   resolved "https://registry.npmjs.org/csstype/-/csstype-3.2.3.tgz"
   integrity sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==
@@ -15218,10 +15218,10 @@ humanize-ms@^1.2.1:
   dependencies:
     ms "^2.0.0"
 
-husky@8.0.0:
-  version "8.0.0"
-  resolved "https://registry.npmjs.org/husky/-/husky-8.0.0.tgz"
-  integrity sha512-4qbE/5dzNDNxFEkX9MNRPKl5+omTXQzdILCUWiqG/lWIAioiM5vln265/l6I2Zx8gpW8l1ukZwGQeCFbBZ6+6w==
+husky@8.0.3:
+  version "8.0.3"
+  resolved "https://registry.yarnpkg.com/husky/-/husky-8.0.3.tgz#4936d7212e46d1dea28fef29bb3a108872cd9184"
+  integrity sha512-+dQSyqPh4x1hlO1swXBiNb2HzTDN1I2IGLQx1GrBuiqFJfoMrnZWwVmatvSiO+Iz8fBUnf+lekwNo4c2LlXItg==
 
 husky@^9.0.6:
   version "9.1.7"
@@ -16105,10 +16105,10 @@ jake@^10.8.5:
     filelist "^1.0.4"
     picocolors "^1.1.1"
 
-jest-axe@7.0.0:
-  version "7.0.0"
-  resolved "https://registry.npmjs.org/jest-axe/-/jest-axe-7.0.0.tgz"
-  integrity sha512-y+TH+GGH7zOYABWv5IrtGx4ove1dYcVg9Nv9pJZcqKQ+2goJCkAYoHAqergPaV/y9hh1Q9vZykjSXC/2U0Mjyg==
+jest-axe@7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/jest-axe/-/jest-axe-7.0.1.tgz#ddc81ac979a39d081872cbd2cd32c111c7365031"
+  integrity sha512-1JoEla6gL4rcsTxEWm+VBcWMwOhP3f9w4dH7/YW3H41nU08Dds3gUFqxgdAq/pzBNPpauC3QPr/BuO+0W8eamg==
   dependencies:
     axe-core "4.5.1"
     chalk "4.1.2"
@@ -17614,7 +17614,7 @@ magic-string@^0.27.0:
   dependencies:
     "@jridgewell/sourcemap-codec" "^1.4.13"
 
-magic-string@^0.30.0, magic-string@^0.30.3:
+magic-string@^0.30.0, magic-string@^0.30.2, magic-string@^0.30.3:
   version "0.30.21"
   resolved "https://registry.npmjs.org/magic-string/-/magic-string-0.30.21.tgz"
   integrity sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==
@@ -18529,10 +18529,10 @@ next-compose-plugins@^2.2.1:
   resolved "https://registry.npmjs.org/next-compose-plugins/-/next-compose-plugins-2.2.1.tgz"
   integrity sha512-OjJ+fV15FXO2uQXQagLD4C0abYErBjyjE0I0FHpOEIB8upw0hg1ldFP6cqHTJBH1cZqy96OeR3u1dJ+Ez2D4Bg==
 
-next-i18next@14.0.0:
-  version "14.0.0"
-  resolved "https://registry.npmjs.org/next-i18next/-/next-i18next-14.0.0.tgz"
-  integrity sha512-umv8hOZoSoAA+td3ErfemyO/5Ib2pnYCdQ8/Oy+fncS2skFIL3hHKRer3Oa3Nfm4Xbv5p6DHWzm3NhT1j4tWwg==
+next-i18next@14.0.3:
+  version "14.0.3"
+  resolved "https://registry.yarnpkg.com/next-i18next/-/next-i18next-14.0.3.tgz#9c17e69483b3af4172b15454af2ef92c5f79be48"
+  integrity sha512-FtnjRMfhlamk8YyeyWqd+pndNL+3er83iMZnH4M4mhiGA93l0+vtBUvuObgOAMHDJGLLB2SS2xOOZq69oiJh7A==
   dependencies:
     "@babel/runtime" "^7.20.13"
     "@types/hoist-non-react-statics" "^3.3.1"
@@ -20455,10 +20455,10 @@ react-native-image-picker@5.6.0:
   resolved "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-5.6.0.tgz"
   integrity sha512-QHHb0qw3VXDedllrfS6SjxNG1SubnjUjIR2OH1HVbjv/IRVa3v4fI1MHbQaSNXlGopT9kL9jcnh7tbcX1z74Vg==
 
-react-native-linear-gradient@2.8.2:
-  version "2.8.2"
-  resolved "https://registry.npmjs.org/react-native-linear-gradient/-/react-native-linear-gradient-2.8.2.tgz"
-  integrity sha512-hgmCsgzd58WNcDCyPtKrvxsaoETjb/jLGxis/dmU3Aqm2u4ICIduj4ECjbil7B7pm9OnuTkmpwXu08XV2mpg8g==
+react-native-linear-gradient@2.8.3:
+  version "2.8.3"
+  resolved "https://registry.yarnpkg.com/react-native-linear-gradient/-/react-native-linear-gradient-2.8.3.tgz#9a116649f86d74747304ee13db325e20b21e564f"
+  integrity sha512-KflAXZcEg54PXkLyflaSZQ3PJp4uC4whM7nT/Uot9m0e/qxFV3p6uor1983D1YOBJbJN7rrWdqIjq0T42jOJyA==
 
 react-native-loading-indicator@^1.0.0:
   version "1.0.0"
@@ -20590,10 +20590,10 @@ react-popper@^2.3.0:
     react-fast-compare "^3.0.1"
     warning "^4.0.2"
 
-react-redux@8.1.1:
-  version "8.1.1"
-  resolved "https://registry.npmjs.org/react-redux/-/react-redux-8.1.1.tgz"
-  integrity sha512-5W0QaKtEhj+3bC0Nj0NkqkhIv8gLADH/2kYFMTHxCVqQILiWzLv6MaLuV5wJU3BQEdHKzTfcvPN0WMS6SC1oyA==
+react-redux@8.1.3:
+  version "8.1.3"
+  resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-8.1.3.tgz#4fdc0462d0acb59af29a13c27ffef6f49ab4df46"
+  integrity sha512-n0ZrutD7DaX/j9VscF+uTALI3oUPa/pO4Z3soOBIjuRn/FzVu6aehhysxZCLi6y7duMf52WNZGMl7CtuK5EnRw==
   dependencies:
     "@babel/runtime" "^7.12.1"
     "@types/hoist-non-react-statics" "^3.3.1"
@@ -21170,14 +21170,14 @@ roarr@^2.15.3:
     semver-compare "^1.0.0"
     sprintf-js "^1.1.2"
 
-rollup-plugin-dts@5.3.0:
-  version "5.3.0"
-  resolved "https://registry.npmjs.org/rollup-plugin-dts/-/rollup-plugin-dts-5.3.0.tgz"
-  integrity sha512-8FXp0ZkyZj1iU5klkIJYLjIq/YZSwBoERu33QBDxm/1yw5UU4txrEtcmMkrq+ZiKu3Q4qvPCNqc3ovX6rjqzbQ==
+rollup-plugin-dts@5.3.1:
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-dts/-/rollup-plugin-dts-5.3.1.tgz#c2841269a3a5cb986b7791b0328e6a178eba108f"
+  integrity sha512-gusMi+Z4gY/JaEQeXnB0RUdU82h1kF0WYzCWgVmV4p3hWXqelaKuCvcJawfeg+EKn2T1Ie+YWF2OiN1/L8bTVg==
   dependencies:
-    magic-string "^0.30.0"
+    magic-string "^0.30.2"
   optionalDependencies:
-    "@babel/code-frame" "^7.18.6"
+    "@babel/code-frame" "^7.22.5"
 
 rollup-plugin-peer-deps-external@2.2.4:
   version "2.2.4"

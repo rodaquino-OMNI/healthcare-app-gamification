@@ -54,7 +54,7 @@
     "expo-local-authentication": "13.6.0",
     "expo-localization": "14.5.0",
     "expo-secure-store": "12.8.1",
-    "formik": "2.4.5",
+    "formik": "2.4.9",
     "motion": "^11.18.0",
     "graphql-request": "6.1.0",
     "husky": "^9.0.6",
@@ -84,8 +84,8 @@
     "styled-components": "^6.1.8",
     "styled-system": "5.1.5",
     "turbo": "^2.0.0",
-    "victory": "36.9.1",
-    "victory-native": "36.9.1"
+    "victory": "36.9.2",
+    "victory-native": "36.9.2"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.23.9",
