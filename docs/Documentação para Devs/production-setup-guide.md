@@ -1,9 +1,9 @@
 # AUSTA Healthcare SuperApp — Production Setup Guide
 
-> Last audited: 2026-02-28 | Updated 2026-02-28 — stale claims corrected after SWARM-A/B completion.
+> Last audited: 2026-03-10 | Updated 2026-03-10 — reflects W7 swarm completion (0 TS errors, Prometheus in all services, 510 test files).
 
 AWS region: sa-east-1 (LGPD compliance). All infrastructure is managed via Terraform
-(`infrastructure/terraform/`). Kubernetes manifests live under `infrastructure/kubernetes/`.
+(`infrastructure/terraform/` — 28 files, security-hardened). Kubernetes manifests live under `infrastructure/kubernetes/`.
 Docker Compose files for local and staging use are under `src/backend/`.
 
 ---
@@ -232,8 +232,9 @@ Global scrape interval: 15s. Per-service scrape interval: 10s.
 | redis-exporter | `redis-exporter:9121` |
 | node-exporter | `node-exporter:9100` |
 
-> Prerequisite: NestJS Prometheus instrumentation (`@willsoto/nestjs-prometheus` or equivalent)
-> must be enabled in each service module for `/metrics` to return data.
+> **Update (2026-03-10)**: NestJS Prometheus instrumentation (`@willsoto/nestjs-prometheus`) is now
+> enabled in all 7 services via `PrometheusModule.register()` in each `app.module.ts`.
+> The `/metrics` endpoint will return Prometheus-format data when the services are running.
 
 ### 4.3 Grafana Dashboards
 
