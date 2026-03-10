@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import React, { useState, useEffect, useRef } from 'react';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { useAppointments } from '@/hooks';
 import { CareLayout } from '@/layouts/CareLayout';
 
 /** Equipment check item for pre-consultation verification */
@@ -54,6 +55,7 @@ const INITIAL_EQUIPMENT_CHECKS: EquipmentCheck[] = [
 const WaitingRoomPage: React.FC = () => {
     const router = useRouter();
     const { time } = router.query;
+    const { appointments: _appointments, loading, error } = useAppointments();
 
     const [equipmentChecks, setEquipmentChecks] = useState<EquipmentCheck[]>(INITIAL_EQUIPMENT_CHECKS);
 
@@ -108,6 +110,32 @@ const WaitingRoomPage: React.FC = () => {
 
     const allChecksOk = equipmentChecks.every((c) => c.status === 'ok');
     const isReady = allChecksOk && queuePosition === 0;
+
+    if (loading) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Sala de Espera" />
+                <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.gray[50]}>
+                        Carregando...
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Sala de Espera" />
+                <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.semantic.error}>
+                        Erro ao carregar dados. Tente novamente.
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
 
     const handleJoinConsultation = (): void => {
         // In production, this would connect to the video consultation

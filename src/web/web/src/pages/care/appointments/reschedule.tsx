@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { useAppointments } from '@/hooks';
 import { CareLayout } from '@/layouts/CareLayout';
 
 const DAYS = Array.from({ length: 28 }, (_, i) => i + 1);
@@ -16,9 +17,36 @@ const REASONS = ['Conflito de agenda', 'Imprevisto pessoal', 'Problema de transp
 
 const ReschedulePage: React.FC = () => {
     const router = useRouter();
+    const { appointments: _appointments, loading, error } = useAppointments();
     const [selectedDay, setSelectedDay] = useState<number | null>(null);
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
     const [selectedReason, setSelectedReason] = useState('');
+
+    if (loading) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Reagendar Consulta" />
+                <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.gray[50]}>
+                        Carregando...
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Reagendar Consulta" />
+                <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.semantic.error}>
+                        Erro ao carregar dados. Tente novamente.
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
 
     const canConfirm = selectedDay !== null && selectedTime !== null && selectedReason !== '';
 

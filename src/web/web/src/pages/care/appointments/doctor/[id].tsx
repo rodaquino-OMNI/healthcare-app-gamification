@@ -9,6 +9,7 @@ import React from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { useAppointments } from '@/hooks';
 import { CareLayout } from '@/layouts/CareLayout';
 
 /** Mock doctor data for the profile page */
@@ -84,7 +85,34 @@ const MOCK_REVIEWS: Review[] = [
 const DoctorProfilePage: React.FC = () => {
     const router = useRouter();
     const { id } = router.query;
+    const { appointments: _appointments, loading, error } = useAppointments();
     const doctor = MOCK_DOCTOR; // In production, fetch by id
+
+    if (loading) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Perfil do Medico" />
+                <div style={{ maxWidth: '800px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.gray[50]}>
+                        Carregando...
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Perfil do Medico" />
+                <div style={{ maxWidth: '800px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.semantic.error}>
+                        Erro ao carregar dados. Tente novamente.
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
 
     const handleBookAppointment = (): void => {
         void router.push({

@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useSymptomChecker } from '@/hooks';
+
 const EMERGENCY_SYMPTOMS = [
     'Difficulty breathing or shortness of breath',
     'Persistent chest pain or pressure',
@@ -21,6 +23,27 @@ const EMERGENCY_SYMPTOMS = [
 /** Emergency warning screen with red alert styling and call-to-action buttons. */
 const EmergencyWarningPage: React.FC = () => {
     const router = useRouter();
+    const { symptoms: _symptoms, isLoading, error } = useSymptomChecker();
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    {error.message}
+                </Text>
+            </div>
+        );
+    }
 
     const handleCallEmergency = (): void => {
         window.open('tel:192', '_self');

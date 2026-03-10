@@ -9,6 +9,8 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
+import { useSymptomChecker } from '@/hooks';
+
 /** Recommendation action type */
 interface Recommendation {
     id: string;
@@ -106,6 +108,27 @@ const getUrgencyLabel = (urgency: string): string => {
  */
 const SymptomRecommendationPage: React.FC = () => {
     const router = useRouter();
+    const { results: _results, isLoading, error, getRecommendations: _getRecommendations } = useSymptomChecker();
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    {error.message}
+                </Text>
+            </div>
+        );
+    }
 
     const handleDone = (): void => {
         void router.push(WEB_CARE_ROUTES.SYMPTOM_CHECKER);

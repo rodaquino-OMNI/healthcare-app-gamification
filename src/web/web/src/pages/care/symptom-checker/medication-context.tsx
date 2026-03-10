@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useSymptomChecker } from '@/hooks';
+
 interface Medication {
     id: string;
     name: string;
@@ -27,7 +29,28 @@ const COMMON_MEDICATIONS: Medication[] = [
 /** Current medications toggle list for contextualizing the symptom check. */
 const MedicationContextPage: React.FC = () => {
     const router = useRouter();
+    const { symptoms: _symptoms, isLoading, error } = useSymptomChecker();
     const [active, setActive] = useState<Record<string, boolean>>({});
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    {error.message}
+                </Text>
+            </div>
+        );
+    }
 
     const toggle = (id: string): void => {
         setActive((prev) => ({ ...prev, [id]: !prev[id] }));

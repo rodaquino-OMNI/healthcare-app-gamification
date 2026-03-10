@@ -8,6 +8,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useTelemedicine } from '@/hooks';
+
 interface ChatMessage {
     id: string;
     sender: 'doctor' | 'patient';
@@ -42,6 +44,27 @@ const QUICK_REPLIES = ['Yes, that is correct', 'I have a question', 'Can you rep
 /** In-call chat panel for text communication during telemedicine sessions. */
 const ChatPage: React.FC = () => {
     const router = useRouter();
+    const { isLoading, error } = useTelemedicine();
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading chat...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    Failed to load chat. Please try again.
+                </Text>
+            </div>
+        );
+    }
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>

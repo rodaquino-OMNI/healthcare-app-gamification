@@ -7,9 +7,12 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState, useRef, useEffect } from 'react';
 
+import { useSymptomChecker } from '@/hooks';
+
 /** Photo upload page for adding visual evidence to the symptom check. */
 const PhotoUploadPage: React.FC = () => {
     const router = useRouter();
+    const { symptoms: _symptoms, isLoading, error } = useSymptomChecker();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [previews, setPreviews] = useState<string[]>([]);
 
@@ -19,6 +22,26 @@ const PhotoUploadPage: React.FC = () => {
             previews.forEach((url) => URL.revokeObjectURL(url));
         };
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    {error.message}
+                </Text>
+            </div>
+        );
+    }
 
     const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
     const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB

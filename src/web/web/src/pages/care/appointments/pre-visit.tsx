@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { useAppointments } from '@/hooks';
 import { CareLayout } from '@/layouts/CareLayout';
 
 interface ChecklistItem {
@@ -41,7 +42,34 @@ const INITIAL_CHECKLIST: ChecklistItem[] = [
 
 const PreVisitPage: React.FC = () => {
     const router = useRouter();
+    const { appointments: _appointments, loading, error } = useAppointments();
     const [checklist, setChecklist] = useState(INITIAL_CHECKLIST);
+
+    if (loading) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Checklist Pre-Consulta" />
+                <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.gray[50]}>
+                        Carregando...
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Checklist Pre-Consulta" />
+                <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.semantic.error}>
+                        Erro ao carregar dados. Tente novamente.
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
 
     const toggleItem = (id: string): void => {
         setChecklist((prev) => prev.map((item) => (item.id === id ? { ...item, checked: !item.checked } : item)));

@@ -8,6 +8,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useVisits } from '@/hooks';
+
 interface DateSuggestion {
     id: string;
     date: string;
@@ -16,15 +18,31 @@ interface DateSuggestion {
     recommended: boolean;
 }
 
-const MOCK_SUGGESTIONS: DateSuggestion[] = [
-    { id: 'd1', date: 'Mar 7, 2026', time: '10:00 AM', type: 'telemedicine', recommended: true },
-    { id: 'd2', date: 'Mar 9, 2026', time: '2:30 PM', type: 'in-person', recommended: false },
-    { id: 'd3', date: 'Mar 12, 2026', time: '11:00 AM', type: 'telemedicine', recommended: false },
-];
-
 /** Follow-up scheduling page with date suggestions from the doctor. */
 const FollowUpPage: React.FC = () => {
     const router = useRouter();
+    const { isLoading, error } = useVisits();
+    const suggestions: DateSuggestion[] = [];
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading follow-up options...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    Failed to load follow-up data.
+                </Text>
+            </div>
+        );
+    }
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
@@ -67,7 +85,7 @@ const FollowUpPage: React.FC = () => {
                     marginBottom: spacing.xl,
                 }}
             >
-                {MOCK_SUGGESTIONS.map((slot) => (
+                {suggestions.map((slot) => (
                     <Card
                         key={slot.id}
                         journey="care"

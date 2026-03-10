@@ -9,6 +9,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useSymptomChecker } from '@/hooks';
+
 interface Condition {
     id: string;
     name: string;
@@ -68,6 +70,27 @@ const getSeverityStatus = (s: string): 'success' | 'warning' | 'error' => {
 /** Conditions list page showing all matched conditions with probability bars and badges. */
 const ConditionsListPage: React.FC = () => {
     const router = useRouter();
+    const { results: _results, isLoading, error, getRecommendations: _getRecommendations } = useSymptomChecker();
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    {error.message}
+                </Text>
+            </div>
+        );
+    }
 
     const handleViewDetail = (id: string): void => {
         void router.push({

@@ -11,6 +11,8 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
+import { useSymptomChecker } from '@/hooks';
+
 const DURATION_OPTIONS = [
     { label: 'Less than 1 day', value: 'less-1-day' },
     { label: '1-3 days', value: '1-3-days' },
@@ -33,12 +35,38 @@ const ONSET_OPTIONS = [
  */
 const SymptomDetailPage: React.FC = () => {
     const router = useRouter();
+    const {
+        symptoms: _symptoms,
+        currentStep: _currentStep,
+        setCurrentStep: _setCurrentStep,
+        isLoading,
+        error,
+    } = useSymptomChecker();
     const { regions } = router.query;
-
     const [severity, setSeverity] = useState(5);
     const [duration, setDuration] = useState('');
     const [onset, setOnset] = useState('');
     const [notes, setNotes] = useState('');
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    {error.message}
+                </Text>
+            </div>
+        );
+    }
 
     const handleContinue = (): void => {
         void router.push({

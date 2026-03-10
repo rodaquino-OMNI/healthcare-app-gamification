@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { useAppointments } from '@/hooks';
 import { CareLayout } from '@/layouts/CareLayout';
 
 const COMMON_REASONS = [
@@ -24,8 +25,35 @@ const COMMON_REASONS = [
 const ReasonForVisitPage: React.FC = () => {
     const router = useRouter();
     const { type } = router.query;
+    const { appointments: _appointments, loading, error } = useAppointments();
     const [reason, setReason] = useState('');
     const [selectedChips, setSelectedChips] = useState<string[]>([]);
+
+    if (loading) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Motivo da Consulta" />
+                <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.gray[50]}>
+                        Carregando...
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Motivo da Consulta" />
+                <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.semantic.error}>
+                        Erro ao carregar dados. Tente novamente.
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
 
     const toggleChip = (chip: string): void => {
         setSelectedChips((prev) => (prev.includes(chip) ? prev.filter((c) => c !== chip) : [...prev, chip]));

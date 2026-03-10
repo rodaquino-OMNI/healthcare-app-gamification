@@ -10,6 +10,8 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
+import { useSymptomChecker } from '@/hooks';
+
 /** Condition assessment result type */
 interface ConditionResult {
     id: string;
@@ -61,6 +63,27 @@ const getSeverityStatus = (severity: string): 'success' | 'warning' | 'error' =>
  */
 const SymptomResultPage: React.FC = () => {
     const router = useRouter();
+    const { results: _results, isLoading, error, getRecommendations: _getRecommendations } = useSymptomChecker();
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    {error.message}
+                </Text>
+            </div>
+        );
+    }
 
     const handleViewRecommendations = (): void => {
         void router.push({

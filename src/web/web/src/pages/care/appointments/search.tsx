@@ -9,6 +9,7 @@ import React, { useState } from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { useAppointments } from '@/hooks';
 import { CareLayout } from '@/layouts/CareLayout';
 
 /** Specialty option for the search filter */
@@ -71,8 +72,35 @@ const MOCK_DOCTORS: DoctorResult[] = [
  */
 const DoctorSearchPage: React.FC = () => {
     const router = useRouter();
+    const { appointments: _appointments, loading, error } = useAppointments();
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(null);
+
+    if (loading) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Buscar Medico" />
+                <div style={{ maxWidth: '960px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.gray[50]}>
+                        Carregando...
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Buscar Medico" />
+                <div style={{ maxWidth: '960px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.semantic.error}>
+                        Erro ao carregar dados. Tente novamente.
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
 
     const filteredDoctors = MOCK_DOCTORS.filter((doc) => {
         const matchesQuery = !searchQuery || doc.name.toLowerCase().includes(searchQuery.toLowerCase());

@@ -8,19 +8,7 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
-const MOCK_REFERRAL = {
-    referringDoctor: 'Dr. Maria Santos',
-    referringSpecialty: 'General Practitioner',
-    specialist: 'Dr. Carlos Mendes',
-    specialistField: 'Neurology',
-    specialistClinic: 'NeuroHealth Center',
-    specialistAddress: '789 Medical Park Blvd, Suite 301',
-    reason: 'Persistent tension-type headaches unresponsive to initial treatment, requiring neurological evaluation to rule out secondary causes.',
-    urgency: 'moderate' as const,
-    referralDate: 'Feb 21, 2026',
-    validUntil: 'May 21, 2026',
-    notes: 'Patient has been experiencing recurrent headaches for the past 3 weeks. Initial treatment with analgesics has shown limited improvement. MRI recommended if symptoms persist.',
-};
+import { useVisits } from '@/hooks';
 
 const getUrgencyLabel = (urgency: string): string => {
     switch (urgency) {
@@ -47,6 +35,41 @@ const getUrgencyStatus = (urgency: string): 'error' | 'warning' | 'success' => {
 /** Specialist referral page with referring doctor and specialist details. */
 const ReferralPage: React.FC = () => {
     const router = useRouter();
+    const { currentVisit, isLoading, error } = useVisits();
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading referral...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    Failed to load referral.
+                </Text>
+            </div>
+        );
+    }
+
+    const referral = {
+        referringDoctor: currentVisit?.doctor ?? '',
+        referringSpecialty: currentVisit?.specialty ?? '',
+        specialist: '',
+        specialistField: '',
+        specialistClinic: '',
+        specialistAddress: '',
+        reason: '',
+        urgency: 'routine' as const,
+        referralDate: currentVisit?.date ?? '',
+        validUntil: '',
+        notes: currentVisit?.notes ?? '',
+    };
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
@@ -56,11 +79,11 @@ const ReferralPage: React.FC = () => {
                         Specialist Referral
                     </Text>
                     <Text fontSize="sm" color={colors.gray[50]} style={{ marginTop: spacing['3xs'] }}>
-                        Issued {MOCK_REFERRAL.referralDate}
+                        Issued {referral.referralDate}
                     </Text>
                 </div>
-                <Badge variant="status" status={getUrgencyStatus(MOCK_REFERRAL.urgency)}>
-                    {getUrgencyLabel(MOCK_REFERRAL.urgency)}
+                <Badge variant="status" status={getUrgencyStatus(referral.urgency)}>
+                    {getUrgencyLabel(referral.urgency)}
                 </Badge>
             </Box>
 
@@ -74,10 +97,10 @@ const ReferralPage: React.FC = () => {
                     Referring Doctor
                 </Text>
                 <Text fontSize="md" color={colors.journeys.care.text}>
-                    {MOCK_REFERRAL.referringDoctor}
+                    {referral.referringDoctor}
                 </Text>
                 <Text fontSize="sm" color={colors.gray[50]}>
-                    {MOCK_REFERRAL.referringSpecialty}
+                    {referral.referringSpecialty}
                 </Text>
             </Card>
 
@@ -91,16 +114,16 @@ const ReferralPage: React.FC = () => {
                     Specialist
                 </Text>
                 <Text fontSize="lg" fontWeight="medium" color={colors.journeys.care.text}>
-                    {MOCK_REFERRAL.specialist}
+                    {referral.specialist}
                 </Text>
                 <Text fontSize="sm" color={colors.journeys.care.primary}>
-                    {MOCK_REFERRAL.specialistField}
+                    {referral.specialistField}
                 </Text>
                 <Text fontSize="sm" color={colors.gray[60]} style={{ marginTop: spacing.xs }}>
-                    {MOCK_REFERRAL.specialistClinic}
+                    {referral.specialistClinic}
                 </Text>
                 <Text fontSize="sm" color={colors.gray[50]}>
-                    {MOCK_REFERRAL.specialistAddress}
+                    {referral.specialistAddress}
                 </Text>
             </Card>
 
@@ -114,7 +137,7 @@ const ReferralPage: React.FC = () => {
                     Reason for Referral
                 </Text>
                 <Text fontSize="sm" color={colors.gray[60]}>
-                    {MOCK_REFERRAL.reason}
+                    {referral.reason}
                 </Text>
             </Card>
 
@@ -128,10 +151,10 @@ const ReferralPage: React.FC = () => {
                     Additional Notes
                 </Text>
                 <Text fontSize="sm" color={colors.gray[60]}>
-                    {MOCK_REFERRAL.notes}
+                    {referral.notes}
                 </Text>
                 <Text fontSize="sm" color={colors.gray[40]} style={{ marginTop: spacing.sm }}>
-                    Valid until: {MOCK_REFERRAL.validUntil}
+                    Valid until: {referral.validUntil}
                 </Text>
             </Card>
 

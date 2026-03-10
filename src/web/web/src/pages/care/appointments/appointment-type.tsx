@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { useAppointments } from '@/hooks';
 import { CareLayout } from '@/layouts/CareLayout';
 
 interface AppointmentTypeOption {
@@ -44,7 +45,34 @@ const TYPES: AppointmentTypeOption[] = [
 
 const AppointmentTypePage: React.FC = () => {
     const router = useRouter();
+    const { appointments: _appointments, loading, error } = useAppointments();
     const [selected, setSelected] = useState<string | null>(null);
+
+    if (loading) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Tipo de Consulta" />
+                <div style={{ maxWidth: '960px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.gray[50]}>
+                        Carregando...
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Tipo de Consulta" />
+                <div style={{ maxWidth: '960px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.semantic.error}>
+                        Erro ao carregar consultas. Tente novamente.
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
 
     const handleContinue = (): void => {
         if (selected) {

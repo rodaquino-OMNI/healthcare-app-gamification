@@ -8,15 +8,38 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
+import { useSymptomChecker } from '@/hooks';
+
 const STAR_COUNT = 5;
 
 /** Accuracy rating page with star rating and optional feedback form. */
 const AccuracyRatingPage: React.FC = () => {
     const router = useRouter();
+    const { isLoading, error } = useSymptomChecker();
     const [rating, setRating] = useState(0);
     const [hoveredStar, setHoveredStar] = useState(0);
     const [feedback, setFeedback] = useState('');
     const [submitted, setSubmitted] = useState(false);
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    {error.message}
+                </Text>
+            </div>
+        );
+    }
 
     const handleSubmit = (): void => {
         setSubmitted(true);

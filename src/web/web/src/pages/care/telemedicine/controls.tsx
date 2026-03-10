@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useTelemedicine } from '@/hooks';
+
 interface ControlButton {
     id: string;
     label: string;
@@ -29,6 +31,27 @@ const MOCK_DOCTOR = {
 /** Video consultation page with camera controls and call management. */
 const ControlsPage: React.FC = () => {
     const router = useRouter();
+    const { isLoading, error, endSession } = useTelemedicine();
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading consultation...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    Session error. Please try again.
+                </Text>
+            </div>
+        );
+    }
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
@@ -102,7 +125,10 @@ const ControlsPage: React.FC = () => {
             <Box display="flex" justifyContent="center">
                 <Button
                     journey="care"
-                    onPress={() => void router.push('/care/telemedicine/end')}
+                    onPress={() => {
+                        void endSession();
+                        void router.push('/care/telemedicine/end');
+                    }}
                     accessibilityLabel="End call"
                     data-testid="control-end-call-btn"
                     style={{ backgroundColor: colors.semantic.error }}

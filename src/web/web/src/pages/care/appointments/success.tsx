@@ -8,10 +8,38 @@ import { useRouter } from 'next/router';
 import React from 'react';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { useAppointments } from '@/hooks';
 import { CareLayout } from '@/layouts/CareLayout';
 
 const SuccessPage: React.FC = () => {
     const router = useRouter();
+    const { appointments: _appointments, loading, error } = useAppointments();
+
+    if (loading) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Agendamento Confirmado" />
+                <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.gray[50]}>
+                        Carregando...
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Agendamento Confirmado" />
+                <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.semantic.error}>
+                        Erro ao carregar dados. Tente novamente.
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
 
     return (
         <CareLayout>
