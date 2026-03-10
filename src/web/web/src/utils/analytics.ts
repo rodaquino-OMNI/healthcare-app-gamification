@@ -12,12 +12,12 @@
  * - Sentry for error tracking
  *
  * @package react-ga4 ^2.1.0
- * @package @sentry/nextjs ^7.60.1
+ * @package @sentry/nextjs ^8.0.0
  * @package @datadog/browser-rum ^4.37.0
  */
 
 import { datadogRum } from '@datadog/browser-rum'; // v4.37.0
-import * as Sentry from '@sentry/nextjs'; // v7.60.1
+import * as Sentry from '@sentry/nextjs'; // v8.x
 import ReactGA from 'react-ga4'; // v2.1.0
 import { JOURNEY_IDS } from 'shared/utils/index';
 

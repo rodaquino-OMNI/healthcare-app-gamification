@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { registerAs, ConfigType } from '@nestjs/config';
 
 /**
@@ -42,6 +41,10 @@ const configuration = registerAs('authService', () => ({
             callbackUrl: process.env.APPLE_CALLBACK_URL || 'http://localhost:3001/api/v1/auth/apple/callback',
             enabled: process.env.APPLE_AUTH_ENABLED === 'true',
         },
+    },
+    biometric: {
+        enabled: process.env.BIOMETRIC_AUTHENTICATION_ENABLED !== 'false', // Default to true
+        deviceKeyExpirationDays: parseInt(process.env.BIOMETRIC_DEVICE_KEY_EXPIRATION_DAYS || '90', 10),
     },
     mfa: {
         enabled: process.env.MFA_ENABLED !== 'false',

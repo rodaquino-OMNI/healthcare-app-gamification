@@ -49,6 +49,7 @@
         "react-native-agora": "4.5.2",
         "react-native-biometrics": "2.1.4",
         "react-native-config": "1.5.1",
+        "react-native-ssl-pinning": "^1.5.5",
         "react-native-device-info": "10.8.0",
         "react-native-gesture-handler": "2.14.0",
         "react-native-haptic-feedback": "^2.0.2",

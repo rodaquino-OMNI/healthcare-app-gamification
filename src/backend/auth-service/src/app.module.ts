@@ -10,7 +10,9 @@ import { ConfigModule } from '@nestjs/config'; // 10.0.0+
 import { APP_INTERCEPTOR } from '@nestjs/core';
 
 import { AuthModule } from './auth/auth.module';
+import { BiometricModule } from './biometric/biometric.module';
 import { configuration } from './config/configuration';
+import { IntegrityModule } from './integrity/integrity.module';
 import { HealthModule } from './health/health.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { RolesModule } from './roles/roles.module';
@@ -29,6 +31,8 @@ import { UsersModule } from './users/users.module';
             isGlobal: true,
         }),
         AuthModule,
+        BiometricModule,
+        IntegrityModule,
         UsersModule,
         RolesModule,
         PermissionsModule,

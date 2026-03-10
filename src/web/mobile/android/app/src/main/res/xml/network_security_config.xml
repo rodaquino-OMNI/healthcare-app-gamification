@@ -4,6 +4,7 @@
   - Blocks cleartext (HTTP) traffic globally
   - Trusts only system CAs (excludes user-installed certificates)
   - Pins austa.com.br domains with placeholder SHA-256 hashes
+  - Debug overrides allow user-installed CAs for proxy debugging
 
   IMPORTANT: Replace PLACEHOLDER pin hashes with real certificate
   SHA-256 hashes before production deployment. Generate pins using:
@@ -16,15 +17,53 @@
         </trust-anchors>
     </base-config>
 
+    <!-- api.austa.com.br — REST API endpoints -->
     <domain-config>
-        <domain includeSubdomains="true">austa.com.br</domain>
+        <domain includeSubdomains="true">api.austa.com.br</domain>
         <pin-set expiration="2027-01-01">
-            <!-- Replace with actual certificate pin hashes before production -->
-            <pin digest="SHA-256">PLACEHOLDER_PRIMARY_PIN_HASH_BASE64</pin>
-            <pin digest="SHA-256">PLACEHOLDER_BACKUP_PIN_HASH_BASE64</pin>
+            <!-- TODO(ops): Replace with real SPKI hashes before production -->
+            <pin digest="SHA-256">PLACEHOLDER_API_PRIMARY_PIN_HASH_BASE64</pin>
+            <pin digest="SHA-256">PLACEHOLDER_API_BACKUP_PIN_HASH_BASE64</pin>
         </pin-set>
         <trust-anchors>
             <certificates src="system" />
         </trust-anchors>
     </domain-config>
+
+    <!-- auth.austa.com.br — Authentication/OAuth endpoints -->
+    <domain-config>
+        <domain includeSubdomains="false">auth.austa.com.br</domain>
+        <pin-set expiration="2027-01-01">
+            <!-- TODO(ops): Replace with real SPKI hashes before production -->
+            <pin digest="SHA-256">PLACEHOLDER_AUTH_PRIMARY_PIN_HASH_BASE64</pin>
+            <pin digest="SHA-256">PLACEHOLDER_AUTH_BACKUP_PIN_HASH_BASE64</pin>
+        </pin-set>
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </domain-config>
+
+    <!-- cdn.austa.com.br — Static assets and media -->
+    <domain-config>
+        <domain includeSubdomains="true">cdn.austa.com.br</domain>
+        <pin-set expiration="2027-01-01">
+            <!-- TODO(ops): Replace with real SPKI hashes before production -->
+            <pin digest="SHA-256">PLACEHOLDER_CDN_PRIMARY_PIN_HASH_BASE64</pin>
+            <pin digest="SHA-256">PLACEHOLDER_CDN_BACKUP_PIN_HASH_BASE64</pin>
+        </pin-set>
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </domain-config>
+
+    <!--
+      Debug overrides: In debug builds only, trust user-installed CAs
+      so that proxy tools (Charles, Proxyman, mitmproxy) work for development.
+      This section is IGNORED in release/production builds.
+    -->
+    <debug-overrides>
+        <trust-anchors>
+            <certificates src="user" />
+        </trust-anchors>
+    </debug-overrides>
 </network-security-config>

@@ -93,3 +93,19 @@
     public static int d(...);
     public static int i(...);
 }
+
+# --- react-native-ssl-pinning (MASVS-NETWORK-1) ---
+-keep class com.toyberman.** { *; }
+-dontwarn com.toyberman.**
+
+# --- Google Play Integrity API (MASVS-RESILIENCE-3) ---
+-keep class com.google.android.play.core.integrity.** { *; }
+-dontwarn com.google.android.play.core.integrity.**
+
+# --- Google SafetyNet (legacy fallback for Play Integrity) ---
+-keep class com.google.android.gms.safetynet.** { *; }
+-dontwarn com.google.android.gms.safetynet.**
+
+# --- Google Play Services Tasks (required by Integrity/SafetyNet) ---
+-keep class com.google.android.gms.tasks.** { *; }
+-dontwarn com.google.android.gms.tasks.**
