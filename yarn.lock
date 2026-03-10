@@ -14124,13 +14124,13 @@ forwarded@0.2.0:
   resolved "https://registry.npmjs.org/forwarded/-/forwarded-0.2.0.tgz"
   integrity sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==
 
-framer-motion@^11.18.2:
-  version "11.18.2"
-  resolved "https://registry.npmjs.org/framer-motion/-/framer-motion-11.18.2.tgz"
-  integrity sha512-5F5Och7wrvtLVElIpclDT0CBzMVg3dL22B64aZwHtsIY8RB4mXICLrkajK4G9R+ieSAGcgrLeae2SeUTg2pr6w==
+framer-motion@^12.35.2:
+  version "12.35.2"
+  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-12.35.2.tgz#add40fe8cdb8eb553feb9dd17525c93b51e6f67c"
+  integrity sha512-dhfuEMaNo0hc+AEqyHiIfiJRNb9U9UQutE9FoKm5pjf7CMitp9xPEF1iWZihR1q86LBmo6EJ7S8cN8QXEy49AA==
   dependencies:
-    motion-dom "^11.18.1"
-    motion-utils "^11.18.1"
+    motion-dom "^12.35.2"
+    motion-utils "^12.29.2"
     tslib "^2.4.0"
 
 fresh@^2.0.0:
@@ -18160,24 +18160,24 @@ module-details-from-path@^1.0.3, module-details-from-path@^1.0.4:
   resolved "https://registry.npmjs.org/module-details-from-path/-/module-details-from-path-1.0.4.tgz"
   integrity sha512-EGWKgxALGMgzvxYF1UyGTy0HXX/2vHLkw6+NvDKW2jypWbHpjQuj4UMcqQWXHERJhVGKikolT06G3bcKe4fi7w==
 
-motion-dom@^11.18.1:
-  version "11.18.1"
-  resolved "https://registry.npmjs.org/motion-dom/-/motion-dom-11.18.1.tgz"
-  integrity sha512-g76KvA001z+atjfxczdRtw/RXOM3OMSdd1f4DL77qCTF/+avrRJiawSG4yDibEQ215sr9kpinSlX2pCTJ9zbhw==
+motion-dom@^12.35.2:
+  version "12.35.2"
+  resolved "https://registry.yarnpkg.com/motion-dom/-/motion-dom-12.35.2.tgz#489b9eb7206dbac3d6087aae584f08e78c16cfbd"
+  integrity sha512-pWXFMTwvGDbx1Fe9YL5HZebv2NhvGBzRtiNUv58aoK7+XrsuaydQ0JGRKK2r+bTKlwgSWwWxHbP5249Qr/BNpg==
   dependencies:
-    motion-utils "^11.18.1"
+    motion-utils "^12.29.2"
 
-motion-utils@^11.18.1:
-  version "11.18.1"
-  resolved "https://registry.npmjs.org/motion-utils/-/motion-utils-11.18.1.tgz"
-  integrity sha512-49Kt+HKjtbJKLtgO/LKj9Ld+6vw9BjH5d9sc40R/kVyH8GLAXgT42M2NnuPcJNuA3s9ZfZBUcwIgpmZWGEE+hA==
+motion-utils@^12.29.2:
+  version "12.29.2"
+  resolved "https://registry.yarnpkg.com/motion-utils/-/motion-utils-12.29.2.tgz#8fdd28babe042c2456b078ab33b32daa3bf5938b"
+  integrity sha512-G3kc34H2cX2gI63RqU+cZq+zWRRPSsNIOjpdl9TN4AQwC4sgwYPl/Q/Obf/d53nOm569T0fYK+tcoSV50BWx8A==
 
-motion@^11.18.0:
-  version "11.18.2"
-  resolved "https://registry.npmjs.org/motion/-/motion-11.18.2.tgz"
-  integrity sha512-JLjvFDuFr42NFtcVoMAyC2sEjnpA8xpy6qWPyzQvCloznAyQ8FIXioxWfHiLtgYhoVpfUqSWpn1h9++skj9+Wg==
+motion@^12.0.0:
+  version "12.35.2"
+  resolved "https://registry.yarnpkg.com/motion/-/motion-12.35.2.tgz#e71676c977f4f5cca5a28c71f0dd69f7cbc1d90d"
+  integrity sha512-8zCi1DkNyU6a/tgEHn/GnnXZDcaMpDHbDOGORY1Rg/6lcNMSOuvwDB3i4hMSOvxqMWArc/vrGaw/Xek1OP69/A==
   dependencies:
-    framer-motion "^11.18.2"
+    framer-motion "^12.35.2"
     tslib "^2.4.0"
 
 mrmime@^2.0.0:
