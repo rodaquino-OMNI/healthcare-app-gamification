@@ -174,7 +174,7 @@
             "@babel/plugin-proposal-logical-assignment-operators": "@babel/plugin-transform-logical-assignment-operators"
         },
         "axios": "1.13.6",
-        "glob": "7.2.3",
+        "glob": "13.0.6",
         "@react-navigation/native": "7.1.8",
         "@react-navigation/stack": "7.3.1",
         "react-native-reanimated": "3.17.5",
@@ -230,7 +230,7 @@
         "@babel/plugin-transform-async-generator-functions": "7.23.3",
         "@babel/plugin-transform-unicode-property-regex": "7.23.3",
         "ua-parser-js": "1.0.41",
-        "glob": "7.2.3",
+        "glob": "13.0.6",
         "graphql": "16.8.1",
         "metro": "0.76.8",
         "metro-react-native-babel-preset": "0.76.7",

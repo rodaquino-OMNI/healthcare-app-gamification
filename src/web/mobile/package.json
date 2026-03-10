@@ -205,7 +205,7 @@
             "@babel/plugin-proposal-export-namespace-from": "@babel/plugin-transform-export-namespace-from",
             "@babel/plugin-proposal-logical-assignment-operators": "@babel/plugin-transform-logical-assignment-operators"
         },
-        "glob": "7.2.3",
+        "glob": "13.0.6",
         "react-native-reanimated": "3.17.5",
         "react-native-gesture-handler": "2.25.0",
         "react-native-safe-area-context": "5.4.0"
@@ -256,7 +256,7 @@
         "react-native-safe-area-context": "4.6.3",
         "react-native-screens": "3.22.0",
         "@babel/plugin-transform-unicode-property-regex": "7.23.3",
-        "glob": "7.2.3",
+        "glob": "13.0.6",
         "graphql": "16.8.1",
         "metro": "0.76.8",
         "metro-react-native-babel-preset": "0.76.7",
