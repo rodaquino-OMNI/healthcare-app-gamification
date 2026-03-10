@@ -15,6 +15,15 @@ jest.mock('next/router', () => ({
   }),
 }));
 
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    back: jest.fn(),
+    refresh: jest.fn(),
+  }),
+}));
+
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
 }));
@@ -48,23 +57,38 @@ jest.mock('@/layouts/HealthLayout', () => {
 
 jest.mock('styled-components', () => {
   const actual = jest.requireActual('react');
-  const styled = new Proxy(
-    (tag: string) => {
-      return ({ children, ...props }: Record<string, unknown>) =>
-        actual.createElement(tag, props, children as React.ReactNode);
+  function createStyledTag() {
+    return function StyledComponent(props: Record<string, unknown>) {
+      return actual.createElement('div', null, props.children);
+    };
+  }
+  const handler = {
+    get: function () {
+      return function templateTag() {
+        return createStyledTag();
+      };
     },
-    {
-      get: (_target: unknown, prop: string) => {
-        return ({ children, ...props }: Record<string, unknown>) =>
-          actual.createElement(prop, props, children as React.ReactNode);
-      },
+    apply: function () {
+      return function templateTag() {
+        return createStyledTag();
+      };
     },
-  );
+  };
+  const styled = new Proxy(createStyledTag, handler);
   return {
     __esModule: true,
     default: styled,
-    ThemeProvider: ({ children }: { children: React.ReactNode }) => actual.createElement('div', null, children),
+    ThemeProvider: function ThemeProvider(props: Record<string, unknown>) {
+      return actual.createElement('div', null, props.children);
+    },
+    css: function () { return ''; },
+    keyframes: function () { return ''; },
   };
+});
+
+jest.mock('design-system/components/Card/Card', () => {
+  const React = require('react');
+  return { Card: (props: Record<string, unknown>) => React.createElement('div', null, props.children) };
 });
 
 describe('HistoryPage', () => {

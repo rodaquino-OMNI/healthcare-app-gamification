@@ -38,8 +38,11 @@ jest.mock('styled-components/native', () => {
   const proxy = new Proxy(styled, {
     get: (_target, prop) => {
       if (prop === 'default') return styled;
-      if (typeof prop === 'string' && RN[prop]) return (strs: any) => (props: any) => <RN[prop] {...props} />;
-      return (strs: any) => (props: any) => <RN.View {...props} />;
+      if (typeof prop === 'string' && RN[prop]) {
+        const Comp = RN[prop];
+        return (_strs: any) => (props: any) => <Comp {...props} />;
+      }
+      return (_strs: any) => (props: any) => <RN.View {...props} />;
     },
   });
   return { __esModule: true, default: proxy, useTheme: () => ({ colors: { background: { default: '#fff' }, text: { default: '#000', muted: '#888' } } }) };

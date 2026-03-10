@@ -9,11 +9,11 @@ jest.mock('@/hooks/useAuth', () => ({
     }),
 }));
 
-jest.mock('@/layouts/AuthLayout', () => {
-    return function AuthLayout({ children }: { children: React.ReactNode }) {
+jest.mock('@/layouts/AuthLayout', () => ({
+    AuthLayout: function AuthLayout({ children }: { children: React.ReactNode }) {
         return <div data-testid="auth-layout">{children}</div>;
-    };
-});
+    },
+}));
 
 interface MockButtonProps {
     children: React.ReactNode;
@@ -64,7 +64,7 @@ jest.mock('design-system/components/Input', () => {
     );
     MockInput.displayName = 'Input';
     return {
-        default: MockInput,
+        Input: MockInput,
     };
 });
 
@@ -74,7 +74,7 @@ interface MockBoxProps {
 }
 
 jest.mock('design-system/primitives/Box/Box', () => ({
-    default: ({ children, ...props }: MockBoxProps) => <div {...props}>{children}</div>,
+    Box: ({ children, ...props }: MockBoxProps) => <div {...props}>{children}</div>,
 }));
 
 interface MockTextProps {
@@ -84,7 +84,7 @@ interface MockTextProps {
 }
 
 jest.mock('design-system/primitives/Text/Text', () => ({
-    default: ({ children, as: Tag = 'span', ...props }: MockTextProps) => {
+    Text: ({ children, as: Tag = 'span', ...props }: MockTextProps) => {
         const Component = Tag;
         return <Component {...props}>{children}</Component>;
     },

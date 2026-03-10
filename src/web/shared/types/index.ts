@@ -30,6 +30,9 @@ export type {
   TelemedicineSessionStatus,
   TreatmentPlan,
   TreatmentPlanStatus,
+  SymptomRegionDetail,
+  SymptomCondition,
+  Provider,
 } from './care.types';
 
 // Plan Journey types
@@ -74,6 +77,30 @@ export type {
   AppointmentReminderData,
   ClaimStatusUpdateData
 } from './notification.types';
+
+// Wellness Journey types
+export type {
+  MoodLevel,
+  GoalCategory,
+  GoalStatus,
+  BreathingExerciseType,
+  MeditationSessionStatus,
+  ChallengeCategory,
+  ChallengeStatus,
+  MoodEntry,
+  WellnessTip,
+  BreathingExercise,
+  MeditationSession,
+  DailyPlan,
+  DailyPlanActivity,
+  WellnessGoal,
+  JournalEntry,
+  WellnessChallenge,
+  WellnessStreak,
+  WellnessInsights,
+  QuickReplyOption,
+  CompanionChatMessage,
+} from './wellness.types';
 
 // Journey types
 export type { JourneyId } from '../constants/journeys';

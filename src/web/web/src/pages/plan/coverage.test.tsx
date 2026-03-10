@@ -19,8 +19,25 @@ jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
 }));
 
+jest.mock('../../api/client', () => ({
+  restClient: { get: jest.fn(), post: jest.fn(), put: jest.fn(), delete: jest.fn() },
+  graphqlClient: {},
+}));
+
 jest.mock('../../hooks/useAuth', () => ({
   useAuth: () => ({ session: { userId: 'test-user-id' } }),
+}));
+
+jest.mock('../../hooks/useCoverage', () => ({
+  useCoverage: () => ({ data: [], isLoading: false, error: null }),
+}));
+
+jest.mock('../../components/shared/LoadingIndicator', () => ({
+  LoadingIndicator: () => <div data-testid="loading">Loading</div>,
+}));
+
+jest.mock('../../components/shared/ErrorState', () => ({
+  ErrorState: () => <div data-testid="error">Error</div>,
 }));
 
 jest.mock('../../layouts/PlanLayout', () => {

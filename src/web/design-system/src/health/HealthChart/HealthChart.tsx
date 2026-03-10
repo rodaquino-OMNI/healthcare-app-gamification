@@ -7,15 +7,8 @@ import { Box } from '../../primitives/Box/Box';
 import { Text } from '../../primitives/Text/Text';
 import { colors } from '../../tokens/colors';
 
-// Local type stub for HealthMetric (shared package not available at build time)
-interface HealthMetric {
-    id: string;
-    type: string;
-    value: number;
-    unit: string;
-    timestamp: string;
-    journey?: 'health' | 'care' | 'plan';
-}
+/** A single data point for the chart. Accepts any key/value pairs accessed via xAxisKey/yAxisKey. */
+type HealthMetric = Record<string, unknown>;
 
 /**
  * Props interface for the HealthChart component.
@@ -27,7 +20,8 @@ export interface HealthChartProps {
     type: 'line' | 'bar' | 'radial';
 
     /**
-     * The data to display in the chart.
+     * The data to display in the chart. Each item should have at least the keys
+     * specified by xAxisKey and yAxisKey.
      */
     data: HealthMetric[];
 
@@ -117,7 +111,7 @@ export const HealthChart: React.FC<HealthChartProps> = ({
             return (
                 <Box role="figure" aria-label={chartDescription}>
                     <LineChartComponent
-                        data={data as unknown as Array<Record<string, unknown>>}
+                        data={data}
                         xAxisKey={xAxisKey}
                         yAxisKey={yAxisKey}
                         xAxisLabel={xAxisLabel}
@@ -130,8 +124,8 @@ export const HealthChart: React.FC<HealthChartProps> = ({
 
         case 'bar': {
             // Transform data for BarChart
-            const values = data.map((item) => Number(item[yAxisKey as keyof HealthMetric]));
-            const labels = data.map((item) => String(item[xAxisKey as keyof HealthMetric]));
+            const values = data.map((item) => Number(item[yAxisKey]));
+            const labels = data.map((item) => String(item[xAxisKey]));
             const journeyColor = colors.journeys[journey].primary;
 
             return (
@@ -150,8 +144,8 @@ export const HealthChart: React.FC<HealthChartProps> = ({
         case 'radial': {
             // Transform data for RadialChart
             const pieData = data.map((item) => ({
-                x: String(item[xAxisKey as keyof HealthMetric]),
-                y: Number(item[yAxisKey as keyof HealthMetric]),
+                x: String(item[xAxisKey]),
+                y: Number(item[yAxisKey]),
             }));
 
             return (

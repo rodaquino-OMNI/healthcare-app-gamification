@@ -109,6 +109,30 @@ export interface Provider {
 }
 
 /**
+ * Detail information for a body region in the symptom checker flow.
+ * Used as route params between symptom checker screens.
+ */
+export interface SymptomRegionDetail {
+  regionId: string;
+  regionLabel: string;
+  severity: number;
+  duration: string;
+  onset: Date | null;
+  notes: string;
+}
+
+/**
+ * Symptom condition result from the symptom checker analysis.
+ */
+export interface SymptomCondition {
+  id: string;
+  name: string;
+  probability: number;
+  description: string;
+  urgency: 'low' | 'medium' | 'high' | 'emergency';
+}
+
+/**
  * Zod schema for validating appointment data
  * Ensures data consistency for appointment booking
  */

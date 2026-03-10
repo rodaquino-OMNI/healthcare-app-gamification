@@ -19,6 +19,15 @@ jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
 }));
 
+jest.mock('@/api/client', () => ({
+  restClient: { get: jest.fn(), post: jest.fn(), put: jest.fn(), delete: jest.fn() },
+  graphqlClient: {},
+}));
+
+jest.mock('@/hooks/useClaims', () => ({
+  useClaims: () => ({ data: [], isLoading: false, error: null }),
+}));
+
 describe('Claims', () => {
   it('renders without crashing', () => {
     const { container } = render(<Claims />);

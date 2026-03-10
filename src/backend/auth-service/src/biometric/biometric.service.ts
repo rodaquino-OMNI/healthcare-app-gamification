@@ -7,6 +7,7 @@ import { RedisService } from '@app/shared/redis/redis.service';
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import type { StringValue } from 'ms';
 
 /** Extracts message and stack from an unknown error. */
 function extractError(err: unknown): {
@@ -73,7 +74,10 @@ export class BiometricService {
         deviceId: string,
         platform: string
     ): Promise<{ success: boolean; deviceKeyId: string }> {
-        this.logger.log(`Registering biometric device for user: ${userId}, device: ${deviceId}`, 'BiometricService');
+        this.logger.log(
+            `Registering biometric device for user: ${userId}, device: ${deviceId}`,
+            'BiometricService'
+        );
 
         if (!userId || !publicKey || !deviceId || !platform) {
             throw new AppException(
@@ -84,7 +88,10 @@ export class BiometricService {
         }
 
         const deviceKeyId = crypto.randomBytes(16).toString('hex');
-        const expirationDays = this.configService.get<number>('authService.biometric.deviceKeyExpirationDays', 90);
+        const expirationDays = this.configService.get<number>(
+            'authService.biometric.deviceKeyExpirationDays',
+            90
+        );
         const ttlSeconds = expirationDays * 24 * 3600;
 
         const deviceKey: BiometricDeviceKey = {
@@ -97,19 +104,35 @@ export class BiometricService {
         };
 
         try {
-            await this.redisService.set(`biometric:device:${deviceKeyId}`, JSON.stringify(deviceKey), ttlSeconds);
+            await this.redisService.set(
+                `biometric:device:${deviceKeyId}`,
+                JSON.stringify(deviceKey),
+                ttlSeconds
+            );
 
-            this.logger.log(`Biometric device registered: ${deviceKeyId} for user ${userId}`, 'BiometricService');
+            this.logger.log(
+                `Biometric device registered: ${deviceKeyId} for user ${userId}`,
+                'BiometricService'
+            );
 
             return { success: true, deviceKeyId };
         } catch (error: unknown) {
             const { message, stack } = extractError(error);
-            this.logger.error(`Failed to register biometric device: ${message}`, stack, 'BiometricService');
+            this.logger.error(
+                `Failed to register biometric device: ${message}`,
+                stack,
+                'BiometricService'
+            );
 
-            throw new AppException('Failed to register biometric device', ErrorType.TECHNICAL, 'BIO_002', {
-                userId,
-                deviceId,
-            });
+            throw new AppException(
+                'Failed to register biometric device',
+                ErrorType.TECHNICAL,
+                'BIO_002',
+                {
+                    userId,
+                    deviceId,
+                }
+            );
         }
     }
 
@@ -123,7 +146,11 @@ export class BiometricService {
         this.logger.log(`Generating biometric challenge for user: ${userId}`, 'BiometricService');
 
         if (!userId) {
-            throw new AppException('User ID is required to generate a challenge', ErrorType.VALIDATION, 'BIO_003');
+            throw new AppException(
+                'User ID is required to generate a challenge',
+                ErrorType.VALIDATION,
+                'BIO_003'
+            );
         }
 
         const challenge = crypto.randomBytes(32).toString('hex');
@@ -135,7 +162,10 @@ export class BiometricService {
                 BiometricService.CHALLENGE_TTL_SECONDS
             );
 
-            this.logger.log(`Biometric challenge generated for user: ${userId}`, 'BiometricService');
+            this.logger.log(
+                `Biometric challenge generated for user: ${userId}`,
+                'BiometricService'
+            );
 
             return {
                 challenge,
@@ -143,11 +173,20 @@ export class BiometricService {
             };
         } catch (error: unknown) {
             const { message, stack } = extractError(error);
-            this.logger.error(`Failed to generate biometric challenge: ${message}`, stack, 'BiometricService');
+            this.logger.error(
+                `Failed to generate biometric challenge: ${message}`,
+                stack,
+                'BiometricService'
+            );
 
-            throw new AppException('Failed to generate biometric challenge', ErrorType.TECHNICAL, 'BIO_004', {
-                userId,
-            });
+            throw new AppException(
+                'Failed to generate biometric challenge',
+                ErrorType.TECHNICAL,
+                'BIO_004',
+                {
+                    userId,
+                }
+            );
         }
     }
 
@@ -214,7 +253,10 @@ export class BiometricService {
 
         // 3. Verify the device key belongs to the requesting user
         if (deviceKey.userId !== userId) {
-            this.logger.warn(`Device key ${deviceKeyId} does not belong to user ${userId}`, 'BiometricService');
+            this.logger.warn(
+                `Device key ${deviceKeyId} does not belong to user ${userId}`,
+                'BiometricService'
+            );
             throw new AppException(
                 'Device key does not belong to this user',
                 ErrorType.AUTHENTICATION,
@@ -234,7 +276,10 @@ export class BiometricService {
             const isValid = verifier.verify(deviceKey.publicKey, signatureBuffer);
 
             if (!isValid) {
-                this.logger.warn(`Invalid biometric signature for user: ${userId}`, 'BiometricService');
+                this.logger.warn(
+                    `Invalid biometric signature for user: ${userId}`,
+                    'BiometricService'
+                );
                 throw new AppException(
                     'Invalid biometric signature',
                     ErrorType.AUTHENTICATION,
@@ -248,7 +293,11 @@ export class BiometricService {
                 throw error;
             }
             const { message, stack } = extractError(error);
-            this.logger.error(`Signature verification failed: ${message}`, stack, 'BiometricService');
+            this.logger.error(
+                `Signature verification failed: ${message}`,
+                stack,
+                'BiometricService'
+            );
             throw new AppException(
                 'Biometric signature verification failed',
                 ErrorType.AUTHENTICATION,
@@ -270,12 +319,24 @@ export class BiometricService {
             })) as BiometricUser | null;
         } catch (error: unknown) {
             const { message, stack } = extractError(error);
-            this.logger.error(`Failed to find user for biometric auth: ${message}`, stack, 'BiometricService');
-            throw new AppException('Failed to retrieve user data', ErrorType.TECHNICAL, 'BIO_012', { userId });
+            this.logger.error(
+                `Failed to find user for biometric auth: ${message}`,
+                stack,
+                'BiometricService'
+            );
+            throw new AppException('Failed to retrieve user data', ErrorType.TECHNICAL, 'BIO_012', {
+                userId,
+            });
         }
 
         if (!user) {
-            throw new AppException('User not found', ErrorType.AUTHENTICATION, 'BIO_013', {}, HttpStatus.UNAUTHORIZED);
+            throw new AppException(
+                'User not found',
+                ErrorType.AUTHENTICATION,
+                'BIO_013',
+                {},
+                HttpStatus.UNAUTHORIZED
+            );
         }
 
         // 7. Generate JWT tokens
@@ -285,7 +346,9 @@ export class BiometricService {
             roles: user.roles?.map((r) => r.name) || [],
         };
 
-        const expiration = this.configService.get<string>('authService.jwt.accessTokenExpiration');
+        const expiration = this.configService.get<StringValue>(
+            'authService.jwt.accessTokenExpiration'
+        );
         const accessToken = this.jwtService.sign(payload, {
             secret: this.configService.get<string>('authService.jwt.secret'),
             expiresIn: expiration,
@@ -295,7 +358,10 @@ export class BiometricService {
         const refreshTtl = this.getRefreshTokenTtl();
         await this.redisService.set(`refresh:${refreshToken}`, userId, refreshTtl);
 
-        this.logger.log(`Biometric authentication successful for user: ${userId}`, 'BiometricService');
+        this.logger.log(
+            `Biometric authentication successful for user: ${userId}`,
+            'BiometricService'
+        );
 
         return {
             access_token: accessToken,
@@ -308,7 +374,8 @@ export class BiometricService {
      * @returns TTL in seconds
      */
     private getRefreshTokenTtl(): number {
-        const exp = this.configService.get<string>('authService.jwt.refreshTokenExpiration') || '7d';
+        const exp =
+            this.configService.get<string>('authService.jwt.refreshTokenExpiration') || '7d';
         const match = exp.match(/^(\d+)([dhms])$/);
         if (!match) {
             return 7 * 24 * 3600;

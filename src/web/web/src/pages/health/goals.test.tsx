@@ -39,6 +39,16 @@ jest.mock('@/hooks/useAuth', () => ({
   useAuth: () => ({ session: { userId: 'test-user-id' } }),
 }));
 
+jest.mock('@/components/forms/HealthGoalForm', () => ({
+  HealthGoalForm: ({ onSubmit }: { onSubmit?: () => void }) => (
+    <div data-testid="health-goal-form" onClick={onSubmit}>Form</div>
+  ),
+}));
+
+jest.mock('@/components/shared/JourneyHeader', () => ({
+  JourneyHeader: ({ title }: { title: string }) => <div data-testid="journey-header">{title}</div>,
+}));
+
 describe('HealthGoalsPage', () => {
   it('renders without crashing', () => {
     const { container } = render(<HealthGoalsPage />);

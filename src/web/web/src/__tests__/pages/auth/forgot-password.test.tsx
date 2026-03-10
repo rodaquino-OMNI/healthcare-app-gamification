@@ -1,11 +1,11 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 
-jest.mock('@/layouts/AuthLayout', () => {
-    return function AuthLayout({ children }: { children: React.ReactNode }) {
+jest.mock('@/layouts/AuthLayout', () => ({
+    AuthLayout: function AuthLayout({ children }: { children: React.ReactNode }) {
         return <div data-testid="auth-layout">{children}</div>;
-    };
-});
+    },
+}));
 
 jest.mock('design-system/tokens/colors', () => ({
     colors: {

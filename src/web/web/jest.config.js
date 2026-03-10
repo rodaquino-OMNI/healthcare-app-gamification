@@ -22,9 +22,9 @@ module.exports = {
     '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
   },
   
-  // Don't transform node_modules except for our internal packages
+  // Don't transform node_modules except for our internal packages and ESM-only deps
   transformIgnorePatterns: [
-    '/node_modules/(?!(@austa/design-system|@austa/shared))',
+    '/node_modules/(?!(@austa/design-system|@austa/shared|apollo-upload-client))',
   ],
   
   // Module name mapper for path aliases
@@ -40,7 +40,23 @@ module.exports = {
     '^@context/(.*)$': '<rootDir>/src/context/$1',
     '^@constants/(.*)$': '<rootDir>/src/constants/$1',
     '^@i18n/(.*)$': '<rootDir>/src/i18n/$1',
-    
+
+    // Workspace package aliases (match tsconfig paths)
+    // Design-system components (import react-native) are auto-mocked;
+    // tokens/primitives resolve to the real source.
+    '^design-system/components/(.*)$': '<rootDir>/__mocks__/design-system-components.js',
+    '^design-system/gamification/(.*)$': '<rootDir>/__mocks__/design-system-components.js',
+    '^design-system/primitives/(.*)$': '<rootDir>/__mocks__/design-system-components.js',
+    '^design-system/plan/(.*)$': '<rootDir>/__mocks__/design-system-components.js',
+    '^design-system/(.*)$': '<rootDir>/../design-system/src/$1',
+    '^shared/(.*)$': '<rootDir>/../shared/$1',
+
+    // Mock react-native for web tests (design-system primitives import it)
+    '^react-native$': '<rootDir>/__mocks__/react-native.js',
+
+    // Mock apollo-upload-client ESM module to prevent import errors
+    '^apollo-upload-client/(.*)$': '<rootDir>/__mocks__/apollo-upload-client.js',
+
     // Handle CSS and image imports in tests
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/__mocks__/fileMock.js',
