@@ -62,7 +62,7 @@
     "intl": "^1.2.5",
     "jwt-decode": "4.0.0",
     "next": "15.4.11",
-    "next-seo": "^6.4.0",
+    "next-seo": "^7.0.0",
     "nookies": "2.5.2",
     "prettier": "^3.2.5",
     "react": "19.0.0",
