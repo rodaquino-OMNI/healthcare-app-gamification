@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 
+import { useAuth } from '@/hooks/useAuth';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 const ContentContainer = styled.div`
@@ -175,6 +176,7 @@ const GOALS: GoalItem[] = [
  */
 export default function GoalSelectionPage(): React.ReactElement {
     const router = useRouter();
+    const { isAuthenticated: _isAuthenticated, session: _session } = useAuth();
     const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
 
     const toggleGoal = useCallback((goalId: string) => {

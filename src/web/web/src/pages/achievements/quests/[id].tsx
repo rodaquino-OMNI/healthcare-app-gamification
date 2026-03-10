@@ -10,6 +10,8 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import type { Quest } from 'shared/types/gamification.types';
 
+import { useGamification } from '@/hooks/useGamification';
+
 const MOCK_QUESTS: Record<string, Quest & { requirements: string[]; rewardXp: number }> = {
     q1: {
         id: 'q1',
@@ -150,6 +152,7 @@ const QuestDetailPage: React.FC = () => {
     const { id } = router.query;
     const questId = Array.isArray(id) ? id[0] : id;
     const quest = questId ? MOCK_QUESTS[questId] : undefined;
+    const { gameProfile, isLoading: profileLoading } = useGamification('');
 
     if (!quest) {
         return (
@@ -301,6 +304,11 @@ const QuestDetailPage: React.FC = () => {
                         upon completion
                     </Text>
                 </Box>
+                {!profileLoading && gameProfile && (
+                    <Text fontSize="sm" color={colors.gray[50]} style={{ marginTop: spacing.xs }}>
+                        Current level: {gameProfile.level} ({gameProfile.xp} XP total)
+                    </Text>
+                )}
             </Card>
         </div>
     );

@@ -6,6 +6,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
+import { useAuth } from '@/hooks/useAuth';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 const Title = styled.h2`
@@ -129,11 +130,14 @@ const OTP_LENGTH = 6;
  */
 export default function EmailVerifyPage(): React.ReactElement {
     const router = useRouter();
+    const { isLoading: isAuthLoading, error: authError } = useAuth();
     const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(''));
     const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS);
     const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+    const isDisabled = isSubmitting || isAuthLoading;
 
     useEffect(() => {
         if (countdown > 0) {
@@ -238,12 +242,10 @@ export default function EmailVerifyPage(): React.ReactElement {
 
             {countdown > 0 && <TimerText>Codigo expira em {formatCountdown(countdown)}</TimerText>}
 
+            {authError && <FeedbackMessage variant="error">{authError}</FeedbackMessage>}
             {feedback && <FeedbackMessage variant={feedback.type}>{feedback.message}</FeedbackMessage>}
 
-            <SubmitButton
-                onClick={() => void handleSubmit()}
-                disabled={isSubmitting || otp.join('').length < OTP_LENGTH}
-            >
+            <SubmitButton onClick={() => void handleSubmit()} disabled={isDisabled || otp.join('').length < OTP_LENGTH}>
                 {isSubmitting ? 'Verificando...' : 'Verificar'}
             </SubmitButton>
 

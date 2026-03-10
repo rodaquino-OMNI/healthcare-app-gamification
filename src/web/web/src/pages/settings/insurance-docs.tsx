@@ -1,40 +1,16 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-import { getInsuranceDocs, downloadDoc } from '../../api/settings';
-
-interface InsuranceDoc {
-    id: string;
-    name: string;
-    type: string;
-    url: string;
-    uploadedAt: string;
-}
+import { useSettings } from '@/hooks/useSettings';
 
 /**
  * Insurance documents page.
  * Displays available plan documents for download.
  */
 const InsuranceDocsPage: NextPage = () => {
-    const [docs, setDocs] = useState<InsuranceDoc[]>([]);
-    const [loading, setLoading] = useState(false);
+    const { insuranceDocs: docs, isLoading: loading, error: hookError, downloadDoc } = useSettings();
     const [error, setError] = useState('');
-
-    useEffect(() => {
-        const fetchDocs = async (): Promise<void> => {
-            setLoading(true);
-            try {
-                const data = await getInsuranceDocs();
-                setDocs(data);
-            } catch (err: unknown) {
-                setError(err instanceof Error ? err.message : 'Erro ao carregar documentos.');
-            } finally {
-                setLoading(false);
-            }
-        };
-        void fetchDocs();
-    }, []);
 
     const handleDownload = async (doc: { id: string; name: string }): Promise<void> => {
         try {
@@ -46,7 +22,7 @@ const InsuranceDocsPage: NextPage = () => {
             a.click();
             URL.revokeObjectURL(url);
         } catch (err: unknown) {
-            setError(err instanceof Error ? err.message : 'Erro ao baixar documento.');
+            setError(err instanceof Error ? err.message : (hookError ?? 'Erro ao baixar documento.'));
         }
     };
 

@@ -6,7 +6,7 @@ import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Claim, ClaimStatus } from 'shared/types/plan.types';
 
-import { useClaims } from '@/hooks/useClaims';
+import { useClaims } from '@/hooks';
 
 const { plan } = colors.journeys;
 

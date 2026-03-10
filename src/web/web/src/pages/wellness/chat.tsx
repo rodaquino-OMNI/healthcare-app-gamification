@@ -5,7 +5,9 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+import { useWellness } from '@/hooks/useWellness';
 
 interface Message {
     id: string;
@@ -14,29 +16,36 @@ interface Message {
     timestamp: string;
 }
 
-const INITIAL_MESSAGES: Message[] = [
-    {
-        id: '1',
-        sender: 'ai',
-        text: 'Hello! I am your AI Wellness Companion. How are you feeling today?',
-        timestamp: '9:30 AM',
-    },
-    { id: '2', sender: 'user', text: 'I have been feeling a bit stressed lately.', timestamp: '9:31 AM' },
-    {
-        id: '3',
-        sender: 'ai',
-        text: 'I understand. Stress is common but manageable. Would you like to try a breathing exercise, talk about what is causing your stress, or explore some relaxation techniques?',
-        timestamp: '9:31 AM',
-    },
-];
+const PLACEHOLDER_USER_ID = 'me';
+const PLACEHOLDER_SESSION_ID = 'session-1';
 
 const QUICK_SUGGESTIONS = ['Breathing exercise', 'Sleep tips', 'Stress management', 'Meditation guide'];
 
 const ChatPage: React.FC = () => {
     const router = useRouter();
-    const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
+    const { chatHistory, quickReplies, sendMessage, loadChatHistory, loadQuickReplies } = useWellness();
+    const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
     const [isTyping, setIsTyping] = useState(false);
+
+    useEffect(() => {
+        void loadChatHistory(PLACEHOLDER_USER_ID, PLACEHOLDER_SESSION_ID);
+        void loadQuickReplies(PLACEHOLDER_USER_ID, PLACEHOLDER_SESSION_ID);
+    }, [loadChatHistory, loadQuickReplies]);
+
+    useEffect(() => {
+        if (chatHistory) {
+            const mapped: Message[] = chatHistory.messages.map((m) => ({
+                id: m.id,
+                sender: m.role === 'user' ? 'user' : 'ai',
+                text: m.content,
+                timestamp: m.timestamp,
+            }));
+            setMessages(mapped);
+        }
+    }, [chatHistory]);
+
+    const displayQuickSuggestions = quickReplies.length > 0 ? quickReplies.slice(0, 4) : QUICK_SUGGESTIONS;
 
     const handleSend = (): void => {
         if (!input.trim()) {
@@ -49,18 +58,23 @@ const ChatPage: React.FC = () => {
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         };
         setMessages((prev) => [...prev, userMsg]);
+        const content = input.trim();
         setInput('');
         setIsTyping(true);
-        setTimeout(() => {
-            const aiMsg: Message = {
-                id: `a-${Date.now()}`,
-                sender: 'ai',
-                text: 'Thank you for sharing. Let me suggest some wellness strategies that might help.',
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            };
-            setMessages((prev) => [...prev, aiMsg]);
-            setIsTyping(false);
-        }, 1500);
+        void sendMessage(PLACEHOLDER_USER_ID, content, PLACEHOLDER_SESSION_ID)
+            .then((reply) => {
+                const aiMsg: Message = {
+                    id: reply.id,
+                    sender: 'ai',
+                    text: reply.content,
+                    timestamp: reply.timestamp,
+                };
+                setMessages((prev) => [...prev, aiMsg]);
+                setIsTyping(false);
+            })
+            .catch(() => {
+                setIsTyping(false);
+            });
     };
 
     const handleQuickSuggestion = (suggestion: string): void => {
@@ -154,7 +168,7 @@ const ChatPage: React.FC = () => {
             </div>
 
             <div style={{ display: 'flex', gap: spacing.xs, flexWrap: 'wrap', marginBottom: spacing.sm }}>
-                {QUICK_SUGGESTIONS.map((suggestion) => (
+                {displayQuickSuggestions.map((suggestion) => (
                     <button
                         key={suggestion}
                         onClick={() => handleQuickSuggestion(suggestion)}

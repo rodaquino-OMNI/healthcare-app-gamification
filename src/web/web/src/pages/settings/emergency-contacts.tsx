@@ -2,6 +2,8 @@ import { colors, typography, spacing, borderRadius } from 'design-system/tokens'
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
 
+import { useSettings } from '@/hooks/useSettings';
+
 interface Contact {
     id: string;
     name: string;
@@ -20,6 +22,7 @@ const MOCK_CONTACTS: Contact[] = [
  * Displays and manages emergency contact list.
  */
 const EmergencyContactsPage: NextPage = () => {
+    const { isLoading, error } = useSettings();
     const [contacts, setContacts] = useState<Contact[]>(MOCK_CONTACTS);
     const [showForm, setShowForm] = useState(false);
     const [newName, setNewName] = useState('');
@@ -56,6 +59,28 @@ const EmergencyContactsPage: NextPage = () => {
         <div style={{ padding: spacing.xl, maxWidth: '600px', margin: '0 auto' }}>
             <h1 style={titleStyle}>Contatos de Emergencia</h1>
             <p style={subtitleStyle}>Pessoas a serem notificadas em caso de emergencia.</p>
+            {isLoading && (
+                <p
+                    style={{
+                        fontSize: typography.fontSize['text-sm'],
+                        color: colors.gray[40],
+                        marginBottom: spacing.md,
+                    }}
+                >
+                    Carregando...
+                </p>
+            )}
+            {error && (
+                <p
+                    style={{
+                        fontSize: typography.fontSize['text-sm'],
+                        color: colors.semantic.error,
+                        marginBottom: spacing.md,
+                    }}
+                >
+                    {error}
+                </p>
+            )}
 
             {contacts.map((contact) => (
                 <div key={contact.id} style={{ ...cardStyle, marginBottom: spacing.md }}>

@@ -2,7 +2,10 @@ import { borderRadius } from 'design-system/tokens/borderRadius';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
+import { NotificationStatus } from 'shared/types';
+
+import { useNotifications } from '@/hooks/useNotifications';
 
 type NotificationType = 'care' | 'health' | 'plan' | 'system';
 
@@ -61,14 +64,39 @@ const MOCK_UNREAD: UnreadNotification[] = [
 ];
 
 const UnreadNotificationsPage: React.FC = () => {
-    const [notifications, setNotifications] = useState(MOCK_UNREAD);
+    const { notifications: allNotifications, isLoading, markAsRead, unreadCount } = useNotifications();
 
-    const handleMarkAllRead = (): void => setNotifications([]);
+    const notifications: UnreadNotification[] = useMemo(() => {
+        const unread = allNotifications
+            .filter((n) => n.status !== NotificationStatus.READ)
+            .map((n) => ({
+                id: n.id,
+                type: (n.journey as NotificationType) ?? 'system',
+                title: n.title,
+                preview: n.body,
+                timestamp: n.createdAt ? new Date(n.createdAt).toLocaleString('pt-BR') : '',
+            }));
+        return unread.length > 0 ? unread : MOCK_UNREAD;
+    }, [allNotifications]);
+
+    const handleMarkAllRead = (): void => {
+        notifications.forEach((n) => {
+            void markAsRead(n.id);
+        });
+    };
+
+    if (isLoading) {
+        return (
+            <div style={styles.container}>
+                <p>Carregando notificacoes...</p>
+            </div>
+        );
+    }
 
     return (
         <div style={styles.container}>
             <div style={styles.header}>
-                <h1 style={styles.title}>Nao Lidas</h1>
+                <h1 style={styles.title}>Nao Lidas ({unreadCount})</h1>
                 {notifications.length > 0 && (
                     <button style={styles.markAllBtn} onClick={handleMarkAllRead}>
                         Marcar todas como lidas

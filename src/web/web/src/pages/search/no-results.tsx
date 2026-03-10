@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import styled from 'styled-components';
 
+import { useSearch } from '@/hooks/useSearch';
 import { MainLayout } from '@/layouts/MainLayout';
 
 const PageContainer = styled.div`
@@ -130,6 +131,7 @@ const HomeButton = styled.button`
 
 export default function NoResultsPage(): React.ReactElement {
     const router = useRouter();
+    const { query } = useSearch();
 
     const handlePopularSearch = (tag: string): void => {
         void router.push(`/search/results?q=${encodeURIComponent(tag)}`);
@@ -146,7 +148,9 @@ export default function NoResultsPage(): React.ReactElement {
                     <EmptyIcon>🔍</EmptyIcon>
                     <EmptyTitle>Nenhum Resultado</EmptyTitle>
                     <EmptyDescription>
-                        Desculpe, não encontramos nada para sua busca. Tente usar palavras diferentes.
+                        {query
+                            ? `Desculpe, não encontramos nada para "${query}". Tente usar palavras diferentes.`
+                            : 'Desculpe, não encontramos nada para sua busca. Tente usar palavras diferentes.'}
                     </EmptyDescription>
 
                     <SuggestionsContainer>

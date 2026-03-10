@@ -1,12 +1,12 @@
 import { BenefitCard } from 'design-system/plan/BenefitCard';
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
-import React, { useState, useEffect } from 'react';
-import { Benefit } from 'shared/types/plan.types';
+import React, { useState } from 'react';
+
+import { usePlan } from '@/hooks';
 
 import { ErrorState } from '../../components/shared/ErrorState';
 import { LoadingIndicator } from '../../components/shared/LoadingIndicator';
-import { useAuth } from '../../hooks/useAuth';
 import { useJourney } from '../../hooks/useJourney';
 import PlanLayout from '../../layouts/PlanLayout';
 
@@ -26,35 +26,10 @@ const FILTER_TABS: { key: FilterTab; label: string }[] = [
  * The main component that renders the Benefits page within the Plan journey.
  */
 const BenefitsPage: NextPage = () => {
-    const [benefits, setBenefits] = useState<Benefit[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
     const [activeFilter, setActiveFilter] = useState<FilterTab>('all');
 
-    const { session } = useAuth();
     useJourney();
-
-    useEffect(() => {
-        const loadBenefits = async (): Promise<void> => {
-            setLoading(true);
-            setError(null);
-
-            try {
-                if (session?.accessToken) {
-                    const fetchedBenefits = await fetchBenefits(session.accessToken);
-                    setBenefits(fetchedBenefits);
-                } else {
-                    setError('User not authenticated');
-                }
-            } catch (err: unknown) {
-                setError((err instanceof Error ? err.message : null) || 'Failed to load benefits');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        void loadBenefits();
-    }, [session]);
+    const { benefits, isLoading: loading, error, refreshBenefits } = usePlan();
 
     const filteredBenefits = activeFilter === 'all' ? benefits : benefits.filter((b) => b.type === activeFilter);
 
@@ -63,14 +38,7 @@ const BenefitsPage: NextPage = () => {
         content = <LoadingIndicator text="Carregando seus beneficios..." />;
     } else if (error) {
         content = (
-            <ErrorState
-                message={`Erro ao carregar seus beneficios: ${error}`}
-                onRetry={() => {
-                    setLoading(true);
-                    setError(null);
-                    void fetchBenefits(session?.accessToken || '');
-                }}
-            />
+            <ErrorState message={`Erro ao carregar seus beneficios: ${error}`} onRetry={() => void refreshBenefits()} />
         );
     } else {
         content = (
@@ -163,26 +131,5 @@ const BenefitsPage: NextPage = () => {
         </PlanLayout>
     );
 };
-
-/**
- * Fetches the benefits associated with the user's active insurance plan.
- */
-async function fetchBenefits(userId: string): Promise<Benefit[]> {
-    const apiUrl = `/api/plan/benefits?userId=${userId}`;
-
-    try {
-        const response = await fetch(apiUrl);
-
-        if (!response.ok) {
-            throw new Error(`Failed to fetch benefits: ${response.status}`);
-        }
-
-        const data: Benefit[] = (await response.json()) as Benefit[];
-        return data;
-    } catch (error: unknown) {
-        console.error('There was an error fetching the benefits:', error);
-        throw new Error(`Failed to fetch benefits: ${error instanceof Error ? error.message : String(error)}`);
-    }
-}
 
 export default BenefitsPage;

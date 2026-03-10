@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useAuth } from '@/hooks/useAuth';
+
 interface FAQItem {
     id: string;
     question: string;
@@ -47,6 +49,7 @@ const FAQ_ITEMS: FAQItem[] = [
  */
 const FAQCategoryPage: React.FC = () => {
     const router = useRouter();
+    const { isAuthenticated: _isAuthenticated } = useAuth();
     const [expandedId, setExpandedId] = useState<string | null>(null);
 
     const toggleExpand = (id: string): void => {

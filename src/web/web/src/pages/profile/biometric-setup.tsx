@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
+import { useProfile } from '@/hooks/useProfile';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 import { restClient } from '../../api/client';
@@ -136,6 +137,7 @@ const BENEFITS = [
  */
 export default function BiometricSetupPage(): React.ReactElement {
     const router = useRouter();
+    const { profile } = useProfile();
     const [error, setError] = useState<string | null>(null);
     const [enrolling, setEnrolling] = useState(false);
 
@@ -149,8 +151,8 @@ export default function BiometricSetupPage(): React.ReactElement {
                     rp: { name: 'AUSTA Health' },
                     user: {
                         id: new Uint8Array(16),
-                        name: 'user',
-                        displayName: 'User',
+                        name: (profile?.name as string) || 'user',
+                        displayName: (profile?.name as string) || 'User',
                     },
                     pubKeyCredParams: [{ alg: -7, type: 'public-key' as const }],
                 },

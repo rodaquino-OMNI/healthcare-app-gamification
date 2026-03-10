@@ -3,7 +3,10 @@ import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React from 'react';
 
+import { useAuth } from '@/hooks/useAuth';
+
 const MaintenancePage: React.FC = () => {
+    const { isAuthenticated: _isAuthenticated } = useAuth();
     const estimatedTime = '2 horas';
 
     return (

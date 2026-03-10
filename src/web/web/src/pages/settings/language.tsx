@@ -3,7 +3,7 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
-import { saveLanguage } from '../../api/settings';
+import { useSettings } from '@/hooks/useSettings';
 
 interface LanguageOption {
     code: string;
@@ -23,6 +23,7 @@ const LANGUAGES: LanguageOption[] = [
  */
 const LanguagePage: NextPage = () => {
     const router = useRouter();
+    const { saveLanguage } = useSettings();
     const [selected, setSelected] = useState('pt-BR');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');

@@ -6,7 +6,8 @@ import { typography } from 'design-system/tokens/typography';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
-import { MainLayout, useHealthMetrics } from '@/components/index';
+import { MainLayout } from '@/components/index';
+import { useHealthMetrics } from '@/hooks';
 
 /**
  * Filter options for the metrics view.

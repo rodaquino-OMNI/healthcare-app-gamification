@@ -1,13 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
 import { InsuranceCard } from 'design-system/plan/InsuranceCard';
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import React from 'react';
-import { Plan } from 'shared/types/plan.types';
 
-import { getDigitalCard } from '../../api/plan';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth, usePlan } from '@/hooks';
+
 import PlanLayout from '../../layouts/PlanLayout';
 
 const { plan } = colors.journeys;
@@ -17,17 +15,10 @@ const { plan } = colors.journeys;
  * for the user's health plan with share and download actions.
  */
 const DigitalCardPage: NextPage = () => {
-    const { session, status, isAuthenticated, isLoading: authIsLoading } = useAuth();
+    const { session, status, isLoading: authIsLoading } = useAuth();
+    const { digitalCard: digitalCardData, isLoading, error: planError } = usePlan();
 
-    const {
-        isLoading,
-        error,
-        data: digitalCardData,
-    } = useQuery<{ plan: Plan }>({
-        queryKey: ['digitalCard', session?.accessToken],
-        queryFn: () => getDigitalCard(session?.accessToken, session?.accessToken),
-        enabled: isAuthenticated && !!session?.accessToken,
-    });
+    const error = planError ? new Error(planError) : null;
 
     if (status === 'loading' || isLoading || authIsLoading) {
         return (

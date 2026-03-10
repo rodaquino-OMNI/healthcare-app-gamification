@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState, useEffect, useRef } from 'react';
 
+import { useWellness } from '@/hooks/useWellness';
+
 type Phase = 'idle' | 'breatheIn' | 'hold' | 'breatheOut';
 
 const PHASE_CONFIG: Record<Exclude<Phase, 'idle'>, { label: string; duration: number }> = {
@@ -18,16 +20,30 @@ const PHASE_CONFIG: Record<Exclude<Phase, 'idle'>, { label: string; duration: nu
 const PHASE_ORDER: Exclude<Phase, 'idle'>[] = ['breatheIn', 'hold', 'breatheOut'];
 const DURATION_OPTIONS = [3, 5, 10];
 
+const PLACEHOLDER_USER_ID = 'me';
+
 const BreathingPage: React.FC = () => {
     const router = useRouter();
     const [isRunning, setIsRunning] = useState(false);
     const [phase, setPhase] = useState<Phase>('idle');
     const [countdown, setCountdown] = useState(0);
     const [selectedDuration, setSelectedDuration] = useState(5);
-    const [sessionsCompleted, setSessionsCompleted] = useState(3);
+    const [sessionsCompleted, setSessionsCompleted] = useState(0);
     const [elapsed, setElapsed] = useState(0);
     const phaseIndex = useRef(0);
     const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const { startBreathing, streaks, loadStreaks } = useWellness();
+
+    useEffect(() => {
+        void loadStreaks(PLACEHOLDER_USER_ID);
+    }, [loadStreaks]);
+
+    useEffect(() => {
+        const breathingStreak = streaks.find((s) => s.type === 'breathing');
+        if (breathingStreak) {
+            setSessionsCompleted(breathingStreak.currentCount);
+        }
+    }, [streaks]);
 
     useEffect(() => {
         if (!isRunning) {
@@ -49,6 +65,7 @@ const BreathingPage: React.FC = () => {
                     setIsRunning(false);
                     setPhase('idle');
                     setSessionsCompleted((s) => s + 1);
+                    void startBreathing(PLACEHOLDER_USER_ID, '4-7-8', selectedDuration);
                     return 0;
                 }
                 return next;

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
+import { useProfile } from '@/hooks/useProfile';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 const ContentContainer = styled.div`
@@ -180,6 +181,7 @@ const RELATIONSHIPS = [
  */
 export default function EmergencyContactPage(): React.ReactElement {
     const router = useRouter();
+    const { profile: _profile } = useProfile();
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [relationship, setRelationship] = useState<string | null>(null);

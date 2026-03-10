@@ -1,18 +1,9 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-import { getDependents, removeDependent } from '../../api/settings';
-
-interface Dependent {
-    id: string;
-    name: string;
-    relationship: string;
-    dob: string;
-    cpf: string;
-    gender: string;
-}
+import { useSettings } from '@/hooks/useSettings';
 
 /**
  * Dependents list page.
@@ -20,31 +11,14 @@ interface Dependent {
  */
 const DependentsPage: NextPage = () => {
     const router = useRouter();
-    const [dependents, setDependents] = useState<Dependent[]>([]);
-    const [loading, setLoading] = useState(false);
+    const { dependents, isLoading: loading, error: hookError, removeDependent } = useSettings();
     const [error, setError] = useState('');
-
-    useEffect(() => {
-        const fetchDependents = async (): Promise<void> => {
-            setLoading(true);
-            try {
-                const data = await getDependents();
-                setDependents(data);
-            } catch (err: unknown) {
-                setError(err instanceof Error ? err.message : 'Erro ao carregar dependentes.');
-            } finally {
-                setLoading(false);
-            }
-        };
-        void fetchDependents();
-    }, []);
 
     const handleRemove = async (id: string): Promise<void> => {
         try {
             await removeDependent(id);
-            setDependents((prev) => prev.filter((d) => d.id !== id));
         } catch (err: unknown) {
-            setError(err instanceof Error ? err.message : 'Erro ao remover dependente.');
+            setError(err instanceof Error ? err.message : (hookError ?? 'Erro ao remover dependente.'));
         }
     };
 

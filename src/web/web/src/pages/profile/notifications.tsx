@@ -4,6 +4,7 @@ import { typography } from 'design-system/tokens/typography';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
+import { useProfile } from '@/hooks/useProfile';
 import { MainLayout } from '@/layouts/MainLayout';
 
 import { restClient } from '../../api/client';
@@ -140,6 +141,7 @@ interface NotificationPreference {
  * Mirrors the mobile SettingsNotifications screen.
  */
 export default function NotificationPreferencesPage(): React.ReactElement {
+    const { profile: _profile } = useProfile();
     const [preferences, setPreferences] = useState<NotificationPreference[]>([
         {
             key: 'push',

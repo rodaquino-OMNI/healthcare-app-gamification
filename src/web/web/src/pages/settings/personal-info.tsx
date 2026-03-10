@@ -3,7 +3,7 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
-import { savePersonalInfo } from '../../api/settings';
+import { useSettings } from '@/hooks/useSettings';
 
 /**
  * Personal information settings page.
@@ -11,10 +11,11 @@ import { savePersonalInfo } from '../../api/settings';
  */
 const PersonalInfoPage: NextPage = () => {
     const router = useRouter();
-    const [name, setName] = useState('Maria Silva');
-    const [dob, setDob] = useState('1990-03-15');
-    const [gender, setGender] = useState('feminino');
-    const [bloodType, setBloodType] = useState('O+');
+    const { savePersonalInfo, personalInfo } = useSettings();
+    const [name, setName] = useState(personalInfo?.name ?? 'Maria Silva');
+    const [dob, setDob] = useState(personalInfo?.dob ?? '1990-03-15');
+    const [gender, setGender] = useState(personalInfo?.gender ?? 'feminino');
+    const [bloodType, setBloodType] = useState(personalInfo?.bloodType ?? 'O+');
     const [cpf, setCpf] = useState('123.456.789-00');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');

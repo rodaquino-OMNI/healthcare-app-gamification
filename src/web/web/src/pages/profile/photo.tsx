@@ -6,6 +6,7 @@ import React, { useState, useRef } from 'react';
 import { WEB_PROFILE_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
+import { useProfile } from '@/hooks/useProfile';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 const Title = styled.h2`
@@ -146,6 +147,7 @@ const StepIndicator = styled.p`
  */
 export default function ProfilePhotoPage(): React.ReactElement {
     const router = useRouter();
+    const { profile: _profile } = useProfile();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);

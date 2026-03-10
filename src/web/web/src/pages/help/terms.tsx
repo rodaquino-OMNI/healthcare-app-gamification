@@ -3,6 +3,8 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useAuth } from '@/hooks/useAuth';
+
 const SECTIONS = [
     {
         title: '1. Aceitacao dos Termos',
@@ -57,6 +59,7 @@ const SECTIONS = [
  */
 const TermsPage: NextPage = () => {
     const router = useRouter();
+    const { isAuthenticated: _isAuthenticated } = useAuth();
 
     return (
         <div style={{ padding: spacing.xl, maxWidth: '720px', margin: '0 auto' }}>

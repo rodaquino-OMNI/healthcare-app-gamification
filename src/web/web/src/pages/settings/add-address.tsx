@@ -3,7 +3,7 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
-import { lookupCep, saveAddress } from '../../api/settings';
+import { useSettings } from '@/hooks/useSettings';
 
 /**
  * Add address form page with CEP lookup.
@@ -11,6 +11,7 @@ import { lookupCep, saveAddress } from '../../api/settings';
  */
 const AddAddressPage: NextPage = () => {
     const router = useRouter();
+    const { lookupCep, saveAddress } = useSettings();
     const [label, setLabel] = useState('');
     const [cep, setCep] = useState('');
     const [street, setStreet] = useState('');

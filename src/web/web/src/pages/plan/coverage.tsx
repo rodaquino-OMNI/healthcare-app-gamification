@@ -5,10 +5,10 @@ import { NextSeo } from 'next-seo';
 import React, { useState } from 'react';
 import { Coverage } from 'shared/types/plan.types';
 
+import { useAuth, useCoverage } from '@/hooks';
+
 import { ErrorState } from '../../components/shared/ErrorState';
 import { LoadingIndicator } from '../../components/shared/LoadingIndicator';
-import { useAuth } from '../../hooks/useAuth';
-import { useCoverage } from '../../hooks/useCoverage';
 import PlanLayout from '../../layouts/PlanLayout';
 
 const { plan } = colors.journeys;

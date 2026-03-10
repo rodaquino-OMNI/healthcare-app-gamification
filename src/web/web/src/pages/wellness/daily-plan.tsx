@@ -5,53 +5,45 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-interface PlanTask {
-    id: string;
-    title: string;
-    category: 'Exercise' | 'Nutrition' | 'Mindfulness' | 'Sleep';
-    time: string;
-    completed: boolean;
-}
+import { useWellness } from '@/hooks/useWellness';
 
 const CATEGORY_COLORS: Record<string, string> = {
-    Exercise: colors.journeys.health.primary,
-    Nutrition: colors.semantic.warning,
-    Mindfulness: colors.journeys.health.secondary,
-    Sleep: colors.gray[50],
+    exercise: colors.journeys.health.primary,
+    nutrition: colors.semantic.warning,
+    meditation: colors.journeys.health.secondary,
+    journal: colors.journeys.health.secondary,
+    sleep: colors.gray[50],
+    social: colors.gray[50],
+    breathing: colors.journeys.health.primary,
 };
 
-const INITIAL_TASKS: PlanTask[] = [
-    { id: '1', title: 'Morning stretching (10 min)', category: 'Exercise', time: '7:00 AM', completed: true },
-    { id: '2', title: 'Drink 500ml water', category: 'Nutrition', time: '7:30 AM', completed: true },
-    { id: '3', title: '5-minute breathing exercise', category: 'Mindfulness', time: '8:00 AM', completed: true },
-    { id: '4', title: 'Healthy breakfast with protein', category: 'Nutrition', time: '8:30 AM', completed: false },
-    { id: '5', title: '30-minute walk or jog', category: 'Exercise', time: '12:00 PM', completed: false },
-    { id: '6', title: 'Balanced lunch', category: 'Nutrition', time: '1:00 PM', completed: false },
-    { id: '7', title: 'Afternoon meditation (10 min)', category: 'Mindfulness', time: '3:00 PM', completed: false },
-    { id: '8', title: 'Evening yoga (15 min)', category: 'Exercise', time: '7:00 PM', completed: false },
-    { id: '9', title: 'No screens 30 min before bed', category: 'Sleep', time: '10:00 PM', completed: false },
-    { id: '10', title: 'Sleep by 10:30 PM', category: 'Sleep', time: '10:30 PM', completed: false },
-];
+const PLACEHOLDER_USER_ID = 'me';
 
 const DailyPlanPage: React.FC = () => {
     const router = useRouter();
-    const [tasks, setTasks] = useState<PlanTask[]>(INITIAL_TASKS);
+    const { dailyPlan, loadDailyPlan } = useWellness();
+    const [localCompleted, setLocalCompleted] = useState<Record<string, boolean>>({});
 
-    const completedCount = tasks.filter((t) => t.completed).length;
-    const allDone = completedCount === tasks.length;
-    const progressPercent = Math.round((completedCount / tasks.length) * 100);
+    useEffect(() => {
+        void loadDailyPlan(PLACEHOLDER_USER_ID);
+    }, [loadDailyPlan]);
+
+    const activities = dailyPlan?.activities ?? [];
+    const completedCount = activities.filter((a) => localCompleted[a.id] ?? a.completed).length;
+    const allDone = activities.length > 0 && completedCount === activities.length;
+    const progressPercent = activities.length > 0 ? Math.round((completedCount / activities.length) * 100) : 0;
 
     const toggleTask = (id: string): void => {
-        setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)));
+        setLocalCompleted((prev) => ({ ...prev, [id]: !(prev[id] ?? activities.find((a) => a.id === id)?.completed) }));
     };
 
-    const categories = ['Exercise', 'Nutrition', 'Mindfulness', 'Sleep'];
+    const categories = ['exercise', 'nutrition', 'meditation', 'sleep'];
     const categoryCounts = categories.map((cat) => ({
         category: cat,
-        completed: tasks.filter((t) => t.category === cat && t.completed).length,
-        total: tasks.filter((t) => t.category === cat).length,
+        completed: activities.filter((a) => a.type === cat && (localCompleted[a.id] ?? a.completed)).length,
+        total: activities.filter((a) => a.type === cat).length,
     }));
 
     return (
@@ -81,7 +73,7 @@ const DailyPlanPage: React.FC = () => {
                 Daily Wellness Plan
             </Text>
             <Text fontSize="md" color={colors.gray[50]} style={{ marginTop: spacing.xs, marginBottom: spacing.xl }}>
-                {allDone ? 'All tasks completed!' : `${completedCount} of ${tasks.length} complete`}
+                {allDone ? 'All tasks completed!' : `${completedCount} of ${activities.length} complete`}
             </Text>
 
             <Card journey="health" elevation="sm" padding="md" style={{ marginBottom: spacing.lg }}>
@@ -132,42 +124,52 @@ const DailyPlanPage: React.FC = () => {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm, marginBottom: spacing['2xl'] }}>
-                {tasks.map((task) => (
-                    <Card key={task.id} journey="health" elevation="sm" padding="md">
-                        <Box display="flex" alignItems="center" style={{ gap: spacing.sm }}>
-                            <input
-                                type="checkbox"
-                                checked={task.completed}
-                                onChange={() => toggleTask(task.id)}
-                                aria-label={`Mark ${task.title} ${task.completed ? 'incomplete' : 'complete'}`}
-                                style={{
-                                    width: 20,
-                                    height: 20,
-                                    cursor: 'pointer',
-                                    accentColor: colors.journeys.health.primary,
-                                }}
-                            />
-                            <Box style={{ flex: 1 }}>
-                                <Text
-                                    fontSize="sm"
-                                    fontWeight="medium"
-                                    color={task.completed ? colors.gray[40] : colors.gray[70]}
-                                    style={{ textDecoration: task.completed ? 'line-through' : 'none' }}
-                                >
-                                    {task.title}
-                                </Text>
-                                <Box display="flex" style={{ gap: spacing.sm, marginTop: spacing['3xs'] }}>
-                                    <Text fontSize="xs" color={CATEGORY_COLORS[task.category]}>
-                                        {task.category}
+                {activities.map((task) => {
+                    const isCompleted = localCompleted[task.id] ?? task.completed;
+                    return (
+                        <Card key={task.id} journey="health" elevation="sm" padding="md">
+                            <Box display="flex" alignItems="center" style={{ gap: spacing.sm }}>
+                                <input
+                                    type="checkbox"
+                                    checked={isCompleted}
+                                    onChange={() => toggleTask(task.id)}
+                                    aria-label={`Mark ${task.title} ${isCompleted ? 'incomplete' : 'complete'}`}
+                                    style={{
+                                        width: 20,
+                                        height: 20,
+                                        cursor: 'pointer',
+                                        accentColor: colors.journeys.health.primary,
+                                    }}
+                                />
+                                <Box style={{ flex: 1 }}>
+                                    <Text
+                                        fontSize="sm"
+                                        fontWeight="medium"
+                                        color={isCompleted ? colors.gray[40] : colors.gray[70]}
+                                        style={{ textDecoration: isCompleted ? 'line-through' : 'none' }}
+                                    >
+                                        {task.title}
                                     </Text>
-                                    <Text fontSize="xs" color={colors.gray[40]}>
-                                        {task.time}
-                                    </Text>
+                                    <Box display="flex" style={{ gap: spacing.sm, marginTop: spacing['3xs'] }}>
+                                        <Text fontSize="xs" color={CATEGORY_COLORS[task.type] ?? colors.gray[50]}>
+                                            {task.type}
+                                        </Text>
+                                        {task.scheduledTime && (
+                                            <Text fontSize="xs" color={colors.gray[40]}>
+                                                {task.scheduledTime}
+                                            </Text>
+                                        )}
+                                    </Box>
                                 </Box>
                             </Box>
-                        </Box>
-                    </Card>
-                ))}
+                        </Card>
+                    );
+                })}
+                {activities.length === 0 && (
+                    <Text fontSize="sm" color={colors.gray[40]}>
+                        No activities for today
+                    </Text>
+                )}
             </div>
 
             <Box display="flex" justifyContent="center">

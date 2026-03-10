@@ -3,6 +3,8 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useAuth } from '@/hooks/useAuth';
+
 interface FaqArticle {
     id: string;
     question: string;
@@ -46,6 +48,7 @@ const DEFAULT_ARTICLE: FaqArticle = {
  */
 const FaqArticlePage: NextPage = () => {
     const router = useRouter();
+    const { isAuthenticated: _isAuthenticated } = useAuth();
     const { id } = router.query;
     const articleId = typeof id === 'string' ? id : '';
     const article = ARTICLES[articleId] || DEFAULT_ARTICLE;

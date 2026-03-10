@@ -4,6 +4,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React, { useState, useMemo } from 'react';
 
+import { useNotifications } from '@/hooks/useNotifications';
+
 type CategoryType = 'all' | 'health' | 'care' | 'plan' | 'system';
 
 interface CategoryNotification {
@@ -96,13 +98,32 @@ const MOCK_NOTIFICATIONS: CategoryNotification[] = [
 
 const CategoryFilterPage: React.FC = () => {
     const [active, setActive] = useState<CategoryType>('all');
+    const { notifications, isLoading } = useNotifications();
+
+    const allNotifications: CategoryNotification[] = notifications.map((n) => ({
+        id: n.id,
+        category: (n.journey as Exclude<CategoryType, 'all'>) ?? 'system',
+        title: n.title,
+        preview: n.body,
+        timestamp: n.createdAt ? new Date(n.createdAt).toLocaleString('pt-BR') : '',
+    }));
 
     const filtered = useMemo(() => {
+        const source = allNotifications.length > 0 ? allNotifications : MOCK_NOTIFICATIONS;
         if (active === 'all') {
-            return MOCK_NOTIFICATIONS;
+            return source;
         }
-        return MOCK_NOTIFICATIONS.filter((n) => n.category === active);
-    }, [active]);
+        return source.filter((n) => n.category === active);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [active, notifications]);
+
+    if (isLoading) {
+        return (
+            <div style={styles.container}>
+                <p>Carregando notificacoes...</p>
+            </div>
+        );
+    }
 
     return (
         <div style={styles.container}>

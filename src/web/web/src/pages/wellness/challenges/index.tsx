@@ -5,101 +5,36 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+import { useWellness } from '@/hooks/useWellness';
 
 type ChallengeStatus = 'Active' | 'Upcoming' | 'Completed';
 
-interface Challenge {
-    id: string;
-    title: string;
-    category: string;
-    status: ChallengeStatus;
-    participants: number;
-    daysLeft: number;
-    progress: number;
-    reward: string;
-}
-
 const STATUS_TABS: ChallengeStatus[] = ['Active', 'Upcoming', 'Completed'];
-
-const CHALLENGES: Challenge[] = [
-    {
-        id: '1',
-        title: '7-Day Meditation Streak',
-        category: 'Mindfulness',
-        status: 'Active',
-        participants: 234,
-        daysLeft: 4,
-        progress: 43,
-        reward: 'Zen Master Badge',
-    },
-    {
-        id: '2',
-        title: '10K Steps Daily',
-        category: 'Fitness',
-        status: 'Active',
-        participants: 567,
-        daysLeft: 12,
-        progress: 60,
-        reward: 'Step Champion Badge',
-    },
-    {
-        id: '3',
-        title: 'Hydration Hero',
-        category: 'Nutrition',
-        status: 'Active',
-        participants: 189,
-        daysLeft: 8,
-        progress: 75,
-        reward: 'Hydration Pro Badge',
-    },
-    {
-        id: '4',
-        title: '30-Day Yoga Journey',
-        category: 'Fitness',
-        status: 'Upcoming',
-        participants: 412,
-        daysLeft: 30,
-        progress: 0,
-        reward: 'Yoga Warrior Badge',
-    },
-    {
-        id: '5',
-        title: 'Mindful Eating Week',
-        category: 'Nutrition',
-        status: 'Upcoming',
-        participants: 156,
-        daysLeft: 15,
-        progress: 0,
-        reward: 'Mindful Eater Badge',
-    },
-    {
-        id: '6',
-        title: 'Sleep Better Challenge',
-        category: 'Sleep',
-        status: 'Completed',
-        participants: 890,
-        daysLeft: 0,
-        progress: 100,
-        reward: 'Sleep Master Badge',
-    },
-    {
-        id: '7',
-        title: '5K Running Goal',
-        category: 'Fitness',
-        status: 'Completed',
-        participants: 345,
-        daysLeft: 0,
-        progress: 100,
-        reward: 'Runner Badge',
-    },
-];
+const PLACEHOLDER_USER_ID = 'me';
 
 const ChallengesPage: React.FC = () => {
     const router = useRouter();
     const [activeTab, setActiveTab] = useState<ChallengeStatus>('Active');
+    const { challenges, loadChallenges } = useWellness();
 
-    const filtered = CHALLENGES.filter((c) => c.status === activeTab);
+    useEffect(() => {
+        void loadChallenges(PLACEHOLDER_USER_ID);
+    }, [loadChallenges]);
+
+    const now = new Date();
+    const filtered = challenges.filter((c) => {
+        const endDate = new Date(c.endDate);
+        const startDate = new Date(c.startDate);
+        if (activeTab === 'Completed') {
+            return c.progress >= 100 || endDate < now;
+        }
+        if (activeTab === 'Upcoming') {
+            return startDate > now;
+        }
+        return startDate <= now && endDate >= now && c.progress < 100;
+    });
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
@@ -165,7 +100,7 @@ const ChallengesPage: React.FC = () => {
                             style={{ cursor: 'pointer' }}
                             role="link"
                             tabIndex={0}
-                            aria-label={challenge.title}
+                            aria-label={challenge.name}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
                                     void router.push(`/wellness/challenges/${challenge.id}`);
@@ -176,20 +111,20 @@ const ChallengesPage: React.FC = () => {
                                 <Box display="flex" justifyContent="space-between" alignItems="flex-start">
                                     <Box style={{ flex: 1 }}>
                                         <Text fontWeight="semiBold" fontSize="md">
-                                            {challenge.title}
+                                            {challenge.name}
                                         </Text>
                                         <Box display="flex" style={{ gap: spacing.sm, marginTop: spacing['3xs'] }}>
                                             <Text fontSize="xs" color={colors.journeys.health.primary}>
-                                                {challenge.category}
+                                                {challenge.type}
                                             </Text>
                                             <Text fontSize="xs" color={colors.gray[40]}>
                                                 {challenge.participants} participants
                                             </Text>
                                         </Box>
                                     </Box>
-                                    {challenge.daysLeft > 0 && (
+                                    {challenge.duration > 0 && (
                                         <Text fontSize="xs" fontWeight="semiBold" color={colors.semantic.warning}>
-                                            {challenge.daysLeft} days left
+                                            {challenge.duration} days
                                         </Text>
                                     )}
                                 </Box>
@@ -232,7 +167,7 @@ const ChallengesPage: React.FC = () => {
                                 )}
                                 <Box display="flex" style={{ marginTop: spacing.xs }}>
                                     <Text fontSize="xs" color={colors.gray[40]}>
-                                        Reward: {challenge.reward}
+                                        {challenge.participants} participants
                                     </Text>
                                 </Box>
                             </Card>

@@ -7,12 +7,6 @@ import { useRouter } from 'next/router'; // next/router 13.0+
 import React from 'react';
 
 import {
-    useAuth,
-    useHealthMetrics,
-    useAppointments,
-    useClaims,
-    useGamification,
-    useJourney,
     MainLayout,
     MetricsWidget,
     AppointmentsWidget,
@@ -20,6 +14,7 @@ import {
     RecentActivityWidget,
     AchievementsWidget,
 } from '@/components';
+import { useAuth, useHealthMetrics, useAppointments, useClaims, useGamification, useJourney } from '@/hooks';
 
 /**
  * Journey configuration for the three core journeys displayed on the dashboard.

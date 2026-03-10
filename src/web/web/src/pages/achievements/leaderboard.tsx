@@ -8,6 +8,9 @@ import { spacing } from 'design-system/tokens/spacing';
 import Link from 'next/link';
 import React, { useState } from 'react';
 
+import { useAuth } from '@/hooks/useAuth';
+import { useGamification } from '@/hooks/useGamification';
+
 type Timeframe = 'weekly' | 'monthly' | 'allTime';
 type JourneyFilter = 'all' | 'health' | 'care' | 'plan';
 
@@ -42,8 +45,13 @@ const JOURNEY_LABELS: Record<JourneyFilter, string> = {
  * Uses the DS Leaderboard component for rendering the ranked list.
  */
 const LeaderboardPage: React.FC = () => {
+    const { userId } = useAuth();
+    const { gameProfile } = useGamification(userId || 'user-123');
     const [timeframe, setTimeframe] = useState<Timeframe>('weekly');
     const [journeyFilter, setJourneyFilter] = useState<JourneyFilter>('all');
+
+    const currentUserXp = gameProfile?.xp ?? 0;
+    const _currentUserLevel = gameProfile?.level ?? 1;
 
     return (
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: spacing.xl }}>
@@ -111,9 +119,9 @@ const LeaderboardPage: React.FC = () => {
                     leaderboardData={MOCK_USERS.map((u, i) => ({
                         userId: u.id,
                         username: u.name,
-                        score: u.xp,
+                        score: u.id === (userId || 'user-123') ? currentUserXp || u.xp : u.xp,
                         rank: i + 1,
-                        isCurrentUser: u.id === 'user-123',
+                        isCurrentUser: u.id === (userId || 'user-123'),
                     }))}
                     journey={journeyFilter === 'all' ? 'health' : journeyFilter}
                 />

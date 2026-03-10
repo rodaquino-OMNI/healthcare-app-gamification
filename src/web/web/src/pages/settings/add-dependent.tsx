@@ -3,7 +3,7 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
-import { addDependent } from '../../api/settings';
+import { useSettings } from '@/hooks/useSettings';
 
 /**
  * Add dependent form page.
@@ -11,6 +11,7 @@ import { addDependent } from '../../api/settings';
  */
 const AddDependentPage: NextPage = () => {
     const router = useRouter();
+    const { addDependent } = useSettings();
     const [name, setName] = useState('');
     const [cpf, setCpf] = useState('');
     const [dob, setDob] = useState('');

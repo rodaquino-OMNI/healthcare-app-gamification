@@ -3,6 +3,8 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useSettings } from '@/hooks/useSettings';
+
 const { plan } = colors.journeys;
 
 /**
@@ -11,6 +13,7 @@ const { plan } = colors.journeys;
  */
 const HealthPlanPage: NextPage = () => {
     const router = useRouter();
+    const { isLoading, error } = useSettings();
 
     const planData = {
         name: 'AUSTA Saude Premium',
@@ -34,6 +37,28 @@ const HealthPlanPage: NextPage = () => {
         <div style={{ padding: spacing.xl, maxWidth: '600px', margin: '0 auto' }}>
             <h1 style={titleStyle}>Meu Plano de Saude</h1>
             <p style={subtitleStyle}>Informacoes do seu plano e cobertura.</p>
+            {isLoading && (
+                <p
+                    style={{
+                        fontSize: typography.fontSize['text-sm'],
+                        color: colors.gray[40],
+                        marginBottom: spacing.md,
+                    }}
+                >
+                    Carregando...
+                </p>
+            )}
+            {error && (
+                <p
+                    style={{
+                        fontSize: typography.fontSize['text-sm'],
+                        color: colors.semantic.error,
+                        marginBottom: spacing.md,
+                    }}
+                >
+                    {error}
+                </p>
+            )}
 
             {/* Plan card */}
             <div style={{ ...cardStyle, borderLeft: `4px solid ${plan.primary}` }}>

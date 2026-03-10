@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { deleteAccount } from '@/api/auth';
+import { useAuth } from '@/hooks/useAuth';
+import { useSettings } from '@/hooks/useSettings';
 
 /**
  * Account deletion page.
@@ -11,6 +13,8 @@ import { deleteAccount } from '@/api/auth';
  */
 const DeleteAccountPage: NextPage = () => {
     const router = useRouter();
+    const { isAuthenticated: _isAuthenticated } = useAuth();
+    const { isLoading: _settingsLoading } = useSettings();
     const [confirmed, setConfirmed] = useState(false);
     const [password, setPassword] = useState('');
     const [reason, setReason] = useState('');

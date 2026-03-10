@@ -5,50 +5,24 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+import { useWellness } from '@/hooks/useWellness';
 
 type TimePeriod = 'week' | 'month';
 
-interface MetricCard {
-    label: string;
-    value: string;
-    trend: string;
-    trendUp: boolean;
-}
-
-const WEEKLY_METRICS: MetricCard[] = [
-    { label: 'Mood Trend', value: '3.8 / 5', trend: '+0.3 from last week', trendUp: true },
-    { label: 'Activity Level', value: '72%', trend: '+5% from last week', trendUp: true },
-    { label: 'Sleep Quality', value: '7.2h avg', trend: '-0.3h from last week', trendUp: false },
-    { label: 'Mindfulness', value: '45 min', trend: '+10 min from last week', trendUp: true },
-];
-
-const MONTHLY_METRICS: MetricCard[] = [
-    { label: 'Mood Trend', value: '3.6 / 5', trend: '+0.2 from last month', trendUp: true },
-    { label: 'Activity Level', value: '68%', trend: '+8% from last month', trendUp: true },
-    { label: 'Sleep Quality', value: '7.0h avg', trend: '+0.2h from last month', trendUp: true },
-    { label: 'Mindfulness', value: '180 min', trend: '+30 min from last month', trendUp: true },
-];
-
-interface TipItem {
-    id: string;
-    title: string;
-    category: string;
-    readTime: string;
-}
-
-const WELLNESS_TIPS: TipItem[] = [
-    { id: '1', title: 'The Power of Deep Breathing', category: 'Stress Management', readTime: '3 min' },
-    { id: '2', title: 'Mindful Meditation for Beginners', category: 'Mindfulness', readTime: '5 min' },
-    { id: '3', title: 'Morning Routines for Wellness', category: 'Daily Habits', readTime: '4 min' },
-    { id: '4', title: 'Sleep Hygiene Essentials', category: 'Sleep', readTime: '4 min' },
-];
+const PLACEHOLDER_USER_ID = 'me';
 
 const InsightsPage: React.FC = () => {
     const router = useRouter();
     const [period, setPeriod] = useState<TimePeriod>('week');
+    const { insights, loadInsights } = useWellness();
 
-    const metrics = period === 'week' ? WEEKLY_METRICS : MONTHLY_METRICS;
+    useEffect(() => {
+        void loadInsights(PLACEHOLDER_USER_ID);
+    }, [loadInsights]);
+
+    const metrics = insights.slice(0, 4);
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
@@ -107,10 +81,10 @@ const InsightsPage: React.FC = () => {
                     marginBottom: spacing['2xl'],
                 }}
             >
-                {metrics.map((metric) => (
-                    <Card key={metric.label} journey="health" elevation="sm" padding="md">
+                {metrics.map((insight) => (
+                    <Card key={insight.id} journey="health" elevation="sm" padding="md">
                         <Text fontSize="xs" color={colors.gray[50]}>
-                            {metric.label}
+                            {insight.title}
                         </Text>
                         <Text
                             fontSize="xl"
@@ -118,17 +92,24 @@ const InsightsPage: React.FC = () => {
                             color={colors.journeys.health.primary}
                             style={{ marginTop: spacing['3xs'] }}
                         >
-                            {metric.value}
+                            {insight.metric ?? insight.type}
                         </Text>
                         <Text
                             fontSize="xs"
-                            color={metric.trendUp ? colors.journeys.health.primary : colors.semantic.error}
+                            color={
+                                insight.trend === 'improving' ? colors.journeys.health.primary : colors.semantic.error
+                            }
                             style={{ marginTop: spacing['3xs'] }}
                         >
-                            {metric.trend}
+                            {insight.description}
                         </Text>
                     </Card>
                 ))}
+                {metrics.length === 0 && (
+                    <Text fontSize="sm" color={colors.gray[40]}>
+                        No insights available for {period === 'week' ? 'this week' : 'this month'}
+                    </Text>
+                )}
             </div>
 
             <Text
@@ -140,7 +121,7 @@ const InsightsPage: React.FC = () => {
                 Wellness Tips
             </Text>
             <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm, marginBottom: spacing['2xl'] }}>
-                {WELLNESS_TIPS.map((tip) => (
+                {insights.slice(4).map((tip) => (
                     <div
                         key={tip.id}
                         onClick={() => void router.push(`/wellness/tip/${tip.id}`)}
@@ -160,10 +141,7 @@ const InsightsPage: React.FC = () => {
                             </Text>
                             <Box display="flex" style={{ gap: spacing.sm, marginTop: spacing['3xs'] }}>
                                 <Text fontSize="xs" color={colors.journeys.health.primary}>
-                                    {tip.category}
-                                </Text>
-                                <Text fontSize="xs" color={colors.gray[40]}>
-                                    {tip.readTime} read
+                                    {tip.type}
                                 </Text>
                             </Box>
                         </Card>

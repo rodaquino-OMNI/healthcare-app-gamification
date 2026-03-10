@@ -2,11 +2,11 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import { useRouter } from 'next/router';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { WEB_GLOBAL_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
-import { restClient } from '@/api/client';
+import { useSearch } from '@/hooks/useSearch';
 import { MainLayout } from '@/layouts/MainLayout';
 
 const PageContainer = styled.div`
@@ -117,24 +117,14 @@ const EmptyDescription = styled.p`
     margin: 0;
 `;
 
-interface SearchResult {
-    id: string;
-    title: string;
-    description: string;
-    journey: string;
-    deepLink: string;
-}
-
 /**
  * Search results page - displays results from a search query.
  * Mirrors the mobile SearchResults screen.
  */
 export default function SearchResultsPage(): React.ReactElement {
     const router = useRouter();
-    const query = (router.query.q as string) || '';
-    const [results, setResults] = useState<SearchResult[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const urlQuery = (router.query.q as string) || '';
+    const { query, setQuery, results, isSearching: loading, error, search } = useSearch();
 
     const getJourneyColor = (journey: string): string => {
         switch (journey) {
@@ -149,36 +139,14 @@ export default function SearchResultsPage(): React.ReactElement {
         }
     };
 
+    // Sync URL query param into the hook and trigger search when the page loads or URL changes
     useEffect(() => {
-        if (!query) {
+        if (!urlQuery) {
             return;
         }
-
-        const controller = new AbortController();
-        setLoading(true);
-        setError(null);
-
-        restClient
-            .get<{ results: SearchResult[] }>('/search', {
-                params: { q: query },
-                signal: controller.signal,
-            })
-            .then((res) => {
-                setResults(res.data.results ?? []);
-            })
-            .catch((err: unknown) => {
-                if (err instanceof Error && err.name !== 'CanceledError') {
-                    setError('Erro ao buscar resultados. Tente novamente.');
-                } else if (!(err instanceof Error)) {
-                    setError('Erro ao buscar resultados. Tente novamente.');
-                }
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-
-        return () => controller.abort();
-    }, [query]);
+        setQuery(urlQuery);
+        void search(urlQuery);
+    }, [urlQuery]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <MainLayout>
@@ -186,7 +154,7 @@ export default function SearchResultsPage(): React.ReactElement {
                 <BackLink onClick={() => void router.push(WEB_GLOBAL_ROUTES.SEARCH)}>Voltar para busca</BackLink>
 
                 <SearchHeader>
-                    <QueryText>Resultados para &quot;{query}&quot;</QueryText>
+                    <QueryText>Resultados para &quot;{query || urlQuery}&quot;</QueryText>
                     <ResultCount>{loading ? 'Buscando...' : `${results.length} resultados encontrados`}</ResultCount>
                 </SearchHeader>
 

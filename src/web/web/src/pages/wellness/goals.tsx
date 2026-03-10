@@ -5,74 +5,18 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-interface Goal {
-    id: string;
-    title: string;
-    category: 'Fitness' | 'Nutrition' | 'Sleep' | 'Mindfulness';
-    percent: number;
-    target: string;
-    current: string;
-}
+import { useWellness } from '@/hooks/useWellness';
 
 const CATEGORY_COLORS: Record<string, string> = {
-    Fitness: colors.journeys.health.primary,
-    Nutrition: colors.semantic.warning,
-    Sleep: colors.journeys.health.secondary,
-    Mindfulness: colors.gray[50],
+    fitness: colors.journeys.health.primary,
+    nutrition: colors.semantic.warning,
+    sleep: colors.journeys.health.secondary,
+    mindfulness: colors.gray[50],
 };
 
-const GOALS: Goal[] = [
-    {
-        id: '1',
-        title: 'Walk 10,000 steps daily',
-        category: 'Fitness',
-        percent: 72,
-        target: '10,000 steps',
-        current: '7,200 steps',
-    },
-    {
-        id: '2',
-        title: 'Drink 2L water daily',
-        category: 'Nutrition',
-        percent: 85,
-        target: '2,000 ml',
-        current: '1,700 ml',
-    },
-    {
-        id: '3',
-        title: 'Sleep 8 hours nightly',
-        category: 'Sleep',
-        percent: 90,
-        target: '8 hours',
-        current: '7.2 hours avg',
-    },
-    {
-        id: '4',
-        title: 'Meditate 15 min daily',
-        category: 'Mindfulness',
-        percent: 60,
-        target: '15 min',
-        current: '9 min avg',
-    },
-    {
-        id: '5',
-        title: 'Exercise 3x per week',
-        category: 'Fitness',
-        percent: 100,
-        target: '3 sessions',
-        current: '3 sessions',
-    },
-    {
-        id: '6',
-        title: 'Eat 5 servings of vegetables',
-        category: 'Nutrition',
-        percent: 40,
-        target: '5 servings',
-        current: '2 servings avg',
-    },
-];
+const PLACEHOLDER_USER_ID = 'me';
 
 const CircularProgress: React.FC<{ percent: number; color: string; size?: number }> = ({
     percent,
@@ -104,10 +48,18 @@ const CircularProgress: React.FC<{ percent: number; color: string; size?: number
 const GoalsPage: React.FC = () => {
     const router = useRouter();
     const [filter, setFilter] = useState('All');
-    const categories = ['All', 'Fitness', 'Nutrition', 'Sleep', 'Mindfulness'];
+    const { goals, loadGoals } = useWellness();
+    const categories = ['All', 'fitness', 'nutrition', 'sleep', 'mindfulness'];
 
-    const filtered = filter === 'All' ? GOALS : GOALS.filter((g) => g.category === filter);
-    const overallPercent = Math.round(GOALS.reduce((sum, g) => sum + g.percent, 0) / GOALS.length);
+    useEffect(() => {
+        void loadGoals(PLACEHOLDER_USER_ID);
+    }, [loadGoals]);
+
+    const filtered = filter === 'All' ? goals : goals.filter((g) => g.category === filter);
+    const overallPercent =
+        goals.length > 0
+            ? Math.round(goals.reduce((sum, g) => sum + Math.round((g.current / g.target) * 100), 0) / goals.length)
+            : 0;
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
@@ -183,44 +135,53 @@ const GoalsPage: React.FC = () => {
             </Box>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm, marginBottom: spacing['2xl'] }}>
-                {filtered.map((goal) => (
-                    <Card key={goal.id} journey="health" elevation="sm" padding="md">
-                        <Box display="flex" alignItems="center" style={{ gap: spacing.md }}>
-                            <CircularProgress percent={goal.percent} color={CATEGORY_COLORS[goal.category]} />
-                            <Box style={{ flex: 1 }}>
-                                <Text fontWeight="semiBold" fontSize="md">
-                                    {goal.title}
-                                </Text>
-                                <Box display="flex" style={{ gap: spacing.sm, marginTop: spacing['3xs'] }}>
-                                    <Text fontSize="xs" color={CATEGORY_COLORS[goal.category]}>
-                                        {goal.category}
+                {filtered.map((goal) => {
+                    const percent = Math.round((goal.current / goal.target) * 100);
+                    const categoryColor = CATEGORY_COLORS[goal.category] ?? colors.gray[50];
+                    return (
+                        <Card key={goal.id} journey="health" elevation="sm" padding="md">
+                            <Box display="flex" alignItems="center" style={{ gap: spacing.md }}>
+                                <CircularProgress percent={percent} color={categoryColor} />
+                                <Box style={{ flex: 1 }}>
+                                    <Text fontWeight="semiBold" fontSize="md">
+                                        {goal.title}
                                     </Text>
-                                    <Text fontSize="xs" color={colors.gray[40]}>
-                                        {goal.current} / {goal.target}
-                                    </Text>
-                                </Box>
-                                <div
-                                    style={{
-                                        width: '100%',
-                                        height: 4,
-                                        backgroundColor: colors.gray[10],
-                                        borderRadius: 2,
-                                        marginTop: spacing.xs,
-                                    }}
-                                >
+                                    <Box display="flex" style={{ gap: spacing.sm, marginTop: spacing['3xs'] }}>
+                                        <Text fontSize="xs" color={categoryColor}>
+                                            {goal.category}
+                                        </Text>
+                                        <Text fontSize="xs" color={colors.gray[40]}>
+                                            {goal.current} / {goal.target} {goal.unit}
+                                        </Text>
+                                    </Box>
                                     <div
                                         style={{
-                                            width: `${goal.percent}%`,
+                                            width: '100%',
                                             height: 4,
-                                            backgroundColor: CATEGORY_COLORS[goal.category],
+                                            backgroundColor: colors.gray[10],
                                             borderRadius: 2,
+                                            marginTop: spacing.xs,
                                         }}
-                                    />
-                                </div>
+                                    >
+                                        <div
+                                            style={{
+                                                width: `${Math.min(percent, 100)}%`,
+                                                height: 4,
+                                                backgroundColor: categoryColor,
+                                                borderRadius: 2,
+                                            }}
+                                        />
+                                    </div>
+                                </Box>
                             </Box>
-                        </Box>
-                    </Card>
-                ))}
+                        </Card>
+                    );
+                })}
+                {filtered.length === 0 && (
+                    <Text fontSize="sm" color={colors.gray[40]}>
+                        No goals yet
+                    </Text>
+                )}
             </div>
 
             <Box display="flex" justifyContent="center" style={{ gap: spacing.sm }}>

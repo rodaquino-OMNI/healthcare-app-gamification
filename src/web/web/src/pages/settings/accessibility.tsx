@@ -3,7 +3,7 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
-import { saveAccessibility } from '../../api/settings';
+import { useSettings } from '@/hooks/useSettings';
 
 /**
  * Accessibility settings page.
@@ -11,6 +11,7 @@ import { saveAccessibility } from '../../api/settings';
  */
 const AccessibilityPage: NextPage = () => {
     const router = useRouter();
+    const { saveAccessibility, isLoading: _isLoading, error: hookError } = useSettings();
     const [fontSize, setFontSize] = useState<'normal' | 'large' | 'extra-large'>('normal');
     const [highContrast, setHighContrast] = useState(false);
     const [reducedMotion, setReducedMotion] = useState(false);
@@ -52,7 +53,7 @@ const AccessibilityPage: NextPage = () => {
             await saveAccessibility({ fontSize, highContrast, reducedMotion, screenReader });
             void router.push('/settings');
         } catch (err: unknown) {
-            setError(err instanceof Error ? err.message : 'Erro inesperado.');
+            setError(err instanceof Error ? err.message : (hookError ?? 'Erro inesperado.'));
         } finally {
             setLoading(false);
         }

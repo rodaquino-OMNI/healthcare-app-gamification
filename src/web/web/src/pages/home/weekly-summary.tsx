@@ -4,6 +4,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React from 'react';
 
+import { useAuth } from '@/hooks/useAuth';
+
 type TrendDirection = 'up' | 'down' | 'stable';
 
 interface WeeklyMetric {
@@ -78,6 +80,8 @@ const getTrendArrow = (trend: TrendDirection): string => {
 };
 
 const WeeklySummaryPage: React.FC = () => {
+    const { isAuthenticated: _isAuthenticated } = useAuth();
+
     return (
         <div style={styles.container}>
             <h1 style={styles.title}>Resumo Semanal</h1>

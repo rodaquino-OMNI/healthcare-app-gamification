@@ -6,6 +6,8 @@ import React from 'react';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
+import { useAuth } from '@/hooks/useAuth';
+
 const PageContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -109,6 +111,7 @@ const SecondaryButton = styled.button`
  */
 export default function WelcomePage(): React.ReactElement {
     const router = useRouter();
+    const { isAuthenticated: _isAuthenticated, isLoading: _isLoading } = useAuth();
 
     return (
         <PageContainer>

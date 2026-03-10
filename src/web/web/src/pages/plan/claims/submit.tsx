@@ -10,7 +10,7 @@ import { claimValidationSchema } from 'shared/utils/validation';
 
 import { FileUploader } from '@/components/shared/FileUploader';
 import { useJourneyContext } from '@/context/JourneyContext';
-import { useClaims } from '@/hooks/useClaims';
+import { useClaims } from '@/hooks';
 
 const { plan } = colors.journeys;
 

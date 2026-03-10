@@ -6,6 +6,7 @@ import React, { useState, useMemo } from 'react';
 import { WEB_PROFILE_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
+import { useAuth } from '@/hooks/useAuth';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 const Title = styled.h2`
@@ -184,10 +185,11 @@ function getStrength(rules: PasswordRules): { level: number; label: string; colo
  */
 export default function SetPasswordPage(): React.ReactElement {
     const router = useRouter();
+    const { isLoading: isAuthLoading, error: authError } = useAuth();
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [confirmError, setConfirmError] = useState('');
+    const [confirmError, setConfirmError] = useState(authError ?? '');
 
     const rules = useMemo(() => evaluatePassword(password), [password]);
     const strength = useMemo(() => getStrength(rules), [rules]);
@@ -289,7 +291,7 @@ export default function SetPasswordPage(): React.ReactElement {
 
             <SubmitButton
                 onClick={() => void handleSubmit()}
-                disabled={isSubmitting || !allRulesMet || !confirmPassword}
+                disabled={isSubmitting || isAuthLoading || !allRulesMet || !confirmPassword}
             >
                 {isSubmitting ? 'Salvando...' : 'Definir Senha'}
             </SubmitButton>

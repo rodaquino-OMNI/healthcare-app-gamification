@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useWellness } from '@/hooks/useWellness';
+
 const CATEGORIES = ['All', 'Sleep', 'Focus', 'Calm', 'Energy'];
 
 interface MeditationTrack {
@@ -87,12 +89,25 @@ const chipStyle = (selected: boolean): React.CSSProperties => ({
     whiteSpace: 'nowrap' as const,
 });
 
+const PLACEHOLDER_USER_ID = 'me';
+
 const MeditationPage: React.FC = () => {
     const router = useRouter();
     const [activeCategory, setActiveCategory] = useState('All');
     const [playing, setPlaying] = useState<string | null>(null);
+    const { startMeditation } = useWellness();
 
     const filtered = activeCategory === 'All' ? TRACKS : TRACKS.filter((t) => t.category === activeCategory);
+
+    const handlePlay = (track: MeditationTrack): void => {
+        if (playing === track.id) {
+            setPlaying(null);
+        } else {
+            setPlaying(track.id);
+            const durationMins = parseInt(track.duration, 10) || 10;
+            void startMeditation(PLACEHOLDER_USER_ID, track.category, durationMins);
+        }
+    };
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
@@ -171,7 +186,7 @@ const MeditationPage: React.FC = () => {
                             <Button
                                 variant={playing === track.id ? 'secondary' : 'primary'}
                                 journey="health"
-                                onPress={() => setPlaying(playing === track.id ? null : track.id)}
+                                onPress={() => handlePlay(track)}
                                 accessibilityLabel={playing === track.id ? 'Pause' : 'Play'}
                             >
                                 {playing === track.id ? 'Pause' : 'Play'}

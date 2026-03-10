@@ -3,7 +3,9 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+import { useWellness } from '@/hooks/useWellness';
 
 interface QuickReply {
     id: string;
@@ -13,7 +15,7 @@ interface QuickReply {
 
 const CATEGORIES = ['All', 'Mood', 'Health', 'Activity', 'Nutrition'];
 
-const QUICK_REPLIES: QuickReply[] = [
+const PLACEHOLDER_QUICK_REPLIES: QuickReply[] = [
     { id: '1', text: 'I feel anxious today', category: 'Mood' },
     { id: '2', text: 'I slept poorly last night', category: 'Health' },
     { id: '3', text: 'Suggest a workout', category: 'Activity' },
@@ -32,6 +34,9 @@ const QUICK_REPLIES: QuickReply[] = [
     { id: '16', text: 'Anti-inflammatory foods', category: 'Nutrition' },
 ];
 
+const PLACEHOLDER_USER_ID = 'me';
+const PLACEHOLDER_SESSION_ID = 'session-1';
+
 const chipStyle = (selected: boolean): React.CSSProperties => ({
     padding: `${spacing.xs} ${spacing.md}`,
     borderRadius: '20px',
@@ -47,9 +52,18 @@ const chipStyle = (selected: boolean): React.CSSProperties => ({
 const QuickRepliesPage: React.FC = () => {
     const router = useRouter();
     const [activeCategory, setActiveCategory] = useState('All');
+    const { quickReplies, loadQuickReplies } = useWellness();
 
-    const filtered =
-        activeCategory === 'All' ? QUICK_REPLIES : QUICK_REPLIES.filter((r) => r.category === activeCategory);
+    useEffect(() => {
+        void loadQuickReplies(PLACEHOLDER_USER_ID, PLACEHOLDER_SESSION_ID);
+    }, [loadQuickReplies]);
+
+    const allReplies: QuickReply[] =
+        quickReplies.length > 0
+            ? quickReplies.map((text, i) => ({ id: String(i + 1), text, category: 'Mood' }))
+            : PLACEHOLDER_QUICK_REPLIES;
+
+    const filtered = activeCategory === 'All' ? allReplies : allReplies.filter((r) => r.category === activeCategory);
 
     const handleSelect = (reply: QuickReply): void => {
         void router.push({ pathname: '/wellness/chat', query: { message: reply.text } });

@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { WEB_PROFILE_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
+import { useProfile } from '@/hooks/useProfile';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 const Title = styled.h2`
@@ -175,6 +176,7 @@ interface AddressFormData {
  */
 export default function ProfileAddressPage(): React.ReactElement {
     const router = useRouter();
+    const { profile: _profile } = useProfile();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoadingCep, setIsLoadingCep] = useState(false);
     const [form, setForm] = useState<AddressFormData>({

@@ -4,7 +4,11 @@ import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React from 'react';
 
+import { useNotifications } from '@/hooks/useNotifications';
+
 const NotificationEmptyPage: React.FC = () => {
+    const { isLoading: _isLoading } = useNotifications();
+
     return (
         <div style={styles.container}>
             <div style={styles.center}>

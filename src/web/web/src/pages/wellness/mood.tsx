@@ -5,7 +5,9 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+import { useWellness } from '@/hooks/useWellness';
 
 const MOOD_SCALE = [
     { value: 1, label: 'Very Bad', color: colors.semantic.error },
@@ -15,35 +17,51 @@ const MOOD_SCALE = [
     { value: 5, label: 'Very Good', color: colors.journeys.health.primary },
 ];
 
-interface MoodEntry {
-    id: string;
-    date: string;
-    value: number;
-    note: string;
-}
+const MOOD_VALUE_MAP: Record<number, 'great' | 'good' | 'okay' | 'bad' | 'terrible'> = {
+    5: 'great',
+    4: 'good',
+    3: 'okay',
+    2: 'bad',
+    1: 'terrible',
+};
 
-const MOOD_HISTORY: MoodEntry[] = [
-    { id: '1', date: 'Today, 9:00 AM', value: 4, note: 'Feeling productive' },
-    { id: '2', date: 'Yesterday, 8:30 PM', value: 3, note: '' },
-    { id: '3', date: 'Yesterday, 12:00 PM', value: 2, note: 'Work stress' },
-    { id: '4', date: 'Feb 21, 7:00 AM', value: 5, note: 'Great morning run' },
-    { id: '5', date: 'Feb 20, 9:00 PM', value: 3, note: '' },
-    { id: '6', date: 'Feb 20, 1:00 PM', value: 4, note: 'Good lunch break' },
-];
+const MOOD_LABEL_MAP: Record<string, number> = {
+    great: 5,
+    good: 4,
+    okay: 3,
+    bad: 2,
+    terrible: 1,
+};
 
-const WEEKLY_AVERAGE = 3.6;
-const ENTRIES_THIS_WEEK = 12;
+const PLACEHOLDER_USER_ID = 'me';
 
 const MoodCheckInPage: React.FC = () => {
     const router = useRouter();
     const [selectedMood, setSelectedMood] = useState<number | null>(null);
     const [note, setNote] = useState('');
+    const { moodPrompt, loadMoodPrompt, submitMood } = useWellness();
+
+    useEffect(() => {
+        void loadMoodPrompt(PLACEHOLDER_USER_ID);
+    }, [loadMoodPrompt]);
+
+    const previousMoodValue = moodPrompt?.previousMood ? (MOOD_LABEL_MAP[moodPrompt.previousMood.mood] ?? null) : null;
+
+    const moodHistory = moodPrompt?.previousMood ? [moodPrompt.previousMood] : [];
+
+    const weeklyAverage = previousMoodValue ?? 0;
+    const entriesThisWeek = moodHistory.length;
 
     const handleSave = (): void => {
         if (selectedMood === null) {
             return;
         }
-        window.alert(`Mood logged: ${MOOD_SCALE[selectedMood - 1].label}`);
+        void submitMood(PLACEHOLDER_USER_ID, {
+            mood: MOOD_VALUE_MAP[selectedMood] ?? 'okay',
+            energy: selectedMood,
+            stress: 6 - selectedMood,
+            notes: note || undefined,
+        });
         setSelectedMood(null);
         setNote('');
     };
@@ -145,7 +163,7 @@ const MoodCheckInPage: React.FC = () => {
                         Weekly Average
                     </Text>
                     <Text fontSize="xl" fontWeight="bold" color={colors.journeys.health.primary}>
-                        {WEEKLY_AVERAGE.toFixed(1)}
+                        {weeklyAverage.toFixed(1)}
                     </Text>
                 </Card>
                 <Card journey="health" elevation="sm" padding="md">
@@ -153,7 +171,7 @@ const MoodCheckInPage: React.FC = () => {
                         Entries This Week
                     </Text>
                     <Text fontSize="xl" fontWeight="bold" color={colors.journeys.health.primary}>
-                        {ENTRIES_THIS_WEEK}
+                        {entriesThisWeek}
                     </Text>
                 </Card>
             </div>
@@ -167,22 +185,23 @@ const MoodCheckInPage: React.FC = () => {
                 Mood History
             </Text>
             <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
-                {MOOD_HISTORY.map((entry) => {
-                    const mood = MOOD_SCALE[entry.value - 1];
+                {moodHistory.map((entry) => {
+                    const moodValue = MOOD_LABEL_MAP[entry.mood] ?? 3;
+                    const moodScale = MOOD_SCALE[moodValue - 1];
                     return (
                         <Card key={entry.id} journey="health" elevation="sm" padding="md">
                             <Box display="flex" justifyContent="space-between" alignItems="center">
                                 <Box>
                                     <Text fontSize="sm" fontWeight="medium">
-                                        {entry.date}
+                                        {entry.timestamp}
                                     </Text>
-                                    {entry.note && (
+                                    {entry.notes && (
                                         <Text
                                             fontSize="xs"
                                             color={colors.gray[50]}
                                             style={{ marginTop: spacing['3xs'] }}
                                         >
-                                            {entry.note}
+                                            {entry.notes}
                                         </Text>
                                     )}
                                 </Box>
@@ -192,17 +211,26 @@ const MoodCheckInPage: React.FC = () => {
                                             width: 10,
                                             height: 10,
                                             borderRadius: '50%',
-                                            backgroundColor: mood.color,
+                                            backgroundColor: moodScale?.color ?? colors.gray[40],
                                         }}
                                     />
-                                    <Text fontSize="sm" fontWeight="semiBold" color={mood.color}>
-                                        {mood.label}
+                                    <Text
+                                        fontSize="sm"
+                                        fontWeight="semiBold"
+                                        color={moodScale?.color ?? colors.gray[40]}
+                                    >
+                                        {moodScale?.label ?? entry.mood}
                                     </Text>
                                 </Box>
                             </Box>
                         </Card>
                     );
                 })}
+                {moodHistory.length === 0 && (
+                    <Text fontSize="sm" color={colors.gray[40]}>
+                        No mood history yet
+                    </Text>
+                )}
             </div>
         </div>
     );

@@ -2,6 +2,8 @@ import { colors, typography, spacing, borderRadius } from 'design-system/tokens'
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
 
+import { usePlan } from '@/hooks';
+
 import PlanLayout from '../../layouts/PlanLayout';
 
 const { plan } = colors.journeys;
@@ -39,6 +41,8 @@ const CostSimulatorPage: NextPage = () => {
     const [customAmount, setCustomAmount] = useState('');
     const [result, setResult] = useState<SimulationResult | null>(null);
 
+    const { simulateCost } = usePlan();
+
     const handleSimulate = (): void => {
         const procedure = PROCEDURE_OPTIONS.find((p) => p.value === procedureType);
         const provider = PROVIDER_OPTIONS.find((p) => p.value === providerType);
@@ -55,6 +59,27 @@ const CostSimulatorPage: NextPage = () => {
         const planCoverage = baseCost * (coveragePercent / 100);
         const outOfPocket = baseCost - planCoverage;
 
+        // Call API for server-side cost estimate; update result with API value when available
+        void simulateCost(procedureType)
+            .then(({ estimatedCost }) => {
+                setResult({
+                    baseCost,
+                    coveragePercent,
+                    planCoverage,
+                    outOfPocket: estimatedCost,
+                });
+            })
+            .catch(() => {
+                // Fall back to local calculation if API call fails
+                setResult({
+                    baseCost,
+                    coveragePercent,
+                    planCoverage,
+                    outOfPocket,
+                });
+            });
+
+        // Set preliminary result immediately for responsive UX
         setResult({
             baseCost,
             coveragePercent,

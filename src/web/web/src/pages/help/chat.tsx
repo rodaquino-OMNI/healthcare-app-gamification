@@ -3,6 +3,8 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useAuth } from '@/hooks/useAuth';
+
 interface ChatMessage {
     id: string;
     sender: 'user' | 'agent';
@@ -25,6 +27,7 @@ const INITIAL_MESSAGES: ChatMessage[] = [
  */
 const ChatPage: NextPage = () => {
     const router = useRouter();
+    const { isAuthenticated: _isAuthenticated } = useAuth();
     const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
     const [input, setInput] = useState('');
 

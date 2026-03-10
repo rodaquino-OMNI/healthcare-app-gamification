@@ -1,12 +1,12 @@
 import { Button } from 'design-system/components/Button/Button';
 import { Input } from 'design-system/components/Input/Input';
 import { useRouter } from 'next/router'; // next/router v13.0+
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
-import { AuthContext } from '@/context/AuthContext';
 import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
 
 /**
  * Renders the user profile settings page.
@@ -19,29 +19,22 @@ const Settings: React.FC = () => {
     // LD1: Uses the useAuth hook to get the logout function.
     const { logout } = useAuth();
 
-    // LD1: Uses the AuthContext to access the current user's information.
-    const { session } = useContext(AuthContext);
+    // LD1: Uses the useProfile hook to load real profile data.
+    const { profile, isLoading: loading } = useProfile();
 
-    // LD1: Defines state variables for managing form inputs and loading states.
+    // LD1: Defines state variables for managing form inputs.
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
-    const [loading, setLoading] = useState(false);
 
-    // LD1: Uses useEffect to fetch the user profile data when the component mounts.
+    // LD1: Populates the form fields when profile data is loaded.
     useEffect(() => {
-        // Simulate fetching user profile data
-        if (session?.accessToken) {
-            setLoading(true);
-            // Replace this with actual API call to fetch user profile
-            setTimeout(() => {
-                setName('Maria Silva');
-                setEmail('maria@example.com');
-                setPhone('(11) 99999-9999');
-                setLoading(false);
-            }, 500);
+        if (profile) {
+            setName((profile.name as string) || '');
+            setEmail((profile.email as string) || '');
+            setPhone((profile.phone as string) || '');
         }
-    }, [session]);
+    }, [profile]);
 
     // LD1: Renders a JourneyHeader with the title 'Configurações'.
     return (

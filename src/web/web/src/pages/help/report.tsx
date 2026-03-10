@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { restClient } from '@/api/client';
+import { useAuth } from '@/hooks/useAuth';
 
 /**
  * Report problem form page.
@@ -11,6 +12,7 @@ import { restClient } from '@/api/client';
  */
 const ReportPage: NextPage = () => {
     const router = useRouter();
+    const { isAuthenticated: _isAuthenticated } = useAuth();
     const [category, setCategory] = useState('');
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');

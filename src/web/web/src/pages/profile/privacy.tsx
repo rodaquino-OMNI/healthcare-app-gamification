@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import { restClient } from '@/api/client';
+import { useProfile } from '@/hooks/useProfile';
 import { MainLayout } from '@/layouts/MainLayout';
 
 const PageContainer = styled.div`
@@ -245,6 +246,7 @@ interface PrivacySetting {
  * Mirrors the mobile SettingsPrivacy screen.
  */
 export default function PrivacySettingsPage(): React.ReactElement {
+    const { profile: _profile } = useProfile();
     const [_loading, setLoading] = useState(false);
     const [_error, setError] = useState<string | null>(null);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);

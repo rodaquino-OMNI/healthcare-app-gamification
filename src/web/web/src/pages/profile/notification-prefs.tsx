@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 
+import { useProfile } from '@/hooks/useProfile';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 const ContentContainer = styled.div`
@@ -184,6 +185,7 @@ const PREFS: PrefItem[] = [
  */
 export default function NotificationPrefsPage(): React.ReactElement {
     const router = useRouter();
+    const { profile: _profile } = useProfile();
 
     const [prefs, setPrefs] = useState<Record<string, boolean>>(() => {
         const initial: Record<string, boolean> = {};

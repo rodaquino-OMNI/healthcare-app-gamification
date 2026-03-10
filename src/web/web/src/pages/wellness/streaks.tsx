@@ -5,34 +5,22 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect } from 'react';
 
-const CURRENT_STREAK = 12;
-const BEST_STREAK = 28;
+import { useWellness } from '@/hooks/useWellness';
 
 interface Milestone {
     label: string;
     days: number;
-    earned: boolean;
 }
 
 const MILESTONES: Milestone[] = [
-    { label: '7 Day Streak', days: 7, earned: true },
-    { label: '30 Day Streak', days: 30, earned: false },
-    { label: '90 Day Streak', days: 90, earned: false },
+    { label: '7 Day Streak', days: 7 },
+    { label: '30 Day Streak', days: 30 },
+    { label: '90 Day Streak', days: 90 },
 ];
 
-interface Reward {
-    id: string;
-    title: string;
-    earnedDate: string;
-}
-
-const REWARDS: Reward[] = [
-    { id: '1', title: 'First Week Champion', earnedDate: 'Feb 18, 2026' },
-    { id: '2', title: 'Consistent Tracker', earnedDate: 'Feb 15, 2026' },
-    { id: '3', title: 'Early Bird', earnedDate: 'Feb 12, 2026' },
-];
+const PLACEHOLDER_USER_ID = 'me';
 
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -52,7 +40,16 @@ const generateCalendarHeatmap = (): { day: number; active: boolean }[][] => {
 
 const StreaksPage: React.FC = () => {
     const router = useRouter();
+    const { streaks, loadStreaks } = useWellness();
     const calendarWeeks = generateCalendarHeatmap();
+
+    useEffect(() => {
+        void loadStreaks(PLACEHOLDER_USER_ID);
+    }, [loadStreaks]);
+
+    const primaryStreak = streaks[0];
+    const currentStreak = primaryStreak?.currentCount ?? 0;
+    const bestStreak = primaryStreak?.longestCount ?? 0;
 
     const handleShare = (): void => {
         window.alert('Share feature coming soon.');
@@ -94,7 +91,7 @@ const StreaksPage: React.FC = () => {
                         Current Streak
                     </Text>
                     <Text fontSize="2xl" fontWeight="bold" color={colors.journeys.health.primary}>
-                        {CURRENT_STREAK} days
+                        {currentStreak} days
                     </Text>
                 </Card>
                 <Card journey="health" elevation="sm" padding="md">
@@ -102,7 +99,7 @@ const StreaksPage: React.FC = () => {
                         Best Streak
                     </Text>
                     <Text fontSize="2xl" fontWeight="bold" color={colors.journeys.health.secondary}>
-                        {BEST_STREAK} days
+                        {bestStreak} days
                     </Text>
                 </Card>
             </div>
@@ -116,47 +113,50 @@ const StreaksPage: React.FC = () => {
                 Milestones
             </Text>
             <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm, marginBottom: spacing.xl }}>
-                {MILESTONES.map((milestone) => (
-                    <Card key={milestone.label} journey="health" elevation="sm" padding="md">
-                        <Box display="flex" justifyContent="space-between" alignItems="center">
-                            <Box>
-                                <Text fontWeight="semiBold" fontSize="md">
-                                    {milestone.label}
-                                </Text>
-                                <Text fontSize="xs" color={colors.gray[40]}>
-                                    {milestone.days} consecutive days
+                {MILESTONES.map((milestone) => {
+                    const earned = currentStreak >= milestone.days;
+                    return (
+                        <Card key={milestone.label} journey="health" elevation="sm" padding="md">
+                            <Box display="flex" justifyContent="space-between" alignItems="center">
+                                <Box>
+                                    <Text fontWeight="semiBold" fontSize="md">
+                                        {milestone.label}
+                                    </Text>
+                                    <Text fontSize="xs" color={colors.gray[40]}>
+                                        {milestone.days} consecutive days
+                                    </Text>
+                                </Box>
+                                <Text
+                                    fontSize="sm"
+                                    fontWeight="semiBold"
+                                    color={earned ? colors.journeys.health.primary : colors.gray[30]}
+                                >
+                                    {earned ? 'Earned' : `${milestone.days - currentStreak} days away`}
                                 </Text>
                             </Box>
-                            <Text
-                                fontSize="sm"
-                                fontWeight="semiBold"
-                                color={milestone.earned ? colors.journeys.health.primary : colors.gray[30]}
-                            >
-                                {milestone.earned ? 'Earned' : `${milestone.days - CURRENT_STREAK} days away`}
-                            </Text>
-                        </Box>
-                        <div
-                            style={{
-                                width: '100%',
-                                height: 4,
-                                backgroundColor: colors.gray[10],
-                                borderRadius: 2,
-                                marginTop: spacing.xs,
-                            }}
-                        >
                             <div
                                 style={{
-                                    width: `${Math.min((CURRENT_STREAK / milestone.days) * 100, 100)}%`,
+                                    width: '100%',
                                     height: 4,
-                                    backgroundColor: milestone.earned
-                                        ? colors.journeys.health.primary
-                                        : colors.semantic.warning,
+                                    backgroundColor: colors.gray[10],
                                     borderRadius: 2,
+                                    marginTop: spacing.xs,
                                 }}
-                            />
-                        </div>
-                    </Card>
-                ))}
+                            >
+                                <div
+                                    style={{
+                                        width: `${Math.min((currentStreak / milestone.days) * 100, 100)}%`,
+                                        height: 4,
+                                        backgroundColor: earned
+                                            ? colors.journeys.health.primary
+                                            : colors.semantic.warning,
+                                        borderRadius: 2,
+                                    }}
+                                />
+                            </div>
+                        </Card>
+                    );
+                })}
             </div>
 
             <Text
@@ -201,21 +201,26 @@ const StreaksPage: React.FC = () => {
                 color={colors.journeys.health.text}
                 style={{ marginBottom: spacing.sm }}
             >
-                Rewards Earned
+                Streaks Breakdown
             </Text>
             <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm, marginBottom: spacing['2xl'] }}>
-                {REWARDS.map((reward) => (
-                    <Card key={reward.id} journey="health" elevation="sm" padding="md">
+                {streaks.map((streak) => (
+                    <Card key={streak.id} journey="health" elevation="sm" padding="md">
                         <Box display="flex" justifyContent="space-between" alignItems="center">
                             <Text fontWeight="semiBold" fontSize="md">
-                                {reward.title}
+                                {streak.type}
                             </Text>
                             <Text fontSize="xs" color={colors.gray[40]}>
-                                {reward.earnedDate}
+                                {streak.currentCount} days current
                             </Text>
                         </Box>
                     </Card>
                 ))}
+                {streaks.length === 0 && (
+                    <Text fontSize="sm" color={colors.gray[40]}>
+                        No streak data yet
+                    </Text>
+                )}
             </div>
 
             <Box display="flex" justifyContent="center">

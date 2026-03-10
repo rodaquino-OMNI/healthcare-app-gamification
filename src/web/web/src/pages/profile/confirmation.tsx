@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import styled from 'styled-components';
 
+import { useProfile } from '@/hooks/useProfile';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 const SuccessContainer = styled.div`
@@ -141,6 +142,7 @@ const StepIndicator = styled.p`
  */
 export default function ProfileConfirmationPage(): React.ReactElement {
     const router = useRouter();
+    const { profile } = useProfile();
 
     const handleContinue = (): void => {
         router.push('/home');
@@ -154,7 +156,11 @@ export default function ProfileConfirmationPage(): React.ReactElement {
                 </SuccessIcon>
 
                 <Title>Perfil Completo!</Title>
-                <Message>Seu perfil foi configurado com sucesso. Voce esta pronto para comecar a usar o AUSTA.</Message>
+                <Message>
+                    {profile?.name
+                        ? `${profile.name}, seu perfil foi configurado com sucesso. Voce esta pronto para comecar a usar o AUSTA.`
+                        : 'Seu perfil foi configurado com sucesso. Voce esta pronto para comecar a usar o AUSTA.'}
+                </Message>
 
                 <SummaryCard>
                     <SummaryTitle>Resumo do Perfil</SummaryTitle>

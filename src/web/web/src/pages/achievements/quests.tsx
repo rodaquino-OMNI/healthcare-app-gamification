@@ -6,8 +6,11 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import type { Quest } from 'shared/types/gamification.types';
+
+import { useAuth } from '@/hooks/useAuth';
+import { useGamification } from '@/hooks/useGamification';
 
 type QuestFilter = 'all' | 'active' | 'completed';
 type JourneyFilter = 'all' | 'health' | 'care' | 'plan';
@@ -113,10 +116,17 @@ const JOURNEY_LABELS: Record<JourneyFilter, string> = {
  * for status (active/completed) and journey.
  */
 const QuestsPage: React.FC = () => {
+    const { userId } = useAuth();
+    const { gameProfile, loading: _loading } = useGamification(userId || 'user-123');
     const [statusFilter, setStatusFilter] = useState<QuestFilter>('all');
     const [journeyFilter, setJourneyFilter] = useState<JourneyFilter>('all');
 
-    const filteredQuests = MOCK_QUESTS.filter((quest) => {
+    const quests: Quest[] = useMemo(() => {
+        const profileQuests = gameProfile?.quests;
+        return profileQuests && profileQuests.length > 0 ? profileQuests : MOCK_QUESTS;
+    }, [gameProfile]);
+
+    const filteredQuests = quests.filter((quest) => {
         if (statusFilter === 'active' && quest.completed) {
             return false;
         }
@@ -129,8 +139,8 @@ const QuestsPage: React.FC = () => {
         return true;
     });
 
-    const activeCount = MOCK_QUESTS.filter((q) => !q.completed).length;
-    const completedCount = MOCK_QUESTS.filter((q) => q.completed).length;
+    const activeCount = quests.filter((q) => !q.completed).length;
+    const completedCount = quests.filter((q) => q.completed).length;
 
     return (
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: spacing.xl }}>

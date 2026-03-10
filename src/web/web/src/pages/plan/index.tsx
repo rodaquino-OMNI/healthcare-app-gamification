@@ -5,42 +5,11 @@ import { colors, typography, spacing, borderRadius } from 'design-system/tokens'
 import { useRouter } from 'next/router';
 import React from 'react';
 import { WEB_PLAN_ROUTES } from 'shared/constants/routes';
-import { Claim } from 'shared/types/plan.types';
 
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth, useClaims, usePlan } from '@/hooks';
 import PlanLayout from '@/layouts/PlanLayout';
 
 const { plan } = colors.journeys;
-
-const MOCK_RECENT_CLAIMS: Claim[] = [
-    {
-        id: 'c1',
-        planId: 'plan-001',
-        type: 'medical',
-        amount: 250.0,
-        status: 'approved',
-        submittedAt: '2026-02-10',
-        documents: [],
-    },
-    {
-        id: 'c2',
-        planId: 'plan-001',
-        type: 'dental',
-        amount: 180.0,
-        status: 'pending',
-        submittedAt: '2026-02-15',
-        documents: [],
-    },
-    {
-        id: 'c3',
-        planId: 'plan-001',
-        type: 'vision',
-        amount: 420.0,
-        status: 'denied',
-        submittedAt: '2026-01-22',
-        documents: [],
-    },
-];
 
 /**
  * The main dashboard component for the 'My Plan & Benefits' journey.
@@ -48,9 +17,13 @@ const MOCK_RECENT_CLAIMS: Claim[] = [
 const PlanDashboard: React.FC = () => {
     const router = useRouter();
     const { session } = useAuth();
+    const { claims } = useClaims();
+    const { plan: planData, digitalCard } = usePlan();
+
+    const recentClaims = claims.slice(0, 3);
 
     const stats = [
-        { label: 'Total de Solicitacoes', value: '12', color: plan.primary },
+        { label: 'Total de Solicitacoes', value: String(claims.length), color: plan.primary },
         { label: 'Beneficios Ativos', value: '8', color: colors.semantic.success },
         { label: 'Cobertura', value: '85%', color: plan.accent },
     ];
@@ -134,12 +107,12 @@ const PlanDashboard: React.FC = () => {
                     </h2>
                     <InsuranceCard
                         plan={{
-                            id: 'plan-001',
-                            name: 'AUSTA Health PPO',
-                            planNumber: 'AUSTA-2026-001',
-                            type: 'PPO',
-                            validityStart: '2026-01-01',
-                            validityEnd: '2026-12-31',
+                            id: digitalCard?.plan.id ?? planData?.id ?? 'plan-001',
+                            name: digitalCard?.plan.planNumber ?? planData?.planNumber ?? 'AUSTA Health PPO',
+                            planNumber: digitalCard?.plan.planNumber ?? planData?.planNumber ?? 'AUSTA-2026-001',
+                            type: digitalCard?.plan.type ?? planData?.type ?? 'PPO',
+                            validityStart: digitalCard?.plan.validityStart ?? planData?.validityStart ?? '2026-01-01',
+                            validityEnd: digitalCard?.plan.validityEnd ?? planData?.validityEnd ?? '2026-12-31',
                         }}
                         user={{
                             id: session?.accessToken || '',
@@ -188,7 +161,7 @@ const PlanDashboard: React.FC = () => {
                         </a>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
-                        {MOCK_RECENT_CLAIMS.map((claim) => (
+                        {recentClaims.map((claim) => (
                             <ClaimCard
                                 key={claim.id}
                                 claim={claim}
