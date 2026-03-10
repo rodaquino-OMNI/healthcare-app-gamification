@@ -80,7 +80,7 @@
         "prettier": "^3.2.5",
         "react-native": "0.73.0",
         "rollup": "3.30.0",
-        "rollup-plugin-dts": "5.3.1",
+        "rollup-plugin-dts": "6.3.0",
         "rollup-plugin-peer-deps-external": "2.2.4",
         "@rollup/plugin-terser": "^1.0.0",
         "storybook": "^8.4.0",
