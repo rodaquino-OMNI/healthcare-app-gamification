@@ -165,7 +165,7 @@
     "word-wrap": "1.2.5",
     "tough-cookie": "4.1.4",
     "glob-parent": "6.0.2",
-    "loader-utils": "2.0.4",
+    "loader-utils": "3.3.1",
     "qs": "6.15.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
