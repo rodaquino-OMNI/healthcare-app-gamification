@@ -41,7 +41,7 @@
         "compression": "^1.8.1",
         "express": "^5.1.0",
         "graphql": "16.13.1",
-        "graphql-ws": "^5.14.3",
+        "graphql-ws": "^6.0.0",
         "helmet": "^8.0.0",
         "joi": "^17.12.2",
         "jsonwebtoken": "^9.0.3",
