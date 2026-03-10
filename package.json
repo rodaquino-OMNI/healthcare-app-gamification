@@ -76,7 +76,7 @@
     "body-parser": "1.20.4",
     "serialize-javascript": "7.0.4",
     "path-to-regexp": "8.3.0",
-    "immutable": "4.3.8",
+    "immutable": "5.1.4",
     "@nestjs/common": "11.1.16",
     "@nestjs/core": "11.1.16",
     "@nestjs/platform-express": "11.1.16",
