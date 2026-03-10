@@ -161,7 +161,7 @@
     "overrides": {
         "semver": "7.7.4",
         "json5": "2.2.3",
-        "minimatch": "3.1.5",
+        "minimatch": "10.2.4",
         "word-wrap": "1.2.5",
         "tough-cookie": "4.1.4",
         "postcss": "8.5.8",
@@ -261,7 +261,7 @@
         "axios": "^1.12.2",
         "semver": "7.7.4",
         "json5": "2.2.3",
-        "minimatch": "3.1.5",
+        "minimatch": "10.2.4",
         "word-wrap": "1.2.5",
         "tough-cookie": "4.1.4",
         "postcss": "8.5.8",
