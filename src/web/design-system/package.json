@@ -48,7 +48,7 @@
         "@babel/preset-react": "7.22.5",
         "@babel/preset-typescript": "7.22.5",
         "@rollup/plugin-babel": "6.1.0",
-        "@rollup/plugin-commonjs": "25.0.8",
+        "@rollup/plugin-commonjs": "29.0.0",
         "@rollup/plugin-node-resolve": "15.3.1",
         "@rollup/plugin-typescript": "11.1.6",
         "@storybook/addon-a11y": "^8.4.0",
