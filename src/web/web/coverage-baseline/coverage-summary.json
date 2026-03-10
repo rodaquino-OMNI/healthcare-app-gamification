@@ -1,0 +1,2271 @@
+{
+    "total": {
+        "lines": { "total": 7391, "covered": 1823, "skipped": 0, "pct": 24.66 },
+        "statements": { "total": 7693, "covered": 1876, "skipped": 0, "pct": 24.38 },
+        "functions": { "total": 2721, "covered": 455, "skipped": 0, "pct": 16.72 },
+        "branches": { "total": 4247, "covered": 721, "skipped": 0, "pct": 16.97 },
+        "branchesTrue": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/__tests__/pages/plan/submit-claim.test.tsx": {
+        "lines": { "total": 45, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 27, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 56, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/api/auth.ts": {
+        "lines": { "total": 19, "covered": 9, "skipped": 0, "pct": 47.36 },
+        "functions": { "total": 8, "covered": 1, "skipped": 0, "pct": 12.5 },
+        "statements": { "total": 19, "covered": 9, "skipped": 0, "pct": 47.36 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/api/care.ts": {
+        "lines": { "total": 26, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 26, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/api/client.ts": {
+        "lines": { "total": 8, "covered": 5, "skipped": 0, "pct": 62.5 },
+        "functions": { "total": 4, "covered": 1, "skipped": 0, "pct": 25 },
+        "statements": { "total": 8, "covered": 5, "skipped": 0, "pct": 62.5 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/api/gamification.ts": {
+        "lines": { "total": 45, "covered": 39, "skipped": 0, "pct": 86.66 },
+        "functions": { "total": 7, "covered": 7, "skipped": 0, "pct": 100 },
+        "statements": { "total": 45, "covered": 39, "skipped": 0, "pct": 86.66 },
+        "branches": { "total": 2, "covered": 2, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/api/health.ts": {
+        "lines": { "total": 40, "covered": 28, "skipped": 0, "pct": 70 },
+        "functions": { "total": 5, "covered": 5, "skipped": 0, "pct": 100 },
+        "statements": { "total": 40, "covered": 28, "skipped": 0, "pct": 70 },
+        "branches": { "total": 10, "covered": 6, "skipped": 0, "pct": 60 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/api/index.ts": {
+        "lines": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "functions": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "statements": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/api/notifications.ts": {
+        "lines": { "total": 34, "covered": 31, "skipped": 0, "pct": 91.17 },
+        "functions": { "total": 7, "covered": 7, "skipped": 0, "pct": 100 },
+        "statements": { "total": 37, "covered": 33, "skipped": 0, "pct": 89.18 },
+        "branches": { "total": 7, "covered": 6, "skipped": 0, "pct": 85.71 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/api/plan.ts": {
+        "lines": { "total": 29, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 29, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/api/settings.ts": {
+        "lines": { "total": 47, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 47, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 28, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/index.ts": {
+        "lines": { "total": 1, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 1, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/dashboard/AchievementsWidget.tsx": {
+        "lines": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/dashboard/AppointmentsWidget.tsx": {
+        "lines": { "total": 34, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 34, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 18, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/dashboard/ClaimsWidget.tsx": {
+        "lines": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 1, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/dashboard/MetricsWidget.tsx": {
+        "lines": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/dashboard/RecentActivityWidget.tsx": {
+        "lines": { "total": 30, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 31, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/dashboard/index.ts": {
+        "lines": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "functions": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "statements": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/forms/AppointmentForm.tsx": {
+        "lines": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/forms/ClaimForm.tsx": {
+        "lines": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/forms/HealthGoalForm.tsx": {
+        "lines": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/forms/HealthMetricForm.tsx": {
+        "lines": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/forms/ProfileForm.tsx": {
+        "lines": { "total": 37, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 38, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 28, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/modals/AchievementModal.tsx": {
+        "lines": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/modals/ConfirmationModal.tsx": {
+        "lines": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 1, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/modals/FilterModal.tsx": {
+        "lines": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 18, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/navigation/Breadcrumbs.tsx": {
+        "lines": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/navigation/JourneyNav.tsx": {
+        "lines": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/navigation/MobileNav.tsx": {
+        "lines": { "total": 22, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 23, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/navigation/Sidebar.tsx": {
+        "lines": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 1, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/navigation/TopBar.tsx": {
+        "lines": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 1, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/navigation/index.ts": {
+        "lines": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "functions": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "statements": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/shared/EmptyState.tsx": {
+        "lines": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 1, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/shared/ErrorState.tsx": {
+        "lines": { "total": 4, "covered": 4, "skipped": 0, "pct": 100 },
+        "functions": { "total": 1, "covered": 1, "skipped": 0, "pct": 100 },
+        "statements": { "total": 4, "covered": 4, "skipped": 0, "pct": 100 },
+        "branches": { "total": 5, "covered": 4, "skipped": 0, "pct": 80 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/shared/FileUploader.tsx": {
+        "lines": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/shared/GamificationPopup.tsx": {
+        "lines": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/shared/JourneyHeader.tsx": {
+        "lines": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 1, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/shared/LoadingIndicator.tsx": {
+        "lines": { "total": 11, "covered": 7, "skipped": 0, "pct": 63.63 },
+        "functions": { "total": 2, "covered": 2, "skipped": 0, "pct": 100 },
+        "statements": { "total": 11, "covered": 7, "skipped": 0, "pct": 63.63 },
+        "branches": { "total": 33, "covered": 17, "skipped": 0, "pct": 51.51 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/components/shared/index.ts": {
+        "lines": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "functions": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "statements": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/constants/config.ts": {
+        "lines": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "statements": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/constants/index.ts": {
+        "lines": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "functions": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "statements": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/constants/journeys.ts": {
+        "lines": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "statements": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/constants/routes.ts": {
+        "lines": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/context/AuthContext.tsx": {
+        "lines": { "total": 52, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 52, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/context/GamificationContext.tsx": {
+        "lines": { "total": 55, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 59, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 26, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/context/JourneyContext.tsx": {
+        "lines": { "total": 21, "covered": 7, "skipped": 0, "pct": 33.33 },
+        "functions": { "total": 7, "covered": 1, "skipped": 0, "pct": 14.28 },
+        "statements": { "total": 23, "covered": 7, "skipped": 0, "pct": 30.43 },
+        "branches": { "total": 8, "covered": 1, "skipped": 0, "pct": 12.5 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/context/NotificationContext.tsx": {
+        "lines": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/context/ThemeContext.tsx": {
+        "lines": { "total": 29, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 32, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 22, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/context/index.ts": {
+        "lines": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "functions": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "statements": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/hooks/index.ts": {
+        "lines": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "functions": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "statements": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/hooks/useActivity.ts": {
+        "lines": { "total": 28, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 31, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/hooks/useAppointments.ts": {
+        "lines": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 1, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/hooks/useAuth.ts": {
+        "lines": { "total": 63, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 63, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/hooks/useClaims.ts": {
+        "lines": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/hooks/useCoverage.ts": {
+        "lines": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/hooks/useDevices.ts": {
+        "lines": { "total": 22, "covered": 14, "skipped": 0, "pct": 63.63 },
+        "functions": { "total": 6, "covered": 3, "skipped": 0, "pct": 50 },
+        "statements": { "total": 22, "covered": 14, "skipped": 0, "pct": 63.63 },
+        "branches": { "total": 10, "covered": 2, "skipped": 0, "pct": 20 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/hooks/useGamification.ts": {
+        "lines": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/hooks/useHealthMetrics.ts": {
+        "lines": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/hooks/useJourney.ts": {
+        "lines": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/hooks/useMedicalRecords.ts": {
+        "lines": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/hooks/useNotifications.ts": {
+        "lines": { "total": 38, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 40, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/hooks/usePayments.ts": {
+        "lines": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/hooks/useSymptomChecker.ts": {
+        "lines": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/hooks/useTelemedicine.ts": {
+        "lines": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/hooks/useVisits.ts": {
+        "lines": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/i18n/en-US.ts": {
+        "lines": { "total": 1, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "statements": { "total": 1, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/i18n/formatters.ts": {
+        "lines": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/i18n/index.ts": {
+        "lines": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 1, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/i18n/pt-BR.ts": {
+        "lines": { "total": 1, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "statements": { "total": 1, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/layouts/AuthLayout.tsx": {
+        "lines": { "total": 2, "covered": 2, "skipped": 0, "pct": 100 },
+        "functions": { "total": 1, "covered": 1, "skipped": 0, "pct": 100 },
+        "statements": { "total": 2, "covered": 2, "skipped": 0, "pct": 100 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/layouts/CareLayout.tsx": {
+        "lines": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 1, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/layouts/HealthLayout.tsx": {
+        "lines": { "total": 21, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 21, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/layouts/MainLayout.tsx": {
+        "lines": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/layouts/PlanLayout.tsx": {
+        "lines": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 1, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/layouts/index.ts": {
+        "lines": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "functions": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "statements": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/404.tsx": {
+        "lines": { "total": 2, "covered": 2, "skipped": 0, "pct": 100 },
+        "functions": { "total": 1, "covered": 1, "skipped": 0, "pct": 100 },
+        "statements": { "total": 2, "covered": 2, "skipped": 0, "pct": 100 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/500.tsx": {
+        "lines": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/achievements/[id].tsx": {
+        "lines": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 21, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 19, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/achievements/index.tsx": {
+        "lines": { "total": 21, "covered": 19, "skipped": 0, "pct": 90.47 },
+        "functions": { "total": 5, "covered": 5, "skipped": 0, "pct": 100 },
+        "statements": { "total": 22, "covered": 20, "skipped": 0, "pct": 90.9 },
+        "branches": { "total": 26, "covered": 14, "skipped": 0, "pct": 53.84 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/achievements/leaderboard.tsx": {
+        "lines": { "total": 12, "covered": 10, "skipped": 0, "pct": 83.33 },
+        "functions": { "total": 7, "covered": 4, "skipped": 0, "pct": 57.14 },
+        "statements": { "total": 12, "covered": 10, "skipped": 0, "pct": 83.33 },
+        "branches": { "total": 16, "covered": 15, "skipped": 0, "pct": 93.75 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/achievements/quests.tsx": {
+        "lines": { "total": 22, "covered": 17, "skipped": 0, "pct": 77.27 },
+        "functions": { "total": 10, "covered": 7, "skipped": 0, "pct": 70 },
+        "statements": { "total": 24, "covered": 19, "skipped": 0, "pct": 79.16 },
+        "branches": { "total": 33, "covered": 25, "skipped": 0, "pct": 75.75 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/achievements/rewards.tsx": {
+        "lines": { "total": 23, "covered": 18, "skipped": 0, "pct": 78.26 },
+        "functions": { "total": 10, "covered": 7, "skipped": 0, "pct": 70 },
+        "statements": { "total": 24, "covered": 19, "skipped": 0, "pct": 79.16 },
+        "branches": { "total": 29, "covered": 22, "skipped": 0, "pct": 75.86 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/achievements/quests/[id].tsx": {
+        "lines": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 31, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/achievements/rewards/[id].tsx": {
+        "lines": { "total": 22, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 22, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 22, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/auth/email-verify.tsx": {
+        "lines": { "total": 72, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 22, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 77, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 33, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/auth/forgot-password.tsx": {
+        "lines": { "total": 38, "covered": 28, "skipped": 0, "pct": 73.68 },
+        "functions": { "total": 7, "covered": 4, "skipped": 0, "pct": 57.14 },
+        "statements": { "total": 39, "covered": 28, "skipped": 0, "pct": 71.79 },
+        "branches": { "total": 10, "covered": 7, "skipped": 0, "pct": 70 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/auth/goal-selection.tsx": {
+        "lines": { "total": 29, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 31, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/auth/login.tsx": {
+        "lines": { "total": 18, "covered": 10, "skipped": 0, "pct": 55.55 },
+        "functions": { "total": 7, "covered": 3, "skipped": 0, "pct": 42.85 },
+        "statements": { "total": 18, "covered": 10, "skipped": 0, "pct": 55.55 },
+        "branches": { "total": 10, "covered": 5, "skipped": 0, "pct": 50 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/auth/mfa.tsx": {
+        "lines": { "total": 29, "covered": 11, "skipped": 0, "pct": 37.93 },
+        "functions": { "total": 8, "covered": 1, "skipped": 0, "pct": 12.5 },
+        "statements": { "total": 31, "covered": 11, "skipped": 0, "pct": 35.48 },
+        "branches": { "total": 8, "covered": 1, "skipped": 0, "pct": 12.5 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/auth/onboarding-confirmation.tsx": {
+        "lines": { "total": 18, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 18, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/auth/onboarding.tsx": {
+        "lines": { "total": 30, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 32, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/auth/personalization-intro.tsx": {
+        "lines": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/auth/register.tsx": {
+        "lines": { "total": 20, "covered": 12, "skipped": 0, "pct": 60 },
+        "functions": { "total": 8, "covered": 5, "skipped": 0, "pct": 62.5 },
+        "statements": { "total": 20, "covered": 12, "skipped": 0, "pct": 60 },
+        "branches": { "total": 4, "covered": 1, "skipped": 0, "pct": 25 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/auth/set-password.tsx": {
+        "lines": { "total": 59, "covered": 30, "skipped": 0, "pct": 50.84 },
+        "functions": { "total": 17, "covered": 6, "skipped": 0, "pct": 35.29 },
+        "statements": { "total": 62, "covered": 32, "skipped": 0, "pct": 51.61 },
+        "branches": { "total": 41, "covered": 7, "skipped": 0, "pct": 17.07 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/auth/social-auth.tsx": {
+        "lines": { "total": 38, "covered": 22, "skipped": 0, "pct": 57.89 },
+        "functions": { "total": 11, "covered": 3, "skipped": 0, "pct": 27.27 },
+        "statements": { "total": 39, "covered": 23, "skipped": 0, "pct": 58.97 },
+        "branches": { "total": 18, "covered": 10, "skipped": 0, "pct": 55.55 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/auth/welcome.tsx": {
+        "lines": { "total": 12, "covered": 10, "skipped": 0, "pct": 83.33 },
+        "functions": { "total": 3, "covered": 1, "skipped": 0, "pct": 33.33 },
+        "statements": { "total": 12, "covered": 10, "skipped": 0, "pct": 83.33 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/async-chat.tsx": {
+        "lines": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/index.tsx": {
+        "lines": { "total": 2, "covered": 2, "skipped": 0, "pct": 100 },
+        "functions": { "total": 1, "covered": 1, "skipped": 0, "pct": 100 },
+        "statements": { "total": 2, "covered": 2, "skipped": 0, "pct": 100 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/medical-records.tsx": {
+        "lines": { "total": 19, "covered": 15, "skipped": 0, "pct": 78.94 },
+        "functions": { "total": 9, "covered": 4, "skipped": 0, "pct": 44.44 },
+        "statements": { "total": 20, "covered": 15, "skipped": 0, "pct": 75 },
+        "branches": { "total": 9, "covered": 6, "skipped": 0, "pct": 66.66 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/treatment-plans.tsx": {
+        "lines": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/[id].tsx": {
+        "lines": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/appointment-type.tsx": {
+        "lines": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/book.tsx": {
+        "lines": { "total": 3, "covered": 3, "skipped": 0, "pct": 100 },
+        "functions": { "total": 1, "covered": 1, "skipped": 0, "pct": 100 },
+        "statements": { "total": 3, "covered": 3, "skipped": 0, "pct": 100 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/cancel.tsx": {
+        "lines": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/cancelled.tsx": {
+        "lines": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/confirm.tsx": {
+        "lines": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/documents.tsx": {
+        "lines": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/filters.tsx": {
+        "lines": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 25, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 30, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/index.tsx": {
+        "lines": { "total": 42, "covered": 12, "skipped": 0, "pct": 28.57 },
+        "functions": { "total": 10, "covered": 1, "skipped": 0, "pct": 10 },
+        "statements": { "total": 42, "covered": 12, "skipped": 0, "pct": 28.57 },
+        "branches": { "total": 20, "covered": 5, "skipped": 0, "pct": 25 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/insurance.tsx": {
+        "lines": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 25, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/list.tsx": {
+        "lines": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/no-show.tsx": {
+        "lines": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/pre-visit.tsx": {
+        "lines": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 21, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/rate-visit.tsx": {
+        "lines": { "total": 23, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 24, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/reason-for-visit.tsx": {
+        "lines": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 18, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/reschedule.tsx": {
+        "lines": { "total": 22, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 23, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 27, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/reviews.tsx": {
+        "lines": { "total": 22, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 25, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/saved-doctors.tsx": {
+        "lines": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/search.tsx": {
+        "lines": { "total": 21, "covered": 15, "skipped": 0, "pct": 71.42 },
+        "functions": { "total": 10, "covered": 4, "skipped": 0, "pct": 40 },
+        "statements": { "total": 21, "covered": 15, "skipped": 0, "pct": 71.42 },
+        "branches": { "total": 16, "covered": 7, "skipped": 0, "pct": 43.75 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/success.tsx": {
+        "lines": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/waiting-room.tsx": {
+        "lines": { "total": 45, "covered": 22, "skipped": 0, "pct": 48.88 },
+        "functions": { "total": 17, "covered": 5, "skipped": 0, "pct": 29.41 },
+        "statements": { "total": 48, "covered": 23, "skipped": 0, "pct": 47.91 },
+        "branches": { "total": 28, "covered": 11, "skipped": 0, "pct": 39.28 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/doctor/[id].tsx": {
+        "lines": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/appointments/doctor/availability.tsx": {
+        "lines": { "total": 18, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 19, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 46, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/payments/receipt.tsx": {
+        "lines": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/payments/summary.tsx": {
+        "lines": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/accuracy-rating.tsx": {
+        "lines": { "total": 29, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 29, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/analyzing.tsx": {
+        "lines": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/back-body-map.tsx": {
+        "lines": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/body-map.tsx": {
+        "lines": { "total": 13, "covered": 9, "skipped": 0, "pct": 69.23 },
+        "functions": { "total": 7, "covered": 2, "skipped": 0, "pct": 28.57 },
+        "statements": { "total": 14, "covered": 9, "skipped": 0, "pct": 64.28 },
+        "branches": { "total": 14, "covered": 6, "skipped": 0, "pct": 42.85 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/book-appointment.tsx": {
+        "lines": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/comparison.tsx": {
+        "lines": { "total": 25, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 25, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/condition-detail.tsx": {
+        "lines": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/conditions-list.tsx": {
+        "lines": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/detail.tsx": {
+        "lines": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/diary.tsx": {
+        "lines": { "total": 31, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 32, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/emergency-warning.tsx": {
+        "lines": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/er-locator.tsx": {
+        "lines": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/follow-up.tsx": {
+        "lines": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 18, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/head-detail.tsx": {
+        "lines": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/history-detail.tsx": {
+        "lines": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/history.tsx": {
+        "lines": { "total": 26, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 26, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 18, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/medical-history.tsx": {
+        "lines": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 19, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/medication-context.tsx": {
+        "lines": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/photo-upload.tsx": {
+        "lines": { "total": 39, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 42, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/questions.tsx": {
+        "lines": { "total": 29, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 33, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 26, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/recommendation.tsx": {
+        "lines": { "total": 28, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 28, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/result.tsx": {
+        "lines": { "total": 13, "covered": 10, "skipped": 0, "pct": 76.92 },
+        "functions": { "total": 5, "covered": 3, "skipped": 0, "pct": 60 },
+        "statements": { "total": 13, "covered": 10, "skipped": 0, "pct": 76.92 },
+        "branches": { "total": 3, "covered": 2, "skipped": 0, "pct": 66.66 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/save-report.tsx": {
+        "lines": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/self-care.tsx": {
+        "lines": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/severity.tsx": {
+        "lines": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/share-report.tsx": {
+        "lines": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 33, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/symptom-checker/vitals.tsx": {
+        "lines": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/telemedicine/[id].tsx": {
+        "lines": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/telemedicine/chat.tsx": {
+        "lines": { "total": 8, "covered": 7, "skipped": 0, "pct": 87.5 },
+        "functions": { "total": 6, "covered": 3, "skipped": 0, "pct": 50 },
+        "statements": { "total": 8, "covered": 7, "skipped": 0, "pct": 87.5 },
+        "branches": { "total": 8, "covered": 8, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/telemedicine/connecting.tsx": {
+        "lines": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/telemedicine/controls.tsx": {
+        "lines": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/telemedicine/end.tsx": {
+        "lines": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/telemedicine/index.tsx": {
+        "lines": { "total": 4, "covered": 3, "skipped": 0, "pct": 75 },
+        "functions": { "total": 2, "covered": 1, "skipped": 0, "pct": 50 },
+        "statements": { "total": 4, "covered": 3, "skipped": 0, "pct": 75 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/telemedicine/screen-share.tsx": {
+        "lines": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/visits/follow-up.tsx": {
+        "lines": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/visits/lab-orders.tsx": {
+        "lines": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/visits/prescriptions.tsx": {
+        "lines": { "total": 6, "covered": 5, "skipped": 0, "pct": 83.33 },
+        "functions": { "total": 4, "covered": 2, "skipped": 0, "pct": 50 },
+        "statements": { "total": 6, "covered": 5, "skipped": 0, "pct": 83.33 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/visits/referral.tsx": {
+        "lines": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/care/visits/summary.tsx": {
+        "lines": { "total": 10, "covered": 7, "skipped": 0, "pct": 70 },
+        "functions": { "total": 5, "covered": 2, "skipped": 0, "pct": 40 },
+        "statements": { "total": 10, "covered": 7, "skipped": 0, "pct": 70 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/error/force-update.tsx": {
+        "lines": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/error/maintenance.tsx": {
+        "lines": { "total": 3, "covered": 3, "skipped": 0, "pct": 100 },
+        "functions": { "total": 1, "covered": 1, "skipped": 0, "pct": 100 },
+        "statements": { "total": 3, "covered": 3, "skipped": 0, "pct": 100 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/error/no-internet.tsx": {
+        "lines": { "total": 6, "covered": 3, "skipped": 0, "pct": 50 },
+        "functions": { "total": 4, "covered": 1, "skipped": 0, "pct": 25 },
+        "statements": { "total": 6, "covered": 3, "skipped": 0, "pct": 50 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/error/server-error.tsx": {
+        "lines": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/devices.tsx": {
+        "lines": { "total": 4, "covered": 3, "skipped": 0, "pct": 75 },
+        "functions": { "total": 2, "covered": 1, "skipped": 0, "pct": 50 },
+        "statements": { "total": 4, "covered": 3, "skipped": 0, "pct": 75 },
+        "branches": { "total": 16, "covered": 5, "skipped": 0, "pct": 31.25 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/goals.tsx": {
+        "lines": { "total": 8, "covered": 6, "skipped": 0, "pct": 75 },
+        "functions": { "total": 3, "covered": 1, "skipped": 0, "pct": 33.33 },
+        "statements": { "total": 8, "covered": 6, "skipped": 0, "pct": 75 },
+        "branches": { "total": 2, "covered": 1, "skipped": 0, "pct": 50 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/history.tsx": {
+        "lines": { "total": 91, "covered": 34, "skipped": 0, "pct": 37.36 },
+        "functions": { "total": 57, "covered": 4, "skipped": 0, "pct": 7.01 },
+        "statements": { "total": 92, "covered": 34, "skipped": 0, "pct": 36.95 },
+        "branches": { "total": 23, "covered": 10, "skipped": 0, "pct": 43.47 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/index.tsx": {
+        "lines": { "total": 7, "covered": 7, "skipped": 0, "pct": 100 },
+        "functions": { "total": 2, "covered": 2, "skipped": 0, "pct": 100 },
+        "statements": { "total": 7, "covered": 7, "skipped": 0, "pct": 100 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications.tsx": {
+        "lines": { "total": 17, "covered": 13, "skipped": 0, "pct": 76.47 },
+        "functions": { "total": 9, "covered": 5, "skipped": 0, "pct": 55.55 },
+        "statements": { "total": 19, "covered": 15, "skipped": 0, "pct": 78.94 },
+        "branches": { "total": 14, "covered": 8, "skipped": 0, "pct": 57.14 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/activity/[id].tsx": {
+        "lines": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/activity/device-sync.tsx": {
+        "lines": { "total": 19, "covered": 9, "skipped": 0, "pct": 47.36 },
+        "functions": { "total": 8, "covered": 2, "skipped": 0, "pct": 25 },
+        "statements": { "total": 19, "covered": 9, "skipped": 0, "pct": 47.36 },
+        "branches": { "total": 16, "covered": 6, "skipped": 0, "pct": 37.5 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/activity/exercise-detail.tsx": {
+        "lines": { "total": 8, "covered": 6, "skipped": 0, "pct": 75 },
+        "functions": { "total": 4, "covered": 2, "skipped": 0, "pct": 50 },
+        "statements": { "total": 8, "covered": 6, "skipped": 0, "pct": 75 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/activity/exercise-library.tsx": {
+        "lines": { "total": 15, "covered": 10, "skipped": 0, "pct": 66.66 },
+        "functions": { "total": 8, "covered": 3, "skipped": 0, "pct": 37.5 },
+        "statements": { "total": 16, "covered": 10, "skipped": 0, "pct": 62.5 },
+        "branches": { "total": 6, "covered": 3, "skipped": 0, "pct": 50 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/activity/export.tsx": {
+        "lines": { "total": 23, "covered": 15, "skipped": 0, "pct": 65.21 },
+        "functions": { "total": 10, "covered": 3, "skipped": 0, "pct": 30 },
+        "statements": { "total": 23, "covered": 15, "skipped": 0, "pct": 65.21 },
+        "branches": { "total": 6, "covered": 2, "skipped": 0, "pct": 33.33 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/activity/index.tsx": {
+        "lines": { "total": 9, "covered": 7, "skipped": 0, "pct": 77.77 },
+        "functions": { "total": 5, "covered": 3, "skipped": 0, "pct": 60 },
+        "statements": { "total": 9, "covered": 7, "skipped": 0, "pct": 77.77 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/activity/step-goals.tsx": {
+        "lines": { "total": 12, "covered": 9, "skipped": 0, "pct": 75 },
+        "functions": { "total": 4, "covered": 1, "skipped": 0, "pct": 25 },
+        "statements": { "total": 12, "covered": 9, "skipped": 0, "pct": 75 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/activity/trends.tsx": {
+        "lines": { "total": 13, "covered": 10, "skipped": 0, "pct": 76.92 },
+        "functions": { "total": 6, "covered": 3, "skipped": 0, "pct": 50 },
+        "statements": { "total": 13, "covered": 10, "skipped": 0, "pct": 76.92 },
+        "branches": { "total": 4, "covered": 2, "skipped": 0, "pct": 50 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/activity/workout-history.tsx": {
+        "lines": { "total": 14, "covered": 9, "skipped": 0, "pct": 64.28 },
+        "functions": { "total": 8, "covered": 3, "skipped": 0, "pct": 37.5 },
+        "statements": { "total": 15, "covered": 9, "skipped": 0, "pct": 60 },
+        "branches": { "total": 6, "covered": 3, "skipped": 0, "pct": 50 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/activity/workout-log.tsx": {
+        "lines": { "total": 21, "covered": 13, "skipped": 0, "pct": 61.9 },
+        "functions": { "total": 10, "covered": 3, "skipped": 0, "pct": 30 },
+        "statements": { "total": 21, "covered": 13, "skipped": 0, "pct": 61.9 },
+        "branches": { "total": 8, "covered": 4, "skipped": 0, "pct": 50 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/index.tsx": {
+        "lines": { "total": 33, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 37, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-alcohol-tobacco.tsx": {
+        "lines": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-allergies.tsx": {
+        "lines": { "total": 18, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 19, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 30, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-anxiety-scale.tsx": {
+        "lines": { "total": 29, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 33, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 32, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-chronic-pain.tsx": {
+        "lines": { "total": 35, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 36, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 58, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-consent-privacy.tsx": {
+        "lines": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-diet.tsx": {
+        "lines": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 22, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-emergency-contacts.tsx": {
+        "lines": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-exercise.tsx": {
+        "lines": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 21, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 30, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-existing-conditions.tsx": {
+        "lines": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 18, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-family-history.tsx": {
+        "lines": { "total": 23, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 28, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 22, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-health-goals.tsx": {
+        "lines": { "total": 29, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 32, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 40, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-height-weight.tsx": {
+        "lines": { "total": 28, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 28, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 63, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-insurance-info.tsx": {
+        "lines": { "total": 21, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 21, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 42, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-introduction.tsx": {
+        "lines": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-medications.tsx": {
+        "lines": { "total": 27, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 28, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 18, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-mental-screening.tsx": {
+        "lines": { "total": 19, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 22, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-mood-assessment.tsx": {
+        "lines": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 18, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-personal-info.tsx": {
+        "lines": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-reproductive-health.tsx": {
+        "lines": { "total": 19, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 21, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 28, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-results-health-score.tsx": {
+        "lines": { "total": 23, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 23, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-review-summary.tsx": {
+        "lines": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-sleep.tsx": {
+        "lines": { "total": 23, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 26, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 36, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-stress.tsx": {
+        "lines": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 22, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 30, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-submission-confirm.tsx": {
+        "lines": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-vaccination.tsx": {
+        "lines": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 26, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/assessment/steps/step-water-intake.tsx": {
+        "lines": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 24, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/cycle/analysis.tsx": {
+        "lines": { "total": 12, "covered": 11, "skipped": 0, "pct": 91.66 },
+        "functions": { "total": 5, "covered": 4, "skipped": 0, "pct": 80 },
+        "statements": { "total": 12, "covered": 11, "skipped": 0, "pct": 91.66 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/cycle/export.tsx": {
+        "lines": { "total": 25, "covered": 14, "skipped": 0, "pct": 56 },
+        "functions": { "total": 15, "covered": 4, "skipped": 0, "pct": 26.66 },
+        "statements": { "total": 28, "covered": 15, "skipped": 0, "pct": 53.57 },
+        "branches": { "total": 16, "covered": 6, "skipped": 0, "pct": 37.5 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/cycle/fertility.tsx": {
+        "lines": { "total": 33, "covered": 32, "skipped": 0, "pct": 96.96 },
+        "functions": { "total": 10, "covered": 8, "skipped": 0, "pct": 80 },
+        "statements": { "total": 35, "covered": 33, "skipped": 0, "pct": 94.28 },
+        "branches": { "total": 16, "covered": 14, "skipped": 0, "pct": 87.5 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/cycle/history.tsx": {
+        "lines": { "total": 15, "covered": 13, "skipped": 0, "pct": 86.66 },
+        "functions": { "total": 6, "covered": 4, "skipped": 0, "pct": 66.66 },
+        "statements": { "total": 15, "covered": 13, "skipped": 0, "pct": 86.66 },
+        "branches": { "total": 8, "covered": 8, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/cycle/index.tsx": {
+        "lines": { "total": 33, "covered": 32, "skipped": 0, "pct": 96.96 },
+        "functions": { "total": 9, "covered": 7, "skipped": 0, "pct": 77.77 },
+        "statements": { "total": 35, "covered": 33, "skipped": 0, "pct": 94.28 },
+        "branches": { "total": 20, "covered": 19, "skipped": 0, "pct": 95 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/cycle/insights.tsx": {
+        "lines": { "total": 20, "covered": 12, "skipped": 0, "pct": 60 },
+        "functions": { "total": 13, "covered": 6, "skipped": 0, "pct": 46.15 },
+        "statements": { "total": 23, "covered": 14, "skipped": 0, "pct": 60.86 },
+        "branches": { "total": 16, "covered": 11, "skipped": 0, "pct": 68.75 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/cycle/log-flow.tsx": {
+        "lines": { "total": 18, "covered": 10, "skipped": 0, "pct": 55.55 },
+        "functions": { "total": 9, "covered": 3, "skipped": 0, "pct": 33.33 },
+        "statements": { "total": 18, "covered": 10, "skipped": 0, "pct": 55.55 },
+        "branches": { "total": 6, "covered": 2, "skipped": 0, "pct": 33.33 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/cycle/log-period.tsx": {
+        "lines": { "total": 19, "covered": 10, "skipped": 0, "pct": 52.63 },
+        "functions": { "total": 9, "covered": 2, "skipped": 0, "pct": 22.22 },
+        "statements": { "total": 19, "covered": 10, "skipped": 0, "pct": 52.63 },
+        "branches": { "total": 6, "covered": 2, "skipped": 0, "pct": 33.33 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/cycle/log-symptoms.tsx": {
+        "lines": { "total": 28, "covered": 18, "skipped": 0, "pct": 64.28 },
+        "functions": { "total": 16, "covered": 5, "skipped": 0, "pct": 31.25 },
+        "statements": { "total": 31, "covered": 19, "skipped": 0, "pct": 61.29 },
+        "branches": { "total": 10, "covered": 4, "skipped": 0, "pct": 40 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/cycle/partner-sharing.tsx": {
+        "lines": { "total": 19, "covered": 12, "skipped": 0, "pct": 63.15 },
+        "functions": { "total": 11, "covered": 3, "skipped": 0, "pct": 27.27 },
+        "statements": { "total": 22, "covered": 14, "skipped": 0, "pct": 63.63 },
+        "branches": { "total": 10, "covered": 3, "skipped": 0, "pct": 30 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/cycle/pms-predictions.tsx": {
+        "lines": { "total": 10, "covered": 9, "skipped": 0, "pct": 90 },
+        "functions": { "total": 5, "covered": 4, "skipped": 0, "pct": 80 },
+        "statements": { "total": 10, "covered": 9, "skipped": 0, "pct": 90 },
+        "branches": { "total": 10, "covered": 10, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/cycle/reminders.tsx": {
+        "lines": { "total": 18, "covered": 13, "skipped": 0, "pct": 72.22 },
+        "functions": { "total": 11, "covered": 5, "skipped": 0, "pct": 45.45 },
+        "statements": { "total": 21, "covered": 15, "skipped": 0, "pct": 71.42 },
+        "branches": { "total": 10, "covered": 10, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/cycle/settings.tsx": {
+        "lines": { "total": 24, "covered": 15, "skipped": 0, "pct": 62.5 },
+        "functions": { "total": 13, "covered": 4, "skipped": 0, "pct": 30.76 },
+        "statements": { "total": 27, "covered": 17, "skipped": 0, "pct": 62.96 },
+        "branches": { "total": 6, "covered": 4, "skipped": 0, "pct": 66.66 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/cycle/today.tsx": {
+        "lines": { "total": 11, "covered": 8, "skipped": 0, "pct": 72.72 },
+        "functions": { "total": 5, "covered": 2, "skipped": 0, "pct": 40 },
+        "statements": { "total": 11, "covered": 8, "skipped": 0, "pct": 72.72 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/cycle/article/[id].tsx": {
+        "lines": { "total": 18, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 18, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/[id].tsx": {
+        "lines": { "total": 13, "covered": 9, "skipped": 0, "pct": 69.23 },
+        "functions": { "total": 6, "covered": 2, "skipped": 0, "pct": 33.33 },
+        "statements": { "total": 13, "covered": 9, "skipped": 0, "pct": 69.23 },
+        "branches": { "total": 14, "covered": 13, "skipped": 0, "pct": 92.85 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/add-confirmation.tsx": {
+        "lines": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/add.tsx": {
+        "lines": { "total": 40, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 42, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/adherence.tsx": {
+        "lines": { "total": 32, "covered": 17, "skipped": 0, "pct": 53.12 },
+        "functions": { "total": 10, "covered": 4, "skipped": 0, "pct": 40 },
+        "statements": { "total": 33, "covered": 18, "skipped": 0, "pct": 54.54 },
+        "branches": { "total": 16, "covered": 2, "skipped": 0, "pct": 12.5 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/alarm.tsx": {
+        "lines": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/calendar.tsx": {
+        "lines": { "total": 35, "covered": 33, "skipped": 0, "pct": 94.28 },
+        "functions": { "total": 12, "covered": 10, "skipped": 0, "pct": 83.33 },
+        "statements": { "total": 37, "covered": 35, "skipped": 0, "pct": 94.59 },
+        "branches": { "total": 28, "covered": 26, "skipped": 0, "pct": 92.85 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/caregiver-access.tsx": {
+        "lines": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/delete-confirm.tsx": {
+        "lines": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/dose-missed.tsx": {
+        "lines": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 26, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/dose-taken.tsx": {
+        "lines": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/drug-interaction.tsx": {
+        "lines": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/edit.tsx": {
+        "lines": { "total": 36, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 38, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 24, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/empty.tsx": {
+        "lines": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/export.tsx": {
+        "lines": { "total": 23, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 23, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/monthly-report.tsx": {
+        "lines": { "total": 44, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 25, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 58, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 18, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/ocr-review.tsx": {
+        "lines": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/pharmacy-locator.tsx": {
+        "lines": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/prescription-photo.tsx": {
+        "lines": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/refill-reminder.tsx": {
+        "lines": { "total": 27, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 27, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/reminder.tsx": {
+        "lines": { "total": 82, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 27, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 84, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 35, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/search.tsx": {
+        "lines": { "total": 18, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 18, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/share-caregiver.tsx": {
+        "lines": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/side-effect-form.tsx": {
+        "lines": { "total": 38, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 40, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 30, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/medications/side-effects.tsx": {
+        "lines": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/metrics/[id].tsx": {
+        "lines": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 18, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/nutrition/[id].tsx": {
+        "lines": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/nutrition/dietary-goals.tsx": {
+        "lines": { "total": 13, "covered": 9, "skipped": 0, "pct": 69.23 },
+        "functions": { "total": 6, "covered": 2, "skipped": 0, "pct": 33.33 },
+        "statements": { "total": 13, "covered": 9, "skipped": 0, "pct": 69.23 },
+        "branches": { "total": 4, "covered": 3, "skipped": 0, "pct": 75 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/nutrition/export.tsx": {
+        "lines": { "total": 23, "covered": 15, "skipped": 0, "pct": 65.21 },
+        "functions": { "total": 10, "covered": 3, "skipped": 0, "pct": 30 },
+        "statements": { "total": 23, "covered": 15, "skipped": 0, "pct": 65.21 },
+        "branches": { "total": 6, "covered": 2, "skipped": 0, "pct": 33.33 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/nutrition/food-diary.tsx": {
+        "lines": { "total": 23, "covered": 17, "skipped": 0, "pct": 73.91 },
+        "functions": { "total": 9, "covered": 5, "skipped": 0, "pct": 55.55 },
+        "statements": { "total": 23, "covered": 17, "skipped": 0, "pct": 73.91 },
+        "branches": { "total": 16, "covered": 9, "skipped": 0, "pct": 56.25 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/nutrition/food-search.tsx": {
+        "lines": { "total": 29, "covered": 12, "skipped": 0, "pct": 41.37 },
+        "functions": { "total": 12, "covered": 2, "skipped": 0, "pct": 16.66 },
+        "statements": { "total": 29, "covered": 12, "skipped": 0, "pct": 41.37 },
+        "branches": { "total": 18, "covered": 4, "skipped": 0, "pct": 22.22 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/nutrition/index.tsx": {
+        "lines": { "total": 9, "covered": 7, "skipped": 0, "pct": 77.77 },
+        "functions": { "total": 5, "covered": 3, "skipped": 0, "pct": 60 },
+        "statements": { "total": 9, "covered": 7, "skipped": 0, "pct": 77.77 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/nutrition/insights.tsx": {
+        "lines": { "total": 22, "covered": 21, "skipped": 0, "pct": 95.45 },
+        "functions": { "total": 7, "covered": 6, "skipped": 0, "pct": 85.71 },
+        "statements": { "total": 22, "covered": 21, "skipped": 0, "pct": 95.45 },
+        "branches": { "total": 10, "covered": 10, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/nutrition/macro-tracker.tsx": {
+        "lines": { "total": 13, "covered": 11, "skipped": 0, "pct": 84.61 },
+        "functions": { "total": 6, "covered": 4, "skipped": 0, "pct": 66.66 },
+        "statements": { "total": 13, "covered": 11, "skipped": 0, "pct": 84.61 },
+        "branches": { "total": 2, "covered": 2, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/nutrition/meal-log.tsx": {
+        "lines": { "total": 17, "covered": 12, "skipped": 0, "pct": 70.58 },
+        "functions": { "total": 8, "covered": 3, "skipped": 0, "pct": 37.5 },
+        "statements": { "total": 17, "covered": 12, "skipped": 0, "pct": 70.58 },
+        "branches": { "total": 2, "covered": 2, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/nutrition/water-intake.tsx": {
+        "lines": { "total": 13, "covered": 10, "skipped": 0, "pct": 76.92 },
+        "functions": { "total": 7, "covered": 3, "skipped": 0, "pct": 42.85 },
+        "statements": { "total": 14, "covered": 10, "skipped": 0, "pct": 71.42 },
+        "branches": { "total": 4, "covered": 4, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/sleep/[id].tsx": {
+        "lines": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/sleep/bedtime-routine.tsx": {
+        "lines": { "total": 18, "covered": 11, "skipped": 0, "pct": 61.11 },
+        "functions": { "total": 10, "covered": 4, "skipped": 0, "pct": 40 },
+        "statements": { "total": 19, "covered": 12, "skipped": 0, "pct": 63.15 },
+        "branches": { "total": 8, "covered": 4, "skipped": 0, "pct": 50 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/sleep/device-sync.tsx": {
+        "lines": { "total": 19, "covered": 9, "skipped": 0, "pct": 47.36 },
+        "functions": { "total": 8, "covered": 2, "skipped": 0, "pct": 25 },
+        "statements": { "total": 19, "covered": 9, "skipped": 0, "pct": 47.36 },
+        "branches": { "total": 16, "covered": 6, "skipped": 0, "pct": 37.5 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/sleep/diary.tsx": {
+        "lines": { "total": 21, "covered": 16, "skipped": 0, "pct": 76.19 },
+        "functions": { "total": 8, "covered": 4, "skipped": 0, "pct": 50 },
+        "statements": { "total": 21, "covered": 16, "skipped": 0, "pct": 76.19 },
+        "branches": { "total": 12, "covered": 7, "skipped": 0, "pct": 58.33 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/sleep/export.tsx": {
+        "lines": { "total": 24, "covered": 16, "skipped": 0, "pct": 66.66 },
+        "functions": { "total": 10, "covered": 3, "skipped": 0, "pct": 30 },
+        "statements": { "total": 24, "covered": 16, "skipped": 0, "pct": 66.66 },
+        "branches": { "total": 6, "covered": 2, "skipped": 0, "pct": 33.33 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/sleep/goals.tsx": {
+        "lines": { "total": 22, "covered": 15, "skipped": 0, "pct": 68.18 },
+        "functions": { "total": 7, "covered": 1, "skipped": 0, "pct": 14.28 },
+        "statements": { "total": 22, "covered": 15, "skipped": 0, "pct": 68.18 },
+        "branches": { "total": 8, "covered": 2, "skipped": 0, "pct": 25 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/sleep/index.tsx": {
+        "lines": { "total": 9, "covered": 7, "skipped": 0, "pct": 77.77 },
+        "functions": { "total": 5, "covered": 3, "skipped": 0, "pct": 60 },
+        "statements": { "total": 9, "covered": 7, "skipped": 0, "pct": 77.77 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/sleep/insights.tsx": {
+        "lines": { "total": 11, "covered": 10, "skipped": 0, "pct": 90.9 },
+        "functions": { "total": 6, "covered": 5, "skipped": 0, "pct": 83.33 },
+        "statements": { "total": 12, "covered": 11, "skipped": 0, "pct": 91.66 },
+        "branches": { "total": 4, "covered": 4, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/sleep/log.tsx": {
+        "lines": { "total": 19, "covered": 11, "skipped": 0, "pct": 57.89 },
+        "functions": { "total": 9, "covered": 2, "skipped": 0, "pct": 22.22 },
+        "statements": { "total": 19, "covered": 11, "skipped": 0, "pct": 57.89 },
+        "branches": { "total": 6, "covered": 1, "skipped": 0, "pct": 16.66 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/sleep/quality.tsx": {
+        "lines": { "total": 21, "covered": 11, "skipped": 0, "pct": 52.38 },
+        "functions": { "total": 13, "covered": 3, "skipped": 0, "pct": 23.07 },
+        "statements": { "total": 24, "covered": 11, "skipped": 0, "pct": 45.83 },
+        "branches": { "total": 22, "covered": 4, "skipped": 0, "pct": 18.18 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/sleep/smart-alarm.tsx": {
+        "lines": { "total": 22, "covered": 11, "skipped": 0, "pct": 50 },
+        "functions": { "total": 11, "covered": 3, "skipped": 0, "pct": 27.27 },
+        "statements": { "total": 22, "covered": 11, "skipped": 0, "pct": 50 },
+        "branches": { "total": 24, "covered": 10, "skipped": 0, "pct": 41.66 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/sleep/trends.tsx": {
+        "lines": { "total": 16, "covered": 13, "skipped": 0, "pct": 81.25 },
+        "functions": { "total": 8, "covered": 5, "skipped": 0, "pct": 62.5 },
+        "statements": { "total": 16, "covered": 13, "skipped": 0, "pct": 81.25 },
+        "branches": { "total": 4, "covered": 2, "skipped": 0, "pct": 50 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/wellness-resources/[id].tsx": {
+        "lines": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/wellness-resources/articles.tsx": {
+        "lines": { "total": 18, "covered": 14, "skipped": 0, "pct": 77.77 },
+        "functions": { "total": 8, "covered": 4, "skipped": 0, "pct": 50 },
+        "statements": { "total": 18, "covered": 14, "skipped": 0, "pct": 77.77 },
+        "branches": { "total": 8, "covered": 6, "skipped": 0, "pct": 75 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/wellness-resources/bookmarks.tsx": {
+        "lines": { "total": 12, "covered": 8, "skipped": 0, "pct": 66.66 },
+        "functions": { "total": 8, "covered": 2, "skipped": 0, "pct": 25 },
+        "statements": { "total": 14, "covered": 8, "skipped": 0, "pct": 57.14 },
+        "branches": { "total": 4, "covered": 2, "skipped": 0, "pct": 50 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/wellness-resources/index.tsx": {
+        "lines": { "total": 13, "covered": 9, "skipped": 0, "pct": 69.23 },
+        "functions": { "total": 8, "covered": 4, "skipped": 0, "pct": 50 },
+        "statements": { "total": 13, "covered": 9, "skipped": 0, "pct": 69.23 },
+        "branches": { "total": 2, "covered": 2, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/wellness-resources/program-detail.tsx": {
+        "lines": { "total": 14, "covered": 10, "skipped": 0, "pct": 71.42 },
+        "functions": { "total": 9, "covered": 3, "skipped": 0, "pct": 33.33 },
+        "statements": { "total": 17, "covered": 11, "skipped": 0, "pct": 64.7 },
+        "branches": { "total": 22, "covered": 18, "skipped": 0, "pct": 81.81 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/wellness-resources/programs.tsx": {
+        "lines": { "total": 13, "covered": 9, "skipped": 0, "pct": 69.23 },
+        "functions": { "total": 8, "covered": 4, "skipped": 0, "pct": 50 },
+        "statements": { "total": 14, "covered": 10, "skipped": 0, "pct": 71.42 },
+        "branches": { "total": 12, "covered": 11, "skipped": 0, "pct": 91.66 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/wellness-resources/video-player.tsx": {
+        "lines": { "total": 10, "covered": 6, "skipped": 0, "pct": 60 },
+        "functions": { "total": 6, "covered": 2, "skipped": 0, "pct": 33.33 },
+        "statements": { "total": 10, "covered": 6, "skipped": 0, "pct": 60 },
+        "branches": { "total": 2, "covered": 2, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/health/wellness-resources/videos.tsx": {
+        "lines": { "total": 12, "covered": 9, "skipped": 0, "pct": 75 },
+        "functions": { "total": 7, "covered": 4, "skipped": 0, "pct": 57.14 },
+        "statements": { "total": 13, "covered": 10, "skipped": 0, "pct": 76.92 },
+        "branches": { "total": 4, "covered": 3, "skipped": 0, "pct": 75 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/help/about.tsx": {
+        "lines": { "total": 18, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 19, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/help/chat.tsx": {
+        "lines": { "total": 35, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 37, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/help/contact.tsx": {
+        "lines": { "total": 23, "covered": 19, "skipped": 0, "pct": 82.6 },
+        "functions": { "total": 6, "covered": 4, "skipped": 0, "pct": 66.66 },
+        "statements": { "total": 23, "covered": 19, "skipped": 0, "pct": 82.6 },
+        "branches": { "total": 6, "covered": 1, "skipped": 0, "pct": 16.66 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/help/faq-category.tsx": {
+        "lines": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/help/faq-detail.tsx": {
+        "lines": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/help/index.tsx": {
+        "lines": { "total": 27, "covered": 21, "skipped": 0, "pct": 77.77 },
+        "functions": { "total": 9, "covered": 4, "skipped": 0, "pct": 44.44 },
+        "statements": { "total": 27, "covered": 21, "skipped": 0, "pct": 77.77 },
+        "branches": { "total": 8, "covered": 4, "skipped": 0, "pct": 50 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/help/privacy.tsx": {
+        "lines": { "total": 14, "covered": 13, "skipped": 0, "pct": 92.85 },
+        "functions": { "total": 3, "covered": 2, "skipped": 0, "pct": 66.66 },
+        "statements": { "total": 14, "covered": 13, "skipped": 0, "pct": 92.85 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/help/report.tsx": {
+        "lines": { "total": 44, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 44, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 24, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/help/terms.tsx": {
+        "lines": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/help/faq/[id].tsx": {
+        "lines": { "total": 30, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 30, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/help/faq/index.tsx": {
+        "lines": { "total": 24, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 25, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/home/alert.tsx": {
+        "lines": { "total": 42, "covered": 38, "skipped": 0, "pct": 90.47 },
+        "functions": { "total": 15, "covered": 14, "skipped": 0, "pct": 93.33 },
+        "statements": { "total": 47, "covered": 43, "skipped": 0, "pct": 91.48 },
+        "branches": { "total": 24, "covered": 21, "skipped": 0, "pct": 87.5 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/home/appointment-widget.tsx": {
+        "lines": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/home/bottom-sheet.tsx": {
+        "lines": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/home/empty.tsx": {
+        "lines": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/home/health-tips.tsx": {
+        "lines": { "total": 7, "covered": 7, "skipped": 0, "pct": 100 },
+        "functions": { "total": 3, "covered": 3, "skipped": 0, "pct": 100 },
+        "statements": { "total": 7, "covered": 7, "skipped": 0, "pct": 100 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/home/index.tsx": {
+        "lines": { "total": 22, "covered": 14, "skipped": 0, "pct": 63.63 },
+        "functions": { "total": 8, "covered": 3, "skipped": 0, "pct": 37.5 },
+        "statements": { "total": 22, "covered": 14, "skipped": 0, "pct": 63.63 },
+        "branches": { "total": 10, "covered": 4, "skipped": 0, "pct": 40 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/home/medication-reminders.tsx": {
+        "lines": { "total": 12, "covered": 8, "skipped": 0, "pct": 66.66 },
+        "functions": { "total": 10, "covered": 2, "skipped": 0, "pct": 20 },
+        "statements": { "total": 16, "covered": 8, "skipped": 0, "pct": 50 },
+        "branches": { "total": 2, "covered": 1, "skipped": 0, "pct": 50 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/home/metrics.tsx": {
+        "lines": { "total": 25, "covered": 24, "skipped": 0, "pct": 96 },
+        "functions": { "total": 9, "covered": 8, "skipped": 0, "pct": 88.88 },
+        "statements": { "total": 26, "covered": 25, "skipped": 0, "pct": 96.15 },
+        "branches": { "total": 10, "covered": 10, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/home/weekly-summary.tsx": {
+        "lines": { "total": 16, "covered": 16, "skipped": 0, "pct": 100 },
+        "functions": { "total": 4, "covered": 4, "skipped": 0, "pct": 100 },
+        "statements": { "total": 16, "covered": 16, "skipped": 0, "pct": 100 },
+        "branches": { "total": 6, "covered": 6, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/notifications/category-filter.tsx": {
+        "lines": { "total": 26, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 27, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/notifications/detail.tsx": {
+        "lines": { "total": 38, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 38, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 26, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/notifications/empty.tsx": {
+        "lines": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 1, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/notifications/index.tsx": {
+        "lines": { "total": 4, "covered": 3, "skipped": 0, "pct": 75 },
+        "functions": { "total": 2, "covered": 1, "skipped": 0, "pct": 50 },
+        "statements": { "total": 4, "covered": 3, "skipped": 0, "pct": 75 },
+        "branches": { "total": 4, "covered": 2, "skipped": 0, "pct": 50 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/notifications/settings.tsx": {
+        "lines": { "total": 10, "covered": 7, "skipped": 0, "pct": 70 },
+        "functions": { "total": 6, "covered": 2, "skipped": 0, "pct": 33.33 },
+        "statements": { "total": 11, "covered": 7, "skipped": 0, "pct": 63.63 },
+        "branches": { "total": 6, "covered": 4, "skipped": 0, "pct": 66.66 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/notifications/unread.tsx": {
+        "lines": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 21, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/plan/benefits.tsx": {
+        "lines": { "total": 44, "covered": 24, "skipped": 0, "pct": 54.54 },
+        "functions": { "total": 9, "covered": 3, "skipped": 0, "pct": 33.33 },
+        "statements": { "total": 45, "covered": 24, "skipped": 0, "pct": 53.33 },
+        "branches": { "total": 26, "covered": 5, "skipped": 0, "pct": 19.23 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/plan/card.tsx": {
+        "lines": { "total": 23, "covered": 9, "skipped": 0, "pct": 39.13 },
+        "functions": { "total": 11, "covered": 1, "skipped": 0, "pct": 9.09 },
+        "statements": { "total": 23, "covered": 9, "skipped": 0, "pct": 39.13 },
+        "branches": { "total": 14, "covered": 7, "skipped": 0, "pct": 50 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/plan/coverage.tsx": {
+        "lines": { "total": 30, "covered": 14, "skipped": 0, "pct": 46.66 },
+        "functions": { "total": 10, "covered": 2, "skipped": 0, "pct": 20 },
+        "statements": { "total": 31, "covered": 14, "skipped": 0, "pct": 45.16 },
+        "branches": { "total": 18, "covered": 6, "skipped": 0, "pct": 33.33 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/plan/index.tsx": {
+        "lines": { "total": 13, "covered": 10, "skipped": 0, "pct": 76.92 },
+        "functions": { "total": 6, "covered": 4, "skipped": 0, "pct": 66.66 },
+        "statements": { "total": 13, "covered": 10, "skipped": 0, "pct": 76.92 },
+        "branches": { "total": 4, "covered": 2, "skipped": 0, "pct": 50 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/plan/simulator.tsx": {
+        "lines": { "total": 33, "covered": 19, "skipped": 0, "pct": 57.57 },
+        "functions": { "total": 10, "covered": 3, "skipped": 0, "pct": 30 },
+        "statements": { "total": 36, "covered": 19, "skipped": 0, "pct": 52.77 },
+        "branches": { "total": 22, "covered": 6, "skipped": 0, "pct": 27.27 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/plan/claims/index.tsx": {
+        "lines": { "total": 27, "covered": 22, "skipped": 0, "pct": 81.48 },
+        "functions": { "total": 9, "covered": 6, "skipped": 0, "pct": 66.66 },
+        "statements": { "total": 28, "covered": 23, "skipped": 0, "pct": 82.14 },
+        "branches": { "total": 16, "covered": 14, "skipped": 0, "pct": 87.5 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/plan/claims/submit.tsx": {
+        "lines": { "total": 32, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 34, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 62, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/profile/address.tsx": {
+        "lines": { "total": 43, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 47, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 28, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/profile/biometric-setup.tsx": {
+        "lines": { "total": 30, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 30, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/profile/confirmation.tsx": {
+        "lines": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 17, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/profile/documents.tsx": {
+        "lines": { "total": 38, "covered": 22, "skipped": 0, "pct": 57.89 },
+        "functions": { "total": 9, "covered": 1, "skipped": 0, "pct": 11.11 },
+        "statements": { "total": 39, "covered": 22, "skipped": 0, "pct": 56.41 },
+        "branches": { "total": 12, "covered": 5, "skipped": 0, "pct": 41.66 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/profile/edit.tsx": {
+        "lines": { "total": 37, "covered": 26, "skipped": 0, "pct": 70.27 },
+        "functions": { "total": 9, "covered": 6, "skipped": 0, "pct": 66.66 },
+        "statements": { "total": 39, "covered": 28, "skipped": 0, "pct": 71.79 },
+        "branches": { "total": 14, "covered": 7, "skipped": 0, "pct": 50 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/profile/emergency-contact.tsx": {
+        "lines": { "total": 33, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 33, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/profile/index.tsx": {
+        "lines": { "total": 21, "covered": 10, "skipped": 0, "pct": 47.61 },
+        "functions": { "total": 7, "covered": 1, "skipped": 0, "pct": 14.28 },
+        "statements": { "total": 21, "covered": 10, "skipped": 0, "pct": 47.61 },
+        "branches": { "total": 10, "covered": 5, "skipped": 0, "pct": 50 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/profile/notification-prefs.tsx": {
+        "lines": { "total": 29, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 30, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/profile/notifications.tsx": {
+        "lines": { "total": 35, "covered": 23, "skipped": 0, "pct": 65.71 },
+        "functions": { "total": 12, "covered": 5, "skipped": 0, "pct": 41.66 },
+        "statements": { "total": 40, "covered": 26, "skipped": 0, "pct": 65 },
+        "branches": { "total": 6, "covered": 2, "skipped": 0, "pct": 33.33 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/profile/photo.tsx": {
+        "lines": { "total": 42, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 43, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/profile/privacy.tsx": {
+        "lines": { "total": 61, "covered": 37, "skipped": 0, "pct": 60.65 },
+        "functions": { "total": 20, "covered": 9, "skipped": 0, "pct": 45 },
+        "statements": { "total": 63, "covered": 39, "skipped": 0, "pct": 61.9 },
+        "branches": { "total": 10, "covered": 3, "skipped": 0, "pct": 30 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/profile/settings.tsx": {
+        "lines": { "total": 21, "covered": 13, "skipped": 0, "pct": 61.9 },
+        "functions": { "total": 11, "covered": 2, "skipped": 0, "pct": 18.18 },
+        "statements": { "total": 22, "covered": 13, "skipped": 0, "pct": 59.09 },
+        "branches": { "total": 2, "covered": 1, "skipped": 0, "pct": 50 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/profile/setup.tsx": {
+        "lines": { "total": 26, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 29, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/search/article-results.tsx": {
+        "lines": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/search/doctor-results.tsx": {
+        "lines": { "total": 21, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 21, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/search/index.tsx": {
+        "lines": { "total": 23, "covered": 18, "skipped": 0, "pct": 78.26 },
+        "functions": { "total": 7, "covered": 3, "skipped": 0, "pct": 42.85 },
+        "statements": { "total": 24, "covered": 18, "skipped": 0, "pct": 75 },
+        "branches": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/search/medication-results.tsx": {
+        "lines": { "total": 21, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 21, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/search/no-results.tsx": {
+        "lines": { "total": 24, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 24, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/search/results.tsx": {
+        "lines": { "total": 42, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 44, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 24, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/settings/accessibility.tsx": {
+        "lines": { "total": 37, "covered": 25, "skipped": 0, "pct": 67.56 },
+        "functions": { "total": 9, "covered": 3, "skipped": 0, "pct": 33.33 },
+        "statements": { "total": 37, "covered": 25, "skipped": 0, "pct": 67.56 },
+        "branches": { "total": 16, "covered": 9, "skipped": 0, "pct": 56.25 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/settings/add-address.tsx": {
+        "lines": { "total": 58, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 58, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 46, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/settings/add-dependent.tsx": {
+        "lines": { "total": 38, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 38, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 26, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/settings/addresses.tsx": {
+        "lines": { "total": 35, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 37, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/settings/biometric.tsx": {
+        "lines": { "total": 21, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 21, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/settings/change-password.tsx": {
+        "lines": { "total": 43, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 44, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 19, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/settings/connected-devices.tsx": {
+        "lines": { "total": 22, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 26, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/settings/data-export.tsx": {
+        "lines": { "total": 32, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 37, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/settings/delete-account.tsx": {
+        "lines": { "total": 38, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 38, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 22, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/settings/delete-confirm.tsx": {
+        "lines": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/settings/dependents.tsx": {
+        "lines": { "total": 34, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 36, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/settings/emergency-contacts.tsx": {
+        "lines": { "total": 45, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 47, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/settings/feedback.tsx": {
+        "lines": { "total": 38, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 9, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 38, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 34, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/settings/health-plan.tsx": {
+        "lines": { "total": 19, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 19, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/settings/insurance-docs.tsx": {
+        "lines": { "total": 35, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 35, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/settings/language.tsx": {
+        "lines": { "total": 27, "covered": 16, "skipped": 0, "pct": 59.25 },
+        "functions": { "total": 6, "covered": 2, "skipped": 0, "pct": 33.33 },
+        "statements": { "total": 27, "covered": 16, "skipped": 0, "pct": 59.25 },
+        "branches": { "total": 16, "covered": 8, "skipped": 0, "pct": 50 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/settings/logout.tsx": {
+        "lines": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 5, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/settings/personal-info.tsx": {
+        "lines": { "total": 36, "covered": 22, "skipped": 0, "pct": 61.11 },
+        "functions": { "total": 10, "covered": 2, "skipped": 0, "pct": 20 },
+        "statements": { "total": 36, "covered": 22, "skipped": 0, "pct": 61.11 },
+        "branches": { "total": 6, "covered": 2, "skipped": 0, "pct": 33.33 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/settings/theme.tsx": {
+        "lines": { "total": 27, "covered": 16, "skipped": 0, "pct": 59.25 },
+        "functions": { "total": 6, "covered": 2, "skipped": 0, "pct": 33.33 },
+        "statements": { "total": 27, "covered": 16, "skipped": 0, "pct": 59.25 },
+        "branches": { "total": 14, "covered": 6, "skipped": 0, "pct": 42.85 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/settings/two-factor.tsx": {
+        "lines": { "total": 50, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 50, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 36, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/wellness/breathing.tsx": {
+        "lines": { "total": 51, "covered": 21, "skipped": 0, "pct": 41.17 },
+        "functions": { "total": 11, "covered": 3, "skipped": 0, "pct": 27.27 },
+        "statements": { "total": 52, "covered": 21, "skipped": 0, "pct": 40.38 },
+        "branches": { "total": 38, "covered": 16, "skipped": 0, "pct": 42.1 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/wellness/chat.tsx": {
+        "lines": { "total": 28, "covered": 12, "skipped": 0, "pct": 42.85 },
+        "functions": { "total": 12, "covered": 3, "skipped": 0, "pct": 25 },
+        "statements": { "total": 30, "covered": 12, "skipped": 0, "pct": 40 },
+        "branches": { "total": 14, "covered": 9, "skipped": 0, "pct": 64.28 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/wellness/daily-plan.tsx": {
+        "lines": { "total": 20, "covered": 16, "skipped": 0, "pct": 80 },
+        "functions": { "total": 13, "covered": 7, "skipped": 0, "pct": 53.84 },
+        "statements": { "total": 24, "covered": 18, "skipped": 0, "pct": 75 },
+        "branches": { "total": 12, "covered": 9, "skipped": 0, "pct": 75 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/wellness/goals.tsx": {
+        "lines": { "total": 20, "covered": 16, "skipped": 0, "pct": 80 },
+        "functions": { "total": 10, "covered": 5, "skipped": 0, "pct": 50 },
+        "statements": { "total": 22, "covered": 17, "skipped": 0, "pct": 77.27 },
+        "branches": { "total": 11, "covered": 10, "skipped": 0, "pct": 90.9 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/wellness/index.tsx": {
+        "lines": { "total": 19, "covered": 11, "skipped": 0, "pct": 57.89 },
+        "functions": { "total": 11, "covered": 4, "skipped": 0, "pct": 36.36 },
+        "statements": { "total": 19, "covered": 11, "skipped": 0, "pct": 57.89 },
+        "branches": { "total": 8, "covered": 3, "skipped": 0, "pct": 37.5 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/wellness/insights.tsx": {
+        "lines": { "total": 17, "covered": 10, "skipped": 0, "pct": 58.82 },
+        "functions": { "total": 9, "covered": 3, "skipped": 0, "pct": 33.33 },
+        "statements": { "total": 17, "covered": 10, "skipped": 0, "pct": 58.82 },
+        "branches": { "total": 10, "covered": 5, "skipped": 0, "pct": 50 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/wellness/meditation.tsx": {
+        "lines": { "total": 16, "covered": 13, "skipped": 0, "pct": 81.25 },
+        "functions": { "total": 9, "covered": 5, "skipped": 0, "pct": 55.55 },
+        "statements": { "total": 18, "covered": 14, "skipped": 0, "pct": 77.77 },
+        "branches": { "total": 20, "covered": 13, "skipped": 0, "pct": 65 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/wellness/mood.tsx": {
+        "lines": { "total": 22, "covered": 14, "skipped": 0, "pct": 63.63 },
+        "functions": { "total": 8, "covered": 4, "skipped": 0, "pct": 50 },
+        "statements": { "total": 22, "covered": 14, "skipped": 0, "pct": 63.63 },
+        "branches": { "total": 8, "covered": 4, "skipped": 0, "pct": 50 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/wellness/quick-replies.tsx": {
+        "lines": { "total": 17, "covered": 11, "skipped": 0, "pct": 64.7 },
+        "functions": { "total": 10, "covered": 4, "skipped": 0, "pct": 40 },
+        "statements": { "total": 19, "covered": 12, "skipped": 0, "pct": 63.15 },
+        "branches": { "total": 12, "covered": 9, "skipped": 0, "pct": 75 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/wellness/streaks.tsx": {
+        "lines": { "total": 26, "covered": 24, "skipped": 0, "pct": 92.3 },
+        "functions": { "total": 8, "covered": 6, "skipped": 0, "pct": 75 },
+        "statements": { "total": 28, "covered": 26, "skipped": 0, "pct": 92.85 },
+        "branches": { "total": 12, "covered": 12, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/wellness/challenges/[id].tsx": {
+        "lines": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/wellness/challenges/index.tsx": {
+        "lines": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 10, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/wellness/journal/history.tsx": {
+        "lines": { "total": 13, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/wellness/journal/index.tsx": {
+        "lines": { "total": 19, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/pages/wellness/tip/[id].tsx": {
+        "lines": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 16, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 8, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/shims/react-native.js": {
+        "lines": { "total": 1, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "statements": { "total": 1, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/styles/theme.ts": {
+        "lines": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "statements": { "total": 2, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/types/gamification.ts": {
+        "lines": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "functions": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "statements": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/types/index.ts": {
+        "lines": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "functions": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "statements": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/utils/analytics.ts": {
+        "lines": { "total": 84, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 84, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 32, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/utils/date.ts": {
+        "lines": { "total": 161, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 15, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 161, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 161, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/utils/env-init.ts": {
+        "lines": { "total": 22, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 22, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 39, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/utils/format.ts": {
+        "lines": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "functions": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "statements": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/utils/index.ts": {
+        "lines": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "functions": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "statements": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 },
+        "branches": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/utils/seo.tsx": {
+        "lines": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 1, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 6, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+    },
+    "/Users/rodrigo/claude-projects/healthcare-super-app--w-gamification--tgfzl7/src/web/web/src/utils/validation.ts": {
+        "lines": { "total": 29, "covered": 0, "skipped": 0, "pct": 0 },
+        "functions": { "total": 3, "covered": 0, "skipped": 0, "pct": 0 },
+        "statements": { "total": 31, "covered": 0, "skipped": 0, "pct": 0 },
+        "branches": { "total": 20, "covered": 0, "skipped": 0, "pct": 0 }
+    }
+}
