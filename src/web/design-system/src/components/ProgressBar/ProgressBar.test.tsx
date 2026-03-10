@@ -8,7 +8,7 @@ import { healthTheme, careTheme, planTheme } from '../../themes';
 /**
  * Helper function to render components with a specific theme
  */
-const renderWithTheme = (ui: React.ReactElement, theme: object) => {
+const renderWithTheme = (ui: React.ReactElement, theme: any) => {
     return render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
 };
 

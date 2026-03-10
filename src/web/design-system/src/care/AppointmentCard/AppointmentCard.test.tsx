@@ -2,11 +2,11 @@ import { describe, it, expect } from '@jest/globals';
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
-import { AppointmentCard } from './AppointmentCard';
+import { AppointmentCard, Appointment } from './AppointmentCard';
 
 describe('AppointmentCard', () => {
     // Mock data for testing
-    const mockAppointment = {
+    const mockAppointment: Appointment = {
         id: 'appointment-123',
         dateTime: '2023-04-15T14:30:00Z',
         type: 'in_person',
@@ -49,7 +49,7 @@ describe('AppointmentCard', () => {
     it('renders telemedicine appointment correctly', () => {
         const telemedicineAppointment = {
             ...mockAppointment,
-            type: 'telemedicine',
+            type: 'telemedicine' as const,
         };
 
         render(
@@ -116,7 +116,7 @@ describe('AppointmentCard', () => {
     it('calls onJoinTelemedicine when telemedicine button is clicked', () => {
         const telemedicineAppointment = {
             ...mockAppointment,
-            type: 'telemedicine',
+            type: 'telemedicine' as const,
         };
 
         render(

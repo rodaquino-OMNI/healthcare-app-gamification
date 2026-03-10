@@ -67,7 +67,7 @@ const mockTheme = {
 
 // Helper function to render components with theme
 const renderWithTheme = (ui: React.ReactElement) => {
-    return render(<ThemeProvider theme={mockTheme}>{ui}</ThemeProvider>);
+    return render(<ThemeProvider theme={mockTheme as any}>{ui}</ThemeProvider>);
 };
 
 // Helper function to set up the component with props

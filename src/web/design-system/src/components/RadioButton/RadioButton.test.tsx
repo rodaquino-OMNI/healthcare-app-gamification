@@ -2,14 +2,14 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
 
-import RadioButton from './RadioButton';
+import { RadioButton } from './RadioButton';
 import { careTheme } from '../../themes/care.theme';
 import { healthTheme } from '../../themes/health.theme';
 import { planTheme } from '../../themes/plan.theme';
 import { colors } from '../../tokens/colors';
 
 // Helper function to render a component with a specific theme
-const renderWithTheme = (ui: React.ReactElement, theme: object) => {
+const renderWithTheme = (ui: React.ReactElement, theme: any) => {
     return render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
 };
 

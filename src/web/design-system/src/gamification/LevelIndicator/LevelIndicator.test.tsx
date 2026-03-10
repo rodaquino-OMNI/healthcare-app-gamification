@@ -132,7 +132,7 @@ describe('LevelIndicator', () => {
             progress: 1,
             total: 1,
             unlocked: true,
-            journey: 'health',
+            journey: 'health' as const,
         };
 
         render(

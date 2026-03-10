@@ -1,14 +1,31 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
-import ClaimCard from './ClaimCard';
-// eslint-disable-next-line import/no-unresolved
-import { Claim, ClaimStatus } from '../../../shared/types/plan.types';
+import { ClaimCard } from './ClaimCard';
+
+type ClaimStatus = 'pending' | 'approved' | 'denied' | 'additional_info_required';
+
+interface ClaimDocument {
+    id: string;
+    type: string;
+    filePath: string;
+    uploadedAt: string;
+}
+
+interface Claim {
+    id: string;
+    planId: string;
+    type: string;
+    amount: number;
+    status: ClaimStatus;
+    submittedAt: string;
+    documents: ClaimDocument[];
+}
 
 // Mock the i18next hook
 jest.mock('react-i18next', () => ({
     useTranslation: () => ({
-        t: (key: string, options) => {
+        t: (key: string, options?: { count?: number }) => {
             // Mock implementation to simulate translation
             if (key.startsWith('claim.type.')) {
                 return key.split('.').pop();

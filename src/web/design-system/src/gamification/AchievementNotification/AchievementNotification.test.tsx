@@ -11,7 +11,7 @@ describe('AchievementNotification', () => {
             id: '123',
             title: 'Test Achievement',
             description: 'This is a test achievement description.',
-            journey: 'health',
+            journey: 'health' as const,
             icon: 'test-icon',
             progress: 100,
             total: 100,
@@ -39,7 +39,7 @@ describe('AchievementNotification', () => {
             id: '123',
             title: 'Test Achievement',
             description: 'This is a test achievement description.',
-            journey: 'health',
+            journey: 'health' as const,
             icon: 'test-icon',
             progress: 100,
             total: 100,
@@ -54,7 +54,7 @@ describe('AchievementNotification', () => {
 
         // Simulate a click on the close button.
         const closeButton = screen.getByRole('button', { name: 'OK' });
-        fireEvent.press(closeButton);
+        fireEvent.click(closeButton);
 
         // Assertion: Verify that the onClose function is called.
         expect(onCloseMock).toHaveBeenCalled();

@@ -1,5 +1,5 @@
+import { expect } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
-import { expect } from 'expect';
 import React from 'react';
 
 import { AchievementBadge } from '../../gamification/AchievementBadge/AchievementBadge';

@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
 
-import MedicationCard from './MedicationCard';
+import { MedicationCard } from './MedicationCard';
 import { careTheme } from '../../themes/care.theme';
 
 /**
@@ -55,7 +55,13 @@ describe('MedicationCard', () => {
         const onPressMock = jest.fn();
 
         renderWithTheme(
-            <MedicationCard name="Aspirin" dosage="81mg" schedule="Once daily" adherence={true} onPress={onPressMock} />
+            <MedicationCard
+                name="Aspirin"
+                dosage="81mg"
+                schedule="Once daily"
+                adherence={true}
+                {...({ onPress: onPressMock } as any)}
+            />
         );
 
         const card = screen.getByText('Aspirin - 81mg').closest('div');

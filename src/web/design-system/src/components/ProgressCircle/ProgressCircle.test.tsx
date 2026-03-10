@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
 
-import ProgressCircle from './ProgressCircle';
+import { ProgressCircle } from './ProgressCircle';
 import { baseTheme } from '../../themes/base.theme';
 import { careTheme } from '../../themes/care.theme';
 import { healthTheme } from '../../themes/health.theme';

@@ -5,7 +5,8 @@ import React from 'react';
 import { ThemeProvider } from 'styled-components';
 
 import VideoConsultation from './VideoConsultation';
-// eslint-disable-next-line import/no-unresolved
+// @ts-expect-error Module does not exist in design-system; used only by jest.mock
+// eslint-disable-next-line import/no-unresolved -- resolved at runtime via jest.mock
 import { JourneyProvider } from '../../context/JourneyContext';
 import { careTheme } from '../../themes/care.theme';
 

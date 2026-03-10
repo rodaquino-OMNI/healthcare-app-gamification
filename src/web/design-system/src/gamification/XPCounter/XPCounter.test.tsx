@@ -5,55 +5,55 @@ import { ThemeProvider } from 'styled-components';
 
 import XPCounter from './XPCounter';
 
+// Create a mock theme object with journey colors (declared at module scope for reference in tests)
+const mockTheme = {
+    spacing: {
+        xs: '4px',
+        sm: '8px',
+        md: '16px',
+        lg: '24px',
+    },
+    typography: {
+        fontSize: {
+            sm: '14px',
+            md: '16px',
+            lg: '18px',
+        },
+        fontWeight: {
+            bold: 700,
+        },
+    },
+    colors: {
+        brand: {
+            primary: '#0066CC',
+        },
+        neutral: {
+            gray600: '#757575',
+            gray200: '#EEEEEE',
+        },
+        journeys: {
+            health: {
+                primary: '#0ACF83',
+                secondary: '#05A66A',
+            },
+            care: {
+                primary: '#FF8C42',
+                secondary: '#F17C3A',
+            },
+            plan: {
+                primary: '#3A86FF',
+                secondary: '#2D6FD9',
+            },
+        },
+    },
+    borderRadius: {
+        md: '8px',
+    },
+};
+
 // Helper function to render components with theme
 const renderWithTheme = (ui: React.ReactNode) => {
-    // Create a mock theme object with journey colors
-    const mockTheme = {
-        spacing: {
-            xs: '4px',
-            sm: '8px',
-            md: '16px',
-            lg: '24px',
-        },
-        typography: {
-            fontSize: {
-                sm: '14px',
-                md: '16px',
-                lg: '18px',
-            },
-            fontWeight: {
-                bold: 700,
-            },
-        },
-        colors: {
-            brand: {
-                primary: '#0066CC',
-            },
-            neutral: {
-                gray600: '#757575',
-                gray200: '#EEEEEE',
-            },
-            journeys: {
-                health: {
-                    primary: '#0ACF83',
-                    secondary: '#05A66A',
-                },
-                care: {
-                    primary: '#FF8C42',
-                    secondary: '#F17C3A',
-                },
-                plan: {
-                    primary: '#3A86FF',
-                    secondary: '#2D6FD9',
-                },
-            },
-        },
-        borderRadius: {
-            md: '8px',
-        },
-    };
-
-    return render(<ThemeProvider theme={mockTheme}>{ui}</ThemeProvider>);
+    return render(<ThemeProvider theme={mockTheme as any}>{ui}</ThemeProvider>);
 };
 
 describe('XPCounter', () => {
@@ -88,7 +88,7 @@ describe('XPCounter', () => {
 
         // Test care journey
         rerender(
-            <ThemeProvider theme={mockTheme}>
+            <ThemeProvider theme={mockTheme as any}>
                 <XPCounter currentXP={500} nextLevelXP={1000} journey="care" testId="care-xp" />
             </ThemeProvider>
         );
@@ -98,7 +98,7 @@ describe('XPCounter', () => {
 
         // Test plan journey
         rerender(
-            <ThemeProvider theme={mockTheme}>
+            <ThemeProvider theme={mockTheme as any}>
                 <XPCounter currentXP={500} nextLevelXP={1000} journey="plan" testId="plan-xp" />
             </ThemeProvider>
         );

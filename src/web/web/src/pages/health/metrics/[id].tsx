@@ -69,7 +69,7 @@ const MetricDetail: React.FC = () => {
                 <Text>Last Updated: {formattedDate}</Text>
                 <HealthChart
                     type="line"
-                    data={[metric]}
+                    data={[metric as unknown as Record<string, unknown>]}
                     xAxisKey="timestamp"
                     yAxisKey="value"
                     xAxisLabel="Time"

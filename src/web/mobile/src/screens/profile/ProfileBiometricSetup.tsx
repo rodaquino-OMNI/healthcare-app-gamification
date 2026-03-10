@@ -1,20 +1,44 @@
-import React, { useState, useCallback } from 'react';
-import { ScrollView, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useTranslation } from 'react-i18next';
-import styled from 'styled-components/native';
-import ReactNativeBiometrics from 'react-native-biometrics';
-
-import { colors } from '@design-system/tokens/colors';
-import { typography } from '@design-system/tokens/typography';
-import { spacing } from '@design-system/tokens/spacing';
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { borderRadius } from '@design-system/tokens/borderRadius';
+import { colors } from '@design-system/tokens/colors';
 import { sizing } from '@design-system/tokens/sizing';
+import { spacing } from '@design-system/tokens/spacing';
+import { typography } from '@design-system/tokens/typography';
+import { useNavigation } from '@react-navigation/native';
+import * as LocalAuthentication from 'expo-local-authentication';
+import React, { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ScrollView, Alert } from 'react-native';
+import ReactNativeBiometricsImport from 'react-native-biometrics';
+import styled from 'styled-components/native';
+
+import { registerBiometricKey, getBiometricChallenge, verifyBiometricSignature } from '../../api/auth';
 import { ROUTES } from '../../constants/routes';
 import { useAuth } from '../../context/AuthContext';
-import { registerBiometricKey, getBiometricChallenge, verifyBiometricSignature } from '../../api/auth';
+import type { AuthNavigationProp } from '../../navigation/types';
 import { secureTokenStorage } from '../../utils/secure-storage';
-import * as LocalAuthentication from 'expo-local-authentication';
+
+// react-native-biometrics exports a default class but module resolution may pick up
+// the raw .ts source whose export shape differs from the compiled .d.ts.
+const ReactNativeBiometrics = ReactNativeBiometricsImport as unknown as new (opts?: {
+    allowDeviceCredentials?: boolean;
+}) => {
+    isSensorAvailable(): Promise<{ available: boolean; biometryType?: string; error?: string }>;
+    createKeys(promptMessage?: string): Promise<{ publicKey: string }>;
+    biometricKeysExist(): Promise<{ keysExist: boolean }>;
+    deleteKeys(): Promise<{ keysDeleted: boolean }>;
+    createSignature(opts: {
+        promptMessage: string;
+        payload: string;
+        cancelButtonText?: string;
+    }): Promise<{ success: boolean; signature?: string; error?: string }>;
+    simplePrompt(opts: {
+        promptMessage: string;
+        fallbackPromptMessage?: string;
+        cancelButtonText?: string;
+    }): Promise<{ success: boolean; error?: string }>;
+};
 
 const rnBiometrics = new ReactNativeBiometrics({ allowDeviceCredentials: true });
 
@@ -154,11 +178,11 @@ const BENEFITS = [
  * Users can enable it or skip for later.
  */
 export const ProfileBiometricSetup: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<AuthNavigationProp>();
     const { t } = useTranslation();
     const { session } = useAuth();
-    const [enrolling, setEnrolling] = useState(false);
-    const [registered, setRegistered] = useState(false);
+    const [_enrolling, setEnrolling] = useState(false);
+    const [_registered, setRegistered] = useState(false);
 
     /**
      * Enable biometric authentication:
@@ -167,7 +191,7 @@ export const ProfileBiometricSetup: React.FC = () => {
      * 3. Generate RSA keypair via react-native-biometrics
      * 4. Register public key with the backend
      */
-    const handleEnable = async () => {
+    const handleEnable = async (): Promise<void> => {
         setEnrolling(true);
         try {
             const hasHardware = await LocalAuthentication.hasHardwareAsync();
@@ -219,7 +243,7 @@ export const ProfileBiometricSetup: React.FC = () => {
      * 3. Send the signature to the server for verification
      * 4. Receive and persist an auth session on success
      */
-    const handleBiometricLogin = useCallback(async (): Promise<boolean> => {
+    const _handleBiometricLogin = useCallback(async (): Promise<boolean> => {
         try {
             // Step 1: Get challenge from server
             const { challenge } = await getBiometricChallenge();
@@ -248,7 +272,7 @@ export const ProfileBiometricSetup: React.FC = () => {
         }
     }, [t]);
 
-    const handleSkip = () => {
+    const handleSkip = (): void => {
         navigation.navigate(ROUTES.PROFILE_CONFIRMATION);
     };
 
@@ -284,7 +308,7 @@ export const ProfileBiometricSetup: React.FC = () => {
                     {/* Buttons */}
                     <ButtonsContainer>
                         <PrimaryButton
-                            onPress={handleEnable}
+                            onPress={() => void handleEnable()}
                             accessibilityRole="button"
                             accessibilityLabel={t('profile.biometricSetup.enable')}
                             testID="biometric-setup-enable"

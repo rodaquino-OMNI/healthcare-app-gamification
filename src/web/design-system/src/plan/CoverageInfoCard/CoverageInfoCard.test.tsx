@@ -1,13 +1,15 @@
 import { render, screen } from '@testing-library/react';
+// @ts-expect-error jest-axe has no type declarations
 import { axe } from 'jest-axe';
 import React from 'react';
+import { ThemeProvider } from 'styled-components';
 
 import { CoverageInfoCard } from './CoverageInfoCard';
-import { ThemeProvider, planTheme } from '../../themes';
+import { planTheme } from '../../themes';
 
 // Helper function to render components with the Plan theme
 const renderWithTheme = (ui: React.ReactElement) => {
-    return render(<ThemeProvider theme={planTheme}>{ui}</ThemeProvider>);
+    return render(<ThemeProvider theme={planTheme as any}>{ui}</ThemeProvider>);
 };
 
 // Test data

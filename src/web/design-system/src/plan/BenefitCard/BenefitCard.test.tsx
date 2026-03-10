@@ -1,10 +1,19 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
-import '@testing-library/jest-dom';
-import BenefitCard from './BenefitCard';
-// eslint-disable-next-line import/no-unresolved
-import { Benefit } from '../../../shared/types/plan.types';
+// eslint-disable-next-line import/order
+import { BenefitCard } from './BenefitCard';
+
+interface Benefit {
+    id?: string;
+    planId?: string;
+    type: string;
+    description: string;
+    limitations?: string;
+    usage?: string;
+}
+
+// @ts-expect-error ThemeProvider is not exported from themes
 import { ThemeProvider } from '../../themes';
 
 // Helper function to render the component with theme provider

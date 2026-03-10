@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
 import { QuestCard } from './QuestCard';
+// @ts-expect-error ThemeProvider is not exported from themes; mocked by jest.mock('styled-components')
 import { ThemeProvider } from '../../themes';
 
 // Mock styled-components theme
@@ -141,6 +142,7 @@ const baseQuest = {
     icon: 'footsteps',
     progress: 5000,
     total: 10000,
+    completed: false,
     journey: 'health' as const,
 };
 
@@ -188,6 +190,7 @@ describe('QuestCard', () => {
             ...baseQuest,
             progress: 10000,
             total: 10000,
+            completed: true,
         };
 
         renderWithTheme(<QuestCard quest={completedQuest} />);
@@ -254,6 +257,7 @@ describe('QuestCard', () => {
             ...baseQuest,
             progress: 12000,
             total: 10000,
+            completed: true,
         };
 
         renderWithTheme(<QuestCard quest={overcompletedQuest} />);

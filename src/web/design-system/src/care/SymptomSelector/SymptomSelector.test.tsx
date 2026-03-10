@@ -4,8 +4,7 @@ import React from 'react';
 
 // eslint-disable-next-line import/no-unresolved
 import SymptomSelector from './SymptomSelector';
-// eslint-disable-next-line import/no-unresolved
-import type { Symptom } from '../../../shared/types/care.types';
+type Symptom = { id: string; name: string };
 // eslint-disable-next-line import/no-unresolved
 import { careTheme } from '../../themes/care.theme';
 

@@ -43,15 +43,9 @@ jest.mock('design-system/primitives', () => ({
     Box: ({ children, ...props }: React.HTMLAttributes<HTMLDivElement> & { children?: React.ReactNode }) => (
         <div {...props}>{children}</div>
     ),
-    Text: ({
-        children,
-        as: Tag = 'span',
-        ...props
-    }: {
-        children?: React.ReactNode;
-        as?: keyof JSX.IntrinsicElements;
-        [key: string]: unknown;
-    }) => <Tag {...(props as React.HTMLAttributes<HTMLElement>)}>{children}</Tag>,
+    Text: ({ children, as: _tag, ...props }: { children?: React.ReactNode; as?: string; [key: string]: unknown }) => (
+        <span {...(props as React.HTMLAttributes<HTMLElement>)}>{children}</span>
+    ),
 }));
 
 jest.mock('design-system/tokens', () => ({

@@ -1,9 +1,10 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client'; // Version 3.0+
-import { createUploadLink } from 'apollo-upload-client'; // Version 17.0.0
-import axios, { AxiosInstance, AxiosError } from 'axios'; // Version 1.6.8
-import { Platform } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
+import { createUploadLink } from 'apollo-upload-client'; // Version 17.0.0
+import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'axios'; // Version 1.6.8
+// eslint-disable-next-line import/no-unresolved
 import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 // Native TLS certificate pinning is handled by native-ssl-pinning.ts and
 // Android's network_security_config.xml. See native-ssl-pinning.ts for the
 // pinnedFetch wrapper that can be used for direct fetch calls.
@@ -16,7 +17,10 @@ declare const __DEV__: boolean;
  * Note: In a production environment, these values should be loaded from environment variables
  * or a configuration service rather than being hardcoded.
  */
-const API_URL = Constants.expoConfig?.extra?.apiUrl || process.env.EXPO_PUBLIC_API_URL || 'https://api.austa.com.br';
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
+const API_URL: string =
+    Constants.expoConfig?.extra?.apiUrl || process.env.EXPO_PUBLIC_API_URL || 'https://api.austa.com.br';
+/* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
 const GRAPHQL_ENDPOINT = `${API_URL}/graphql`;
 const API_TIMEOUT = 30000; // 30 seconds
 
@@ -81,12 +85,9 @@ function isUrlSafe(url: string): boolean {
     }
 }
 
-// Type definition for request config
-interface RequestConfig {
-    url?: string;
+// Extend Axios internal config with SSRF-relevant fields
+interface RequestConfig extends InternalAxiosRequestConfig {
     baseURL?: string;
-    headers?: Record<string, string>;
-    [key: string]: any;
 }
 
 /**

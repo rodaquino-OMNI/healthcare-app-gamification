@@ -2,18 +2,18 @@ import { describe, it, expect } from '@jest/globals';
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
-import Button from './Button';
+import { Button } from './Button';
 
 // Mock react-native components
 jest.mock('react-native', () => ({
-    ActivityIndicator: ({ size, color, ...props }) => (
+    ActivityIndicator: ({ size, color, ...props }: { size?: string; color?: string; [key: string]: unknown }) => (
         <div data-testid="activity-indicator" data-size={size} data-color={color} {...props} />
     ),
 }));
 
 // Mock the Touchable component to pass through props to a button element
 jest.mock('../../primitives/Touchable/Touchable', () => ({
-    Touchable: ({ children, ...props }) => (
+    Touchable: ({ children, ...props }: { children?: React.ReactNode; [key: string]: unknown }) => (
         <button data-testid="button" {...props}>
             {children}
         </button>
@@ -22,14 +22,34 @@ jest.mock('../../primitives/Touchable/Touchable', () => ({
 
 // Mock the Icon component
 jest.mock('../../primitives/Icon/Icon', () => ({
-    Icon: ({ name, size, color, ...props }) => (
-        <span data-testid="icon" data-name={name} data-size={size} data-color={color} {...props} />
-    ),
+    Icon: ({
+        name,
+        size,
+        color,
+        ...props
+    }: {
+        name?: string;
+        size?: string;
+        color?: string;
+        [key: string]: unknown;
+    }) => <span data-testid="icon" data-name={name} data-size={size} data-color={color} {...props} />,
 }));
 
 // Mock the Text component
 jest.mock('../../primitives/Text/Text', () => ({
-    Text: ({ children, fontSize, fontWeight, color, ...props }) => (
+    Text: ({
+        children,
+        fontSize,
+        fontWeight,
+        color,
+        ...props
+    }: {
+        children?: React.ReactNode;
+        fontSize?: string;
+        fontWeight?: string;
+        color?: string;
+        [key: string]: unknown;
+    }) => (
         <span data-testid="text" data-font-size={fontSize} data-font-weight={fontWeight} data-color={color} {...props}>
             {children}
         </span>

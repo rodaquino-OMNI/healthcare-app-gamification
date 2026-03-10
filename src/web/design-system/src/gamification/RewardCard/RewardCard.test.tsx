@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
 import RewardCard from './RewardCard';
+// @ts-expect-error ThemeProvider is not exported from themes; component uses styled-components ThemeProvider
 import { ThemeProvider } from '../../themes';
 
 // Helper function to render components with theme context

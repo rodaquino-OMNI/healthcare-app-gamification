@@ -3,14 +3,14 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
 
-import Modal from './Modal';
+import { Modal } from './Modal';
 import { baseTheme } from '../../themes/base.theme';
 import { careTheme } from '../../themes/care.theme';
 import { healthTheme } from '../../themes/health.theme';
 import { planTheme } from '../../themes/plan.theme';
 
 // Helper function to render a component with a specified theme
-const renderWithTheme = (ui: React.ReactElement, theme: object) => {
+const renderWithTheme = (ui: React.ReactElement, theme: any) => {
     return render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
 };
 
@@ -71,7 +71,7 @@ describe('Modal component', () => {
         );
 
         // Find the modal container element (the backdrop)
-        const backdrop = screen.getByRole('dialog').querySelector('[aria-labelledby]');
+        const backdrop = screen.getByRole('dialog').querySelector('[aria-labelledby]')!;
         fireEvent.click(backdrop);
 
         expect(onCloseMock).toHaveBeenCalledTimes(1);
@@ -198,7 +198,7 @@ describe('Modal component', () => {
         // Verify focus is initially in the modal
         await waitFor(() => {
             expect(document.activeElement).toBeInTheDocument();
-            expect(document.activeElement.closest('[role="dialog"]')).toBeInTheDocument();
+            expect(document.activeElement!.closest('[role="dialog"]')).toBeInTheDocument();
         });
 
         // Simulate tabbing through elements and verify focus remains in modal

@@ -85,7 +85,7 @@ const getCategoryColor = (category: string): 'success' | 'info' | 'warning' => {
 /** Self-care tips page with categorized recommendation cards. */
 const SelfCarePage: React.FC = () => {
     const router = useRouter();
-    const categories = [...new Set(SELF_CARE_TIPS.map((t) => t.category))];
+    const categories = Array.from(new Set(SELF_CARE_TIPS.map((t) => t.category)));
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>

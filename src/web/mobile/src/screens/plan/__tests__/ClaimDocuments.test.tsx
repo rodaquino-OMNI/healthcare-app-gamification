@@ -1,5 +1,5 @@
-import React from 'react';
 import { render } from '@testing-library/react-native';
+import React from 'react';
 
 // Navigation mock
 jest.mock('@react-navigation/native', () => ({
@@ -18,7 +18,8 @@ jest.mock('react-i18next', () => ({
 
 // styled-components mock
 jest.mock('styled-components/native', () => {
-    const RN = jest.requireActual('react-native');
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+    const RN = require('react-native') as typeof import('react-native');
     return {
         __esModule: true,
         default: {
@@ -174,14 +175,33 @@ jest.mock('@expo/vector-icons', () => ({
 // Screen import — always after all mocks
 import { ClaimDocuments } from '../ClaimDocuments';
 
+const defaultProps = {
+    documents: [{ id: '1', type: 'Receipt' }],
+    sectionTitle: 'Documents',
+    theme: {
+        colors: {
+            primary: { main: '#007AFF' },
+            background: { default: '#fff', paper: '#f5f5f5' },
+            text: { primary: '#000', secondary: '#666' },
+            border: { light: '#ddd' },
+        },
+        spacing: { xs: 4, sm: 8, md: 16, lg: 24 },
+        borderRadius: { sm: 4, md: 8 },
+        typography: {
+            fontSize: { sm: 12, md: 14, lg: 16 },
+            fontWeight: { regular: '400', medium: '500', bold: '700' },
+        },
+    },
+} as unknown as React.ComponentProps<typeof ClaimDocuments>;
+
 describe('ClaimDocuments', () => {
     it('renders without crashing', () => {
-        const { toJSON } = render(<ClaimDocuments />);
+        const { toJSON } = render(<ClaimDocuments {...defaultProps} />);
         expect(toJSON()).toBeTruthy();
     });
 
     it('matches snapshot', () => {
-        const { toJSON } = render(<ClaimDocuments />);
+        const { toJSON } = render(<ClaimDocuments {...defaultProps} />);
         expect(toJSON()).toMatchSnapshot();
     });
 });

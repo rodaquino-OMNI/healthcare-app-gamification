@@ -1,5 +1,5 @@
-import React from 'react';
 import { render } from '@testing-library/react-native';
+import React from 'react';
 
 // Navigation mock
 jest.mock('@react-navigation/native', () => ({
@@ -18,7 +18,8 @@ jest.mock('react-i18next', () => ({
 
 // styled-components mock
 jest.mock('styled-components/native', () => {
-    const RN = jest.requireActual('react-native');
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+    const RN = require('react-native') as typeof import('react-native');
     return {
         __esModule: true,
         default: {
@@ -174,14 +175,34 @@ jest.mock('@expo/vector-icons', () => ({
 // Screen import — always after all mocks
 import { ClaimStatusTimeline } from '../ClaimStatusTimeline';
 
+const defaultProps = {
+    status: 'pending' as const,
+    sectionTitle: 'Timeline',
+    formattedDate: '2024-01-01',
+    theme: {
+        colors: {
+            primary: { main: '#007AFF' },
+            background: { default: '#fff', paper: '#f5f5f5' },
+            text: { primary: '#000', secondary: '#666' },
+            border: { light: '#ddd' },
+        },
+        spacing: { xs: 4, sm: 8, md: 16, lg: 24 },
+        borderRadius: { sm: 4, md: 8 },
+        typography: {
+            fontSize: { sm: 12, md: 14, lg: 16 },
+            fontWeight: { regular: '400', medium: '500', bold: '700' },
+        },
+    },
+} as unknown as React.ComponentProps<typeof ClaimStatusTimeline>;
+
 describe('ClaimStatusTimeline', () => {
     it('renders without crashing', () => {
-        const { toJSON } = render(<ClaimStatusTimeline />);
+        const { toJSON } = render(<ClaimStatusTimeline {...defaultProps} />);
         expect(toJSON()).toBeTruthy();
     });
 
     it('matches snapshot', () => {
-        const { toJSON } = render(<ClaimStatusTimeline />);
+        const { toJSON } = render(<ClaimStatusTimeline {...defaultProps} />);
         expect(toJSON()).toMatchSnapshot();
     });
 });

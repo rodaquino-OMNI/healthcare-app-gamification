@@ -14,12 +14,12 @@ import { Platform, Alert } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 
 export interface DeviceSecurityStatus {
-  /** True if the device is rooted (Android) or jailbroken (iOS). */
-  rooted: boolean;
-  /** True if the app is running on an emulator/simulator. */
-  emulator: boolean;
-  /** True if the app was installed from an unofficial source. */
-  debugMode: boolean;
+    /** True if the device is rooted (Android) or jailbroken (iOS). */
+    rooted: boolean;
+    /** True if the app is running on an emulator/simulator. */
+    emulator: boolean;
+    /** True if the app was installed from an unofficial source. */
+    debugMode: boolean;
 }
 
 /**
@@ -27,45 +27,45 @@ export interface DeviceSecurityStatus {
  * Returns a promise because the native checks are asynchronous.
  */
 export async function isRooted(): Promise<boolean> {
-  try {
-    if (Platform.OS === 'android') {
-      return await DeviceInfo.isRooted();
+    try {
+        // DeviceInfo exposes isRooted/isJailBroken at runtime but
+        // the v10 type declarations omit them. Cast to access safely.
+        const di = DeviceInfo as unknown as Record<string, (() => Promise<boolean>) | undefined>;
+        if (Platform.OS === 'android' && typeof di.isRooted === 'function') {
+            return await di.isRooted();
+        }
+        if (Platform.OS === 'ios' && typeof di.isJailBroken === 'function') {
+            return await di.isJailBroken();
+        }
+        return false;
+    } catch {
+        // If the check fails, assume compromised for safety
+        return true;
     }
-    if (Platform.OS === 'ios') {
-      return await DeviceInfo.isJailBroken();
-    }
-    return false;
-  } catch {
-    // If the check fails, assume compromised for safety
-    return true;
-  }
 }
 
 /**
  * Check if the app is running on an emulator or simulator.
  */
 export async function isEmulator(): Promise<boolean> {
-  try {
-    return await DeviceInfo.isEmulator();
-  } catch {
-    return false;
-  }
+    try {
+        return await DeviceInfo.isEmulator();
+    } catch {
+        return false;
+    }
 }
 
 /**
  * Run all device security checks and return a combined status.
  */
 export async function checkDeviceSecurity(): Promise<DeviceSecurityStatus> {
-  const [rootedResult, emulatorResult] = await Promise.all([
-    isRooted(),
-    isEmulator(),
-  ]);
+    const [rootedResult, emulatorResult] = await Promise.all([isRooted(), isEmulator()]);
 
-  return {
-    rooted: rootedResult,
-    emulator: emulatorResult,
-    debugMode: __DEV__,
-  };
+    return {
+        rooted: rootedResult,
+        emulator: emulatorResult,
+        debugMode: __DEV__,
+    };
 }
 
 /**
@@ -74,15 +74,15 @@ export async function checkDeviceSecurity(): Promise<DeviceSecurityStatus> {
  * Call this from App.tsx or the auth flow entry point.
  */
 export async function warnIfCompromised(): Promise<void> {
-  const status = await checkDeviceSecurity();
+    const status = await checkDeviceSecurity();
 
-  if (status.rooted) {
-    Alert.alert(
-      'Security Warning',
-      'This device appears to be rooted or jailbroken. ' +
-        'Your health data may be at risk. We recommend using a ' +
-        'non-modified device for the best security.',
-      [{ text: 'I Understand', style: 'default' }],
-    );
-  }
+    if (status.rooted) {
+        Alert.alert(
+            'Security Warning',
+            'This device appears to be rooted or jailbroken. ' +
+                'Your health data may be at risk. We recommend using a ' +
+                'non-modified device for the best security.',
+            [{ text: 'I Understand', style: 'default' }]
+        );
+    }
 }

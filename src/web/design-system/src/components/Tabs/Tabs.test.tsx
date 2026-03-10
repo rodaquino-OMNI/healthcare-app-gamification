@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
 
-import Tabs from './Tabs';
+import { Tabs } from './Tabs';
 import { baseTheme } from '../../themes/base.theme';
 import { healthTheme } from '../../themes/health.theme';
 

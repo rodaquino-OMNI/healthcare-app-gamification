@@ -1,264 +1,258 @@
-import React, { useState } from 'react';
-import {
-  ScrollView,
-  Switch,
-  Modal as RNModal,
-  Alert,
-} from 'react-native';
-import styled from 'styled-components/native';
-import { useTranslation } from 'react-i18next';
-
-import { deleteAccount } from '../../../api/auth';
-import { restClient } from '../../../api/client';
-import { useAuth } from '../../../context/AuthContext';
-
-import { colors } from '@design-system/tokens/colors';
-import { typography } from '@design-system/tokens/typography';
-import { spacing, spacingValues } from '@design-system/tokens/spacing';
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { borderRadius } from '@design-system/tokens/borderRadius';
+import { colors } from '@design-system/tokens/colors';
 import { sizing } from '@design-system/tokens/sizing';
+import { spacing, spacingValues } from '@design-system/tokens/spacing';
+import { typography } from '@design-system/tokens/typography';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ScrollView, Switch, Modal as RNModal, Alert } from 'react-native';
+import styled from 'styled-components/native';
+
+import { deleteAccount } from '../../api/auth';
+import { restClient } from '../../api/client';
+import { useAuth } from '../../context/AuthContext';
 
 // --- Styled Components ---
 
 const Container = styled.SafeAreaView`
-  flex: 1;
-  background-color: ${({ theme }) => theme.colors.background.default};
+    flex: 1;
+    background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const SectionHeader = styled.View`
-  background-color: ${({ theme }) => theme.colors.background.subtle};
-  padding-horizontal: ${spacing.xl};
-  padding-vertical: ${spacing.sm};
+    background-color: ${({ theme }) => theme.colors.background.subtle};
+    padding-horizontal: ${spacing.xl};
+    padding-vertical: ${spacing.sm};
 `;
 
 const SectionHeaderText = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-xs']};
-  font-weight: ${typography.fontWeight.semiBold};
-  color: ${({ theme }) => theme.colors.text.muted};
-  text-transform: uppercase;
-  letter-spacing: ${typography.letterSpacing.wide};
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-xs']};
+    font-weight: ${typography.fontWeight.semiBold};
+    color: ${({ theme }) => theme.colors.text.muted};
+    text-transform: uppercase;
+    letter-spacing: ${typography.letterSpacing.wide};
 `;
 
 const ToggleRow = styled.View`
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding-horizontal: ${spacing.xl};
-  padding-vertical: ${spacing.md};
-  background-color: ${({ theme }) => theme.colors.background.default};
-  border-bottom-width: 1px;
-  border-bottom-color: ${colors.gray[10]};
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-horizontal: ${spacing.xl};
+    padding-vertical: ${spacing.md};
+    background-color: ${({ theme }) => theme.colors.background.default};
+    border-bottom-width: 1px;
+    border-bottom-color: ${colors.gray[10]};
 `;
 
 const ToggleLabel = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-md']};
-  font-weight: ${typography.fontWeight.regular};
-  color: ${({ theme }) => theme.colors.text.default};
-  flex: 1;
-  margin-right: ${spacing.md};
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-md']};
+    font-weight: ${typography.fontWeight.regular};
+    color: ${({ theme }) => theme.colors.text.default};
+    flex: 1;
+    margin-right: ${spacing.md};
 `;
 
 const CheckboxRow = styled.TouchableOpacity`
-  flex-direction: row;
-  align-items: center;
-  padding-horizontal: ${spacing.xl};
-  padding-vertical: ${spacing.md};
-  background-color: ${({ theme }) => theme.colors.background.default};
-  border-bottom-width: 1px;
-  border-bottom-color: ${colors.gray[10]};
+    flex-direction: row;
+    align-items: center;
+    padding-horizontal: ${spacing.xl};
+    padding-vertical: ${spacing.md};
+    background-color: ${({ theme }) => theme.colors.background.default};
+    border-bottom-width: 1px;
+    border-bottom-color: ${colors.gray[10]};
 `;
 
 const CheckboxBox = styled.View<{ checked: boolean }>`
-  width: 20px;
-  height: 20px;
-  border-radius: ${borderRadius.xs};
-  border-width: 2px;
-  border-color: ${(props) =>
-    props.checked ? colors.brand.primary : colors.gray[40]};
-  background-color: ${(props) =>
-    props.checked ? colors.brand.primary : 'transparent'};
-  align-items: center;
-  justify-content: center;
-  margin-right: ${spacing.sm};
+    width: 20px;
+    height: 20px;
+    border-radius: ${borderRadius.xs};
+    border-width: 2px;
+    border-color: ${(props) => (props.checked ? colors.brand.primary : colors.gray[40])};
+    background-color: ${(props) => (props.checked ? colors.brand.primary : 'transparent')};
+    align-items: center;
+    justify-content: center;
+    margin-right: ${spacing.sm};
 `;
 
 const CheckmarkText = styled.Text`
-  font-size: 14px;
-  color: ${({ theme }) => theme.colors.text.onBrand};
-  line-height: 20px;
+    font-size: 14px;
+    color: ${({ theme }) => theme.colors.text.onBrand};
+    line-height: 20px;
 `;
 
 const CheckboxLabel = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-md']};
-  font-weight: ${typography.fontWeight.regular};
-  color: ${({ theme }) => theme.colors.text.default};
-  flex: 1;
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-md']};
+    font-weight: ${typography.fontWeight.regular};
+    color: ${({ theme }) => theme.colors.text.default};
+    flex: 1;
 `;
 
 const InfoText = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-xs']};
-  color: ${({ theme }) => theme.colors.text.muted};
-  padding-horizontal: ${spacing.xl};
-  padding-vertical: ${spacing.sm};
-  line-height: 18px;
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-xs']};
+    color: ${({ theme }) => theme.colors.text.muted};
+    padding-horizontal: ${spacing.xl};
+    padding-vertical: ${spacing.sm};
+    line-height: 18px;
 `;
 
 const ActionButtonContainer = styled.View`
-  padding-horizontal: ${spacing.xl};
-  padding-vertical: ${spacing.sm};
+    padding-horizontal: ${spacing.xl};
+    padding-vertical: ${spacing.sm};
 `;
 
 const OutlineButton = styled.TouchableOpacity`
-  border-width: 1px;
-  border-color: ${({ theme }) => theme.colors.border.default};
-  border-radius: ${borderRadius.md};
-  height: ${sizing.component.md};
-  align-items: center;
-  justify-content: center;
-  margin-bottom: ${spacing.sm};
+    border-width: 1px;
+    border-color: ${({ theme }) => theme.colors.border.default};
+    border-radius: ${borderRadius.md};
+    height: ${sizing.component.md};
+    align-items: center;
+    justify-content: center;
+    margin-bottom: ${spacing.sm};
 `;
 
 const OutlineButtonText = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-md']};
-  font-weight: ${typography.fontWeight.medium};
-  color: ${({ theme }) => theme.colors.text.default};
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-md']};
+    font-weight: ${typography.fontWeight.medium};
+    color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const DangerOutlineButton = styled.TouchableOpacity`
-  border-width: 1px;
-  border-color: ${colors.semantic.error};
-  border-radius: ${borderRadius.md};
-  height: ${sizing.component.md};
-  align-items: center;
-  justify-content: center;
-  margin-bottom: ${spacing.sm};
+    border-width: 1px;
+    border-color: ${colors.semantic.error};
+    border-radius: ${borderRadius.md};
+    height: ${sizing.component.md};
+    align-items: center;
+    justify-content: center;
+    margin-bottom: ${spacing.sm};
 `;
 
 const DangerOutlineButtonText = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-md']};
-  font-weight: ${typography.fontWeight.medium};
-  color: ${colors.semantic.error};
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-md']};
+    font-weight: ${typography.fontWeight.medium};
+    color: ${colors.semantic.error};
 `;
 
 const DangerSection = styled.View`
-  margin-top: ${spacing['2xl']};
-  padding-horizontal: ${spacing.xl};
-  padding-vertical: ${spacing.lg};
-  border-top-width: 1px;
-  border-top-color: ${({ theme }) => theme.colors.border.default};
+    margin-top: ${spacing['2xl']};
+    padding-horizontal: ${spacing.xl};
+    padding-vertical: ${spacing.lg};
+    border-top-width: 1px;
+    border-top-color: ${({ theme }) => theme.colors.border.default};
 `;
 
 const DangerSectionTitle = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-xs']};
-  font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.semantic.error};
-  text-transform: uppercase;
-  letter-spacing: ${typography.letterSpacing.wide};
-  margin-bottom: ${spacing.md};
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-xs']};
+    font-weight: ${typography.fontWeight.semiBold};
+    color: ${colors.semantic.error};
+    text-transform: uppercase;
+    letter-spacing: ${typography.letterSpacing.wide};
+    margin-bottom: ${spacing.md};
 `;
 
 const DangerButton = styled.TouchableOpacity`
-  background-color: ${colors.semantic.error};
-  border-radius: ${borderRadius.md};
-  height: ${sizing.component.md};
-  align-items: center;
-  justify-content: center;
+    background-color: ${colors.semantic.error};
+    border-radius: ${borderRadius.md};
+    height: ${sizing.component.md};
+    align-items: center;
+    justify-content: center;
 `;
 
 const DangerButtonText = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-md']};
-  font-weight: ${typography.fontWeight.semiBold};
-  color: ${({ theme }) => theme.colors.text.onBrand};
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-md']};
+    font-weight: ${typography.fontWeight.semiBold};
+    color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 // --- Modal Styled Components ---
 
 const ModalOverlay = styled.View`
-  flex: 1;
-  background-color: rgba(0, 0, 0, 0.5);
-  align-items: center;
-  justify-content: center;
+    flex: 1;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
 `;
 
 const ModalContent = styled.View`
-  width: 85%;
-  background-color: ${({ theme }) => theme.colors.background.default};
-  border-radius: ${borderRadius.lg};
-  padding: ${spacing.xl};
+    width: 85%;
+    background-color: ${({ theme }) => theme.colors.background.default};
+    border-radius: ${borderRadius.lg};
+    padding: ${spacing.xl};
 `;
 
 const ModalTitle = styled.Text`
-  font-family: ${typography.fontFamily.heading};
-  font-size: ${typography.fontSize['heading-md']};
-  font-weight: ${typography.fontWeight.bold};
-  color: ${({ theme }) => theme.colors.text.default};
-  margin-bottom: ${spacing.sm};
+    font-family: ${typography.fontFamily.heading};
+    font-size: ${typography.fontSize['heading-md']};
+    font-weight: ${typography.fontWeight.bold};
+    color: ${({ theme }) => theme.colors.text.default};
+    margin-bottom: ${spacing.sm};
 `;
 
 const ModalBody = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-md']};
-  font-weight: ${typography.fontWeight.regular};
-  color: ${({ theme }) => theme.colors.text.default};
-  line-height: 24px;
-  margin-bottom: ${spacing.xl};
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-md']};
+    font-weight: ${typography.fontWeight.regular};
+    color: ${({ theme }) => theme.colors.text.default};
+    line-height: 24px;
+    margin-bottom: ${spacing.xl};
 `;
 
 const ModalActions = styled.View`
-  flex-direction: row;
-  justify-content: flex-end;
-  gap: ${spacing.sm};
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: ${spacing.sm};
 `;
 
 const ModalCancelButton = styled.TouchableOpacity`
-  padding-vertical: ${spacing.sm};
-  padding-horizontal: ${spacing.lg};
-  border-radius: ${borderRadius.md};
-  border-width: 1px;
-  border-color: ${({ theme }) => theme.colors.border.default};
+    padding-vertical: ${spacing.sm};
+    padding-horizontal: ${spacing.lg};
+    border-radius: ${borderRadius.md};
+    border-width: 1px;
+    border-color: ${({ theme }) => theme.colors.border.default};
 `;
 
 const ModalCancelText = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-sm']};
-  font-weight: ${typography.fontWeight.medium};
-  color: ${({ theme }) => theme.colors.text.default};
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-sm']};
+    font-weight: ${typography.fontWeight.medium};
+    color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const ModalConfirmButton = styled.TouchableOpacity`
-  padding-vertical: ${spacing.sm};
-  padding-horizontal: ${spacing.lg};
-  border-radius: ${borderRadius.md};
-  background-color: ${colors.semantic.error};
+    padding-vertical: ${spacing.sm};
+    padding-horizontal: ${spacing.lg};
+    border-radius: ${borderRadius.md};
+    background-color: ${colors.semantic.error};
 `;
 
 const ModalConfirmText = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-sm']};
-  font-weight: ${typography.fontWeight.semiBold};
-  color: ${({ theme }) => theme.colors.text.onBrand};
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-sm']};
+    font-weight: ${typography.fontWeight.semiBold};
+    color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 // --- Types ---
 
 interface ConsentState {
-  serviceImprovement: boolean;
-  marketing: boolean;
-  analytics: boolean;
+    serviceImprovement: boolean;
+    marketing: boolean;
+    analytics: boolean;
 }
 
 interface SharingState {
-  healthWithDoctors: boolean;
-  usageWithPartners: boolean;
-  anonymousResearch: boolean;
+    healthWithDoctors: boolean;
+    usageWithPartners: boolean;
+    anonymousResearch: boolean;
 }
 
 /**
@@ -272,271 +266,270 @@ interface SharingState {
  *  4. Danger Zone (account deletion with modal confirmation)
  */
 export const SettingsPrivacyScreen: React.FC = () => {
-  const { t } = useTranslation();
-  const { session, signOut } = useAuth();
-  const [consent, setConsent] = useState<ConsentState>({
-    serviceImprovement: true,
-    marketing: false,
-    analytics: true,
-  });
-
-  const [sharing, setSharing] = useState<SharingState>({
-    healthWithDoctors: true,
-    usageWithPartners: false,
-    anonymousResearch: true,
-  });
-
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [consentRevokedVisible, setConsentRevokedVisible] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
-
-  const toggleConsent = (key: keyof ConsentState) => {
-    setConsent((prev) => {
-      const next = { ...prev, [key]: !prev[key] };
-      if (key === 'marketing' && !next.marketing) {
-        setConsentRevokedVisible(true);
-      } else {
-        setConsentRevokedVisible(false);
-      }
-      return next;
+    const { t } = useTranslation();
+    const { session, signOut } = useAuth();
+    const [consent, setConsent] = useState<ConsentState>({
+        serviceImprovement: true,
+        marketing: false,
+        analytics: true,
     });
-  };
 
-  const toggleSharing = (key: keyof SharingState) => {
-    setSharing((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
+    const [sharing, setSharing] = useState<SharingState>({
+        healthWithDoctors: true,
+        usageWithPartners: false,
+        anonymousResearch: true,
+    });
 
-  const handleExportData = async () => {
-    setIsExporting(true);
-    try {
-      const response = await restClient.get('/privacy/export');
-      Alert.alert(
-        t('settings.privacy.exportTitle'),
-        t('settings.privacy.exportMessage'),
-      );
-    } catch (err: unknown) {
-      Alert.alert(
-        t('settings.privacy.errorTitle'),
-        err instanceof Error ? err.message : t('settings.privacy.errorGeneric'),
-      );
-    } finally {
-      setIsExporting(false);
-    }
-  };
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [consentRevokedVisible, setConsentRevokedVisible] = useState(false);
+    const [isExporting, setIsExporting] = useState(false);
 
-  const handleRequestDeletion = async () => {
-    try {
-      if (!session?.accessToken) return;
-      await deleteAccount(session.accessToken, 'CONFIRM_DELETE');
-      await signOut();
-    } catch (err: unknown) {
-      Alert.alert(
-        t('settings.privacy.errorTitle'),
-        err instanceof Error ? err.message : t('settings.privacy.errorGeneric')
-      );
-    }
-  };
+    const toggleConsent = (key: keyof ConsentState): void => {
+        setConsent((prev) => {
+            const next = { ...prev, [key]: !prev[key] };
+            if (key === 'marketing' && !next.marketing) {
+                setConsentRevokedVisible(true);
+            } else {
+                setConsentRevokedVisible(false);
+            }
+            return next;
+        });
+    };
 
-  const handleDeleteAccount = async () => {
-    try {
-      if (!session?.accessToken) return;
-      await deleteAccount(session.accessToken, 'CONFIRM_DELETE');
-      await signOut();
-    } catch (err: unknown) {
-      Alert.alert(
-        t('settings.privacy.errorTitle'),
-        err instanceof Error ? err.message : t('settings.privacy.errorGeneric')
-      );
-    }
-  };
+    const toggleSharing = (key: keyof SharingState): void => {
+        setSharing((prev) => ({ ...prev, [key]: !prev[key] }));
+    };
 
-  const trackColor = {
-    false: colors.gray[20],
-    true: colors.brand.primary,
-  };
+    const handleExportData = async (): Promise<void> => {
+        setIsExporting(true);
+        try {
+            await restClient.get('/privacy/export');
+            Alert.alert(t('settings.privacy.exportTitle'), t('settings.privacy.exportMessage'));
+        } catch (err: unknown) {
+            Alert.alert(
+                t('settings.privacy.errorTitle'),
+                err instanceof Error ? err.message : t('settings.privacy.errorGeneric')
+            );
+        } finally {
+            setIsExporting(false);
+        }
+    };
 
-  return (
-    <Container>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: spacingValues['4xl'] }}
-      >
-        {/* Consentimento LGPD */}
-        <SectionHeader>
-          <SectionHeaderText>{t('settings.privacy.lgpdConsent')}</SectionHeaderText>
-        </SectionHeader>
+    const handleRequestDeletion = async (): Promise<void> => {
+        try {
+            if (!session?.accessToken) {
+                return;
+            }
+            await deleteAccount(session.accessToken, 'CONFIRM_DELETE');
+            await signOut();
+        } catch (err: unknown) {
+            Alert.alert(
+                t('settings.privacy.errorTitle'),
+                err instanceof Error ? err.message : t('settings.privacy.errorGeneric')
+            );
+        }
+    };
 
-        <ToggleRow>
-          <ToggleLabel>{t('settings.privacy.serviceImprovement')}</ToggleLabel>
-          <Switch
-            value={consent.serviceImprovement}
-            onValueChange={() => toggleConsent('serviceImprovement')}
-            trackColor={trackColor}
-            thumbColor={colors.neutral.white}
-            accessibilityLabel={t('settings.privacy.serviceImprovement')}
-            testID="settings-privacy-service"
-          />
-        </ToggleRow>
+    const handleDeleteAccount = async (): Promise<void> => {
+        try {
+            if (!session?.accessToken) {
+                return;
+            }
+            await deleteAccount(session.accessToken, 'CONFIRM_DELETE');
+            await signOut();
+        } catch (err: unknown) {
+            Alert.alert(
+                t('settings.privacy.errorTitle'),
+                err instanceof Error ? err.message : t('settings.privacy.errorGeneric')
+            );
+        }
+    };
 
-        <ToggleRow>
-          <ToggleLabel>{t('settings.privacy.marketing')}</ToggleLabel>
-          <Switch
-            value={consent.marketing}
-            onValueChange={() => toggleConsent('marketing')}
-            trackColor={trackColor}
-            thumbColor={colors.neutral.white}
-            accessibilityLabel={t('settings.privacy.marketing')}
-            testID="settings-privacy-marketing"
-          />
-        </ToggleRow>
+    const trackColor = {
+        false: colors.gray[20],
+        true: colors.brand.primary,
+    };
 
-        <ToggleRow>
-          <ToggleLabel>{t('settings.privacy.analytics')}</ToggleLabel>
-          <Switch
-            value={consent.analytics}
-            onValueChange={() => toggleConsent('analytics')}
-            trackColor={trackColor}
-            thumbColor={colors.neutral.white}
-            accessibilityLabel={t('settings.privacy.analytics')}
-            testID="settings-privacy-analytics"
-          />
-        </ToggleRow>
+    return (
+        <Container>
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: spacingValues['4xl'] }}
+            >
+                {/* Consentimento LGPD */}
+                <SectionHeader>
+                    <SectionHeaderText>{t('settings.privacy.lgpdConsent')}</SectionHeaderText>
+                </SectionHeader>
 
-        <InfoText>
-          {t('settings.privacy.lgpdInfo')}
-        </InfoText>
+                <ToggleRow>
+                    <ToggleLabel>{t('settings.privacy.serviceImprovement')}</ToggleLabel>
+                    <Switch
+                        value={consent.serviceImprovement}
+                        onValueChange={() => toggleConsent('serviceImprovement')}
+                        trackColor={trackColor}
+                        thumbColor={colors.neutral.white}
+                        accessibilityLabel={t('settings.privacy.serviceImprovement')}
+                        testID="settings-privacy-service"
+                    />
+                </ToggleRow>
 
-        {consentRevokedVisible && (
-          <InfoText
-            testID="consent-revoked-message"
-            style={{ color: colors.semantic.warning }}
-          >
-            {t('settings.privacy.consentRevoked', { defaultValue: 'Marketing consent has been revoked. You will no longer receive promotional communications.' })}
-          </InfoText>
-        )}
+                <ToggleRow>
+                    <ToggleLabel>{t('settings.privacy.marketing')}</ToggleLabel>
+                    <Switch
+                        value={consent.marketing}
+                        onValueChange={() => toggleConsent('marketing')}
+                        trackColor={trackColor}
+                        thumbColor={colors.neutral.white}
+                        accessibilityLabel={t('settings.privacy.marketing')}
+                        testID="settings-privacy-marketing"
+                    />
+                </ToggleRow>
 
-        {/* Compartilhamento de Dados */}
-        <SectionHeader>
-          <SectionHeaderText>{t('settings.privacy.dataSharing')}</SectionHeaderText>
-        </SectionHeader>
+                <ToggleRow>
+                    <ToggleLabel>{t('settings.privacy.analytics')}</ToggleLabel>
+                    <Switch
+                        value={consent.analytics}
+                        onValueChange={() => toggleConsent('analytics')}
+                        trackColor={trackColor}
+                        thumbColor={colors.neutral.white}
+                        accessibilityLabel={t('settings.privacy.analytics')}
+                        testID="settings-privacy-analytics"
+                    />
+                </ToggleRow>
 
-        <CheckboxRow
-          onPress={() => toggleSharing('healthWithDoctors')}
-          accessibilityRole="checkbox"
-          accessibilityState={{ checked: sharing.healthWithDoctors }}
-          accessibilityLabel={t('settings.privacy.healthWithDoctors')}
-          testID="settings-privacy-share-doctors"
-        >
-          <CheckboxBox checked={sharing.healthWithDoctors}>
-            {sharing.healthWithDoctors && <CheckmarkText>{'✓'}</CheckmarkText>}
-          </CheckboxBox>
-          <CheckboxLabel>{t('settings.privacy.healthWithDoctors')}</CheckboxLabel>
-        </CheckboxRow>
+                <InfoText>{t('settings.privacy.lgpdInfo')}</InfoText>
 
-        <CheckboxRow
-          onPress={() => toggleSharing('usageWithPartners')}
-          accessibilityRole="checkbox"
-          accessibilityState={{ checked: sharing.usageWithPartners }}
-          accessibilityLabel={t('settings.privacy.usageWithPartners')}
-          testID="settings-privacy-share-partners"
-        >
-          <CheckboxBox checked={sharing.usageWithPartners}>
-            {sharing.usageWithPartners && <CheckmarkText>{'✓'}</CheckmarkText>}
-          </CheckboxBox>
-          <CheckboxLabel>{t('settings.privacy.usageWithPartners')}</CheckboxLabel>
-        </CheckboxRow>
+                {consentRevokedVisible && (
+                    <InfoText testID="consent-revoked-message" style={{ color: colors.semantic.warning }}>
+                        {t('settings.privacy.consentRevoked', {
+                            defaultValue:
+                                'Marketing consent has been revoked. You will no longer receive promotional communications.',
+                        })}
+                    </InfoText>
+                )}
 
-        <CheckboxRow
-          onPress={() => toggleSharing('anonymousResearch')}
-          accessibilityRole="checkbox"
-          accessibilityState={{ checked: sharing.anonymousResearch }}
-          accessibilityLabel={t('settings.privacy.anonymousResearch')}
-          testID="settings-privacy-share-research"
-        >
-          <CheckboxBox checked={sharing.anonymousResearch}>
-            {sharing.anonymousResearch && <CheckmarkText>{'✓'}</CheckmarkText>}
-          </CheckboxBox>
-          <CheckboxLabel>{t('settings.privacy.anonymousResearch')}</CheckboxLabel>
-        </CheckboxRow>
+                {/* Compartilhamento de Dados */}
+                <SectionHeader>
+                    <SectionHeaderText>{t('settings.privacy.dataSharing')}</SectionHeaderText>
+                </SectionHeader>
 
-        {/* Seus Dados */}
-        <SectionHeader>
-          <SectionHeaderText>{t('settings.privacy.yourData')}</SectionHeaderText>
-        </SectionHeader>
+                <CheckboxRow
+                    onPress={() => toggleSharing('healthWithDoctors')}
+                    accessibilityRole="checkbox"
+                    accessibilityState={{ checked: sharing.healthWithDoctors }}
+                    accessibilityLabel={t('settings.privacy.healthWithDoctors')}
+                    testID="settings-privacy-share-doctors"
+                >
+                    <CheckboxBox checked={sharing.healthWithDoctors}>
+                        {sharing.healthWithDoctors && <CheckmarkText>{'✓'}</CheckmarkText>}
+                    </CheckboxBox>
+                    <CheckboxLabel>{t('settings.privacy.healthWithDoctors')}</CheckboxLabel>
+                </CheckboxRow>
 
-        <ActionButtonContainer>
-          <OutlineButton
-            onPress={handleExportData}
-            disabled={isExporting}
-            accessibilityRole="button"
-            accessibilityLabel={t('settings.privacy.exportData')}
-            testID="settings-privacy-export"
-          >
-            <OutlineButtonText>
-              {isExporting ? t('common.buttons.loading', { defaultValue: 'Loading...' }) : t('settings.privacy.exportData')}
-            </OutlineButtonText>
-          </OutlineButton>
+                <CheckboxRow
+                    onPress={() => toggleSharing('usageWithPartners')}
+                    accessibilityRole="checkbox"
+                    accessibilityState={{ checked: sharing.usageWithPartners }}
+                    accessibilityLabel={t('settings.privacy.usageWithPartners')}
+                    testID="settings-privacy-share-partners"
+                >
+                    <CheckboxBox checked={sharing.usageWithPartners}>
+                        {sharing.usageWithPartners && <CheckmarkText>{'✓'}</CheckmarkText>}
+                    </CheckboxBox>
+                    <CheckboxLabel>{t('settings.privacy.usageWithPartners')}</CheckboxLabel>
+                </CheckboxRow>
 
-          <DangerOutlineButton
-            onPress={handleRequestDeletion}
-            accessibilityRole="button"
-            accessibilityLabel={t('settings.privacy.requestDeletion')}
-            testID="settings-privacy-request-deletion"
-          >
-            <DangerOutlineButtonText>{t('settings.privacy.requestDeletion')}</DangerOutlineButtonText>
-          </DangerOutlineButton>
-        </ActionButtonContainer>
+                <CheckboxRow
+                    onPress={() => toggleSharing('anonymousResearch')}
+                    accessibilityRole="checkbox"
+                    accessibilityState={{ checked: sharing.anonymousResearch }}
+                    accessibilityLabel={t('settings.privacy.anonymousResearch')}
+                    testID="settings-privacy-share-research"
+                >
+                    <CheckboxBox checked={sharing.anonymousResearch}>
+                        {sharing.anonymousResearch && <CheckmarkText>{'✓'}</CheckmarkText>}
+                    </CheckboxBox>
+                    <CheckboxLabel>{t('settings.privacy.anonymousResearch')}</CheckboxLabel>
+                </CheckboxRow>
 
-        {/* Danger Zone */}
-        <DangerSection>
-          <DangerSectionTitle>{t('settings.privacy.dangerZone')}</DangerSectionTitle>
-          <DangerButton
-            onPress={() => setShowDeleteModal(true)}
-            accessibilityRole="button"
-            accessibilityLabel={t('settings.privacy.deleteAccount')}
-            testID="settings-privacy-delete-account"
-          >
-            <DangerButtonText>{t('settings.privacy.deleteAccount')}</DangerButtonText>
-          </DangerButton>
-        </DangerSection>
-      </ScrollView>
+                {/* Seus Dados */}
+                <SectionHeader>
+                    <SectionHeaderText>{t('settings.privacy.yourData')}</SectionHeaderText>
+                </SectionHeader>
 
-      {/* Delete Account Confirmation Modal */}
-      <RNModal
-        visible={showDeleteModal}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setShowDeleteModal(false)}
-      >
-        <ModalOverlay>
-          <ModalContent>
-            <ModalTitle>{t('settings.privacy.deleteAccount')}</ModalTitle>
-            <ModalBody>
-              {t('settings.privacy.deleteConfirmMessage')}
-            </ModalBody>
-            <ModalActions>
-              <ModalCancelButton
-                onPress={() => setShowDeleteModal(false)}
-                accessibilityRole="button"
-                accessibilityLabel={t('settings.privacy.cancelDeletion')}
-                testID="settings-privacy-delete-cancel"
-              >
-                <ModalCancelText>{t('common.buttons.cancel')}</ModalCancelText>
-              </ModalCancelButton>
-              <ModalConfirmButton
-                onPress={handleDeleteAccount}
-                accessibilityRole="button"
-                accessibilityLabel={t('settings.privacy.deletePermanently')}
-                testID="settings-privacy-delete-confirm"
-              >
-                <ModalConfirmText>{t('settings.privacy.deletePermanently')}</ModalConfirmText>
-              </ModalConfirmButton>
-            </ModalActions>
-          </ModalContent>
-        </ModalOverlay>
-      </RNModal>
-    </Container>
-  );
+                <ActionButtonContainer>
+                    <OutlineButton
+                        onPress={() => void handleExportData()}
+                        disabled={isExporting}
+                        accessibilityRole="button"
+                        accessibilityLabel={t('settings.privacy.exportData')}
+                        testID="settings-privacy-export"
+                    >
+                        <OutlineButtonText>
+                            {isExporting
+                                ? t('common.buttons.loading', { defaultValue: 'Loading...' })
+                                : t('settings.privacy.exportData')}
+                        </OutlineButtonText>
+                    </OutlineButton>
+
+                    <DangerOutlineButton
+                        onPress={() => void handleRequestDeletion()}
+                        accessibilityRole="button"
+                        accessibilityLabel={t('settings.privacy.requestDeletion')}
+                        testID="settings-privacy-request-deletion"
+                    >
+                        <DangerOutlineButtonText>{t('settings.privacy.requestDeletion')}</DangerOutlineButtonText>
+                    </DangerOutlineButton>
+                </ActionButtonContainer>
+
+                {/* Danger Zone */}
+                <DangerSection>
+                    <DangerSectionTitle>{t('settings.privacy.dangerZone')}</DangerSectionTitle>
+                    <DangerButton
+                        onPress={() => setShowDeleteModal(true)}
+                        accessibilityRole="button"
+                        accessibilityLabel={t('settings.privacy.deleteAccount')}
+                        testID="settings-privacy-delete-account"
+                    >
+                        <DangerButtonText>{t('settings.privacy.deleteAccount')}</DangerButtonText>
+                    </DangerButton>
+                </DangerSection>
+            </ScrollView>
+
+            {/* Delete Account Confirmation Modal */}
+            <RNModal
+                visible={showDeleteModal}
+                transparent
+                animationType="fade"
+                onRequestClose={() => setShowDeleteModal(false)}
+            >
+                <ModalOverlay>
+                    <ModalContent>
+                        <ModalTitle>{t('settings.privacy.deleteAccount')}</ModalTitle>
+                        <ModalBody>{t('settings.privacy.deleteConfirmMessage')}</ModalBody>
+                        <ModalActions>
+                            <ModalCancelButton
+                                onPress={() => setShowDeleteModal(false)}
+                                accessibilityRole="button"
+                                accessibilityLabel={t('settings.privacy.cancelDeletion')}
+                                testID="settings-privacy-delete-cancel"
+                            >
+                                <ModalCancelText>{t('common.buttons.cancel')}</ModalCancelText>
+                            </ModalCancelButton>
+                            <ModalConfirmButton
+                                onPress={() => void handleDeleteAccount()}
+                                accessibilityRole="button"
+                                accessibilityLabel={t('settings.privacy.deletePermanently')}
+                                testID="settings-privacy-delete-confirm"
+                            >
+                                <ModalConfirmText>{t('settings.privacy.deletePermanently')}</ModalConfirmText>
+                            </ModalConfirmButton>
+                        </ModalActions>
+                    </ModalContent>
+                </ModalOverlay>
+            </RNModal>
+        </Container>
+    );
 };
 
 export default SettingsPrivacyScreen;

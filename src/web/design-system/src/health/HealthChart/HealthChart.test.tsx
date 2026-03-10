@@ -3,10 +3,11 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 import HealthChart from './HealthChart';
-// eslint-disable-next-line import/no-unresolved
+// @ts-expect-error Module path resolved at runtime via jest.mock
+// eslint-disable-next-line import/no-unresolved -- resolved at runtime via jest.mock
 import { JourneyProvider } from '../../../mobile/src/context/JourneyContext';
-// eslint-disable-next-line import/no-unresolved
-import { JOURNEY_IDS } from '../../../shared/constants/journeys';
+
+const JOURNEY_IDS = { HEALTH: 'health', CARE: 'care', PLAN: 'plan' } as const;
 
 // Mock health data for testing
 const mockHealthData = [
@@ -18,7 +19,7 @@ const mockHealthData = [
 // Mock the chart components
 jest.mock('../../charts/LineChart/LineChart', () => ({
     __esModule: true,
-    default: jest.fn((props) => (
+    default: jest.fn((props: any) => (
         <div
             data-testid="line-chart"
             data-journey={props.journey}
@@ -36,7 +37,7 @@ jest.mock('../../charts/LineChart/LineChart', () => ({
 
 jest.mock('../../charts/BarChart/BarChart', () => ({
     __esModule: true,
-    default: jest.fn((props) => (
+    default: jest.fn((props: any) => (
         <div data-testid="bar-chart" data-journey={props.journey} aria-label={`Bar chart for ${props.title}`}>
             <div data-testid="bar-chart-data">{JSON.stringify(props.data)}</div>
             <div data-testid="bar-chart-labels">{JSON.stringify(props.labels)}</div>
@@ -48,7 +49,7 @@ jest.mock('../../charts/BarChart/BarChart', () => ({
 
 jest.mock('../../charts/RadialChart/RadialChart', () => ({
     __esModule: true,
-    default: jest.fn((props) => (
+    default: jest.fn((props: any) => (
         <div data-testid="radial-chart" data-journey={props.journey} aria-label="Radial chart showing health data">
             <div data-testid="radial-chart-data">{JSON.stringify(props.data)}</div>
             <div data-testid="radial-chart-label-type">{props.labelType}</div>
@@ -71,8 +72,9 @@ jest.mock('../../../mobile/src/context/JourneyContext', () => {
 /* eslint-enable @typescript-eslint/no-unsafe-return */
 
 // Helper function to render a component with the JourneyProvider
-const renderWithJourney = (ui: React.ReactElement, journeyId = JOURNEY_IDS.HEALTH) => {
-    return render(<JourneyProvider>{React.cloneElement(ui, { journey: journeyId })}</JourneyProvider>);
+const renderWithJourney = (ui: React.ReactElement, journeyId: string = JOURNEY_IDS.HEALTH) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- test helper with dynamic props
+    return render(<JourneyProvider>{React.cloneElement(ui, { journey: journeyId } as any)}</JourneyProvider>);
 };
 
 describe('HealthChart', () => {

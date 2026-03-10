@@ -49,9 +49,10 @@ describe('GoalCard', () => {
 
         expect(screen.getByText('0%')).toBeInTheDocument();
         expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '0');
+    });
 
-        // Cleanup and re-render with progress > 100 (should be normalized to 100)
-        screen.unmount();
+    it('normalizes progress values above 100 to 100', () => {
+        // Re-render with progress > 100 (should be normalized to 100)
         customRender(<GoalCard title="Test Goal" progress={120} />);
 
         expect(screen.getByText('100%')).toBeInTheDocument();

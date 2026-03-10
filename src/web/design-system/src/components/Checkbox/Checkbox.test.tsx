@@ -10,8 +10,8 @@ import { planTheme } from '../../themes/plan.theme';
 /**
  * Helper function to render components with a specific theme
  */
-const renderWithTheme = (ui: React.ReactElement, theme = healthTheme) => {
-    return render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
+const renderWithTheme = (ui: React.ReactElement, theme: Record<string, unknown> = healthTheme) => {
+    return render(<ThemeProvider theme={theme as any}>{ui}</ThemeProvider>);
 };
 
 describe('Checkbox component', () => {

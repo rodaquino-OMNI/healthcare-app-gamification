@@ -87,8 +87,8 @@ describe('Accordion Component', () => {
         expect(content).toHaveAttribute('aria-labelledby');
 
         // The content's aria-labelledby should match the header's id
-        const headerId = header.getAttribute('id').split('-header')[0];
-        const contentId = content.getAttribute('id').split('-content')[0];
+        const headerId = header.getAttribute('id')!.split('-header')[0];
+        const contentId = content.getAttribute('id')!.split('-content')[0];
 
         // Ensure the base IDs match to confirm the relationship between elements
         expect(headerId).toBe(contentId);

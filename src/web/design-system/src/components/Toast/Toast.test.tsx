@@ -10,7 +10,7 @@ import { planTheme } from '../../themes/plan.theme';
 import { colors } from '../../tokens/colors';
 
 // Helper function to render a component with a specific theme
-const renderWithTheme = (ui: React.ReactElement, theme: object) => {
+const renderWithTheme = (ui: React.ReactElement, theme: any) => {
     return render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
 };
 

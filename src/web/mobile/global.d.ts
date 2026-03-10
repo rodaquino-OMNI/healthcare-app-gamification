@@ -1,65 +1,25 @@
 /**
  * Global type declarations for the Austa Health mobile app
+ *
+ * This is an ambient declaration file (script, NOT a module).
+ * Do NOT add `export` or `import` at the top level.
  */
 
 // React Native global __DEV__ variable
 declare const __DEV__: boolean;
 
-// Add module declarations for packages without type definitions
-declare module '@apollo/client' {
-  export interface DefaultOptions {
-    watchQuery?: WatchQueryOptions;
-    query?: QueryOptions;
-    mutate?: MutationOptions;
-  }
-
-  export interface WatchQueryOptions {
-    fetchPolicy?: string;
-    errorPolicy?: string;
-  }
-
-  export interface QueryOptions {
-    fetchPolicy?: string;
-    errorPolicy?: string;
-  }
-
-  export interface MutationOptions {
-    errorPolicy?: string;
-  }
-
-  export class InMemoryCache {
-    constructor();
-  }
-
-  export class ApolloClient<T = any> {
-    constructor(options: {
-      link: any;
-      cache: any;
-      defaultOptions?: DefaultOptions;
-      connectToDevTools?: boolean;
-    });
-  }
+// expo-constants is not installed; declare a minimal stub
+declare module 'expo-constants' {
+    interface ExpoConfig {
+        extra?: Record<string, string>;
+    }
+    const Constants: {
+        expoConfig?: ExpoConfig;
+    };
+    export default Constants;
 }
 
-declare module 'apollo-upload-client' {
-  export function createUploadLink(options: { 
-    uri: string;
-    credentials?: string;
-    headers?: Record<string, string>;
-  }): any;
+// react-native-ssl-pinning is not installed; declare a minimal stub
+declare module 'react-native-ssl-pinning' {
+    export function fetch(url: string, options?: Record<string, unknown>): Promise<Response>;
 }
-
-// Custom declaration for localStorage in React Native
-// This is used in the care.ts file's getAuthSession function
-interface Storage {
-  getItem(key: string): string | null;
-  setItem(key: string, value: string): void;
-  removeItem(key: string): void;
-}
-
-declare global {
-  // Add localStorage to global scope for mobile
-  var localStorage: Storage;
-}
-
-export {};
