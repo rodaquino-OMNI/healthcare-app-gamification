@@ -7,10 +7,10 @@ variable "cluster_name" {
 variable "kafka_version" {
   type        = string
   description = "The version of Kafka to use for the MSK cluster."
-  default     = "3.2.0"
+  default     = "3.4.0"
 }
 
-variable "number_of_broker_nodes" {
+variable "broker_count" {
   type        = number
   description = "The number of broker nodes in the MSK cluster."
   default     = 3
@@ -22,34 +22,38 @@ variable "broker_instance_type" {
   default     = "kafka.m5.large"
 }
 
-variable "client_subnets" {
+variable "vpc_id" {
+  type        = string
+  description = "The VPC ID where the MSK cluster will be deployed."
+}
+
+variable "broker_subnet_ids" {
   type        = list(string)
   description = "A list of subnet IDs to place the broker nodes in."
+}
+
+variable "security_groups" {
+  type        = list(string)
+  description = "A list of security group IDs to associate with the broker nodes."
   default     = []
 }
 
-variable "security_group_id" {
+variable "project_name" {
   type        = string
-  description = "The ID of the security group to associate with the broker nodes."
-  default     = ""
+  description = "The project name used for resource naming and tagging."
+  default     = "austa"
+}
+
+variable "environment" {
+  type        = string
+  description = "The environment name (e.g., dev, staging, prod)."
+  default     = "dev"
 }
 
 variable "ebs_volume_size" {
   type        = number
   description = "The size of the EBS volume for each broker node, in GiB."
-  default     = 100
-}
-
-variable "enhanced_monitoring" {
-  type        = string
-  description = "Specifies the level of monitoring for the MSK cluster. Valid values: DEFAULT, PER_BROKER, PER_TOPIC_PER_BROKER, PER_PARTITION_PER_BROKER."
-  default     = "DEFAULT"
-}
-
-variable "open_monitoring" {
-  type        = bool
-  description = "Enable or disable open monitoring with Prometheus."
-  default     = true
+  default     = 1000
 }
 
 variable "tags" {

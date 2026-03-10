@@ -28,7 +28,7 @@ variable "prefix" {
 variable "tags" {
   type        = map(string)
   description = "Tags to apply to all resources"
-  default     = {
+  default = {
     Environment = "production"
     Component   = "austa-superapp"
     ManagedBy   = "Terraform"
@@ -41,6 +41,18 @@ variable "vpc_cidr" {
   type        = string
   description = "CIDR block for the VPC"
   default     = "10.0.0.0/16"
+}
+
+variable "public_subnet_cidrs" {
+  type        = list(string)
+  description = "List of CIDR blocks for public subnets"
+  default     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+}
+
+variable "private_subnet_cidrs" {
+  type        = list(string)
+  description = "List of CIDR blocks for private subnets"
+  default     = ["10.0.11.0/24", "10.0.12.0/24", "10.0.13.0/24"]
 }
 
 variable "availability_zones" {
@@ -187,6 +199,13 @@ variable "s3_encryption_enabled" {
 }
 
 # Sensitive configuration
+variable "db_username" {
+  type        = string
+  description = "Username for the RDS database administrator"
+  default     = "dbadmin"
+  sensitive   = true
+}
+
 variable "db_password" {
   type        = string
   description = "Password for the RDS database administrator"

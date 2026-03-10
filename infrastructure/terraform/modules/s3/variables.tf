@@ -30,9 +30,9 @@ variable "encryption_enabled" {
 variable "tags" {
   type        = map(string)
   description = "Tags to apply to the bucket"
-  default     = {
-    Project     = "AUSTA SuperApp"
-    ManagedBy   = "Terraform"
+  default = {
+    Project   = "AUSTA SuperApp"
+    ManagedBy = "Terraform"
   }
 }
 

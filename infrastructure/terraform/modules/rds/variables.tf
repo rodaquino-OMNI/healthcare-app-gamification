@@ -1,43 +1,34 @@
-variable "name" {
-  description = "Name of the RDS instance."
-  type        = string
-  default     = "austa-rds"
-}
+# Required variables (no defaults — must be explicitly provided)
 
 variable "engine" {
   description = "Database engine type (e.g., postgres, mysql)."
   type        = string
-  default     = "postgres"
 }
 
 variable "engine_version" {
   description = "Version of the database engine."
   type        = string
-  default     = "14"
 }
 
 variable "instance_class" {
   description = "Instance class for the RDS instance (e.g., db.m5.large)."
   type        = string
-  default     = "db.m5.large"
 }
 
 variable "allocated_storage" {
   description = "Allocated storage size in GB."
   type        = number
-  default     = 20
 }
 
 variable "db_name" {
   description = "Name of the initial database to create."
   type        = string
-  default     = "austa"
 }
 
 variable "db_username" {
   description = "Username for the database administrator."
   type        = string
-  default     = "austa_admin"
+  sensitive   = true
 }
 
 variable "db_password" {
@@ -46,13 +37,8 @@ variable "db_password" {
   sensitive   = true
 }
 
-variable "vpc_id" {
-  description = "VPC ID where the RDS instance will be created."
-  type        = string
-}
-
 variable "subnet_ids" {
-  description = "List of subnet IDs for the RDS instance."
+  description = "List of subnet IDs for the DB subnet group."
   type        = list(string)
 }
 
@@ -60,6 +46,8 @@ variable "security_group_ids" {
   description = "List of security group IDs for the RDS instance."
   type        = list(string)
 }
+
+# Optional variables (with safe production defaults)
 
 variable "multi_az" {
   description = "Enable multi-AZ deployment for high availability."
@@ -77,18 +65,6 @@ variable "backup_retention_period" {
   description = "Number of days to retain backups."
   type        = number
   default     = 7
-}
-
-variable "maintenance_window" {
-  description = "Preferred maintenance window (e.g., Sun:05:00-Sun:09:00)."
-  type        = string
-  default     = "Sun:05:00-Sun:09:00"
-}
-
-variable "apply_immediately" {
-  description = "Whether to apply changes immediately or during the maintenance window."
-  type        = bool
-  default     = true
 }
 
 variable "deletion_protection" {
@@ -109,11 +85,26 @@ variable "performance_insights_retention_period" {
   default     = 7
 }
 
-variable "tags" {
-  description = "Tags to apply to the RDS instance."
-  type        = map(string)
-  default = {
-    Environment = "dev"
-    Terraform   = "true"
-  }
+variable "performance_insights_kms_key_id" {
+  description = "The KMS key ID to use for encrypting Performance Insights data."
+  type        = string
+  default     = ""
+}
+
+variable "storage_type" {
+  description = "The storage type for the RDS instance (gp2, gp3, io1)."
+  type        = string
+  default     = "gp2"
+}
+
+variable "iops" {
+  description = "Provisioned IOPS for the RDS instance (only for io1/gp3 storage)."
+  type        = number
+  default     = 0
+}
+
+variable "max_allocated_storage" {
+  description = "Upper limit for storage autoscaling (0 disables autoscaling)."
+  type        = number
+  default     = 0
 }

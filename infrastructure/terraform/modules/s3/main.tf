@@ -4,7 +4,7 @@
 
 # Main S3 bucket resource
 resource "aws_s3_bucket" "main" {
-  bucket        = "${var.bucket_name}-${var.environment}"
+  bucket = "${var.bucket_name}-${var.environment}"
   # Removed deprecated acl attribute
   tags          = var.tags
   force_destroy = false
@@ -46,10 +46,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "main" {
     content {
       id     = rule.value.id != null ? rule.value.id : "rule-${rule.key}"
       status = rule.value.enabled ? "Enabled" : "Disabled"
-      
+
       # Handle prefix if provided
       prefix = lookup(rule.value, "prefix", null)
-      
+
       # Handle expiration if provided
       dynamic "expiration" {
         for_each = lookup(rule.value, "expiration", null) != null ? [rule.value.expiration] : []
@@ -59,7 +59,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "main" {
           expired_object_delete_marker = lookup(expiration.value, "expired_object_delete_marker", null)
         }
       }
-      
+
       # Handle transitions if provided
       dynamic "transition" {
         for_each = lookup(rule.value, "transitions", [])
@@ -69,7 +69,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "main" {
           storage_class = transition.value.storage_class
         }
       }
-      
+
       # Handle noncurrent_version_expiration if provided
       dynamic "noncurrent_version_expiration" {
         for_each = lookup(rule.value, "noncurrent_version_expiration", null) != null ? [rule.value.noncurrent_version_expiration] : []
@@ -77,7 +77,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "main" {
           noncurrent_days = noncurrent_version_expiration.value.days
         }
       }
-      
+
       # Handle noncurrent_version_transition if provided
       dynamic "noncurrent_version_transition" {
         for_each = lookup(rule.value, "noncurrent_version_transitions", [])
@@ -86,7 +86,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "main" {
           storage_class   = noncurrent_version_transition.value.storage_class
         }
       }
-      
+
       # Handle abort_incomplete_multipart_upload if provided
       dynamic "abort_incomplete_multipart_upload" {
         for_each = lookup(rule.value, "abort_incomplete_multipart_upload_days", null) != null ? [rule.value.abort_incomplete_multipart_upload_days] : []

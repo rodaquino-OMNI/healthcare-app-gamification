@@ -1,8 +1,8 @@
 # General configuration for AUSTA SuperApp production environment
-aws_region = "sa-east-1"
+aws_region  = "sa-east-1"
 environment = "production"
-prefix = "austa"
-component = "austa-superapp"
+prefix      = "austa"
+component   = "austa-superapp"
 tags = {
   Environment = "production"
   Project     = "austa-superapp"
@@ -12,35 +12,37 @@ tags = {
 }
 
 # Networking configuration
-vpc_cidr = "10.0.0.0/16"
-availability_zones = ["sa-east-1a", "sa-east-1b", "sa-east-1c"]
+vpc_cidr             = "10.0.0.0/16"
+public_subnet_cidrs  = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+private_subnet_cidrs = ["10.0.11.0/24", "10.0.12.0/24", "10.0.13.0/24"]
+availability_zones   = ["sa-east-1a", "sa-east-1b", "sa-east-1c"]
 
 # EKS cluster configuration
-eks_version = "1.25"
-eks_instance_type = "m5.large" # Default instance type for general worker nodes
-eks_desired_capacity = 5 # Base capacity before journey-specific scaling
-eks_min_size = 3
-eks_max_size = 30 # High max size to accommodate traffic spikes
+eks_version          = "1.25"
+eks_instance_type    = "m5.large" # Default instance type for general worker nodes
+eks_desired_capacity = 5          # Base capacity before journey-specific scaling
+eks_min_size         = 3
+eks_max_size         = 30 # High max size to accommodate traffic spikes
 
 # RDS database configuration
-rds_instance_type = "db.m5.2xlarge"
-rds_allocated_storage = 200
-rds_engine_version = "14.7"
-rds_multi_az = true
-rds_backup_retention_period = 30
-rds_deletion_protection = true
-rds_performance_insights_enabled = true
+rds_instance_type                         = "db.m5.2xlarge"
+rds_allocated_storage                     = 200
+rds_engine_version                        = "14.7"
+rds_multi_az                              = true
+rds_backup_retention_period               = 30
+rds_deletion_protection                   = true
+rds_performance_insights_enabled          = true
 rds_performance_insights_retention_period = 30
 
 # ElastiCache Redis configuration
-elasticache_node_type = "cache.m5.2xlarge"
-elasticache_num_cache_nodes = 3
-elasticache_engine_version = "7.0"
+elasticache_node_type                  = "cache.m5.2xlarge"
+elasticache_num_cache_nodes            = 3
+elasticache_engine_version             = "7.0"
 elasticache_automatic_failover_enabled = true
 
 # MSK Kafka configuration
 msk_instance_type = "kafka.m5.xlarge"
-msk_broker_count = 6 # Higher broker count for production workloads
+msk_broker_count  = 6 # Higher broker count for production workloads
 msk_kafka_version = "3.2.1"
 
 # S3 storage configuration

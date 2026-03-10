@@ -60,10 +60,10 @@ variable "cluster_addons" {
 
 variable "oidc_providers" {
   type = list(object({
-    client_id_list             = list(string)
-    iam_role_arn               = string
-    issuer_url                 = string
-    namespace_service_account  = string
+    client_id_list            = list(string)
+    iam_role_arn              = string
+    issuer_url                = string
+    namespace_service_account = string
   }))
   description = "OIDC providers to configure for the cluster"
   default     = []

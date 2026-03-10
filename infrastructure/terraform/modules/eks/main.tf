@@ -111,10 +111,10 @@ resource "aws_eks_cluster" "this" {
   dynamic "addon" {
     for_each = var.cluster_addons
     content {
-      addon_name               = addon.key
-      addon_version            = addon.value.version
-      resolve_conflicts        = addon.value.resolve_conflicts
-      configuration_values     = addon.value.configuration_values
+      addon_name           = addon.key
+      addon_version        = addon.value.version
+      resolve_conflicts    = addon.value.resolve_conflicts
+      configuration_values = addon.value.configuration_values
     }
   }
 

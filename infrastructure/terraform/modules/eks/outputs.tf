@@ -30,6 +30,17 @@ output "oidc_provider_url" {
   value       = aws_eks_cluster.this.identity[0].oidc[0].issuer
 }
 
+# Security group outputs
+output "cluster_security_group_id" {
+  description = "The ID of the EKS cluster security group"
+  value       = aws_security_group.eks_cluster_sg.id
+}
+
+output "worker_security_group_id" {
+  description = "The ID of the EKS worker nodes security group"
+  value       = aws_security_group.eks_nodes_sg.id
+}
+
 # Node group outputs
 output "health_journey_node_group_id" {
   description = "The ID of the Health Journey node group"
@@ -60,10 +71,10 @@ output "shared_services_node_group_id" {
 output "journey_namespaces" {
   description = "Map of journey names to their Kubernetes namespace names"
   value = {
-    health        = kubernetes_namespace.health_journey.metadata[0].name
-    care          = kubernetes_namespace.care_journey.metadata[0].name
-    plan          = kubernetes_namespace.plan_journey.metadata[0].name
-    gamification  = kubernetes_namespace.gamification.metadata[0].name
+    health       = kubernetes_namespace.health_journey.metadata[0].name
+    care         = kubernetes_namespace.care_journey.metadata[0].name
+    plan         = kubernetes_namespace.plan_journey.metadata[0].name
+    gamification = kubernetes_namespace.gamification.metadata[0].name
   }
 }
 
