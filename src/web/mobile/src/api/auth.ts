@@ -9,6 +9,27 @@ import fetch from 'cross-fetch'; // v3.1.5
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://api.austa.com.br';
 
 // ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/** Shape of error responses from the API. */
+interface ApiError {
+    message?: string;
+}
+
+/**
+ * Parses a JSON response and throws on non-OK status.
+ * The generic parameter T describes the expected JSON shape.
+ */
+async function parseJson<T>(response: Response, fallbackMsg: string): Promise<T> {
+    const data = (await response.json()) as T & ApiError;
+    if (!response.ok) {
+        throw new Error(data.message || fallbackMsg);
+    }
+    return data;
+}
+
+// ---------------------------------------------------------------------------
 // Interfaces
 // ---------------------------------------------------------------------------
 
@@ -18,6 +39,11 @@ export interface AuthSession {
     expiresAt: number;
     userId: string;
     email?: string;
+}
+
+/** API envelope that wraps an AuthSession. */
+interface SessionEnvelope {
+    session: AuthSession;
 }
 
 export interface RegisterData {
@@ -110,10 +136,7 @@ export async function login(email: string, password: string): Promise<AuthSessio
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
     });
-    const data = await response.json();
-    if (!response.ok) {
-        throw new Error(data.message || 'Authentication failed');
-    }
+    const data = await parseJson<SessionEnvelope>(response, 'Authentication failed');
     return data.session;
 }
 
@@ -131,10 +154,7 @@ export async function register(userData: RegisterData): Promise<AuthSession> {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
     });
-    const data = await response.json();
-    if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
-    }
+    const data = await parseJson<SessionEnvelope>(response, 'Registration failed');
     return data.session;
 }
 
@@ -156,10 +176,7 @@ export async function verifyMfa(code: string, tempToken: string): Promise<AuthSe
         },
         body: JSON.stringify({ code }),
     });
-    const data = await response.json();
-    if (!response.ok) {
-        throw new Error(data.message || 'MFA verification failed');
-    }
+    const data = await parseJson<SessionEnvelope>(response, 'MFA verification failed');
     return data.session;
 }
 
@@ -176,10 +193,7 @@ export async function refreshToken(): Promise<AuthSession> {
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
     });
-    const data = await response.json();
-    if (!response.ok) {
-        throw new Error(data.message || 'Token refresh failed');
-    }
+    const data = await parseJson<SessionEnvelope>(response, 'Token refresh failed');
     return data.session;
 }
 
@@ -198,10 +212,7 @@ export async function socialLogin(provider: string, tokenData: SocialTokenData):
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(tokenData),
     });
-    const data = await response.json();
-    if (!response.ok) {
-        throw new Error(data.message || 'Social authentication failed');
-    }
+    const data = await parseJson<SessionEnvelope>(response, 'Social authentication failed');
     return data.session;
 }
 
@@ -223,11 +234,7 @@ export async function forgotPassword(email: string): Promise<{ message: string }
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
     });
-    const data = await response.json();
-    if (!response.ok) {
-        throw new Error(data.message || 'Failed to send reset email');
-    }
-    return data;
+    return parseJson<{ message: string }>(response, 'Failed to send reset email');
 }
 
 /**
@@ -244,11 +251,7 @@ export async function verifyEmail(token: string): Promise<{ verified: boolean }>
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token }),
     });
-    const data = await response.json();
-    if (!response.ok) {
-        throw new Error(data.message || 'Email verification failed');
-    }
-    return data;
+    return parseJson<{ verified: boolean }>(response, 'Email verification failed');
 }
 
 /**
@@ -266,10 +269,7 @@ export async function setPassword(token: string, newPassword: string): Promise<A
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token, newPassword }),
     });
-    const data = await response.json();
-    if (!response.ok) {
-        throw new Error(data.message || 'Failed to set password');
-    }
+    const data = await parseJson<SessionEnvelope>(response, 'Failed to set password');
     return data.session;
 }
 
@@ -289,7 +289,7 @@ export async function logout(accessToken: string): Promise<void> {
         },
     });
     if (!response.ok) {
-        const data = await response.json();
+        const data = (await response.json()) as ApiError;
         throw new Error(data.message || 'Logout failed');
     }
 }
@@ -307,11 +307,7 @@ export async function getProfile(accessToken: string): Promise<UserProfile> {
         method: 'GET',
         headers: { Authorization: `Bearer ${accessToken}` },
     });
-    const data = await response.json();
-    if (!response.ok) {
-        throw new Error(data.message || 'Failed to get profile');
-    }
-    return data;
+    return parseJson<UserProfile>(response, 'Failed to get profile');
 }
 
 /**
@@ -332,11 +328,7 @@ export async function updateProfile(accessToken: string, updates: UpdateProfileD
         },
         body: JSON.stringify(updates),
     });
-    const data = await response.json();
-    if (!response.ok) {
-        throw new Error(data.message || 'Failed to update profile');
-    }
-    return data;
+    return parseJson<UserProfile>(response, 'Failed to update profile');
 }
 
 /**
@@ -357,7 +349,7 @@ export async function deleteAccount(accessToken: string, confirmationCode: strin
         body: JSON.stringify({ confirmationCode }),
     });
     if (!response.ok) {
-        const data = await response.json();
+        const data = (await response.json()) as ApiError;
         throw new Error(data.message || 'Failed to delete account');
     }
 }
@@ -384,11 +376,7 @@ export async function registerBiometricKey(accessToken: string, publicKey: strin
         },
         body: JSON.stringify({ publicKey }),
     });
-    const data = await response.json();
-    if (!response.ok) {
-        throw new Error(data.message || 'Biometric registration failed');
-    }
-    return data;
+    return parseJson<{ registered: boolean }>(response, 'Biometric registration failed');
 }
 
 /**
@@ -403,11 +391,7 @@ export async function getBiometricChallenge(): Promise<{ challenge: string }> {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     });
-    const data = await response.json();
-    if (!response.ok) {
-        throw new Error(data.message || 'Failed to get biometric challenge');
-    }
-    return data;
+    return parseJson<{ challenge: string }>(response, 'Failed to get biometric challenge');
 }
 
 /**
@@ -425,9 +409,6 @@ export async function verifyBiometricSignature(signature: string, challenge: str
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ signature, challenge }),
     });
-    const data = await response.json();
-    if (!response.ok) {
-        throw new Error(data.message || 'Biometric verification failed');
-    }
+    const data = await parseJson<SessionEnvelope>(response, 'Biometric verification failed');
     return data.session;
 }

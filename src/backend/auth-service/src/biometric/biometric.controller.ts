@@ -12,11 +12,7 @@ import {
     HttpCode,
     HttpStatus,
 } from '@nestjs/common';
-import {
-    ApiTags,
-    ApiOperation,
-    ApiResponse,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { BiometricService } from './biometric.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -39,6 +35,24 @@ interface VerifySignatureDto {
     signature: string;
     challenge: string;
     deviceKeyId: string;
+}
+
+/** Result of biometric device registration. */
+interface RegisterResult {
+    success: boolean;
+    deviceKeyId: string;
+}
+
+/** Result of biometric challenge generation. */
+interface ChallengeResult {
+    challenge: string;
+    expiresIn: number;
+}
+
+/** JWT tokens returned after biometric auth. */
+interface AuthTokens {
+    access_token: string;
+    refresh_token: string;
 }
 
 /**
@@ -68,15 +82,9 @@ export class BiometricController {
     @ApiResponse({ status: 201, description: 'Biometric device registered successfully' })
     @ApiResponse({ status: 401, description: 'Authentication required' })
     @UsePipes(new ValidationPipe())
-    async register(
-        @Body() body: RegisterDeviceDto,
-    ): Promise<{ success: boolean; deviceKeyId: string }> {
-        return this.biometricService.registerDevice(
-            body.userId,
-            body.publicKey,
-            body.deviceId,
-            body.platform,
-        );
+    async register(@Body() body: RegisterDeviceDto): Promise<RegisterResult> {
+        const { userId, publicKey, deviceId, platform } = body;
+        return this.biometricService.registerDevice(userId, publicKey, deviceId, platform);
     }
 
     /**
@@ -89,12 +97,8 @@ export class BiometricController {
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Generate a biometric authentication challenge' })
     @ApiResponse({ status: 200, description: 'Challenge generated successfully' })
-    async challenge(
-        @Query('userId') userId: string,
-    ): Promise<{ challenge: string; expiresIn: number }> {
-        return this.biometricService.generateChallenge(
-            userId,
-        );
+    async challenge(@Query('userId') userId: string): Promise<ChallengeResult> {
+        return this.biometricService.generateChallenge(userId);
     }
 
     /**
@@ -109,17 +113,8 @@ export class BiometricController {
     @ApiResponse({ status: 200, description: 'Biometric verification successful, returns JWT tokens' })
     @ApiResponse({ status: 401, description: 'Invalid signature or expired challenge' })
     @UsePipes(new ValidationPipe())
-    async verify(
-        @Body() body: VerifySignatureDto,
-    ): Promise<{
-        access_token: string;
-        refresh_token: string;
-    }> {
-        return this.biometricService.verifySignature(
-            body.userId,
-            body.signature,
-            body.challenge,
-            body.deviceKeyId,
-        );
+    async verify(@Body() body: VerifySignatureDto): Promise<AuthTokens> {
+        const { userId, signature, challenge, deviceKeyId } = body;
+        return this.biometricService.verifySignature(userId, signature, challenge, deviceKeyId);
     }
 }

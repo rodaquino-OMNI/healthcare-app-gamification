@@ -1,11 +1,12 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-import { BiometricService } from './biometric.service';
 import { PrismaService } from '@app/shared/database/prisma.service';
+import { AppException } from '@app/shared/exceptions/exceptions.types';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { RedisService } from '@app/shared/redis/redis.service';
-import { AppException } from '@app/shared/exceptions/exceptions.types';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { BiometricService } from './biometric.service';
 
 describe('BiometricService', () => {
     let service: BiometricService;
@@ -50,7 +51,12 @@ describe('BiometricService', () => {
                 { provide: ConfigService, useValue: configService },
                 {
                     provide: LoggerService,
-                    useValue: { log: jest.fn(), error: jest.fn(), warn: jest.fn(), debug: jest.fn() },
+                    useValue: {
+                        log: jest.fn(),
+                        error: jest.fn(),
+                        warn: jest.fn(),
+                        debug: jest.fn(),
+                    },
                 },
                 { provide: PrismaService, useValue: prisma },
                 { provide: RedisService, useValue: redisService },

@@ -1,20 +1,8 @@
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
-import {
-    Controller,
-    Post,
-    Body,
-    UseFilters,
-    UsePipes,
-    ValidationPipe,
-    HttpCode,
-    HttpStatus,
-} from '@nestjs/common';
+import { Controller, Post, Body, UseFilters, UsePipes, ValidationPipe, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-import {
-    IntegrityService,
-    IntegrityVerdict,
-} from './integrity.service';
+import { IntegrityService, IntegrityVerdict } from './integrity.service';
 
 /** DTO for integrity verification requests from mobile clients. */
 interface VerifyIntegrityDto {
@@ -66,14 +54,9 @@ export class IntegrityController {
         description: 'Invalid request — missing token or platform',
     })
     @UsePipes(new ValidationPipe())
-    async verify(
-        @Body() dto: VerifyIntegrityDto,
-    ): Promise<VerifyIntegrityResponse> {
-        const result: IntegrityVerdict =
-            await this.integrityService.verify(
-                dto.token,
-                dto.platform,
-            );
+    async verify(@Body() dto: VerifyIntegrityDto): Promise<VerifyIntegrityResponse> {
+        const { token, platform } = dto;
+        const result: IntegrityVerdict = await this.integrityService.verify(token, platform);
 
         return {
             verified: result.verified,

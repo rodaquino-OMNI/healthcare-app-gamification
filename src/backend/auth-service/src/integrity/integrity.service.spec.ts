@@ -1,9 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigService } from '@nestjs/config';
-import { HttpService } from '@nestjs/axios';
-import { of, throwError } from 'rxjs';
-import { IntegrityService } from './integrity.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
+import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
+import { of, throwError } from 'rxjs';
+
+import { IntegrityService } from './integrity.service';
 
 describe('IntegrityService', () => {
     let service: IntegrityService;
@@ -35,8 +36,10 @@ describe('IntegrityService', () => {
                 {
                     provide: LoggerService,
                     useValue: {
-                        log: jest.fn(), error: jest.fn(),
-                        warn: jest.fn(), debug: jest.fn(),
+                        log: jest.fn(),
+                        error: jest.fn(),
+                        warn: jest.fn(),
+                        debug: jest.fn(),
                     },
                 },
             ],
@@ -88,7 +91,9 @@ describe('IntegrityService', () => {
 
         it('should verify successfully with MEETS_DEVICE_INTEGRITY', async () => {
             configService.get.mockImplementation((key: string, defaultValue?: unknown) => {
-                if (key === 'GOOGLE_PLAY_INTEGRITY_API_KEY') return 'test-api-key';
+                if (key === 'GOOGLE_PLAY_INTEGRITY_API_KEY') {
+                    return 'test-api-key';
+                }
                 return defaultValue;
             });
 
@@ -116,7 +121,9 @@ describe('IntegrityService', () => {
 
         it('should return VERIFICATION_ERROR on API failure', async () => {
             configService.get.mockImplementation((key: string, defaultValue?: unknown) => {
-                if (key === 'GOOGLE_PLAY_INTEGRITY_API_KEY') return 'test-api-key';
+                if (key === 'GOOGLE_PLAY_INTEGRITY_API_KEY') {
+                    return 'test-api-key';
+                }
                 return defaultValue;
             });
 
@@ -130,7 +137,9 @@ describe('IntegrityService', () => {
 
         it('should return INVALID_PAYLOAD when payload is missing', async () => {
             configService.get.mockImplementation((key: string, defaultValue?: unknown) => {
-                if (key === 'GOOGLE_PLAY_INTEGRITY_API_KEY') return 'test-api-key';
+                if (key === 'GOOGLE_PLAY_INTEGRITY_API_KEY') {
+                    return 'test-api-key';
+                }
                 return defaultValue;
             });
 
@@ -161,9 +170,15 @@ describe('IntegrityService', () => {
 
         it('should verify successfully when Apple returns 200', async () => {
             configService.get.mockImplementation((key: string, defaultValue?: unknown) => {
-                if (key === 'APPLE_TEAM_ID') return 'TEAM123';
-                if (key === 'APPLE_APP_ATTEST_KEY_ID') return 'KEY456';
-                if (key === 'NODE_ENV') return 'development';
+                if (key === 'APPLE_TEAM_ID') {
+                    return 'TEAM123';
+                }
+                if (key === 'APPLE_APP_ATTEST_KEY_ID') {
+                    return 'KEY456';
+                }
+                if (key === 'NODE_ENV') {
+                    return 'development';
+                }
                 return defaultValue;
             });
 
@@ -185,9 +200,15 @@ describe('IntegrityService', () => {
 
         it('should return VERIFICATION_ERROR on API failure', async () => {
             configService.get.mockImplementation((key: string, defaultValue?: unknown) => {
-                if (key === 'APPLE_TEAM_ID') return 'TEAM123';
-                if (key === 'APPLE_APP_ATTEST_KEY_ID') return 'KEY456';
-                if (key === 'NODE_ENV') return 'development';
+                if (key === 'APPLE_TEAM_ID') {
+                    return 'TEAM123';
+                }
+                if (key === 'APPLE_APP_ATTEST_KEY_ID') {
+                    return 'KEY456';
+                }
+                if (key === 'NODE_ENV') {
+                    return 'development';
+                }
                 return defaultValue;
             });
 

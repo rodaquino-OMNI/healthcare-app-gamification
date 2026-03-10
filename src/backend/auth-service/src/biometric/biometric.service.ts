@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as crypto from 'crypto';
 
 import { PrismaService } from '@app/shared/database/prisma.service';
@@ -8,6 +7,27 @@ import { RedisService } from '@app/shared/redis/redis.service';
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+
+/** Extracts message and stack from an unknown error. */
+function extractError(err: unknown): {
+    message: string;
+    stack: string;
+} {
+    if (err instanceof Error) {
+        return {
+            message: err.message,
+            stack: err.stack ?? '',
+        };
+    }
+    return { message: String(err), stack: '' };
+}
+
+/** Shape of a user row returned by Prisma with roles. */
+interface BiometricUser {
+    id: string;
+    email: string;
+    roles?: Array<{ name: string }>;
+}
 
 /**
  * Interface for a stored biometric device key.
@@ -82,10 +102,9 @@ export class BiometricService {
             this.logger.log(`Biometric device registered: ${deviceKeyId} for user ${userId}`, 'BiometricService');
 
             return { success: true, deviceKeyId };
-        } catch (error: any) {
-            const errorMsg = error.message || 'Unknown error during biometric registration';
-            const errorStack = error.stack || '';
-            this.logger.error(`Failed to register biometric device: ${errorMsg}`, errorStack, 'BiometricService');
+        } catch (error: unknown) {
+            const { message, stack } = extractError(error);
+            this.logger.error(`Failed to register biometric device: ${message}`, stack, 'BiometricService');
 
             throw new AppException('Failed to register biometric device', ErrorType.TECHNICAL, 'BIO_002', {
                 userId,
@@ -122,10 +141,9 @@ export class BiometricService {
                 challenge,
                 expiresIn: BiometricService.CHALLENGE_TTL_SECONDS,
             };
-        } catch (error: any) {
-            const errorMsg = error.message || 'Unknown error during challenge generation';
-            const errorStack = error.stack || '';
-            this.logger.error(`Failed to generate biometric challenge: ${errorMsg}`, errorStack, 'BiometricService');
+        } catch (error: unknown) {
+            const { message, stack } = extractError(error);
+            this.logger.error(`Failed to generate biometric challenge: ${message}`, stack, 'BiometricService');
 
             throw new AppException('Failed to generate biometric challenge', ErrorType.TECHNICAL, 'BIO_004', {
                 userId,
@@ -189,7 +207,7 @@ export class BiometricService {
 
         let deviceKey: BiometricDeviceKey;
         try {
-            deviceKey = JSON.parse(deviceKeyData);
+            deviceKey = JSON.parse(deviceKeyData) as BiometricDeviceKey;
         } catch {
             throw new AppException('Corrupted device key data', ErrorType.TECHNICAL, 'BIO_008');
         }
@@ -225,13 +243,12 @@ export class BiometricService {
                     HttpStatus.UNAUTHORIZED
                 );
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             if (error instanceof AppException) {
                 throw error;
             }
-            const errorMsg = error.message || 'Unknown verification error';
-            const errorStack = error.stack || '';
-            this.logger.error(`Signature verification failed: ${errorMsg}`, errorStack, 'BiometricService');
+            const { message, stack } = extractError(error);
+            this.logger.error(`Signature verification failed: ${message}`, stack, 'BiometricService');
             throw new AppException(
                 'Biometric signature verification failed',
                 ErrorType.AUTHENTICATION,
@@ -245,16 +262,15 @@ export class BiometricService {
         await this.redisService.del(`biometric:challenge:${userId}`);
 
         // 6. Look up the user to build the JWT payload
-        let user: any;
+        let user: BiometricUser | null;
         try {
-            user = await this.prisma.user.findUnique({
+            user = (await this.prisma.user.findUnique({
                 where: { id: userId },
                 include: { roles: true },
-            });
-        } catch (error: any) {
-            const errorMsg = error.message || 'Unknown error looking up user';
-            const errorStack = error.stack || '';
-            this.logger.error(`Failed to find user for biometric auth: ${errorMsg}`, errorStack, 'BiometricService');
+            })) as BiometricUser | null;
+        } catch (error: unknown) {
+            const { message, stack } = extractError(error);
+            this.logger.error(`Failed to find user for biometric auth: ${message}`, stack, 'BiometricService');
             throw new AppException('Failed to retrieve user data', ErrorType.TECHNICAL, 'BIO_012', { userId });
         }
 
@@ -264,14 +280,15 @@ export class BiometricService {
 
         // 7. Generate JWT tokens
         const payload = {
-            sub: user.id as string,
-            email: user.email as string,
-            roles: (user.roles as Array<{ name: string }>)?.map((r) => r.name) || [],
+            sub: user.id,
+            email: user.email,
+            roles: user.roles?.map((r) => r.name) || [],
         };
 
+        const expiration = this.configService.get<string>('authService.jwt.accessTokenExpiration');
         const accessToken = this.jwtService.sign(payload, {
             secret: this.configService.get<string>('authService.jwt.secret'),
-            expiresIn: this.configService.get<string>('authService.jwt.accessTokenExpiration') as any,
+            expiresIn: expiration,
         });
 
         const refreshToken = crypto.randomBytes(64).toString('hex');

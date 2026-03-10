@@ -9,7 +9,9 @@
  * certificate hashes before production deployment.
  */
 
+// eslint-disable-next-line import/no-unresolved
 import { fetch as sslFetch } from 'react-native-ssl-pinning';
+
 import { SSL_PINS, getPinConfig, isProductionPinned } from './ssl-pinning';
 
 // React Native global __DEV__ flag
@@ -105,7 +107,11 @@ export async function pinnedFetch(url: string, options: PinnedFetchOptions = {})
         ...(options.sslPinning ? { sslPinning: options.sslPinning } : {}),
     };
 
-    return sslFetch(url, fetchOptions);
+    const response = await (sslFetch as (url: string, options: Record<string, unknown>) => Promise<Response>)(
+        url,
+        fetchOptions
+    );
+    return response;
 }
 
 /**
