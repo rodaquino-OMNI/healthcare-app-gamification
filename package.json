@@ -27,7 +27,7 @@
     "@react-native/typescript-config": "0.73.1",
     "json5": "2.2.3",
     "word-wrap": "1.2.5",
-    "tough-cookie": "4.1.4",
+    "tough-cookie": "6.0.0",
     "postcss": "8.5.8",
     "webpack": "5.105.4",
     "node-fetch": "3.3.2",
