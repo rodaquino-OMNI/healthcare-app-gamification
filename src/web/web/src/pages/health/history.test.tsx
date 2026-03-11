@@ -29,13 +29,8 @@ jest.mock('react-i18next', () => ({
     useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
 }));
 
-jest.mock('@apollo/client', () => ({
-    useQuery: () => ({ loading: false, error: null, data: { getMedicalHistory: [] } }),
-    gql: (s: TemplateStringsArray) => s,
-}));
-
-jest.mock('shared/graphql/queries/health.queries', () => ({
-    GET_MEDICAL_HISTORY: 'mock-query',
+jest.mock('@/hooks/useHealthMetrics', () => ({
+    useHealthMetrics: () => ({ history: [], loading: false, error: null }),
 }));
 
 jest.mock('shared/utils/date', () => ({
