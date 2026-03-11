@@ -15,9 +15,7 @@ class StorePlanRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
             'type' => ['required', 'string', 'max:100'],
-            'price' => ['required', 'numeric', 'min:0'],
             'coverage_details' => ['nullable', 'array'],
         ];
     }

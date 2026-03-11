@@ -25,6 +25,10 @@ use App\Http\Controllers\Api\V1\Plan\BenefitController;
 use App\Http\Controllers\Api\V1\Plan\ClaimController;
 use App\Http\Controllers\Api\V1\Plan\CoverageController;
 use App\Http\Controllers\Api\V1\Plan\PlanController;
+use App\Http\Controllers\Api\V1\Wellness\JournalEntryController;
+use App\Http\Controllers\Api\V1\Wellness\MeditationController;
+use App\Http\Controllers\Api\V1\Wellness\MoodEntryController;
+use App\Http\Controllers\Api\V1\Wellness\WellnessSummaryController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -88,5 +92,19 @@ Route::prefix('v1')->group(function () {
         Route::get('consent', [ConsentController::class, 'index']);
         Route::post('consent', [ConsentController::class, 'store']);
         Route::delete('consent/{id}', [ConsentController::class, 'revoke']);
+
+        // Wellness
+        Route::prefix('wellness')->group(function () {
+            Route::get('summary', [WellnessSummaryController::class, 'show']);
+            Route::get('moods', [MoodEntryController::class, 'index']);
+            Route::post('moods', [MoodEntryController::class, 'store']);
+            Route::delete('moods/{id}', [MoodEntryController::class, 'destroy']);
+            Route::get('journal', [JournalEntryController::class, 'index']);
+            Route::post('journal', [JournalEntryController::class, 'store']);
+            Route::get('journal/{id}', [JournalEntryController::class, 'show']);
+            Route::delete('journal/{id}', [JournalEntryController::class, 'destroy']);
+            Route::get('meditation', [MeditationController::class, 'index']);
+            Route::post('meditation/log', [MeditationController::class, 'log']);
+        });
     });
 });

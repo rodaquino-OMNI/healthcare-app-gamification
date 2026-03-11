@@ -29,6 +29,7 @@ class DeviceConnectionController extends Controller
             'user_id' => $request->user()->id,
             'record_id' => $validated['device_identifier'],
             'device_type' => $validated['device_type'],
+            'device_name' => $validated['device_name'],
             'device_id' => $validated['device_identifier'],
             'auth_token' => $validated['access_token'] ?? null,
             'refresh_token' => $validated['refresh_token'] ?? null,

@@ -18,8 +18,8 @@ class StoreAppointmentRequest extends FormRequest
         return [
             'provider_id' => ['required', 'uuid', 'exists:providers,id'],
             'type' => ['required', Rule::enum(AppointmentType::class)],
-            'scheduled_at' => ['required', 'date', 'after:now'],
-            'duration_minutes' => ['required', 'integer', 'min:15', 'max:480'],
+            'date_time' => ['required', 'date', 'after:now'],
+            'duration_minutes' => ['nullable', 'integer', 'min:15', 'max:480'],
             'notes' => ['nullable', 'string'],
             'metadata' => ['nullable', 'array'],
         ];

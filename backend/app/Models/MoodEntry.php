@@ -7,31 +7,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class MedicalEvent extends Model
+class MoodEntry extends Model
 {
     use HasFactory, HasUuids;
 
     protected $fillable = [
         'user_id',
-        'type',
-        'title',
-        'description',
-        'severity',
-        'provider',
-        'location',
-        'date',
-        'documents',
-        'tags',
-        'metadata',
+        'mood',
+        'note',
     ];
 
     protected function casts(): array
     {
         return [
-            'date' => 'date',
-            'documents' => 'array',
-            'tags' => 'array',
-            'metadata' => 'array',
+            'mood' => 'integer',
         ];
     }
 

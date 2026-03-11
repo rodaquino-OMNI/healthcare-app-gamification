@@ -18,6 +18,7 @@ class Appointment extends Model
         'user_id',
         'provider_id',
         'date_time',
+        'duration_minutes',
         'type',
         'status',
         'notes',

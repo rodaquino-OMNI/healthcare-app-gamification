@@ -19,8 +19,8 @@ class HealthGoalResource extends JsonResource
             'unit' => $this->unit,
             'period' => $this->period,
             'status' => $this->status,
-            'starts_at' => $this->starts_at,
-            'ends_at' => $this->ends_at,
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

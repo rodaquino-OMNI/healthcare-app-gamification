@@ -29,7 +29,8 @@ class AppointmentController extends Controller
             'user_id' => $request->user()->id,
             'provider_id' => $validated['provider_id'],
             'type' => $validated['type'],
-            'date_time' => $validated['scheduled_at'],
+            'date_time' => $validated['date_time'],
+            'duration_minutes' => $validated['duration_minutes'] ?? null,
             'notes' => $validated['notes'] ?? null,
         ]);
 

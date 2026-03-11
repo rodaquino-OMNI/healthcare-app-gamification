@@ -14,7 +14,7 @@ class AppointmentResource extends JsonResource
             'provider_id' => $this->provider_id,
             'type' => $this->type,
             'status' => $this->status,
-            'scheduled_at' => $this->scheduled_at,
+            'date_time' => $this->date_time,
             'duration_minutes' => $this->duration_minutes,
             'notes' => $this->notes,
             'provider' => new ProviderResource($this->whenLoaded('provider')),

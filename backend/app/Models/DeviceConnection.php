@@ -17,6 +17,7 @@ class DeviceConnection extends Model
         'user_id',
         'record_id',
         'device_type',
+        'device_name',
         'device_id',
         'status',
         'last_sync',
