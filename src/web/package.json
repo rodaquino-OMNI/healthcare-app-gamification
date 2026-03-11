@@ -35,7 +35,7 @@
     "@mui/material": "5.18.0",
     "@react-native-async-storage/async-storage": "1.19.3",
     "@react-native-firebase/analytics": "^18.8.0",
-    "@react-native-firebase/crashlytics": "^18.8.0",
+    "@react-native-firebase/crashlytics": "^23.0.0",
     "@react-navigation/bottom-tabs": "6.5.8",
     "@react-navigation/drawer": "6.7.2",
     "@react-navigation/native": "6.1.9",
