@@ -224,7 +224,7 @@
     "rollup": "3.30.0",
     "multer": "2.1.1",
     "serialize-javascript": "7.0.4",
-    "path-to-regexp": "1.9.0",
+    "path-to-regexp": "8.3.0",
     "@nestjs/common": "11.1.16"
   },
   "resolutions": {
@@ -300,7 +300,7 @@
     "rollup": "3.30.0",
     "multer": "2.1.1",
     "serialize-javascript": "7.0.4",
-    "path-to-regexp": "1.9.0",
+    "path-to-regexp": "8.3.0",
     "@nestjs/common": "11.1.16",
     "esbuild": ">=0.25.0"
   },
