@@ -252,7 +252,7 @@
         "@babel/plugin-transform-optional-catch-binding": "7.28.6",
         "@babel/plugin-transform-async-generator-functions": "7.29.0",
         "@babel/plugin-transform-unicode-property-regex": "7.28.6",
-        "ua-parser-js": "1.0.41",
+        "ua-parser-js": "2.0.9",
         "glob": "13.0.6",
         "graphql": "16.13.1",
         "metro": "0.76.8",
