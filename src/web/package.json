@@ -84,7 +84,7 @@
     "styled-components": "^6.1.8",
     "styled-system": "5.1.5",
     "turbo": "^2.0.0",
-    "victory": "36.9.2",
+    "victory": "37.3.6",
     "victory-native": "36.9.2"
   },
   "devDependencies": {
