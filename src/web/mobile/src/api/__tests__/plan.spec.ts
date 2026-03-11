@@ -53,9 +53,8 @@ jest.mock('../client', () => ({
     },
 }));
 
-jest.mock('apollo-upload-client', () => ({
-    ReactNativeFile: jest.fn().mockImplementation((args: any) => args),
-}));
+// apollo-upload-client v19: ReactNativeFile removed; plan.ts now uses plain objects.
+jest.mock('apollo-upload-client/createUploadLink.mjs', () => jest.fn(() => ({})));
 
 beforeEach(() => {
     jest.clearAllMocks();

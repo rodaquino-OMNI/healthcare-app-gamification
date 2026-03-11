@@ -3,22 +3,9 @@
 
 // Note: module-declarations.d.ts is auto-included via tsconfig "include" glob
 
-// Apollo Upload Client — no bundled types
-declare module 'apollo-upload-client' {
-    export class ReactNativeFile {
-        constructor(options: { uri: string; name: string; type: string });
-        uri: string;
-        name: string;
-        type: string;
-    }
-
-    export function createUploadLink(options: {
-        uri: string;
-        credentials?: string;
-        headers?: Record<string, string>;
-        [key: string]: any;
-    }): import('@apollo/client').ApolloLink;
-}
+// apollo-upload-client v19: ReactNativeFile removed; createUploadLink is a subpath export.
+// Type declaration lives in apollo-upload-client/createUploadLink.mjs (see src/types/).
+// The mobile client uses a custom isExtractableFile predicate for RN { uri, name, type } objects.
 
 // React Native - do NOT declare module here; it shadows the real types.
 // The actual types come from node_modules/react-native/types/index.d.ts

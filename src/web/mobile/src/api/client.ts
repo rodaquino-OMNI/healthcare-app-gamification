@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client'; // Version 3.0+
 import NetInfo from '@react-native-community/netinfo';
-import { createUploadLink } from 'apollo-upload-client'; // Version 17.0.0
+import createUploadLink from 'apollo-upload-client/createUploadLink.mjs'; // v19: subpath ESM import
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'axios'; // Version 1.6.8
 // eslint-disable-next-line import/no-unresolved
 import Constants from 'expo-constants';
@@ -35,6 +35,11 @@ const graphQLClient = new ApolloClient({
     link: createUploadLink({
         uri: GRAPHQL_ENDPOINT,
         credentials: 'include',
+        // v19: custom extractor for React Native { uri, name, type } file objects
+        isExtractableFile: (value: unknown): boolean =>
+            (typeof File !== 'undefined' && value instanceof File) ||
+            (typeof Blob !== 'undefined' && value instanceof Blob) ||
+            (typeof value === 'object' && value !== null && 'uri' in value && 'name' in value && 'type' in value),
     }),
     cache: new InMemoryCache(),
     defaultOptions: {

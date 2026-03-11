@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import jwtDecode from 'jwt-decode'; // v3.1.2
+import { jwtDecode } from 'jwt-decode'; // v4: named export (was default in v3)
 import { secureTokenStorage, migrateFromAsyncStorage } from '../utils/secure-storage';
 
 import { AuthSession, AuthState } from '@shared/types/auth.types';
