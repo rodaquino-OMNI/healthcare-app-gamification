@@ -4,6 +4,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React, { useState } from 'react';
 
+import { useAuth } from '@/hooks/useAuth';
+
 interface MedicationReminder {
     id: string;
     drugName: string;
@@ -18,6 +20,7 @@ const INITIAL_REMINDERS: MedicationReminder[] = [
 ];
 
 const MedicationRemindersPage: React.FC = () => {
+    const { isAuthenticated: _isAuthenticated } = useAuth();
     const [reminders, setReminders] = useState(INITIAL_REMINDERS);
 
     const handleTake = (id: string): void => {

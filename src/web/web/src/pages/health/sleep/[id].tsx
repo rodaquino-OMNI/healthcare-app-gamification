@@ -6,6 +6,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useSleep } from '@/hooks';
+
 const STAGES = [
     { label: 'Deep Sleep', hours: '1h 32m', pct: 20, color: colors.journeys.health.accent },
     { label: 'Light Sleep', hours: '3h 24m', pct: 45, color: colors.journeys.health.primary },
@@ -20,8 +22,28 @@ const ENVIRONMENT = [
 ];
 
 const SleepDetailPage: React.FC = () => {
+    const { data: sleepData, loading, error, refetch } = useSleep();
     const router = useRouter();
     const { id } = router.query;
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void sleepData;
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>

@@ -9,6 +9,8 @@ import { useRouter } from 'next/router';
 import React, { useState, useMemo } from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
+import { useMedications } from '@/hooks';
+
 /** Dose slot for a single medication time */
 interface DoseSlot {
     id: string;
@@ -95,6 +97,7 @@ const STATUS_CONFIG: Record<DoseSlot['status'], { badge: 'success' | 'error' | '
  * Calendar page showing a weekly view of medication dose schedule.
  */
 const MedicationCalendarPage: React.FC = () => {
+    const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const weekDays = useMemo(() => generateWeekDays(), []);
     const mockSchedule = useMemo(() => buildMockSchedule(weekDays), [weekDays]);
@@ -103,6 +106,25 @@ const MedicationCalendarPage: React.FC = () => {
         return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     }, []);
     const [selectedDate, setSelectedDate] = useState(todayStr);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void medications;
 
     const doses = mockSchedule[selectedDate] ?? [];
 

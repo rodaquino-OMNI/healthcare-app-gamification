@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useNutrition } from '@/hooks';
+
 type Period = '7d' | '30d';
 
 const MACROS = [
@@ -19,8 +21,28 @@ const WEEKLY_DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const WEEKLY_CALORIES = [1820, 2100, 1650, 1940, 1780, 2200, 1840];
 
 const MacroTrackerPage: React.FC = () => {
+    const { data: nutritionData, loading, error, refetch } = useNutrition();
     const router = useRouter();
     const [period, setPeriod] = useState<Period>('7d');
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void nutritionData;
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>

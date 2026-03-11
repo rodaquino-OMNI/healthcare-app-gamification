@@ -1,5 +1,6 @@
-import React from 'react';
 import { render } from '@testing-library/react';
+import React from 'react';
+
 import '@testing-library/jest-dom';
 import FoodDiaryPage from './food-diary';
 

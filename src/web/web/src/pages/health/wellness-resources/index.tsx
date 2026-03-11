@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useAuth, useHealthMetrics } from '@/hooks';
+
 const CATEGORIES = [
     { label: 'Articles', description: 'Expert health articles', href: '/health/wellness-resources/articles' },
     { label: 'Videos', description: 'Guided wellness videos', href: '/health/wellness-resources/videos' },
@@ -27,6 +29,9 @@ const RECENT = [
 
 const WellnessResourcesHomePage: React.FC = () => {
     const router = useRouter();
+    const { session } = useAuth();
+    const userId = session?.userId || '';
+    const { metrics: _metrics, loading: _metricsLoading } = useHealthMetrics(userId, []);
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>

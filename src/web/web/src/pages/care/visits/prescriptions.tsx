@@ -8,6 +8,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useVisits } from '@/hooks';
+
 interface Prescription {
     id: string;
     name: string;
@@ -18,39 +20,31 @@ interface Prescription {
     refills: number;
 }
 
-const MOCK_PRESCRIPTIONS: Prescription[] = [
-    {
-        id: 'rx1',
-        name: 'Ibuprofen',
-        dosage: '400mg',
-        frequency: 'Every 8 hours',
-        duration: '7 days',
-        instructions: 'Take with food. Do not exceed 3 doses per day.',
-        refills: 1,
-    },
-    {
-        id: 'rx2',
-        name: 'Cyclobenzaprine',
-        dosage: '10mg',
-        frequency: 'Once daily at bedtime',
-        duration: '14 days',
-        instructions: 'May cause drowsiness. Do not operate heavy machinery.',
-        refills: 0,
-    },
-    {
-        id: 'rx3',
-        name: 'Magnesium Citrate',
-        dosage: '200mg',
-        frequency: 'Twice daily',
-        duration: '30 days',
-        instructions: 'Take with a full glass of water. May be taken with or without food.',
-        refills: 2,
-    },
-];
-
 /** Prescriptions page listing medications prescribed during the visit. */
 const PrescriptionsPage: React.FC = () => {
     const router = useRouter();
+    const { isLoading, error } = useVisits();
+    const prescriptions: Prescription[] = [];
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading prescriptions...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    Failed to load prescriptions.
+                </Text>
+            </div>
+        );
+    }
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
@@ -62,7 +56,7 @@ const PrescriptionsPage: React.FC = () => {
             </Text>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.md }}>
-                {MOCK_PRESCRIPTIONS.map((rx) => (
+                {prescriptions.map((rx) => (
                     <Card key={rx.id} journey="care" elevation="md" padding="lg">
                         <Box
                             display="flex"

@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { useAppointments } from '@/hooks';
 import { CareLayout } from '@/layouts/CareLayout';
 
 interface Review {
@@ -71,7 +72,34 @@ const renderStars = (rating: number): string =>
 
 const ReviewsPage: React.FC = () => {
     const router = useRouter();
+    const { appointments: _appointments, loading, error } = useAppointments();
     const [sortBy, setSortBy] = useState('Mais Recentes');
+    if (loading) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Avaliacoes do Medico" />
+                <div style={{ maxWidth: '960px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.gray[50]}>
+                        Carregando...
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Avaliacoes do Medico" />
+                <div style={{ maxWidth: '960px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.semantic.error}>
+                        Erro ao carregar avaliacoes. Tente novamente.
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
+
     const totalReviews = STAR_DISTRIBUTION.reduce((sum, d) => sum + d.count, 0);
     const avgRating = (STAR_DISTRIBUTION.reduce((sum, d) => sum + d.stars * d.count, 0) / totalReviews).toFixed(1);
 

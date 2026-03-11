@@ -1,9 +1,13 @@
+import { colors } from 'design-system/tokens/colors';
 import type { NextPage } from 'next';
 import React from 'react';
 
+import { useAuth } from '@/hooks/useAuth';
+
 const ServerErrorPage: NextPage = () => {
+    const { isAuthenticated: _isAuthenticated } = useAuth();
     // Care journey color - used for error pages to signal attention and care
-    const careJourneyColor = '#FF8C42';
+    const careJourneyColor = colors.journeys.care.primary;
 
     return (
         <div className="error-container">
@@ -55,7 +59,7 @@ const ServerErrorPage: NextPage = () => {
                     justify-content: center;
                     min-height: 100vh;
                     padding: 16px;
-                    background-color: #fff8f0;
+                    background-color: ${colors.journeys.care.background};
                 }
                 .error-content {
                     max-width: 600px;
@@ -72,13 +76,13 @@ const ServerErrorPage: NextPage = () => {
                     margin-bottom: 16px;
                 }
                 .error-container h1 {
-                    color: #212121;
+                    color: ${colors.neutral.gray900};
                     font-size: 24px;
                     font-weight: 700;
                     margin-bottom: 16px;
                 }
                 .error-container p {
-                    color: #616161;
+                    color: ${colors.gray[50]};
                     margin-bottom: 8px;
                     font-size: 16px;
                     line-height: 1.5;
@@ -100,7 +104,7 @@ const ServerErrorPage: NextPage = () => {
                     transition: background-color 0.3s;
                 }
                 .primary-button:hover {
-                    background-color: #f17c3a;
+                    background-color: ${colors.journeys.care.secondary};
                 }
                 .secondary-button {
                     background-color: transparent;

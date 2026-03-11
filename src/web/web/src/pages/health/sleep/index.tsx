@@ -6,12 +6,7 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
-const QUICK_STATS = [
-    { label: 'Sleep Score', value: '85' },
-    { label: 'Hours Slept', value: '7.4h' },
-    { label: 'Sleep Quality', value: 'Good' },
-    { label: 'Streak', value: '12 days' },
-];
+import { useSleep } from '@/hooks';
 
 const NAV_LINKS = [
     { label: 'Log Sleep', href: '/health/sleep/log' },
@@ -27,7 +22,46 @@ const NAV_LINKS = [
 ];
 
 const SleepHomePage: React.FC = () => {
+    const { data: sleepData, loading, error, refetch } = useSleep();
     const router = useRouter();
+
+    const stats = sleepData
+        ? [
+              {
+                  label: 'Sleep Score',
+                  value: String(sleepData.find((m) => String(m.type) === 'sleep_score')?.value ?? '—'),
+              },
+              {
+                  label: 'Hours Slept',
+                  value: `${sleepData.find((m) => String(m.type) === 'sleep_duration')?.value ?? '—'}h`,
+              },
+              {
+                  label: 'Sleep Quality',
+                  value: String(sleepData.find((m) => String(m.type) === 'sleep_quality')?.value ?? '—'),
+              },
+              {
+                  label: 'Streak',
+                  value: `${sleepData.find((m) => String(m.type) === 'sleep_streak')?.value ?? '—'} days`,
+              },
+          ]
+        : [];
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
@@ -75,7 +109,7 @@ const SleepHomePage: React.FC = () => {
                     marginBottom: spacing['2xl'],
                 }}
             >
-                {QUICK_STATS.map((stat) => (
+                {stats.map((stat) => (
                     <Card key={stat.label} journey="health" elevation="sm" padding="md">
                         <Text fontSize="sm" color={colors.gray[50]}>
                             {stat.label}

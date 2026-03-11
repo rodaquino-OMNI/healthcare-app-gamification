@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { WEB_PROFILE_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
+import { useProfile } from '@/hooks/useProfile';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 const Title = styled.h2`
@@ -135,8 +136,10 @@ const StepIndicator = styled.p`
  */
 export default function ProfileDocumentsPage(): React.ReactElement {
     const router = useRouter();
+    const { profile } = useProfile();
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [cpf, setCpf] = useState('');
+    // Pre-fill CPF from profile if available
+    const [cpf, setCpf] = useState((profile?.cpf as string) || '');
     const [rg, setRg] = useState('');
     const [docType, setDocType] = useState('cpf');
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);

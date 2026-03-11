@@ -4,6 +4,7 @@ import FormField from 'design-system/components/Input';
 import { Input } from 'design-system/components/Input/Input';
 import { Box } from 'design-system/primitives/Box/Box';
 import { Text } from 'design-system/primitives/Text/Text';
+import { colors } from 'design-system/tokens/colors';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
@@ -157,7 +158,7 @@ const Register: React.FC = () => {
                         style={{
                             margin: '16px 0',
                             padding: '8px',
-                            backgroundColor: '#DC3545',
+                            backgroundColor: colors.semantic.error,
                             borderRadius: '8px',
                         }}
                     >

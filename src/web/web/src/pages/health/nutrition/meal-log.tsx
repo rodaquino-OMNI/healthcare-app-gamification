@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useNutrition } from '@/hooks';
+
 const MEAL_TYPES = ['Breakfast', 'Lunch', 'Dinner', 'Snack'];
 
 const MOCK_MACROS = [
@@ -26,10 +28,30 @@ const inputStyle: React.CSSProperties = {
 };
 
 const MealLogPage: React.FC = () => {
+    const { data: nutritionData, loading, error, refetch } = useNutrition();
     const router = useRouter();
     const [foodName, setFoodName] = useState('');
     const [portion, setPortion] = useState('');
     const [mealType, setMealType] = useState('Breakfast');
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void nutritionData;
 
     const handleSave = (): void => {
         window.alert(`Meal logged: ${foodName}, ${portion}, ${mealType}`);

@@ -8,7 +8,9 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
-type RecordType = 'visit' | 'lab' | 'prescription' | 'imaging';
+import { useMedicalRecords } from '@/hooks';
+import type { RecordType } from '@/hooks/useMedicalRecords';
+
 type FilterTab = 'all' | 'visit' | 'lab' | 'prescription';
 
 const FILTER_TABS: { key: FilterTab; label: string }[] = [
@@ -16,58 +18,6 @@ const FILTER_TABS: { key: FilterTab; label: string }[] = [
     { key: 'visit', label: 'Visit Notes' },
     { key: 'lab', label: 'Lab Results' },
     { key: 'prescription', label: 'Prescriptions' },
-];
-
-interface MedicalRecord {
-    id: string;
-    type: RecordType;
-    title: string;
-    doctor: string;
-    date: string;
-    description: string;
-}
-
-const MOCK_RECORDS: MedicalRecord[] = [
-    {
-        id: 'r1',
-        type: 'visit',
-        title: 'Telemedicine Consultation',
-        doctor: 'Dr. Maria Santos',
-        date: 'Feb 21, 2026',
-        description: 'Tension-type headache evaluation and treatment plan',
-    },
-    {
-        id: 'r2',
-        type: 'lab',
-        title: 'Complete Blood Count (CBC)',
-        doctor: 'LabCorp',
-        date: 'Feb 15, 2026',
-        description: 'All values within normal range',
-    },
-    {
-        id: 'r3',
-        type: 'prescription',
-        title: 'Ibuprofen 400mg',
-        doctor: 'Dr. Maria Santos',
-        date: 'Feb 21, 2026',
-        description: 'Every 8 hours for 7 days',
-    },
-    {
-        id: 'r4',
-        type: 'lab',
-        title: 'Thyroid Panel (TSH)',
-        doctor: 'Quest Diagnostics',
-        date: 'Feb 10, 2026',
-        description: 'TSH within normal range (2.1 mIU/L)',
-    },
-    {
-        id: 'r5',
-        type: 'visit',
-        title: 'Annual Physical Exam',
-        doctor: 'Dr. Carlos Mendes',
-        date: 'Jan 15, 2026',
-        description: 'Routine checkup - all clear',
-    },
 ];
 
 const getTypeBadge = (type: RecordType): { status: 'info' | 'success' | 'warning'; label: string } => {
@@ -88,9 +38,30 @@ const getTypeBadge = (type: RecordType): { status: 'info' | 'success' | 'warning
 /** Medical records page with filter tabs and downloadable record list. */
 const MedicalRecordsPage: React.FC = () => {
     const router = useRouter();
+    const { records, isLoading, error } = useMedicalRecords();
     const [activeTab, setActiveTab] = useState<FilterTab>('all');
 
-    const filteredRecords = activeTab === 'all' ? MOCK_RECORDS : MOCK_RECORDS.filter((r) => r.type === activeTab);
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading medical records...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    Failed to load medical records.
+                </Text>
+            </div>
+        );
+    }
+
+    const filteredRecords = activeTab === 'all' ? records : records.filter((r) => r.type === activeTab);
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>

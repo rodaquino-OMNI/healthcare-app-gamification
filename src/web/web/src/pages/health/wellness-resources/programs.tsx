@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useAuth, useHealthMetrics } from '@/hooks';
+
 type Level = 'All' | 'Beginner' | 'Intermediate' | 'Advanced';
 const LEVELS: Level[] = ['All', 'Beginner', 'Intermediate', 'Advanced'];
 
@@ -48,6 +50,9 @@ const PROGRAMS = [
 
 const WellnessProgramsPage: React.FC = () => {
     const router = useRouter();
+    const { session } = useAuth();
+    const userId = session?.userId || '';
+    const { metrics: _metrics, loading: _metricsLoading } = useHealthMetrics(userId, []);
     const [level, setLevel] = useState<Level>('All');
 
     const filtered = PROGRAMS.filter((p) => level === 'All' || p.level === level);

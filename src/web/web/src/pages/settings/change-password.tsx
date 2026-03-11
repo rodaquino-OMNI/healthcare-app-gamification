@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { changePassword } from '@/api/auth';
+import { useAuth } from '@/hooks/useAuth';
+import { useSettings } from '@/hooks/useSettings';
 
 /**
  * Change password page.
@@ -11,6 +13,8 @@ import { changePassword } from '@/api/auth';
  */
 const ChangePasswordPage: NextPage = () => {
     const router = useRouter();
+    const { isAuthenticated: _isAuthenticated } = useAuth();
+    const { isLoading: _settingsLoading } = useSettings();
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');

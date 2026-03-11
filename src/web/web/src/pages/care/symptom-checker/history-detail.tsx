@@ -4,8 +4,31 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useSymptomChecker } from '@/hooks';
+
 const HistoryDetailPage: React.FC = () => {
     const router = useRouter();
+    const { symptoms: _symptoms, results: _results, isLoading, error } = useSymptomChecker();
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    {error.message}
+                </Text>
+            </div>
+        );
+    }
 
     const getSeverityColor = (severity: string): string => {
         switch (severity) {

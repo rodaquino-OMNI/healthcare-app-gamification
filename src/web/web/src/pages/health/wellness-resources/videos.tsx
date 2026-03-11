@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useAuth, useHealthMetrics } from '@/hooks';
+
 type Category = 'All' | 'Yoga' | 'Meditation' | 'Fitness' | 'Nutrition';
 const CATEGORIES: Category[] = ['All', 'Yoga', 'Meditation', 'Fitness', 'Nutrition'];
 
@@ -21,6 +23,9 @@ const VIDEOS = [
 
 const VideoLibraryPage: React.FC = () => {
     const router = useRouter();
+    const { session } = useAuth();
+    const userId = session?.userId || '';
+    const { metrics: _metrics, loading: _metricsLoading } = useHealthMetrics(userId, []);
     const [category, setCategory] = useState<Category>('All');
 
     const filtered = VIDEOS.filter((v) => category === 'All' || v.category === category);

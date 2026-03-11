@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useNutrition } from '@/hooks';
+
 type FilterPeriod = 'week' | 'month' | 'all';
 
 const DIARY_ENTRIES = [
@@ -50,10 +52,30 @@ const typeColor = (type: string): string => {
 };
 
 const FoodDiaryPage: React.FC = () => {
+    const { data: nutritionData, loading, error, refetch } = useNutrition();
     const router = useRouter();
     const [filter, setFilter] = useState<FilterPeriod>('week');
 
     const entries = filter === 'all' ? DIARY_ENTRIES : DIARY_ENTRIES.slice(0, filter === 'week' ? 3 : 3);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void nutritionData;
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>

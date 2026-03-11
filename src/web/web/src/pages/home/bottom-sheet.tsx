@@ -4,6 +4,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React from 'react';
 
+import { useAuth } from '@/hooks/useAuth';
+
 interface QuickAction {
     id: string;
     icon: string;
@@ -44,6 +46,8 @@ const QUICK_ACTIONS: QuickAction[] = [
 ];
 
 const BottomSheetPage: React.FC = () => {
+    const { isAuthenticated: _isAuthenticated } = useAuth();
+
     return (
         <div style={styles.container}>
             <h1 style={styles.title}>Acoes Rapidas</h1>

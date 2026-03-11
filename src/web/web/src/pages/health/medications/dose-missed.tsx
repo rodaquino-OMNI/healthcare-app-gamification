@@ -10,6 +10,8 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
+import { useMedications } from '@/hooks';
+
 /** Missed dose reason options */
 const MISSED_REASONS = [
     { id: 'forgot', label: 'I forgot' },
@@ -23,6 +25,7 @@ const MISSED_REASONS = [
  * and optionally reschedule or take the dose immediately.
  */
 const MedicationDoseMissedPage: React.FC = () => {
+    const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const { name, dosage, scheduledTime } = router.query;
 
@@ -33,6 +36,25 @@ const MedicationDoseMissedPage: React.FC = () => {
     const [selectedReason, setSelectedReason] = useState<string | null>(null);
     const [showReschedule, setShowReschedule] = useState(false);
     const [rescheduleTime, setRescheduleTime] = useState('');
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void medications;
 
     const handleSkip = (): void => {
         // In a real app, persist the skip record via API

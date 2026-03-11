@@ -8,6 +8,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useTelemedicine } from '@/hooks';
+
 interface AsyncMessage {
     id: string;
     sender: 'doctor' | 'patient';
@@ -17,50 +19,31 @@ interface AsyncMessage {
     read: boolean;
 }
 
-const MOCK_DOCTOR = {
-    name: 'Dr. Maria Santos',
-    specialty: 'General Practitioner',
-    responseTime: 'Usually responds within 2 hours',
-};
-
-const MOCK_MESSAGES: AsyncMessage[] = [
-    {
-        id: 'a1',
-        sender: 'patient',
-        text: 'Hi Dr. Santos, I wanted to let you know the headaches have improved since starting the medication.',
-        time: '9:15 AM',
-        date: 'Feb 20',
-        read: true,
-    },
-    {
-        id: 'a2',
-        sender: 'doctor',
-        text: 'That is great news! Are you experiencing any side effects from the ibuprofen or cyclobenzaprine?',
-        time: '11:30 AM',
-        date: 'Feb 20',
-        read: true,
-    },
-    {
-        id: 'a3',
-        sender: 'patient',
-        text: 'Some mild drowsiness from the cyclobenzaprine, but nothing too bad. Should I continue at the same dose?',
-        time: '2:45 PM',
-        date: 'Feb 20',
-        read: true,
-    },
-    {
-        id: 'a4',
-        sender: 'doctor',
-        text: 'Mild drowsiness is expected and should improve in a few days. Continue with the current dose. If drowsiness persists beyond a week, we can adjust. Keep me updated!',
-        time: '4:10 PM',
-        date: 'Feb 20',
-        read: false,
-    },
-];
-
 /** Asynchronous messaging page for non-urgent doctor communication. */
 const AsyncChatPage: React.FC = () => {
     const router = useRouter();
+    const { isLoading, error } = useTelemedicine();
+    const messages: AsyncMessage[] = [];
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading messages...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    Failed to load messages.
+                </Text>
+            </div>
+        );
+    }
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
@@ -86,15 +69,15 @@ const AsyncChatPage: React.FC = () => {
                             }}
                         >
                             <Text fontSize="sm" fontWeight="bold" color={colors.neutral.white}>
-                                MS
+                                {'--'}
                             </Text>
                         </div>
                         <div>
                             <Text fontWeight="bold" fontSize="md" color={colors.journeys.care.text}>
-                                {MOCK_DOCTOR.name}
+                                Doctor
                             </Text>
                             <Text fontSize="sm" color={colors.gray[50]}>
-                                {MOCK_DOCTOR.specialty}
+                                Specialist
                             </Text>
                         </div>
                     </Box>
@@ -103,7 +86,7 @@ const AsyncChatPage: React.FC = () => {
                     </Badge>
                 </Box>
                 <Text fontSize="sm" color={colors.gray[40]} style={{ marginTop: spacing.xs }}>
-                    {MOCK_DOCTOR.responseTime}
+                    Usually responds within 2 hours
                 </Text>
             </Card>
 
@@ -116,7 +99,7 @@ const AsyncChatPage: React.FC = () => {
                         minHeight: '260px',
                     }}
                 >
-                    {MOCK_MESSAGES.map((msg) => (
+                    {messages.map((msg) => (
                         <div
                             key={msg.id}
                             style={{

@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useSleep } from '@/hooks';
+
 type FilterPeriod = 'week' | 'month' | 'all';
 
 const QUALITY_EMOJI: Record<string, string> = {
@@ -43,10 +45,30 @@ const scoreColor = (score: number): string => {
 };
 
 const SleepDiaryPage: React.FC = () => {
+    const { data: sleepData, loading, error, refetch } = useSleep();
     const router = useRouter();
     const [filter, setFilter] = useState<FilterPeriod>('week');
 
     const filtered = filter === 'week' ? MOCK_ENTRIES.slice(0, 7) : MOCK_ENTRIES;
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void sleepData;
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>

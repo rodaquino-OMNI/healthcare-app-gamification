@@ -2,6 +2,8 @@ import { colors, typography, spacing, borderRadius } from 'design-system/tokens'
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
 
+import { useSettings } from '@/hooks/useSettings';
+
 import { restClient } from '../../api/client';
 
 interface ExportCategory {
@@ -16,6 +18,7 @@ interface ExportCategory {
  * Allows users to request export of their personal data.
  */
 const DataExportPage: NextPage = () => {
+    const { isLoading: _isLoading } = useSettings();
     const [categories, setCategories] = useState<ExportCategory[]>([
         { key: 'personal', label: 'Dados Pessoais', description: 'Nome, CPF, endereco, contato', selected: true },
         { key: 'health', label: 'Dados de Saude', description: 'Consultas, exames, medicamentos', selected: true },

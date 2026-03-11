@@ -8,6 +8,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useSymptomChecker } from '@/hooks';
+
 interface EmergencyRoom {
     id: string;
     name: string;
@@ -60,6 +62,27 @@ const MOCK_ERS: EmergencyRoom[] = [
 /** ER locator page listing nearest emergency rooms with call and directions actions. */
 const ERLocatorPage: React.FC = () => {
     const router = useRouter();
+    const { isLoading, error } = useSymptomChecker();
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    {error.message}
+                </Text>
+            </div>
+        );
+    }
 
     const handleCall = (phone: string): void => {
         window.open(`tel:${phone.replace(/\D/g, '')}`, '_self');

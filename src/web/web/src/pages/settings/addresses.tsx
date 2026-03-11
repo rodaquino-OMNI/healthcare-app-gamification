@@ -1,22 +1,9 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-import { getAddresses, removeAddress } from '../../api/settings';
-
-interface Address {
-    id: string;
-    label: string;
-    street: string;
-    number: string;
-    complement?: string;
-    neighborhood: string;
-    city: string;
-    state: string;
-    cep: string;
-    isPrimary?: boolean;
-}
+import { useSettings } from '@/hooks/useSettings';
 
 /**
  * Address list management page.
@@ -24,33 +11,15 @@ interface Address {
  */
 const AddressesPage: NextPage = () => {
     const router = useRouter();
-    const [addresses, setAddresses] = useState<Address[]>([]);
-    const [loading, setLoading] = useState(false);
+    const { addresses, isLoading: loading, error: hookError, removeAddress } = useSettings();
     const [error, setError] = useState('');
-
-    useEffect(() => {
-        const fetchAddresses = async (): Promise<void> => {
-            setLoading(true);
-            setError('');
-            try {
-                const data = await getAddresses();
-                setAddresses(data);
-            } catch (err: unknown) {
-                setError(err instanceof Error ? err.message : 'Erro ao carregar enderecos.');
-            } finally {
-                setLoading(false);
-            }
-        };
-        void fetchAddresses();
-    }, []);
 
     const handleRemove = async (id: string): Promise<void> => {
         setError('');
         try {
             await removeAddress(id);
-            setAddresses((prev) => prev.filter((addr) => addr.id !== id));
         } catch (err: unknown) {
-            setError(err instanceof Error ? err.message : 'Erro ao remover endereco.');
+            setError(err instanceof Error ? err.message : (hookError ?? 'Erro ao remover endereco.'));
         }
     };
 
@@ -113,10 +82,10 @@ const AddressesPage: NextPage = () => {
 };
 
 const errorStyle: React.CSSProperties = {
-    backgroundColor: '#fef2f2',
-    border: '1px solid #fecaca',
+    backgroundColor: colors.semantic.errorBg,
+    border: `1px solid ${colors.semantic.error}`,
     borderRadius: 6,
-    color: '#b91c1c',
+    color: colors.semantic.error,
     fontSize: 14,
     padding: '10px 14px',
     marginBottom: 16,

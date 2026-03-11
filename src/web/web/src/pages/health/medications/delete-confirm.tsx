@@ -8,13 +8,35 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
+import { useMedications } from '@/hooks';
+
 /**
  * Delete confirmation page for a medication.
  * Shows a warning and provides cancel/delete actions.
  */
 const MedicationDeleteConfirmPage: React.FC = () => {
+    const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const { name } = router.query;
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void medications;
 
     const medicationName = (name as string) || 'this medication';
 

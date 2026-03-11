@@ -8,6 +8,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState, useMemo } from 'react';
 
+import { useMedications } from '@/hooks';
+
 interface MedicationSummary {
     id: string;
     name: string;
@@ -60,6 +62,7 @@ const generateDayStatuses = (count: number): DayStatus[] =>
  * and daily calendar grid showing taken/missed doses.
  */
 const MedicationMonthlyReportPage: React.FC = () => {
+    const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const now = new Date();
     const [month, setMonth] = useState(now.getMonth());
@@ -76,6 +79,34 @@ const MedicationMonthlyReportPage: React.FC = () => {
         const adherence = totalDoses > 0 ? Math.round((takenDoses / totalDoses) * 100) : 0;
         return { totalDoses, takenDoses, missedDoses, adherence };
     }, []);
+
+    const gridCells = useMemo(() => {
+        const cells: (DayStatus | null)[] = [];
+        for (let i = 0; i < firstDay; i++) {
+            cells.push(null);
+        }
+        dayStatuses.forEach((ds) => cells.push(ds));
+        return cells;
+    }, [firstDay, dayStatuses]);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void medications;
 
     const handlePrevMonth = (): void => {
         if (month === 0) {
@@ -94,15 +125,6 @@ const MedicationMonthlyReportPage: React.FC = () => {
             setMonth((m) => m + 1);
         }
     };
-
-    const gridCells = useMemo(() => {
-        const cells: (DayStatus | null)[] = [];
-        for (let i = 0; i < firstDay; i++) {
-            cells.push(null);
-        }
-        dayStatuses.forEach((ds) => cells.push(ds));
-        return cells;
-    }, [firstDay, dayStatuses]);
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>

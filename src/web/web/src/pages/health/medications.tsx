@@ -11,6 +11,8 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
+import { useMedications } from '@/hooks';
+
 /** Medication data type */
 interface Medication {
     id: string;
@@ -67,8 +69,28 @@ const MOCK_MEDICATIONS: Medication[] = [
  * Includes search functionality and links to add/view individual medications.
  */
 const MedicationsPage: React.FC = () => {
+    const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('');
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void medications;
 
     const filteredMedications = MOCK_MEDICATIONS.filter((med) =>
         med.name.toLowerCase().includes(searchTerm.toLowerCase())

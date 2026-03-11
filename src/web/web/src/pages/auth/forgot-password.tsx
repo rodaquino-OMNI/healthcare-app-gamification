@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
+import { useAuth } from '@/hooks/useAuth';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 const Title = styled.h2`
@@ -138,6 +139,7 @@ const ErrorText = styled.p`
  */
 export default function ForgotPasswordPage(): React.ReactElement {
     const router = useRouter();
+    const { isLoading: isAuthLoading } = useAuth();
     const [email, setEmail] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
@@ -202,7 +204,7 @@ export default function ForgotPasswordPage(): React.ReactElement {
                     {error && <ErrorText>{error}</ErrorText>}
                 </FieldGroup>
 
-                <SubmitButton type="submit" disabled={isSubmitting || !email.trim()}>
+                <SubmitButton type="submit" disabled={isSubmitting || isAuthLoading || !email.trim()}>
                     {isSubmitting ? 'Enviando...' : 'Enviar Link'}
                 </SubmitButton>
             </form>

@@ -3,6 +3,8 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useAuth } from '@/hooks/useAuth';
+
 interface ContactChannel {
     id: string;
     title: string;
@@ -53,6 +55,7 @@ const CHANNELS: ContactChannel[] = [
  */
 const ContactPage: NextPage = () => {
     const router = useRouter();
+    const { isAuthenticated: _isAuthenticated } = useAuth();
 
     const handleChannelClick = (channel: ContactChannel): void => {
         if (channel.action.startsWith('/')) {

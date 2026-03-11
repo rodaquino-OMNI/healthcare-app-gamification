@@ -8,6 +8,8 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
+import { useSymptomChecker } from '@/hooks';
+
 interface HeadRegion {
     id: string;
     label: string;
@@ -28,7 +30,28 @@ const HEAD_REGIONS: HeadRegion[] = [
 /** Head detail page for selecting specific head/face regions. */
 const HeadDetailPage: React.FC = () => {
     const router = useRouter();
+    const { addSymptom: _addSymptom, isLoading, error } = useSymptomChecker();
     const [selected, setSelected] = useState<string[]>([]);
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    {error.message}
+                </Text>
+            </div>
+        );
+    }
 
     const toggle = (id: string): void => {
         setSelected((prev) => (prev.includes(id) ? prev.filter((r) => r !== id) : [...prev, id]));

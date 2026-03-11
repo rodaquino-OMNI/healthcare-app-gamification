@@ -10,6 +10,8 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
+import { useSymptomChecker } from '@/hooks';
+
 /** Follow-up question type definition */
 interface FollowUpQuestion {
     id: string;
@@ -60,8 +62,35 @@ const FOLLOW_UP_QUESTIONS: FollowUpQuestion[] = [
  */
 const SymptomQuestionsPage: React.FC = () => {
     const router = useRouter();
+    const {
+        symptoms: _symptoms,
+        currentStep: _currentStep,
+        setCurrentStep: _setCurrentStep,
+        isLoading,
+        error,
+    } = useSymptomChecker();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    {error.message}
+                </Text>
+            </div>
+        );
+    }
 
     const currentQuestion = FOLLOW_UP_QUESTIONS[currentIndex];
     const isLastQuestion = currentIndex === FOLLOW_UP_QUESTIONS.length - 1;

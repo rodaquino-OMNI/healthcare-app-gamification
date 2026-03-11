@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useAuth } from '@/hooks/useAuth';
+
 interface FAQDetail {
     id: string;
     question: string;
@@ -68,6 +70,7 @@ Dica: Configure lembretes alguns minutos antes do horário real para ter tempo d
  */
 const FAQDetailPage: React.FC = () => {
     const router = useRouter();
+    const { isAuthenticated: _isAuthenticated } = useAuth();
     const { id } = router.query;
     const [helpful, setHelpful] = useState<boolean | null>(null);
 

@@ -3,12 +3,15 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useAuth } from '@/hooks/useAuth';
+
 /**
  * About the app page.
  * Shows version info, credits, and links to legal pages.
  */
 const AboutPage: NextPage = () => {
     const router = useRouter();
+    const { isAuthenticated: _isAuthenticated } = useAuth();
 
     const appInfo = [
         { label: 'Versao', value: '2.4.1 (Build 241)' },

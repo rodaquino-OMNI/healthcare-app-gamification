@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useSymptomChecker } from '@/hooks';
+
 interface HistoryItem {
     id: string;
     label: string;
@@ -29,7 +31,28 @@ const HISTORY_ITEMS: HistoryItem[] = [
 /** Medical history checklist page for the symptom checker flow. */
 const MedicalHistoryPage: React.FC = () => {
     const router = useRouter();
+    const { symptoms: _symptoms, isLoading, error } = useSymptomChecker();
     const [enabled, setEnabled] = useState<Record<string, boolean>>({});
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    {error.message}
+                </Text>
+            </div>
+        );
+    }
 
     const toggleItem = (id: string): void => {
         setEnabled((prev) => ({ ...prev, [id]: !prev[id] }));

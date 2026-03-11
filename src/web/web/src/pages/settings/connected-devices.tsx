@@ -2,6 +2,8 @@ import { colors, typography, spacing, borderRadius } from 'design-system/tokens'
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
 
+import { useSettings } from '@/hooks/useSettings';
+
 interface Device {
     id: string;
     name: string;
@@ -29,6 +31,7 @@ const MOCK_DEVICES: Device[] = [
  * Allows users to view and manage connected wearables and health devices.
  */
 const ConnectedDevicesPage: NextPage = () => {
+    const { isLoading: _isLoading } = useSettings();
     const [devices, setDevices] = useState<Device[]>(MOCK_DEVICES);
 
     const toggleDevice = (id: string): void => {

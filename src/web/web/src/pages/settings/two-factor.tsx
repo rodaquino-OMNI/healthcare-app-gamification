@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { enable2FA, disable2FA, configure2FA } from '@/api/auth';
+import { useAuth } from '@/hooks/useAuth';
 
 /**
  * Two-factor authentication settings page.
@@ -11,6 +12,7 @@ import { enable2FA, disable2FA, configure2FA } from '@/api/auth';
  */
 const TwoFactorPage: NextPage = () => {
     const router = useRouter();
+    const { session } = useAuth();
     const [enabled, setEnabled] = useState(false);
     const [method, setMethod] = useState<'sms' | 'authenticator'>('sms');
     const [phone, setPhone] = useState('(11) 99999-9999');
@@ -51,7 +53,10 @@ const TwoFactorPage: NextPage = () => {
     return (
         <div style={{ padding: spacing.xl, maxWidth: '600px', margin: '0 auto' }}>
             <h1 style={titleStyle}>Autenticacao em Duas Etapas</h1>
-            <p style={subtitleStyle}>Adicione uma camada extra de seguranca a sua conta.</p>
+            <p style={subtitleStyle}>
+                Adicione uma camada extra de seguranca a sua conta
+                {session?.userId ? ` (${session.userId})` : ''}.
+            </p>
 
             <div style={cardStyle}>
                 {error && (

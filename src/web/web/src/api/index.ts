@@ -38,3 +38,6 @@ export { getNotifications, markNotificationAsRead } from './notifications';
 
 // Settings API functions
 export * from './settings';
+
+// Wellness API functions
+export * from './wellness';

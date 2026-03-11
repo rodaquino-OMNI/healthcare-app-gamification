@@ -9,6 +9,8 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
+import { useSymptomChecker } from '@/hooks';
+
 /** Severity level thresholds and their labels */
 const SEVERITY_LABELS = [
     {
@@ -53,7 +55,34 @@ const getSeverityInfo = (
  */
 const SymptomSeverityPage: React.FC = () => {
     const router = useRouter();
+    const {
+        symptoms: _symptoms,
+        currentStep: _currentStep,
+        setCurrentStep: _setCurrentStep,
+        isLoading,
+        error,
+    } = useSymptomChecker();
     const [overallSeverity, setOverallSeverity] = useState(5);
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    {error.message}
+                </Text>
+            </div>
+        );
+    }
 
     const severityInfo = getSeverityInfo(overallSeverity);
 

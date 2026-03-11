@@ -14,9 +14,9 @@ import type { Achievement } from 'shared/types/gamification.types';
 import { useGameProfile } from '@/hooks/useGamification';
 
 const JOURNEY_COLORS: Record<string, string> = {
-    health: colors.journeys?.health?.primary ?? '#0ACF83',
-    care: colors.journeys?.care?.primary ?? '#FF8C42',
-    plan: colors.journeys?.plan?.primary ?? '#3A86FF',
+    health: colors.journeys.health.primary,
+    care: colors.journeys.care.primary,
+    plan: colors.journeys.plan.primary,
 };
 
 const JOURNEY_LABELS: Record<string, string> = {
@@ -97,7 +97,7 @@ const AchievementDetailPage: React.FC = () => {
                     style={{
                         display: 'inline-block',
                         backgroundColor: journeyColor,
-                        color: '#fff',
+                        color: colors.gray[0],
                         padding: `${spacing.xs} ${spacing.sm}`,
                         borderRadius: '12px',
                         fontSize: '12px',

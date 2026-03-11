@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useActivity } from '@/hooks';
+
 const STATS = [
     { label: 'Duration', value: '45 min' },
     { label: 'Calories', value: '380 kcal' },
@@ -16,6 +18,26 @@ const STATS = [
 
 const WorkoutDetailPage: React.FC = () => {
     const router = useRouter();
+    const { data: activityData, loading, error, refetch } = useActivity();
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void activityData;
+
     const { id } = router.query;
 
     const handleDelete = (): void => {

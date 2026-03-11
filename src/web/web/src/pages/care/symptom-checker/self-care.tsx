@@ -8,6 +8,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useSymptomChecker } from '@/hooks';
+
 interface SelfCareTip {
     id: string;
     category: string;
@@ -85,7 +87,28 @@ const getCategoryColor = (category: string): 'success' | 'info' | 'warning' => {
 /** Self-care tips page with categorized recommendation cards. */
 const SelfCarePage: React.FC = () => {
     const router = useRouter();
+    const { results: _results, isLoading, error } = useSymptomChecker();
     const categories = Array.from(new Set(SELF_CARE_TIPS.map((t) => t.category)));
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    {error.message}
+                </Text>
+            </div>
+        );
+    }
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>

@@ -9,6 +9,7 @@ import { ErrorState } from '@/components/shared/ErrorState';
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
 import { LoadingIndicator } from '@/components/shared/LoadingIndicator';
 import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
 import { MainLayout } from '@/layouts/MainLayout';
 
 /**
@@ -17,7 +18,10 @@ import { MainLayout } from '@/layouts/MainLayout';
  */
 const ProfilePage: React.FC = () => {
     // LD1: Uses the useAuth hook to get the authentication status and user data.
-    const { isLoading, isAuthenticated, error: authError, session } = useAuth();
+    const { isLoading: authLoading, isAuthenticated, error: authError, session } = useAuth();
+    // LD1: Uses the useProfile hook to load profile data.
+    const { profile: _profile, isLoading: profileLoading } = useProfile();
+    const isLoading = authLoading || profileLoading;
 
     // LD1: Uses the useRouter hook to handle navigation.
     const router = useRouter();

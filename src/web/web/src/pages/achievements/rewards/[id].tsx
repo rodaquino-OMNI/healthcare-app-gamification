@@ -104,9 +104,9 @@ const MOCK_REWARDS: Record<string, Reward & { terms: string; category: string }>
 };
 
 const JOURNEY_COLORS: Record<string, string> = {
-    health: '#0ACF83',
-    care: '#FF8C42',
-    plan: '#3A86FF',
+    health: colors.journeys.health.primary,
+    care: colors.journeys.care.primary,
+    plan: colors.journeys.plan.primary,
 };
 
 const JOURNEY_LABELS: Record<string, string> = {
@@ -147,7 +147,7 @@ const RewardDetailPage: React.FC = () => {
     }
 
     const canClaim = userXp >= reward.xp && !claimed;
-    const journeyColor = JOURNEY_COLORS[reward.journey] ?? '#6C63FF';
+    const journeyColor = JOURNEY_COLORS[reward.journey] ?? colors.gamification.primary;
 
     const handleClaim = (): void => {
         if (canClaim) {
@@ -173,7 +173,7 @@ const RewardDetailPage: React.FC = () => {
                         style={{
                             display: 'inline-block',
                             backgroundColor: journeyColor,
-                            color: '#fff',
+                            color: colors.gray[0],
                             padding: `${spacing.xs} ${spacing.sm}`,
                             borderRadius: '12px',
                             fontSize: '12px',
@@ -185,8 +185,8 @@ const RewardDetailPage: React.FC = () => {
                     <span
                         style={{
                             display: 'inline-block',
-                            backgroundColor: colors.gray[10] ?? '#f0f0f0',
-                            color: colors.gray[70] ?? '#333',
+                            backgroundColor: colors.gray[10],
+                            color: colors.gray[70],
                             padding: `${spacing.xs} ${spacing.sm}`,
                             borderRadius: '12px',
                             fontSize: '12px',
@@ -208,7 +208,12 @@ const RewardDetailPage: React.FC = () => {
                 <Text fontSize="sm" color={colors.gray[50]} style={{ marginBottom: spacing.xs }}>
                     Cost
                 </Text>
-                <Text fontSize="2xl" fontWeight="bold" color="#6C63FF" style={{ marginBottom: spacing.md }}>
+                <Text
+                    fontSize="2xl"
+                    fontWeight="bold"
+                    color={colors.gamification.primary}
+                    style={{ marginBottom: spacing.md }}
+                >
                     {reward.xp} XP
                 </Text>
 
@@ -222,7 +227,7 @@ const RewardDetailPage: React.FC = () => {
                 </Box>
 
                 {claimed ? (
-                    <Card padding="md" style={{ backgroundColor: '#e8f5e9' }}>
+                    <Card padding="md" style={{ backgroundColor: colors.semantic.successBg }}>
                         <Text fontWeight="bold" color={colors.semantic.success}>
                             Reward Claimed Successfully!
                         </Text>

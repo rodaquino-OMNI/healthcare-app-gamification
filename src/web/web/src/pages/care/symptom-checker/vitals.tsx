@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useSymptomChecker } from '@/hooks';
+
 interface VitalField {
     id: string;
     label: string;
@@ -37,7 +39,28 @@ const VITAL_FIELDS: VitalField[] = [
 /** Vitals input page for recording basic vital signs during symptom check. */
 const VitalsPage: React.FC = () => {
     const router = useRouter();
+    const { symptoms: _symptoms, isLoading, error } = useSymptomChecker();
     const [values, setValues] = useState<Record<string, string>>({});
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    {error.message}
+                </Text>
+            </div>
+        );
+    }
 
     const handleChange = (id: string, value: string): void => {
         setValues((prev) => ({ ...prev, [id]: value }));

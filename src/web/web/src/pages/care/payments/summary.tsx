@@ -8,29 +8,47 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { usePayments } from '@/hooks';
+
 interface FeeItem {
     label: string;
     amount: string;
     type: 'charge' | 'discount' | 'total';
 }
 
-const FEE_BREAKDOWN: FeeItem[] = [
-    { label: 'Telemedicine Consultation', amount: 'R$ 250.00', type: 'charge' },
-    { label: 'Insurance Coverage (80%)', amount: '- R$ 200.00', type: 'discount' },
-    { label: 'Copay', amount: 'R$ 50.00', type: 'charge' },
-    { label: 'Total Due', amount: 'R$ 50.00', type: 'total' },
-];
-
-const MOCK_PAYMENT = {
-    method: 'Credit Card ending in 4321',
-    doctor: 'Dr. Maria Santos',
-    date: 'Feb 21, 2026',
-    service: 'Telemedicine - General Practitioner',
-};
-
 /** Payment summary page with fee breakdown and payment action. */
 const PaymentSummaryPage: React.FC = () => {
     const router = useRouter();
+    const { payments, isLoading, error } = usePayments();
+    const feeBreakdown: FeeItem[] = [];
+    const paymentInfo = {
+        method: '',
+        doctor: '',
+        date: '',
+        service: '',
+    };
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading payment summary...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    Failed to load payment summary.
+                </Text>
+            </div>
+        );
+    }
+
+    void payments;
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
@@ -55,7 +73,7 @@ const PaymentSummaryPage: React.FC = () => {
                         Doctor
                     </Text>
                     <Text fontSize="sm" fontWeight="medium" color={colors.journeys.care.text}>
-                        {MOCK_PAYMENT.doctor}
+                        {paymentInfo.doctor}
                     </Text>
                 </Box>
                 <Box display="flex" justifyContent="space-between" style={{ marginBottom: spacing['3xs'] }}>
@@ -63,7 +81,7 @@ const PaymentSummaryPage: React.FC = () => {
                         Service
                     </Text>
                     <Text fontSize="sm" fontWeight="medium" color={colors.journeys.care.text}>
-                        {MOCK_PAYMENT.service}
+                        {paymentInfo.service}
                     </Text>
                 </Box>
                 <Box display="flex" justifyContent="space-between">
@@ -71,7 +89,7 @@ const PaymentSummaryPage: React.FC = () => {
                         Date
                     </Text>
                     <Text fontSize="sm" fontWeight="medium" color={colors.journeys.care.text}>
-                        {MOCK_PAYMENT.date}
+                        {paymentInfo.date}
                     </Text>
                 </Box>
             </Card>
@@ -86,7 +104,7 @@ const PaymentSummaryPage: React.FC = () => {
                     Fee Breakdown
                 </Text>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
-                    {FEE_BREAKDOWN.map((item, idx) => (
+                    {feeBreakdown.map((item, idx) => (
                         <Box
                             key={idx}
                             display="flex"
@@ -123,7 +141,7 @@ const PaymentSummaryPage: React.FC = () => {
                             Payment Method
                         </Text>
                         <Text fontSize="sm" color={colors.gray[50]}>
-                            {MOCK_PAYMENT.method}
+                            {paymentInfo.method}
                         </Text>
                     </div>
                     <Badge variant="status" status="info">

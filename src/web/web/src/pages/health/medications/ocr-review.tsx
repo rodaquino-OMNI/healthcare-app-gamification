@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useMedications } from '@/hooks';
+
 interface MedicationField {
     label: string;
     value: string;
@@ -18,6 +20,7 @@ interface MedicationField {
  * Displays extracted text with editable fields for correction.
  */
 const OCRReviewPage: React.FC = () => {
+    const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const [fields, setFields] = useState<MedicationField[]>([
         { label: 'Nome do Medicamento', value: 'Amoxicilina', editable: true },
@@ -26,6 +29,25 @@ const OCRReviewPage: React.FC = () => {
         { label: 'Duração', value: '7 dias', editable: true },
         { label: 'Prescritor', value: 'Dr. João Silva', editable: false },
     ]);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void medications;
 
     const handleFieldChange = (index: number, newValue: string): void => {
         const updated = [...fields];
@@ -64,7 +86,7 @@ const OCRReviewPage: React.FC = () => {
                                     borderRadius: '8px',
                                     border: `1px solid ${colors.neutral.gray300}`,
                                     fontSize: '14px',
-                                    backgroundColor: field.editable ? '#fff' : colors.gray[10],
+                                    backgroundColor: field.editable ? colors.gray[0] : colors.gray[10],
                                     color: colors.neutral.gray900,
                                     fontFamily: 'inherit',
                                 }}

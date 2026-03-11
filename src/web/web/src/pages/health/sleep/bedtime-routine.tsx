@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useSleep } from '@/hooks';
+
 interface RoutineStep {
     id: string;
     name: string;
@@ -22,12 +24,32 @@ const INITIAL_STEPS: RoutineStep[] = [
 ];
 
 const BedtimeRoutinePage: React.FC = () => {
+    const { data: sleepData, loading, error, refetch } = useSleep();
     const router = useRouter();
     const [steps] = useState<RoutineStep[]>(INITIAL_STEPS);
     const [dndMode, setDndMode] = useState(false);
     const [reminder, setReminder] = useState(true);
 
     const totalMinutes = steps.reduce((sum, s) => sum + parseInt(s.duration, 10), 0);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void sleepData;
 
     const handleSave = (): void => {
         window.alert(`Routine saved: ${steps.length} steps, ${totalMinutes} min total`);

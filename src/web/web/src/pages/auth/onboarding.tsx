@@ -7,6 +7,8 @@ import React, { useState } from 'react';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
+import { useAuth } from '@/hooks/useAuth';
+
 const PageContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -165,6 +167,7 @@ const ONBOARDING_STEPS = [
  */
 export default function OnboardingPage(): React.ReactElement {
     const router = useRouter();
+    const { isAuthenticated: _isAuthenticated } = useAuth();
     const [activeStep, setActiveStep] = useState(0);
     const currentStep = ONBOARDING_STEPS[activeStep];
     const progressPercent = ((activeStep + 1) / ONBOARDING_STEPS.length) * 100;

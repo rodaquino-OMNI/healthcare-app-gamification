@@ -8,6 +8,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useVisits } from '@/hooks';
+
 interface LabOrder {
     id: string;
     name: string;
@@ -24,47 +26,6 @@ interface NearbyLab {
     hours: string;
 }
 
-const MOCK_ORDERS: LabOrder[] = [
-    {
-        id: 'lab1',
-        name: 'Complete Blood Count (CBC)',
-        description: 'Evaluate overall health and detect disorders',
-        urgency: 'routine',
-        fasting: false,
-    },
-    {
-        id: 'lab2',
-        name: 'Comprehensive Metabolic Panel',
-        description: 'Check kidney function, blood sugar, and electrolytes',
-        urgency: 'urgent',
-        fasting: true,
-    },
-    {
-        id: 'lab3',
-        name: 'Thyroid Function (TSH)',
-        description: 'Screen for thyroid disorders that may cause headaches',
-        urgency: 'routine',
-        fasting: false,
-    },
-];
-
-const MOCK_LABS: NearbyLab[] = [
-    {
-        id: 'n1',
-        name: 'LabCorp - Downtown',
-        address: '123 Main St, Suite 200',
-        distance: '0.8 km',
-        hours: '7:00 AM - 6:00 PM',
-    },
-    {
-        id: 'n2',
-        name: 'Quest Diagnostics - Medical Center',
-        address: '456 Health Ave',
-        distance: '1.2 km',
-        hours: '6:30 AM - 5:00 PM',
-    },
-];
-
 const getUrgencyStatus = (urgency: string): 'success' | 'warning' | 'error' => {
     switch (urgency) {
         case 'urgent':
@@ -79,6 +40,29 @@ const getUrgencyStatus = (urgency: string): 'success' | 'warning' | 'error' => {
 /** Lab orders page showing ordered tests and nearby lab locations. */
 const LabOrdersPage: React.FC = () => {
     const router = useRouter();
+    const { isLoading, error } = useVisits();
+    const orders: LabOrder[] = [];
+    const nearbyLabs: NearbyLab[] = [];
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading lab orders...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    Failed to load lab orders.
+                </Text>
+            </div>
+        );
+    }
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
@@ -97,7 +81,7 @@ const LabOrdersPage: React.FC = () => {
                     marginBottom: spacing.xl,
                 }}
             >
-                {MOCK_ORDERS.map((order) => (
+                {orders.map((order) => (
                     <Card key={order.id} journey="care" elevation="md" padding="lg">
                         <Box
                             display="flex"
@@ -141,7 +125,7 @@ const LabOrdersPage: React.FC = () => {
                     marginBottom: spacing.xl,
                 }}
             >
-                {MOCK_LABS.map((lab) => (
+                {nearbyLabs.map((lab) => (
                     <Card key={lab.id} journey="care" elevation="sm" padding="lg">
                         <Box
                             display="flex"

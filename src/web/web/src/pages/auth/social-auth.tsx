@@ -6,6 +6,8 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import styled from 'styled-components';
 
+import { useAuth } from '@/hooks/useAuth';
+
 const PageContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -196,6 +198,7 @@ const OAUTH_CONFIG: Record<string, OAuthProviderConfig> = {
 
 export default function SocialAuthPage(): React.ReactElement {
     const router = useRouter();
+    const { isAuthenticated: _isAuthenticated, isLoading: _isLoading } = useAuth();
 
     const handleSocialAuth = (provider: string): void => {
         const config = OAUTH_CONFIG[provider.toLowerCase()];

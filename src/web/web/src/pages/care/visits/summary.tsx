@@ -8,30 +8,45 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
-const MOCK_VISIT = {
-    doctor: 'Dr. Maria Santos',
-    specialty: 'General Practitioner',
-    date: 'Feb 21, 2026',
-    type: 'Telemedicine',
-};
-
-const MOCK_DIAGNOSIS = {
-    primary: 'Tension-type headache',
-    code: 'G44.2',
-    severity: 'Mild',
-};
-
-const RECOMMENDATIONS = [
-    'Maintain regular sleep schedule (7-8 hours)',
-    'Stay hydrated - at least 8 glasses of water daily',
-    'Reduce screen time and take breaks every 30 minutes',
-    'Over-the-counter pain relief as prescribed',
-    'Follow-up visit in 2 weeks if symptoms persist',
-];
+import { useVisits } from '@/hooks';
 
 /** Visit summary page showing diagnosis, notes, and post-visit actions. */
 const VisitSummaryPage: React.FC = () => {
     const router = useRouter();
+    const { currentVisit, isLoading, error } = useVisits();
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading visit summary...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    Failed to load visit summary.
+                </Text>
+            </div>
+        );
+    }
+
+    const visit = {
+        doctor: currentVisit?.doctor ?? '',
+        specialty: currentVisit?.specialty ?? '',
+        date: currentVisit?.date ?? '',
+        type: currentVisit?.type ?? '',
+    };
+    const diagnosis = {
+        primary: currentVisit?.diagnosis ?? '',
+        code: '',
+        severity: '',
+    };
+    const recommendations: string[] = [];
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
@@ -39,7 +54,7 @@ const VisitSummaryPage: React.FC = () => {
                 Visit Summary
             </Text>
             <Text fontSize="md" color={colors.gray[50]} style={{ marginTop: spacing.xs, marginBottom: spacing.xl }}>
-                {MOCK_VISIT.date} - {MOCK_VISIT.type}
+                {visit.date} - {visit.type}
             </Text>
 
             <Card journey="care" elevation="md" padding="lg" style={{ marginBottom: spacing.lg }}>
@@ -56,15 +71,15 @@ const VisitSummaryPage: React.FC = () => {
                         }}
                     >
                         <Text fontSize="md" fontWeight="bold" color={colors.neutral.white}>
-                            MS
+                            {'--'}
                         </Text>
                     </div>
                     <div>
                         <Text fontWeight="bold" fontSize="md" color={colors.journeys.care.text}>
-                            {MOCK_VISIT.doctor}
+                            {visit.doctor}
                         </Text>
                         <Text fontSize="sm" color={colors.gray[50]}>
-                            {MOCK_VISIT.specialty}
+                            {visit.specialty}
                         </Text>
                     </div>
                 </Box>
@@ -80,16 +95,20 @@ const VisitSummaryPage: React.FC = () => {
                     <Text fontWeight="bold" fontSize="lg" color={colors.journeys.care.text}>
                         Diagnosis
                     </Text>
-                    <Badge variant="status" status="success">
-                        {MOCK_DIAGNOSIS.severity}
-                    </Badge>
+                    {diagnosis.severity && (
+                        <Badge variant="status" status="success">
+                            {diagnosis.severity}
+                        </Badge>
+                    )}
                 </Box>
                 <Text fontSize="md" fontWeight="medium" color={colors.journeys.care.text}>
-                    {MOCK_DIAGNOSIS.primary}
+                    {diagnosis.primary}
                 </Text>
-                <Text fontSize="sm" color={colors.gray[40]} style={{ marginTop: spacing['3xs'] }}>
-                    ICD-10: {MOCK_DIAGNOSIS.code}
-                </Text>
+                {diagnosis.code && (
+                    <Text fontSize="sm" color={colors.gray[40]} style={{ marginTop: spacing['3xs'] }}>
+                        ICD-10: {diagnosis.code}
+                    </Text>
+                )}
             </Card>
 
             <Card journey="care" elevation="sm" padding="lg" style={{ marginBottom: spacing.lg }}>
@@ -102,9 +121,7 @@ const VisitSummaryPage: React.FC = () => {
                     Clinical Notes
                 </Text>
                 <Text fontSize="sm" color={colors.gray[60]}>
-                    Patient presents with recurrent tension-type headaches over the past 3 days, primarily in the
-                    afternoon. No visual disturbances, nausea, or neurological symptoms reported. Vitals within normal
-                    range. Recommended lifestyle adjustments and over-the-counter analgesics.
+                    {currentVisit?.notes ?? 'No clinical notes available.'}
                 </Text>
             </Card>
 
@@ -118,7 +135,7 @@ const VisitSummaryPage: React.FC = () => {
                     Recommendations
                 </Text>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
-                    {RECOMMENDATIONS.map((rec, idx) => (
+                    {recommendations.map((rec, idx) => (
                         <Box key={idx} display="flex" style={{ gap: spacing.xs }}>
                             <Text fontSize="sm" color={colors.journeys.care.primary}>
                                 {'•'}

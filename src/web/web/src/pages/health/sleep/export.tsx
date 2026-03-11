@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState, useMemo } from 'react';
 
+import { useSleep } from '@/hooks';
+
 type ExportFormat = 'pdf' | 'csv';
 
 const FORMAT_OPTIONS: Array<{ id: ExportFormat; label: string; description: string }> = [
@@ -24,6 +26,7 @@ const inputStyle: React.CSSProperties = {
 };
 
 const ExportSleepPage: React.FC = () => {
+    const { data: sleepData, loading, error, refetch } = useSleep();
     const router = useRouter();
     const [format, setFormat] = useState<ExportFormat>('pdf');
     const [startDate, setStartDate] = useState('2025-12-01');
@@ -35,6 +38,25 @@ const ExportSleepPage: React.FC = () => {
         const diff = Math.max(0, Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)));
         return diff;
     }, [startDate, endDate]);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void sleepData;
 
     const handleGenerate = (): void => {
         window.alert(`Generating ${format.toUpperCase()} report: ${nightCount} nights from ${startDate} to ${endDate}`);

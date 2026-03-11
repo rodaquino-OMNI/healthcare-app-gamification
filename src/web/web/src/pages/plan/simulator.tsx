@@ -2,6 +2,8 @@ import { colors, typography, spacing, borderRadius } from 'design-system/tokens'
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
 
+import { usePlan } from '@/hooks';
+
 import PlanLayout from '../../layouts/PlanLayout';
 
 const { plan } = colors.journeys;
@@ -39,6 +41,8 @@ const CostSimulatorPage: NextPage = () => {
     const [customAmount, setCustomAmount] = useState('');
     const [result, setResult] = useState<SimulationResult | null>(null);
 
+    const { simulateCost } = usePlan();
+
     const handleSimulate = (): void => {
         const procedure = PROCEDURE_OPTIONS.find((p) => p.value === procedureType);
         const provider = PROVIDER_OPTIONS.find((p) => p.value === providerType);
@@ -55,6 +59,27 @@ const CostSimulatorPage: NextPage = () => {
         const planCoverage = baseCost * (coveragePercent / 100);
         const outOfPocket = baseCost - planCoverage;
 
+        // Call API for server-side cost estimate; update result with API value when available
+        void simulateCost(procedureType)
+            .then(({ estimatedCost }) => {
+                setResult({
+                    baseCost,
+                    coveragePercent,
+                    planCoverage,
+                    outOfPocket: estimatedCost,
+                });
+            })
+            .catch(() => {
+                // Fall back to local calculation if API call fails
+                setResult({
+                    baseCost,
+                    coveragePercent,
+                    planCoverage,
+                    outOfPocket,
+                });
+            });
+
+        // Set preliminary result immediately for responsive UX
         setResult({
             baseCost,
             coveragePercent,
@@ -93,7 +118,7 @@ const CostSimulatorPage: NextPage = () => {
                 {/* Form */}
                 <div
                     style={{
-                        backgroundColor: '#ffffff',
+                        backgroundColor: colors.gray[0],
                         borderRadius: borderRadius.md,
                         padding: spacing.xl,
                         boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
@@ -163,7 +188,7 @@ const CostSimulatorPage: NextPage = () => {
                             width: '100%',
                             padding: spacing.sm,
                             backgroundColor: procedureType && providerType ? plan.primary : colors.gray[30],
-                            color: '#ffffff',
+                            color: colors.gray[0],
                             border: 'none',
                             borderRadius: borderRadius.md,
                             cursor: procedureType && providerType ? 'pointer' : 'not-allowed',
@@ -180,7 +205,7 @@ const CostSimulatorPage: NextPage = () => {
                 {result && (
                     <div
                         style={{
-                            backgroundColor: '#ffffff',
+                            backgroundColor: colors.gray[0],
                             borderRadius: borderRadius.md,
                             padding: spacing.xl,
                             boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
@@ -281,7 +306,7 @@ const selectStyle: React.CSSProperties = {
     fontSize: typography.fontSize['text-md'],
     fontFamily: typography.fontFamily.body,
     color: plan.text,
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.gray[0],
 };
 
 const inputStyle: React.CSSProperties = {

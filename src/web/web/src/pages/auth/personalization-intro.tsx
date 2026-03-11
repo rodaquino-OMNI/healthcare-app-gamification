@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import styled from 'styled-components';
 
+import { useAuth } from '@/hooks/useAuth';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 const ContentContainer = styled.div`
@@ -126,6 +127,7 @@ const BENEFITS = [
  */
 export default function PersonalizationIntroPage(): React.ReactElement {
     const router = useRouter();
+    const { isAuthenticated: _isAuthenticated } = useAuth();
 
     return (
         <AuthLayout>

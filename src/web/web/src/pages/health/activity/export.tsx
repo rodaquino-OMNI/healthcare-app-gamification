@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState, useMemo } from 'react';
 
+import { useActivity } from '@/hooks';
+
 type ExportFormat = 'pdf' | 'csv';
 
 const FORMAT_OPTIONS: Array<{ id: ExportFormat; label: string; description: string }> = [
@@ -25,6 +27,7 @@ const inputStyle: React.CSSProperties = {
 
 const ExportActivityPage: React.FC = () => {
     const router = useRouter();
+    const { data: activityData, loading, error, refetch } = useActivity();
     const [format, setFormat] = useState<ExportFormat>('pdf');
     const [startDate, setStartDate] = useState('2025-12-01');
     const [endDate, setEndDate] = useState('2026-02-23');
@@ -34,6 +37,25 @@ const ExportActivityPage: React.FC = () => {
         const end = new Date(endDate);
         return Math.max(0, Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)));
     }, [startDate, endDate]);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void activityData;
 
     const handleGenerate = (): void => {
         window.alert(`Generating ${format.toUpperCase()} report: ${dayCount} days from ${startDate} to ${endDate}`);

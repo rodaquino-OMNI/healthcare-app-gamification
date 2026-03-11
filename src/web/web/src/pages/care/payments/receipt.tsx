@@ -8,23 +8,47 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
-const MOCK_RECEIPT = {
-    transactionId: 'TXN-2026-0221-7834',
-    date: 'Feb 21, 2026',
-    time: '10:47 AM',
-    status: 'Approved',
-    method: 'Credit Card ending in 4321',
-    amount: 'R$ 50.00',
-    doctor: 'Dr. Maria Santos',
-    service: 'Telemedicine Consultation',
-    duration: '18 min',
-    insurancePlan: 'AUSTA Gold',
-    insuranceCoverage: 'R$ 200.00',
-};
+import { usePayments } from '@/hooks';
 
 /** Payment receipt page showing transaction confirmation and download options. */
 const ReceiptPage: React.FC = () => {
     const router = useRouter();
+    const { isLoading, error, getReceipt } = usePayments();
+    const receipt = getReceipt('current');
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading receipt...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    Failed to load receipt.
+                </Text>
+            </div>
+        );
+    }
+
+    const receiptData = {
+        transactionId: receipt?.transactionId ?? '',
+        date: receipt?.date ?? '',
+        time: receipt?.time ?? '',
+        status: receipt?.status ?? '',
+        method: receipt?.method ?? '',
+        amount: receipt?.amount ?? '',
+        doctor: receipt?.doctor ?? '',
+        service: receipt?.service ?? '',
+        duration: receipt?.duration ?? '',
+        insurancePlan: receipt?.insurancePlan ?? '',
+        insuranceCoverage: receipt?.insuranceCoverage ?? '',
+    };
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
@@ -69,7 +93,7 @@ const ReceiptPage: React.FC = () => {
                         Transaction Details
                     </Text>
                     <Badge variant="status" status="success">
-                        {MOCK_RECEIPT.status}
+                        {receiptData.status}
                     </Badge>
                 </Box>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.xs }}>
@@ -78,7 +102,7 @@ const ReceiptPage: React.FC = () => {
                             Transaction ID
                         </Text>
                         <Text fontSize="sm" fontWeight="medium" color={colors.journeys.care.text}>
-                            {MOCK_RECEIPT.transactionId}
+                            {receiptData.transactionId}
                         </Text>
                     </Box>
                     <Box display="flex" justifyContent="space-between">
@@ -86,7 +110,7 @@ const ReceiptPage: React.FC = () => {
                             Date
                         </Text>
                         <Text fontSize="sm" fontWeight="medium" color={colors.journeys.care.text}>
-                            {MOCK_RECEIPT.date} at {MOCK_RECEIPT.time}
+                            {receiptData.date} at {receiptData.time}
                         </Text>
                     </Box>
                     <Box display="flex" justifyContent="space-between">
@@ -94,7 +118,7 @@ const ReceiptPage: React.FC = () => {
                             Payment Method
                         </Text>
                         <Text fontSize="sm" fontWeight="medium" color={colors.journeys.care.text}>
-                            {MOCK_RECEIPT.method}
+                            {receiptData.method}
                         </Text>
                     </Box>
                     <Box
@@ -109,7 +133,7 @@ const ReceiptPage: React.FC = () => {
                             Amount Paid
                         </Text>
                         <Text fontSize="md" fontWeight="bold" color={colors.journeys.care.primary}>
-                            {MOCK_RECEIPT.amount}
+                            {receiptData.amount}
                         </Text>
                     </Box>
                 </div>
@@ -130,7 +154,7 @@ const ReceiptPage: React.FC = () => {
                             Doctor
                         </Text>
                         <Text fontSize="sm" color={colors.journeys.care.text}>
-                            {MOCK_RECEIPT.doctor}
+                            {receiptData.doctor}
                         </Text>
                     </Box>
                     <Box display="flex" justifyContent="space-between">
@@ -138,7 +162,7 @@ const ReceiptPage: React.FC = () => {
                             Service
                         </Text>
                         <Text fontSize="sm" color={colors.journeys.care.text}>
-                            {MOCK_RECEIPT.service}
+                            {receiptData.service}
                         </Text>
                     </Box>
                     <Box display="flex" justifyContent="space-between">
@@ -146,7 +170,7 @@ const ReceiptPage: React.FC = () => {
                             Duration
                         </Text>
                         <Text fontSize="sm" color={colors.journeys.care.text}>
-                            {MOCK_RECEIPT.duration}
+                            {receiptData.duration}
                         </Text>
                     </Box>
                     <Box display="flex" justifyContent="space-between">
@@ -154,7 +178,7 @@ const ReceiptPage: React.FC = () => {
                             Insurance
                         </Text>
                         <Text fontSize="sm" color={colors.journeys.care.text}>
-                            {MOCK_RECEIPT.insurancePlan} (-{MOCK_RECEIPT.insuranceCoverage})
+                            {receiptData.insurancePlan} (-{receiptData.insuranceCoverage})
                         </Text>
                     </Box>
                 </div>

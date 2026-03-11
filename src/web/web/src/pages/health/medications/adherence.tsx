@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState, useMemo } from 'react';
 
+import { useMedications } from '@/hooks';
+
 type TimeRange = 'daily' | 'weekly' | 'monthly';
 
 interface ChartDataPoint {
@@ -63,6 +65,7 @@ const tabs: { key: TimeRange; label: string }[] = [
  * Displays bar chart visualization with overall adherence percentage.
  */
 const MedicationAdherencePage: React.FC = () => {
+    const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const [activeTab, setActiveTab] = useState<TimeRange>('daily');
 
@@ -86,6 +89,25 @@ const MedicationAdherencePage: React.FC = () => {
         const sum = chartData.reduce((acc, d) => acc + d.adherence, 0);
         return Math.round(sum / chartData.length);
     }, [chartData]);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void medications;
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>

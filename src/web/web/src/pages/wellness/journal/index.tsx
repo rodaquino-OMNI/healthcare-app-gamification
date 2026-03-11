@@ -7,13 +7,17 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useWellness } from '@/hooks/useWellness';
+
 const MOOD_TAGS = ['Happy', 'Calm', 'Anxious', 'Sad', 'Energetic', 'Tired'];
+const PLACEHOLDER_USER_ID = 'me';
 
 const JournalEntryPage: React.FC = () => {
     const router = useRouter();
     const [content, setContent] = useState('');
     const [selectedMood, setSelectedMood] = useState<string | null>(null);
     const [saved, setSaved] = useState(false);
+    const { createEntry } = useWellness();
 
     const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
     const today = new Date().toLocaleDateString('en-US', {
@@ -27,8 +31,22 @@ const JournalEntryPage: React.FC = () => {
         if (!content.trim()) {
             return;
         }
-        setSaved(true);
-        setTimeout(() => setSaved(false), 2000);
+        void createEntry(PLACEHOLDER_USER_ID, {
+            title: today,
+            content: content.trim(),
+            mood: selectedMood ?? undefined,
+            tags: selectedMood ? [selectedMood] : [],
+        })
+            .then(() => {
+                setSaved(true);
+                setContent('');
+                setSelectedMood(null);
+                setTimeout(() => setSaved(false), 2000);
+            })
+            .catch(() => {
+                setSaved(true);
+                setTimeout(() => setSaved(false), 2000);
+            });
     };
 
     return (

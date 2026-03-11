@@ -3,7 +3,7 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
-import { lookupCep, saveAddress } from '../../api/settings';
+import { useSettings } from '@/hooks/useSettings';
 
 /**
  * Add address form page with CEP lookup.
@@ -11,6 +11,7 @@ import { lookupCep, saveAddress } from '../../api/settings';
  */
 const AddAddressPage: NextPage = () => {
     const router = useRouter();
+    const { lookupCep, saveAddress } = useSettings();
     const [label, setLabel] = useState('');
     const [cep, setCep] = useState('');
     const [street, setStreet] = useState('');
@@ -203,10 +204,10 @@ const AddAddressPage: NextPage = () => {
 };
 
 const errorStyle: React.CSSProperties = {
-    backgroundColor: '#fef2f2',
-    border: '1px solid #fecaca',
+    backgroundColor: colors.semantic.errorBg,
+    border: `1px solid ${colors.semantic.error}`,
     borderRadius: 6,
-    color: '#b91c1c',
+    color: colors.semantic.error,
     fontSize: 14,
     padding: '10px 14px',
     marginBottom: 16,

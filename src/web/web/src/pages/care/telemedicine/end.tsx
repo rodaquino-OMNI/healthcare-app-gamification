@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useTelemedicine } from '@/hooks';
+
 const STAR_RATINGS = [1, 2, 3, 4, 5];
 
 const MOCK_SUMMARY = {
@@ -19,6 +21,27 @@ const MOCK_SUMMARY = {
 /** Call ended page with rating, feedback, and follow-up actions. */
 const EndPage: React.FC = () => {
     const router = useRouter();
+    const { isLoading, error } = useTelemedicine();
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    Unable to load session data. Please try again.
+                </Text>
+            </div>
+        );
+    }
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>

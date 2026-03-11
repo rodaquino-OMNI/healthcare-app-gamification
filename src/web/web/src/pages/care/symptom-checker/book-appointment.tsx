@@ -9,6 +9,8 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
+import { useSymptomChecker } from '@/hooks';
+
 interface SpecialtySuggestion {
     id: string;
     name: string;
@@ -40,6 +42,27 @@ const SUGGESTED_SPECIALTIES: SpecialtySuggestion[] = [
 /** Book appointment page with specialty suggestions based on the symptom check. */
 const BookAppointmentPage: React.FC = () => {
     const router = useRouter();
+    const { results: _results, isLoading, error } = useSymptomChecker();
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    {error.message}
+                </Text>
+            </div>
+        );
+    }
 
     const handleBookSpecialty = (specialtyId: string): void => {
         void router.push({

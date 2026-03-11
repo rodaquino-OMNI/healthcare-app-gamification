@@ -3,6 +3,8 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useAuth } from '@/hooks/useAuth';
+
 interface FaqItem {
     id: string;
     question: string;
@@ -79,6 +81,7 @@ const FAQ_ITEMS: FaqItem[] = [
  */
 const FaqIndexPage: NextPage = () => {
     const router = useRouter();
+    const { isAuthenticated: _isAuthenticated } = useAuth();
     const { category } = router.query;
     const [expandedId, setExpandedId] = useState<string | null>(null);
 

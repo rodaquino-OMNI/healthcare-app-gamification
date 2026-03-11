@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { useAppointments } from '@/hooks';
 import { CareLayout } from '@/layouts/CareLayout';
 
 const CATEGORIES = [
@@ -46,12 +47,39 @@ const StarSelector: React.FC<{ value: number; onChange: (v: number) => void; lab
 
 const RateVisitPage: React.FC = () => {
     const router = useRouter();
+    const { appointments: _appointments, loading, error } = useAppointments();
     const [overallRating, setOverallRating] = useState(0);
     const [categoryRatings, setCategoryRatings] = useState<Record<string, number>>(
         Object.fromEntries(CATEGORIES.map((c) => [c.id, 0]))
     );
     const [review, setReview] = useState('');
     const [recommend, setRecommend] = useState<boolean | null>(null);
+
+    if (loading) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Avaliar Consulta" />
+                <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.gray[50]}>
+                        Carregando...
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Avaliar Consulta" />
+                <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.semantic.error}>
+                        Erro ao carregar dados. Tente novamente.
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
 
     const handleCategoryChange = (id: string, value: number): void => {
         setCategoryRatings((prev) => ({ ...prev, [id]: value }));

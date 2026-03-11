@@ -4,7 +4,10 @@ import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React from 'react';
 
+import { useAuth } from '@/hooks/useAuth';
+
 const ForceUpdatePage: React.FC = () => {
+    const { isAuthenticated: _isAuthenticated } = useAuth();
     const currentVersion = '1.0.0';
     const requiredVersion = '1.1.0';
 

@@ -5,6 +5,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState, useEffect } from 'react';
 
+import { useSymptomChecker } from '@/hooks';
+
 interface AnalysisStep {
     id: string;
     label: string;
@@ -22,7 +24,14 @@ const ANALYSIS_STEPS: AnalysisStep[] = [
 /** Analyzing page showing animated progress steps before redirecting to results. */
 const AnalyzingPage: React.FC = () => {
     const router = useRouter();
+    const { submitSymptoms: _submitSymptoms, isLoading: _isLoading, error } = useSymptomChecker();
     const [activeStep, setActiveStep] = useState(0);
+
+    useEffect(() => {
+        if (error) {
+            return;
+        }
+    }, [error]);
 
     useEffect(() => {
         if (activeStep >= ANALYSIS_STEPS.length) {

@@ -9,6 +9,7 @@ import React from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { useAppointments } from '@/hooks';
 import { CareLayout } from '@/layouts/CareLayout';
 
 /**
@@ -18,6 +19,33 @@ import { CareLayout } from '@/layouts/CareLayout';
 const BookingConfirmationPage: React.FC = () => {
     const router = useRouter();
     const { doctorId, date, time, type } = router.query;
+    const { appointments: _appointments, loading, error } = useAppointments();
+
+    if (loading) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Confirmacao de Agendamento" />
+                <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.gray[50]}>
+                        Carregando...
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Confirmacao de Agendamento" />
+                <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.semantic.error}>
+                        Erro ao carregar dados. Tente novamente.
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
 
     const formattedDate = date
         ? new Date(date as string).toLocaleDateString('pt-BR', {

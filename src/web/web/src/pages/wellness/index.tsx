@@ -5,7 +5,9 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+import { useWellness } from '@/hooks/useWellness';
 
 const MOOD_OPTIONS = [
     { emoji: '1', label: 'Very Bad', value: 1 },
@@ -15,18 +17,7 @@ const MOOD_OPTIONS = [
     { emoji: '5', label: 'Very Good', value: 5 },
 ];
 
-interface RecentChat {
-    id: string;
-    preview: string;
-    date: string;
-    mood: string;
-}
-
-const RECENT_CHATS: RecentChat[] = [
-    { id: '1', preview: 'We discussed breathing exercises for stress...', date: 'Today, 9:30 AM', mood: 'Calm' },
-    { id: '2', preview: 'Tips for better sleep hygiene were shared...', date: 'Yesterday, 8:15 PM', mood: 'Tired' },
-    { id: '3', preview: 'Meditation routine planning session...', date: 'Feb 21, 3:00 PM', mood: 'Focused' },
-];
+const PLACEHOLDER_USER_ID = 'me';
 
 const NAV_LINKS = [
     { label: 'Chat', href: '/wellness/chat' },
@@ -43,10 +34,35 @@ const NAV_LINKS = [
 const WellnessHomePage: React.FC = () => {
     const router = useRouter();
     const [selectedMood, setSelectedMood] = useState<number | null>(null);
+    const { chatHistory, loadChatHistory, submitMood } = useWellness();
+
+    useEffect(() => {
+        void loadChatHistory(PLACEHOLDER_USER_ID);
+    }, [loadChatHistory]);
 
     const handleMoodSelect = (value: number): void => {
         setSelectedMood(value);
     };
+
+    const handleMoodSubmit = (): void => {
+        if (selectedMood === null) {
+            return;
+        }
+        const moodMap: Record<number, 'great' | 'good' | 'okay' | 'bad' | 'terrible'> = {
+            5: 'great',
+            4: 'good',
+            3: 'okay',
+            2: 'bad',
+            1: 'terrible',
+        };
+        void submitMood(PLACEHOLDER_USER_ID, {
+            mood: moodMap[selectedMood] ?? 'okay',
+            energy: selectedMood,
+            stress: 6 - selectedMood,
+        });
+    };
+
+    const recentMessages = chatHistory?.messages.slice(-3) ?? [];
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
@@ -109,7 +125,10 @@ const WellnessHomePage: React.FC = () => {
                 <Button
                     variant="secondary"
                     journey="health"
-                    onPress={() => void router.push('/wellness/mood')}
+                    onPress={() => {
+                        handleMoodSubmit();
+                        void router.push('/wellness/mood');
+                    }}
                     accessibilityLabel="View mood history"
                 >
                     Mood History
@@ -125,37 +144,47 @@ const WellnessHomePage: React.FC = () => {
                 Recent Conversations
             </Text>
             <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm, marginBottom: spacing['2xl'] }}>
-                {RECENT_CHATS.map((chat) => (
-                    <div
-                        key={chat.id}
-                        onClick={() => void router.push('/wellness/chat')}
-                        style={{ cursor: 'pointer' }}
-                        role="link"
-                        tabIndex={0}
-                        aria-label={`Chat: ${chat.preview}`}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                                void router.push('/wellness/chat');
-                            }
-                        }}
-                    >
-                        <Card journey="health" elevation="sm" padding="md">
-                            <Box display="flex" justifyContent="space-between" alignItems="flex-start">
-                                <Box style={{ flex: 1 }}>
-                                    <Text fontSize="sm" color={colors.gray[60]}>
-                                        {chat.preview}
-                                    </Text>
-                                    <Text fontSize="xs" color={colors.gray[40]} style={{ marginTop: spacing['3xs'] }}>
-                                        {chat.date}
+                {recentMessages.length > 0 ? (
+                    recentMessages.map((msg) => (
+                        <div
+                            key={msg.id}
+                            onClick={() => void router.push('/wellness/chat')}
+                            style={{ cursor: 'pointer' }}
+                            role="link"
+                            tabIndex={0}
+                            aria-label={`Chat: ${msg.content}`}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    void router.push('/wellness/chat');
+                                }
+                            }}
+                        >
+                            <Card journey="health" elevation="sm" padding="md">
+                                <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+                                    <Box style={{ flex: 1 }}>
+                                        <Text fontSize="sm" color={colors.gray[60]}>
+                                            {msg.content}
+                                        </Text>
+                                        <Text
+                                            fontSize="xs"
+                                            color={colors.gray[40]}
+                                            style={{ marginTop: spacing['3xs'] }}
+                                        >
+                                            {msg.timestamp}
+                                        </Text>
+                                    </Box>
+                                    <Text fontSize="xs" fontWeight="semiBold" color={colors.journeys.health.primary}>
+                                        {msg.role === 'user' ? 'You' : 'AI'}
                                     </Text>
                                 </Box>
-                                <Text fontSize="xs" fontWeight="semiBold" color={colors.journeys.health.primary}>
-                                    {chat.mood}
-                                </Text>
-                            </Box>
-                        </Card>
-                    </div>
-                ))}
+                            </Card>
+                        </div>
+                    ))
+                ) : (
+                    <Text fontSize="sm" color={colors.gray[40]}>
+                        No recent conversations
+                    </Text>
+                )}
             </div>
 
             <Text

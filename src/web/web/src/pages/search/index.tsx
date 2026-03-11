@@ -2,10 +2,11 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React from 'react';
 import { WEB_GLOBAL_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
+import { useSearch } from '@/hooks/useSearch';
 import { MainLayout } from '@/layouts/MainLayout';
 
 const PageContainer = styled.div`
@@ -140,7 +141,7 @@ const categories = [
  */
 export default function SearchPage(): React.ReactElement {
     const router = useRouter();
-    const [query, setQuery] = useState('');
+    const { query, setQuery } = useSearch();
 
     const handleSearch = (e: React.FormEvent): void => {
         e.preventDefault();

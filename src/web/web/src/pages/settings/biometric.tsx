@@ -2,11 +2,14 @@ import { colors, typography, spacing, borderRadius } from 'design-system/tokens'
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
 
+import { useSettings } from '@/hooks/useSettings';
+
 /**
  * Biometric preferences page.
  * Allows users to toggle Face ID and fingerprint authentication.
  */
 const BiometricPage: NextPage = () => {
+    const { isLoading: _isLoading } = useSettings();
     const [faceId, setFaceId] = useState(true);
     const [fingerprint, setFingerprint] = useState(false);
     const [loginBiometric, setLoginBiometric] = useState(true);

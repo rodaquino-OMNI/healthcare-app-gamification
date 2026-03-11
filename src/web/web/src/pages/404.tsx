@@ -4,7 +4,11 @@ import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React from 'react';
 
+import { useAuth } from '@/hooks/useAuth';
+
 const NotFoundPage: React.FC = () => {
+    const { isAuthenticated: _isAuthenticated } = useAuth();
+
     return (
         <div
             style={{

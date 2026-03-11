@@ -4,14 +4,37 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useSymptomChecker } from '@/hooks';
+
 type ShareMethod = 'email' | 'app' | 'link';
 
 const ShareReportPage: React.FC = () => {
     const router = useRouter();
+    const { symptoms: _symptoms, results: _results, isLoading, error } = useSymptomChecker();
     const [doctorEmail, setDoctorEmail] = useState('');
     const [doctorName, setDoctorName] = useState('');
     const [shareMethod, setShareMethod] = useState<ShareMethod>('email');
     const [isSending, setIsSending] = useState(false);
+
+    if (isLoading) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.gray[50]}>
+                    Loading...
+                </Text>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
+                <Text fontSize="md" color={colors.semantic.error}>
+                    {error.message}
+                </Text>
+            </div>
+        );
+    }
 
     const handleShare = (): void => {
         setIsSending(true);

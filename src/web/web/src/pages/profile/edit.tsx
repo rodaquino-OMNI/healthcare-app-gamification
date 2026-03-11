@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
+import { useProfile } from '@/hooks/useProfile';
 import { MainLayout } from '@/layouts/MainLayout';
 
-import { getProfile } from '../../api/auth';
 import { restClient } from '../../api/client';
 
 const PageContainer = styled.div`
@@ -132,6 +132,7 @@ interface ProfileData {
  */
 export default function ProfileEditPage(): React.ReactElement {
     const router = useRouter();
+    const { profile, isLoading: profileLoading, error: profileError } = useProfile();
     const [saving, setSaving] = useState(false);
     const [form, setForm] = useState<ProfileData>({
         name: '',
@@ -142,28 +143,24 @@ export default function ProfileEditPage(): React.ReactElement {
     });
 
     const [error, setError] = useState<string | null>(null);
-    const [_loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchProfile = async (): Promise<void> => {
-            setLoading(true);
-            try {
-                const data = await getProfile();
-                setForm({
-                    name: data.name || '',
-                    email: data.email || '',
-                    phone: data.phone || '',
-                    cpf: data.cpf || '',
-                    dob: data.dob || '',
-                });
-            } catch (err) {
-                setError('Falha ao carregar perfil');
-            } finally {
-                setLoading(false);
-            }
-        };
-        void fetchProfile();
-    }, []);
+        if (profile) {
+            setForm({
+                name: (profile.name as string) || '',
+                email: (profile.email as string) || '',
+                phone: (profile.phone as string) || '',
+                cpf: (profile.cpf as string) || '',
+                dob: (profile.dob as string) || '',
+            });
+        }
+    }, [profile]);
+
+    useEffect(() => {
+        if (profileError) {
+            setError('Falha ao carregar perfil');
+        }
+    }, [profileError]);
 
     const handleChange = (field: keyof ProfileData) => (e: React.ChangeEvent<HTMLInputElement>) => {
         setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -248,7 +245,7 @@ export default function ProfileEditPage(): React.ReactElement {
                         <SecondaryButton type="button" onClick={() => router.back()}>
                             Cancelar
                         </SecondaryButton>
-                        <PrimaryButton type="submit" disabled={saving}>
+                        <PrimaryButton type="submit" disabled={saving || profileLoading}>
                             {saving ? 'Salvando...' : 'Salvar'}
                         </PrimaryButton>
                     </ButtonRow>

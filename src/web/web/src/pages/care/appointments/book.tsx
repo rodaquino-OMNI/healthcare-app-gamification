@@ -3,6 +3,7 @@ import React from 'react'; // React v18.0+
 
 import { AppointmentForm } from '@/components/forms/AppointmentForm';
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { useAppointments } from '@/hooks';
 import { CareLayout } from '@/layouts/CareLayout';
 
 /**
@@ -12,6 +13,29 @@ import { CareLayout } from '@/layouts/CareLayout';
 const AppointmentBookingPage: React.FC = () => {
     // LD1: Uses the useRouter hook to get the router object.
     useRouter();
+    const { appointments: _appointments, loading, error } = useAppointments();
+
+    if (loading) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Agendar Consulta" />
+                <div style={{ padding: '2rem', textAlign: 'center' }}>
+                    <p>Carregando...</p>
+                </div>
+            </CareLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Agendar Consulta" />
+                <div style={{ padding: '2rem', textAlign: 'center' }}>
+                    <p>Erro ao carregar consultas. Tente novamente.</p>
+                </div>
+            </CareLayout>
+        );
+    }
 
     // LD1: Renders the CareLayout component to provide the basic layout for the Care Now journey.
     return (

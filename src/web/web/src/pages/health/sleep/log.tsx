@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useSleep } from '@/hooks';
+
 const STAR_LABELS = ['Terrible', 'Poor', 'Fair', 'Good', 'Excellent'];
 
 const inputStyle: React.CSSProperties = {
@@ -19,11 +21,31 @@ const inputStyle: React.CSSProperties = {
 };
 
 const LogSleepPage: React.FC = () => {
+    const { data: sleepData, loading, error, refetch } = useSleep();
     const router = useRouter();
     const [bedtime, setBedtime] = useState('23:00');
     const [wakeTime, setWakeTime] = useState('07:00');
     const [rating, setRating] = useState(0);
     const [notes, setNotes] = useState('');
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void sleepData;
 
     const handleSave = (): void => {
         window.alert(`Sleep logged: ${bedtime} - ${wakeTime}, Rating: ${rating}/5`);

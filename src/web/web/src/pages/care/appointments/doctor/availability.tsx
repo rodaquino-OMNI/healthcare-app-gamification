@@ -9,6 +9,7 @@ import React, { useState } from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { useAppointments } from '@/hooks';
 import { CareLayout } from '@/layouts/CareLayout';
 
 /** Date entry for the calendar view */
@@ -55,8 +56,35 @@ const MOCK_TIME_SLOTS: TimeSlot[] = [
 const DoctorAvailabilityPage: React.FC = () => {
     const router = useRouter();
     const { doctorId } = router.query;
+    const { appointments: _appointments, loading, error } = useAppointments();
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+
+    if (loading) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Horarios Disponiveis" />
+                <div style={{ maxWidth: '800px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.gray[50]}>
+                        Carregando...
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Horarios Disponiveis" />
+                <div style={{ maxWidth: '800px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.semantic.error}>
+                        Erro ao carregar horarios. Tente novamente.
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
 
     const handleConfirm = (): void => {
         if (selectedDate && selectedSlot) {

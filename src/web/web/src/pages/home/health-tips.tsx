@@ -4,6 +4,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React from 'react';
 
+import { useAuth } from '@/hooks/useAuth';
+
 interface HealthTip {
     id: string;
     emoji: string;
@@ -67,6 +69,8 @@ const FEATURED: FeaturedTip[] = [
 ];
 
 const HealthTipsPage: React.FC = () => {
+    const { isAuthenticated: _isAuthenticated } = useAuth();
+
     return (
         <div style={styles.container}>
             <h1 style={styles.title}>Dicas de Saude</h1>

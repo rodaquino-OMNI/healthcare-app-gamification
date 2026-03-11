@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useAuth, useHealthMetrics } from '@/hooks';
+
 const STEPS = [
     { id: 1, title: 'Introduction & Goal Setting', done: true },
     { id: 2, title: 'Understanding the Basics', done: true },
@@ -19,6 +21,9 @@ const STEPS = [
 
 const ProgramDetailPage: React.FC = () => {
     const router = useRouter();
+    const { session } = useAuth();
+    const userId = session?.userId || '';
+    const { metrics: _metrics, loading: _metricsLoading } = useHealthMetrics(userId, []);
     const { id } = router.query;
     const [steps, setSteps] = useState(STEPS);
 

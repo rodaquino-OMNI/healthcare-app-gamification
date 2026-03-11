@@ -20,7 +20,7 @@
         "@opentelemetry/sdk-node": "^0.213.0",
         "@opentelemetry/sdk-trace-base": "^1.15.2",
         "@austa/shared": "1.0.0",
-        "@prisma/client": "5.22.0",
+        "@prisma/client": "^7.0.0",
         "axios": "1.13.6",
         "bcrypt": "^5.1.1",
         "class-transformer": "^0.5.1",

@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useAuth, useHealthMetrics } from '@/hooks';
+
 const RELATED_VIDEOS = [
     { id: 'rv1', title: 'Gentle Morning Stretch', duration: '10 min' },
     { id: 'rv2', title: 'Core Strengthening Basics', duration: '15 min' },
@@ -15,6 +17,9 @@ const RELATED_VIDEOS = [
 
 const VideoPlayerPage: React.FC = () => {
     const router = useRouter();
+    const { session } = useAuth();
+    const userId = session?.userId || '';
+    const { metrics: _metrics, loading: _metricsLoading } = useHealthMetrics(userId, []);
     const { id } = router.query;
 
     return (

@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useCycle } from '@/hooks';
+
 interface ArticleData {
     title: string;
     category: string;
@@ -60,6 +62,27 @@ const DEFAULT_ARTICLE: ArticleData = {
 
 const ArticleDetailPage: React.FC = () => {
     const router = useRouter();
+    const { data: cycleData, loading, error, refetch } = useCycle();
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void cycleData;
+
     const { id } = router.query;
     const articleId = typeof id === 'string' ? id : '';
     const article = ARTICLES_DB[articleId] ?? DEFAULT_ARTICLE;

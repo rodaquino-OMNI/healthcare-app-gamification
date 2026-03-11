@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import { restClient } from '@/api/client';
+import { useMedications } from '@/hooks';
 import { MainLayout } from '@/layouts/MainLayout';
 
 const PageContainer = styled.div`
@@ -354,6 +355,7 @@ const SNOOZE_OPTIONS = [
  * Mirrors the mobile MedicationReminder screen.
  */
 export default function MedicationReminderPage(): React.ReactElement {
+    const { medications, loading: medsLoading, error: medsError, refetch } = useMedications();
     const router = useRouter();
     const medicationName = (router.query.name as string) || 'Medicamento';
 
@@ -365,6 +367,25 @@ export default function MedicationReminderPage(): React.ReactElement {
     const [snoozeDuration, setSnoozeDuration] = useState(10);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    if (medsLoading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (medsError) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void medications;
 
     const toggleDay = (day: string): void => {
         setSelectedDays((prev) => (prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]));

@@ -3,7 +3,7 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
-import { saveTheme } from '../../api/settings';
+import { useSettings } from '@/hooks/useSettings';
 
 type ThemeOption = 'light' | 'dark' | 'system';
 
@@ -45,6 +45,7 @@ const THEMES: ThemeChoice[] = [
  */
 const ThemePage: NextPage = () => {
     const router = useRouter();
+    const { saveTheme } = useSettings();
     const [selected, setSelected] = useState<ThemeOption>('light');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');

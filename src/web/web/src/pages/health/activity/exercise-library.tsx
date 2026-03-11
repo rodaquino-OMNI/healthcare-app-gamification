@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useActivity } from '@/hooks';
+
 type Category = 'all' | 'cardio' | 'strength' | 'flexibility';
 
 const CATEGORIES: Array<{ id: Category; label: string }> = [
@@ -33,7 +35,27 @@ const EXERCISES = [
 
 const ExerciseLibraryPage: React.FC = () => {
     const router = useRouter();
+    const { data: activityData, loading, error, refetch } = useActivity();
     const [category, setCategory] = useState<Category>('all');
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void activityData;
 
     const filtered = category === 'all' ? EXERCISES : EXERCISES.filter((e) => e.category === category);
 

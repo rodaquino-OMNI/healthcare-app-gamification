@@ -6,8 +6,11 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import type { Quest } from 'shared/types/gamification.types';
+
+import { useAuth } from '@/hooks/useAuth';
+import { useGamification } from '@/hooks/useGamification';
 
 type QuestFilter = 'all' | 'active' | 'completed';
 type JourneyFilter = 'all' | 'health' | 'care' | 'plan';
@@ -113,10 +116,17 @@ const JOURNEY_LABELS: Record<JourneyFilter, string> = {
  * for status (active/completed) and journey.
  */
 const QuestsPage: React.FC = () => {
+    const { userId } = useAuth();
+    const { gameProfile, loading: _loading } = useGamification(userId || 'user-123');
     const [statusFilter, setStatusFilter] = useState<QuestFilter>('all');
     const [journeyFilter, setJourneyFilter] = useState<JourneyFilter>('all');
 
-    const filteredQuests = MOCK_QUESTS.filter((quest) => {
+    const quests: Quest[] = useMemo(() => {
+        const profileQuests = gameProfile?.quests;
+        return profileQuests && profileQuests.length > 0 ? profileQuests : MOCK_QUESTS;
+    }, [gameProfile]);
+
+    const filteredQuests = quests.filter((quest) => {
         if (statusFilter === 'active' && quest.completed) {
             return false;
         }
@@ -129,8 +139,8 @@ const QuestsPage: React.FC = () => {
         return true;
     });
 
-    const activeCount = MOCK_QUESTS.filter((q) => !q.completed).length;
-    const completedCount = MOCK_QUESTS.filter((q) => q.completed).length;
+    const activeCount = quests.filter((q) => !q.completed).length;
+    const completedCount = quests.filter((q) => q.completed).length;
 
     return (
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: spacing.xl }}>
@@ -148,7 +158,7 @@ const QuestsPage: React.FC = () => {
             {/* Summary bar */}
             <Box display="flex" style={{ gap: spacing.md, marginBottom: spacing.xl }}>
                 <Card padding="md" style={{ flex: 1, textAlign: 'center' }}>
-                    <Text fontSize="2xl" fontWeight="bold" color="#6C63FF">
+                    <Text fontSize="2xl" fontWeight="bold" color={colors.gamification.primary}>
                         {activeCount}
                     </Text>
                     <Text fontSize="sm" color={colors.gray[50]}>
@@ -185,8 +195,8 @@ const QuestsPage: React.FC = () => {
                             border: 'none',
                             cursor: 'pointer',
                             fontWeight: statusFilter === f ? 700 : 400,
-                            backgroundColor: statusFilter === f ? '#6C63FF' : (colors.gray[10] ?? '#f0f0f0'),
-                            color: statusFilter === f ? '#fff' : (colors.gray[70] ?? '#333'),
+                            backgroundColor: statusFilter === f ? colors.gamification.primary : colors.gray[10],
+                            color: statusFilter === f ? colors.gray[0] : colors.gray[70],
                             fontSize: '14px',
                         }}
                     >
@@ -204,10 +214,13 @@ const QuestsPage: React.FC = () => {
                         style={{
                             padding: `${spacing.xs} ${spacing.md}`,
                             borderRadius: '16px',
-                            border: journeyFilter === jf ? '2px solid #6C63FF' : '1px solid #e0e0e0',
+                            border:
+                                journeyFilter === jf
+                                    ? `2px solid ${colors.gamification.primary}`
+                                    : `1px solid ${colors.gray[20]}`,
                             cursor: 'pointer',
-                            backgroundColor: journeyFilter === jf ? '#f0eeff' : '#fff',
-                            color: journeyFilter === jf ? '#6C63FF' : (colors.gray[70] ?? '#333'),
+                            backgroundColor: journeyFilter === jf ? colors.gamification.background : colors.gray[0],
+                            color: journeyFilter === jf ? colors.gamification.primary : colors.gray[70],
                             fontSize: '13px',
                             fontWeight: journeyFilter === jf ? 600 : 400,
                         }}

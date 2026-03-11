@@ -5,8 +5,11 @@ import { typography } from 'design-system/tokens/typography';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useAuth } from '@/hooks/useAuth';
+
 const ServerErrorPage: React.FC = () => {
     const router = useRouter();
+    const { isAuthenticated: _isAuthenticated } = useAuth();
 
     const handleRetry = (): void => {
         window.location.reload();

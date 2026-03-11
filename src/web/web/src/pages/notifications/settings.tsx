@@ -4,6 +4,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React, { useState } from 'react';
 
+import { useNotifications } from '@/hooks/useNotifications';
+
 interface NotificationToggles {
     healthUpdates: boolean;
     careReminders: boolean;
@@ -13,6 +15,7 @@ interface NotificationToggles {
 }
 
 const NotificationSettingsPage: React.FC = () => {
+    const { unreadCount: _unreadCount } = useNotifications();
     const [toggles, setToggles] = useState<NotificationToggles>({
         healthUpdates: true,
         careReminders: true,

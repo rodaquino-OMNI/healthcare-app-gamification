@@ -7,15 +7,37 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useMedications } from '@/hooks';
+
 /**
  * Share medication access with caregiver page.
  * Allows user to invite caregiver by name/email with specific permissions.
  */
 const ShareCaregiverPage: React.FC = () => {
+    const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const [caregiverName, setCaregiverName] = useState('');
     const [caregiverEmail, setCaregiverEmail] = useState('');
     const [permission, setPermission] = useState<'view' | 'edit'>('view');
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void medications;
 
     const handleShare = (): void => {
         if (!caregiverName || !caregiverEmail) {
@@ -54,7 +76,7 @@ const ShareCaregiverPage: React.FC = () => {
                             borderRadius: '8px',
                             border: `1px solid ${colors.neutral.gray300}`,
                             fontSize: '14px',
-                            backgroundColor: '#fff',
+                            backgroundColor: colors.gray[0],
                             color: colors.neutral.gray900,
                             fontFamily: 'inherit',
                         }}
@@ -78,7 +100,7 @@ const ShareCaregiverPage: React.FC = () => {
                             borderRadius: '8px',
                             border: `1px solid ${colors.neutral.gray300}`,
                             fontSize: '14px',
-                            backgroundColor: '#fff',
+                            backgroundColor: colors.gray[0],
                             color: colors.neutral.gray900,
                             fontFamily: 'inherit',
                         }}
@@ -100,7 +122,7 @@ const ShareCaregiverPage: React.FC = () => {
                             borderRadius: '8px',
                             border: `1px solid ${colors.neutral.gray300}`,
                             fontSize: '14px',
-                            backgroundColor: '#fff',
+                            backgroundColor: colors.gray[0],
                             color: colors.neutral.gray900,
                             fontFamily: 'inherit',
                         }}

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import styled from 'styled-components';
 
+import { useAuth } from '@/hooks/useAuth';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 const ContentContainer = styled.div`
@@ -143,6 +144,7 @@ const MOCK_GOALS = [
  */
 export default function OnboardingConfirmationPage(): React.ReactElement {
     const router = useRouter();
+    const { session: _session } = useAuth();
 
     return (
         <AuthLayout>

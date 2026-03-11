@@ -3,7 +3,7 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
-import { submitFeedback } from '../../api/settings';
+import { useSettings } from '@/hooks/useSettings';
 
 /**
  * App feedback page.
@@ -11,6 +11,7 @@ import { submitFeedback } from '../../api/settings';
  */
 const FeedbackPage: NextPage = () => {
     const router = useRouter();
+    const { submitFeedback } = useSettings();
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
     const [category, setCategory] = useState('');

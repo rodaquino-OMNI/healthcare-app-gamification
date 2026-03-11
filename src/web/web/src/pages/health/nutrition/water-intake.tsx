@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useNutrition } from '@/hooks';
+
 const DAILY_TARGET = 8;
 const HISTORY = [
     { time: '08:00 AM', amount: '1 glass' },
@@ -17,8 +19,28 @@ const HISTORY = [
 ];
 
 const WaterIntakePage: React.FC = () => {
+    const { data: nutritionData, loading, error, refetch } = useNutrition();
     const router = useRouter();
     const [current, setCurrent] = useState(6);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void nutritionData;
 
     const handleAdd = (amount: number): void => {
         setCurrent((prev) => Math.min(prev + amount, DAILY_TARGET + 4));

@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { restClient } from '@/api/client';
+import { useNotifications } from '@/hooks/useNotifications';
 import { MainLayout } from '@/layouts/MainLayout';
 
 const PageContainer = styled.div`
@@ -98,6 +99,7 @@ const ActionButton = styled.button`
 export default function NotificationDetailPage(): React.ReactElement {
     const router = useRouter();
     const { id } = router.query;
+    const { markAsRead, unreadCount: _unreadCount } = useNotifications();
 
     const [notification, setNotification] = useState<{
         id: string;
@@ -122,16 +124,16 @@ export default function NotificationDetailPage(): React.ReactElement {
         restClient
             .get(`/notifications/${safeId}`)
             .then((res) => {
-                setNotification(
-                    res.data as {
-                        id: string;
-                        title: string;
-                        body: string;
-                        journey: string;
-                        createdAt: string;
-                        deepLink: string | null;
-                    }
-                );
+                const data = res.data as {
+                    id: string;
+                    title: string;
+                    body: string;
+                    journey: string;
+                    createdAt: string;
+                    deepLink: string | null;
+                };
+                setNotification(data);
+                void markAsRead(safeId);
             })
             .catch(() => {
                 setError('Erro ao carregar notificacao.');
@@ -139,7 +141,7 @@ export default function NotificationDetailPage(): React.ReactElement {
             .finally(() => {
                 setLoading(false);
             });
-    }, [safeId]);
+    }, [safeId, markAsRead]);
 
     const getJourneyColor = (journey: string): string => {
         switch (journey) {

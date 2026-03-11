@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useMedications } from '@/hooks';
+
 type SeverityLevel = 'mild' | 'moderate' | 'severe';
 
 interface EffectType {
@@ -42,12 +44,32 @@ const formatDate = (date: Date): string => {
  * with type, severity, date, and notes.
  */
 const MedicationSideEffectFormPage: React.FC = () => {
+    const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const [selectedEffect, setSelectedEffect] = useState<string | null>(null);
     const [severity, setSeverity] = useState<SeverityLevel | null>(null);
     const [date] = useState<Date>(new Date());
     const [notes, setNotes] = useState('');
     const [errors, setErrors] = useState<{ effect?: string; severity?: string }>({});
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void medications;
 
     const validate = (): boolean => {
         const newErrors: { effect?: string; severity?: string } = {};

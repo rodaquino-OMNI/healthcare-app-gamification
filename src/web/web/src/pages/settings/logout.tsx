@@ -3,7 +3,8 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
-import { logout } from '@/api/auth';
+import { logout as apiLogout } from '@/api/auth';
+import { useAuth } from '@/hooks/useAuth';
 
 /**
  * Logout confirmation page.
@@ -11,6 +12,7 @@ import { logout } from '@/api/auth';
  */
 const LogoutPage: NextPage = () => {
     const router = useRouter();
+    const { logout } = useAuth();
     const [loading, setLoading] = useState(false);
 
     const handleLogout = async (): Promise<void> => {
@@ -18,7 +20,12 @@ const LogoutPage: NextPage = () => {
         try {
             await logout();
         } catch {
-            // Continue with local cleanup even if API fails
+            // If hook logout fails, fall back to direct API call
+            try {
+                await apiLogout();
+            } catch {
+                // Continue with local cleanup even if API fails
+            }
         }
         localStorage.clear();
         document.cookie.split(';').forEach((c) => {

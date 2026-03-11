@@ -4,6 +4,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React from 'react';
 
+import { useAuth } from '@/hooks/useAuth';
+
 interface ChecklistItem {
     id: string;
     label: string;
@@ -20,6 +22,8 @@ const CHECKLIST: ChecklistItem[] = [
 ];
 
 const HomeEmptyPage: React.FC = () => {
+    const { isAuthenticated: _isAuthenticated } = useAuth();
+
     return (
         <div style={styles.container}>
             <div style={styles.center}>

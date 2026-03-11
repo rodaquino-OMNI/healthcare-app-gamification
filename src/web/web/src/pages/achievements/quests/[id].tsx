@@ -10,6 +10,8 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import type { Quest } from 'shared/types/gamification.types';
 
+import { useGamification } from '@/hooks/useGamification';
+
 const MOCK_QUESTS: Record<string, Quest & { requirements: string[]; rewardXp: number }> = {
     q1: {
         id: 'q1',
@@ -130,9 +132,9 @@ const MOCK_QUESTS: Record<string, Quest & { requirements: string[]; rewardXp: nu
 };
 
 const JOURNEY_COLORS: Record<string, string> = {
-    health: '#0ACF83',
-    care: '#FF8C42',
-    plan: '#3A86FF',
+    health: colors.journeys.health.primary,
+    care: colors.journeys.care.primary,
+    plan: colors.journeys.plan.primary,
 };
 
 const JOURNEY_LABELS: Record<string, string> = {
@@ -150,6 +152,7 @@ const QuestDetailPage: React.FC = () => {
     const { id } = router.query;
     const questId = Array.isArray(id) ? id[0] : id;
     const quest = questId ? MOCK_QUESTS[questId] : undefined;
+    const { gameProfile, isLoading: profileLoading } = useGamification('');
 
     if (!quest) {
         return (
@@ -168,7 +171,7 @@ const QuestDetailPage: React.FC = () => {
 
     const progressPercent = quest.total > 0 ? Math.round((quest.progress / quest.total) * 100) : 0;
 
-    const journeyColor = JOURNEY_COLORS[quest.journey] ?? '#6C63FF';
+    const journeyColor = JOURNEY_COLORS[quest.journey] ?? colors.gamification.primary;
 
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
@@ -188,7 +191,7 @@ const QuestDetailPage: React.FC = () => {
                         style={{
                             display: 'inline-block',
                             backgroundColor: journeyColor,
-                            color: '#fff',
+                            color: colors.gray[0],
                             padding: `${spacing.xs} ${spacing.sm}`,
                             borderRadius: '12px',
                             fontSize: '12px',
@@ -202,7 +205,7 @@ const QuestDetailPage: React.FC = () => {
                             style={{
                                 display: 'inline-block',
                                 backgroundColor: colors.semantic.success,
-                                color: '#fff',
+                                color: colors.gray[0],
                                 padding: `${spacing.xs} ${spacing.sm}`,
                                 borderRadius: '12px',
                                 fontSize: '12px',
@@ -255,7 +258,8 @@ const QuestDetailPage: React.FC = () => {
                             style={{
                                 gap: spacing.sm,
                                 padding: `${spacing.sm} 0`,
-                                borderBottom: index < quest.requirements.length - 1 ? '1px solid #f0f0f0' : 'none',
+                                borderBottom:
+                                    index < quest.requirements.length - 1 ? `1px solid ${colors.gray[10]}` : 'none',
                             }}
                         >
                             <span
@@ -263,10 +267,8 @@ const QuestDetailPage: React.FC = () => {
                                     width: '24px',
                                     height: '24px',
                                     borderRadius: '50%',
-                                    backgroundColor: isComplete
-                                        ? colors.semantic.success
-                                        : (colors.gray[10] ?? '#f0f0f0'),
-                                    color: isComplete ? '#fff' : (colors.gray[50] ?? '#666'),
+                                    backgroundColor: isComplete ? colors.semantic.success : colors.gray[10],
+                                    color: isComplete ? colors.gray[0] : colors.gray[50],
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
@@ -290,18 +292,23 @@ const QuestDetailPage: React.FC = () => {
             </Card>
 
             {/* Reward preview */}
-            <Card elevation="sm" padding="lg" style={{ backgroundColor: '#f0eeff' }}>
+            <Card elevation="sm" padding="lg" style={{ backgroundColor: colors.gamification.background }}>
                 <Text fontWeight="bold" fontSize="lg" style={{ marginBottom: spacing.sm }}>
                     Reward
                 </Text>
                 <Box display="flex" alignItems="center" style={{ gap: spacing.sm }}>
-                    <Text fontSize="2xl" fontWeight="bold" color="#6C63FF">
+                    <Text fontSize="2xl" fontWeight="bold" color={colors.gamification.primary}>
                         {quest.rewardXp} XP
                     </Text>
                     <Text fontSize="sm" color={colors.gray[50]}>
                         upon completion
                     </Text>
                 </Box>
+                {!profileLoading && gameProfile && (
+                    <Text fontSize="sm" color={colors.gray[50]} style={{ marginTop: spacing.xs }}>
+                        Current level: {gameProfile.level} ({gameProfile.xp} XP total)
+                    </Text>
+                )}
             </Card>
         </div>
     );

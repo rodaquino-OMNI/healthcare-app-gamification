@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { MainLayout } from '@/components/index';
+import { useAuth } from '@/hooks/useAuth';
 
 /**
  * Severity levels for health alerts with associated styling.
@@ -138,6 +139,7 @@ const formatTimestamp = (timestamp: string): string => {
  */
 const AlertPage: React.FC = () => {
     const router = useRouter();
+    const { isAuthenticated: _isAuthenticated } = useAuth();
     const [alerts, setAlerts] = useState<HealthAlert[]>(INITIAL_ALERTS);
 
     const activeAlerts = alerts.filter((a) => !a.dismissed);

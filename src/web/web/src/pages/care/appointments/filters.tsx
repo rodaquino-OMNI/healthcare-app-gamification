@@ -9,6 +9,7 @@ import React, { useState } from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { useAppointments } from '@/hooks';
 import { CareLayout } from '@/layouts/CareLayout';
 
 /** Filter state for doctor search */
@@ -48,6 +49,7 @@ const DISTANCE_OPTIONS = [5, 10, 20, 50];
  */
 const DoctorFiltersPage: React.FC = () => {
     const router = useRouter();
+    const { appointments: _appointments, loading, error } = useAppointments();
     const [filters, setFilters] = useState<FilterState>({
         specialty: 'Todas',
         maxDistance: 20,
@@ -56,6 +58,32 @@ const DoctorFiltersPage: React.FC = () => {
         gender: 'any',
         acceptsInsurance: true,
     });
+
+    if (loading) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Filtros de Busca" />
+                <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.gray[50]}>
+                        Carregando...
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Filtros de Busca" />
+                <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.semantic.error}>
+                        Erro ao carregar dados. Tente novamente.
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
 
     const handleApplyFilters = (): void => {
         void router.push({

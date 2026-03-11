@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useAuth, useHealthMetrics } from '@/hooks';
+
 const RELATED = [
     { id: 'r1', title: 'Mindfulness for Beginners', category: 'Mental Health' },
     { id: 'r2', title: 'Post-Workout Recovery', category: 'Fitness' },
@@ -15,6 +17,9 @@ const RELATED = [
 
 const ArticleDetailPage: React.FC = () => {
     const router = useRouter();
+    const { session } = useAuth();
+    const userId = session?.userId || '';
+    const { metrics: _metrics, loading: _metricsLoading } = useHealthMetrics(userId, []);
     const { id } = router.query;
 
     return (

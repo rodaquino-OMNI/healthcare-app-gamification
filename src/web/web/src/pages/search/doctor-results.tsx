@@ -5,6 +5,7 @@ import { typography } from 'design-system/tokens/typography';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
+import { useSearch } from '@/hooks/useSearch';
 import { MainLayout } from '@/layouts/MainLayout';
 
 const PageContainer = styled.div`
@@ -156,12 +157,13 @@ const mockDoctors: Doctor[] = [
 ];
 
 export default function DoctorResultsPage(): React.ReactElement {
+    const { query } = useSearch();
     const [selectedFilter, setSelectedFilter] = useState('todos');
 
     return (
         <MainLayout>
             <PageContainer>
-                <Title>Resultados: Médicos</Title>
+                <Title>{query ? `Resultados: Médicos para "${query}"` : 'Resultados: Médicos'}</Title>
 
                 <FilterBar>
                     <FilterButton active={selectedFilter === 'todos'} onClick={() => setSelectedFilter('todos')}>

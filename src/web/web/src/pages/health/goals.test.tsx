@@ -1,62 +1,54 @@
-import React from 'react';
 import { render } from '@testing-library/react';
+import React from 'react';
+
 import '@testing-library/jest-dom';
 import HealthGoalsPage from './goals';
 
 jest.mock('next/router', () => ({
-  useRouter: () => ({
-    push: jest.fn(),
-    replace: jest.fn(),
-    back: jest.fn(),
-    query: {},
-    pathname: '/health/goals',
-    asPath: '/health/goals',
-    isReady: true,
-  }),
+    useRouter: () => ({
+        push: jest.fn(),
+        replace: jest.fn(),
+        back: jest.fn(),
+        query: {},
+        pathname: '/health/goals',
+        asPath: '/health/goals',
+        isReady: true,
+    }),
 }));
 
 jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
+    useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
 }));
 
-jest.mock('@apollo/client', () => ({
-  useQuery: () => ({ loading: false, error: null, data: null }),
-  useMutation: () => [jest.fn(), { loading: false }],
-  gql: (s: TemplateStringsArray) => s,
-}));
-
-jest.mock('shared/graphql/queries/health.queries', () => ({
-  GET_HEALTH_GOALS: 'mock-query',
-}));
-
-jest.mock('shared/graphql/mutations/health.mutations', () => ({
-  CREATE_HEALTH_GOAL: 'mock-mutation',
-  UPDATE_HEALTH_GOAL: 'mock-mutation',
-  DELETE_HEALTH_GOAL: 'mock-mutation',
+jest.mock('@/hooks/useHealthMetrics', () => ({
+    useHealthMetrics: () => ({ metrics: [], goals: [], loading: false, error: null }),
 }));
 
 jest.mock('@/hooks/useAuth', () => ({
-  useAuth: () => ({ session: { userId: 'test-user-id' } }),
+    useAuth: () => ({ session: { userId: 'test-user-id' } }),
 }));
 
 jest.mock('@/components/forms/HealthGoalForm', () => ({
-  HealthGoalForm: ({ onSubmit }: { onSubmit?: () => void }) => (
-    <div data-testid="health-goal-form" onClick={onSubmit}>Form</div>
-  ),
+    HealthGoalForm: ({ onSubmit }: { onSubmit?: () => void }) => (
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+        <div data-testid="health-goal-form" onClick={onSubmit}>
+            Form
+        </div>
+    ),
 }));
 
 jest.mock('@/components/shared/JourneyHeader', () => ({
-  JourneyHeader: ({ title }: { title: string }) => <div data-testid="journey-header">{title}</div>,
+    JourneyHeader: ({ title }: { title: string }) => <div data-testid="journey-header">{title}</div>,
 }));
 
 describe('HealthGoalsPage', () => {
-  it('renders without crashing', () => {
-    const { container } = render(<HealthGoalsPage />);
-    expect(container).toBeTruthy();
-  });
+    it('renders without crashing', () => {
+        const { container } = render(<HealthGoalsPage />);
+        expect(container).toBeTruthy();
+    });
 
-  it('renders content in the document', () => {
-    const { container } = render(<HealthGoalsPage />);
-    expect(container.firstChild).toBeTruthy();
-  });
+    it('renders content in the document', () => {
+        const { container } = render(<HealthGoalsPage />);
+        expect(container.firstChild).toBeTruthy();
+    });
 });

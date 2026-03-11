@@ -1,34 +1,28 @@
 /**
- * Prisma Configuration (Forward-compatible with Prisma 7.x)
+ * Prisma 7.x Configuration
  *
- * This file provides the defineConfig pattern that will be required in Prisma 7.x.
- * Currently serves as documentation and forward-compatibility preparation.
- *
- * When upgrading to Prisma 7.x:
- * 1. Remove env("DATABASE_URL") from schema.prisma datasource block
- * 2. Uncomment the defineConfig export below
- * 3. Run `npx prisma generate` to verify
+ * datasource url is now managed here instead of in schema.prisma.
+ * See: https://www.prisma.io/docs/orm/reference/prisma-config-reference
  */
 
-// Prisma 7.x configuration (uncomment when upgrading):
-// import { defineConfig } from 'prisma/config';
-// import { envField } from 'prisma/env';
-//
-// export default defineConfig({
-//   earlyAccess: true,
-//   datasource: {
-//     url: envField('DATABASE_URL'),
-//   },
-// });
+// eslint-disable-next-line import/no-unresolved
+import { defineConfig } from 'prisma/config';
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+export default defineConfig({
+    earlyAccess: true,
+    schema: './schema.prisma',
+});
 
 /**
- * Runtime configuration helper for current Prisma 5.x/6.x.
+ * Runtime configuration helper.
  * Validates DATABASE_URL is set at startup.
  */
 export function validateDatabaseConfig(): void {
     if (!process.env.DATABASE_URL) {
         throw new Error(
-            'DATABASE_URL environment variable is required. ' + 'Set it in .env or your deployment configuration.'
+            'DATABASE_URL environment variable is required. ' +
+                'Set it in .env or your deployment config.'
         );
     }
 }

@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { useAppointments } from '@/hooks';
 import { CareLayout } from '@/layouts/CareLayout';
 
 interface DocumentSlot {
@@ -19,12 +20,39 @@ interface DocumentSlot {
 
 const DocumentsPage: React.FC = () => {
     const router = useRouter();
+    const { appointments: _appointments, loading, error } = useAppointments();
     const [documents, setDocuments] = useState<DocumentSlot[]>([
         { id: 'id', label: 'Documento de Identidade', required: true, uploaded: false },
         { id: 'insurance', label: 'Carteira do Convenio', required: true, uploaded: false },
         { id: 'referral', label: 'Encaminhamento Medico', required: false, uploaded: false },
         { id: 'exams', label: 'Exames Anteriores', required: false, uploaded: false },
     ]);
+
+    if (loading) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Documentos" />
+                <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.gray[50]}>
+                        Carregando...
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Documentos" />
+                <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.semantic.error}>
+                        Erro ao carregar dados. Tente novamente.
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
 
     const handleUpload = (docId: string): void => {
         setDocuments((prev) => prev.map((d) => (d.id === docId ? { ...d, uploaded: true } : d)));

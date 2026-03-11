@@ -7,6 +7,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useCycle } from '@/hooks';
+
 interface ReminderSetting {
     id: string;
     label: string;
@@ -53,6 +55,7 @@ const toggleKnobStyle = (enabled: boolean): React.CSSProperties => ({
 
 const RemindersPage: React.FC = () => {
     const router = useRouter();
+    const { data: cycleData, loading, error, refetch } = useCycle();
     const [enabledReminders, setEnabledReminders] = useState<Record<string, boolean>>({
         period_start: true,
         fertile_window: false,
@@ -61,6 +64,25 @@ const RemindersPage: React.FC = () => {
         log_reminder: false,
     });
     const [timing, setTiming] = useState('1_day');
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void cycleData;
 
     const toggleReminder = (id: string): void => {
         setEnabledReminders((prev) => ({ ...prev, [id]: !prev[id] }));

@@ -1,4 +1,4 @@
-import NextApp, { type AppProps, type AppContext } from 'next/app'; // next/app 13.0+
+import { type AppProps } from 'next/app'; // next/app 13.0+
 import { useRouter } from 'next/router'; // next/router 13.0+
 import React, { useEffect } from 'react';
 import { ThemeProvider, DefaultTheme } from 'styled-components'; // styled-components 6.0+
@@ -41,21 +41,5 @@ function _app({ Component, pageProps }: AppProps): React.ReactElement {
         </ThemeProvider>
     );
 }
-
-// Disable Automatic Static Optimization so that pages are server-rendered.
-// react-native-web's styled-components integration requires a full React
-// render cycle which SSG workers do not provide, causing useContext failures.
-/* eslint-disable @typescript-eslint/no-unsafe-assignment,
-   @typescript-eslint/no-unsafe-call,
-   @typescript-eslint/no-unsafe-member-access,
-   @typescript-eslint/no-unsafe-return */
-_app.getInitialProps = async (appContext: AppContext) => {
-    const appProps = await NextApp.getInitialProps(appContext);
-    return { ...appProps };
-};
-/* eslint-enable @typescript-eslint/no-unsafe-assignment,
-   @typescript-eslint/no-unsafe-call,
-   @typescript-eslint/no-unsafe-member-access,
-   @typescript-eslint/no-unsafe-return */
 
 export default _app;

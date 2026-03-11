@@ -4,6 +4,8 @@ import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React from 'react';
 
+import { useAppointments } from '@/hooks';
+
 interface Appointment {
     id: string;
     doctorName: string;
@@ -37,6 +39,8 @@ const MOCK_APPOINTMENTS: Appointment[] = [
 ];
 
 const AppointmentWidgetPage: React.FC = () => {
+    useAppointments();
+
     return (
         <div style={styles.container}>
             <div style={styles.header}>

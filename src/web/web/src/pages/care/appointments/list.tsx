@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
+import { useAppointments } from '@/hooks';
 import { CareLayout } from '@/layouts/CareLayout';
 
 type TabKey = 'upcoming' | 'past' | 'cancelled';
@@ -90,7 +91,34 @@ const STATUS_LABELS: Record<TabKey, string> = {
 
 const ListPage: React.FC = () => {
     const router = useRouter();
+    const { appointments: _appointments, loading, error } = useAppointments();
     const [activeTab, setActiveTab] = useState<TabKey>('upcoming');
+
+    if (loading) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Minhas Consultas" />
+                <div style={{ maxWidth: '960px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.gray[50]}>
+                        Carregando...
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <CareLayout>
+                <JourneyHeader title="Minhas Consultas" />
+                <div style={{ maxWidth: '960px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
+                    <Text fontSize="md" color={colors.semantic.error}>
+                        Erro ao carregar consultas. Tente novamente.
+                    </Text>
+                </div>
+            </CareLayout>
+        );
+    }
 
     const filtered = MOCK_APPOINTMENTS.filter((a) => a.status === activeTab);
 

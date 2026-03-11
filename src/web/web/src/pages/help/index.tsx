@@ -3,6 +3,8 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useAuth } from '@/hooks/useAuth';
+
 interface HelpCategory {
     id: string;
     title: string;
@@ -44,6 +46,7 @@ const CATEGORIES: HelpCategory[] = [
  */
 const HelpHomePage: NextPage = () => {
     const router = useRouter();
+    const { isAuthenticated: _isAuthenticated } = useAuth();
     const [searchQuery, setSearchQuery] = useState('');
 
     const filteredCategories = searchQuery

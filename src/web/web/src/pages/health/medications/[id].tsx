@@ -10,6 +10,8 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
+import { useMedications } from '@/hooks';
+
 /** Mock medication detail data */
 interface MedicationDetail {
     id: string;
@@ -56,8 +58,28 @@ const MOCK_DETAIL: MedicationDetail = {
  * including dose history, adherence progress, and refill information.
  */
 const MedicationDetailPage: React.FC = () => {
+    const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+    if (loading) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+    if (error) {
+        return (
+            <div style={{ padding: '24px' }}>
+                <p>
+                    Error loading data. <button onClick={refetch}>Retry</button>
+                </p>
+            </div>
+        );
+    }
+
+    void medications;
 
     // In a real app, fetch medication detail by id
     const medication = MOCK_DETAIL;
