@@ -23,7 +23,7 @@
         "@austa/design-system": "0.1.0",
         "@austa/web-shared": "0.1.0",
         "@hookform/resolvers": "^3.3.4",
-        "@react-native-async-storage/async-storage": "1.19.3",
+        "@react-native-async-storage/async-storage": "3.0.1",
         "@react-native-community/netinfo": "9.3.10",
         "@react-native-firebase/analytics": "^18.0.0",
         "@react-native-firebase/crashlytics": "^18.0.0",
