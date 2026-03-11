@@ -22,7 +22,7 @@
         "@austa/shared": "1.0.0",
         "@prisma/client": "^7.0.0",
         "axios": "1.13.6",
-        "bcrypt": "^5.1.1",
+        "bcrypt": "^6.0.0",
         "class-transformer": "^0.5.1",
         "class-validator": "^0.15.1",
         "date-fns": "^3.3.1",
