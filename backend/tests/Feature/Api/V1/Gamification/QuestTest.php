@@ -154,4 +154,69 @@ class QuestTest extends TestCase
 
         $response->assertUnauthorized();
     }
+
+    // ─── Edge Cases ────────────────────────────────────────────────────
+
+    public function test_index_unauthenticated_returns_401(): void
+    {
+        $response = $this->getJson('/api/v1/gamification/quests');
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_show_unauthenticated_returns_401(): void
+    {
+        $quest = Quest::factory()->create();
+
+        $response = $this->getJson("/api/v1/gamification/quests/{$quest->id}");
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_start_unauthenticated_returns_401(): void
+    {
+        $quest = Quest::factory()->create();
+
+        $response = $this->postJson("/api/v1/gamification/quests/{$quest->id}/start");
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_complete_task_unauthenticated_returns_401(): void
+    {
+        $quest = Quest::factory()->create();
+
+        $response = $this->postJson("/api/v1/gamification/quests/{$quest->id}/tasks/1/complete");
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_index_returns_empty_when_no_quests(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->getJson('/api/v1/gamification/quests');
+
+        $response->assertOk()
+            ->assertJsonCount(0, 'data');
+    }
+
+    public function test_start_creates_quest_with_zero_progress(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $profile = GameProfile::factory()->create(['user_id' => $this->user->id]);
+        $quest = Quest::factory()->create();
+
+        $response = $this->postJson("/api/v1/gamification/quests/{$quest->id}/start");
+
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('user_quests', [
+            'profile_id' => $profile->id,
+            'quest_id' => $quest->id,
+            'progress' => 0,
+            'completed' => false,
+        ]);
+    }
 }

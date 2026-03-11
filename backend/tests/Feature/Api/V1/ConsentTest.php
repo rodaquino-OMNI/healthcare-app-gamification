@@ -104,4 +104,67 @@ class ConsentTest extends TestCase
 
         $response->assertUnauthorized();
     }
+
+    // ─── Edge Cases ────────────────────────────────────────────────────
+
+    public function test_index_unauthenticated_returns_401(): void
+    {
+        $response = $this->getJson('/api/v1/consent');
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_store_unauthenticated_returns_401(): void
+    {
+        $response = $this->postJson('/api/v1/consent', [
+            'consent_type' => 'DATA_PROCESSING',
+            'status' => 'ACTIVE',
+            'purpose' => 'Test',
+            'data_categories' => ['health'],
+            'granted_at' => '2026-01-01 00:00:00',
+            'expires_at' => '2027-01-01 00:00:00',
+            'ip_address' => '127.0.0.1',
+            'user_agent' => 'TestAgent/1.0',
+            'version' => 1,
+        ]);
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_revoke_unauthenticated_returns_401(): void
+    {
+        $consent = ConsentRecord::factory()->create([
+            'user_id' => $this->user->id,
+            'status' => ConsentStatus::ACTIVE,
+        ]);
+
+        $response = $this->deleteJson("/api/v1/consent/{$consent->id}");
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_index_returns_empty_when_no_consents(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->getJson('/api/v1/consent');
+
+        $response->assertOk()
+            ->assertJsonCount(0, 'data');
+    }
+
+    public function test_index_only_returns_own_consents(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $otherUser = User::factory()->create();
+
+        ConsentRecord::factory()->count(2)->create(['user_id' => $this->user->id]);
+        ConsentRecord::factory()->count(3)->create(['user_id' => $otherUser->id]);
+
+        $response = $this->getJson('/api/v1/consent');
+
+        $response->assertOk()
+            ->assertJsonCount(2, 'data');
+    }
 }

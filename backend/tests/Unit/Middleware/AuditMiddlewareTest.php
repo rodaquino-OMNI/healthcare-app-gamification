@@ -149,4 +149,55 @@ class AuditMiddlewareTest extends TestCase
         $this->assertNotNull($log);
         $this->assertNull($log->user_id);
     }
+
+    public function test_catches_exception_and_continues_when_audit_log_creation_fails(): void
+    {
+        // Drop the audit_logs table to force an exception during create
+        \Illuminate\Support\Facades\Schema::drop('audit_logs');
+
+        $request = $this->createRequest();
+        $response = $this->handleRequest($request);
+
+        // The middleware should catch the exception and still return the response
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('OK', $response->getContent());
+    }
+
+    public function test_returns_null_for_empty_sanitized_request_body(): void
+    {
+        // Send only sensitive fields so sanitization returns empty array -> null
+        $request = $this->createRequest('POST', '/api/login', [
+            'password' => 'secret123',
+            'password_confirmation' => 'secret123',
+            'access_token' => 'tok',
+            'refresh_token' => 'ref',
+        ]);
+        $this->handleRequest($request);
+
+        $log = AuditLog::first();
+        $this->assertNotNull($log);
+        $this->assertNull($log->request_body);
+    }
+
+    // ─── Edge Cases ────────────────────────────────────────────────────
+
+    public function test_logs_correct_response_status_for_errors(): void
+    {
+        $request = $this->createRequest('GET', '/api/test');
+        $this->handleRequest($request, 500);
+
+        $log = AuditLog::first();
+        $this->assertNotNull($log);
+        $this->assertEquals(500, $log->response_status);
+    }
+
+    public function test_handles_get_request_with_no_body(): void
+    {
+        $request = $this->createRequest('GET', '/api/test');
+        $this->handleRequest($request);
+
+        $log = AuditLog::first();
+        $this->assertNotNull($log);
+        $this->assertNull($log->request_body);
+    }
 }

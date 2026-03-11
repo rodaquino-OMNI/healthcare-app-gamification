@@ -174,4 +174,53 @@ class AppointmentTest extends TestCase
 
         $this->assertDatabaseMissing('appointments', ['id' => $appointment->id]);
     }
+
+    // ── Edge-case / negative tests ───────────────────────────────────
+
+    public function test_update_nonexistent_appointment_returns_404(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->putJson('/api/v1/care/appointments/00000000-0000-0000-0000-000000000000', [
+            'notes' => 'Does not exist',
+        ]);
+
+        $response->assertStatus(404);
+    }
+
+    public function test_destroy_nonexistent_appointment_returns_404(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->deleteJson('/api/v1/care/appointments/00000000-0000-0000-0000-000000000000');
+
+        $response->assertStatus(404);
+    }
+
+    public function test_index_returns_empty_when_no_appointments(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->getJson('/api/v1/care/appointments');
+
+        $response->assertStatus(200)
+            ->assertJsonCount(0, 'data');
+    }
+
+    public function test_update_with_invalid_status_returns_422(): void
+    {
+        Sanctum::actingAs($this->user);
+        $provider = Provider::factory()->create();
+        $appointment = Appointment::factory()->create([
+            'user_id' => $this->user->id,
+            'provider_id' => $provider->id,
+        ]);
+
+        $response = $this->putJson("/api/v1/care/appointments/{$appointment->id}", [
+            'status' => 'INVALID',
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['status']);
+    }
 }

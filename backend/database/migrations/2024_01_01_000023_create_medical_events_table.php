@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('provider')->nullable();
             $table->string('location')->nullable();
             $table->date('date');
-            $table->json('documents')->default('[]');
-            $table->json('tags')->default('[]');
+            $table->json('documents')->nullable();
+            $table->json('tags')->nullable();
             $table->timestamps();
 
             $table->index('user_id');

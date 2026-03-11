@@ -111,4 +111,41 @@ class RewardTest extends TestCase
 
         $response->assertUnauthorized();
     }
+
+    // ─── Edge Cases ────────────────────────────────────────────────────
+
+    public function test_index_unauthenticated_returns_401(): void
+    {
+        $response = $this->getJson('/api/v1/gamification/rewards');
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_show_unauthenticated_returns_401(): void
+    {
+        $reward = Reward::factory()->create();
+
+        $response = $this->getJson("/api/v1/gamification/rewards/{$reward->id}");
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_claim_unauthenticated_returns_401(): void
+    {
+        $reward = Reward::factory()->create();
+
+        $response = $this->postJson("/api/v1/gamification/rewards/{$reward->id}/claim");
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_index_returns_empty_when_no_rewards(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->getJson('/api/v1/gamification/rewards');
+
+        $response->assertOk()
+            ->assertJsonCount(0, 'data');
+    }
 }

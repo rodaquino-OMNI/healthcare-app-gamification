@@ -133,6 +133,20 @@ class DeviceConnectionTest extends TestCase
         ]);
     }
 
+    public function test_update_connection_with_tokens_and_metadata(): void
+    {
+        Sanctum::actingAs($this->user);
+        $connection = DeviceConnection::factory()->create(['user_id' => $this->user->id]);
+
+        $response = $this->putJson("/api/v1/health/devices/{$connection->id}", [
+            'access_token' => 'new-access-token',
+            'refresh_token' => 'new-refresh-token',
+            'metadata' => ['key' => 'value'],
+        ]);
+
+        $response->assertStatus(200);
+    }
+
     // ── Destroy ─────────────────────────────────────────────────────
 
     public function test_destroy_connection(): void
@@ -145,5 +159,55 @@ class DeviceConnectionTest extends TestCase
         $response->assertStatus(204);
 
         $this->assertDatabaseMissing('device_connections', ['id' => $connection->id]);
+    }
+
+    // ── Edge-case / negative tests ───────────────────────────────────
+
+    public function test_update_nonexistent_connection_returns_404(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->putJson('/api/v1/health/devices/00000000-0000-0000-0000-000000000000', [
+            'status' => 'CONNECTED',
+        ]);
+
+        $response->assertStatus(404);
+    }
+
+    public function test_destroy_nonexistent_connection_returns_404(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->deleteJson('/api/v1/health/devices/00000000-0000-0000-0000-000000000000');
+
+        $response->assertStatus(404);
+    }
+
+    public function test_index_returns_empty_when_no_connections(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->getJson('/api/v1/health/devices');
+
+        $response->assertStatus(200)
+            ->assertJsonCount(0, 'data');
+    }
+
+    public function test_store_with_optional_tokens(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $payload = [
+            'device_type' => 'FITBIT',
+            'device_name' => 'My Fitbit',
+            'device_identifier' => 'FITBIT-99999',
+            'access_token' => 'my-access-token',
+            'refresh_token' => 'my-refresh-token',
+        ];
+
+        $response = $this->postJson('/api/v1/health/devices', $payload);
+
+        $response->assertStatus(201)
+            ->assertJsonStructure(['data' => ['id', 'device_type', 'device_name']]);
     }
 }

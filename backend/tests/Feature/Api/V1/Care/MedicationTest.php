@@ -152,4 +152,36 @@ class MedicationTest extends TestCase
 
         $this->assertDatabaseMissing('medications', ['id' => $medication->id]);
     }
+
+    // ── Edge-case / negative tests ───────────────────────────────────
+
+    public function test_update_nonexistent_medication_returns_404(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->putJson('/api/v1/care/medications/00000000-0000-0000-0000-000000000000', [
+            'name' => 'Does not exist',
+        ]);
+
+        $response->assertStatus(404);
+    }
+
+    public function test_destroy_nonexistent_medication_returns_404(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->deleteJson('/api/v1/care/medications/00000000-0000-0000-0000-000000000000');
+
+        $response->assertStatus(404);
+    }
+
+    public function test_index_returns_empty_when_no_medications(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->getJson('/api/v1/care/medications');
+
+        $response->assertStatus(200)
+            ->assertJsonCount(0, 'data');
+    }
 }

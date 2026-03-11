@@ -62,4 +62,28 @@ class GameProfileTest extends TestCase
 
         $response->assertUnauthorized();
     }
+
+    // ─── Edge Cases ────────────────────────────────────────────────────
+
+    public function test_unauthenticated_returns_401(): void
+    {
+        $response = $this->getJson('/api/v1/gamification/profile');
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_show_returns_correct_level_calculation(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        GameProfile::factory()->create([
+            'user_id' => $this->user->id,
+            'xp' => 250,
+        ]);
+
+        $response = $this->getJson('/api/v1/gamification/profile');
+
+        $response->assertOk()
+            ->assertJsonPath('data.level', 3);
+    }
 }

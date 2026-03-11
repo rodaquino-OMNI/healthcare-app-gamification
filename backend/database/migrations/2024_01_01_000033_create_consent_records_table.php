@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('consent_type');
             $table->string('status')->default('ACTIVE');
             $table->text('purpose');
-            $table->json('data_categories')->default('[]');
+            $table->json('data_categories')->nullable();
             $table->timestamp('granted_at');
             $table->timestamp('expires_at')->nullable();
             $table->timestamp('revoked_at')->nullable();

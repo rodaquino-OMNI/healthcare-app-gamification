@@ -220,4 +220,36 @@ class TelemedicineTest extends TestCase
 
         $this->assertDatabaseMissing('telemedicine_sessions', ['id' => $session->id]);
     }
+
+    // ── Edge-case / negative tests ───────────────────────────────────
+
+    public function test_update_nonexistent_session_returns_404(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->putJson('/api/v1/care/telemedicine/00000000-0000-0000-0000-000000000000', [
+            'status' => 'completed',
+        ]);
+
+        $response->assertStatus(404);
+    }
+
+    public function test_destroy_nonexistent_session_returns_404(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->deleteJson('/api/v1/care/telemedicine/00000000-0000-0000-0000-000000000000');
+
+        $response->assertStatus(404);
+    }
+
+    public function test_index_returns_empty_when_no_sessions(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->getJson('/api/v1/care/telemedicine');
+
+        $response->assertStatus(200)
+            ->assertJsonCount(0, 'data');
+    }
 }

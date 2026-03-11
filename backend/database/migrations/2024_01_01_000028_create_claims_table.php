@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('provider_tax_id')->nullable();
             $table->text('procedure_description')->nullable();
             $table->string('receipt_url')->nullable();
-            $table->json('additional_document_urls')->default('[]');
+            $table->json('additional_document_urls')->nullable();
             $table->json('status_history')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();

@@ -102,4 +102,34 @@ class GamificationEventTest extends TestCase
 
         $response->assertUnauthorized();
     }
+
+    // ─── Edge Cases ────────────────────────────────────────────────────
+
+    public function test_process_unauthenticated_returns_401(): void
+    {
+        $response = $this->postJson('/api/v1/gamification/events', [
+            'event_type' => 'appointment_completed',
+            'payload' => ['appointment_id' => 'abc-123'],
+        ]);
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_process_with_occurred_at_accepts_valid_date(): void
+    {
+        Queue::fake();
+        Sanctum::actingAs($this->user);
+
+        $payload = [
+            'event_type' => 'appointment_completed',
+            'payload' => ['appointment_id' => 'abc-123'],
+            'occurred_at' => '2026-01-15T10:30:00Z',
+        ];
+
+        $response = $this->postJson('/api/v1/gamification/events', $payload);
+
+        $response->assertStatus(202);
+
+        Queue::assertPushed(ProcessGamificationEvent::class);
+    }
 }

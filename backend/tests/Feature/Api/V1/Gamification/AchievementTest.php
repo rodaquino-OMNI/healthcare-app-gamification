@@ -108,4 +108,41 @@ class AchievementTest extends TestCase
 
         $response->assertUnauthorized();
     }
+
+    // ─── Edge Cases ────────────────────────────────────────────────────
+
+    public function test_index_unauthenticated_returns_401(): void
+    {
+        $response = $this->getJson('/api/v1/gamification/achievements');
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_show_unauthenticated_returns_401(): void
+    {
+        $achievement = Achievement::factory()->create();
+
+        $response = $this->getJson("/api/v1/gamification/achievements/{$achievement->id}");
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_acknowledge_unauthenticated_returns_401(): void
+    {
+        $achievement = Achievement::factory()->create();
+
+        $response = $this->postJson("/api/v1/gamification/achievements/{$achievement->id}/acknowledge");
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_index_returns_empty_when_no_achievements(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->getJson('/api/v1/gamification/achievements');
+
+        $response->assertOk()
+            ->assertJsonCount(0, 'data');
+    }
 }

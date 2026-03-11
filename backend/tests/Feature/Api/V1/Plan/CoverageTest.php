@@ -70,4 +70,16 @@ class CoverageTest extends TestCase
 
         $response->assertUnauthorized();
     }
+
+    // ── Edge-case / negative tests ───────────────────────────────────
+
+    public function test_index_returns_empty_when_no_coverages(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->getJson('/api/v1/plan/coverages');
+
+        $response->assertOk()
+            ->assertJsonCount(0, 'data');
+    }
 }

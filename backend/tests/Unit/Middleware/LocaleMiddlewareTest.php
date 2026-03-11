@@ -78,4 +78,45 @@ class LocaleMiddlewareTest extends TestCase
 
         $this->assertEquals($defaultLocale, App::getLocale());
     }
+
+    // ─── Edge Cases ────────────────────────────────────────────────────
+
+    public function test_sets_locale_to_pt_BR_from_header(): void
+    {
+        $this->handleWithLocale('pt-BR');
+
+        $this->assertEquals('pt_BR', App::getLocale());
+    }
+
+    public function test_sets_locale_to_es_from_header(): void
+    {
+        $this->handleWithLocale('es');
+
+        $this->assertEquals('es', App::getLocale());
+    }
+
+    public function test_falls_back_to_en_for_unsupported_locale(): void
+    {
+        $defaultLocale = App::getLocale();
+
+        $this->handleWithLocale('fr');
+
+        $this->assertEquals($defaultLocale, App::getLocale());
+    }
+
+    public function test_handles_missing_accept_language_header(): void
+    {
+        $defaultLocale = App::getLocale();
+
+        $this->handleWithLocale(null);
+
+        $this->assertEquals($defaultLocale, App::getLocale());
+    }
+
+    public function test_handles_language_prefix_match(): void
+    {
+        $this->handleWithLocale('pt');
+
+        $this->assertEquals('pt_BR', App::getLocale());
+    }
 }

@@ -24,4 +24,22 @@ class HealthCheckTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    // ─── Edge Cases ────────────────────────────────────────────────────
+
+    public function test_health_check_returns_correct_json_structure(): void
+    {
+        $response = $this->getJson('/api/v1/health');
+
+        $response->assertOk()
+            ->assertJsonStructure(['status', 'version']);
+    }
+
+    public function test_health_check_status_is_ok(): void
+    {
+        $response = $this->getJson('/api/v1/health');
+
+        $response->assertOk()
+            ->assertJsonPath('status', 'ok');
+    }
 }

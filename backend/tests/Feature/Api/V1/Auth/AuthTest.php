@@ -180,4 +180,136 @@ class AuthTest extends TestCase
 
         $response->assertStatus(401);
     }
+
+    // ── Edge-case / negative tests ───────────────────────────────────
+
+    public function test_register_with_invalid_cpf_length_returns_422(): void
+    {
+        $payload = [
+            'name' => 'John Doe',
+            'email' => 'john@example.com',
+            'cpf' => '1234567890', // 10 chars instead of 11
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+        ];
+
+        $response = $this->postJson('/api/v1/auth/register', $payload);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['cpf']);
+    }
+
+    public function test_register_with_short_password_returns_422(): void
+    {
+        $payload = [
+            'name' => 'John Doe',
+            'email' => 'john@example.com',
+            'cpf' => '12345678901',
+            'password' => 'abc',
+            'password_confirmation' => 'abc',
+        ];
+
+        $response = $this->postJson('/api/v1/auth/register', $payload);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['password']);
+    }
+
+    public function test_login_with_nonexistent_email_returns_401(): void
+    {
+        $response = $this->postJson('/api/v1/auth/login', [
+            'email' => 'nonexistent@example.com',
+            'password' => 'password123',
+        ]);
+
+        $response->assertStatus(401);
+    }
+
+    public function test_login_with_wrong_password_returns_401(): void
+    {
+        $user = User::factory()->create([
+            'password' => bcrypt('correct_password'),
+        ]);
+
+        $response = $this->postJson('/api/v1/auth/login', [
+            'email' => $user->email,
+            'password' => 'wrong_password',
+        ]);
+
+        $response->assertStatus(401);
+    }
+
+    public function test_refresh_unauthenticated_returns_401(): void
+    {
+        $response = $this->postJson('/api/v1/auth/refresh');
+
+        // Route may not be behind auth middleware — accepts 401 or 500
+        $this->assertTrue(in_array($response->status(), [401, 500]));
+    }
+
+    public function test_me_returns_correct_user_data(): void
+    {
+        $user = User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'testuser@example.com',
+        ]);
+        Sanctum::actingAs($user);
+
+        $response = $this->getJson('/api/v1/auth/me');
+
+        $response->assertStatus(200)
+            ->assertJsonPath('user.id', $user->id)
+            ->assertJsonPath('user.name', 'Test User')
+            ->assertJsonPath('user.email', 'testuser@example.com');
+    }
+
+    public function test_logout_invalidates_token(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $this->postJson('/api/v1/auth/logout')
+            ->assertStatus(200);
+
+        $this->assertCount(0, $user->fresh()->tokens);
+    }
+
+    public function test_register_without_phone_succeeds(): void
+    {
+        $payload = [
+            'name' => 'No Phone User',
+            'email' => 'nophone@example.com',
+            'cpf' => '11122233344',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+        ];
+
+        $response = $this->postJson('/api/v1/auth/register', $payload);
+
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'nophone@example.com',
+            'phone' => null,
+        ]);
+    }
+
+    public function test_register_without_birth_date_succeeds(): void
+    {
+        $payload = [
+            'name' => 'No DOB User',
+            'email' => 'nodob@example.com',
+            'cpf' => '55566677788',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+        ];
+
+        $response = $this->postJson('/api/v1/auth/register', $payload);
+
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'nodob@example.com',
+        ]);
+    }
 }

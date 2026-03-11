@@ -161,4 +161,11 @@ class UserAchievementTest extends TestCase
         $this->assertInstanceOf(Achievement::class, $ua->achievement);
         $this->assertEquals($achievement->id, $ua->achievement->id);
     }
+
+    public function test_get_key_type_returns_string(): void
+    {
+        $model = new UserAchievement();
+
+        $this->assertEquals('string', $model->getKeyType());
+    }
 }

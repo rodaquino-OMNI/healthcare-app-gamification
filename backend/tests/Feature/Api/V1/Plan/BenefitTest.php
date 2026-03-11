@@ -70,4 +70,16 @@ class BenefitTest extends TestCase
 
         $response->assertUnauthorized();
     }
+
+    // ── Edge-case / negative tests ───────────────────────────────────
+
+    public function test_index_returns_empty_when_no_benefits(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->getJson('/api/v1/plan/benefits');
+
+        $response->assertOk()
+            ->assertJsonCount(0, 'data');
+    }
 }

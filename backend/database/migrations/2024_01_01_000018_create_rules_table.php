@@ -12,7 +12,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('event');
             $table->string('condition');
-            $table->json('actions')->default('[]');
+            $table->json('actions')->nullable();
         });
     }
 

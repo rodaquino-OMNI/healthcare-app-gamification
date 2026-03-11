@@ -140,4 +140,36 @@ class ClaimTest extends TestCase
 
         $response->assertUnauthorized();
     }
+
+    // ── Edge-case / negative tests ───────────────────────────────────
+
+    public function test_update_nonexistent_claim_returns_404(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->putJson('/api/v1/plan/claims/00000000-0000-0000-0000-000000000000', [
+            'description' => 'Does not exist',
+        ]);
+
+        $response->assertNotFound();
+    }
+
+    public function test_destroy_nonexistent_claim_returns_404(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->deleteJson('/api/v1/plan/claims/00000000-0000-0000-0000-000000000000');
+
+        $response->assertNotFound();
+    }
+
+    public function test_index_returns_empty_when_no_claims(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->getJson('/api/v1/plan/claims');
+
+        $response->assertOk()
+            ->assertJsonCount(0, 'data');
+    }
 }

@@ -248,4 +248,56 @@ class RuleEngineTest extends TestCase
 
         $this->assertTrue(true);
     }
+
+    public function test_execute_action_dispatches_progress_quest_action(): void
+    {
+        $mock = Mockery::mock(\App\Domain\Gamification\Actions\ProgressQuestAction::class);
+        $mock->shouldReceive('execute')
+            ->once()
+            ->with('user-123', 'quest-1', 'task-1');
+
+        $this->app->instance(\App\Domain\Gamification\Actions\ProgressQuestAction::class, $mock);
+
+        $this->engine->executeAction([
+            'type' => 'PROGRESS_QUEST',
+            'quest_id' => 'quest-1',
+            'task_id' => 'task-1',
+        ], 'user-123');
+    }
+
+    public function test_evaluate_condition_returns_false_when_no_expression_key(): void
+    {
+        $result = $this->engine->evaluateCondition(
+            ['something_else' => 'value'],
+            []
+        );
+        $this->assertFalse($result);
+    }
+
+    public function test_process_event_executes_actions_for_matching_rules(): void
+    {
+        $user = User::factory()->create();
+        GameProfile::factory()->create(['user_id' => $user->id, 'xp' => 50]);
+
+        $mock = Mockery::mock(AwardXpAction::class);
+        $mock->shouldReceive('execute')
+            ->once()
+            ->with($user->id, 25, 'completed');
+        $this->app->instance(AwardXpAction::class, $mock);
+
+        Rule::factory()->create([
+            'event' => 'task.done',
+            'condition' => '',
+            'actions' => [
+                ['type' => 'AWARD_XP', 'amount' => 25, 'reason' => 'completed'],
+            ],
+        ]);
+
+        Cache::flush();
+        $this->engine->processEvent([
+            'user_id' => $user->id,
+            'type' => 'task.done',
+            'payload' => [],
+        ]);
+    }
 }

@@ -67,4 +67,25 @@ class ProviderTest extends TestCase
 
         $response->assertStatus(404);
     }
+
+    // ── Edge-case / negative tests ───────────────────────────────────
+
+    public function test_show_nonexistent_provider_returns_404(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->getJson('/api/v1/care/providers/00000000-0000-0000-0000-999999999999');
+
+        $response->assertStatus(404);
+    }
+
+    public function test_index_returns_empty_when_no_providers(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->getJson('/api/v1/care/providers');
+
+        $response->assertStatus(200)
+            ->assertJsonCount(0, 'data');
+    }
 }

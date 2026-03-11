@@ -153,4 +153,80 @@ class HealthMetricTest extends TestCase
 
         $this->assertDatabaseMissing('health_metrics', ['id' => $metric->id]);
     }
+
+    // ── Edge-case / negative tests ───────────────────────────────────
+
+    public function test_update_validation_with_invalid_type_returns_422(): void
+    {
+        Sanctum::actingAs($this->user);
+        $metric = HealthMetric::factory()->create(['user_id' => $this->user->id]);
+
+        $response = $this->putJson("/api/v1/health/metrics/{$metric->id}", [
+            'type' => 'INVALID_TYPE',
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['type']);
+    }
+
+    public function test_update_nonexistent_metric_returns_404(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->putJson('/api/v1/health/metrics/00000000-0000-0000-0000-000000000000', [
+            'value' => 100,
+        ]);
+
+        $response->assertStatus(404);
+    }
+
+    public function test_destroy_nonexistent_metric_returns_404(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->deleteJson('/api/v1/health/metrics/00000000-0000-0000-0000-000000000000');
+
+        $response->assertStatus(404);
+    }
+
+    public function test_index_returns_empty_when_no_metrics(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->getJson('/api/v1/health/metrics');
+
+        $response->assertStatus(200)
+            ->assertJsonCount(0, 'data');
+    }
+
+    public function test_index_pagination_returns_correct_page(): void
+    {
+        Sanctum::actingAs($this->user);
+        HealthMetric::factory()->count(20)->create(['user_id' => $this->user->id]);
+
+        $response = $this->getJson('/api/v1/health/metrics?page=2');
+
+        $response->assertStatus(200);
+        $this->assertLessThanOrEqual(15, count($response->json('data')));
+    }
+
+    public function test_store_with_metadata(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $payload = [
+            'type' => 'STEPS',
+            'value' => 5000,
+            'unit' => 'steps',
+            'source' => 'USER_INPUT',
+            'metadata' => ['device' => 'fitbit', 'synced' => true],
+        ];
+
+        $response = $this->postJson('/api/v1/health/metrics', $payload);
+
+        $response->assertStatus(201);
+
+        $metric = HealthMetric::where('user_id', $this->user->id)->latest('id')->first();
+        $this->assertEquals(['device' => 'fitbit', 'synced' => true], $metric->metadata);
+    }
 }

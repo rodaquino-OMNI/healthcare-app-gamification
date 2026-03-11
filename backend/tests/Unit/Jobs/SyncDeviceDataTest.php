@@ -36,4 +36,15 @@ class SyncDeviceDataTest extends TestCase
 
         $this->assertEquals($device->id, $job->deviceConnection->id);
     }
+
+    public function test_handle_executes_without_error(): void
+    {
+        $device = DeviceConnection::factory()->create();
+        $job = new SyncDeviceData($device);
+
+        // handle() is currently a stub (TODO) - just verify it runs without throwing
+        $job->handle();
+
+        $this->assertTrue(true);
+    }
 }

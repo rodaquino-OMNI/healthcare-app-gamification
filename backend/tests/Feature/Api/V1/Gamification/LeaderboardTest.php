@@ -69,4 +69,44 @@ class LeaderboardTest extends TestCase
 
         $response->assertUnauthorized();
     }
+
+    // ─── Edge Cases ────────────────────────────────────────────────────
+
+    public function test_unauthenticated_returns_401(): void
+    {
+        $response = $this->getJson('/api/v1/gamification/leaderboard/health');
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_show_limits_to_100_entries(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        LeaderboardEntry::factory()->count(110)->create(['journey' => 'health']);
+
+        $response = $this->getJson('/api/v1/gamification/leaderboard/health');
+
+        $response->assertOk();
+
+        $this->assertLessThanOrEqual(100, count($response->json('data')));
+    }
+
+    public function test_show_only_returns_entries_for_requested_journey(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        LeaderboardEntry::factory()->count(3)->create(['journey' => 'health']);
+        LeaderboardEntry::factory()->count(4)->create(['journey' => 'care']);
+
+        $response = $this->getJson('/api/v1/gamification/leaderboard/health');
+
+        $response->assertOk()
+            ->assertJsonCount(3, 'data');
+
+        $journeys = array_column($response->json('data'), 'journey');
+        foreach ($journeys as $journey) {
+            $this->assertEquals('health', $journey);
+        }
+    }
 }

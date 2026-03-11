@@ -74,4 +74,17 @@ class RateLimiterTest extends TestCase
 
         $this->assertTrue($this->limiter->isDailyCapReached('user-123'));
     }
+
+    // ─── Additional Edge Cases ─────────────────────────────────────────
+
+    public function test_record_event_increments_counter(): void
+    {
+        $this->assertNull(Cache::get('gamification_events:user-789'));
+
+        $this->limiter->recordEvent('user-789');
+        $this->assertEquals(1, Cache::get('gamification_events:user-789'));
+
+        $this->limiter->recordEvent('user-789');
+        $this->assertEquals(2, Cache::get('gamification_events:user-789'));
+    }
 }

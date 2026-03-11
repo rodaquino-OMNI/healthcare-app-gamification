@@ -113,4 +113,22 @@ class NotificationPreferenceTest extends TestCase
 
         $response->assertUnauthorized();
     }
+
+    // ─── Edge Cases ────────────────────────────────────────────────────
+
+    public function test_show_unauthenticated_returns_401(): void
+    {
+        $response = $this->getJson('/api/v1/notifications/preferences');
+
+        $response->assertUnauthorized();
+    }
+
+    public function test_update_unauthenticated_returns_401(): void
+    {
+        $response = $this->putJson('/api/v1/notifications/preferences', [
+            'push_enabled' => false,
+        ]);
+
+        $response->assertUnauthorized();
+    }
 }

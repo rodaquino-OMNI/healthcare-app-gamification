@@ -154,4 +154,62 @@ class HealthGoalTest extends TestCase
 
         $this->assertDatabaseMissing('health_goals', ['id' => $goal->id]);
     }
+
+    // ── Edge-case / negative tests ───────────────────────────────────
+
+    public function test_update_nonexistent_goal_returns_404(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->putJson('/api/v1/health/goals/00000000-0000-0000-0000-000000000000', [
+            'title' => 'Does not exist',
+        ]);
+
+        $response->assertStatus(404);
+    }
+
+    public function test_destroy_nonexistent_goal_returns_404(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->deleteJson('/api/v1/health/goals/00000000-0000-0000-0000-000000000000');
+
+        $response->assertStatus(404);
+    }
+
+    public function test_index_returns_empty_when_no_goals(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->getJson('/api/v1/health/goals');
+
+        $response->assertStatus(200)
+            ->assertJsonCount(0, 'data');
+    }
+
+    public function test_store_with_all_optional_fields(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $payload = [
+            'type' => 'STEPS',
+            'title' => 'Full goal',
+            'description' => 'A goal with all optional fields',
+            'target_value' => 8000,
+            'unit' => 'steps',
+            'period' => 'DAILY',
+            'starts_at' => '2026-01-01',
+            'ends_at' => '2026-12-31',
+        ];
+
+        $response = $this->postJson('/api/v1/health/goals', $payload);
+
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('health_goals', [
+            'record_id' => $this->user->id,
+            'title' => 'Full goal',
+            'description' => 'A goal with all optional fields',
+        ]);
+    }
 }

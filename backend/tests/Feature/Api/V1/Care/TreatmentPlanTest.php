@@ -152,4 +152,36 @@ class TreatmentPlanTest extends TestCase
 
         $this->assertDatabaseMissing('treatment_plans', ['id' => $plan->id]);
     }
+
+    // ── Edge-case / negative tests ───────────────────────────────────
+
+    public function test_update_nonexistent_plan_returns_404(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->putJson('/api/v1/care/treatment-plans/00000000-0000-0000-0000-000000000000', [
+            'title' => 'Does not exist',
+        ]);
+
+        $response->assertStatus(404);
+    }
+
+    public function test_destroy_nonexistent_plan_returns_404(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->deleteJson('/api/v1/care/treatment-plans/00000000-0000-0000-0000-000000000000');
+
+        $response->assertStatus(404);
+    }
+
+    public function test_index_returns_empty_when_no_plans(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $response = $this->getJson('/api/v1/care/treatment-plans');
+
+        $response->assertStatus(200)
+            ->assertJsonCount(0, 'data');
+    }
 }
