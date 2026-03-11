@@ -45,7 +45,7 @@
     "@babel/plugin-transform-object-rest-spread": "7.28.6",
     "@babel/plugin-transform-optional-catch-binding": "7.28.6",
     "@babel/plugin-transform-async-generator-functions": "7.29.0",
-    "ua-parser-js": "1.0.41",
+    "ua-parser-js": "2.0.9",
     "eslint": "8.57.0",
     "@types/react-native": "0.72.2",
     "@react-navigation/native": "6.1.7",
