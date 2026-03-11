@@ -1,0 +1,62 @@
+name: austa_mobile
+description: "Austa Healthcare App with Gamification"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # State management
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+
+  # Navigation
+  go_router: ^14.8.1
+
+  # Networking
+  dio: ^5.7.0
+
+  # Code generation annotations
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
+
+  # Storage
+  flutter_secure_storage: ^9.2.4
+
+  # Fonts
+  google_fonts: ^6.2.1
+
+  # Internationalization
+  intl: ^0.20.2
+
+  # Images
+  cached_network_image: ^3.4.1
+
+  # Utils
+  equatable: ^2.0.7
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+  # Code generation
+  build_runner: ^2.4.14
+  freezed: ^2.5.8
+  json_serializable: ^6.9.4
+  riverpod_generator: ^2.6.3
+
+flutter:
+  uses-material-design: true
+
+  generate: true

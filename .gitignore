@@ -93,6 +93,35 @@ src/backend/api-gateway/src/graphql/schema.generated.ts
 .cache/
 .eslintcache
 .stylelintcache
+
+# ── Laravel ────────────────────────────────────────────────────────────────
+vendor/
+backend/vendor/
+backend/.env
+backend/.env.*
+!backend/.env.example
+backend/storage/logs/*
+!backend/storage/logs/.gitkeep
+backend/bootstrap/cache/*.php
+backend/storage/framework/cache/data/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+
+# ── Flutter / Dart ─────────────────────────────────────────────────────────
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+mobile/build/
+mobile/.dart_tool/
+*.g.dart
+*.freezed.dart
+*.mocks.dart
+pubspec.lock
+
+# ── Docker ─────────────────────────────────────────────────────────────────
+docker-compose.override.yml
+
 # Claude Flow / AI assistant local runtime state
 .claude-flow/
 .swarm/

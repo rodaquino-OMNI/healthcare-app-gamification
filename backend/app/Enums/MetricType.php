@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Enums;
+
+enum MetricType: string
+{
+    case STEPS = 'STEPS';
+    case HEART_RATE = 'HEART_RATE';
+    case WEIGHT = 'WEIGHT';
+    case BLOOD_PRESSURE_SYSTOLIC = 'BLOOD_PRESSURE_SYSTOLIC';
+    case BLOOD_PRESSURE_DIASTOLIC = 'BLOOD_PRESSURE_DIASTOLIC';
+    case BLOOD_GLUCOSE = 'BLOOD_GLUCOSE';
+    case SLEEP = 'SLEEP';
+    case OXYGEN_SATURATION = 'OXYGEN_SATURATION';
+    case BODY_TEMPERATURE = 'BODY_TEMPERATURE';
+    case RESPIRATORY_RATE = 'RESPIRATORY_RATE';
+    case CALORIES = 'CALORIES';
+    case DISTANCE = 'DISTANCE';
+    case FLOORS = 'FLOORS';
+    case ACTIVITY = 'ACTIVITY';
+    case UNKNOWN = 'UNKNOWN';
+}

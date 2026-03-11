@@ -1,0 +1,181 @@
+workflows:
+  # ── Flutter Development ────────────────────────────────────────────────────
+  flutter-dev:
+    name: Flutter Dev Build
+    max_build_duration: 30
+    instance_type: mac_mini_m2
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: develop
+          include: true
+    environment:
+      flutter: stable
+      java: 17
+      vars:
+        FLUTTER_DIR: mobile
+    cache:
+      cache_paths:
+        - $HOME/.pub-cache
+        - $FLUTTER_DIR/.dart_tool
+    scripts:
+      - name: Install dependencies
+        script: |
+          cd $FLUTTER_DIR
+          flutter pub get
+
+      - name: Analyze code
+        script: |
+          cd $FLUTTER_DIR
+          flutter analyze --no-fatal-infos
+
+      - name: Run tests
+        script: |
+          cd $FLUTTER_DIR
+          flutter test --coverage
+
+      - name: Build debug APK
+        script: |
+          cd $FLUTTER_DIR
+          flutter build apk --debug
+
+      - name: Build debug iOS (no codesign)
+        script: |
+          cd $FLUTTER_DIR
+          flutter build ios --debug --no-codesign
+
+    artifacts:
+      - mobile/build/app/outputs/flutter-apk/app-debug.apk
+      - mobile/build/ios/iphoneos/Runner.app
+
+  # ── Flutter Staging ────────────────────────────────────────────────────────
+  flutter-staging:
+    name: Flutter Staging Build
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: "release/*"
+          include: true
+    environment:
+      flutter: stable
+      java: 17
+      groups:
+        - google_play_credentials
+        - app_store_credentials
+      vars:
+        FLUTTER_DIR: mobile
+        APP_ENV: staging
+    cache:
+      cache_paths:
+        - $HOME/.pub-cache
+        - $FLUTTER_DIR/.dart_tool
+    scripts:
+      - name: Install dependencies
+        script: |
+          cd $FLUTTER_DIR
+          flutter pub get
+
+      - name: Run tests
+        script: |
+          cd $FLUTTER_DIR
+          flutter test
+
+      - name: Build release APK
+        script: |
+          cd $FLUTTER_DIR
+          flutter build apk --release --dart-define=APP_ENV=staging
+
+      - name: Build release AAB
+        script: |
+          cd $FLUTTER_DIR
+          flutter build appbundle --release --dart-define=APP_ENV=staging
+
+      - name: Build release iOS
+        script: |
+          cd $FLUTTER_DIR
+          flutter build ipa --release --dart-define=APP_ENV=staging --export-options-plist=/Users/builder/export_options.plist
+
+    artifacts:
+      - mobile/build/app/outputs/flutter-apk/app-release.apk
+      - mobile/build/app/outputs/bundle/release/app-release.aab
+      - mobile/build/ios/ipa/*.ipa
+
+    publishing:
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: internal
+        submit_as_draft: true
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        beta_groups:
+          - Internal Testers
+
+  # ── Flutter Production ─────────────────────────────────────────────────────
+  flutter-production:
+    name: Flutter Production Release
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    triggering:
+      events:
+        - tag
+      tag_patterns:
+        - pattern: "v*"
+          include: true
+    environment:
+      flutter: stable
+      java: 17
+      groups:
+        - google_play_credentials
+        - app_store_credentials
+        - signing_credentials
+      vars:
+        FLUTTER_DIR: mobile
+        APP_ENV: production
+    cache:
+      cache_paths:
+        - $HOME/.pub-cache
+        - $FLUTTER_DIR/.dart_tool
+    scripts:
+      - name: Install dependencies
+        script: |
+          cd $FLUTTER_DIR
+          flutter pub get
+
+      - name: Run tests
+        script: |
+          cd $FLUTTER_DIR
+          flutter test
+
+      - name: Build release APK
+        script: |
+          cd $FLUTTER_DIR
+          flutter build apk --release --dart-define=APP_ENV=production
+
+      - name: Build release AAB
+        script: |
+          cd $FLUTTER_DIR
+          flutter build appbundle --release --dart-define=APP_ENV=production
+
+      - name: Build release iOS
+        script: |
+          cd $FLUTTER_DIR
+          flutter build ipa --release --dart-define=APP_ENV=production --export-options-plist=/Users/builder/export_options.plist
+
+    artifacts:
+      - mobile/build/app/outputs/flutter-apk/app-release.apk
+      - mobile/build/app/outputs/bundle/release/app-release.aab
+      - mobile/build/ios/ipa/*.ipa
+
+    publishing:
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: production
+        submit_as_draft: true
+      app_store_connect:
+        auth: integration
+        submit_to_app_store: true

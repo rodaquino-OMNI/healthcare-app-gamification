@@ -1,7 +1,0 @@
-appId: com.austa.superapp
-tags:
-  - regression
-  - smoke
-env:
-  TEST_EMAIL: test@austa.health
-  TEST_PASSWORD: Test123!@#
