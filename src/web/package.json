@@ -212,7 +212,7 @@
       "@babel/plugin-proposal-logical-assignment-operators": "@babel/plugin-transform-logical-assignment-operators"
     },
     "cookie": "1.1.1",
-    "send": "0.19.2",
+    "send": "1.2.1",
     "serve-static": "2.2.1",
     "tar": "7.5.11",
     "zod": "3.25.76",
@@ -288,7 +288,7 @@
     "lodash.get": "4.4.2",
     "cross-fetch": "4.1.0",
     "cookie": "1.1.1",
-    "send": "0.19.2",
+    "send": "1.2.1",
     "serve-static": "2.2.1",
     "tar": "7.5.11",
     "zod": "3.25.76",
