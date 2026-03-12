@@ -23,9 +23,9 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: '20'
           cache-dependency-path: src/web/yarn.lock
@@ -41,9 +41,9 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: '20'
           cache-dependency-path: src/web/yarn.lock
@@ -54,7 +54,7 @@ jobs:
         working-directory: src/web/design-system
         run: yarn test:ci
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5
         with:
           directory: src/web/design-system/coverage
           env_vars: CI,GITHUB_ACTIONS
@@ -69,11 +69,11 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: '20'
           cache-dependency-path: src/web/yarn.lock
@@ -86,7 +86,7 @@ jobs:
         env:
           CI: 'true'
       - name: Chromatic Publish
-        uses: chromaui/action@v15
+        uses: chromaui/action@5ec258af08deb3e8c36653bd618cb7fe52090031 # v15
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           token: ${{ secrets.GITHUB_TOKEN }}
