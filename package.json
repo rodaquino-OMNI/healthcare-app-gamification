@@ -125,7 +125,7 @@
     "@ruvector/core": "^0.1.30",
     "@ruvector/sona": "^0.1.5",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.15.3",
+    "@types/node": "^24.0.0",
     "@types/react-native": "0.72.2",
     "agentdb": "^2.0.0-alpha.3.3",
     "agentic-flow": "2.0.7",

@@ -1,4 +1,4 @@
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ RUN yarn install --frozen-lockfile
 RUN npx prisma generate --schema=shared/prisma/schema.prisma || true
 RUN yarn nest build health-service
 
-FROM node:22-alpine
+FROM node:24-alpine
 
 WORKDIR /app
 
