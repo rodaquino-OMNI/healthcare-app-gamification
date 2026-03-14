@@ -85,7 +85,7 @@ services:
       "
 
   kafdrop:
-    image: obsidiandynamics/kafdrop:3.31.0
+    image: obsidiandynamics/kafdrop:4.2.0
     depends_on:
       - kafka
     ports:
