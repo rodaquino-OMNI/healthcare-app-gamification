@@ -1,5 +1,5 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
-import type { NextPage } from 'next';
+import type { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
@@ -217,5 +217,12 @@ const relatedLinkStyle: React.CSSProperties = {
     padding: `${spacing.xs} 0`,
     fontFamily: typography.fontFamily.body,
 };
+
+export const getStaticPaths: GetStaticPaths = () => ({
+    paths: [],
+    fallback: 'blocking' as const,
+});
+
+export const getStaticProps: GetStaticProps = () => ({ props: {} });
 
 export default FaqArticlePage;

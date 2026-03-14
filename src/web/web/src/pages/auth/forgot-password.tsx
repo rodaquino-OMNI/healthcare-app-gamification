@@ -1,6 +1,7 @@
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
+import type { GetStaticProps } from 'next';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
@@ -137,6 +138,8 @@ const ErrorText = styled.p`
 /**
  * Forgot Password page - allows users to request a password reset link via email.
  */
+export const getStaticProps: GetStaticProps = () => ({ props: {} });
+
 export default function ForgotPasswordPage(): React.ReactElement {
     const router = useRouter();
     const { isLoading: isAuthLoading } = useAuth();

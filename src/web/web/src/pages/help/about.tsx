@@ -1,5 +1,5 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
-import type { NextPage } from 'next';
+import type { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 
@@ -157,5 +157,7 @@ const copyrightStyle: React.CSSProperties = {
     marginTop: spacing.xl,
     fontFamily: typography.fontFamily.body,
 };
+
+export const getStaticProps: GetStaticProps = () => ({ props: {} });
 
 export default AboutPage;

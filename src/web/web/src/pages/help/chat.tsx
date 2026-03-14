@@ -1,5 +1,5 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
-import type { NextPage } from 'next';
+import type { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
@@ -227,5 +227,7 @@ const sendBtnStyle: React.CSSProperties = {
     fontFamily: typography.fontFamily.body,
     flexShrink: 0,
 };
+
+export const getStaticProps: GetStaticProps = () => ({ props: {} });
 
 export default ChatPage;

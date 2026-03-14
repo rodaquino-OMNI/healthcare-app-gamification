@@ -83,8 +83,6 @@
     "test:ci": "jest --ci --coverage --passWithNoTests"
   },
   "overrides": {
-    "postcss": "8.5.8",
-    "semver": "7.7.4",
     "@babel/plugin-proposal-class-properties": "@babel/plugin-transform-class-properties",
     "@babel/plugin-proposal-nullish-coalescing-operator": "@babel/plugin-transform-nullish-coalescing-operator",
     "@babel/plugin-proposal-optional-chaining": "@babel/plugin-transform-optional-chaining",
@@ -136,24 +134,18 @@
       "@babel/plugin-proposal-export-namespace-from": "@babel/plugin-transform-export-namespace-from",
       "@babel/plugin-proposal-logical-assignment-operators": "@babel/plugin-transform-logical-assignment-operators"
     },
-    "axios": "1.13.6",
-    "glob": "13.0.6",
     "@react-navigation/native": "7.1.8",
     "@react-navigation/stack": "7.3.1",
     "react-native-reanimated": "3.17.5",
     "react-native-gesture-handler": "2.25.0",
     "react-native-safe-area-context": "5.4.0"
   },
-  "//resolutions": "Shared-specific: react-native 0.72.6 (parent src/web uses 0.73.0). shelljs 8.4.31 (parent uses 0.10.0). next/webpack scoped pin. @sentry/nextjs scoped follow-redirects 1.15.6. axios exact pin 1.13.6 (parent uses ^1.12.2 range). All other CVE/version pins handled by root + src/web parent resolutions.",
+  "//resolutions": "Shared-specific: @sentry/nextjs scoped follow-redirects 1.15.11. All other CVE/version pins handled by root + src/web parent resolutions.",
   "resolutions": {
-    "react-native": "0.72.6",
-    "shelljs": "8.4.31",
-    "next/webpack": "8.4.31",
     "@sentry/nextjs": {
       "@sentry/core": {
-        "follow-redirects": "1.15.6"
+        "follow-redirects": "1.15.11"
       }
-    },
-    "axios": "1.13.6"
+    }
   }
 }

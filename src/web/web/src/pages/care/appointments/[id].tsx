@@ -1,4 +1,5 @@
 import { AppointmentCard } from 'design-system/care/AppointmentCard/AppointmentCard';
+import type { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router'; // next/router 13.0+
 import React from 'react';
 
@@ -68,5 +69,12 @@ const AppointmentDetail: React.FC = () => {
         </div>
     );
 };
+
+export const getStaticPaths: GetStaticPaths = () => ({
+    paths: [],
+    fallback: 'blocking' as const,
+});
+
+export const getStaticProps: GetStaticProps = () => ({ props: {} });
 
 export default AppointmentDetail;

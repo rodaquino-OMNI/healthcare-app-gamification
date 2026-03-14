@@ -2,6 +2,7 @@ import { borderRadius } from 'design-system/tokens/borderRadius';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
+import type { GetStaticProps } from 'next';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import styled from 'styled-components';
@@ -125,6 +126,8 @@ const BENEFITS = [
  * Personalization Intro page - introduces the personalization flow
  * and explains its benefits before goal selection.
  */
+export const getStaticProps: GetStaticProps = () => ({ props: {} });
+
 export default function PersonalizationIntroPage(): React.ReactElement {
     const router = useRouter();
     const { isAuthenticated: _isAuthenticated } = useAuth();

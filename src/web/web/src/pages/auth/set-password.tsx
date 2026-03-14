@@ -1,6 +1,7 @@
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
+import type { GetStaticProps } from 'next';
 import { useRouter } from 'next/navigation';
 import React, { useState, useMemo } from 'react';
 import { WEB_PROFILE_ROUTES } from 'shared/constants/routes';
@@ -183,6 +184,8 @@ function getStrength(rules: PasswordRules): { level: number; label: string; colo
 /**
  * Set Password page with password strength indicator and validation rules.
  */
+export const getStaticProps: GetStaticProps = () => ({ props: {} });
+
 export default function SetPasswordPage(): React.ReactElement {
     const router = useRouter();
     const { isLoading: isAuthLoading, error: authError } = useAuth();

@@ -2,6 +2,7 @@ import { borderRadius } from 'design-system/tokens/borderRadius';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
+import type { GetStaticProps } from 'next';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import styled from 'styled-components';
@@ -142,6 +143,8 @@ const MOCK_GOALS = [
  * Onboarding Confirmation page - shows success message after
  * completing the personalization flow with a summary of selected goals.
  */
+export const getStaticProps: GetStaticProps = () => ({ props: {} });
+
 export default function OnboardingConfirmationPage(): React.ReactElement {
     const router = useRouter();
     const { session: _session } = useAuth();

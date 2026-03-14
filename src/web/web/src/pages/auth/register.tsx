@@ -5,6 +5,7 @@ import { Input } from 'design-system/components/Input/Input';
 import { Box } from 'design-system/primitives/Box/Box';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
+import type { GetStaticProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
@@ -44,6 +45,8 @@ const validationSchema = yup.object().shape({
 /**
  * Register component - Renders the registration page with form for new users
  */
+export const getStaticProps: GetStaticProps = () => ({ props: {} });
+
 const Register: React.FC = () => {
     const router = useRouter();
     const { register: registerUser } = useAuth();

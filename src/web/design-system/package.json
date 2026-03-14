@@ -100,22 +100,6 @@
         ]
     },
     "overrides": {
-        "postcss": "8.5.8",
-        "qs": "6.15.0",
-        "semver": "7.7.4",
-        "json5": "2.2.3",
-        "minimatch": "10.2.4",
-        "word-wrap": "1.2.5",
-        "tough-cookie": "4.1.4",
-        "@babel/traverse": "7.29.0",
-        "follow-redirects": "1.15.11",
-        "webpack": "5.105.4",
-        "node-fetch": "3.3.2",
-        "glob-parent": "6.0.2",
-        "terser": "5.46.0",
-        "loader-utils": "3.3.1",
-        "minimist": "1.2.8",
-        "shelljs": "0.10.0",
         "@babel/plugin-proposal-class-properties": "@babel/plugin-transform-class-properties",
         "@babel/plugin-proposal-nullish-coalescing-operator": "@babel/plugin-transform-nullish-coalescing-operator",
         "@babel/plugin-proposal-optional-chaining": "@babel/plugin-transform-optional-chaining",
@@ -167,19 +151,16 @@
             "@babel/plugin-proposal-export-namespace-from": "@babel/plugin-transform-export-namespace-from",
             "@babel/plugin-proposal-logical-assignment-operators": "@babel/plugin-transform-logical-assignment-operators"
         },
-        "axios": "1.13.6",
-        "glob": "13.0.6",
         "@react-navigation/native": "7.1.8",
         "@react-navigation/stack": "7.3.1",
         "react-native-reanimated": "3.17.5",
         "react-native-gesture-handler": "2.25.0",
         "react-native-safe-area-context": "5.4.0"
     },
-    "//resolutions": "DS-specific: react-native 0.72.6 (parent src/web uses 0.73.0). @types/react and @types/react-dom pinned to 18.x for DS devDeps compat. axios exact pin 1.13.6 (parent uses ^1.12.2 range). All other CVE/version pins handled by root + src/web parent resolutions.",
+    "//resolutions": "DS-specific: react-native 0.72.6 (parent src/web uses 0.73.0). @types/react and @types/react-dom pinned to 18.x for DS devDeps compat. All other CVE/version pins handled by root + src/web parent resolutions.",
     "resolutions": {
         "react-native": "0.72.6",
         "@types/react": "18.2.37",
-        "@types/react-dom": "18.2.15",
-        "axios": "1.13.6"
+        "@types/react-dom": "18.2.15"
     }
 }

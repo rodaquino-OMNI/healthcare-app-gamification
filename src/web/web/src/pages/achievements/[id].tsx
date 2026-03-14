@@ -6,6 +6,7 @@ import { Box } from 'design-system/primitives/Box/Box';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import type { GetStaticPaths, GetStaticProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -145,5 +146,12 @@ const AchievementDetailPage: React.FC = () => {
         </div>
     );
 };
+
+export const getStaticPaths: GetStaticPaths = () => ({
+    paths: [],
+    fallback: 'blocking' as const,
+});
+
+export const getStaticProps: GetStaticProps = () => ({ props: {} });
 
 export default AchievementDetailPage;

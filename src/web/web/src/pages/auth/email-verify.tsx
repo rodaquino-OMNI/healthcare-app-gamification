@@ -1,6 +1,7 @@
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
+import type { GetStaticProps } from 'next';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect, useRef } from 'react';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
@@ -128,6 +129,8 @@ const OTP_LENGTH = 6;
  * Email verification page with 6-digit OTP input.
  * Includes countdown timer and resend functionality.
  */
+export const getStaticProps: GetStaticProps = () => ({ props: {} });
+
 export default function EmailVerifyPage(): React.ReactElement {
     const router = useRouter();
     const { isLoading: isAuthLoading, error: authError } = useAuth();

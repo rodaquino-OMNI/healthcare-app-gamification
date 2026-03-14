@@ -2,6 +2,7 @@ import { borderRadius } from 'design-system/tokens/borderRadius';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
+import type { GetStaticProps } from 'next';
 import { useRouter } from 'next/navigation';
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
@@ -174,6 +175,8 @@ const GOALS: GoalItem[] = [
  * Goal Selection page - allows users to choose their health goals
  * during the personalization onboarding flow.
  */
+export const getStaticProps: GetStaticProps = () => ({ props: {} });
+
 export default function GoalSelectionPage(): React.ReactElement {
     const router = useRouter();
     const { isAuthenticated: _isAuthenticated, session: _session } = useAuth();

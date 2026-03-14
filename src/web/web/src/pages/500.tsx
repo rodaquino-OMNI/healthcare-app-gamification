@@ -1,5 +1,5 @@
 import { colors } from 'design-system/tokens/colors';
-import type { NextPage } from 'next';
+import type { GetStaticProps, NextPage } from 'next';
 import React from 'react';
 
 import { useAuth } from '@/hooks/useAuth';
@@ -49,9 +49,8 @@ const ServerErrorPage: NextPage = () => {
                     </button>
                 </div>
             </div>
-            <style
-                dangerouslySetInnerHTML={{
-                    __html: `
+            {/* eslint-disable-next-line react/no-unknown-property */}
+            <style jsx>{`
                 .error-container {
                     display: flex;
                     flex-direction: column;
@@ -126,11 +125,11 @@ const ServerErrorPage: NextPage = () => {
                         gap: 16px;
                     }
                 }
-            `,
-                }}
-            />
+            `}</style>
         </div>
     );
 };
+
+export const getStaticProps: GetStaticProps = () => ({ props: {} });
 
 export default ServerErrorPage;

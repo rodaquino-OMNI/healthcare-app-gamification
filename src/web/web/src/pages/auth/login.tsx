@@ -3,6 +3,7 @@ import { Button } from 'design-system/components/Button/Button';
 import { Input } from 'design-system/components/Input/Input';
 import { Box } from 'design-system/primitives/Box/Box';
 import { Text } from 'design-system/primitives/Text/Text';
+import type { GetStaticProps } from 'next';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
@@ -16,6 +17,8 @@ interface LoginFormData {
     email: string;
     password: string;
 }
+
+export const getStaticProps: GetStaticProps = () => ({ props: {} });
 
 export const Login: React.FC = () => {
     const router = useRouter();

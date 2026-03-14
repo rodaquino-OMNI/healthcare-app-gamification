@@ -2,6 +2,7 @@ import { borderRadius } from 'design-system/tokens/borderRadius';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
+import type { GetStaticProps } from 'next';
 import React from 'react';
 
 import { useAuth } from '@/hooks/useAuth';
@@ -81,5 +82,7 @@ const NoInternetPage: React.FC = () => {
         </div>
     );
 };
+
+export const getStaticProps: GetStaticProps = () => ({ props: {} });
 
 export default NoInternetPage;

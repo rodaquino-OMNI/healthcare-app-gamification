@@ -3,6 +3,7 @@ import { Box } from 'design-system/primitives/Box/Box';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
+import type { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
@@ -89,5 +90,12 @@ const TipDetailPage: React.FC = () => {
         </div>
     );
 };
+
+export const getStaticPaths: GetStaticPaths = () => ({
+    paths: [],
+    fallback: 'blocking' as const,
+});
+
+export const getStaticProps: GetStaticProps = () => ({ props: {} });
 
 export default TipDetailPage;

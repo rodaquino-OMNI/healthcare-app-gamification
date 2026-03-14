@@ -1,6 +1,7 @@
 import { HealthChart } from 'design-system/charts/index';
 import { Text } from 'design-system/components/index';
 import { MetricCard } from 'design-system/health/index';
+import type { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router'; // next/router v13.0.0
 import React from 'react';
 import { HealthMetric } from 'shared/types/health.types';
@@ -80,5 +81,12 @@ const MetricDetail: React.FC = () => {
         </HealthLayout>
     );
 };
+
+export const getStaticPaths: GetStaticPaths = () => ({
+    paths: [],
+    fallback: 'blocking' as const,
+});
+
+export const getStaticProps: GetStaticProps = () => ({ props: {} });
 
 export default MetricDetail;

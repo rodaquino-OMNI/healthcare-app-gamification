@@ -1,5 +1,5 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
-import type { NextPage } from 'next';
+import type { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 
@@ -142,5 +142,7 @@ const sectionContentStyle: React.CSSProperties = {
     fontFamily: typography.fontFamily.body,
     margin: 0,
 };
+
+export const getStaticProps: GetStaticProps = () => ({ props: {} });
 
 export default PrivacyPolicyPage;
