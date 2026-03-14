@@ -7,11 +7,37 @@
  */
 
 import { AxiosResponse } from 'axios'; // axios version 1.6.7
-import { restClient } from './client';
 import { Notification } from 'shared/types';
+
+import { restClient } from './client';
 
 /** Default polling interval for notification subscription (in milliseconds). */
 const DEFAULT_POLL_INTERVAL_MS = 15_000;
+
+/** Notification preferences for a user. */
+export interface NotificationPreferences {
+    userId: string;
+    pushEnabled: boolean;
+    emailEnabled: boolean;
+    smsEnabled: boolean;
+    appointmentReminders: boolean;
+    medicationReminders: boolean;
+    claimUpdates: boolean;
+    healthAlerts: boolean;
+    gamificationUpdates: boolean;
+    marketingMessages: boolean;
+    quietHoursStart?: string;
+    quietHoursEnd?: string;
+}
+
+/** Available notification category. */
+export interface NotificationCategory {
+    id: string;
+    name: string;
+    description: string;
+    defaultEnabled: boolean;
+    channels: Array<'push' | 'email' | 'sms' | 'in_app'>;
+}
 
 /**
  * Fetches notifications for a user.
@@ -68,7 +94,9 @@ export const subscribeToNotifications = (
     let stopped = false;
 
     const poll = async (): Promise<void> => {
-        if (stopped) return;
+        if (stopped) {
+            return;
+        }
 
         try {
             const notifications = await getNotifications(userId);
@@ -99,4 +127,180 @@ export const subscribeToNotifications = (
         stopped = true;
         clearInterval(intervalHandle);
     };
+};
+
+/**
+ * Marks all notifications as read for a given user.
+ *
+ * @param userId - The ID of the user whose notifications to mark as read
+ * @returns A promise that resolves when all notifications are marked as read
+ */
+export const markAllAsRead = async (userId: string): Promise<void> => {
+    try {
+        await restClient.post('/notifications/mark-all-read', { userId });
+    } catch (error) {
+        console.error('Error marking all notifications as read:', error);
+        throw error;
+    }
+};
+
+/**
+ * Deletes a specific notification by ID.
+ *
+ * @param notificationId - The ID of the notification to delete
+ * @returns A promise that resolves when the notification is deleted
+ */
+export const deleteNotification = async (notificationId: string): Promise<void> => {
+    try {
+        await restClient.delete(`/notifications/${notificationId}`);
+    } catch (error) {
+        console.error('Error deleting notification:', error);
+        throw error;
+    }
+};
+
+/**
+ * Fetches the notification preferences for a given user.
+ *
+ * @param userId - The ID of the user whose preferences to fetch
+ * @returns Promise that resolves to NotificationPreferences
+ */
+export const getNotificationPreferences = async (userId: string): Promise<NotificationPreferences> => {
+    try {
+        const response = await restClient.get<NotificationPreferences>(`/users/${userId}/notification-preferences`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching notification preferences:', error);
+        throw error;
+    }
+};
+
+/**
+ * Updates notification preferences for a given user.
+ *
+ * @param userId - The ID of the user whose preferences to update
+ * @param prefs - Partial preferences object with the fields to update
+ * @returns Promise that resolves to the updated NotificationPreferences
+ */
+export const updateNotificationPreferences = async (
+    userId: string,
+    prefs: Partial<NotificationPreferences>
+): Promise<NotificationPreferences> => {
+    try {
+        const response = await restClient.put<NotificationPreferences>(
+            `/users/${userId}/notification-preferences`,
+            prefs
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error updating notification preferences:', error);
+        throw error;
+    }
+};
+
+/**
+ * Fetches all available notification categories.
+ *
+ * @returns Promise that resolves to an array of NotificationCategory objects
+ */
+export const getNotificationCategories = async (): Promise<NotificationCategory[]> => {
+    try {
+        const response = await restClient.get<NotificationCategory[]>('/notification-categories');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching notification categories:', error);
+        throw error;
+    }
+};
+
+/**
+ * Fetches the count of unread notifications for a given user.
+ *
+ * @param userId - The ID of the user
+ * @returns Promise that resolves to the unread notification count
+ */
+export const getUnreadCount = async (userId: string): Promise<number> => {
+    try {
+        const response = await restClient.get<number>(`/notifications/unread-count?userId=${userId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching unread notification count:', error);
+        throw error;
+    }
+};
+
+/**
+ * Registers a push notification token for a user's device.
+ *
+ * @param userId - The ID of the user
+ * @param token - The device push token to register
+ * @param platform - The device platform ('web', 'ios', or 'android')
+ * @returns Promise that resolves when the token is registered
+ */
+export const registerPushToken = async (
+    userId: string,
+    token: string,
+    platform: 'web' | 'ios' | 'android'
+): Promise<void> => {
+    try {
+        await restClient.post('/notifications/push-token', { userId, token, platform });
+    } catch (error) {
+        console.error('Error registering push token:', error);
+        throw error;
+    }
+};
+
+/**
+ * Unregisters the push notification token for a user's device.
+ *
+ * @param userId - The ID of the user whose push token to remove
+ * @returns Promise that resolves when the token is unregistered
+ */
+export const unregisterPushToken = async (userId: string): Promise<void> => {
+    try {
+        await restClient.delete(`/notifications/push-token?userId=${userId}`);
+    } catch (error) {
+        console.error('Error unregistering push token:', error);
+        throw error;
+    }
+};
+
+/**
+ * Fetches paginated notification history for a user.
+ *
+ * @param userId - The ID of the user
+ * @param page - The page number to fetch (1-based, defaults to 1)
+ * @param limit - The number of notifications per page (defaults to 20)
+ * @returns Promise that resolves to a paginated result containing notifications and metadata
+ */
+export const getNotificationHistory = async (
+    userId: string,
+    page?: number,
+    limit?: number
+): Promise<{ notifications: Notification[]; total: number; page: number }> => {
+    try {
+        const response = await restClient.get<{ notifications: Notification[]; total: number; page: number }>(
+            '/notifications/history',
+            { params: { userId, page, limit } }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching notification history:', error);
+        throw error;
+    }
+};
+
+/**
+ * Clears all notifications for a given user.
+ *
+ * @param userId - The ID of the user whose notifications to clear
+ * @returns Promise that resolves when all notifications are cleared
+ */
+export const clearAllNotifications = async (userId: string): Promise<void> => {
+    try {
+        await restClient.delete(`/notifications?userId=${userId}`);
+    } catch (error) {
+        console.error('Error clearing all notifications:', error);
+        throw error;
+    }
 };

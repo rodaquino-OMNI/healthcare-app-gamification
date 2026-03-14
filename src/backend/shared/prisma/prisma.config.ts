@@ -1,18 +1,20 @@
 /**
- * Prisma 7.x Configuration
+ * Prisma 7.x Configuration (forward-compatible)
  *
- * datasource url is now managed here instead of in schema.prisma.
+ * Currently on Prisma 5.22.0 — defineConfig is not yet available.
+ * When upgrading to Prisma 7.x, uncomment the defineConfig block below
+ * and remove `url = env("DATABASE_URL")` from schema.prisma.
  * See: https://www.prisma.io/docs/orm/reference/prisma-config-reference
  */
 
 // eslint-disable-next-line import/no-unresolved
-import { defineConfig } from 'prisma/config';
+// import { defineConfig } from 'prisma/config';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-export default defineConfig({
-    earlyAccess: true,
-    schema: './schema.prisma',
-});
+// export default defineConfig({
+//     earlyAccess: true,
+//     schema: './schema.prisma',
+// });
 
 /**
  * Runtime configuration helper.

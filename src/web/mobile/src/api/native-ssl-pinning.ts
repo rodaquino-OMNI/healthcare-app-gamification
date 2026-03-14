@@ -9,7 +9,7 @@
  * certificate hashes before production deployment.
  */
 
-// eslint-disable-next-line import/no-unresolved
+// eslint-disable-next-line import/no-unresolved, import/namespace
 import { fetch as sslFetch } from 'react-native-ssl-pinning';
 
 import { SSL_PINS, getPinConfig, isProductionPinned } from './ssl-pinning';
@@ -43,11 +43,13 @@ function buildSslConfig(hostname: string): { sslPinning: { certs: string[] } } |
     const pinConfig = getPinConfig(hostname);
 
     if (!pinConfig) {
+        // intentional: no pin config for this hostname — skip SSL pinning
         return {};
     }
 
     // In dev mode, skip pinning unless explicitly enforced for this domain
     if (__DEV__ && !pinConfig.enforceInDev) {
+        // intentional: dev-mode bypass — returns empty config to disable pinning
         return {};
     }
 
