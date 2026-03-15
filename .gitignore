@@ -6,6 +6,8 @@ dist/
 build/
 lib/
 .next/
+# Next.js SWC binaries
+*.tgz
 out/
 .turbo/
 
