@@ -1,6 +1,6 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client'; // v3.7.17
+import { ApolloClient, ApolloLink, InMemoryCache } from '@apollo/client'; // v3.x
 import createUploadLink from 'apollo-upload-client/createUploadLink.mjs'; // v18.0.1
-import axios, { AxiosInstance } from 'axios'; // v1.4.0
+import axios, { AxiosInstance } from 'axios'; // v1.x
 import { apiConfig } from 'shared/config/apiConfig';
 
 /**
@@ -13,14 +13,14 @@ import { apiConfig } from 'shared/config/apiConfig';
  * The client uses 'cache-and-network' fetch policy by default, which means it will
  * immediately show cached data while fetching fresh data from the server in the background.
  *
- * @version Apollo Client 3.7.17
+ * @version Apollo Client 3.x
  */
 export const graphQLClient = new ApolloClient({
     // Upload link supports multipart form requests for file uploads
     link: createUploadLink({
         uri: `${apiConfig.baseURL}/graphql`,
         credentials: 'include', // Include cookies for authentication if needed
-    }),
+    }) as unknown as ApolloLink,
     // In-memory cache stores query results for faster subsequent access
     cache: new InMemoryCache({
         typePolicies: {

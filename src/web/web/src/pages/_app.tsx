@@ -1,8 +1,10 @@
+import { ApolloProvider } from '@apollo/client';
 import { type AppProps } from 'next/app'; // next/app 13.0+
 import { useRouter } from 'next/router'; // next/router 13.0+
 import React, { useEffect } from 'react';
 import { ThemeProvider, DefaultTheme } from 'styled-components'; // styled-components 6.0+
 
+import { graphQLClient } from '@/api/client';
 import { AuthProvider } from '@/context/AuthContext';
 import { GamificationProvider } from '@/context/GamificationContext';
 import { JourneyProvider } from '@/context/JourneyContext';
@@ -25,20 +27,22 @@ function _app({ Component, pageProps }: AppProps): React.ReactElement {
     }, []);
 
     return (
-        <ThemeProvider theme={theme as unknown as DefaultTheme}>
-            <GlobalStyle />
-            <I18nProvider i18n={i18n}>
-                <AuthProvider>
-                    <GamificationProvider>
-                        <NotificationProvider>
-                            <JourneyProvider>
-                                <Component {...pageProps} key={router.asPath} />
-                            </JourneyProvider>
-                        </NotificationProvider>
-                    </GamificationProvider>
-                </AuthProvider>
-            </I18nProvider>
-        </ThemeProvider>
+        <ApolloProvider client={graphQLClient}>
+            <ThemeProvider theme={theme as unknown as DefaultTheme}>
+                <GlobalStyle />
+                <I18nProvider i18n={i18n}>
+                    <AuthProvider>
+                        <GamificationProvider>
+                            <NotificationProvider>
+                                <JourneyProvider>
+                                    <Component {...pageProps} key={router.asPath} />
+                                </JourneyProvider>
+                            </NotificationProvider>
+                        </GamificationProvider>
+                    </AuthProvider>
+                </I18nProvider>
+            </ThemeProvider>
+        </ApolloProvider>
     );
 }
 

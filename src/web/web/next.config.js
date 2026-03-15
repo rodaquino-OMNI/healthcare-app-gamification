@@ -7,8 +7,8 @@ const path = require('path');
 const supportedLocales = ['pt-BR', 'en-US'];
 const defaultLocale = 'pt-BR';
 
-const reactDir = path.dirname(require.resolve('react', { paths: [path.resolve(__dirname, '..')] }));
-const reactDomDir = path.dirname(require.resolve('react-dom', { paths: [path.resolve(__dirname, '..')] }));
+const reactDir = path.dirname(require.resolve('react', { paths: [__dirname] }));
+const reactDomDir = path.dirname(require.resolve('react-dom', { paths: [__dirname] }));
 
 /**
  * Next.js configuration for AUSTA SuperApp
