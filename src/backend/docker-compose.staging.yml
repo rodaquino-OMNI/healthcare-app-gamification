@@ -28,7 +28,7 @@ services:
           cpus: '0.5'
 
   redis:
-    image: redis:7-alpine
+    image: redis:8-alpine
     container_name: redis-staging
     restart: unless-stopped
     command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
