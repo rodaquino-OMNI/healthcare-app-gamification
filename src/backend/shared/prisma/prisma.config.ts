@@ -7,14 +7,9 @@
  * See: https://www.prisma.io/docs/orm/reference/prisma-config-reference
  */
 
-// eslint-disable-next-line import/no-unresolved
-// import { defineConfig } from 'prisma/config';
+import { defineConfig } from 'prisma/config';
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
-// export default defineConfig({
-//     earlyAccess: true,
-//     schema: './schema.prisma',
-// });
+export default defineConfig({ schema: './schema.prisma' });
 
 /**
  * Runtime configuration helper.

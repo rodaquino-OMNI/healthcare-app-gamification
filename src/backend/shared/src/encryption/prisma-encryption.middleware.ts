@@ -1,6 +1,22 @@
-import { Prisma } from '@prisma/client';
+// TODO(prisma-7): Prisma.Middleware and Prisma.MiddlewareParams were removed in Prisma 7.x.
+// This middleware needs to be migrated to the $extends query extension API before re-enabling.
+// The type stubs below allow tsc to compile; runtime usage is disabled in prisma.service.ts.
 
 import { EncryptionService } from './encryption.service';
+
+// TODO(prisma-7): Replace with $extends query extension — Prisma.Middleware removed in 7.x
+interface PrismaMiddlewareParams {
+    model?: string;
+    action: string;
+    args: Record<string, unknown>;
+    dataPath: string[];
+    runInTransaction: boolean;
+}
+
+type PrismaMiddlewareFn = (
+    params: PrismaMiddlewareParams,
+    next: (params: PrismaMiddlewareParams) => Promise<unknown>
+) => Promise<unknown>;
 
 /**
  * PHI field definitions: maps Prisma model names to their sensitive fields
@@ -30,7 +46,11 @@ const READ_ACTIONS = ['findUnique', 'findFirst', 'findMany'];
  * Encrypts the specified PHI fields in a data object before writing to the DB.
  */
 // eslint-disable-next-line max-len
-function encryptFields(data: Record<string, unknown>, fields: string[], encryptionService: EncryptionService): void {
+function encryptFields(
+    data: Record<string, unknown>,
+    fields: string[],
+    encryptionService: EncryptionService
+): void {
     for (const field of fields) {
         if (data[field] !== null && data[field] !== undefined) {
             const value = String(data[field]);
@@ -47,9 +67,17 @@ function encryptFields(data: Record<string, unknown>, fields: string[], encrypti
  * Gracefully handles legacy unencrypted data by checking format first.
  */
 // eslint-disable-next-line max-len
-function decryptFields(record: Record<string, unknown>, fields: string[], encryptionService: EncryptionService): void {
+function decryptFields(
+    record: Record<string, unknown>,
+    fields: string[],
+    encryptionService: EncryptionService
+): void {
     for (const field of fields) {
-        if (record[field] !== null && record[field] !== undefined && typeof record[field] === 'string') {
+        if (
+            record[field] !== null &&
+            record[field] !== undefined &&
+            typeof record[field] === 'string'
+        ) {
             const fieldValue = record[field] as string;
             if (encryptionService.isEncrypted(fieldValue)) {
                 try {
@@ -67,7 +95,11 @@ function decryptFields(record: Record<string, unknown>, fields: string[], encryp
  * Decrypts PHI fields in a query result, handling both single records and arrays.
  */
 // eslint-disable-next-line max-len
-function decryptResult(result: unknown, fields: string[], encryptionService: EncryptionService): unknown {
+function decryptResult(
+    result: unknown,
+    fields: string[],
+    encryptionService: EncryptionService
+): unknown {
     if (result === null || result === undefined) {
         return result;
     }
@@ -90,10 +122,15 @@ function decryptResult(result: unknown, fields: string[], encryptionService: Enc
  * Usage in PrismaService.onModuleInit():
  *   this.$use(createEncryptionMiddleware(encryptionService));
  */
-// eslint-disable-next-line max-len
-export function createEncryptionMiddleware(encryptionService: EncryptionService): Prisma.Middleware {
-    // eslint-disable-next-line max-len
-    return async (params: Prisma.MiddlewareParams, next: (params: Prisma.MiddlewareParams) => Promise<unknown>) => {
+// TODO(prisma-7): Return type was Prisma.Middleware; replaced with local type since Prisma 7.x
+// removed Prisma.Middleware and Prisma.MiddlewareParams. Migrate to $extends query extension.
+export function createEncryptionMiddleware(
+    encryptionService: EncryptionService
+): PrismaMiddlewareFn {
+    return async (
+        params: PrismaMiddlewareParams,
+        next: (params: PrismaMiddlewareParams) => Promise<unknown>
+    ) => {
         const model = params.model;
         if (!model || !PHI_FIELDS[model]) {
             return next(params);

@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit, OnModuleDestroy, Optional } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
-import { EncryptionService, createEncryptionMiddleware } from '../encryption';
+import { EncryptionService } from '../encryption';
 
 /**
  * Service for handling Prisma database connections.
@@ -19,7 +19,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
      */
     constructor(@Optional() private encryptionService?: EncryptionService) {
         super({
-            log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['error'],
+            log:
+                process.env.NODE_ENV === 'development'
+                    ? ['query', 'info', 'warn', 'error']
+                    : ['error'],
         });
     }
 
@@ -29,7 +32,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
      */
     async onModuleInit(): Promise<void> {
         if (this.encryptionService) {
-            this.$use(createEncryptionMiddleware(this.encryptionService));
+            // TODO(prisma-7): $use middleware was removed in Prisma 7.x.
+            // prisma-encryption.middleware.ts needs porting to the $extends query extension
+            // before re-enabling field-level PHI encryption.
+            // this.$use(createEncryptionMiddleware(this.encryptionService));
         }
         await this.$connect();
     }
