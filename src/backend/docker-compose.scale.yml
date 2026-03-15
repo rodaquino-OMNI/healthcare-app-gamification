@@ -246,7 +246,7 @@ services:
       - austa-network
 
   postgres:
-    image: postgres:14
+    image: postgres:18
     container_name: postgres
     ports:
       - "5432:5432"
