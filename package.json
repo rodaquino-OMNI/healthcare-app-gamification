@@ -102,7 +102,7 @@
     "nodemailer": "7.0.13",
     "@apollo/server": "5.4.0",
     "@apollo/federation-internals": "2.13.2",
-    "next": "15.5.12",
+    "next": "16.0.10",
     "lodash": "4.17.23"
   },
   "scripts": {
