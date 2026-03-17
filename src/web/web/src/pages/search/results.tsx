@@ -1,11 +1,11 @@
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { WEB_GLOBAL_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { useSearch } from '@/hooks/useSearch';
 import { MainLayout } from '@/layouts/MainLayout';
 
@@ -121,6 +121,9 @@ const EmptyDescription = styled.p`
  * Search results page - displays results from a search query.
  * Mirrors the mobile SearchResults screen.
  */
+
+export const getServerSideProps = () => ({ props: {} });
+
 export default function SearchResultsPage(): React.ReactElement {
     const router = useRouter();
     const urlQuery = (router.query.q as string) || '';

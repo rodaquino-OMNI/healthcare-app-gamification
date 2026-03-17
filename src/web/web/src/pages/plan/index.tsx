@@ -2,11 +2,11 @@ import { ClaimCard } from 'design-system/plan/ClaimCard/ClaimCard';
 import { InsuranceCard } from 'design-system/plan/InsuranceCard/InsuranceCard';
 import { Text } from 'design-system/primitives';
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
-import { useRouter } from 'next/router';
 import React from 'react';
 import { WEB_PLAN_ROUTES } from 'shared/constants/routes';
 
 import { useAuth, useClaims, usePlan } from '@/hooks';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import PlanLayout from '@/layouts/PlanLayout';
 
 const { plan } = colors.journeys;
@@ -225,5 +225,7 @@ const PlanDashboard: React.FC = () => {
         </PlanLayout>
     );
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default PlanDashboard;

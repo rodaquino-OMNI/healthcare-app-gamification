@@ -1,10 +1,10 @@
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { useRouter } from 'next/router';
 import React from 'react';
 
 import { useSymptomChecker } from '@/hooks';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 interface ComparisonData {
     symptom: string;
@@ -332,5 +332,7 @@ const ComparisonPage: React.FC = () => {
         </div>
     );
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default ComparisonPage;

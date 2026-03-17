@@ -4,10 +4,10 @@ import { Box } from 'design-system/primitives/Box/Box';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { useAuth, useHealthMetrics } from '@/hooks';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 const INITIAL_BOOKMARKS = [
     { id: 'b1', title: 'Building a Consistent Exercise Habit', type: 'Article', savedAt: 'Feb 20, 2026' },
@@ -130,5 +130,7 @@ const WellnessBookmarksPage: React.FC = () => {
         </div>
     );
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default WellnessBookmarksPage;

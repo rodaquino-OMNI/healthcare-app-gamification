@@ -162,4 +162,6 @@ const AchievementsPage: React.FC = () => {
     );
 };
 
+export const getServerSideProps = () => ({ props: {} });
+
 export default AchievementsPage;

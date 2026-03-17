@@ -87,4 +87,6 @@ const StepIntroductionPage: React.FC<StepProps> = () => {
     );
 };
 
+export const getServerSideProps = () => ({ props: {} });
+
 export default StepIntroductionPage;

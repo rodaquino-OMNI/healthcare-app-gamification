@@ -137,6 +137,8 @@ const mockArticles: Article[] = [
     },
 ];
 
+export const getServerSideProps = () => ({ props: {} });
+
 export default function ArticleResultsPage(): React.ReactElement {
     const { query } = useSearch();
     const [selectedFilter, setSelectedFilter] = useState('todos');

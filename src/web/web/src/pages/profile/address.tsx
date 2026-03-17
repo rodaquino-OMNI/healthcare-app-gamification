@@ -1,12 +1,12 @@
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { WEB_PROFILE_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
 import { useProfile } from '@/hooks/useProfile';
+import { useSafeNavRouter as useRouter } from '@/hooks/useSafeRouter';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 const Title = styled.h2`
@@ -174,6 +174,9 @@ interface AddressFormData {
 /**
  * Profile Address page - collects Brazilian address with CEP auto-fill.
  */
+
+export const getServerSideProps = () => ({ props: {} });
+
 export default function ProfileAddressPage(): React.ReactElement {
     const router = useRouter();
     const { profile: _profile } = useProfile();

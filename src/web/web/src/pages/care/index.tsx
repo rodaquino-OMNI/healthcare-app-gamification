@@ -24,4 +24,6 @@ const CareNowPage: React.FC = () => {
     );
 };
 
+export const getServerSideProps = () => ({ props: {} });
+
 export default CareNowPage;

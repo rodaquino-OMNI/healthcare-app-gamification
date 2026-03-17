@@ -4,10 +4,10 @@ import { Box } from 'design-system/primitives/Box/Box';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { useRouter } from 'next/router';
 import React from 'react';
 
 import { useTelemedicine } from '@/hooks';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 const STAR_RATINGS = [1, 2, 3, 4, 5];
 
@@ -167,5 +167,7 @@ const EndPage: React.FC = () => {
         </div>
     );
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default EndPage;

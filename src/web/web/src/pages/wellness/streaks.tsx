@@ -4,9 +4,9 @@ import { Box } from 'design-system/primitives/Box/Box';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { useWellness } from '@/hooks/useWellness';
 
 interface Milestone {
@@ -231,5 +231,7 @@ const StreaksPage: React.FC = () => {
         </div>
     );
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default StreaksPage;

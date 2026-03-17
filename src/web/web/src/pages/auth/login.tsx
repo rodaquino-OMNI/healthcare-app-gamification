@@ -3,14 +3,13 @@ import { Button } from 'design-system/components/Button/Button';
 import { Input } from 'design-system/components/Input/Input';
 import { Box } from 'design-system/primitives/Box/Box';
 import { Text } from 'design-system/primitives/Text/Text';
-import type { GetStaticProps } from 'next';
-import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 import { loginValidationSchema } from 'shared/utils/validation';
 
 import { useAuth } from '@/hooks/useAuth';
+import { useSafeNavRouter as useRouter } from '@/hooks/useSafeRouter';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 interface LoginFormData {
@@ -18,7 +17,7 @@ interface LoginFormData {
     password: string;
 }
 
-export const getStaticProps: GetStaticProps = () => ({ props: {} });
+export const getServerSideProps = () => ({ props: {} });
 
 export const Login: React.FC = () => {
     const router = useRouter();

@@ -4,10 +4,10 @@ import { Box } from 'design-system/primitives/Box/Box';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { useActivity } from '@/hooks';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 const DATA_SOURCES = [
     { id: 'apple_health', label: 'Apple Health', description: 'Sync via HealthKit integration' },
@@ -208,5 +208,7 @@ const DeviceSyncPage: React.FC = () => {
         </div>
     );
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default DeviceSyncPage;

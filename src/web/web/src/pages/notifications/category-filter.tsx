@@ -102,7 +102,7 @@ const CategoryFilterPage: React.FC = () => {
 
     const allNotifications: CategoryNotification[] = notifications.map((n) => ({
         id: n.id,
-        category: (n.journey as Exclude<CategoryType, 'all'>) ?? 'system',
+        category: (n.journeyId as Exclude<CategoryType, 'all'>) ?? 'system',
         title: n.title,
         preview: n.body,
         timestamp: n.createdAt ? new Date(n.createdAt).toLocaleString('pt-BR') : '',
@@ -242,5 +242,7 @@ const styles: Record<string, React.CSSProperties> = {
         fontFamily: typography.fontFamily.heading,
     },
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default CategoryFilterPage;

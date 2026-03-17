@@ -1,9 +1,9 @@
-import { useRouter } from 'next/router'; // next/router latest
 import React from 'react'; // React v18.0+
 
 import { AppointmentForm } from '@/components/forms/AppointmentForm';
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
 import { useAppointments } from '@/hooks';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter'; // next/router latest
 import { CareLayout } from '@/layouts/CareLayout';
 
 /**
@@ -48,5 +48,7 @@ const AppointmentBookingPage: React.FC = () => {
         </CareLayout>
     );
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default AppointmentBookingPage;

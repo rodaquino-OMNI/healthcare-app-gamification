@@ -1,11 +1,11 @@
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { WEB_PROFILE_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
+import { useSafeNavRouter as useRouter } from '@/hooks/useSafeRouter';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 const Title = styled.h2`
@@ -115,6 +115,9 @@ interface ProfileFormData {
  * Profile setup page - collects basic user information (name, email, phone, DOB).
  * Uses a two-column grid layout for desktop screens.
  */
+
+export const getServerSideProps = () => ({ props: {} });
+
 export default function ProfileSetupPage(): React.ReactElement {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);

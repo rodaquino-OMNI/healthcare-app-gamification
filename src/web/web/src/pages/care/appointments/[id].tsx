@@ -1,10 +1,10 @@
 import { AppointmentCard } from 'design-system/care/AppointmentCard/AppointmentCard';
-import type { GetStaticPaths, GetStaticProps } from 'next';
-import { useRouter } from 'next/router'; // next/router 13.0+
+import type { GetStaticPaths } from 'next';
 import React from 'react';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
 import { useAppointments } from '@/hooks/useAppointments';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter'; // next/router 13.0+
 
 /**
  * Renders the details of a specific appointment.
@@ -75,6 +75,6 @@ export const getStaticPaths: GetStaticPaths = () => ({
     fallback: 'blocking' as const,
 });
 
-export const getStaticProps: GetStaticProps = () => ({ props: {} });
+export const getStaticProps = () => ({ props: {} });
 
 export default AppointmentDetail;

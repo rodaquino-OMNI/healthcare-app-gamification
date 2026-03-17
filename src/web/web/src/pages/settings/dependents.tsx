@@ -1,8 +1,8 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { useSettings } from '@/hooks/useSettings';
 
 /**
@@ -152,5 +152,7 @@ const errorStyle: React.CSSProperties = {
     marginBottom: spacing.md,
     fontFamily: typography.fontFamily.body,
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default DependentsPage;

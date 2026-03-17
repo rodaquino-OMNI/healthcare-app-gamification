@@ -1,10 +1,10 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
-import type { GetStaticProps, NextPage } from 'next';
-import { useRouter } from 'next/router';
+import type { NextPage } from 'next';
 import React, { useState } from 'react';
 
 import { restClient } from '@/api/client';
 import { useAuth } from '@/hooks/useAuth';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 /**
  * Report problem form page.
@@ -279,6 +279,6 @@ const successIconStyle: React.CSSProperties = {
     marginBottom: spacing.md,
 };
 
-export const getStaticProps: GetStaticProps = () => ({ props: {} });
+export const getServerSideProps = () => ({ props: {} });
 
 export default ReportPage;

@@ -2,10 +2,10 @@ import { borderRadius } from 'design-system/tokens/borderRadius';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import { useRouter } from 'next/router';
 import React from 'react';
 import styled from 'styled-components';
 
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { useSearch } from '@/hooks/useSearch';
 import { MainLayout } from '@/layouts/MainLayout';
 
@@ -128,6 +128,8 @@ const HomeButton = styled.button`
         opacity: 0.9;
     }
 `;
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default function NoResultsPage(): React.ReactElement {
     const router = useRouter();

@@ -1,12 +1,12 @@
 import { Button } from 'design-system/components/Button/Button';
 import { Input } from 'design-system/components/Input/Input';
-import { useRouter } from 'next/router'; // next/router v13.0+
 import React, { useState, useEffect } from 'react';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter'; // next/router v13.0+
 
 /**
  * Renders the user profile settings page.
@@ -94,4 +94,7 @@ const Settings: React.FC = () => {
 };
 
 // LD1: Exports the Settings component for use in the application.
+
+export const getServerSideProps = () => ({ props: {} });
+
 export default Settings;

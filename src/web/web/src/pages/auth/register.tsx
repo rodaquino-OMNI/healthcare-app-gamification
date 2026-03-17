@@ -5,15 +5,14 @@ import { Input } from 'design-system/components/Input/Input';
 import { Box } from 'design-system/primitives/Box/Box';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
-import type { GetStaticProps } from 'next';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 import * as yup from 'yup';
 
 import { useAuth } from '@/hooks/useAuth';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 // Define the form values interface
@@ -45,7 +44,7 @@ const validationSchema = yup.object().shape({
 /**
  * Register component - Renders the registration page with form for new users
  */
-export const getStaticProps: GetStaticProps = () => ({ props: {} });
+export const getServerSideProps = () => ({ props: {} });
 
 const Register: React.FC = () => {
     const router = useRouter();

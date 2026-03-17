@@ -293,4 +293,6 @@ const addBtnStyle: React.CSSProperties = {
     marginTop: spacing.md,
 };
 
+export const getServerSideProps = () => ({ props: {} });
+
 export default EmergencyContactsPage;

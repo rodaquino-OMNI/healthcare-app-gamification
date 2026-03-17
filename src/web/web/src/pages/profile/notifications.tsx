@@ -140,6 +140,9 @@ interface NotificationPreference {
  * Notification preferences page - allows users to configure notification settings.
  * Mirrors the mobile SettingsNotifications screen.
  */
+
+export const getServerSideProps = () => ({ props: {} });
+
 export default function NotificationPreferencesPage(): React.ReactElement {
     const { profile: _profile } = useProfile();
     const [preferences, setPreferences] = useState<NotificationPreference[]>([

@@ -1,7 +1,7 @@
 import { Button } from 'design-system/components/Button/Button';
 import { Card } from 'design-system/components/Card/Card';
 import React, { useState } from 'react'; // react 18.0+
-import { HealthGoal } from 'shared/types/health.types';
+// HealthMetric type is inferred from the useHealthMetrics hook
 
 import { HealthGoalForm } from '@/components/forms/HealthGoalForm';
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
@@ -29,9 +29,9 @@ const HealthGoalsPage: React.FC = () => {
             <JourneyHeader title="Minhas Metas" />
 
             {/* LD1: Renders a list of HealthGoal components, displaying each goal's details. */}
-            {goals?.map((goal: HealthGoal) => (
+            {goals?.map((goal) => (
                 <Card key={goal.id}>
-                    {goal.type} - {goal.target}
+                    {goal.type} - {goal.value}
                 </Card>
             ))}
 
@@ -44,5 +44,7 @@ const HealthGoalsPage: React.FC = () => {
         </div>
     );
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default HealthGoalsPage;

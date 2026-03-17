@@ -1,6 +1,7 @@
-import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { JOURNEY_IDS } from 'shared/constants/journeys';
+
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 import { useJourney } from '../../hooks/useJourney';
 import HealthLayout from '../../layouts/HealthLayout';
@@ -26,5 +27,7 @@ const HealthJourneyIndex: React.FC = () => {
         </HealthLayout>
     );
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default HealthJourneyIndex;

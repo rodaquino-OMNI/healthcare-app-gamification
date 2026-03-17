@@ -3,11 +3,11 @@ import { colors } from 'design-system/tokens/colors';
 import { shadows } from 'design-system/tokens/shadows';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { MainLayout } from '@/components/index';
 import { useHealthMetrics } from '@/hooks';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 /**
  * Filter options for the metrics view.
@@ -358,5 +358,7 @@ const pageStyles: Record<string, React.CSSProperties> = {
         fontFamily: typography.fontFamily.body,
     },
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default MetricsPage;

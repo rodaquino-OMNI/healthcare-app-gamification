@@ -1,8 +1,8 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
-import { useRouter } from 'next/router';
 import React from 'react';
 
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { useSettings } from '@/hooks/useSettings';
 
 const { plan } = colors.journeys;
@@ -182,5 +182,7 @@ const linkBtnStyle: React.CSSProperties = {
     fontFamily: typography.fontFamily.body,
     textAlign: 'center' as const,
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default HealthPlanPage;

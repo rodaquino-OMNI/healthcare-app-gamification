@@ -1,40 +1,18 @@
+import { borderRadius } from 'design-system/tokens/borderRadius';
+import { colors } from 'design-system/tokens/colors';
+import { spacing } from 'design-system/tokens/spacing';
+import { typography } from 'design-system/tokens/typography';
 import { createGlobalStyle } from 'styled-components';
 
 /**
  * Application theme configuration for styled-components ThemeProvider.
+ * Uses design system tokens so styled components can access them via props.theme.
  */
 export const theme = {
-    colors: {
-        primary: '#0ACF83',
-        secondary: '#00B8D9',
-        background: '#F8F9FA',
-        text: '#212529',
-        error: '#DC3545',
-        warning: '#FFC107',
-        success: '#28A745',
-    },
-    spacing: {
-        xs: '4px',
-        sm: '8px',
-        md: '16px',
-        lg: '24px',
-        xl: '32px',
-    },
-    borderRadius: {
-        sm: '4px',
-        md: '8px',
-        lg: '16px',
-        full: '9999px',
-    },
-    typography: {
-        fontFamily: 'Inter, sans-serif',
-        fontSize: {
-            sm: '12px',
-            md: '14px',
-            lg: '16px',
-            xl: '20px',
-        },
-    },
+    colors,
+    spacing,
+    borderRadius,
+    typography,
 };
 
 /**

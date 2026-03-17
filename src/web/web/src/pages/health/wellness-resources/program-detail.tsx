@@ -4,10 +4,10 @@ import { Box } from 'design-system/primitives/Box/Box';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { useAuth, useHealthMetrics } from '@/hooks';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 const STEPS = [
     { id: 1, title: 'Introduction & Goal Setting', done: true },
@@ -165,5 +165,7 @@ const ProgramDetailPage: React.FC = () => {
         </div>
     );
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default ProgramDetailPage;

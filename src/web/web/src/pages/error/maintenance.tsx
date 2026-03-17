@@ -1,7 +1,6 @@
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import type { GetStaticProps } from 'next';
 import React from 'react';
 
 import { useAuth } from '@/hooks/useAuth';
@@ -67,6 +66,6 @@ const MaintenancePage: React.FC = () => {
     );
 };
 
-export const getStaticProps: GetStaticProps = () => ({ props: {} });
+export const getServerSideProps = () => ({ props: {} });
 
 export default MaintenancePage;

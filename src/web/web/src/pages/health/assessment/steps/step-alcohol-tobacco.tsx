@@ -196,4 +196,6 @@ const StepAlcoholTobaccoPage: React.FC<StepProps> = ({ data, onUpdate }) => {
     );
 };
 
+export const getServerSideProps = () => ({ props: {} });
+
 export default StepAlcoholTobaccoPage;

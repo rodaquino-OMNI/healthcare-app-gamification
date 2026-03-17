@@ -1,9 +1,10 @@
 import axios from 'axios'; // axios 1.4+
-import { useRouter } from 'next/navigation'; // next/navigation 13.0+
 import { useState, useEffect, useContext, useCallback } from 'react';
 import { API_BASE_URL } from 'shared/constants/api';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 import { AuthSession, AuthUser } from 'shared/types/auth.types';
+
+import { useSafeNavRouter as useRouter } from '@/hooks/useSafeRouter';
 
 import { AuthContext } from '../context/AuthContext';
 

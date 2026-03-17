@@ -1,9 +1,9 @@
-import { useRouter } from 'next/router';
 import { createContext, useState, useEffect } from 'react';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 import { AuthSession } from 'shared/types/auth.types';
 
 import { login, logout, getProfile } from '@/api/auth';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 /**
  * Authentication context interface

@@ -1,11 +1,11 @@
 import { Button } from 'design-system/components/Button/Button';
-import { useRouter } from 'next/router';
 import React from 'react';
 import { ALL_JOURNEYS } from 'shared/constants/journeys';
 import { MOBILE_AUTH_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
 import { useJourney } from '@/hooks/useJourney';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 // Styled container for the mobile navigation bar
 const MobileNavContainer = styled.div`

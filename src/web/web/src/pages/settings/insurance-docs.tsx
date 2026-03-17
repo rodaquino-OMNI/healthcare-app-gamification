@@ -159,4 +159,6 @@ const footerNoteStyle: React.CSSProperties = {
     fontFamily: typography.fontFamily.body,
 };
 
+export const getServerSideProps = () => ({ props: {} });
+
 export default InsuranceDocsPage;

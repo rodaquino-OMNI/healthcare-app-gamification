@@ -4,10 +4,10 @@ import { Box } from 'design-system/primitives/Box/Box';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { useRouter } from 'next/router';
 import React from 'react';
 
 import { useAuth, useHealthMetrics } from '@/hooks';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 const RELATED_VIDEOS = [
     { id: 'rv1', title: 'Gentle Morning Stretch', duration: '10 min' },
@@ -145,5 +145,7 @@ const VideoPlayerPage: React.FC = () => {
         </div>
     );
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default VideoPlayerPage;

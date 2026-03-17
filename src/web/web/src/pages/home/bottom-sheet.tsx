@@ -117,4 +117,6 @@ const styles: Record<string, React.CSSProperties> = {
     chevron: { fontSize: typography.fontSize['text-lg'], color: colors.neutral.gray400 },
 };
 
+export const getServerSideProps = () => ({ props: {} });
+
 export default BottomSheetPage;

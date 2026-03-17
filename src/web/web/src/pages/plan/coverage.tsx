@@ -1,7 +1,7 @@
 import { CoverageInfoCard } from 'design-system/plan/CoverageInfoCard';
 import { Box, Text } from 'design-system/primitives';
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
-import { NextSeo } from 'next-seo';
+import Head from 'next/head';
 import React, { useState } from 'react';
 import { Coverage } from 'shared/types/plan.types';
 
@@ -51,10 +51,10 @@ const CoveragePage: React.FC = () => {
 
     return (
         <PlanLayout>
-            <NextSeo
-                title="Cobertura do Plano - AUSTA"
-                description="Visualize os detalhes da sua cobertura do plano de saude."
-            />
+            <Head>
+                <title>Cobertura do Plano - AUSTA</title>
+                <meta name="description" content="Visualize os detalhes da sua cobertura do plano de saude." />
+            </Head>
             <Box padding="md">
                 <Text as="h1" fontSize="2xl" fontWeight="medium" marginBottom="md">
                     Informacoes de Cobertura

@@ -151,4 +151,6 @@ const infoBoxStyle: React.CSSProperties = {
     borderLeft: `3px solid ${colors.brand.primary}`,
 };
 
+export const getServerSideProps = () => ({ props: {} });
+
 export default BiometricPage;

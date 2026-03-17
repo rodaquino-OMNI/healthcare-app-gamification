@@ -39,4 +39,6 @@ const Devices: React.FC = () => {
     );
 };
 
+export const getServerSideProps = () => ({ props: {} });
+
 export default Devices;

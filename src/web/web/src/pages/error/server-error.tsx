@@ -2,11 +2,10 @@ import { borderRadius } from 'design-system/tokens/borderRadius';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import type { GetStaticProps } from 'next';
-import { useRouter } from 'next/router';
 import React from 'react';
 
 import { useAuth } from '@/hooks/useAuth';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 const ServerErrorPage: React.FC = () => {
     const router = useRouter();
@@ -120,6 +119,6 @@ const ServerErrorPage: React.FC = () => {
     );
 };
 
-export const getStaticProps: GetStaticProps = () => ({ props: {} });
+export const getServerSideProps = () => ({ props: {} });
 
 export default ServerErrorPage;

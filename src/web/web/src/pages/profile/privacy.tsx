@@ -245,6 +245,9 @@ interface PrivacySetting {
  * Privacy settings page - allows users to manage their data sharing and privacy options.
  * Mirrors the mobile SettingsPrivacy screen.
  */
+
+export const getServerSideProps = () => ({ props: {} });
+
 export default function PrivacySettingsPage(): React.ReactElement {
     const { profile: _profile } = useProfile();
     const [_loading, setLoading] = useState(false);

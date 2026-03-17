@@ -2,13 +2,12 @@ import { Stepper } from 'design-system/components/Stepper/Stepper';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import type { GetStaticProps } from 'next';
-import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
 import { useAuth } from '@/hooks/useAuth';
+import { useSafeNavRouter as useRouter } from '@/hooks/useSafeRouter';
 
 const PageContainer = styled.div`
     display: flex;
@@ -166,7 +165,7 @@ const ONBOARDING_STEPS = [
  * Onboarding page with a 5-step wizard introducing the app features.
  * Uses the Stepper component for step navigation and a progress bar.
  */
-export const getStaticProps: GetStaticProps = () => ({ props: {} });
+export const getServerSideProps = () => ({ props: {} });
 
 export default function OnboardingPage(): React.ReactElement {
     const router = useRouter();

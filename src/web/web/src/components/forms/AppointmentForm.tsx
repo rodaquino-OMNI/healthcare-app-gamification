@@ -1,11 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Input, Select, Button } from 'design-system/components';
-import { useRouter } from 'next/router';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import { useJourney } from '@/context/JourneyContext';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 /**
  * Interface defining the props for the AppointmentForm component.

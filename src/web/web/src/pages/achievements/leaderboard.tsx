@@ -51,7 +51,8 @@ const LeaderboardPage: React.FC = () => {
     const [journeyFilter, setJourneyFilter] = useState<JourneyFilter>('all');
 
     const currentUserXp = gameProfile?.xp ?? 0;
-    const _currentUserLevel = gameProfile?.level ?? 1;
+    const _currentUserLevel: number = gameProfile?.level ?? 1;
+    void _currentUserLevel;
 
     return (
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: spacing.xl }}>
@@ -142,5 +143,7 @@ const LeaderboardPage: React.FC = () => {
         </div>
     );
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default LeaderboardPage;

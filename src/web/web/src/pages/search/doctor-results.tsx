@@ -156,6 +156,8 @@ const mockDoctors: Doctor[] = [
     },
 ];
 
+export const getServerSideProps = () => ({ props: {} });
+
 export default function DoctorResultsPage(): React.ReactElement {
     const { query } = useSearch();
     const [selectedFilter, setSelectedFilter] = useState('todos');

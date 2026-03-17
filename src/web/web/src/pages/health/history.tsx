@@ -1,5 +1,4 @@
 import { Card } from 'design-system/components/Card/Card';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { MedicalEvent } from 'shared/types/health.types';
 import { formatRelativeDate } from 'shared/utils/date';
@@ -7,6 +6,7 @@ import { truncateText } from 'shared/utils/format';
 import styled from 'styled-components';
 
 import { useAuth, useHealthMetrics } from '@/hooks';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import HealthLayout from '@/layouts/HealthLayout';
 
 // Styled components for the Medical History Timeline page
@@ -275,5 +275,7 @@ const HistoryPage: React.FC = () => {
         </HealthLayout>
     );
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default HistoryPage;

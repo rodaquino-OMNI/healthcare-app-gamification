@@ -1,11 +1,10 @@
 import { Button } from 'design-system/components/Button/Button';
 import { Input } from 'design-system/components/Input/Input';
-import type { GetStaticProps } from 'next';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '@/hooks/useAuth';
+import { useSafeNavRouter as useRouter } from '@/hooks/useSafeRouter';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 /**
@@ -13,7 +12,7 @@ import { AuthLayout } from '@/layouts/AuthLayout';
  * Allows users to verify their identity by entering a verification code
  * sent to their registered device to complete the login process.
  */
-export const getStaticProps: GetStaticProps = () => ({ props: {} });
+export const getServerSideProps = () => ({ props: {} });
 
 const MFAPage = (): React.ReactElement => {
     const { t } = useTranslation();

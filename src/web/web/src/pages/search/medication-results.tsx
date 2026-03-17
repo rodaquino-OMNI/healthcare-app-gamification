@@ -152,6 +152,8 @@ const mockMedications: Medication[] = [
     },
 ];
 
+export const getServerSideProps = () => ({ props: {} });
+
 export default function MedicationResultsPage(): React.ReactElement {
     const { query } = useSearch();
     const [selectedFilter, setSelectedFilter] = useState('todos');

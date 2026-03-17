@@ -71,7 +71,7 @@ const UnreadNotificationsPage: React.FC = () => {
             .filter((n) => n.status !== NotificationStatus.READ)
             .map((n) => ({
                 id: n.id,
-                type: (n.journey as NotificationType) ?? 'system',
+                type: (n.journeyId as NotificationType) ?? 'system',
                 title: n.title,
                 preview: n.body,
                 timestamp: n.createdAt ? new Date(n.createdAt).toLocaleString('pt-BR') : '',
@@ -220,5 +220,7 @@ const styles: Record<string, React.CSSProperties> = {
         fontFamily: typography.fontFamily.body,
     },
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default UnreadNotificationsPage;

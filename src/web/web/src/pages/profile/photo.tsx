@@ -1,12 +1,12 @@
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import { useRouter } from 'next/navigation';
 import React, { useState, useRef } from 'react';
 import { WEB_PROFILE_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
 import { useProfile } from '@/hooks/useProfile';
+import { useSafeNavRouter as useRouter } from '@/hooks/useSafeRouter';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 const Title = styled.h2`
@@ -145,6 +145,9 @@ const StepIndicator = styled.p`
  * Profile Photo page - allows users to upload and preview a profile photo.
  * Displays a circular avatar preview with upload functionality.
  */
+
+export const getServerSideProps = () => ({ props: {} });
+
 export default function ProfilePhotoPage(): React.ReactElement {
     const router = useRouter();
     const { profile: _profile } = useProfile();

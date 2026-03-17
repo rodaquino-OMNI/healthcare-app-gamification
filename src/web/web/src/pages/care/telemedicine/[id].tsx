@@ -3,11 +3,11 @@ import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import type { GetStaticPaths, GetStaticProps } from 'next';
-import { useRouter } from 'next/router';
+import type { GetStaticPaths } from 'next';
 import React from 'react';
 
 import { useTelemedicine } from '@/hooks';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 /** Telemedicine session detail page. */
 const TelemedicineSessionPage: React.FC = () => {
@@ -73,6 +73,6 @@ export const getStaticPaths: GetStaticPaths = () => ({
     fallback: 'blocking' as const,
 });
 
-export const getStaticProps: GetStaticProps = () => ({ props: {} });
+export const getStaticProps = () => ({ props: {} });
 
 export default TelemedicineSessionPage;

@@ -4,11 +4,11 @@ import { Box } from 'design-system/primitives/Box/Box';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { useRouter } from 'next/router';
 import React, { useState, useCallback } from 'react';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
 import { useAssessment } from '@/hooks';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 import StepAlcoholTobacco from './steps/step-alcohol-tobacco';
 import StepAllergies from './steps/step-allergies';
@@ -67,7 +67,8 @@ const TOTAL_STEPS = STEPS.length;
  */
 const HealthAssessmentPage: React.FC = () => {
     const router = useRouter();
-    const _assessment = useAssessment();
+    const _assessment = useAssessment('default');
+    void _assessment;
     const [activeStep, setActiveStep] = useState(0);
     const [formData, setFormData] = useState<Record<string, unknown>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -211,5 +212,7 @@ const HealthAssessmentPage: React.FC = () => {
         </div>
     );
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default HealthAssessmentPage;

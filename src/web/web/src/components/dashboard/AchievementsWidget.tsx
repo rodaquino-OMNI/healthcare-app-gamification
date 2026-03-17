@@ -1,12 +1,12 @@
 import { Button } from 'design-system/components/Button/Button';
 import { Card } from 'design-system/components/Card/Card';
 import { AchievementBadge } from 'design-system/gamification/AchievementBadge/AchievementBadge';
-import { useRouter } from 'next/router'; // latest
 import React from 'react';
 import type { Achievement } from 'shared/types/gamification.types';
 
 import { useAuth } from '@/hooks/useAuth';
 import { useGameProfile } from '@/hooks/useGamification';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 /**
  * Displays a list of recent achievements with a link to the full achievement gallery.

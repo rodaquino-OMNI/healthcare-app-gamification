@@ -2,11 +2,11 @@ import { borderRadius } from 'design-system/tokens/borderRadius';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import { useProfile } from '@/hooks/useProfile';
+import { useSafeNavRouter as useRouter } from '@/hooks/useSafeRouter';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 const ContentContainer = styled.div`
@@ -179,6 +179,9 @@ const RELATIONSHIPS = [
  * Emergency Contact page - form to add an emergency contact
  * during the profile onboarding flow.
  */
+
+export const getServerSideProps = () => ({ props: {} });
+
 export default function EmergencyContactPage(): React.ReactElement {
     const router = useRouter();
     const { profile: _profile } = useProfile();

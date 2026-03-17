@@ -132,4 +132,6 @@ const BenefitsPage: NextPage = () => {
     );
 };
 
+export const getServerSideProps = () => ({ props: {} });
+
 export default BenefitsPage;

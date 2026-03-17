@@ -2,7 +2,6 @@ import { format } from 'date-fns'; // date-fns v2.30+
 import { Button, Card } from 'design-system/components';
 import { Box, Text } from 'design-system/primitives';
 import Head from 'next/head'; // next/head v13.0+
-import { useRouter } from 'next/router'; // next/router v13.0+
 import React, { useState } from 'react';
 import { CARE_ROUTES } from 'shared/constants/routes';
 import { Appointment } from 'shared/types/care.types';
@@ -12,6 +11,7 @@ import { ErrorState } from '@/components/shared/ErrorState';
 import { LoadingIndicator } from '@/components/shared/LoadingIndicator';
 import { useAppointments } from '@/hooks/useAppointments';
 import { useJourney } from '@/hooks/useJourney';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter'; // next/router v13.0+
 import { CareLayout } from '@/layouts/CareLayout';
 
 /**

@@ -1,13 +1,14 @@
 import { Box } from 'design-system/primitives/Box';
-import { useRouter } from 'next/router'; // next/router@^13.0.0
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components'; // styled-components@^6.0.0
 
 import { Sidebar } from '@/components/navigation/Sidebar';
 import { TopBar } from '@/components/navigation/TopBar';
 import { GamificationPopup } from '@/components/shared/GamificationPopup';
+import { AuthContext } from '@/context/AuthContext';
 import { useGamification } from '@/context/GamificationContext';
-import { useAuth } from '@/hooks/useAuth';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
+// useAuth removed — auth check uses AuthContext directly
 
 // LD1: Styled component for the main layout container.
 const LayoutContainer = styled(Box)`
@@ -61,16 +62,16 @@ interface MainLayoutProps {
  * for the application
  */
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
-    // LD1: Retrieves the authentication status from the AuthContext.
-    const { isAuthenticated } = useAuth();
     // LD1: Retrieves the gamification state to check for unlocked achievements.
     const { gameProfile } = useGamification();
     // LD1: Retrieves the router object from Next.js.
     const router = useRouter();
 
-    // LD1: Check if the user is authenticated, redirect to login if not.
-    if (!isAuthenticated) {
-        // router.push('/auth/login');
+    // During SSR, auth status is 'loading' (useEffect hasn't run).
+    // Only redirect on the client when explicitly unauthenticated.
+    const auth = useContext(AuthContext);
+    if (typeof window !== 'undefined' && auth.status === 'unauthenticated') {
+        void router.push('/auth/login');
         return null;
     }
 

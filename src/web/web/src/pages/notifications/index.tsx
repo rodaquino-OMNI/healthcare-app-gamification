@@ -44,4 +44,6 @@ const NotificationsPage: React.FC = () => {
     );
 };
 
+export const getServerSideProps = () => ({ props: {} });
+
 export default NotificationsPage;

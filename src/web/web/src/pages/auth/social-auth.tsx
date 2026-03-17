@@ -2,12 +2,11 @@ import { borderRadius } from 'design-system/tokens/borderRadius';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import type { GetStaticProps } from 'next';
-import { useRouter } from 'next/router';
 import React from 'react';
 import styled from 'styled-components';
 
 import { useAuth } from '@/hooks/useAuth';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 const PageContainer = styled.div`
     display: flex;
@@ -197,7 +196,7 @@ const OAUTH_CONFIG: Record<string, OAuthProviderConfig> = {
     },
 };
 
-export const getStaticProps: GetStaticProps = () => ({ props: {} });
+export const getServerSideProps = () => ({ props: {} });
 
 export default function SocialAuthPage(): React.ReactElement {
     const router = useRouter();

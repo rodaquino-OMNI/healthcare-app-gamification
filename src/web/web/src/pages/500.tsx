@@ -1,11 +1,8 @@
 import { colors } from 'design-system/tokens/colors';
-import type { GetStaticProps, NextPage } from 'next';
+import type { NextPage } from 'next';
 import React from 'react';
 
-import { useAuth } from '@/hooks/useAuth';
-
 const ServerErrorPage: NextPage = () => {
-    const { isAuthenticated: _isAuthenticated } = useAuth();
     // Care journey color - used for error pages to signal attention and care
     const careJourneyColor = colors.journeys.care.primary;
 
@@ -129,7 +126,5 @@ const ServerErrorPage: NextPage = () => {
         </div>
     );
 };
-
-export const getStaticProps: GetStaticProps = () => ({ props: {} });
 
 export default ServerErrorPage;

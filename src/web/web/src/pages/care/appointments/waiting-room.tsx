@@ -4,11 +4,11 @@ import { Box } from 'design-system/primitives/Box/Box';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { useRouter } from 'next/router';
 import React, { useState, useEffect, useRef } from 'react';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
 import { useAppointments } from '@/hooks';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { CareLayout } from '@/layouts/CareLayout';
 
 /** Equipment check item for pre-consultation verification */
@@ -302,5 +302,7 @@ const WaitingRoomPage: React.FC = () => {
         </CareLayout>
     );
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default WaitingRoomPage;

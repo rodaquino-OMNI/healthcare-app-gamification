@@ -262,4 +262,6 @@ const QuestsPage: React.FC = () => {
     );
 };
 
+export const getServerSideProps = () => ({ props: {} });
+
 export default QuestsPage;

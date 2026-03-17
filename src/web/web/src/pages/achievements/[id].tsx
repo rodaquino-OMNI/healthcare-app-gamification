@@ -6,13 +6,13 @@ import { Box } from 'design-system/primitives/Box/Box';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import type { GetStaticPaths, GetStaticProps } from 'next';
+import type { GetStaticPaths } from 'next';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import React from 'react';
 import type { Achievement } from 'shared/types/gamification.types';
 
 import { useGameProfile } from '@/hooks/useGamification';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 const JOURNEY_COLORS: Record<string, string> = {
     health: colors.journeys.health.primary,
@@ -152,6 +152,6 @@ export const getStaticPaths: GetStaticPaths = () => ({
     fallback: 'blocking' as const,
 });
 
-export const getStaticProps: GetStaticProps = () => ({ props: {} });
+export const getStaticProps = () => ({ props: {} });
 
 export default AchievementDetailPage;

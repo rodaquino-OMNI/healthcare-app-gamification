@@ -5,13 +5,13 @@ import { Box } from 'design-system/primitives/Box/Box';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import type { GetStaticPaths, GetStaticProps } from 'next';
+import type { GetStaticPaths } from 'next';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import type { Reward } from 'shared/types/gamification.types';
 
 import { useGameProfile } from '@/hooks/useGamification';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 const MOCK_REWARDS: Record<string, Reward & { terms: string; category: string }> = {
     r1: {
@@ -268,6 +268,6 @@ export const getStaticPaths: GetStaticPaths = () => ({
     fallback: 'blocking' as const,
 });
 
-export const getStaticProps: GetStaticProps = () => ({ props: {} });
+export const getStaticProps = () => ({ props: {} });
 
 export default RewardDetailPage;

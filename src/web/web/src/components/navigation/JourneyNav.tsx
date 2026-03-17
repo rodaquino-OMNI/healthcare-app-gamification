@@ -1,11 +1,11 @@
 import { Card } from 'design-system/components/Card/Card';
 import { Icon } from 'design-system/primitives/Icon/Icon';
 import { Text } from 'design-system/primitives/Text/Text';
-import { useRouter } from 'next/router';
 import React from 'react';
 import { ALL_JOURNEYS } from 'shared/constants/journeys';
 
 import { useJourney } from '@/hooks/useJourney';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 /**
  * A navigation component that displays the available journeys in the AUSTA SuperApp.

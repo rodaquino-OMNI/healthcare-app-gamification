@@ -3,10 +3,10 @@ import { Card } from 'design-system/components/Card/Card';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { useRouter } from 'next/router';
 import React from 'react';
 
 import { useTelemedicine } from '@/hooks';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 /** Telemedicine landing page listing active and upcoming sessions. */
 const TelemedicinePage: React.FC = () => {
@@ -60,5 +60,7 @@ const TelemedicinePage: React.FC = () => {
         </div>
     );
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default TelemedicinePage;

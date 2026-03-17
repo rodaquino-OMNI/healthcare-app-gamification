@@ -161,4 +161,6 @@ const StepEmergencyContactsPage: React.FC<StepProps> = ({ data, onUpdate }) => {
     );
 };
 
+export const getServerSideProps = () => ({ props: {} });
+
 export default StepEmergencyContactsPage;

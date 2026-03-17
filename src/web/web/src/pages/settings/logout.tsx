@@ -1,10 +1,10 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { logout as apiLogout } from '@/api/auth';
 import { useAuth } from '@/hooks/useAuth';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 /**
  * Logout confirmation page.
@@ -129,5 +129,7 @@ const cancelBtnStyle: React.CSSProperties = {
     fontFamily: typography.fontFamily.body,
     marginTop: spacing.xs,
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default LogoutPage;

@@ -137,4 +137,6 @@ const styles: Record<string, React.CSSProperties> = {
     },
 };
 
+export const getServerSideProps = () => ({ props: {} });
+
 export default AppointmentWidgetPage;

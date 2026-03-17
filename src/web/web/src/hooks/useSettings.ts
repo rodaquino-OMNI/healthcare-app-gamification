@@ -36,6 +36,7 @@ interface Address {
     neighborhood: string;
     city: string;
     state: string;
+    isPrimary?: boolean;
 }
 
 interface InsuranceDoc {

@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input, Button, Select } from 'design-system/components/index';
-import { useRouter } from 'next/router';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { MOBILE_PLAN_ROUTES } from 'shared/constants/routes';
@@ -8,6 +7,7 @@ import { claimValidationSchema } from 'shared/utils/validation';
 
 import { useJourneyContext } from '@/context/JourneyContext';
 import { useClaims } from '@/hooks/useClaims';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 /**
  * A React component that renders a form for submitting insurance claims.

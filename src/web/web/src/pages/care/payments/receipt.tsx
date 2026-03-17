@@ -5,10 +5,10 @@ import { Box } from 'design-system/primitives/Box/Box';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { useRouter } from 'next/router';
 import React from 'react';
 
 import { usePayments } from '@/hooks';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 /** Payment receipt page showing transaction confirmation and download options. */
 const ReceiptPage: React.FC = () => {
@@ -218,5 +218,7 @@ const ReceiptPage: React.FC = () => {
         </div>
     );
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default ReceiptPage;

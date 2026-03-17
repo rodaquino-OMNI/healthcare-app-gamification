@@ -7,9 +7,6 @@ const path = require('path');
 const supportedLocales = ['pt-BR', 'en-US'];
 const defaultLocale = 'pt-BR';
 
-const reactDir = path.dirname(require.resolve('react', { paths: [__dirname] }));
-const reactDomDir = path.dirname(require.resolve('react-dom', { paths: [__dirname] }));
-
 /**
  * Next.js configuration for AUSTA SuperApp
  */
@@ -70,7 +67,7 @@ const nextConfig = {
                             "style-src 'self' 'unsafe-inline'",
                             "img-src 'self' blob: data: https://storage.googleapis.com https://cdn.austa.com.br",
                             "font-src 'self'",
-                            "connect-src 'self' https://*.austa.com.br https://*.sentry.io",
+                            `connect-src 'self' https://*.austa.com.br https://*.sentry.io${process.env.NODE_ENV === 'development' ? ' http://localhost:* ws://localhost:*' : ''}`,
                             "frame-ancestors 'none'",
                             "base-uri 'self'",
                             "form-action 'self'",
@@ -89,8 +86,6 @@ const nextConfig = {
     webpack: (config, { isServer }) => {
         config.resolve.alias = {
             ...config.resolve.alias,
-            react: reactDir,
-            'react-dom': reactDomDir,
             '@shared': path.resolve(__dirname, '../shared'),
             'react-native$': 'react-native-web',
         };

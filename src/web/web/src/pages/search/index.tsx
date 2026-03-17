@@ -1,11 +1,11 @@
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import { useRouter } from 'next/router';
 import React from 'react';
 import { WEB_GLOBAL_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { useSearch } from '@/hooks/useSearch';
 import { MainLayout } from '@/layouts/MainLayout';
 
@@ -139,6 +139,9 @@ const categories = [
  * Search page - allows the user to search across all app content.
  * Mirrors the mobile Search screen.
  */
+
+export const getServerSideProps = () => ({ props: {} });
+
 export default function SearchPage(): React.ReactElement {
     const router = useRouter();
     const { query, setQuery } = useSearch();

@@ -233,4 +233,6 @@ const RewardsPage: React.FC = () => {
     );
 };
 
+export const getServerSideProps = () => ({ props: {} });
+
 export default RewardsPage;

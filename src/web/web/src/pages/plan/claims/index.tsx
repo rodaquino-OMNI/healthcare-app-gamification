@@ -1,12 +1,12 @@
 import { ClaimCard } from 'design-system/plan/ClaimCard/ClaimCard';
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
-import { useRouter } from 'next/router';
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Claim, ClaimStatus } from 'shared/types/plan.types';
 
 import { useClaims } from '@/hooks';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 const { plan } = colors.journeys;
 
@@ -200,5 +200,7 @@ const Claims: NextPage = () => {
         </div>
     );
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default Claims;

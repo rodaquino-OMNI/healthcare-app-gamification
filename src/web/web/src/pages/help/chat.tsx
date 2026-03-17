@@ -1,9 +1,9 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
-import type { GetStaticProps, NextPage } from 'next';
-import { useRouter } from 'next/router';
+import type { NextPage } from 'next';
 import React, { useState } from 'react';
 
 import { useAuth } from '@/hooks/useAuth';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 interface ChatMessage {
     id: string;
@@ -228,6 +228,6 @@ const sendBtnStyle: React.CSSProperties = {
     flexShrink: 0,
 };
 
-export const getStaticProps: GetStaticProps = () => ({ props: {} });
+export const getServerSideProps = () => ({ props: {} });
 
 export default ChatPage;

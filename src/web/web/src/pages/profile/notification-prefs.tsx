@@ -2,11 +2,11 @@ import { borderRadius } from 'design-system/tokens/borderRadius';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import { useRouter } from 'next/navigation';
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 
 import { useProfile } from '@/hooks/useProfile';
+import { useSafeNavRouter as useRouter } from '@/hooks/useSafeRouter';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 const ContentContainer = styled.div`
@@ -183,6 +183,9 @@ const PREFS: PrefItem[] = [
  * Notification Preferences page - allows users to configure
  * which notifications they want to receive.
  */
+
+export const getServerSideProps = () => ({ props: {} });
+
 export default function NotificationPrefsPage(): React.ReactElement {
     const router = useRouter();
     const { profile: _profile } = useProfile();

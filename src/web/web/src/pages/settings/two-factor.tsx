@@ -1,10 +1,10 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
 import { enable2FA, disable2FA, configure2FA } from '@/api/auth';
 import { useAuth } from '@/hooks/useAuth';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 /**
  * Two-factor authentication settings page.
@@ -297,5 +297,7 @@ const primaryButtonStyle: React.CSSProperties = {
     fontFamily: typography.fontFamily.body,
     marginTop: spacing.xl,
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default TwoFactorPage;

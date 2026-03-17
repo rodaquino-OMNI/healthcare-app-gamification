@@ -137,4 +137,6 @@ const StepSubmissionConfirmPage: React.FC<StepProps> = ({ onUpdate }) => {
     );
 };
 
+export const getServerSideProps = () => ({ props: {} });
+
 export default StepSubmissionConfirmPage;

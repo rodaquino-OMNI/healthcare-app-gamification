@@ -4,12 +4,12 @@ import { Box } from 'design-system/primitives/Box/Box';
 import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
 import { useAppointments } from '@/hooks';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { CareLayout } from '@/layouts/CareLayout';
 
 /** Date entry for the calendar view */
@@ -264,5 +264,7 @@ const DoctorAvailabilityPage: React.FC = () => {
         </CareLayout>
     );
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default DoctorAvailabilityPage;

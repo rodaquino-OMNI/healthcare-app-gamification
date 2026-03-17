@@ -1,12 +1,12 @@
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import { useRouter } from 'next/router';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { restClient } from '@/api/client';
 import { useNotifications } from '@/hooks/useNotifications';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { MainLayout } from '@/layouts/MainLayout';
 
 const PageContainer = styled.div`
@@ -96,6 +96,9 @@ const ActionButton = styled.button`
  * Notification detail page - displays a single notification with full content.
  * Mirrors the mobile NotificationDetail screen.
  */
+
+export const getServerSideProps = () => ({ props: {} });
+
 export default function NotificationDetailPage(): React.ReactElement {
     const router = useRouter();
     const { id } = router.query;

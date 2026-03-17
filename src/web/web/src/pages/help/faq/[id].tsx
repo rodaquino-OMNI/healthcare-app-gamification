@@ -1,9 +1,9 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
-import type { GetStaticPaths, GetStaticProps, NextPage } from 'next';
-import { useRouter } from 'next/router';
+import type { GetStaticPaths, NextPage } from 'next';
 import React, { useState } from 'react';
 
 import { useAuth } from '@/hooks/useAuth';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 interface FaqArticle {
     id: string;
@@ -223,6 +223,6 @@ export const getStaticPaths: GetStaticPaths = () => ({
     fallback: 'blocking' as const,
 });
 
-export const getStaticProps: GetStaticProps = () => ({ props: {} });
+export const getStaticProps = () => ({ props: {} });
 
 export default FaqArticlePage;

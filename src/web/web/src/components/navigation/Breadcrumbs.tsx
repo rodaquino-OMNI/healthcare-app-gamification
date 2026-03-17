@@ -1,8 +1,8 @@
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import React from 'react';
 
 import { useJourney } from '@/hooks/useJourney';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { i18n } from '@/i18n/index';
 
 interface BreadcrumbsProps {}

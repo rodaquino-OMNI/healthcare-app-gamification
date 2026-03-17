@@ -1,9 +1,9 @@
 import { Button } from 'design-system/components/Button/Button';
 import { Card } from 'design-system/components/Card/Card';
-import { useRouter } from 'next/router'; // next/router v13.0+
 import React from 'react'; // React v18.0+
 
 import { useAppointments } from '@/hooks/useAppointments';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter'; // next/router v13.0+
 import { CareLayout } from '@/layouts/CareLayout';
 import { formatDate } from '@/utils/format';
 
@@ -56,5 +56,7 @@ const TreatmentPlans: React.FC = () => {
         </CareLayout>
     );
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default TreatmentPlans;

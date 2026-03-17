@@ -3,7 +3,6 @@ import { Button } from 'design-system/components/Button/Button';
 import { Input } from 'design-system/components/Input/Input';
 import { Select } from 'design-system/components/Select/Select';
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { claimValidationSchema } from 'shared/utils/validation';
@@ -11,6 +10,7 @@ import { claimValidationSchema } from 'shared/utils/validation';
 import { FileUploader } from '@/components/shared/FileUploader';
 import { useJourneyContext } from '@/context/JourneyContext';
 import { useClaims } from '@/hooks';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
 const { plan } = colors.journeys;
 
@@ -413,5 +413,7 @@ const errorStyle: React.CSSProperties = {
     fontSize: typography.fontSize['text-xs'],
     fontFamily: typography.fontFamily.body,
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default ClaimForm;

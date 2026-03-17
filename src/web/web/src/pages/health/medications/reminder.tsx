@@ -1,12 +1,12 @@
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import { restClient } from '@/api/client';
 import { useMedications } from '@/hooks';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { MainLayout } from '@/layouts/MainLayout';
 
 const PageContainer = styled.div`
@@ -354,6 +354,9 @@ const SNOOZE_OPTIONS = [
  * Medication reminder configuration page - allows users to set up reminders.
  * Mirrors the mobile MedicationReminder screen.
  */
+
+export const getServerSideProps = () => ({ props: {} });
+
 export default function MedicationReminderPage(): React.ReactElement {
     const { medications, loading: medsLoading, error: medsError, refetch } = useMedications();
     const router = useRouter();

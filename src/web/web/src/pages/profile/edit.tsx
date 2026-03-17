@@ -1,11 +1,11 @@
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { useProfile } from '@/hooks/useProfile';
+import { useSafeNavRouter as useRouter } from '@/hooks/useSafeRouter';
 import { MainLayout } from '@/layouts/MainLayout';
 
 import { restClient } from '../../api/client';
@@ -130,6 +130,9 @@ interface ProfileData {
  * Profile edit page - allows users to update their personal information.
  * Mirrors the mobile SettingsEdit screen.
  */
+
+export const getServerSideProps = () => ({ props: {} });
+
 export default function ProfileEditPage(): React.ReactElement {
     const router = useRouter();
     const { profile, isLoading: profileLoading, error: profileError } = useProfile();

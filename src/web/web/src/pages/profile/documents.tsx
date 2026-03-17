@@ -2,12 +2,12 @@ import { FileUpload } from 'design-system/components/FileUpload/FileUpload';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { WEB_PROFILE_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
 import { useProfile } from '@/hooks/useProfile';
+import { useSafeNavRouter as useRouter } from '@/hooks/useSafeRouter';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 const Title = styled.h2`
@@ -134,6 +134,9 @@ const StepIndicator = styled.p`
 /**
  * Profile Documents page - collects CPF/RG and allows document upload.
  */
+
+export const getServerSideProps = () => ({ props: {} });
+
 export default function ProfileDocumentsPage(): React.ReactElement {
     const router = useRouter();
     const { profile } = useProfile();

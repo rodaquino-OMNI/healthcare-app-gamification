@@ -1,11 +1,11 @@
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 import styled from 'styled-components';
 
 import { useProfile } from '@/hooks/useProfile';
+import { useSafeNavRouter as useRouter } from '@/hooks/useSafeRouter';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 const SuccessContainer = styled.div`
@@ -140,6 +140,9 @@ const StepIndicator = styled.p`
  * Profile Confirmation page - shows success message and profile summary.
  * Final step in the onboarding flow before entering the dashboard.
  */
+
+export const getServerSideProps = () => ({ props: {} });
+
 export default function ProfileConfirmationPage(): React.ReactElement {
     const router = useRouter();
     const { profile } = useProfile();

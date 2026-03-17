@@ -212,4 +212,6 @@ const downloadCard = (): void => {
     window.print();
 };
 
+export const getServerSideProps = () => ({ props: {} });
+
 export default DigitalCardPage;

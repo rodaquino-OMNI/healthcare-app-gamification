@@ -1,8 +1,8 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { useSettings } from '@/hooks/useSettings';
 
 /**
@@ -238,5 +238,7 @@ const primaryButtonStyle: React.CSSProperties = {
     fontFamily: typography.fontFamily.body,
     marginTop: spacing.xl,
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default AccessibilityPage;

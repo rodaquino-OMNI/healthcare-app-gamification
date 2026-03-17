@@ -1,14 +1,14 @@
 import { HealthChart } from 'design-system/charts/index';
 import { Text } from 'design-system/components/index';
 import { MetricCard } from 'design-system/health/index';
-import type { GetStaticPaths, GetStaticProps } from 'next';
-import { useRouter } from 'next/router'; // next/router v13.0.0
+import type { GetStaticPaths } from 'next';
 import React from 'react';
 import { HealthMetric } from 'shared/types/health.types';
 import { formatRelativeDate } from 'shared/utils/date';
 import { formatHealthMetric } from 'shared/utils/format';
 
 import { useHealthMetrics } from '@/hooks/useHealthMetrics';
+import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter'; // next/router v13.0.0
 import HealthLayout from '@/layouts/HealthLayout';
 
 /**
@@ -87,6 +87,6 @@ export const getStaticPaths: GetStaticPaths = () => ({
     fallback: 'blocking' as const,
 });
 
-export const getStaticProps: GetStaticProps = () => ({ props: {} });
+export const getStaticProps = () => ({ props: {} });
 
 export default MetricDetail;

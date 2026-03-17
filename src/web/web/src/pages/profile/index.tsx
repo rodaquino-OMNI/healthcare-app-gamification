@@ -1,4 +1,3 @@
-import { useRouter } from 'next/navigation'; // next/navigation latest
 import React, { useState } from 'react'; // react latest
 
 import { restClient } from '@/api/client';
@@ -10,6 +9,7 @@ import { JourneyHeader } from '@/components/shared/JourneyHeader';
 import { LoadingIndicator } from '@/components/shared/LoadingIndicator';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
+import { useSafeNavRouter as useRouter } from '@/hooks/useSafeRouter';
 import { MainLayout } from '@/layouts/MainLayout';
 
 /**
@@ -96,5 +96,7 @@ const ProfilePage: React.FC = () => {
         </MainLayout>
     );
 };
+
+export const getServerSideProps = () => ({ props: {} });
 
 export default ProfilePage;

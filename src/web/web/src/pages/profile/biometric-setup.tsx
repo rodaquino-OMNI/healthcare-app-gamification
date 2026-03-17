@@ -2,11 +2,11 @@ import { borderRadius } from 'design-system/tokens/borderRadius';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
-import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import { useProfile } from '@/hooks/useProfile';
+import { useSafeNavRouter as useRouter } from '@/hooks/useSafeRouter';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
 import { restClient } from '../../api/client';
@@ -135,6 +135,9 @@ const BENEFITS = [
  * Biometric Setup page - allows users to enable biometric
  * authentication (Face ID / Touch ID) during profile setup.
  */
+
+export const getServerSideProps = () => ({ props: {} });
+
 export default function BiometricSetupPage(): React.ReactElement {
     const router = useRouter();
     const { profile } = useProfile();

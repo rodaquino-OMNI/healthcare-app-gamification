@@ -212,4 +212,6 @@ const primaryButtonStyle: React.CSSProperties = {
     marginTop: spacing.xl,
 };
 
+export const getServerSideProps = () => ({ props: {} });
+
 export default DataExportPage;
