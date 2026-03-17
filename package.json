@@ -10,6 +10,7 @@
     "react-native-web": "^0.21.0"
   },
   "resolutions": {
+    "apollo-upload-client": "18.0.1",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-native": "0.72.6",
@@ -20,7 +21,6 @@
     "graphql": "16.13.1",
     "axios": "1.13.6",
     "follow-redirects": "1.15.11",
-    "@babel/traverse": "7.29.0",
     "semver": "7.7.4",
     "react-native-webview": "13.13.5",
     "react-native-agora": "4.5.2",
@@ -32,7 +32,6 @@
     "webpack": "5.105.4",
     "node-fetch": "3.3.2",
     "glob-parent": "6.0.2",
-    "terser": "5.46.0",
     "loader-utils": "3.3.1",
     "minimist": "1.2.8",
     "shelljs": "0.10.0",

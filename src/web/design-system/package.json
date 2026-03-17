@@ -99,58 +99,8 @@
             "prettier --write"
         ]
     },
+    "//overrides": "Child-specific only. 22 redundant entries removed (inherited from workspace root src/web/package.json). Kept: navigation/animation overrides that differ from parent versions.",
     "overrides": {
-        "@babel/plugin-proposal-class-properties": "@babel/plugin-transform-class-properties",
-        "@babel/plugin-proposal-nullish-coalescing-operator": "@babel/plugin-transform-nullish-coalescing-operator",
-        "@babel/plugin-proposal-optional-chaining": "@babel/plugin-transform-optional-chaining",
-        "@babel/plugin-proposal-numeric-separator": "@babel/plugin-transform-numeric-separator",
-        "@babel/plugin-proposal-object-rest-spread": "@babel/plugin-transform-object-rest-spread",
-        "@babel/plugin-proposal-optional-catch-binding": "@babel/plugin-transform-optional-catch-binding",
-        "@babel/plugin-proposal-async-generator-functions": "@babel/plugin-transform-async-generator-functions",
-        "@babel/plugin-proposal-unicode-property-regex": "@babel/plugin-transform-unicode-property-regex",
-        "sudo-prompt": "sudo-block",
-        "subscriptions-transport-ws": "graphql-ws",
-        "acorn-import-assertions": "acorn-import-attributes",
-        "lodash.omit": "lodash",
-        "abab": "base64-js",
-        "babel-preset-fbjs": {
-            "@babel/plugin-proposal-class-properties": "@babel/plugin-transform-class-properties",
-            "@babel/plugin-proposal-object-rest-spread": "@babel/plugin-transform-object-rest-spread",
-            "@babel/plugin-proposal-optional-catch-binding": "@babel/plugin-transform-optional-catch-binding"
-        },
-        "metro-react-native-babel-preset": {
-            "@babel/plugin-proposal-class-properties": "@babel/plugin-transform-class-properties",
-            "@babel/plugin-proposal-nullish-coalescing-operator": "@babel/plugin-transform-nullish-coalescing-operator",
-            "@babel/plugin-proposal-optional-chaining": "@babel/plugin-transform-optional-chaining",
-            "@babel/plugin-proposal-object-rest-spread": "@babel/plugin-transform-object-rest-spread",
-            "@babel/plugin-proposal-numeric-separator": "@babel/plugin-transform-numeric-separator",
-            "@babel/plugin-proposal-optional-catch-binding": "@babel/plugin-transform-optional-catch-binding"
-        },
-        "metro": {
-            "babel-preset-fbjs": {
-                "@babel/plugin-proposal-class-properties": "@babel/plugin-transform-class-properties",
-                "@babel/plugin-proposal-object-rest-spread": "@babel/plugin-transform-object-rest-spread"
-            }
-        },
-        "lodash.throttle": "lodash",
-        "lodash.debounce": "lodash",
-        "create-hmac": "crypto-browserify",
-        "fbjs": "react-native",
-        "react-native-iphone-x-helper": "react-native-safe-area-context",
-        "@babel/preset-env": {
-            "@babel/plugin-proposal-class-properties": "@babel/plugin-transform-class-properties",
-            "@babel/plugin-proposal-nullish-coalescing-operator": "@babel/plugin-transform-nullish-coalescing-operator",
-            "@babel/plugin-proposal-numeric-separator": "@babel/plugin-transform-numeric-separator",
-            "@babel/plugin-proposal-object-rest-spread": "@babel/plugin-transform-object-rest-spread",
-            "@babel/plugin-proposal-optional-catch-binding": "@babel/plugin-transform-optional-catch-binding",
-            "@babel/plugin-proposal-optional-chaining": "@babel/plugin-transform-optional-chaining",
-            "@babel/plugin-proposal-private-methods": "@babel/plugin-transform-private-methods",
-            "@babel/plugin-proposal-private-property-in-object": "@babel/plugin-transform-private-property-in-object",
-            "@babel/plugin-proposal-async-generator-functions": "@babel/plugin-transform-async-generator-functions",
-            "@babel/plugin-proposal-unicode-property-regex": "@babel/plugin-transform-unicode-property-regex",
-            "@babel/plugin-proposal-export-namespace-from": "@babel/plugin-transform-export-namespace-from",
-            "@babel/plugin-proposal-logical-assignment-operators": "@babel/plugin-transform-logical-assignment-operators"
-        },
         "@react-navigation/native": "7.1.8",
         "@react-navigation/stack": "7.3.1",
         "react-native-reanimated": "3.17.5",
