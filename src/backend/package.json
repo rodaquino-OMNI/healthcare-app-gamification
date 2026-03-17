@@ -186,7 +186,7 @@
         "abab": "base64-js",
         "@apollo/server": "5.4.0",
         "@nestjs/platform-fastify": "^11.0.0",
-        "immutable": "5.1.4",
+        "immutable": "5.1.5",
         "babel-preset-fbjs": {
             "@babel/plugin-proposal-class-properties": "@babel/plugin-transform-class-properties",
             "@babel/plugin-proposal-object-rest-spread": "@babel/plugin-transform-object-rest-spread",
