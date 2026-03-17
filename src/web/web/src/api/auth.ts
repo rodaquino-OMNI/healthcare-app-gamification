@@ -308,3 +308,32 @@ export const verifyBiometricSignature = async (signature: string, challenge: str
     const response = await client.post<AuthSession>(`${API_BASE_URL}/auth/biometric/verify`, { signature, challenge });
     return response.data;
 };
+
+/** Session entry returned by the active-sessions endpoint. */
+export interface SessionEntry {
+    id: string;
+    device: string;
+    ip: string;
+    lastActiveAt: string;
+    current: boolean;
+}
+
+/**
+ * Retrieves the list of active sessions for the authenticated user.
+ *
+ * @returns A promise that resolves with an array of active session entries
+ */
+export const getActiveSessions = async (): Promise<SessionEntry[]> => {
+    const response = await client.get<SessionEntry[]>(`${API_BASE_URL}/auth/sessions`);
+    return response.data;
+};
+
+/**
+ * Revokes (terminates) a specific session by its identifier.
+ *
+ * @param sessionId - The ID of the session to revoke
+ * @returns A promise that resolves when the session has been revoked
+ */
+export const revokeSession = async (sessionId: string): Promise<void> => {
+    await client.delete(`${API_BASE_URL}/auth/sessions/${sessionId}`);
+};

@@ -5,7 +5,18 @@
  * We mock restClient to validate endpoints, methods, and error handling.
  */
 
-import { login, logout, getProfile, changePassword, enable2FA, disable2FA, configure2FA, deleteAccount } from '../auth';
+import {
+    login,
+    logout,
+    getProfile,
+    changePassword,
+    enable2FA,
+    disable2FA,
+    configure2FA,
+    deleteAccount,
+    getActiveSessions,
+    revokeSession,
+} from '../auth';
 
 // ---------------------------------------------------------------------------
 // Mocks
@@ -162,5 +173,50 @@ describe('deleteAccount', () => {
         expect(mockClient.delete).toHaveBeenCalledWith('https://api.austa.com.br/users/me', {
             data: { password: 'my-password', reason: 'Not using anymore' },
         });
+    });
+});
+
+// ---------------------------------------------------------------------------
+// getActiveSessions (new)
+// ---------------------------------------------------------------------------
+
+describe('getActiveSessions', () => {
+    it('should GET /auth/sessions and return session entries', async () => {
+        const sessions = [
+            { id: 's1', device: 'Chrome', ip: '1.2.3.4', lastActiveAt: '2026-01-01', current: true },
+            { id: 's2', device: 'Firefox', ip: '5.6.7.8', lastActiveAt: '2026-01-02', current: false },
+        ];
+        mockClient.get.mockResolvedValue({ data: sessions });
+
+        const result = await getActiveSessions();
+
+        expect(mockClient.get).toHaveBeenCalledWith('https://api.austa.com.br/auth/sessions');
+        expect(result).toEqual(sessions);
+    });
+
+    it('should throw on network error', async () => {
+        mockClient.get.mockRejectedValue(new Error('Network error'));
+
+        await expect(getActiveSessions()).rejects.toThrow('Network error');
+    });
+});
+
+// ---------------------------------------------------------------------------
+// revokeSession (new)
+// ---------------------------------------------------------------------------
+
+describe('revokeSession', () => {
+    it('should DELETE /auth/sessions/:sessionId', async () => {
+        mockClient.delete.mockResolvedValue({});
+
+        await revokeSession('s2');
+
+        expect(mockClient.delete).toHaveBeenCalledWith('https://api.austa.com.br/auth/sessions/s2');
+    });
+
+    it('should throw on network error', async () => {
+        mockClient.delete.mockRejectedValue(new Error('Network error'));
+
+        await expect(revokeSession('s2')).rejects.toThrow('Network error');
     });
 });

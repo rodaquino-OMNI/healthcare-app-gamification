@@ -304,3 +304,99 @@ export const clearAllNotifications = async (userId: string): Promise<void> => {
         throw error;
     }
 };
+
+/**
+ * Fetches the details of a specific notification by ID.
+ *
+ * @param notificationId - The ID of the notification to fetch
+ * @returns Promise that resolves to the notification details
+ */
+export const getNotificationDetail = async (notificationId: string): Promise<Notification> => {
+    try {
+        const response: AxiosResponse<Notification> = await restClient.get(`/notifications/${notificationId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching notification detail:', error);
+        throw error;
+    }
+};
+
+/**
+ * Snoozes a notification for a specified duration.
+ *
+ * @param notificationId - The ID of the notification to snooze
+ * @param snoozeDuration - The snooze duration in minutes
+ * @returns Promise that resolves when the notification is snoozed
+ */
+export const snoozeNotification = async (notificationId: string, snoozeDuration: number): Promise<void> => {
+    try {
+        await restClient.post(`/notifications/${notificationId}/snooze`, { snoozeDuration });
+    } catch (error) {
+        console.error('Error snoozing notification:', error);
+        throw error;
+    }
+};
+
+/**
+ * Schedules a notification for future delivery.
+ *
+ * @param userId - The ID of the user to schedule the notification for
+ * @param notification - The notification scheduling payload
+ * @returns Promise that resolves to the scheduled notification
+ */
+export const scheduleNotification = async (
+    userId: string,
+    notification: { title: string; body: string; scheduledAt: string; type?: string }
+): Promise<Notification> => {
+    try {
+        const response: AxiosResponse<Notification> = await restClient.post('/notifications/schedule', {
+            userId,
+            ...notification,
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error scheduling notification:', error);
+        throw error;
+    }
+};
+
+/**
+ * Fetches notification statistics for a user.
+ *
+ * @param userId - The ID of the user
+ * @returns Promise that resolves to the notification statistics
+ */
+export const getNotificationStats = async (
+    userId: string
+): Promise<{ total: number; unread: number; byCategory: Record<string, number> }> => {
+    try {
+        const response = await restClient.get<{ total: number; unread: number; byCategory: Record<string, number> }>(
+            '/notifications/stats',
+            { params: { userId } }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching notification stats:', error);
+        throw error;
+    }
+};
+
+/**
+ * Fetches all available notification templates.
+ *
+ * @returns Promise that resolves to an array of notification templates
+ */
+export const getNotificationTemplates = async (): Promise<
+    Array<{ id: string; name: string; template: string; variables: string[] }>
+> => {
+    try {
+        const response =
+            await restClient.get<Array<{ id: string; name: string; template: string; variables: string[] }>>(
+                '/notification-templates'
+            );
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching notification templates:', error);
+        throw error;
+    }
+};

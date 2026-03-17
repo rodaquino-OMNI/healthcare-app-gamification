@@ -20,6 +20,11 @@ import {
     submitFeedback,
     getInsuranceDocs,
     downloadDoc,
+    updateDependent,
+    getPreferences,
+    deleteInsuranceDoc,
+    uploadInsuranceDoc,
+    getPrivacySettings,
 } from '../settings';
 
 // ---------------------------------------------------------------------------
@@ -285,5 +290,95 @@ describe('error handling', () => {
         mockClient.get.mockRejectedValue(new Error('Network error'));
 
         await expect(getDependents()).rejects.toThrow('Network error');
+    });
+});
+
+// ---------------------------------------------------------------------------
+// updateDependent (new)
+// ---------------------------------------------------------------------------
+
+describe('updateDependent', () => {
+    it('should PUT /users/me/dependents/:id with update data', async () => {
+        mockClient.put.mockResolvedValue({});
+
+        const updates = { name: 'Jane Updated', relationship: 'spouse' };
+        await updateDependent('d1', updates);
+
+        expect(mockClient.put).toHaveBeenCalledWith('/users/me/dependents/d1', updates);
+    });
+
+    it('should throw on error', async () => {
+        mockClient.put.mockRejectedValue(new Error('Server error'));
+
+        await expect(updateDependent('d1', { name: 'Jane' })).rejects.toThrow('Server error');
+    });
+});
+
+// ---------------------------------------------------------------------------
+// getPreferences (new)
+// ---------------------------------------------------------------------------
+
+describe('getPreferences', () => {
+    it('should GET /users/me/preferences and return preferences', async () => {
+        const prefs = {
+            theme: 'dark',
+            language: 'pt-BR',
+            accessibility: { fontSize: 'medium', highContrast: false, reducedMotion: false, screenReader: false },
+        };
+        mockClient.get.mockResolvedValue({ data: prefs });
+
+        const result = await getPreferences();
+
+        expect(mockClient.get).toHaveBeenCalledWith('/users/me/preferences');
+        expect(result).toEqual(prefs);
+    });
+});
+
+// ---------------------------------------------------------------------------
+// deleteInsuranceDoc (new)
+// ---------------------------------------------------------------------------
+
+describe('deleteInsuranceDoc', () => {
+    it('should DELETE /users/me/insurance/documents/:id', async () => {
+        mockClient.delete.mockResolvedValue({});
+
+        await deleteInsuranceDoc('doc1');
+
+        expect(mockClient.delete).toHaveBeenCalledWith('/users/me/insurance/documents/doc1');
+    });
+});
+
+// ---------------------------------------------------------------------------
+// uploadInsuranceDoc (new)
+// ---------------------------------------------------------------------------
+
+describe('uploadInsuranceDoc', () => {
+    it('should POST /users/me/insurance/documents with FormData', async () => {
+        const responseData = { id: 'doc2', name: 'insurance.pdf', url: 'https://storage.example.com/doc2' };
+        mockClient.post.mockResolvedValue({ data: responseData });
+
+        const formData = new FormData();
+        const result = await uploadInsuranceDoc(formData);
+
+        expect(mockClient.post).toHaveBeenCalledWith('/users/me/insurance/documents', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        expect(result).toEqual(responseData);
+    });
+});
+
+// ---------------------------------------------------------------------------
+// getPrivacySettings (new)
+// ---------------------------------------------------------------------------
+
+describe('getPrivacySettings', () => {
+    it('should GET /users/me/privacy and return privacy settings', async () => {
+        const privacy = { dataSharing: false, analyticsEnabled: true, marketingOptIn: false, lgpdConsent: true };
+        mockClient.get.mockResolvedValue({ data: privacy });
+
+        const result = await getPrivacySettings();
+
+        expect(mockClient.get).toHaveBeenCalledWith('/users/me/privacy');
+        expect(result).toEqual(privacy);
     });
 });

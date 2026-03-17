@@ -1,7 +1,7 @@
 /**
  * Health API Module
  *
- * Provides 78 exported functions covering health metrics, sleep, activity,
+ * Provides 98 exported functions covering health metrics, sleep, activity,
  * nutrition, cycle tracking, wellness resources, assessments, medications,
  * health goals, and device sync for the web application.
  *
@@ -1108,5 +1108,158 @@ export async function updateHealthGoal(goalId: string, updates: Partial<HealthGo
 
 export async function getHealthGoalProgress(goalId: string): Promise<HealthGoalProgress> {
     const response = await restClient.get<HealthGoalProgress>(`/health/goals/${goalId}/progress`);
+    return response.data;
+}
+
+// ===========================================================================
+// 10. ADDITIONAL SLEEP FUNCTIONS (5)
+// ===========================================================================
+
+/** Update sleep goals for a user. */
+export async function updateSleepGoals(userId: string, goals: Partial<SleepGoal>): Promise<SleepGoal> {
+    const response = await restClient.put<SleepGoal>('/health/sleep/goals', { userId, ...goals });
+    return response.data;
+}
+
+/** Update smart alarm settings for a user. */
+export async function updateSmartAlarm(userId: string, alarm: Partial<SmartAlarm>): Promise<SmartAlarm> {
+    const response = await restClient.put<SmartAlarm>('/health/sleep/alarm', { userId, ...alarm });
+    return response.data;
+}
+
+/** Update bedtime routine for a user. */
+export async function updateBedtimeRoutine(userId: string, routine: Partial<BedtimeRoutine>): Promise<BedtimeRoutine> {
+    const response = await restClient.put<BedtimeRoutine>('/health/sleep/routine', { userId, ...routine });
+    return response.data;
+}
+
+/** Create a new sleep diary entry. */
+export async function createSleepDiaryEntry(
+    userId: string,
+    entry: Omit<SleepDiaryEntry, 'id'>
+): Promise<SleepDiaryEntry> {
+    const response = await restClient.post<SleepDiaryEntry>('/health/sleep/diary', { userId, ...entry });
+    return response.data;
+}
+
+/** Delete a sleep log by its ID. */
+export async function deleteSleepLog(logId: string): Promise<void> {
+    await restClient.delete(`/health/sleep/logs/${logId}`);
+}
+
+// ===========================================================================
+// 11. ADDITIONAL ACTIVITY FUNCTIONS (5)
+// ===========================================================================
+
+/** Create a new activity goal for a user. */
+export async function createActivityGoal(
+    userId: string,
+    goal: Omit<ActivityGoal, 'id' | 'userId' | 'current'>
+): Promise<ActivityGoal> {
+    const response = await restClient.post<ActivityGoal>('/health/activity/goals', { userId, ...goal });
+    return response.data;
+}
+
+/** Update an existing activity goal. */
+export async function updateActivityGoal(goalId: string, updates: Partial<ActivityGoal>): Promise<ActivityGoal> {
+    const response = await restClient.put<ActivityGoal>(`/health/activity/goals/${goalId}`, updates);
+    return response.data;
+}
+
+/** Join an activity challenge. */
+export async function joinActivityChallenge(userId: string, challengeId: string): Promise<ActivityChallenge> {
+    const response = await restClient.post<ActivityChallenge>(`/health/activity/challenges/${challengeId}/join`, {
+        userId,
+    });
+    return response.data;
+}
+
+/** Create a new workout. */
+export async function createWorkout(userId: string, workout: Omit<Workout, 'id'>): Promise<Workout> {
+    const response = await restClient.post<Workout>('/health/activity/workouts', { userId, ...workout });
+    return response.data;
+}
+
+/** Delete an activity session by its ID. */
+export async function deleteActivitySession(sessionId: string): Promise<void> {
+    await restClient.delete(`/health/activity/sessions/${sessionId}`);
+}
+
+// ===========================================================================
+// 12. ADDITIONAL NUTRITION FUNCTIONS (5)
+// ===========================================================================
+
+/** Delete a nutrition log by its ID. */
+export async function deleteNutritionLog(logId: string): Promise<void> {
+    await restClient.delete(`/health/nutrition/logs/${logId}`);
+}
+
+/** Update nutrition goals for a user. */
+export async function updateNutritionGoals(userId: string, goals: Partial<NutritionGoal>): Promise<NutritionGoal> {
+    const response = await restClient.put<NutritionGoal>('/health/nutrition/goals', { userId, ...goals });
+    return response.data;
+}
+
+/** Create a new meal plan for a user. */
+export async function createMealPlan(userId: string, plan: Omit<MealPlan, 'id' | 'userId'>): Promise<MealPlan> {
+    const response = await restClient.post<MealPlan>('/health/nutrition/meal-plan', { userId, ...plan });
+    return response.data;
+}
+
+/** Get details for a specific recipe. */
+export async function getRecipeDetail(recipeId: string): Promise<Recipe> {
+    const response = await restClient.get<Recipe>(`/health/nutrition/recipes/${recipeId}`);
+    return response.data;
+}
+
+/** Get water intake for a user on a given date. */
+export async function getWaterIntake(
+    userId: string,
+    date: string
+): Promise<{ consumed: number; target: number; unit: string }> {
+    const response = await restClient.get<{ consumed: number; target: number; unit: string }>(
+        '/health/nutrition/water',
+        { params: { userId, date } }
+    );
+    return response.data;
+}
+
+// ===========================================================================
+// 13. ADDITIONAL CYCLE TRACKING FUNCTIONS (2)
+// ===========================================================================
+
+/** Update a cycle reminder. */
+export async function updateCycleReminder(reminderId: string, updates: Partial<CycleReminder>): Promise<CycleReminder> {
+    const response = await restClient.put<CycleReminder>(`/health/cycle/reminders/${reminderId}`, updates);
+    return response.data;
+}
+
+/** Get cycle settings for a user. */
+export async function getCycleSettings(userId: string): Promise<CycleSettings> {
+    const response = await restClient.get<CycleSettings>('/health/cycle/settings', {
+        params: { userId },
+    });
+    return response.data;
+}
+
+// ===========================================================================
+// 14. HEALTH GOALS & DEVICE FUNCTIONS (3)
+// ===========================================================================
+
+/** Delete a health goal by its ID. */
+export async function deleteHealthGoal(goalId: string): Promise<void> {
+    await restClient.delete(`/health/goals/${goalId}`);
+}
+
+/** Disconnect a health device for a user. */
+export async function disconnectDevice(userId: string, deviceId: string): Promise<void> {
+    await restClient.delete(`/health/devices/${deviceId}`, { params: { userId } });
+}
+
+/** Get sync history for a specific device. */
+export async function getDeviceSyncHistory(userId: string, deviceId: string): Promise<DeviceSyncResult[]> {
+    const response = await restClient.get<DeviceSyncResult[]>(`/health/devices/${deviceId}/sync-history`, {
+        params: { userId },
+    });
     return response.data;
 }

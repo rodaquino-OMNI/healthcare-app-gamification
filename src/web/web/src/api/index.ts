@@ -28,7 +28,10 @@ export {
     registerBiometricKey,
     getBiometricChallenge,
     verifyBiometricSignature,
+    getActiveSessions,
+    revokeSession,
 } from './auth';
+export type { SessionEntry } from './auth';
 
 // Care Journey API functions
 export {
@@ -80,6 +83,16 @@ export {
     getPaymentSummary,
     getPaymentReceipt,
     getMedicalRecords,
+    submitDoctorReview,
+    getVisitHistory,
+    getAppointmentReminders,
+    updatePreVisitChecklist,
+    getTelemedicineMessages,
+    getProviderSpecialties,
+    getProviderInsurances,
+    getNearbyProviders,
+    getUrgentCareLocations,
+    getSecondOpinion,
 } from './care';
 
 // Health Journey API functions
@@ -162,6 +175,26 @@ export {
     createHealthGoal,
     updateHealthGoal,
     getHealthGoalProgress,
+    updateSleepGoals,
+    updateSmartAlarm,
+    updateBedtimeRoutine,
+    createSleepDiaryEntry,
+    deleteSleepLog,
+    createActivityGoal,
+    updateActivityGoal,
+    joinActivityChallenge,
+    createWorkout,
+    deleteActivitySession,
+    deleteNutritionLog,
+    updateNutritionGoals,
+    createMealPlan,
+    getRecipeDetail,
+    getWaterIntake,
+    updateCycleReminder,
+    getCycleSettings,
+    deleteHealthGoal,
+    disconnectDevice,
+    getDeviceSyncHistory,
 } from './health';
 
 // Plan Journey API functions
@@ -192,6 +225,12 @@ export {
     submitClaimAppeal,
     getPlanComparison,
     getDigitalCardShare,
+    getCoverageSummary,
+    requestPreAuth,
+    getClaimEstimate,
+    getPlanDocuments,
+    exportClaimData,
+    getPaymentHistory,
 } from './plan';
 
 // Gamification API functions
@@ -211,6 +250,16 @@ export {
     getRewardHistory,
     getStreakStatus,
     updateStreak,
+    getAchievementDetail,
+    getQuestDetail,
+    getRewardDetail,
+    getXpHistory,
+    getLevelProgress,
+    getJourneyQuests,
+    acknowledgeReward,
+    getAchievementProgress,
+    getDailyChallenge,
+    getWeeklyChallenge,
 } from './gamification';
 
 // Notification API functions
@@ -228,6 +277,11 @@ export {
     unregisterPushToken,
     getNotificationHistory,
     clearAllNotifications,
+    getNotificationDetail,
+    snoozeNotification,
+    scheduleNotification,
+    getNotificationStats,
+    getNotificationTemplates,
 } from './notifications';
 
 // Settings API functions

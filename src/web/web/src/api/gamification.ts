@@ -369,6 +369,200 @@ export const updateStreak = async (userId: string, streakType: string): Promise<
     }
 };
 
+/**
+ * Retrieves detailed information about a specific achievement.
+ *
+ * @param achievementId - The unique identifier of the achievement
+ * @returns A promise that resolves to the achievement details including criteria and tips
+ */
+export const getAchievementDetail = async (
+    achievementId: string
+): Promise<Achievement & { criteria: string[]; tips: string[] }> => {
+    try {
+        const response = await axios.get<Achievement & { criteria: string[]; tips: string[] }>(
+            `${GAMIFICATION_API_URL}/achievements/${achievementId}`
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Failed to fetch achievement detail:', error);
+        throw new Error('Failed to retrieve achievement detail. Please try again later.');
+    }
+};
+
+/**
+ * Retrieves detailed information about a specific quest.
+ *
+ * @param questId - The unique identifier of the quest
+ * @returns A promise that resolves to the quest details including steps
+ */
+export const getQuestDetail = async (
+    questId: string
+): Promise<Quest & { steps: Array<{ description: string; completed: boolean }> }> => {
+    try {
+        const response = await axios.get<Quest & { steps: Array<{ description: string; completed: boolean }> }>(
+            `${GAMIFICATION_API_URL}/quests/${questId}`
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Failed to fetch quest detail:', error);
+        throw new Error('Failed to retrieve quest detail. Please try again later.');
+    }
+};
+
+/**
+ * Retrieves detailed information about a specific reward.
+ *
+ * @param rewardId - The unique identifier of the reward
+ * @returns A promise that resolves to the reward details including terms and redemption instructions
+ */
+export const getRewardDetail = async (
+    rewardId: string
+): Promise<Reward & { terms: string; redemptionInstructions: string }> => {
+    try {
+        const response = await axios.get<Reward & { terms: string; redemptionInstructions: string }>(
+            `${GAMIFICATION_API_URL}/rewards/${rewardId}`
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Failed to fetch reward detail:', error);
+        throw new Error('Failed to retrieve reward detail. Please try again later.');
+    }
+};
+
+/**
+ * Retrieves the XP history for a user.
+ *
+ * @param userId - The unique identifier of the user
+ * @param limit - Optional limit on the number of entries to return
+ * @returns A promise that resolves to an array of XP history entries
+ */
+export const getXpHistory = async (
+    userId: string,
+    limit?: number
+): Promise<Array<{ amount: number; reason: string; timestamp: string }>> => {
+    try {
+        const response = await axios.get<Array<{ amount: number; reason: string; timestamp: string }>>(
+            `${GAMIFICATION_API_URL}/users/${userId}/xp-history`,
+            { params: { limit } }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Failed to fetch XP history:', error);
+        throw new Error('Failed to retrieve XP history. Please try again later.');
+    }
+};
+
+/**
+ * Retrieves the level progress for a user.
+ *
+ * @param userId - The unique identifier of the user
+ * @returns A promise that resolves to the user's level progress information
+ */
+export const getLevelProgress = async (
+    userId: string
+): Promise<{ currentLevel: number; currentXp: number; nextLevelXp: number; progress: number }> => {
+    try {
+        const response = await axios.get<{
+            currentLevel: number;
+            currentXp: number;
+            nextLevelXp: number;
+            progress: number;
+        }>(`${GAMIFICATION_API_URL}/users/${userId}/level-progress`);
+        return response.data;
+    } catch (error) {
+        console.error('Failed to fetch level progress:', error);
+        throw new Error('Failed to retrieve level progress. Please try again later.');
+    }
+};
+
+/**
+ * Retrieves quests for a specific journey for a user.
+ *
+ * @param userId - The unique identifier of the user
+ * @param journey - The journey identifier (health, care, plan)
+ * @returns A promise that resolves to an array of journey-specific quests
+ */
+export const getJourneyQuests = async (userId: string, journey: string): Promise<Quest[]> => {
+    try {
+        const url = `${GAMIFICATION_API_URL}/users/${userId}` + `/journeys/${journey}/quests`;
+        const response = await axios.get<Quest[]>(url);
+        return response.data;
+    } catch (error) {
+        console.error(`Failed to fetch ${journey} journey quests:`, error);
+        throw new Error(`Failed to retrieve ${journey} journey quests.` + ' Please try again later.');
+    }
+};
+
+/**
+ * Acknowledges a reward notification as seen by the user.
+ *
+ * @param userId - The unique identifier of the user
+ * @param rewardId - The unique identifier of the reward
+ * @returns A promise that resolves when the reward is acknowledged
+ */
+export const acknowledgeReward = async (userId: string, rewardId: string): Promise<void> => {
+    try {
+        const url = `${GAMIFICATION_API_URL}/users/${userId}` + `/rewards/${rewardId}/acknowledge`;
+        await axios.post(url);
+    } catch (error) {
+        console.error('Failed to acknowledge reward:', error);
+        throw new Error('Failed to acknowledge reward.' + ' Please try again later.');
+    }
+};
+
+/**
+ * Retrieves the progress towards a specific achievement for a user.
+ *
+ * @param userId - The unique identifier of the user
+ * @param achievementId - The unique identifier of the achievement
+ * @returns A promise that resolves to the achievement progress information
+ */
+export const getAchievementProgress = async (
+    userId: string,
+    achievementId: string
+): Promise<{ current: number; target: number; percentage: number }> => {
+    try {
+        const url = `${GAMIFICATION_API_URL}/users/${userId}` + `/achievements/${achievementId}/progress`;
+        const response = await axios.get<{ current: number; target: number; percentage: number }>(url);
+        return response.data;
+    } catch (error) {
+        console.error('Failed to fetch achievement progress:', error);
+        throw new Error('Failed to retrieve achievement progress.' + ' Please try again later.');
+    }
+};
+
+/**
+ * Retrieves the daily challenge quest for a user.
+ *
+ * @param userId - The unique identifier of the user
+ * @returns A promise that resolves to the daily challenge quest
+ */
+export const getDailyChallenge = async (userId: string): Promise<Quest> => {
+    try {
+        const response = await axios.get<Quest>(`${GAMIFICATION_API_URL}/users/${userId}/daily-challenge`);
+        return response.data;
+    } catch (error) {
+        console.error('Failed to fetch daily challenge:', error);
+        throw new Error('Failed to retrieve daily challenge. Please try again later.');
+    }
+};
+
+/**
+ * Retrieves the weekly challenge quest for a user.
+ *
+ * @param userId - The unique identifier of the user
+ * @returns A promise that resolves to the weekly challenge quest
+ */
+export const getWeeklyChallenge = async (userId: string): Promise<Quest> => {
+    try {
+        const response = await axios.get<Quest>(`${GAMIFICATION_API_URL}/users/${userId}/weekly-challenge`);
+        return response.data;
+    } catch (error) {
+        console.error('Failed to fetch weekly challenge:', error);
+        throw new Error('Failed to retrieve weekly challenge. Please try again later.');
+    }
+};
+
 export default {
     getGameProfile,
     getUserAchievements,
@@ -385,4 +579,14 @@ export default {
     getRewardHistory,
     getStreakStatus,
     updateStreak,
+    getAchievementDetail,
+    getQuestDetail,
+    getRewardDetail,
+    getXpHistory,
+    getLevelProgress,
+    getJourneyQuests,
+    acknowledgeReward,
+    getAchievementProgress,
+    getDailyChallenge,
+    getWeeklyChallenge,
 };

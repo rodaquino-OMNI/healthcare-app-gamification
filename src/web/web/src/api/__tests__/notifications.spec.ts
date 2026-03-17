@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 /**
  * Tests for src/web/web/src/api/notifications.ts
  *
@@ -6,7 +7,16 @@
  */
 
 import { restClient } from '../client';
-import { getNotifications, markNotificationAsRead, subscribeToNotifications } from '../notifications';
+import {
+    getNotifications,
+    markNotificationAsRead,
+    subscribeToNotifications,
+    getNotificationDetail,
+    snoozeNotification,
+    scheduleNotification,
+    getNotificationStats,
+    getNotificationTemplates,
+} from '../notifications';
 
 // ---------------------------------------------------------------------------
 // Mocks
@@ -16,6 +26,8 @@ jest.mock('../client', () => ({
     restClient: {
         get: jest.fn(),
         post: jest.fn(),
+        put: jest.fn(),
+        delete: jest.fn(),
     },
 }));
 
@@ -134,5 +146,96 @@ describe('subscribeToNotifications', () => {
 
         // Only the initial poll should have happened, plus no further calls
         expect(restClient.get).toHaveBeenCalledTimes(1);
+    });
+});
+
+// ---------------------------------------------------------------------------
+// getNotificationDetail (new)
+// ---------------------------------------------------------------------------
+
+describe('getNotificationDetail', () => {
+    it('should GET /notifications/:id and return the notification', async () => {
+        const notification = { id: 'n1', title: 'Test', body: 'Body' };
+        (restClient.get as jest.Mock).mockResolvedValue({ data: notification });
+
+        const result = await getNotificationDetail('n1');
+
+        expect(restClient.get).toHaveBeenCalledWith('/notifications/n1');
+        expect(result).toEqual(notification);
+    });
+
+    it('should throw on error', async () => {
+        (restClient.get as jest.Mock).mockRejectedValue(new Error('Not found'));
+
+        await expect(getNotificationDetail('n1')).rejects.toThrow('Not found');
+    });
+});
+
+// ---------------------------------------------------------------------------
+// snoozeNotification (new)
+// ---------------------------------------------------------------------------
+
+describe('snoozeNotification', () => {
+    it('should POST /notifications/:id/snooze with snoozeDuration', async () => {
+        (restClient.post as jest.Mock).mockResolvedValue({});
+
+        await snoozeNotification('n1', 30);
+
+        expect(restClient.post).toHaveBeenCalledWith('/notifications/n1/snooze', { snoozeDuration: 30 });
+    });
+
+    it('should throw on error', async () => {
+        (restClient.post as jest.Mock).mockRejectedValue(new Error('Server error'));
+
+        await expect(snoozeNotification('n1', 30)).rejects.toThrow('Server error');
+    });
+});
+
+// ---------------------------------------------------------------------------
+// scheduleNotification (new)
+// ---------------------------------------------------------------------------
+
+describe('scheduleNotification', () => {
+    it('should POST /notifications/schedule with userId and notification data', async () => {
+        const notification = { id: 'n2', title: 'Reminder', body: 'Take medicine' };
+        (restClient.post as jest.Mock).mockResolvedValue({ data: notification });
+
+        const payload = { title: 'Reminder', body: 'Take medicine', scheduledAt: '2026-01-15T09:00:00Z' };
+        const result = await scheduleNotification('u1', payload);
+
+        expect(restClient.post).toHaveBeenCalledWith('/notifications/schedule', { userId: 'u1', ...payload });
+        expect(result).toEqual(notification);
+    });
+});
+
+// ---------------------------------------------------------------------------
+// getNotificationStats (new)
+// ---------------------------------------------------------------------------
+
+describe('getNotificationStats', () => {
+    it('should GET /notifications/stats with userId', async () => {
+        const stats = { total: 50, unread: 5, byCategory: { health: 20, plan: 15, care: 15 } };
+        (restClient.get as jest.Mock).mockResolvedValue({ data: stats });
+
+        const result = await getNotificationStats('u1');
+
+        expect(restClient.get).toHaveBeenCalledWith('/notifications/stats', { params: { userId: 'u1' } });
+        expect(result).toEqual(stats);
+    });
+});
+
+// ---------------------------------------------------------------------------
+// getNotificationTemplates (new)
+// ---------------------------------------------------------------------------
+
+describe('getNotificationTemplates', () => {
+    it('should GET /notification-templates and return templates', async () => {
+        const templates = [{ id: 't1', name: 'Welcome', template: 'Hello {{name}}', variables: ['name'] }];
+        (restClient.get as jest.Mock).mockResolvedValue({ data: templates });
+
+        const result = await getNotificationTemplates();
+
+        expect(restClient.get).toHaveBeenCalledWith('/notification-templates');
+        expect(result).toEqual(templates);
     });
 });

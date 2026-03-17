@@ -723,3 +723,102 @@ export async function getMedicalRecords(userId: string, type?: string): Promise<
     });
     return response.data;
 }
+
+// ===========================================================================
+// 10. ADDITIONAL CARE FUNCTIONS (10)
+// ===========================================================================
+
+/** Submits a review for a doctor. */
+export async function submitDoctorReview(
+    doctorId: string,
+    review: { rating: number; comment: string }
+): Promise<DoctorReview> {
+    const response = await restClient.post<DoctorReview>(`/care/doctors/${doctorId}/reviews`, review);
+    return response.data;
+}
+
+/** Retrieves paginated visit history for a user. */
+export async function getVisitHistory(userId: string, page?: number): Promise<VisitSummary[]> {
+    const response = await restClient.get<VisitSummary[]>('/care/visits/history', {
+        params: { userId, ...(page !== undefined ? { page } : {}) },
+    });
+    return response.data;
+}
+
+/** Retrieves upcoming appointment reminders for a user. */
+export async function getAppointmentReminders(
+    userId: string
+): Promise<Array<{ appointmentId: string; reminderTime: string; message: string }>> {
+    const response = await restClient.get<Array<{ appointmentId: string; reminderTime: string; message: string }>>(
+        '/care/appointments/reminders',
+        { params: { userId } }
+    );
+    return response.data;
+}
+
+/** Updates a single item in the pre-visit checklist for an appointment. */
+export async function updatePreVisitChecklist(
+    appointmentId: string,
+    itemId: string,
+    completed: boolean
+): Promise<PreVisitChecklist> {
+    const response = await restClient.put<PreVisitChecklist>(
+        `/care/appointments/${appointmentId}/checklist/${itemId}`,
+        { completed }
+    );
+    return response.data;
+}
+
+/** Retrieves messages from a telemedicine session. */
+export async function getTelemedicineMessages(sessionId: string): Promise<TelemedicineMessage[]> {
+    const response = await restClient.get<TelemedicineMessage[]>(`/care/telemedicine/sessions/${sessionId}/messages`);
+    return response.data;
+}
+
+/** Retrieves available provider specialties. */
+export async function getProviderSpecialties(): Promise<string[]> {
+    const response = await restClient.get<string[]>('/care/providers/specialties');
+    return response.data;
+}
+
+/** Retrieves available provider insurance plans. */
+export async function getProviderInsurances(): Promise<string[]> {
+    const response = await restClient.get<string[]>('/care/providers/insurances');
+    return response.data;
+}
+
+/** Retrieves nearby healthcare providers by coordinates. */
+export async function getNearbyProviders(
+    latitude: number,
+    longitude: number,
+    radius?: number
+): Promise<DoctorProfile[]> {
+    const response = await restClient.get<DoctorProfile[]>('/care/providers/nearby', {
+        params: { latitude, longitude, ...(radius !== undefined ? { radius } : {}) },
+    });
+    return response.data;
+}
+
+/** Retrieves nearby urgent care locations with wait times. */
+export async function getUrgentCareLocations(
+    latitude: number,
+    longitude: number
+): Promise<Array<{ id: string; name: string; address: string; distance: string; phone: string; waitTime: number }>> {
+    const response = await restClient.get<
+        Array<{ id: string; name: string; address: string; distance: string; phone: string; waitTime: number }>
+    >('/care/urgent-care', { params: { latitude, longitude } });
+    return response.data;
+}
+
+/** Requests a second opinion for an existing appointment. */
+export async function getSecondOpinion(
+    appointmentId: string
+): Promise<{ id: string; status: string; assignedDoctor?: ProviderSummary; requestedAt: string }> {
+    const response = await restClient.post<{
+        id: string;
+        status: string;
+        assignedDoctor?: ProviderSummary;
+        requestedAt: string;
+    }>(`/care/appointments/${appointmentId}/second-opinion`);
+    return response.data;
+}

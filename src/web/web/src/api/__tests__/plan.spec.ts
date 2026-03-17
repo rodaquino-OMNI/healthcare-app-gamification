@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument, @typescript-eslint/unbound-method */
 /**
  * Tests for src/web/web/src/api/plan.ts
  *
@@ -16,6 +17,12 @@ import {
     uploadClaimDocument,
     simulateCost,
     getDigitalCard,
+    getCoverageSummary,
+    requestPreAuth,
+    getClaimEstimate,
+    getPlanDocuments,
+    exportClaimData,
+    getPaymentHistory,
 } from '../plan';
 
 // ---------------------------------------------------------------------------
@@ -203,5 +210,108 @@ describe('error handling', () => {
         mockClient.get.mockRejectedValue(new Error('Network error'));
 
         await expect(getPlan('u1')).rejects.toThrow('Network error');
+    });
+});
+
+// ---------------------------------------------------------------------------
+// getCoverageSummary (new)
+// ---------------------------------------------------------------------------
+
+describe('getCoverageSummary', () => {
+    it('should GET /plan/coverage-summary with userId', async () => {
+        const summary = { planName: 'Gold', coverageLevel: 'premium', deductibleMet: 500, outOfPocketMet: 1000 };
+        mockClient.get.mockResolvedValue({ data: summary });
+
+        const result = await getCoverageSummary('u1');
+
+        expect(mockClient.get).toHaveBeenCalledWith('/plan/coverage-summary', { params: { userId: 'u1' } });
+        expect(result).toEqual(summary);
+    });
+});
+
+// ---------------------------------------------------------------------------
+// requestPreAuth (new)
+// ---------------------------------------------------------------------------
+
+describe('requestPreAuth', () => {
+    it('should POST /plans/:planId/pre-auth with request data', async () => {
+        const preAuth = { id: 'pa1', status: 'pending', serviceType: 'surgery', requestedDate: '2026-01-15' };
+        mockClient.post.mockResolvedValue({ data: preAuth });
+
+        const request = { serviceType: 'surgery', providerId: 'doc1', reason: 'Knee replacement' };
+        const result = await requestPreAuth('p1', request);
+
+        expect(mockClient.post).toHaveBeenCalledWith('/plans/p1/pre-auth', request);
+        expect(result).toEqual(preAuth);
+    });
+});
+
+// ---------------------------------------------------------------------------
+// getClaimEstimate (new)
+// ---------------------------------------------------------------------------
+
+describe('getClaimEstimate', () => {
+    it('should GET /plans/:planId/claim-estimate with procedureCode', async () => {
+        const estimate = { estimatedCost: 5000, estimatedCoverage: 4000, estimatedOutOfPocket: 1000 };
+        mockClient.get.mockResolvedValue({ data: estimate });
+
+        const result = await getClaimEstimate('p1', 'XYZ123');
+
+        expect(mockClient.get).toHaveBeenCalledWith('/plans/p1/claim-estimate', {
+            params: { procedureCode: 'XYZ123' },
+        });
+        expect(result).toEqual(estimate);
+    });
+});
+
+// ---------------------------------------------------------------------------
+// getPlanDocuments (new)
+// ---------------------------------------------------------------------------
+
+describe('getPlanDocuments', () => {
+    it('should GET /plans/:planId/documents', async () => {
+        const docs = [{ id: 'd1', name: 'Policy.pdf', type: 'policy', url: 'https://...', uploadedAt: '2026-01-01' }];
+        mockClient.get.mockResolvedValue({ data: docs });
+
+        const result = await getPlanDocuments('p1');
+
+        expect(mockClient.get).toHaveBeenCalledWith('/plans/p1/documents');
+        expect(result).toEqual(docs);
+    });
+});
+
+// ---------------------------------------------------------------------------
+// exportClaimData (new)
+// ---------------------------------------------------------------------------
+
+describe('exportClaimData', () => {
+    it('should POST /plan/claims/export with userId and format', async () => {
+        const exportResult = { url: 'https://export.url/file.csv', expiresAt: '2026-02-01' };
+        mockClient.post.mockResolvedValue({ data: exportResult });
+
+        const result = await exportClaimData('u1', 'csv', { start: '2025-01-01', end: '2025-12-31' });
+
+        expect(mockClient.post).toHaveBeenCalledWith('/plan/claims/export', {
+            userId: 'u1',
+            format: 'csv',
+            dateRange: { start: '2025-01-01', end: '2025-12-31' },
+        });
+        expect(result).toEqual(exportResult);
+    });
+});
+
+// ---------------------------------------------------------------------------
+// getPaymentHistory (new)
+// ---------------------------------------------------------------------------
+
+describe('getPaymentHistory', () => {
+    it('should GET /plan/payments/history with userId and page', async () => {
+        const history = [{ id: 'pay1', amount: 150, date: '2026-01-15', description: 'Copay', status: 'completed' }];
+        mockClient.get.mockResolvedValue({ data: history });
+
+        const result = await getPaymentHistory('u1', 1);
+
+        expect(mockClient.get).toHaveBeenCalledWith('/plan/payments/history', { params: { userId: 'u1', page: 1 } });
+        expect(result).toEqual(history);
     });
 });

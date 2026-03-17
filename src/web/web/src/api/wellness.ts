@@ -406,3 +406,125 @@ export async function getCompanionQuickReplies(userId: string, sessionId: string
         throw err instanceof Error ? err : new Error('Failed to retrieve companion quick replies');
     }
 }
+
+// ============ Additional Wellness Functions ============
+
+/** Deletes a journal entry by ID. */
+export async function deleteJournalEntry(entryId: string): Promise<void> {
+    try {
+        await restClient.delete(`/wellness/journal/${entryId}`);
+    } catch (err: unknown) {
+        throw err instanceof Error ? err : new Error('Failed to delete journal entry');
+    }
+}
+
+/** Updates an existing journal entry. */
+export async function updateJournalEntry(
+    entryId: string,
+    updates: Partial<Omit<JournalEntry, 'id' | 'userId' | 'createdAt' | 'updatedAt'>>
+): Promise<JournalEntry> {
+    try {
+        const response = await restClient.put<JournalEntry>(`/wellness/journal/${entryId}`, updates);
+        return response.data;
+    } catch (err: unknown) {
+        throw err instanceof Error ? err : new Error('Failed to update journal entry');
+    }
+}
+
+/** Leaves a wellness challenge. */
+export async function leaveWellnessChallenge(userId: string, challengeId: string): Promise<void> {
+    try {
+        await restClient.post(`/wellness/challenges/${challengeId}/leave`, { userId });
+    } catch (err: unknown) {
+        throw err instanceof Error ? err : new Error('Failed to leave wellness challenge');
+    }
+}
+
+/** Retrieves the leaderboard for a wellness challenge. */
+export async function getWellnessChallengeLeaderboard(
+    challengeId: string
+): Promise<Array<{ userId: string; name: string; progress: number; rank: number }>> {
+    try {
+        const response = await restClient.get<Array<{ userId: string; name: string; progress: number; rank: number }>>(
+            `/wellness/challenges/${challengeId}/leaderboard`
+        );
+        return response.data;
+    } catch (err: unknown) {
+        throw err instanceof Error ? err : new Error('Failed to retrieve challenge leaderboard');
+    }
+}
+
+/** Creates a new wellness goal for a user. */
+export async function createWellnessGoal(
+    userId: string,
+    goal: Omit<WellnessGoal, 'id' | 'userId' | 'current' | 'status'>
+): Promise<WellnessGoal> {
+    try {
+        const response = await restClient.post<WellnessGoal>('/wellness/goals', { userId, ...goal });
+        return response.data;
+    } catch (err: unknown) {
+        throw err instanceof Error ? err : new Error('Failed to create wellness goal');
+    }
+}
+
+/** Deletes a wellness goal by ID. */
+export async function deleteWellnessGoal(goalId: string): Promise<void> {
+    try {
+        await restClient.delete(`/wellness/goals/${goalId}`);
+    } catch (err: unknown) {
+        throw err instanceof Error ? err : new Error('Failed to delete wellness goal');
+    }
+}
+
+/** Retrieves mood history for a user within an optional date range. */
+export async function getMoodHistory(userId: string, startDate?: string, endDate?: string): Promise<MoodCheckIn[]> {
+    try {
+        const response = await restClient.get<MoodCheckIn[]>('/wellness/companion/mood-history', {
+            params: { userId, startDate, endDate },
+        });
+        return response.data;
+    } catch (err: unknown) {
+        throw err instanceof Error ? err : new Error('Failed to retrieve mood history');
+    }
+}
+
+/** Retrieves available breathing techniques. */
+export async function getBreathingTechniques(): Promise<
+    Array<{ id: string; name: string; description: string; durationMinutes: number }>
+> {
+    try {
+        const response = await restClient.get<
+            Array<{ id: string; name: string; description: string; durationMinutes: number }>
+        >('/wellness/sessions/breathing/techniques');
+        return response.data;
+    } catch (err: unknown) {
+        throw err instanceof Error ? err : new Error('Failed to retrieve breathing techniques');
+    }
+}
+
+/** Retrieves available meditation types. */
+export async function getMeditationTypes(): Promise<
+    Array<{ id: string; name: string; description: string; audioUrl?: string }>
+> {
+    try {
+        const response = await restClient.get<
+            Array<{ id: string; name: string; description: string; audioUrl?: string }>
+        >('/wellness/sessions/meditation/types');
+        return response.data;
+    } catch (err: unknown) {
+        throw err instanceof Error ? err : new Error('Failed to retrieve meditation types');
+    }
+}
+
+/** Completes a wellness activity and returns the updated daily plan. */
+export async function completeWellnessActivity(userId: string, activityId: string): Promise<DailyWellnessPlan> {
+    try {
+        const response = await restClient.post<DailyWellnessPlan>(
+            `/wellness/daily-plan/activities/${activityId}/complete`,
+            { userId }
+        );
+        return response.data;
+    } catch (err: unknown) {
+        throw err instanceof Error ? err : new Error('Failed to complete wellness activity');
+    }
+}

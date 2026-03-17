@@ -330,3 +330,73 @@ export const getDigitalCardShare = async (planId: string): Promise<ShareData> =>
     const response = await restClient.get<ShareData>(`/plans/${planId}/digital-card/share`);
     return response.data;
 };
+
+/** Fetches a coverage summary for a user. */
+export const getCoverageSummary = async (
+    userId: string
+): Promise<{ planName: string; coverageLevel: string; deductibleMet: number; outOfPocketMet: number }> => {
+    const response = await restClient.get<{
+        planName: string;
+        coverageLevel: string;
+        deductibleMet: number;
+        outOfPocketMet: number;
+    }>('/plan/coverage-summary', { params: { userId } });
+    return response.data;
+};
+
+/** Requests pre-authorization for a service under a plan. */
+export const requestPreAuth = async (
+    planId: string,
+    request: { serviceType: string; providerId: string; reason: string }
+): Promise<PreAuthStatus> => {
+    const response = await restClient.post<PreAuthStatus>(`/plans/${planId}/pre-auth`, request);
+    return response.data;
+};
+
+/** Fetches a claim cost estimate for a procedure under a plan. */
+export const getClaimEstimate = async (
+    planId: string,
+    procedureCode: string
+): Promise<{ estimatedCost: number; estimatedCoverage: number; estimatedOutOfPocket: number }> => {
+    const response = await restClient.get<{
+        estimatedCost: number;
+        estimatedCoverage: number;
+        estimatedOutOfPocket: number;
+    }>(`/plans/${planId}/claim-estimate`, { params: { procedureCode } });
+    return response.data;
+};
+
+/** Fetches documents associated with a plan. */
+export const getPlanDocuments = async (
+    planId: string
+): Promise<Array<{ id: string; name: string; type: string; url: string; uploadedAt: string }>> => {
+    const response = await restClient.get<
+        Array<{ id: string; name: string; type: string; url: string; uploadedAt: string }>
+    >(`/plans/${planId}/documents`);
+    return response.data;
+};
+
+/** Exports claim data for a user in the specified format. */
+export const exportClaimData = async (
+    userId: string,
+    format: string,
+    dateRange?: { start: string; end: string }
+): Promise<{ url: string; expiresAt: string }> => {
+    const response = await restClient.post<{ url: string; expiresAt: string }>('/plan/claims/export', {
+        userId,
+        format,
+        dateRange,
+    });
+    return response.data;
+};
+
+/** Fetches payment history for a user. */
+export const getPaymentHistory = async (
+    userId: string,
+    page?: number
+): Promise<Array<{ id: string; amount: number; date: string; description: string; status: string }>> => {
+    const response = await restClient.get<
+        Array<{ id: string; amount: number; date: string; description: string; status: string }>
+    >('/plan/payments/history', { params: { userId, page } });
+    return response.data;
+};

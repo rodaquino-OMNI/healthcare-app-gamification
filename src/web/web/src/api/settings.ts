@@ -179,3 +179,71 @@ export async function downloadDoc(id: string): Promise<Blob> {
         throw err instanceof Error ? err : new Error('Unexpected error');
     }
 }
+
+export async function updateDependent(
+    id: string,
+    data: { name?: string; dob?: string; relationship?: string; gender?: string }
+): Promise<void> {
+    try {
+        await restClient.put(`/users/me/dependents/${id}`, data);
+    } catch (err: unknown) {
+        throw err instanceof Error ? err : new Error('Unexpected error');
+    }
+}
+
+export async function getPreferences(): Promise<{
+    theme: string;
+    language: string;
+    accessibility: { fontSize: string; highContrast: boolean; reducedMotion: boolean; screenReader: boolean };
+}> {
+    try {
+        const response = await restClient.get<{
+            theme: string;
+            language: string;
+            accessibility: { fontSize: string; highContrast: boolean; reducedMotion: boolean; screenReader: boolean };
+        }>('/users/me/preferences');
+        return response.data;
+    } catch (err: unknown) {
+        throw err instanceof Error ? err : new Error('Unexpected error');
+    }
+}
+
+export async function deleteInsuranceDoc(id: string): Promise<void> {
+    try {
+        await restClient.delete(`/users/me/insurance/documents/${id}`);
+    } catch (err: unknown) {
+        throw err instanceof Error ? err : new Error('Unexpected error');
+    }
+}
+
+export async function uploadInsuranceDoc(file: FormData): Promise<{ id: string; name: string; url: string }> {
+    try {
+        const response = await restClient.post<{ id: string; name: string; url: string }>(
+            '/users/me/insurance/documents',
+            file,
+            { headers: { 'Content-Type': 'multipart/form-data' } }
+        );
+        return response.data;
+    } catch (err: unknown) {
+        throw err instanceof Error ? err : new Error('Unexpected error');
+    }
+}
+
+export async function getPrivacySettings(): Promise<{
+    dataSharing: boolean;
+    analyticsEnabled: boolean;
+    marketingOptIn: boolean;
+    lgpdConsent: boolean;
+}> {
+    try {
+        const response = await restClient.get<{
+            dataSharing: boolean;
+            analyticsEnabled: boolean;
+            marketingOptIn: boolean;
+            lgpdConsent: boolean;
+        }>('/users/me/privacy');
+        return response.data;
+    } catch (err: unknown) {
+        throw err instanceof Error ? err : new Error('Unexpected error');
+    }
+}
