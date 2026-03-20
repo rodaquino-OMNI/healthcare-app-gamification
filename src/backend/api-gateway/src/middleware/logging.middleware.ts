@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
@@ -23,7 +22,8 @@ export class LoggingMiddleware implements NestMiddleware {
             res.setHeader('X-Correlation-Id', correlationId);
 
             // Extract request information
-            const { method, originalUrl, body } = req;
+            const { method, originalUrl } = req;
+            const body = req.body as Record<string, unknown> | undefined;
             const userAgent = req.get('user-agent') || 'unknown';
             const ipAddress = this.getIpAddress(req);
 
@@ -37,14 +37,16 @@ export class LoggingMiddleware implements NestMiddleware {
             };
 
             // Log the request
-            const hasBody = body && Object.keys(body).length > 0;
-            const requestMeta = {
+            const hasBody = body !== undefined && body !== null && Object.keys(body).length > 0;
+            const requestMeta: Record<string, unknown> = {
                 ...logContext,
                 hasBody,
                 // Don't log sensitive body data like passwords
                 body: hasBody ? this.sanitizeRequestBody(body) : undefined,
             };
-            this.loggerService.log(`Request received ${method} ${originalUrl} ${JSON.stringify(requestMeta)}`);
+            this.loggerService.log(
+                `Request received ${method} ${originalUrl} ` + JSON.stringify(requestMeta)
+            );
 
             // Calculate request start time
             const startTime = process.hrtime();
@@ -53,10 +55,12 @@ export class LoggingMiddleware implements NestMiddleware {
             const loggerService = this.loggerService;
 
             // Override response end method to log response
-            const originalEnd = res.end;
+            const originalEnd = res.end.bind(res);
 
-            // Use type assertion to avoid complex overload resolution
-            res.end = function (this: Response, ...args: any[]): any {
+            // Use type assertion to avoid complex overload resolution on Response.end
+            /* eslint-disable-next-line @typescript-eslint/no-explicit-any
+               -- Response.end has 6+ overloads; typed wrapper is impractical */
+            res.end = function (this: Response, ...args: unknown[]): unknown {
                 // Calculate request duration
                 const [seconds, nanoseconds] = process.hrtime(startTime);
                 const responseTime = seconds * 1000 + nanoseconds / 1000000;
@@ -72,24 +76,28 @@ export class LoggingMiddleware implements NestMiddleware {
                     contentLength,
                     responseTime,
                 };
+                const msg =
+                    `Response sent ${statusCode} ` +
+                    `${method} ${originalUrl} - ` +
+                    `${responseTime.toFixed(2)}ms ` +
+                    JSON.stringify(responseMeta);
                 if (statusCode >= 400) {
-                    loggerService.warn(
-                        `Response sent ${statusCode} ${method} ${originalUrl} - ${responseTime.toFixed(2)}ms ${JSON.stringify(responseMeta)}`
-                    );
+                    loggerService.warn(msg);
                 } else {
-                    loggerService.log(
-                        `Response sent ${statusCode} ${method} ${originalUrl} - ${responseTime.toFixed(2)}ms ${JSON.stringify(responseMeta)}`
-                    );
+                    loggerService.log(msg);
                 }
 
                 // Call the original end function
-                return originalEnd.apply(this, args as any);
-            } as any;
+                /* eslint-disable-next-line @typescript-eslint/no-explicit-any,
+                   @typescript-eslint/no-unsafe-argument
+                   -- apply requires any[] for overloaded .end() */
+                return (originalEnd as (...a: any[]) => unknown)(...args);
+            } as Response['end'];
 
             next();
         } catch (error) {
-            const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
-            const errorStack = error instanceof Error ? (error as any).stack : 'No stack trace';
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            const errorStack = error instanceof Error ? error.stack : 'No stack trace';
             this.loggerService.error(`Logging error: ${errorMessage}`, errorStack);
             next();
         }
@@ -117,14 +125,21 @@ export class LoggingMiddleware implements NestMiddleware {
      * @param body - The request body to sanitize
      * @returns The sanitized body
      */
-    private sanitizeRequestBody(body: any): any {
+    private sanitizeRequestBody(body: Record<string, unknown>): Record<string, unknown> {
         if (!body) {
             return body;
         }
 
-        const sanitized = { ...body };
+        const sanitized: Record<string, unknown> = { ...body };
         // Mask sensitive fields
-        const sensitiveFields = ['password', 'newPassword', 'currentPassword', 'token', 'secret', 'authorization'];
+        const sensitiveFields = [
+            'password',
+            'newPassword',
+            'currentPassword',
+            'token',
+            'secret',
+            'authorization',
+        ];
 
         sensitiveFields.forEach((field) => {
             if (sanitized[field] !== undefined) {

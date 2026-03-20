@@ -1,9 +1,9 @@
 import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 import { PhiAccess } from '@app/shared/audit';
-import { Controller, Post, Body, UseGuards } from '@nestjs/common'; // v10.0.0+
+import { Controller, Post, Body, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common'; // v10.0.0+
 
 import { CheckSymptomsDto } from './dto/check-symptoms.dto';
-import { SymptomCheckerService } from './symptom-checker.service';
+import { SymptomCheckerResponse, SymptomCheckerService } from './symptom-checker.service';
 
 /**
  * Controller for handling symptom check requests in the Care Now journey.
@@ -24,13 +24,16 @@ export class SymptomCheckerController {
      * Implements requirement F-102-RQ-001 allowing users to input symptoms and receive guidance.
      *
      * @param checkSymptomsDto DTO containing the symptoms to check
-     * @returns Preliminary guidance based on the symptoms, including severity level and care options
+     * @returns Preliminary guidance based on the symptoms,
+     *   including severity level and care options
      */
     @Post()
     @UseGuards(JwtAuthGuard)
     @PhiAccess('SymptomCheck')
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async checkSymptoms(@Body() checkSymptomsDto: CheckSymptomsDto): Promise<any> {
+    @UsePipes(ValidationPipe)
+    async checkSymptoms(
+        @Body() checkSymptomsDto: CheckSymptomsDto
+    ): Promise<SymptomCheckerResponse> {
         return this.symptomCheckerService.checkSymptoms(checkSymptomsDto);
     }
 }

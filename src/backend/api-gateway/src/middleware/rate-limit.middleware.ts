@@ -1,16 +1,28 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { ErrorCodes } from '@app/shared/constants/error-codes.constants';
 import { RedisService } from '@app/shared/redis/redis.service';
 import { Injectable, NestMiddleware, HttpStatus, HttpException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request, Response, NextFunction } from 'express';
 
-import { configuration } from '../config/configuration';
+/** Authenticated request with user info attached by auth middleware. */
+interface AuthenticatedRequest extends Request {
+    user?: { id: string; email?: string };
+}
+
+/** Shape of the rate-limit configuration object. */
+interface RateLimitConfig {
+    windowMs: number;
+    max: number;
+    journeyLimits?: Record<string, number>;
+    message?: string;
+    standardHeaders?: boolean;
+    legacyHeaders?: boolean;
+}
 
 /**
  * Middleware that applies rate limiting to API requests.
- * Uses Redis to track request counts and applies journey-specific limits
- * to ensure fair usage and protect against abuse.
+ * Uses Redis to track request counts and applies
+ * journey-specific limits to ensure fair usage and protect
+ * against abuse.
  */
 @Injectable()
 export class RateLimitMiddleware implements NestMiddleware {
@@ -25,7 +37,7 @@ export class RateLimitMiddleware implements NestMiddleware {
      * @param res Express response object
      * @param next Express next function
      */
-    async use(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async use(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
         try {
             // Extract the user's IP address from the request
             const ip =
@@ -35,32 +47,36 @@ export class RateLimitMiddleware implements NestMiddleware {
                 'unknown';
 
             // Check if user is authenticated
-            const isAuthenticated = !!(req as any).user;
-            const userId = isAuthenticated ? (req as any).user.id : null;
+            const isAuthenticated = !!req.user;
+            const userId = isAuthenticated ? (req.user?.id ?? null) : null;
 
             // Determine which journey this request is for
             const journey = this.getRequestJourney(req);
 
             // Construct a unique key for rate limiting
-            // For authenticated users, use their ID; for anonymous users, use IP
+            // For authenticated users, use their ID; for anonymous, use IP
             const identifier = isAuthenticated ? `user:${userId}` : `ip:${ip}`;
             const rateLimitKey = `rateLimit:${identifier}:${journey || 'global'}`;
 
-            // Retrieve the rate limiting configuration from the ConfigService
-            const rateLimitConfig = this.configService.get('apiGateway.rateLimit');
+            // Retrieve the rate limiting configuration
+            const rateLimitConfig = this.configService.get<RateLimitConfig>('apiGateway.rateLimit');
             if (!rateLimitConfig) {
                 return next();
             }
 
             // Determine the maximum number of requests allowed
-            let maxRequests = rateLimitConfig.max;
-            if (journey && rateLimitConfig.journeyLimits && rateLimitConfig.journeyLimits[journey]) {
+            let maxRequests: number = rateLimitConfig.max;
+            if (
+                journey &&
+                rateLimitConfig.journeyLimits &&
+                rateLimitConfig.journeyLimits[journey]
+            ) {
                 maxRequests = rateLimitConfig.journeyLimits[journey];
             }
 
             // Authenticated users get higher limits
             if (isAuthenticated) {
-                maxRequests *= 3; // Triple the limit for authenticated users
+                maxRequests *= 3; // Triple the limit
             }
 
             // Check if the rate limit key exists
@@ -85,17 +101,22 @@ export class RateLimitMiddleware implements NestMiddleware {
                     if (rateLimitConfig.standardHeaders) {
                         res.setHeader('RateLimit-Limit', maxRequests.toString());
                         res.setHeader('RateLimit-Remaining', '0');
-                        res.setHeader('RateLimit-Reset', Math.ceil(Date.now() / 1000 + remainingTtl).toString());
+                        res.setHeader(
+                            'RateLimit-Reset',
+                            Math.ceil(Date.now() / 1000 + remainingTtl).toString()
+                        );
                         res.setHeader('Retry-After', remainingTtl.toString());
                     }
 
                     // Return 429 Too Many Requests error
+                    const errorMsg: string =
+                        rateLimitConfig.message || 'Too many requests, please try again later.';
                     throw new HttpException(
                         {
                             statusCode: HttpStatus.TOO_MANY_REQUESTS,
                             error: 'Too Many Requests',
-                            message: rateLimitConfig.message || 'Too many requests, please try again later.',
-                            code: 'API_001', // API_RATE_LIMIT_EXCEEDED constant value
+                            message: errorMsg,
+                            code: 'API_001',
                         },
                         HttpStatus.TOO_MANY_REQUESTS
                     );
@@ -107,7 +128,8 @@ export class RateLimitMiddleware implements NestMiddleware {
                 // Set rate limit headers
                 if (rateLimitConfig.standardHeaders) {
                     const remaining = Math.max(0, maxRequests - (currentCount + 1));
-                    const resetTime = Math.ceil(Date.now() / 1000 + (await this.redisService.ttl(rateLimitKey)));
+                    const resetTtl = await this.redisService.ttl(rateLimitKey);
+                    const resetTime = Math.ceil(Date.now() / 1000 + resetTtl);
 
                     res.setHeader('RateLimit-Limit', maxRequests.toString());
                     res.setHeader('RateLimit-Remaining', remaining.toString());
@@ -129,7 +151,7 @@ export class RateLimitMiddleware implements NestMiddleware {
             next();
         } catch (error) {
             if (error instanceof HttpException) {
-                throw error as any;
+                throw error;
             }
 
             // For unexpected errors, log and continue
@@ -139,9 +161,10 @@ export class RateLimitMiddleware implements NestMiddleware {
     }
 
     /**
-     * Determine which journey the request belongs to based on the path or GraphQL operation.
+     * Determine which journey the request belongs to
+     * based on the path or GraphQL operation.
      * @param req The Express request object
-     * @returns The journey identifier or null if not determined
+     * @returns The journey identifier or null
      */
     private getRequestJourney(req: Request): string | null {
         // First check path segments
@@ -157,9 +180,10 @@ export class RateLimitMiddleware implements NestMiddleware {
             return 'game';
         }
 
-        // If path doesn't indicate journey, try GraphQL operation (if available)
-        if (req.body?.operationName && typeof req.body.operationName === 'string') {
-            const operation = req.body.operationName.toLowerCase();
+        // If path doesn't indicate journey, try GraphQL operation
+        const body = req.body as { operationName?: unknown } | undefined;
+        if (body?.operationName && typeof body.operationName === 'string') {
+            const operation = body.operationName.toLowerCase();
 
             if (operation.includes('health')) {
                 return 'health';

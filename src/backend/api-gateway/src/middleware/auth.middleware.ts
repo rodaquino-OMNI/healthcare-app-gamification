@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AuthService } from '@app/auth/auth/auth.service';
 import { UsersService } from '@app/auth/users/users.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
@@ -6,11 +5,24 @@ import { Injectable, NestMiddleware, HttpStatus, HttpException } from '@nestjs/c
 import { Request, Response, NextFunction } from 'express';
 import { verify, JwtPayload } from 'jsonwebtoken';
 
-import { configuration } from '../config/configuration';
+import { ApiGatewayConfig } from '../config/configuration';
+
+/** Auth config subset needed by this middleware. */
+interface AuthConfig {
+    jwtSecret?: string;
+}
+
+/** Possible shapes the injected config can take at runtime. */
+interface ResolvedConfig {
+    auth?: AuthConfig;
+    apiGateway?: { auth?: AuthConfig };
+}
 
 /**
- * Middleware that authenticates incoming requests by verifying the JWT token in the Authorization header.
- * Implements the requirements for API Gateway authentication and authorization.
+ * Middleware that authenticates incoming requests by verifying
+ * the JWT token in the Authorization header.
+ * Implements the requirements for API Gateway authentication
+ * and authorization.
  */
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
@@ -20,19 +32,20 @@ export class AuthMiddleware implements NestMiddleware {
      * @param authService Service for authentication operations
      * @param usersService Service for user management operations
      * @param loggerService Service for logging
-     * @param configuration Configuration for the API Gateway
+     * @param config Configuration for the API Gateway
      */
     constructor(
         private readonly authService: AuthService,
         private readonly usersService: UsersService,
         private readonly loggerService: LoggerService,
-        private readonly configuration: any
+        private readonly config: ResolvedConfig | (() => ApiGatewayConfig)
     ) {
         this.loggerService.setContext('AuthMiddleware');
     }
 
     /**
-     * Authenticates the request by verifying the JWT token and attaching user information to the request object.
+     * Authenticates the request by verifying the JWT token
+     * and attaching user information to the request object.
      *
      * @param req The Express request object
      * @param res The Express response object
@@ -53,7 +66,10 @@ export class AuthMiddleware implements NestMiddleware {
             const [type, token] = authHeader.split(' ');
             if (type !== 'Bearer' || !token) {
                 this.loggerService.error('Invalid authorization header format');
-                throw new HttpException('Invalid authorization header format', HttpStatus.UNAUTHORIZED);
+                throw new HttpException(
+                    'Invalid authorization header format',
+                    HttpStatus.UNAUTHORIZED
+                );
             }
 
             try {
@@ -68,32 +84,31 @@ export class AuthMiddleware implements NestMiddleware {
                 try {
                     await this.usersService.findOne(userId);
                 } catch (error) {
-                    const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
-                    const errorStack = error instanceof Error ? (error as any).stack : 'No stack trace';
+                    const errorStack = error instanceof Error ? error.stack : 'No stack trace';
                     this.loggerService.error(`User not found: ${userId}`, errorStack);
                     throw new HttpException('Invalid user', HttpStatus.UNAUTHORIZED);
                 }
 
                 // Attach user information to the request object
-                req['user'] = {
+                (req as Request & { user: unknown })['user'] = {
                     id: userId,
-                    email: decoded.email,
+                    email: decoded.email as string | undefined,
                 };
 
                 this.loggerService.log(`Authenticated user: ${userId}`);
                 return next();
             } catch (error) {
-                const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
-                const errorStack = error instanceof Error ? (error as any).stack : 'No stack trace';
+                const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+                const errorStack = error instanceof Error ? error.stack : 'No stack trace';
                 this.loggerService.error(`Token verification failed: ${errorMessage}`, errorStack);
                 throw new HttpException('Invalid or expired token', HttpStatus.UNAUTHORIZED);
             }
         } catch (error) {
             if (error instanceof HttpException) {
-                throw error as any;
+                throw error;
             } else {
-                const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
-                const errorStack = error instanceof Error ? (error as any).stack : 'No stack trace';
+                const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+                const errorStack = error instanceof Error ? error.stack : 'No stack trace';
                 this.loggerService.error(`Authentication error: ${errorMessage}`, errorStack);
                 throw new HttpException('Authentication failed', HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -108,24 +123,26 @@ export class AuthMiddleware implements NestMiddleware {
      */
     private getJwtSecret(): string {
         try {
-            if (typeof this.configuration === 'function') {
+            if (typeof this.config === 'function') {
                 // If configuration is a function (registerAs result)
-                const config = this.configuration();
-                return config.auth.jwtSecret;
-            } else if (this.configuration.apiGateway && this.configuration.apiGateway.auth) {
+                const cfg = this.config();
+                if (cfg.auth.jwtSecret) {
+                    return cfg.auth.jwtSecret;
+                }
+            } else if (this.config.apiGateway?.auth?.jwtSecret) {
                 // If configuration is already resolved with apiGateway namespace
-                return this.configuration.apiGateway.auth.jwtSecret;
-            } else if (this.configuration.auth) {
+                return this.config.apiGateway.auth.jwtSecret;
+            } else if (this.config.auth?.jwtSecret) {
                 // If auth is directly on the configuration object
-                return this.configuration.auth.jwtSecret;
+                return this.config.auth.jwtSecret;
             }
         } catch (error) {
-            const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
-            const errorStack = error instanceof Error ? (error as any).stack : 'No stack trace';
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            const errorStack = error instanceof Error ? error.stack : 'No stack trace';
             this.loggerService.error(`Error getting JWT secret: ${errorMessage}`, errorStack);
         }
 
-        // Fallback to environment variable — no hardcoded default allowed
+        // Fallback to environment variable -- no hardcoded default allowed
         const jwtSecret = process.env.JWT_SECRET;
         if (!jwtSecret) {
             throw new Error('JWT_SECRET environment variable is required');

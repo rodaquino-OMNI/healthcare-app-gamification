@@ -4,19 +4,21 @@ import { Provider } from '@app/care/providers/entities/provider.entity';
 
 /**
  * Enum defining the possible types of appointments.
+ * Values match Prisma-generated AppointmentType enum.
  */
 export enum AppointmentType {
-    IN_PERSON = 'in-person',
-    TELEMEDICINE = 'telemedicine',
+    IN_PERSON = 'IN_PERSON',
+    TELEMEDICINE = 'TELEMEDICINE',
 }
 
 /**
  * Enum defining the possible statuses of appointments.
+ * Values match Prisma-generated AppointmentStatus enum.
  */
 export enum AppointmentStatus {
-    SCHEDULED = 'scheduled',
-    COMPLETED = 'completed',
-    CANCELLED = 'cancelled',
+    SCHEDULED = 'SCHEDULED',
+    COMPLETED = 'COMPLETED',
+    CANCELLED = 'CANCELLED',
 }
 
 /**

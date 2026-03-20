@@ -34,15 +34,12 @@ export class InsightsController {
     @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'Get health insights for the current user' })
     @ApiResponse({ status: 200, description: 'Returns generated health insights' })
-    // eslint-disable-next-line max-len
-    async getInsights(@Request() _req: unknown, @CurrentUser() user: { id: string }): Promise<unknown> {
-        // Logs the request to retrieve insights.
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    async getInsights(
+        @Request() _req: unknown,
+        @CurrentUser() user: { id: string }
+    ): Promise<unknown> {
         this.logger.log(`Request to retrieve insights for user ${user.id}`);
-        // Calls the insightsService to generate user insights.
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const insights = await this.insightsService.generateUserInsights(user.id);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return insights;
     }
 }

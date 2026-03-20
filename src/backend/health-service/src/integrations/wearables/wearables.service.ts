@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { ErrorType } from '@app/shared/exceptions/error.types';
 import { LoggerService } from '@app/shared/logging/logger.service';
@@ -14,7 +13,11 @@ import { HealthMetric } from '../../health/entities/health-metric.entity';
  * Abstract class for wearable device adapters
  */
 export abstract class WearableAdapter {
-    abstract connect(userId: string, authToken: string, refreshToken?: string): Promise<DeviceConnection>;
+    abstract connect(
+        userId: string,
+        authToken: string,
+        refreshToken?: string
+    ): Promise<DeviceConnection>;
     abstract getHealthMetrics(
         userId: string,
         deviceConnection: DeviceConnection,
@@ -81,27 +84,44 @@ export class WearablesService {
             const deviceConnection = await adapter.connect(userId, authToken, refreshToken);
 
             // Persist the device connection in the database
-            const persistedConnection = await (this.prisma as any).deviceConnection.create({
+            /* eslint-disable
+               @typescript-eslint/no-unsafe-assignment,
+               @typescript-eslint/no-unsafe-call,
+               @typescript-eslint/no-unsafe-member-access,
+               @typescript-eslint/no-explicit-any
+               -- Prisma model delegate */
+            const persistedConnection: DeviceConnection = await (
+                this.prisma as any
+            ).deviceConnection.create({
                 data: {
                     recordId,
                     userId,
                     deviceType,
                     status: deviceConnection.status,
-                    connectionData: (deviceConnection as any).connectionData,
+                    connectionData: (deviceConnection as unknown as Record<string, unknown>)
+                        .connectionData,
                     lastSyncedAt: deviceConnection.lastSync,
                 },
             });
+            /* eslint-enable
+               @typescript-eslint/no-unsafe-assignment,
+               @typescript-eslint/no-unsafe-call,
+               @typescript-eslint/no-unsafe-member-access,
+               @typescript-eslint/no-explicit-any */
 
             this.logger.log('info', `Connected ${deviceType} to record ${recordId}`);
 
             return persistedConnection;
         } catch (error: unknown) {
-            const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
-            const errorStack = error instanceof Error ? (error as any).stack : undefined;
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            const errorStack = error instanceof Error ? error.stack : undefined;
 
-            this.logger.error(`Failed to connect ${deviceType} to record ${recordId}: ${errorMessage}`, errorStack);
+            this.logger.error(
+                `Failed to connect ${deviceType} to record ${recordId}: ${errorMessage}`,
+                errorStack
+            );
 
-            throw error as any;
+            throw error;
         }
     }
 
@@ -130,7 +150,15 @@ export class WearablesService {
             }
 
             // Retrieve the device connection from the database
-            const deviceConnection = await (this.prisma as any).deviceConnection.findFirst({
+            /* eslint-disable
+               @typescript-eslint/no-unsafe-assignment,
+               @typescript-eslint/no-unsafe-call,
+               @typescript-eslint/no-unsafe-member-access,
+               @typescript-eslint/no-explicit-any
+               -- Prisma model delegate */
+            const deviceConnection: DeviceConnection | null = await (
+                this.prisma as any
+            ).deviceConnection.findFirst({
                 where: {
                     recordId,
                     userId,
@@ -138,20 +166,41 @@ export class WearablesService {
                     status: 'CONNECTED',
                 },
             });
+            /* eslint-enable
+               @typescript-eslint/no-unsafe-assignment,
+               @typescript-eslint/no-unsafe-call,
+               @typescript-eslint/no-unsafe-member-access,
+               @typescript-eslint/no-explicit-any */
 
             if (!deviceConnection) {
                 throw new Error(
-                    `${ErrorType.HEALTH_001}: No active ${deviceType} connection found for record ${recordId}`
+                    `${ErrorType.HEALTH_001}: No active ` +
+                        `${deviceType} connection found ` +
+                        `for record ${recordId}`
                 );
             }
 
-            const healthMetrics = await adapter.getHealthMetrics(userId, deviceConnection, startTime, endTime);
+            const healthMetrics = await adapter.getHealthMetrics(
+                userId,
+                deviceConnection,
+                startTime,
+                endTime
+            );
 
             // Update the last synced timestamp
+            /* eslint-disable
+               @typescript-eslint/no-unsafe-call,
+               @typescript-eslint/no-unsafe-member-access,
+               @typescript-eslint/no-explicit-any
+               -- Prisma model delegate */
             await (this.prisma as any).deviceConnection.update({
                 where: { id: deviceConnection.id },
                 data: { lastSyncedAt: new Date() },
             });
+            /* eslint-enable
+               @typescript-eslint/no-unsafe-call,
+               @typescript-eslint/no-unsafe-member-access,
+               @typescript-eslint/no-explicit-any */
 
             this.logger.log(
                 'info',
@@ -160,15 +209,15 @@ export class WearablesService {
 
             return healthMetrics;
         } catch (error: unknown) {
-            const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
-            const errorStack = error instanceof Error ? (error as any).stack : undefined;
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            const errorStack = error instanceof Error ? error.stack : undefined;
 
             this.logger.error(
                 `Failed to retrieve metrics for record ${recordId} from ${deviceType}: ${errorMessage}`,
                 errorStack
             );
 
-            throw error as any;
+            throw error;
         }
     }
 
@@ -189,7 +238,15 @@ export class WearablesService {
             }
 
             // Retrieve the device connection from the database
-            const deviceConnection = await (this.prisma as any).deviceConnection.findFirst({
+            /* eslint-disable
+               @typescript-eslint/no-unsafe-assignment,
+               @typescript-eslint/no-unsafe-call,
+               @typescript-eslint/no-unsafe-member-access,
+               @typescript-eslint/no-explicit-any
+               -- Prisma model delegate */
+            const deviceConnection: DeviceConnection | null = await (
+                this.prisma as any
+            ).deviceConnection.findFirst({
                 where: {
                     recordId,
                     userId,
@@ -197,9 +254,16 @@ export class WearablesService {
                     status: 'CONNECTED',
                 },
             });
+            /* eslint-enable
+               @typescript-eslint/no-unsafe-assignment,
+               @typescript-eslint/no-unsafe-call,
+               @typescript-eslint/no-unsafe-member-access,
+               @typescript-eslint/no-explicit-any */
 
             if (!deviceConnection) {
-                this.logger.warn(`No active ${deviceType} connection found for record ${recordId}`);
+                this.logger.warn(
+                    `No active ${deviceType} connection ` + `found for record ${recordId}`
+                );
                 return false;
             }
 
@@ -207,25 +271,34 @@ export class WearablesService {
 
             if (disconnected) {
                 // Update the connection status in the database
+                /* eslint-disable
+                   @typescript-eslint/no-unsafe-call,
+                   @typescript-eslint/no-unsafe-member-access,
+                   @typescript-eslint/no-explicit-any
+                   -- Prisma model delegate */
                 await (this.prisma as any).deviceConnection.update({
                     where: { id: deviceConnection.id },
                     data: { status: 'DISCONNECTED' },
                 });
+                /* eslint-enable
+               @typescript-eslint/no-unsafe-call,
+               @typescript-eslint/no-unsafe-member-access,
+               @typescript-eslint/no-explicit-any */
             }
 
             this.logger.log('info', `Disconnected ${deviceType} from record ${recordId}`);
 
             return disconnected;
         } catch (error: unknown) {
-            const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
-            const errorStack = error instanceof Error ? (error as any).stack : undefined;
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            const errorStack = error instanceof Error ? error.stack : undefined;
 
             this.logger.error(
                 `Failed to disconnect ${deviceType} from record ${recordId}: ${errorMessage}`,
                 errorStack
             );
 
-            throw error as any;
+            throw error;
         }
     }
 }

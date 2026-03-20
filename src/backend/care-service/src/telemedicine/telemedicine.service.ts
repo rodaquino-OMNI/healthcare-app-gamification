@@ -1,9 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { Injectable } from '@nestjs/common';
 
 import { CreateSessionDto } from './dto/create-session.dto';
@@ -53,7 +47,9 @@ export class TelemedicineService {
      * @throws AppException if validation fails or system error occurs
      */
     // eslint-disable-next-line max-len
-    async startTelemedicineSession(createSessionDto: CreateSessionDto): Promise<TelemedicineSession> {
+    async startTelemedicineSession(
+        createSessionDto: CreateSessionDto
+    ): Promise<TelemedicineSession> {
         try {
             // Validate that telemedicine is enabled in the configuration
             if (!this.config.telemedicine.enabled) {
@@ -66,8 +62,7 @@ export class TelemedicineService {
             }
 
             // Validate that the provider offers telemedicine
-            // eslint-disable-next-line max-len
-            const provider = await this.providersService.findById((createSessionDto as any).providerId);
+            const provider = await this.providersService.findById(createSessionDto.providerId!);
 
             if (!provider.telemedicineAvailable) {
                 throw new AppException(
@@ -79,16 +74,16 @@ export class TelemedicineService {
             }
 
             // Get the appointment to validate eligibility
-            const appointment = await (this.prisma as any).appointment.findUnique({
-                where: { id: (createSessionDto as any).appointmentId },
+            const appointment = await this.prisma.appointment.findUnique({
+                where: { id: createSessionDto.appointmentId! },
             });
 
             if (!appointment) {
                 throw new AppException(
-                    `Appointment with ID ${(createSessionDto as any).appointmentId} not found`,
+                    `Appointment with ID ${createSessionDto.appointmentId!} not found`,
                     ErrorType.BUSINESS,
                     'CARE_APPOINTMENT_NOT_FOUND',
-                    { appointmentId: (createSessionDto as any).appointmentId }
+                    { appointmentId: createSessionDto.appointmentId! }
                 );
             }
 
@@ -113,9 +108,9 @@ export class TelemedicineService {
             }
 
             // Create a new telemedicine session
-            const session = await (this.prisma as any).telemedicineSession.create({
+            const session = await this.prisma.telemedicineSession.create({
                 data: {
-                    appointmentId: (createSessionDto as any).appointmentId,
+                    appointmentId: createSessionDto.appointmentId!,
                     patientId: createSessionDto.userId,
                     providerId: provider.id,
                     startTime: new Date(),
@@ -123,10 +118,10 @@ export class TelemedicineService {
                 },
             });
 
-            // Update appointment status to IN_PROGRESS
-            await (this.prisma as any).appointment.update({
+            // Update appointment status (keep as SCHEDULED while telemedicine session is active)
+            await this.prisma.appointment.update({
                 where: { id: appointment.id },
-                data: { status: 'IN_PROGRESS' },
+                data: { status: 'SCHEDULED' },
             });
 
             // Log session creation
@@ -146,15 +141,16 @@ export class TelemedicineService {
                 session.id // Use session ID as message key for ordering
             );
 
-            return session;
+            return session as unknown as TelemedicineSession;
         } catch (error) {
             if (error instanceof AppException) {
-                throw error as any;
+                throw error;
             }
 
+            const err = error instanceof Error ? error : new Error(String(error));
             this.logger.error(
-                `Failed to start telemedicine session: ${(error as any).message}`,
-                (error as any).stack,
+                `Failed to start telemedicine session: ${err.message}`,
+                err.stack,
                 'TelemedicineService'
             );
 

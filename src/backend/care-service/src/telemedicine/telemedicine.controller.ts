@@ -1,11 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 import { PhiAccess } from '@app/shared/audit';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 import { LoggerService } from '@app/shared/logging/logger.service';
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 
 import { CreateSessionDto } from './dto/create-session.dto';
+import { TelemedicineSession } from './entities/telemedicine-session.entity';
 import { TelemedicineService } from './telemedicine.service';
 
 /**
@@ -33,24 +33,32 @@ export class TelemedicineController {
     @Post('session')
     @UseGuards(JwtAuthGuard)
     @PhiAccess('TelemedicineSession')
-    async startTelemedicineSession(@Body() createSessionDto: CreateSessionDto): Promise<any> {
+    @UsePipes(ValidationPipe)
+    async startTelemedicineSession(
+        @Body() createSessionDto: CreateSessionDto
+    ): Promise<TelemedicineSession> {
         try {
             // Call the telemedicine service to start a new session
-            const session = await this.telemedicineService.startTelemedicineSession(createSessionDto);
+            const session =
+                await this.telemedicineService.startTelemedicineSession(createSessionDto);
 
-            this.logger.log(`Telemedicine session started: ${session.id}`, 'TelemedicineController');
+            this.logger.log(
+                `Telemedicine session started: ${session.id}`,
+                'TelemedicineController'
+            );
 
             // Return the result of the session creation
             return session;
         } catch (error) {
             // If it's already an AppException, just rethrow
             if (error instanceof AppException) {
-                throw error as any;
+                throw error;
             }
 
+            const err = error instanceof Error ? error : new Error(String(error));
             this.logger.error(
-                `Failed to start telemedicine session: ${(error as any).message}`,
-                (error as any).stack,
+                `Failed to start telemedicine session: ${err.message}`,
+                err.stack,
                 'TelemedicineController'
             );
 

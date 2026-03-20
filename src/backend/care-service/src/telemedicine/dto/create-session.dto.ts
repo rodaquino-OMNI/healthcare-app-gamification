@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsUUID } from 'class-validator'; // class-validator v5.0.1
+import { IsNotEmpty, IsOptional, IsUUID } from 'class-validator'; // class-validator v5.0.1
 
 /**
  * Data Transfer Object for creating a telemedicine session.
@@ -13,4 +13,20 @@ export class CreateSessionDto {
     @IsNotEmpty()
     @IsUUID()
     userId!: string;
+
+    /**
+     * The ID of the appointment associated with the telemedicine session.
+     * Provided when starting a session from an existing appointment.
+     */
+    @IsOptional()
+    @IsUUID()
+    appointmentId?: string;
+
+    /**
+     * The ID of the healthcare provider for the telemedicine session.
+     * Provided when starting a session from an existing appointment.
+     */
+    @IsOptional()
+    @IsUUID()
+    providerId?: string;
 }

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 import { KafkaService } from '@app/shared/kafka/kafka.service';
@@ -12,10 +11,19 @@ import { HealthMetric } from '../health/entities/health-metric.entity';
 import { FhirService } from '../integrations/fhir/fhir.service';
 import { WearablesService } from '../integrations/wearables/wearables.service';
 
+/** Shape of user insights data */
+interface InsightsData {
+    metricsCount: number;
+    goalsCount: number;
+    recommendations: string[];
+}
+
 /**
  * Generates health insights for users based on their health data.
- * It retrieves health metrics, analyzes trends, and generates personalized recommendations.
- * This service integrates with external data sources and the gamification engine to provide a comprehensive health management experience.
+ * It retrieves health metrics, analyzes trends, and generates
+ * personalized recommendations. This service integrates with
+ * external data sources and the gamification engine to provide
+ * a comprehensive health management experience.
  */
 @Injectable()
 export class InsightsService {
@@ -60,7 +68,7 @@ export class InsightsService {
 
             this.logger.log('Daily health insights generation completed.'); // Logs the completion of the process
         } catch (error: unknown) {
-            const errorStack = error instanceof Error ? (error as any).stack : undefined;
+            const errorStack = error instanceof Error ? error.stack : undefined;
             this.logger.error('Error during daily health insights generation', errorStack); // Logs any errors that occur during the process
         }
     }
@@ -70,7 +78,7 @@ export class InsightsService {
      * @param userId - The ID of the user to generate insights for.
      * @returns A promise that resolves with the generated insights for the user.
      */
-    async generateUserInsights(userId: string, requestingUserId?: string): Promise<any> {
+    async generateUserInsights(userId: string, requestingUserId?: string): Promise<InsightsData> {
         if (requestingUserId && userId !== requestingUserId) {
             throw new ForbiddenException("Access denied: cannot access another user's data");
         }
@@ -94,20 +102,21 @@ export class InsightsService {
             // Publishes insight generation events to Kafka for gamification processing.
             await this.publishInsightEvent(userId, insightsData);
 
-            this.logger.log(`Generated insights for user ${userId}: ${JSON.stringify(insightsData)}`); // Logs the generated insights.
+            this.logger.log(
+                `Generated insights for user ${userId}: ${JSON.stringify(insightsData)}`
+            ); // Logs the generated insights.
 
             return insightsData; // Returns the generated insights.
         } catch (error: unknown) {
-            const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
-            const errorStack = error instanceof Error ? (error as any).stack : undefined;
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            const errorStack = error instanceof Error ? error.stack : undefined;
 
             this.logger.error(`Error generating insights for user ${userId}`, errorStack); // Logs any errors that occur during the process
             throw new AppException(
                 'Failed to generate user insights',
                 ErrorType.TECHNICAL,
                 'HEALTH_INVALID_METRIC',
-                { userId },
-                (error instanceof Error ? error : new Error(errorMessage)) as any
+                { userId, error: errorMessage }
             );
         }
     }
@@ -132,8 +141,15 @@ export class InsightsService {
         this.logger.log(`Retrieving health metrics for user ${userId}`); // Logs the start of the process
 
         try {
-            // Queries the database using PrismaService to retrieve health metrics for the specified user.
-            const metrics = await (this.prisma as any).healthMetric.findMany({
+            // Queries the database using PrismaService to retrieve
+            // health metrics for the specified user.
+            /* eslint-disable
+               @typescript-eslint/no-unsafe-assignment,
+               @typescript-eslint/no-unsafe-call,
+               @typescript-eslint/no-unsafe-member-access,
+               @typescript-eslint/no-explicit-any
+               -- Prisma model delegate not exposed */
+            const metrics: HealthMetric[] = await (this.prisma as any).healthMetric.findMany({
                 where: {
                     userId: userId,
                     timestamp: {
@@ -142,21 +158,25 @@ export class InsightsService {
                     },
                 },
             });
+            /* eslint-enable
+               @typescript-eslint/no-unsafe-assignment,
+               @typescript-eslint/no-unsafe-call,
+               @typescript-eslint/no-unsafe-member-access,
+               @typescript-eslint/no-explicit-any */
 
-            this.logger.log(`Retrieved ${metrics.length} health metrics for user ${userId}`); // Logs the number of metrics retrieved
+            this.logger.log(`Retrieved ${metrics.length} health metrics ` + `for user ${userId}`);
 
-            return metrics; // Returns the retrieved health metrics.
+            return metrics;
         } catch (error: unknown) {
-            const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
-            const errorStack = error instanceof Error ? (error as any).stack : undefined;
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            const errorStack = error instanceof Error ? error.stack : undefined;
 
             this.logger.error(`Error retrieving health metrics for user ${userId}`, errorStack); // Logs any errors that occur during the process
             throw new AppException(
                 'Failed to retrieve user health metrics',
                 ErrorType.TECHNICAL,
                 'HEALTH_INVALID_METRIC',
-                { userId },
-                (error instanceof Error ? error : new Error(errorMessage)) as any
+                { userId, error: errorMessage }
             );
         }
     }
@@ -174,28 +194,39 @@ export class InsightsService {
         this.logger.log(`Retrieving health goals for user ${userId}`); // Logs the start of the process
 
         try {
-            // Queries the database using PrismaService to retrieve health goals for the specified user.
-            const goals = await (this.prisma as any).healthGoal.findMany({
+            // Queries the database using PrismaService to
+            // retrieve health goals for the specified user.
+            /* eslint-disable
+               @typescript-eslint/no-unsafe-assignment,
+               @typescript-eslint/no-unsafe-call,
+               @typescript-eslint/no-unsafe-member-access,
+               @typescript-eslint/no-explicit-any
+               -- Prisma model delegate not exposed */
+            const goals: HealthGoal[] = await (this.prisma as any).healthGoal.findMany({
                 where: {
-                    recordId: userId, // Assuming recordId is used to store userId
-                    status: GoalStatus.ACTIVE, // Filters active goals by default.
+                    recordId: userId,
+                    status: GoalStatus.ACTIVE,
                 },
             });
+            /* eslint-enable
+               @typescript-eslint/no-unsafe-assignment,
+               @typescript-eslint/no-unsafe-call,
+               @typescript-eslint/no-unsafe-member-access,
+               @typescript-eslint/no-explicit-any */
 
-            this.logger.log(`Retrieved ${goals.length} health goals for user ${userId}`); // Logs the number of goals retrieved
+            this.logger.log(`Retrieved ${goals.length} health goals ` + `for user ${userId}`);
 
-            return goals; // Returns the retrieved health goals.
+            return goals;
         } catch (error: unknown) {
-            const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
-            const errorStack = error instanceof Error ? (error as any).stack : undefined;
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            const errorStack = error instanceof Error ? error.stack : undefined;
 
             this.logger.error(`Error retrieving health goals for user ${userId}`, errorStack); // Logs any errors that occur during the process
             throw new AppException(
                 'Failed to retrieve user health goals',
                 ErrorType.TECHNICAL,
                 'HEALTH_INVALID_METRIC',
-                { userId },
-                (error instanceof Error ? error : new Error(errorMessage)) as any
+                { userId, error: errorMessage }
             );
         }
     }
@@ -206,7 +237,7 @@ export class InsightsService {
      * @param goals - An array of health goals to consider.
      * @returns The generated insights based on the health data.
      */
-    analyzeHealthData(metrics: HealthMetric[], goals: HealthGoal[]): any {
+    analyzeHealthData(metrics: HealthMetric[], goals: HealthGoal[]): InsightsData {
         this.logger.log('Analyzing health data to generate insights'); // Logs the start of the process
 
         // Analyzes trends in health metrics.
@@ -231,7 +262,7 @@ export class InsightsService {
      * @param insightData - The generated insight data.
      * @returns A promise that resolves when the event has been published.
      */
-    async publishInsightEvent(userId: string, insightData: any): Promise<void> {
+    async publishInsightEvent(userId: string, insightData: InsightsData): Promise<void> {
         this.logger.log(`Publishing insight event for user ${userId}`); // Logs the start of the process
 
         try {
@@ -249,16 +280,15 @@ export class InsightsService {
 
             this.logger.log(`Published insight event for user ${userId}`); // Logs the event publication.
         } catch (error: unknown) {
-            const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
-            const errorStack = error instanceof Error ? (error as any).stack : undefined;
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            const errorStack = error instanceof Error ? error.stack : undefined;
 
             this.logger.error(`Error publishing insight event for user ${userId}`, errorStack); // Logs any errors that occur during the process
             throw new AppException(
                 'Failed to publish insight event',
                 ErrorType.EXTERNAL,
                 'GAME_INVALID_EVENT_DATA',
-                { userId },
-                (error instanceof Error ? error : new Error(errorMessage)) as any
+                { userId, error: errorMessage }
             );
         }
     }

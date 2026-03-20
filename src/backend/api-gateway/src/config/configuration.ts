@@ -1,15 +1,12 @@
 import { AUTH_INVALID_CREDENTIALS } from '@app/shared/constants/error-codes.constants';
 import { JOURNEY_IDS } from '@app/shared/constants/journey.constants';
-import { LoggerModule } from '@app/shared/logging/logger.module';
-import { RedisModule } from '@app/shared/redis/redis.module';
-import { TracingModule } from '@app/shared/tracing/tracing.module';
 import { registerAs, ConfigType } from '@nestjs/config';
-
-import { ApiGatewayConfigValidation } from '../config/validation.schema';
+import { Request, Response } from 'express';
 
 /**
  * Configuration for the API Gateway.
- * Defines settings for authentication, CORS, rate limiting, GraphQL, logging, and service endpoints.
+ * Defines settings for authentication, CORS, rate limiting,
+ * GraphQL, logging, and service endpoints.
  */
 export const configuration = registerAs('apiGateway', () => ({
     // Server configuration
@@ -56,12 +53,12 @@ export const configuration = registerAs('apiGateway', () => ({
 
     // GraphQL configuration
     graphql: {
-        playground: process.env.GRAPHQL_PLAYGROUND === 'true' || process.env.NODE_ENV !== 'production',
+        playground:
+            process.env.GRAPHQL_PLAYGROUND === 'true' || process.env.NODE_ENV !== 'production',
         debug: process.env.GRAPHQL_DEBUG === 'true' || process.env.NODE_ENV !== 'production',
         autoSchemaFile: process.env.GRAPHQL_SCHEMA_FILE || 'schema.gql',
         sortSchema: true,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        context: ({ req, res }: { req: any; res: any }) => ({ req, res }),
+        context: ({ req, res }: { req: Request; res: Response }) => ({ req, res }),
         cors: false, // Handled by Express middleware
         installSubscriptionHandlers: true,
         subscriptions: {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CARE_TREATMENT_PLAN_NOT_FOUND } from '@app/shared/constants/error-codes.constants';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { FilterDto } from '@app/shared/dto/filter.dto';
@@ -39,7 +38,10 @@ export class TreatmentsService {
      * @param createTreatmentDto - Data for creating the treatment plan
      * @returns A promise resolving to the newly created treatment plan
      */
-    async create(userId: string, createTreatmentDto: CreateTreatmentPlanDto): Promise<TreatmentPlan> {
+    async create(
+        userId: string,
+        createTreatmentDto: CreateTreatmentPlanDto
+    ): Promise<TreatmentPlan> {
         return this.tracing.createSpan('treatments.create', async () => {
             this.logger.log(`Creating new treatment plan for user ${userId}`, 'TreatmentsService');
 
@@ -51,16 +53,17 @@ export class TreatmentsService {
                         description: createTreatmentDto.description,
                         startDate: createTreatmentDto.startDate,
                         endDate: createTreatmentDto.endDate,
-                        progress: createTreatmentDto.progress || 0,
+                        progress: createTreatmentDto.progress ?? 0,
                         userId,
-                    } as any,
+                    },
                 });
 
                 return treatmentPlan as unknown as TreatmentPlan;
             } catch (error) {
+                const err = error instanceof Error ? error : new Error(String(error));
                 this.logger.error(
-                    `Failed to create treatment plan: ${(error as any).message}`,
-                    (error as any).stack,
+                    `Failed to create treatment plan: ${err.message}`,
+                    err.stack,
                     'TreatmentsService'
                 );
                 throw error;
@@ -90,15 +93,16 @@ export class TreatmentsService {
                         // Add userId filter when present
                         ...(userId ? { userId } : {}),
                     },
-                    orderBy: filter?.orderBy as any,
+                    orderBy: filter?.orderBy as Prisma.TreatmentPlanOrderByWithRelationInput,
                     include: filter?.include,
                 });
 
                 return treatmentPlans as unknown as TreatmentPlan[];
             } catch (error) {
+                const err = error instanceof Error ? error : new Error(String(error));
                 this.logger.error(
-                    `Failed to retrieve treatment plans: ${(error as any).message}`,
-                    (error as any).stack,
+                    `Failed to retrieve treatment plans: ${err.message}`,
+                    err.stack,
                     'TreatmentsService'
                 );
                 throw error;
@@ -137,9 +141,10 @@ export class TreatmentsService {
                 if (error instanceof NotFoundException) {
                     throw error;
                 }
+                const err = error instanceof Error ? error : new Error(String(error));
                 this.logger.error(
-                    `Failed to retrieve treatment plan: ${(error as any).message}`,
-                    (error as any).stack,
+                    `Failed to retrieve treatment plan: ${err.message}`,
+                    err.stack,
                     'TreatmentsService'
                 );
                 throw error;
@@ -161,7 +166,7 @@ export class TreatmentsService {
 
             try {
                 // Prepare the data for update
-                const data: any = {};
+                const data: Prisma.TreatmentPlanUpdateInput = {};
                 if (updateTreatmentDto.name !== undefined) {
                     data.name = updateTreatmentDto.name;
                 }
@@ -187,16 +192,20 @@ export class TreatmentsService {
                 return treatmentPlan as unknown as TreatmentPlan;
             } catch (error) {
                 // Handle Prisma's "not found" error
-                if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+                if (
+                    error instanceof Prisma.PrismaClientKnownRequestError &&
+                    error.code === 'P2025'
+                ) {
                     throw new AppException(
                         `Treatment plan with ID ${id} not found`,
                         ErrorType.NOT_FOUND,
                         CARE_TREATMENT_PLAN_NOT_FOUND
                     );
                 }
+                const err = error instanceof Error ? error : new Error(String(error));
                 this.logger.error(
-                    `Failed to update treatment plan: ${(error as any).message}`,
-                    (error as any).stack,
+                    `Failed to update treatment plan: ${err.message}`,
+                    err.stack,
                     'TreatmentsService'
                 );
                 throw error;
@@ -224,16 +233,20 @@ export class TreatmentsService {
                 return treatmentPlan as unknown as TreatmentPlan;
             } catch (error) {
                 // Handle Prisma's "not found" error
-                if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+                if (
+                    error instanceof Prisma.PrismaClientKnownRequestError &&
+                    error.code === 'P2025'
+                ) {
                     throw new AppException(
                         `Treatment plan with ID ${id} not found`,
                         ErrorType.NOT_FOUND,
                         CARE_TREATMENT_PLAN_NOT_FOUND
                     );
                 }
+                const err = error instanceof Error ? error : new Error(String(error));
                 this.logger.error(
-                    `Failed to delete treatment plan: ${(error as any).message}`,
-                    (error as any).stack,
+                    `Failed to delete treatment plan: ${err.message}`,
+                    err.stack,
                     'TreatmentsService'
                 );
                 throw error;

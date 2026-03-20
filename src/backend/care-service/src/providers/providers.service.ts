@@ -1,8 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable, Logger } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 
 import { SearchProvidersDto } from './dto/search-providers.dto';
 import { Provider } from './entities/provider.entity';
@@ -41,7 +38,7 @@ export class ProvidersService {
             const skip = (page - 1) * limit;
 
             // Build filter based on search criteria
-            const where: Record<string, any> = {};
+            const where: Prisma.ProviderWhereInput = {};
 
             if (searchDto.specialty) {
                 where.specialty = {
@@ -74,7 +71,9 @@ export class ProvidersService {
                 where,
                 skip,
                 take: limit,
-                orderBy: (searchDto.orderBy as any) || { name: 'asc' },
+                orderBy: (searchDto.orderBy as Prisma.ProviderOrderByWithRelationInput) ?? {
+                    name: 'asc',
+                },
             });
 
             // Count total for pagination
@@ -82,11 +81,17 @@ export class ProvidersService {
 
             return { providers, total };
         } catch (error) {
-            this.logger.error(`Failed to find providers: ${(error as any).message}`, (error as any).stack);
-            throw new AppException('Failed to retrieve providers', ErrorType.TECHNICAL, 'CARE_004', {
-                searchDto,
-                paginationDto,
-            });
+            const err = error instanceof Error ? error : new Error(String(error));
+            this.logger.error(`Failed to find providers: ${err.message}`, err.stack);
+            throw new AppException(
+                'Failed to retrieve providers',
+                ErrorType.TECHNICAL,
+                'CARE_004',
+                {
+                    searchDto,
+                    paginationDto,
+                }
+            );
         }
     }
 
@@ -103,19 +108,30 @@ export class ProvidersService {
             });
 
             if (!provider) {
-                throw new AppException(`Provider with ID ${id} not found`, ErrorType.BUSINESS, 'CARE_005', { id });
+                throw new AppException(
+                    `Provider with ID ${id} not found`,
+                    ErrorType.BUSINESS,
+                    'CARE_005',
+                    { id }
+                );
             }
 
             return provider;
         } catch (error) {
             if (error instanceof AppException) {
-                throw error as any;
+                throw error;
             }
 
-            this.logger.error(`Failed to find provider: ${(error as any).message}`, (error as any).stack);
-            throw new AppException(`Failed to retrieve provider with ID ${id}`, ErrorType.TECHNICAL, 'CARE_006', {
-                id,
-            });
+            const err = error instanceof Error ? error : new Error(String(error));
+            this.logger.error(`Failed to find provider: ${err.message}`, err.stack);
+            throw new AppException(
+                `Failed to retrieve provider with ID ${id}`,
+                ErrorType.TECHNICAL,
+                'CARE_006',
+                {
+                    id,
+                }
+            );
         }
     }
 
@@ -139,11 +155,14 @@ export class ProvidersService {
             return provider;
         } catch (error) {
             if (error instanceof AppException) {
-                throw error as any;
+                throw error;
             }
 
-            this.logger.error(`Failed to create provider: ${(error as any).message}`, (error as any).stack);
-            throw new AppException('Failed to create provider', ErrorType.TECHNICAL, 'CARE_007', { providerData });
+            const err = error instanceof Error ? error : new Error(String(error));
+            this.logger.error(`Failed to create provider: ${err.message}`, err.stack);
+            throw new AppException('Failed to create provider', ErrorType.TECHNICAL, 'CARE_007', {
+                providerData,
+            });
         }
     }
 
@@ -169,14 +188,20 @@ export class ProvidersService {
             return updatedProvider;
         } catch (error) {
             if (error instanceof AppException) {
-                throw error as any;
+                throw error;
             }
 
-            this.logger.error(`Failed to update provider: ${(error as any).message}`, (error as any).stack);
-            throw new AppException(`Failed to update provider with ID ${id}`, ErrorType.TECHNICAL, 'CARE_008', {
-                id,
-                providerData,
-            });
+            const err = error instanceof Error ? error : new Error(String(error));
+            this.logger.error(`Failed to update provider: ${err.message}`, err.stack);
+            throw new AppException(
+                `Failed to update provider with ID ${id}`,
+                ErrorType.TECHNICAL,
+                'CARE_008',
+                {
+                    id,
+                    providerData,
+                }
+            );
         }
     }
 
@@ -192,11 +217,11 @@ export class ProvidersService {
             await this.findById(id);
 
             // Check if provider has any active appointments
-            const activeAppointments = await (this.prisma as any).appointment.count({
+            const activeAppointments = await this.prisma.appointment.count({
                 where: {
                     providerId: id,
                     status: {
-                        in: ['SCHEDULED', 'CONFIRMED'],
+                        in: ['SCHEDULED'],
                     },
                 },
             });
@@ -219,11 +244,17 @@ export class ProvidersService {
             return true;
         } catch (error) {
             if (error instanceof AppException) {
-                throw error as any;
+                throw error;
             }
 
-            this.logger.error(`Failed to delete provider: ${(error as any).message}`, (error as any).stack);
-            throw new AppException(`Failed to delete provider with ID ${id}`, ErrorType.TECHNICAL, 'CARE_010', { id });
+            const err = error instanceof Error ? error : new Error(String(error));
+            this.logger.error(`Failed to delete provider: ${err.message}`, err.stack);
+            throw new AppException(
+                `Failed to delete provider with ID ${id}`,
+                ErrorType.TECHNICAL,
+                'CARE_010',
+                { id }
+            );
         }
     }
 
@@ -240,7 +271,7 @@ export class ProvidersService {
             await this.findById(providerId);
 
             // Check for existing appointments at the requested time
-            const existingAppointment = await (this.prisma as any).appointment.findFirst({
+            const existingAppointment = await this.prisma.appointment.findFirst({
                 where: {
                     providerId,
                     dateTime: {
@@ -250,7 +281,7 @@ export class ProvidersService {
                         lte: new Date(dateTime.getTime() + 30 * 60000), // 30 minutes after
                     },
                     status: {
-                        in: ['SCHEDULED', 'CONFIRMED'],
+                        in: ['SCHEDULED'],
                     },
                 },
             });
@@ -259,10 +290,11 @@ export class ProvidersService {
             return !existingAppointment;
         } catch (error) {
             if (error instanceof AppException) {
-                throw error as any;
+                throw error;
             }
 
-            this.logger.error(`Failed to check provider availability: ${(error as any).message}`, (error as any).stack);
+            const err = error instanceof Error ? error : new Error(String(error));
+            this.logger.error(`Failed to check provider availability: ${err.message}`, err.stack);
             throw new AppException(
                 `Failed to check availability for provider with ID ${providerId}`,
                 ErrorType.TECHNICAL,
@@ -280,7 +312,10 @@ export class ProvidersService {
      * @returns List of time slots with availability status
      */
     // eslint-disable-next-line max-len
-    async getAvailableTimeSlots(providerId: string, date: Date): Promise<{ time: string; available: boolean }[]> {
+    async getAvailableTimeSlots(
+        providerId: string,
+        date: Date
+    ): Promise<{ time: string; available: boolean }[]> {
         try {
             // Check if provider exists
             await this.findById(providerId);
@@ -296,7 +331,7 @@ export class ProvidersService {
             dateEnd.setDate(dateEnd.getDate() + 1); // Next day
 
             // Get all appointments for the provider on the specified day
-            const appointments = await (this.prisma as any).appointment.findMany({
+            const appointments = await this.prisma.appointment.findMany({
                 where: {
                     providerId,
                     dateTime: {
@@ -304,7 +339,7 @@ export class ProvidersService {
                         lt: dateEnd,
                     },
                     status: {
-                        in: ['SCHEDULED', 'CONFIRMED'],
+                        in: ['SCHEDULED'],
                     },
                 },
             });
@@ -320,8 +355,8 @@ export class ProvidersService {
                 });
 
                 // Check if there's an appointment at this time slot
-                const isBooked = appointments.some((appointment: any) => {
-                    const apptHour = appointment.dateTime.getHours();
+                const isBooked = appointments.some((appointment) => {
+                    const apptHour = new Date(appointment.dateTime).getHours();
                     return apptHour === hour;
                 });
 
@@ -334,10 +369,11 @@ export class ProvidersService {
             return timeSlots;
         } catch (error) {
             if (error instanceof AppException) {
-                throw error as any;
+                throw error;
             }
 
-            this.logger.error(`Failed to get provider time slots: ${(error as any).message}`, (error as any).stack);
+            const err = error instanceof Error ? error : new Error(String(error));
+            this.logger.error(`Failed to get provider time slots: ${err.message}`, err.stack);
             throw new AppException(
                 `Failed to retrieve time slots for provider with ID ${providerId}`,
                 ErrorType.TECHNICAL,
@@ -384,7 +420,9 @@ export class ProvidersService {
      * @returns List of telemedicine providers and total count
      */
     // eslint-disable-next-line max-len
-    async getTelemedicineProviders(paginationDto: PaginationDto): Promise<{ providers: Provider[]; total: number }> {
+    async getTelemedicineProviders(
+        paginationDto: PaginationDto
+    ): Promise<{ providers: Provider[]; total: number }> {
         try {
             const { page = 1, limit = 10 } = paginationDto;
             const skip = (page - 1) * limit;
@@ -410,10 +448,16 @@ export class ProvidersService {
 
             return { providers, total };
         } catch (error) {
-            this.logger.error(`Failed to find telemedicine providers: ${(error as any).message}`, (error as any).stack);
-            throw new AppException('Failed to retrieve telemedicine providers', ErrorType.TECHNICAL, 'CARE_013', {
-                paginationDto,
-            });
+            const err = error instanceof Error ? error : new Error(String(error));
+            this.logger.error(`Failed to find telemedicine providers: ${err.message}`, err.stack);
+            throw new AppException(
+                'Failed to retrieve telemedicine providers',
+                ErrorType.TECHNICAL,
+                'CARE_013',
+                {
+                    paginationDto,
+                }
+            );
         }
     }
 
@@ -426,17 +470,29 @@ export class ProvidersService {
     private validateProviderData(providerData: Partial<Provider>): void {
         // Check required fields
         if (!providerData.name) {
-            throw new AppException('Provider name is required', ErrorType.VALIDATION, 'CARE_014', { providerData });
-        }
-
-        if (!providerData.specialty) {
-            throw new AppException('Provider specialty is required', ErrorType.VALIDATION, 'CARE_015', {
+            throw new AppException('Provider name is required', ErrorType.VALIDATION, 'CARE_014', {
                 providerData,
             });
         }
 
+        if (!providerData.specialty) {
+            throw new AppException(
+                'Provider specialty is required',
+                ErrorType.VALIDATION,
+                'CARE_015',
+                {
+                    providerData,
+                }
+            );
+        }
+
         if (!providerData.location) {
-            throw new AppException('Provider location is required', ErrorType.VALIDATION, 'CARE_016', { providerData });
+            throw new AppException(
+                'Provider location is required',
+                ErrorType.VALIDATION,
+                'CARE_016',
+                { providerData }
+            );
         }
 
         // Validate email format
@@ -448,9 +504,14 @@ export class ProvidersService {
 
         // Validate phone format (simple validation)
         if (providerData.phone && !/^\+?[0-9\s()-]{8,20}$/.test(providerData.phone)) {
-            throw new AppException('Invalid phone number format', ErrorType.VALIDATION, 'CARE_018', {
-                phone: providerData.phone,
-            });
+            throw new AppException(
+                'Invalid phone number format',
+                ErrorType.VALIDATION,
+                'CARE_018',
+                {
+                    phone: providerData.phone,
+                }
+            );
         }
     }
 }

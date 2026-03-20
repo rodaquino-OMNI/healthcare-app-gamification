@@ -1,9 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { TracingService } from '@app/shared/tracing/tracing.service';
@@ -17,7 +11,7 @@ const CARE_PROVIDER_UNAVAILABLE = 'CARE_PROVIDER_UNAVAILABLE';
 /**
  * Interface for symptom checker response
  */
-interface SymptomCheckerResponse {
+export interface SymptomCheckerResponse {
     severity: string;
     guidance: string;
     careOptions: {
@@ -61,69 +55,100 @@ export class SymptomCheckerService {
      * @returns Promise resolving to preliminary guidance based on the symptoms
      */
     async checkSymptoms(checkSymptomsDto: CheckSymptomsDto): Promise<SymptomCheckerResponse> {
-        return this.tracingService.createSpan('symptom-checker.check-symptoms', async () => {
-            this.logger.log(`Checking symptoms: ${JSON.stringify(checkSymptomsDto.symptoms)}`, 'SymptomCheckerService');
-
-            try {
-                // Get configuration for symptom checker
-                const symptomsCheckerConfig = this.configService.get('care.symptomsChecker');
-
-                // Check if the symptom checker is enabled
-                if (!symptomsCheckerConfig.enabled) {
-                    throw new AppException(
-                        'Symptom checker is currently disabled',
-                        ErrorType.BUSINESS,
-                        CARE_PROVIDER_UNAVAILABLE
-                    );
-                }
-
-                // Check if any emergency symptoms are present
-                const emergencySymptoms = symptomsCheckerConfig.emergencySymptoms.split(',');
-                const hasEmergencySymptoms = checkSymptomsDto.symptoms.some((symptom) =>
-                    emergencySymptoms.includes(symptom)
-                );
-
-                if (hasEmergencySymptoms) {
-                    // Return emergency guidance
-                    const emergencyConfig = this.configService.get('care.integrations.emergencyServices');
-
-                    return {
-                        severity: 'high',
-                        guidance: 'Seek immediate medical attention or call emergency services.',
-                        emergencyNumber: emergencyConfig?.emergencyNumber || '192',
-                        careOptions: {
-                            emergency: true,
-                            appointmentRecommended: false,
-                            telemedicineRecommended: false,
-                        },
-                    };
-                }
-
-                // Determine if we should use internal or external symptom checking
-                if (symptomsCheckerConfig.provider === 'internal') {
-                    // Use internal rule-based symptom analysis
-                    return this.analyzeSymptoms(checkSymptomsDto.symptoms);
-                } else {
-                    // Call external symptom checking API
-                    // eslint-disable-next-line max-len
-                    return this.callExternalSymptomAPI(checkSymptomsDto.symptoms, symptomsCheckerConfig.externalApi);
-                }
-            } catch (error) {
-                this.logger.error(
-                    `Error checking symptoms: ${(error as any).message}`,
-                    (error as any).stack,
+        // createSpan expects async callback
+        return this.tracingService.createSpan(
+            'symptom-checker.check-symptoms',
+            // eslint-disable-next-line @typescript-eslint/require-await
+            async () => {
+                this.logger.log(
+                    `Checking symptoms: ${JSON.stringify(checkSymptomsDto.symptoms)}`,
                     'SymptomCheckerService'
                 );
 
-                if (error instanceof AppException) {
-                    throw error as any;
-                }
+                try {
+                    // Get configuration for symptom checker
+                    interface SymptomsCheckerConfig {
+                        enabled: boolean;
+                        provider: string;
+                        externalApi: { url: string; apiKey: string; timeout: number };
+                        emergencySymptoms: string;
+                    }
+                    const symptomsCheckerConfig =
+                        this.configService.get<SymptomsCheckerConfig>('care.symptomsChecker');
 
-                throw new AppException('Failed to analyze symptoms', ErrorType.TECHNICAL, CARE_PROVIDER_UNAVAILABLE, {
-                    symptoms: checkSymptomsDto.symptoms,
-                });
+                    // Check if the symptom checker is enabled
+                    if (
+                        symptomsCheckerConfig === null ||
+                        symptomsCheckerConfig === undefined ||
+                        !symptomsCheckerConfig.enabled
+                    ) {
+                        throw new AppException(
+                            'Symptom checker is currently disabled',
+                            ErrorType.BUSINESS,
+                            CARE_PROVIDER_UNAVAILABLE
+                        );
+                    }
+
+                    // Check if any emergency symptoms are present
+                    const emergencySymptoms = symptomsCheckerConfig.emergencySymptoms.split(',');
+                    const hasEmergencySymptoms = checkSymptomsDto.symptoms.some((symptom) =>
+                        emergencySymptoms.includes(symptom)
+                    );
+
+                    if (hasEmergencySymptoms) {
+                        // Return emergency guidance
+                        const emergencyConfig = this.configService.get<{
+                            emergencyNumber?: string;
+                        }>('care.integrations.emergencyServices');
+
+                        return {
+                            severity: 'high',
+                            guidance:
+                                'Seek immediate medical attention or call emergency services.',
+                            emergencyNumber: emergencyConfig?.emergencyNumber || '192',
+                            careOptions: {
+                                emergency: true,
+                                appointmentRecommended: false,
+                                telemedicineRecommended: false,
+                            },
+                        };
+                    }
+
+                    // Determine if we should use internal or external symptom checking
+                    if (symptomsCheckerConfig.provider === 'internal') {
+                        // Use internal rule-based symptom analysis
+                        return this.analyzeSymptoms(checkSymptomsDto.symptoms);
+                    } else {
+                        // Call external symptom checking API
+                        // eslint-disable-next-line max-len
+                        return this.callExternalSymptomAPI(
+                            checkSymptomsDto.symptoms,
+                            symptomsCheckerConfig.externalApi
+                        );
+                    }
+                } catch (error) {
+                    const err = error instanceof Error ? error : new Error(String(error));
+                    this.logger.error(
+                        `Error checking symptoms: ${err.message}`,
+                        err.stack,
+                        'SymptomCheckerService'
+                    );
+
+                    if (error instanceof AppException) {
+                        throw error;
+                    }
+
+                    throw new AppException(
+                        'Failed to analyze symptoms',
+                        ErrorType.TECHNICAL,
+                        CARE_PROVIDER_UNAVAILABLE,
+                        {
+                            symptoms: checkSymptomsDto.symptoms,
+                        }
+                    );
+                }
             }
-        });
+        );
     }
 
     /**
@@ -168,14 +193,16 @@ export class SymptomCheckerService {
         // Provide guidance based on severity
         switch (severity) {
             case 'low':
-                guidance = 'Your symptoms suggest a minor condition. Rest, stay hydrated, and monitor your symptoms.';
+                guidance =
+                    'Your symptoms suggest a minor condition. Rest, stay hydrated, and monitor your symptoms.';
                 break;
             case 'medium':
                 guidance =
                     'Your symptoms may require medical attention. Consider scheduling a telemedicine consultation or in-person appointment.';
                 break;
             default:
-                guidance = 'Based on the information provided, we recommend consulting with a healthcare professional.';
+                guidance =
+                    'Based on the information provided, we recommend consulting with a healthcare professional.';
         }
 
         return {
@@ -236,7 +263,8 @@ export class SymptomCheckerService {
             conditions.push({
                 name: 'Unspecified Condition',
                 confidence: 0.3,
-                description: 'Based on the provided symptoms, a specific condition could not be identified.',
+                description:
+                    'Based on the provided symptoms, a specific condition could not be identified.',
             });
         }
 
@@ -253,9 +281,15 @@ export class SymptomCheckerService {
      * @private
      */
     // eslint-disable-next-line max-len
-    private callExternalSymptomAPI(symptoms: string[], apiConfig: any): SymptomCheckerResponse {
+    private callExternalSymptomAPI(
+        symptoms: string[],
+        apiConfig: { url: string; apiKey: string; timeout: number }
+    ): SymptomCheckerResponse {
         try {
-            this.logger.log(`Calling external symptom API: ${apiConfig.url}`, 'SymptomCheckerService');
+            this.logger.log(
+                `Calling external symptom API: ${apiConfig.url}`,
+                'SymptomCheckerService'
+            );
 
             // In a real implementation, this would make an HTTP request to the external API
             // For demonstration purposes, we'll return a mock response
@@ -271,9 +305,10 @@ export class SymptomCheckerService {
                 externalProviderName: 'External Symptom Service',
             };
         } catch (error) {
+            const err = error instanceof Error ? error : new Error(String(error));
             this.logger.error(
-                `Error calling external symptom API: ${(error as any).message}`,
-                (error as any).stack,
+                `Error calling external symptom API: ${err.message}`,
+                err.stack,
                 'SymptomCheckerService'
             );
             throw new AppException(

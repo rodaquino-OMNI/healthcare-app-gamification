@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { ErrorCodes } from '@app/shared/constants/error-codes.constants';
 import {
+    ErrorCodes,
     AUTH_INVALID_CREDENTIALS,
     AUTH_INSUFFICIENT_PERMISSIONS,
     AUTH_TOKEN_INVALID,
@@ -14,13 +13,33 @@ const logger = new Logger('ResponseTransformUtil');
 const API_RATE_LIMIT_EXCEEDED = 'API_RATE_LIMIT_EXCEEDED';
 const API_INVALID_PARAMETER = 'API_INVALID_PARAMETER';
 
+/** Shape of an upstream error with an HTTP-like response (e.g. Axios errors). */
+interface UpstreamErrorResponse {
+    response?: {
+        status?: number;
+        data?: {
+            message?: string;
+            errorCode?: string;
+            path?: string;
+        };
+    };
+    config?: { url?: string };
+    status?: number;
+    message?: string;
+    errorCode?: string;
+    path?: string;
+    journey?: string;
+    stack?: string;
+}
+
 /**
- * Transforms a successful response from a backend service into a standardized format for the client.
+ * Transforms a successful response from a backend service
+ * into a standardized format for the client.
  *
  * @param data - The data to transform
  * @returns The transformed response data
  */
-export function transformResponse(data: any): any {
+export function transformResponse(data: unknown): unknown {
     // If data is null or undefined, return an empty object
     if (data === null || data === undefined) {
         return {};
@@ -31,13 +50,15 @@ export function transformResponse(data: any): any {
 }
 
 /**
- * Transforms an error response from a backend service into a standardized format for the client.
- * Extracts relevant information from various error types and converts them to a consistent format.
+ * Transforms an error response from a backend service
+ * into a standardized format for the client.
+ * Extracts relevant information from various error types
+ * and converts them to a consistent format.
  *
  * @param error - The error to transform
  * @returns A standardized error response object
  */
-export function transformErrorResponse(error: any): {
+export function transformErrorResponse(error: UpstreamErrorResponse): {
     statusCode: number;
     errorCode: string;
     message: string;
@@ -47,7 +68,7 @@ export function transformErrorResponse(error: any): {
 } {
     let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
     let errorMessage = 'An unexpected error occurred';
-    let errorCode: string = ErrorCodes.SYS_INTERNAL_SERVER_ERROR;
+    let errorCode: string = ErrorCodes.SYS_INTERNAL_SERVER_ERROR as string;
     let path: string | undefined;
     let journey: string | undefined;
 
@@ -78,11 +99,11 @@ export function transformErrorResponse(error: any): {
         journey = error.journey;
     } else if (error instanceof Error) {
         // Handle standard Error objects
-        errorMessage = (error as any).message || errorMessage;
+        errorMessage = error.message || errorMessage;
     }
 
-    // Map specific error messages to appropriate error codes if not already set
-    if (errorCode === ErrorCodes.SYS_INTERNAL_SERVER_ERROR) {
+    // Map specific error messages to appropriate error codes
+    if (errorCode === (ErrorCodes.SYS_INTERNAL_SERVER_ERROR as string)) {
         if (
             errorMessage.toLowerCase().includes('unauthorized') ||
             errorMessage.toLowerCase().includes('unauthenticated')

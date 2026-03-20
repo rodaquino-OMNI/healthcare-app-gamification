@@ -27,6 +27,7 @@ export interface Configuration {
     fhirApiClientSecret: string;
     fhirApiScope: string;
     fhirApiTokenUrl: string;
+    fhirApiAccessToken: string;
     fhirApiUsername: string;
     fhirApiPassword: string;
     fhirApiTimeout: number;
@@ -73,6 +74,7 @@ export const health = registerAs('health', () => ({
     fhirApiClientSecret: process.env.FHIR_API_CLIENT_SECRET ?? '',
     fhirApiScope: process.env.FHIR_API_SCOPE ?? '',
     fhirApiTokenUrl: process.env.FHIR_API_TOKEN_URL ?? '',
+    fhirApiAccessToken: process.env.FHIR_API_ACCESS_TOKEN ?? '',
     fhirApiUsername: process.env.FHIR_API_USERNAME ?? '',
     fhirApiPassword: process.env.FHIR_API_PASSWORD ?? '',
     fhirApiTimeout: parseInt(process.env.FHIR_API_TIMEOUT ?? '10000', 10) || 10000,
@@ -89,7 +91,8 @@ export const health = registerAs('health', () => ({
     wearablesMaxSyncDays: parseInt(process.env.WEARABLES_MAX_SYNC_DAYS ?? '30', 10) || 30,
     healthGoalsMaxActive: parseInt(process.env.HEALTH_GOALS_MAX_ACTIVE ?? '10', 10) || 10,
     healthInsightsEnabled: process.env.HEALTH_INSIGHTS_ENABLED === 'true',
-    healthInsightsGenerationInterval: parseInt(process.env.HEALTH_INSIGHTS_GENERATION_INTERVAL ?? '24', 10) || 24,
+    healthInsightsGenerationInterval:
+        parseInt(process.env.HEALTH_INSIGHTS_GENERATION_INTERVAL ?? '24', 10) || 24,
     healthInsightsModelsPath: process.env.HEALTH_INSIGHTS_MODELS_PATH ?? '',
     eventsKafkaEnabled: process.env.EVENTS_KAFKA_ENABLED === 'true',
     eventsKafkaBrokers: process.env.EVENTS_KAFKA_BROKERS ?? '',

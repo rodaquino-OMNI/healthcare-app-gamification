@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { ConnectDeviceDto } from './dto/connect-device.dto';
@@ -37,30 +36,55 @@ export class DevicesService {
      * @param connectDeviceDto - Data for connecting the device
      * @returns The newly created DeviceConnection entity.
      */
-    async connectDevice(recordId: string, connectDeviceDto: ConnectDeviceDto): Promise<DeviceConnection> {
+    async connectDevice(
+        recordId: string,
+        connectDeviceDto: ConnectDeviceDto
+    ): Promise<DeviceConnection> {
         try {
-            this.logger.log(`Connecting device ${connectDeviceDto.deviceType} for record ${recordId}`);
+            this.logger.log(
+                `Connecting device ${connectDeviceDto.deviceType} for record ${recordId}`
+            );
 
             // Validates the device type
-            // This is already handled by class-validator in the DTO, but we could add additional validation here
+            // This is already handled by class-validator in the DTO,
+            // but we could add additional validation here
 
-            // Convert the deviceType enum to a string format that the WearablesService expects
+            // Convert the deviceType enum to a string format
+            // that the WearablesService expects
             const deviceType = String(connectDeviceDto.deviceType).toLowerCase();
 
-            // Calls the appropriate adapter to connect to the device using WearablesService
-            const deviceConnection = await (this.wearablesService as any).connect(recordId, deviceType);
+            // Calls the appropriate adapter to connect
+            /* eslint-disable @typescript-eslint/no-explicit-any,
+               @typescript-eslint/no-unsafe-assignment,
+               @typescript-eslint/no-unsafe-call,
+               @typescript-eslint/no-unsafe-member-access
+               -- WearablesService.connect not exposed */
+            const deviceConnection: DeviceConnection = await (this.wearablesService as any).connect(
+                recordId,
+                deviceType
+            );
+            /* eslint-enable @typescript-eslint/no-explicit-any,
+               @typescript-eslint/no-unsafe-assignment,
+               @typescript-eslint/no-unsafe-call,
+               @typescript-eslint/no-unsafe-member-access */
 
-            this.logger.log(`Successfully connected device ${connectDeviceDto.deviceType} for record ${recordId}`);
+            this.logger.log(
+                `Successfully connected device ` +
+                    `${connectDeviceDto.deviceType} ` +
+                    `for record ${recordId}`
+            );
 
             return deviceConnection;
         } catch (error) {
+            const errMsg = error instanceof Error ? error.message : 'Unknown error';
+            const errStack = error instanceof Error ? error.stack : undefined;
             this.logger.error(
-                `Failed to connect device ${connectDeviceDto.deviceType} for record ${recordId}: ${(error as any).message}`,
-                (error as any).stack
+                `Failed to connect device ${connectDeviceDto.deviceType} for record ${recordId}: ${errMsg}`,
+                errStack
             );
 
             throw new AppException(
-                `Failed to connect device: ${(error as any).message}`,
+                `Failed to connect device: ${errMsg}`,
                 ErrorType.TECHNICAL,
                 'HEALTH_DEVICE_CONNECTION_FAILED',
                 {
@@ -79,6 +103,7 @@ export class DevicesService {
      * @param filterDto - Optional filtering criteria
      * @returns A promise that resolves to an array of DeviceConnection entities.
      */
+    // eslint-disable-next-line @typescript-eslint/require-await -- placeholder for future DB call
     async getDevices(recordId: string, filterDto?: FilterDto): Promise<DeviceConnection[]> {
         try {
             this.logger.log(`Retrieving connected devices for record ${recordId}`);
@@ -89,7 +114,7 @@ export class DevicesService {
                     recordId,
                     ...(filterDto?.where || {}),
                 },
-                orderBy: filterDto?.orderBy || { lastSync: 'DESC' as any },
+                orderBy: filterDto?.orderBy || { lastSync: 'DESC' as const },
                 ...filterDto,
             };
 
@@ -103,13 +128,15 @@ export class DevicesService {
 
             return deviceConnections;
         } catch (error) {
+            const errMsg = error instanceof Error ? error.message : 'Unknown error';
+            const errStack = error instanceof Error ? error.stack : undefined;
             this.logger.error(
-                `Failed to retrieve devices for record ${recordId}: ${(error as any).message}`,
-                (error as any).stack
+                `Failed to retrieve devices for record ${recordId}: ${errMsg}`,
+                errStack
             );
 
             throw new AppException(
-                `Failed to retrieve devices: ${(error as any).message}`,
+                `Failed to retrieve devices: ${errMsg}`,
                 ErrorType.TECHNICAL,
                 'SYS_INTERNAL_SERVER_ERROR',
                 {

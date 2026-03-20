@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -60,9 +59,11 @@ export class HealthKitAdapter extends WearableAdapter {
      * Initiates the connection to Apple HealthKit API.
      * @param userId The user ID to connect the HealthKit account to
      * @param authData Authentication data for the connection
-     * @returns A promise that resolves to a DeviceConnection entity representing the successful connection
+     * @returns A DeviceConnection entity representing the connection
      */
-    async connect(userId: string, _authData: any): Promise<DeviceConnection> {
+    /* eslint-disable-next-line @typescript-eslint/require-await --
+       interface contract requires async */
+    async connect(userId: string, _authData: string): Promise<DeviceConnection> {
         try {
             this.logger.log('info', `Connecting user ${userId} to Apple HealthKit`);
 
@@ -101,8 +102,8 @@ export class HealthKitAdapter extends WearableAdapter {
 
             return connectionDetails as unknown as DeviceConnection;
         } catch (error: unknown) {
-            const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
-            const errorStack = error instanceof Error ? (error as any).stack : undefined;
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            const errorStack = error instanceof Error ? error.stack : undefined;
             this.logger.error(`${ERROR_MESSAGES.CONNECTION_FAILED}: ${errorMessage}`, errorStack);
             throw new Error(`${ERROR_MESSAGES.CONNECTION_FAILED}: ${errorMessage}`);
         }
@@ -116,6 +117,8 @@ export class HealthKitAdapter extends WearableAdapter {
      * @param endTime The end date of the date range to retrieve health metrics for
      * @returns A promise that resolves to an array of HealthMetric entities
      */
+    /* eslint-disable-next-line @typescript-eslint/require-await --
+       interface contract requires async */
     async getHealthMetrics(
         userId: string,
         deviceConnection: DeviceConnection,
@@ -125,7 +128,9 @@ export class HealthKitAdapter extends WearableAdapter {
         try {
             this.logger.log(
                 'info',
-                `Retrieving health metrics for user ${userId} from ${startTime.toISOString()} to ${endTime.toISOString()}`
+                `Retrieving health metrics for user ${userId} ` +
+                    `from ${startTime.toISOString()} ` +
+                    `to ${endTime.toISOString()}`
             );
 
             // Retrieve Apple HealthKit API credentials from configuration
@@ -136,15 +141,17 @@ export class HealthKitAdapter extends WearableAdapter {
                 throw new Error('HealthKit API credentials not configured');
             }
 
-            // Simulate retrieving health metrics from HealthKit
-            // This is mock data; in a real implementation, this would be data from the Apple HealthKit API
+            // Simulate retrieving health metrics from HealthKit.
+            // This is mock data; in a real implementation, this
+            // would be data from the Apple HealthKit API.
             const mockHealthKitResponse = [
                 {
                     type: HEALTHKIT_TYPES.HEART_RATE,
                     value: 72,
                     unit: HEALTHKIT_UNITS.BEATS_PER_MINUTE,
                     timestamp: new Date(
-                        startTime.getTime() + Math.random() * (endTime.getTime() - startTime.getTime())
+                        startTime.getTime() +
+                            Math.random() * (endTime.getTime() - startTime.getTime())
                     ).toISOString(),
                     source: 'Apple Watch',
                 },
@@ -153,7 +160,8 @@ export class HealthKitAdapter extends WearableAdapter {
                     value: 120,
                     unit: HEALTHKIT_UNITS.MILLIMETERS_OF_MERCURY,
                     timestamp: new Date(
-                        startTime.getTime() + Math.random() * (endTime.getTime() - startTime.getTime())
+                        startTime.getTime() +
+                            Math.random() * (endTime.getTime() - startTime.getTime())
                     ).toISOString(),
                     source: 'Blood Pressure Monitor',
                 },
@@ -162,7 +170,8 @@ export class HealthKitAdapter extends WearableAdapter {
                     value: 80,
                     unit: HEALTHKIT_UNITS.MILLIMETERS_OF_MERCURY,
                     timestamp: new Date(
-                        startTime.getTime() + Math.random() * (endTime.getTime() - startTime.getTime())
+                        startTime.getTime() +
+                            Math.random() * (endTime.getTime() - startTime.getTime())
                     ).toISOString(),
                     source: 'Blood Pressure Monitor',
                 },
@@ -171,7 +180,8 @@ export class HealthKitAdapter extends WearableAdapter {
                     value: 100,
                     unit: HEALTHKIT_UNITS.MILLIGRAMS_PER_DECILITER,
                     timestamp: new Date(
-                        startTime.getTime() + Math.random() * (endTime.getTime() - startTime.getTime())
+                        startTime.getTime() +
+                            Math.random() * (endTime.getTime() - startTime.getTime())
                     ).toISOString(),
                     source: 'Glucose Monitor',
                 },
@@ -180,7 +190,8 @@ export class HealthKitAdapter extends WearableAdapter {
                     value: 8500,
                     unit: HEALTHKIT_UNITS.COUNT,
                     timestamp: new Date(
-                        startTime.getTime() + Math.random() * (endTime.getTime() - startTime.getTime())
+                        startTime.getTime() +
+                            Math.random() * (endTime.getTime() - startTime.getTime())
                     ).toISOString(),
                     source: 'iPhone',
                 },
@@ -189,7 +200,8 @@ export class HealthKitAdapter extends WearableAdapter {
                     value: 70.5,
                     unit: HEALTHKIT_UNITS.KILOGRAMS,
                     timestamp: new Date(
-                        startTime.getTime() + Math.random() * (endTime.getTime() - startTime.getTime())
+                        startTime.getTime() +
+                            Math.random() * (endTime.getTime() - startTime.getTime())
                     ).toISOString(),
                     source: 'Smart Scale',
                 },
@@ -219,13 +231,19 @@ export class HealthKitAdapter extends WearableAdapter {
                 return metric;
             });
 
-            this.logger.log('info', `Successfully retrieved ${healthMetrics.length} health metrics for user ${userId}`);
+            this.logger.log(
+                'info',
+                `Successfully retrieved ${healthMetrics.length} health metrics for user ${userId}`
+            );
 
             return healthMetrics;
         } catch (error: unknown) {
-            const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
-            const errorStack = error instanceof Error ? (error as any).stack : undefined;
-            this.logger.error(`${ERROR_MESSAGES.RETRIEVE_METRICS_FAILED}: ${errorMessage}`, errorStack);
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            const errorStack = error instanceof Error ? error.stack : undefined;
+            this.logger.error(
+                `${ERROR_MESSAGES.RETRIEVE_METRICS_FAILED}: ${errorMessage}`,
+                errorStack
+            );
             throw new Error(`${ERROR_MESSAGES.RETRIEVE_METRICS_FAILED}: ${errorMessage}`);
         }
     }
@@ -236,6 +254,8 @@ export class HealthKitAdapter extends WearableAdapter {
      * @param deviceConnection The device connection details
      * @returns A promise that resolves when the user's account has been disconnected
      */
+    /* eslint-disable-next-line @typescript-eslint/require-await --
+       interface contract requires async */
     async disconnect(userId: string, _deviceConnection: DeviceConnection): Promise<boolean> {
         try {
             this.logger.log('info', `Disconnecting user ${userId} from Apple HealthKit`);
@@ -256,11 +276,14 @@ export class HealthKitAdapter extends WearableAdapter {
             // 5. Updating the device connection status to disconnected
 
             // Simulate a successful disconnection
-            this.logger.log('info', `Successfully disconnected user ${userId} from Apple HealthKit`);
+            this.logger.log(
+                'info',
+                `Successfully disconnected user ${userId} from Apple HealthKit`
+            );
             return true;
         } catch (error: unknown) {
-            const errorMessage = error instanceof Error ? (error as any).message : 'Unknown error';
-            const errorStack = error instanceof Error ? (error as any).stack : undefined;
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            const errorStack = error instanceof Error ? error.stack : undefined;
             this.logger.error(`${ERROR_MESSAGES.DISCONNECT_FAILED}: ${errorMessage}`, errorStack);
             throw new Error(`${ERROR_MESSAGES.DISCONNECT_FAILED}: ${errorMessage}`);
         }

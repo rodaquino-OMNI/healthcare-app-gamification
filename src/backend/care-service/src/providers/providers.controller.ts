@@ -1,5 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Controller, Get, Post, Put, Delete, Param, Query, Body, Logger } from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    Post,
+    Put,
+    Delete,
+    Param,
+    Query,
+    Body,
+    Logger,
+    UsePipes,
+    ValidationPipe,
+} from '@nestjs/common';
 
 import { SearchProvidersDto } from './dto/search-providers.dto';
 import { Provider } from './entities/provider.entity';
@@ -120,21 +131,29 @@ export class ProvidersController {
         try {
             const date = new Date(dateTime);
             if (isNaN(date.getTime())) {
-                throw new AppException('Invalid date format', ErrorType.VALIDATION, 'CARE_019', { dateTime });
+                throw new AppException('Invalid date format', ErrorType.VALIDATION, 'CARE_019', {
+                    dateTime,
+                });
             }
 
             const available = await this.providersService.checkAvailability(id, date);
             return { available };
         } catch (error) {
             if (error instanceof AppException) {
-                throw error as any;
+                throw error;
             }
 
-            this.logger.error(`Error checking availability: ${(error as any).message}`, (error as any).stack);
-            throw new AppException('Failed to check provider availability', ErrorType.TECHNICAL, 'CARE_020', {
-                id,
-                dateTime,
-            });
+            const err = error instanceof Error ? error : new Error(String(error));
+            this.logger.error(`Error checking availability: ${err.message}`, err.stack);
+            throw new AppException(
+                'Failed to check provider availability',
+                ErrorType.TECHNICAL,
+                'CARE_020',
+                {
+                    id,
+                    dateTime,
+                }
+            );
         }
     }
 
@@ -156,18 +175,26 @@ export class ProvidersController {
         try {
             const dateObj = new Date(date);
             if (isNaN(dateObj.getTime())) {
-                throw new AppException('Invalid date format', ErrorType.VALIDATION, 'CARE_021', { date });
+                throw new AppException('Invalid date format', ErrorType.VALIDATION, 'CARE_021', {
+                    date,
+                });
             }
 
             const timeSlots = await this.providersService.getAvailableTimeSlots(id, dateObj);
             return { timeSlots };
         } catch (error) {
             if (error instanceof AppException) {
-                throw error as any;
+                throw error;
             }
 
-            this.logger.error(`Error getting time slots: ${(error as any).message}`, (error as any).stack);
-            throw new AppException('Failed to get provider time slots', ErrorType.TECHNICAL, 'CARE_022', { id, date });
+            const err = error instanceof Error ? error : new Error(String(error));
+            this.logger.error(`Error getting time slots: ${err.message}`, err.stack);
+            throw new AppException(
+                'Failed to get provider time slots',
+                ErrorType.TECHNICAL,
+                'CARE_022',
+                { id, date }
+            );
         }
     }
 
@@ -180,7 +207,11 @@ export class ProvidersController {
      */
     @Post()
     @Roles('admin')
-    async create(@Body() providerData: Provider, @CurrentUser() _user: { id: string }): Promise<Provider> {
+    @UsePipes(ValidationPipe)
+    async create(
+        @Body() providerData: Provider,
+        @CurrentUser() _user: { id: string }
+    ): Promise<Provider> {
         this.logger.log(`Creating provider: ${JSON.stringify(providerData)}`);
         return this.providersService.create(providerData);
     }
@@ -195,6 +226,7 @@ export class ProvidersController {
      */
     @Put(':id')
     @Roles('admin')
+    @UsePipes(ValidationPipe)
     async update(
         @Param('id') id: string,
         @Body() providerData: Provider,
@@ -213,7 +245,10 @@ export class ProvidersController {
      */
     @Delete(':id')
     @Roles('admin')
-    async delete(@Param('id') id: string, @CurrentUser() _user: { id: string }): Promise<{ success: boolean }> {
+    async delete(
+        @Param('id') id: string,
+        @CurrentUser() _user: { id: string }
+    ): Promise<{ success: boolean }> {
         this.logger.log(`Deleting provider with ID: ${id}`);
         const success = await this.providersService.delete(id);
         return { success };

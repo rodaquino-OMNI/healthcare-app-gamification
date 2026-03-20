@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { TracingService } from '@app/shared/tracing/tracing.service';
@@ -6,13 +5,51 @@ import { truncate } from '@app/shared/utils/string.util';
 import { HttpStatus, Injectable } from '@nestjs/common'; // NestJS Common 9.0.0+
 import FhirClient from 'fhir-kit-client'; // FHIR Kit Client 4.0.0+
 
-import { health } from '@app/health/config/configuration';
+import { health, Configuration } from '@app/health/config/configuration';
 import { MedicalEvent } from '@app/health/health/entities/medical-event.entity';
+
+/** Shape of a FHIR Patient resource (subset used by this adapter) */
+interface FhirPatient {
+    id?: string;
+    resourceType?: string;
+    name?: Array<{ given?: string[]; family?: string }>;
+    gender?: string;
+    birthDate?: string;
+    telecom?: Array<{ system?: string; value?: string }>;
+    address?: Array<{ line?: string[]; city?: string; state?: string; postalCode?: string }>;
+    identifier?: Array<{ system?: string; value?: string }>;
+    maritalStatus?: { text?: string };
+    communication?: Array<{ language?: { text?: string } }>;
+    meta?: { versionId?: string; lastUpdated?: string };
+}
+
+/** Shape of a FHIR Bundle with Condition entries */
+interface FhirConditionBundle {
+    entry?: Array<{
+        resource?: {
+            id?: string;
+            resourceType?: string;
+            clinicalStatus?: { coding?: Array<{ display?: string; code?: string }> };
+            code?: { text?: string; coding?: Array<{ display?: string; code?: string }> };
+            recordedDate?: string;
+            onsetDateTime?: string;
+            asserter?: { display?: string };
+            note?: Array<{ text?: string }>;
+            supportingInfo?: Array<{ reference?: string }>;
+        };
+    }>;
+}
+
+/** HTTP-like error returned by FHIR client */
+interface FhirHttpError extends Error {
+    response?: { status: number };
+}
 
 /**
  * Adapts communication with FHIR-compliant systems to retrieve medical records and history.
- * This adapter handles authentication, data transformation, and error handling specific to FHIR APIs,
- * providing a consistent interface for the Health Service.
+ * This adapter handles authentication, data transformation,
+ * and error handling specific to FHIR APIs, providing a
+ * consistent interface for the Health Service.
  *
  * Addresses requirements:
  * - F-101: Integrates with external health record systems
@@ -21,7 +58,7 @@ import { MedicalEvent } from '@app/health/health/entities/medical-event.entity';
 @Injectable()
 export class FHIRAdapter {
     private fhirClient!: FhirClient;
-    private config!: Record<string, any>;
+    private config!: Configuration;
 
     /**
      * Initializes the FHIRAdapter.
@@ -58,12 +95,14 @@ export class FHIRAdapter {
 
             this.logger.log('FHIR adapter initialized successfully', 'FHIRAdapter');
         } catch (error) {
-            this.logger.error('Failed to initialize FHIR adapter', (error as any).stack, 'FHIRAdapter');
+            const errStack = error instanceof Error ? error.stack : undefined;
+            const errMsg = error instanceof Error ? error.message : 'Unknown error';
+            this.logger.error('Failed to initialize FHIR adapter', errStack, 'FHIRAdapter');
             throw new AppException(
                 'Failed to initialize FHIR adapter',
                 ErrorType.TECHNICAL,
                 'HEALTH_002',
-                { detail: (error as Error).message },
+                { detail: errMsg },
                 HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
@@ -89,12 +128,13 @@ export class FHIRAdapter {
                 // For now, we'll assume the token is pre-configured or obtained elsewhere
                 headers['Authorization'] = `Bearer ${this.config.fhirApiAccessToken}`;
                 break;
-            case 'basic':
+            case 'basic': {
                 const credentials = Buffer.from(
                     `${this.config.fhirApiUsername}:${this.config.fhirApiPassword}`
                 ).toString('base64');
                 headers['Authorization'] = `Basic ${credentials}`;
                 break;
+            }
             case 'none':
             default:
                 // No authentication
@@ -110,10 +150,10 @@ export class FHIRAdapter {
      * @param error - The error to check
      * @returns True if the error is retryable, false otherwise
      */
-    private isRetryable(error: any): boolean {
+    private isRetryable(error: unknown): boolean {
         // Consider server errors (5xx) and rate limiting (429) as retryable
-        const status = error.response?.status;
-        return status >= 500 || status === 429;
+        const status = (error as FhirHttpError).response?.status;
+        return (status !== null && status !== undefined && status >= 500) || status === 429;
     }
 
     /**
@@ -128,11 +168,14 @@ export class FHIRAdapter {
             return await fn();
         } catch (error) {
             if (retries <= 0 || !this.isRetryable(error)) {
-                throw error as any;
+                throw error;
             }
 
             const delay = Math.pow(2, 4 - retries) * 1000; // Exponential backoff: 1s, 2s, 4s
-            this.logger.warn(`Retrying FHIR API call after ${delay}ms, ${retries} retries left`, 'FHIRAdapter');
+            this.logger.warn(
+                `Retrying FHIR API call after ${delay}ms, ${retries} retries left`,
+                'FHIRAdapter'
+            );
 
             await new Promise((resolve) => setTimeout(resolve, delay));
             return this.retryWithBackoff(fn, retries - 1);
@@ -145,16 +188,21 @@ export class FHIRAdapter {
      * @param patientId - The unique identifier of the patient
      * @returns A promise that resolves to the patient record
      */
-    public async getPatientRecord(patientId: string): Promise<any> {
+    public async getPatientRecord(patientId: string): Promise<Record<string, unknown>> {
         try {
             // Check if FHIR API is enabled
             if (!this.config.fhirApiEnabled) {
-                throw new AppException('FHIR API is disabled', ErrorType.BUSINESS, 'HEALTH_001', { patientId });
+                throw new AppException('FHIR API is disabled', ErrorType.BUSINESS, 'HEALTH_001', {
+                    patientId,
+                });
             }
 
             // Use the tracing service to create a span for this operation
             return await this.tracingService.createSpan('fhir.getPatientRecord', async () => {
-                this.logger.log(`Fetching patient record for patient ID: ${patientId}`, 'FHIRAdapter');
+                this.logger.log(
+                    `Fetching patient record for patient ID: ${patientId}`,
+                    'FHIRAdapter'
+                );
 
                 try {
                     // Use the FHIR client to fetch the patient record
@@ -166,14 +214,17 @@ export class FHIRAdapter {
                     );
 
                     // Transform FHIR patient to our internal format
-                    const patientRecord = this.mapToPatientRecord(response);
+                    const patientRecord = this.mapToPatientRecord(response as FhirPatient);
 
-                    this.logger.log(`Successfully fetched patient record for patient ID: ${patientId}`, 'FHIRAdapter');
+                    this.logger.log(
+                        `Successfully fetched patient record for patient ID: ${patientId}`,
+                        'FHIRAdapter'
+                    );
                     return patientRecord;
                 } catch (error) {
                     this.logger.error(
                         `Failed to fetch patient record for patient ID: ${patientId}`,
-                        (error as any).stack,
+                        error instanceof Error ? error.stack : undefined,
                         'FHIRAdapter'
                     );
 
@@ -188,7 +239,7 @@ export class FHIRAdapter {
             });
         } catch (error) {
             if (error instanceof AppException) {
-                throw error as any;
+                throw error;
             }
 
             throw new AppException(
@@ -211,12 +262,17 @@ export class FHIRAdapter {
         try {
             // Check if FHIR API is enabled
             if (!this.config.fhirApiEnabled) {
-                throw new AppException('FHIR API is disabled', ErrorType.BUSINESS, 'HEALTH_001', { patientId });
+                throw new AppException('FHIR API is disabled', ErrorType.BUSINESS, 'HEALTH_001', {
+                    patientId,
+                });
             }
 
             // Use the tracing service to create a span for this operation
             return await this.tracingService.createSpan('fhir.getMedicalHistory', async () => {
-                this.logger.log(`Fetching medical history for patient ID: ${patientId}`, 'FHIRAdapter');
+                this.logger.log(
+                    `Fetching medical history for patient ID: ${patientId}`,
+                    'FHIRAdapter'
+                );
 
                 try {
                     // Use the FHIR client to search for conditions related to the patient
@@ -226,13 +282,14 @@ export class FHIRAdapter {
                             searchParams: {
                                 patient: patientId,
                                 _sort: '-date', // Sort by date in descending order
-                                _count: this.config.medicalHistoryMaxEvents || 1000, // Limit the number of records
+                                // Limit the number of records
+                                _count: this.config.medicalHistoryMaxEvents || 1000,
                             },
                         })
                     );
 
                     // Transform FHIR conditions to our internal format
-                    const medicalEvents = this.mapToMedicalEvents(response);
+                    const medicalEvents = this.mapToMedicalEvents(response as FhirConditionBundle);
 
                     this.logger.log(
                         `Successfully fetched ${medicalEvents.length} medical events for patient ID: ${patientId}`,
@@ -242,7 +299,7 @@ export class FHIRAdapter {
                 } catch (error) {
                     this.logger.error(
                         `Failed to fetch medical history for patient ID: ${patientId}`,
-                        (error as any).stack,
+                        error instanceof Error ? error.stack : undefined,
                         'FHIRAdapter'
                     );
 
@@ -257,7 +314,7 @@ export class FHIRAdapter {
             });
         } catch (error) {
             if (error instanceof AppException) {
-                throw error as any;
+                throw error;
             }
 
             throw new AppException(
@@ -276,33 +333,41 @@ export class FHIRAdapter {
      * @param fhirPatient - The FHIR Patient resource
      * @returns Standardized patient record
      */
-    private mapToPatientRecord(fhirPatient: any): any {
+    private mapToPatientRecord(fhirPatient: FhirPatient): Record<string, unknown> {
         try {
             // Validate FHIR patient resource
-            if (!fhirPatient || !fhirPatient.resourceType || fhirPatient.resourceType !== 'Patient') {
+            if (
+                !fhirPatient ||
+                !fhirPatient.resourceType ||
+                fhirPatient.resourceType !== 'Patient'
+            ) {
                 throw new Error('Invalid FHIR Patient resource');
             }
 
             // Extract name information
-            const name = fhirPatient.name && fhirPatient.name.length > 0 ? fhirPatient.name[0] : null;
-            const firstName = name && name.given && name.given.length > 0 ? name.given[0] : '';
-            const lastName = name && name.family ? name.family : '';
+            const name =
+                fhirPatient.name && fhirPatient.name.length > 0 ? fhirPatient.name[0] : null;
+            const firstName = name?.given && name.given.length > 0 ? name.given[0] : '';
+            const lastName = name?.family ? name.family : '';
 
             // Extract contact information
             const telecom = fhirPatient.telecom || [];
-            const phone = telecom.find((t: any) => t.system === 'phone')?.value || '';
-            const email = telecom.find((t: any) => t.system === 'email')?.value || '';
+            const phone = telecom.find((t) => t.system === 'phone')?.value || '';
+            const email = telecom.find((t) => t.system === 'email')?.value || '';
 
             // Extract address information
-            const address = fhirPatient.address && fhirPatient.address.length > 0 ? fhirPatient.address[0] : null;
-            const addressLine = address && address.line ? address.line.join(', ') : '';
+            const address =
+                fhirPatient.address && fhirPatient.address.length > 0
+                    ? fhirPatient.address[0]
+                    : null;
+            const addressLine = address?.line ? address.line.join(', ') : '';
             const city = address ? address.city || '' : '';
             const state = address ? address.state || '' : '';
             const postalCode = address ? address.postalCode || '' : '';
 
             // Extract identifiers (like CPF in Brazil)
             const identifiers =
-                fhirPatient.identifier?.map((id: any) => ({
+                fhirPatient.identifier?.map((id) => ({
                     system: id.system,
                     value: id.value,
                 })) || [];
@@ -329,7 +394,7 @@ export class FHIRAdapter {
                 maritalStatus: fhirPatient.maritalStatus?.text || '',
                 identifiers,
                 communication:
-                    fhirPatient.communication?.map((comm: any) => ({
+                    fhirPatient.communication?.map((comm) => ({
                         language: comm.language?.text || '',
                     })) || [],
                 source: 'FHIR',
@@ -339,7 +404,11 @@ export class FHIRAdapter {
                 },
             };
         } catch (error) {
-            this.logger.error('Failed to map FHIR patient to internal format', (error as any).stack, 'FHIRAdapter');
+            this.logger.error(
+                'Failed to map FHIR patient to internal format',
+                error instanceof Error ? error.stack : undefined,
+                'FHIRAdapter'
+            );
             throw new AppException(
                 'Failed to process patient data',
                 ErrorType.TECHNICAL,
@@ -356,7 +425,7 @@ export class FHIRAdapter {
      * @param fhirResponse - The FHIR response containing Condition resources
      * @returns Array of MedicalEvent entities
      */
-    private mapToMedicalEvents(fhirResponse: any): MedicalEvent[] {
+    private mapToMedicalEvents(fhirResponse: FhirConditionBundle): MedicalEvent[] {
         try {
             // Validate FHIR response
             if (!fhirResponse || !fhirResponse.entry || !Array.isArray(fhirResponse.entry)) {
@@ -365,9 +434,9 @@ export class FHIRAdapter {
 
             // Map each condition to a medical event
             return fhirResponse.entry
-                .filter((entry: any) => entry.resource && entry.resource.resourceType === 'Condition')
-                .map((entry: any) => {
-                    const condition = entry.resource;
+                .filter((entry) => entry.resource && entry.resource.resourceType === 'Condition')
+                .map((entry) => {
+                    const condition = entry.resource!;
 
                     // Extract clinical status (reserved for future use)
                     const _clinicalStatus =
@@ -376,7 +445,10 @@ export class FHIRAdapter {
                         '';
 
                     // Extract condition code and description
-                    const code = condition.code?.coding?.[0]?.display || condition.code?.coding?.[0]?.code || '';
+                    const code =
+                        condition.code?.coding?.[0]?.display ||
+                        condition.code?.coding?.[0]?.code ||
+                        '';
                     const description = condition.code?.text || code || 'Unknown condition';
 
                     // Extract recorded date
@@ -393,23 +465,31 @@ export class FHIRAdapter {
                     const provider = condition.asserter?.display || '';
 
                     // Extract notes (reserved for future use)
-                    const _notes = condition.note?.map((n: any) => n.text).join('\n') || '';
+                    const _notes = condition.note?.map((n) => n.text).join('\n') || '';
 
                     // Create a new MedicalEvent entity
                     const medicalEvent = new MedicalEvent();
-                    medicalEvent.id = condition.id;
+                    medicalEvent.id = condition.id ?? '';
                     medicalEvent.type = 'condition';
                     medicalEvent.description = truncate(description, 255);
                     medicalEvent.date = recordedDate;
                     medicalEvent.provider = truncate(provider, 255);
-                    medicalEvent.documents = condition.supportingInfo?.map((info: any) => info.reference) || [];
+                    medicalEvent.documents =
+                        condition.supportingInfo
+                            ?.map((info) => info.reference)
+                            .filter((ref): ref is string => ref !== null && ref !== undefined) ||
+                        [];
                     medicalEvent.createdAt = new Date();
                     medicalEvent.updatedAt = new Date();
 
                     return medicalEvent;
                 });
         } catch (error) {
-            this.logger.error('Failed to map FHIR conditions to medical events', (error as any).stack, 'FHIRAdapter');
+            this.logger.error(
+                'Failed to map FHIR conditions to medical events',
+                error instanceof Error ? error.stack : undefined,
+                'FHIRAdapter'
+            );
             throw new AppException(
                 'Failed to process medical history data',
                 ErrorType.TECHNICAL,
