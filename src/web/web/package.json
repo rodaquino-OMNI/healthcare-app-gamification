@@ -63,7 +63,7 @@
     "//resolutions": "Child-specific only. @sentry/nextjs ^8.0.0 (parent uses scoped overrides). react-native 0.72.6 (parent src/web uses 0.73.0). esbuild 0.27.3 (parent uses >=0.25.0 range). All other CVE/version pins handled by root + src/web parent resolutions.",
     "resolutions": {
         "@sentry/nextjs": "^8.0.0",
-        "react-native": "0.72.6",
+        "react-native": "0.73.0",
         "esbuild": "0.27.3"
     }
 }

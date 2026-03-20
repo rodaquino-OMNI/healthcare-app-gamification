@@ -21,8 +21,13 @@
             "design-system/*": ["../design-system/src/*"],
             "shared/*": ["../shared/*"],
             "src/web/design-system/src/*": ["../design-system/src/*"],
-            "src/web/shared/*": ["../shared/*"]
+            "src/web/shared/*": ["../shared/*"],
+            "react": ["./node_modules/@types/react"],
+            "react-dom": ["./node_modules/@types/react-dom"],
+            "react/jsx-runtime": ["./node_modules/@types/react/jsx-runtime"]
         },
+        "typeRoots": ["./node_modules/@types"],
+        "types": ["node", "react", "react-dom"],
         "noImplicitAny": true,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,

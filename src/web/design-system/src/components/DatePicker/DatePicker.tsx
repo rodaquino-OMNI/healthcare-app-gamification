@@ -1,8 +1,12 @@
 import { format, type Locale } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
-import ReactDatePicker, { registerLocale, setDefaultLocale, CalendarContainerProps } from 'react-datepicker';
+import ReactDatePickerOriginal, { registerLocale, setDefaultLocale, CalendarContainerProps } from 'react-datepicker';
 import styled from 'styled-components';
+
+// Cast to fix React 19 class component type incompatibility (refs property)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const ReactDatePicker = ReactDatePickerOriginal as unknown as React.ComponentType<any>;
 
 import { Button } from '../../components/Button/Button';
 import { Modal } from '../../components/Modal/Modal';

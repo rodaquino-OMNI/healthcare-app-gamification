@@ -1,5 +1,4 @@
-import { ApolloClient, ApolloLink, InMemoryCache } from '@apollo/client'; // v3.x
-import createUploadLink from 'apollo-upload-client/createUploadLink.mjs'; // v18.0.1
+import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client'; // v3.x
 import axios, { AxiosInstance } from 'axios'; // v1.x
 import { apiConfig } from 'shared/config/apiConfig';
 
@@ -16,11 +15,13 @@ import { apiConfig } from 'shared/config/apiConfig';
  * @version Apollo Client 3.x
  */
 export const graphQLClient = new ApolloClient({
-    // Upload link supports multipart form requests for file uploads
-    link: createUploadLink({
+    // HttpLink for standard GraphQL requests
+    // NOTE: apollo-upload-client v19 dropped createUploadLink; use HttpLink for now.
+    // File uploads should use the REST client instead.
+    link: new HttpLink({
         uri: `${apiConfig.baseURL}/graphql`,
         credentials: 'include', // Include cookies for authentication if needed
-    }) as unknown as ApolloLink,
+    }),
     // In-memory cache stores query results for faster subsequent access
     cache: new InMemoryCache({
         typePolicies: {
