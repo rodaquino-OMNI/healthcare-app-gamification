@@ -52,8 +52,11 @@ jobs:
 
       - name: Audit for high/critical vulnerabilities (${{ matrix.workspace.name }})
         working-directory: ${{ matrix.workspace.path }}
-        continue-on-error: true
-        run: yarn audit --level high
+        run: |
+          yarn audit --level high || {
+            echo "::warning::Audit found high/critical vulnerabilities"
+            exit 1
+          }
 
   build-backend:
     if: github.actor == 'renovate[bot]'
