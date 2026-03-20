@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@apollo/client": "^3.7.17",
+    "@apollo/client": "^3.8.10",
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.1",
     "@hookform/resolvers": "^3.3.4",
@@ -16,11 +16,11 @@
     "axios": "1.13.6",
     "date-fns": "^4.0.0",
     "motion": "^12.0.0",
-    "graphql": "16.8.1",
+    "graphql": "16.13.1",
     "graphql-request": "7.4.0",
     "i18next": "^25.0.0",
     "jwt-decode": "4.0.0",
-    "next": "15.4.11",
+    "next": "15.5.12",
     "next-i18next": "15.4.3",
     "next-seo": "^7.0.0",
     "nookies": "2.5.2",
@@ -140,12 +140,8 @@
     "react-native-gesture-handler": "2.25.0",
     "react-native-safe-area-context": "5.4.0"
   },
-  "//resolutions": "Shared-specific: @sentry/nextjs scoped follow-redirects 1.15.11. All other CVE/version pins handled by root + src/web parent resolutions.",
+  "//resolutions": "Shared-specific: @sentry/nextjs scoped follow-redirects 1.15.11. Flattened for Turbo compat. All other CVE/version pins handled by root + src/web parent resolutions.",
   "resolutions": {
-    "@sentry/nextjs": {
-      "@sentry/core": {
-        "follow-redirects": "1.15.11"
-      }
-    }
+    "@sentry/nextjs/@sentry/core/follow-redirects": "1.15.11"
   }
 }

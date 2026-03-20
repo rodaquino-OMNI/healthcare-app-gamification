@@ -19,7 +19,7 @@
         "submit:android": "eas submit --platform android"
     },
     "dependencies": {
-        "@apollo/client": "^3.7.17",
+        "@apollo/client": "^3.8.10",
         "@austa/design-system": "0.1.0",
         "@austa/web-shared": "0.1.0",
         "@hookform/resolvers": "^3.3.4",
@@ -122,7 +122,7 @@
         "typescript": "5.3.3"
     },
     "engines": {
-        "node": ">=16"
+        "node": ">=18"
     },
     "lint-staged": {
         "*.{ts,tsx}": [
