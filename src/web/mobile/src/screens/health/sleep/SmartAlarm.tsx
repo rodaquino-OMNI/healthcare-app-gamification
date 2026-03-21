@@ -118,7 +118,7 @@ export const SmartAlarm: React.FC = () => {
                                 accessibilityLabel={t(option.labelKey)}
                                 accessibilityRole="button"
                                 testID={`sleep-alarm-window-${option.value}`}
-                                style={[styles.windowOption, wakeWindow === option.value && styles.windowOptionActive]}
+                                style={{...styles.windowOption, ...(wakeWindow === option.value ? styles.windowOptionActive : {})}}
                             >
                                 <Text
                                     fontSize="md"

@@ -187,7 +187,7 @@ export const SleepTrends: React.FC = () => {
                             accessibilityLabel={t('journeys.health.sleep.trends.periodOption', { period })}
                             accessibilityRole="button"
                             testID={`sleep-trends-period-${period}`}
-                            style={[styles.periodOption, selectedPeriod === period && styles.periodOptionActive]}
+                            style={{...styles.periodOption, ...(selectedPeriod === period ? styles.periodOptionActive : {})}}
                         >
                             <Text
                                 fontSize="sm"

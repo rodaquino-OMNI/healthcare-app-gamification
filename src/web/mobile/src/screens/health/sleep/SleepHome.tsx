@@ -160,7 +160,7 @@ export const SleepHome: React.FC = () => {
                                 accessibilityLabel={`${day.label} ${day.date}`}
                                 accessibilityRole="button"
                                 testID={`sleep-home-calendar-${day.label.toLowerCase()}`}
-                                style={[styles.calendarDay, isSelected && styles.calendarDaySelected]}
+                                style={{...styles.calendarDay, ...(isSelected ? styles.calendarDaySelected : {})}}
                             >
                                 <Text fontSize="xs" color={isSelected ? colors.neutral.white : colors.gray[50]}>
                                     {day.label}

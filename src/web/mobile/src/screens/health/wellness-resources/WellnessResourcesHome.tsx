@@ -117,7 +117,7 @@ export const WellnessResourcesHome: React.FC = () => {
 
     const handleCategoryPress = useCallback(
         (screen: keyof WellnessResourcesParamList) => {
-            navigation.navigate(screen);
+            (navigation.navigate as (screen: string) => void)(screen);
         },
         [navigation]
     );

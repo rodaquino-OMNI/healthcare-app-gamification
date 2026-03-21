@@ -140,10 +140,10 @@ export const CycleReminders: React.FC = () => {
                                                 })}
                                                 accessibilityRole="button"
                                                 testID={`days-${reminder.type}-${days}`}
-                                                style={[
-                                                    styles.dayChip,
-                                                    reminder.daysBefore === days && styles.dayChipActive,
-                                                ]}
+                                                style={{
+                                                    ...styles.dayChip,
+                                                    ...(reminder.daysBefore === days ? styles.dayChipActive : {}),
+                                                }}
                                             >
                                                 <Text
                                                     fontSize="sm"

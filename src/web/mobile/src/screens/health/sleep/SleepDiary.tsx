@@ -272,7 +272,7 @@ export const SleepDiary: React.FC = () => {
                             accessibilityLabel={t(filter.labelKey)}
                             accessibilityRole="button"
                             testID={`sleep-diary-filter-${filter.key}`}
-                            style={[styles.filterTab, isActive && styles.filterTabActive]}
+                            style={{...styles.filterTab, ...(isActive ? styles.filterTabActive : {})}}
                         >
                             <Text
                                 fontSize="sm"

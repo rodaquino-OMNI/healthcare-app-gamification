@@ -210,7 +210,7 @@ export const WorkoutHistory: React.FC = () => {
                             accessibilityLabel={t(filter.labelKey)}
                             accessibilityRole="button"
                             testID={`activity-workout-history-filter-${filter.key}`}
-                            style={[styles.filterTab, isActive && styles.filterTabActive]}
+                            style={{...styles.filterTab, ...(isActive ? styles.filterTabActive : {})}}
                         >
                             <Text
                                 fontSize="sm"

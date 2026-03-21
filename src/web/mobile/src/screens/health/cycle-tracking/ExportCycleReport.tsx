@@ -134,7 +134,7 @@ export const ExportCycleReport: React.FC = () => {
                                 accessibilityLabel={t(option.labelKey)}
                                 accessibilityRole="button"
                                 testID={`range-${option.id}`}
-                                style={[styles.rangeOption, dateRange === option.id && styles.rangeOptionActive]}
+                                style={{...styles.rangeOption, ...(dateRange === option.id ? styles.rangeOptionActive : {})}}
                             >
                                 <Text
                                     fontSize="sm"

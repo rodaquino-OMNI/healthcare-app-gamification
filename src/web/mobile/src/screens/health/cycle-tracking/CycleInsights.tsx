@@ -210,7 +210,7 @@ export const CycleInsights: React.FC = () => {
                         accessibilityLabel={t('journeys.health.cycle.insights.allCategories')}
                         accessibilityRole="button"
                         testID="category-all"
-                        style={[styles.categoryChip, selectedCategory === 'all' && styles.categoryChipActive]}
+                        style={{...styles.categoryChip, ...(selectedCategory === 'all' ? styles.categoryChipActive : {})}}
                     >
                         <Text fontSize="sm" color={selectedCategory === 'all' ? colors.gray[0] : colors.gray[50]}>
                             {t('journeys.health.cycle.insights.all')}
@@ -223,7 +223,7 @@ export const CycleInsights: React.FC = () => {
                             accessibilityLabel={t(`journeys.health.cycle.insights.categories.${cat}`)}
                             accessibilityRole="button"
                             testID={`category-${cat}`}
-                            style={[styles.categoryChip, selectedCategory === cat && styles.categoryChipActive]}
+                            style={{...styles.categoryChip, ...(selectedCategory === cat ? styles.categoryChipActive : {})}}
                         >
                             <Text fontSize="sm" color={selectedCategory === cat ? colors.gray[0] : colors.gray[50]}>
                                 {t(`journeys.health.cycle.insights.categories.${cat}`)}

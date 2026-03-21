@@ -193,7 +193,7 @@ export const MacroTracker: React.FC = () => {
                             accessibilityLabel={t('journeys.health.nutrition.macro.period', { period })}
                             accessibilityRole="button"
                             testID={`nutrition-macro-period-${period}`}
-                            style={[styles.periodOption, selectedPeriod === period && styles.periodOptionActive]}
+                            style={{...styles.periodOption, ...(selectedPeriod === period ? styles.periodOptionActive : {})}}
                         >
                             <Text
                                 fontSize="sm"

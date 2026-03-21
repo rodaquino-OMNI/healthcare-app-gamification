@@ -124,7 +124,7 @@ export const LogPeriodStart: React.FC = () => {
                                     accessibilityLabel={item.label}
                                     accessibilityRole="button"
                                     testID={`date-option-${item.formatted}`}
-                                    style={[styles.dateOption, isSelected && styles.dateOptionSelected]}
+                                    style={{...styles.dateOption, ...(isSelected ? styles.dateOptionSelected : {})}}
                                 >
                                     <Text
                                         fontSize="sm"
@@ -155,7 +155,7 @@ export const LogPeriodStart: React.FC = () => {
                                     accessibilityLabel={t(option.labelKey)}
                                     accessibilityRole="button"
                                     testID={`flow-${option.id}`}
-                                    style={[styles.flowOption, isSelected && styles.flowOptionSelected]}
+                                    style={{...styles.flowOption, ...(isSelected ? styles.flowOptionSelected : {})}}
                                 >
                                     <View style={styles.dropletContainer}>
                                         {Array.from({ length: option.iconScale }, (_, i) => (

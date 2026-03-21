@@ -122,7 +122,7 @@ export const CycleSettings: React.FC = () => {
                             accessibilityLabel={t('journeys.health.cycle.settings.decrease', { field: label })}
                             accessibilityRole="button"
                             testID={`decrease-${field}`}
-                            style={[styles.stepButton, value <= min && styles.stepButtonDisabled]}
+                            style={{...styles.stepButton, ...(value <= min ? styles.stepButtonDisabled : {})}}
                         >
                             <Text
                                 fontSize="lg"
@@ -142,7 +142,7 @@ export const CycleSettings: React.FC = () => {
                             accessibilityLabel={t('journeys.health.cycle.settings.increase', { field: label })}
                             accessibilityRole="button"
                             testID={`increase-${field}`}
-                            style={[styles.stepButton, value >= max && styles.stepButtonDisabled]}
+                            style={{...styles.stepButton, ...(value >= max ? styles.stepButtonDisabled : {})}}
                         >
                             <Text
                                 fontSize="lg"

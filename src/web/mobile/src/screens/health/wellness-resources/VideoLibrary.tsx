@@ -198,7 +198,7 @@ export const VideoLibrary: React.FC = () => {
                             accessibilityLabel={t(filter.labelKey)}
                             accessibilityRole="button"
                             testID={`wellness-resources-video-library-filter-${filter.key}`}
-                            style={[styles.filterChip, isActive && styles.filterChipActive]}
+                            style={{...styles.filterChip, ...(isActive ? styles.filterChipActive : {})}}
                         >
                             <Text
                                 fontSize="sm"

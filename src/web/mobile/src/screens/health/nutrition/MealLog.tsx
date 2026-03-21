@@ -178,7 +178,7 @@ export const MealLog: React.FC = () => {
                                     accessibilityLabel={t(mt.labelKey)}
                                     accessibilityRole="button"
                                     testID={`nutrition-log-meal-${mt.key}`}
-                                    style={[styles.mealTypeTab, isActive && styles.mealTypeTabActive]}
+                                    style={{...styles.mealTypeTab, ...(isActive ? styles.mealTypeTabActive : {})}}
                                 >
                                     <Text
                                         fontSize="xs"

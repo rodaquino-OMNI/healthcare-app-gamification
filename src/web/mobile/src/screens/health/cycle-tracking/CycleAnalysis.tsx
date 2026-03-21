@@ -159,7 +159,7 @@ export const CycleAnalysis: React.FC = () => {
                             accessibilityLabel={t('journeys.health.cycle.analysis.periodOption', { period })}
                             accessibilityRole="button"
                             testID={`period-${period}`}
-                            style={[styles.periodOption, selectedPeriod === period && styles.periodOptionActive]}
+                            style={{...styles.periodOption, ...(selectedPeriod === period ? styles.periodOptionActive : {})}}
                         >
                             <Text
                                 fontSize="sm"

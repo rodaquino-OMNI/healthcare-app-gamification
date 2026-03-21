@@ -256,7 +256,7 @@ export const ExerciseLibrary: React.FC = () => {
                         accessibilityLabel={t(filter.labelKey)}
                         accessibilityRole="button"
                         testID={`activity-exercise-library-filter-${filter.id}`}
-                        style={[styles.filterChip, selectedCategory === filter.id && styles.filterChipActive]}
+                        style={{...styles.filterChip, ...(selectedCategory === filter.id ? styles.filterChipActive : {})}}
                     >
                         <Text
                             fontSize="sm"
