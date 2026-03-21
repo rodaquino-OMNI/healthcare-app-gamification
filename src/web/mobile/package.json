@@ -25,6 +25,7 @@
         "@hookform/resolvers": "^3.3.4",
         "@react-native-async-storage/async-storage": "1.19.3",
         "@react-native-community/netinfo": "9.3.10",
+        "@react-native-firebase/app": "^18.0.0",
         "@react-native-firebase/analytics": "^18.0.0",
         "@react-native-firebase/crashlytics": "^18.0.0",
         "@react-navigation/bottom-tabs": "6.5.8",
@@ -38,6 +39,11 @@
         "axios": "1.13.6",
         "cross-fetch": "4.1.0",
         "date-fns": "^4.0.0",
+        "expo-dev-client": "~5.0.0",
+        "expo-font": "~13.0.0",
+        "expo-screen-capture": "~7.0.0",
+        "expo-secure-store": "~14.0.0",
+        "expo-splash-screen": "~0.29.0",
         "formik": "2.4.9",
         "graphql-request": "7.4.0",
         "i18next": "25.8.13",
@@ -48,10 +54,10 @@
         "react-native": "0.73.0",
         "react-native-agora": "4.5.2",
         "react-native-biometrics": "3.0.1",
-        "react-native-config": "1.6.1",
         "react-native-ssl-pinning": "^1.5.5",
         "react-native-device-info": "15.0.2",
         "react-native-gesture-handler": "2.14.0",
+        "react-native-health": "^2.0.0",
         "react-native-haptic-feedback": "^2.0.2",
         "react-native-image-picker": "8.2.1",
         "react-native-linear-gradient": "2.8.3",
@@ -142,12 +148,17 @@
         "react-native-gesture-handler": "2.25.0",
         "react-native-safe-area-context": "5.4.0"
     },
-    "//resolutions": "Mobile-specific: react/react-dom/types pinned to 18.x for React Native compat (parent uses 19.x). react-native-haptic-feedback not in parent. All other CVE/version pins handled by root + src/web parent resolutions.",
+    "//resolutions": "Mobile-specific: react/react-dom/types pinned to 18.x for React Native compat (parent uses 19.x). React Navigation pinned to v6 to prevent transitive v7 upgrades. react-native-haptic-feedback not in parent. All other CVE/version pins handled by root + src/web parent resolutions.",
     "resolutions": {
         "react": "18.3.1",
         "react-dom": "18.3.1",
         "@types/react": "18.2.37",
         "@types/react-dom": "18.2.15",
-        "react-native-haptic-feedback": "^2.0.2"
+        "react-native-haptic-feedback": "^2.0.2",
+        "@react-navigation/native": "6.1.9",
+        "@react-navigation/bottom-tabs": "6.5.8",
+        "@react-navigation/drawer": "6.7.2",
+        "@react-navigation/native-stack": "6.9.13",
+        "@react-navigation/stack": "6.3.20"
     }
 }
