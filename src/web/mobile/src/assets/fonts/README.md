@@ -2,10 +2,10 @@
 
 This directory contains font files used in the AUSTA SuperApp mobile application.
 
-Currently, we are using the Roboto font family for a consistent and accessible user interface.
+## Included Fonts
 
-To add new fonts:
+- **Plus Jakarta Sans** (Regular, Medium, SemiBold, Bold) — Primary font for headings and body text
+- **Nunito** (Bold) — Logo font
 
-1. Place the font files (e.g., .ttf, .otf) in this directory.
-2. Update the application's styling to reference the new font files.
-3. Ensure that the font files are properly licensed for use in the application.
+All fonts are licensed under the SIL Open Font License (OFL).
+Loaded at runtime via `expo-font` in App.tsx.

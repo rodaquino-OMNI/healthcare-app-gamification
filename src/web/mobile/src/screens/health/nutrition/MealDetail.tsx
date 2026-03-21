@@ -9,7 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, Alert, FlatList, ListRenderItemInfo } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import type { NutritionNavigationProp } from '../../../navigation/types';
 
 /**
  * Meal type classification.
@@ -83,9 +85,8 @@ const MOCK_MEAL: MealData = {
  * including nutrient breakdown, ingredient list, and edit/delete actions.
  */
 export const MealDetail: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<NutritionNavigationProp>();
     const { t } = useTranslation();
-    const _theme = useTheme();
 
     const nutrientCards: NutrientCard[] = useMemo(
         () => [
@@ -175,7 +176,7 @@ export const MealDetail: React.FC = () => {
     const keyExtractor = useCallback((item: Ingredient) => item.id, []);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -279,7 +280,7 @@ export const MealDetail: React.FC = () => {
                     </Button>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

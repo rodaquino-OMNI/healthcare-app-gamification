@@ -9,7 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, Alert } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme } from '../../../hooks/useTheme';
 
 /**
  * Data source for activity tracking.
@@ -62,7 +64,7 @@ const MOCK_DEVICE: ConnectedDevice | null = {
  * sync actions, and data source selection.
  */
 export const ActivityDeviceSync: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
     const _theme = useTheme();
     const [selectedSource, setSelectedSource] = useState<DataSource>('fitbit');
@@ -106,7 +108,7 @@ export const ActivityDeviceSync: React.FC = () => {
     }, []);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -249,7 +251,7 @@ export const ActivityDeviceSync: React.FC = () => {
                     </Button>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

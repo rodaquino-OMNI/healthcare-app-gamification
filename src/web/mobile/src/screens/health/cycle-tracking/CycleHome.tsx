@@ -8,8 +8,10 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, StyleProp, ViewStyle } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ROUTES } from '../../../constants/routes';
+import type { CycleTrackingNavigationProp } from '../../../navigation/types';
 
 /**
  * Phase type within a menstrual cycle.
@@ -87,7 +89,7 @@ const generateMonthDays = (year: number, month: number): CalendarDay[] => {
  * quick stats, and navigation to all cycle tracking sub-screens.
  */
 export const CycleHome: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<CycleTrackingNavigationProp>();
     const { t } = useTranslation();
     const today = useMemo(() => new Date(), []);
     const [currentMonth, setCurrentMonth] = useState(today.getMonth());
@@ -143,7 +145,7 @@ export const CycleHome: React.FC = () => {
     ];
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -307,7 +309,7 @@ export const CycleHome: React.FC = () => {
                         accessibilityLabel={t(tab.labelKey)}
                         accessibilityRole="button"
                         testID={`tab-${tab.key}`}
-                        style={[styles.tabItem, activeTab === tab.key && styles.tabItemActive] as any}
+                        style={[styles.tabItem, activeTab === tab.key && styles.tabItemActive]}
                     >
                         <Text
                             fontSize="lg"
@@ -325,7 +327,7 @@ export const CycleHome: React.FC = () => {
                     </Touchable>
                 ))}
             </View>
-        </View>
+        </SafeAreaView>
     );
 };
 

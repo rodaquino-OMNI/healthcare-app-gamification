@@ -9,7 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, Alert } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme } from '../../../hooks/useTheme';
 
 /**
  * Muscle group tag.
@@ -50,7 +52,7 @@ const DIFFICULTY_COLORS: Record<string, string> = {
  * including description, muscle groups, video placeholder, and action buttons.
  */
 export const ExerciseDetail: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
     const _theme = useTheme();
 
@@ -68,7 +70,7 @@ export const ExerciseDetail: React.FC = () => {
     const difficultyColor = useMemo(() => DIFFICULTY_COLORS[MOCK_EXERCISE.difficulty] || colors.gray[40], []);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -188,7 +190,7 @@ export const ExerciseDetail: React.FC = () => {
                     </Button>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

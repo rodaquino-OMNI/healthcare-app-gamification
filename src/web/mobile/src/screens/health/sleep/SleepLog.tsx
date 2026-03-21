@@ -9,7 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, Alert, TextInput } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme } from '../../../hooks/useTheme';
 
 /**
  * Represents a star rating value (1-5).
@@ -48,7 +50,7 @@ const formatTime12h = (time24: string): string => {
  * wake time, quality rating, and optional notes.
  */
 export const SleepLog: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
     const _theme = useTheme();
 
@@ -86,7 +88,7 @@ export const SleepLog: React.FC = () => {
     }, [navigation, t]);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -218,7 +220,7 @@ export const SleepLog: React.FC = () => {
                     </Button>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

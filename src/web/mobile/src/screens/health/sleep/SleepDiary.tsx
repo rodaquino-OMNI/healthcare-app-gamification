@@ -8,7 +8,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, FlatList, StyleSheet, ListRenderItemInfo } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme } from '../../../hooks/useTheme';
 
 /**
  * Filter period for diary entries.
@@ -166,7 +168,7 @@ const FILTERS: { key: FilterPeriod; labelKey: string }[] = [
  * each showing the date, score, hours slept, and quality emoji.
  */
 export const SleepDiary: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
     const _theme = useTheme();
     const [activeFilter, setActiveFilter] = useState<FilterPeriod>('week');
@@ -242,7 +244,7 @@ export const SleepDiary: React.FC = () => {
     );
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -270,7 +272,7 @@ export const SleepDiary: React.FC = () => {
                             accessibilityLabel={t(filter.labelKey)}
                             accessibilityRole="button"
                             testID={`sleep-diary-filter-${filter.key}`}
-                            style={[styles.filterTab, isActive && styles.filterTabActive] as any}
+                            style={[styles.filterTab, isActive && styles.filterTabActive]}
                         >
                             <Text
                                 fontSize="sm"
@@ -294,7 +296,7 @@ export const SleepDiary: React.FC = () => {
                 testID="sleep-diary-list"
                 ListEmptyComponent={renderEmpty}
             />
-        </View>
+        </SafeAreaView>
     );
 };
 

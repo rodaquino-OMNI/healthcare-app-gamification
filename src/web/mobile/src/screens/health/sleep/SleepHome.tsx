@@ -9,9 +9,10 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ROUTES } from '../../../constants/routes';
+import type { SleepNavigationProp } from '../../../navigation/types';
 
 /**
  * Day label used in the calendar strip.
@@ -88,9 +89,8 @@ const MAX_HOURS = 10;
  * tonight's sleep score ring, a mini bar chart, and quick stats.
  */
 export const SleepHome: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<SleepNavigationProp>();
     const { t } = useTranslation();
-    const _theme = useTheme();
     const weekData = useMemo(() => generateWeekData(), []);
     const [selectedDay, setSelectedDay] = useState(6);
 
@@ -131,7 +131,7 @@ export const SleepHome: React.FC = () => {
     }, []);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -160,7 +160,7 @@ export const SleepHome: React.FC = () => {
                                 accessibilityLabel={`${day.label} ${day.date}`}
                                 accessibilityRole="button"
                                 testID={`sleep-home-calendar-${day.label.toLowerCase()}`}
-                                style={[styles.calendarDay, isSelected && styles.calendarDaySelected] as any}
+                                style={[styles.calendarDay, isSelected && styles.calendarDaySelected]}
                             >
                                 <Text fontSize="xs" color={isSelected ? colors.neutral.white : colors.gray[50]}>
                                     {day.label}
@@ -285,7 +285,7 @@ export const SleepHome: React.FC = () => {
                     </Button>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

@@ -7,8 +7,10 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, FlatList, StyleSheet, ListRenderItemInfo } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ROUTES } from '../../../constants/routes';
+import type { CycleTrackingNavigationProp } from '../../../navigation/types';
 
 /**
  * Article category type.
@@ -125,7 +127,7 @@ const MOCK_ARTICLES: Article[] = [
  * Features category filtering, featured/recent sections, and navigation to detail.
  */
 export const CycleInsights: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<CycleTrackingNavigationProp>();
     const { t } = useTranslation();
     const [selectedCategory, setSelectedCategory] = useState<ArticleCategory | 'all'>('all');
 
@@ -208,7 +210,7 @@ export const CycleInsights: React.FC = () => {
                         accessibilityLabel={t('journeys.health.cycle.insights.allCategories')}
                         accessibilityRole="button"
                         testID="category-all"
-                        style={[styles.categoryChip, selectedCategory === 'all' && styles.categoryChipActive] as any}
+                        style={[styles.categoryChip, selectedCategory === 'all' && styles.categoryChipActive]}
                     >
                         <Text fontSize="sm" color={selectedCategory === 'all' ? colors.gray[0] : colors.gray[50]}>
                             {t('journeys.health.cycle.insights.all')}
@@ -221,7 +223,7 @@ export const CycleInsights: React.FC = () => {
                             accessibilityLabel={t(`journeys.health.cycle.insights.categories.${cat}`)}
                             accessibilityRole="button"
                             testID={`category-${cat}`}
-                            style={[styles.categoryChip, selectedCategory === cat && styles.categoryChipActive] as any}
+                            style={[styles.categoryChip, selectedCategory === cat && styles.categoryChipActive]}
                         >
                             <Text fontSize="sm" color={selectedCategory === cat ? colors.gray[0] : colors.gray[50]}>
                                 {t(`journeys.health.cycle.insights.categories.${cat}`)}
@@ -261,7 +263,7 @@ export const CycleInsights: React.FC = () => {
     const keyExtractor = useCallback((item: Article) => item.id, []);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -289,7 +291,7 @@ export const CycleInsights: React.FC = () => {
                 showsVerticalScrollIndicator={false}
                 testID="insights-list"
             />
-        </View>
+        </SafeAreaView>
     );
 };
 

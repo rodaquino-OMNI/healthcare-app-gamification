@@ -176,3 +176,31 @@ export const typography = {
  * @deprecated Use `typography.fontSize` instead.
  */
 export const fontSize = typography.fontSize;
+
+/**
+ * Native (React Native / iOS / Android) font-family mappings.
+ * Uses exact PostScript names registered via expo-font in App.tsx.
+ * Web consumers should continue using `typography.fontFamily`.
+ */
+export const fontFamilyNative = {
+    /** PlusJakartaSans-SemiBold — heading text on native */
+    heading: 'PlusJakartaSans-SemiBold',
+    /** PlusJakartaSans-Regular — body text on native */
+    body: 'PlusJakartaSans-Regular',
+    /** PlusJakartaSans-Regular — alias for body (backward compat) */
+    base: 'PlusJakartaSans-Regular',
+    /** Nunito-Bold — logo text on native */
+    logo: 'Nunito-Bold',
+} as const;
+
+/**
+ * Maps numeric font weights to the exact loaded font name (PostScript name).
+ * Use this in React Native to resolve fontWeight to the correct font file,
+ * since iOS requires explicit font filenames per weight.
+ */
+export const fontFamilyByWeight = {
+    400: 'PlusJakartaSans-Regular',
+    500: 'PlusJakartaSans-Medium',
+    600: 'PlusJakartaSans-SemiBold',
+    700: 'PlusJakartaSans-Bold',
+} as const;

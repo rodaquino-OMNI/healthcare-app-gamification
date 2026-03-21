@@ -8,7 +8,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, FlatList, StyleSheet, ListRenderItemInfo } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import type { ActivityNavigationProp } from '../../../navigation/types';
 
 /**
  * Workout type filter key.
@@ -87,9 +89,8 @@ const MOCK_ENTRIES: WorkoutEntry[] = [
  * each showing the type icon, date, duration, and calories.
  */
 export const WorkoutHistory: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<ActivityNavigationProp>();
     const { t } = useTranslation();
-    const _theme = useTheme();
     const [activeFilter, setActiveFilter] = useState<WorkoutFilter>('all');
 
     const filteredEntries = useMemo(() => {
@@ -181,7 +182,7 @@ export const WorkoutHistory: React.FC = () => {
     );
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -209,7 +210,7 @@ export const WorkoutHistory: React.FC = () => {
                             accessibilityLabel={t(filter.labelKey)}
                             accessibilityRole="button"
                             testID={`activity-workout-history-filter-${filter.key}`}
-                            style={[styles.filterTab, isActive && styles.filterTabActive] as any}
+                            style={[styles.filterTab, isActive && styles.filterTabActive]}
                         >
                             <Text
                                 fontSize="sm"
@@ -233,7 +234,7 @@ export const WorkoutHistory: React.FC = () => {
                 testID="activity-workout-history-list"
                 ListEmptyComponent={renderEmpty}
             />
-        </View>
+        </SafeAreaView>
     );
 };
 

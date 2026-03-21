@@ -27,7 +27,7 @@ export function useTelemedicineSession(sessionId?: string) {
     const { session: authSession, isAuthenticated } = useAuth();
 
     // Access journey context for journey-specific behaviour
-    const { _journey } = useJourney();
+    const { journey: _journey } = useJourney();
 
     // Fetch (and poll) an existing session when sessionId is provided
     const {

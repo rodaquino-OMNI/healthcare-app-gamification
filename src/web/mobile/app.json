@@ -115,45 +115,7 @@
         "web": {
             "favicon": "./src/assets/images/favicon.png"
         },
-        "plugins": [
-            "@react-native-firebase/app",
-            "react-native-health",
-            "react-native-biometrics",
-            [
-                "expo-notifications",
-                {
-                    "icon": "./src/assets/images/notification-icon.png",
-                    "color": "#ffffff",
-                    "sounds": ["./src/assets/sounds/notification.wav", "./src/assets/sounds/achievement.wav"]
-                }
-            ],
-            "expo-apple-authentication",
-            [
-                "expo-tracking-transparency",
-                {
-                    "userTrackingPermission": "This app uses tracking to provide personalized health insights and measure campaign effectiveness."
-                }
-            ],
-            [
-                "expo-build-properties",
-                {
-                    "ios": {
-                        "deploymentTarget": "15.0",
-                        "useFrameworks": "static"
-                    },
-                    "android": {
-                        "compileSdkVersion": 34,
-                        "targetSdkVersion": 34,
-                        "minSdkVersion": 24,
-                        "buildToolsVersion": "34.0.0",
-                        "kotlinVersion": "1.9.22",
-                        "enableProguardInReleaseBuilds": true,
-                        "enableShrinkResourcesInReleaseBuilds": true
-                    }
-                }
-            ],
-            "expo-dev-client"
-        ],
+        "plugins": ["@react-native-firebase/app", "react-native-health", "expo-dev-client"],
         "notification": {
             "icon": "./src/assets/images/notification-icon.png",
             "color": "#ffffff",

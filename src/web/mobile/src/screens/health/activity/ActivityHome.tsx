@@ -9,7 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import type { ActivityNavigationProp } from '../../../navigation/types';
 
 /**
  * Day label used in the weekly bar chart.
@@ -83,9 +85,8 @@ const MAX_STEPS_CHART = 12000;
  * quick stats, a weekly bar chart, and action buttons.
  */
 export const ActivityHome: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<ActivityNavigationProp>();
     const { t } = useTranslation();
-    const _theme = useTheme();
     const weekData = useMemo(() => generateWeekData(), []);
     const [selectedDay, setSelectedDay] = useState(6);
 
@@ -129,7 +130,7 @@ export const ActivityHome: React.FC = () => {
     }, []);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -284,7 +285,7 @@ export const ActivityHome: React.FC = () => {
                     </Button>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

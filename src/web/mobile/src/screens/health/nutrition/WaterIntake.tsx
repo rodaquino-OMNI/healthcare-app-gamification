@@ -9,7 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, TextInput, Alert } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme } from '../../../hooks/useTheme';
 
 /**
  * A water intake history entry.
@@ -35,7 +37,7 @@ const DAILY_GOAL = 8;
  * glass buttons, a custom amount input, and a hydration streak display.
  */
 export const WaterIntake: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
     const _theme = useTheme();
 
@@ -71,7 +73,7 @@ export const WaterIntake: React.FC = () => {
     }, [customAmount, handleAddGlasses, t]);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -228,7 +230,7 @@ export const WaterIntake: React.FC = () => {
                     ))}
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

@@ -8,8 +8,10 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ROUTES } from '../../../constants/routes';
+import type { CycleTrackingNavigationProp } from '../../../navigation/types';
 
 /**
  * Regularity classification thresholds.
@@ -104,7 +106,7 @@ const getRegularityColor = (level: RegularityLevel): string => {
  * cycle length distribution, and month-over-month comparisons.
  */
 export const CycleAnalysis: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<CycleTrackingNavigationProp>();
     const { t } = useTranslation();
     const [selectedPeriod, setSelectedPeriod] = useState<'3m' | '6m' | '12m'>('6m');
 
@@ -124,7 +126,7 @@ export const CycleAnalysis: React.FC = () => {
     }, []);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -157,7 +159,7 @@ export const CycleAnalysis: React.FC = () => {
                             accessibilityLabel={t('journeys.health.cycle.analysis.periodOption', { period })}
                             accessibilityRole="button"
                             testID={`period-${period}`}
-                            style={[styles.periodOption, selectedPeriod === period && styles.periodOptionActive] as any}
+                            style={[styles.periodOption, selectedPeriod === period && styles.periodOptionActive]}
                         >
                             <Text
                                 fontSize="sm"
@@ -335,7 +337,7 @@ export const CycleAnalysis: React.FC = () => {
                     </Button>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

@@ -7,7 +7,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, FlatList, ScrollView, StyleSheet, Dimensions, ListRenderItemInfo } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import type { WellnessResourcesNavigationProp } from '../../../navigation/types';
 
 /**
  * Filter category for videos.
@@ -87,9 +89,8 @@ const THUMBNAIL_HEIGHT = CARD_WIDTH * 0.65;
  * VideoLibrary displays a filterable grid of wellness video content.
  */
 export const VideoLibrary: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<WellnessResourcesNavigationProp>();
     const { t } = useTranslation();
-    const _theme = useTheme();
     const [activeFilter, setActiveFilter] = useState<VideoCategory>('all');
 
     const filteredVideos = useMemo(() => {
@@ -169,7 +170,7 @@ export const VideoLibrary: React.FC = () => {
     );
 
     return (
-        <View style={styles.container} testID="wellness-resources-video-library-screen">
+        <SafeAreaView style={styles.container} testID="wellness-resources-video-library-screen">
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -197,7 +198,7 @@ export const VideoLibrary: React.FC = () => {
                             accessibilityLabel={t(filter.labelKey)}
                             accessibilityRole="button"
                             testID={`wellness-resources-video-library-filter-${filter.key}`}
-                            style={[styles.filterChip, isActive && styles.filterChipActive] as any}
+                            style={[styles.filterChip, isActive && styles.filterChipActive]}
                         >
                             <Text
                                 fontSize="sm"
@@ -223,7 +224,7 @@ export const VideoLibrary: React.FC = () => {
                 testID="wellness-resources-video-library-flatlist"
                 ListEmptyComponent={renderEmpty}
             />
-        </View>
+        </SafeAreaView>
     );
 };
 

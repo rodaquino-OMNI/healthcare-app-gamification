@@ -9,7 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, Switch, StyleSheet, Alert } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme } from '../../../hooks/useTheme';
 
 /**
  * Wake window duration in minutes.
@@ -53,7 +55,7 @@ const SOUND_OPTIONS: { id: SoundLevel; labelKey: string; descKey: string; icon: 
  * a wake window, vibration toggle, and sound intensity selection.
  */
 export const SmartAlarm: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
     const _theme = useTheme();
     const [wakeWindow, setWakeWindow] = useState<WakeWindow>(20);
@@ -76,7 +78,7 @@ export const SmartAlarm: React.FC = () => {
     }, [t]);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -116,12 +118,7 @@ export const SmartAlarm: React.FC = () => {
                                 accessibilityLabel={t(option.labelKey)}
                                 accessibilityRole="button"
                                 testID={`sleep-alarm-window-${option.value}`}
-                                style={
-                                    [
-                                        styles.windowOption,
-                                        wakeWindow === option.value && styles.windowOptionActive,
-                                    ] as any
-                                }
+                                style={[styles.windowOption, wakeWindow === option.value && styles.windowOptionActive]}
                             >
                                 <Text
                                     fontSize="md"
@@ -236,7 +233,7 @@ export const SmartAlarm: React.FC = () => {
                     </Button>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

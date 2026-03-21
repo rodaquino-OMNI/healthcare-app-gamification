@@ -8,7 +8,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme } from '../../../hooks/useTheme';
 
 /**
  * Sleep stage type for the pie chart and timeline.
@@ -87,7 +89,7 @@ const MOCK_DATE = '2026-02-22';
  * including sleep score, stage breakdown, timeline, and environment readings.
  */
 export const SleepDetail: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
     const _theme = useTheme();
 
@@ -106,7 +108,7 @@ export const SleepDetail: React.FC = () => {
     }, []);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -266,7 +268,7 @@ export const SleepDetail: React.FC = () => {
                     </Card>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

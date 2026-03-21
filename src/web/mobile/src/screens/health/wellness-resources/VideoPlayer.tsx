@@ -9,6 +9,7 @@ import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import type { WellnessResourcesParamList } from '../../../navigation/types';
 
@@ -96,7 +97,7 @@ export const VideoPlayer: React.FC = () => {
     );
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -234,7 +235,7 @@ export const VideoPlayer: React.FC = () => {
                     </ScrollView>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

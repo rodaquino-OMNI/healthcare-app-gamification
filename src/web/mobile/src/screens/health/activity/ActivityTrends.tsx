@@ -8,7 +8,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme } from '../../../hooks/useTheme';
 
 /**
  * Period selector options.
@@ -109,7 +111,7 @@ const MAX_STEPS = 16000;
  * summary statistics, and monthly comparison data.
  */
 export const ActivityTrends: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
     const _theme = useTheme();
     const [selectedPeriod, setSelectedPeriod] = useState<TrendPeriod>('7d');
@@ -174,7 +176,7 @@ export const ActivityTrends: React.FC = () => {
     }, []);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -201,7 +203,7 @@ export const ActivityTrends: React.FC = () => {
                             accessibilityLabel={t('journeys.health.activity.trends.periodOption', { period })}
                             accessibilityRole="button"
                             testID={`activity-trends-period-${period}`}
-                            style={[styles.periodOption, selectedPeriod === period && styles.periodOptionActive] as any}
+                            style={[styles.periodOption, selectedPeriod === period && styles.periodOptionActive]}
                         >
                             <Text
                                 fontSize="sm"
@@ -305,7 +307,7 @@ export const ActivityTrends: React.FC = () => {
                     </Card>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

@@ -3,12 +3,13 @@ import { borderRadius } from '@design-system/tokens/borderRadius';
 import { sizing } from '@design-system/tokens/sizing';
 import { spacing, spacingValues } from '@design-system/tokens/spacing';
 import { typography } from '@design-system/tokens/typography';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
 import styled from 'styled-components/native';
 
 import { useAppTheme, type ThemeMode } from '../../context/ThemeContext';
+import { haptic } from '../../utils/haptics';
 
 // --- Types ---
 
@@ -188,6 +189,14 @@ export const ThemeSelectScreen: React.FC = () => {
     const { t } = useTranslation();
     const { themeMode, setThemeMode } = useAppTheme();
 
+    const handleThemePress = useCallback(
+        (mode: ThemeMode) => {
+            void haptic.selection();
+            setThemeMode(mode);
+        },
+        [setThemeMode]
+    );
+
     const previewTheme = themeMode === 'system' ? 'light' : themeMode;
     const preview = PREVIEW_COLORS[previewTheme];
 
@@ -205,7 +214,7 @@ export const ThemeSelectScreen: React.FC = () => {
                         <ThemeCard
                             key={option.mode}
                             isSelected={isSelected}
-                            onPress={() => setThemeMode(option.mode)}
+                            onPress={() => handleThemePress(option.mode)}
                             accessibilityRole="radio"
                             accessibilityLabel={t(option.labelKey)}
                             accessibilityState={{ checked: isSelected }}

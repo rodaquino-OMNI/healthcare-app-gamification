@@ -10,14 +10,15 @@
  * Raw numeric border radius values in pixels
  * Used for programmatic calculations and manipulations
  *
- * 8-step scale (none → full):
- *   none(0), 2xs(2), xs(4), sm(6), md(8), lg(16), xl(24), 2xl(20), full(9999)
+ * 9-step scale (none → full):
+ *   none(0), 3xs(1), 2xs(2), xs(4), sm(6), md(8), lg(16), xl(24), 2xl(20), full(9999)
  *
  * Note: 2xs(2) is the hairline rounding used for compact UI elements.
  *       2xl(20) bridges xl(24) and lg(16) for cards and modals.
  */
 export const borderRadiusValues = {
     none: 0, // No border radius (sharp corners)
+    '3xs': 1, // Hairline micro-rounding (Figma core.json radius.3xs)
     '2xs': 2, // Hairline rounding (compact elements, tags)
     xs: 4, // Extra small border radius
     sm: 6, // Small border radius
@@ -34,6 +35,7 @@ export const borderRadiusValues = {
  */
 export const borderRadius = {
     none: '0px', // No border radius (sharp corners)
+    '3xs': '1px', // Hairline micro-rounding (Figma core.json radius.3xs)
     '2xs': '2px', // Hairline rounding (compact elements, tags)
     xs: '4px', // Extra small border radius
     sm: '6px', // Small border radius

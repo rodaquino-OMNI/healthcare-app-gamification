@@ -8,12 +8,13 @@ import { spacingValues } from '@design-system/tokens/spacing';
 import { fontSizeValues } from '@design-system/tokens/typography';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { Achievement } from '@shared/types/gamification.types';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, Share, Alert } from 'react-native';
-import { useTheme } from 'styled-components/native';
 
 import { useAchievements } from '../../hooks/useGamification';
+import { useTheme } from '../../hooks/useTheme';
+import { haptic } from '../../utils/haptics';
 
 type AchievementDetailParamList = {
     GamificationAchievementDetail: { achievementId: string };
@@ -78,8 +79,8 @@ function getMockRequirements(achievement: Achievement): Requirement[] {
 const AchievementDetailScreen: React.FC = () => {
     const { t } = useTranslation();
     const navigation = useNavigation();
-    const theme = useTheme() as Theme;
-    const styles = createStyles(theme);
+    const { theme } = useTheme();
+    const styles = createStyles(theme as Theme);
     const route = useRoute<RouteProp<AchievementDetailParamList, 'GamificationAchievementDetail'>>();
     const { achievementId } = (route.params ?? {}) as Partial<{ achievementId: string }>;
 
@@ -91,6 +92,13 @@ const AchievementDetailScreen: React.FC = () => {
         }
         return achievements.find((a) => a.id === achievementId);
     }, [achievements, achievementId]);
+
+    // Fire success haptic when viewing an unlocked achievement
+    useEffect(() => {
+        if (achievement?.unlocked) {
+            void haptic.success();
+        }
+    }, [achievement?.unlocked]);
 
     const handleShare = async (): Promise<void> => {
         if (!achievement) {
@@ -191,7 +199,7 @@ const AchievementDetailScreen: React.FC = () => {
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    onPress={handleShare}
+                    onPress={() => void handleShare()}
                     style={styles.shareButton}
                     accessibilityRole="button"
                     accessibilityLabel={t('gamification.achievementDetail.shareLabel')}

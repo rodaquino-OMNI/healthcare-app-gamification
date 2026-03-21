@@ -8,7 +8,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, FlatList, StyleSheet, TextInput, ListRenderItemInfo, Alert } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme } from '../../../hooks/useTheme';
 
 /**
  * A food item returned from search results.
@@ -42,7 +44,7 @@ const MOCK_RECENT_SEARCHES = ['Chicken', 'Rice', 'Salad', 'Yogurt', 'Fruit'];
  * daily log, with recent searches and macro bar visualisations per result.
  */
 export const FoodSearch: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
     const _theme = useTheme();
 
@@ -143,7 +145,7 @@ export const FoodSearch: React.FC = () => {
     const keyExtractor = useCallback((item: FoodItem) => item.id, []);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -261,7 +263,7 @@ export const FoodSearch: React.FC = () => {
                     </View>
                 </View>
             )}
-        </View>
+        </SafeAreaView>
     );
 };
 

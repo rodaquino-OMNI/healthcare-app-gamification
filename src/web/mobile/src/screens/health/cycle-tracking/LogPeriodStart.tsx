@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, Alert, TextInput } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 /**
  * Flow intensity options.
@@ -57,7 +58,7 @@ const generateRecentDates = (): { date: Date; label: string; formatted: string }
  * with initial flow intensity selection and optional notes.
  */
 export const LogPeriodStart: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
     const recentDates = generateRecentDates();
 
@@ -78,7 +79,7 @@ export const LogPeriodStart: React.FC = () => {
     }, [navigation, t]);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -123,7 +124,7 @@ export const LogPeriodStart: React.FC = () => {
                                     accessibilityLabel={item.label}
                                     accessibilityRole="button"
                                     testID={`date-option-${item.formatted}`}
-                                    style={[styles.dateOption, isSelected && styles.dateOptionSelected] as any}
+                                    style={[styles.dateOption, isSelected && styles.dateOptionSelected]}
                                 >
                                     <Text
                                         fontSize="sm"
@@ -154,7 +155,7 @@ export const LogPeriodStart: React.FC = () => {
                                     accessibilityLabel={t(option.labelKey)}
                                     accessibilityRole="button"
                                     testID={`flow-${option.id}`}
-                                    style={[styles.flowOption, isSelected && styles.flowOptionSelected] as any}
+                                    style={[styles.flowOption, isSelected && styles.flowOptionSelected]}
                                 >
                                     <View style={styles.dropletContainer}>
                                         {Array.from({ length: option.iconScale }, (_, i) => (
@@ -216,7 +217,7 @@ export const LogPeriodStart: React.FC = () => {
                     </Button>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

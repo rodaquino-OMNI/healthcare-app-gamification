@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 /**
  * Flow intensity level.
@@ -62,7 +63,7 @@ const getTodayFormatted = (): string => {
  * with scaled droplet icons and quick date logging.
  */
 export const LogFlowIntensity: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
 
     const [selectedFlow, setSelectedFlow] = useState<FlowIntensity>('medium');
@@ -77,7 +78,7 @@ export const LogFlowIntensity: React.FC = () => {
     }, [navigation, selectedFlow, t]);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -215,7 +216,7 @@ export const LogFlowIntensity: React.FC = () => {
                     </Button>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

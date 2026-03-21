@@ -9,7 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, Alert, TextInput, StyleProp, ViewStyle } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme } from '../../../hooks/useTheme';
 
 /**
  * Supported workout types.
@@ -51,7 +53,7 @@ const INTENSITY_OPTIONS: { key: IntensityLevel; labelKey: string }[] = [
  * duration, intensity, and optional notes.
  */
 export const WorkoutLog: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
     const _theme = useTheme();
 
@@ -81,7 +83,7 @@ export const WorkoutLog: React.FC = () => {
     }, [navigation, t]);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -201,7 +203,7 @@ export const WorkoutLog: React.FC = () => {
                                     onPress={() => handleIntensityPress(opt.key)}
                                     accessibilityLabel={t(opt.labelKey)}
                                     accessibilityRole="button"
-                                    style={[styles.intensityChip, isActive && styles.intensityChipActive] as any}
+                                    style={[styles.intensityChip, isActive && styles.intensityChipActive]}
                                 >
                                     <Text
                                         fontSize="sm"
@@ -248,7 +250,7 @@ export const WorkoutLog: React.FC = () => {
                     </Button>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

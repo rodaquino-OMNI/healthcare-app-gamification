@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, Switch, StyleSheet, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 /**
  * Export date range option.
@@ -52,7 +53,7 @@ const MOCK_PREVIEW = {
  * of their cycle data with configurable date range, content, and format.
  */
 export const ExportCycleReport: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
     const [dateRange, setDateRange] = useState<DateRange>('6m');
     const [format, setFormat] = useState<ExportFormat>('pdf');
@@ -96,7 +97,7 @@ export const ExportCycleReport: React.FC = () => {
     }, [t]);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -133,7 +134,7 @@ export const ExportCycleReport: React.FC = () => {
                                 accessibilityLabel={t(option.labelKey)}
                                 accessibilityRole="button"
                                 testID={`range-${option.id}`}
-                                style={[styles.rangeOption, dateRange === option.id && styles.rangeOptionActive] as any}
+                                style={[styles.rangeOption, dateRange === option.id && styles.rangeOptionActive]}
                             >
                                 <Text
                                     fontSize="sm"
@@ -328,7 +329,7 @@ export const ExportCycleReport: React.FC = () => {
                     </Button>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

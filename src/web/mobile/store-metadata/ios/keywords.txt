@@ -1,0 +1,1 @@
+saude,bem-estar,consulta,medico,telemedicina,plano de saude,medicamento,exame,laboratorio,sono,ciclo,wellness,healthcare,LGPD

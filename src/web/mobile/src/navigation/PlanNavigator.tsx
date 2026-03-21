@@ -16,7 +16,7 @@ import DigitalCard from '../screens/plan/DigitalCard';
 const Stack = createStackNavigator<PlanStackParamList>();
 
 const PlanNavigator: React.FC = () => {
-    const { _journey } = useJourney();
+    const { journey: _journey } = useJourney();
 
     const screenOptions = {
         headerShown: false,

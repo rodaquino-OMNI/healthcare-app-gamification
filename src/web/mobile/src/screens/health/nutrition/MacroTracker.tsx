@@ -8,7 +8,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme } from '../../../hooks/useTheme';
 
 type MacroPeriod = '7d' | '30d';
 type MacroType = 'carbs' | 'protein' | 'fat';
@@ -86,7 +88,7 @@ const MAX_BAR_HEIGHT = 80;
 
 /** MacroTracker displays macro ring, weekly stacked bars, and goal vs actual summaries. */
 export const MacroTracker: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
     const _theme = useTheme();
     const [selectedPeriod, setSelectedPeriod] = useState<MacroPeriod>('7d');
@@ -110,7 +112,7 @@ export const MacroTracker: React.FC = () => {
     }, []);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -191,7 +193,7 @@ export const MacroTracker: React.FC = () => {
                             accessibilityLabel={t('journeys.health.nutrition.macro.period', { period })}
                             accessibilityRole="button"
                             testID={`nutrition-macro-period-${period}`}
-                            style={[styles.periodOption, selectedPeriod === period && styles.periodOptionActive] as any}
+                            style={[styles.periodOption, selectedPeriod === period && styles.periodOptionActive]}
                         >
                             <Text
                                 fontSize="sm"
@@ -298,7 +300,7 @@ export const MacroTracker: React.FC = () => {
                     </View>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

@@ -8,7 +8,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, TextInput, FlatList, ListRenderItemInfo } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import type { ActivityNavigationProp } from '../../../navigation/types';
 
 /**
  * Exercise category type.
@@ -123,9 +125,8 @@ const DIFFICULTY_COLORS: Record<Difficulty, string> = {
  * organized by category with difficulty indicators.
  */
 export const ExerciseLibrary: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<ActivityNavigationProp>();
     const { t } = useTranslation();
-    const _theme = useTheme();
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<ExerciseCategory>('all');
 
@@ -213,7 +214,7 @@ export const ExerciseLibrary: React.FC = () => {
     const keyExtractor = useCallback((item: Exercise) => item.id, []);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -255,7 +256,7 @@ export const ExerciseLibrary: React.FC = () => {
                         accessibilityLabel={t(filter.labelKey)}
                         accessibilityRole="button"
                         testID={`activity-exercise-library-filter-${filter.id}`}
-                        style={[styles.filterChip, selectedCategory === filter.id && styles.filterChipActive] as any}
+                        style={[styles.filterChip, selectedCategory === filter.id && styles.filterChipActive]}
                     >
                         <Text
                             fontSize="sm"
@@ -279,7 +280,7 @@ export const ExerciseLibrary: React.FC = () => {
                 testID="activity-exercise-library-list"
                 ItemSeparatorComponent={() => <View style={styles.listSeparator} />}
             />
-        </View>
+        </SafeAreaView>
     );
 };
 

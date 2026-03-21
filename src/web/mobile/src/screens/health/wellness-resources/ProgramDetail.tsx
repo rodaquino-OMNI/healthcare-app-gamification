@@ -6,18 +6,13 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-/**
- * Route params for ProgramDetail screen.
- */
-interface ProgramDetailRouteParams {
-    programId: string;
-}
+import type { WellnessResourcesNavigationProp, WellnessResourcesParamList } from '../../../navigation/types';
 
 /**
  * A step within a wellness program.
@@ -95,12 +90,11 @@ const MOCK_PROGRAM: ProgramData = {
  * progress indicator, participant count, and a step-by-step checklist.
  */
 export const ProgramDetail: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<any>();
+    const navigation = useNavigation<WellnessResourcesNavigationProp>();
+    const route = useRoute<RouteProp<WellnessResourcesParamList, 'HealthWellnessResourcesProgramDetail'>>();
     const { t } = useTranslation();
-    const _theme = useTheme();
 
-    const { _programId } = route.params as ProgramDetailRouteParams;
+    const { programId: _programId } = route.params;
 
     const [steps, setSteps] = useState<ProgramStep[]>(MOCK_PROGRAM.steps);
 
@@ -117,7 +111,7 @@ export const ProgramDetail: React.FC = () => {
     }, []);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -274,7 +268,7 @@ export const ProgramDetail: React.FC = () => {
                           : t('journeys.health.wellnessResources.programDetail.continue')}
                 </Button>
             </View>
-        </View>
+        </SafeAreaView>
     );
 };
 

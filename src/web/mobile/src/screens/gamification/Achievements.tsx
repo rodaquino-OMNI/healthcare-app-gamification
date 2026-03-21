@@ -9,10 +9,11 @@ import { Achievement } from '@shared/types/gamification.types';
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
-import { useTheme } from 'styled-components/native';
 
 import { useGameProfile, useAchievements } from '../../hooks/useGamification';
+import { useTheme } from '../../hooks/useTheme';
 import type { GamificationNavigationProp } from '../../navigation/types';
+import { haptic } from '../../utils/haptics';
 
 type JourneyFilter = 'all' | 'health' | 'care' | 'plan';
 
@@ -52,8 +53,8 @@ function getJourneyColor(journey: string): string {
 const AchievementsScreen: React.FC = () => {
     const { t } = useTranslation();
     const navigation = useNavigation<GamificationNavigationProp>();
-    const theme = useTheme() as Theme;
-    const styles = createStyles(theme);
+    const { theme } = useTheme();
+    const styles = createStyles(theme as Theme);
     const profile = useGameProfile();
     const achievements: Achievement[] | undefined = useAchievements();
 
@@ -81,21 +82,26 @@ const AchievementsScreen: React.FC = () => {
 
     const totalCount = achievements?.length ?? 0;
 
-    const handleAchievementPress = (item: Achievement) => {
+    const handleAchievementPress = (item: Achievement): void => {
+        if (item.unlocked) {
+            void haptic.success();
+        } else {
+            void haptic.selection();
+        }
         navigation.navigate('GamificationAchievementDetail', {
             achievementId: item.id,
         });
     };
 
-    const handleLeaderboardPress = () => {
+    const handleLeaderboardPress = (): void => {
         navigation.navigate('GamificationLeaderboard');
     };
 
-    const handleQuestsPress = () => {
+    const handleQuestsPress = (): void => {
         navigation.navigate('GamificationQuests');
     };
 
-    const handleRewardsPress = () => {
+    const handleRewardsPress = (): void => {
         navigation.navigate('GamificationRewards');
     };
 
@@ -274,7 +280,7 @@ const AchievementsScreen: React.FC = () => {
     );
 };
 
-const createStyles = (theme: Theme) =>
+const createStyles = (theme: Theme): ReturnType<typeof StyleSheet.create> =>
     StyleSheet.create({
         container: { flex: 1, backgroundColor: theme.colors.background.default },
         loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },

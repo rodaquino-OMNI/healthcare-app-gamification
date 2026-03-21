@@ -91,6 +91,13 @@ export interface TextProps {
     ellipsizeMode?: 'head' | 'middle' | 'tail' | 'clip';
 
     /**
+     * Maximum font size multiplier for Dynamic Type accessibility (iOS).
+     * Caps how large text can grow when the user increases system font size.
+     * @default 1.5
+     */
+    maxFontSizeMultiplier?: number;
+
+    /**
      * Accessibility label
      */
     accessibilityLabel?: string;
@@ -235,6 +242,7 @@ export const Text: React.FC<TextProps> = ({
     lineHeight = 'base',
     textAlign = 'left',
     truncate = false,
+    maxFontSizeMultiplier = 1.5,
     children,
     testID,
     ...props
@@ -248,6 +256,7 @@ export const Text: React.FC<TextProps> = ({
             lineHeight={lineHeight}
             textAlign={textAlign}
             truncate={truncate}
+            maxFontSizeMultiplier={maxFontSizeMultiplier}
             data-testid={testID}
             {...props}
         >

@@ -3,10 +3,12 @@ import { colors } from '@design-system/tokens/colors';
 import { sizing } from '@design-system/tokens/sizing';
 import { spacing, spacingValues } from '@design-system/tokens/spacing';
 import { typography } from '@design-system/tokens/typography';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, Switch } from 'react-native';
 import styled from 'styled-components/native';
+
+import { haptic } from '../../utils/haptics';
 
 // --- Types ---
 
@@ -160,6 +162,21 @@ export const AccessibilityScreen: React.FC = () => {
     const [highContrast, setHighContrast] = useState(false);
     const [reducedMotion, setReducedMotion] = useState(false);
 
+    const handleHighContrastChange = useCallback((value: boolean) => {
+        void haptic.light();
+        setHighContrast(value);
+    }, []);
+
+    const handleReducedMotionChange = useCallback((value: boolean) => {
+        void haptic.light();
+        setReducedMotion(value);
+    }, []);
+
+    const handleFontSizePress = useCallback((key: FontSizeOption) => {
+        void haptic.selection();
+        setSelectedSize(key);
+    }, []);
+
     const currentFontSize = FONT_SIZES.find((fs) => fs.key === selectedSize);
 
     const trackColor = {
@@ -187,7 +204,7 @@ export const AccessibilityScreen: React.FC = () => {
                             <FontSizeButton
                                 key={fs.key}
                                 isSelected={isSelected}
-                                onPress={() => setSelectedSize(fs.key)}
+                                onPress={() => handleFontSizePress(fs.key)}
                                 accessibilityRole="radio"
                                 accessibilityLabel={t(fs.labelKey)}
                                 accessibilityState={{ checked: isSelected }}
@@ -215,7 +232,7 @@ export const AccessibilityScreen: React.FC = () => {
                     <ToggleLabel>{t('settings.accessibility.highContrast')}</ToggleLabel>
                     <Switch
                         value={highContrast}
-                        onValueChange={setHighContrast}
+                        onValueChange={handleHighContrastChange}
                         trackColor={trackColor}
                         thumbColor={colors.neutral.white}
                         accessibilityLabel={t('settings.accessibility.highContrast')}
@@ -227,7 +244,7 @@ export const AccessibilityScreen: React.FC = () => {
                     <ToggleLabel>{t('settings.accessibility.reducedMotion')}</ToggleLabel>
                     <Switch
                         value={reducedMotion}
-                        onValueChange={setReducedMotion}
+                        onValueChange={handleReducedMotionChange}
                         trackColor={trackColor}
                         thumbColor={colors.neutral.white}
                         accessibilityLabel={t('settings.accessibility.reducedMotion')}

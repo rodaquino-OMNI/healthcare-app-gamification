@@ -8,7 +8,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, FlatList, TextInput, ScrollView, StyleSheet, ListRenderItemInfo } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import type { WellnessResourcesNavigationProp } from '../../../navigation/types';
 
 /**
  * Filter category for articles.
@@ -88,9 +90,8 @@ const CATEGORY_COLORS: Record<Exclude<ArticleCategory, 'all'>, string> = {
  * ArticleList displays a searchable and filterable list of wellness articles.
  */
 export const ArticleList: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<WellnessResourcesNavigationProp>();
     const { t } = useTranslation();
-    const _theme = useTheme();
     const [searchQuery, setSearchQuery] = useState('');
     const [activeFilter, setActiveFilter] = useState<ArticleCategory>('all');
 
@@ -181,7 +182,7 @@ export const ArticleList: React.FC = () => {
     );
 
     return (
-        <View style={styles.container} testID="wellness-resources-article-list-screen">
+        <SafeAreaView style={styles.container} testID="wellness-resources-article-list-screen">
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -225,7 +226,7 @@ export const ArticleList: React.FC = () => {
                             accessibilityLabel={t(filter.labelKey)}
                             accessibilityRole="button"
                             testID={`wellness-resources-article-list-filter-${filter.key}`}
-                            style={[styles.filterChip, isActive && styles.filterChipActive] as any}
+                            style={[styles.filterChip, isActive && styles.filterChipActive]}
                         >
                             <Text
                                 fontSize="sm"
@@ -249,7 +250,7 @@ export const ArticleList: React.FC = () => {
                 testID="wellness-resources-article-list-flatlist"
                 ListEmptyComponent={renderEmpty}
             />
-        </View>
+        </SafeAreaView>
     );
 };
 

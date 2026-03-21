@@ -8,8 +8,10 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ROUTES } from '../../../constants/routes';
+import type { CycleTrackingNavigationProp } from '../../../navigation/types';
 
 /**
  * Cycle phase identifier.
@@ -66,7 +68,7 @@ const STROKE_WIDTH = 12;
  * displaying the current position in the cycle, predicted dates, and quick actions.
  */
 export const CycleCalendar: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<CycleTrackingNavigationProp>();
     const { t } = useTranslation();
     const [cycle] = useState(MOCK_CYCLE);
 
@@ -104,7 +106,7 @@ export const CycleCalendar: React.FC = () => {
     ];
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -210,7 +212,7 @@ export const CycleCalendar: React.FC = () => {
                     </Button>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

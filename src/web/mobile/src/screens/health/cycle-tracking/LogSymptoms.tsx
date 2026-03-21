@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, Alert, TextInput } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 /**
  * Mood type options.
@@ -63,7 +64,7 @@ const ENERGY_LEVELS: { id: EnergyLevel; labelKey: string }[] = [
  * for any date (defaults to today).
  */
 export const LogSymptoms: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
 
     const [selectedSymptoms, setSelectedSymptoms] = useState<Set<PhysicalSymptom>>(new Set());
@@ -95,7 +96,7 @@ export const LogSymptoms: React.FC = () => {
     }, [navigation, t]);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -142,7 +143,7 @@ export const LogSymptoms: React.FC = () => {
                                     accessibilityLabel={t(symptom.labelKey)}
                                     accessibilityRole="button"
                                     testID={`symptom-${symptom.id}`}
-                                    style={[styles.chip, isSelected && styles.chipSelected] as any}
+                                    style={[styles.chip, isSelected && styles.chipSelected]}
                                 >
                                     <Text
                                         fontSize="sm"
@@ -172,7 +173,7 @@ export const LogSymptoms: React.FC = () => {
                                     accessibilityLabel={t(mood.labelKey)}
                                     accessibilityRole="button"
                                     testID={`mood-${mood.id}`}
-                                    style={[styles.moodOption, isSelected && styles.moodOptionSelected] as any}
+                                    style={[styles.moodOption, isSelected && styles.moodOptionSelected]}
                                 >
                                     <Text fontSize="heading-2xl">{mood.emoji}</Text>
                                     <Text
@@ -203,7 +204,7 @@ export const LogSymptoms: React.FC = () => {
                                     accessibilityLabel={t(level.labelKey)}
                                     accessibilityRole="button"
                                     testID={`energy-${level.id}`}
-                                    style={[styles.energyOption, isSelected && styles.energyOptionSelected] as any}
+                                    style={[styles.energyOption, isSelected && styles.energyOptionSelected]}
                                 >
                                     <Text
                                         fontSize="md"
@@ -251,7 +252,7 @@ export const LogSymptoms: React.FC = () => {
                     </Button>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

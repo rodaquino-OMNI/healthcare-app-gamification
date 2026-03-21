@@ -2,7 +2,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; // v6.5.8
 import { createNativeStackNavigator } from '@react-navigation/native-stack'; // v6.9.13
 import { JOURNEY_IDS } from '@shared/constants/journeys';
-import React from 'react'; // v18.2.0
+import React, { useCallback } from 'react'; // v18.2.0
 
 import CareNavigator from './CareNavigator';
 import GamificationNavigator from './GamificationNavigator';
@@ -14,176 +14,143 @@ import { ROUTES } from '../constants/routes';
 import HomeScreen from '../screens/home/Home';
 import { NotificationsScreen } from '../screens/home/Notifications';
 import { ProfileScreen } from '../screens/home/Profile';
+import { haptic } from '../utils/haptics';
 
-let WellnessNavigator: React.FC = () => null;
-try {
-    const mod = require('./WellnessNavigator');
-    WellnessNavigator = mod.default || mod.WellnessNavigator || WellnessNavigator;
-} catch {
-    /* WellnessNavigator not yet available */
+/**
+ * Safely require a screen module and extract a named or default export.
+ * Metro requires static string literals in require() calls, so each call
+ * site must use an inline string -- not a variable. This helper is only
+ * used to extract the component from an already-required module.
+ */
+function extractScreen(
+    mod: Record<string, React.FC | undefined> | undefined,
+    exportNames: string[],
+    fallback: React.FC
+): React.FC {
+    if (!mod) {
+        return fallback;
+    }
+    for (const name of exportNames) {
+        if (typeof mod[name] === 'function') {
+            return mod[name] as React.FC;
+        }
+    }
+    return fallback;
 }
 
-// Lazy-loaded screens for the Home stack.
-// These screens are pushed on top of the Home tab.
-let HomeMetricsScreen: React.FC = () => null;
-let HomeAlertScreen: React.FC = () => null;
-let NotificationDetailScreen: React.FC = () => null;
-let SearchScreen: React.FC = () => null;
-let SearchResultsScreen: React.FC = () => null;
-let WeeklySummaryScreen: React.FC = () => null;
-let HomeBottomSheetScreen: React.FC = () => null;
-let HomeMedicationRemindersScreen: React.FC = () => null;
-let HomeAppointmentWidgetScreen: React.FC = () => null;
-let HomeHealthTipsScreen: React.FC = () => null;
-let HomeEmptyScreen: React.FC = () => null;
-let NotificationUnreadScreen: React.FC = () => null;
-let NotificationCategoryFilterScreen: React.FC = () => null;
-let NotificationEmptyScreen: React.FC = () => null;
-let NotificationSettingsScreen: React.FC = () => null;
-let SearchDoctorResultsScreen: React.FC = () => null;
-let SearchArticleResultsScreen: React.FC = () => null;
-let SearchMedicationResultsScreen: React.FC = () => null;
-let SearchNoResultsScreen: React.FC = () => null;
+// Lazy-loaded navigators and screens for the Home stack.
+// Each require() uses a static string literal so Metro can resolve it at bundle time.
+const placeholder: React.FC = () => null;
 
-try {
-    // Attempt to import screens if they exist (created by another worker)
-    // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic require for lazy-loaded tab icons
-    const metricsModule = require('../screens/home/HomeMetrics');
-    HomeMetricsScreen = metricsModule.HomeMetricsScreen || metricsModule.default || HomeMetricsScreen;
-} catch {
-    // HomeMetrics screen not yet available - placeholder will be used
+function safeRequire(fn: () => unknown): Record<string, React.FC | undefined> | undefined {
+    try {
+        return fn() as Record<string, React.FC | undefined>;
+    } catch {
+        return undefined;
+    }
 }
 
-try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic require for lazy-loaded tab icons
-    const alertModule = require('../screens/home/HomeAlert');
-    HomeAlertScreen = alertModule.HomeAlertScreen || alertModule.default || HomeAlertScreen;
-} catch {
-    // HomeAlert screen not yet available - placeholder will be used
-}
+const WellnessNavigator = extractScreen(
+    safeRequire(() => require('./WellnessNavigator')),
+    ['default', 'WellnessNavigator'],
+    placeholder
+);
 
-try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic require for lazy-loaded tab icons
-    const ndModule = require('../screens/home/NotificationDetail');
-    NotificationDetailScreen = ndModule.NotificationDetailScreen || ndModule.default || NotificationDetailScreen;
-} catch {
-    // NotificationDetail screen not yet available - placeholder will be used
-}
-
-try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic require for lazy-loaded tab icons
-    const searchModule = require('../screens/home/Search');
-    SearchScreen = searchModule.SearchScreen || searchModule.default || SearchScreen;
-} catch {
-    // Search screen not yet available - placeholder will be used
-}
-
-try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic require for lazy-loaded tab icons
-    const srModule = require('../screens/home/SearchResults');
-    SearchResultsScreen = srModule.SearchResultsScreen || srModule.default || SearchResultsScreen;
-} catch {
-    // SearchResults screen not yet available - placeholder will be used
-}
-
-try {
-    const mod = require('../screens/home/WeeklySummary');
-    WeeklySummaryScreen = mod.WeeklySummaryScreen || mod.default || WeeklySummaryScreen;
-} catch {
-    /* screen not yet available */
-}
-
-try {
-    const mod = require('../screens/home/HomeBottomSheet');
-    HomeBottomSheetScreen = mod.HomeBottomSheetScreen || mod.default || HomeBottomSheetScreen;
-} catch {
-    /* screen not yet available */
-}
-
-try {
-    const mod = require('../screens/home/HomeMedicationReminders');
-    HomeMedicationRemindersScreen = mod.HomeMedicationRemindersScreen || mod.default || HomeMedicationRemindersScreen;
-} catch {
-    /* screen not yet available */
-}
-
-try {
-    const mod = require('../screens/home/HomeAppointmentWidget');
-    HomeAppointmentWidgetScreen = mod.HomeAppointmentWidgetScreen || mod.default || HomeAppointmentWidgetScreen;
-} catch {
-    /* screen not yet available */
-}
-
-try {
-    const mod = require('../screens/home/HomeHealthTips');
-    HomeHealthTipsScreen = mod.HomeHealthTipsScreen || mod.default || HomeHealthTipsScreen;
-} catch {
-    /* screen not yet available */
-}
-
-try {
-    const mod = require('../screens/home/HomeEmpty');
-    HomeEmptyScreen = mod.HomeEmptyScreen || mod.default || HomeEmptyScreen;
-} catch {
-    /* screen not yet available */
-}
-
-try {
-    const mod = require('../screens/home/NotificationUnreadFilter');
-    NotificationUnreadScreen = mod.NotificationUnreadFilterScreen || mod.default || NotificationUnreadScreen;
-} catch {
-    /* screen not yet available */
-}
-
-try {
-    const mod = require('../screens/home/NotificationCategoryFilter');
-    NotificationCategoryFilterScreen =
-        mod.NotificationCategoryFilterScreen || mod.default || NotificationCategoryFilterScreen;
-} catch {
-    /* screen not yet available */
-}
-
-try {
-    const mod = require('../screens/home/NotificationEmpty');
-    NotificationEmptyScreen = mod.NotificationEmptyScreen || mod.default || NotificationEmptyScreen;
-} catch {
-    /* screen not yet available */
-}
-
-try {
-    const mod = require('../screens/home/NotificationSettings');
-    NotificationSettingsScreen = mod.NotificationSettingsScreen || mod.default || NotificationSettingsScreen;
-} catch {
-    /* screen not yet available */
-}
-
-try {
-    const mod = require('../screens/home/SearchDoctorResults');
-    SearchDoctorResultsScreen = mod.SearchDoctorResultsScreen || mod.default || SearchDoctorResultsScreen;
-} catch {
-    /* screen not yet available */
-}
-
-try {
-    const mod = require('../screens/home/SearchArticleResults');
-    SearchArticleResultsScreen = mod.SearchArticleResultsScreen || mod.default || SearchArticleResultsScreen;
-} catch {
-    /* screen not yet available */
-}
-
-try {
-    const mod = require('../screens/home/SearchMedicationResults');
-    SearchMedicationResultsScreen = mod.SearchMedicationResultsScreen || mod.default || SearchMedicationResultsScreen;
-} catch {
-    /* screen not yet available */
-}
-
-try {
-    const mod = require('../screens/home/SearchNoResults');
-    SearchNoResultsScreen = mod.SearchNoResultsScreen || mod.default || SearchNoResultsScreen;
-} catch {
-    /* screen not yet available */
-}
+const HomeMetricsScreen = extractScreen(
+    safeRequire(() => require('../screens/home/HomeMetrics')),
+    ['HomeMetricsScreen', 'default'],
+    placeholder
+);
+const HomeAlertScreen = extractScreen(
+    safeRequire(() => require('../screens/home/HomeAlert')),
+    ['HomeAlertScreen', 'default'],
+    placeholder
+);
+const NotificationDetailScreen = extractScreen(
+    safeRequire(() => require('../screens/home/NotificationDetail')),
+    ['NotificationDetailScreen', 'default'],
+    placeholder
+);
+const SearchScreen = extractScreen(
+    safeRequire(() => require('../screens/home/Search')),
+    ['SearchScreen', 'default'],
+    placeholder
+);
+const SearchResultsScreen = extractScreen(
+    safeRequire(() => require('../screens/home/SearchResults')),
+    ['SearchResultsScreen', 'default'],
+    placeholder
+);
+const WeeklySummaryScreen = extractScreen(
+    safeRequire(() => require('../screens/home/WeeklySummary')),
+    ['WeeklySummaryScreen', 'default'],
+    placeholder
+);
+const HomeBottomSheetScreen = extractScreen(
+    safeRequire(() => require('../screens/home/HomeBottomSheet')),
+    ['HomeBottomSheetScreen', 'default'],
+    placeholder
+);
+const HomeMedicationRemindersScreen = extractScreen(
+    safeRequire(() => require('../screens/home/HomeMedicationReminders')),
+    ['HomeMedicationRemindersScreen', 'default'],
+    placeholder
+);
+const HomeAppointmentWidgetScreen = extractScreen(
+    safeRequire(() => require('../screens/home/HomeAppointmentWidget')),
+    ['HomeAppointmentWidgetScreen', 'default'],
+    placeholder
+);
+const HomeHealthTipsScreen = extractScreen(
+    safeRequire(() => require('../screens/home/HomeHealthTips')),
+    ['HomeHealthTipsScreen', 'default'],
+    placeholder
+);
+const HomeEmptyScreen = extractScreen(
+    safeRequire(() => require('../screens/home/HomeEmpty')),
+    ['HomeEmptyScreen', 'default'],
+    placeholder
+);
+const NotificationUnreadScreen = extractScreen(
+    safeRequire(() => require('../screens/home/NotificationUnreadFilter')),
+    ['NotificationUnreadFilterScreen', 'default'],
+    placeholder
+);
+const NotificationCategoryFilterScreen = extractScreen(
+    safeRequire(() => require('../screens/home/NotificationCategoryFilter')),
+    ['NotificationCategoryFilterScreen', 'default'],
+    placeholder
+);
+const NotificationEmptyScreen = extractScreen(
+    safeRequire(() => require('../screens/home/NotificationEmpty')),
+    ['NotificationEmptyScreen', 'default'],
+    placeholder
+);
+const NotificationSettingsScreen = extractScreen(
+    safeRequire(() => require('../screens/home/NotificationSettings')),
+    ['NotificationSettingsScreen', 'default'],
+    placeholder
+);
+const SearchDoctorResultsScreen = extractScreen(
+    safeRequire(() => require('../screens/home/SearchDoctorResults')),
+    ['SearchDoctorResultsScreen', 'default'],
+    placeholder
+);
+const SearchArticleResultsScreen = extractScreen(
+    safeRequire(() => require('../screens/home/SearchArticleResults')),
+    ['SearchArticleResultsScreen', 'default'],
+    placeholder
+);
+const SearchMedicationResultsScreen = extractScreen(
+    safeRequire(() => require('../screens/home/SearchMedicationResults')),
+    ['SearchMedicationResultsScreen', 'default'],
+    placeholder
+);
+const SearchNoResultsScreen = extractScreen(
+    safeRequire(() => require('../screens/home/SearchNoResults')),
+    ['SearchNoResultsScreen', 'default'],
+    placeholder
+);
 
 // Creates a native stack navigator for the Home tab.
 // This allows HomeMetrics and HomeAlert to be pushed on top of the Home screen.
@@ -219,11 +186,18 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 
 // Defines the main tab navigator for the app.
 export const MainNavigator: React.FC = () => {
+    const handleTabPress = useCallback(() => {
+        void haptic.selection();
+    }, []);
+
     return (
         <Tab.Navigator
             initialRouteName="Home"
             screenOptions={{
                 headerShown: false,
+            }}
+            screenListeners={{
+                tabPress: handleTabPress,
             }}
         >
             <Tab.Screen name="Home" component={HomeStack} />

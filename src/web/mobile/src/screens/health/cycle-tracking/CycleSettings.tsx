@@ -8,8 +8,10 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, Switch, StyleSheet, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ROUTES } from '../../../constants/routes';
+import type { CycleTrackingNavigationProp } from '../../../navigation/types';
 
 /**
  * Cycle configuration values.
@@ -42,7 +44,7 @@ const DEFAULT_CONFIG: CycleConfig = {
  * birth control effects on predictions, data privacy, and notification preferences.
  */
 export const CycleSettings: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<CycleTrackingNavigationProp>();
     const { t } = useTranslation();
     const [config, setConfig] = useState<CycleConfig>(DEFAULT_CONFIG);
     const [showLutealPhase, setShowLutealPhase] = useState(false);
@@ -120,7 +122,7 @@ export const CycleSettings: React.FC = () => {
                             accessibilityLabel={t('journeys.health.cycle.settings.decrease', { field: label })}
                             accessibilityRole="button"
                             testID={`decrease-${field}`}
-                            style={[styles.stepButton, value <= min && styles.stepButtonDisabled] as any}
+                            style={[styles.stepButton, value <= min && styles.stepButtonDisabled]}
                         >
                             <Text
                                 fontSize="lg"
@@ -140,7 +142,7 @@ export const CycleSettings: React.FC = () => {
                             accessibilityLabel={t('journeys.health.cycle.settings.increase', { field: label })}
                             accessibilityRole="button"
                             testID={`increase-${field}`}
-                            style={[styles.stepButton, value >= max && styles.stepButtonDisabled] as any}
+                            style={[styles.stepButton, value >= max && styles.stepButtonDisabled]}
                         >
                             <Text
                                 fontSize="lg"
@@ -158,7 +160,7 @@ export const CycleSettings: React.FC = () => {
     );
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -320,7 +322,7 @@ export const CycleSettings: React.FC = () => {
                     </Touchable>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

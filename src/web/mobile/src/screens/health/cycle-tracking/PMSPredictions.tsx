@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, FlatList, StyleSheet, ListRenderItemInfo } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 /**
  * Severity level for PMS predictions.
@@ -93,7 +94,7 @@ const MOCK_ACCURACY = 76;
  * with severity and self-care recommendations based on history.
  */
 export const PMSPredictions: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
 
     const sortedPredictions = useMemo(() => [...MOCK_PREDICTIONS].sort((a, b) => b.probability - a.probability), []);
@@ -140,7 +141,7 @@ export const PMSPredictions: React.FC = () => {
     };
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -258,7 +259,7 @@ export const PMSPredictions: React.FC = () => {
                     </>
                 }
             />
-        </View>
+        </SafeAreaView>
     );
 };
 

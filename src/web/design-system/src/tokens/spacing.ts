@@ -92,3 +92,19 @@ export const spacingCompat = {
     /** @deprecated Use spacing['5xl'] (64px) */
     '3xl': spacing['5xl'],
 } as const;
+
+/**
+ * Component gap scale for large layout spacing.
+ * Used for spacing between major layout sections and components.
+ * Sourced from Figma componentGap tokens.
+ */
+export const componentGap = {
+    xs: 10,
+    sm: 24,
+    md: 32,
+    lg: 64,
+    xl: 96,
+    '2xl': 128,
+    '3xl': 256,
+    '4xl': 512,
+} as const;

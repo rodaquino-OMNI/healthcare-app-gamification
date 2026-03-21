@@ -9,7 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, Alert, StyleProp, ViewStyle } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme } from '../../../hooks/useTheme';
 
 /**
  * Mood level for the emoji scale (1 = terrible, 5 = excellent).
@@ -56,7 +58,7 @@ const SLEEP_FACTORS: SleepFactor[] = [
  * using an emoji mood scale and a factors checklist.
  */
 export const SleepQuality: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
     const _theme = useTheme();
 
@@ -86,7 +88,7 @@ export const SleepQuality: React.FC = () => {
     }, [navigation, t]);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -119,7 +121,7 @@ export const SleepQuality: React.FC = () => {
                                     accessibilityLabel={t(option.labelKey)}
                                     accessibilityRole="button"
                                     testID={`sleep-quality-emoji-${option.level}`}
-                                    style={[styles.moodOption, isSelected && styles.moodOptionSelected] as any}
+                                    style={[styles.moodOption, isSelected && styles.moodOptionSelected]}
                                 >
                                     <Text fontSize="heading-2xl">{option.emoji}</Text>
                                     <Text
@@ -203,7 +205,7 @@ export const SleepQuality: React.FC = () => {
                     </Button>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

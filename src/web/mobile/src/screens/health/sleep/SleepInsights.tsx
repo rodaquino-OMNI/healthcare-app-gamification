@@ -8,7 +8,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme } from '../../../hooks/useTheme';
 
 /**
  * Trend direction for a sleep metric.
@@ -109,7 +111,7 @@ const MOCK_RECOMMENDATIONS: Recommendation[] = [
  * and personalized recommendations to improve sleep quality.
  */
 export const SleepInsights: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
     const _theme = useTheme();
     const [expandedTip, setExpandedTip] = useState<string | null>(null);
@@ -123,7 +125,7 @@ export const SleepInsights: React.FC = () => {
     }, []);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -256,7 +258,7 @@ export const SleepInsights: React.FC = () => {
                     ))}
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

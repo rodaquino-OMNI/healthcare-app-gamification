@@ -7,7 +7,9 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import type { WellnessResourcesNavigationProp } from '../../../navigation/types';
 
 /**
  * Route params for the article detail screen.
@@ -101,10 +103,9 @@ const MOCK_RELATED: RelatedArticle[] = [
  * with hero image, author info, body sections, and related articles.
  */
 export const ArticleDetail: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<WellnessResourcesNavigationProp>();
     const route = useRoute();
     const { t } = useTranslation();
-    const _theme = useTheme();
     const [isBookmarked, setIsBookmarked] = useState(false);
 
     const params = route.params as ArticleDetailParams | undefined;
@@ -132,7 +133,7 @@ export const ArticleDetail: React.FC = () => {
     );
 
     return (
-        <View style={styles.container} testID="wellness-resources-article-detail-screen">
+        <SafeAreaView style={styles.container} testID="wellness-resources-article-detail-screen">
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -270,7 +271,7 @@ export const ArticleDetail: React.FC = () => {
                     </ScrollView>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

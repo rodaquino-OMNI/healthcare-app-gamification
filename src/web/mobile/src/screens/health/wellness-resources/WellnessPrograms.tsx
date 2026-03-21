@@ -10,7 +10,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, FlatList, ScrollView, StyleSheet, ListRenderItemInfo } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import type { WellnessResourcesNavigationProp } from '../../../navigation/types';
 
 /**
  * Difficulty level for wellness programs.
@@ -123,9 +125,8 @@ const formatEnrolled = (count: number): string => {
  * with progress indicators, difficulty badges, and enrollment CTAs.
  */
 export const WellnessPrograms: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<WellnessResourcesNavigationProp>();
     const { t } = useTranslation();
-    const _theme = useTheme();
     const [activeFilter, setActiveFilter] = useState<FilterKey>('all');
 
     const filteredPrograms = useMemo(() => {
@@ -250,7 +251,7 @@ export const WellnessPrograms: React.FC = () => {
     );
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -283,7 +284,7 @@ export const WellnessPrograms: React.FC = () => {
                             accessibilityLabel={t(filter.labelKey)}
                             accessibilityRole="button"
                             testID={`wellness-resources-programs-filter-${filter.key}`}
-                            style={[styles.filterChip, isActive && styles.filterChipActive] as any}
+                            style={[styles.filterChip, isActive && styles.filterChipActive]}
                         >
                             <Text
                                 fontSize="sm"
@@ -307,7 +308,7 @@ export const WellnessPrograms: React.FC = () => {
                 testID="wellness-resources-programs-list"
                 ListEmptyComponent={renderEmpty}
             />
-        </View>
+        </SafeAreaView>
     );
 };
 

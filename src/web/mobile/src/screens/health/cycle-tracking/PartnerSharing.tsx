@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, Switch, StyleSheet, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 /**
  * Data categories that can be shared with a partner.
@@ -52,7 +53,7 @@ const MOCK_INVITE_CODE = 'AUSTA-CYC-7X3K';
  * inviting via code, and revoking access.
  */
 export const PartnerSharing: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
     const [sharingEnabled, setSharingEnabled] = useState(MOCK_PARTNER.isConnected);
     const [sharingOptions, setSharingOptions] = useState<SharingOption[]>(INITIAL_SHARING);
@@ -100,7 +101,7 @@ export const PartnerSharing: React.FC = () => {
     }, [t]);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -268,7 +269,7 @@ export const PartnerSharing: React.FC = () => {
                     </>
                 )}
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

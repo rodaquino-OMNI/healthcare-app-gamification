@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, FlatList, StyleSheet, ListRenderItemInfo } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 /**
  * Trend direction for cycle length comparison.
@@ -175,7 +176,7 @@ const MOCK_REGULARITY: Regularity = 'regular';
  * with average length, regularity indicator, and trend arrows.
  */
 export const CycleHistory: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
 
     const regularityConfig = useMemo(() => REGULARITY_CONFIG[MOCK_REGULARITY], []);
@@ -238,7 +239,7 @@ export const CycleHistory: React.FC = () => {
     const cycleKeyExtractor = useCallback((item: CycleRecord) => item.id, []);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -327,7 +328,7 @@ export const CycleHistory: React.FC = () => {
                     </>
                 }
             />
-        </View>
+        </SafeAreaView>
     );
 };
 

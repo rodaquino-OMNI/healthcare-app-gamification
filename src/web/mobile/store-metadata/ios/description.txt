@@ -1,0 +1,17 @@
+AUSTA SuperApp - Seu aplicativo completo de saude e bem-estar
+
+Gerencie sua saude de forma inteligente com o AUSTA SuperApp. Acompanhe consultas, exames, medicamentos, plano de saude e muito mais em um unico lugar.
+
+Principais funcionalidades:
+
+- Agendamento de consultas medicas e telemedicina
+- Acompanhamento de exames e resultados laboratoriais
+- Gerenciamento de medicamentos com lembretes inteligentes
+- Monitoramento de saude com integracao Apple Health e dispositivos
+- Rastreamento de ciclo menstrual e sono
+- Companheiro de bem-estar com IA
+- Gestao completa do plano de saude e sinistros
+- Gamificacao para habitos saudaveis
+- Conformidade total com LGPD
+
+Baixe agora e tenha o controle da sua saude na palma da mao.

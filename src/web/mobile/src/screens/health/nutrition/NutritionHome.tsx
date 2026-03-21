@@ -9,7 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, FlatList, ListRenderItemInfo } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import type { NutritionNavigationProp } from '../../../navigation/types';
 
 /**
  * Meal type classification.
@@ -88,9 +90,8 @@ const MOCK_RECENT_MEALS: RecentMeal[] = [
  * macro breakdown, recent meals, and quick action buttons.
  */
 export const NutritionHome: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<NutritionNavigationProp>();
     const { t } = useTranslation();
-    const _theme = useTheme();
 
     const [summary] = useState<DailySummary>(MOCK_DAILY_SUMMARY);
 
@@ -135,7 +136,7 @@ export const NutritionHome: React.FC = () => {
     const keyExtractor = useCallback((item: RecentMeal) => item.id, []);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -301,7 +302,7 @@ export const NutritionHome: React.FC = () => {
                     </Button>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

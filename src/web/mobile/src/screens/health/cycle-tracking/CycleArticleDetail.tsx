@@ -7,8 +7,10 @@ import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ROUTES } from '../../../constants/routes';
+import type { CycleTrackingNavigationProp } from '../../../navigation/types';
 
 /**
  * Route params for the article detail screen.
@@ -108,7 +110,7 @@ const MOCK_ARTICLE: ArticleData = {
  * including sections, author info, and related articles.
  */
 export const CycleArticleDetail: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<CycleTrackingNavigationProp>();
     const route = useRoute<RouteProp<ArticleDetailParams, 'params'>>();
     const { t } = useTranslation();
     const _articleId = route.params?.articleId ?? 'art-1';
@@ -141,7 +143,7 @@ export const CycleArticleDetail: React.FC = () => {
     );
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -263,7 +265,7 @@ export const CycleArticleDetail: React.FC = () => {
                     ))}
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

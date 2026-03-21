@@ -9,7 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, FlatList, StyleSheet, ListRenderItemInfo } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import type { WellnessResourcesNavigationProp } from '../../../navigation/types';
 
 /**
  * Content type for bookmarked items.
@@ -71,9 +73,8 @@ const MOCK_BOOKMARKS: BookmarkedItem[] = [
  * with the ability to remove bookmarks. Shows an empty state when no bookmarks exist.
  */
 export const WellnessBookmarks: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<WellnessResourcesNavigationProp>();
     const { t } = useTranslation();
-    const _theme = useTheme();
 
     const [bookmarks, setBookmarks] = useState<BookmarkedItem[]>(MOCK_BOOKMARKS);
 
@@ -163,7 +164,7 @@ export const WellnessBookmarks: React.FC = () => {
     );
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -190,7 +191,7 @@ export const WellnessBookmarks: React.FC = () => {
                 testID="wellness-resources-bookmarks-list"
                 ListEmptyComponent={renderEmpty}
             />
-        </View>
+        </SafeAreaView>
     );
 };
 

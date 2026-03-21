@@ -9,7 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, Alert, TextInput } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme } from '../../../hooks/useTheme';
 
 /**
  * Meal type options for selector tabs.
@@ -61,7 +63,7 @@ const calculateNutrition = (
  * meal type, auto-calculated nutrition, and optional notes.
  */
 export const MealLog: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
     const _theme = useTheme();
 
@@ -97,7 +99,7 @@ export const MealLog: React.FC = () => {
     }, [foodName, navigation, t]);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -176,7 +178,7 @@ export const MealLog: React.FC = () => {
                                     accessibilityLabel={t(mt.labelKey)}
                                     accessibilityRole="button"
                                     testID={`nutrition-log-meal-${mt.key}`}
-                                    style={[styles.mealTypeTab, isActive && styles.mealTypeTabActive] as any}
+                                    style={[styles.mealTypeTab, isActive && styles.mealTypeTabActive]}
                                 >
                                     <Text
                                         fontSize="xs"
@@ -278,7 +280,7 @@ export const MealLog: React.FC = () => {
                     </Button>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

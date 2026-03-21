@@ -9,6 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 /**
  * Represents a single day in the fertility calendar strip.
@@ -63,7 +64,7 @@ const FERTILITY_DATA = {
  * ovulation marker, probability indicators, and educational content.
  */
 export const FertilityWindow: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
 
     const fertilityDays = useMemo(() => generateFertilityDays(), []);
@@ -84,7 +85,7 @@ export const FertilityWindow: React.FC = () => {
     ];
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -278,7 +279,7 @@ export const FertilityWindow: React.FC = () => {
                     </Card>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

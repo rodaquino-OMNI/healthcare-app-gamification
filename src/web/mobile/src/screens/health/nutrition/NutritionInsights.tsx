@@ -9,7 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import type { NutritionNavigationProp } from '../../../navigation/types';
 
 /**
  * An AI-generated nutrition insight.
@@ -111,9 +113,8 @@ const STREAK_DAYS = 12;
  * meal suggestions and an achievement streak display.
  */
 export const NutritionInsights: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<NutritionNavigationProp>();
     const { t } = useTranslation();
-    const _theme = useTheme();
 
     const handleGoBack = useCallback(() => {
         navigation.goBack();
@@ -124,7 +125,7 @@ export const NutritionInsights: React.FC = () => {
     }, [navigation]);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -312,7 +313,7 @@ export const NutritionInsights: React.FC = () => {
                     </Button>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

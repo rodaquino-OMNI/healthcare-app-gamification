@@ -9,7 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, FlatList, Switch, StyleSheet, Alert, ListRenderItemInfo } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useTheme } from '../../../hooks/useTheme';
 
 /**
  * A single step in the bedtime routine.
@@ -35,7 +37,7 @@ const MOCK_WIND_DOWN = '42 min';
  * toggle Do Not Disturb and bedtime reminders, and save their routine.
  */
 export const BedtimeRoutine: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation();
     const { t } = useTranslation();
     const _theme = useTheme();
     const [steps, setSteps] = useState<RoutineStep[]>(INITIAL_STEPS);
@@ -99,7 +101,7 @@ export const BedtimeRoutine: React.FC = () => {
     const stepKeyExtractor = useCallback((item: RoutineStep) => item.id, []);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -226,7 +228,7 @@ export const BedtimeRoutine: React.FC = () => {
                     </>
                 }
             />
-        </View>
+        </SafeAreaView>
     );
 };
 

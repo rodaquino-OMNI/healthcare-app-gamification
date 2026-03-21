@@ -9,7 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import type { WellnessResourcesNavigationProp, WellnessResourcesParamList } from '../../../navigation/types';
 
 /**
  * Content category types for the dashboard.
@@ -23,7 +25,7 @@ interface CategoryCard {
     id: string;
     labelKey: string;
     icon: keyof typeof Ionicons.glyphMap;
-    screen: string;
+    screen: keyof WellnessResourcesParamList;
 }
 
 /**
@@ -110,12 +112,11 @@ const CATEGORY_ICON_MAP: Record<ContentCategory, keyof typeof Ionicons.glyphMap>
  * featured content, and recent activity for wellness resources.
  */
 export const WellnessResourcesHome: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<WellnessResourcesNavigationProp>();
     const { t } = useTranslation();
-    const _theme = useTheme();
 
     const handleCategoryPress = useCallback(
-        (screen: string) => {
+        (screen: keyof WellnessResourcesParamList) => {
             navigation.navigate(screen);
         },
         [navigation]
@@ -152,7 +153,7 @@ export const WellnessResourcesHome: React.FC = () => {
     );
 
     return (
-        <View style={styles.container} testID="wellness-resources-home-screen">
+        <SafeAreaView style={styles.container} testID="wellness-resources-home-screen">
             {/* Header */}
             <View style={styles.header}>
                 <Touchable
@@ -298,7 +299,7 @@ export const WellnessResourcesHome: React.FC = () => {
                     </Button>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 

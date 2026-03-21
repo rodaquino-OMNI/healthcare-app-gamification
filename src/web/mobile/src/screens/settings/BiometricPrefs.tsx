@@ -2,10 +2,12 @@ import { borderRadius } from '@design-system/tokens/borderRadius';
 import { colors } from '@design-system/tokens/colors';
 import { spacing, spacingValues } from '@design-system/tokens/spacing';
 import { typography } from '@design-system/tokens/typography';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, Switch, Platform } from 'react-native';
 import styled from 'styled-components/native';
+
+import { haptic } from '../../utils/haptics';
 
 // --- Styled Components ---
 
@@ -95,6 +97,16 @@ export const BiometricPrefsScreen: React.FC = () => {
     const [faceIdEnabled, setFaceIdEnabled] = useState(false);
     const [fingerprintEnabled, setFingerprintEnabled] = useState(false);
 
+    const handleFaceIdChange = useCallback((value: boolean) => {
+        void haptic.light();
+        setFaceIdEnabled(value);
+    }, []);
+
+    const handleFingerprintChange = useCallback((value: boolean) => {
+        void haptic.light();
+        setFingerprintEnabled(value);
+    }, []);
+
     const trackColor = {
         false: colors.gray[20],
         true: colors.brand.primary,
@@ -121,7 +133,7 @@ export const BiometricPrefsScreen: React.FC = () => {
                             </BiometricInfo>
                             <Switch
                                 value={faceIdEnabled}
-                                onValueChange={setFaceIdEnabled}
+                                onValueChange={handleFaceIdChange}
                                 disabled={!isFaceIdAvailable}
                                 trackColor={trackColor}
                                 thumbColor={colors.neutral.white}
@@ -143,7 +155,7 @@ export const BiometricPrefsScreen: React.FC = () => {
                             </BiometricInfo>
                             <Switch
                                 value={fingerprintEnabled}
-                                onValueChange={setFingerprintEnabled}
+                                onValueChange={handleFingerprintChange}
                                 disabled={!isFingerprintAvailable}
                                 trackColor={trackColor}
                                 thumbColor={colors.neutral.white}
