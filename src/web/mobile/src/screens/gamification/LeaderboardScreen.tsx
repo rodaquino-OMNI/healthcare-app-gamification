@@ -8,7 +8,8 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
-import { useTheme } from 'styled-components/native';
+
+import { useTheme } from '../../hooks/useTheme';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -230,8 +231,8 @@ function getJourneyColor(journey: string): string {
 const LeaderboardScreen: React.FC = () => {
     const { t } = useTranslation();
     const navigation = useNavigation();
-    const theme = useTheme() as Theme;
-    const styles = createStyles(theme);
+    const { theme } = useTheme();
+    const styles = createStyles(theme as Theme);
     const [timeframe, setTimeframe] = useState<TimeframeFilter>('week');
     const [journeyFilter, setJourneyFilter] = useState<JourneyFilter>('all');
 

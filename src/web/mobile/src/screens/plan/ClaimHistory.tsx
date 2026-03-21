@@ -107,7 +107,7 @@ const MOCK_CLAIMS: Claim[] = [
  */
 const ClaimHistory: React.FC = () => {
     const { t } = useTranslation();
-    const { _journey } = useJourney();
+    const { journey: _journey } = useJourney();
     const navigation = useNavigation<PlanNavigationProp>();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);

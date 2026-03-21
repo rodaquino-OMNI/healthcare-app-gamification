@@ -26,7 +26,7 @@ interface AddMetricScreenProps {
 export const AddMetricScreen: React.FC<AddMetricScreenProps> = () => {
     const { t } = useTranslation();
     // LD1: Uses the useJourney hook to get the current journey.
-    const { _journey } = useJourney();
+    const { journey: _journey } = useJourney();
     // LD1: Uses the useNavigation hook to get the navigation object.
     const navigation = useNavigation();
     // LD1: Uses the useAuth hook to get the authenticated user information.
@@ -41,9 +41,9 @@ export const AddMetricScreen: React.FC<AddMetricScreenProps> = () => {
 
     // LD1: Uses the useForm hook to manage the form state and validation.
     const {
-        _control,
+        control: _control,
         handleSubmit,
-        formState: { _errors },
+        formState: { errors: _errors },
         reset,
     } = useForm({
         resolver: yupResolver(schema as any),

@@ -104,7 +104,7 @@ const MedicalRecordsAccess: React.FC = () => {
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
-    const { _appointmentId } = route.params || { appointmentId: 'appt-001' };
+    const { appointmentId: _appointmentId } = route.params || { appointmentId: 'appt-001' };
 
     const [activeTab, setActiveTab] = useState<FilterTab>('all');
     const [expandedRecordId, setExpandedRecordId] = useState<string | null>(null);

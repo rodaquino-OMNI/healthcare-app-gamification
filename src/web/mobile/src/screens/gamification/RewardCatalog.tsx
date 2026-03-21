@@ -8,7 +8,7 @@ import { Reward } from '@shared/types/gamification.types';
 import React, { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, ScrollView, SafeAreaView } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { useTheme } from '../../hooks/useTheme';
 
 type JourneyFilter = 'all' | 'health' | 'care' | 'plan';
 type SortOption = 'low-high' | 'high-low' | 'popular';
@@ -141,8 +141,8 @@ const POPULARITY: Record<string, number> = {
 const RewardCatalog: React.FC = () => {
     const { t } = useTranslation();
     const navigation = useNavigation<any>();
-    const theme = useTheme() as Theme;
-    const styles = createStyles(theme);
+    const { theme } = useTheme();
+    const styles = createStyles(theme as Theme);
     const [journeyFilter, setJourneyFilter] = useState<JourneyFilter>('all');
     const [sortOption, setSortOption] = useState<SortOption>('popular');
     const [searchQuery, setSearchQuery] = useState('');

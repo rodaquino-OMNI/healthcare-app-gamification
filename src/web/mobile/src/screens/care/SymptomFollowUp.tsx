@@ -72,7 +72,7 @@ const SymptomFollowUp: React.FC = () => {
     const route = useRoute<RouteProp<{ params: SymptomFollowUpRouteParams }, 'params'>>();
     const { t } = useTranslation();
 
-    const { _conditions = [], overallSeverity = 5 } = route.params || {};
+    const { conditions: _conditions = [], overallSeverity = 5 } = route.params || {};
 
     const [selectedReminder, setSelectedReminder] = useState<string | null>(null);
 

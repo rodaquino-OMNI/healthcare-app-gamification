@@ -20,7 +20,7 @@ export const Dashboard: React.FC = () => {
     // LD1: Retrieves the navigation object using the useNavigation hook.
     const _navigation = useNavigation();
     // LD1: Retrieves the Care journey ID using the useJourney hook.
-    const { _journey } = useJourney();
+    const { journey: _journey } = useJourney();
     const { t } = useTranslation();
 
     // LD1: Renders a JourneyHeader component with the title 'Cuidar-me Agora' and a back button.

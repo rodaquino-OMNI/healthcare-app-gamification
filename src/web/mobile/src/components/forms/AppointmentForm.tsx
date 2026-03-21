@@ -33,13 +33,13 @@ const AppointmentForm: React.FC = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState<string | null>(null);
     const [showDatePicker, setShowDatePicker] = useState(false);
-    const { _journey } = useContext(JourneyContext);
+    const { journey: _journey } = useContext(JourneyContext);
     const navigation = useNavigation<CareNavigationProp>();
 
     const {
         control,
         handleSubmit,
-        _setValue,
+        setValue: _setValue,
         formState: { errors },
     } = useForm<AppointmentFormData>({
         resolver: zodResolver(appointmentSchema),

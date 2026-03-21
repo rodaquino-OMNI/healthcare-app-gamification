@@ -117,8 +117,8 @@ interface SettingSection {
  */
 export const SettingsScreen: React.FC = () => {
     const navigation = useNavigation<SettingsNavigationProp>();
-    const { _signOut } = useAuth();
-    const { _journey } = useJourney();
+    const { signOut: _signOut } = useAuth();
+    const { journey: _journey } = useJourney();
     const { t } = useTranslation();
 
     const handleLogout = (): void => {

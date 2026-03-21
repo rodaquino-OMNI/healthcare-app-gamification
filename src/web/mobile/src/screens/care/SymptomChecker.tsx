@@ -22,7 +22,7 @@ const SymptomChecker: React.FC = () => {
     const [error, setError] = useState<Error | null>(null);
 
     const navigation = useNavigation<any>();
-    const { _journey } = useJourney();
+    const { journey: _journey } = useJourney();
     const { t } = useTranslation();
 
     const SYMPTOM_STEPS = [

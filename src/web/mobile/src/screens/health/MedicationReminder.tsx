@@ -34,7 +34,7 @@ export const MedicationReminderScreen: React.FC = () => {
     const styles = createStyles(theme);
     const route = useRoute<any>();
     const navigation = useNavigation();
-    const { _journey } = useJourney();
+    const { journey: _journey } = useJourney();
 
     const [_loading, setLoading] = useState(false);
     const [_error, setError] = useState<string | null>(null);

@@ -41,7 +41,7 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({ onCapture }) => {
      */
     useEffect(() => {
         // Asynchronous function to check and request camera permissions
-        const checkPermissions = async (): Promise<boolean> => {
+        const checkPermissions = async (): Promise<void> => {
             // Check camera permissions based on the platform
             let permissionGranted = false;
 

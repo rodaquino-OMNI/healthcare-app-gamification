@@ -79,11 +79,11 @@ const LinkButton = styled.Text`
  */
 export const RegisterScreen: React.FC = () => {
     const navigation = useNavigation<AuthNavigationProp>();
-    const { _signIn } = useAuth();
+    const { signIn: _signIn } = useAuth();
     const { t } = useTranslation();
 
     const {
-        _control,
+        control: _control,
         handleSubmit,
         formState: { errors, isValid, isSubmitting },
         register: registerInput,

@@ -22,7 +22,7 @@ export const DeviceConnection: React.FC = () => {
     const { journey } = useJourney();
 
     // LD1: Retrieves the connected devices, loading state, and error state using the `useDevices` hook.
-    const { devices, isLoading, error, _connect } = useDevices();
+    const { devices, isLoading, error, connect: _connect } = useDevices();
 
     // LD1: Sets up local state for managing the new device type.
     const [_newDevice, _setNewDevice] = useState<string>('');

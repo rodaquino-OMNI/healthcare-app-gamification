@@ -65,7 +65,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({
     const { notifications, isLoading, error, markAsRead } = useNotifications();
 
     // Use the useJourney hook to get the current journey context
-    const { _journey } = useJourney();
+    const { journey: _journey } = useJourney();
 
     // Use the useNavigation hook for handling deep links
     const navigation = useNavigation();

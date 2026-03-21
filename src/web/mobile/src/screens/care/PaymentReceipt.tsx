@@ -73,7 +73,7 @@ const PaymentReceipt: React.FC = () => {
     const route = useRoute<RouteProp<{ params: PaymentReceiptRouteParams }, 'params'>>();
     const { t } = useTranslation();
 
-    const { _appointmentId, _paymentId } = route.params || {
+    const { appointmentId: _appointmentId, paymentId: _paymentId } = route.params || {
         appointmentId: 'appt-001',
         paymentId: 'pay-001',
     };

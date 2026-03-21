@@ -8,7 +8,7 @@ import { Reward } from '@shared/types/gamification.types';
 import React, { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, Modal, SafeAreaView } from 'react-native';
-import { useTheme } from 'styled-components/native';
+import { useTheme } from '../../hooks/useTheme';
 
 interface RewardDetailRouteParams {
     rewardId: string;
@@ -104,8 +104,8 @@ const getJourneyColor = (journey: string): string => JOURNEY_COLORS[journey] || 
 const RewardDetail: React.FC = () => {
     const { t } = useTranslation();
     const navigation = useNavigation<any>();
-    const theme = useTheme() as Theme;
-    const styles = createStyles(theme);
+    const { theme } = useTheme();
+    const styles = createStyles(theme as Theme);
     const route = useRoute<any>();
     const { rewardId } = route.params as RewardDetailRouteParams;
 

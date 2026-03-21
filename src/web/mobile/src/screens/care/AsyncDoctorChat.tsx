@@ -85,7 +85,7 @@ const AsyncDoctorChat: React.FC = () => {
     const styles = createStyles(theme);
     const flatListRef = useRef<FlatList>(null);
 
-    const { _appointmentId, doctorName, doctorSpecialty } = route.params || {
+    const { appointmentId: _appointmentId, doctorName, doctorSpecialty } = route.params || {
         appointmentId: 'appt-001',
         doctorName: 'Dra. Ana Carolina Silva',
         doctorSpecialty: 'Cardiologia',

@@ -142,7 +142,7 @@ const VisitLabOrders: React.FC = () => {
     const route = useRoute<RouteProp<{ params: VisitLabOrdersRouteParams }, 'params'>>();
     const { t } = useTranslation();
 
-    const { _appointmentId = 'apt-001' } = route.params || {};
+    const { appointmentId: _appointmentId = 'apt-001' } = route.params || {};
 
     const [expandedTest, setExpandedTest] = useState<string | null>(null);
 

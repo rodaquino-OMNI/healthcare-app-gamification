@@ -9,10 +9,10 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet, SectionList, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
-import { useTheme } from 'styled-components/native';
 
 import { QuestListItem, CategorizedQuest } from './QuestListItem';
 import { useQuestFilters, TABS } from './useQuestFilters';
+import { useTheme } from '../../hooks/useTheme';
 
 /**
  * Mock quest data for development and immediate rendering.
@@ -159,8 +159,8 @@ const MOCK_QUESTS: CategorizedQuest[] = [
 const QuestList: React.FC = () => {
     const { t } = useTranslation();
     const navigation = useNavigation<any>();
-    const theme = useTheme() as Theme;
-    const styles = createStyles(theme);
+    const { theme } = useTheme();
+    const styles = createStyles(theme as Theme);
 
     const { activeTab, setActiveTab, sections, stats } = useQuestFilters(MOCK_QUESTS, t);
 

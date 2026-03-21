@@ -114,7 +114,7 @@ const VisitReferral: React.FC = () => {
     const route = useRoute<RouteProp<{ params: VisitReferralRouteParams }, 'params'>>();
     const { t } = useTranslation();
 
-    const { _appointmentId = 'apt-001', referralId = 'ref-001' } = route.params || {};
+    const { appointmentId: _appointmentId = 'apt-001', referralId = 'ref-001' } = route.params || {};
 
     const referral = MOCK_REFERRAL;
     const remainingDays = getRemainingDays(referral.validUntil);

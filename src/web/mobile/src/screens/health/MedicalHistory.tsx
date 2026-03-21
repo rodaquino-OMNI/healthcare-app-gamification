@@ -21,7 +21,7 @@ const MedicalHistory = () => {
     // State variables for managing medical history data and loading state
     const [medicalHistory, setMedicalHistory] = useState<HealthMetric[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const { _journey } = useJourney();
+    const { journey: _journey } = useJourney();
 
     // Fetch medical history data using the useHealthMetrics hook
     // const { data, error } = useHealthMetrics(userId, null, null, []);

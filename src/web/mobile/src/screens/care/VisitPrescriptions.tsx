@@ -91,7 +91,7 @@ const VisitPrescriptions: React.FC = () => {
     const route = useRoute<RouteProp<{ params: VisitPrescriptionsRouteParams }, 'params'>>();
     const { t } = useTranslation();
 
-    const { _appointmentId = 'apt-001' } = route.params || {};
+    const { appointmentId: _appointmentId = 'apt-001' } = route.params || {};
 
     const [prescriptions, setPrescriptions] = useState<PrescriptionItem[]>(MOCK_PRESCRIPTIONS);
     const [expandedId, setExpandedId] = useState<string | null>(null);

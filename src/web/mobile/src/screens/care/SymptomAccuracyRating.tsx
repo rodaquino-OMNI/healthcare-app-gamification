@@ -42,7 +42,7 @@ const SymptomAccuracyRating: React.FC = () => {
     const route = useRoute<RouteProp<{ params: SymptomAccuracyRatingRouteParams }, 'params'>>();
     const { t } = useTranslation();
 
-    const { _checkId = '', conditions = [] } = route.params || {};
+    const { checkId: _checkId = '', conditions = [] } = route.params || {};
 
     const [starRating, setStarRating] = useState(0);
     const [selectedAccuracy, setSelectedAccuracy] = useState<AccuracyOption | null>(null);

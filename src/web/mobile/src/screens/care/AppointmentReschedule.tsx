@@ -35,7 +35,7 @@ export const AppointmentReschedule: React.FC = () => {
     const navigation = useNavigation<any>();
     const route = useRoute<any>();
     const { t } = useTranslation();
-    const { _appointmentId, doctorId } = route.params as RouteParams;
+    const { appointmentId: _appointmentId, doctorId } = route.params as RouteParams;
 
     const doctor = MOCK_DOCTOR[doctorId] || { name: 'Dr. Medico', specialty: 'Especialidade' };
     const now = new Date();

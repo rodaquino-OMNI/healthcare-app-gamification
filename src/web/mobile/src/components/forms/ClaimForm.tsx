@@ -1,4 +1,5 @@
 import { Button } from '@design-system/components/Button/Button';
+import { Input } from '@design-system/components/Input/Input';
 import DatePicker from '@design-system/components/DatePicker/DatePicker';
 import { Select } from '@design-system/components/Select/Select';
 import { yupResolver } from '@hookform/resolvers'; // latest
@@ -17,7 +18,7 @@ import { useJourney } from '@hooks/useJourney';
  */
 export const ClaimForm: React.FC = () => {
     // Uses the `useJourney` hook to get the current journey.
-    const { _journey } = useJourney();
+    const { journey: _journey } = useJourney();
 
     // Uses the `useForm` hook to manage the form state and validation,
     // integrating with `claimValidationSchema` for validation rules.
@@ -25,7 +26,7 @@ export const ClaimForm: React.FC = () => {
         register,
         control,
         handleSubmit,
-        formState: { _errors, isSubmitting, _isValid },
+        formState: { errors: _errors, isSubmitting, isValid: _isValid },
     } = useForm({
         resolver: yupResolver(claimValidationSchema),
         defaultValues: {

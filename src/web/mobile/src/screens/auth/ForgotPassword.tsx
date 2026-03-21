@@ -95,7 +95,7 @@ const SuccessMessage = styled.Text`
 export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProp> = ({ navigation }) => {
     const { t } = useTranslation();
     const {
-        _control,
+        control: _control,
         handleSubmit,
         formState: { errors },
     } = useForm({
@@ -106,7 +106,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProp> = ({ navig
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const { _signIn } = useAuth();
+    const { signIn: _signIn } = useAuth();
 
     const onSubmit = async (): Promise<void> => {
         setIsSubmitting(true);

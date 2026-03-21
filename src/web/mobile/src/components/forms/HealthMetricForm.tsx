@@ -16,7 +16,7 @@ import { useHealthMetrics } from '@hooks/useHealthMetrics';
  */
 export const HealthMetricForm: React.FC = () => {
     // Access the current journey context
-    const { _journey } = useJourney();
+    const { journey: _journey } = useJourney();
 
     // Define the validation schema using Yup
     const schema = yup.object({

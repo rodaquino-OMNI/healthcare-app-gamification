@@ -35,9 +35,9 @@ jest.mock('../../../../../design-system/src/tokens/colors', () => ({
         },
         journeys: {
             health: { primary: '#00BCD4' },
-            plan: { primary: '#4CAF50' },
+            plan: { primary: '#22C55E' },
             care: { primary: '#FF9800' },
-            community: { primary: '#9C27B0' },
+            community: { primary: '#A855F7' },
         },
         gray: {
             20: '#ECECEC',

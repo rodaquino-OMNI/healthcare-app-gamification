@@ -10,7 +10,8 @@ import { Quest } from '@shared/types/gamification.types';
 import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, Share, Alert } from 'react-native';
-import { useTheme } from 'styled-components/native';
+
+import { useTheme } from '../../hooks/useTheme';
 
 /**
  * Route params for QuestDetail.
@@ -155,9 +156,9 @@ const getTimeRemainingKey = (quest: Quest): { key: string; params?: Record<strin
  */
 const QuestDetail: React.FC = () => {
     const { t } = useTranslation();
-    const navigation = useNavigation<any>();
-    const theme = useTheme() as Theme;
-    const styles = createStyles(theme);
+    const navigation = useNavigation();
+    const { theme } = useTheme();
+    const styles = createStyles(theme as Theme);
     const route = useRoute<any>();
     const { questId } = route.params as QuestDetailRouteParams;
 
