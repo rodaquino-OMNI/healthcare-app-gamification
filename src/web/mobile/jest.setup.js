@@ -4,8 +4,170 @@
  * and third-party libraries used across all three user journeys.
  */
 
-// Extend expect with jest-native matchers
-require('@testing-library/jest-native/extend-expect');
+// NOTE: @testing-library/jest-native/extend-expect removed because it requires
+// the real react-native module which uses Flow syntax incompatible with esbuild.
+// No test files in this project use jest-native matchers (toBeVisible, toHaveProp, etc.).
+
+// Define React Native globals
+global.__DEV__ = true;
+
+// Mock react-native — the real module uses Flow type annotations that can't be parsed.
+jest.mock('react-native', () => {
+    const React = require('react');
+    const mc = (name) => {
+        const C = React.forwardRef(({ children, testID, ...props }, ref) =>
+            React.createElement(name, { ...props, testID, ref }, children)
+        );
+        C.displayName = name;
+        return C;
+    };
+    return {
+        View: mc('View'),
+        Text: mc('Text'),
+        Image: mc('Image'),
+        ScrollView: mc('ScrollView'),
+        FlatList: mc('FlatList'),
+        SectionList: mc('SectionList'),
+        TextInput: mc('TextInput'),
+        TouchableOpacity: mc('TouchableOpacity'),
+        TouchableHighlight: mc('TouchableHighlight'),
+        TouchableWithoutFeedback: mc('TouchableWithoutFeedback'),
+        Pressable: mc('Pressable'),
+        Button: mc('Button'),
+        Switch: mc('Switch'),
+        ActivityIndicator: mc('ActivityIndicator'),
+        Modal: mc('Modal'),
+        StatusBar: mc('StatusBar'),
+        SafeAreaView: mc('SafeAreaView'),
+        KeyboardAvoidingView: mc('KeyboardAvoidingView'),
+        ImageBackground: mc('ImageBackground'),
+        RefreshControl: mc('RefreshControl'),
+        VirtualizedList: mc('VirtualizedList'),
+        StyleSheet: {
+            create: (styles) => styles,
+            compose: (a, b) => [a, b],
+            flatten: (s) => (Array.isArray(s) ? Object.assign({}, ...s.filter(Boolean)) : s || {}),
+            absoluteFill: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 },
+            absoluteFillObject: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 },
+            hairlineWidth: 1,
+        },
+        Platform: {
+            OS: 'ios',
+            Version: '17.0',
+            isPad: false,
+            isTV: false,
+            isTesting: true,
+            select: jest.fn((obj) => obj.ios ?? obj.default),
+            constants: { reactNativeVersion: { major: 0, minor: 73, patch: 0 } },
+        },
+        Dimensions: {
+            get: jest.fn((dim) => ({ width: 375, height: 812, scale: 2, fontScale: 1 })),
+            set: jest.fn(),
+            addEventListener: jest.fn(() => ({ remove: jest.fn() })),
+        },
+        Animated: {
+            Value: jest.fn(function (v) {
+                this._value = v;
+                this.setValue = jest.fn();
+                this.interpolate = jest.fn(() => 0);
+                this.addListener = jest.fn();
+                this.removeListener = jest.fn();
+                this.stopAnimation = jest.fn();
+            }),
+            ValueXY: jest.fn(function () {
+                this.x = { _value: 0 };
+                this.y = { _value: 0 };
+            }),
+            createAnimatedComponent: (c) => c,
+            timing: jest.fn(() => ({ start: jest.fn((cb) => cb && cb({ finished: true })), stop: jest.fn() })),
+            spring: jest.fn(() => ({ start: jest.fn((cb) => cb && cb({ finished: true })), stop: jest.fn() })),
+            decay: jest.fn(() => ({ start: jest.fn((cb) => cb && cb({ finished: true })), stop: jest.fn() })),
+            parallel: jest.fn(() => ({ start: jest.fn((cb) => cb && cb({ finished: true })), stop: jest.fn() })),
+            sequence: jest.fn(() => ({ start: jest.fn((cb) => cb && cb({ finished: true })), stop: jest.fn() })),
+            event: jest.fn(() => jest.fn()),
+            View: mc('Animated.View'),
+            Text: mc('Animated.Text'),
+            Image: mc('Animated.Image'),
+            ScrollView: mc('Animated.ScrollView'),
+        },
+        Alert: { alert: jest.fn(), prompt: jest.fn() },
+        Linking: {
+            openURL: jest.fn(() => Promise.resolve()),
+            canOpenURL: jest.fn(() => Promise.resolve(true)),
+            getInitialURL: jest.fn(() => Promise.resolve(null)),
+            addEventListener: jest.fn(() => ({ remove: jest.fn() })),
+            openSettings: jest.fn(() => Promise.resolve()),
+        },
+        Share: {
+            share: jest.fn(() => Promise.resolve({ action: 'sharedAction' })),
+            sharedAction: 'sharedAction',
+            dismissedAction: 'dismissedAction',
+        },
+        AppState: { currentState: 'active', addEventListener: jest.fn(() => ({ remove: jest.fn() })) },
+        Keyboard: { addListener: jest.fn(() => ({ remove: jest.fn() })), dismiss: jest.fn() },
+        LayoutAnimation: {
+            configureNext: jest.fn(),
+            create: jest.fn(),
+            Presets: { easeInEaseOut: {}, linear: {}, spring: {} },
+        },
+        Easing: {
+            linear: jest.fn(),
+            ease: jest.fn(),
+            bezier: jest.fn(),
+            in: jest.fn(),
+            out: jest.fn(),
+            inOut: jest.fn(),
+        },
+        InteractionManager: {
+            runAfterInteractions: jest.fn((cb) => {
+                if (typeof cb === 'function') cb();
+                return { then: jest.fn(), done: jest.fn(), cancel: jest.fn() };
+            }),
+        },
+        PanResponder: { create: jest.fn(() => ({ panHandlers: {} })) },
+        PixelRatio: {
+            get: jest.fn(() => 2),
+            getFontScale: jest.fn(() => 1),
+            getPixelSizeForLayoutSize: jest.fn((s) => s * 2),
+            roundToNearestPixel: jest.fn((s) => Math.round(s * 2) / 2),
+        },
+        Appearance: {
+            getColorScheme: jest.fn(() => 'light'),
+            addChangeListener: jest.fn(() => ({ remove: jest.fn() })),
+        },
+        AccessibilityInfo: {
+            isScreenReaderEnabled: jest.fn(() => Promise.resolve(false)),
+            addEventListener: jest.fn(() => ({ remove: jest.fn() })),
+            announceForAccessibility: jest.fn(),
+        },
+        NativeModules: {},
+        NativeEventEmitter: jest
+            .fn()
+            .mockImplementation(() => ({
+                addListener: jest.fn(() => ({ remove: jest.fn() })),
+                removeAllListeners: jest.fn(),
+            })),
+        DeviceEventEmitter: { addListener: jest.fn(() => ({ remove: jest.fn() })), emit: jest.fn() },
+        AppRegistry: { registerComponent: jest.fn() },
+        I18nManager: { isRTL: false, allowRTL: jest.fn(), forceRTL: jest.fn() },
+        Vibration: { vibrate: jest.fn(), cancel: jest.fn() },
+        LogBox: { ignoreLogs: jest.fn(), ignoreAllLogs: jest.fn() },
+        BackHandler: { exitApp: jest.fn(), addEventListener: jest.fn(() => ({ remove: jest.fn() })) },
+        PermissionsAndroid: {
+            PERMISSIONS: {},
+            RESULTS: { GRANTED: 'granted', DENIED: 'denied' },
+            check: jest.fn(() => Promise.resolve(true)),
+            request: jest.fn(() => Promise.resolve('granted')),
+        },
+        UIManager: { getViewManagerConfig: jest.fn(() => ({})), setLayoutAnimationEnabledExperimental: jest.fn() },
+        useColorScheme: jest.fn(() => 'light'),
+        useWindowDimensions: jest.fn(() => ({ width: 375, height: 812, scale: 2, fontScale: 1 })),
+        processColor: jest.fn((c) => c),
+        requireNativeComponent: jest.fn((n) => mc(n)),
+        findNodeHandle: jest.fn(() => 1),
+        unstable_batchedUpdates: jest.fn((fn) => fn()),
+    };
+});
 
 //@react-native-async-storage/async-storage
 
@@ -314,28 +476,7 @@ jest.mock('react-native-reanimated', () => {
     };
 });
 
-//react-native Linking mock
-
-jest.mock('react-native/Libraries/Linking/Linking', () => ({
-    openURL: jest.fn(() => Promise.resolve()),
-    canOpenURL: jest.fn(() => Promise.resolve(true)),
-    getInitialURL: jest.fn(() => Promise.resolve(null)),
-    addEventListener: jest.fn(() => ({ remove: jest.fn() })),
-    removeEventListener: jest.fn(),
-}));
-
-//react-native Alert mock
-
-jest.mock('react-native/Libraries/Alert/Alert', () => ({
-    alert: jest.fn(),
-    prompt: jest.fn(),
-}));
-
-//react-native Share mock
-
-jest.mock('react-native/Libraries/Share/Share', () => ({
-    share: jest.fn(() => Promise.resolve({ action: 'sharedAction' })),
-}));
+// NOTE: react-native/Libraries/* subpath mocks removed — covered by jest.mock('react-native') above.
 
 // react-native-screens
 jest.mock('react-native-screens', () => {

@@ -18,11 +18,6 @@ const path = require('path');
 const esbuildPath = path.resolve(__dirname, '../node_modules/esbuild');
 const { transformSync } = require(esbuildPath);
 
-// Jest mock support: we need babel-plugin-jest-hoist for jest.mock hoisting.
-// Use babel-jest only for the hoist plugin (not for TypeScript/JSX transformation).
-// Resolve via Node module resolution (may be hoisted to parent node_modules in workspaces).
-const babelJest = require('babel-jest');
-
 /**
  * Detect if a file likely contains Flow type annotations.
  * We check for react-native paths and @flow pragma.
@@ -44,48 +39,131 @@ function likelyHasFlowTypes(source, sourcePath) {
 }
 
 /**
- * Strip Flow type annotations using simple regex patterns.
+ * Strip Flow type annotations using regex patterns and line-by-line processing.
  * Applied PRE-EMPTIVELY for react-native files (not just as fallback).
- * Handles the most common Flow syntax found in react-native internals.
+ * Handles common Flow syntax found in react-native internals, including
+ * complex getter return types that may span multiple lines.
  */
 function stripFlowTypes(source) {
-    return (
-        source
-            // Remove ALL forms of 'import typeof ...' — Flow-specific import syntax
-            // Covers: import typeof Foo from '...'
-            //         import typeof * as Foo from '...'
-            //         import typeof {Foo} from '...'
-            //         import typeof {Foo, Bar} from '...'
-            .replace(/^import\s+typeof\b[^\n]*$/gm, '')
-            // Remove type imports: import type {...} from '...' or import type Foo from '...'
-            .replace(/^import\s+type\s+.*?;?\s*$/gm, '')
-            // Remove export type declarations
-            .replace(/^export\s+type\s+.*?;?\s*$/gm, '')
-            // Remove type declarations: type Foo = ...;
-            .replace(/^\s*(?:opaque\s+)?type\s+\w+\b.*$/gm, '')
-            // Remove interface declarations (single line)
-            .replace(/^\s*(?:export\s+)?interface\s+\w+[^{]*\{[^}]*\}\s*$/gm, '')
-            // Remove @flow pragma
-            .replace(/\/\/\s*@flow[^\n]*/g, '')
-            .replace(/\/\*\s*@flow[^*]*\*\//g, '')
-            // Remove Flow type annotations after variable declarations: (x: Type) patterns
-            // Be careful not to break JS object property names
-            .replace(/:\s*\??\w+(?:\.\w+)*(?:<[^>]*>)?(?:\[\])?\s*(?=[,)=;])/g, '')
-            // Remove return type annotations: ): ReturnType {
-            .replace(/\)\s*:\s*\??\w+(?:\.\w+)*(?:<[^>]*>)?(?:\[\])?\s*(?=\{)/g, ') ')
-            .trim()
-    );
+    // Phase 1: regex-based stripping for common patterns
+    let partial = source
+        // Remove ALL forms of 'import typeof ...' — Flow-specific import syntax
+        .replace(/^import\s+typeof\b[^\n]*$/gm, '')
+        // Remove type imports: import type {...} from '...' or import type Foo from '...'
+        .replace(/^import\s+type\s+.*?;?\s*$/gm, '')
+        // Remove export type declarations
+        .replace(/^export\s+type\s+.*?;?\s*$/gm, '')
+        // Remove type declarations: type Foo = ...;
+        .replace(/^\s*(?:opaque\s+)?type\s+\w+\b.*$/gm, '')
+        // Remove interface declarations (single line)
+        .replace(/^\s*(?:export\s+)?interface\s+\w+[^{]*\{[^}]*\}\s*$/gm, '')
+        // Remove @flow pragma
+        .replace(/\/\/\s*@flow[^\n]*/g, '')
+        .replace(/\/\*\s*@flow[^*]*\*\//g, '')
+        // Remove Flow type annotations after variable declarations: (x: Type) patterns
+        .replace(/:\s*\??\w+(?:\.\w+)*(?:<[^>]*>)?(?:\[\])?\s*(?=[,)=;])/g, '')
+        // Remove return type annotations: ): ReturnType {
+        .replace(/\)\s*:\s*\??\w+(?:\.\w+)*(?:<[^>]*>)?(?:\[\])?\s*(?=\{)/g, ') ');
+
+    // Phase 2: handle getter/setter return type annotations (possibly multiline).
+    // Pattern: "get Name():" followed by a type annotation ending at "{".
+    // Examples:
+    //   get Animated(): {...$Diff<AnimatedModule, {default: any}>, ...Animated} {
+    //   get unstable_batchedUpdates(): $PropertyType<\n  ReactNative,...> {
+    //   get requireNativeComponent(): <T>(\n  uiViewClassName: string\n) => HostComponent<T> {
+    const lines = partial.split('\n');
+    const output = [];
+    let skipUntilBodyBrace = false;
+    let braceDepth = 0;
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+
+        if (skipUntilBodyBrace) {
+            // Count braces to find the body-opening brace at depth 1
+            for (let c = 0; c < line.length; c++) {
+                if (line[c] === '{') braceDepth++;
+                if (line[c] === '}') braceDepth--;
+            }
+            if (/\{\s*$/.test(line) && braceDepth > 0) {
+                // Found the body-opening brace; skip this annotation line
+                skipUntilBodyBrace = false;
+                braceDepth = 0;
+            }
+            // Skip annotation lines (the getter decl was already emitted)
+            continue;
+        }
+
+        // Detect getter with return type annotation
+        const getterMatch = line.match(/^(\s*get\s+\w+\(\))\s*:/);
+        if (getterMatch) {
+            const decl = getterMatch[1]; // e.g. "  get Animated()"
+            const afterColon = line.substring(getterMatch[0].length);
+            if (/\{\s*$/.test(afterColon)) {
+                // Single-line: get Foo(): Type { — replace with: get Foo() {
+                output.push(decl + ' {');
+            } else {
+                // Multiline annotation — emit the declaration and skip until body brace
+                output.push(decl + ' {');
+                skipUntilBodyBrace = true;
+                braceDepth = 0;
+                for (let c = 0; c < afterColon.length; c++) {
+                    if (afterColon[c] === '{') braceDepth++;
+                    if (afterColon[c] === '}') braceDepth--;
+                }
+            }
+            continue;
+        }
+
+        output.push(line);
+    }
+
+    return output.join('\n').trim();
 }
 
-// Create a minimal babel-jest transformer that only applies jest-hoist
-// without going through TypeScript/JSX transformation (esbuild handles that).
-const jestHoistTransformer = babelJest.createTransformer({
-    // Only the jest-mock hoisting preset — no TypeScript or JSX plugins.
-    // babel-preset-jest does NOT use @babel/traverse for hoisting.
-    presets: [require.resolve('babel-preset-jest')],
-    babelrc: false,
-    configFile: false,
-});
+/**
+ * Hoist jest.mock/jest.unmock/jest.enableAutomock/jest.disableAutomock calls
+ * to the top of the file, before any require() statements.
+ * This replicates babel-plugin-jest-hoist without relying on @babel/traverse.
+ */
+function hoistJestMocks(code) {
+    const lines = code.split('\n');
+    const hoisted = [];
+    const rest = [];
+    let i = 0;
+
+    while (i < lines.length) {
+        const line = lines[i];
+        const trimmed = line.trimStart();
+
+        // Detect jest.mock/unmock/enableAutomock/disableAutomock calls
+        if (/^jest\.(mock|unmock|enableAutomock|disableAutomock)\(/.test(trimmed)) {
+            // Collect the full call — it may span multiple lines (count parens)
+            let depth = 0;
+            let block = '';
+            let j = i;
+            while (j < lines.length) {
+                const l = lines[j];
+                block += (j > i ? '\n' : '') + l;
+                for (let c = 0; c < l.length; c++) {
+                    if (l[c] === '(') depth++;
+                    if (l[c] === ')') depth--;
+                }
+                j++;
+                if (depth <= 0) break;
+            }
+            hoisted.push(block);
+            i = j;
+            continue;
+        }
+
+        rest.push(line);
+        i++;
+    }
+
+    if (hoisted.length === 0) return code;
+    return hoisted.join('\n') + '\n' + rest.join('\n');
+}
 
 module.exports = {
     process(sourceText, sourcePath, options) {
@@ -143,15 +221,11 @@ module.exports = {
             }
         }
 
-        // Step 2: Apply jest.mock hoisting via babel-preset-jest
-        // This ensures jest.mock() calls are hoisted to the top of the file.
-        try {
-            const hoisted = jestHoistTransformer.process(code, sourcePath, options);
-            return hoisted;
-        } catch (err) {
-            // If hoisting fails, return esbuild output as-is
-            return { code };
-        }
+        // Step 2: Hoist jest.mock calls to the top of the file
+        // so they run before any require() statements.
+        code = hoistJestMocks(code);
+
+        return { code };
     },
 
     getCacheKey(fileData, filePath, options) {

@@ -39,7 +39,7 @@ interface JourneyEndpoints {
 /**
  * Define the interface for API configuration
  */
-interface ApiConfig {
+export interface ApiConfig {
     baseURL: string;
     journeys: JourneyEndpoints;
 }
