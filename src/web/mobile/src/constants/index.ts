@@ -8,7 +8,7 @@
 // Re-export all configuration constants
 export * from './config';
 
-// Re-export all journey-related constants 
+// Re-export all journey-related constants
 export * from './journeys';
 
 // Re-export all route-related constants

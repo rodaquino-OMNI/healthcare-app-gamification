@@ -8,9 +8,9 @@
  * User-facing localized names for each journey
  */
 export const JOURNEY_NAMES = {
-  MyHealth: 'Minha Saúde',
-  CareNow: 'Cuidar-me Agora',
-  MyPlan: 'Meu Plano & Benefícios'
+    MyHealth: 'Minha Saúde',
+    CareNow: 'Cuidar-me Agora',
+    MyPlan: 'Meu Plano & Benefícios',
 };
 
 /**
@@ -18,9 +18,9 @@ export const JOURNEY_NAMES = {
  * Used for routing, analytics tracking, and feature flagging
  */
 export const JOURNEY_IDS = {
-  MyHealth: 'my-health',
-  CareNow: 'care-now',
-  MyPlan: 'my-plan'
+    MyHealth: 'my-health',
+    CareNow: 'care-now',
+    MyPlan: 'my-plan',
 };
 
 /**
@@ -31,7 +31,7 @@ export const JOURNEY_IDS = {
  * - MyPlan: Blue (#3A86FF)
  */
 export const JOURNEY_COLORS = {
-  MyHealth: '#0ACF83',
-  CareNow: '#FF8C42',
-  MyPlan: '#3A86FF'
+    MyHealth: '#0ACF83',
+    CareNow: '#FF8C42',
+    MyPlan: '#3A86FF',
 };

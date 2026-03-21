@@ -11,8 +11,8 @@ import { restClient, graphQLClient } from './client';
  * Unified API client object for convenience
  */
 export const api = {
-  rest: restClient,
-  graphql: graphQLClient,
+    rest: restClient,
+    graphql: graphQLClient,
 };
 
 export { graphQLClient, restClient } from './client';

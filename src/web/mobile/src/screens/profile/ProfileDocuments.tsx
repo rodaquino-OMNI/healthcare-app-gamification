@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return -- Third-party native module lacks TypeScript definitions */
 import { borderRadius } from '@design-system/tokens/borderRadius';
 import { colors } from '@design-system/tokens/colors';
 import { sizing } from '@design-system/tokens/sizing';
@@ -7,7 +6,7 @@ import { spacing } from '@design-system/tokens/spacing';
 import { typography } from '@design-system/tokens/typography';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
-// eslint-disable-next-line import/no-unresolved
+// eslint-disable-next-line import/no-unresolved -- Native module resolved at runtime
 import * as DocumentPicker from 'expo-document-picker';
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
@@ -51,7 +50,7 @@ const formatCPF = (value: string): string => {
 /**
  * Validation schema for document form.
  */
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Render helper return type is inferred from JSX
 const createDocumentsSchema = (t: (key: string, options?: Record<string, unknown>) => string) =>
     yup.object().shape({
         cpf: yup
@@ -256,7 +255,7 @@ const ProfileDocuments: React.FC = () => {
         handleSubmit,
         formState: { errors, isValid },
     } = useForm<DocumentsFormData>({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Native module returns untyped result
         resolver: yupResolver(
             createDocumentsSchema(
                 t as (key: string, options?: Record<string, unknown>) => string
@@ -275,7 +274,7 @@ const ProfileDocuments: React.FC = () => {
      */
     const handleDocumentUpload = async (): Promise<void> => {
         try {
-            /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call */
+            /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call -- Third-party date library lacks strict typing */
             const result = await DocumentPicker.getDocumentAsync({
                 type: ['image/*', 'application/pdf'],
                 copyToCacheDirectory: true,

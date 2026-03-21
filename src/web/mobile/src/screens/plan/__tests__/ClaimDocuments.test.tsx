@@ -18,7 +18,7 @@ jest.mock('react-i18next', () => ({
 
 // styled-components mock
 jest.mock('styled-components/native', () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports -- Dynamic require for test mock isolation
     const RN = require('react-native') as typeof import('react-native');
     return {
         __esModule: true,

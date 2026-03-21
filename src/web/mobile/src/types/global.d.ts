@@ -61,7 +61,7 @@ declare module '@react-native-community/datetimepicker' {
 
 // React Native Picker
 declare module '@react-native-picker/picker' {
-    // eslint-disable-next-line no-duplicate-imports
+    // eslint-disable-next-line no-duplicate-imports -- Separate import needed for type augmentation
     import { Component } from 'react';
 
     interface PickerProps {

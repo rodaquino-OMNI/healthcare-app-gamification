@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return -- Third-party native module lacks TypeScript definitions */
 import type { Theme } from '@design-system/themes/base.theme';
 import { borderRadius } from '@design-system/tokens/borderRadius';
 import { colors } from '@design-system/tokens/colors';
@@ -8,9 +7,9 @@ import { spacing } from '@design-system/tokens/spacing';
 import { typography } from '@design-system/tokens/typography';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-// eslint-disable-next-line import/no-unresolved
+// eslint-disable-next-line import/no-unresolved -- Native module resolved at runtime
 import * as AuthSession from 'expo-auth-session';
-// eslint-disable-next-line import/no-unresolved
+// eslint-disable-next-line import/no-unresolved -- Native module resolved at runtime
 import * as WebBrowser from 'expo-web-browser';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';

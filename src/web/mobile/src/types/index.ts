@@ -17,14 +17,14 @@ export type { Appointment, Medication, TelemedicineSession, TreatmentPlan } from
 
 // Plan journey types
 export type {
-  ClaimStatus, 
-  ClaimType, 
-  PlanType, 
-  CoverageType,
-  Claim, 
-  Plan, 
-  Coverage, 
-  Benefit
+    ClaimStatus,
+    ClaimType,
+    PlanType,
+    CoverageType,
+    Claim,
+    Plan,
+    Coverage,
+    Benefit,
 } from '@shared/types/plan.types';
 
 // Gamification types
@@ -32,22 +32,22 @@ export type { Achievement, Quest, Reward, GameProfile } from '@shared/types/gami
 
 // Notification types
 export type {
-  Notification,
-  NotificationPreference,
-  JourneyNotificationPreference,
-  SendNotificationRequest,
-  NotificationTemplate,
-  NotificationFilter,
-  NotificationCount,
-  AchievementNotificationData,
-  LevelUpNotificationData,
-  AppointmentReminderData,
-  ClaimStatusUpdateData
+    Notification,
+    NotificationPreference,
+    JourneyNotificationPreference,
+    SendNotificationRequest,
+    NotificationTemplate,
+    NotificationFilter,
+    NotificationCount,
+    AchievementNotificationData,
+    LevelUpNotificationData,
+    AppointmentReminderData,
+    ClaimStatusUpdateData,
 } from '@shared/types/notification.types';
 
 export {
-  NotificationType,
-  NotificationChannel,
-  NotificationStatus,
-  NotificationPriority
+    NotificationType,
+    NotificationChannel,
+    NotificationStatus,
+    NotificationPriority,
 } from '@shared/types/notification.types';

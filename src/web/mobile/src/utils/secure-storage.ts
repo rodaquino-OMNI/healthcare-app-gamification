@@ -8,8 +8,8 @@
  *
  * @see https://github.com/mrousavy/react-native-mmkv
  */
-import { MMKV } from 'react-native-mmkv';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MMKV } from 'react-native-mmkv';
 
 /**
  * Encrypted MMKV instance for auth tokens and sensitive data.
@@ -23,14 +23,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
  * at-rest storage (significantly better than plaintext AsyncStorage).
  */
 const secureInstance = new MMKV({
-  id: 'austa-secure-storage',
-  encryptionKey: 'austa-device-key-v1',
+    id: 'austa-secure-storage',
+    encryptionKey: 'austa-device-key-v1',
 });
 
 /** Keys used for auth token storage */
 const TOKEN_KEYS = {
-  AUTH_SESSION: '@AUSTA:auth_session',
-  MIGRATION_DONE: '@AUSTA:mmkv_migrated',
+    AUTH_SESSION: '@AUSTA:auth_session',
+    MIGRATION_DONE: '@AUSTA:mmkv_migrated',
 } as const;
 
 /**
@@ -38,36 +38,36 @@ const TOKEN_KEYS = {
  * Drop-in replacement for AsyncStorage with synchronous API.
  */
 export const SecureStorage = {
-  /** Get a string value by key. Returns null if not found. */
-  getString(key: string): string | null {
-    const value = secureInstance.getString(key);
-    return value === undefined ? null : value;
-  },
+    /** Get a string value by key. Returns null if not found. */
+    getString(key: string): string | null {
+        const value = secureInstance.getString(key);
+        return value === undefined ? null : value;
+    },
 
-  /** Set a string value by key. */
-  setString(key: string, value: string): void {
-    secureInstance.set(key, value);
-  },
+    /** Set a string value by key. */
+    setString(key: string, value: string): void {
+        secureInstance.set(key, value);
+    },
 
-  /** Delete a key from storage. */
-  delete(key: string): void {
-    secureInstance.delete(key);
-  },
+    /** Delete a key from storage. */
+    delete(key: string): void {
+        secureInstance.delete(key);
+    },
 
-  /** Check if a key exists. */
-  contains(key: string): boolean {
-    return secureInstance.contains(key);
-  },
+    /** Check if a key exists. */
+    contains(key: string): boolean {
+        return secureInstance.contains(key);
+    },
 
-  /** Clear all data in the encrypted storage. */
-  clearAll(): void {
-    secureInstance.clearAll();
-  },
+    /** Clear all data in the encrypted storage. */
+    clearAll(): void {
+        secureInstance.clearAll();
+    },
 
-  /** Get all keys in the encrypted storage. */
-  getAllKeys(): string[] {
-    return secureInstance.getAllKeys();
-  },
+    /** Get all keys in the encrypted storage. */
+    getAllKeys(): string[] {
+        return secureInstance.getAllKeys();
+    },
 };
 
 /**
@@ -75,20 +75,20 @@ export const SecureStorage = {
  * Use this instead of raw SecureStorage for auth operations.
  */
 export const secureTokenStorage = {
-  /** Get the persisted auth session JSON string. */
-  getSession(): string | null {
-    return SecureStorage.getString(TOKEN_KEYS.AUTH_SESSION);
-  },
+    /** Get the persisted auth session JSON string. */
+    getSession(): string | null {
+        return SecureStorage.getString(TOKEN_KEYS.AUTH_SESSION);
+    },
 
-  /** Persist the auth session as a JSON string. */
-  setSession(sessionJson: string): void {
-    SecureStorage.setString(TOKEN_KEYS.AUTH_SESSION, sessionJson);
-  },
+    /** Persist the auth session as a JSON string. */
+    setSession(sessionJson: string): void {
+        SecureStorage.setString(TOKEN_KEYS.AUTH_SESSION, sessionJson);
+    },
 
-  /** Remove the persisted auth session. */
-  removeSession(): void {
-    SecureStorage.delete(TOKEN_KEYS.AUTH_SESSION);
-  },
+    /** Remove the persisted auth session. */
+    removeSession(): void {
+        SecureStorage.delete(TOKEN_KEYS.AUTH_SESSION);
+    },
 };
 
 /**
@@ -99,26 +99,26 @@ export const secureTokenStorage = {
  * Call this early in the app lifecycle (e.g., App.tsx or AuthProvider).
  */
 export async function migrateFromAsyncStorage(): Promise<void> {
-  // Skip if migration was already performed
-  if (SecureStorage.contains(TOKEN_KEYS.MIGRATION_DONE)) {
-    return;
-  }
-
-  try {
-    // Migrate auth session
-    const session = await AsyncStorage.getItem(TOKEN_KEYS.AUTH_SESSION);
-    if (session) {
-      SecureStorage.setString(TOKEN_KEYS.AUTH_SESSION, session);
-      await AsyncStorage.removeItem(TOKEN_KEYS.AUTH_SESSION);
+    // Skip if migration was already performed
+    if (SecureStorage.contains(TOKEN_KEYS.MIGRATION_DONE)) {
+        return;
     }
 
-    // Mark migration as complete
-    SecureStorage.setString(TOKEN_KEYS.MIGRATION_DONE, 'true');
-  } catch (error) {
-    // Log but don't throw — the app can still function with AsyncStorage
-    // until migration succeeds on the next launch
-    console.error('[SecureStorage] Migration from AsyncStorage failed:', error);
-  }
+    try {
+        // Migrate auth session
+        const session = await AsyncStorage.getItem(TOKEN_KEYS.AUTH_SESSION);
+        if (session) {
+            SecureStorage.setString(TOKEN_KEYS.AUTH_SESSION, session);
+            await AsyncStorage.removeItem(TOKEN_KEYS.AUTH_SESSION);
+        }
+
+        // Mark migration as complete
+        SecureStorage.setString(TOKEN_KEYS.MIGRATION_DONE, 'true');
+    } catch (error) {
+        // Log but don't throw — the app can still function with AsyncStorage
+        // until migration succeeds on the next launch
+        console.error('[SecureStorage] Migration from AsyncStorage failed:', error);
+    }
 }
 
 export default SecureStorage;

@@ -1,9 +1,10 @@
-import React from 'react'; // version 18.2.0
+/* eslint-disable @typescript-eslint/no-var-requires -- lazy screen imports use require() inside try-catch for resilience */
 import { createStackNavigator } from '@react-navigation/stack'; // version 6.3.16
-import type { GamificationStackParamList } from './types';
+import React from 'react'; // version 18.2.0
 
-import Achievements from '../screens/home/Achievements';
+import type { GamificationStackParamList } from './types';
 import { ROUTES } from '../constants/routes';
+import Achievements from '../screens/home/Achievements';
 
 // Lazy-loaded gamification screens.
 // These screens are created by Worker-3; safe fallbacks if not yet available.
@@ -15,45 +16,45 @@ let RewardCatalogScreen: React.FC = () => null;
 let RewardDetailScreen: React.FC = () => null;
 
 try {
-  const mod = require('../screens/gamification/AchievementDetail');
-  AchievementDetailScreen = mod.AchievementDetailScreen || mod.default || AchievementDetailScreen;
+    const mod = require('../screens/gamification/AchievementDetail');
+    AchievementDetailScreen = mod.AchievementDetailScreen || mod.default || AchievementDetailScreen;
 } catch {
-  // AchievementDetail screen not yet available
+    // AchievementDetail screen not yet available
 }
 
 try {
-  const mod = require('../screens/gamification/LeaderboardScreen');
-  LeaderboardScreen = mod.LeaderboardScreen || mod.default || LeaderboardScreen;
+    const mod = require('../screens/gamification/LeaderboardScreen');
+    LeaderboardScreen = mod.LeaderboardScreen || mod.default || LeaderboardScreen;
 } catch {
-  // LeaderboardScreen not yet available
+    // LeaderboardScreen not yet available
 }
 
 try {
-  const mod = require('../screens/gamification/QuestList');
-  QuestListScreen = mod.QuestListScreen || mod.default || QuestListScreen;
+    const mod = require('../screens/gamification/QuestList');
+    QuestListScreen = mod.QuestListScreen || mod.default || QuestListScreen;
 } catch {
-  // QuestList screen not yet available
+    // QuestList screen not yet available
 }
 
 try {
-  const mod = require('../screens/gamification/QuestDetail');
-  QuestDetailScreen = mod.QuestDetailScreen || mod.default || QuestDetailScreen;
+    const mod = require('../screens/gamification/QuestDetail');
+    QuestDetailScreen = mod.QuestDetailScreen || mod.default || QuestDetailScreen;
 } catch {
-  // QuestDetail screen not yet available
+    // QuestDetail screen not yet available
 }
 
 try {
-  const mod = require('../screens/gamification/RewardCatalog');
-  RewardCatalogScreen = mod.RewardCatalogScreen || mod.default || RewardCatalogScreen;
+    const mod = require('../screens/gamification/RewardCatalog');
+    RewardCatalogScreen = mod.RewardCatalogScreen || mod.default || RewardCatalogScreen;
 } catch {
-  // RewardCatalog screen not yet available
+    // RewardCatalog screen not yet available
 }
 
 try {
-  const mod = require('../screens/gamification/RewardDetail');
-  RewardDetailScreen = mod.RewardDetailScreen || mod.default || RewardDetailScreen;
+    const mod = require('../screens/gamification/RewardDetail');
+    RewardDetailScreen = mod.RewardDetailScreen || mod.default || RewardDetailScreen;
 } catch {
-  // RewardDetail screen not yet available
+    // RewardDetail screen not yet available
 }
 
 const Stack = createStackNavigator<GamificationStackParamList>();
@@ -63,21 +64,22 @@ const Stack = createStackNavigator<GamificationStackParamList>();
  * Nested inside the Achievements tab of the bottom tab navigator.
  * Provides navigation between achievements, leaderboard, quests, and rewards screens.
  */
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types -- return type inferred from implementation
 export default function GamificationNavigator() {
-  return (
-    <Stack.Navigator
-      initialRouteName={ROUTES.GAMIFICATION_ACHIEVEMENTS}
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name={ROUTES.GAMIFICATION_ACHIEVEMENTS} component={Achievements} />
-      <Stack.Screen name={ROUTES.GAMIFICATION_DETAIL} component={AchievementDetailScreen} />
-      <Stack.Screen name={ROUTES.GAMIFICATION_LEADERBOARD} component={LeaderboardScreen} />
-      <Stack.Screen name={ROUTES.GAMIFICATION_QUESTS} component={QuestListScreen} />
-      <Stack.Screen name={ROUTES.GAMIFICATION_QUEST_DETAIL} component={QuestDetailScreen} />
-      <Stack.Screen name={ROUTES.GAMIFICATION_REWARDS} component={RewardCatalogScreen} />
-      <Stack.Screen name={ROUTES.GAMIFICATION_REWARD_DETAIL} component={RewardDetailScreen} />
-    </Stack.Navigator>
-  );
+    return (
+        <Stack.Navigator
+            initialRouteName={ROUTES.GAMIFICATION_ACHIEVEMENTS}
+            screenOptions={{
+                headerShown: false,
+            }}
+        >
+            <Stack.Screen name={ROUTES.GAMIFICATION_ACHIEVEMENTS} component={Achievements} />
+            <Stack.Screen name={ROUTES.GAMIFICATION_DETAIL} component={AchievementDetailScreen} />
+            <Stack.Screen name={ROUTES.GAMIFICATION_LEADERBOARD} component={LeaderboardScreen} />
+            <Stack.Screen name={ROUTES.GAMIFICATION_QUESTS} component={QuestListScreen} />
+            <Stack.Screen name={ROUTES.GAMIFICATION_QUEST_DETAIL} component={QuestDetailScreen} />
+            <Stack.Screen name={ROUTES.GAMIFICATION_REWARDS} component={RewardCatalogScreen} />
+            <Stack.Screen name={ROUTES.GAMIFICATION_REWARD_DETAIL} component={RewardDetailScreen} />
+        </Stack.Navigator>
+    );
 }

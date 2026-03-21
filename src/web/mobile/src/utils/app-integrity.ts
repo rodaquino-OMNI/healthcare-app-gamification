@@ -27,7 +27,7 @@ export async function requestIntegrityToken(): Promise<string | null> {
 
     try {
         if (Platform.OS === 'android') {
-            // TODO: Bridge to IntegrityManager.requestIntegrityToken()
+            // TODO(AUSTA-301): Bridge to IntegrityManager.requestIntegrityToken()
             const { PlayIntegrity } = NativeModules;
             if (PlayIntegrity?.requestToken) {
                 return await PlayIntegrity.requestToken();
@@ -37,7 +37,7 @@ export async function requestIntegrityToken(): Promise<string | null> {
         }
 
         if (Platform.OS === 'ios') {
-            // TODO: Bridge to DCAppAttestService.attestKey()
+            // TODO(AUSTA-302): Bridge to DCAppAttestService.attestKey()
             const { AppAttest } = NativeModules;
             if (AppAttest?.requestAttestation) {
                 return await AppAttest.requestAttestation();

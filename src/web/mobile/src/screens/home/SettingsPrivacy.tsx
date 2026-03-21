@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return -- Third-party native module lacks TypeScript definitions */
 import { borderRadius } from '@design-system/tokens/borderRadius';
 import { colors } from '@design-system/tokens/colors';
 import { sizing } from '@design-system/tokens/sizing';

@@ -7,46 +7,40 @@
  *   type Props = NativeStackScreenProps<CareStackParamList, 'CareDoctorProfile'>;
  */
 
-import type {
-  NavigatorScreenParams,
-  CompositeNavigationProp,
-} from '@react-navigation/native';
-import type {
-  StackNavigationProp,
-  StackScreenProps,
-} from '@react-navigation/stack';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import type { NavigatorScreenParams, CompositeNavigationProp } from '@react-navigation/native';
+import type { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
 
 // ---------------------------------------------------------------------------
 // Auth Stack
 // ---------------------------------------------------------------------------
 
 export type AuthStackParamList = {
-  // Welcome & Onboarding (local ROUTES constants)
-  AuthWelcome: undefined;
-  AuthOnboarding: undefined;
-  AuthWelcomeCTA: undefined;
-  // Core auth screens (unified ROUTES constants)
-  AuthLogin: undefined;
-  AuthRegister: undefined;
-  AuthForgotPassword: undefined;
-  AuthMFA: undefined;
-  AuthEmailVerify: undefined;
-  AuthSetPassword: { token?: string } | undefined;
-  // Social
-  AuthSocial: undefined;
-  // Personalization
-  AuthPersonalizationIntro: undefined;
-  AuthGoalSelection: undefined;
-  AuthOnboardingConfirmation: undefined;
-  // Profile setup (registered in auth flow)
-  ProfileSetup: undefined;
-  ProfileHealth: undefined;
-  ProfileInsurance: undefined;
-  ProfileAddress: undefined;
-  ProfileDocuments: undefined;
-  ProfilePhoto: undefined;
-  ProfileConfirmation: undefined;
+    // Welcome & Onboarding (local ROUTES constants)
+    AuthWelcome: undefined;
+    AuthOnboarding: undefined;
+    AuthWelcomeCTA: undefined;
+    // Core auth screens (unified ROUTES constants)
+    AuthLogin: undefined;
+    AuthRegister: undefined;
+    AuthForgotPassword: undefined;
+    AuthMFA: undefined;
+    AuthEmailVerify: undefined;
+    AuthSetPassword: { token?: string } | undefined;
+    // Social
+    AuthSocial: undefined;
+    // Personalization
+    AuthPersonalizationIntro: undefined;
+    AuthGoalSelection: undefined;
+    AuthOnboardingConfirmation: undefined;
+    // Profile setup (registered in auth flow)
+    ProfileSetup: undefined;
+    ProfileHealth: undefined;
+    ProfileInsurance: undefined;
+    ProfileAddress: undefined;
+    ProfileDocuments: undefined;
+    ProfilePhoto: undefined;
+    ProfileConfirmation: undefined;
 };
 
 // ---------------------------------------------------------------------------
@@ -54,26 +48,26 @@ export type AuthStackParamList = {
 // ---------------------------------------------------------------------------
 
 export type HomeStackParamList = {
-  HomeMain: undefined;
-  HomeMetrics: undefined;
-  HomeAlert: undefined;
-  NotificationDetail: { notificationId: string };
-  Search: undefined;
-  SearchResults: { query?: string };
-  HomeWeeklySummary: undefined;
-  HomeBottomSheet: undefined;
-  HomeMedicationReminders: undefined;
-  HomeAppointmentWidget: undefined;
-  HomeHealthTips: undefined;
-  HomeEmpty: undefined;
-  NotificationUnread: undefined;
-  NotificationCategoryFilter: undefined;
-  NotificationEmpty: undefined;
-  NotificationSettings: undefined;
-  SearchDoctorResults: { query?: string };
-  SearchArticleResults: { query?: string };
-  SearchMedicationResults: { query?: string };
-  SearchNoResults: { query?: string };
+    HomeMain: undefined;
+    HomeMetrics: undefined;
+    HomeAlert: undefined;
+    NotificationDetail: { notificationId: string };
+    Search: undefined;
+    SearchResults: { query?: string };
+    HomeWeeklySummary: undefined;
+    HomeBottomSheet: undefined;
+    HomeMedicationReminders: undefined;
+    HomeAppointmentWidget: undefined;
+    HomeHealthTips: undefined;
+    HomeEmpty: undefined;
+    NotificationUnread: undefined;
+    NotificationCategoryFilter: undefined;
+    NotificationEmpty: undefined;
+    NotificationSettings: undefined;
+    SearchDoctorResults: { query?: string };
+    SearchArticleResults: { query?: string };
+    SearchMedicationResults: { query?: string };
+    SearchNoResults: { query?: string };
 };
 
 // ---------------------------------------------------------------------------
@@ -81,83 +75,83 @@ export type HomeStackParamList = {
 // ---------------------------------------------------------------------------
 
 export type CareStackParamList = {
-  // Core
-  CareDashboard: undefined;
-  CareAppointments: { appointmentId?: string };
-  CareAppointmentBooking: undefined;
-  CareTelemedicine: { sessionId?: string };
-  CareMedicationTracking: undefined;
-  // Symptom checker flow
-  CareSymptomChecker: { symptoms?: string[]; sessionId?: string };
-  CareSymptomBodyMap: { symptoms?: string[]; sessionId?: string };
-  CareSymptomDetail: { symptomId: string; sessionId?: string };
-  CareSymptomSeverity: { symptoms?: string[]; sessionId?: string };
-  CareSymptomQuestions: { symptoms?: string[]; sessionId?: string };
-  CareSymptomResult: { sessionId?: string };
-  CareSymptomRecommendation: { sessionId?: string };
-  // Symptom checker deep
-  CareSymptomBodyMapBack: { symptoms?: string[]; sessionId?: string };
-  CareSymptomHeadDetail: { symptoms?: string[]; sessionId?: string };
-  CareSymptomPhotoUpload: { sessionId?: string };
-  CareSymptomMedicalHistory: { sessionId?: string };
-  CareSymptomMedicationContext: { sessionId?: string };
-  CareSymptomVitals: { sessionId?: string };
-  CareSymptomAnalyzing: { sessionId?: string };
-  CareSymptomConditionsList: { sessionId?: string };
-  CareSymptomConditionDetail: { conditionId: string; sessionId?: string };
-  CareSymptomSelfCare: { sessionId?: string };
-  CareSymptomEmergencyWarning: { sessionId?: string };
-  CareSymptomBookAppointment: { sessionId?: string };
-  CareSymptomERLocator: { sessionId?: string };
-  CareSymptomSaveReport: { sessionId?: string };
-  CareSymptomShareReport: { sessionId?: string };
-  CareSymptomHistory: undefined;
-  CareSymptomHistoryDetail: { sessionId: string };
-  CareSymptomAccuracyRating: { sessionId: string };
-  CareSymptomFollowUp: { sessionId?: string };
-  CareSymptomDiary: undefined;
-  CareSymptomComparison: undefined;
-  // Doctor search & booking
-  CareDoctorSearch: undefined;
-  CareDoctorFilters: undefined;
-  CareDoctorProfile: { doctorId: string };
-  CareDoctorAvailability: { doctorId: string };
-  CareBookingSchedule: { doctorId: string; date?: string; time?: string };
-  CareBookingConfirmation: { doctorId: string; appointmentId?: string };
-  CareWaitingRoom: { appointmentId: string };
-  // Consultation deep
-  CareDoctorReviews: { doctorId: string };
-  CareAppointmentType: undefined;
-  CareBookingReason: undefined;
-  CareBookingDocuments: undefined;
-  CareBookingInsurance: undefined;
-  CareBookingSuccess: { appointmentId?: string };
-  CareAppointmentsList: undefined;
-  CareAppointmentReschedule: { appointmentId: string };
-  CareAppointmentCancel: { appointmentId: string };
-  CareAppointmentCancelled: { appointmentId?: string };
-  CareAppointmentNoShow: { appointmentId?: string };
-  CarePreVisitChecklist: { appointmentId: string };
-  CareRateVisit: { appointmentId: string };
-  CareSavedDoctors: undefined;
-  // Telemedicine deep
-  CareTelemedicineConnecting: { sessionId?: string };
-  CareTelemedicineControls: { sessionId?: string };
-  CareTelemedicineChat: { sessionId?: string };
-  CareTelemedicineScreenShare: { sessionId?: string };
-  CareTelemedicineEnd: { sessionId?: string };
-  // Post-visit
-  CareVisitSummary: { visitId?: string };
-  CareVisitPrescriptions: { visitId?: string };
-  CareVisitFollowUp: { visitId?: string };
-  CareVisitLabOrders: { visitId?: string };
-  CareVisitReferral: { visitId?: string };
-  // Payment
-  CarePaymentSummary: { appointmentId?: string };
-  CarePaymentReceipt: { paymentId?: string };
-  // Records
-  CareAsyncDoctorChat: { doctorId?: string };
-  CareMedicalRecords: undefined;
+    // Core
+    CareDashboard: undefined;
+    CareAppointments: { appointmentId?: string };
+    CareAppointmentBooking: undefined;
+    CareTelemedicine: { sessionId?: string };
+    CareMedicationTracking: undefined;
+    // Symptom checker flow
+    CareSymptomChecker: { symptoms?: string[]; sessionId?: string };
+    CareSymptomBodyMap: { symptoms?: string[]; sessionId?: string };
+    CareSymptomDetail: { symptomId: string; sessionId?: string };
+    CareSymptomSeverity: { symptoms?: string[]; sessionId?: string };
+    CareSymptomQuestions: { symptoms?: string[]; sessionId?: string };
+    CareSymptomResult: { sessionId?: string };
+    CareSymptomRecommendation: { sessionId?: string };
+    // Symptom checker deep
+    CareSymptomBodyMapBack: { symptoms?: string[]; sessionId?: string };
+    CareSymptomHeadDetail: { symptoms?: string[]; sessionId?: string };
+    CareSymptomPhotoUpload: { sessionId?: string };
+    CareSymptomMedicalHistory: { sessionId?: string };
+    CareSymptomMedicationContext: { sessionId?: string };
+    CareSymptomVitals: { sessionId?: string };
+    CareSymptomAnalyzing: { sessionId?: string };
+    CareSymptomConditionsList: { sessionId?: string };
+    CareSymptomConditionDetail: { conditionId: string; sessionId?: string };
+    CareSymptomSelfCare: { sessionId?: string };
+    CareSymptomEmergencyWarning: { sessionId?: string };
+    CareSymptomBookAppointment: { sessionId?: string };
+    CareSymptomERLocator: { sessionId?: string };
+    CareSymptomSaveReport: { sessionId?: string };
+    CareSymptomShareReport: { sessionId?: string };
+    CareSymptomHistory: undefined;
+    CareSymptomHistoryDetail: { sessionId: string };
+    CareSymptomAccuracyRating: { sessionId: string };
+    CareSymptomFollowUp: { sessionId?: string };
+    CareSymptomDiary: undefined;
+    CareSymptomComparison: undefined;
+    // Doctor search & booking
+    CareDoctorSearch: undefined;
+    CareDoctorFilters: undefined;
+    CareDoctorProfile: { doctorId: string };
+    CareDoctorAvailability: { doctorId: string };
+    CareBookingSchedule: { doctorId: string; date?: string; time?: string };
+    CareBookingConfirmation: { doctorId: string; appointmentId?: string };
+    CareWaitingRoom: { appointmentId: string };
+    // Consultation deep
+    CareDoctorReviews: { doctorId: string };
+    CareAppointmentType: undefined;
+    CareBookingReason: undefined;
+    CareBookingDocuments: undefined;
+    CareBookingInsurance: undefined;
+    CareBookingSuccess: { appointmentId?: string };
+    CareAppointmentsList: undefined;
+    CareAppointmentReschedule: { appointmentId: string };
+    CareAppointmentCancel: { appointmentId: string };
+    CareAppointmentCancelled: { appointmentId?: string };
+    CareAppointmentNoShow: { appointmentId?: string };
+    CarePreVisitChecklist: { appointmentId: string };
+    CareRateVisit: { appointmentId: string };
+    CareSavedDoctors: undefined;
+    // Telemedicine deep
+    CareTelemedicineConnecting: { sessionId?: string };
+    CareTelemedicineControls: { sessionId?: string };
+    CareTelemedicineChat: { sessionId?: string };
+    CareTelemedicineScreenShare: { sessionId?: string };
+    CareTelemedicineEnd: { sessionId?: string };
+    // Post-visit
+    CareVisitSummary: { visitId?: string };
+    CareVisitPrescriptions: { visitId?: string };
+    CareVisitFollowUp: { visitId?: string };
+    CareVisitLabOrders: { visitId?: string };
+    CareVisitReferral: { visitId?: string };
+    // Payment
+    CarePaymentSummary: { appointmentId?: string };
+    CarePaymentReceipt: { paymentId?: string };
+    // Records
+    CareAsyncDoctorChat: { doctorId?: string };
+    CareMedicalRecords: undefined;
 };
 
 // ---------------------------------------------------------------------------
@@ -165,73 +159,73 @@ export type CareStackParamList = {
 // ---------------------------------------------------------------------------
 
 export type CycleTrackingParamList = {
-  HealthCycleHome: undefined;
-  HealthCycleCalendar: undefined;
-  HealthCycleLogPeriod: undefined;
-  HealthCycleLogSymptoms: undefined;
-  HealthCycleLogFlow: undefined;
-  HealthCycleFertility: undefined;
-  HealthCyclePMS: undefined;
-  HealthCycleHistory: undefined;
-  HealthCycleAnalysis: undefined;
-  HealthCycleInsights: undefined;
-  HealthCycleArticleDetail: { articleId: string };
-  HealthCycleReminders: undefined;
-  HealthCyclePartnerSharing: undefined;
-  HealthCycleSettings: undefined;
-  HealthCycleExportReport: undefined;
+    HealthCycleHome: undefined;
+    HealthCycleCalendar: undefined;
+    HealthCycleLogPeriod: undefined;
+    HealthCycleLogSymptoms: undefined;
+    HealthCycleLogFlow: undefined;
+    HealthCycleFertility: undefined;
+    HealthCyclePMS: undefined;
+    HealthCycleHistory: undefined;
+    HealthCycleAnalysis: undefined;
+    HealthCycleInsights: undefined;
+    HealthCycleArticleDetail: { articleId: string };
+    HealthCycleReminders: undefined;
+    HealthCyclePartnerSharing: undefined;
+    HealthCycleSettings: undefined;
+    HealthCycleExportReport: undefined;
 };
 
 export type SleepParamList = {
-  HealthSleepHome: undefined;
-  HealthSleepLog: undefined;
-  HealthSleepQuality: undefined;
-  HealthSleepDiary: undefined;
-  HealthSleepTrends: undefined;
-  HealthSleepGoals: undefined;
-  HealthSleepDetail: { date: string };
-  HealthSleepBedtimeRoutine: undefined;
-  HealthSleepSmartAlarm: undefined;
-  HealthSleepInsights: undefined;
-  HealthSleepDeviceSync: undefined;
-  HealthSleepExport: undefined;
+    HealthSleepHome: undefined;
+    HealthSleepLog: undefined;
+    HealthSleepQuality: undefined;
+    HealthSleepDiary: undefined;
+    HealthSleepTrends: undefined;
+    HealthSleepGoals: undefined;
+    HealthSleepDetail: { date: string };
+    HealthSleepBedtimeRoutine: undefined;
+    HealthSleepSmartAlarm: undefined;
+    HealthSleepInsights: undefined;
+    HealthSleepDeviceSync: undefined;
+    HealthSleepExport: undefined;
 };
 
 export type ActivityParamList = {
-  HealthActivityHome: undefined;
-  HealthActivityWorkoutLog: undefined;
-  HealthActivityWorkoutDetail: { workoutId: string };
-  HealthActivityWorkoutHistory: undefined;
-  HealthActivityStepGoals: undefined;
-  HealthActivityTrends: undefined;
-  HealthActivityExerciseLibrary: undefined;
-  HealthActivityExerciseDetail: { exerciseId: string };
-  HealthActivityDeviceSync: undefined;
-  HealthActivityExport: undefined;
+    HealthActivityHome: undefined;
+    HealthActivityWorkoutLog: undefined;
+    HealthActivityWorkoutDetail: { workoutId: string };
+    HealthActivityWorkoutHistory: undefined;
+    HealthActivityStepGoals: undefined;
+    HealthActivityTrends: undefined;
+    HealthActivityExerciseLibrary: undefined;
+    HealthActivityExerciseDetail: { exerciseId: string };
+    HealthActivityDeviceSync: undefined;
+    HealthActivityExport: undefined;
 };
 
 export type NutritionParamList = {
-  HealthNutritionHome: undefined;
-  HealthNutritionMealLog: undefined;
-  HealthNutritionMealDetail: { mealId: string };
-  HealthNutritionFoodDiary: undefined;
-  HealthNutritionMacroTracker: undefined;
-  HealthNutritionWaterIntake: undefined;
-  HealthNutritionDietaryGoals: undefined;
-  HealthNutritionInsights: undefined;
-  HealthNutritionFoodSearch: undefined;
-  HealthNutritionExport: undefined;
+    HealthNutritionHome: undefined;
+    HealthNutritionMealLog: undefined;
+    HealthNutritionMealDetail: { mealId: string };
+    HealthNutritionFoodDiary: undefined;
+    HealthNutritionMacroTracker: undefined;
+    HealthNutritionWaterIntake: undefined;
+    HealthNutritionDietaryGoals: undefined;
+    HealthNutritionInsights: undefined;
+    HealthNutritionFoodSearch: undefined;
+    HealthNutritionExport: undefined;
 };
 
 export type WellnessResourcesParamList = {
-  HealthWellnessResourcesHome: undefined;
-  HealthWellnessResourcesArticleList: undefined;
-  HealthWellnessResourcesArticleDetail: { articleId: string };
-  HealthWellnessResourcesVideoLibrary: undefined;
-  HealthWellnessResourcesVideoPlayer: { videoId: string };
-  HealthWellnessResourcesPrograms: undefined;
-  HealthWellnessResourcesProgramDetail: { programId: string };
-  HealthWellnessResourcesBookmarks: undefined;
+    HealthWellnessResourcesHome: undefined;
+    HealthWellnessResourcesArticleList: undefined;
+    HealthWellnessResourcesArticleDetail: { articleId: string };
+    HealthWellnessResourcesVideoLibrary: undefined;
+    HealthWellnessResourcesVideoPlayer: { videoId: string };
+    HealthWellnessResourcesPrograms: undefined;
+    HealthWellnessResourcesProgramDetail: { programId: string };
+    HealthWellnessResourcesBookmarks: undefined;
 };
 
 // ---------------------------------------------------------------------------
@@ -239,47 +233,47 @@ export type WellnessResourcesParamList = {
 // ---------------------------------------------------------------------------
 
 export type HealthStackParamList = {
-  // Core
-  HealthDashboard: undefined;
-  HealthMedicalHistory: undefined;
-  HealthGoals: undefined;
-  HealthDeviceConnection: undefined;
-  HealthMetricDetail: { metricType: string };
-  HealthAddMetric: undefined;
-  HealthAssessmentWizard: undefined;
-  // Medication core
-  HealthMedicationList: undefined;
-  HealthMedicationAdd: undefined;
-  HealthMedicationDetail: { medicationId: string };
-  HealthMedicationSearch: undefined;
-  HealthMedicationReminder: { medicationId?: string };
-  HealthMedicationAlarm: { medicationId?: string };
-  // Medication deep
-  HealthMedicationCalendar: undefined;
-  HealthMedicationEmpty: undefined;
-  HealthMedicationAddConfirmation: { medicationId?: string };
-  HealthMedicationDoseTaken: { medicationId: string };
-  HealthMedicationDoseMissed: { medicationId: string };
-  HealthMedicationEdit: { medicationId: string };
-  HealthMedicationDeleteConfirm: { medicationId: string };
-  HealthMedicationAdherence: { medicationId?: string };
-  HealthMedicationMonthlyReport: { medicationId?: string };
-  HealthMedicationRefillReminder: { medicationId?: string };
-  HealthMedicationDrugInteraction: { medicationId?: string };
-  HealthMedicationSideEffectsLog: { medicationId?: string };
-  HealthMedicationSideEffectForm: { medicationId?: string };
-  HealthMedicationPharmacyLocator: undefined;
-  HealthMedicationPrescriptionPhoto: { medicationId?: string };
-  HealthMedicationOCRReview: undefined;
-  HealthMedicationShareCaregiver: { medicationId?: string };
-  HealthMedicationCaregiverAccess: undefined;
-  HealthMedicationExport: undefined;
-  // Sub-navigator references
-  CycleTracking: NavigatorScreenParams<CycleTrackingParamList>;
-  Sleep: NavigatorScreenParams<SleepParamList>;
-  Activity: NavigatorScreenParams<ActivityParamList>;
-  Nutrition: NavigatorScreenParams<NutritionParamList>;
-  WellnessResources: NavigatorScreenParams<WellnessResourcesParamList>;
+    // Core
+    HealthDashboard: undefined;
+    HealthMedicalHistory: undefined;
+    HealthGoals: undefined;
+    HealthDeviceConnection: undefined;
+    HealthMetricDetail: { metricType: string };
+    HealthAddMetric: undefined;
+    HealthAssessmentWizard: undefined;
+    // Medication core
+    HealthMedicationList: undefined;
+    HealthMedicationAdd: undefined;
+    HealthMedicationDetail: { medicationId: string };
+    HealthMedicationSearch: undefined;
+    HealthMedicationReminder: { medicationId?: string };
+    HealthMedicationAlarm: { medicationId?: string };
+    // Medication deep
+    HealthMedicationCalendar: undefined;
+    HealthMedicationEmpty: undefined;
+    HealthMedicationAddConfirmation: { medicationId?: string };
+    HealthMedicationDoseTaken: { medicationId: string };
+    HealthMedicationDoseMissed: { medicationId: string };
+    HealthMedicationEdit: { medicationId: string };
+    HealthMedicationDeleteConfirm: { medicationId: string };
+    HealthMedicationAdherence: { medicationId?: string };
+    HealthMedicationMonthlyReport: { medicationId?: string };
+    HealthMedicationRefillReminder: { medicationId?: string };
+    HealthMedicationDrugInteraction: { medicationId?: string };
+    HealthMedicationSideEffectsLog: { medicationId?: string };
+    HealthMedicationSideEffectForm: { medicationId?: string };
+    HealthMedicationPharmacyLocator: undefined;
+    HealthMedicationPrescriptionPhoto: { medicationId?: string };
+    HealthMedicationOCRReview: undefined;
+    HealthMedicationShareCaregiver: { medicationId?: string };
+    HealthMedicationCaregiverAccess: undefined;
+    HealthMedicationExport: undefined;
+    // Sub-navigator references
+    CycleTracking: NavigatorScreenParams<CycleTrackingParamList>;
+    Sleep: NavigatorScreenParams<SleepParamList>;
+    Activity: NavigatorScreenParams<ActivityParamList>;
+    Nutrition: NavigatorScreenParams<NutritionParamList>;
+    WellnessResources: NavigatorScreenParams<WellnessResourcesParamList>;
 };
 
 // ---------------------------------------------------------------------------
@@ -288,14 +282,14 @@ export type HealthStackParamList = {
 // ---------------------------------------------------------------------------
 
 export type PlanStackParamList = {
-  PlanDashboard: undefined;
-  Coverage: undefined;          // routes.COVERAGE = 'Coverage' (legacy)
-  ClaimHistory: undefined;      // routes.CLAIMS = 'ClaimHistory' (legacy)
-  ClaimDetail: { claimId: string };  // routes.CLAIM_DETAIL = 'ClaimDetail' (legacy)
-  ClaimSubmission: undefined;   // routes.CLAIM_SUBMISSION = 'ClaimSubmission' (legacy)
-  CostSimulator: undefined;     // routes.COST_SIMULATOR = 'CostSimulator' (legacy)
-  DigitalCard: undefined;       // routes.DIGITAL_CARD = 'DigitalCard' (legacy)
-  Benefits: undefined;          // routes.BENEFITS = 'Benefits' (legacy)
+    PlanDashboard: undefined;
+    Coverage: undefined; // routes.COVERAGE = 'Coverage' (legacy)
+    ClaimHistory: undefined; // routes.CLAIMS = 'ClaimHistory' (legacy)
+    ClaimDetail: { claimId: string }; // routes.CLAIM_DETAIL = 'ClaimDetail' (legacy)
+    ClaimSubmission: undefined; // routes.CLAIM_SUBMISSION = 'ClaimSubmission' (legacy)
+    CostSimulator: undefined; // routes.COST_SIMULATOR = 'CostSimulator' (legacy)
+    DigitalCard: undefined; // routes.DIGITAL_CARD = 'DigitalCard' (legacy)
+    Benefits: undefined; // routes.BENEFITS = 'Benefits' (legacy)
 };
 
 // ---------------------------------------------------------------------------
@@ -303,57 +297,59 @@ export type PlanStackParamList = {
 // ---------------------------------------------------------------------------
 
 export type SettingsStackParamList = {
-  SettingsMain: undefined;
-  // Existing sub-screens (moved from HomeStack)
-  SettingsEdit: undefined;
-  SettingsNotifications: undefined;
-  SettingsPrivacy: undefined;
-  // Account & Security
-  SettingsPersonalInfo: undefined;
-  SettingsChangePassword: undefined;
-  SettingsTwoFactor: undefined;
-  SettingsBiometric: undefined;
-  // Data Management
-  SettingsDataExport: undefined;
-  SettingsDeleteAccount: undefined;
-  SettingsDeleteConfirm: undefined;
-  // Preferences
-  SettingsLanguage: undefined;
-  SettingsTheme: undefined;
-  SettingsAccessibility: undefined;
-  // Devices
-  SettingsConnectedDevices: undefined;
-  // Health Plan
-  SettingsHealthPlan: undefined;
-  SettingsInsuranceDocs: undefined;
-  SettingsDependents: undefined;
-  SettingsAddDependent: {
-    dependent?: {
-      id: string;
-      name: string;
-      relationship: string;
-      dob: string;
-      cpf: string;
-    };
-  } | undefined;
-  // Contacts & Addresses
-  SettingsEmergencyContacts: undefined;
-  SettingsAddresses: undefined;
-  SettingsAddAddress: undefined;
-  // Legal & Info
-  SettingsTerms: undefined;
-  SettingsPrivacyPolicy: undefined;
-  SettingsAbout: undefined;
-  // Session
-  SettingsLogout: undefined;
-  SettingsFeedback: undefined;
-  // Help Center
-  HelpHome: undefined;
-  HelpFAQCategory: { categoryId: string };
-  HelpFAQDetail: { faqId: string };
-  HelpContact: undefined;
-  HelpChat: undefined;
-  HelpReport: undefined;
+    SettingsMain: undefined;
+    // Existing sub-screens (moved from HomeStack)
+    SettingsEdit: undefined;
+    SettingsNotifications: undefined;
+    SettingsPrivacy: undefined;
+    // Account & Security
+    SettingsPersonalInfo: undefined;
+    SettingsChangePassword: undefined;
+    SettingsTwoFactor: undefined;
+    SettingsBiometric: undefined;
+    // Data Management
+    SettingsDataExport: undefined;
+    SettingsDeleteAccount: undefined;
+    SettingsDeleteConfirm: undefined;
+    // Preferences
+    SettingsLanguage: undefined;
+    SettingsTheme: undefined;
+    SettingsAccessibility: undefined;
+    // Devices
+    SettingsConnectedDevices: undefined;
+    // Health Plan
+    SettingsHealthPlan: undefined;
+    SettingsInsuranceDocs: undefined;
+    SettingsDependents: undefined;
+    SettingsAddDependent:
+        | {
+              dependent?: {
+                  id: string;
+                  name: string;
+                  relationship: string;
+                  dob: string;
+                  cpf: string;
+              };
+          }
+        | undefined;
+    // Contacts & Addresses
+    SettingsEmergencyContacts: undefined;
+    SettingsAddresses: undefined;
+    SettingsAddAddress: undefined;
+    // Legal & Info
+    SettingsTerms: undefined;
+    SettingsPrivacyPolicy: undefined;
+    SettingsAbout: undefined;
+    // Session
+    SettingsLogout: undefined;
+    SettingsFeedback: undefined;
+    // Help Center
+    HelpHome: undefined;
+    HelpFAQCategory: { categoryId: string };
+    HelpFAQDetail: { faqId: string };
+    HelpContact: undefined;
+    HelpChat: undefined;
+    HelpReport: undefined;
 };
 
 // ---------------------------------------------------------------------------
@@ -361,13 +357,13 @@ export type SettingsStackParamList = {
 // ---------------------------------------------------------------------------
 
 export type GamificationStackParamList = {
-  GamificationAchievements: undefined;
-  GamificationAchievementDetail: { achievementId: string };
-  GamificationLeaderboard: undefined;
-  GamificationQuests: undefined;
-  GamificationQuestDetail: { questId: string };
-  GamificationRewards: undefined;
-  GamificationRewardDetail: { rewardId: string };
+    GamificationAchievements: undefined;
+    GamificationAchievementDetail: { achievementId: string };
+    GamificationLeaderboard: undefined;
+    GamificationQuests: undefined;
+    GamificationQuestDetail: { questId: string };
+    GamificationRewards: undefined;
+    GamificationRewardDetail: { rewardId: string };
 };
 
 // ---------------------------------------------------------------------------
@@ -375,42 +371,41 @@ export type GamificationStackParamList = {
 // ---------------------------------------------------------------------------
 
 export type WellnessStackParamList = {
-  WellnessChat: undefined;
-  WellnessChatActive: undefined;
-  WellnessQuickReplies: undefined;
-  WellnessMoodCheckIn: undefined;
-  WellnessTipDetail: { tipId: string };
-  WellnessBreathing: undefined;
-  WellnessMeditation: undefined;
-  WellnessDailyPlan: undefined;
-  WellnessInsights: undefined;
-  WellnessGoals: undefined;
-  WellnessJournal: undefined;
-  WellnessJournalHistory: undefined;
-  WellnessChallenges: undefined;
-  WellnessChallengeDetail: { challengeId: string };
-  WellnessStreaks: undefined;
+    WellnessChat: undefined;
+    WellnessChatActive: undefined;
+    WellnessQuickReplies: undefined;
+    WellnessMoodCheckIn: undefined;
+    WellnessTipDetail: { tipId: string };
+    WellnessBreathing: undefined;
+    WellnessMeditation: undefined;
+    WellnessDailyPlan: undefined;
+    WellnessInsights: undefined;
+    WellnessGoals: undefined;
+    WellnessJournal: undefined;
+    WellnessJournalHistory: undefined;
+    WellnessChallenges: undefined;
+    WellnessChallengeDetail: { challengeId: string };
+    WellnessStreaks: undefined;
 };
 
 export type WellnessNavigationProp = StackNavigationProp<WellnessStackParamList>;
 
-export type WellnessScreenProps<T extends keyof WellnessStackParamList> =
-  StackScreenProps<WellnessStackParamList, T>;
+export type WellnessScreenProps<T extends keyof WellnessStackParamList> = StackScreenProps<WellnessStackParamList, T>;
 
 // ---------------------------------------------------------------------------
 // Main Tab (bottom tab navigator)
 // ---------------------------------------------------------------------------
 
 export type MainTabParamList = {
-  Home: NavigatorScreenParams<HomeStackParamList>;
-  Health: NavigatorScreenParams<HealthStackParamList>;
-  Care: NavigatorScreenParams<CareStackParamList>;
-  Plan: NavigatorScreenParams<PlanStackParamList>;
-  Notifications: undefined;
-  Profile: undefined;
-  Achievements: NavigatorScreenParams<GamificationStackParamList>;
-  Wellness: NavigatorScreenParams<WellnessStackParamList>;
-  Settings: NavigatorScreenParams<SettingsStackParamList>;
+    Home: NavigatorScreenParams<HomeStackParamList>;
+    Health: NavigatorScreenParams<HealthStackParamList>;
+    Care: NavigatorScreenParams<CareStackParamList>;
+    Plan: NavigatorScreenParams<PlanStackParamList>;
+    Notifications: undefined;
+    Profile: undefined;
+    Achievements: NavigatorScreenParams<GamificationStackParamList>;
+    Wellness: NavigatorScreenParams<WellnessStackParamList>;
+    Settings: NavigatorScreenParams<SettingsStackParamList>;
 };
 
 // ---------------------------------------------------------------------------
@@ -418,8 +413,8 @@ export type MainTabParamList = {
 // ---------------------------------------------------------------------------
 
 export type RootStackParamList = {
-  Auth: NavigatorScreenParams<AuthStackParamList>;
-  Main: NavigatorScreenParams<MainTabParamList>;
+    Auth: NavigatorScreenParams<AuthStackParamList>;
+    Main: NavigatorScreenParams<MainTabParamList>;
 };
 
 // ---------------------------------------------------------------------------
@@ -442,46 +437,43 @@ export type MainTabNavigationProp = BottomTabNavigationProp<MainTabParamList>;
 
 /** Composite navigation prop for screens inside the Home tab stack. */
 export type HomeTabScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<HomeStackParamList>,
-  BottomTabNavigationProp<MainTabParamList>
+    StackNavigationProp<HomeStackParamList>,
+    BottomTabNavigationProp<MainTabParamList>
 >;
 
 // ---------------------------------------------------------------------------
 // ScreenProps utility types (convenience — one import for props + route)
 // ---------------------------------------------------------------------------
 
-export type AuthScreenProps<T extends keyof AuthStackParamList> =
-  StackScreenProps<AuthStackParamList, T>;
+export type AuthScreenProps<T extends keyof AuthStackParamList> = StackScreenProps<AuthStackParamList, T>;
 
-export type HomeScreenProps<T extends keyof HomeStackParamList> =
-  StackScreenProps<HomeStackParamList, T>;
+export type HomeScreenProps<T extends keyof HomeStackParamList> = StackScreenProps<HomeStackParamList, T>;
 
-export type CareScreenProps<T extends keyof CareStackParamList> =
-  StackScreenProps<CareStackParamList, T>;
+export type CareScreenProps<T extends keyof CareStackParamList> = StackScreenProps<CareStackParamList, T>;
 
-export type HealthScreenProps<T extends keyof HealthStackParamList> =
-  StackScreenProps<HealthStackParamList, T>;
+export type HealthScreenProps<T extends keyof HealthStackParamList> = StackScreenProps<HealthStackParamList, T>;
 
-export type PlanScreenProps<T extends keyof PlanStackParamList> =
-  StackScreenProps<PlanStackParamList, T>;
+export type PlanScreenProps<T extends keyof PlanStackParamList> = StackScreenProps<PlanStackParamList, T>;
 
-export type SettingsScreenProps<T extends keyof SettingsStackParamList> =
-  StackScreenProps<SettingsStackParamList, T>;
+export type SettingsScreenProps<T extends keyof SettingsStackParamList> = StackScreenProps<SettingsStackParamList, T>;
 
-export type GamificationScreenProps<T extends keyof GamificationStackParamList> =
-  StackScreenProps<GamificationStackParamList, T>;
+export type GamificationScreenProps<T extends keyof GamificationStackParamList> = StackScreenProps<
+    GamificationStackParamList,
+    T
+>;
 
-export type CycleTrackingScreenProps<T extends keyof CycleTrackingParamList> =
-  StackScreenProps<CycleTrackingParamList, T>;
+export type CycleTrackingScreenProps<T extends keyof CycleTrackingParamList> = StackScreenProps<
+    CycleTrackingParamList,
+    T
+>;
 
-export type SleepScreenProps<T extends keyof SleepParamList> =
-  StackScreenProps<SleepParamList, T>;
+export type SleepScreenProps<T extends keyof SleepParamList> = StackScreenProps<SleepParamList, T>;
 
-export type ActivityScreenProps<T extends keyof ActivityParamList> =
-  StackScreenProps<ActivityParamList, T>;
+export type ActivityScreenProps<T extends keyof ActivityParamList> = StackScreenProps<ActivityParamList, T>;
 
-export type NutritionScreenProps<T extends keyof NutritionParamList> =
-  StackScreenProps<NutritionParamList, T>;
+export type NutritionScreenProps<T extends keyof NutritionParamList> = StackScreenProps<NutritionParamList, T>;
 
-export type WellnessResourcesScreenProps<T extends keyof WellnessResourcesParamList> =
-  StackScreenProps<WellnessResourcesParamList, T>;
+export type WellnessResourcesScreenProps<T extends keyof WellnessResourcesParamList> = StackScreenProps<
+    WellnessResourcesParamList,
+    T
+>;

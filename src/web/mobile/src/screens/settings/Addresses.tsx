@@ -1,186 +1,188 @@
-import React, { useState, useEffect } from 'react';
-import { FlatList, Alert, ActivityIndicator } from 'react-native';
+/* eslint-disable @typescript-eslint/explicit-function-return-type -- return types are inferred from implementation context */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types -- return types are inferred from implementation context */
+import { borderRadius } from '@design-system/tokens/borderRadius';
+import { colors } from '@design-system/tokens/colors';
+import { sizing } from '@design-system/tokens/sizing';
+import { spacing, spacingValues } from '@design-system/tokens/spacing';
+import { typography } from '@design-system/tokens/typography';
 import { useNavigation } from '@react-navigation/native';
-import type { SettingsNavigationProp } from '../../navigation/types';
-import styled from 'styled-components/native';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FlatList, Alert, ActivityIndicator } from 'react-native';
+import styled from 'styled-components/native';
 
 import { restClient } from '../../api/client';
 import { ROUTES } from '../../constants/routes';
-import { colors } from '@design-system/tokens/colors';
-import { typography } from '@design-system/tokens/typography';
-import { spacing, spacingValues } from '@design-system/tokens/spacing';
-import { borderRadius } from '@design-system/tokens/borderRadius';
-import { sizing } from '@design-system/tokens/sizing';
+import type { SettingsNavigationProp } from '../../navigation/types';
 
 // --- Styled Components ---
 
 const Container = styled.SafeAreaView`
-  flex: 1;
-  background-color: ${({ theme }) => theme.colors.background.default};
+    flex: 1;
+    background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const Header = styled.View`
-  padding-horizontal: ${spacing.xl};
-  padding-top: ${spacing['2xl']};
-  padding-bottom: ${spacing.lg};
+    padding-horizontal: ${spacing.xl};
+    padding-top: ${spacing['2xl']};
+    padding-bottom: ${spacing.lg};
 `;
 
 const Title = styled.Text`
-  font-family: ${typography.fontFamily.heading};
-  font-size: ${typography.fontSize['heading-xl']};
-  font-weight: ${typography.fontWeight.bold};
-  color: ${({ theme }) => theme.colors.text.default};
+    font-family: ${typography.fontFamily.heading};
+    font-size: ${typography.fontSize['heading-xl']};
+    font-weight: ${typography.fontWeight.bold};
+    color: ${({ theme }) => theme.colors.text.default};
 `;
 
 const Card = styled.View`
-  background-color: ${({ theme }) => theme.colors.background.default};
-  border-width: 1px;
-  border-color: ${({ theme }) => theme.colors.border.default};
-  border-radius: ${borderRadius.lg};
-  padding: ${spacing.lg};
-  margin-horizontal: ${spacing.xl};
-  margin-bottom: ${spacing.md};
+    background-color: ${({ theme }) => theme.colors.background.default};
+    border-width: 1px;
+    border-color: ${({ theme }) => theme.colors.border.default};
+    border-radius: ${borderRadius.lg};
+    padding: ${spacing.lg};
+    margin-horizontal: ${spacing.xl};
+    margin-bottom: ${spacing.md};
 `;
 
 const CardTopRow = styled.View`
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: ${spacing.sm};
-  gap: ${spacing.xs};
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: ${spacing.sm};
+    gap: ${spacing.xs};
 `;
 
 const LabelBadge = styled.View`
-  background-color: ${colors.brand.primary}15;
-  padding-horizontal: ${spacing.sm};
-  padding-vertical: ${spacing['3xs']};
-  border-radius: ${borderRadius.full};
+    background-color: ${colors.brand.primary}15;
+    padding-horizontal: ${spacing.sm};
+    padding-vertical: ${spacing['3xs']};
+    border-radius: ${borderRadius.full};
 `;
 
 const LabelBadgeText = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-xs']};
-  font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.brand.primary};
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-xs']};
+    font-weight: ${typography.fontWeight.semiBold};
+    color: ${colors.brand.primary};
 `;
 
 const PrimaryBadge = styled.View`
-  background-color: ${colors.semantic.success}20;
-  padding-horizontal: ${spacing.sm};
-  padding-vertical: ${spacing['3xs']};
-  border-radius: ${borderRadius.full};
+    background-color: ${colors.semantic.success}20;
+    padding-horizontal: ${spacing.sm};
+    padding-vertical: ${spacing['3xs']};
+    border-radius: ${borderRadius.full};
 `;
 
 const PrimaryBadgeText = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-xs']};
-  font-weight: ${typography.fontWeight.semiBold};
-  color: ${colors.semantic.success};
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-xs']};
+    font-weight: ${typography.fontWeight.semiBold};
+    color: ${colors.semantic.success};
 `;
 
 const AddressStreet = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-md']};
-  font-weight: ${typography.fontWeight.medium};
-  color: ${({ theme }) => theme.colors.text.default};
-  margin-bottom: ${spacing['3xs']};
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-md']};
+    font-weight: ${typography.fontWeight.medium};
+    color: ${({ theme }) => theme.colors.text.default};
+    margin-bottom: ${spacing['3xs']};
 `;
 
 const AddressDetail = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-sm']};
-  font-weight: ${typography.fontWeight.regular};
-  color: ${({ theme }) => theme.colors.text.muted};
-  margin-bottom: ${spacing['4xs']};
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-sm']};
+    font-weight: ${typography.fontWeight.regular};
+    color: ${({ theme }) => theme.colors.text.muted};
+    margin-bottom: ${spacing['4xs']};
 `;
 
 const ButtonRow = styled.View`
-  flex-direction: row;
-  justify-content: flex-end;
-  margin-top: ${spacing.sm};
-  gap: ${spacing.sm};
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: ${spacing.sm};
+    gap: ${spacing.sm};
 `;
 
 const EditButton = styled.TouchableOpacity`
-  padding-vertical: ${spacing.xs};
-  padding-horizontal: ${spacing.md};
-  border-radius: ${borderRadius.md};
-  border-width: 1px;
-  border-color: ${colors.brand.primary};
+    padding-vertical: ${spacing.xs};
+    padding-horizontal: ${spacing.md};
+    border-radius: ${borderRadius.md};
+    border-width: 1px;
+    border-color: ${colors.brand.primary};
 `;
 
 const EditButtonText = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-sm']};
-  font-weight: ${typography.fontWeight.medium};
-  color: ${colors.brand.primary};
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-sm']};
+    font-weight: ${typography.fontWeight.medium};
+    color: ${colors.brand.primary};
 `;
 
 const DeleteButton = styled.TouchableOpacity`
-  padding-vertical: ${spacing.xs};
-  padding-horizontal: ${spacing.md};
-  border-radius: ${borderRadius.md};
-  border-width: 1px;
-  border-color: ${colors.semantic.error};
+    padding-vertical: ${spacing.xs};
+    padding-horizontal: ${spacing.md};
+    border-radius: ${borderRadius.md};
+    border-width: 1px;
+    border-color: ${colors.semantic.error};
 `;
 
 const DeleteButtonText = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-sm']};
-  font-weight: ${typography.fontWeight.medium};
-  color: ${colors.semantic.error};
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-sm']};
+    font-weight: ${typography.fontWeight.medium};
+    color: ${colors.semantic.error};
 `;
 
 const AddButton = styled.TouchableOpacity`
-  background-color: ${colors.brand.primary};
-  border-radius: ${borderRadius.md};
-  height: ${sizing.component.lg};
-  align-items: center;
-  justify-content: center;
-  margin-horizontal: ${spacing.xl};
-  margin-top: ${spacing.md};
-  margin-bottom: ${spacing['2xl']};
+    background-color: ${colors.brand.primary};
+    border-radius: ${borderRadius.md};
+    height: ${sizing.component.lg};
+    align-items: center;
+    justify-content: center;
+    margin-horizontal: ${spacing.xl};
+    margin-top: ${spacing.md};
+    margin-bottom: ${spacing['2xl']};
 `;
 
 const AddButtonText = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-md']};
-  font-weight: ${typography.fontWeight.semiBold};
-  color: ${({ theme }) => theme.colors.text.onBrand};
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-md']};
+    font-weight: ${typography.fontWeight.semiBold};
+    color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const EmptyContainer = styled.View`
-  flex: 1;
-  align-items: center;
-  justify-content: center;
-  padding: ${spacing['4xl']};
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    padding: ${spacing['4xl']};
 `;
 
 const EmptyText = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-md']};
-  font-weight: ${typography.fontWeight.regular};
-  color: ${({ theme }) => theme.colors.text.muted};
-  text-align: center;
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-md']};
+    font-weight: ${typography.fontWeight.regular};
+    color: ${({ theme }) => theme.colors.text.muted};
+    text-align: center;
 `;
 
 const LoadingContainer = styled.View`
-  flex: 1;
-  align-items: center;
-  justify-content: center;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
 `;
 
 // --- Types ---
 
 interface Address {
-  id: string;
-  label: string;
-  street: string;
-  neighborhood: string;
-  city: string;
-  state: string;
-  cep: string;
-  isPrimary: boolean;
+    id: string;
+    label: string;
+    street: string;
+    neighborhood: string;
+    city: string;
+    state: string;
+    cep: string;
+    isPrimary: boolean;
 }
 
 /**
@@ -188,142 +190,141 @@ interface Address {
  * primary indicator, full formatted address, and Edit/Delete actions.
  */
 export const AddressesScreen: React.FC = () => {
-  const navigation = useNavigation<SettingsNavigationProp>();
-  const { t } = useTranslation();
-  const [addresses, setAddresses] = useState<Address[]>([]);
-  const [loading, setLoading] = useState(true);
+    const navigation = useNavigation<SettingsNavigationProp>();
+    const { t } = useTranslation();
+    const [addresses, setAddresses] = useState<Address[]>([]);
+    const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchAddresses = async () => {
-      setLoading(true);
-      try {
-        const response = await restClient.get('/users/me/addresses');
-        setAddresses(response.data ?? []);
-      } catch (err: unknown) {
-        Alert.alert('Erro', err instanceof Error ? err.message : 'Erro inesperado.');
-      } finally {
-        setLoading(false);
-      }
+    useEffect(() => {
+        const fetchAddresses = async () => {
+            setLoading(true);
+            try {
+                const response = await restClient.get('/users/me/addresses');
+                setAddresses(response.data ?? []);
+            } catch (err: unknown) {
+                Alert.alert('Erro', err instanceof Error ? err.message : 'Erro inesperado.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAddresses();
+    }, []);
+
+    const handleDelete = (addr: Address): void => {
+        Alert.alert(t('settings.addresses.delete'), `${addr.label} - ${addr.street}?`, [
+            { text: t('settings.addresses.cancel'), style: 'cancel' },
+            {
+                text: t('settings.addresses.delete'),
+                style: 'destructive',
+                onPress: () => {
+                    setAddresses((prev) => prev.filter((a) => a.id !== addr.id));
+                },
+            },
+        ]);
     };
 
-    fetchAddresses();
-  }, []);
+    const handleEdit = (_addr: Address): void => {
+        navigation.navigate(ROUTES.SETTINGS_ADD_ADDRESS);
+    };
 
-  const handleDelete = (addr: Address) => {
-    Alert.alert(
-      t('settings.addresses.delete'),
-      `${addr.label} - ${addr.street}?`,
-      [
-        { text: t('settings.addresses.cancel'), style: 'cancel' },
-        {
-          text: t('settings.addresses.delete'),
-          style: 'destructive',
-          onPress: () => {
-            setAddresses((prev) => prev.filter((a) => a.id !== addr.id));
-          },
-        },
-      ],
+    const handleAdd = (): void => {
+        navigation.navigate(ROUTES.SETTINGS_ADD_ADDRESS);
+    };
+
+    const getLabelTranslation = (label: string): string => {
+        switch (label) {
+            case 'Casa':
+                return t('settings.addresses.labels.home');
+            case 'Trabalho':
+                return t('settings.addresses.labels.work');
+            default:
+                return t('settings.addresses.labels.other');
+        }
+    };
+
+    const renderItem = ({ item }: { item: Address }): React.ReactElement | null => (
+        <Card testID={`address-card-${item.id}`}>
+            <CardTopRow>
+                <LabelBadge>
+                    <LabelBadgeText>{getLabelTranslation(item.label)}</LabelBadgeText>
+                </LabelBadge>
+                {item.isPrimary && (
+                    <PrimaryBadge>
+                        <PrimaryBadgeText>{t('settings.addresses.primary')}</PrimaryBadgeText>
+                    </PrimaryBadge>
+                )}
+            </CardTopRow>
+            <AddressStreet>{item.street}</AddressStreet>
+            <AddressDetail>{item.neighborhood}</AddressDetail>
+            <AddressDetail>{`${item.city} - ${item.state}`}</AddressDetail>
+            <AddressDetail>{`CEP: ${item.cep}`}</AddressDetail>
+            <ButtonRow>
+                <EditButton
+                    onPress={() => handleEdit(item)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${t('settings.addresses.edit')} ${item.label}`}
+                    testID={`address-edit-${item.id}`}
+                >
+                    <EditButtonText>{t('settings.addresses.edit')}</EditButtonText>
+                </EditButton>
+                <DeleteButton
+                    onPress={() => handleDelete(item)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${t('settings.addresses.delete')} ${item.label}`}
+                    testID={`address-delete-${item.id}`}
+                >
+                    <DeleteButtonText>{t('settings.addresses.delete')}</DeleteButtonText>
+                </DeleteButton>
+            </ButtonRow>
+        </Card>
     );
-  };
 
-  const handleEdit = (_addr: Address) => {
-    navigation.navigate(ROUTES.SETTINGS_ADD_ADDRESS);
-  };
+    const renderEmpty = (): React.ReactElement | null => (
+        <EmptyContainer>
+            <EmptyText>{t('settings.addresses.empty')}</EmptyText>
+        </EmptyContainer>
+    );
 
-  const handleAdd = () => {
-    navigation.navigate(ROUTES.SETTINGS_ADD_ADDRESS);
-  };
-
-  const getLabelTranslation = (label: string): string => {
-    switch (label) {
-      case 'Casa': return t('settings.addresses.labels.home');
-      case 'Trabalho': return t('settings.addresses.labels.work');
-      default: return t('settings.addresses.labels.other');
+    if (loading) {
+        return (
+            <Container>
+                <Header>
+                    <Title>{t('settings.addresses.title')}</Title>
+                </Header>
+                <LoadingContainer>
+                    <ActivityIndicator size="large" color={colors.brand.primary} testID="addresses-loading" />
+                </LoadingContainer>
+            </Container>
+        );
     }
-  };
 
-  const renderItem = ({ item }: { item: Address }) => (
-    <Card testID={`address-card-${item.id}`}>
-      <CardTopRow>
-        <LabelBadge>
-          <LabelBadgeText>{getLabelTranslation(item.label)}</LabelBadgeText>
-        </LabelBadge>
-        {item.isPrimary && (
-          <PrimaryBadge>
-            <PrimaryBadgeText>{t('settings.addresses.primary')}</PrimaryBadgeText>
-          </PrimaryBadge>
-        )}
-      </CardTopRow>
-      <AddressStreet>{item.street}</AddressStreet>
-      <AddressDetail>{item.neighborhood}</AddressDetail>
-      <AddressDetail>{`${item.city} - ${item.state}`}</AddressDetail>
-      <AddressDetail>{`CEP: ${item.cep}`}</AddressDetail>
-      <ButtonRow>
-        <EditButton
-          onPress={() => handleEdit(item)}
-          accessibilityRole="button"
-          accessibilityLabel={`${t('settings.addresses.edit')} ${item.label}`}
-          testID={`address-edit-${item.id}`}
-        >
-          <EditButtonText>{t('settings.addresses.edit')}</EditButtonText>
-        </EditButton>
-        <DeleteButton
-          onPress={() => handleDelete(item)}
-          accessibilityRole="button"
-          accessibilityLabel={`${t('settings.addresses.delete')} ${item.label}`}
-          testID={`address-delete-${item.id}`}
-        >
-          <DeleteButtonText>{t('settings.addresses.delete')}</DeleteButtonText>
-        </DeleteButton>
-      </ButtonRow>
-    </Card>
-  );
-
-  const renderEmpty = () => (
-    <EmptyContainer>
-      <EmptyText>{t('settings.addresses.empty')}</EmptyText>
-    </EmptyContainer>
-  );
-
-  if (loading) {
     return (
-      <Container>
-        <Header>
-          <Title>{t('settings.addresses.title')}</Title>
-        </Header>
-        <LoadingContainer>
-          <ActivityIndicator size="large" color={colors.brand.primary} testID="addresses-loading" />
-        </LoadingContainer>
-      </Container>
+        <Container>
+            <Header>
+                <Title>{t('settings.addresses.title')}</Title>
+            </Header>
+            <FlatList
+                data={addresses}
+                keyExtractor={(item) => item.id}
+                renderItem={renderItem}
+                ListEmptyComponent={renderEmpty}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                    paddingBottom: spacingValues['4xl'],
+                    flexGrow: addresses.length === 0 ? 1 : undefined,
+                }}
+            />
+            <AddButton
+                onPress={handleAdd}
+                accessibilityRole="button"
+                accessibilityLabel={t('settings.addresses.addAddress')}
+                testID="addresses-add-button"
+            >
+                <AddButtonText>{t('settings.addresses.addAddress')}</AddButtonText>
+            </AddButton>
+        </Container>
     );
-  }
-
-  return (
-    <Container>
-      <Header>
-        <Title>{t('settings.addresses.title')}</Title>
-      </Header>
-      <FlatList
-        data={addresses}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        ListEmptyComponent={renderEmpty}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingBottom: spacingValues['4xl'],
-          flexGrow: addresses.length === 0 ? 1 : undefined,
-        }}
-      />
-      <AddButton
-        onPress={handleAdd}
-        accessibilityRole="button"
-        accessibilityLabel={t('settings.addresses.addAddress')}
-        testID="addresses-add-button"
-      >
-        <AddButtonText>{t('settings.addresses.addAddress')}</AddButtonText>
-      </AddButton>
-    </Container>
-  );
 };
 
 export default AddressesScreen;

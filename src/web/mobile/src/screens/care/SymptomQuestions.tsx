@@ -1,26 +1,26 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
-import { Stepper } from '@austa/design-system/src/components/Stepper/Stepper';
 import { Button } from '@austa/design-system/src/components/Button/Button';
 import { Card } from '@austa/design-system/src/components/Card/Card';
-import { RadioButton } from '@austa/design-system/src/components/RadioButton/RadioButton';
 import { Checkbox } from '@austa/design-system/src/components/Checkbox/Checkbox';
+import { RadioButton } from '@austa/design-system/src/components/RadioButton/RadioButton';
+import { Stepper } from '@austa/design-system/src/components/Stepper/Stepper';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
-import { Box } from '@austa/design-system/src/primitives/Box/Box';
-import { ROUTES } from '@constants/routes';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { View, StyleSheet, ScrollView } from 'react-native';
+
+import { ROUTES } from '@constants/routes';
 
 /**
  * Question data structure for the AI-driven follow-up questions.
  */
 interface SymptomQuestion {
-  id: string;
-  text: string;
-  type: 'single' | 'multi';
-  options: Array<{ id: string; label: string }>;
+    id: string;
+    text: string;
+    type: 'single' | 'multi';
+    options: Array<{ id: string; label: string }>;
 }
 
 /**
@@ -29,74 +29,74 @@ interface SymptomQuestion {
  * user's specific symptom selections.
  */
 const MOCK_QUESTIONS: SymptomQuestion[] = [
-  {
-    id: 'q1',
-    text: 'Have you experienced any of the following recently?',
-    type: 'multi',
-    options: [
-      { id: 'q1_fever', label: 'Fever (above 38C / 100.4F)' },
-      { id: 'q1_chills', label: 'Chills or sweating' },
-      { id: 'q1_fatigue', label: 'Unusual fatigue or weakness' },
-      { id: 'q1_weight', label: 'Unexpected weight change' },
-      { id: 'q1_none', label: 'None of the above' },
-    ],
-  },
-  {
-    id: 'q2',
-    text: 'When are your symptoms typically worse?',
-    type: 'single',
-    options: [
-      { id: 'q2_morning', label: 'In the morning' },
-      { id: 'q2_evening', label: 'In the evening' },
-      { id: 'q2_activity', label: 'During physical activity' },
-      { id: 'q2_rest', label: 'During rest' },
-      { id: 'q2_constant', label: 'Constant throughout the day' },
-    ],
-  },
-  {
-    id: 'q3',
-    text: 'Have you recently experienced any major life changes?',
-    type: 'multi',
-    options: [
-      { id: 'q3_travel', label: 'Recent travel' },
-      { id: 'q3_stress', label: 'Increased stress' },
-      { id: 'q3_diet', label: 'Change in diet' },
-      { id: 'q3_medication', label: 'New medication' },
-      { id: 'q3_surgery', label: 'Recent surgery or procedure' },
-      { id: 'q3_none', label: 'None of the above' },
-    ],
-  },
-  {
-    id: 'q4',
-    text: 'Do you have any pre-existing medical conditions?',
-    type: 'multi',
-    options: [
-      { id: 'q4_diabetes', label: 'Diabetes' },
-      { id: 'q4_hypertension', label: 'High blood pressure' },
-      { id: 'q4_asthma', label: 'Asthma or respiratory condition' },
-      { id: 'q4_heart', label: 'Heart condition' },
-      { id: 'q4_autoimmune', label: 'Autoimmune disorder' },
-      { id: 'q4_none', label: 'None' },
-    ],
-  },
-  {
-    id: 'q5',
-    text: 'Have you tried any treatments so far?',
-    type: 'single',
-    options: [
-      { id: 'q5_otc', label: 'Over-the-counter medication' },
-      { id: 'q5_home', label: 'Home remedies' },
-      { id: 'q5_prescription', label: 'Prescription medication' },
-      { id: 'q5_nothing', label: 'No treatment attempted' },
-    ],
-  },
+    {
+        id: 'q1',
+        text: 'Have you experienced any of the following recently?',
+        type: 'multi',
+        options: [
+            { id: 'q1_fever', label: 'Fever (above 38C / 100.4F)' },
+            { id: 'q1_chills', label: 'Chills or sweating' },
+            { id: 'q1_fatigue', label: 'Unusual fatigue or weakness' },
+            { id: 'q1_weight', label: 'Unexpected weight change' },
+            { id: 'q1_none', label: 'None of the above' },
+        ],
+    },
+    {
+        id: 'q2',
+        text: 'When are your symptoms typically worse?',
+        type: 'single',
+        options: [
+            { id: 'q2_morning', label: 'In the morning' },
+            { id: 'q2_evening', label: 'In the evening' },
+            { id: 'q2_activity', label: 'During physical activity' },
+            { id: 'q2_rest', label: 'During rest' },
+            { id: 'q2_constant', label: 'Constant throughout the day' },
+        ],
+    },
+    {
+        id: 'q3',
+        text: 'Have you recently experienced any major life changes?',
+        type: 'multi',
+        options: [
+            { id: 'q3_travel', label: 'Recent travel' },
+            { id: 'q3_stress', label: 'Increased stress' },
+            { id: 'q3_diet', label: 'Change in diet' },
+            { id: 'q3_medication', label: 'New medication' },
+            { id: 'q3_surgery', label: 'Recent surgery or procedure' },
+            { id: 'q3_none', label: 'None of the above' },
+        ],
+    },
+    {
+        id: 'q4',
+        text: 'Do you have any pre-existing medical conditions?',
+        type: 'multi',
+        options: [
+            { id: 'q4_diabetes', label: 'Diabetes' },
+            { id: 'q4_hypertension', label: 'High blood pressure' },
+            { id: 'q4_asthma', label: 'Asthma or respiratory condition' },
+            { id: 'q4_heart', label: 'Heart condition' },
+            { id: 'q4_autoimmune', label: 'Autoimmune disorder' },
+            { id: 'q4_none', label: 'None' },
+        ],
+    },
+    {
+        id: 'q5',
+        text: 'Have you tried any treatments so far?',
+        type: 'single',
+        options: [
+            { id: 'q5_otc', label: 'Over-the-counter medication' },
+            { id: 'q5_home', label: 'Home remedies' },
+            { id: 'q5_prescription', label: 'Prescription medication' },
+            { id: 'q5_nothing', label: 'No treatment attempted' },
+        ],
+    },
 ];
 
 type SymptomQuestionsRouteParams = {
-  symptoms: Array<{ id: string; name: string }>;
-  description: string;
-  regions: Array<{ id: string; label: string }>;
-  details: any[];
+    symptoms: Array<{ id: string; name: string }>;
+    description: string;
+    regions: Array<{ id: string; label: string }>;
+    details: any[];
 };
 
 /**
@@ -105,265 +105,253 @@ type SymptomQuestionsRouteParams = {
  * Step 4 of the symptom checker flow.
  */
 const SymptomQuestions: React.FC = () => {
-  const navigation = useNavigation<any>();
-  const route = useRoute<RouteProp<{ params: SymptomQuestionsRouteParams }, 'params'>>();
-  const { symptoms = [], description = '', regions = [], details = [] } = route.params || {};
-  const { t } = useTranslation();
+    const navigation = useNavigation<any>();
+    const route = useRoute<RouteProp<{ params: SymptomQuestionsRouteParams }, 'params'>>();
+    const { symptoms = [], description = '', regions = [], details = [] } = route.params || {};
+    const { t } = useTranslation();
 
-  const SYMPTOM_STEPS = [
-    { label: t('journeys.care.symptomChecker.steps.symptoms') },
-    { label: t('journeys.care.symptomChecker.steps.bodyMap') },
-    { label: t('journeys.care.symptomChecker.steps.details') },
-    { label: t('journeys.care.symptomChecker.steps.questions') },
-    { label: t('journeys.care.symptomChecker.steps.severity') },
-    { label: t('journeys.care.symptomChecker.steps.results') },
-    { label: t('journeys.care.symptomChecker.steps.actions') },
-  ];
+    const SYMPTOM_STEPS = [
+        { label: t('journeys.care.symptomChecker.steps.symptoms') },
+        { label: t('journeys.care.symptomChecker.steps.bodyMap') },
+        { label: t('journeys.care.symptomChecker.steps.details') },
+        { label: t('journeys.care.symptomChecker.steps.questions') },
+        { label: t('journeys.care.symptomChecker.steps.severity') },
+        { label: t('journeys.care.symptomChecker.steps.results') },
+        { label: t('journeys.care.symptomChecker.steps.actions') },
+    ];
 
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
 
-  const currentQuestion = MOCK_QUESTIONS[currentQuestionIndex];
-  const isLastQuestion = currentQuestionIndex === MOCK_QUESTIONS.length - 1;
+    const currentQuestion = MOCK_QUESTIONS[currentQuestionIndex];
+    const isLastQuestion = currentQuestionIndex === MOCK_QUESTIONS.length - 1;
 
-  const handleSingleAnswer = (questionId: string, optionId: string) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: optionId }));
-  };
+    const handleSingleAnswer = (questionId: string, optionId: string): void => {
+        setAnswers((prev) => ({ ...prev, [questionId]: optionId }));
+    };
 
-  const handleMultiAnswer = (questionId: string, optionId: string, isChecked: boolean) => {
-    setAnswers((prev) => {
-      const current = (prev[questionId] as string[]) || [];
-      if (isChecked) {
-        return { ...prev, [questionId]: [...current, optionId] };
-      }
-      return { ...prev, [questionId]: current.filter((id) => id !== optionId) };
-    });
-  };
-
-  const isOptionSelected = (questionId: string, optionId: string): boolean => {
-    const answer = answers[questionId];
-    if (Array.isArray(answer)) {
-      return answer.includes(optionId);
-    }
-    return answer === optionId;
-  };
-
-  const hasAnswer = (questionId: string): boolean => {
-    const answer = answers[questionId];
-    if (Array.isArray(answer)) {
-      return answer.length > 0;
-    }
-    return !!answer;
-  };
-
-  const handleNext = () => {
-    if (isLastQuestion) {
-      handleContinue();
-    } else {
-      setCurrentQuestionIndex((prev) => prev + 1);
-    }
-  };
-
-  const handlePrevious = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex((prev) => prev - 1);
-    }
-  };
-
-  const handleContinue = () => {
-    navigation.navigate(ROUTES.CARE_SYMPTOM_SEVERITY, {
-      symptoms,
-      description,
-      regions,
-      details,
-      answers,
-    });
-  };
-
-  const handleBack = () => {
-    navigation.goBack();
-  };
-
-  return (
-    <View style={styles.root}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-      >
-        <View style={styles.stepperContainer}>
-          <Stepper
-            steps={SYMPTOM_STEPS}
-            activeStep={3}
-            journey="care"
-            accessibilityLabel="Symptom checker progress - Step 4 Questions"
-          />
-        </View>
-
-        <Text variant="heading" journey="care" testID="questions-title">
-          {t('journeys.care.symptomChecker.questions.title')}
-        </Text>
-
-        <Text variant="body" journey="care">
-          {t('journeys.care.symptomChecker.questions.counter', { current: currentQuestionIndex + 1, total: MOCK_QUESTIONS.length })}
-        </Text>
-
-        <Card journey="care" elevation="md">
-          <Text
-            variant="body"
-            fontWeight="semiBold"
-            journey="care"
-            testID="question-text"
-          >
-            {currentQuestion.text}
-          </Text>
-
-          <View style={styles.optionsContainer}>
-            {currentQuestion.type === 'single'
-              ? currentQuestion.options.map((option) => (
-                  <View key={option.id} style={styles.optionItem}>
-                    <RadioButton
-                      id={option.id}
-                      name={currentQuestion.id}
-                      value={option.id}
-                      checked={isOptionSelected(currentQuestion.id, option.id)}
-                      onChange={() =>
-                        handleSingleAnswer(currentQuestion.id, option.id)
-                      }
-                      label={option.label}
-                      journey="care"
-                      testID={`radio-${option.id}`}
-                    />
-                  </View>
-                ))
-              : currentQuestion.options.map((option) => (
-                  <View key={option.id} style={styles.optionItem}>
-                    <Checkbox
-                      id={option.id}
-                      name={currentQuestion.id}
-                      value={option.id}
-                      checked={isOptionSelected(currentQuestion.id, option.id)}
-                      onChange={(e: any) => {
-                        const checked = e.target?.checked ?? !isOptionSelected(currentQuestion.id, option.id);
-                        handleMultiAnswer(
-                          currentQuestion.id,
-                          option.id,
-                          checked
-                        );
-                      }}
-                      label={option.label}
-                      journey="care"
-                      testID={`checkbox-${option.id}`}
-                    />
-                  </View>
-                ))}
-          </View>
-        </Card>
-
-        {/* Progress indicator */}
-        <View style={styles.progressRow}>
-          {MOCK_QUESTIONS.map((q, i) => (
-            <View
-              key={q.id}
-              style={[
-                styles.progressDot,
-                i === currentQuestionIndex && styles.progressDotActive,
-                i < currentQuestionIndex && styles.progressDotCompleted,
-              ]}
-              accessibilityLabel={`Question ${i + 1}${i === currentQuestionIndex ? ', current' : i < currentQuestionIndex ? ', completed' : ''}`}
-            />
-          ))}
-        </View>
-
-        <View style={styles.buttonRow}>
-          {currentQuestionIndex === 0 ? (
-            <Button
-              variant="secondary"
-              onPress={handleBack}
-              journey="care"
-              accessibilityLabel="Go back to symptom details"
-              testID="back-button"
-            >
-              {t('common.buttons.back')}
-            </Button>
-          ) : (
-            <Button
-              variant="secondary"
-              onPress={handlePrevious}
-              journey="care"
-              accessibilityLabel="Previous question"
-              testID="previous-button"
-            >
-              {t('journeys.care.symptomChecker.questions.previous')}
-            </Button>
-          )}
-
-          <Button
-            onPress={handleNext}
-            journey="care"
-            disabled={!hasAnswer(currentQuestion.id)}
-            accessibilityLabel={
-              isLastQuestion ? 'Continue to severity assessment' : 'Next question'
+    const handleMultiAnswer = (questionId: string, optionId: string, isChecked: boolean): void => {
+        setAnswers((prev) => {
+            const current = (prev[questionId] as string[]) || [];
+            if (isChecked) {
+                return { ...prev, [questionId]: [...current, optionId] };
             }
-            testID="next-button"
-          >
-            {isLastQuestion ? t('common.buttons.next') : t('journeys.care.symptomChecker.questions.next')}
-          </Button>
+            return { ...prev, [questionId]: current.filter((id) => id !== optionId) };
+        });
+    };
+
+    const isOptionSelected = (questionId: string, optionId: string): boolean => {
+        const answer = answers[questionId];
+        if (Array.isArray(answer)) {
+            return answer.includes(optionId);
+        }
+        return answer === optionId;
+    };
+
+    const hasAnswer = (questionId: string): boolean => {
+        const answer = answers[questionId];
+        if (Array.isArray(answer)) {
+            return answer.length > 0;
+        }
+        return !!answer;
+    };
+
+    const handleNext = (): void => {
+        if (isLastQuestion) {
+            handleContinue();
+        } else {
+            setCurrentQuestionIndex((prev) => prev + 1);
+        }
+    };
+
+    const handlePrevious = (): void => {
+        if (currentQuestionIndex > 0) {
+            setCurrentQuestionIndex((prev) => prev - 1);
+        }
+    };
+
+    const handleContinue = (): void => {
+        navigation.navigate(ROUTES.CARE_SYMPTOM_SEVERITY, {
+            symptoms,
+            description,
+            regions,
+            details,
+            answers,
+        });
+    };
+
+    const handleBack = (): void => {
+        navigation.goBack();
+    };
+
+    return (
+        <View style={styles.root}>
+            <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+                <View style={styles.stepperContainer}>
+                    <Stepper
+                        steps={SYMPTOM_STEPS}
+                        activeStep={3}
+                        journey="care"
+                        accessibilityLabel="Symptom checker progress - Step 4 Questions"
+                    />
+                </View>
+
+                <Text variant="heading" journey="care" testID="questions-title">
+                    {t('journeys.care.symptomChecker.questions.title')}
+                </Text>
+
+                <Text variant="body" journey="care">
+                    {t('journeys.care.symptomChecker.questions.counter', {
+                        current: currentQuestionIndex + 1,
+                        total: MOCK_QUESTIONS.length,
+                    })}
+                </Text>
+
+                <Card journey="care" elevation="md">
+                    <Text variant="body" fontWeight="semiBold" journey="care" testID="question-text">
+                        {currentQuestion.text}
+                    </Text>
+
+                    <View style={styles.optionsContainer}>
+                        {currentQuestion.type === 'single'
+                            ? currentQuestion.options.map((option) => (
+                                  <View key={option.id} style={styles.optionItem}>
+                                      <RadioButton
+                                          id={option.id}
+                                          name={currentQuestion.id}
+                                          value={option.id}
+                                          checked={isOptionSelected(currentQuestion.id, option.id)}
+                                          onChange={() => handleSingleAnswer(currentQuestion.id, option.id)}
+                                          label={option.label}
+                                          journey="care"
+                                          testID={`radio-${option.id}`}
+                                      />
+                                  </View>
+                              ))
+                            : currentQuestion.options.map((option) => (
+                                  <View key={option.id} style={styles.optionItem}>
+                                      <Checkbox
+                                          id={option.id}
+                                          name={currentQuestion.id}
+                                          value={option.id}
+                                          checked={isOptionSelected(currentQuestion.id, option.id)}
+                                          onChange={(e: any) => {
+                                              const checked =
+                                                  e.target?.checked ?? !isOptionSelected(currentQuestion.id, option.id);
+                                              handleMultiAnswer(currentQuestion.id, option.id, checked);
+                                          }}
+                                          label={option.label}
+                                          journey="care"
+                                          testID={`checkbox-${option.id}`}
+                                      />
+                                  </View>
+                              ))}
+                    </View>
+                </Card>
+
+                {/* Progress indicator */}
+                <View style={styles.progressRow}>
+                    {MOCK_QUESTIONS.map((q, i) => (
+                        <View
+                            key={q.id}
+                            style={[
+                                styles.progressDot,
+                                i === currentQuestionIndex && styles.progressDotActive,
+                                i < currentQuestionIndex && styles.progressDotCompleted,
+                            ]}
+                            accessibilityLabel={`Question ${i + 1}${i === currentQuestionIndex ? ', current' : i < currentQuestionIndex ? ', completed' : ''}`}
+                        />
+                    ))}
+                </View>
+
+                <View style={styles.buttonRow}>
+                    {currentQuestionIndex === 0 ? (
+                        <Button
+                            variant="secondary"
+                            onPress={handleBack}
+                            journey="care"
+                            accessibilityLabel="Go back to symptom details"
+                            testID="back-button"
+                        >
+                            {t('common.buttons.back')}
+                        </Button>
+                    ) : (
+                        <Button
+                            variant="secondary"
+                            onPress={handlePrevious}
+                            journey="care"
+                            accessibilityLabel="Previous question"
+                            testID="previous-button"
+                        >
+                            {t('journeys.care.symptomChecker.questions.previous')}
+                        </Button>
+                    )}
+
+                    <Button
+                        onPress={handleNext}
+                        journey="care"
+                        disabled={!hasAnswer(currentQuestion.id)}
+                        accessibilityLabel={isLastQuestion ? 'Continue to severity assessment' : 'Next question'}
+                        testID="next-button"
+                    >
+                        {isLastQuestion ? t('common.buttons.next') : t('journeys.care.symptomChecker.questions.next')}
+                    </Button>
+                </View>
+            </ScrollView>
         </View>
-      </ScrollView>
-    </View>
-  );
+    );
 };
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: colors.journeys.care.background,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: spacingValues.md,
-    paddingBottom: spacingValues['3xl'],
-  },
-  stepperContainer: {
-    marginBottom: spacingValues.xl,
-  },
-  optionsContainer: {
-    marginTop: spacingValues.md,
-  },
-  optionItem: {
-    paddingVertical: spacingValues.xs,
-    paddingHorizontal: spacingValues['3xs'],
-    borderBottomWidth: 1,
-    borderBottomColor: colors.neutral.gray200,
-  },
-  progressRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: spacingValues.xl,
-    gap: spacingValues.xs,
-  },
-  progressDot: {
-    width: spacingValues.xs,
-    height: spacingValues.xs,
-    borderRadius: spacingValues['3xs'],
-    backgroundColor: colors.neutral.gray300,
-  },
-  progressDotActive: {
-    backgroundColor: colors.journeys.care.primary,
-    width: spacingValues.xl,
-  },
-  progressDotCompleted: {
-    backgroundColor: colors.journeys.care.secondary,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: spacingValues.xl,
-    gap: spacingValues.md,
-  },
+    root: {
+        flex: 1,
+        backgroundColor: colors.journeys.care.background,
+    },
+    scrollView: {
+        flex: 1,
+    },
+    scrollContent: {
+        padding: spacingValues.md,
+        paddingBottom: spacingValues['3xl'],
+    },
+    stepperContainer: {
+        marginBottom: spacingValues.xl,
+    },
+    optionsContainer: {
+        marginTop: spacingValues.md,
+    },
+    optionItem: {
+        paddingVertical: spacingValues.xs,
+        paddingHorizontal: spacingValues['3xs'],
+        borderBottomWidth: 1,
+        borderBottomColor: colors.neutral.gray200,
+    },
+    progressRow: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: spacingValues.xl,
+        gap: spacingValues.xs,
+    },
+    progressDot: {
+        width: spacingValues.xs,
+        height: spacingValues.xs,
+        borderRadius: spacingValues['3xs'],
+        backgroundColor: colors.neutral.gray300,
+    },
+    progressDotActive: {
+        backgroundColor: colors.journeys.care.primary,
+        width: spacingValues.xl,
+    },
+    progressDotCompleted: {
+        backgroundColor: colors.journeys.care.secondary,
+    },
+    buttonRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: spacingValues.xl,
+        gap: spacingValues.md,
+    },
 });
 
 export default SymptomQuestions;

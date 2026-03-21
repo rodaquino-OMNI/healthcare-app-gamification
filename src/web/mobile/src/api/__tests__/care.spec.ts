@@ -5,7 +5,6 @@
  * We mock both restClient and AsyncStorage to validate endpoints, methods, and auth.
  */
 
-import { restClient } from '../client';
 import {
     bookAppointment,
     getAppointments,
@@ -37,6 +36,7 @@ import {
     getBookingTypes,
     getAuthSession,
 } from '../care';
+import { restClient } from '../client';
 
 // ---------------------------------------------------------------------------
 // Mocks
@@ -58,7 +58,7 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
     removeItem: jest.fn(),
 }));
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic require for test mock isolation
 const AsyncStorage = require('@react-native-async-storage/async-storage');
 
 const MOCK_SESSION = {

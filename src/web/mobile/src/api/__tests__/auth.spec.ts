@@ -32,7 +32,7 @@ jest.mock('cross-fetch', () => {
     return { __esModule: true, default: mockFetch };
 });
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic require for test mock isolation
 const fetchModule = require('cross-fetch');
 const mockFetch: jest.Mock = fetchModule.default;
 

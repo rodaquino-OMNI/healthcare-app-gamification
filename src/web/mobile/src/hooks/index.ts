@@ -1,6 +1,7 @@
 /**
  * @file index.ts
- * @description Exports all custom hooks from the `src/web/mobile/src/hooks` directory, providing a single point of import for all hooks.
+ * @description Exports all custom hooks from the `src/web/mobile/src/hooks` directory,
+ * providing a single point of import for all hooks.
  */
 
 import { useAppointments } from './useAppointments';

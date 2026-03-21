@@ -1,6 +1,6 @@
 /**
  * Mobile-specific formatting utilities for the AUSTA SuperApp
- * 
+ *
  * This file provides utility functions for formatting data, such as numbers, currency,
  * and phone numbers, specifically tailored for the mobile application. It re-exports
  * formatting functions from the shared utilities to maintain consistency across platforms.
@@ -9,15 +9,15 @@
  */
 
 import {
-  formatNumber,
-  formatCurrency,
-  formatPercent,
-  formatJourneyValue,
-  formatHealthMetric,
-  truncateText,
-  formatPhoneNumber,
-  formatCPF as sharedFormatCPF,
-  formatDate as sharedFormatDate
+    formatNumber,
+    formatCurrency,
+    formatPercent,
+    formatJourneyValue,
+    formatHealthMetric,
+    truncateText,
+    formatPhoneNumber,
+    formatCPF as _sharedFormatCPF,
+    formatDate as _sharedFormatDate,
 } from '@shared/utils/format';
 
 /**
@@ -31,13 +31,13 @@ import {
  * would cause duplicate-export errors in the barrel index.
  */
 export {
-  formatNumber,
-  formatCurrency,
-  formatPercent,
-  formatJourneyValue,
-  formatHealthMetric,
-  truncateText,
-  formatPhoneNumber,
+    formatNumber,
+    formatCurrency,
+    formatPercent,
+    formatJourneyValue,
+    formatHealthMetric,
+    truncateText,
+    formatPhoneNumber,
 };
 
 /**

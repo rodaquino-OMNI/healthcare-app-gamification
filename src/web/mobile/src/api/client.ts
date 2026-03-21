@@ -2,7 +2,7 @@ import { ApolloClient, InMemoryCache } from '@apollo/client'; // Version 3.0+
 import NetInfo from '@react-native-community/netinfo';
 import createUploadLink from 'apollo-upload-client/createUploadLink.mjs'; // v19: subpath ESM import
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'axios'; // Version 1.6.8
-// eslint-disable-next-line import/no-unresolved
+// eslint-disable-next-line import/no-unresolved -- Native module resolved at runtime
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 // Native TLS certificate pinning is handled by native-ssl-pinning.ts and
@@ -17,7 +17,7 @@ declare const __DEV__: boolean;
  * Note: In a production environment, these values should be loaded from environment variables
  * or a configuration service rather than being hardcoded.
  */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- Native module returns untyped result */
 const API_URL: string =
     Constants.expoConfig?.extra?.apiUrl || process.env.EXPO_PUBLIC_API_URL || 'https://api.austa.com.br';
 /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */

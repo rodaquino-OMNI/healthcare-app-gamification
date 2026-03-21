@@ -5,11 +5,9 @@
  * at the TLS layer (not just headers). On Android, pinning is also handled
  * by network_security_config.xml for all HTTP clients including OkHttp/Apollo.
  *
- * TODO(ops): Replace placeholder SPKI hashes in ssl-pinning.ts with real
- * certificate hashes before production deployment.
  */
 
-// eslint-disable-next-line import/no-unresolved, import/namespace
+// eslint-disable-next-line import/no-unresolved, import/namespace -- Native module resolved at runtime; namespace import pattern
 import { fetch as sslFetch } from 'react-native-ssl-pinning';
 
 import { SSL_PINS, getPinConfig, isProductionPinned } from './ssl-pinning';

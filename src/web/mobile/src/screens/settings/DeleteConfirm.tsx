@@ -1,152 +1,144 @@
-import React, { useState, useEffect } from 'react';
-import {
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  Alert,
-} from 'react-native';
+import { borderRadius } from '@design-system/tokens/borderRadius';
+import { colors } from '@design-system/tokens/colors';
+import { sizing } from '@design-system/tokens/sizing';
+import { spacing, spacingValues } from '@design-system/tokens/spacing';
+import { typography } from '@design-system/tokens/typography';
 import { useNavigation } from '@react-navigation/native';
-import styled from 'styled-components/native';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import styled from 'styled-components/native';
 
 import { useAuth } from '../../hooks/useAuth';
-import { ROUTES } from '../../constants/routes';
-import { colors } from '@design-system/tokens/colors';
-import { typography } from '@design-system/tokens/typography';
-import { spacing, spacingValues } from '@design-system/tokens/spacing';
-import { borderRadius } from '@design-system/tokens/borderRadius';
-import { sizing } from '@design-system/tokens/sizing';
 
 // --- Styled Components ---
 
 const Container = styled.SafeAreaView`
-  flex: 1;
-  background-color: ${({ theme }) => theme.colors.background.default};
+    flex: 1;
+    background-color: ${({ theme }) => theme.colors.background.default};
 `;
 
 const ContentWrapper = styled.View`
-  padding-horizontal: ${spacing.xl};
-  padding-top: ${spacing['2xl']};
-  padding-bottom: ${spacing['4xl']};
-  align-items: center;
+    padding-horizontal: ${spacing.xl};
+    padding-top: ${spacing['2xl']};
+    padding-bottom: ${spacing['4xl']};
+    align-items: center;
 `;
 
 const WarningBox = styled.View`
-  width: 100%;
-  padding: ${spacing.md};
-  background-color: ${colors.semantic.error};
-  border-radius: ${borderRadius.md};
-  margin-bottom: ${spacing.xl};
+    width: 100%;
+    padding: ${spacing.md};
+    background-color: ${colors.semantic.error};
+    border-radius: ${borderRadius.md};
+    margin-bottom: ${spacing.xl};
 `;
 
 const WarningBoxText = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-sm']};
-  font-weight: ${typography.fontWeight.semiBold};
-  color: ${({ theme }) => theme.colors.text.onBrand};
-  text-align: center;
-  line-height: 20px;
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-sm']};
+    font-weight: ${typography.fontWeight.semiBold};
+    color: ${({ theme }) => theme.colors.text.onBrand};
+    text-align: center;
+    line-height: 20px;
 `;
 
 const CountdownContainer = styled.View`
-  width: 100%;
-  align-items: center;
-  margin-bottom: ${spacing.xl};
+    width: 100%;
+    align-items: center;
+    margin-bottom: ${spacing.xl};
 `;
 
 const CountdownCircle = styled.View`
-  width: 80px;
-  height: 80px;
-  border-radius: 40px;
-  border-width: 3px;
-  border-color: ${colors.semantic.error};
-  align-items: center;
-  justify-content: center;
-  margin-bottom: ${spacing.sm};
+    width: 80px;
+    height: 80px;
+    border-radius: 40px;
+    border-width: 3px;
+    border-color: ${colors.semantic.error};
+    align-items: center;
+    justify-content: center;
+    margin-bottom: ${spacing.sm};
 `;
 
 const CountdownNumber = styled.Text`
-  font-family: ${typography.fontFamily.heading};
-  font-size: ${typography.fontSize['heading-xl']};
-  font-weight: ${typography.fontWeight.bold};
-  color: ${colors.semantic.error};
+    font-family: ${typography.fontFamily.heading};
+    font-size: ${typography.fontSize['heading-xl']};
+    font-weight: ${typography.fontWeight.bold};
+    color: ${colors.semantic.error};
 `;
 
 const CountdownText = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-sm']};
-  color: ${({ theme }) => theme.colors.text.muted};
-  text-align: center;
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-sm']};
+    color: ${({ theme }) => theme.colors.text.muted};
+    text-align: center;
 `;
 
 const FieldContainer = styled.View`
-  width: 100%;
-  margin-bottom: ${spacing.xl};
+    width: 100%;
+    margin-bottom: ${spacing.xl};
 `;
 
 const Label = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-sm']};
-  font-weight: ${typography.fontWeight.medium};
-  color: ${({ theme }) => theme.colors.text.default};
-  margin-bottom: ${spacing.xs};
-  text-align: center;
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-sm']};
+    font-weight: ${typography.fontWeight.medium};
+    color: ${({ theme }) => theme.colors.text.default};
+    margin-bottom: ${spacing.xs};
+    text-align: center;
 `;
 
 const ConfirmWord = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-md']};
-  font-weight: ${typography.fontWeight.bold};
-  color: ${colors.semantic.error};
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-md']};
+    font-weight: ${typography.fontWeight.bold};
+    color: ${colors.semantic.error};
 `;
 
 const StyledInput = styled.TextInput<{ hasError?: boolean }>`
-  height: ${sizing.component.md};
-  border-width: 2px;
-  border-color: ${(props) =>
-    props.hasError ? colors.semantic.error : colors.gray[20]};
-  border-radius: ${borderRadius.md};
-  padding-horizontal: ${spacing.md};
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-md']};
-  color: ${({ theme }) => theme.colors.text.default};
-  background-color: ${({ theme }) => theme.colors.background.default};
-  text-align: center;
+    height: ${sizing.component.md};
+    border-width: 2px;
+    border-color: ${(props) => (props.hasError ? colors.semantic.error : colors.gray[20])};
+    border-radius: ${borderRadius.md};
+    padding-horizontal: ${spacing.md};
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-md']};
+    color: ${({ theme }) => theme.colors.text.default};
+    background-color: ${({ theme }) => theme.colors.background.default};
+    text-align: center;
 `;
 
 const DangerButton = styled.TouchableOpacity<{ disabled?: boolean }>`
-  width: 100%;
-  background-color: ${(props) =>
-    props.disabled ? colors.gray[30] : colors.semantic.error};
-  border-radius: ${borderRadius.md};
-  height: ${sizing.component.lg};
-  align-items: center;
-  justify-content: center;
+    width: 100%;
+    background-color: ${(props) => (props.disabled ? colors.gray[30] : colors.semantic.error)};
+    border-radius: ${borderRadius.md};
+    height: ${sizing.component.lg};
+    align-items: center;
+    justify-content: center;
 `;
 
 const DangerButtonText = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-md']};
-  font-weight: ${typography.fontWeight.semiBold};
-  color: ${({ theme }) => theme.colors.text.onBrand};
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-md']};
+    font-weight: ${typography.fontWeight.semiBold};
+    color: ${({ theme }) => theme.colors.text.onBrand};
 `;
 
 const SecondaryButton = styled.TouchableOpacity`
-  width: 100%;
-  border-width: 1px;
-  border-color: ${({ theme }) => theme.colors.border.default};
-  border-radius: ${borderRadius.md};
-  height: ${sizing.component.lg};
-  align-items: center;
-  justify-content: center;
-  margin-top: ${spacing.sm};
+    width: 100%;
+    border-width: 1px;
+    border-color: ${({ theme }) => theme.colors.border.default};
+    border-radius: ${borderRadius.md};
+    height: ${sizing.component.lg};
+    align-items: center;
+    justify-content: center;
+    margin-top: ${spacing.sm};
 `;
 
 const SecondaryButtonText = styled.Text`
-  font-family: ${typography.fontFamily.body};
-  font-size: ${typography.fontSize['text-md']};
-  font-weight: ${typography.fontWeight.medium};
-  color: ${({ theme }) => theme.colors.text.default};
+    font-family: ${typography.fontFamily.body};
+    font-size: ${typography.fontSize['text-md']};
+    font-weight: ${typography.fontWeight.medium};
+    color: ${({ theme }) => theme.colors.text.default};
 `;
 
 // --- Constants ---
@@ -159,113 +151,105 @@ const COUNTDOWN_SECONDS = 10;
  * countdown timer and typed confirmation word requirement.
  */
 export const DeleteConfirmScreen: React.FC = () => {
-  const navigation = useNavigation();
-  const { t } = useTranslation();
-  const { signOut } = useAuth();
+    const navigation = useNavigation();
+    const { t } = useTranslation();
+    const { signOut } = useAuth();
 
-  const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS);
-  const [confirmText, setConfirmText] = useState('');
+    const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS);
+    const [confirmText, setConfirmText] = useState('');
 
-  useEffect(() => {
-    if (countdown <= 0) return;
-
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          return 0;
+    useEffect(() => {
+        if (countdown <= 0) {
+            return;
         }
-        return prev - 1;
-      });
-    }, 1000);
 
-    return () => clearInterval(timer);
-  }, []);
+        const timer = setInterval(() => {
+            setCountdown((prev) => {
+                if (prev <= 1) {
+                    clearInterval(timer);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
 
-  const isDeleteEnabled = countdown === 0 && confirmText === CONFIRM_WORD;
+        return () => clearInterval(timer);
+    }, []);
 
-  const handleDelete = async () => {
-    try {
-      await signOut();
-      Alert.alert(
-        t('settings.deleteConfirm.successTitle'),
-        t('settings.deleteConfirm.successMessage'),
-      );
-    } catch {
-      Alert.alert(
-        t('settings.deleteConfirm.errorTitle'),
-        t('settings.deleteConfirm.errorMessage'),
-      );
-    }
-  };
+    const isDeleteEnabled = countdown === 0 && confirmText === CONFIRM_WORD;
 
-  return (
-    <Container>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}
-      >
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ paddingBottom: spacingValues['4xl'] }}
-        >
-          <ContentWrapper>
-            <WarningBox>
-              <WarningBoxText>{t('settings.deleteConfirm.title')}</WarningBoxText>
-            </WarningBox>
+    const handleDelete = async (): Promise<void> => {
+        try {
+            await signOut();
+            Alert.alert(t('settings.deleteConfirm.successTitle'), t('settings.deleteConfirm.successMessage'));
+        } catch {
+            Alert.alert(t('settings.deleteConfirm.errorTitle'), t('settings.deleteConfirm.errorMessage'));
+        }
+    };
 
-            <CountdownContainer>
-              <CountdownCircle>
-                <CountdownNumber>{countdown}</CountdownNumber>
-              </CountdownCircle>
-              <CountdownText>
-                {countdown > 0
-                  ? t('settings.deleteConfirm.waitMessage', { seconds: countdown })
-                  : t('settings.deleteConfirm.waitComplete')}
-              </CountdownText>
-            </CountdownContainer>
+    return (
+        <Container>
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    keyboardShouldPersistTaps="handled"
+                    contentContainerStyle={{ paddingBottom: spacingValues['4xl'] }}
+                >
+                    <ContentWrapper>
+                        <WarningBox>
+                            <WarningBoxText>{t('settings.deleteConfirm.title')}</WarningBoxText>
+                        </WarningBox>
 
-            <FieldContainer>
-              <Label>
-                {t('settings.deleteConfirm.typeToConfirm')}{' '}
-                <ConfirmWord>{CONFIRM_WORD}</ConfirmWord>{' '}
-                {t('settings.deleteConfirm.toConfirmSuffix')}
-              </Label>
-              <StyledInput
-                value={confirmText}
-                onChangeText={setConfirmText}
-                placeholder={CONFIRM_WORD}
-                placeholderTextColor={colors.gray[40]}
-                autoCapitalize="characters"
-                accessibilityLabel={t('settings.deleteConfirm.typeToConfirm')}
-                testID="delete-confirm-input"
-              />
-            </FieldContainer>
+                        <CountdownContainer>
+                            <CountdownCircle>
+                                <CountdownNumber>{countdown}</CountdownNumber>
+                            </CountdownCircle>
+                            <CountdownText>
+                                {countdown > 0
+                                    ? t('settings.deleteConfirm.waitMessage', { seconds: countdown })
+                                    : t('settings.deleteConfirm.waitComplete')}
+                            </CountdownText>
+                        </CountdownContainer>
 
-            <DangerButton
-              onPress={handleDelete}
-              disabled={!isDeleteEnabled}
-              accessibilityRole="button"
-              accessibilityLabel={t('settings.deleteConfirm.deleteForever')}
-              testID="delete-confirm-button"
-            >
-              <DangerButtonText>{t('settings.deleteConfirm.deleteForever')}</DangerButtonText>
-            </DangerButton>
+                        <FieldContainer>
+                            <Label>
+                                {t('settings.deleteConfirm.typeToConfirm')} <ConfirmWord>{CONFIRM_WORD}</ConfirmWord>{' '}
+                                {t('settings.deleteConfirm.toConfirmSuffix')}
+                            </Label>
+                            <StyledInput
+                                value={confirmText}
+                                onChangeText={setConfirmText}
+                                placeholder={CONFIRM_WORD}
+                                placeholderTextColor={colors.gray[40]}
+                                autoCapitalize="characters"
+                                accessibilityLabel={t('settings.deleteConfirm.typeToConfirm')}
+                                testID="delete-confirm-input"
+                            />
+                        </FieldContainer>
 
-            <SecondaryButton
-              onPress={() => navigation.goBack()}
-              accessibilityRole="button"
-              accessibilityLabel={t('settings.deleteConfirm.cancel')}
-              testID="delete-confirm-cancel"
-            >
-              <SecondaryButtonText>{t('settings.deleteConfirm.cancel')}</SecondaryButtonText>
-            </SecondaryButton>
-          </ContentWrapper>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </Container>
-  );
+                        <DangerButton
+                            onPress={handleDelete}
+                            disabled={!isDeleteEnabled}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('settings.deleteConfirm.deleteForever')}
+                            testID="delete-confirm-button"
+                        >
+                            <DangerButtonText>{t('settings.deleteConfirm.deleteForever')}</DangerButtonText>
+                        </DangerButton>
+
+                        <SecondaryButton
+                            onPress={() => navigation.goBack()}
+                            accessibilityRole="button"
+                            accessibilityLabel={t('settings.deleteConfirm.cancel')}
+                            testID="delete-confirm-cancel"
+                        >
+                            <SecondaryButtonText>{t('settings.deleteConfirm.cancel')}</SecondaryButtonText>
+                        </SecondaryButton>
+                    </ContentWrapper>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </Container>
+    );
 };
 
 export default DeleteConfirmScreen;

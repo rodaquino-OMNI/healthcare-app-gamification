@@ -2,10 +2,10 @@ import React from 'react';
 import { View } from 'react-native';
 
 interface HealthGoalFormProps {
-  onSubmit?: (data: any) => void;
-  onCancel?: () => void;
-  initialValues?: any;
-  testID?: string;
+    onSubmit?: (data: any) => void;
+    onCancel?: () => void;
+    initialValues?: any;
+    testID?: string;
 }
 
 /**
@@ -13,16 +13,12 @@ interface HealthGoalFormProps {
  * Placeholder implementation to be completed in a future sprint.
  */
 export const HealthGoalForm: React.FC<HealthGoalFormProps> = ({
-  onSubmit,
-  onCancel,
-  initialValues,
-  testID,
+    onSubmit: _onSubmit,
+    onCancel: _onCancel,
+    initialValues: _initialValues,
+    testID,
 }) => {
-  return (
-    <View testID={testID || 'health-goal-form'}>
-      {/* Health goal form fields will be implemented here */}
-    </View>
-  );
+    return <View testID={testID || 'health-goal-form'}>{/* Health goal form fields will be implemented here */}</View>;
 };
 
 export default HealthGoalForm;

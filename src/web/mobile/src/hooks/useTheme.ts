@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types -- return types are inferred from implementation context */
 /**
  * Theme hook that provides access to the current theme.
  * Wraps styled-components useTheme with proper typing.
@@ -9,35 +10,36 @@ import { useTheme as useStyledTheme } from 'styled-components/native';
  * Custom hook that provides access to the current theme.
  * @returns Object containing the theme and toggleTheme function
  */
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- hook return type inferred
 export function useTheme() {
-  const theme = useStyledTheme() as any;
+    const theme = useStyledTheme() as any;
 
-  return {
-    theme: {
-      colors: {
-        journey: {
-          health: theme?.colors?.journey?.health || '#4CAF50',
-          care: theme?.colors?.journey?.care || '#2196F3',
-          plan: theme?.colors?.journey?.plan || '#9C27B0',
+    return {
+        theme: {
+            colors: {
+                journey: {
+                    health: theme?.colors?.journey?.health || '#4CAF50',
+                    care: theme?.colors?.journey?.care || '#2196F3',
+                    plan: theme?.colors?.journey?.plan || '#9C27B0',
+                },
+                brand: {
+                    primary: theme?.colors?.brand?.primary || '#1976D2',
+                },
+                background: {
+                    default: theme?.colors?.background?.default || '#FFFFFF',
+                },
+                text: {
+                    primary: theme?.colors?.text?.primary || '#212121',
+                    secondary: theme?.colors?.text?.secondary || '#757575',
+                },
+                ...theme?.colors,
+            },
+            ...theme,
         },
-        brand: {
-          primary: theme?.colors?.brand?.primary || '#1976D2',
+        toggleTheme: () => {
+            // Theme toggle is handled by ThemeContext
         },
-        background: {
-          default: theme?.colors?.background?.default || '#FFFFFF',
-        },
-        text: {
-          primary: theme?.colors?.text?.primary || '#212121',
-          secondary: theme?.colors?.text?.secondary || '#757575',
-        },
-        ...theme?.colors,
-      },
-      ...theme,
-    },
-    toggleTheme: () => {
-      // Theme toggle is handled by ThemeContext
-    },
-  };
+    };
 }
 
 export default useTheme;

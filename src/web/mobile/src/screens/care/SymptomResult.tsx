@@ -1,23 +1,24 @@
-import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
-import { Stepper } from '@austa/design-system/src/components/Stepper/Stepper';
+import { Badge } from '@austa/design-system/src/components/Badge/Badge';
 import { Button } from '@austa/design-system/src/components/Button/Button';
 import { Card } from '@austa/design-system/src/components/Card/Card';
-import { Badge } from '@austa/design-system/src/components/Badge/Badge';
 import { ProgressBar } from '@austa/design-system/src/components/ProgressBar/ProgressBar';
+import { Stepper } from '@austa/design-system/src/components/Stepper/Stepper';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
-import { ROUTES } from '@constants/routes';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { View, StyleSheet, ScrollView } from 'react-native';
+
+import { ROUTES } from '@constants/routes';
 
 interface PossibleCondition {
-  id: string;
-  name: string;
-  probability: number;
-  severity: 'low' | 'medium' | 'high';
-  description: string;
+    id: string;
+    name: string;
+    probability: number;
+    severity: 'low' | 'medium' | 'high';
+    description: string;
 }
 
 /**
@@ -25,70 +26,68 @@ interface PossibleCondition {
  * AI/ML diagnostic service based on the collected symptom data.
  */
 const MOCK_CONDITIONS: PossibleCondition[] = [
-  {
-    id: 'c1',
-    name: 'Common Cold',
-    probability: 72,
-    severity: 'low',
-    description:
-      'A viral infection of the upper respiratory tract. Symptoms typically resolve within 7-10 days with rest and hydration.',
-  },
-  {
-    id: 'c2',
-    name: 'Seasonal Allergies',
-    probability: 58,
-    severity: 'low',
-    description:
-      'An immune response to environmental allergens such as pollen, dust, or pet dander. Treatable with antihistamines.',
-  },
-  {
-    id: 'c3',
-    name: 'Tension Headache',
-    probability: 45,
-    severity: 'medium',
-    description:
-      'A common type of headache caused by muscle tension, stress, or fatigue. Usually responds to OTC pain relievers.',
-  },
-  {
-    id: 'c4',
-    name: 'Gastroenteritis',
-    probability: 30,
-    severity: 'medium',
-    description:
-      'Inflammation of the stomach and intestines, often caused by viral or bacterial infection. Hydration is critical.',
-  },
-  {
-    id: 'c5',
-    name: 'Influenza',
-    probability: 18,
-    severity: 'high',
-    description:
-      'A viral respiratory infection that can cause severe symptoms. May require antiviral medication if caught early.',
-  },
+    {
+        id: 'c1',
+        name: 'Common Cold',
+        probability: 72,
+        severity: 'low',
+        description:
+            'A viral infection of the upper respiratory tract. Symptoms typically resolve within 7-10 days with rest and hydration.',
+    },
+    {
+        id: 'c2',
+        name: 'Seasonal Allergies',
+        probability: 58,
+        severity: 'low',
+        description:
+            'An immune response to environmental allergens such as pollen, dust, or pet dander. Treatable with antihistamines.',
+    },
+    {
+        id: 'c3',
+        name: 'Tension Headache',
+        probability: 45,
+        severity: 'medium',
+        description:
+            'A common type of headache caused by muscle tension, stress, or fatigue. Usually responds to OTC pain relievers.',
+    },
+    {
+        id: 'c4',
+        name: 'Gastroenteritis',
+        probability: 30,
+        severity: 'medium',
+        description:
+            'Inflammation of the stomach and intestines, often caused by viral or bacterial infection. Hydration is critical.',
+    },
+    {
+        id: 'c5',
+        name: 'Influenza',
+        probability: 18,
+        severity: 'high',
+        description:
+            'A viral respiratory infection that can cause severe symptoms. May require antiviral medication if caught early.',
+    },
 ];
 
-const getSeverityBadgeStatus = (
-  severity: 'low' | 'medium' | 'high'
-): 'success' | 'warning' | 'error' => {
-  switch (severity) {
-    case 'low':
-      return 'success';
-    case 'medium':
-      return 'warning';
-    case 'high':
-      return 'error';
-  }
+const getSeverityBadgeStatus = (severity: 'low' | 'medium' | 'high'): 'success' | 'warning' | 'error' => {
+    switch (severity) {
+        case 'low':
+            return 'success';
+        case 'medium':
+            return 'warning';
+        case 'high':
+            return 'error';
+    }
 };
 
 // getRiskLevel is now inside the component to access t()
 
 type SymptomResultRouteParams = {
-  symptoms: Array<{ id: string; name: string }>;
-  description: string;
-  regions: Array<{ id: string; label: string }>;
-  details: any[];
-  answers: Record<string, string | string[]>;
-  overallSeverity: number;
+    symptoms: Array<{ id: string; name: string }>;
+    description: string;
+    regions: Array<{ id: string; label: string }>;
+    details: any[];
+    answers: Record<string, string | string[]>;
+    overallSeverity: number;
 };
 
 /**
@@ -97,258 +96,238 @@ type SymptomResultRouteParams = {
  * Step 6 of the symptom checker flow.
  */
 const SymptomResult: React.FC = () => {
-  const navigation = useNavigation<any>();
-  const route = useRoute<RouteProp<{ params: SymptomResultRouteParams }, 'params'>>();
-  const {
-    symptoms = [],
-    description = '',
-    regions = [],
-    details = [],
-    answers = {},
-    overallSeverity = 5,
-  } = route.params || {};
-  const { t } = useTranslation();
+    const navigation = useNavigation<any>();
+    const route = useRoute<RouteProp<{ params: SymptomResultRouteParams }, 'params'>>();
+    const {
+        symptoms = [],
+        description = '',
+        regions = [],
+        details = [],
+        answers = {},
+        overallSeverity = 5,
+    } = route.params || {};
+    const { t } = useTranslation();
 
-  const SYMPTOM_STEPS = [
-    { label: t('journeys.care.symptomChecker.steps.symptoms') },
-    { label: t('journeys.care.symptomChecker.steps.bodyMap') },
-    { label: t('journeys.care.symptomChecker.steps.details') },
-    { label: t('journeys.care.symptomChecker.steps.questions') },
-    { label: t('journeys.care.symptomChecker.steps.severity') },
-    { label: t('journeys.care.symptomChecker.steps.results') },
-    { label: t('journeys.care.symptomChecker.steps.actions') },
-  ];
+    const SYMPTOM_STEPS = [
+        { label: t('journeys.care.symptomChecker.steps.symptoms') },
+        { label: t('journeys.care.symptomChecker.steps.bodyMap') },
+        { label: t('journeys.care.symptomChecker.steps.details') },
+        { label: t('journeys.care.symptomChecker.steps.questions') },
+        { label: t('journeys.care.symptomChecker.steps.severity') },
+        { label: t('journeys.care.symptomChecker.steps.results') },
+        { label: t('journeys.care.symptomChecker.steps.actions') },
+    ];
 
-  const getRiskLevel = (
-    severity: number
-  ): { label: string; color: string; badgeStatus: 'success' | 'warning' | 'error' } => {
-    if (severity <= 3) {
-      return {
-        label: t('journeys.care.symptomChecker.results.lowRisk'),
-        color: colors.semantic.success,
-        badgeStatus: 'success',
-      };
-    }
-    if (severity <= 6) {
-      return {
-        label: t('journeys.care.symptomChecker.results.moderateRisk'),
-        color: colors.semantic.warning,
-        badgeStatus: 'warning',
-      };
-    }
-    return {
-      label: t('journeys.care.symptomChecker.results.highRisk'),
-      color: colors.semantic.error,
-      badgeStatus: 'error',
+    const getRiskLevel = (
+        severity: number
+    ): { label: string; color: string; badgeStatus: 'success' | 'warning' | 'error' } => {
+        if (severity <= 3) {
+            return {
+                label: t('journeys.care.symptomChecker.results.lowRisk'),
+                color: colors.semantic.success,
+                badgeStatus: 'success',
+            };
+        }
+        if (severity <= 6) {
+            return {
+                label: t('journeys.care.symptomChecker.results.moderateRisk'),
+                color: colors.semantic.warning,
+                badgeStatus: 'warning',
+            };
+        }
+        return {
+            label: t('journeys.care.symptomChecker.results.highRisk'),
+            color: colors.semantic.error,
+            badgeStatus: 'error',
+        };
     };
-  };
 
-  const riskLevel = getRiskLevel(overallSeverity);
+    const riskLevel = getRiskLevel(overallSeverity);
 
-  const sortedConditions = [...MOCK_CONDITIONS].sort(
-    (a, b) => b.probability - a.probability
-  );
+    const sortedConditions = [...MOCK_CONDITIONS].sort((a, b) => b.probability - a.probability);
 
-  const handleViewRecommendations = () => {
-    navigation.navigate(ROUTES.CARE_SYMPTOM_RECOMMENDATION, {
-      symptoms,
-      description,
-      regions,
-      details,
-      answers,
-      overallSeverity,
-      conditions: sortedConditions,
-    });
-  };
+    const handleViewRecommendations = (): void => {
+        navigation.navigate(ROUTES.CARE_SYMPTOM_RECOMMENDATION, {
+            symptoms,
+            description,
+            regions,
+            details,
+            answers,
+            overallSeverity,
+            conditions: sortedConditions,
+        });
+    };
 
-  const handleStartOver = () => {
-    navigation.navigate(ROUTES.CARE_SYMPTOM_CHECKER);
-  };
+    const handleStartOver = (): void => {
+        navigation.navigate(ROUTES.CARE_SYMPTOM_CHECKER);
+    };
 
-  return (
-    <View style={styles.root}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-      >
-        <View style={styles.stepperContainer}>
-          <Stepper
-            steps={SYMPTOM_STEPS}
-            activeStep={5}
-            journey="care"
-            accessibilityLabel="Symptom checker progress - Step 6 Results"
-          />
-        </View>
+    return (
+        <View style={styles.root}>
+            <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+                <View style={styles.stepperContainer}>
+                    <Stepper
+                        steps={SYMPTOM_STEPS}
+                        activeStep={5}
+                        journey="care"
+                        accessibilityLabel="Symptom checker progress - Step 6 Results"
+                    />
+                </View>
 
-        <Text variant="heading" journey="care" testID="result-title">
-          {t('journeys.care.symptomChecker.results.title')}
-        </Text>
-
-        {/* Overall risk card */}
-        <Card journey="care" elevation="md">
-          <View style={styles.riskHeader}>
-            <Text variant="body" fontWeight="semiBold" journey="care">
-              {t('journeys.care.symptomChecker.results.overallRiskAssessment')}
-            </Text>
-            <Badge
-              variant="status"
-              status={riskLevel.badgeStatus}
-              testID="risk-badge"
-              accessibilityLabel={`Risk level: ${riskLevel.label}`}
-            >
-              {riskLevel.label}
-            </Badge>
-          </View>
-          <Text variant="body" journey="care">
-            {t('journeys.care.symptomChecker.results.riskDescription', { severity: overallSeverity })}
-          </Text>
-          <Text
-            variant="caption"
-            color={colors.neutral.gray600}
-          >
-            {t('journeys.care.symptomChecker.results.disclaimer')}
-          </Text>
-        </Card>
-
-        {/* Condition cards */}
-        <Text
-          variant="body"
-          fontWeight="semiBold"
-          journey="care"
-          testID="conditions-heading"
-        >
-          {t('journeys.care.symptomChecker.results.possibleConditions')}
-        </Text>
-
-        {sortedConditions.map((condition, index) => (
-          <Card
-            key={condition.id}
-            journey="care"
-            elevation="sm"
-          >
-            <View style={styles.conditionHeader}>
-              <View style={styles.conditionNameRow}>
-                <Text
-                  fontSize="heading-md"
-                  fontWeight="semiBold"
-                  journey="care"
-                  testID={`condition-name-${index}`}
-                >
-                  {condition.name}
+                <Text variant="heading" journey="care" testID="result-title">
+                    {t('journeys.care.symptomChecker.results.title')}
                 </Text>
-                <Badge
-                  variant="status"
-                  status={getSeverityBadgeStatus(condition.severity)}
-                  testID={`condition-severity-${index}`}
-                  accessibilityLabel={`${condition.severity} severity`}
-                >
-                  {condition.severity.charAt(0).toUpperCase() + condition.severity.slice(1)}
-                </Badge>
-              </View>
-            </View>
 
-            <View style={styles.probabilityRow}>
-              <Text
-                fontSize="text-sm"
-                color={colors.neutral.gray600}
-              >
-                {t('journeys.care.symptomChecker.results.matchProbability')}
-              </Text>
-              <Text
-                fontSize="text-sm"
-                fontWeight="semiBold"
-                color={colors.journeys.care.primary}
-                testID={`condition-probability-${index}`}
-              >
-                {condition.probability}%
-              </Text>
-            </View>
+                {/* Overall risk card */}
+                <Card journey="care" elevation="md">
+                    <View style={styles.riskHeader}>
+                        <Text variant="body" fontWeight="semiBold" journey="care">
+                            {t('journeys.care.symptomChecker.results.overallRiskAssessment')}
+                        </Text>
+                        <Badge
+                            variant="status"
+                            status={riskLevel.badgeStatus}
+                            testID="risk-badge"
+                            accessibilityLabel={`Risk level: ${riskLevel.label}`}
+                        >
+                            {riskLevel.label}
+                        </Badge>
+                    </View>
+                    <Text variant="body" journey="care">
+                        {t('journeys.care.symptomChecker.results.riskDescription', { severity: overallSeverity })}
+                    </Text>
+                    <Text variant="caption" color={colors.neutral.gray600}>
+                        {t('journeys.care.symptomChecker.results.disclaimer')}
+                    </Text>
+                </Card>
 
-            <ProgressBar
-              current={condition.probability}
-              total={100}
-              journey="care"
-              size="sm"
-              testId={`condition-progress-${index}`}
-              ariaLabel={`${condition.name} probability: ${condition.probability}%`}
-            />
+                {/* Condition cards */}
+                <Text variant="body" fontWeight="semiBold" journey="care" testID="conditions-heading">
+                    {t('journeys.care.symptomChecker.results.possibleConditions')}
+                </Text>
 
-            <View style={styles.conditionDescription}>
-              <Text variant="body" journey="care">
-                {condition.description}
-              </Text>
-            </View>
-          </Card>
-        ))}
+                {sortedConditions.map((condition, index) => (
+                    <Card key={condition.id} journey="care" elevation="sm">
+                        <View style={styles.conditionHeader}>
+                            <View style={styles.conditionNameRow}>
+                                <Text
+                                    fontSize="heading-md"
+                                    fontWeight="semiBold"
+                                    journey="care"
+                                    testID={`condition-name-${index}`}
+                                >
+                                    {condition.name}
+                                </Text>
+                                <Badge
+                                    variant="status"
+                                    status={getSeverityBadgeStatus(condition.severity)}
+                                    testID={`condition-severity-${index}`}
+                                    accessibilityLabel={`${condition.severity} severity`}
+                                >
+                                    {condition.severity.charAt(0).toUpperCase() + condition.severity.slice(1)}
+                                </Badge>
+                            </View>
+                        </View>
 
-        <View style={styles.buttonRow}>
-          <Button
-            variant="secondary"
-            onPress={handleStartOver}
-            journey="care"
-            accessibilityLabel="Start symptom check over"
-            testID="start-over-button"
-          >
-            {t('journeys.care.symptomChecker.results.startOver')}
-          </Button>
-          <Button
-            onPress={handleViewRecommendations}
-            journey="care"
-            accessibilityLabel="View recommendations"
-            testID="recommendations-button"
-          >
-            {t('journeys.care.symptomChecker.results.viewRecommendations')}
-          </Button>
+                        <View style={styles.probabilityRow}>
+                            <Text fontSize="text-sm" color={colors.neutral.gray600}>
+                                {t('journeys.care.symptomChecker.results.matchProbability')}
+                            </Text>
+                            <Text
+                                fontSize="text-sm"
+                                fontWeight="semiBold"
+                                color={colors.journeys.care.primary}
+                                testID={`condition-probability-${index}`}
+                            >
+                                {condition.probability}%
+                            </Text>
+                        </View>
+
+                        <ProgressBar
+                            current={condition.probability}
+                            total={100}
+                            journey="care"
+                            size="sm"
+                            testId={`condition-progress-${index}`}
+                            ariaLabel={`${condition.name} probability: ${condition.probability}%`}
+                        />
+
+                        <View style={styles.conditionDescription}>
+                            <Text variant="body" journey="care">
+                                {condition.description}
+                            </Text>
+                        </View>
+                    </Card>
+                ))}
+
+                <View style={styles.buttonRow}>
+                    <Button
+                        variant="secondary"
+                        onPress={handleStartOver}
+                        journey="care"
+                        accessibilityLabel="Start symptom check over"
+                        testID="start-over-button"
+                    >
+                        {t('journeys.care.symptomChecker.results.startOver')}
+                    </Button>
+                    <Button
+                        onPress={handleViewRecommendations}
+                        journey="care"
+                        accessibilityLabel="View recommendations"
+                        testID="recommendations-button"
+                    >
+                        {t('journeys.care.symptomChecker.results.viewRecommendations')}
+                    </Button>
+                </View>
+            </ScrollView>
         </View>
-      </ScrollView>
-    </View>
-  );
+    );
 };
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: colors.journeys.care.background,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: spacingValues.md,
-    paddingBottom: spacingValues['3xl'],
-  },
-  stepperContainer: {
-    marginBottom: spacingValues.xl,
-  },
-  riskHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacingValues.sm,
-  },
-  conditionHeader: {
-    marginBottom: spacingValues.sm,
-  },
-  conditionNameRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  probabilityRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacingValues['3xs'],
-  },
-  conditionDescription: {
-    marginTop: spacingValues.sm,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: spacingValues.xl,
-    gap: spacingValues.md,
-  },
+    root: {
+        flex: 1,
+        backgroundColor: colors.journeys.care.background,
+    },
+    scrollView: {
+        flex: 1,
+    },
+    scrollContent: {
+        padding: spacingValues.md,
+        paddingBottom: spacingValues['3xl'],
+    },
+    stepperContainer: {
+        marginBottom: spacingValues.xl,
+    },
+    riskHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: spacingValues.sm,
+    },
+    conditionHeader: {
+        marginBottom: spacingValues.sm,
+    },
+    conditionNameRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    probabilityRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: spacingValues['3xs'],
+    },
+    conditionDescription: {
+        marginTop: spacingValues.sm,
+    },
+    buttonRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: spacingValues.xl,
+        gap: spacingValues.md,
+    },
 });
 
 export default SymptomResult;

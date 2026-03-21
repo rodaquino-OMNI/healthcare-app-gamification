@@ -1,26 +1,28 @@
-import React, { useCallback } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
-import { useTranslation } from 'react-i18next';
-import { useTheme } from 'styled-components/native';
-import type { Theme } from '@design-system/themes/base.theme';
-
-import { ROUTES } from '../../constants/routes';
+/* eslint-disable @typescript-eslint/explicit-function-return-type -- return types are inferred from implementation context */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types -- return types are inferred from implementation context */
+import { Button } from '@austa/design-system/src/components/Button/Button';
+import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchable';
-import { Card } from '@austa/design-system/src/components/Card/Card';
-import { Button } from '@austa/design-system/src/components/Button/Button';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
+import type { Theme } from '@design-system/themes/base.theme';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import React, { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import { View, StyleSheet } from 'react-native';
+import { useTheme } from 'styled-components/native';
+
+import { ROUTES } from '../../constants/routes';
 
 /**
  * Route params for the MedicationDeleteConfirm screen.
  */
 type DeleteConfirmRouteParams = {
-  MedicationDeleteConfirm: {
-    medicationId?: string;
-    medicationName?: string;
-  };
+    MedicationDeleteConfirm: {
+        medicationId?: string;
+        medicationName?: string;
+    };
 };
 
 /**
@@ -28,160 +30,151 @@ type DeleteConfirmRouteParams = {
  * a medication, with cancel and delete actions.
  */
 export const MedicationDeleteConfirm: React.FC = () => {
-  const navigation = useNavigation<any>();
-  const { t } = useTranslation();
-  const theme = useTheme() as Theme;
-  const styles = createStyles(theme);
-  const route = useRoute<RouteProp<DeleteConfirmRouteParams, 'MedicationDeleteConfirm'>>();
+    const navigation = useNavigation<any>();
+    const { t } = useTranslation();
+    const theme = useTheme() as Theme;
+    const styles = createStyles(theme);
+    const route = useRoute<RouteProp<DeleteConfirmRouteParams, 'MedicationDeleteConfirm'>>();
 
-  const medicationName = route.params?.medicationName ?? t('medication.deleteConfirm.defaultName');
+    const medicationName = route.params?.medicationName ?? t('medication.deleteConfirm.defaultName');
 
-  const handleCancel = useCallback(() => {
-    navigation.goBack();
-  }, [navigation]);
+    const handleCancel = useCallback(() => {
+        navigation.goBack();
+    }, [navigation]);
 
-  const handleDelete = useCallback(() => {
-    // In production, call API to delete the medication
-    navigation.navigate(ROUTES.HEALTH_MEDICATION_LIST);
-  }, [navigation]);
+    const handleDelete = useCallback(() => {
+        // In production, call API to delete the medication
+        navigation.navigate(ROUTES.HEALTH_MEDICATION_LIST);
+    }, [navigation]);
 
-  return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Touchable
-          onPress={handleCancel}
-          accessibilityLabel={t('common.buttons.back')}
-          accessibilityRole="button"
-          testID="back-button"
-        >
-          <Text fontSize="lg" color={colors.journeys.health.primary}>
-            {t('common.buttons.back')}
-          </Text>
-        </Touchable>
-        <Text variant="heading" journey="health">
-          {t('medication.deleteConfirm.header')}
-        </Text>
-        <View style={styles.headerSpacer} />
-      </View>
+    return (
+        <View style={styles.container}>
+            {/* Header */}
+            <View style={styles.header}>
+                <Touchable
+                    onPress={handleCancel}
+                    accessibilityLabel={t('common.buttons.back')}
+                    accessibilityRole="button"
+                    testID="back-button"
+                >
+                    <Text fontSize="lg" color={colors.journeys.health.primary}>
+                        {t('common.buttons.back')}
+                    </Text>
+                </Touchable>
+                <Text variant="heading" journey="health">
+                    {t('medication.deleteConfirm.header')}
+                </Text>
+                <View style={styles.headerSpacer} />
+            </View>
 
-      {/* Confirmation Content */}
-      <View style={styles.content}>
-        {/* Warning Icon */}
-        <View style={styles.iconContainer}>
-          <View style={styles.warningCircle}>
-            <Text fontSize="3xl" color={colors.semantic.error} textAlign="center">
-              {'\u26A0'}
-            </Text>
-          </View>
+            {/* Confirmation Content */}
+            <View style={styles.content}>
+                {/* Warning Icon */}
+                <View style={styles.iconContainer}>
+                    <View style={styles.warningCircle}>
+                        <Text fontSize="3xl" color={colors.semantic.error} textAlign="center">
+                            {'\u26A0'}
+                        </Text>
+                    </View>
+                </View>
+
+                <Text variant="heading" fontSize="heading-xl" textAlign="center" color={colors.neutral.gray900}>
+                    {t('medication.deleteConfirm.title', { medication: medicationName })}
+                </Text>
+
+                <Card journey="health" elevation="sm" padding="md" style={styles.warningCard}>
+                    <Text fontSize="md" color={colors.neutral.gray700} textAlign="center">
+                        {t('medication.deleteConfirm.warning')}
+                    </Text>
+                </Card>
+
+                {/* Action Buttons */}
+                <View style={styles.actionsContainer}>
+                    <Button
+                        variant="secondary"
+                        journey="health"
+                        onPress={handleCancel}
+                        accessibilityLabel={t('common.buttons.cancel')}
+                        testID="cancel-delete-button"
+                    >
+                        {t('common.buttons.cancel')}
+                    </Button>
+
+                    <View style={styles.buttonSpacer} />
+
+                    <Touchable
+                        onPress={handleDelete}
+                        accessibilityLabel={t('medication.deleteConfirm.deleteButton')}
+                        accessibilityRole="button"
+                        testID="confirm-delete-button"
+                        style={styles.deleteButton}
+                    >
+                        <Text fontSize="md" fontWeight="semiBold" color={colors.neutral.white} textAlign="center">
+                            {t('medication.deleteConfirm.deleteButton')}
+                        </Text>
+                    </Touchable>
+                </View>
+            </View>
         </View>
-
-        <Text
-          variant="heading"
-          fontSize="heading-xl"
-          textAlign="center"
-          color={colors.neutral.gray900}
-        >
-          {t('medication.deleteConfirm.title', { medication: medicationName })}
-        </Text>
-
-        <Card journey="health" elevation="sm" padding="md" style={styles.warningCard}>
-          <Text fontSize="md" color={colors.neutral.gray700} textAlign="center">
-            {t('medication.deleteConfirm.warning')}
-          </Text>
-        </Card>
-
-        {/* Action Buttons */}
-        <View style={styles.actionsContainer}>
-          <Button
-            variant="secondary"
-            journey="health"
-            onPress={handleCancel}
-            accessibilityLabel={t('common.buttons.cancel')}
-            testID="cancel-delete-button"
-          >
-            {t('common.buttons.cancel')}
-          </Button>
-
-          <View style={styles.buttonSpacer} />
-
-          <Touchable
-            onPress={handleDelete}
-            accessibilityLabel={t('medication.deleteConfirm.deleteButton')}
-            accessibilityRole="button"
-            testID="confirm-delete-button"
-            style={styles.deleteButton}
-          >
-            <Text
-              fontSize="md"
-              fontWeight="semiBold"
-              color={colors.neutral.white}
-              textAlign="center"
-            >
-              {t('medication.deleteConfirm.deleteButton')}
-            </Text>
-          </Touchable>
-        </View>
-      </View>
-    </View>
-  );
+    );
 };
 
-const createStyles = (theme: Theme) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.journeys.health.background,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacingValues.md,
-    paddingTop: spacingValues['3xl'],
-    paddingBottom: spacingValues.sm,
-  },
-  headerSpacer: {
-    width: 40,
-  },
-  content: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: spacingValues.xl,
-  },
-  iconContainer: {
-    marginBottom: spacingValues.xl,
-  },
-  warningCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: theme.colors.background.default,
-    borderWidth: 3,
-    borderColor: colors.semantic.error,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  warningCard: {
-    marginTop: spacingValues.lg,
-    width: '100%',
-    maxWidth: 320,
-  },
-  actionsContainer: {
-    marginTop: spacingValues['2xl'],
-    width: '100%',
-    maxWidth: 320,
-  },
-  buttonSpacer: {
-    height: spacingValues.sm,
-  },
-  deleteButton: {
-    paddingVertical: spacingValues.md,
-    paddingHorizontal: spacingValues.xl,
-    borderRadius: 8,
-    backgroundColor: colors.semantic.error,
-    alignItems: 'center',
-  },
-});
+const createStyles = (theme: Theme) =>
+    StyleSheet.create({
+        container: {
+            flex: 1,
+            backgroundColor: colors.journeys.health.background,
+        },
+        header: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingHorizontal: spacingValues.md,
+            paddingTop: spacingValues['3xl'],
+            paddingBottom: spacingValues.sm,
+        },
+        headerSpacer: {
+            width: 40,
+        },
+        content: {
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingHorizontal: spacingValues.xl,
+        },
+        iconContainer: {
+            marginBottom: spacingValues.xl,
+        },
+        warningCircle: {
+            width: 80,
+            height: 80,
+            borderRadius: 40,
+            backgroundColor: theme.colors.background.default,
+            borderWidth: 3,
+            borderColor: colors.semantic.error,
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        warningCard: {
+            marginTop: spacingValues.lg,
+            width: '100%',
+            maxWidth: 320,
+        },
+        actionsContainer: {
+            marginTop: spacingValues['2xl'],
+            width: '100%',
+            maxWidth: 320,
+        },
+        buttonSpacer: {
+            height: spacingValues.sm,
+        },
+        deleteButton: {
+            paddingVertical: spacingValues.md,
+            paddingHorizontal: spacingValues.xl,
+            borderRadius: 8,
+            backgroundColor: colors.semantic.error,
+            alignItems: 'center',
+        },
+    });
 
 export default MedicationDeleteConfirm;

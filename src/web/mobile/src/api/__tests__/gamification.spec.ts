@@ -39,7 +39,7 @@ jest.mock('@react-native-async-storage/async-storage', () => ({
     getItem: jest.fn(),
 }));
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-var-requires -- Dynamic require for test mock isolation
 const AsyncStorage = require('@react-native-async-storage/async-storage');
 
 const MOCK_SESSION = { accessToken: 'test-token', refreshToken: 'rt', expiresAt: Date.now() + 3600000, userId: 'u1' };

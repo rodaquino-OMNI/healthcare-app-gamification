@@ -1,6 +1,6 @@
 /**
  * Context index file
- * 
+ *
  * This file exports all context providers and hooks from the context directory,
  * providing a centralized import location for the application's contexts.
  * This simplifies importing context-related components throughout the app.
