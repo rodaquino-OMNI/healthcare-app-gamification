@@ -213,6 +213,8 @@
     "ua-parser-js": "1.0.41",
     "@sentry/nextjs/webpack": "5.76.0",
     "@sentry/nextjs/@babel/traverse": "7.29.0",
+    "@sentry/cli": "2.39.1",
+    "@sentry/webpack-plugin": "2.22.7",
     "next": "15.5.12",
     "eslint-config-next": "15.5.12",
     "@next/bundle-analyzer": "^15.5.12",
