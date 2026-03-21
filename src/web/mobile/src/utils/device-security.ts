@@ -23,6 +23,22 @@ export interface DeviceSecurityStatus {
 }
 
 /**
+ * Device security restriction level for sensitive screens.
+ * - "none": Device passes all checks — no restrictions needed.
+ * - "warn": Emulator or debug build detected — show informational alert, allow usage.
+ * - "restrict": Rooted/jailbroken device — consuming screens should hide sensitive data.
+ *
+ * Screens that should use enforceDeviceSecurity():
+ * - screens/health/* (health records, metrics, cycle tracking, sleep data)
+ * - screens/plan/* (insurance details, claims, coverage)
+ * - screens/settings/SettingsPrivacy.tsx
+ */
+export type DeviceSecurityRestriction = 'none' | 'warn' | 'restrict';
+
+/** Set after checkDeviceSecurity() runs. Use to gate sensitive UI. */
+export let isDeviceCompromised = false;
+
+/**
  * Check if the device is rooted (Android) or jailbroken (iOS).
  * Returns a promise because the native checks are asynchronous.
  */
@@ -61,6 +77,8 @@ export async function isEmulator(): Promise<boolean> {
 export async function checkDeviceSecurity(): Promise<DeviceSecurityStatus> {
     const [rootedResult, emulatorResult] = await Promise.all([isRooted(), isEmulator()]);
 
+    isDeviceCompromised = rootedResult;
+
     return {
         rooted: rootedResult,
         emulator: emulatorResult,
@@ -85,4 +103,32 @@ export async function warnIfCompromised(): Promise<void> {
             [{ text: 'I Understand', style: 'default' }]
         );
     }
+}
+
+/**
+ * Evaluate device security and return the appropriate restriction level.
+ * Updates the isDeviceCompromised flag as a side-effect.
+ *
+ * Usage in screens:
+ *   const restriction = await enforceDeviceSecurity();
+ *   if (restriction === 'restrict') {
+ *       // Hide sensitive health/financial data
+ *   }
+ *
+ * Does NOT block the entire app — only flags for consuming screens.
+ * MASVS-RESILIENCE-1 L2: Compromised devices must restrict sensitive features.
+ */
+export async function enforceDeviceSecurity(): Promise<DeviceSecurityRestriction> {
+    const status = await checkDeviceSecurity();
+
+    if (status.rooted) {
+        isDeviceCompromised = true;
+        return 'restrict';
+    }
+
+    if (status.emulator || status.debugMode) {
+        return 'warn';
+    }
+
+    return 'none';
 }

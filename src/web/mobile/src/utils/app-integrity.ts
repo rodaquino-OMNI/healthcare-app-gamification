@@ -5,7 +5,7 @@
  * @see https://developer.android.com/google/play/integrity
  * @see https://developer.apple.com/documentation/devicecheck
  */
-import { Platform, NativeModules } from 'react-native';
+import { Platform } from 'react-native';
 
 import { isRooted, isEmulator } from './device-security';
 
@@ -19,6 +19,7 @@ export interface AppIntegrityResult {
  * Request an integrity attestation token from the platform native module.
  * Returns null on failure or unsupported platforms.
  */
+// eslint-disable-next-line @typescript-eslint/require-await
 export async function requestIntegrityToken(): Promise<string | null> {
     if (__DEV__) {
         console.warn('[AppIntegrity] Running in dev mode — returning mock integrity token');
@@ -27,22 +28,18 @@ export async function requestIntegrityToken(): Promise<string | null> {
 
     try {
         if (Platform.OS === 'android') {
-            // TODO(AUSTA-301): Bridge to IntegrityManager.requestIntegrityToken()
-            const { PlayIntegrity } = NativeModules;
-            if (PlayIntegrity?.requestToken) {
-                return await PlayIntegrity.requestToken();
-            }
-            console.warn('[AppIntegrity] PlayIntegrity native module not available');
+            // TODO(AUSTA-301): Implement Play Integrity via EAS config plugin or custom dev client.
+            // NativeModules.PlayIntegrity is not available in Expo managed workflow.
+            // When using EAS custom native modules, bridge to IntegrityManager.requestIntegrityToken().
+            console.warn('[AppIntegrity] Play Integrity not available in Expo managed workflow');
             return null;
         }
 
         if (Platform.OS === 'ios') {
-            // TODO(AUSTA-302): Bridge to DCAppAttestService.attestKey()
-            const { AppAttest } = NativeModules;
-            if (AppAttest?.requestAttestation) {
-                return await AppAttest.requestAttestation();
-            }
-            console.warn('[AppIntegrity] AppAttest native module not available');
+            // TODO(AUSTA-302): Implement App Attest via EAS config plugin or custom dev client.
+            // DCAppAttestService requires native module not available in Expo managed workflow.
+            // When ejecting to bare or using EAS custom native module, implement DCAppAttestService.attestKey().
+            console.warn('[AppIntegrity] App Attest not available in Expo managed workflow');
             return null;
         }
 
@@ -71,7 +68,7 @@ export async function verifyAppIntegrity(backendUrl: string): Promise<boolean> {
             return false;
         }
 
-        const result = await response.json();
+        const result = (await response.json()) as { verified?: boolean };
         return result.verified === true;
     } catch (error) {
         console.error('[AppIntegrity] Backend verification failed:', error);

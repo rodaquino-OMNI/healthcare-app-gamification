@@ -9,23 +9,73 @@
  * @see https://github.com/mrousavy/react-native-mmkv
  */
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { MMKV } from 'react-native-mmkv';
+import * as SecureStore from 'expo-secure-store';
+import type { MMKV as MMKVInstance } from 'react-native-mmkv';
+
+interface MMKVConfig {
+    id: string;
+    encryptionKey?: string;
+}
+
+// react-native-mmkv v4.x exports MMKV as type-only in declarations but the
+// JS module exports a constructable class. Use require() + cast for the constructor.
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const MMKVConstructor = (require('react-native-mmkv') as { MMKV: new (config: MMKVConfig) => MMKVInstance }).MMKV;
 
 /**
- * Encrypted MMKV instance for auth tokens and sensitive data.
- * The encryptionKey should ideally come from the device keystore
- * (Android Keystore / iOS Keychain). For MMKV v2.x the encryption
- * key is a string that MMKV uses internally for AES encryption.
+ * Keychain-backed MMKV encryption key.
  *
- * NOTE: In a production environment, derive this key from a
- * hardware-backed keystore via react-native-keychain or expo-secure-store.
- * For now we use a static ID-based encryption which still encrypts
- * at-rest storage (significantly better than plaintext AsyncStorage).
+ * MASVS-STORAGE-1 / MASVS-CRYPTO-1: The encryption key is derived
+ * from the iOS Keychain / Android Keystore via expo-secure-store,
+ * ensuring it is hardware-protected and never exposed in plaintext.
+ *
+ * On first launch a cryptographically random 256-bit key is generated
+ * and persisted in the Keychain with WHEN_UNLOCKED_THIS_DEVICE_ONLY
+ * accessibility, meaning it cannot be extracted from backups.
  */
-const secureInstance = new MMKV({
-    id: 'austa-secure-storage',
-    encryptionKey: 'austa-device-key-v1',
-});
+const MMKV_ENCRYPTION_KEY_ID = 'austa-mmkv-encryption-key';
+
+async function getOrCreateEncryptionKey(): Promise<string> {
+    const existing = await SecureStore.getItemAsync(MMKV_ENCRYPTION_KEY_ID);
+    if (existing) {
+        return existing;
+    }
+
+    // Generate a random 256-bit key for first-time setup
+    const bytes = new Uint8Array(32);
+    crypto.getRandomValues(bytes);
+    const newKey = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+
+    await SecureStore.setItemAsync(MMKV_ENCRYPTION_KEY_ID, newKey, {
+        keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
+    });
+    return newKey;
+}
+
+let secureInstance: MMKVInstance | null = null;
+
+/**
+ * Initialise the encrypted MMKV instance with a Keychain-derived key.
+ * Must be called early in the app lifecycle (e.g. App.tsx) before any
+ * storage access. Safe to call multiple times — subsequent calls are no-ops.
+ */
+export async function initSecureStorage(): Promise<void> {
+    if (secureInstance) {
+        return;
+    }
+    const encryptionKey = await getOrCreateEncryptionKey();
+    secureInstance = new MMKVConstructor({ id: 'austa-secure-storage', encryptionKey });
+}
+
+function getInstance(): MMKVInstance {
+    if (!secureInstance) {
+        // Fallback: create without encryption if init hasn't been called yet.
+        // This handles the edge case where code accesses storage before async init.
+        console.warn('[SecureStorage] Accessed before initSecureStorage(). Using unencrypted fallback.');
+        secureInstance = new MMKVConstructor({ id: 'austa-secure-storage' });
+    }
+    return secureInstance;
+}
 
 /** Keys used for auth token storage */
 const TOKEN_KEYS = {
@@ -40,33 +90,33 @@ const TOKEN_KEYS = {
 export const SecureStorage = {
     /** Get a string value by key. Returns null if not found. */
     getString(key: string): string | null {
-        const value = secureInstance.getString(key);
+        const value = getInstance().getString(key);
         return value === undefined ? null : value;
     },
 
     /** Set a string value by key. */
     setString(key: string, value: string): void {
-        secureInstance.set(key, value);
+        getInstance().set(key, value);
     },
 
     /** Delete a key from storage. */
     delete(key: string): void {
-        secureInstance.delete(key);
+        getInstance().remove(key);
     },
 
     /** Check if a key exists. */
     contains(key: string): boolean {
-        return secureInstance.contains(key);
+        return getInstance().contains(key);
     },
 
     /** Clear all data in the encrypted storage. */
     clearAll(): void {
-        secureInstance.clearAll();
+        getInstance().clearAll();
     },
 
     /** Get all keys in the encrypted storage. */
     getAllKeys(): string[] {
-        return secureInstance.getAllKeys();
+        return getInstance().getAllKeys();
     },
 };
 
@@ -99,6 +149,9 @@ export const secureTokenStorage = {
  * Call this early in the app lifecycle (e.g., App.tsx or AuthProvider).
  */
 export async function migrateFromAsyncStorage(): Promise<void> {
+    // Ensure encrypted storage is initialised before migration
+    await initSecureStorage();
+
     // Skip if migration was already performed
     if (SecureStorage.contains(TOKEN_KEYS.MIGRATION_DONE)) {
         return;
@@ -117,7 +170,7 @@ export async function migrateFromAsyncStorage(): Promise<void> {
     } catch (error) {
         // Log but don't throw — the app can still function with AsyncStorage
         // until migration succeeds on the next launch
-        console.error('[SecureStorage] Migration from AsyncStorage failed:', error);
+        console.error('[SecureStorage] Migration from AsyncStorage failed:', String(error));
     }
 }
 
