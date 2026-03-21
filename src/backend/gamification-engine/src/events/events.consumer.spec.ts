@@ -27,7 +27,7 @@ describe('EventsConsumer', () => {
                     const instance = new EventsConsumer(
                         mockKafkaService as never,
                         mockRulesService as never,
-                        mockLogger as never,
+                        mockLogger as never
                     );
                     return instance;
                 },
@@ -49,7 +49,7 @@ describe('EventsConsumer', () => {
             expect(mockKafkaService.subscribe).toHaveBeenCalledWith(
                 'health.events',
                 'gamification-engine-group',
-                expect.any(Function),
+                expect.any(Function)
             );
         });
 

@@ -1,14 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Test, TestingModule } from '@nestjs/testing';
-import { ForbiddenException } from '@nestjs/common';
-import { InsightsService } from './insights.service';
+/* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
 import { PrismaService } from '@app/shared/database/prisma.service';
-import { FhirService } from '../integrations/fhir/fhir.service';
-import { WearablesService } from '../integrations/wearables/wearables.service';
+import { AppException } from '@app/shared/exceptions/exceptions.types';
 import { KafkaService } from '@app/shared/kafka/kafka.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { TracingService } from '@app/shared/tracing/tracing.service';
-import { AppException } from '@app/shared/exceptions/exceptions.types';
+import { ForbiddenException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { InsightsService } from './insights.service';
+import { FhirService } from '../integrations/fhir/fhir.service';
+import { WearablesService } from '../integrations/wearables/wearables.service';
 
 describe('InsightsService', () => {
     let service: InsightsService;
@@ -101,7 +102,9 @@ describe('InsightsService', () => {
             { id: 'metric-2', userId, type: 'STEPS', value: 8000, timestamp: new Date() },
         ];
 
-        const mockGoals = [{ id: 'goal-1', recordId: userId, type: 'STEPS', targetValue: 10000, status: 'ACTIVE' }];
+        const mockGoals = [
+            { id: 'goal-1', recordId: userId, type: 'STEPS', targetValue: 10000, status: 'ACTIVE' },
+        ];
 
         it('should generate insights for a user', async () => {
             (mockPrismaService as any).healthMetric.findMany.mockResolvedValue(mockMetrics);
@@ -116,7 +119,9 @@ describe('InsightsService', () => {
         });
 
         it('should throw ForbiddenException when requestingUserId does not match userId', async () => {
-            await expect(service.generateUserInsights(userId, 'different-user')).rejects.toThrow(ForbiddenException);
+            await expect(service.generateUserInsights(userId, 'different-user')).rejects.toThrow(
+                ForbiddenException
+            );
         });
 
         it('should query health metrics and goals for the user', async () => {
@@ -147,7 +152,9 @@ describe('InsightsService', () => {
         });
 
         it('should throw AppException when database query fails', async () => {
-            (mockPrismaService as any).healthMetric.findMany.mockRejectedValue(new Error('Database connection lost'));
+            (mockPrismaService as any).healthMetric.findMany.mockRejectedValue(
+                new Error('Database connection lost')
+            );
 
             await expect(service.generateUserInsights(userId)).rejects.toThrow(AppException);
         });
@@ -169,7 +176,9 @@ describe('InsightsService', () => {
         it('should not throw when individual user insight generation fails', async () => {
             const mockUsers = [{ id: 'user-1' }];
             mockPrismaService.user.findMany.mockResolvedValue(mockUsers);
-            (mockPrismaService as any).healthMetric.findMany.mockRejectedValue(new Error('Failed for user'));
+            (mockPrismaService as any).healthMetric.findMany.mockRejectedValue(
+                new Error('Failed for user')
+            );
 
             await expect(service.generateInsights()).resolves.not.toThrow();
         });
@@ -205,9 +214,13 @@ describe('InsightsService', () => {
         });
 
         it('should throw AppException when query fails', async () => {
-            (mockPrismaService as any).healthMetric.findMany.mockRejectedValue(new Error('Query error'));
+            (mockPrismaService as any).healthMetric.findMany.mockRejectedValue(
+                new Error('Query error')
+            );
 
-            await expect(service.getUserHealthMetrics(userId, startDate, endDate)).rejects.toThrow(AppException);
+            await expect(service.getUserHealthMetrics(userId, startDate, endDate)).rejects.toThrow(
+                AppException
+            );
         });
     });
 
@@ -254,7 +267,9 @@ describe('InsightsService', () => {
         it('should throw AppException when Kafka produce fails', async () => {
             mockKafkaService.produce.mockRejectedValue(new Error('Kafka unavailable'));
 
-            await expect(service.publishInsightEvent(userId, insightData)).rejects.toThrow(AppException);
+            await expect(service.publishInsightEvent(userId, insightData)).rejects.toThrow(
+                AppException
+            );
         });
     });
 });

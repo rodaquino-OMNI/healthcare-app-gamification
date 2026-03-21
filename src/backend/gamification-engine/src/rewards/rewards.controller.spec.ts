@@ -1,13 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { Reward } from './entities/reward.entity';
 import { RewardsController } from './rewards.controller';
 import { RewardsService } from './rewards.service';
 import { AppException } from '../../../shared/src/exceptions/exceptions.types';
-import { Reward } from './entities/reward.entity';
 
 describe('RewardsController', () => {
     let controller: RewardsController;
-    let rewardsService: RewardsService;
+    let _rewardsService: RewardsService;
 
     const mockReward: Partial<Reward> = {
         id: 'reward-1',
@@ -33,7 +34,7 @@ describe('RewardsController', () => {
         }).compile();
 
         controller = module.get<RewardsController>(RewardsController);
-        rewardsService = module.get<RewardsService>(RewardsService);
+        _rewardsService = module.get<RewardsService>(RewardsService);
     });
 
     it('should be defined', () => {

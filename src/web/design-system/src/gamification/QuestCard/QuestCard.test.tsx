@@ -9,7 +9,7 @@ import { ThemeProvider } from '../../themes';
 jest.mock('styled-components', () => {
     const originalModule = jest.requireActual('styled-components');
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Mock factory returns untyped test double
     return {
         ...originalModule,
         ThemeProvider: ({ children }: { children: React.ReactNode }) => children,

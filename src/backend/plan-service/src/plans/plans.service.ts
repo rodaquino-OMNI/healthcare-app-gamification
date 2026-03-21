@@ -1,12 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable
-    @typescript-eslint/no-explicit-any,
-    @typescript-eslint/no-unsafe-argument,
-    @typescript-eslint/no-unsafe-assignment,
-    @typescript-eslint/no-unsafe-member-access,
-    @typescript-eslint/no-unsafe-return,
-    max-len
-*/
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return, max-len -- Prisma dynamic query options and AppException constructor require untyped arguments */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { PaginationDto } from '@app/shared/dto/pagination.dto';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
@@ -50,7 +42,11 @@ export class PlansService {
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error';
                 const errorStack = error instanceof Error ? error.stack : undefined;
 
-                this.logger.error(`Error creating plan: ${errorMessage}`, errorStack, 'PlansService');
+                this.logger.error(
+                    `Error creating plan: ${errorMessage}`,
+                    errorStack,
+                    'PlansService'
+                );
                 throw new AppException(
                     'Failed to create insurance plan',
                     ErrorType.TECHNICAL,
@@ -93,7 +89,8 @@ export class PlansService {
                 // Apply pagination
                 if (pagination) {
                     const take = pagination.limit || 10;
-                    const skip = pagination.skip || (pagination.page ? (pagination.page - 1) * take : 0);
+                    const skip =
+                        pagination.skip || (pagination.page ? (pagination.page - 1) * take : 0);
 
                     queryOptions.take = take;
                     queryOptions.skip = skip;
@@ -109,7 +106,11 @@ export class PlansService {
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error';
                 const errorStack = error instanceof Error ? error.stack : undefined;
 
-                this.logger.error(`Error retrieving plans: ${errorMessage}`, errorStack, 'PlansService');
+                this.logger.error(
+                    `Error retrieving plans: ${errorMessage}`,
+                    errorStack,
+                    'PlansService'
+                );
                 throw new AppException(
                     'Failed to retrieve insurance plans',
                     ErrorType.TECHNICAL,
@@ -134,9 +135,14 @@ export class PlansService {
                 const plan = await this.prisma.plan.findUnique({ where: { id } });
 
                 if (!plan) {
-                    throw new AppException(`Plan with ID ${id} not found`, ErrorType.BUSINESS, 'PLAN_NOT_FOUND', {
-                        planId: id,
-                    });
+                    throw new AppException(
+                        `Plan with ID ${id} not found`,
+                        ErrorType.BUSINESS,
+                        'PLAN_NOT_FOUND',
+                        {
+                            planId: id,
+                        }
+                    );
                 }
 
                 return plan;
@@ -148,7 +154,11 @@ export class PlansService {
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error';
                 const errorStack = error instanceof Error ? error.stack : undefined;
 
-                this.logger.error(`Error retrieving plan ${id}: ${errorMessage}`, errorStack, 'PlansService');
+                this.logger.error(
+                    `Error retrieving plan ${id}: ${errorMessage}`,
+                    errorStack,
+                    'PlansService'
+                );
                 throw new AppException(
                     `Failed to retrieve insurance plan with ID ${id}`,
                     ErrorType.TECHNICAL,
@@ -187,7 +197,11 @@ export class PlansService {
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error';
                 const errorStack = error instanceof Error ? error.stack : undefined;
 
-                this.logger.error(`Error updating plan ${id}: ${errorMessage}`, errorStack, 'PlansService');
+                this.logger.error(
+                    `Error updating plan ${id}: ${errorMessage}`,
+                    errorStack,
+                    'PlansService'
+                );
                 throw new AppException(
                     `Failed to update insurance plan with ID ${id}`,
                     ErrorType.TECHNICAL,
@@ -221,7 +235,11 @@ export class PlansService {
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error';
                 const errorStack = error instanceof Error ? error.stack : undefined;
 
-                this.logger.error(`Error removing plan ${id}: ${errorMessage}`, errorStack, 'PlansService');
+                this.logger.error(
+                    `Error removing plan ${id}: ${errorMessage}`,
+                    errorStack,
+                    'PlansService'
+                );
                 throw new AppException(
                     `Failed to delete insurance plan with ID ${id}`,
                     ErrorType.TECHNICAL,
@@ -241,7 +259,10 @@ export class PlansService {
      */
     async verifyCoverage(planId: string, procedureCode: string): Promise<boolean> {
         return this.tracingService.createSpan('PlansService.verifyCoverage', async () => {
-            this.logger.log(`Verifying coverage for plan ${planId} and procedure ${procedureCode}`, 'PlansService');
+            this.logger.log(
+                `Verifying coverage for plan ${planId} and procedure ${procedureCode}`,
+                'PlansService'
+            );
 
             try {
                 const plan = await this.findOne(planId);

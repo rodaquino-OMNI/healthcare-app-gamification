@@ -1,13 +1,14 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { GameProfile } from './entities/game-profile.entity';
 import { ProfilesController } from './profiles.controller';
 import { ProfilesService } from './profiles.service';
 import { LoggerService } from '../../../shared/src/logging/logger.service';
-import { GameProfile } from './entities/game-profile.entity';
 
 describe('ProfilesController', () => {
     let controller: ProfilesController;
-    let profilesService: ProfilesService;
+    let _profilesService: ProfilesService;
 
     const mockGameProfile: GameProfile = {
         id: 'profile-1',
@@ -43,7 +44,7 @@ describe('ProfilesController', () => {
         }).compile();
 
         controller = module.get<ProfilesController>(ProfilesController);
-        profilesService = module.get<ProfilesService>(ProfilesService);
+        _profilesService = module.get<ProfilesService>(ProfilesService);
     });
 
     it('should be defined', () => {
@@ -92,7 +93,9 @@ describe('ProfilesController', () => {
         it('should propagate errors from the service', async () => {
             mockProfilesService.create.mockRejectedValue(new Error('Creation failed'));
 
-            await expect(controller.createProfile({ userId: 'user-1' })).rejects.toThrow('Creation failed');
+            await expect(controller.createProfile({ userId: 'user-1' })).rejects.toThrow(
+                'Creation failed'
+            );
         });
     });
 
@@ -106,14 +109,19 @@ describe('ProfilesController', () => {
 
             const result = await controller.updateProfile('user-1', { xp: 300, level: 4 });
 
-            expect(mockProfilesService.update).toHaveBeenCalledWith('user-1', { xp: 300, level: 4 });
+            expect(mockProfilesService.update).toHaveBeenCalledWith('user-1', {
+                xp: 300,
+                level: 4,
+            });
             expect(result.xp).toBe(300);
         });
 
         it('should propagate NotFoundException when profile not found', async () => {
             mockProfilesService.update.mockRejectedValue(new NotFoundException('Not found'));
 
-            await expect(controller.updateProfile('nonexistent', { xp: 100 })).rejects.toThrow(NotFoundException);
+            await expect(controller.updateProfile('nonexistent', { xp: 100 })).rejects.toThrow(
+                NotFoundException
+            );
         });
     });
 });

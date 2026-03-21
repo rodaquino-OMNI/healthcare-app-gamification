@@ -1,12 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { AchievementsController } from './achievements.controller';
 import { AchievementsService } from './achievements.service';
 import { AppException } from '../../../shared/src/exceptions/exceptions.types';
 
 describe('AchievementsController', () => {
     let controller: AchievementsController;
-    let achievementsService: AchievementsService;
+    let _achievementsService: AchievementsService;
 
     const mockAchievement = {
         id: 'achievement-1',
@@ -36,7 +37,7 @@ describe('AchievementsController', () => {
         }).compile();
 
         controller = module.get<AchievementsController>(AchievementsController);
-        achievementsService = module.get<AchievementsService>(AchievementsService);
+        _achievementsService = module.get<AchievementsService>(AchievementsService);
     });
 
     it('should be defined', () => {
@@ -52,7 +53,10 @@ describe('AchievementsController', () => {
 
             const result = await controller.findAll({ page: 1, limit: 10 }, {});
 
-            expect(mockAchievementsService.findAll).toHaveBeenCalledWith({}, { page: 1, limit: 10 });
+            expect(mockAchievementsService.findAll).toHaveBeenCalledWith(
+                {},
+                { page: 1, limit: 10 }
+            );
             expect(result).toEqual(mockPaginatedResponse);
         });
 
@@ -62,11 +66,17 @@ describe('AchievementsController', () => {
 
             await controller.findAll({ page: 1, limit: 5 }, filter as any);
 
-            expect(mockAchievementsService.findAll).toHaveBeenCalledWith(filter, { page: 1, limit: 5 });
+            expect(mockAchievementsService.findAll).toHaveBeenCalledWith(filter, {
+                page: 1,
+                limit: 5,
+            });
         });
 
         it('should return empty result when no achievements match', async () => {
-            mockAchievementsService.findAll.mockResolvedValue({ data: [], meta: { total: 0, page: 1, limit: 10 } });
+            mockAchievementsService.findAll.mockResolvedValue({
+                data: [],
+                meta: { total: 0, page: 1, limit: 10 },
+            });
 
             const result = await controller.findAll({ page: 1, limit: 10 }, {});
 
@@ -77,7 +87,9 @@ describe('AchievementsController', () => {
             const exception = new AppException('Query failed', 'TECHNICAL' as any, 'ACH_001', {});
             mockAchievementsService.findAll.mockRejectedValue(exception);
 
-            await expect(controller.findAll({ page: 1, limit: 10 }, {})).rejects.toThrow(AppException);
+            await expect(controller.findAll({ page: 1, limit: 10 }, {})).rejects.toThrow(
+                AppException
+            );
         });
     });
 

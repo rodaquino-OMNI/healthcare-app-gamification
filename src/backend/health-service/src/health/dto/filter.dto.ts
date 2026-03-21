@@ -27,15 +27,27 @@ export class FilterDto {
     @IsOptional()
     source?: string;
 
-    @ApiPropertyOptional({ type: 'object', description: 'Specific filtering conditions', additionalProperties: true })
+    @ApiPropertyOptional({
+        type: 'object',
+        description: 'Specific filtering conditions',
+        additionalProperties: true,
+    })
     @IsOptional()
     where?: Record<string, unknown>;
 
-    @ApiPropertyOptional({ type: 'object', description: 'Ordering specification', additionalProperties: true })
+    @ApiPropertyOptional({
+        type: 'object',
+        description: 'Ordering specification',
+        additionalProperties: true,
+    })
     @IsOptional()
     orderBy?: Record<string, 'asc' | 'desc'>;
 
-    @ApiPropertyOptional({ type: 'object', description: 'Related data to include', additionalProperties: true })
+    @ApiPropertyOptional({
+        type: 'object',
+        description: 'Related data to include',
+        additionalProperties: true,
+    })
     @IsOptional()
     include?: Record<string, boolean>;
 }

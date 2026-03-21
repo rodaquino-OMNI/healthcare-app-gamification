@@ -23,7 +23,11 @@ interface AchievementFilterDto extends FilterDto {
  * Handles CRUD operations and business logic for achievements across all journeys.
  */
 @Injectable()
-export class AchievementsService implements Service<Achievement, CreateAchievementDto, UpdateAchievementDto> {
+export class AchievementsService implements Service<
+    Achievement,
+    CreateAchievementDto,
+    UpdateAchievementDto
+> {
     /**
      * Creates an instance of the AchievementsService.
      *
@@ -44,7 +48,9 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
         try {
             return await this.prisma.achievement.findFirst({ where: criteria });
         } catch {
-            throw new AppException('Failed to find achievement', ErrorType.TECHNICAL, 'GAME_002', { criteria });
+            throw new AppException('Failed to find achievement', ErrorType.TECHNICAL, 'GAME_002', {
+                criteria,
+            });
         }
     }
 
@@ -110,7 +116,12 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
             if (error instanceof AppException) {
                 throw error;
             }
-            throw new AppException('Failed to retrieve achievements', ErrorType.TECHNICAL, 'GAME_002', { filter });
+            throw new AppException(
+                'Failed to retrieve achievements',
+                ErrorType.TECHNICAL,
+                'GAME_002',
+                { filter }
+            );
         }
     }
 
@@ -193,9 +204,14 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
                 throw error;
             }
 
-            throw new AppException(`Failed to retrieve achievement with ID ${id}`, ErrorType.TECHNICAL, 'GAME_002', {
-                id,
-            });
+            throw new AppException(
+                `Failed to retrieve achievement with ID ${id}`,
+                ErrorType.TECHNICAL,
+                'GAME_002',
+                {
+                    id,
+                }
+            );
         }
     }
 
@@ -209,15 +225,22 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
     async create(achievementData: CreateAchievementDto): Promise<Achievement> {
         try {
             return await this.prisma.achievement.create({
-                data: achievementData as Parameters<typeof this.prisma.achievement.create>[0]['data'],
+                data: achievementData as Parameters<
+                    typeof this.prisma.achievement.create
+                >[0]['data'],
             });
         } catch (error: unknown) {
             if (error instanceof AppException) {
                 throw error;
             }
-            throw new AppException('Failed to create achievement', ErrorType.TECHNICAL, 'GAME_003', {
-                achievementData,
-            });
+            throw new AppException(
+                'Failed to create achievement',
+                ErrorType.TECHNICAL,
+                'GAME_003',
+                {
+                    achievementData,
+                }
+            );
         }
     }
 
@@ -237,17 +260,24 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
             // Update the achievement
             return await this.prisma.achievement.update({
                 where: { id },
-                data: achievementData as Parameters<typeof this.prisma.achievement.update>[0]['data'],
+                data: achievementData as Parameters<
+                    typeof this.prisma.achievement.update
+                >[0]['data'],
             });
         } catch (error: unknown) {
             if (error instanceof AppException) {
                 throw error;
             }
 
-            throw new AppException(`Failed to update achievement with ID ${id}`, ErrorType.TECHNICAL, 'GAME_005', {
-                id,
-                achievementData,
-            });
+            throw new AppException(
+                `Failed to update achievement with ID ${id}`,
+                ErrorType.TECHNICAL,
+                'GAME_005',
+                {
+                    id,
+                    achievementData,
+                }
+            );
         }
     }
 
@@ -271,9 +301,14 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
                 throw error;
             }
 
-            throw new AppException(`Failed to delete achievement with ID ${id}`, ErrorType.TECHNICAL, 'GAME_006', {
-                id,
-            });
+            throw new AppException(
+                `Failed to delete achievement with ID ${id}`,
+                ErrorType.TECHNICAL,
+                'GAME_006',
+                {
+                    id,
+                }
+            );
         }
     }
 
@@ -302,7 +337,12 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
             if (error instanceof AppException) {
                 throw error;
             }
-            throw new AppException('Failed to count achievements', ErrorType.TECHNICAL, 'GAME_007', { filter });
+            throw new AppException(
+                'Failed to count achievements',
+                ErrorType.TECHNICAL,
+                'GAME_007',
+                { filter }
+            );
         }
     }
 
@@ -399,7 +439,10 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
      * @param pagination - Optional pagination parameters
      * @returns A promise resolving to a paginated response of achievements
      */
-    async findByJourney(journey: string, pagination?: PaginationDto): Promise<PaginatedResponse<Achievement>> {
+    async findByJourney(
+        journey: string,
+        pagination?: PaginationDto
+    ): Promise<PaginatedResponse<Achievement>> {
         const { items, total } = await this.findAll({ journey, where: {} }, pagination);
         const page = pagination?.page || 1;
         const limit = pagination?.limit || 20;
@@ -414,7 +457,10 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
      * @param pagination - Optional pagination parameters
      * @returns A promise resolving to a paginated response of achievements
      */
-    async findByXpReward(xpReward: number, pagination?: PaginationDto): Promise<PaginatedResponse<Achievement>> {
+    async findByXpReward(
+        xpReward: number,
+        pagination?: PaginationDto
+    ): Promise<PaginatedResponse<Achievement>> {
         const { items, total } = await this.findAll({ where: { xpReward } }, pagination);
         const page = pagination?.page || 1;
         const limit = pagination?.limit || 20;
@@ -429,7 +475,10 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
      * @param pagination - Optional pagination parameters
      * @returns A promise resolving to a paginated response of matching achievements
      */
-    async search(searchTerm: string, pagination?: PaginationDto): Promise<PaginatedResponse<Achievement>> {
+    async search(
+        searchTerm: string,
+        pagination?: PaginationDto
+    ): Promise<PaginatedResponse<Achievement>> {
         try {
             const page = pagination?.page || 1;
             const limit = pagination?.limit || 20;
@@ -456,7 +505,12 @@ export class AchievementsService implements Service<Achievement, CreateAchieveme
             if (error instanceof AppException) {
                 throw error;
             }
-            throw new AppException('Failed to search achievements', ErrorType.TECHNICAL, 'GAME_008', { searchTerm });
+            throw new AppException(
+                'Failed to search achievements',
+                ErrorType.TECHNICAL,
+                'GAME_008',
+                { searchTerm }
+            );
         }
     }
 }

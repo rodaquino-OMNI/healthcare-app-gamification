@@ -1,10 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Test, TestingModule } from '@nestjs/testing';
+/* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
 import { NotFoundException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { GameProfile } from './entities/game-profile.entity';
 import { ProfilesService } from './profiles.service';
 import { PrismaService } from '../../../shared/src/database/prisma.service';
 import { LoggerService } from '../../../shared/src/logging/logger.service';
-import { GameProfile } from './entities/game-profile.entity';
 
 // Minimal stub for mapToDomainGameProfile — source uses it, mock must return shaped data
 jest.mock('../utils/entity-mappers', () => ({
@@ -13,7 +14,7 @@ jest.mock('../utils/entity-mappers', () => ({
 
 describe('ProfilesService', () => {
     let service: ProfilesService;
-    let prismaService: PrismaService;
+    let _prismaService: PrismaService;
 
     const mockGameProfile: GameProfile = {
         id: 'profile-1',
@@ -52,7 +53,7 @@ describe('ProfilesService', () => {
         }).compile();
 
         service = module.get<ProfilesService>(ProfilesService);
-        prismaService = module.get<PrismaService>(PrismaService);
+        _prismaService = module.get<PrismaService>(PrismaService);
     });
 
     it('should be defined', () => {
@@ -119,7 +120,9 @@ describe('ProfilesService', () => {
         });
 
         it('should re-throw non-NotFoundException errors from database', async () => {
-            mockPrismaService.gameProfile.findUnique.mockRejectedValue(new Error('Connection lost'));
+            mockPrismaService.gameProfile.findUnique.mockRejectedValue(
+                new Error('Connection lost')
+            );
 
             await expect(service.findById('user-1')).rejects.toThrow('Connection lost');
         });
@@ -143,7 +146,8 @@ describe('ProfilesService', () => {
     describe('update', () => {
         it('should update and return the modified game profile', async () => {
             const updatedProfile = { ...mockGameProfile, xp: 150, level: 2 };
-            mockPrismaService.gameProfile.findUnique.mockResolvedValueOnce(mockGameProfile); // findById call
+            // findById call
+            mockPrismaService.gameProfile.findUnique.mockResolvedValueOnce(mockGameProfile);
             mockPrismaService.gameProfile.update.mockResolvedValue(updatedProfile);
 
             const result = await service.update('user-1', { xp: 150, level: 2 });
@@ -160,7 +164,9 @@ describe('ProfilesService', () => {
         it('should throw NotFoundException when profile does not exist', async () => {
             mockPrismaService.gameProfile.findUnique.mockResolvedValue(null);
 
-            await expect(service.update('nonexistent', { xp: 100 })).rejects.toThrow(NotFoundException);
+            await expect(service.update('nonexistent', { xp: 100 })).rejects.toThrow(
+                NotFoundException
+            );
         });
 
         it('should only allow updating level and xp fields', async () => {
@@ -190,7 +196,10 @@ describe('ProfilesService', () => {
     // ----------------------------------------------------------------
     describe('getAllProfiles', () => {
         it('should return all game profiles', async () => {
-            const profiles = [mockGameProfile, { ...mockGameProfile, id: 'profile-2', userId: 'user-2' }];
+            const profiles = [
+                mockGameProfile,
+                { ...mockGameProfile, id: 'profile-2', userId: 'user-2' },
+            ];
             mockPrismaService.gameProfile.findMany.mockResolvedValue(profiles);
 
             const result = await service.getAllProfiles();

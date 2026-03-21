@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { LeaderboardController } from './leaderboard.controller';
 import { LeaderboardService } from './leaderboard.service';
 import { LoggerService } from '../../../shared/src/logging/logger.service';
@@ -6,7 +7,7 @@ import { TracingService } from '../../../shared/src/tracing/tracing.service';
 
 describe('LeaderboardController', () => {
     let controller: LeaderboardController;
-    let leaderboardService: LeaderboardService;
+    let _leaderboardService: LeaderboardService;
 
     const mockLeaderboardData = [
         { rank: 1, userId: 'user-3', level: 7, xp: 680, achievements: 3 },
@@ -41,7 +42,7 @@ describe('LeaderboardController', () => {
         }).compile();
 
         controller = module.get<LeaderboardController>(LeaderboardController);
-        leaderboardService = module.get<LeaderboardService>(LeaderboardService);
+        _leaderboardService = module.get<LeaderboardService>(LeaderboardService);
     });
 
     it('should be defined', () => {

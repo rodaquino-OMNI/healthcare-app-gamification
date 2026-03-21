@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Injectable } from '@nestjs/common';
@@ -32,18 +31,29 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
      * @returns The authenticated user
      * @throws AppException if authentication fails
      */
-    async validate(email: string, password: string): Promise<any> {
+    async validate(email: string, password: string): Promise<unknown> {
         try {
-            const user = await this.authService.login(email, password);
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- login() returns any due to dynamic Prisma user shape
+            const user: unknown = await this.authService.login(email, password);
             if (!user) {
                 this.logger.debug(`Authentication failed for user: ${email}`, 'LocalStrategy');
-                throw new AppException('Invalid email or password', ErrorType.VALIDATION, 'AUTH_005', {});
+                throw new AppException(
+                    'Invalid email or password',
+                    ErrorType.VALIDATION,
+                    'AUTH_005',
+                    {}
+                );
             }
             return user;
-        } catch (error: any) {
-            const errorMsg = error.message || 'Unknown authentication error';
-            const errorStack = error.stack || '';
-            this.logger.error(`Authentication failed for user ${email}: ${errorMsg}`, errorStack, 'LocalStrategy');
+        } catch (error: unknown) {
+            const err = error as { message?: string; stack?: string };
+            const errorMsg = err.message || 'Unknown authentication error';
+            const errorStack = err.stack || '';
+            this.logger.error(
+                `Authentication failed for user ${email}: ${errorMsg}`,
+                errorStack,
+                'LocalStrategy'
+            );
 
             throw new AppException(
                 'Authentication failed',

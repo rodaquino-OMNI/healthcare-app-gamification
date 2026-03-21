@@ -7,24 +7,14 @@
 
 // Authentication mutations
 import * as AuthMutations from './auth.mutations';
-
-// Health journey mutations
-import * as HealthMutations from './health.mutations';
-
 // Care journey mutations
 import * as CareMutations from './care.mutations';
-
+// Gamification mutations
+import * as GamificationMutations from './gamification.mutations';
+// Health journey mutations
+import * as HealthMutations from './health.mutations';
 // Plan journey mutations
 import * as PlanMutations from './plan.mutations';
 
-// Gamification mutations
-import * as GamificationMutations from './gamification.mutations';
-
 // Export all mutation groups
-export {
-  AuthMutations,
-  HealthMutations,
-  CareMutations,
-  PlanMutations,
-  GamificationMutations
-};
+export { AuthMutations, HealthMutations, CareMutations, PlanMutations, GamificationMutations };

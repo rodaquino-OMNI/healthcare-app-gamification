@@ -1,5 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { FhirController } from './fhir.controller';
 import { FhirService } from './fhir.service';
 
@@ -47,14 +48,19 @@ describe('FhirController', () => {
 
             const result = await controller.getPatientRecord(patientId, mockReq as any);
 
-            expect(mockFhirService.getPatientRecord).toHaveBeenCalledWith(patientId, mockReq.user.id);
+            expect(mockFhirService.getPatientRecord).toHaveBeenCalledWith(
+                patientId,
+                mockReq.user.id
+            );
             expect(result).toEqual(mockPatientRecord);
         });
 
         it('should propagate errors from fhirService.getPatientRecord', async () => {
             mockFhirService.getPatientRecord.mockRejectedValue(new Error('Forbidden'));
 
-            await expect(controller.getPatientRecord(patientId, mockReq as any)).rejects.toThrow('Forbidden');
+            await expect(controller.getPatientRecord(patientId, mockReq as any)).rejects.toThrow(
+                'Forbidden'
+            );
         });
     });
 
@@ -69,14 +75,19 @@ describe('FhirController', () => {
 
             const result = await controller.getMedicalHistory(patientId, mockReq as any);
 
-            expect(mockFhirService.getMedicalHistory).toHaveBeenCalledWith(patientId, mockReq.user.id);
+            expect(mockFhirService.getMedicalHistory).toHaveBeenCalledWith(
+                patientId,
+                mockReq.user.id
+            );
             expect(result).toEqual(mockHistory);
         });
 
         it('should propagate service errors', async () => {
             mockFhirService.getMedicalHistory.mockRejectedValue(new Error('FHIR error'));
 
-            await expect(controller.getMedicalHistory(patientId, mockReq as any)).rejects.toThrow('FHIR error');
+            await expect(controller.getMedicalHistory(patientId, mockReq as any)).rejects.toThrow(
+                'FHIR error'
+            );
         });
     });
 
@@ -111,9 +122,9 @@ describe('FhirController', () => {
         it('should propagate service errors', async () => {
             mockFhirService.getHealthMetricsFromFhir.mockRejectedValue(new Error('Access denied'));
 
-            await expect(controller.getHealthMetrics(patientId, metricType, mockReq as any)).rejects.toThrow(
-                'Access denied'
-            );
+            await expect(
+                controller.getHealthMetrics(patientId, metricType, mockReq as any)
+            ).rejects.toThrow('Access denied');
         });
     });
 });

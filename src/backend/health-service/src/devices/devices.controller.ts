@@ -1,8 +1,18 @@
-import { Controller, Post, Get, Body, Param, Query } from '@nestjs/common'; // NestJS Common 9.0.0+
+import {
+    Controller,
+    Post,
+    Get,
+    Body,
+    Param,
+    Query,
+    UsePipes,
+    ValidationPipe,
+} from '@nestjs/common'; // NestJS Common 9.0.0+
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { DevicesService } from './devices.service';
 import { ConnectDeviceDto } from './dto/connect-device.dto';
+import { DeviceConnection } from './entities/device-connection.entity';
 import { FilterDto } from '../../../shared/src/dto/filter.dto';
 
 /**
@@ -31,7 +41,11 @@ export class DevicesController {
     @Post()
     @ApiOperation({ summary: 'Connect a wearable device to a health record' })
     @ApiResponse({ status: 201, description: 'Device connected successfully' })
-    async connectDevice(@Param('recordId') recordId: string, @Body() connectDeviceDto: ConnectDeviceDto) {
+    @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+    async connectDevice(
+        @Param('recordId') recordId: string,
+        @Body() connectDeviceDto: ConnectDeviceDto
+    ): Promise<DeviceConnection> {
         return this.devicesService.connectDevice(recordId, connectDeviceDto);
     }
 
@@ -46,7 +60,10 @@ export class DevicesController {
     @Get()
     @ApiOperation({ summary: 'Get all connected devices for a health record' })
     @ApiResponse({ status: 200, description: 'Returns list of connected devices' })
-    async getDevices(@Param('recordId') recordId: string, @Query() filterDto: FilterDto) {
+    async getDevices(
+        @Param('recordId') recordId: string,
+        @Query() filterDto: FilterDto
+    ): Promise<DeviceConnection[]> {
         return this.devicesService.getDevices(recordId, filterDto);
     }
 }

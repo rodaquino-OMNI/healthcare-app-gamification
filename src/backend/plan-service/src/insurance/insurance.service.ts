@@ -32,6 +32,7 @@ export class InsuranceService {
      * @returns A boolean indicating whether the procedure is covered
      */
     async verifyCoverage(verifyCoverageDto: VerifyCoverageDto): Promise<boolean> {
+        // eslint-disable-next-line @typescript-eslint/require-await -- tracing span requires async callback
         return this.tracingService.createSpan('InsuranceService.verifyCoverage', async () => {
             this.logger.log(
                 `Verifying coverage for procedure ${verifyCoverageDto.procedureCode} with plan ${verifyCoverageDto.planId}`,
@@ -80,7 +81,11 @@ export class InsuranceService {
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error';
                 const errorStack = error instanceof Error ? error.stack : undefined;
 
-                this.logger.error(`Error verifying coverage: ${errorMessage}`, errorStack, 'InsuranceService');
+                this.logger.error(
+                    `Error verifying coverage: ${errorMessage}`,
+                    errorStack,
+                    'InsuranceService'
+                );
 
                 throw new AppException(
                     'Failed to verify insurance coverage',

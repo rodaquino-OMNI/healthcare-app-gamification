@@ -1,8 +1,7 @@
 import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard'; // NestJS JWT 10.0.0+
 import { RolesGuard } from '@app/auth/auth/guards/roles.guard'; // NestJS JWT 10.0.0+
 import { PhiAccess } from '@app/shared/audit';
-import { ConsentGuard, RequireConsent } from '@app/shared/consent'; // LGPD consent guard
-import { ConsentType } from '@app/shared/consent'; // Consent type enum
+import { ConsentGuard, RequireConsent, ConsentType } from '@app/shared/consent'; // LGPD consent guard + type enum
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter'; // Import AllExceptionsFilter for global exception handling
 import {
     Controller,
@@ -15,6 +14,8 @@ import {
     HttpCode,
     HttpStatus,
     Inject,
+    UsePipes,
+    ValidationPipe,
 } from '@nestjs/common'; // NestJS Common 10.0.0+
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
@@ -53,6 +54,7 @@ export class HealthController {
     @ApiOperation({ summary: 'Create a new health metric' })
     @ApiResponse({ status: 201, description: 'Health metric created successfully' })
     @ApiResponse({ status: 403, description: 'Consent not granted for health data sharing' })
+    @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
     async createHealthMetric(
         @Param('recordId') recordId: string,
         @Body() createMetricDto: CreateMetricDto
@@ -75,7 +77,11 @@ export class HealthController {
     @ApiOperation({ summary: 'Update an existing health metric' })
     @ApiResponse({ status: 200, description: 'Health metric updated successfully' })
     @ApiResponse({ status: 403, description: 'Consent not granted for health data sharing' })
-    async updateHealthMetric(@Param('id') id: string, @Body() updateMetricDto: UpdateMetricDto): Promise<unknown> {
+    @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+    async updateHealthMetric(
+        @Param('id') id: string,
+        @Body() updateMetricDto: UpdateMetricDto
+    ): Promise<unknown> {
         // Calls the healthService to update an existing health metric.
         return this.healthService.updateHealthMetric(id, updateMetricDto);
     }

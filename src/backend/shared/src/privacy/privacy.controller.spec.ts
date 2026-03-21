@@ -1,6 +1,9 @@
+import { Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { PrivacyController } from './privacy.controller';
 import { PrivacyService } from './privacy.service';
+import { LoggerService } from '../logging/logger.service';
 
 describe('PrivacyController', () => {
     let controller: PrivacyController;
@@ -49,6 +52,16 @@ describe('PrivacyController', () => {
                     provide: PrivacyService,
                     useValue: mockPrivacyService,
                 },
+                {
+                    provide: LoggerService,
+                    useValue: {
+                        log: jest.fn(),
+                        error: jest.fn(),
+                        warn: jest.fn(),
+                        debug: jest.fn(),
+                    },
+                },
+                Reflector,
             ],
         }).compile();
 
@@ -171,7 +184,9 @@ describe('PrivacyController', () => {
 
         it('should propagate validation errors for duplicate email', async () => {
             const dto = { email: 'taken@example.com' };
-            mockPrivacyService.rectifyMyData.mockRejectedValue(new Error('Email already in use by another account'));
+            mockPrivacyService.rectifyMyData.mockRejectedValue(
+                new Error('Email already in use by another account')
+            );
 
             await expect(controller.rectifyMyData(userId, dto as any)).rejects.toThrow(
                 'Email already in use by another account'

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-duplicate-enum-values */
+/* eslint-disable @typescript-eslint/no-duplicate-enum-values -- Intentional aliases for backward-compatible error codes (e.g., AUTHENTICATION = UNAUTHORIZED) */
 /**
  * Standardized error types for application exceptions
  * Used to categorize errors and determine appropriate HTTP status codes

@@ -38,7 +38,7 @@ export class PlansController {
         private readonly plansService: PlansService,
         private readonly logger: LoggerService
     ) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- LoggerService import path mismatch causes unsafe-call in strict mode
         this.logger.log('PlansController initialized', 'PlansController');
     }
 
@@ -50,7 +50,7 @@ export class PlansController {
     @Post()
     @Roles('admin')
     async create(@Body(ValidationPipe) createPlanData: Record<string, unknown>): Promise<unknown> {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- LoggerService import path mismatch causes unsafe-call in strict mode
         this.logger.log('Creating new plan', 'PlansController');
         return this.plansService.create(createPlanData);
     }
@@ -63,9 +63,11 @@ export class PlansController {
      */
     @Get()
     @UseGuards(JwtAuthGuard)
-    // eslint-disable-next-line max-len
-    async findAll(@Query() pagination: PaginationDto, @Query() filter: FilterDto): Promise<unknown[]> {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    async findAll(
+        @Query() pagination: PaginationDto,
+        @Query() filter: FilterDto
+    ): Promise<unknown[]> {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- LoggerService import path mismatch causes unsafe-call in strict mode
         this.logger.log('Retrieving all plans', 'PlansController');
         return this.plansService.findAll(pagination, filter);
     }
@@ -78,7 +80,7 @@ export class PlansController {
     @Get(':id')
     @UseGuards(JwtAuthGuard)
     async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<unknown> {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- LoggerService import path mismatch causes unsafe-call in strict mode
         this.logger.log(`Retrieving plan with ID: ${id}`, 'PlansController');
         return this.plansService.findOne(id);
     }
@@ -95,7 +97,7 @@ export class PlansController {
         @Param('id', ParseUUIDPipe) id: string,
         @Body(ValidationPipe) updatePlanDto: Record<string, unknown>
     ): Promise<unknown> {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- LoggerService import path mismatch causes unsafe-call in strict mode
         this.logger.log(`Updating plan with ID: ${id}`, 'PlansController');
         return this.plansService.update(id, updatePlanDto);
     }
@@ -108,7 +110,7 @@ export class PlansController {
     @HttpCode(HttpStatus.NO_CONTENT)
     @Roles('admin')
     async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- LoggerService import path mismatch causes unsafe-call in strict mode
         this.logger.log(`Removing plan with ID: ${id}`, 'PlansController');
         return this.plansService.remove(id);
     }

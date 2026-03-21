@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsObject, IsArray, IsOptional, IsBoolean, IsNumber } from 'class-validator';
+import {
+    IsString,
+    IsNotEmpty,
+    IsObject,
+    IsArray,
+    IsOptional,
+    IsBoolean,
+    IsNumber,
+} from 'class-validator';
 
 /**
  * Data transfer object for sending a notification

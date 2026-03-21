@@ -27,7 +27,11 @@ export class EventsConsumer implements OnModuleInit {
             this.logger.log('Initializing Kafka event consumers', 'EventsConsumer');
 
             for (const topic of this.topics) {
-                await this.kafkaService.subscribe(topic, this.consumerGroup, this.handleEvent.bind(this));
+                await this.kafkaService.subscribe(
+                    topic,
+                    this.consumerGroup,
+                    this.handleEvent.bind(this)
+                );
                 this.logger.log(`Subscribed to topic: ${topic}`, 'EventsConsumer');
             }
 
@@ -35,7 +39,11 @@ export class EventsConsumer implements OnModuleInit {
         } catch (error) {
             const msg = error instanceof Error ? error.message : 'Unknown error';
             const stack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Failed to initialize Kafka event consumers: ${msg}`, stack, 'EventsConsumer');
+            this.logger.error(
+                `Failed to initialize Kafka event consumers: ${msg}`,
+                stack,
+                'EventsConsumer'
+            );
             throw error;
         }
     }
@@ -53,7 +61,10 @@ export class EventsConsumer implements OnModuleInit {
 
             // Validate the event structure
             if (!this.isValidEvent(messageValue)) {
-                this.logger.warn(`Invalid event received: ${JSON.stringify(messageValue)}`, 'EventsConsumer');
+                this.logger.warn(
+                    `Invalid event received: ${JSON.stringify(messageValue)}`,
+                    'EventsConsumer'
+                );
                 return;
             }
 

@@ -1,18 +1,14 @@
+import { PrismaService } from '@app/shared/database/prisma.service';
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { PrismaClient } from '@prisma/client';
 import request from 'supertest';
-import { agent, SuperAgentTest } from 'supertest';
 
-import { AuthService } from '../src/auth/auth.service';
-import { PrismaService } from '@app/shared/database/prisma.service';
 import { CreateUserDto } from '../src/users/dto/create-user.dto';
 
 describe('Auth Module (e2e)', () => {
     let app: INestApplication;
     let prisma: PrismaService;
-    let authService: AuthService;
 
     // Test data
     const createUserDto: CreateUserDto = {
@@ -86,10 +82,15 @@ describe('Auth Module (e2e)', () => {
             .useValue({
                 register: jest
                     .fn()
-                    .mockImplementation((dto) => Promise.resolve({ id: 'user-id', ...dto, password: undefined })),
+                    .mockImplementation((dto) =>
+                        Promise.resolve({ id: 'user-id', ...dto, password: undefined })
+                    ),
                 login: jest.fn().mockImplementation((email, password) => {
                     if (password === 'Password123!') {
-                        return Promise.resolve({ accessToken: 'test-jwt-token', refreshToken: 'test-refresh-token' });
+                        return Promise.resolve({
+                            accessToken: 'test-jwt-token',
+                            refreshToken: 'test-refresh-token',
+                        });
                     }
                     throw new Error('Invalid credentials');
                 }),
@@ -101,7 +102,6 @@ describe('Auth Module (e2e)', () => {
         await app.init();
 
         prisma = moduleFixture.get<PrismaService>(PrismaService);
-        authService = moduleFixture.get<AuthService>(AuthService);
 
         // Clean up database before tests
         await prisma.user.deleteMany({ where: { email: createUserDto.email } });

@@ -28,9 +28,11 @@ export class TemplatesService {
      * @param id The template ID to find
      * @returns The found template or null if not found
      */
-    async findById(id: string): Promise<NotificationTemplate | null> {
+    findById(id: string): Promise<NotificationTemplate | null> {
         this.logger.log(`Finding template by ID: ${id}`, 'TemplatesService');
-        return this.prisma.notificationTemplate.findUnique({ where: { id } }) as unknown as NotificationTemplate | null;
+        return this.prisma.notificationTemplate.findUnique({
+            where: { id },
+        }) as unknown as Promise<NotificationTemplate | null>;
     }
 
     /**
@@ -38,11 +40,11 @@ export class TemplatesService {
      * @param code The template code (same as templateId) to find
      * @returns The found template or null if not found
      */
-    async findByCode(code: string): Promise<NotificationTemplate | null> {
+    findByCode(code: string): Promise<NotificationTemplate | null> {
         this.logger.log(`Finding template by code: ${code}`, 'TemplatesService');
         return this.prisma.notificationTemplate.findFirst({
             where: { templateId: code },
-        }) as unknown as NotificationTemplate | null;
+        }) as unknown as Promise<NotificationTemplate | null>;
     }
 
     /**
@@ -51,7 +53,7 @@ export class TemplatesService {
      * @param language Optional language filter (e.g., 'pt-BR', 'en-US')
      * @returns Array of matching templates
      */
-    async findByTemplateId(templateId: string, language?: string): Promise<NotificationTemplate[]> {
+    findByTemplateId(templateId: string, language?: string): Promise<NotificationTemplate[]> {
         this.logger.log(
             `Finding templates by templateId: ${templateId}, language: ${language || 'any'}`,
             'TemplatesService'
@@ -63,7 +65,9 @@ export class TemplatesService {
             filter.language = language;
         }
 
-        return this.prisma.notificationTemplate.findMany({ where: filter }) as unknown as NotificationTemplate[];
+        return this.prisma.notificationTemplate.findMany({
+            where: filter,
+        }) as unknown as Promise<NotificationTemplate[]>;
     }
 
     /**
@@ -75,7 +79,10 @@ export class TemplatesService {
      * @returns Array of templates for the specified journey
      */
     async findByJourney(journey: string, language?: string): Promise<NotificationTemplate[]> {
-        this.logger.log(`Finding templates by journey: ${journey}, language: ${language || 'any'}`, 'TemplatesService');
+        this.logger.log(
+            `Finding templates by journey: ${journey}, language: ${language || 'any'}`,
+            'TemplatesService'
+        );
 
         // Validate that the journey is a valid journey type
         if (!Object.values(JOURNEY_IDS).includes(journey)) {
@@ -105,13 +112,15 @@ export class TemplatesService {
      * @param filter Optional filter criteria
      * @returns Array of templates matching the filter
      */
-    async findAll(filter?: Record<string, unknown>): Promise<NotificationTemplate[]> {
+    findAll(filter?: Record<string, unknown>): Promise<NotificationTemplate[]> {
         this.logger.log(
             `Finding all templates with filter: ${filter ? JSON.stringify(filter) : 'none'}`,
             'TemplatesService'
         );
 
-        return this.prisma.notificationTemplate.findMany({ where: filter }) as unknown as NotificationTemplate[];
+        return this.prisma.notificationTemplate.findMany({
+            where: filter,
+        }) as unknown as Promise<NotificationTemplate[]>;
     }
 
     /**
@@ -119,12 +128,15 @@ export class TemplatesService {
      * @param template The template data to create
      * @returns The created template
      */
-    async create(template: Omit<NotificationTemplate, 'id'>): Promise<NotificationTemplate> {
-        this.logger.log(`Creating template with templateId: ${template.templateId}`, 'TemplatesService');
+    create(template: Omit<NotificationTemplate, 'id'>): Promise<NotificationTemplate> {
+        this.logger.log(
+            `Creating template with templateId: ${template.templateId}`,
+            'TemplatesService'
+        );
 
         return this.prisma.notificationTemplate.create({
             data: template as unknown as Prisma.NotificationTemplateCreateInput,
-        }) as unknown as NotificationTemplate;
+        }) as unknown as Promise<NotificationTemplate>;
     }
 
     /**
@@ -133,13 +145,13 @@ export class TemplatesService {
      * @param template The updated template data
      * @returns The updated template
      */
-    async update(id: string, template: Partial<NotificationTemplate>): Promise<NotificationTemplate> {
+    update(id: string, template: Partial<NotificationTemplate>): Promise<NotificationTemplate> {
         this.logger.log(`Updating template with ID: ${id}`, 'TemplatesService');
 
         return this.prisma.notificationTemplate.update({
             where: { id },
             data: template as unknown as Prisma.NotificationTemplateUpdateInput,
-        }) as unknown as NotificationTemplate;
+        }) as unknown as Promise<NotificationTemplate>;
     }
 
     /**
@@ -209,7 +221,11 @@ export class TemplatesService {
 
         // If no template found at all, throw an error
         if (!template) {
-            this.logger.error(`No template found for templateId: ${templateId}`, undefined, 'TemplatesService');
+            this.logger.error(
+                `No template found for templateId: ${templateId}`,
+                undefined,
+                'TemplatesService'
+            );
             throw new Error(`No template found for templateId: ${templateId}`);
         }
 
@@ -245,7 +261,7 @@ export class TemplatesService {
      * @private
      */
     private replacePlaceholders(text: string, data: Record<string, unknown>): string {
-        return text.replace(/\{\{(\w+)\}\}/g, (match, key) => {
+        return text.replace(/\{\{(\w+)\}\}/g, (match, key: string) => {
             return data[key] !== undefined ? String(data[key]) : match;
         });
     }

@@ -84,8 +84,17 @@ const nextConfig = {
 
     // Webpack configuration to resolve shared package and react-native
     webpack: (config, { isServer }) => {
+        // Force a single React instance across all dependencies to prevent
+        // "Cannot read properties of null (reading 'useContext')" during SSG.
+        // Several packages (e.g. @apollo/client, react-i18next) ship nested
+        // React 18 copies that conflict with the workspace React 19.
+        const reactPath = path.resolve(__dirname, '../node_modules/react');
+        const reactDomPath = path.resolve(__dirname, '../node_modules/react-dom');
+
         config.resolve.alias = {
             ...config.resolve.alias,
+            react: reactPath,
+            'react-dom': reactDomPath,
             '@shared': path.resolve(__dirname, '../shared'),
             'react-native$': 'react-native-web',
         };

@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { ConsentController } from './consent.controller';
 import { ConsentService } from './consent.service';
 import { ConsentType } from './dto/create-consent.dto';
@@ -100,7 +101,12 @@ describe('ConsentController', () => {
             const result = await controller.createConsent(mockRequest, createDto as any);
 
             expect(result).toEqual(mockConsent);
-            expect(service.createConsent).toHaveBeenCalledWith('user-123', createDto, '127.0.0.1', 'Test/1.0');
+            expect(service.createConsent).toHaveBeenCalledWith(
+                'user-123',
+                createDto,
+                '127.0.0.1',
+                'Test/1.0'
+            );
         });
 
         it('should pass x-forwarded-for when ip is not available', async () => {
@@ -112,13 +118,20 @@ describe('ConsentController', () => {
 
             await controller.createConsent(req, createDto as any);
 
-            expect(service.createConsent).toHaveBeenCalledWith('user-123', createDto, '10.0.0.1', 'Browser/2.0');
+            expect(service.createConsent).toHaveBeenCalledWith(
+                'user-123',
+                createDto,
+                '10.0.0.1',
+                'Browser/2.0'
+            );
         });
 
         it('should propagate validation errors', async () => {
             mockConsentService.createConsent.mockRejectedValue(new Error('Invalid consent data'));
 
-            await expect(controller.createConsent(mockRequest, {} as any)).rejects.toThrow('Invalid consent data');
+            await expect(controller.createConsent(mockRequest, {} as any)).rejects.toThrow(
+                'Invalid consent data'
+            );
         });
     });
 
@@ -134,7 +147,9 @@ describe('ConsentController', () => {
         });
 
         it('should propagate not found errors', async () => {
-            mockConsentService.revokeConsent.mockRejectedValue(new Error('Consent record not found'));
+            mockConsentService.revokeConsent.mockRejectedValue(
+                new Error('Consent record not found')
+            );
 
             await expect(controller.revokeConsent(mockRequest, 'nonexistent')).rejects.toThrow(
                 'Consent record not found'
@@ -156,13 +171,19 @@ describe('ConsentController', () => {
         it('should return true when user has active consent', async () => {
             mockConsentService.hasActiveConsent.mockResolvedValue(true);
 
-            const result = await controller.hasActiveConsent(mockRequest, ConsentType.HEALTH_DATA_SHARING);
+            const result = await controller.hasActiveConsent(
+                mockRequest,
+                ConsentType.HEALTH_DATA_SHARING
+            );
 
             expect(result).toEqual({
                 consentType: ConsentType.HEALTH_DATA_SHARING,
                 hasConsent: true,
             });
-            expect(service.hasActiveConsent).toHaveBeenCalledWith('user-123', ConsentType.HEALTH_DATA_SHARING);
+            expect(service.hasActiveConsent).toHaveBeenCalledWith(
+                'user-123',
+                ConsentType.HEALTH_DATA_SHARING
+            );
         });
 
         it('should return false when user has no active consent', async () => {

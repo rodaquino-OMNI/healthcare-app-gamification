@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
-// eslint-disable-next-line import/order
+// eslint-disable-next-line import/order -- Mock must be imported before module under test
 import { BenefitCard } from './BenefitCard';
 
 interface Benefit {

@@ -58,7 +58,7 @@ export class SymptomCheckerService {
         // createSpan expects async callback
         return this.tracingService.createSpan(
             'symptom-checker.check-symptoms',
-            // eslint-disable-next-line @typescript-eslint/require-await
+            // eslint-disable-next-line @typescript-eslint/require-await -- createSpan generic requires async callback; body is synchronous-only
             async () => {
                 this.logger.log(
                     `Checking symptoms: ${JSON.stringify(checkSymptomsDto.symptoms)}`,
@@ -120,7 +120,6 @@ export class SymptomCheckerService {
                         return this.analyzeSymptoms(checkSymptomsDto.symptoms);
                     } else {
                         // Call external symptom checking API
-                        // eslint-disable-next-line max-len
                         return this.callExternalSymptomAPI(
                             checkSymptomsDto.symptoms,
                             symptomsCheckerConfig.externalApi
@@ -280,7 +279,6 @@ export class SymptomCheckerService {
      * @returns Promise resolving to the API response
      * @private
      */
-    // eslint-disable-next-line max-len
     private callExternalSymptomAPI(
         symptoms: string[],
         apiConfig: { url: string; apiKey: string; timeout: number }

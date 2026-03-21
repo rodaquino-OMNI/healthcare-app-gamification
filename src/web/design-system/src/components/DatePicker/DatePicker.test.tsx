@@ -114,7 +114,7 @@ jest.mock('../../components/Button/Button', () => {
 });
 
 // Mock react-datepicker
-/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-return -- Mock factory returns untyped test double */
 jest.mock('react-datepicker', () => {
     const actual = jest.requireActual('react-datepicker');
     return {

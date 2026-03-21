@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, max-len */
+/* eslint-disable @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, max-len -- GraphQL resolver bridges untyped HTTP responses from gamification-engine to client schema */
 import { HttpService } from '@nestjs/axios';
 import { UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -31,7 +31,9 @@ export class GamificationResolvers {
     @Query('getGameProfile')
     @UseGuards(JwtAuthGuard)
     async getGameProfile(@CurrentUser() user: AuthenticatedUser, @Args('userId') userId: string) {
-        const response = await lastValueFrom(this.httpService.get(`${this.gamificationServiceUrl}/profiles/${userId}`));
+        const response = await lastValueFrom(
+            this.httpService.get(`${this.gamificationServiceUrl}/profiles/${userId}`)
+        );
         return response.data;
     }
 
@@ -47,14 +49,18 @@ export class GamificationResolvers {
     @Query('getQuests')
     @UseGuards(JwtAuthGuard)
     async getQuests(@CurrentUser() user: AuthenticatedUser, @Args('userId') userId: string) {
-        const response = await lastValueFrom(this.httpService.get(`${this.gamificationServiceUrl}/quests/${userId}`));
+        const response = await lastValueFrom(
+            this.httpService.get(`${this.gamificationServiceUrl}/quests/${userId}`)
+        );
         return response.data;
     }
 
     @Query('getRewards')
     @UseGuards(JwtAuthGuard)
     async getRewards(@CurrentUser() user: AuthenticatedUser, @Args('userId') userId: string) {
-        const response = await lastValueFrom(this.httpService.get(`${this.gamificationServiceUrl}/rewards/${userId}`));
+        const response = await lastValueFrom(
+            this.httpService.get(`${this.gamificationServiceUrl}/rewards/${userId}`)
+        );
         return response.data;
     }
 
@@ -77,20 +83,29 @@ export class GamificationResolvers {
         @Args('taskId') taskId: string
     ) {
         const response = await lastValueFrom(
-            this.httpService.post(`${this.gamificationServiceUrl}/quests/${questId}/tasks/${taskId}/complete`, {
-                userId: user.id,
-            })
+            this.httpService.post(
+                `${this.gamificationServiceUrl}/quests/${questId}/tasks/${taskId}/complete`,
+                {
+                    userId: user.id,
+                }
+            )
         );
         return response.data;
     }
 
     @Mutation('acknowledgeAchievement')
     @UseGuards(JwtAuthGuard)
-    async acknowledgeAchievement(@CurrentUser() user: AuthenticatedUser, @Args('achievementId') achievementId: string) {
+    async acknowledgeAchievement(
+        @CurrentUser() user: AuthenticatedUser,
+        @Args('achievementId') achievementId: string
+    ) {
         const response = await lastValueFrom(
-            this.httpService.post(`${this.gamificationServiceUrl}/achievements/${achievementId}/acknowledge`, {
-                userId: user.id,
-            })
+            this.httpService.post(
+                `${this.gamificationServiceUrl}/achievements/${achievementId}/acknowledge`,
+                {
+                    userId: user.id,
+                }
+            )
         );
         return response.data;
     }

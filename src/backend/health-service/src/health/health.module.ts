@@ -7,6 +7,8 @@ import { RedisModule } from '@app/shared/redis/redis.module';
 import { Module } from '@nestjs/common'; // NestJS Common 10.0.0+
 import { ConfigModule } from '@nestjs/config';
 
+import { HealthGoalsService } from './health-goals.service';
+import { HealthMetricsService } from './health-metrics.service';
 import { HealthController } from './health.controller';
 import { HealthService } from './health.service';
 import { DevicesModule } from '../devices/devices.module';
@@ -27,7 +29,7 @@ import { WearablesModule } from '../integrations/wearables/wearables.module';
         RedisModule,
     ],
     controllers: [HealthController],
-    providers: [HealthService, PrismaService],
+    providers: [HealthService, HealthMetricsService, HealthGoalsService, PrismaService],
     exports: [HealthService],
 })
 export class HealthModule {

@@ -1,11 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Test, TestingModule } from '@nestjs/testing';
-import { LeaderboardService } from './leaderboard.service';
-import { ProfilesService } from '../profiles/profiles.service';
-import { RedisService } from '../../../shared/src/redis/redis.service';
-import { LoggerService } from '../../../shared/src/logging/logger.service';
+/* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
 import { ConfigService } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { LeaderboardService } from './leaderboard.service';
+import { LoggerService } from '../../../shared/src/logging/logger.service';
+import { RedisService } from '../../../shared/src/redis/redis.service';
 import { GameProfile } from '../profiles/entities/game-profile.entity';
+import { ProfilesService } from '../profiles/profiles.service';
 
 describe('LeaderboardService', () => {
     let service: LeaderboardService;

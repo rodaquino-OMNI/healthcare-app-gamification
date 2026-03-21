@@ -1,7 +1,17 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
-export const CurrentUser = createParamDecorator((data: unknown, context: ExecutionContext) => {
-    const ctx = GqlExecutionContext.create(context);
-    return ctx.getContext().req.user;
-});
+interface GqlContext {
+    req: {
+        user: unknown;
+    };
+}
+
+export const CurrentUser = createParamDecorator(
+    (_data: unknown, context: ExecutionContext): unknown => {
+        const ctx = GqlExecutionContext.create(context);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- GqlExecutionContext.getContext() returns any
+        const gqlContext: GqlContext = ctx.getContext();
+        return gqlContext.req.user;
+    }
+);

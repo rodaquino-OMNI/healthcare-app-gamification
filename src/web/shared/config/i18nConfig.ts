@@ -9,11 +9,11 @@
 
 /**
  * List of locales supported by the application
- * 
+ *
  * Current supported locales:
  * - pt-BR: Brazilian Portuguese (primary)
  * - en-US: US English (alternative)
- * 
+ *
  * Future planned locales:
  * - es: Spanish
  */
@@ -21,7 +21,7 @@ export const supportedLocales: string[] = ['pt-BR', 'en-US'];
 
 /**
  * Default locale for the application
- * 
+ *
  * Brazilian Portuguese is the primary language for the AUSTA SuperApp
  * as specified in the technical requirements.
  */

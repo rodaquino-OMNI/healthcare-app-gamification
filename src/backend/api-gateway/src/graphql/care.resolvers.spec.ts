@@ -1,6 +1,6 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
 import { of } from 'rxjs';
 
 import { CareResolvers } from './care.resolvers';
@@ -49,7 +49,7 @@ describe('CareResolvers', () => {
 
             expect(result).toEqual(mockData);
             expect(httpService.get).toHaveBeenCalledWith(
-                'http://care-service:3003/appointments?userId=user-1',
+                'http://care-service:3003/appointments?userId=user-1'
             );
         });
     });
@@ -95,7 +95,7 @@ describe('CareResolvers', () => {
                 'prov-1',
                 '2024-01-01',
                 'consultation',
-                'checkup',
+                'checkup'
             );
 
             expect(result).toEqual(mockData);
@@ -104,7 +104,7 @@ describe('CareResolvers', () => {
                 expect.objectContaining({
                     providerId: 'prov-1',
                     userId: 'user-1',
-                }),
+                })
             );
         });
     });

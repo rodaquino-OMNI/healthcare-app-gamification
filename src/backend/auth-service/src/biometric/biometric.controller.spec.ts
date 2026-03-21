@@ -58,9 +58,13 @@ describe('BiometricController', () => {
         });
 
         it('should propagate errors from registerDevice', async () => {
-            mockBiometricService.registerDevice.mockRejectedValue(new Error('Missing required fields'));
+            mockBiometricService.registerDevice.mockRejectedValue(
+                new Error('Missing required fields')
+            );
 
-            await expect(controller.register(registerDto)).rejects.toThrow('Missing required fields');
+            await expect(controller.register(registerDto)).rejects.toThrow(
+                'Missing required fields'
+            );
         });
     });
 
@@ -76,7 +80,9 @@ describe('BiometricController', () => {
         });
 
         it('should propagate errors from generateChallenge', async () => {
-            mockBiometricService.generateChallenge.mockRejectedValue(new Error('User ID is required'));
+            mockBiometricService.generateChallenge.mockRejectedValue(
+                new Error('User ID is required')
+            );
 
             await expect(controller.challenge('')).rejects.toThrow('User ID is required');
         });
@@ -109,9 +115,13 @@ describe('BiometricController', () => {
         });
 
         it('should propagate errors from verifySignature', async () => {
-            mockBiometricService.verifySignature.mockRejectedValue(new Error('Invalid biometric signature'));
+            mockBiometricService.verifySignature.mockRejectedValue(
+                new Error('Invalid biometric signature')
+            );
 
-            await expect(controller.verify(verifyDto)).rejects.toThrow('Invalid biometric signature');
+            await expect(controller.verify(verifyDto)).rejects.toThrow(
+                'Invalid biometric signature'
+            );
         });
     });
 });

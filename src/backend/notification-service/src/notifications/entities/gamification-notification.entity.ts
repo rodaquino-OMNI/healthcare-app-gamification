@@ -22,7 +22,13 @@ export class GamificationNotification extends Notification {
      */
     @ApiProperty({
         description: 'Type of gamification event',
-        enum: ['ACHIEVEMENT_UNLOCKED', 'LEVEL_UP', 'STREAK_MILESTONE', 'POINTS_EARNED', 'CHALLENGE_COMPLETED'],
+        enum: [
+            'ACHIEVEMENT_UNLOCKED',
+            'LEVEL_UP',
+            'STREAK_MILESTONE',
+            'POINTS_EARNED',
+            'CHALLENGE_COMPLETED',
+        ],
         example: 'ACHIEVEMENT_UNLOCKED',
     })
     gamificationEventType!: string;

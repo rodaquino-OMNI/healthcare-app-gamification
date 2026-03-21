@@ -1,10 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigService } from '@nestjs/config';
-import { InAppService } from './in-app.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { RedisService } from '@app/shared/redis/redis.service';
-import { WebsocketsGateway } from '../../websockets/websockets.gateway';
+import { ConfigService } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { InAppService } from './in-app.service';
 import { Notification } from '../../notifications/entities/notification.entity';
+import { WebsocketsGateway } from '../../websockets/websockets.gateway';
 
 describe('InAppService', () => {
     let service: InAppService;
@@ -42,7 +43,12 @@ describe('InAppService', () => {
                 { provide: RedisService, useValue: redisService },
                 {
                     provide: LoggerService,
-                    useValue: { log: jest.fn(), error: jest.fn(), warn: jest.fn(), debug: jest.fn() },
+                    useValue: {
+                        log: jest.fn(),
+                        error: jest.fn(),
+                        warn: jest.fn(),
+                        debug: jest.fn(),
+                    },
                 },
                 { provide: ConfigService, useValue: { get: jest.fn() } },
             ],
@@ -81,6 +87,7 @@ describe('InAppService', () => {
 
         it('should return false on error', async () => {
             redisService.exists.mockRejectedValueOnce(new Error('Redis error'));
+            redisService.hset.mockRejectedValueOnce(new Error('Redis error'));
 
             const result = await service.send('user-1', mockNotification);
 
@@ -116,7 +123,10 @@ describe('InAppService', () => {
 
     describe('storeNotificationForLaterDelivery', () => {
         it('should store notification in redis hash', async () => {
-            const result = await service.storeNotificationForLaterDelivery('user-1', mockNotification);
+            const result = await service.storeNotificationForLaterDelivery(
+                'user-1',
+                mockNotification
+            );
 
             expect(result).toBe(true);
             expect(redisService.hset).toHaveBeenCalledWith(
@@ -129,7 +139,10 @@ describe('InAppService', () => {
         it('should return false on redis error', async () => {
             redisService.hset.mockRejectedValueOnce(new Error('Redis error'));
 
-            const result = await service.storeNotificationForLaterDelivery('user-1', mockNotification);
+            const result = await service.storeNotificationForLaterDelivery(
+                'user-1',
+                mockNotification
+            );
 
             expect(result).toBe(false);
         });

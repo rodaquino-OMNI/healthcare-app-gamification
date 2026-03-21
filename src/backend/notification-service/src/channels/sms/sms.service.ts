@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- Twilio client error shape is untyped */
 import { SYS_INTERNAL_SERVER_ERROR } from '@app/shared/constants/error-codes.constants';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Injectable } from '@nestjs/common'; // v10.0.0+

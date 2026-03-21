@@ -15,7 +15,9 @@ export const configuration = registerAs('care', () => ({
 
     // Database configuration
     database: {
-        url: process.env.CARE_SERVICE_DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/austa_care',
+        url:
+            process.env.CARE_SERVICE_DATABASE_URL ||
+            'postgresql://postgres:postgres@localhost:5432/austa_care',
         maxConnections: parseInt(process.env.CARE_SERVICE_DB_MAX_CONNECTIONS || '10', 10),
         idleTimeoutMillis: parseInt(process.env.CARE_SERVICE_DB_IDLE_TIMEOUT || '30000', 10),
         ssl: process.env.CARE_SERVICE_DB_SSL === 'true' || false,
@@ -55,10 +57,16 @@ export const configuration = registerAs('care', () => ({
     appointments: {
         maxAdvanceDays: parseInt(process.env.CARE_SERVICE_MAX_ADVANCE_DAYS || '90', 10),
         reminderSchedule: process.env.CARE_SERVICE_APPOINTMENT_REMINDER_SCHEDULE || '24h,1h',
-        defaultDuration: parseInt(process.env.CARE_SERVICE_DEFAULT_APPOINTMENT_DURATION || '30', 10), // minutes
+        defaultDuration: parseInt(
+            process.env.CARE_SERVICE_DEFAULT_APPOINTMENT_DURATION || '30',
+            10
+        ), // minutes
         cancellationPolicy: {
             enabled: process.env.CARE_SERVICE_CANCELLATION_POLICY_ENABLED === 'true' || true,
-            minimumNoticeHours: parseInt(process.env.CARE_SERVICE_MIN_CANCELLATION_HOURS || '24', 10),
+            minimumNoticeHours: parseInt(
+                process.env.CARE_SERVICE_MIN_CANCELLATION_HOURS || '24',
+                10
+            ),
             penaltyXpLoss: parseInt(process.env.CARE_SERVICE_CANCELLATION_XP_LOSS || '50', 10),
         },
         availabilityBuffer: parseInt(process.env.CARE_SERVICE_AVAILABILITY_BUFFER || '15', 10), // minutes between appointments
@@ -70,19 +78,34 @@ export const configuration = registerAs('care', () => ({
         provider: process.env.CARE_SERVICE_TELEMEDICINE_PROVIDER || 'agora',
         agora: {
             appId: process.env.CARE_SERVICE_AGORA_APP_ID || 'development-app-id',
-            appCertificate: process.env.CARE_SERVICE_AGORA_APP_CERTIFICATE || 'development-certificate',
-            tokenExpirationTimeInSeconds: parseInt(process.env.CARE_SERVICE_AGORA_TOKEN_EXPIRATION || '3600', 10),
+            appCertificate:
+                process.env.CARE_SERVICE_AGORA_APP_CERTIFICATE || 'development-certificate',
+            tokenExpirationTimeInSeconds: parseInt(
+                process.env.CARE_SERVICE_AGORA_TOKEN_EXPIRATION || '3600',
+                10
+            ),
         },
         recordingEnabled: process.env.CARE_SERVICE_TELEMEDICINE_RECORDING === 'true' || false,
         recordingStorage: {
-            bucket: process.env.CARE_SERVICE_TELEMEDICINE_RECORDING_BUCKET || 'austa-telemedicine-recordings',
+            bucket:
+                process.env.CARE_SERVICE_TELEMEDICINE_RECORDING_BUCKET ||
+                'austa-telemedicine-recordings',
             region: process.env.CARE_SERVICE_TELEMEDICINE_RECORDING_REGION || 'sa-east-1',
             retentionDays: parseInt(process.env.CARE_SERVICE_RECORDING_RETENTION_DAYS || '90', 10),
         },
         qualityThresholds: {
-            minimumBitrate: parseInt(process.env.CARE_SERVICE_TELEMEDICINE_MIN_BITRATE || '350000', 10), // 350 kbps
-            minimumFramerate: parseInt(process.env.CARE_SERVICE_TELEMEDICINE_MIN_FRAMERATE || '15', 10),
-            connectionTimeout: parseInt(process.env.CARE_SERVICE_TELEMEDICINE_CONNECTION_TIMEOUT || '30000', 10),
+            minimumBitrate: parseInt(
+                process.env.CARE_SERVICE_TELEMEDICINE_MIN_BITRATE || '350000',
+                10
+            ), // 350 kbps
+            minimumFramerate: parseInt(
+                process.env.CARE_SERVICE_TELEMEDICINE_MIN_FRAMERATE || '15',
+                10
+            ),
+            connectionTimeout: parseInt(
+                process.env.CARE_SERVICE_TELEMEDICINE_CONNECTION_TIMEOUT || '30000',
+                10
+            ),
         },
         sessionDuration: {
             default: parseInt(process.env.CARE_SERVICE_TELEMEDICINE_DEFAULT_DURATION || '20', 10), // minutes
@@ -95,7 +118,9 @@ export const configuration = registerAs('care', () => ({
     medications: {
         reminderEnabled: process.env.CARE_SERVICE_MEDICATION_REMINDERS === 'true' || true,
         reminderDefaultTime: process.env.CARE_SERVICE_MEDICATION_DEFAULT_REMINDER_TIME || '1h,0h',
-        adherenceThreshold: parseFloat(process.env.CARE_SERVICE_MEDICATION_ADHERENCE_THRESHOLD || '0.8'),
+        adherenceThreshold: parseFloat(
+            process.env.CARE_SERVICE_MEDICATION_ADHERENCE_THRESHOLD || '0.8'
+        ),
         refillReminderDays: parseInt(process.env.CARE_SERVICE_REFILL_REMINDER_DAYS || '7', 10),
         maxMissedDoses: parseInt(process.env.CARE_SERVICE_MAX_MISSED_DOSES || '3', 10),
         doseWindowMinutes: parseInt(process.env.CARE_SERVICE_DOSE_WINDOW_MINUTES || '60', 10),
@@ -110,8 +135,14 @@ export const configuration = registerAs('care', () => ({
             onTrack: parseFloat(process.env.CARE_SERVICE_TREATMENT_ON_TRACK_THRESHOLD || '0.8'),
         },
         interventionTriggers: {
-            missedActivities: parseInt(process.env.CARE_SERVICE_TREATMENT_MISSED_ACTIVITIES || '3', 10),
-            missedAppointments: parseInt(process.env.CARE_SERVICE_TREATMENT_MISSED_APPOINTMENTS || '1', 10),
+            missedActivities: parseInt(
+                process.env.CARE_SERVICE_TREATMENT_MISSED_ACTIVITIES || '3',
+                10
+            ),
+            missedAppointments: parseInt(
+                process.env.CARE_SERVICE_TREATMENT_MISSED_APPOINTMENTS || '1',
+                10
+            ),
         },
     },
 
@@ -120,18 +151,22 @@ export const configuration = registerAs('care', () => ({
         enabled: process.env.CARE_SERVICE_SYMPTOMS_CHECKER_ENABLED === 'true' || true,
         provider: process.env.CARE_SERVICE_SYMPTOMS_CHECKER_PROVIDER || 'internal',
         externalApi: {
-            url: process.env.CARE_SERVICE_SYMPTOMS_CHECKER_API_URL || 'https://symptoms-api.austa.com.br',
+            url:
+                process.env.CARE_SERVICE_SYMPTOMS_CHECKER_API_URL ||
+                'https://symptoms-api.austa.com.br',
             apiKey: process.env.CARE_SERVICE_SYMPTOMS_CHECKER_API_KEY || 'development-api-key',
             timeout: parseInt(process.env.CARE_SERVICE_SYMPTOMS_CHECKER_TIMEOUT || '10000', 10),
         },
         emergencySymptoms:
-            process.env.CARE_SERVICE_EMERGENCY_SYMPTOMS || 'chest_pain,difficulty_breathing,severe_bleeding',
+            process.env.CARE_SERVICE_EMERGENCY_SYMPTOMS ||
+            'chest_pain,difficulty_breathing,severe_bleeding',
         updateFrequency: process.env.CARE_SERVICE_SYMPTOMS_UPDATE_FREQUENCY || 'weekly',
     },
 
     // Notification service integration
     notifications: {
-        serviceUrl: process.env.CARE_SERVICE_NOTIFICATIONS_URL || 'http://notification-service:3006',
+        serviceUrl:
+            process.env.CARE_SERVICE_NOTIFICATIONS_URL || 'http://notification-service:3006',
         apiKey: process.env.CARE_SERVICE_NOTIFICATIONS_API_KEY || 'development-api-key',
         defaultChannel: process.env.CARE_SERVICE_DEFAULT_NOTIFICATION_CHANNEL || 'push,email',
         throttling: {
@@ -140,11 +175,16 @@ export const configuration = registerAs('care', () => ({
             maxPerDay: parseInt(process.env.CARE_SERVICE_MAX_NOTIFICATIONS_DAY || '20', 10),
         },
         templates: {
-            appointmentReminder: process.env.CARE_SERVICE_APPOINTMENT_REMINDER_TEMPLATE || 'care-appointment-reminder',
+            appointmentReminder:
+                process.env.CARE_SERVICE_APPOINTMENT_REMINDER_TEMPLATE ||
+                'care-appointment-reminder',
             appointmentConfirmation:
-                process.env.CARE_SERVICE_APPOINTMENT_CONFIRMATION_TEMPLATE || 'care-appointment-confirmation',
-            medicationReminder: process.env.CARE_SERVICE_MEDICATION_REMINDER_TEMPLATE || 'care-medication-reminder',
-            treatmentUpdate: process.env.CARE_SERVICE_TREATMENT_UPDATE_TEMPLATE || 'care-treatment-update',
+                process.env.CARE_SERVICE_APPOINTMENT_CONFIRMATION_TEMPLATE ||
+                'care-appointment-confirmation',
+            medicationReminder:
+                process.env.CARE_SERVICE_MEDICATION_REMINDER_TEMPLATE || 'care-medication-reminder',
+            treatmentUpdate:
+                process.env.CARE_SERVICE_TREATMENT_UPDATE_TEMPLATE || 'care-treatment-update',
         },
     },
 
@@ -163,11 +203,26 @@ export const configuration = registerAs('care', () => ({
             symptomCheckerCompleted: 'SYMPTOM_CHECKER_COMPLETED',
         },
         pointValues: {
-            appointmentBooked: parseInt(process.env.CARE_SERVICE_POINTS_APPOINTMENT_BOOKED || '10', 10),
-            appointmentAttended: parseInt(process.env.CARE_SERVICE_POINTS_APPOINTMENT_ATTENDED || '50', 10),
-            telemedicineCompleted: parseInt(process.env.CARE_SERVICE_POINTS_TELEMEDICINE_COMPLETED || '50', 10),
-            medicationPerfectWeek: parseInt(process.env.CARE_SERVICE_POINTS_MEDICATION_PERFECT_WEEK || '100', 10),
-            treatmentMilestone: parseInt(process.env.CARE_SERVICE_POINTS_TREATMENT_MILESTONE || '75', 10),
+            appointmentBooked: parseInt(
+                process.env.CARE_SERVICE_POINTS_APPOINTMENT_BOOKED || '10',
+                10
+            ),
+            appointmentAttended: parseInt(
+                process.env.CARE_SERVICE_POINTS_APPOINTMENT_ATTENDED || '50',
+                10
+            ),
+            telemedicineCompleted: parseInt(
+                process.env.CARE_SERVICE_POINTS_TELEMEDICINE_COMPLETED || '50',
+                10
+            ),
+            medicationPerfectWeek: parseInt(
+                process.env.CARE_SERVICE_POINTS_MEDICATION_PERFECT_WEEK || '100',
+                10
+            ),
+            treatmentMilestone: parseInt(
+                process.env.CARE_SERVICE_POINTS_TREATMENT_MILESTONE || '75',
+                10
+            ),
         },
     },
 
@@ -175,7 +230,8 @@ export const configuration = registerAs('care', () => ({
     integrations: {
         pharmacyNetworks: {
             enabled: process.env.CARE_SERVICE_PHARMACY_INTEGRATION === 'true' || false,
-            apiUrl: process.env.CARE_SERVICE_PHARMACY_API_URL || 'https://pharmacy-api.austa.com.br',
+            apiUrl:
+                process.env.CARE_SERVICE_PHARMACY_API_URL || 'https://pharmacy-api.austa.com.br',
             apiKey: process.env.CARE_SERVICE_PHARMACY_API_KEY || 'development-api-key',
             timeout: parseInt(process.env.CARE_SERVICE_PHARMACY_TIMEOUT || '5000', 10),
             cacheEnabled: process.env.CARE_SERVICE_PHARMACY_CACHE_ENABLED === 'true' || true,
@@ -183,7 +239,8 @@ export const configuration = registerAs('care', () => ({
         },
         emergencyServices: {
             enabled: process.env.CARE_SERVICE_EMERGENCY_INTEGRATION === 'true' || false,
-            apiUrl: process.env.CARE_SERVICE_EMERGENCY_API_URL || 'https://emergency-api.austa.com.br',
+            apiUrl:
+                process.env.CARE_SERVICE_EMERGENCY_API_URL || 'https://emergency-api.austa.com.br',
             apiKey: process.env.CARE_SERVICE_EMERGENCY_API_KEY || 'development-api-key',
             emergencyNumber: process.env.CARE_SERVICE_EMERGENCY_NUMBER || '192',
         },
@@ -194,18 +251,22 @@ export const configuration = registerAs('care', () => ({
         level: process.env.CARE_SERVICE_LOG_LEVEL || 'info',
         format: process.env.CARE_SERVICE_LOG_FORMAT || 'json',
         requestLogging: process.env.CARE_SERVICE_REQUEST_LOGGING === 'true' || true,
-        sensitiveDataFields: process.env.CARE_SERVICE_SENSITIVE_DATA_FIELDS || 'password,token,healthData',
+        sensitiveDataFields:
+            process.env.CARE_SERVICE_SENSITIVE_DATA_FIELDS || 'password,token,healthData',
         journeyContext: 'care',
     },
 
     // Feature flags
     features: {
         enableSymptomsChecker: process.env.CARE_SERVICE_ENABLE_SYMPTOMS_CHECKER === 'true' || true,
-        enableTreatmentTracking: process.env.CARE_SERVICE_ENABLE_TREATMENT_TRACKING === 'true' || true,
+        enableTreatmentTracking:
+            process.env.CARE_SERVICE_ENABLE_TREATMENT_TRACKING === 'true' || true,
         enableEmergencyAccess: process.env.CARE_SERVICE_ENABLE_EMERGENCY_ACCESS === 'true' || false,
-        enableVirtualWaitingRoom: process.env.CARE_SERVICE_ENABLE_VIRTUAL_WAITING_ROOM === 'true' || false,
+        enableVirtualWaitingRoom:
+            process.env.CARE_SERVICE_ENABLE_VIRTUAL_WAITING_ROOM === 'true' || false,
         enableProviderRatings: process.env.CARE_SERVICE_ENABLE_PROVIDER_RATINGS === 'true' || true,
         enableDocumentSharing: process.env.CARE_SERVICE_ENABLE_DOCUMENT_SHARING === 'true' || true,
-        enableFollowUpSuggestions: process.env.CARE_SERVICE_ENABLE_FOLLOW_UP_SUGGESTIONS === 'true' || true,
+        enableFollowUpSuggestions:
+            process.env.CARE_SERVICE_ENABLE_FOLLOW_UP_SUGGESTIONS === 'true' || true,
     },
 }));

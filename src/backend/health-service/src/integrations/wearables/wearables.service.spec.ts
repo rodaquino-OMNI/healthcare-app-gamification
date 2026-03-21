@@ -1,8 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Test, TestingModule } from '@nestjs/testing';
-import { WearablesService } from './wearables.service';
+/* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { WearablesService } from './wearables.service';
 
 describe('WearablesService', () => {
     let service: WearablesService;
@@ -110,9 +111,17 @@ describe('WearablesService', () => {
                 lastSync: new Date(),
             };
             mockGoogleFitAdapter.connect.mockResolvedValue(mockAdapterResult);
-            (mockPrismaService as any).deviceConnection.create.mockResolvedValue(mockPersistedConnection);
+            (mockPrismaService as any).deviceConnection.create.mockResolvedValue(
+                mockPersistedConnection
+            );
 
-            const result = await service.connectDevice(userId, recordId, 'GOOGLE_FIT', authToken, refreshToken);
+            const result = await service.connectDevice(
+                userId,
+                recordId,
+                'GOOGLE_FIT',
+                authToken,
+                refreshToken
+            );
 
             expect(result).toEqual(mockPersistedConnection);
         });
@@ -133,13 +142,21 @@ describe('WearablesService', () => {
         });
 
         it('should throw error when unsupported deviceType is provided', async () => {
-            await expect(service.connectDevice(userId, recordId, 'UNSUPPORTED_DEVICE', authToken)).rejects.toThrow();
+            await expect(
+                service.connectDevice(userId, recordId, 'UNSUPPORTED_DEVICE', authToken)
+            ).rejects.toThrow();
         });
 
         it('should persist connection with correct data structure', async () => {
-            const mockAdapterResult = { status: 'CONNECTED', connectionData: {}, lastSync: new Date() };
+            const mockAdapterResult = {
+                status: 'CONNECTED',
+                connectionData: {},
+                lastSync: new Date(),
+            };
             mockGoogleFitAdapter.connect.mockResolvedValue(mockAdapterResult);
-            (mockPrismaService as any).deviceConnection.create.mockResolvedValue(mockPersistedConnection);
+            (mockPrismaService as any).deviceConnection.create.mockResolvedValue(
+                mockPersistedConnection
+            );
 
             await service.connectDevice(userId, recordId, 'GOOGLE_FIT', authToken);
 
@@ -168,12 +185,20 @@ describe('WearablesService', () => {
         };
 
         it('should return health metrics when device is connected', async () => {
-            const mockMetrics = [{ type: 'HEART_RATE', value: 72, unit: 'bpm', timestamp: new Date() }];
+            const mockMetrics = [
+                { type: 'HEART_RATE', value: 72, unit: 'bpm', timestamp: new Date() },
+            ];
             (mockPrismaService as any).deviceConnection.findFirst.mockResolvedValue(mockConnection);
             mockGoogleFitAdapter.getHealthMetrics.mockResolvedValue(mockMetrics);
             (mockPrismaService as any).deviceConnection.update.mockResolvedValue(mockConnection);
 
-            const result = await service.getHealthMetrics(userId, recordId, 'GOOGLE_FIT', startTime, endTime);
+            const result = await service.getHealthMetrics(
+                userId,
+                recordId,
+                'GOOGLE_FIT',
+                startTime,
+                endTime
+            );
 
             expect(result).toEqual(mockMetrics);
         });
@@ -249,7 +274,9 @@ describe('WearablesService', () => {
         });
 
         it('should throw error for unsupported deviceType', async () => {
-            await expect(service.disconnectDevice(userId, recordId, 'UNSUPPORTED_DEVICE')).rejects.toThrow();
+            await expect(
+                service.disconnectDevice(userId, recordId, 'UNSUPPORTED_DEVICE')
+            ).rejects.toThrow();
         });
     });
 });

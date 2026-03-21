@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- ClaimsService returns dynamic Prisma results bridged to typed Claim entity */
 import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 import { Roles } from '@app/auth/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
@@ -58,7 +58,10 @@ export class ClaimsController {
     @HttpCode(HttpStatus.CREATED)
     @Roles('user')
     @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
-    async create(@CurrentUser('id') userId: string, @Body() createClaimDto: CreateClaimDto): Promise<Claim> {
+    async create(
+        @CurrentUser('id') userId: string,
+        @Body() createClaimDto: CreateClaimDto
+    ): Promise<Claim> {
         this.logger.log(`Creating claim for user: ${userId}`, 'ClaimsController');
 
         return this.tracingService.createSpan('ClaimsController.create', async () => {

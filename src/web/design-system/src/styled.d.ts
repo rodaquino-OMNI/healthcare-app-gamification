@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-interface */
+/* eslint-disable @typescript-eslint/no-empty-interface -- Augmentation placeholder for styled-components theme extension */
 import 'styled-components';
 import { Theme } from './themes/base.theme';
 

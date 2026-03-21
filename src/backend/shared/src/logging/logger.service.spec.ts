@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { LoggerService } from './logger.service';
 
 describe('LoggerService (Shared)', () => {
@@ -53,7 +54,9 @@ describe('LoggerService (Shared)', () => {
         });
 
         it('should log an error with trace and context', () => {
-            expect(() => service.error('Error occurred', 'stack trace', 'ErrorContext')).not.toThrow();
+            expect(() =>
+                service.error('Error occurred', 'stack trace', 'ErrorContext')
+            ).not.toThrow();
         });
     });
 

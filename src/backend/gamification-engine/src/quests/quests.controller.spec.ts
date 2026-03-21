@@ -1,11 +1,12 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+
 import { QuestsController } from './quests.controller';
 import { QuestsService } from './quests.service';
 
 describe('QuestsController', () => {
     let controller: QuestsController;
-    let questsService: QuestsService;
+    let _questsService: QuestsService;
 
     const mockQuest = {
         id: 'quest-1',
@@ -43,7 +44,7 @@ describe('QuestsController', () => {
         }).compile();
 
         controller = module.get<QuestsController>(QuestsController);
-        questsService = module.get<QuestsService>(QuestsService);
+        _questsService = module.get<QuestsService>(QuestsService);
     });
 
     it('should be defined', () => {
@@ -121,7 +122,9 @@ describe('QuestsController', () => {
         it('should propagate errors from the service', async () => {
             mockQuestsService.startQuest.mockRejectedValue(new Error('Start failed'));
 
-            await expect(controller.startQuest('quest-1', mockUser)).rejects.toThrow('Start failed');
+            await expect(controller.startQuest('quest-1', mockUser)).rejects.toThrow(
+                'Start failed'
+            );
         });
     });
 
@@ -140,9 +143,13 @@ describe('QuestsController', () => {
         });
 
         it('should propagate NotFoundException when quest is not started', async () => {
-            mockQuestsService.completeQuest.mockRejectedValue(new NotFoundException('Quest not started'));
+            mockQuestsService.completeQuest.mockRejectedValue(
+                new NotFoundException('Quest not started')
+            );
 
-            await expect(controller.completeQuest('quest-1', mockUser)).rejects.toThrow(NotFoundException);
+            await expect(controller.completeQuest('quest-1', mockUser)).rejects.toThrow(
+                NotFoundException
+            );
         });
     });
 });

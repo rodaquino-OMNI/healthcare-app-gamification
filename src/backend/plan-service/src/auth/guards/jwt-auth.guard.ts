@@ -22,8 +22,14 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
      * Custom error handling for authentication failures
      * @param error Error thrown during authentication
      */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    handleRequest<TUser = any>(err: any, user: any, info: any, context: ExecutionContext, status?: any): TUser {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Passport handleRequest callback signature requires any
+    handleRequest<TUser = any>(
+        err: Error | null,
+        user: TUser | false,
+        _info: unknown,
+        _context: ExecutionContext,
+        _status?: unknown
+    ): TUser {
         if (err || !user) {
             throw err instanceof Error ? err : new UnauthorizedException('Authentication failed');
         }

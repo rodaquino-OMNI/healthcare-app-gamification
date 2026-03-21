@@ -1,4 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- Passport/JWT dynamic payloads and catch clauses require any */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment -- dynamic Prisma/Passport user objects lack strict types */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access -- dynamic Prisma/Passport user objects lack strict types */
+/* eslint-disable @typescript-eslint/no-unsafe-argument -- dynamic user/error objects from Prisma/Passport */
 import * as crypto from 'crypto';
 
 import { PrismaService } from '@app/shared/database/prisma.service';
@@ -8,6 +11,7 @@ import { RedisService } from '@app/shared/redis/redis.service';
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import type { StringValue } from 'ms';
 
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
@@ -50,9 +54,14 @@ export class AuthService {
             });
 
             if (existingUser) {
-                throw new AppException('User with this email already exists', ErrorType.VALIDATION, 'AUTH_002', {
-                    email: createUserDto.email,
-                });
+                throw new AppException(
+                    'User with this email already exists',
+                    ErrorType.VALIDATION,
+                    'AUTH_002',
+                    {
+                        email: createUserDto.email,
+                    }
+                );
             }
 
             // Create the user using the users service
@@ -84,7 +93,8 @@ export class AuthService {
      * Parses refresh token expiration config string (e.g. '7d') into seconds.
      */
     private getRefreshTokenTtl(): number {
-        const exp = this.configService.get<string>('authService.jwt.refreshTokenExpiration') || '7d';
+        const exp =
+            this.configService.get<string>('authService.jwt.refreshTokenExpiration') || '7d';
         const match = exp.match(/^(\d+)([dhms])$/);
         if (!match) {
             return 7 * 24 * 3600;
@@ -122,7 +132,9 @@ export class AuthService {
      * @param refreshToken The current refresh token to rotate
      * @returns New access token and refresh token pair
      */
-    async refreshTokens(refreshToken: string): Promise<{ access_token: string; refresh_token: string }> {
+    async refreshTokens(
+        refreshToken: string
+    ): Promise<{ access_token: string; refresh_token: string }> {
         const userId = await this.redisService.get(`refresh:${refreshToken}`);
         if (!userId) {
             throw new AppException(
@@ -139,7 +151,13 @@ export class AuthService {
 
         const user = await this.usersService.findOne(userId);
         if (!user) {
-            throw new AppException('User not found', ErrorType.AUTHENTICATION, 'AUTH_009', {}, HttpStatus.UNAUTHORIZED);
+            throw new AppException(
+                'User not found',
+                ErrorType.AUTHENTICATION,
+                'AUTH_009',
+                {},
+                HttpStatus.UNAUTHORIZED
+            );
         }
 
         const payload = {
@@ -150,7 +168,7 @@ export class AuthService {
 
         const accessToken = this.jwtService.sign(payload, {
             secret: this.configService.get<string>('authService.jwt.secret'),
-            expiresIn: this.configService.get<string>('authService.jwt.accessTokenExpiration') as any,
+            expiresIn: this.configService.get<StringValue>('authService.jwt.accessTokenExpiration'),
         });
 
         const newRefreshToken = await this.generateRefreshToken(user.id as string);
@@ -179,10 +197,14 @@ export class AuthService {
         // Check account lockout before attempting credentials validation
         const lockoutKey = `lockout:${email}`;
         const attempts = parseInt((await this.redisService.get(lockoutKey)) || '0', 10);
-        const threshold = this.configService.get<number>('authService.password.lockoutThreshold') || 5;
+        const threshold =
+            this.configService.get<number>('authService.password.lockoutThreshold') || 5;
 
         if (attempts >= threshold) {
-            this.logger.warn(`Account locked for ${email} after ${attempts} failed attempts`, 'AuthService');
+            this.logger.warn(
+                `Account locked for ${email} after ${attempts} failed attempts`,
+                'AuthService'
+            );
             throw new AppException(
                 'Account temporarily locked due to too many failed attempts',
                 ErrorType.AUTHENTICATION,
@@ -199,12 +221,17 @@ export class AuthService {
         } catch (error: any) {
             // Increment failed attempt counter on credential failure
             const newAttempts = parseInt((await this.redisService.get(lockoutKey)) || '0', 10) + 1;
-            const lockoutDuration = this.configService.get<number>('authService.password.lockoutDuration') || 1800;
+            const lockoutDuration =
+                this.configService.get<number>('authService.password.lockoutDuration') || 1800;
             await this.redisService.set(lockoutKey, String(newAttempts), lockoutDuration);
 
             const errorMsg = error.message || 'Unknown login error';
             const errorStack = error.stack || '';
-            this.logger.error(`Login failed for user ${email}: ${errorMsg}`, errorStack, 'AuthService');
+            this.logger.error(
+                `Login failed for user ${email}: ${errorMsg}`,
+                errorStack,
+                'AuthService'
+            );
 
             throw new AppException(
                 'Invalid login credentials',
@@ -227,7 +254,7 @@ export class AuthService {
 
         const token = this.jwtService.sign(payload, {
             secret: this.configService.get<string>('authService.jwt.secret'),
-            expiresIn: this.configService.get<string>('authService.jwt.accessTokenExpiration') as any,
+            expiresIn: this.configService.get<StringValue>('authService.jwt.accessTokenExpiration'),
         });
 
         // Generate refresh token
@@ -249,11 +276,11 @@ export class AuthService {
      * @param payload JWT payload
      * @returns User object if token is valid
      */
-    async validateToken(payload: any): Promise<any> {
-        this.logger.log(`Validating token for user ID: ${payload.sub}`, 'AuthService');
+    async validateToken(payload: Record<string, unknown>): Promise<unknown> {
+        this.logger.log(`Validating token for user ID: ${String(payload.sub)}`, 'AuthService');
 
         try {
-            const user = await this.usersService.findOne(payload.sub);
+            const user = await this.usersService.findOne(payload.sub as string);
             return user;
         } catch (error: any) {
             const errorMsg = error.message || 'Unknown token validation error';

@@ -6,7 +6,7 @@ import { Select } from './Select';
 
 // Mock react-native
 jest.mock('react-native', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Mock factory returns untyped test double
     StyleSheet: { create: (styles: Record<string, unknown>) => styles },
     Platform: { OS: 'web' },
 }));

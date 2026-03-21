@@ -52,7 +52,7 @@ jest.mock('@/layouts/HealthLayout', () => {
 });
 
 jest.mock('styled-components', () => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- jest.requireActual returns any; we cast it to the known type immediately
     const actual: typeof import('react') = jest.requireActual('react');
     function createStyledTag() {
         return function StyledComponent(props: Record<string, unknown>) {
@@ -88,7 +88,7 @@ jest.mock('styled-components', () => {
 });
 
 jest.mock('design-system/components/Card/Card', () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment -- dynamic require for test mock isolation; jest.mock factory cannot use ES import syntax
     const ReactMod: typeof import('react') = require('react');
     return {
         Card: (props: Record<string, unknown>) =>

@@ -11,7 +11,7 @@ export interface PhiAccessMetadata {
  * Marks an endpoint as accessing Protected Health Information (PHI).
  * When applied, the AuditInterceptor will log LGPD-compliant PHI access entries.
  *
- * @param resourceType - The type of PHI resource being accessed (e.g., "HealthMetric", "Appointment")
+ * @param resourceType - The type of PHI resource being accessed (e.g., "HealthMetric")
  */
 export const PhiAccess = (resourceType: string): MethodDecorator & ClassDecorator =>
     SetMetadata<string, PhiAccessMetadata>(PHI_ACCESS_KEY, { resourceType, isPhi: true });

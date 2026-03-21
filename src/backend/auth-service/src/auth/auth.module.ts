@@ -6,6 +6,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config'; // 10.0.0+
 import { JwtModule } from '@nestjs/jwt'; // 10.0.0+
 import { PassportModule } from '@nestjs/passport'; // 10.0.0+
+import type { StringValue } from 'ms';
 
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -28,11 +29,16 @@ import { RolesModule } from '../roles/roles.module';
         PassportModule,
         JwtModule.registerAsync({
             imports: [ConfigModule],
-            useFactory: async (configService: ConfigService) => ({
-                secret: configService.get<string>('authService.jwt.secret', 'fallback-secret-change-me'),
+            useFactory: (configService: ConfigService) => ({
+                secret: configService.get<string>(
+                    'authService.jwt.secret',
+                    'fallback-secret-change-me'
+                ),
                 signOptions: {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    expiresIn: configService.get<string>('authService.jwt.accessTokenExpiration', '1h') as any,
+                    expiresIn: configService.get<StringValue>(
+                        'authService.jwt.accessTokenExpiration',
+                        '1h' as StringValue
+                    ),
                 },
             }),
             inject: [ConfigService],

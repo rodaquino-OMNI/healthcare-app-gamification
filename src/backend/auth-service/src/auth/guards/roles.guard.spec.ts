@@ -15,12 +15,13 @@ describe('RolesGuard (Auth Service)', () => {
         guard = new RolesGuard(mockReflector);
     });
 
-    const createMockContext = (user?: Record<string, unknown>): ExecutionContext => ({
-        getHandler: jest.fn(),
-        switchToHttp: () => ({
-            getRequest: () => ({ user }),
-        }),
-    } as unknown as ExecutionContext);
+    const createMockContext = (user?: Record<string, unknown>): ExecutionContext =>
+        ({
+            getHandler: jest.fn(),
+            switchToHttp: () => ({
+                getRequest: () => ({ user }),
+            }),
+        }) as unknown as ExecutionContext;
 
     it('should be defined', () => {
         expect(guard).toBeDefined();
@@ -62,7 +63,9 @@ describe('RolesGuard (Auth Service)', () => {
             mockReflector.get.mockReturnValue(['admin']);
             const user = { roles: [{ name: 'user' }] };
 
-            expect(() => guard.canActivate(createMockContext(user))).toThrow('Insufficient permissions');
+            expect(() => guard.canActivate(createMockContext(user))).toThrow(
+                'Insufficient permissions'
+            );
         });
 
         it('should throw when user has no roles', () => {

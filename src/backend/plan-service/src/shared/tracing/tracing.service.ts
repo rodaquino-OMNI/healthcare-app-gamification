@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- OpenTelemetry span API returns untyped results; catch clauses require any */
 import { Injectable } from '@nestjs/common';
 
 /**
@@ -33,6 +33,7 @@ export class TracingService {
      * @param durationMs Duration of the span in milliseconds
      */
     private recordSpanCompletion(name: string, durationMs: number): void {
+        // eslint-disable-next-line no-console -- tracing service intentionally uses console for span recording
         console.debug(`[Tracing] Span '${name}' completed in ${durationMs}ms`);
     }
 

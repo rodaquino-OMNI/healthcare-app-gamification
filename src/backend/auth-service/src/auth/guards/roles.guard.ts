@@ -35,16 +35,18 @@ export class RolesGuard implements CanActivate {
         }
 
         // Get the request object
-        const request = context.switchToHttp().getRequest();
+        const request = context.switchToHttp().getRequest<{ user?: { roles?: Role[] } }>();
         const user = request.user;
 
         // Ensure user exists
         if (!user) {
-            throw new AppException('Authentication required', ErrorType.VALIDATION, 'AUTH_003', { requiredRoles });
+            throw new AppException('Authentication required', ErrorType.VALIDATION, 'AUTH_003', {
+                requiredRoles,
+            });
         }
 
         // Check if user has any of the required roles
-        const hasRole = this.matchRoles(requiredRoles, user.roles);
+        const hasRole = this.matchRoles(requiredRoles, user.roles ?? []);
         if (!hasRole) {
             throw new AppException('Insufficient permissions', ErrorType.VALIDATION, 'AUTH_004', {
                 requiredRoles,
@@ -67,6 +69,8 @@ export class RolesGuard implements CanActivate {
             return false;
         }
 
-        return requiredRoles.some((requiredRole) => userRoles.some((userRole) => userRole.name === requiredRole));
+        return requiredRoles.some((requiredRole) =>
+            userRoles.some((userRole) => userRole.name === requiredRole)
+        );
     }
 }

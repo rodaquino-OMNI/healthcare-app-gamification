@@ -1,6 +1,6 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
 import { of } from 'rxjs';
 
 import { HealthResolvers } from './health.resolvers';
@@ -53,10 +53,17 @@ describe('HealthResolvers', () => {
             const mockData = [{ id: 'metric-1' }];
             httpService.get.mockReturnValue(of({ data: mockData } as never));
 
-            await resolvers.getHealthMetrics(mockUser, 'user-1', ['heart_rate'], undefined, undefined, 'wearable');
+            await resolvers.getHealthMetrics(
+                mockUser,
+                'user-1',
+                ['heart_rate'],
+                undefined,
+                undefined,
+                'wearable'
+            );
 
             expect(httpService.get).toHaveBeenCalledWith(
-                expect.stringContaining('types=heart_rate'),
+                expect.stringContaining('types=heart_rate')
             );
         });
     });

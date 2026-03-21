@@ -21,7 +21,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     ) {
         const jwtSecret = configService.get<string>('authService.jwt.secret');
         if (!jwtSecret) {
-            throw new Error('JWT_SECRET environment variable is required — cannot start auth-service without it');
+            throw new Error(
+                'JWT_SECRET environment variable is required — cannot start auth-service without it'
+            );
         }
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -37,15 +39,18 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
      * @param payload - The decoded JWT payload
      * @returns The authenticated user
      */
-    async validate(payload: Record<string, unknown>) {
-        this.logger.debug(`Validating JWT for user ID: ${payload.sub}`, 'JwtStrategy');
+    async validate(payload: Record<string, unknown>): Promise<unknown> {
+        this.logger.debug(`Validating JWT for user ID: ${String(payload.sub)}`, 'JwtStrategy');
 
         // Use the auth service to validate the token and get the user
         const user = await this.authService.validateToken(payload);
 
         // If user is not found or invalid, return null to fail authentication
         if (!user) {
-            this.logger.warn(`Failed to validate token for user ID: ${payload.sub}`, 'JwtStrategy');
+            this.logger.warn(
+                `Failed to validate token for user ID: ${String(payload.sub)}`,
+                'JwtStrategy'
+            );
             return null;
         }
 

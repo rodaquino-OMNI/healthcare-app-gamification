@@ -61,7 +61,10 @@ async function bootstrap(): Promise<void> {
     await app.listen(port);
 
     // LD1: Log the application startup with the service URL
-    logger.log(`Care Service running on ${configService.get<string>('care.baseUrl')}:${port}`, 'Bootstrap');
+    logger.log(
+        `Care Service running on ${configService.get<string>('care.baseUrl')}:${port}`,
+        'Bootstrap'
+    );
 }
 
 // LD1: Call the bootstrap function to start the application

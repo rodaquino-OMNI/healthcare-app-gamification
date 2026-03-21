@@ -1,4 +1,11 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+    ArgumentsHost,
+    Catch,
+    ExceptionFilter,
+    HttpException,
+    HttpStatus,
+    Injectable,
+} from '@nestjs/common';
 import * as Sentry from '@sentry/node';
 
 import { AppException, ErrorType } from './exceptions.types';
@@ -57,7 +64,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
             if (typeof exceptionResponse === 'object') {
                 errorResponse = {
                     error: {
-                        ...(typeof exceptionResponse === 'object' ? exceptionResponse : { message: exceptionResponse }),
+                        ...(typeof exceptionResponse === 'object'
+                            ? exceptionResponse
+                            : { message: exceptionResponse }),
                         type: this.getErrorTypeFromStatus(statusCode),
                     },
                 };
@@ -155,10 +164,18 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
         switch (type) {
             case ErrorType.TECHNICAL:
-                this.logger.error(`Technical error: ${message} (${code})`, exception.stack, logContext);
+                this.logger.error(
+                    `Technical error: ${message} (${code})`,
+                    exception.stack,
+                    logContext
+                );
                 break;
             case ErrorType.EXTERNAL:
-                this.logger.error(`External system error: ${message} (${code})`, exception.stack, logContext);
+                this.logger.error(
+                    `External system error: ${message} (${code})`,
+                    exception.stack,
+                    logContext
+                );
                 break;
             case ErrorType.BUSINESS:
                 this.logger.warn(`Business error: ${message} (${code})`, logContext);
@@ -194,6 +211,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
      * Logs unknown exceptions
      */
     private logUnknownException(exception: Error, _requestInfo: Record<string, unknown>): void {
-        this.logger.error(`Unhandled exception: ${exception.message}`, exception.stack, 'ExceptionsFilter');
+        this.logger.error(
+            `Unhandled exception: ${exception.message}`,
+            exception.stack,
+            'ExceptionsFilter'
+        );
     }
 }

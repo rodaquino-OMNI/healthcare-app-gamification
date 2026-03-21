@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* eslint-disable no-console -- Logger service intentionally wraps console for structured output */
 import { Injectable, LoggerService as NestLoggerService } from '@nestjs/common';
 
 /**

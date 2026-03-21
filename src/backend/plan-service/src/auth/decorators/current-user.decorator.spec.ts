@@ -9,7 +9,7 @@ describe('CurrentUser Decorator (Plan Service)', () => {
 
     it('should create a parameter decorator', () => {
         class TestClass {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Parameter required by decorator signature
             testMethod(@CurrentUser() _user: unknown) {}
         }
 
@@ -19,7 +19,7 @@ describe('CurrentUser Decorator (Plan Service)', () => {
 
     it('should support property path', () => {
         class TestClass {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Parameter required by decorator signature
             testMethod(@CurrentUser('id') _id: unknown) {}
         }
 

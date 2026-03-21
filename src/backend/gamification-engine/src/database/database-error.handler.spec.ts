@@ -32,7 +32,7 @@ describe('DatabaseErrorHandler', () => {
 
             expect(mockLogger.log).toHaveBeenCalledWith(
                 expect.stringContaining('Database configuration validated'),
-                'DatabaseErrorHandler',
+                'DatabaseErrorHandler'
             );
         });
 
@@ -48,7 +48,7 @@ describe('DatabaseErrorHandler', () => {
 
             expect(mockLogger.log).toHaveBeenCalledWith(
                 expect.stringContaining('using connection URL'),
-                'DatabaseErrorHandler',
+                'DatabaseErrorHandler'
             );
         });
 
@@ -59,7 +59,7 @@ describe('DatabaseErrorHandler', () => {
 
             expect(mockLogger.warn).toHaveBeenCalledWith(
                 expect.stringContaining('Database configuration not found'),
-                'DatabaseErrorHandler',
+                'DatabaseErrorHandler'
             );
         });
 

@@ -1,4 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- Prisma UserQuest includes untyped quest relation; catch/rethrow requires any */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment -- Prisma UserQuest quest relation is dynamically typed */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access -- quest relation accessed only after include: { quest: true } */
+/* eslint-disable @typescript-eslint/no-unsafe-argument -- quest.xpReward and quest.journey are present at runtime */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { AppException, ErrorType } from '@app/shared/exceptions/exceptions.types';
 import { KafkaService } from '@app/shared/kafka/kafka.service';
@@ -36,7 +39,12 @@ export class QuestsService {
         } catch (error: unknown) {
             const stack = error instanceof Error ? error.stack : String(error);
             this.logger.error('Failed to retrieve quests', stack, 'QuestsService');
-            throw new AppException('Failed to retrieve quests', ErrorType.TECHNICAL, 'GAME_009', {});
+            throw new AppException(
+                'Failed to retrieve quests',
+                ErrorType.TECHNICAL,
+                'GAME_009',
+                {}
+            );
         }
     }
 
@@ -61,7 +69,12 @@ export class QuestsService {
 
             const stack = error instanceof Error ? error.stack : String(error);
             this.logger.error(`Failed to retrieve quest with ID ${id}`, stack, 'QuestsService');
-            throw new AppException(`Failed to retrieve quest with ID ${id}`, ErrorType.TECHNICAL, 'GAME_010', { id });
+            throw new AppException(
+                `Failed to retrieve quest with ID ${id}`,
+                ErrorType.TECHNICAL,
+                'GAME_010',
+                { id }
+            );
         }
     }
 
@@ -119,7 +132,11 @@ export class QuestsService {
             }
 
             const stack = error instanceof Error ? error.stack : String(error);
-            this.logger.error(`Failed to start quest ${questId} for user ${userId}`, stack, 'QuestsService');
+            this.logger.error(
+                `Failed to start quest ${questId} for user ${userId}`,
+                stack,
+                'QuestsService'
+            );
             throw new AppException(
                 `Failed to start quest ${questId} for user ${userId}`,
                 ErrorType.TECHNICAL,
@@ -203,7 +220,11 @@ export class QuestsService {
             }
 
             const stack = error instanceof Error ? error.stack : String(error);
-            this.logger.error(`Failed to complete quest ${questId} for user ${userId}`, stack, 'QuestsService');
+            this.logger.error(
+                `Failed to complete quest ${questId} for user ${userId}`,
+                stack,
+                'QuestsService'
+            );
             throw new AppException(
                 `Failed to complete quest ${questId} for user ${userId}`,
                 ErrorType.TECHNICAL,

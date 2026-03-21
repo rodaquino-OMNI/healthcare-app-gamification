@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument, @typescript-eslint/unbound-method */
+/* eslint-disable @typescript-eslint/no-unsafe-argument, @typescript-eslint/unbound-method -- Jest expects unbound method references in toHaveBeenCalled assertions; test passes dynamic mock data to typed functions */
 /**
  * Tests for src/web/web/src/api/plan.ts
  *

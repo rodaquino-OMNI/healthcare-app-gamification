@@ -1,6 +1,3 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigService } from '@nestjs/config';
-import { LoggerService } from '@nestjs/common';
 import { TracingService } from './tracing.service';
 
 // Mock OpenTelemetry
@@ -33,32 +30,23 @@ jest.mock('@opentelemetry/api', () => {
 describe('TracingService (Shared)', () => {
     let service: TracingService;
 
-    beforeEach(async () => {
-        const module: TestingModule = await Test.createTestingModule({
-            providers: [
-                TracingService,
-                {
-                    provide: ConfigService,
-                    useValue: {
-                        get: jest.fn().mockImplementation((key: string, defaultValue?: unknown) => {
-                            if (key === 'service.name') return 'test-service';
-                            return defaultValue;
-                        }),
-                    },
-                },
-                {
-                    provide: LoggerService,
-                    useValue: {
-                        log: jest.fn(),
-                        error: jest.fn(),
-                        warn: jest.fn(),
-                        debug: jest.fn(),
-                    },
-                },
-            ],
-        }).compile();
+    beforeEach(() => {
+        const mockConfigService = {
+            get: jest.fn().mockImplementation((key: string, defaultValue?: unknown) => {
+                if (key === 'service.name') {
+                    return 'test-service';
+                }
+                return defaultValue;
+            }),
+        };
+        const mockLogger = {
+            log: jest.fn(),
+            error: jest.fn(),
+            warn: jest.fn(),
+            debug: jest.fn(),
+        };
 
-        service = module.get<TracingService>(TracingService);
+        service = new TracingService(mockConfigService as never, mockLogger as never);
     });
 
     afterEach(() => {

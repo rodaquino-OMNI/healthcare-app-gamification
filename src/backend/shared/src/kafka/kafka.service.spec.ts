@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { KafkaService } from './kafka.service';
 import { LoggerService } from '../logging/logger.service';
 
@@ -90,13 +91,17 @@ describe('KafkaService', () => {
         it('should send a message to a topic', async () => {
             await service.onModuleInit();
 
-            await expect(service.emit('test-topic', { event: 'test', data: 'value' })).resolves.toBeUndefined();
+            await expect(
+                service.emit('test-topic', { event: 'test', data: 'value' })
+            ).resolves.toBeUndefined();
         });
 
         it('should send a string message', async () => {
             await service.onModuleInit();
 
-            await expect(service.emit('test-topic', 'simple string message')).resolves.toBeUndefined();
+            await expect(
+                service.emit('test-topic', 'simple string message')
+            ).resolves.toBeUndefined();
         });
 
         it('should send with key and headers', async () => {
@@ -121,7 +126,9 @@ describe('KafkaService', () => {
             await service.onModuleInit();
 
             const handler = jest.fn();
-            await expect(service.subscribe('test-topic', 'test-group', handler)).resolves.toBeUndefined();
+            await expect(
+                service.subscribe('test-topic', 'test-group', handler)
+            ).resolves.toBeUndefined();
         });
     });
 });

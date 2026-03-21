@@ -182,7 +182,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Search..."
-                            // eslint-disable-next-line jsx-a11y/no-autofocus
+                            // eslint-disable-next-line jsx-a11y/no-autofocus -- Search input autofocus is intentional UX for dropdown filter
                             autoFocus
                             aria-label="Search options"
                             data-testid="dropdown-search"

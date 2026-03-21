@@ -21,7 +21,7 @@ const PhotoUploadPage: React.FC = () => {
         return () => {
             previews.forEach((url) => URL.revokeObjectURL(url));
         };
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps -- Effect intentionally runs only on mount; previews are captured via closure in the cleanup function to revoke blob URLs on unmount
 
     if (isLoading) {
         return (

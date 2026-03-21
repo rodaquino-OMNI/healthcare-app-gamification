@@ -25,13 +25,17 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
      * @param info Additional info from Passport
      * @returns The authenticated user
      */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    handleRequest<TUser = any>(err: any, user: any, info: any, context: ExecutionContext, status?: any): TUser {
+    handleRequest<TUser = unknown>(
+        err: Error | null,
+        user: TUser | false,
+        info: { message?: string } | null,
+        context: ExecutionContext,
+        _status?: unknown
+    ): TUser {
         // If there was an error or no user was found, throw an exception
         if (err || !user) {
             const request = this.getRequest(context) as { url: string; method: string };
-            const errObj = err as { message?: string } | null;
-            const errorMessage = errObj?.message || 'Unauthorized access';
+            const errorMessage = err?.message || 'Unauthorized access';
             const errorDetails = {
                 url: request.url,
                 method: request.method,
@@ -41,7 +45,12 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
             this.logger.warn(`Authentication failed: ${errorMessage}`, 'JwtAuthGuard');
 
-            throw new AppException('Authentication required', ErrorType.UNAUTHORIZED, 'AUTH_006', errorDetails);
+            throw new AppException(
+                'Authentication required',
+                ErrorType.UNAUTHORIZED,
+                'AUTH_006',
+                errorDetails
+            );
         }
 
         // Otherwise return the authenticated user

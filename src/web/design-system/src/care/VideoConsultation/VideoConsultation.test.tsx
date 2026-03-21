@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-var-requires -- Dynamic require for test mock isolation */
 import { describe, it, expect } from '@jest/globals';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import React from 'react';

@@ -46,7 +46,7 @@ const ServerErrorPage: NextPage = () => {
                     </button>
                 </div>
             </div>
-            {/* eslint-disable-next-line react/no-unknown-property */}
+            {/* eslint-disable-next-line react/no-unknown-property -- styled-jsx uses the jsx prop on style tags, not a standard HTML attribute */}
             <style jsx>{`
                 .error-container {
                     display: flex;

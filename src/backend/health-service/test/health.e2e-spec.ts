@@ -21,7 +21,7 @@ import { MetricType, MetricSource } from '../src/health/types/health.types';
  */
 describe('Health Service (e2e)', () => {
     let app: INestApplication;
-    let healthService: HealthService;
+    let _healthService: HealthService;
 
     const mockHealthService = {
         recordHealthMetric: jest.fn(),
@@ -93,7 +93,7 @@ describe('Health Service (e2e)', () => {
             })
         );
         await app.init();
-        healthService = moduleFixture.get<HealthService>(HealthService);
+        _healthService = moduleFixture.get<HealthService>(HealthService);
 
         // Clear all mocks
         jest.clearAllMocks();
@@ -192,7 +192,10 @@ describe('Health Service (e2e)', () => {
                 unit: 'bpm',
                 notes: 'Updated resting heart rate',
             });
-            expect(mockHealthService.updateHealthMetric).toHaveBeenCalledWith(metricId, updateMetricDto);
+            expect(mockHealthService.updateHealthMetric).toHaveBeenCalledWith(
+                metricId,
+                updateMetricDto
+            );
         });
 
         it('should return 400 when updating an invalid health metric', async () => {

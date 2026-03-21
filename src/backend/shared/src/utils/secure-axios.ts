@@ -20,7 +20,9 @@ export function createSecureAxios(): AxiosInstance {
 
             // Block requests to private IP ranges
             if (
-                /^(10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.|127\.|0\.0\.0\.0|localhost)/.test(hostname) ||
+                /^(10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.|127\.|0\.0\.0\.0|localhost)/.test(
+                    hostname
+                ) ||
                 hostname === '::1' ||
                 hostname === 'fe80::' ||
                 hostname.endsWith('.local')

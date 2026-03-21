@@ -1,6 +1,8 @@
 jest.mock('@nestjs/passport', () => {
     class MockAuthGuard {
-        canActivate() { return true; }
+        canActivate() {
+            return true;
+        }
     }
     return { AuthGuard: () => MockAuthGuard };
 });

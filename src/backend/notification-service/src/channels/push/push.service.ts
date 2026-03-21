@@ -51,23 +51,23 @@ export class PushService {
         }
 
         // Only initialize if not already initialized
-        // eslint-disable-next-line import/namespace
+        // eslint-disable-next-line import/namespace -- Firebase Admin uses namespace import pattern
         if (admin.apps.length === 0) {
             try {
                 // The API key could be a JSON string or a path to a service account file
-                let serviceAccount;
+                let serviceAccount: admin.ServiceAccount | string;
 
                 try {
                     // Try to parse as JSON string
-                    serviceAccount = JSON.parse(this.apiKey);
+                    serviceAccount = JSON.parse(this.apiKey) as admin.ServiceAccount;
                 } catch (e) {
                     // If not valid JSON, assume it's a path to a service account file
                     serviceAccount = this.apiKey;
                 }
 
-                // eslint-disable-next-line import/namespace
+                // eslint-disable-next-line import/namespace -- Firebase Admin uses namespace import pattern
                 admin.initializeApp({
-                    // eslint-disable-next-line import/namespace
+                    // eslint-disable-next-line import/namespace -- Firebase Admin uses namespace import pattern
                     credential: admin.credential.cert(serviceAccount),
                 });
 
@@ -90,13 +90,19 @@ export class PushService {
      */
     async send(token: string, payload: PushPayload): Promise<void> {
         if (!token) {
-            this.logger.warn('Cannot send push notification: No device token provided', 'PushService');
+            this.logger.warn(
+                'Cannot send push notification: No device token provided',
+                'PushService'
+            );
             return;
         }
 
-        // eslint-disable-next-line import/namespace
+        // eslint-disable-next-line import/namespace -- Firebase Admin uses namespace import pattern
         if (admin.apps.length === 0) {
-            this.logger.error('Cannot send push notification: Firebase Cloud Messaging not initialized', 'PushService');
+            this.logger.error(
+                'Cannot send push notification: Firebase Cloud Messaging not initialized',
+                'PushService'
+            );
             throw new Error('Firebase Cloud Messaging not initialized');
         }
 
@@ -123,11 +129,14 @@ export class PushService {
             }
 
             // Send the message to the specified device token using FCM
-            // eslint-disable-next-line import/namespace
+            // eslint-disable-next-line import/namespace -- Firebase Admin uses namespace import pattern
             await admin.messaging().send(message);
 
             // Logs the successful sending of the push notification
-            this.logger.log(`Push notification sent successfully to ${token.substring(0, 8)}...`, 'PushService');
+            this.logger.log(
+                `Push notification sent successfully to ${token.substring(0, 8)}...`,
+                'PushService'
+            );
         } catch (error: unknown) {
             // Handles any errors that occur during the push notification sending process
             this.logger.error(

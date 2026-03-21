@@ -1,7 +1,8 @@
+import { LoggerService } from '@app/shared/logging/logger.service';
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { MedicationsController } from './medications.controller';
 import { MedicationsService } from './medications.service';
-import { LoggerService } from '@app/shared/logging/logger.service';
 
 describe('MedicationsController', () => {
     let controller: MedicationsController;
@@ -76,7 +77,9 @@ describe('MedicationsController', () => {
         });
 
         it('should propagate errors from create', async () => {
-            mockMedicationsService.create.mockRejectedValue(new Error('Failed to create medication record'));
+            mockMedicationsService.create.mockRejectedValue(
+                new Error('Failed to create medication record')
+            );
 
             await expect(controller.create(createDto as any, userId)).rejects.toThrow(
                 'Failed to create medication record'
@@ -130,7 +133,9 @@ describe('MedicationsController', () => {
         it('should propagate not found errors', async () => {
             mockMedicationsService.findOne.mockRejectedValue(new Error('Medication not found'));
 
-            await expect(controller.findOne('nonexistent', userId)).rejects.toThrow('Medication not found');
+            await expect(controller.findOne('nonexistent', userId)).rejects.toThrow(
+                'Medication not found'
+            );
         });
     });
 
@@ -183,7 +188,9 @@ describe('MedicationsController', () => {
         it('should propagate not found errors', async () => {
             mockMedicationsService.findOne.mockRejectedValue(new Error('Medication not found'));
 
-            await expect(controller.remove('nonexistent', userId)).rejects.toThrow('Medication not found');
+            await expect(controller.remove('nonexistent', userId)).rejects.toThrow(
+                'Medication not found'
+            );
         });
     });
 });

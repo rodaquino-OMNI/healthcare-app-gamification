@@ -1,17 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
-import { AuthGuard } from '@nestjs/passport';
-
-const JwtAuthGuard = AuthGuard('jwt');
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import { HttpStatus, INestApplication } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
 
-import { CreateSessionDto } from '@app/care/telemedicine/dto/create-session.dto';
 import { TelemedicineController } from '@app/care/telemedicine/telemedicine.controller';
 import { TelemedicineService } from '@app/care/telemedicine/telemedicine.service';
+
+const JwtAuthGuard = AuthGuard('jwt');
 
 describe('Telemedicine E2E Tests', () => {
     let app: INestApplication;
@@ -38,7 +37,12 @@ describe('Telemedicine E2E Tests', () => {
 
         // Apply global exception filter
         app.useGlobalFilters(
-            new AllExceptionsFilter({ log: () => {}, error: () => {}, warn: () => {}, debug: () => {} } as any)
+            new AllExceptionsFilter({
+                log: () => {},
+                error: () => {},
+                warn: () => {},
+                debug: () => {},
+            } as any)
         );
 
         // Add user to request
@@ -131,7 +135,12 @@ describe('Telemedicine E2E Tests', () => {
 
             const unauthApp = unauthModuleRef.createNestApplication();
             unauthApp.useGlobalFilters(
-                new AllExceptionsFilter({ log: () => {}, error: () => {}, warn: () => {}, debug: () => {} } as any)
+                new AllExceptionsFilter({
+                    log: () => {},
+                    error: () => {},
+                    warn: () => {},
+                    debug: () => {},
+                } as any)
             );
             await unauthApp.init();
 

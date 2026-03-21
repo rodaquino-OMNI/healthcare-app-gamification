@@ -114,7 +114,7 @@ const CategoryFilterPage: React.FC = () => {
             return source;
         }
         return source.filter((n) => n.category === active);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- allNotifications is derived from notifications which is already in deps; including allNotifications would cause an infinite loop
     }, [active, notifications]);
 
     if (isLoading) {

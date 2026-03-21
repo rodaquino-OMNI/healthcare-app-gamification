@@ -22,12 +22,10 @@ async function bootstrap(): Promise<void> {
     const config = health();
 
     // LD1: Apply the global exception filter AllExceptionsFilter to handle exceptions.
-    // IE1: The AllExceptionsFilter is imported from the shared module and is used to handle exceptions globally.
     // IE3: The AllExceptionsFilter requires a LoggerService, which is provided by the LoggerModule.
     app.useGlobalFilters(new AllExceptionsFilter(app.get(LoggerService)));
 
     // LD1: Set the global prefix for the API endpoints.
-    // IE1: The health function is imported from the configuration file and is used to get the API prefix.
     app.setGlobalPrefix(config.apiPrefix);
 
     // Swagger setup
@@ -70,4 +68,4 @@ async function bootstrap(): Promise<void> {
 }
 
 // LD1: Calls the bootstrap function to start the application.
-bootstrap();
+void bootstrap();

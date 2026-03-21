@@ -19,11 +19,12 @@ describe('LockoutGuard', () => {
         guard = new LockoutGuard(mockRedisService as never, mockConfigService);
     });
 
-    const createMockContext = (email?: string): ExecutionContext => ({
-        switchToHttp: () => ({
-            getRequest: () => ({ body: email ? { email } : {} }),
-        }),
-    } as unknown as ExecutionContext);
+    const createMockContext = (email?: string): ExecutionContext =>
+        ({
+            switchToHttp: () => ({
+                getRequest: () => ({ body: email ? { email } : {} }),
+            }),
+        }) as unknown as ExecutionContext;
 
     it('should be defined', () => {
         expect(guard).toBeDefined();
@@ -47,16 +48,16 @@ describe('LockoutGuard', () => {
         it('should deny access when lockout threshold is reached', async () => {
             mockRedisService.get.mockResolvedValue('5');
 
-            await expect(
-                guard.canActivate(createMockContext('test@example.com')),
-            ).rejects.toThrow('Account temporarily locked');
+            await expect(guard.canActivate(createMockContext('test@example.com'))).rejects.toThrow(
+                'Account temporarily locked'
+            );
         });
 
         it('should deny access when over lockout threshold', async () => {
             mockRedisService.get.mockResolvedValue('10');
 
             await expect(
-                guard.canActivate(createMockContext('test@example.com')),
+                guard.canActivate(createMockContext('test@example.com'))
             ).rejects.toThrow();
         });
 

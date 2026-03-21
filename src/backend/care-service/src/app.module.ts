@@ -4,10 +4,10 @@ import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
 import { KafkaModule } from '@app/shared/kafka/kafka.module';
 import { LoggerModule } from '@app/shared/logging/logger.module';
 import { RedisModule } from '@app/shared/redis/redis.module';
-import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { Module } from '@nestjs/common'; // v10.0.0+
 import { ConfigModule } from '@nestjs/config'; // v10.0.0+
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 import { AppointmentsModule } from './appointments/appointments.module';
 import { configuration } from './config/configuration';

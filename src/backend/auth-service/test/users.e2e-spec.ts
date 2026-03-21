@@ -1,16 +1,17 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, HttpStatus } from '@nestjs/common';
-import request from 'supertest';
-import { AppModule } from '../src/app.module';
-import { PrismaService } from '../../shared/src/database/prisma.service';
-import { CreateUserDto } from '../src/users/dto/create-user.dto';
+/* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
 import { describe, it, expect, beforeEach, afterAll } from '@jest/globals';
+import { INestApplication, HttpStatus } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import request from 'supertest';
+
+import { PrismaService } from '../../shared/src/database/prisma.service';
+import { AppModule } from '../src/app.module';
+import { CreateUserDto } from '../src/users/dto/create-user.dto';
 
 describe('UsersController (e2e)', () => {
     let app: INestApplication;
     let prismaService: PrismaService;
-    let userId: string;
+    let _userId: string;
 
     beforeEach(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -67,7 +68,7 @@ describe('UsersController (e2e)', () => {
         expect(response.body.password).toBeUndefined(); // Password should not be returned
 
         // Save the user ID for subsequent tests
-        userId = response.body.id;
+        _userId = response.body.id;
     });
 
     it('should return validation errors for invalid user data', async () => {
@@ -96,7 +97,10 @@ describe('UsersController (e2e)', () => {
             cpf: '12345678901',
         };
 
-        await request(app.getHttpServer()).post('/users').send(createUserDto).expect(HttpStatus.CREATED);
+        await request(app.getHttpServer())
+            .post('/users')
+            .send(createUserDto)
+            .expect(HttpStatus.CREATED);
 
         // Then get all users - this requires admin privileges
         // Note: In a real app, you'd need to authenticate as admin first
@@ -125,7 +129,9 @@ describe('UsersController (e2e)', () => {
         const userIdToGet = createResponse.body.id;
 
         // Then get the user by ID
-        const response = await request(app.getHttpServer()).get(`/users/${userIdToGet}`).expect(HttpStatus.OK);
+        const response = await request(app.getHttpServer())
+            .get(`/users/${userIdToGet}`)
+            .expect(HttpStatus.OK);
 
         expect(response.body).toBeDefined();
         expect(response.body.id).toBe(userIdToGet);
@@ -137,7 +143,9 @@ describe('UsersController (e2e)', () => {
     it('should return 404 for non-existent user ID', async () => {
         const nonExistentId = 'non-existent-id';
 
-        await request(app.getHttpServer()).get(`/users/${nonExistentId}`).expect(HttpStatus.NOT_FOUND);
+        await request(app.getHttpServer())
+            .get(`/users/${nonExistentId}`)
+            .expect(HttpStatus.NOT_FOUND);
     });
 
     it('should update a user', async () => {
@@ -172,7 +180,8 @@ describe('UsersController (e2e)', () => {
         expect(updateResponse.body.id).toBe(userIdToUpdate);
         expect(updateResponse.body.name).toBe(updateData.name);
         expect(updateResponse.body.phone).toBe(updateData.phone);
-        expect(updateResponse.body.email).toBe(createUserDto.email); // Email should remain unchanged
+        // Email should remain unchanged
+        expect(updateResponse.body.email).toBe(createUserDto.email);
     });
 
     it('should delete a user', async () => {
@@ -193,9 +202,13 @@ describe('UsersController (e2e)', () => {
         const userIdToDelete = createResponse.body.id;
 
         // Then delete the user
-        await request(app.getHttpServer()).delete(`/users/${userIdToDelete}`).expect(HttpStatus.NO_CONTENT);
+        await request(app.getHttpServer())
+            .delete(`/users/${userIdToDelete}`)
+            .expect(HttpStatus.NO_CONTENT);
 
         // Verify the user is deleted
-        await request(app.getHttpServer()).get(`/users/${userIdToDelete}`).expect(HttpStatus.NOT_FOUND);
+        await request(app.getHttpServer())
+            .get(`/users/${userIdToDelete}`)
+            .expect(HttpStatus.NOT_FOUND);
     });
 });

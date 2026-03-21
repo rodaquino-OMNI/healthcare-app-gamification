@@ -23,7 +23,7 @@ describe('KafkaProducer', () => {
                 'test-topic',
                 'hello',
                 undefined,
-                undefined,
+                undefined
             );
         });
 
@@ -35,19 +35,16 @@ describe('KafkaProducer', () => {
                 'test-topic',
                 message,
                 undefined,
-                undefined,
+                undefined
             );
         });
 
         it('should include key and headers when provided', async () => {
             await producer.send('test-topic', 'hello', 'key-1', { 'x-trace': 'abc' });
 
-            expect(mockKafkaService.emit).toHaveBeenCalledWith(
-                'test-topic',
-                'hello',
-                'key-1',
-                { 'x-trace': 'abc' },
-            );
+            expect(mockKafkaService.emit).toHaveBeenCalledWith('test-topic', 'hello', 'key-1', {
+                'x-trace': 'abc',
+            });
         });
     });
 

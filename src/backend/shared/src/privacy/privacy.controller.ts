@@ -1,6 +1,16 @@
 import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
-import { Controller, Get, Delete, Patch, Body, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    Delete,
+    Patch,
+    Body,
+    UseGuards,
+    HttpCode,
+    HttpStatus,
+    ValidationPipe,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 
 import { RectifyDataDto } from './dto/rectify-data.dto';
@@ -45,7 +55,8 @@ export class PrivacyController {
     @HttpCode(HttpStatus.OK)
     @ApiOperation({
         summary: 'Export data as FHIR R4 Bundle (LGPD Art. 18-V)',
-        description: 'Exports all user data in FHIR R4 Bundle format for interoperability and portability.',
+        description:
+            'Exports all user data in FHIR R4 Bundle format for interoperability and portability.',
     })
     @ApiResponse({ status: 200, description: 'FHIR Bundle generated successfully' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
@@ -62,7 +73,8 @@ export class PrivacyController {
     @HttpCode(HttpStatus.OK)
     @ApiOperation({
         summary: 'Delete all personal data (LGPD Art. 18-VI)',
-        description: 'Permanently deletes all personal data for the authenticated user. This action is irreversible.',
+        description:
+            'Permanently deletes all personal data for the authenticated user. This action is irreversible.',
     })
     @ApiResponse({
         status: 200,
@@ -70,7 +82,9 @@ export class PrivacyController {
     })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 404, description: 'User not found' })
-    async deleteMyData(@CurrentUser('id') userId: string): Promise<{ deletedCounts: Record<string, number> }> {
+    async deleteMyData(
+        @CurrentUser('id') userId: string
+    ): Promise<{ deletedCounts: Record<string, number> }> {
         return this.privacyService.deleteMyData(userId);
     }
 
@@ -88,7 +102,10 @@ export class PrivacyController {
     @ApiResponse({ status: 200, description: 'Data rectified successfully' })
     @ApiResponse({ status: 400, description: 'Validation error' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
-    async rectifyMyData(@CurrentUser('id') userId: string, @Body() dto: RectifyDataDto): Promise<object> {
+    async rectifyMyData(
+        @CurrentUser('id') userId: string,
+        @Body(new ValidationPipe({ whitelist: true })) dto: RectifyDataDto
+    ): Promise<object> {
         return this.privacyService.rectifyMyData(userId, dto);
     }
 }

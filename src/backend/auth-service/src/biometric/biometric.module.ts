@@ -6,6 +6,7 @@ import { RedisModule } from '@app/shared/redis/redis.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import type { StringValue } from 'ms';
 
 import { BiometricController } from './biometric.controller';
 import { BiometricService } from './biometric.service';
@@ -21,11 +22,16 @@ import { configuration } from '../config/configuration';
         ConfigModule.forFeature(configuration),
         JwtModule.registerAsync({
             imports: [ConfigModule],
-            useFactory: async (configService: ConfigService) => ({
-                secret: configService.get<string>('authService.jwt.secret', 'fallback-secret-change-me'),
+            useFactory: (configService: ConfigService) => ({
+                secret: configService.get<string>(
+                    'authService.jwt.secret',
+                    'fallback-secret-change-me'
+                ),
                 signOptions: {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    expiresIn: configService.get<string>('authService.jwt.accessTokenExpiration', '1h') as any,
+                    expiresIn: configService.get<StringValue>(
+                        'authService.jwt.accessTokenExpiration',
+                        '1h' as StringValue
+                    ),
                 },
             }),
             inject: [ConfigService],

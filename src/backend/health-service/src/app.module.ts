@@ -1,8 +1,8 @@
 import { AuditModule, AuditInterceptor } from '@app/shared/audit';
-import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { Module } from '@nestjs/common'; // NestJS Common 10.0.0+
 import { ConfigModule } from '@nestjs/config'; // NestJS Config 2.3.1+
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 import { health } from './config/configuration'; // Configuration function for the Health Service
 import { validationSchema } from './config/validation.schema'; // Validation schema for environment variables

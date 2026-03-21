@@ -58,7 +58,7 @@ jest.mock('../../charts/RadialChart/RadialChart', () => ({
 }));
 
 // Mock the useJourneyContext hook
-/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-return -- Mock factory returns untyped test double */
 jest.mock('../../../mobile/src/context/JourneyContext', () => {
     const original = jest.requireActual('../../../mobile/src/context/JourneyContext');
     return {

@@ -1,21 +1,35 @@
 {
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "module": "commonjs",
-    "declaration": true,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "es2017",
-    "sourceMap": true,
-    "outDir": "./dist",
-    "baseUrl": "./",
-    "incremental": true,
-    "skipLibCheck": true,
-    "paths": {
-      "@app/shared/*": ["../shared/src/*"]
-    }
-  },
-  "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "module": "commonjs",
+        "declaration": true,
+        "removeComments": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "target": "es2017",
+        "sourceMap": true,
+        "outDir": "./dist",
+        "baseUrl": "./",
+        "incremental": true,
+        "skipLibCheck": true,
+        "paths": {
+            "@app/shared": ["shared/src"],
+            "@app/shared/*": ["shared/src/*"],
+            "@app/auth": ["auth-service/src"],
+            "@app/auth/*": ["auth-service/src/*"],
+            "@app/health": ["health-service/src"],
+            "@app/health/*": ["health-service/src/*"],
+            "@app/care": ["care-service/src"],
+            "@app/care/*": ["care-service/src/*"],
+            "@app/plan": ["plan-service/src"],
+            "@app/plan/*": ["plan-service/src/*"],
+            "@app/gamification": ["gamification-engine/src"],
+            "@app/gamification/*": ["gamification-engine/src/*"],
+            "@app/notifications": ["notification-service/src"],
+            "@app/notifications/*": ["notification-service/src/*"],
+            "@prisma/*": ["shared/prisma/*"]
+        }
+    },
+    "exclude": ["node_modules", "test", "dist", "**/*spec.ts", "**/*_original*"]
 }

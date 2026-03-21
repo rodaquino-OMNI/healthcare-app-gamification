@@ -86,8 +86,9 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Logout and invalidate refresh token' })
     @ApiResponse({ status: 200, description: 'Logged out successfully' })
-    // eslint-disable-next-line max-len
-    async logout(@Body(ValidationPipe) refreshTokenDto: RefreshTokenDto): Promise<{ message: string }> {
+    async logout(
+        @Body(ValidationPipe) refreshTokenDto: RefreshTokenDto
+    ): Promise<{ message: string }> {
         await this.authService.revokeRefreshToken(refreshTokenDto.refresh_token);
         return { message: 'Logged out successfully' };
     }

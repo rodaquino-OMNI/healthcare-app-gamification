@@ -1,6 +1,6 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
 import { of } from 'rxjs';
 
 import { GamificationResolvers } from './gamification.resolvers';
@@ -93,7 +93,7 @@ describe('GamificationResolvers', () => {
             expect(result).toEqual(mockData);
             expect(httpService.post).toHaveBeenCalledWith(
                 'http://gamification-engine:3005/rewards/reward-1/claim',
-                expect.objectContaining({ userId: 'user-1' }),
+                expect.objectContaining({ userId: 'user-1' })
             );
         });
     });

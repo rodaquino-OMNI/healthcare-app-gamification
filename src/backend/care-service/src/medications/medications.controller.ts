@@ -133,7 +133,7 @@ export class MedicationsController {
             );
         }
 
-        return this.medicationsService.update(id, updateMedicationData as Record<string, unknown>);
+        return this.medicationsService.update(id, updateMedicationData);
     }
 
     /**

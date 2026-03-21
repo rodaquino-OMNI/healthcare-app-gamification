@@ -51,7 +51,9 @@ export class RewardsService {
             const message = error instanceof Error ? error.message : String(error);
             const stack = error instanceof Error ? error.stack : undefined;
             this.logger.error(`Failed to create reward: ${message}`, stack, 'RewardsService');
-            throw new AppException('Failed to create reward', ErrorType.TECHNICAL, 'REWARD_001', { reward });
+            throw new AppException('Failed to create reward', ErrorType.TECHNICAL, 'REWARD_001', {
+                reward,
+            });
         }
     }
 
@@ -67,7 +69,12 @@ export class RewardsService {
             const message = error instanceof Error ? error.message : String(error);
             const stack = error instanceof Error ? error.stack : undefined;
             this.logger.error(`Failed to retrieve rewards: ${message}`, stack, 'RewardsService');
-            throw new AppException('Failed to retrieve rewards', ErrorType.TECHNICAL, 'REWARD_002', {});
+            throw new AppException(
+                'Failed to retrieve rewards',
+                ErrorType.TECHNICAL,
+                'REWARD_002',
+                {}
+            );
         }
     }
 
@@ -83,7 +90,12 @@ export class RewardsService {
 
             if (!reward) {
                 this.logger.warn(`Reward with ID ${id} not found`, 'RewardsService');
-                throw new AppException(`Reward with ID ${id} not found`, ErrorType.BUSINESS, 'REWARD_003', { id });
+                throw new AppException(
+                    `Reward with ID ${id} not found`,
+                    ErrorType.BUSINESS,
+                    'REWARD_003',
+                    { id }
+                );
             }
 
             return reward;
@@ -94,10 +106,19 @@ export class RewardsService {
 
             const message = error instanceof Error ? error.message : String(error);
             const stack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Failed to retrieve reward with ID ${id}: ${message}`, stack, 'RewardsService');
-            throw new AppException(`Failed to retrieve reward with ID ${id}`, ErrorType.TECHNICAL, 'REWARD_004', {
-                id,
-            });
+            this.logger.error(
+                `Failed to retrieve reward with ID ${id}: ${message}`,
+                stack,
+                'RewardsService'
+            );
+            throw new AppException(
+                `Failed to retrieve reward with ID ${id}`,
+                ErrorType.TECHNICAL,
+                'REWARD_004',
+                {
+                    id,
+                }
+            );
         }
     }
 
@@ -138,7 +159,10 @@ export class RewardsService {
                 userId
             );
 
-            this.logger.log(`Successfully granted reward ${reward.title} to user ${userId}`, 'RewardsService');
+            this.logger.log(
+                `Successfully granted reward ${reward.title} to user ${userId}`,
+                'RewardsService'
+            );
 
             return userReward;
         } catch (error: unknown) {
@@ -149,7 +173,10 @@ export class RewardsService {
                 stack,
                 'RewardsService'
             );
-            throw new AppException('Failed to grant reward', ErrorType.TECHNICAL, 'REWARD_005', { userId, rewardId });
+            throw new AppException('Failed to grant reward', ErrorType.TECHNICAL, 'REWARD_005', {
+                userId,
+                rewardId,
+            });
         }
     }
 }

@@ -58,8 +58,7 @@ export class LoggingMiddleware implements NestMiddleware {
             const originalEnd = res.end.bind(res);
 
             // Use type assertion to avoid complex overload resolution on Response.end
-            /* eslint-disable-next-line @typescript-eslint/no-explicit-any
-               -- Response.end has 6+ overloads; typed wrapper is impractical */
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Response.end has 6+ overloads; typed wrapper is impractical
             res.end = function (this: Response, ...args: unknown[]): unknown {
                 // Calculate request duration
                 const [seconds, nanoseconds] = process.hrtime(startTime);
@@ -88,9 +87,7 @@ export class LoggingMiddleware implements NestMiddleware {
                 }
 
                 // Call the original end function
-                /* eslint-disable-next-line @typescript-eslint/no-explicit-any,
-                   @typescript-eslint/no-unsafe-argument
-                   -- apply requires any[] for overloaded .end() */
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument -- apply requires any[] for overloaded .end()
                 return (originalEnd as (...a: any[]) => unknown)(...args);
             } as Response['end'];
 

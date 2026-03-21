@@ -1,304 +1,305 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { NotFoundException } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-import { TreatmentsService } from './treatments.service';
+/* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { TracingService } from '@app/shared/tracing/tracing.service';
+import { NotFoundException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { TreatmentsService } from './treatments.service';
 
 describe('TreatmentsService', () => {
-  let service: TreatmentsService;
+    let service: TreatmentsService;
 
-  const mockTreatmentPlan = {
-    id: 'plan-test-123',
-    name: 'Hypertension Management',
-    description: 'Daily blood pressure monitoring and lifestyle changes',
-    startDate: new Date('2024-01-01'),
-    endDate: new Date('2024-06-30'),
-    progress: 0,
-    userId: 'user-test-123',
-    careActivityId: 'activity-test-123',
-    careActivity: { id: 'activity-test-123', name: 'Blood Pressure Check' },
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-
-  const mockPrismaService = {
-    treatmentPlan: {
-      create: jest.fn(),
-      findMany: jest.fn(),
-      findUnique: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-    },
-  };
-
-  const mockLogger = {
-    log: jest.fn(),
-    error: jest.fn(),
-    warn: jest.fn(),
-    debug: jest.fn(),
-    setContext: jest.fn(),
-  };
-
-  const mockTracingService = {
-    createSpan: jest.fn().mockImplementation((_name: string, fn: () => any) => fn()),
-  };
-
-  beforeEach(async () => {
-    jest.clearAllMocks();
-
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        TreatmentsService,
-        {
-          provide: PrismaService,
-          useValue: mockPrismaService,
-        },
-        {
-          provide: LoggerService,
-          useValue: mockLogger,
-        },
-        {
-          provide: TracingService,
-          useValue: mockTracingService,
-        },
-      ],
-    }).compile();
-
-    service = module.get<TreatmentsService>(TreatmentsService);
-  });
-
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-
-  // ----------------------------------------------------------------
-  // create
-  // ----------------------------------------------------------------
-  describe('create', () => {
-    const userId = 'user-test-123';
-    const createDto = {
-      name: 'Hypertension Management',
-      description: 'Daily blood pressure monitoring',
-      startDate: new Date('2024-01-01'),
-      endDate: new Date('2024-06-30'),
-      progress: 0,
-      careActivityId: 'activity-test-123',
+    const mockTreatmentPlan = {
+        id: 'plan-test-123',
+        name: 'Hypertension Management',
+        description: 'Daily blood pressure monitoring and lifestyle changes',
+        startDate: new Date('2024-01-01'),
+        endDate: new Date('2024-06-30'),
+        progress: 0,
+        userId: 'user-test-123',
+        careActivityId: 'activity-test-123',
+        careActivity: { id: 'activity-test-123', name: 'Blood Pressure Check' },
+        createdAt: new Date(),
+        updatedAt: new Date(),
     };
 
-    it('should create and return a new treatment plan', async () => {
-      mockPrismaService.treatmentPlan.create.mockResolvedValue(mockTreatmentPlan);
+    const mockPrismaService = {
+        treatmentPlan: {
+            create: jest.fn(),
+            findMany: jest.fn(),
+            findUnique: jest.fn(),
+            update: jest.fn(),
+            delete: jest.fn(),
+        },
+    };
 
-      const result = await service.create(userId, createDto as any);
+    const mockLogger = {
+        log: jest.fn(),
+        error: jest.fn(),
+        warn: jest.fn(),
+        debug: jest.fn(),
+        setContext: jest.fn(),
+    };
 
-      expect(mockPrismaService.treatmentPlan.create).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: expect.objectContaining({
-            name: createDto.name,
-            description: createDto.description,
-          }),
-        }),
-      );
-      expect(result).toEqual(mockTreatmentPlan);
+    const mockTracingService = {
+        createSpan: jest.fn().mockImplementation((_name: string, fn: () => any) => fn()),
+    };
+
+    beforeEach(async () => {
+        jest.clearAllMocks();
+
+        const module: TestingModule = await Test.createTestingModule({
+            providers: [
+                TreatmentsService,
+                {
+                    provide: PrismaService,
+                    useValue: mockPrismaService,
+                },
+                {
+                    provide: LoggerService,
+                    useValue: mockLogger,
+                },
+                {
+                    provide: TracingService,
+                    useValue: mockTracingService,
+                },
+            ],
+        }).compile();
+
+        service = module.get<TreatmentsService>(TreatmentsService);
     });
 
-    it('should connect to user when userId is provided', async () => {
-      mockPrismaService.treatmentPlan.create.mockResolvedValue(mockTreatmentPlan);
-
-      await service.create(userId, createDto as any);
-
-      expect(mockPrismaService.treatmentPlan.create).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: expect.objectContaining({
-            user: expect.objectContaining({ connect: { id: userId } }),
-          }),
-        }),
-      );
+    it('should be defined', () => {
+        expect(service).toBeDefined();
     });
 
-    it('should use 0 as default progress when not provided', async () => {
-      const dtoWithoutProgress = { ...createDto, progress: undefined };
-      mockPrismaService.treatmentPlan.create.mockResolvedValue(mockTreatmentPlan);
+    // ----------------------------------------------------------------
+    // create
+    // ----------------------------------------------------------------
+    describe('create', () => {
+        const userId = 'user-test-123';
+        const createDto = {
+            name: 'Hypertension Management',
+            description: 'Daily blood pressure monitoring',
+            startDate: new Date('2024-01-01'),
+            endDate: new Date('2024-06-30'),
+            progress: 0,
+            careActivityId: 'activity-test-123',
+        };
 
-      await service.create(userId, dtoWithoutProgress as any);
+        it('should create and return a new treatment plan', async () => {
+            mockPrismaService.treatmentPlan.create.mockResolvedValue(mockTreatmentPlan);
 
-      expect(mockPrismaService.treatmentPlan.create).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: expect.objectContaining({ progress: 0 }),
-        }),
-      );
+            const result = await service.create(userId, createDto as any);
+
+            expect(mockPrismaService.treatmentPlan.create).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    data: expect.objectContaining({
+                        name: createDto.name,
+                        description: createDto.description,
+                    }),
+                })
+            );
+            expect(result).toEqual(mockTreatmentPlan);
+        });
+
+        it('should connect to user when userId is provided', async () => {
+            mockPrismaService.treatmentPlan.create.mockResolvedValue(mockTreatmentPlan);
+
+            await service.create(userId, createDto as any);
+
+            expect(mockPrismaService.treatmentPlan.create).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    data: expect.objectContaining({
+                        user: expect.objectContaining({ connect: { id: userId } }),
+                    }),
+                })
+            );
+        });
+
+        it('should use 0 as default progress when not provided', async () => {
+            const dtoWithoutProgress = { ...createDto, progress: undefined };
+            mockPrismaService.treatmentPlan.create.mockResolvedValue(mockTreatmentPlan);
+
+            await service.create(userId, dtoWithoutProgress as any);
+
+            expect(mockPrismaService.treatmentPlan.create).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    data: expect.objectContaining({ progress: 0 }),
+                })
+            );
+        });
+
+        it('should propagate errors from prisma.treatmentPlan.create', async () => {
+            mockPrismaService.treatmentPlan.create.mockRejectedValue(
+                new Error('Database constraint violation')
+            );
+
+            await expect(service.create(userId, createDto as any)).rejects.toThrow();
+        });
     });
 
-    it('should propagate errors from prisma.treatmentPlan.create', async () => {
-      mockPrismaService.treatmentPlan.create.mockRejectedValue(
-        new Error('Database constraint violation'),
-      );
+    // ----------------------------------------------------------------
+    // findAll
+    // ----------------------------------------------------------------
+    describe('findAll', () => {
+        const userId = 'user-test-123';
 
-      await expect(service.create(userId, createDto as any)).rejects.toThrow();
-    });
-  });
+        it('should return treatment plans for a user', async () => {
+            const plans = [mockTreatmentPlan];
+            mockPrismaService.treatmentPlan.findMany.mockResolvedValue(plans);
 
-  // ----------------------------------------------------------------
-  // findAll
-  // ----------------------------------------------------------------
-  describe('findAll', () => {
-    const userId = 'user-test-123';
+            const result = await service.findAll(userId, {});
 
-    it('should return treatment plans for a user', async () => {
-      const plans = [mockTreatmentPlan];
-      mockPrismaService.treatmentPlan.findMany.mockResolvedValue(plans);
+            expect(mockPrismaService.treatmentPlan.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    where: expect.objectContaining({ userId }),
+                })
+            );
+            expect(result).toEqual(plans);
+        });
 
-      const result = await service.findAll(userId, {});
+        it('should apply filter where conditions in addition to userId', async () => {
+            mockPrismaService.treatmentPlan.findMany.mockResolvedValue([]);
+            const filter = { where: { progress: 50 } };
 
-      expect(mockPrismaService.treatmentPlan.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({ userId }),
-        }),
-      );
-      expect(result).toEqual(plans);
-    });
+            await service.findAll(userId, filter as any);
 
-    it('should apply filter where conditions in addition to userId', async () => {
-      mockPrismaService.treatmentPlan.findMany.mockResolvedValue([]);
-      const filter = { where: { progress: 50 } };
+            expect(mockPrismaService.treatmentPlan.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    where: expect.objectContaining({ userId, progress: 50 }),
+                })
+            );
+        });
 
-      await service.findAll(userId, filter as any);
+        it('should return empty array when no plans match', async () => {
+            mockPrismaService.treatmentPlan.findMany.mockResolvedValue([]);
 
-      expect(mockPrismaService.treatmentPlan.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: expect.objectContaining({ userId, progress: 50 }),
-        }),
-      );
-    });
+            const result = await service.findAll('user-with-no-plans', {});
 
-    it('should return empty array when no plans match', async () => {
-      mockPrismaService.treatmentPlan.findMany.mockResolvedValue([]);
+            expect(result).toEqual([]);
+        });
 
-      const result = await service.findAll('user-with-no-plans', {});
+        it('should propagate errors from prisma.treatmentPlan.findMany', async () => {
+            mockPrismaService.treatmentPlan.findMany.mockRejectedValue(new Error('Query failed'));
 
-      expect(result).toEqual([]);
+            await expect(service.findAll(userId, {})).rejects.toThrow();
+        });
     });
 
-    it('should propagate errors from prisma.treatmentPlan.findMany', async () => {
-      mockPrismaService.treatmentPlan.findMany.mockRejectedValue(new Error('Query failed'));
+    // ----------------------------------------------------------------
+    // findOne
+    // ----------------------------------------------------------------
+    describe('findOne', () => {
+        it('should return treatment plan when found by id', async () => {
+            mockPrismaService.treatmentPlan.findUnique.mockResolvedValue(mockTreatmentPlan);
 
-      await expect(service.findAll(userId, {})).rejects.toThrow();
-    });
-  });
+            const result = await service.findOne('plan-test-123');
 
-  // ----------------------------------------------------------------
-  // findOne
-  // ----------------------------------------------------------------
-  describe('findOne', () => {
-    it('should return treatment plan when found by id', async () => {
-      mockPrismaService.treatmentPlan.findUnique.mockResolvedValue(mockTreatmentPlan);
+            expect(mockPrismaService.treatmentPlan.findUnique).toHaveBeenCalledWith(
+                expect.objectContaining({ where: { id: 'plan-test-123' } })
+            );
+            expect(result).toEqual(mockTreatmentPlan);
+        });
 
-      const result = await service.findOne('plan-test-123');
+        it('should throw NotFoundException when treatment plan is not found', async () => {
+            mockPrismaService.treatmentPlan.findUnique.mockResolvedValue(null);
 
-      expect(mockPrismaService.treatmentPlan.findUnique).toHaveBeenCalledWith(
-        expect.objectContaining({ where: { id: 'plan-test-123' } }),
-      );
-      expect(result).toEqual(mockTreatmentPlan);
-    });
+            await expect(service.findOne('nonexistent-id')).rejects.toThrow(NotFoundException);
+        });
 
-    it('should throw NotFoundException when treatment plan is not found', async () => {
-      mockPrismaService.treatmentPlan.findUnique.mockResolvedValue(null);
+        it('should include careActivity in the result', async () => {
+            mockPrismaService.treatmentPlan.findUnique.mockResolvedValue(mockTreatmentPlan);
 
-      await expect(service.findOne('nonexistent-id')).rejects.toThrow(NotFoundException);
-    });
+            const result = await service.findOne('plan-test-123');
 
-    it('should include careActivity in the result', async () => {
-      mockPrismaService.treatmentPlan.findUnique.mockResolvedValue(mockTreatmentPlan);
-
-      const result = await service.findOne('plan-test-123');
-
-      expect(mockPrismaService.treatmentPlan.findUnique).toHaveBeenCalledWith(
-        expect.objectContaining({ include: { careActivity: true } }),
-      );
-      expect(result).toHaveProperty('careActivity');
-    });
-  });
-
-  // ----------------------------------------------------------------
-  // update
-  // ----------------------------------------------------------------
-  describe('update', () => {
-    const updateDto = { name: 'Updated Plan Name', progress: 50 };
-
-    it('should update and return the treatment plan', async () => {
-      const updatedPlan = { ...mockTreatmentPlan, ...updateDto };
-      mockPrismaService.treatmentPlan.update.mockResolvedValue(updatedPlan);
-
-      const result = await service.update('plan-test-123', updateDto as any);
-
-      expect(mockPrismaService.treatmentPlan.update).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: { id: 'plan-test-123' },
-          data: expect.objectContaining({ name: 'Updated Plan Name', progress: 50 }),
-        }),
-      );
-      expect(result.name).toBe('Updated Plan Name');
+            expect(mockPrismaService.treatmentPlan.findUnique).toHaveBeenCalledWith(
+                expect.objectContaining({ include: { careActivity: true } })
+            );
+            expect(result).toHaveProperty('careActivity');
+        });
     });
 
-    it('should throw NotFoundException when plan does not exist (Prisma P2025)', async () => {
-      const prismaError = new Error('Record not found') as any;
-      prismaError.code = 'P2025';
-      prismaError.constructor = { name: 'PrismaClientKnownRequestError' };
-      // Simulate Prisma P2025 error by checking the Prisma import path
-      mockPrismaService.treatmentPlan.update.mockRejectedValue(
-        Object.assign(prismaError, { name: 'PrismaClientKnownRequestError' }),
-      );
+    // ----------------------------------------------------------------
+    // update
+    // ----------------------------------------------------------------
+    describe('update', () => {
+        const updateDto = { name: 'Updated Plan Name', progress: 50 };
 
-      await expect(service.update('nonexistent-id', updateDto as any)).rejects.toThrow();
+        it('should update and return the treatment plan', async () => {
+            const updatedPlan = { ...mockTreatmentPlan, ...updateDto };
+            mockPrismaService.treatmentPlan.update.mockResolvedValue(updatedPlan);
+
+            const result = await service.update('plan-test-123', updateDto as any);
+
+            expect(mockPrismaService.treatmentPlan.update).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    where: { id: 'plan-test-123' },
+                    data: expect.objectContaining({ name: 'Updated Plan Name', progress: 50 }),
+                })
+            );
+            expect(result.name).toBe('Updated Plan Name');
+        });
+
+        it('should throw NotFoundException when plan does not exist (Prisma P2025)', async () => {
+            const prismaError = new Error('Record not found') as any;
+            prismaError.code = 'P2025';
+            prismaError.constructor = { name: 'PrismaClientKnownRequestError' };
+            // Simulate Prisma P2025 error by checking the Prisma import path
+            mockPrismaService.treatmentPlan.update.mockRejectedValue(
+                Object.assign(prismaError, { name: 'PrismaClientKnownRequestError' })
+            );
+
+            await expect(service.update('nonexistent-id', updateDto as any)).rejects.toThrow();
+        });
+
+        it('should only update fields that are present in updateDto', async () => {
+            const partialDto = { progress: 75 };
+            mockPrismaService.treatmentPlan.update.mockResolvedValue({
+                ...mockTreatmentPlan,
+                progress: 75,
+            });
+
+            await service.update('plan-test-123', partialDto as any);
+
+            const callData = mockPrismaService.treatmentPlan.update.mock.calls[0][0].data;
+            expect(callData).toHaveProperty('progress', 75);
+            expect(callData).not.toHaveProperty('name');
+        });
     });
 
-    it('should only update fields that are present in updateDto', async () => {
-      const partialDto = { progress: 75 };
-      mockPrismaService.treatmentPlan.update.mockResolvedValue({
-        ...mockTreatmentPlan,
-        progress: 75,
-      });
+    // ----------------------------------------------------------------
+    // remove
+    // ----------------------------------------------------------------
+    describe('remove', () => {
+        it('should delete and return the treatment plan', async () => {
+            mockPrismaService.treatmentPlan.delete.mockResolvedValue(mockTreatmentPlan);
 
-      await service.update('plan-test-123', partialDto as any);
+            const result = await service.remove('plan-test-123');
 
-      const callData = mockPrismaService.treatmentPlan.update.mock.calls[0][0].data;
-      expect(callData).toHaveProperty('progress', 75);
-      expect(callData).not.toHaveProperty('name');
+            expect(mockPrismaService.treatmentPlan.delete).toHaveBeenCalledWith(
+                expect.objectContaining({ where: { id: 'plan-test-123' } })
+            );
+            expect(result).toEqual(mockTreatmentPlan);
+        });
+
+        it('should throw NotFoundException when plan does not exist', async () => {
+            const prismaError = new Error('Record not found') as any;
+            prismaError.code = 'P2025';
+            mockPrismaService.treatmentPlan.delete.mockRejectedValue(prismaError);
+
+            await expect(service.remove('nonexistent-id')).rejects.toThrow();
+        });
+
+        it('should include careActivity in deletion response', async () => {
+            mockPrismaService.treatmentPlan.delete.mockResolvedValue(mockTreatmentPlan);
+
+            await service.remove('plan-test-123');
+
+            expect(mockPrismaService.treatmentPlan.delete).toHaveBeenCalledWith(
+                expect.objectContaining({ include: { careActivity: true } })
+            );
+        });
     });
-  });
-
-  // ----------------------------------------------------------------
-  // remove
-  // ----------------------------------------------------------------
-  describe('remove', () => {
-    it('should delete and return the treatment plan', async () => {
-      mockPrismaService.treatmentPlan.delete.mockResolvedValue(mockTreatmentPlan);
-
-      const result = await service.remove('plan-test-123');
-
-      expect(mockPrismaService.treatmentPlan.delete).toHaveBeenCalledWith(
-        expect.objectContaining({ where: { id: 'plan-test-123' } }),
-      );
-      expect(result).toEqual(mockTreatmentPlan);
-    });
-
-    it('should throw NotFoundException when plan does not exist', async () => {
-      const prismaError = new Error('Record not found') as any;
-      prismaError.code = 'P2025';
-      mockPrismaService.treatmentPlan.delete.mockRejectedValue(prismaError);
-
-      await expect(service.remove('nonexistent-id')).rejects.toThrow();
-    });
-
-    it('should include careActivity in deletion response', async () => {
-      mockPrismaService.treatmentPlan.delete.mockResolvedValue(mockTreatmentPlan);
-
-      await service.remove('plan-test-123');
-
-      expect(mockPrismaService.treatmentPlan.delete).toHaveBeenCalledWith(
-        expect.objectContaining({ include: { careActivity: true } }),
-      );
-    });
-  });
 });

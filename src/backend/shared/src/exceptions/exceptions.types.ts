@@ -96,7 +96,11 @@ export class AppException extends Error {
  * Specialized exception for validation errors
  */
 export class ValidationException extends AppException {
-    constructor(message: string, code: string | number = 'VALIDATION_ERROR', metadata?: Record<string, unknown>) {
+    constructor(
+        message: string,
+        code: string | number = 'VALIDATION_ERROR',
+        metadata?: Record<string, unknown>
+    ) {
         super(message, ErrorType.VALIDATION, code, metadata);
     }
 }
@@ -105,7 +109,11 @@ export class ValidationException extends AppException {
  * Specialized exception for business logic errors
  */
 export class BusinessException extends AppException {
-    constructor(message: string, code: string | number = 'BUSINESS_ERROR', metadata?: Record<string, unknown>) {
+    constructor(
+        message: string,
+        code: string | number = 'BUSINESS_ERROR',
+        metadata?: Record<string, unknown>
+    ) {
         super(message, ErrorType.BUSINESS, code, metadata);
     }
 }
@@ -114,7 +122,11 @@ export class BusinessException extends AppException {
  * Specialized exception for not found errors
  */
 export class NotFoundException extends AppException {
-    constructor(message: string, code: string | number = 'NOT_FOUND', metadata?: Record<string, unknown>) {
+    constructor(
+        message: string,
+        code: string | number = 'NOT_FOUND',
+        metadata?: Record<string, unknown>
+    ) {
         super(message, ErrorType.NOT_FOUND, code, metadata);
     }
 }
@@ -123,7 +135,11 @@ export class NotFoundException extends AppException {
  * Specialized exception for external service errors
  */
 export class ExternalServiceException extends AppException {
-    constructor(message: string, code: string | number = 'EXTERNAL_SERVICE_ERROR', metadata?: Record<string, unknown>) {
+    constructor(
+        message: string,
+        code: string | number = 'EXTERNAL_SERVICE_ERROR',
+        metadata?: Record<string, unknown>
+    ) {
         super(message, ErrorType.EXTERNAL, code, metadata);
     }
 }

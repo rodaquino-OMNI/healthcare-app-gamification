@@ -1,9 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- Gamification event data and rule evaluation context are dynamically shaped */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access -- error.message/.stack accessed only after instanceof Error check */
+/* eslint-disable @typescript-eslint/no-unsafe-argument -- error.stack is string|undefined; narrowed via instanceof */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment -- rule context fields come from dynamic event data */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-
-// Updated import paths to use the correct locations
 import { Parser } from 'expr-eval';
 
 import { LoggerService } from '../../../shared/src/logging/logger.service';
@@ -69,24 +70,27 @@ export class RulesService implements OnModuleInit {
         private readonly profilesService: ProfilesService,
         private readonly achievementsService: AchievementsService
     ) {
-        this.rulesRefreshInterval = this.configService.get<number>('gamification.rules.refreshInterval', 60000);
+        this.rulesRefreshInterval = this.configService.get<number>(
+            'gamification.rules.refreshInterval',
+            60000
+        );
     }
 
     /**
      * Initialize the rules service by loading rules and setting up a refresh interval.
      */
-    async onModuleInit() {
+    onModuleInit(): void {
         try {
-            await this.loadRules();
+            this.loadRules();
 
             // Set up periodic refresh of rules
-            setInterval(async () => {
+            setInterval(() => {
                 try {
-                    await this.loadRules();
+                    this.loadRules();
                 } catch (error) {
                     this.logger.error(
-                        `Failed to refresh rules: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
-                        error instanceof Error ? (error as any).stack : undefined,
+                        `Failed to refresh rules: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                        error instanceof Error ? error.stack : undefined,
                         'RulesService'
                     );
                 }
@@ -109,7 +113,10 @@ export class RulesService implements OnModuleInit {
      */
     async processEvent(event: GamificationEvent): Promise<void> {
         try {
-            this.logger.log(`Processing event: ${event.type} for user ${event.userId}`, 'RulesService');
+            this.logger.log(
+                `Processing event: ${event.type} for user ${event.userId}`,
+                'RulesService'
+            );
 
             // Find applicable rules for this event type
             const applicableRules = this.rules.filter(
@@ -120,26 +127,37 @@ export class RulesService implements OnModuleInit {
             );
 
             if (applicableRules.length === 0) {
-                this.logger.log(`No applicable rules found for event: ${event.type}`, 'RulesService');
+                this.logger.log(
+                    `No applicable rules found for event: ${event.type}`,
+                    'RulesService'
+                );
                 return;
             }
 
             // Get user profile for context in rule evaluation
-            const userProfile = await this.profilesService.findById(event.userId).catch(async (error) => {
-                // If profile doesn't exist, create one
-                if (error.name === 'NotFoundException') {
-                    this.logger.log(`Creating new profile for user: ${event.userId}`, 'RulesService');
-                    return this.profilesService.create(event.userId);
-                }
-                throw error;
-            });
+            const userProfile = await this.profilesService
+                .findById(event.userId)
+                .catch(async (error) => {
+                    // If profile doesn't exist, create one
+                    if (error.name === 'NotFoundException') {
+                        this.logger.log(
+                            `Creating new profile for user: ${event.userId}`,
+                            'RulesService'
+                        );
+                        return this.profilesService.create(event.userId);
+                    }
+                    throw error;
+                });
 
             // Evaluate each applicable rule
             for (const rule of applicableRules) {
                 await this.evaluateRule(rule, event, userProfile);
             }
 
-            this.logger.log(`Completed processing event: ${event.type} for user ${event.userId}`, 'RulesService');
+            this.logger.log(
+                `Completed processing event: ${event.type} for user ${event.userId}`,
+                'RulesService'
+            );
         } catch (error) {
             this.logger.error(
                 `Error processing event ${event.type} for user ${event.userId}: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
@@ -156,7 +174,11 @@ export class RulesService implements OnModuleInit {
      * @param userProfile The user's profile data
      * @returns A promise with the rule evaluation result
      */
-    async processRule(ruleId: string, event: any, userProfile: any): Promise<RuleEvaluationResult> {
+    processRule(
+        ruleId: string,
+        event: Record<string, unknown>,
+        userProfile: Record<string, unknown>
+    ): RuleEvaluationResult {
         try {
             // Find the rule by ID
             const rule = this.rules.find((r) => r.id === ruleId);
@@ -183,7 +205,7 @@ export class RulesService implements OnModuleInit {
             };
 
             // Evaluate the condition
-            const conditionResult = await this.evaluateCondition(rule.condition, context);
+            const conditionResult = this.evaluateCondition(rule.condition, context);
 
             return {
                 satisfied: conditionResult,
@@ -203,7 +225,7 @@ export class RulesService implements OnModuleInit {
      * Get all available rules
      * @returns Array of all rules
      */
-    async getAll(): Promise<Rule[]> {
+    getAll(): Rule[] {
         return this.rules;
     }
 
@@ -213,9 +235,16 @@ export class RulesService implements OnModuleInit {
      * @param event The event being processed
      * @param userProfile The user's game profile
      */
-    private async evaluateRule(rule: Rule, event: GamificationEvent, userProfile: any): Promise<void> {
+    private async evaluateRule(
+        rule: Rule,
+        event: GamificationEvent,
+        userProfile: any
+    ): Promise<void> {
         try {
-            this.logger.log(`Evaluating rule: ${rule.name} for event: ${event.type}`, 'RulesService');
+            this.logger.log(
+                `Evaluating rule: ${rule.name} for event: ${event.type}`,
+                'RulesService'
+            );
 
             // Create a context for rule evaluation
             const context = {
@@ -234,8 +263,9 @@ export class RulesService implements OnModuleInit {
                 },
             };
 
-            // Evaluate condition using expr-eval safe expression parser (no arbitrary code execution)
-            const conditionResult = await this.evaluateCondition(rule.condition, context);
+            // Evaluate condition using expr-eval safe expression parser
+            // (no arbitrary code execution)
+            const conditionResult = this.evaluateCondition(rule.condition, context);
 
             if (!conditionResult) {
                 this.logger.log(`Rule condition not met: ${rule.name}`, 'RulesService');
@@ -265,14 +295,14 @@ export class RulesService implements OnModuleInit {
      * @param context The context to evaluate against
      * @returns True if the condition is met, false otherwise
      */
-    private async evaluateCondition(condition: string, context: any): Promise<boolean> {
+    private evaluateCondition(condition: string, context: any): boolean {
         try {
             const expr = this.parser.parse(condition);
             return expr.evaluate(context) === true;
         } catch (error) {
             this.logger.error(
-                `Error evaluating condition: ${condition}: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
-                error instanceof Error ? (error as any).stack : undefined,
+                `Error evaluating condition: ${condition}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                error instanceof Error ? error.stack : undefined,
                 'RulesService'
             );
             return false;
@@ -285,7 +315,11 @@ export class RulesService implements OnModuleInit {
      * @param userId The user ID
      * @param context The context for action execution
      */
-    private async executeAction(action: RuleAction, userId: string, _context: unknown): Promise<void> {
+    private async executeAction(
+        action: RuleAction,
+        userId: string,
+        _context: unknown
+    ): Promise<void> {
         try {
             switch (action.type) {
                 case 'AWARD_XP':
@@ -302,7 +336,7 @@ export class RulesService implements OnModuleInit {
                     break;
 
                 default:
-                    this.logger.warn(`Unknown action type: ${action.type}`, 'RulesService');
+                    this.logger.warn(`Unknown action type: ${String(action.type)}`, 'RulesService');
                     break;
             }
         } catch (error) {
@@ -330,7 +364,8 @@ export class RulesService implements OnModuleInit {
             });
 
             this.logger.log(
-                `Successfully awarded ${xp} XP to user ${userId}. New XP: ${updatedProfile.xp}, Level: ${updatedProfile.level}`,
+                `Successfully awarded ${xp} XP to user ${userId}. ` +
+                    `New XP: ${updatedProfile.xp}, Level: ${updatedProfile.level}`,
                 'RulesService'
             );
         } catch (error) {
@@ -350,11 +385,17 @@ export class RulesService implements OnModuleInit {
      */
     private async unlockAchievement(userId: string, achievementId: string): Promise<void> {
         try {
-            this.logger.log(`Unlocking achievement ${achievementId} for user ${userId}`, 'RulesService');
+            this.logger.log(
+                `Unlocking achievement ${achievementId} for user ${userId}`,
+                'RulesService'
+            );
 
             await this.achievementsService.unlockAchievement(userId, achievementId);
 
-            this.logger.log(`Successfully unlocked achievement ${achievementId} for user ${userId}`, 'RulesService');
+            this.logger.log(
+                `Successfully unlocked achievement ${achievementId} for user ${userId}`,
+                'RulesService'
+            );
         } catch (error) {
             this.logger.error(
                 `Error unlocking achievement ${achievementId} for user ${userId}: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
@@ -379,7 +420,7 @@ export class RulesService implements OnModuleInit {
     /**
      * Load rules from the database.
      */
-    private async loadRules(): Promise<void> {
+    private loadRules(): void {
         try {
             this.logger.log('Loading rules from database', 'RulesService');
 

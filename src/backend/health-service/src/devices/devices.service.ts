@@ -54,11 +54,7 @@ export class DevicesService {
             const deviceType = String(connectDeviceDto.deviceType).toLowerCase();
 
             // Calls the appropriate adapter to connect
-            /* eslint-disable @typescript-eslint/no-explicit-any,
-               @typescript-eslint/no-unsafe-assignment,
-               @typescript-eslint/no-unsafe-call,
-               @typescript-eslint/no-unsafe-member-access
-               -- WearablesService.connect not exposed */
+            /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access -- WearablesService.connect not exposed */
             const deviceConnection: DeviceConnection = await (this.wearablesService as any).connect(
                 recordId,
                 deviceType

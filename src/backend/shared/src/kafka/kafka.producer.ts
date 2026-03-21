@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, max-len */
+/* eslint-disable @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, max-len -- KafkaProducer delegates to KafkaService which uses dynamic message payloads */
 import { Injectable } from '@nestjs/common';
 
 import { KafkaService } from './kafka.service';
@@ -32,7 +32,11 @@ export class KafkaProducer {
      */
     async sendBatch(
         topic: string,
-        messages: Array<{ message: string | Record<string, unknown>; key?: string; headers?: Record<string, string> }>
+        messages: Array<{
+            message: string | Record<string, unknown>;
+            key?: string;
+            headers?: Record<string, string>;
+        }>
     ): Promise<void> {
         const promises = messages.map(({ message, key, headers }) =>
             this.kafkaService.emit(topic, message, key, headers)

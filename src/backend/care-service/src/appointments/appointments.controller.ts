@@ -17,6 +17,8 @@ import {
     HttpStatus,
     Query,
     Patch,
+    UsePipes,
+    ValidationPipe,
 } from '@nestjs/common'; // v10.0.0+
 
 import { AppointmentsService } from './appointments.service';
@@ -46,6 +48,7 @@ export class AppointmentsController {
     @Post()
     @UseGuards(JwtAuthGuard, RolesGuard)
     @PhiAccess('Appointment')
+    @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
     async create(@Body() createAppointmentDto: CreateAppointmentDto): Promise<Appointment> {
         return this.appointmentsService.create(createAppointmentDto);
     }
@@ -83,7 +86,11 @@ export class AppointmentsController {
     @Patch(':id')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @PhiAccess('Appointment')
-    async update(@Param('id') id: string, @Body() updateAppointmentDto: UpdateAppointmentDto): Promise<Appointment> {
+    @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+    async update(
+        @Param('id') id: string,
+        @Body() updateAppointmentDto: UpdateAppointmentDto
+    ): Promise<Appointment> {
         return this.appointmentsService.update(id, updateAppointmentDto);
     }
 

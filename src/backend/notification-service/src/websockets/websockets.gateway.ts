@@ -1,5 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- Socket.IO event callbacks and Kafka message payloads are dynamically typed */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment -- Kafka message payloads and error stacks are untyped at runtime */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access -- error.stack and Kafka message fields are untyped */
+/* eslint-disable @typescript-eslint/no-unsafe-argument -- error.stack passed to logger as string | undefined */
 import { KafkaService } from '@app/shared/kafka/kafka.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import {
@@ -80,14 +82,14 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
 
         // Join rooms for each journey
         journeys.forEach((journey) => {
-            client.join(`${userId}:${journey}`);
+            void client.join(`${userId}:${journey}`);
         });
 
         // Join user room
-        client.join(userId);
+        void client.join(userId);
     }
 
-    handleDisconnect(client: Socket) {
+    handleDisconnect(client: Socket): void {
         const connectionInfo = this.connections.get(client.id);
 
         if (connectionInfo) {
@@ -205,7 +207,7 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
             this.logger.debug(`Marking notification ${notificationId} as read for user ${userId}`);
 
             // Emit to kafka for persistence
-            this.kafkaService.emit('notifications.markAsRead', {
+            void this.kafkaService.emit('notifications.markAsRead', {
                 userId,
                 notificationId,
                 timestamp: new Date().toISOString(),
@@ -231,7 +233,9 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
             const connectionInfo = this.connections.get(client.id);
 
             if (!connectionInfo) {
-                this.logger.warn(`Unknown client tried to mark all notifications as read: ${client.id}`);
+                this.logger.warn(
+                    `Unknown client tried to mark all notifications as read: ${client.id}`
+                );
                 return;
             }
 
@@ -240,7 +244,7 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
             this.logger.debug(`Marking all notifications as read for user ${userId}`);
 
             // Emit to kafka for persistence
-            this.kafkaService.emit('notifications.markAllAsRead', {
+            void this.kafkaService.emit('notifications.markAllAsRead', {
                 userId,
                 timestamp: new Date().toISOString(),
             });
@@ -273,14 +277,21 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
     /**
      * Send a journey-specific notification
      */
-    sendJourneyNotification(journey: string, userId: string, notification: NotificationPayload): void {
+    sendJourneyNotification(
+        journey: string,
+        userId: string,
+        notification: NotificationPayload
+    ): void {
         try {
             this.logger.debug(`Sending ${journey} notification to user ${userId}`);
 
             this.server.to(`${userId}:${journey}`).emit(journey, notification);
         } catch (error) {
             const errorStack = error instanceof Error ? (error as any).stack : undefined;
-            this.logger.error(`Error sending ${journey} notification to user ${userId}`, errorStack);
+            this.logger.error(
+                `Error sending ${journey} notification to user ${userId}`,
+                errorStack
+            );
         }
     }
 
@@ -288,7 +299,7 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
      * Setup Kafka consumer for notifications
      */
     private setupKafkaListener(): void {
-        this.kafkaService.subscribe('notifications', 'websocket-gateway', async (message) => {
+        void this.kafkaService.subscribe('notifications', 'websocket-gateway', (message) => {
             try {
                 this.logger.debug('Received notification from Kafka', {
                     key: message.key,
@@ -312,7 +323,7 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
                     this.broadcastNotification(payload);
                 }
             } catch (error) {
-                const errorStack = error instanceof Error ? (error as any).stack : undefined;
+                const errorStack = error instanceof Error ? error.stack : undefined;
                 this.logger.error('Error processing Kafka notification', errorStack);
             }
         });
@@ -324,7 +335,8 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
     private parseKafkaMessage(message: any): NotificationPayload | null {
         try {
             // Parse message value
-            const value = typeof message.value === 'string' ? JSON.parse(message.value) : message.value;
+            const value =
+                typeof message.value === 'string' ? JSON.parse(message.value) : message.value;
 
             // Basic validation
             if (!value || !value.title || !value.message) {

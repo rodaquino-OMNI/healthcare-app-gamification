@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, max-len */
+/* eslint-disable @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, max-len -- GraphQL resolver bridges untyped HTTP responses from auth-service to client schema */
 import { HttpService } from '@nestjs/axios';
 import { UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -22,13 +22,18 @@ export class AuthResolvers {
         private readonly httpService: HttpService,
         private readonly configService: ConfigService
     ) {
-        this.authServiceUrl = this.configService.get<string>('services.auth.url', 'http://auth-service:3001');
+        this.authServiceUrl = this.configService.get<string>(
+            'services.auth.url',
+            'http://auth-service:3001'
+        );
     }
 
     @Query('getUser')
     @UseGuards(JwtAuthGuard)
     async getUser(@CurrentUser() user: AuthenticatedUser, @Args('id') id: string) {
-        const response = await lastValueFrom(this.httpService.get(`${this.authServiceUrl}/users/${id}`));
+        const response = await lastValueFrom(
+            this.httpService.get(`${this.authServiceUrl}/users/${id}`)
+        );
         return response.data;
     }
 
@@ -44,7 +49,11 @@ export class AuthResolvers {
     }
 
     @Mutation('register')
-    async register(@Args('name') name: string, @Args('email') email: string, @Args('password') password: string) {
+    async register(
+        @Args('name') name: string,
+        @Args('email') email: string,
+        @Args('password') password: string
+    ) {
         const response = await lastValueFrom(
             this.httpService.post(`${this.authServiceUrl}/auth/register`, {
                 name,

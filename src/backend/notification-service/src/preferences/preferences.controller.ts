@@ -2,7 +2,18 @@ import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 import { FilterDto } from '@app/shared/dto/filter.dto';
 import { PaginationDto } from '@app/shared/dto/pagination.dto';
-import { Controller, Get, Post, Patch, Query, Body, Param, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    Post,
+    Patch,
+    Query,
+    Body,
+    Param,
+    UseGuards,
+    UsePipes,
+    ValidationPipe,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { NotificationPreference } from './entities/notification-preference.entity';

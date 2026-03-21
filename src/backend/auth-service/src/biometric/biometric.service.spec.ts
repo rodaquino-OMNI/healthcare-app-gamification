@@ -85,15 +85,17 @@ describe('BiometricService', () => {
         });
 
         it('should throw AppException when required fields are missing', async () => {
-            await expect(service.registerDevice('', 'publicKey', 'device-1', 'ios')).rejects.toThrow(AppException);
+            await expect(
+                service.registerDevice('', 'publicKey', 'device-1', 'ios')
+            ).rejects.toThrow(AppException);
         });
 
         it('should throw AppException when redis fails', async () => {
             redisService.set.mockRejectedValueOnce(new Error('Redis connection error'));
 
-            await expect(service.registerDevice('user-1', 'publicKey', 'device-1', 'ios')).rejects.toThrow(
-                AppException
-            );
+            await expect(
+                service.registerDevice('user-1', 'publicKey', 'device-1', 'ios')
+            ).rejects.toThrow(AppException);
         });
     });
 
@@ -104,7 +106,11 @@ describe('BiometricService', () => {
             expect(result.challenge).toBeDefined();
             expect(typeof result.challenge).toBe('string');
             expect(result.expiresIn).toBe(300);
-            expect(redisService.set).toHaveBeenCalledWith('biometric:challenge:user-1', expect.any(String), 300);
+            expect(redisService.set).toHaveBeenCalledWith(
+                'biometric:challenge:user-1',
+                expect.any(String),
+                300
+            );
         });
 
         it('should throw AppException when userId is empty', async () => {
@@ -122,17 +128,17 @@ describe('BiometricService', () => {
         it('should throw when challenge is expired or not found', async () => {
             redisService.get.mockResolvedValueOnce(null);
 
-            await expect(service.verifySignature('user-1', 'sig', 'challenge', 'device-key-1')).rejects.toThrow(
-                AppException
-            );
+            await expect(
+                service.verifySignature('user-1', 'sig', 'challenge', 'device-key-1')
+            ).rejects.toThrow(AppException);
         });
 
         it('should throw when challenge does not match', async () => {
             redisService.get.mockResolvedValueOnce('different-challenge');
 
-            await expect(service.verifySignature('user-1', 'sig', 'my-challenge', 'device-key-1')).rejects.toThrow(
-                AppException
-            );
+            await expect(
+                service.verifySignature('user-1', 'sig', 'my-challenge', 'device-key-1')
+            ).rejects.toThrow(AppException);
         });
 
         it('should throw when device key is not found', async () => {
@@ -140,9 +146,9 @@ describe('BiometricService', () => {
                 .mockResolvedValueOnce('my-challenge') // stored challenge
                 .mockResolvedValueOnce(null); // device key not found
 
-            await expect(service.verifySignature('user-1', 'sig', 'my-challenge', 'device-key-1')).rejects.toThrow(
-                AppException
-            );
+            await expect(
+                service.verifySignature('user-1', 'sig', 'my-challenge', 'device-key-1')
+            ).rejects.toThrow(AppException);
         });
 
         it('should throw when device key does not belong to user', async () => {
@@ -155,11 +161,13 @@ describe('BiometricService', () => {
                 expiresAt: new Date().toISOString(),
             };
 
-            redisService.get.mockResolvedValueOnce('my-challenge').mockResolvedValueOnce(JSON.stringify(deviceKey));
+            redisService.get
+                .mockResolvedValueOnce('my-challenge')
+                .mockResolvedValueOnce(JSON.stringify(deviceKey));
 
-            await expect(service.verifySignature('user-1', 'sig', 'my-challenge', 'device-key-1')).rejects.toThrow(
-                AppException
-            );
+            await expect(
+                service.verifySignature('user-1', 'sig', 'my-challenge', 'device-key-1')
+            ).rejects.toThrow(AppException);
         });
     });
 });

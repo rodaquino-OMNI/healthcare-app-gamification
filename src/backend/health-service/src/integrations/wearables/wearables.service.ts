@@ -84,12 +84,7 @@ export class WearablesService {
             const deviceConnection = await adapter.connect(userId, authToken, refreshToken);
 
             // Persist the device connection in the database
-            /* eslint-disable
-               @typescript-eslint/no-unsafe-assignment,
-               @typescript-eslint/no-unsafe-call,
-               @typescript-eslint/no-unsafe-member-access,
-               @typescript-eslint/no-explicit-any
-               -- Prisma model delegate */
+            /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any -- Prisma model delegate */
             const persistedConnection: DeviceConnection = await (
                 this.prisma as any
             ).deviceConnection.create({
@@ -150,12 +145,7 @@ export class WearablesService {
             }
 
             // Retrieve the device connection from the database
-            /* eslint-disable
-               @typescript-eslint/no-unsafe-assignment,
-               @typescript-eslint/no-unsafe-call,
-               @typescript-eslint/no-unsafe-member-access,
-               @typescript-eslint/no-explicit-any
-               -- Prisma model delegate */
+            /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any -- Prisma model delegate */
             const deviceConnection: DeviceConnection | null = await (
                 this.prisma as any
             ).deviceConnection.findFirst({
@@ -166,11 +156,7 @@ export class WearablesService {
                     status: 'CONNECTED',
                 },
             });
-            /* eslint-enable
-               @typescript-eslint/no-unsafe-assignment,
-               @typescript-eslint/no-unsafe-call,
-               @typescript-eslint/no-unsafe-member-access,
-               @typescript-eslint/no-explicit-any */
+            /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any */
 
             if (!deviceConnection) {
                 throw new Error(
@@ -188,11 +174,7 @@ export class WearablesService {
             );
 
             // Update the last synced timestamp
-            /* eslint-disable
-               @typescript-eslint/no-unsafe-call,
-               @typescript-eslint/no-unsafe-member-access,
-               @typescript-eslint/no-explicit-any
-               -- Prisma model delegate */
+            /* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any -- Prisma model delegate */
             await (this.prisma as any).deviceConnection.update({
                 where: { id: deviceConnection.id },
                 data: { lastSyncedAt: new Date() },
@@ -238,12 +220,7 @@ export class WearablesService {
             }
 
             // Retrieve the device connection from the database
-            /* eslint-disable
-               @typescript-eslint/no-unsafe-assignment,
-               @typescript-eslint/no-unsafe-call,
-               @typescript-eslint/no-unsafe-member-access,
-               @typescript-eslint/no-explicit-any
-               -- Prisma model delegate */
+            /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any -- Prisma model delegate */
             const deviceConnection: DeviceConnection | null = await (
                 this.prisma as any
             ).deviceConnection.findFirst({
@@ -254,11 +231,7 @@ export class WearablesService {
                     status: 'CONNECTED',
                 },
             });
-            /* eslint-enable
-               @typescript-eslint/no-unsafe-assignment,
-               @typescript-eslint/no-unsafe-call,
-               @typescript-eslint/no-unsafe-member-access,
-               @typescript-eslint/no-explicit-any */
+            /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any */
 
             if (!deviceConnection) {
                 this.logger.warn(
@@ -271,11 +244,7 @@ export class WearablesService {
 
             if (disconnected) {
                 // Update the connection status in the database
-                /* eslint-disable
-                   @typescript-eslint/no-unsafe-call,
-                   @typescript-eslint/no-unsafe-member-access,
-                   @typescript-eslint/no-explicit-any
-                   -- Prisma model delegate */
+                /* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any -- Prisma model delegate */
                 await (this.prisma as any).deviceConnection.update({
                     where: { id: deviceConnection.id },
                     data: { status: 'DISCONNECTED' },

@@ -1,6 +1,18 @@
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 import { LoggerService } from '@app/shared/logging/logger.service';
-import { Controller, Get, Post, Patch, Param, Body, UseFilters, HttpStatus, HttpCode } from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    Post,
+    Patch,
+    Param,
+    Body,
+    UseFilters,
+    HttpStatus,
+    HttpCode,
+    UsePipes,
+    ValidationPipe,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { GameProfile } from './entities/game-profile.entity';
@@ -53,6 +65,7 @@ export class ProfilesController {
      * @returns The updated game profile
      */
     @Patch(':userId')
+    @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
     @ApiOperation({ summary: 'Update an existing game profile' })
     @ApiResponse({ status: 200, description: 'Game profile updated successfully' })
     async updateProfile(

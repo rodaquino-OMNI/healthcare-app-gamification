@@ -72,7 +72,9 @@ export class PrivacyService {
         ]);
 
         if (!user) {
-            throw new AppException('User not found', ErrorType.NOT_FOUND, 'PRIVACY_001', { userId });
+            throw new AppException('User not found', ErrorType.NOT_FOUND, 'PRIVACY_001', {
+                userId,
+            });
         }
 
         return {
@@ -104,7 +106,7 @@ export class PrivacyService {
 
         // Patient resource
         entries.push({
-            fullUrl: `urn:uuid:${user.id}`,
+            fullUrl: `urn:uuid:${String(user.id)}`,
             resource: {
                 resourceType: 'Patient',
                 id: user.id,
@@ -127,7 +129,7 @@ export class PrivacyService {
         // Observation resources from HealthMetrics
         for (const metric of data.healthMetrics as Record<string, unknown>[]) {
             entries.push({
-                fullUrl: `urn:uuid:${metric.id}`,
+                fullUrl: `urn:uuid:${String(metric.id)}`,
                 resource: {
                     resourceType: 'Observation',
                     id: metric.id,
@@ -141,7 +143,7 @@ export class PrivacyService {
                             },
                         ],
                     },
-                    subject: { reference: `Patient/${user.id}` },
+                    subject: { reference: `Patient/${String(user.id)}` },
                     effectiveDateTime: metric.timestamp,
                     valueQuantity: {
                         value: metric.value,
@@ -154,7 +156,7 @@ export class PrivacyService {
         // MedicationStatement resources
         for (const med of data.medications as Record<string, unknown>[]) {
             entries.push({
-                fullUrl: `urn:uuid:${med.id}`,
+                fullUrl: `urn:uuid:${String(med.id)}`,
                 resource: {
                     resourceType: 'MedicationStatement',
                     id: med.id,
@@ -162,14 +164,14 @@ export class PrivacyService {
                     medicationCodeableConcept: {
                         text: med.name,
                     },
-                    subject: { reference: `Patient/${user.id}` },
+                    subject: { reference: `Patient/${String(user.id)}` },
                     effectivePeriod: {
                         start: med.startDate,
                         ...(med.endDate ? { end: med.endDate } : {}),
                     },
                     dosage: [
                         {
-                            text: `${med.dosage} - ${med.frequency}`,
+                            text: `${String(med.dosage)} - ${String(med.frequency)}`,
                         },
                     ],
                 },
@@ -179,7 +181,7 @@ export class PrivacyService {
         // Appointment resources
         for (const appt of data.appointments as Record<string, unknown>[]) {
             entries.push({
-                fullUrl: `urn:uuid:${appt.id}`,
+                fullUrl: `urn:uuid:${String(appt.id)}`,
                 resource: {
                     resourceType: 'Appointment',
                     id: appt.id,
@@ -187,7 +189,7 @@ export class PrivacyService {
                     start: appt.dateTime,
                     participant: [
                         {
-                            actor: { reference: `Patient/${user.id}` },
+                            actor: { reference: `Patient/${String(user.id)}` },
                             status: 'accepted',
                         },
                     ],
@@ -217,7 +219,9 @@ export class PrivacyService {
         });
 
         if (!user) {
-            throw new AppException('User not found', ErrorType.NOT_FOUND, 'PRIVACY_002', { userId });
+            throw new AppException('User not found', ErrorType.NOT_FOUND, 'PRIVACY_002', {
+                userId,
+            });
         }
 
         const deletedCounts: Record<string, number> = {};
@@ -372,7 +376,10 @@ export class PrivacyService {
     // Art. 18-III  -  Rectification
     // ──────────────────────────────────────────────────────────
 
-    async rectifyMyData(userId: string, updates: { name?: string; email?: string; phone?: string }): Promise<object> {
+    async rectifyMyData(
+        userId: string,
+        updates: { name?: string; email?: string; phone?: string }
+    ): Promise<object> {
         // Validate there is at least one field to update
         const fieldsToUpdate: Record<string, string> = {};
 
@@ -392,9 +399,14 @@ export class PrivacyService {
             });
 
             if (existing) {
-                throw new AppException('Email already in use by another account', ErrorType.VALIDATION, 'PRIVACY_003', {
-                    email: updates.email,
-                });
+                throw new AppException(
+                    'Email already in use by another account',
+                    ErrorType.VALIDATION,
+                    'PRIVACY_003',
+                    {
+                        email: updates.email,
+                    }
+                );
             }
 
             fieldsToUpdate.email = updates.email;

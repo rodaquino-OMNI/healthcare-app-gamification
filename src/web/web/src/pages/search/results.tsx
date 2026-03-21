@@ -149,7 +149,7 @@ export default function SearchResultsPage(): React.ReactElement {
         }
         setQuery(urlQuery);
         void search(urlQuery);
-    }, [urlQuery]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [urlQuery]); // eslint-disable-line react-hooks/exhaustive-deps -- setQuery and search are stable hook refs; including them would cause a re-fetch loop on every render
 
     return (
         <MainLayout>

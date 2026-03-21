@@ -1,9 +1,9 @@
 import { INestApplication, HttpStatus } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-
-const JwtAuthGuard = AuthGuard('jwt');
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
+
+const JwtAuthGuard = AuthGuard('jwt');
 
 import { AppModule } from '../src/app.module';
 import { SendNotificationDto } from '../src/notifications/dto/send-notification.dto';
@@ -66,7 +66,10 @@ describe('NotificationsController (e2e)', () => {
             title: 'Invalid Notification',
         };
 
-        return request(app.getHttpServer()).post('/notifications/send').send(invalidDto).expect(HttpStatus.BAD_REQUEST);
+        return request(app.getHttpServer())
+            .post('/notifications/send')
+            .send(invalidDto)
+            .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should return 500 when notification service fails', () => {
@@ -80,7 +83,9 @@ describe('NotificationsController (e2e)', () => {
             channels: ['email', 'push'],
         };
 
-        mockNotificationsService.sendNotification.mockRejectedValueOnce(new Error('Service failure'));
+        mockNotificationsService.sendNotification.mockRejectedValueOnce(
+            new Error('Service failure')
+        );
 
         return request(app.getHttpServer())
             .post('/notifications/send')

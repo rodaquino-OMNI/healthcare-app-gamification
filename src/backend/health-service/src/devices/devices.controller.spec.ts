@@ -1,5 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { DevicesController } from './devices.controller';
 import { DevicesService } from './devices.service';
 
@@ -47,14 +48,19 @@ describe('DevicesController', () => {
 
             const result = await controller.connectDevice(recordId, connectDeviceDto);
 
-            expect(mockDevicesService.connectDevice).toHaveBeenCalledWith(recordId, connectDeviceDto);
+            expect(mockDevicesService.connectDevice).toHaveBeenCalledWith(
+                recordId,
+                connectDeviceDto
+            );
             expect(result).toEqual(mockConnection);
         });
 
         it('should propagate errors from devicesService.connectDevice', async () => {
             mockDevicesService.connectDevice.mockRejectedValue(new Error('Connection failed'));
 
-            await expect(controller.connectDevice(recordId, connectDeviceDto)).rejects.toThrow('Connection failed');
+            await expect(controller.connectDevice(recordId, connectDeviceDto)).rejects.toThrow(
+                'Connection failed'
+            );
         });
     });
 

@@ -45,7 +45,7 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = () => {
         handleSubmit,
         formState: { errors },
     } = useForm<AppointmentFormValues>({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- yupResolver returns an untyped Resolver from @hookform/resolvers; the generic inference is lost at the library boundary
         resolver: yupResolver(appointmentValidationSchema),
         defaultValues: {
             provider: '',

@@ -87,6 +87,7 @@ module.exports = {
                 ignoreStrings: true,
                 ignoreTemplateLiterals: true,
                 ignoreRegExpLiterals: true,
+                ignorePattern: 'eslint-disable|eslint-enable',
             },
         ],
         'no-console': ['warn', { allow: ['warn', 'error'] }],

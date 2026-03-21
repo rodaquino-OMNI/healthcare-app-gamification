@@ -14,7 +14,17 @@ describe('KafkaConsumerService', () => {
         mockRulesService = { processEvent: jest.fn() };
         mockProfilesService = { getProfile: jest.fn() };
         mockKafkaService = { subscribe: jest.fn().mockResolvedValue(undefined) };
-        mockConfigService = { get: jest.fn().mockReturnValue(undefined) };
+        mockConfigService = {
+            get: jest.fn().mockImplementation((key: string, defaultValue?: string) => {
+                const config: Record<string, string> = {
+                    'gamificationEngine.kafka.groupId': 'gamification-consumer-group',
+                    'gamificationEngine.kafka.topics.healthEvents': 'health.events',
+                    'gamificationEngine.kafka.topics.careEvents': 'care.events',
+                    'gamificationEngine.kafka.topics.planEvents': 'plan.events',
+                };
+                return config[key] ?? defaultValue;
+            }),
+        };
         mockLogger = { log: jest.fn(), warn: jest.fn(), error: jest.fn() };
 
         service = new KafkaConsumerService(
@@ -23,7 +33,7 @@ describe('KafkaConsumerService', () => {
             mockProfilesService as never,
             mockKafkaService as never,
             mockConfigService as never,
-            mockLogger as never,
+            mockLogger as never
         );
     });
 
@@ -35,7 +45,7 @@ describe('KafkaConsumerService', () => {
         it('should subscribe to kafka topics', async () => {
             await service.onModuleInit();
 
-            expect(mockKafkaService.subscribe).toHaveBeenCalled();
+            expect(mockKafkaService.subscribe).toHaveBeenCalledTimes(3);
         });
 
         it('should warn when no topics configured', async () => {
@@ -43,8 +53,8 @@ describe('KafkaConsumerService', () => {
 
             await service.onModuleInit();
 
-            // Should still attempt to subscribe with defaults
-            expect(mockKafkaService.subscribe).toHaveBeenCalled();
+            expect(mockLogger.warn).toHaveBeenCalled();
+            expect(mockKafkaService.subscribe).not.toHaveBeenCalled();
         });
 
         it('should not throw when kafka setup fails', async () => {

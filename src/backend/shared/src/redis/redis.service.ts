@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- ioredis catch clauses and rethrow patterns require any */
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Redis, { RedisOptions } from 'ioredis';
@@ -105,8 +105,8 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
             } catch (error) {
                 const formattedError = this.formatError(error);
                 this.logger.error(
-                    // eslint-disable-next-line max-len
-                    'Failed to parse Redis URL: ' + `${formattedError.message}. Falling back to connection parameters.`,
+                    'Failed to parse Redis URL: ' +
+                        `${formattedError.message}. Falling back to connection parameters.`,
                     formattedError.stack,
                     'RedisService'
                 );
@@ -135,7 +135,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
             if (!this.client) {
                 // Create client now if it wasn't successful in constructor
                 const redisConfig = this.getRedisConfig();
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any -- readonly property assigned via unsafe cast during lazy init
                 (this as unknown as { client: Redis }).client = new Redis(redisConfig);
             }
 
@@ -252,7 +252,11 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
             return count;
         } catch (error) {
             const formattedError = this.formatError(error);
-            this.logger.error(`Redis DEL error: ${formattedError.message}`, formattedError.stack, 'RedisService');
+            this.logger.error(
+                `Redis DEL error: ${formattedError.message}`,
+                formattedError.stack,
+                'RedisService'
+            );
             throw error as any;
         }
     }
@@ -271,7 +275,11 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
             return count;
         } catch (error) {
             const formattedError = this.formatError(error);
-            this.logger.error(`Redis EXISTS error: ${formattedError.message}`, formattedError.stack, 'RedisService');
+            this.logger.error(
+                `Redis EXISTS error: ${formattedError.message}`,
+                formattedError.stack,
+                'RedisService'
+            );
             throw error as any;
         }
     }
@@ -514,7 +522,10 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     async publish(channel: string, message: string): Promise<number> {
         try {
             const recipients = await this.client.publish(channel, message);
-            this.logger.debug(`Redis PUBLISH: ${channel} (${recipients} recipients)`, 'RedisService');
+            this.logger.debug(
+                `Redis PUBLISH: ${channel} (${recipients} recipients)`,
+                'RedisService'
+            );
             return recipients;
         } catch (error) {
             const formattedError = this.formatError(error);
@@ -532,7 +543,10 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
      * @param channel The channel to subscribe to
      * @param callback Function to call when messages are received
      */
-    async subscribe(channel: string, callback: (message: string, channel: string) => void): Promise<void> {
+    async subscribe(
+        channel: string,
+        callback: (message: string, channel: string) => void
+    ): Promise<void> {
         try {
             // Create a separate client for subscription if it doesn't exist
             if (!this.subscriptionClient) {

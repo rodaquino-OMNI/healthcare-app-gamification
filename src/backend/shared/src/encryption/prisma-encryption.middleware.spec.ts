@@ -69,9 +69,9 @@ describe('Prisma Encryption Middleware', () => {
     describe('read operations', () => {
         it('should decrypt PHI fields on findMany', async () => {
             const middleware = createEncryptionMiddleware(mockEncryptionService as never);
-            const next = jest.fn().mockResolvedValue([
-                { id: '1', value: 'ENC:72', notes: 'ENC:normal' },
-            ]);
+            const next = jest
+                .fn()
+                .mockResolvedValue([{ id: '1', value: 'ENC:72', notes: 'ENC:normal' }]);
 
             const params = {
                 model: 'HealthMetric',

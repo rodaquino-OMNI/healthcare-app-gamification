@@ -69,9 +69,14 @@ export class EmailService {
                 'EmailService'
             );
 
-            throw new AppException('Failed to send email notification', ErrorType.EXTERNAL, 'NOTIFICATION_001', {
-                recipient: to,
-            });
+            throw new AppException(
+                'Failed to send email notification',
+                ErrorType.EXTERNAL,
+                'NOTIFICATION_001',
+                {
+                    recipient: to,
+                }
+            );
         }
     }
 }

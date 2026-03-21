@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Delete, Query, Param, Body, HttpCode, HttpStatus, Logger } from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    Post,
+    Delete,
+    Query,
+    Param,
+    Body,
+    HttpCode,
+    HttpStatus,
+    Logger,
+} from '@nestjs/common';
 
 import { DocumentsService } from './documents.service';
 
@@ -43,7 +54,10 @@ export class DocumentsController {
      * Retrieves all documents for a given entity.
      */
     @Get()
-    async findAll(@Query('entityId') entityId: string, @Query('entityType') entityType: string): Promise<unknown[]> {
+    async findAll(
+        @Query('entityId') entityId: string,
+        @Query('entityType') entityType: string
+    ): Promise<unknown[]> {
         this.logger.log(`Finding all documents for ${entityType} with ID ${entityId}`);
         return this.documentsService.findAll(entityId, entityType);
     }

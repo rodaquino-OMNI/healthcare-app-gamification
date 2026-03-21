@@ -6,18 +6,18 @@ import { gql } from '@apollo/client'; // version 3.7.17
  * across the Health Journey components
  */
 export const healthMetricFragment = gql`
-  fragment HealthMetricFields on HealthMetric {
-    id
-    userId
-    type
-    value
-    unit
-    timestamp
-    source
-    notes
-    trend
-    isAbnormal
-  }
+    fragment HealthMetricFields on HealthMetric {
+        id
+        userId
+        type
+        value
+        unit
+        timestamp
+        source
+        notes
+        trend
+        isAbnormal
+    }
 `;
 
 /**
@@ -26,23 +26,23 @@ export const healthMetricFragment = gql`
  * for goal tracking and progress visualization
  */
 export const healthGoalFragment = gql`
-  fragment HealthGoalFields on HealthGoal {
-    id
-    userId
-    type
-    title
-    description
-    target
-    unit
-    currentValue
-    startDate
-    endDate
-    frequency
-    status
-    progress
-    createdAt
-    updatedAt
-  }
+    fragment HealthGoalFields on HealthGoal {
+        id
+        userId
+        type
+        title
+        description
+        target
+        unit
+        currentValue
+        startDate
+        endDate
+        frequency
+        status
+        progress
+        createdAt
+        updatedAt
+    }
 `;
 
 /**
@@ -51,24 +51,24 @@ export const healthGoalFragment = gql`
  * for timeline visualization and detailed event information
  */
 export const medicalEventFragment = gql`
-  fragment MedicalEventFields on MedicalEvent {
-    id
-    userId
-    type
-    title
-    description
-    date
-    provider
-    location
-    documents
-    severity
-    outcome
-    notes
-    isImported
-    importSource
-    createdAt
-    updatedAt
-  }
+    fragment MedicalEventFields on MedicalEvent {
+        id
+        userId
+        type
+        title
+        description
+        date
+        provider
+        location
+        documents
+        severity
+        outcome
+        notes
+        isImported
+        importSource
+        createdAt
+        updatedAt
+    }
 `;
 
 /**
@@ -77,14 +77,14 @@ export const medicalEventFragment = gql`
  * for device management and data synchronization
  */
 export const deviceConnectionFragment = gql`
-  fragment DeviceConnectionFields on DeviceConnection {
-    id
-    userId
-    deviceType
-    deviceId
-    deviceName
-    lastSync
-    status
-    connectionDetails
-  }
+    fragment DeviceConnectionFields on DeviceConnection {
+        id
+        userId
+        deviceType
+        deviceId
+        deviceName
+        lastSync
+        status
+        connectionDetails
+    }
 `;

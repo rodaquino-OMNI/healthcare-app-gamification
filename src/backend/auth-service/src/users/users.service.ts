@@ -35,7 +35,11 @@ export class UsersService {
             });
 
             if (existingUser) {
-                throw new AppException('User with this email already exists', ErrorType.VALIDATION, 'USER_001');
+                throw new AppException(
+                    'User with this email already exists',
+                    ErrorType.VALIDATION,
+                    'USER_001'
+                );
             }
 
             // Hash the password before storing
@@ -68,7 +72,11 @@ export class UsersService {
                 }
             } catch (error: unknown) {
                 const errorStack = error instanceof Error ? error.stack : '';
-                this.logger.error(`Failed to assign default roles to user ${user.id}`, errorStack, 'UsersService');
+                this.logger.error(
+                    `Failed to assign default roles to user ${user.id}`,
+                    errorStack,
+                    'UsersService'
+                );
                 // Don't fail the user creation if role assignment fails
             }
 
@@ -109,7 +117,9 @@ export class UsersService {
             where,
             skip:
                 paginationDto?.skip ||
-                (paginationDto?.page ? (paginationDto.page - 1) * (paginationDto.limit || 10) : undefined),
+                (paginationDto?.page
+                    ? (paginationDto.page - 1) * (paginationDto.limit || 10)
+                    : undefined),
             take: paginationDto?.limit || 10,
             include: {
                 roles: true,
@@ -127,11 +137,15 @@ export class UsersService {
                 page: paginationDto?.page || 1,
                 limit: paginationDto?.limit || 10,
                 totalPages: Math.ceil(totalUsers / (paginationDto?.limit || 10)),
-                hasNext: (paginationDto?.page || 1) < Math.ceil(totalUsers / (paginationDto?.limit || 10)),
+                hasNext:
+                    (paginationDto?.page || 1) <
+                    Math.ceil(totalUsers / (paginationDto?.limit || 10)),
                 hasPrev: (paginationDto?.page || 1) > 1,
                 offset:
                     paginationDto?.skip ||
-                    (paginationDto?.page ? (paginationDto.page - 1) * (paginationDto.limit || 10) : 0),
+                    (paginationDto?.page
+                        ? (paginationDto.page - 1) * (paginationDto.limit || 10)
+                        : 0),
             },
         };
     }
@@ -237,7 +251,9 @@ export class UsersService {
         });
 
         if (!user) {
-            throw new AppException('User not found', ErrorType.NOT_FOUND, 'USER_005', { id: userId });
+            throw new AppException('User not found', ErrorType.NOT_FOUND, 'USER_005', {
+                id: userId,
+            });
         }
 
         // Update user's roles using implicit many-to-many connect/set

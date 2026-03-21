@@ -1,9 +1,29 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { AuthService } from '../auth.service';
+
+/** Typed shape of an OAuth provider profile (Google, Facebook, Apple). */
+interface OAuthProfile {
+    emails?: Array<{ value: string }>;
+    email?: string;
+    displayName?: string;
+    name?: {
+        givenName?: string;
+        familyName?: string;
+        firstName?: string;
+        lastName?: string;
+    };
+}
+
+/** Normalised user object returned from OAuth validation. */
+interface OAuthUser {
+    id: string;
+    email: string;
+    name: string;
+    provider: string;
+}
 
 /**
  * Base class for OAuth strategies.
@@ -25,7 +45,8 @@ export class OAuthStrategy {
      * @param provider - The name of the OAuth provider (google, facebook, apple)
      * @returns The user object
      */
-    async validate(profile: any, provider: string) {
+    // eslint-disable-next-line @typescript-eslint/require-await -- NestJS Passport strategy interface requires async signature
+    async validate(profile: OAuthProfile, provider: string): Promise<OAuthUser | null> {
         this.logger.log(`Validating OAuth profile for ${provider}`, 'OAuthStrategy');
 
         try {
@@ -42,11 +63,16 @@ export class OAuthStrategy {
                 name,
                 provider,
             };
-        } catch (error: any) {
-            const errorMsg = error.message || 'Unknown OAuth validation error';
-            const errorStack = error.stack || '';
+        } catch (error: unknown) {
+            const err = error as { message?: string; stack?: string };
+            const errorMsg = err.message || 'Unknown OAuth validation error';
+            const errorStack = err.stack || '';
 
-            this.logger.error(`Failed to validate ${provider} OAuth profile: ${errorMsg}`, errorStack, 'OAuthStrategy');
+            this.logger.error(
+                `Failed to validate ${provider} OAuth profile: ${errorMsg}`,
+                errorStack,
+                'OAuthStrategy'
+            );
             return null;
         }
     }
@@ -58,14 +84,14 @@ export class OAuthStrategy {
      * @param provider - The name of the OAuth provider
      * @returns The email address
      */
-    protected extractEmail(profile: any, provider: string): string {
+    protected extractEmail(profile: OAuthProfile, provider: string): string {
         switch (provider) {
             case 'google':
-                return profile.emails[0].value;
+                return profile.emails?.[0]?.value ?? '';
             case 'facebook':
                 return profile.emails?.[0]?.value || '';
             case 'apple':
-                return profile.email;
+                return profile.email ?? '';
             default:
                 return '';
         }
@@ -78,12 +104,12 @@ export class OAuthStrategy {
      * @param provider - The name of the OAuth provider
      * @returns The user's name
      */
-    protected extractName(profile: any, provider: string): string {
+    protected extractName(profile: OAuthProfile, provider: string): string {
         switch (provider) {
             case 'google':
-                return `${profile.name.givenName} ${profile.name.familyName}`;
+                return `${profile.name?.givenName ?? ''} ${profile.name?.familyName ?? ''}`.trim();
             case 'facebook':
-                return profile.displayName;
+                return profile.displayName ?? '';
             case 'apple':
                 return profile.name?.firstName && profile.name?.lastName
                     ? `${profile.name.firstName} ${profile.name.lastName}`

@@ -1,9 +1,10 @@
 import { gql } from '@apollo/client'; // version 3.7.17
+
 import {
-  healthMetricFragment,
-  healthGoalFragment,
-  medicalEventFragment,
-  deviceConnectionFragment
+    healthMetricFragment,
+    healthGoalFragment,
+    medicalEventFragment,
+    deviceConnectionFragment,
 } from '../fragments/health.fragments';
 
 /**
@@ -11,12 +12,12 @@ import {
  * Used in the Health Dashboard to record new health measurements
  */
 export const CREATE_HEALTH_METRIC = gql`
-  mutation CreateHealthMetric($recordId: ID!, $createMetricDto: CreateHealthMetricInput!) {
-    createHealthMetric(recordId: $recordId, createMetricDto: $createMetricDto) {
-      ...HealthMetricFields
+    mutation CreateHealthMetric($recordId: ID!, $createMetricDto: CreateHealthMetricInput!) {
+        createHealthMetric(recordId: $recordId, createMetricDto: $createMetricDto) {
+            ...HealthMetricFields
+        }
     }
-  }
-  ${healthMetricFragment}
+    ${healthMetricFragment}
 `;
 
 /**
@@ -24,12 +25,12 @@ export const CREATE_HEALTH_METRIC = gql`
  * Used to correct or modify previously recorded health metrics
  */
 export const UPDATE_HEALTH_METRIC = gql`
-  mutation UpdateHealthMetric($id: ID!, $updateMetricDto: UpdateHealthMetricInput!) {
-    updateHealthMetric(id: $id, updateMetricDto: $updateMetricDto) {
-      ...HealthMetricFields
+    mutation UpdateHealthMetric($id: ID!, $updateMetricDto: UpdateHealthMetricInput!) {
+        updateHealthMetric(id: $id, updateMetricDto: $updateMetricDto) {
+            ...HealthMetricFields
+        }
     }
-  }
-  ${healthMetricFragment}
+    ${healthMetricFragment}
 `;
 
 /**
@@ -37,12 +38,12 @@ export const UPDATE_HEALTH_METRIC = gql`
  * Used to remove incorrect or unwanted health metrics
  */
 export const DELETE_HEALTH_METRIC = gql`
-  mutation DeleteHealthMetric($id: ID!) {
-    deleteHealthMetric(id: $id) {
-      id
-      success
+    mutation DeleteHealthMetric($id: ID!) {
+        deleteHealthMetric(id: $id) {
+            id
+            success
+        }
     }
-  }
 `;
 
 /**
@@ -50,16 +51,16 @@ export const DELETE_HEALTH_METRIC = gql`
  * Used during device synchronization to efficiently upload multiple measurements
  */
 export const BULK_CREATE_HEALTH_METRICS = gql`
-  mutation BulkCreateHealthMetrics($recordId: ID!, $metrics: [CreateHealthMetricInput!]!) {
-    bulkCreateHealthMetrics(recordId: $recordId, metrics: $metrics) {
-      metrics {
-        ...HealthMetricFields
-      }
-      successCount
-      failureCount
+    mutation BulkCreateHealthMetrics($recordId: ID!, $metrics: [CreateHealthMetricInput!]!) {
+        bulkCreateHealthMetrics(recordId: $recordId, metrics: $metrics) {
+            metrics {
+                ...HealthMetricFields
+            }
+            successCount
+            failureCount
+        }
     }
-  }
-  ${healthMetricFragment}
+    ${healthMetricFragment}
 `;
 
 /**
@@ -67,12 +68,12 @@ export const BULK_CREATE_HEALTH_METRICS = gql`
  * Used to set personal health objectives and targets
  */
 export const CREATE_HEALTH_GOAL = gql`
-  mutation CreateHealthGoal($recordId: ID!, $createGoalDto: CreateHealthGoalInput!) {
-    createHealthGoal(recordId: $recordId, createGoalDto: $createGoalDto) {
-      ...HealthGoalFields
+    mutation CreateHealthGoal($recordId: ID!, $createGoalDto: CreateHealthGoalInput!) {
+        createHealthGoal(recordId: $recordId, createGoalDto: $createGoalDto) {
+            ...HealthGoalFields
+        }
     }
-  }
-  ${healthGoalFragment}
+    ${healthGoalFragment}
 `;
 
 /**
@@ -80,12 +81,12 @@ export const CREATE_HEALTH_GOAL = gql`
  * Used to modify goal targets, timeframes, or other attributes
  */
 export const UPDATE_HEALTH_GOAL = gql`
-  mutation UpdateHealthGoal($id: ID!, $updateGoalDto: UpdateHealthGoalInput!) {
-    updateHealthGoal(id: $id, updateGoalDto: $updateGoalDto) {
-      ...HealthGoalFields
+    mutation UpdateHealthGoal($id: ID!, $updateGoalDto: UpdateHealthGoalInput!) {
+        updateHealthGoal(id: $id, updateGoalDto: $updateGoalDto) {
+            ...HealthGoalFields
+        }
     }
-  }
-  ${healthGoalFragment}
+    ${healthGoalFragment}
 `;
 
 /**
@@ -93,12 +94,12 @@ export const UPDATE_HEALTH_GOAL = gql`
  * Used to remove goals that are no longer relevant
  */
 export const DELETE_HEALTH_GOAL = gql`
-  mutation DeleteHealthGoal($id: ID!) {
-    deleteHealthGoal(id: $id) {
-      id
-      success
+    mutation DeleteHealthGoal($id: ID!) {
+        deleteHealthGoal(id: $id) {
+            id
+            success
+        }
     }
-  }
 `;
 
 /**
@@ -106,12 +107,12 @@ export const DELETE_HEALTH_GOAL = gql`
  * Used when a user manually completes a goal
  */
 export const COMPLETE_HEALTH_GOAL = gql`
-  mutation CompleteHealthGoal($id: ID!) {
-    completeHealthGoal(id: $id) {
-      ...HealthGoalFields
+    mutation CompleteHealthGoal($id: ID!) {
+        completeHealthGoal(id: $id) {
+            ...HealthGoalFields
+        }
     }
-  }
-  ${healthGoalFragment}
+    ${healthGoalFragment}
 `;
 
 /**
@@ -119,12 +120,12 @@ export const COMPLETE_HEALTH_GOAL = gql`
  * Used to record significant health events in the medical history
  */
 export const CREATE_MEDICAL_EVENT = gql`
-  mutation CreateMedicalEvent($recordId: ID!, $createEventDto: CreateMedicalEventInput!) {
-    createMedicalEvent(recordId: $recordId, createEventDto: $createEventDto) {
-      ...MedicalEventFields
+    mutation CreateMedicalEvent($recordId: ID!, $createEventDto: CreateMedicalEventInput!) {
+        createMedicalEvent(recordId: $recordId, createEventDto: $createEventDto) {
+            ...MedicalEventFields
+        }
     }
-  }
-  ${medicalEventFragment}
+    ${medicalEventFragment}
 `;
 
 /**
@@ -132,12 +133,12 @@ export const CREATE_MEDICAL_EVENT = gql`
  * Used to modify details of previously recorded medical events
  */
 export const UPDATE_MEDICAL_EVENT = gql`
-  mutation UpdateMedicalEvent($id: ID!, $updateEventDto: UpdateMedicalEventInput!) {
-    updateMedicalEvent(id: $id, updateEventDto: $updateEventDto) {
-      ...MedicalEventFields
+    mutation UpdateMedicalEvent($id: ID!, $updateEventDto: UpdateMedicalEventInput!) {
+        updateMedicalEvent(id: $id, updateEventDto: $updateEventDto) {
+            ...MedicalEventFields
+        }
     }
-  }
-  ${medicalEventFragment}
+    ${medicalEventFragment}
 `;
 
 /**
@@ -145,12 +146,12 @@ export const UPDATE_MEDICAL_EVENT = gql`
  * Used to remove incorrectly added or private medical events
  */
 export const DELETE_MEDICAL_EVENT = gql`
-  mutation DeleteMedicalEvent($id: ID!) {
-    deleteMedicalEvent(id: $id) {
-      id
-      success
+    mutation DeleteMedicalEvent($id: ID!) {
+        deleteMedicalEvent(id: $id) {
+            id
+            success
+        }
     }
-  }
 `;
 
 /**
@@ -158,16 +159,16 @@ export const DELETE_MEDICAL_EVENT = gql`
  * Used for EHR integration and medical history import features
  */
 export const IMPORT_MEDICAL_EVENTS = gql`
-  mutation ImportMedicalEvents($recordId: ID!, $events: [CreateMedicalEventInput!]!, $source: String!) {
-    importMedicalEvents(recordId: $recordId, events: $events, source: $source) {
-      events {
-        ...MedicalEventFields
-      }
-      successCount
-      failureCount
+    mutation ImportMedicalEvents($recordId: ID!, $events: [CreateMedicalEventInput!]!, $source: String!) {
+        importMedicalEvents(recordId: $recordId, events: $events, source: $source) {
+            events {
+                ...MedicalEventFields
+            }
+            successCount
+            failureCount
+        }
     }
-  }
-  ${medicalEventFragment}
+    ${medicalEventFragment}
 `;
 
 /**
@@ -175,12 +176,12 @@ export const IMPORT_MEDICAL_EVENTS = gql`
  * Used to establish connection with wearables and health devices
  */
 export const CONNECT_DEVICE = gql`
-  mutation ConnectDevice($recordId: ID!, $connectDeviceDto: ConnectDeviceInput!) {
-    connectDevice(recordId: $recordId, connectDeviceDto: $connectDeviceDto) {
-      ...DeviceConnectionFields
+    mutation ConnectDevice($recordId: ID!, $connectDeviceDto: ConnectDeviceInput!) {
+        connectDevice(recordId: $recordId, connectDeviceDto: $connectDeviceDto) {
+            ...DeviceConnectionFields
+        }
     }
-  }
-  ${deviceConnectionFragment}
+    ${deviceConnectionFragment}
 `;
 
 /**
@@ -188,12 +189,12 @@ export const CONNECT_DEVICE = gql`
  * Used when removing a device from the user's health account
  */
 export const DISCONNECT_DEVICE = gql`
-  mutation DisconnectDevice($id: ID!) {
-    disconnectDevice(id: $id) {
-      id
-      success
+    mutation DisconnectDevice($id: ID!) {
+        disconnectDevice(id: $id) {
+            id
+            success
+        }
     }
-  }
 `;
 
 /**
@@ -201,12 +202,12 @@ export const DISCONNECT_DEVICE = gql`
  * Used to modify connection parameters or update device information
  */
 export const UPDATE_DEVICE_CONNECTION = gql`
-  mutation UpdateDeviceConnection($id: ID!, $updateConnectionDto: UpdateDeviceConnectionInput!) {
-    updateDeviceConnection(id: $id, updateConnectionDto: $updateConnectionDto) {
-      ...DeviceConnectionFields
+    mutation UpdateDeviceConnection($id: ID!, $updateConnectionDto: UpdateDeviceConnectionInput!) {
+        updateDeviceConnection(id: $id, updateConnectionDto: $updateConnectionDto) {
+            ...DeviceConnectionFields
+        }
     }
-  }
-  ${deviceConnectionFragment}
+    ${deviceConnectionFragment}
 `;
 
 /**
@@ -214,21 +215,21 @@ export const UPDATE_DEVICE_CONNECTION = gql`
  * Used when the user wants to immediately sync their device data
  */
 export const SYNC_DEVICE_DATA = gql`
-  mutation SyncDeviceData($id: ID!) {
-    syncDeviceData(id: $id) {
-      connection {
-        ...DeviceConnectionFields
-      }
-      syncedMetrics {
-        count
-        metrics {
-          ...HealthMetricFields
+    mutation SyncDeviceData($id: ID!) {
+        syncDeviceData(id: $id) {
+            connection {
+                ...DeviceConnectionFields
+            }
+            syncedMetrics {
+                count
+                metrics {
+                    ...HealthMetricFields
+                }
+            }
+            lastSync
+            success
         }
-      }
-      lastSync
-      success
     }
-  }
-  ${deviceConnectionFragment}
-  ${healthMetricFragment}
+    ${deviceConnectionFragment}
+    ${healthMetricFragment}
 `;

@@ -311,7 +311,6 @@ export class ProvidersService {
      * @param date Date to check availability
      * @returns List of time slots with availability status
      */
-    // eslint-disable-next-line max-len
     async getAvailableTimeSlots(
         providerId: string,
         date: Date
@@ -419,7 +418,6 @@ export class ProvidersService {
      * @param paginationDto Pagination options
      * @returns List of telemedicine providers and total count
      */
-    // eslint-disable-next-line max-len
     async getTelemedicineProviders(
         paginationDto: PaginationDto
     ): Promise<{ providers: Provider[]; total: number }> {

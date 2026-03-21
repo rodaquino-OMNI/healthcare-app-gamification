@@ -14,7 +14,7 @@ import { RateLimitMiddleware } from './middleware/rate-limit.middleware';
 /**
  * Bootstraps the NestJS application, configures middleware, and starts the server.
  */
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
     // LD1: Creates a NestJS application instance.
     const app = await NestFactory.create(AppModule);
 
@@ -22,6 +22,7 @@ async function bootstrap() {
     app.use(helmet());
 
     // LD1: Retrieves the application configuration.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- configuration token returns dynamic config object
     const config = app.get(configuration);
 
     // LD1: Applies global exception filter
@@ -48,7 +49,8 @@ async function bootstrap() {
     SwaggerModule.setup('api/docs', app, swaggerDocument);
 
     // LD1: Starts the server and listens for incoming requests on the configured port.
-    const port = config.port || 4000;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- dynamic config object from NestJS IoC container
+    const port = (config as { port?: number }).port || 4000;
 
     app.useGlobalPipes(
         new ValidationPipe({
@@ -78,8 +80,8 @@ async function bootstrap() {
     // LD1, S1: Logs a message indicating that the server has started successfully.
     const logger = app.get(LoggerService);
     logger.setContext('Main');
-    logger.log('info', `API Gateway started on port ${port}`);
+    logger.log('info', `API Gateway started on port ${String(port)}`);
 }
 
 // LD1: Calls the bootstrap function to start the application.
-bootstrap();
+void bootstrap();

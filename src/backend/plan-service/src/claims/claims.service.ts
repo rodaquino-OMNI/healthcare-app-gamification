@@ -1,13 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable
-    @typescript-eslint/no-explicit-any,
-    @typescript-eslint/no-unsafe-argument,
-    @typescript-eslint/no-unsafe-assignment,
-    @typescript-eslint/no-unsafe-member-access,
-    @typescript-eslint/no-unsafe-return,
-    @typescript-eslint/no-unsafe-enum-comparison,
-    max-len
-*/
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-enum-comparison, max-len -- Prisma client returns dynamic query results; AppException constructor accepts untyped details */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { ErrorType } from '@app/shared/exceptions/error.types';
 import { AppException } from '@app/shared/exceptions/exceptions.types';
@@ -144,7 +135,11 @@ export class ClaimsService {
             const claim = await this.prisma.claim.findUnique({ where: { id } });
 
             if (!claim) {
-                throw new AppException(ErrorType.PLAN_CLAIM_NOT_FOUND, { id } as any, ErrorType.BUSINESS);
+                throw new AppException(
+                    ErrorType.PLAN_CLAIM_NOT_FOUND,
+                    { id } as any,
+                    ErrorType.BUSINESS
+                );
             }
 
             return claim;
@@ -157,7 +152,11 @@ export class ClaimsService {
             const errorStack = error instanceof Error ? error.stack : undefined;
 
             this.logger.error(`Failed to find claim: ${errorMessage}`, errorStack);
-            throw new AppException(ErrorType.PLAN_TECHNICAL_ERROR, { id } as any, ErrorType.TECHNICAL);
+            throw new AppException(
+                ErrorType.PLAN_TECHNICAL_ERROR,
+                { id } as any,
+                ErrorType.TECHNICAL
+            );
         }
     }
 
@@ -199,7 +198,9 @@ export class ClaimsService {
                     note,
                 };
 
-                const currentHistory = Array.isArray(existingClaim.statusHistory) ? existingClaim.statusHistory : [];
+                const currentHistory = Array.isArray(existingClaim.statusHistory)
+                    ? existingClaim.statusHistory
+                    : [];
 
                 updateData.statusHistory = [...currentHistory, statusUpdate];
 
@@ -236,7 +237,11 @@ export class ClaimsService {
             const errorStack = error instanceof Error ? error.stack : undefined;
 
             this.logger.error(`Failed to update claim: ${errorMessage}`, errorStack);
-            throw new AppException(ErrorType.PLAN_TECHNICAL_ERROR, { id, updateClaimDto } as any, ErrorType.TECHNICAL);
+            throw new AppException(
+                ErrorType.PLAN_TECHNICAL_ERROR,
+                { id, updateClaimDto } as any,
+                ErrorType.TECHNICAL
+            );
         }
     }
 
@@ -252,7 +257,11 @@ export class ClaimsService {
 
             // Check if claim can be deleted (only in submitted status)
             if (existingClaim.status !== 'submitted') {
-                throw new AppException(ErrorType.PLAN_CLAIM_STATUS_INVALID, { id } as any, ErrorType.BUSINESS);
+                throw new AppException(
+                    ErrorType.PLAN_CLAIM_STATUS_INVALID,
+                    { id } as any,
+                    ErrorType.BUSINESS
+                );
             }
 
             // Delete the claim
@@ -271,7 +280,11 @@ export class ClaimsService {
             const errorStack = error instanceof Error ? error.stack : undefined;
 
             this.logger.error(`Failed to delete claim: ${errorMessage}`, errorStack);
-            throw new AppException(ErrorType.PLAN_TECHNICAL_ERROR, { id } as any, ErrorType.TECHNICAL);
+            throw new AppException(
+                ErrorType.PLAN_TECHNICAL_ERROR,
+                { id } as any,
+                ErrorType.TECHNICAL
+            );
         }
     }
 

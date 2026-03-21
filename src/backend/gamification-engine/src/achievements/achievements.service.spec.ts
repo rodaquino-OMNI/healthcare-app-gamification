@@ -1,16 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { AchievementsService } from './achievements.service';
-import { PrismaService } from '../../../shared/src/database/prisma.service';
-import { ProfilesService } from '../profiles/profiles.service';
-import { AppException } from '../../../shared/src/exceptions/exceptions.types';
 import { Achievement } from './entities/achievement.entity';
 import { UserAchievement } from './entities/user-achievement.entity';
+import { PrismaService } from '../../../shared/src/database/prisma.service';
+import { AppException } from '../../../shared/src/exceptions/exceptions.types';
 import { GameProfile } from '../profiles/entities/game-profile.entity';
+import { ProfilesService } from '../profiles/profiles.service';
 
 describe('AchievementsService', () => {
     let service: AchievementsService;
-    let prismaService: PrismaService;
-    let profilesService: ProfilesService;
+    let _prismaService: PrismaService;
+    let _profilesService: ProfilesService;
 
     const mockAchievement: Achievement = {
         id: 'achievement-1',
@@ -77,8 +78,8 @@ describe('AchievementsService', () => {
         }).compile();
 
         service = module.get<AchievementsService>(AchievementsService);
-        prismaService = module.get<PrismaService>(PrismaService);
-        profilesService = module.get<ProfilesService>(ProfilesService);
+        _prismaService = module.get<PrismaService>(PrismaService);
+        _profilesService = module.get<ProfilesService>(ProfilesService);
     });
 
     it('should be defined', () => {
@@ -107,7 +108,9 @@ describe('AchievementsService', () => {
         });
 
         it('should re-throw AppException from the database layer', async () => {
-            mockPrismaService.achievement.findUnique.mockRejectedValue(new Error('Database connection failed'));
+            mockPrismaService.achievement.findUnique.mockRejectedValue(
+                new Error('Database connection failed')
+            );
 
             await expect(service.findById('achievement-1')).rejects.toThrow(AppException);
         });
@@ -178,11 +181,13 @@ describe('AchievementsService', () => {
         });
 
         it('should throw AppException when creation fails', async () => {
-            mockPrismaService.achievement.create.mockRejectedValue(new Error('Unique constraint violation'));
-
-            await expect(service.create({ title: 'Test', journey: 'health', xpReward: 50 })).rejects.toThrow(
-                AppException
+            mockPrismaService.achievement.create.mockRejectedValue(
+                new Error('Unique constraint violation')
             );
+
+            await expect(
+                service.create({ title: 'Test', journey: 'health', xpReward: 50 })
+            ).rejects.toThrow(AppException);
         });
     });
 
@@ -207,7 +212,9 @@ describe('AchievementsService', () => {
         it('should throw AppException when achievement does not exist', async () => {
             mockPrismaService.achievement.findUnique.mockResolvedValue(null);
 
-            await expect(service.update('nonexistent-id', { title: 'Updated' })).rejects.toThrow(AppException);
+            await expect(service.update('nonexistent-id', { title: 'Updated' })).rejects.toThrow(
+                AppException
+            );
         });
     });
 
@@ -308,14 +315,18 @@ describe('AchievementsService', () => {
         it('should throw AppException when achievement is not found', async () => {
             mockPrismaService.achievement.findUnique.mockResolvedValue(null);
 
-            await expect(service.unlockAchievement('user-1', 'nonexistent-achievement')).rejects.toThrow(AppException);
+            await expect(
+                service.unlockAchievement('user-1', 'nonexistent-achievement')
+            ).rejects.toThrow(AppException);
         });
 
         it('should throw AppException when user profile is not found', async () => {
             mockPrismaService.achievement.findUnique.mockResolvedValue(mockAchievement);
             mockProfilesService.findById.mockRejectedValue(new Error('Profile not found'));
 
-            await expect(service.unlockAchievement('nonexistent-user', 'achievement-1')).rejects.toThrow(AppException);
+            await expect(
+                service.unlockAchievement('nonexistent-user', 'achievement-1')
+            ).rejects.toThrow(AppException);
         });
     });
 
@@ -377,7 +388,9 @@ describe('AchievementsService', () => {
         });
 
         it('should throw AppException when search fails', async () => {
-            mockPrismaService.achievement.count.mockRejectedValue(new Error('Search index unavailable'));
+            mockPrismaService.achievement.count.mockRejectedValue(
+                new Error('Search index unavailable')
+            );
 
             await expect(service.search('test')).rejects.toThrow(AppException);
         });

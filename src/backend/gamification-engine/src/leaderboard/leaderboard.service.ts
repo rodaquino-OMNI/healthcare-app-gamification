@@ -26,8 +26,14 @@ export class LeaderboardService {
         private readonly configService: ConfigService
     ) {
         this.logger.log('Initializing LeaderboardService', 'LeaderboardService');
-        this.LEADERBOARD_MAX_ENTRIES = this.configService.get<number>('gamification.leaderboard.maxEntries', 100);
-        this.LEADERBOARD_TTL = this.configService.get<number>('gamification.leaderboard.ttl', 60 * 5); // 5 minutes default
+        this.LEADERBOARD_MAX_ENTRIES = this.configService.get<number>(
+            'gamification.leaderboard.maxEntries',
+            100
+        );
+        this.LEADERBOARD_TTL = this.configService.get<number>(
+            'gamification.leaderboard.ttl',
+            60 * 5
+        ); // 5 minutes default
     }
 
     /**
@@ -44,24 +50,32 @@ export class LeaderboardService {
             const cachedData = await this.redisService.get(cacheKey);
 
             if (cachedData) {
-                this.logger.log(`Retrieved leaderboard from cache: ${cacheKey}`, 'LeaderboardService');
+                this.logger.log(
+                    `Retrieved leaderboard from cache: ${cacheKey}`,
+                    'LeaderboardService'
+                );
                 return JSON.parse(cachedData) as unknown;
             }
 
             // Calculate leaderboard if not in cache
-            this.logger.log(`Calculating leaderboard for journey: ${journey}`, 'LeaderboardService');
+            this.logger.log(
+                `Calculating leaderboard for journey: ${journey}`,
+                'LeaderboardService'
+            );
 
             // Get user profiles sorted by XP
             const profiles = await this.calculateLeaderboard();
 
             // Prepare the leaderboard data with ranks
-            const leaderboardData = profiles.slice(0, this.LEADERBOARD_MAX_ENTRIES).map((profile, index) => ({
-                rank: index + 1,
-                userId: profile.userId,
-                level: profile.level,
-                xp: profile.xp,
-                achievements: profile.achievements?.length || 0,
-            }));
+            const leaderboardData = profiles
+                .slice(0, this.LEADERBOARD_MAX_ENTRIES)
+                .map((profile, index) => ({
+                    rank: index + 1,
+                    userId: profile.userId,
+                    level: profile.level,
+                    xp: profile.xp,
+                    achievements: profile.achievements?.length || 0,
+                }));
 
             // Cache the leaderboard data with journey-specific TTL
             const ttl = this.redisService.getJourneyTTL
@@ -70,13 +84,20 @@ export class LeaderboardService {
 
             await this.redisService.set(cacheKey, JSON.stringify(leaderboardData), ttl);
 
-            this.logger.log(`Cached leaderboard for ${ttl} seconds: ${cacheKey}`, 'LeaderboardService');
+            this.logger.log(
+                `Cached leaderboard for ${ttl} seconds: ${cacheKey}`,
+                'LeaderboardService'
+            );
 
             return leaderboardData;
         } catch (error) {
             const msg = error instanceof Error ? error.message : 'Unknown error';
             const stack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Failed to get leaderboard for ${journey}: ${msg}`, stack, 'LeaderboardService');
+            this.logger.error(
+                `Failed to get leaderboard for ${journey}: ${msg}`,
+                stack,
+                'LeaderboardService'
+            );
             throw error;
         }
     }
@@ -95,7 +116,11 @@ export class LeaderboardService {
         } catch (error) {
             const msg = error instanceof Error ? error.message : 'Unknown error';
             const stack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Failed to calculate leaderboard: ${msg}`, stack, 'LeaderboardService');
+            this.logger.error(
+                `Failed to calculate leaderboard: ${msg}`,
+                stack,
+                'LeaderboardService'
+            );
             throw error;
         }
     }

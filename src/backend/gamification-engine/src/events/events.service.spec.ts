@@ -1,19 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { ProcessEventDto } from './dto/process-event.dto';
 import { EventsService } from './events.service';
-import { AchievementsService } from '../achievements/achievements.service';
-import { ProfilesService } from '../profiles/profiles.service';
-import { RulesService } from '../rules/rules.service';
 import { KafkaService } from '../../../shared/src/kafka/kafka.service';
 import { LoggerService } from '../../../shared/src/logging/logger.service';
-import { RewardsService } from '../rewards/rewards.service';
-import { QuestsService } from '../quests/quests.service';
-import { ProcessEventDto } from './dto/process-event.dto';
+import { AchievementsService } from '../achievements/achievements.service';
 import { GameProfile } from '../profiles/entities/game-profile.entity';
+import { ProfilesService } from '../profiles/profiles.service';
+import { QuestsService } from '../quests/quests.service';
+import { RewardsService } from '../rewards/rewards.service';
+import { RulesService } from '../rules/rules.service';
 
 describe('EventsService', () => {
     let service: EventsService;
-    let profilesService: ProfilesService;
-    let rulesService: RulesService;
+    let _profilesService: ProfilesService;
+    let _rulesService: RulesService;
 
     const mockGameProfile: GameProfile = {
         id: 'profile-1',
@@ -78,8 +79,8 @@ describe('EventsService', () => {
         }).compile();
 
         service = module.get<EventsService>(EventsService);
-        profilesService = module.get<ProfilesService>(ProfilesService);
-        rulesService = module.get<RulesService>(RulesService);
+        _profilesService = module.get<ProfilesService>(ProfilesService);
+        _rulesService = module.get<RulesService>(RulesService);
     });
 
     it('should be defined', () => {
@@ -136,16 +137,22 @@ describe('EventsService', () => {
                 data: {},
             };
 
-            mockProfilesService.findById.mockResolvedValueOnce(mockGameProfile).mockResolvedValueOnce(mockGameProfile);
+            mockProfilesService.findById
+                .mockResolvedValueOnce(mockGameProfile)
+                .mockResolvedValueOnce(mockGameProfile);
             mockRulesService.processEvent.mockResolvedValue(undefined);
 
             await service.processEvent(eventWithoutJourney);
 
-            expect(mockRulesService.processEvent).toHaveBeenCalledWith(expect.objectContaining({ journey: 'all' }));
+            expect(mockRulesService.processEvent).toHaveBeenCalledWith(
+                expect.objectContaining({ journey: 'all' })
+            );
         });
 
         it('should pass gamification event with a timestamp to rules service', async () => {
-            mockProfilesService.findById.mockResolvedValueOnce(mockGameProfile).mockResolvedValueOnce(mockGameProfile);
+            mockProfilesService.findById
+                .mockResolvedValueOnce(mockGameProfile)
+                .mockResolvedValueOnce(mockGameProfile);
             mockRulesService.processEvent.mockResolvedValue(undefined);
 
             await service.processEvent(validEventDto);
@@ -157,7 +164,9 @@ describe('EventsService', () => {
 
         it('should return processed profile in response', async () => {
             const updatedProfile = { ...mockGameProfile, xp: 200 };
-            mockProfilesService.findById.mockResolvedValueOnce(mockGameProfile).mockResolvedValueOnce(updatedProfile);
+            mockProfilesService.findById
+                .mockResolvedValueOnce(mockGameProfile)
+                .mockResolvedValueOnce(updatedProfile);
             mockRulesService.processEvent.mockResolvedValue(undefined);
 
             const result = await service.processEvent(validEventDto);
@@ -169,7 +178,9 @@ describe('EventsService', () => {
             mockProfilesService.findById.mockResolvedValue(mockGameProfile);
             mockRulesService.processEvent.mockRejectedValue(new Error('Rules engine failure'));
 
-            await expect(service.processEvent(validEventDto)).rejects.toThrow('Rules engine failure');
+            await expect(service.processEvent(validEventDto)).rejects.toThrow(
+                'Rules engine failure'
+            );
             expect(mockLoggerService.error).toHaveBeenCalled();
         });
     });

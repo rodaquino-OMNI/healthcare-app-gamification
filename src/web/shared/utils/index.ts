@@ -1,6 +1,6 @@
 /**
  * Utility Functions Index
- * 
+ *
  * This barrel file re-exports all utility functions from the utils directory,
  * providing a single point of import for all shared utilities used throughout
  * the AUSTA SuperApp web applications.

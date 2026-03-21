@@ -1,4 +1,13 @@
-import { IsNotEmpty, IsNumber, IsString, IsDate, IsEnum, IsOptional, Min, Max } from 'class-validator'; // v0.14.0+
+import {
+    IsNotEmpty,
+    IsNumber,
+    IsString,
+    IsDate,
+    IsEnum,
+    IsOptional,
+    Min,
+    Max,
+} from 'class-validator'; // v0.14.0+
 
 import { MetricType, MetricSource } from '../types/health.types';
 

@@ -5,16 +5,16 @@ import { gql } from '@apollo/client'; // v3.7.17
  * Contains all essential fields needed to display and track achievement progress
  */
 export const AchievementFragment = gql`
-  fragment AchievementFragment on Achievement {
-    id
-    title
-    description
-    journey
-    icon
-    progress
-    total
-    unlocked
-  }
+    fragment AchievementFragment on Achievement {
+        id
+        title
+        description
+        journey
+        icon
+        progress
+        total
+        unlocked
+    }
 `;
 
 /**
@@ -22,16 +22,16 @@ export const AchievementFragment = gql`
  * Contains all essential fields needed to display and track quest progress
  */
 export const QuestFragment = gql`
-  fragment QuestFragment on Quest {
-    id
-    title
-    description
-    journey
-    icon
-    progress
-    total
-    completed
-  }
+    fragment QuestFragment on Quest {
+        id
+        title
+        description
+        journey
+        icon
+        progress
+        total
+        completed
+    }
 `;
 
 /**
@@ -39,14 +39,14 @@ export const QuestFragment = gql`
  * Contains all essential fields needed to display reward information
  */
 export const RewardFragment = gql`
-  fragment RewardFragment on Reward {
-    id
-    title
-    description
-    journey
-    icon
-    xp
-  }
+    fragment RewardFragment on Reward {
+        id
+        title
+        description
+        journey
+        icon
+        xp
+    }
 `;
 
 /**
@@ -55,14 +55,14 @@ export const RewardFragment = gql`
  * Note: When using this fragment, you must also include AchievementFragment and QuestFragment
  */
 export const GamificationProfileFragment = gql`
-  fragment GamificationProfileFragment on GameProfile {
-    level
-    xp
-    achievements {
-      ...AchievementFragment
+    fragment GamificationProfileFragment on GameProfile {
+        level
+        xp
+        achievements {
+            ...AchievementFragment
+        }
+        quests {
+            ...QuestFragment
+        }
     }
-    quests {
-      ...QuestFragment
-    }
-  }
 `;

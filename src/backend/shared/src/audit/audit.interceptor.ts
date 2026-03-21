@@ -35,7 +35,9 @@ export class AuditInterceptor implements NestInterceptor {
 
     intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
         const httpContext = context.switchToHttp();
-        const request = httpContext.getRequest<Request & { user?: { id?: string; sub?: string } }>();
+        const request = httpContext.getRequest<
+            Request & { user?: { id?: string; sub?: string } }
+        >();
         const controllerName = context.getClass().name;
         const handlerName = context.getHandler().name;
 
@@ -71,15 +73,24 @@ export class AuditInterceptor implements NestInterceptor {
                 });
 
                 // PHI-specific audit logging (LGPD compliance)
-                const phiMeta = this.reflector.get<PhiAccessMetadata>(PHI_ACCESS_KEY, context.getHandler());
+                const phiMeta = this.reflector.get<PhiAccessMetadata>(
+                    PHI_ACCESS_KEY,
+                    context.getHandler()
+                );
                 if (phiMeta) {
-                    this.auditService.logPHIAccess(userId, phiMeta.resourceType, resourceId ?? request.url, action, {
-                        method,
-                        path: request.url,
-                        handler: handlerName,
-                        ipAddress,
-                        userAgent,
-                    });
+                    this.auditService.logPHIAccess(
+                        userId,
+                        phiMeta.resourceType,
+                        resourceId ?? request.url,
+                        action,
+                        {
+                            method,
+                            path: request.url,
+                            handler: handlerName,
+                            ipAddress,
+                            userAgent,
+                        }
+                    );
                 }
             })
         );

@@ -1,8 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
+import { LoggerService } from '@app/shared/logging/logger.service';
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { InsightsController } from './insights.controller';
 import { InsightsService } from './insights.service';
-import { LoggerService } from '@app/shared/logging/logger.service';
 
 describe('InsightsController', () => {
     let controller: InsightsController;
@@ -72,7 +73,9 @@ describe('InsightsController', () => {
         });
 
         it('should propagate errors from insightsService.generateUserInsights', async () => {
-            mockInsightsService.generateUserInsights.mockRejectedValue(new Error('Failed to generate insights'));
+            mockInsightsService.generateUserInsights.mockRejectedValue(
+                new Error('Failed to generate insights')
+            );
 
             await expect(controller.getInsights(mockReq as any, mockUser)).rejects.toThrow(
                 'Failed to generate insights'

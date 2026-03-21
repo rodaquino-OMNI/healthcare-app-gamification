@@ -19,9 +19,9 @@ const mockGetContext = jest.fn();
 const mockGqlCtx = { getContext: mockGetContext };
 
 jest.mock('@nestjs/graphql', () => ({
-  GqlExecutionContext: {
-    create: jest.fn().mockReturnValue(mockGqlCtx),
-  },
+    GqlExecutionContext: {
+        create: jest.fn().mockReturnValue(mockGqlCtx),
+    },
 }));
 
 // ---------------------------------------------------------------------------
@@ -29,21 +29,22 @@ jest.mock('@nestjs/graphql', () => ({
 // Passport strategy at import time (which would require a full NestJS module).
 // ---------------------------------------------------------------------------
 jest.mock('@nestjs/passport', () => {
-  // Singleton base class so that every call to AuthGuard() returns the same
-  // constructor.  This is required for `instanceof` checks to work correctly
-  // because JwtAuthGuard extends the result of AuthGuard('jwt') at class
-  // definition time, and the test resolves the same value via jest.requireMock.
-  class MockAuthGuard {
-    canActivate() {
-      return true;
+    // Singleton base class so that every call to AuthGuard() returns the same
+    // constructor.  This is required for `instanceof` checks to work correctly
+    // because JwtAuthGuard extends the result of AuthGuard('jwt') at class
+    // definition time, and the test resolves the same value via jest.requireMock.
+    class MockAuthGuard {
+        canActivate() {
+            return true;
+        }
     }
-  }
-  const AuthGuard = (_strategy: string) => MockAuthGuard;
-  return { AuthGuard };
+    const AuthGuard = (_strategy: string) => MockAuthGuard;
+    return { AuthGuard };
 });
 
-import { GqlExecutionContext } from '@nestjs/graphql';
 import { ExecutionContext } from '@nestjs/common';
+import { GqlExecutionContext } from '@nestjs/graphql';
+
 import { JwtAuthGuard } from './jwt-auth.guard';
 
 // ---------------------------------------------------------------------------
@@ -51,82 +52,82 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 // ---------------------------------------------------------------------------
 
 describe('JwtAuthGuard', () => {
-  let guard: JwtAuthGuard;
+    let guard: JwtAuthGuard;
 
-  beforeEach(() => {
-    guard = new JwtAuthGuard();
-    // Reset call history between tests but keep the mock implementation.
-    (GqlExecutionContext.create as jest.Mock).mockClear();
-    mockGetContext.mockClear();
-  });
+    beforeEach(() => {
+        guard = new JwtAuthGuard();
+        // Reset call history between tests but keep the mock implementation.
+        (GqlExecutionContext.create as jest.Mock).mockClear();
+        mockGetContext.mockClear();
+    });
 
-  // -------------------------------------------------------------------------
-  // Test 1 – guard is defined
-  // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // Test 1 – guard is defined
+    // -------------------------------------------------------------------------
 
-  it('should be defined', () => {
-    expect(guard).toBeDefined();
-  });
+    it('should be defined', () => {
+        expect(guard).toBeDefined();
+    });
 
-  // -------------------------------------------------------------------------
-  // Test 2 – extends AuthGuard('jwt')
-  // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // Test 2 – extends AuthGuard('jwt')
+    // -------------------------------------------------------------------------
 
-  it('should extend AuthGuard (jwt)', () => {
-    // Because @nestjs/passport is mocked above, AuthGuard('jwt') returns
-    // MockAuthGuard. JwtAuthGuard extends it, so instanceof still works.
-    const { AuthGuard } = jest.requireMock('@nestjs/passport');
-    const Base = AuthGuard('jwt');
-    expect(guard).toBeInstanceOf(Base);
-  });
+    it('should extend AuthGuard (jwt)', () => {
+        // Because @nestjs/passport is mocked above, AuthGuard('jwt') returns
+        // MockAuthGuard. JwtAuthGuard extends it, so instanceof still works.
+        const { AuthGuard } = jest.requireMock('@nestjs/passport');
+        const Base = AuthGuard('jwt');
+        expect(guard).toBeInstanceOf(Base);
+    });
 
-  // -------------------------------------------------------------------------
-  // Test 3 – getRequest() extracts request from GraphQL execution context
-  // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // Test 3 – getRequest() extracts request from GraphQL execution context
+    // -------------------------------------------------------------------------
 
-  it('getRequest() delegates to GqlExecutionContext.create and returns ctx.getContext().req', () => {
-    const mockRequest = { headers: { authorization: 'Bearer token' }, user: undefined };
+    it('getRequest() delegates to GqlExecutionContext.create and returns ctx.getContext().req', () => {
+        const mockRequest = { headers: { authorization: 'Bearer token' }, user: undefined };
 
-    // Wire up the mock chain: getContext() → { req: mockRequest }
-    mockGetContext.mockReturnValue({ req: mockRequest });
+        // Wire up the mock chain: getContext() → { req: mockRequest }
+        mockGetContext.mockReturnValue({ req: mockRequest });
 
-    // Build a minimal ExecutionContext stub
-    const mockExecutionContext = {} as ExecutionContext;
+        // Build a minimal ExecutionContext stub
+        const mockExecutionContext = {} as ExecutionContext;
 
-    const result = guard.getRequest(mockExecutionContext);
+        const result = guard.getRequest(mockExecutionContext);
 
-    // GqlExecutionContext.create must be called with the execution context
-    expect(GqlExecutionContext.create).toHaveBeenCalledTimes(1);
-    expect(GqlExecutionContext.create).toHaveBeenCalledWith(mockExecutionContext);
+        // GqlExecutionContext.create must be called with the execution context
+        expect(GqlExecutionContext.create).toHaveBeenCalledTimes(1);
+        expect(GqlExecutionContext.create).toHaveBeenCalledWith(mockExecutionContext);
 
-    // getContext() must be called on the returned GQL context object
-    expect(mockGetContext).toHaveBeenCalledTimes(1);
+        // getContext() must be called on the returned GQL context object
+        expect(mockGetContext).toHaveBeenCalledTimes(1);
 
-    // The returned value must be the req object from the GraphQL context
-    expect(result).toBe(mockRequest);
-  });
+        // The returned value must be the req object from the GraphQL context
+        expect(result).toBe(mockRequest);
+    });
 
-  it('getRequest() returns undefined when ctx.getContext() has no req property', () => {
-    mockGetContext.mockReturnValue({}); // no req key
+    it('getRequest() returns undefined when ctx.getContext() has no req property', () => {
+        mockGetContext.mockReturnValue({}); // no req key
 
-    const mockExecutionContext = {} as ExecutionContext;
-    const result = guard.getRequest(mockExecutionContext);
+        const mockExecutionContext = {} as ExecutionContext;
+        const result = guard.getRequest(mockExecutionContext);
 
-    expect(result).toBeUndefined();
-  });
+        expect(result).toBeUndefined();
+    });
 
-  it('creates a new GqlExecutionContext on every call', () => {
-    const mockRequest1 = { id: 'req-1' };
-    const mockRequest2 = { id: 'req-2' };
+    it('creates a new GqlExecutionContext on every call', () => {
+        const mockRequest1 = { id: 'req-1' };
+        const mockRequest2 = { id: 'req-2' };
 
-    mockGetContext
-      .mockReturnValueOnce({ req: mockRequest1 })
-      .mockReturnValueOnce({ req: mockRequest2 });
+        mockGetContext
+            .mockReturnValueOnce({ req: mockRequest1 })
+            .mockReturnValueOnce({ req: mockRequest2 });
 
-    const ctx = {} as ExecutionContext;
+        const ctx = {} as ExecutionContext;
 
-    expect(guard.getRequest(ctx)).toBe(mockRequest1);
-    expect(guard.getRequest(ctx)).toBe(mockRequest2);
-    expect(GqlExecutionContext.create).toHaveBeenCalledTimes(2);
-  });
+        expect(guard.getRequest(ctx)).toBe(mockRequest1);
+        expect(guard.getRequest(ctx)).toBe(mockRequest2);
+        expect(GqlExecutionContext.create).toHaveBeenCalledTimes(2);
+    });
 });

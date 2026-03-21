@@ -1,17 +1,18 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Test, TestingModule } from '@nestjs/testing';
+/* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
 import { ConfigService } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
+
 import { RulesService, GamificationEvent } from './rules.service';
 import { PrismaService } from '../../../shared/src/database/prisma.service';
 import { LoggerService } from '../../../shared/src/logging/logger.service';
-import { ProfilesService } from '../profiles/profiles.service';
 import { AchievementsService } from '../achievements/achievements.service';
 import { GameProfile } from '../profiles/entities/game-profile.entity';
+import { ProfilesService } from '../profiles/profiles.service';
 
 describe('RulesService', () => {
     let service: RulesService;
-    let profilesService: ProfilesService;
-    let achievementsService: AchievementsService;
+    let _profilesService: ProfilesService;
+    let _achievementsService: AchievementsService;
 
     const mockGameProfile: GameProfile = {
         id: 'profile-1',
@@ -46,7 +47,9 @@ describe('RulesService', () => {
     };
 
     const mockConfigService = {
-        get: jest.fn().mockImplementation((key: string, defaultValue?: any) => defaultValue ?? 60000),
+        get: jest
+            .fn()
+            .mockImplementation((key: string, defaultValue?: any) => defaultValue ?? 60000),
     };
 
     beforeEach(async () => {
@@ -84,7 +87,10 @@ describe('RulesService', () => {
         });
 
         it('should log initialization success', async () => {
-            expect(mockLoggerService.log).toHaveBeenCalledWith(expect.stringContaining('initialized'), 'RulesService');
+            expect(mockLoggerService.log).toHaveBeenCalledWith(
+                expect.stringContaining('initialized'),
+                'RulesService'
+            );
         });
     });
 

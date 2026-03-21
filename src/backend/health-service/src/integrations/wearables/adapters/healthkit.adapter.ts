@@ -61,8 +61,7 @@ export class HealthKitAdapter extends WearableAdapter {
      * @param authData Authentication data for the connection
      * @returns A DeviceConnection entity representing the connection
      */
-    /* eslint-disable-next-line @typescript-eslint/require-await --
-       interface contract requires async */
+    // eslint-disable-next-line @typescript-eslint/require-await -- interface contract requires async
     async connect(userId: string, _authData: string): Promise<DeviceConnection> {
         try {
             this.logger.log('info', `Connecting user ${userId} to Apple HealthKit`);
@@ -117,8 +116,7 @@ export class HealthKitAdapter extends WearableAdapter {
      * @param endTime The end date of the date range to retrieve health metrics for
      * @returns A promise that resolves to an array of HealthMetric entities
      */
-    /* eslint-disable-next-line @typescript-eslint/require-await --
-       interface contract requires async */
+    // eslint-disable-next-line @typescript-eslint/require-await -- interface contract requires async
     async getHealthMetrics(
         userId: string,
         deviceConnection: DeviceConnection,
@@ -254,8 +252,7 @@ export class HealthKitAdapter extends WearableAdapter {
      * @param deviceConnection The device connection details
      * @returns A promise that resolves when the user's account has been disconnected
      */
-    /* eslint-disable-next-line @typescript-eslint/require-await --
-       interface contract requires async */
+    // eslint-disable-next-line @typescript-eslint/require-await -- interface contract requires async
     async disconnect(userId: string, _deviceConnection: DeviceConnection): Promise<boolean> {
         try {
             this.logger.log('info', `Disconnecting user ${userId} from Apple HealthKit`);

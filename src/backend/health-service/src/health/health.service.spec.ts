@@ -1,17 +1,19 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { HealthService } from './health.service';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { RedisService } from '@app/shared/redis/redis.service';
-import { KafkaService } from '@app/shared/kafka/kafka.service';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { HealthGoalsService } from './health-goals.service';
+import { HealthMetricsService } from './health-metrics.service';
+import { HealthService } from './health.service';
 import { MetricType, MetricSource } from './types/health.types';
 
 describe('HealthService', () => {
     let service: HealthService;
     let prismaService: Record<string, any>;
     let redisService: Record<string, jest.Mock>;
-    let kafkaService: Record<string, jest.Mock>;
+    let healthMetricsService: Record<string, jest.Mock>;
+    let healthGoalsService: Record<string, jest.Mock>;
 
     beforeEach(async () => {
         prismaService = {
@@ -60,8 +62,15 @@ describe('HealthService', () => {
             expire: jest.fn().mockResolvedValue(1),
         };
 
-        kafkaService = {
-            emit: jest.fn().mockResolvedValue(undefined),
+        healthMetricsService = {
+            getHistoricalMetrics: jest.fn().mockResolvedValue([]),
+            detectAnomalies: jest.fn().mockReturnValue(null),
+            updateMetricCache: jest.fn().mockResolvedValue(undefined),
+            emitMetricEvents: jest.fn().mockResolvedValue(undefined),
+        };
+
+        healthGoalsService = {
+            checkAndUpdateHealthGoals: jest.fn().mockResolvedValue(undefined),
         };
 
         const module: TestingModule = await Test.createTestingModule({
@@ -69,8 +78,8 @@ describe('HealthService', () => {
                 HealthService,
                 { provide: PrismaService, useValue: prismaService },
                 { provide: RedisService, useValue: redisService },
-                { provide: KafkaService, useValue: kafkaService },
-                { provide: ConfigService, useValue: { get: jest.fn() } },
+                { provide: HealthMetricsService, useValue: healthMetricsService },
+                { provide: HealthGoalsService, useValue: healthGoalsService },
             ],
         }).compile();
 
@@ -113,7 +122,9 @@ describe('HealthService', () => {
                 notes: null,
             };
 
-            await expect(service.recordHealthMetric('user-1', metricDto)).rejects.toThrow(BadRequestException);
+            await expect(service.recordHealthMetric('user-1', metricDto)).rejects.toThrow(
+                BadRequestException
+            );
         });
 
         it('should throw BadRequestException for out-of-range value', async () => {
@@ -126,7 +137,9 @@ describe('HealthService', () => {
                 notes: null,
             };
 
-            await expect(service.recordHealthMetric('user-1', metricDto)).rejects.toThrow(BadRequestException);
+            await expect(service.recordHealthMetric('user-1', metricDto)).rejects.toThrow(
+                BadRequestException
+            );
         });
 
         it('should throw BadRequestException when unit is missing', async () => {
@@ -139,7 +152,9 @@ describe('HealthService', () => {
                 notes: null,
             };
 
-            await expect(service.recordHealthMetric('user-1', metricDto)).rejects.toThrow(BadRequestException);
+            await expect(service.recordHealthMetric('user-1', metricDto)).rejects.toThrow(
+                BadRequestException
+            );
         });
     });
 
@@ -187,7 +202,9 @@ describe('HealthService', () => {
         it('should throw NotFoundException when metric does not exist', async () => {
             prismaService.healthMetric.findUnique.mockResolvedValueOnce(null);
 
-            await expect(service.updateHealthMetric('nonexistent', { value: 80 })).rejects.toThrow(NotFoundException);
+            await expect(service.updateHealthMetric('nonexistent', { value: 80 })).rejects.toThrow(
+                NotFoundException
+            );
         });
 
         it('should update an existing metric', async () => {
@@ -224,7 +241,9 @@ describe('HealthService', () => {
 
             prismaService.healthMetric.findUnique.mockResolvedValueOnce(existing);
 
-            await expect(service.updateHealthMetric('metric-1', { value: 999 })).rejects.toThrow(BadRequestException);
+            await expect(service.updateHealthMetric('metric-1', { value: 999 })).rejects.toThrow(
+                BadRequestException
+            );
         });
     });
 });

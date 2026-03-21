@@ -37,8 +37,17 @@ export class PermissionsService {
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : String(error);
             const stack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Failed to create permission: ${message}`, stack, 'PermissionsService');
-            throw new AppException('Failed to create permission', ErrorType.TECHNICAL, 'PERM_001', {});
+            this.logger.error(
+                `Failed to create permission: ${message}`,
+                stack,
+                'PermissionsService'
+            );
+            throw new AppException(
+                'Failed to create permission',
+                ErrorType.TECHNICAL,
+                'PERM_001',
+                {}
+            );
         }
     }
 
@@ -60,8 +69,17 @@ export class PermissionsService {
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : String(error);
             const stack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Failed to retrieve permissions: ${message}`, stack, 'PermissionsService');
-            throw new AppException('Failed to retrieve permissions', ErrorType.TECHNICAL, 'PERM_002', {});
+            this.logger.error(
+                `Failed to retrieve permissions: ${message}`,
+                stack,
+                'PermissionsService'
+            );
+            throw new AppException(
+                'Failed to retrieve permissions',
+                ErrorType.TECHNICAL,
+                'PERM_002',
+                {}
+            );
         }
     }
 
@@ -84,8 +102,17 @@ export class PermissionsService {
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : String(error);
             const stack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Failed to retrieve permission: ${message}`, stack, 'PermissionsService');
-            throw new AppException('Failed to retrieve permission', ErrorType.TECHNICAL, 'PERM_003', {});
+            this.logger.error(
+                `Failed to retrieve permission: ${message}`,
+                stack,
+                'PermissionsService'
+            );
+            throw new AppException(
+                'Failed to retrieve permission',
+                ErrorType.TECHNICAL,
+                'PERM_003',
+                {}
+            );
         }
     }
 
@@ -113,8 +140,17 @@ export class PermissionsService {
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : String(error);
             const stack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Failed to update permission: ${message}`, stack, 'PermissionsService');
-            throw new AppException('Failed to update permission', ErrorType.TECHNICAL, 'PERM_004', {});
+            this.logger.error(
+                `Failed to update permission: ${message}`,
+                stack,
+                'PermissionsService'
+            );
+            throw new AppException(
+                'Failed to update permission',
+                ErrorType.TECHNICAL,
+                'PERM_004',
+                {}
+            );
         }
     }
 
@@ -134,8 +170,17 @@ export class PermissionsService {
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : String(error);
             const stack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Failed to delete permission: ${message}`, stack, 'PermissionsService');
-            throw new AppException('Failed to delete permission', ErrorType.TECHNICAL, 'PERM_005', {});
+            this.logger.error(
+                `Failed to delete permission: ${message}`,
+                stack,
+                'PermissionsService'
+            );
+            throw new AppException(
+                'Failed to delete permission',
+                ErrorType.TECHNICAL,
+                'PERM_005',
+                {}
+            );
         }
     }
 }

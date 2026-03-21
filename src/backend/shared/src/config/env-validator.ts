@@ -11,17 +11,12 @@ const coerceBoolean = z
     .transform((v) => v === 'true');
 
 /** Coerce a string env var into an integer with a default. */
-const coerceInt = (fallback: number) => z.coerce.number().int().default(fallback);
+const coerceInt = (fallback: number): z.ZodDefault<z.ZodNumber> =>
+    z.coerce.number().int().default(fallback);
 
 /** Coerce a string env var into a float with a default. */
-const coerceFloat = (fallback: number) => z.coerce.number().default(fallback);
-
-/** Comma-separated string to array transformer. */
-const commaSeparated = (fallback: string) =>
-    z
-        .string()
-        .default(fallback)
-        .transform((v) => v.split(',').map((s) => s.trim()));
+const coerceFloat = (fallback: number): z.ZodDefault<z.ZodNumber> =>
+    z.coerce.number().default(fallback);
 
 // ---------------------------------------------------------------------------
 // Common env vars shared by all services
@@ -595,5 +590,6 @@ function parseOrExit<T extends z.ZodTypeAny>(schema: T, serviceName: string): z.
         process.exit(1);
     }
 
-    return result.data as z.infer<T>;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- zod infer<T> resolves to any in generic context
+    return result.data;
 }

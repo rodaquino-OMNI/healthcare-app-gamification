@@ -24,13 +24,17 @@ const configuration = registerAs('authService', () => ({
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID || '',
             clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
-            callbackUrl: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:3001/api/v1/auth/google/callback',
+            callbackUrl:
+                process.env.GOOGLE_CALLBACK_URL ||
+                'http://localhost:3001/api/v1/auth/google/callback',
             enabled: process.env.GOOGLE_AUTH_ENABLED === 'true',
         },
         facebook: {
             clientId: process.env.FACEBOOK_CLIENT_ID || '',
             clientSecret: process.env.FACEBOOK_CLIENT_SECRET || '',
-            callbackUrl: process.env.FACEBOOK_CALLBACK_URL || 'http://localhost:3001/api/v1/auth/facebook/callback',
+            callbackUrl:
+                process.env.FACEBOOK_CALLBACK_URL ||
+                'http://localhost:3001/api/v1/auth/facebook/callback',
             enabled: process.env.FACEBOOK_AUTH_ENABLED === 'true',
         },
         apple: {
@@ -38,13 +42,18 @@ const configuration = registerAs('authService', () => ({
             teamId: process.env.APPLE_TEAM_ID || '',
             keyId: process.env.APPLE_KEY_ID || '',
             privateKey: process.env.APPLE_PRIVATE_KEY || '',
-            callbackUrl: process.env.APPLE_CALLBACK_URL || 'http://localhost:3001/api/v1/auth/apple/callback',
+            callbackUrl:
+                process.env.APPLE_CALLBACK_URL ||
+                'http://localhost:3001/api/v1/auth/apple/callback',
             enabled: process.env.APPLE_AUTH_ENABLED === 'true',
         },
     },
     biometric: {
         enabled: process.env.BIOMETRIC_AUTHENTICATION_ENABLED !== 'false', // Default to true
-        deviceKeyExpirationDays: parseInt(process.env.BIOMETRIC_DEVICE_KEY_EXPIRATION_DAYS || '90', 10),
+        deviceKeyExpirationDays: parseInt(
+            process.env.BIOMETRIC_DEVICE_KEY_EXPIRATION_DAYS || '90',
+            10
+        ),
     },
     mfa: {
         enabled: process.env.MFA_ENABLED !== 'false',
@@ -85,7 +94,9 @@ const configuration = registerAs('authService', () => ({
             max: parseInt(process.env.RATE_LIMIT_MAX || '100', 10), // limit each IP to 100 requests per windowMs
         },
         cors: {
-            origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : ['http://localhost:3000'],
+            origin: process.env.CORS_ORIGIN
+                ? process.env.CORS_ORIGIN.split(',')
+                : ['http://localhost:3000'],
             methods: process.env.CORS_METHODS
                 ? process.env.CORS_METHODS.split(',')
                 : ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],

@@ -30,13 +30,21 @@ export class PlanResolvers {
         private readonly httpService: HttpService,
         private readonly configService: ConfigService
     ) {
-        this.planServiceUrl = this.configService.get<string>('services.plan.url', 'http://plan-service:3004');
+        this.planServiceUrl = this.configService.get<string>(
+            'services.plan.url',
+            'http://plan-service:3004'
+        );
     }
 
     @Query('getPlan')
     @UseGuards(JwtAuthGuard)
-    async getPlan(@CurrentUser() user: AuthenticatedUser, @Args('planId') planId: string) {
-        const response = await lastValueFrom(this.httpService.get(`${this.planServiceUrl}/plans/${planId}`));
+    async getPlan(
+        @CurrentUser() user: AuthenticatedUser,
+        @Args('planId') planId: string
+    ): Promise<unknown> {
+        const response = await lastValueFrom(
+            this.httpService.get<unknown>(`${this.planServiceUrl}/plans/${planId}`)
+        );
         return response.data;
     }
 
@@ -46,14 +54,16 @@ export class PlanResolvers {
         @CurrentUser() user: AuthenticatedUser,
         @Args('planId') planId: string,
         @Args('status', { nullable: true }) status?: string
-    ) {
+    ): Promise<unknown> {
         const params = new URLSearchParams();
         params.append('planId', planId);
         if (status) {
             params.append('status', status);
         }
 
-        const response = await lastValueFrom(this.httpService.get(`${this.planServiceUrl}/claims?${params}`));
+        const response = await lastValueFrom(
+            this.httpService.get<unknown>(`${this.planServiceUrl}/claims?${String(params)}`)
+        );
         return response.data;
     }
 
@@ -68,9 +78,9 @@ export class PlanResolvers {
         @Args('serviceDate') serviceDate: string,
         @Args('amount') amount: number,
         @Args('documents', { nullable: true }) documents?: string[]
-    ) {
+    ): Promise<unknown> {
         const response = await lastValueFrom(
-            this.httpService.post(`${this.planServiceUrl}/claims`, {
+            this.httpService.post<unknown>(`${this.planServiceUrl}/claims`, {
                 planId,
                 type,
                 procedureCode,
@@ -90,16 +100,16 @@ export class PlanResolvers {
         @CurrentUser() user: AuthenticatedUser,
         @Args('claimId') claimId: string,
         @Args('file', { type: () => GraphQLUpload }) file: FileUpload
-    ) {
+    ): Promise<unknown> {
         // In a real implementation, this would handle file upload to S3 or similar
         // For now, we'll simulate the upload
-        const { filename, mimetype, createReadStream } = await file;
+        const { filename, mimetype } = file;
 
         // Simulate file upload and return document info
         const documentUrl = `https://storage.austa.com/claims/${claimId}/${filename}`;
 
         const response = await lastValueFrom(
-            this.httpService.post(`${this.planServiceUrl}/claims/${claimId}/documents`, {
+            this.httpService.post<unknown>(`${this.planServiceUrl}/claims/${claimId}/documents`, {
                 fileName: filename,
                 fileType: mimetype,
                 fileUrl: documentUrl,
@@ -114,9 +124,9 @@ export class PlanResolvers {
         @CurrentUser() user: AuthenticatedUser,
         @Args('id') id: string,
         @Args('additionalInfo', { nullable: true }) additionalInfo?: unknown
-    ) {
+    ): Promise<unknown> {
         const response = await lastValueFrom(
-            this.httpService.patch(`${this.planServiceUrl}/claims/${id}`, {
+            this.httpService.patch<unknown>(`${this.planServiceUrl}/claims/${id}`, {
                 additionalInfo,
             })
         );
@@ -125,9 +135,12 @@ export class PlanResolvers {
 
     @Mutation('cancelClaim')
     @UseGuards(JwtAuthGuard)
-    async cancelClaim(@CurrentUser() user: AuthenticatedUser, @Args('id') id: string) {
+    async cancelClaim(
+        @CurrentUser() user: AuthenticatedUser,
+        @Args('id') id: string
+    ): Promise<unknown> {
         const response = await lastValueFrom(
-            this.httpService.patch(`${this.planServiceUrl}/claims/${id}`, {
+            this.httpService.patch<unknown>(`${this.planServiceUrl}/claims/${id}`, {
                 status: 'CANCELLED',
             })
         );

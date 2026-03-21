@@ -194,8 +194,12 @@ const shareCard = (): void => {
                 text: 'Confira meu cartao digital do plano de saude AUSTA!',
                 url: window.location.href,
             })
-            .then(() => console.log('Shared successfully'))
-            .catch((error) => console.log('Error sharing', error));
+            .then(() => {
+                /* shared successfully */
+            })
+            .catch(() => {
+                /* share failed — fallback handled by browser */
+            });
     } else {
         navigator.clipboard
             .writeText(window.location.href)

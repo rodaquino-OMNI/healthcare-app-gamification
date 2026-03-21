@@ -13,17 +13,17 @@ export class PreferencesService {
     constructor(private readonly prisma: PrismaService) {}
 
     /**
-     * Retrieves all notification preferences based on the provided filter and pagination parameters.
+     * Retrieves all notification preferences based on the provided filter and pagination params.
      *
      * @param filter - Optional filtering criteria
      * @param pagination - Optional pagination parameters
      * @returns A promise that resolves to an array of NotificationPreference entities
      */
-    async findAll(filter?: FilterDto, pagination?: PaginationDto): Promise<NotificationPreference[]> {
+    findAll(filter?: FilterDto, pagination?: PaginationDto): Promise<NotificationPreference[]> {
         try {
             return this.prisma.notificationPreference.findMany({
                 where: filter?.where,
-            }) as unknown as NotificationPreference[];
+            }) as unknown as Promise<NotificationPreference[]>;
         } catch (error) {
             throw new AppException(
                 'Failed to retrieve notification preferences',
@@ -40,8 +40,10 @@ export class PreferencesService {
      * @param where - Filter criteria for finding a preference
      * @returns A promise that resolves to a NotificationPreference or null
      */
-    async findOne(where: Record<string, unknown>): Promise<NotificationPreference | null> {
-        return this.prisma.notificationPreference.findFirst({ where }) as unknown as NotificationPreference | null;
+    findOne(where: Record<string, unknown>): Promise<NotificationPreference | null> {
+        return this.prisma.notificationPreference.findFirst({
+            where,
+        }) as unknown as Promise<NotificationPreference | null>;
     }
 
     /**
@@ -50,11 +52,11 @@ export class PreferencesService {
      * @param userId - The ID of the user
      * @returns A promise that resolves to the newly created NotificationPreference entity
      */
-    async create(userId: string): Promise<NotificationPreference> {
+    create(userId: string): Promise<NotificationPreference> {
         try {
             return this.prisma.notificationPreference.create({
                 data: { userId },
-            }) as unknown as NotificationPreference;
+            }) as unknown as Promise<NotificationPreference>;
         } catch (error) {
             throw new AppException(
                 'Failed to create notification preferences',
@@ -72,12 +74,12 @@ export class PreferencesService {
      * @param data - Partial notification preference data to update
      * @returns A promise that resolves to the updated NotificationPreference entity
      */
-    async update(id: string, data: Partial<NotificationPreference>): Promise<NotificationPreference> {
+    update(id: string, data: Partial<NotificationPreference>): Promise<NotificationPreference> {
         try {
             return this.prisma.notificationPreference.update({
                 where: { id: parseInt(id) },
                 data: data as Prisma.NotificationPreferenceUpdateInput,
-            }) as unknown as NotificationPreference;
+            }) as unknown as Promise<NotificationPreference>;
         } catch (error) {
             throw new AppException(
                 'Failed to update notification preferences',

@@ -21,22 +21,33 @@ export class CareResolvers {
         private readonly httpService: HttpService,
         private readonly configService: ConfigService
     ) {
-        this.careServiceUrl = this.configService.get<string>('services.care.url', 'http://care-service:3003');
+        this.careServiceUrl = this.configService.get<string>(
+            'services.care.url',
+            'http://care-service:3003'
+        );
     }
 
     @Query('getAppointments')
     @UseGuards(JwtAuthGuard)
-    async getAppointments(@CurrentUser() user: AuthenticatedUser, @Args('userId') userId: string) {
+    async getAppointments(
+        @CurrentUser() user: AuthenticatedUser,
+        @Args('userId') userId: string
+    ): Promise<unknown> {
         const response = await lastValueFrom(
-            this.httpService.get(`${this.careServiceUrl}/appointments?userId=${userId}`)
+            this.httpService.get<unknown>(`${this.careServiceUrl}/appointments?userId=${userId}`)
         );
         return response.data;
     }
 
     @Query('getAppointment')
     @UseGuards(JwtAuthGuard)
-    async getAppointment(@CurrentUser() user: AuthenticatedUser, @Args('id') id: string) {
-        const response = await lastValueFrom(this.httpService.get(`${this.careServiceUrl}/appointments/${id}`));
+    async getAppointment(
+        @CurrentUser() user: AuthenticatedUser,
+        @Args('id') id: string
+    ): Promise<unknown> {
+        const response = await lastValueFrom(
+            this.httpService.get<unknown>(`${this.careServiceUrl}/appointments/${id}`)
+        );
         return response.data;
     }
 
@@ -44,7 +55,7 @@ export class CareResolvers {
     async getProviders(
         @Args('specialty', { nullable: true }) specialty?: string,
         @Args('location', { nullable: true }) location?: string
-    ) {
+    ): Promise<unknown> {
         const params = new URLSearchParams();
         if (specialty) {
             params.append('specialty', specialty);
@@ -53,7 +64,9 @@ export class CareResolvers {
             params.append('location', location);
         }
 
-        const response = await lastValueFrom(this.httpService.get(`${this.careServiceUrl}/providers?${params}`));
+        const response = await lastValueFrom(
+            this.httpService.get<unknown>(`${this.careServiceUrl}/providers?${String(params)}`)
+        );
         return response.data;
     }
 
@@ -65,9 +78,9 @@ export class CareResolvers {
         @Args('dateTime') dateTime: string,
         @Args('type') type: string,
         @Args('reason', { nullable: true }) reason?: string
-    ) {
+    ): Promise<unknown> {
         const response = await lastValueFrom(
-            this.httpService.post(`${this.careServiceUrl}/appointments`, {
+            this.httpService.post<unknown>(`${this.careServiceUrl}/appointments`, {
                 providerId,
                 dateTime,
                 type,
@@ -80,8 +93,13 @@ export class CareResolvers {
 
     @Mutation('cancelAppointment')
     @UseGuards(JwtAuthGuard)
-    async cancelAppointment(@CurrentUser() user: AuthenticatedUser, @Args('id') id: string) {
-        const response = await lastValueFrom(this.httpService.delete(`${this.careServiceUrl}/appointments/${id}`));
+    async cancelAppointment(
+        @CurrentUser() user: AuthenticatedUser,
+        @Args('id') id: string
+    ): Promise<unknown> {
+        const response = await lastValueFrom(
+            this.httpService.delete<unknown>(`${this.careServiceUrl}/appointments/${id}`)
+        );
         return response.data;
     }
 }

@@ -15,7 +15,9 @@ export function createSecureAxios(): AxiosInstance {
 
         // Block requests to private IP ranges
         if (
-            /^(10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.|127\.|0\.0\.0\.0|localhost)/.test(hostname) ||
+            /^(10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.|127\.|0\.0\.0\.0|localhost)/.test(
+                hostname
+            ) ||
             hostname === '::1' ||
             hostname === 'fe80::' ||
             hostname.endsWith('.local')
@@ -32,7 +34,11 @@ export function createSecureAxios(): AxiosInstance {
 /**
  * Creates a secure axios instance with predefined config for internal API calls
  */
-export function createInternalApiClient(baseURL: string, headers = {}) {
+export function createInternalApiClient(
+    baseURL: string,
+    _headers: Record<string, string> = {}
+): AxiosInstance {
+    void baseURL; // baseURL reserved for future configuration; currently uses default
     return createSecureAxios();
 }
 

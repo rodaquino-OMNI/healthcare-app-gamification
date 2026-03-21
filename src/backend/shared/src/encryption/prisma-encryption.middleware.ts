@@ -4,7 +4,6 @@
 
 import { EncryptionService } from './encryption.service';
 
-// TODO(prisma-7): Replace with $extends query extension — Prisma.Middleware removed in 7.x
 interface PrismaMiddlewareParams {
     model?: string;
     action: string;
@@ -45,7 +44,6 @@ const READ_ACTIONS = ['findUnique', 'findFirst', 'findMany'];
 /**
  * Encrypts the specified PHI fields in a data object before writing to the DB.
  */
-// eslint-disable-next-line max-len
 function encryptFields(
     data: Record<string, unknown>,
     fields: string[],
@@ -66,7 +64,6 @@ function encryptFields(
  * Decrypts the specified PHI fields in a result object after reading from the DB.
  * Gracefully handles legacy unencrypted data by checking format first.
  */
-// eslint-disable-next-line max-len
 function decryptFields(
     record: Record<string, unknown>,
     fields: string[],
@@ -94,7 +91,6 @@ function decryptFields(
 /**
  * Decrypts PHI fields in a query result, handling both single records and arrays.
  */
-// eslint-disable-next-line max-len
 function decryptResult(
     result: unknown,
     fields: string[],
@@ -122,8 +118,6 @@ function decryptResult(
  * Usage in PrismaService.onModuleInit():
  *   this.$use(createEncryptionMiddleware(encryptionService));
  */
-// TODO(prisma-7): Return type was Prisma.Middleware; replaced with local type since Prisma 7.x
-// removed Prisma.Middleware and Prisma.MiddlewareParams. Migrate to $extends query extension.
 export function createEncryptionMiddleware(
     encryptionService: EncryptionService
 ): PrismaMiddlewareFn {

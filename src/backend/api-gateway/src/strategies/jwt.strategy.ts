@@ -14,7 +14,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    async validate(payload: Record<string, unknown>) {
+    // eslint-disable-next-line @typescript-eslint/require-await -- NestJS Passport strategy interface requires async signature
+    async validate(
+        payload: Record<string, unknown>
+    ): Promise<{ userId: unknown; email: unknown; roles: unknown }> {
         return { userId: payload.sub, email: payload.email, roles: payload.roles };
     }
 }

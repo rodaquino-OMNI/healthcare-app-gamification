@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/require-await -- Mock stubs implement async interface contracts without real I/O */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types -- Return types inferred from mock literals; full Prisma types not available here */
 /**
  * Mock implementation of PrismaService that provides model access patterns
  * compatible with our service implementation.
@@ -128,7 +130,11 @@ export class PrismaMock {
             return { id: '1', ...args.data, createdAt: new Date(), updatedAt: new Date() };
         },
         update: async (args: MockArgs) => {
-            return { id: (args.where as Record<string, unknown>)?.id, ...args.data, updatedAt: new Date() };
+            return {
+                id: (args.where as Record<string, unknown>)?.id,
+                ...args.data,
+                updatedAt: new Date(),
+            };
         },
         delete: async (args: MockArgs) => {
             return { id: (args.where as Record<string, unknown>)?.id };

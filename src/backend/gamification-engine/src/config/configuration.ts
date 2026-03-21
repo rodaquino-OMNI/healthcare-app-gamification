@@ -55,7 +55,10 @@ export const gamificationEngine = registerAs('gamificationEngine', () => ({
     // Points configuration for gamification
     points: {
         defaultValues: {
-            healthMetricRecorded: parseIntSafe(process.env.DEFAULT_POINT_HEALTH_METRIC_RECORDED, 10),
+            healthMetricRecorded: parseIntSafe(
+                process.env.DEFAULT_POINT_HEALTH_METRIC_RECORDED,
+                10
+            ),
             appointmentBooked: parseIntSafe(process.env.DEFAULT_POINT_APPOINTMENT_BOOKED, 20),
             appointmentAttended: parseIntSafe(process.env.DEFAULT_POINT_APPOINTMENT_ATTENDED, 50),
             claimSubmitted: parseIntSafe(process.env.DEFAULT_POINT_CLAIM_SUBMITTED, 15),

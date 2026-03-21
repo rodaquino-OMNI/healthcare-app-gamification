@@ -41,7 +41,9 @@ export class AuditService {
                         journeyId: entry.journeyId ?? null,
                         ipAddress: entry.ipAddress ?? null,
                         userAgent: entry.userAgent ?? null,
-                        metadata: entry.metadata ? (entry.metadata as Prisma.InputJsonValue) : Prisma.JsonNull,
+                        metadata: entry.metadata
+                            ? (entry.metadata as Prisma.InputJsonValue)
+                            : Prisma.JsonNull,
                     },
                 });
             } catch (error) {

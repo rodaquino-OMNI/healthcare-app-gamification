@@ -1,15 +1,20 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigService } from '@nestjs/config';
-import { SmsService } from './sms.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
+import { ConfigService } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
 
-// Mock the Twilio module
+import { SmsService } from './sms.service';
+
+// Mock the Twilio module — named export { Twilio }
 jest.mock('twilio', () => {
     const mockCreate = jest.fn().mockResolvedValue({ sid: 'SM123' });
-    return jest.fn().mockImplementation(() => ({
+    const MockTwilio = jest.fn().mockImplementation(() => ({
         messages: { create: mockCreate },
     }));
+    return { __esModule: true, default: MockTwilio, Twilio: MockTwilio };
 });
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports -- Jest mocks require dynamic require to access mock state
+const { Twilio: twilioFactory } = require('twilio') as { Twilio: jest.Mock };
 
 describe('SmsService', () => {
     let service: SmsService;
@@ -33,7 +38,12 @@ describe('SmsService', () => {
                 { provide: ConfigService, useValue: configService },
                 {
                     provide: LoggerService,
-                    useValue: { log: jest.fn(), error: jest.fn(), warn: jest.fn(), debug: jest.fn() },
+                    useValue: {
+                        log: jest.fn(),
+                        error: jest.fn(),
+                        warn: jest.fn(),
+                        debug: jest.fn(),
+                    },
                 },
             ],
         }).compile();
@@ -56,8 +66,7 @@ describe('SmsService', () => {
 
         it('should throw error when Twilio API fails', async () => {
             // Access the mocked twilio client's create method
-            const twilioModule = require('twilio');
-            const mockInstance = twilioModule();
+            const mockInstance = twilioFactory() as { messages: { create: jest.Mock } };
             mockInstance.messages.create.mockRejectedValueOnce(new Error('Twilio API error'));
 
             // Re-create service to use updated mock
@@ -67,18 +76,24 @@ describe('SmsService', () => {
                     { provide: ConfigService, useValue: configService },
                     {
                         provide: LoggerService,
-                        useValue: { log: jest.fn(), error: jest.fn(), warn: jest.fn(), debug: jest.fn() },
+                        useValue: {
+                            log: jest.fn(),
+                            error: jest.fn(),
+                            warn: jest.fn(),
+                            debug: jest.fn(),
+                        },
                     },
                 ],
             }).compile();
             const smsService = module.get<SmsService>(SmsService);
 
-            await expect(smsService.sendSms('+15559876543', 'Test message')).rejects.toThrow('Failed to send SMS');
+            await expect(smsService.sendSms('+15559876543', 'Test message')).rejects.toThrow(
+                'Failed to send SMS'
+            );
         });
 
         it('should include error code in thrown error message', async () => {
-            const twilioModule = require('twilio');
-            const mockInstance = twilioModule();
+            const mockInstance = twilioFactory() as { messages: { create: jest.Mock } };
             mockInstance.messages.create.mockRejectedValueOnce(new Error('Invalid phone'));
 
             const module = await Test.createTestingModule({
@@ -87,13 +102,20 @@ describe('SmsService', () => {
                     { provide: ConfigService, useValue: configService },
                     {
                         provide: LoggerService,
-                        useValue: { log: jest.fn(), error: jest.fn(), warn: jest.fn(), debug: jest.fn() },
+                        useValue: {
+                            log: jest.fn(),
+                            error: jest.fn(),
+                            warn: jest.fn(),
+                            debug: jest.fn(),
+                        },
                     },
                 ],
             }).compile();
             const smsService = module.get<SmsService>(SmsService);
 
-            await expect(smsService.sendSms('+15559876543', 'Test message')).rejects.toThrow('SYS_001');
+            await expect(smsService.sendSms('+15559876543', 'Test message')).rejects.toThrow(
+                'SYS_001'
+            );
         });
     });
 });

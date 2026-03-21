@@ -1,5 +1,6 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
+
 import { RedisService } from './redis.service';
 import { LoggerService } from '../logging/logger.service';
 

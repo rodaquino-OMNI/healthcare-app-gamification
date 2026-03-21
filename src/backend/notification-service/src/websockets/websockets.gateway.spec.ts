@@ -120,7 +120,7 @@ describe('WebsocketsGateway', () => {
 
             expect(mockServer.emit).toHaveBeenCalledWith(
                 'notification',
-                expect.objectContaining({ broadcast: true }),
+                expect.objectContaining({ broadcast: true })
             );
         });
     });
@@ -166,11 +166,11 @@ describe('WebsocketsGateway', () => {
 
             expect(mockKafkaService.emit).toHaveBeenCalledWith(
                 'notifications.markAsRead',
-                expect.objectContaining({ userId: 'user-1', notificationId: 'notif-1' }),
+                expect.objectContaining({ userId: 'user-1', notificationId: 'notif-1' })
             );
             expect(client.emit).toHaveBeenCalledWith(
                 'markAsReadAck',
-                expect.objectContaining({ id: 'notif-1', success: true }),
+                expect.objectContaining({ id: 'notif-1', success: true })
             );
         });
     });

@@ -94,7 +94,12 @@ export class LoggerService extends ConsoleLogger {
             case 'info':
                 return ['error' as LogLevel, 'warn' as LogLevel, 'log' as LogLevel];
             case 'debug':
-                return ['error' as LogLevel, 'warn' as LogLevel, 'log' as LogLevel, 'debug' as LogLevel];
+                return [
+                    'error' as LogLevel,
+                    'warn' as LogLevel,
+                    'log' as LogLevel,
+                    'debug' as LogLevel,
+                ];
             case 'verbose':
                 return [
                     'error' as LogLevel,

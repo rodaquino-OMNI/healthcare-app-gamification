@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { SymptomCheckerController } from './symptom-checker.controller';
 import { SymptomCheckerService } from './symptom-checker.service';
 
@@ -103,7 +104,9 @@ describe('SymptomCheckerController', () => {
                 new Error('Symptom checker is currently disabled')
             );
 
-            await expect(controller.checkSymptoms(dto as any)).rejects.toThrow('Symptom checker is currently disabled');
+            await expect(controller.checkSymptoms(dto as any)).rejects.toThrow(
+                'Symptom checker is currently disabled'
+            );
         });
     });
 });

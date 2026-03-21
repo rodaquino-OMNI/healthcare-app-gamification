@@ -41,7 +41,10 @@ async function bootstrap(): Promise<void> {
 
         // Get the logger service after app is created
         const logger = app.get(LoggerService);
-        logger.log(`Starting Gamification Engine in ${nodeEnv} environment on port ${port}`, 'Bootstrap');
+        logger.log(
+            `Starting Gamification Engine in ${nodeEnv} environment on port ${port}`,
+            'Bootstrap'
+        );
 
         try {
             // Retrieves the KafkaConsumerService from the application context
@@ -51,7 +54,10 @@ async function bootstrap(): Promise<void> {
                 await kafkaConsumerService.onModuleInit();
                 logger.log('Kafka consumer initialized successfully', 'Bootstrap');
             } else {
-                logger.warn('Kafka consumer service not found. Event processing may be disabled.', 'Bootstrap');
+                logger.warn(
+                    'Kafka consumer service not found. Event processing may be disabled.',
+                    'Bootstrap'
+                );
             }
         } catch (kafkaError: unknown) {
             const msg = kafkaError instanceof Error ? kafkaError.message : 'Unknown error';

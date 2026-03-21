@@ -5,10 +5,10 @@ import { KafkaModule } from '@app/shared/kafka/kafka.module';
 import { LoggerModule } from '@app/shared/logging/logger.module';
 import { RedisModule } from '@app/shared/redis/redis.module';
 import { TracingModule } from '@app/shared/tracing/tracing.module';
-import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 import { ClaimsModule } from './claims/claims.module';
 import { planService } from './config/configuration';

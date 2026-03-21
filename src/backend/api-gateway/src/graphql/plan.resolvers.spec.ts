@@ -1,6 +1,6 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
 import { of } from 'rxjs';
 
 import { PlanResolvers } from './plan.resolvers';
@@ -68,9 +68,7 @@ describe('PlanResolvers', () => {
             const result = await resolvers.getClaims(mockUser, 'plan-1', 'pending');
 
             expect(result).toEqual(mockData);
-            expect(httpService.get).toHaveBeenCalledWith(
-                expect.stringContaining('status=pending'),
-            );
+            expect(httpService.get).toHaveBeenCalledWith(expect.stringContaining('status=pending'));
         });
     });
 
@@ -86,7 +84,7 @@ describe('PlanResolvers', () => {
                 'PROC-001',
                 'Dr. Smith',
                 '2024-01-01',
-                150.00,
+                150.0
             );
 
             expect(result).toEqual(mockData);
@@ -95,8 +93,8 @@ describe('PlanResolvers', () => {
                 expect.objectContaining({
                     planId: 'plan-1',
                     userId: 'user-1',
-                    amount: 150.00,
-                }),
+                    amount: 150.0,
+                })
             );
         });
     });
@@ -122,7 +120,7 @@ describe('PlanResolvers', () => {
             expect(result).toEqual(mockData);
             expect(httpService.patch).toHaveBeenCalledWith(
                 'http://plan-service:3004/claims/claim-1',
-                expect.objectContaining({ status: 'CANCELLED' }),
+                expect.objectContaining({ status: 'CANCELLED' })
             );
         });
     });

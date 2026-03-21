@@ -23,7 +23,14 @@ import { JwtStrategy } from './strategies/jwt.strategy';
             inject: [ConfigService],
         }),
     ],
-    providers: [AuthResolvers, HealthResolvers, CareResolvers, PlanResolvers, GamificationResolvers, JwtStrategy],
+    providers: [
+        AuthResolvers,
+        HealthResolvers,
+        CareResolvers,
+        PlanResolvers,
+        GamificationResolvers,
+        JwtStrategy,
+    ],
     exports: [AuthResolvers, HealthResolvers, CareResolvers, PlanResolvers, GamificationResolvers],
 })
 export class ApiGatewayModule {}

@@ -36,7 +36,10 @@ export class EventsService {
      * @returns A promise that resolves with the result of the event processing
      */
     async processEvent(event: ProcessEventDto): Promise<unknown> {
-        this.logger.log(`Processing event: ${event.type} for user: ${event.userId}`, 'EventsService');
+        this.logger.log(
+            `Processing event: ${event.type} for user: ${event.userId}`,
+            'EventsService'
+        );
 
         try {
             // Get the user's game profile
@@ -44,7 +47,10 @@ export class EventsService {
                 await this.profilesService.findById(event.userId);
             } catch {
                 // If profile doesn't exist, create it
-                this.logger.log(`Creating new game profile for user: ${event.userId}`, 'EventsService');
+                this.logger.log(
+                    `Creating new game profile for user: ${event.userId}`,
+                    'EventsService'
+                );
                 await this.profilesService.create(event.userId);
             }
 
@@ -71,7 +77,11 @@ export class EventsService {
             };
         } catch (error: unknown) {
             const stack = error instanceof Error ? error.stack : String(error);
-            this.logger.error(`Failed to process event for user ${event.userId}`, stack, 'EventsService');
+            this.logger.error(
+                `Failed to process event for user ${event.userId}`,
+                stack,
+                'EventsService'
+            );
             throw error;
         }
     }

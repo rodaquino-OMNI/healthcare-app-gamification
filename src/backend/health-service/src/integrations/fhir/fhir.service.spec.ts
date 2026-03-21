@@ -1,7 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ForbiddenException } from '@nestjs/common';
-import { FhirService } from './fhir.service';
 import { AppException } from '@app/shared/exceptions/exceptions.types';
+import { ForbiddenException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { FhirService } from './fhir.service';
 
 describe('FhirService', () => {
     let service: FhirService;
@@ -80,7 +81,9 @@ describe('FhirService', () => {
         });
 
         it('should throw ForbiddenException when patientId does not match requestingUserId', async () => {
-            await expect(service.getPatientRecord(patientId, 'different-user-id')).rejects.toThrow(ForbiddenException);
+            await expect(service.getPatientRecord(patientId, 'different-user-id')).rejects.toThrow(
+                ForbiddenException
+            );
         });
 
         it('should emit patient.record.retrieved event after retrieval', async () => {
@@ -99,17 +102,28 @@ describe('FhirService', () => {
         });
 
         it('should throw AppException when fhirAdapter.getPatientRecord fails', async () => {
-            mockFhirAdapter.getPatientRecord.mockRejectedValue(new Error('FHIR server unavailable'));
+            mockFhirAdapter.getPatientRecord.mockRejectedValue(
+                new Error('FHIR server unavailable')
+            );
 
-            await expect(service.getPatientRecord(patientId, requestingUserId)).rejects.toThrow(AppException);
+            await expect(service.getPatientRecord(patientId, requestingUserId)).rejects.toThrow(
+                AppException
+            );
         });
 
         it('should re-throw AppException if adapter throws one', async () => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const originalException = new AppException('Custom FHIR error', 'EXTERNAL' as any, 'HEALTH_004', {});
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Mock FHIR response requires dynamic typing
+            const originalException = new AppException(
+                'Custom FHIR error',
+                'EXTERNAL' as any,
+                'HEALTH_004',
+                {}
+            );
             mockFhirAdapter.getPatientRecord.mockRejectedValue(originalException);
 
-            await expect(service.getPatientRecord(patientId, requestingUserId)).rejects.toThrow(AppException);
+            await expect(service.getPatientRecord(patientId, requestingUserId)).rejects.toThrow(
+                AppException
+            );
         });
     });
 
@@ -131,7 +145,9 @@ describe('FhirService', () => {
         });
 
         it('should throw ForbiddenException when user accesses another patient record', async () => {
-            await expect(service.getMedicalHistory(patientId, 'unauthorized-user')).rejects.toThrow(ForbiddenException);
+            await expect(service.getMedicalHistory(patientId, 'unauthorized-user')).rejects.toThrow(
+                ForbiddenException
+            );
         });
 
         it('should emit medical.history.retrieved event with count', async () => {
@@ -152,7 +168,9 @@ describe('FhirService', () => {
         it('should throw AppException when fhirAdapter.getMedicalHistory fails', async () => {
             mockFhirAdapter.getMedicalHistory.mockRejectedValue(new Error('Service timeout'));
 
-            await expect(service.getMedicalHistory(patientId, requestingUserId)).rejects.toThrow(AppException);
+            await expect(service.getMedicalHistory(patientId, requestingUserId)).rejects.toThrow(
+                AppException
+            );
         });
     });
 
@@ -162,15 +180,19 @@ describe('FhirService', () => {
         const metricType = 'HEART_RATE';
 
         it('should return empty array when no FHIR observations exist', async () => {
-            const result = await service.getHealthMetricsFromFhir(patientId, metricType, requestingUserId);
+            const result = await service.getHealthMetricsFromFhir(
+                patientId,
+                metricType,
+                requestingUserId
+            );
 
             expect(Array.isArray(result)).toBe(true);
         });
 
         it('should throw ForbiddenException when unauthorized user requests metrics', async () => {
-            await expect(service.getHealthMetricsFromFhir(patientId, metricType, 'unauthorized-user')).rejects.toThrow(
-                ForbiddenException
-            );
+            await expect(
+                service.getHealthMetricsFromFhir(patientId, metricType, 'unauthorized-user')
+            ).rejects.toThrow(ForbiddenException);
         });
 
         it('should emit health.metrics.retrieved event', async () => {
@@ -189,7 +211,12 @@ describe('FhirService', () => {
         it('should accept dateRange parameter', async () => {
             const dateRange = { start: '2024-01-01', end: '2024-01-31' };
 
-            const result = await service.getHealthMetricsFromFhir(patientId, metricType, requestingUserId, dateRange);
+            const result = await service.getHealthMetricsFromFhir(
+                patientId,
+                metricType,
+                requestingUserId,
+                dateRange
+            );
 
             expect(Array.isArray(result)).toBe(true);
         });

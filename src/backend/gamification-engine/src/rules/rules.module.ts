@@ -14,8 +14,14 @@ import { ProfilesModule } from '../profiles/profiles.module';
  * and achievements are awarded based on user actions across all journeys.
  */
 @Module({
-    // eslint-disable-next-line max-len
-    imports: [KafkaModule, LoggerModule, ExceptionsModule, ProfilesModule, AchievementsModule, ConfigModule],
+    imports: [
+        KafkaModule,
+        LoggerModule,
+        ExceptionsModule,
+        ProfilesModule,
+        AchievementsModule,
+        ConfigModule,
+    ],
     providers: [RulesService],
     controllers: [],
     exports: [RulesService],

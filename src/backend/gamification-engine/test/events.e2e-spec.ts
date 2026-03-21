@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { AUTH_INVALID_CREDENTIALS } from '@app/shared/constants/error-codes.constants';
+/* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { KafkaService } from '@app/shared/kafka/kafka.service';
 import { describe, it, beforeEach, afterEach, expect } from '@jest/globals'; // v29.0.0+
@@ -9,7 +8,6 @@ import request from 'supertest'; // 6.3.3
 
 import { AchievementsModule } from '@app/gamification/achievements/achievements.module';
 import { AchievementsService } from '@app/gamification/achievements/achievements.service';
-import { gamificationEngine } from '@app/gamification/config/configuration';
 import { EventsModule } from '@app/gamification/events/events.module';
 import { EventsService } from '@app/gamification/events/events.service';
 import { ProfilesModule } from '@app/gamification/profiles/profiles.module';
@@ -20,18 +18,19 @@ import { RulesService } from '@app/gamification/rules/rules.service';
 
 /**
  * End-to-end tests for the Events module.
- * These tests verify the event processing flow by sending events to the API and checking that the user's game profile is updated correctly.
+ * These tests verify the event processing flow by sending events to the API
+ * and checking that the user's game profile is updated correctly.
  */
 describe('EventsModule (e2e)', () => {
     let app: INestApplication;
-    let eventsService: EventsService;
+    let _eventsService: EventsService;
     let achievementsService: AchievementsService;
     let profilesService: ProfilesService;
     let kafkaService: KafkaService;
-    let prismaService: PrismaService;
+    let _prismaService: PrismaService;
     let rulesService: RulesService;
-    let questsService: QuestsService;
-    let rewardsService: RewardsService;
+    let _questsService: QuestsService;
+    let _rewardsService: RewardsService;
 
     beforeEach(async () => {
         // Create a testing module with all necessary dependencies
@@ -48,12 +47,18 @@ describe('EventsModule (e2e)', () => {
         await app.init();
 
         // Get instances of the services for assertions
-        eventsService = moduleFixture.get<EventsService>(EventsService);
+        _eventsService = moduleFixture.get<EventsService>(EventsService);
         achievementsService = moduleFixture.get<AchievementsService>(AchievementsService);
         profilesService = moduleFixture.get<ProfilesService>(ProfilesService);
         kafkaService = moduleFixture.get<KafkaService>(KafkaService);
-        prismaService = new PrismaService();
-        rulesService = new RulesService(null as any, null as any, null as any, profilesService, achievementsService);
+        _prismaService = new PrismaService();
+        rulesService = new RulesService(
+            null as any,
+            null as any,
+            null as any,
+            profilesService,
+            achievementsService
+        );
     });
 
     afterEach(async () => {

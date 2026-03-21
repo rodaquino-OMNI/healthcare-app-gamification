@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ConsentRecord } from '@prisma/client';
 
 import { PrismaService } from '../database/prisma.service';
 import { CreateConsentDto, ConsentType } from './dto/create-consent.dto';
@@ -28,7 +29,12 @@ export class ConsentService {
      * @param userAgent - User agent string (for audit trail)
      * @returns The created consent record
      */
-    async createConsent(userId: string, dto: CreateConsentDto, ip?: string, userAgent?: string) {
+    async createConsent(
+        userId: string,
+        dto: CreateConsentDto,
+        ip?: string,
+        userAgent?: string
+    ): Promise<ConsentRecord> {
         return this.prisma.consentRecord.create({
             data: {
                 userId,
@@ -51,13 +57,15 @@ export class ConsentService {
      * @returns The updated consent record with REVOKED status
      * @throws AppException if consent not found or does not belong to user
      */
-    async revokeConsent(userId: string, consentId: string) {
+    async revokeConsent(userId: string, consentId: string): Promise<ConsentRecord> {
         const consent = await this.prisma.consentRecord.findUnique({
             where: { id: consentId },
         });
 
         if (!consent) {
-            throw new AppException('Consent record not found', ErrorType.NOT_FOUND, 'CONSENT_001', { consentId });
+            throw new AppException('Consent record not found', ErrorType.NOT_FOUND, 'CONSENT_001', {
+                consentId,
+            });
         }
 
         if (consent.userId !== userId) {
@@ -84,7 +92,7 @@ export class ConsentService {
      * @param userId - The ID of the user
      * @returns Array of consent records
      */
-    async getUserConsents(userId: string) {
+    async getUserConsents(userId: string): Promise<ConsentRecord[]> {
         return this.prisma.consentRecord.findMany({
             where: { userId },
             orderBy: { grantedAt: 'desc' },

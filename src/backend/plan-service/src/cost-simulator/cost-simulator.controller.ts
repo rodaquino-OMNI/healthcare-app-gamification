@@ -13,6 +13,8 @@ import {
     Catch,
     ArgumentsHost,
     ExceptionFilter,
+    UsePipes,
+    ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport'; // Correct import
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -21,7 +23,8 @@ import { CostSimulatorService } from './cost-simulator.service';
 import { SimulateCostDto } from './dto/simulate-cost.dto';
 
 // Custom decorator for roles
-export const Roles = (...roles: string[]) => SetMetadata('roles', roles);
+export const Roles = (...roles: string[]): ReturnType<typeof SetMetadata> =>
+    SetMetadata('roles', roles);
 
 // Simple mock guard for roles - replace with actual implementation when available
 @Injectable()
@@ -45,7 +48,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<ResponseWithStatus>();
         const request = ctx.getRequest<RequestWithUrl>();
-        const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+        const status =
+            exception instanceof HttpException
+                ? exception.getStatus()
+                : HttpStatus.INTERNAL_SERVER_ERROR;
 
         response.status(status).json({
             statusCode: status,
@@ -71,6 +77,7 @@ export class CostSimulatorController {
     @Post()
     @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles('user', 'admin')
+    @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
     @ApiOperation({ summary: 'Simulate cost of a medical procedure' })
     @ApiResponse({ status: 201, description: 'Cost simulation completed successfully' })
     @ApiResponse({ status: 400, description: 'Invalid input data' })

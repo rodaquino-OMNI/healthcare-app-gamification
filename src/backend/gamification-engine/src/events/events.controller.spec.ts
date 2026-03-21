@@ -1,9 +1,3 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { EventsController } from './events.controller';
-import { EventsService } from './events.service';
-import { ProcessEventDto } from './dto/process-event.dto';
-import { LoggerService } from '../../../shared/src/logging/logger.service';
-
 // Mock the JwtAuthGuard to avoid auth setup in unit tests
 jest.mock('@app/auth/auth/guards/jwt-auth.guard', () => ({
     JwtAuthGuard: jest.fn().mockImplementation(() => ({
@@ -11,9 +5,17 @@ jest.mock('@app/auth/auth/guards/jwt-auth.guard', () => ({
     })),
 }));
 
+import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { ProcessEventDto } from './dto/process-event.dto';
+import { EventsController } from './events.controller';
+import { EventsService } from './events.service';
+import { LoggerService } from '../../../shared/src/logging/logger.service';
+
 describe('EventsController', () => {
     let controller: EventsController;
-    let eventsService: EventsService;
+    let _eventsService: EventsService;
 
     const mockEventsService = {
         processEvent: jest.fn(),
@@ -36,12 +38,12 @@ describe('EventsController', () => {
                 { provide: LoggerService, useValue: mockLoggerService },
             ],
         })
-            .overrideGuard(require('@app/auth/auth/guards/jwt-auth.guard').JwtAuthGuard)
+            .overrideGuard(JwtAuthGuard)
             .useValue({ canActivate: () => true })
             .compile();
 
         controller = module.get<EventsController>(EventsController);
-        eventsService = module.get<EventsService>(EventsService);
+        _eventsService = module.get<EventsService>(EventsService);
     });
 
     it('should be defined', () => {

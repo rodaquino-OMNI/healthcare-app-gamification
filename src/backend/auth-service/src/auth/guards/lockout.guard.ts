@@ -19,7 +19,7 @@ export class LockoutGuard implements CanActivate {
     ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const request = context.switchToHttp().getRequest();
+        const request = context.switchToHttp().getRequest<{ body?: { email?: string } }>();
         const email = request.body?.email;
 
         if (!email) {
@@ -29,7 +29,8 @@ export class LockoutGuard implements CanActivate {
         const key = `lockout:${email}`;
         const raw = await this.redisService.get(key);
         const attempts = parseInt(raw || '0', 10);
-        const threshold = this.configService.get<number>('authService.password.lockoutThreshold') ?? 5;
+        const threshold =
+            this.configService.get<number>('authService.password.lockoutThreshold') ?? 5;
 
         if (attempts >= threshold) {
             throw new AppException(

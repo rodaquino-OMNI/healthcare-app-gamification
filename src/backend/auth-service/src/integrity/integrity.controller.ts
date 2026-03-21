@@ -1,5 +1,14 @@
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
-import { Controller, Post, Body, UseFilters, UsePipes, ValidationPipe, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+    Controller,
+    Post,
+    Body,
+    UseFilters,
+    UsePipes,
+    ValidationPipe,
+    HttpCode,
+    HttpStatus,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { IntegrityService, IntegrityVerdict } from './integrity.service';

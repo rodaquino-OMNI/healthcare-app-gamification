@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/unbound-method */
+/* eslint-disable @typescript-eslint/unbound-method -- Jest expects unbound method references in toHaveBeenCalled assertions */
 /**
  * Tests for src/web/web/src/api/gamification.ts
  *

@@ -28,26 +28,58 @@ export const validationSchema = Joi.object({
     FHIR_API_URL: Joi.string().uri().when('FHIR_API_ENABLED', { is: 'true', then: Joi.required() }),
     FHIR_API_AUTH_TYPE: Joi.string().valid('oauth2', 'basic', 'none').default('oauth2'),
     FHIR_API_CLIENT_ID: Joi.string().when('FHIR_API_ENABLED', { is: 'true', then: Joi.required() }),
-    FHIR_API_CLIENT_SECRET: Joi.string().when('FHIR_API_ENABLED', { is: 'true', then: Joi.required() }),
+    FHIR_API_CLIENT_SECRET: Joi.string().when('FHIR_API_ENABLED', {
+        is: 'true',
+        then: Joi.required(),
+    }),
     FHIR_API_SCOPE: Joi.string().when('FHIR_API_ENABLED', { is: 'true', then: Joi.required() }),
-    FHIR_API_TOKEN_URL: Joi.string().uri().when('FHIR_API_ENABLED', { is: 'true', then: Joi.required() }),
-    FHIR_API_USERNAME: Joi.string().when('FHIR_API_AUTH_TYPE', { is: 'basic', then: Joi.required() }),
-    FHIR_API_PASSWORD: Joi.string().when('FHIR_API_AUTH_TYPE', { is: 'basic', then: Joi.required() }),
+    FHIR_API_TOKEN_URL: Joi.string()
+        .uri()
+        .when('FHIR_API_ENABLED', { is: 'true', then: Joi.required() }),
+    FHIR_API_USERNAME: Joi.string().when('FHIR_API_AUTH_TYPE', {
+        is: 'basic',
+        then: Joi.required(),
+    }),
+    FHIR_API_PASSWORD: Joi.string().when('FHIR_API_AUTH_TYPE', {
+        is: 'basic',
+        then: Joi.required(),
+    }),
     FHIR_API_TIMEOUT: Joi.number().integer().default(10000), // 10 seconds default
 
     // Wearable device integration
     WEARABLES_SYNC_ENABLED: Joi.string().valid('true', 'false').default('true'),
     WEARABLES_SUPPORTED: Joi.string().default('googlefit,healthkit,fitbit'),
     // Google Fit settings
-    GOOGLEFIT_CLIENT_ID: Joi.string().when('WEARABLES_SYNC_ENABLED', { is: 'true', then: Joi.required() }),
-    GOOGLEFIT_CLIENT_SECRET: Joi.string().when('WEARABLES_SYNC_ENABLED', { is: 'true', then: Joi.required() }),
+    GOOGLEFIT_CLIENT_ID: Joi.string().when('WEARABLES_SYNC_ENABLED', {
+        is: 'true',
+        then: Joi.required(),
+    }),
+    GOOGLEFIT_CLIENT_SECRET: Joi.string().when('WEARABLES_SYNC_ENABLED', {
+        is: 'true',
+        then: Joi.required(),
+    }),
     // Apple HealthKit settings
-    HEALTHKIT_TEAM_ID: Joi.string().when('WEARABLES_SYNC_ENABLED', { is: 'true', then: Joi.required() }),
-    HEALTHKIT_KEY_ID: Joi.string().when('WEARABLES_SYNC_ENABLED', { is: 'true', then: Joi.required() }),
-    HEALTHKIT_PRIVATE_KEY: Joi.string().when('WEARABLES_SYNC_ENABLED', { is: 'true', then: Joi.required() }),
+    HEALTHKIT_TEAM_ID: Joi.string().when('WEARABLES_SYNC_ENABLED', {
+        is: 'true',
+        then: Joi.required(),
+    }),
+    HEALTHKIT_KEY_ID: Joi.string().when('WEARABLES_SYNC_ENABLED', {
+        is: 'true',
+        then: Joi.required(),
+    }),
+    HEALTHKIT_PRIVATE_KEY: Joi.string().when('WEARABLES_SYNC_ENABLED', {
+        is: 'true',
+        then: Joi.required(),
+    }),
     // Fitbit settings
-    FITBIT_CLIENT_ID: Joi.string().when('WEARABLES_SYNC_ENABLED', { is: 'true', then: Joi.required() }),
-    FITBIT_CLIENT_SECRET: Joi.string().when('WEARABLES_SYNC_ENABLED', { is: 'true', then: Joi.required() }),
+    FITBIT_CLIENT_ID: Joi.string().when('WEARABLES_SYNC_ENABLED', {
+        is: 'true',
+        then: Joi.required(),
+    }),
+    FITBIT_CLIENT_SECRET: Joi.string().when('WEARABLES_SYNC_ENABLED', {
+        is: 'true',
+        then: Joi.required(),
+    }),
     // Sync settings
     WEARABLES_SYNC_INTERVAL: Joi.number().integer().default(15), // Minutes
     WEARABLES_MAX_SYNC_DAYS: Joi.number().integer().default(30),
@@ -60,7 +92,10 @@ export const validationSchema = Joi.object({
 
     // Event streaming configuration
     EVENTS_KAFKA_ENABLED: Joi.string().valid('true', 'false').default('true'),
-    EVENTS_KAFKA_BROKERS: Joi.string().when('EVENTS_KAFKA_ENABLED', { is: 'true', then: Joi.required() }),
+    EVENTS_KAFKA_BROKERS: Joi.string().when('EVENTS_KAFKA_ENABLED', {
+        is: 'true',
+        then: Joi.required(),
+    }),
     EVENTS_TOPIC_PREFIX: Joi.string().default('austa.health'),
 
     // Caching configuration

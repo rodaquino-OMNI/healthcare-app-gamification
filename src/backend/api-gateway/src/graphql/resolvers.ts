@@ -15,6 +15,12 @@ import { PlanResolvers } from './plan.resolvers';
  * Array of all resolver classes to be registered with the GraphQL module.
  * Each resolver handles a specific domain of the application.
  */
-export const resolvers = [AuthResolvers, HealthResolvers, CareResolvers, PlanResolvers, GamificationResolvers];
+export const resolvers = [
+    AuthResolvers,
+    HealthResolvers,
+    CareResolvers,
+    PlanResolvers,
+    GamificationResolvers,
+];
 
 export default resolvers;

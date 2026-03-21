@@ -1,4 +1,8 @@
-import { mapToDomainGameProfile, mapToDomainUserAchievement, mapToDomainAchievement } from './entity-mappers';
+import {
+    mapToDomainGameProfile,
+    mapToDomainUserAchievement,
+    mapToDomainAchievement,
+} from './entity-mappers';
 
 describe('Entity Mappers', () => {
     describe('mapToDomainAchievement', () => {

@@ -177,12 +177,13 @@ export const getDateRange = (
                 endDate: endOfDay(today),
             };
 
-        case 'yesterday':
+        case 'yesterday': {
             const yesterday = subDays(today, 1);
             return {
                 startDate: startOfDay(yesterday),
                 endDate: endOfDay(yesterday),
             };
+        }
 
         case 'thisWeek':
             return {
@@ -190,12 +191,13 @@ export const getDateRange = (
                 endDate: endOfWeek(today, { weekStartsOn: 0 }),
             };
 
-        case 'lastWeek':
+        case 'lastWeek': {
             const lastWeek = subDays(today, 7);
             return {
                 startDate: startOfWeek(lastWeek, { weekStartsOn: 0 }),
                 endDate: endOfWeek(lastWeek, { weekStartsOn: 0 }),
             };
+        }
 
         case 'thisMonth':
             return {
@@ -203,12 +205,13 @@ export const getDateRange = (
                 endDate: endOfMonth(today),
             };
 
-        case 'lastMonth':
+        case 'lastMonth': {
             const lastMonth = subMonths(today, 1);
             return {
                 startDate: startOfMonth(lastMonth),
                 endDate: endOfMonth(lastMonth),
             };
+        }
 
         case 'thisYear':
             return {
@@ -216,12 +219,13 @@ export const getDateRange = (
                 endDate: endOfYear(today),
             };
 
-        case 'lastYear':
+        case 'lastYear': {
             const lastYear = subYears(today, 1);
             return {
                 startDate: startOfYear(lastYear),
                 endDate: endOfYear(lastYear),
             };
+        }
 
         case 'last7Days':
             return {
@@ -262,7 +266,10 @@ export const getDateRange = (
  * @param referenceDate - The reference date to calculate age against (defaults to today)
  * @returns Age in years
  */
-export const calculateAge = (birthdate: Date | string, referenceDate: Date = new Date()): number => {
+export const calculateAge = (
+    birthdate: Date | string,
+    referenceDate: Date = new Date()
+): number => {
     if (!isValidDate(birthdate)) {
         throw new Error('Invalid birthdate provided');
     }
@@ -304,7 +311,10 @@ export const formatDateRange = (
  * @param locale - The locale to use for formatting (defaults to pt-BR)
  * @returns Human-readable time ago string
  */
-export const getTimeAgo = (date: Date | string | number, locale: string = DEFAULT_LOCALE): string => {
+export const getTimeAgo = (
+    date: Date | string | number,
+    locale: string = DEFAULT_LOCALE
+): string => {
     if (!isValidDate(date)) {
         return '';
     }
@@ -429,13 +439,18 @@ export const getDatesBetween = (startDate: Date, endDate: Date): Date[] => {
  * @param dateB - The second date
  * @returns True if dates are the same day, false otherwise
  */
-export const isSameDay = (dateA: Date | string | number, dateB: Date | string | number): boolean => {
+export const isSameDay = (
+    dateA: Date | string | number,
+    dateB: Date | string | number
+): boolean => {
     if (!isValidDate(dateA) || !isValidDate(dateB)) {
         return false;
     }
 
-    const dateAObj = typeof dateA === 'string' || typeof dateA === 'number' ? new Date(dateA) : dateA;
-    const dateBObj = typeof dateB === 'string' || typeof dateB === 'number' ? new Date(dateB) : dateB;
+    const dateAObj =
+        typeof dateA === 'string' || typeof dateA === 'number' ? new Date(dateA) : dateA;
+    const dateBObj =
+        typeof dateB === 'string' || typeof dateB === 'number' ? new Date(dateB) : dateB;
 
     return fnIsSameDay(dateAObj, dateBObj);
 };
@@ -462,7 +477,10 @@ export const getLocalTimezone = (): string => {
  * @param locale - The locale to use for formatting (defaults to pt-BR)
  * @returns Relative date string
  */
-export const formatRelativeDate = (date: Date | string | number, locale: string = DEFAULT_LOCALE): string => {
+export const formatRelativeDate = (
+    date: Date | string | number,
+    locale: string = DEFAULT_LOCALE
+): string => {
     if (!isValidDate(date)) {
         return '';
     }
@@ -565,10 +583,14 @@ export const isDateInRange = (
 
     const dateObj = typeof date === 'string' || typeof date === 'number' ? new Date(date) : date;
     const startDateObj =
-        typeof startDate === 'string' || typeof startDate === 'number' ? new Date(startDate) : startDate;
-    const endDateObj = typeof endDate === 'string' || typeof endDate === 'number' ? new Date(endDate) : endDate;
+        typeof startDate === 'string' || typeof startDate === 'number'
+            ? new Date(startDate)
+            : startDate;
+    const endDateObj =
+        typeof endDate === 'string' || typeof endDate === 'number' ? new Date(endDate) : endDate;
 
-    const isAfterOrEqualStart = isAfter(dateObj, startDateObj) || fnIsSameDay(dateObj, startDateObj);
+    const isAfterOrEqualStart =
+        isAfter(dateObj, startDateObj) || fnIsSameDay(dateObj, startDateObj);
     const isBeforeOrEqualEnd = isBefore(dateObj, endDateObj) || fnIsSameDay(dateObj, endDateObj);
 
     return isAfterOrEqualStart && isBeforeOrEqualEnd;

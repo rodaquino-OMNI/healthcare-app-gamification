@@ -52,7 +52,10 @@ export class TreatmentsController {
     @ApiOperation({ summary: 'Get all treatment plans for a user' })
     @ApiResponse({ status: 200, description: 'List of treatment plans returned.' })
     @PhiAccess('TreatmentPlan')
-    async findAll(@CurrentUser() userId: string, @Query() filterDto: FilterDto): Promise<TreatmentPlan[]> {
+    async findAll(
+        @CurrentUser() userId: string,
+        @Query() filterDto: FilterDto
+    ): Promise<TreatmentPlan[]> {
         return this.tracingService.createSpan('TreatmentsController.findAll', () => {
             return this.treatmentsService.findAll(userId, filterDto);
         });

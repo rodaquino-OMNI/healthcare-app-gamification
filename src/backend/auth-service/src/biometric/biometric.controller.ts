@@ -110,7 +110,10 @@ export class BiometricController {
     @Post('verify')
     @HttpCode(HttpStatus.OK)
     @ApiOperation({ summary: 'Verify biometric signature and authenticate' })
-    @ApiResponse({ status: 200, description: 'Biometric verification successful, returns JWT tokens' })
+    @ApiResponse({
+        status: 200,
+        description: 'Biometric verification successful, returns JWT tokens',
+    })
     @ApiResponse({ status: 401, description: 'Invalid signature or expired challenge' })
     @UsePipes(new ValidationPipe())
     async verify(@Body() body: VerifySignatureDto): Promise<AuthTokens> {

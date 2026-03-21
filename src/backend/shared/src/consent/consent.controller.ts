@@ -41,8 +41,10 @@ export class ConsentController {
     @ApiOperation({ summary: 'Grant a new consent' })
     @ApiResponse({ status: 201, description: 'Consent record created.' })
     @ApiResponse({ status: 400, description: 'Invalid consent data.' })
-    // eslint-disable-next-line max-len
-    async createConsent(@Req() req: AuthRequest, @Body(ValidationPipe) dto: CreateConsentDto): Promise<unknown> {
+    async createConsent(
+        @Req() req: AuthRequest,
+        @Body(ValidationPipe) dto: CreateConsentDto
+    ): Promise<unknown> {
         const userId = req.user?.id || req.user?.sub || '';
         const ip = req.ip || req.headers?.['x-forwarded-for'];
         const userAgent = req.headers?.['user-agent'];

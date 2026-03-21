@@ -1,4 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- Prisma GameProfile includes dynamic achievement relation; catch/rethrow requires any */
+/* eslint-disable @typescript-eslint/no-unsafe-argument -- error.stack is always string | undefined when narrowed via instanceof */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access -- error.stack accessed only after instanceof Error check */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
@@ -34,7 +36,10 @@ export class ProfilesService {
             });
 
             if (existingProfile) {
-                this.logger.warn(`Game profile already exists for user: ${userId}`, 'ProfilesService');
+                this.logger.warn(
+                    `Game profile already exists for user: ${userId}`,
+                    'ProfilesService'
+                );
                 return mapToDomainGameProfile(existingProfile);
             }
 
@@ -157,8 +162,8 @@ export class ProfilesService {
                 },
             });
 
-            // Fix: Added explicit type annotation for the profile parameter
-            return profiles.map((profile: any) => mapToDomainGameProfile(profile));
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Prisma return type is complex; mapToDomainGameProfile accepts the raw shape
+            return profiles.map((profile) => mapToDomainGameProfile(profile as any));
         } catch (error) {
             this.logger.error(
                 'Failed to retrieve all game profiles',

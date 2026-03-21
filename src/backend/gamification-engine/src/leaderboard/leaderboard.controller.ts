@@ -33,7 +33,10 @@ export class LeaderboardController {
     @ApiOperation({ summary: 'Get leaderboard for a specific journey' })
     @ApiResponse({ status: 200, description: 'Returns leaderboard data for the journey' })
     async getLeaderboard(@Param('journey') journey: string): Promise<unknown> {
-        this.logger.log(`Request to retrieve leaderboard for journey: ${journey}`, 'LeaderboardController');
+        this.logger.log(
+            `Request to retrieve leaderboard for journey: ${journey}`,
+            'LeaderboardController'
+        );
 
         return this.leaderboardService.getLeaderboard(journey);
     }

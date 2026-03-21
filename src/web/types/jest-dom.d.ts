@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-interface */
+/* eslint-disable @typescript-eslint/no-empty-interface -- Augmentation placeholder for styled-components theme extension */
 
 // Augment the jest global namespace Matchers (for global jest usage)
 declare namespace jest {

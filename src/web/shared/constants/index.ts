@@ -1,10 +1,10 @@
 /**
  * Constants Index
- * 
+ *
  * This barrel file re-exports all constants from the constants directory,
  * providing a single import point for all shared constants used throughout
  * the AUSTA SuperApp web applications.
- * 
+ *
  * These constants support the journey-centered design approach and ensure
  * consistent identification of features, routes, and styling across the application.
  */

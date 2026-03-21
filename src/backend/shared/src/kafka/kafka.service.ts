@@ -74,7 +74,10 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
                 await this.connectConsumer();
             }
         } catch (error) {
-            this.logger.error('Failed to connect to Kafka', error instanceof Error ? error.stack : undefined);
+            this.logger.error(
+                'Failed to connect to Kafka',
+                error instanceof Error ? error.stack : undefined
+            );
             // Don't throw here to allow service to start even if Kafka is unavailable
         }
     }
@@ -92,7 +95,10 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
                 await this.consumer.disconnect();
             }
         } catch (error) {
-            this.logger.error('Error disconnecting from Kafka', error instanceof Error ? error.stack : undefined);
+            this.logger.error(
+                'Error disconnecting from Kafka',
+                error instanceof Error ? error.stack : undefined
+            );
         }
     }
 
@@ -107,7 +113,10 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
                 this.logger.log('Kafka producer connected');
             }
         } catch (error) {
-            this.logger.error('Failed to connect Kafka producer', error instanceof Error ? error.stack : undefined);
+            this.logger.error(
+                'Failed to connect Kafka producer',
+                error instanceof Error ? error.stack : undefined
+            );
             this.isProducerConnected = false;
             throw error;
         }
@@ -127,7 +136,10 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
                 this.setupConsumerEvents();
             }
         } catch (error) {
-            this.logger.error('Failed to connect Kafka consumer', error instanceof Error ? error.stack : undefined);
+            this.logger.error(
+                'Failed to connect Kafka consumer',
+                error instanceof Error ? error.stack : undefined
+            );
             this.isConsumerConnected = false;
             throw error;
         }
@@ -156,10 +168,13 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
                     const parsedMessage = this.parseMessage(message.value);
                     const key = message.key ? message.key.toString() : undefined;
 
-                    this.logger.debug(`Processing message from topic ${topic}, partition ${partition}`, {
-                        key,
-                        offset: message.offset.toString(),
-                    });
+                    this.logger.debug(
+                        `Processing message from topic ${topic}, partition ${partition}`,
+                        {
+                            key,
+                            offset: message.offset.toString(),
+                        }
+                    );
 
                     // Convert Set to Array to fix iteration issue
                     const handlersArray = Array.from(handlers);
@@ -202,7 +217,9 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
         try {
             // Make sure consumer is connected
             if (!this.consumer) {
-                throw new Error('Kafka consumer not initialized. Provide a groupId in module options.');
+                throw new Error(
+                    'Kafka consumer not initialized. Provide a groupId in module options.'
+                );
             }
 
             if (!this.isConsumerConnected) {

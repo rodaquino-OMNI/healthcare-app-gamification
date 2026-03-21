@@ -71,14 +71,18 @@ export const planService = registerAs('planService', () => {
             supportedDocumentTypes: process.env.CLAIMS_SUPPORTED_DOC_TYPES
                 ? process.env.CLAIMS_SUPPORTED_DOC_TYPES.split(',').map((type) => type.trim())
                 : ['pdf', 'jpg', 'jpeg', 'png'],
-            maxDocumentSize: parseInt(process.env.CLAIMS_MAX_DOC_SIZE || String(10 * 1024 * 1024), 10), // Default 10MB
+            maxDocumentSize: parseInt(
+                process.env.CLAIMS_MAX_DOC_SIZE || String(10 * 1024 * 1024),
+                10
+            ), // Default 10MB
             maxDocumentsPerClaim: parseInt(process.env.CLAIMS_MAX_DOCS_PER_CLAIM || '5', 10),
             autoApprovalThreshold: parseFloat(process.env.CLAIMS_AUTO_APPROVAL_THRESHOLD || '100'),
             processingTimeEstimate: {
                 standard: parseInt(process.env.CLAIMS_PROCESSING_TIME_STANDARD || '3', 10),
                 express: parseInt(process.env.CLAIMS_PROCESSING_TIME_EXPRESS || '1', 10),
             },
-            retentionPeriod: parseInt(process.env.CLAIMS_RETENTION_PERIOD || String(7 * 365), 10), // Default 7 years
+            // Default 7 years
+            retentionPeriod: parseInt(process.env.CLAIMS_RETENTION_PERIOD || String(7 * 365), 10),
         },
 
         storage: {
@@ -101,7 +105,10 @@ export const planService = registerAs('planService', () => {
             procedureCatalog: {
                 source: process.env.PROCEDURE_CATALOG_SOURCE || 'database',
                 apiEndpoint: process.env.PROCEDURE_CATALOG_API_ENDPOINT,
-                refreshInterval: parseInt(process.env.PROCEDURE_CATALOG_REFRESH_INTERVAL || String(24 * 60 * 60), 10), // Default 24 hours
+                refreshInterval: parseInt(
+                    process.env.PROCEDURE_CATALOG_REFRESH_INTERVAL || String(24 * 60 * 60),
+                    10
+                ), // Default 24 hours
             },
             coverageDefaults: {
                 consultations: parseInt(process.env.COVERAGE_DEFAULT_CONSULTATIONS || '80', 10),
@@ -118,7 +125,8 @@ export const planService = registerAs('planService', () => {
             events: {
                 claimSubmitted: process.env.GAMIFICATION_EVENT_CLAIM_SUBMITTED || 'CLAIM_SUBMITTED',
                 claimApproved: process.env.GAMIFICATION_EVENT_CLAIM_APPROVED || 'CLAIM_APPROVED',
-                digitalCardAccessed: process.env.GAMIFICATION_EVENT_DIGITAL_CARD_ACCESSED || 'DIGITAL_CARD_ACCESSED',
+                digitalCardAccessed:
+                    process.env.GAMIFICATION_EVENT_DIGITAL_CARD_ACCESSED || 'DIGITAL_CARD_ACCESSED',
                 benefitUsed: process.env.GAMIFICATION_EVENT_BENEFIT_USED || 'BENEFIT_USED',
             },
         },
@@ -129,8 +137,11 @@ export const planService = registerAs('planService', () => {
             timeout: parseInt(process.env.NOTIFICATIONS_TIMEOUT || '5000', 10),
             templates: {
                 claimStatus: process.env.NOTIFICATIONS_TEMPLATE_CLAIM_STATUS || 'plan-claim-status',
-                claimReminder: process.env.NOTIFICATIONS_TEMPLATE_CLAIM_REMINDER || 'plan-claim-reminder',
-                benefitExpiration: process.env.NOTIFICATIONS_TEMPLATE_BENEFIT_EXPIRATION || 'plan-benefit-expiration',
+                claimReminder:
+                    process.env.NOTIFICATIONS_TEMPLATE_CLAIM_REMINDER || 'plan-claim-reminder',
+                benefitExpiration:
+                    process.env.NOTIFICATIONS_TEMPLATE_BENEFIT_EXPIRATION ||
+                    'plan-benefit-expiration',
             },
         },
 
@@ -149,7 +160,9 @@ export const planService = registerAs('planService', () => {
 
     // If validation fails, throw error with details
     if (validationResult.error) {
-        const errorDetails = validationResult.error.details.map((detail) => detail.message).join(', ');
+        const errorDetails = validationResult.error.details
+            .map((detail) => detail.message)
+            .join(', ');
         throw new Error(`Plan Service configuration validation failed: ${errorDetails}`);
     }
 

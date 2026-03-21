@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { AppException, ErrorType } from './exceptions.types';
 
 import { AllExceptionsFilter } from './exceptions.filter';
+import { AppException, ErrorType } from './exceptions.types';
 
 // Mock Sentry
 jest.mock('@sentry/node', () => ({
@@ -45,12 +45,7 @@ describe('AllExceptionsFilter', () => {
 
     describe('catch', () => {
         it('should handle AppException', () => {
-            const exception = new AppException(
-                'Test error',
-                ErrorType.VALIDATION,
-                'TEST_001',
-                {},
-            );
+            const exception = new AppException('Test error', ErrorType.VALIDATION, 'TEST_001', {});
 
             filter.catch(exception, mockHost as never);
 
@@ -76,12 +71,7 @@ describe('AllExceptionsFilter', () => {
         });
 
         it('should map ErrorType.BUSINESS to 422', () => {
-            const exception = new AppException(
-                'Business error',
-                ErrorType.BUSINESS,
-                'BIZ_001',
-                {},
-            );
+            const exception = new AppException('Business error', ErrorType.BUSINESS, 'BIZ_001', {});
 
             filter.catch(exception, mockHost as never);
 
@@ -89,12 +79,7 @@ describe('AllExceptionsFilter', () => {
         });
 
         it('should map ErrorType.EXTERNAL to 502', () => {
-            const exception = new AppException(
-                'External error',
-                ErrorType.EXTERNAL,
-                'EXT_001',
-                {},
-            );
+            const exception = new AppException('External error', ErrorType.EXTERNAL, 'EXT_001', {});
 
             filter.catch(exception, mockHost as never);
 
@@ -106,7 +91,7 @@ describe('AllExceptionsFilter', () => {
                 'Technical error',
                 ErrorType.TECHNICAL,
                 'TECH_001',
-                {},
+                {}
             );
 
             filter.catch(exception, mockHost as never);

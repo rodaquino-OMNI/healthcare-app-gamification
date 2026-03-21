@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- Prisma dynamic results require type casting in catch/rethrow patterns */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { TracingService } from '@app/shared/tracing/tracing.service';
@@ -35,9 +34,17 @@ export class DocumentsService {
      * @param file_path - Path to the stored file
      * @returns The newly created document
      */
-    async create(entityId: string, entityType: string, type: string, file_path: string): Promise<Document> {
+    async create(
+        entityId: string,
+        entityType: string,
+        type: string,
+        file_path: string
+    ): Promise<Document> {
         return this.tracingService.createSpan('documents.create', async () => {
-            this.logger.log(`Creating document for ${entityType} with ID ${entityId}`, 'DocumentsService');
+            this.logger.log(
+                `Creating document for ${entityType} with ID ${entityId}`,
+                'DocumentsService'
+            );
 
             try {
                 const document = await this.prisma.document.create({
@@ -55,7 +62,11 @@ export class DocumentsService {
             } catch (error: unknown) {
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error';
                 const errorStack = error instanceof Error ? error.stack : undefined;
-                this.logger.error(`Failed to create document: ${errorMessage}`, errorStack, 'DocumentsService');
+                this.logger.error(
+                    `Failed to create document: ${errorMessage}`,
+                    errorStack,
+                    'DocumentsService'
+                );
                 throw error as any;
             }
         });
@@ -70,7 +81,10 @@ export class DocumentsService {
      */
     async findAll(entityId: string, entityType: string): Promise<Document[]> {
         return this.tracingService.createSpan('documents.findAll', async () => {
-            this.logger.log(`Finding all documents for ${entityType} with ID ${entityId}`, 'DocumentsService');
+            this.logger.log(
+                `Finding all documents for ${entityType} with ID ${entityId}`,
+                'DocumentsService'
+            );
 
             try {
                 const documents = await this.prisma.document.findMany({
@@ -86,7 +100,11 @@ export class DocumentsService {
             } catch (error: unknown) {
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error';
                 const errorStack = error instanceof Error ? error.stack : undefined;
-                this.logger.error(`Failed to find documents: ${errorMessage}`, errorStack, 'DocumentsService');
+                this.logger.error(
+                    `Failed to find documents: ${errorMessage}`,
+                    errorStack,
+                    'DocumentsService'
+                );
                 throw error as any;
             }
         });
@@ -116,7 +134,11 @@ export class DocumentsService {
             } catch (error: unknown) {
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error';
                 const errorStack = error instanceof Error ? error.stack : undefined;
-                this.logger.error(`Failed to find document: ${errorMessage}`, errorStack, 'DocumentsService');
+                this.logger.error(
+                    `Failed to find document: ${errorMessage}`,
+                    errorStack,
+                    'DocumentsService'
+                );
                 throw error as any;
             }
         });
@@ -140,7 +162,11 @@ export class DocumentsService {
             } catch (error: unknown) {
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error';
                 const errorStack = error instanceof Error ? error.stack : undefined;
-                this.logger.error(`Failed to delete document: ${errorMessage}`, errorStack, 'DocumentsService');
+                this.logger.error(
+                    `Failed to delete document: ${errorMessage}`,
+                    errorStack,
+                    'DocumentsService'
+                );
                 throw error as any;
             }
         });

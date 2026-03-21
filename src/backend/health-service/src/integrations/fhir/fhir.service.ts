@@ -56,7 +56,11 @@ export class FhirService {
             return patientRecord;
         } catch (error) {
             const stack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Failed to retrieve patient record for patient ID: ${patientId}`, stack, 'FhirService');
+            this.logger.error(
+                `Failed to retrieve patient record for patient ID: ${patientId}`,
+                stack,
+                'FhirService'
+            );
 
             if (error instanceof AppException) {
                 throw error;
@@ -99,7 +103,11 @@ export class FhirService {
             return medicalEvents as unknown[];
         } catch (error) {
             const stack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Failed to retrieve medical history for patient ID: ${patientId}`, stack, 'FhirService');
+            this.logger.error(
+                `Failed to retrieve medical history for patient ID: ${patientId}`,
+                stack,
+                'FhirService'
+            );
 
             if (error instanceof AppException) {
                 throw error;
@@ -134,7 +142,10 @@ export class FhirService {
             throw new ForbiddenException("Access denied: cannot access another patient's records");
         }
 
-        this.logger.log(`Retrieving health metrics of type ${metricType} for patient ID: ${patientId}`, 'FhirService');
+        this.logger.log(
+            `Retrieving health metrics of type ${metricType} for patient ID: ${patientId}`,
+            'FhirService'
+        );
 
         try {
             // Construct the appropriate FHIR query based on metricType and dateRange
@@ -147,7 +158,9 @@ export class FhirService {
             // Placeholder for actual implementation
             const observations: FhirObservation[] = [];
 
-            const metrics = observations.map((obs) => this.transformObservationToMetric(obs, patientId, metricType));
+            const metrics = observations.map((obs) =>
+                this.transformObservationToMetric(obs, patientId, metricType)
+            );
 
             this.eventEmitter.emit('health.metrics.retrieved', {
                 patientId,

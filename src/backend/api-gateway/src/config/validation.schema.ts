@@ -1,5 +1,4 @@
-import { ErrorType } from '@app/shared/exceptions/exceptions.types';
-import * as Joi from 'joi';
+import Joi from 'joi';
 
 /**
  * Validation schema for the API Gateway configuration.
@@ -15,19 +14,29 @@ export class ApiGatewayConfigValidation {
             .required()
             .description('Application environment'),
         server: Joi.object({
-            port: Joi.number().port().required().description('Port number the API Gateway will listen on'),
+            port: Joi.number()
+                .port()
+                .required()
+                .description('Port number the API Gateway will listen on'),
             cors: Joi.object({
                 origin: Joi.alternatives()
-                    .try(Joi.string(), Joi.array().items(Joi.string(), Joi.object().instance(RegExp)))
+                    .try(
+                        Joi.string(),
+                        Joi.array().items(Joi.string(), Joi.object().instance(RegExp))
+                    )
                     .required()
                     .description('Allowed origins for CORS'),
-                credentials: Joi.boolean().default(true).description('Whether to allow credentials in CORS requests'),
+                credentials: Joi.boolean()
+                    .default(true)
+                    .description('Whether to allow credentials in CORS requests'),
                 methods: Joi.array()
                     .items(Joi.string())
                     .default(['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'])
                     .description('Allowed HTTP methods'),
                 allowedHeaders: Joi.array().items(Joi.string()).description('Allowed HTTP headers'),
-                exposedHeaders: Joi.array().items(Joi.string()).description('HTTP headers exposed to the browser'),
+                exposedHeaders: Joi.array()
+                    .items(Joi.string())
+                    .description('HTTP headers exposed to the browser'),
             })
                 .required()
                 .description('CORS configuration'),
@@ -36,7 +45,10 @@ export class ApiGatewayConfigValidation {
             .description('Server configuration'),
 
         authentication: Joi.object({
-            jwtSecret: Joi.string().min(32).required().description('Secret key for JWT token signing'),
+            jwtSecret: Joi.string()
+                .min(32)
+                .required()
+                .description('Secret key for JWT token signing'),
             tokenExpiration: Joi.string()
                 .pattern(/^\d+[smhd]$/)
                 .required()
@@ -50,8 +62,14 @@ export class ApiGatewayConfigValidation {
             .description('Authentication configuration'),
 
         rateLimiting: Joi.object({
-            windowMs: Joi.number().min(1000).required().description('Time window for rate limiting in milliseconds'),
-            max: Joi.number().min(1).required().description('Maximum number of requests within the time window'),
+            windowMs: Joi.number()
+                .min(1000)
+                .required()
+                .description('Time window for rate limiting in milliseconds'),
+            max: Joi.number()
+                .min(1)
+                .required()
+                .description('Maximum number of requests within the time window'),
             journeyLimits: Joi.object()
                 .pattern(Joi.string().valid('health', 'care', 'plan'), Joi.number().min(1))
                 .required()
@@ -68,10 +86,16 @@ export class ApiGatewayConfigValidation {
 
         caching: Joi.object({
             ttl: Joi.object()
-                .pattern(Joi.string().valid('health', 'care', 'plan'), Joi.string().pattern(/^\d+[smh]$/))
+                .pattern(
+                    Joi.string().valid('health', 'care', 'plan'),
+                    Joi.string().pattern(/^\d+[smh]$/)
+                )
                 .required()
                 .description('Time-to-live for cached responses by journey'),
-            maxItems: Joi.number().min(100).default(1000).description('Maximum number of items in the cache'),
+            maxItems: Joi.number()
+                .min(100)
+                .default(1000)
+                .description('Maximum number of items in the cache'),
             checkPeriod: Joi.number()
                 .min(0)
                 .default(600)

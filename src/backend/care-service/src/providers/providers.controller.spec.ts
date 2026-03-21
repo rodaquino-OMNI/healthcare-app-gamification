@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { ProvidersController } from './providers.controller';
 import { ProvidersService } from './providers.service';
 
@@ -135,7 +136,10 @@ describe('ProvidersController', () => {
         it('should return available when provider is free', async () => {
             mockProvidersService.checkAvailability.mockResolvedValue(true);
 
-            const result = await controller.checkAvailability('prov-123', '2025-06-15T10:00:00.000Z');
+            const result = await controller.checkAvailability(
+                'prov-123',
+                '2025-06-15T10:00:00.000Z'
+            );
 
             expect(result).toEqual({ available: true });
         });
@@ -143,13 +147,18 @@ describe('ProvidersController', () => {
         it('should return unavailable when provider is booked', async () => {
             mockProvidersService.checkAvailability.mockResolvedValue(false);
 
-            const result = await controller.checkAvailability('prov-123', '2025-06-15T10:00:00.000Z');
+            const result = await controller.checkAvailability(
+                'prov-123',
+                '2025-06-15T10:00:00.000Z'
+            );
 
             expect(result).toEqual({ available: false });
         });
 
         it('should throw on invalid date format', async () => {
-            await expect(controller.checkAvailability('prov-123', 'not-a-date')).rejects.toThrow('Invalid date format');
+            await expect(controller.checkAvailability('prov-123', 'not-a-date')).rejects.toThrow(
+                'Invalid date format'
+            );
         });
     });
 
@@ -162,7 +171,10 @@ describe('ProvidersController', () => {
             ];
             mockProvidersService.getAvailableTimeSlots.mockResolvedValue(mockSlots);
 
-            const result = await controller.getAvailableTimeSlots('prov-123', '2025-06-15T00:00:00.000Z');
+            const result = await controller.getAvailableTimeSlots(
+                'prov-123',
+                '2025-06-15T00:00:00.000Z'
+            );
 
             expect(result).toEqual({ timeSlots: mockSlots });
         });
@@ -187,7 +199,9 @@ describe('ProvidersController', () => {
         it('should propagate validation errors', async () => {
             mockProvidersService.create.mockRejectedValue(new Error('Provider name is required'));
 
-            await expect(controller.create({} as any, mockUser)).rejects.toThrow('Provider name is required');
+            await expect(controller.create({} as any, mockUser)).rejects.toThrow(
+                'Provider name is required'
+            );
         });
     });
 
@@ -205,9 +219,9 @@ describe('ProvidersController', () => {
         it('should propagate not found errors', async () => {
             mockProvidersService.update.mockRejectedValue(new Error('Provider not found'));
 
-            await expect(controller.update('nonexistent', mockProvider as any, mockUser)).rejects.toThrow(
-                'Provider not found'
-            );
+            await expect(
+                controller.update('nonexistent', mockProvider as any, mockUser)
+            ).rejects.toThrow('Provider not found');
         });
     });
 
@@ -222,7 +236,9 @@ describe('ProvidersController', () => {
         });
 
         it('should propagate errors when provider has active appointments', async () => {
-            mockProvidersService.delete.mockRejectedValue(new Error('Cannot delete provider with active appointments'));
+            mockProvidersService.delete.mockRejectedValue(
+                new Error('Cannot delete provider with active appointments')
+            );
 
             await expect(controller.delete('prov-123', mockUser)).rejects.toThrow(
                 'Cannot delete provider with active appointments'

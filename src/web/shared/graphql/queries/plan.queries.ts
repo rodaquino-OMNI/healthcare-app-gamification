@@ -6,18 +6,19 @@
  */
 
 import { gql } from '@apollo/client'; // v3.7.17
+
 import { PlanFragment, ClaimFragment } from '../fragments/plan.fragments';
 
 /**
  * GraphQL query to retrieve a specific plan by ID
  */
 export const GET_PLAN = gql`
-  query GetPlan($planId: ID!) {
-    getPlan(planId: $planId) {
-      ...PlanFragment
+    query GetPlan($planId: ID!) {
+        getPlan(planId: $planId) {
+            ...PlanFragment
+        }
     }
-  }
-  ${PlanFragment}
+    ${PlanFragment}
 `;
 
 /**
@@ -25,10 +26,10 @@ export const GET_PLAN = gql`
  * Optionally filtered by claim status
  */
 export const GET_CLAIMS = gql`
-  query GetClaims($planId: ID!, $status: ClaimStatus) {
-    getClaims(planId: $planId, status: $status) {
-      ...ClaimFragment
+    query GetClaims($planId: ID!, $status: ClaimStatus) {
+        getClaims(planId: $planId, status: $status) {
+            ...ClaimFragment
+        }
     }
-  }
-  ${ClaimFragment}
+    ${ClaimFragment}
 `;

@@ -74,9 +74,11 @@ describe('API Gateway E2E Tests', () => {
      * Test case: should return 401 Unauthorized for a protected endpoint without a valid token
      *
      * Verifies that the API Gateway correctly protects endpoints that require authentication.
-     * This ensures that only authorized users with a valid JWT token can access protected resources.
+     * This ensures that only authorized users with a valid JWT token can access protected
+     * resources.
      */
     it('should return 401 Unauthorized for a protected endpoint without a valid token', () => {
+        // eslint-disable-next-line max-len
         return request(app.getHttpServer()).get('/auth/profile').expect(HttpStatus.UNAUTHORIZED);
     });
 });

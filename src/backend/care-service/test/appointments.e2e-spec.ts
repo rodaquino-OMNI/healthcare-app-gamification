@@ -79,7 +79,10 @@ describe('AppointmentsController (e2e)', () => {
             notes: 'Updated notes',
         };
 
-        return agent.patch('/appointments/valid-uuid').send(updateAppointmentDto).expect(HttpStatus.OK);
+        return agent
+            .patch('/appointments/valid-uuid')
+            .send(updateAppointmentDto)
+            .expect(HttpStatus.OK);
     });
 
     it('/appointments/:id (DELETE) should return 204 if successful', () => {

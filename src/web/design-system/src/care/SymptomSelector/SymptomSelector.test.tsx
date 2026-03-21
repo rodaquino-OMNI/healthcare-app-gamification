@@ -2,10 +2,10 @@ import { describe, expect, it } from '@jest/globals';
 import { fireEvent, render } from '@testing-library/react-native';
 import React from 'react';
 
-// eslint-disable-next-line import/no-unresolved
+// eslint-disable-next-line import/no-unresolved -- Module resolved via Jest moduleNameMapper
 import SymptomSelector from './SymptomSelector';
 type Symptom = { id: string; name: string };
-// eslint-disable-next-line import/no-unresolved
+// eslint-disable-next-line import/no-unresolved -- Module resolved via Jest moduleNameMapper
 import { careTheme } from '../../themes/care.theme';
 
 const symptoms: Symptom[] = [
@@ -80,7 +80,7 @@ describe('SymptomSelector', () => {
 
         // The component's text color matches the Care theme's text color.
         const selectSymptomsText = getByText('Select Your Symptoms');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Mock factory returns untyped test double
         expect(selectSymptomsText).toHaveProp('style', { color: careTheme.colors.journeys.care.primary });
 
         // The component's background color matches the Care theme's background color.

@@ -1,7 +1,7 @@
 import { LoggerService } from '@app/shared/logging/logger.service';
-import { Injectable, HttpStatus } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
 
 /** Integrity verification verdict returned by platform APIs. */
@@ -45,7 +45,10 @@ export class IntegrityService {
             return this.verifyIosIntegrity(token);
         }
 
-        this.logger.warn(`Unsupported platform for integrity check: ${platform}`, 'IntegrityService');
+        this.logger.warn(
+            `Unsupported platform for integrity check: ${platform}`,
+            'IntegrityService'
+        );
         return { verified: false, verdict: 'UNSUPPORTED_PLATFORM' };
     }
 
@@ -56,12 +59,8 @@ export class IntegrityService {
      * and checks the device/app recognition verdicts.
      *
      * @see https://developer.android.com/google/play/integrity/verdict
-     *
-     * TODO: Configure GOOGLE_PLAY_INTEGRITY_API_KEY in environment variables
-     * TODO: Set GOOGLE_CLOUD_PROJECT_NUMBER in environment variables
      */
     async verifyAndroidIntegrity(token: string): Promise<IntegrityVerdict> {
-        // TODO: Replace with actual Google Play Integrity API key from env
         const apiKey = this.configService.get<string>('GOOGLE_PLAY_INTEGRITY_API_KEY', '');
 
         if (!apiKey) {
@@ -76,8 +75,16 @@ export class IntegrityService {
             // Google Play Integrity API v1 endpoint
             const url = `https://playintegrity.googleapis.com/v1/${token}:decodeIntegrityToken`;
 
+            interface AndroidIntegrityResponse {
+                tokenPayloadExternal?: {
+                    deviceIntegrity?: {
+                        deviceRecognitionVerdict?: string[];
+                    };
+                };
+            }
+
             const response = await firstValueFrom(
-                this.httpService.post(
+                this.httpService.post<AndroidIntegrityResponse>(
                     url,
                     { integrity_token: token },
                     {
@@ -119,12 +126,12 @@ export class IntegrityService {
             );
 
             return { verified: meetsBasic || meetsDevice || meetsStrong, verdict };
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
-            const errorMsg = error.message || 'Unknown error';
+        } catch (error: unknown) {
+            const err = error as { message?: string; stack?: string };
+            const errorMsg = err.message || 'Unknown error';
             this.logger.error(
                 `Android integrity verification failed: ${errorMsg}`,
-                error.stack || '',
+                err.stack || '',
                 'IntegrityService'
             );
             return { verified: false, verdict: 'VERIFICATION_ERROR' };
@@ -138,24 +145,25 @@ export class IntegrityService {
      * the app is a legitimate, unmodified build running on genuine hardware.
      *
      * @see https://developer.apple.com/documentation/devicecheck/validating_apps_that_connect_to_your_server
-     *
-     * TODO: Configure APPLE_APP_ATTEST_KEY_ID in environment variables
-     * TODO: Configure APPLE_TEAM_ID in environment variables
      */
     async verifyIosIntegrity(token: string): Promise<IntegrityVerdict> {
-        // TODO: Replace with actual Apple App Attest configuration from env
         const teamId = this.configService.get<string>('APPLE_TEAM_ID', '');
         const keyId = this.configService.get<string>('APPLE_APP_ATTEST_KEY_ID', '');
 
         if (!teamId || !keyId) {
-            this.logger.warn('Apple App Attest credentials not configured — skipping verification', 'IntegrityService');
+            this.logger.warn(
+                'Apple App Attest credentials not configured — skipping verification',
+                'IntegrityService'
+            );
             return { verified: false, verdict: 'CREDENTIALS_NOT_CONFIGURED' };
         }
 
         try {
             // Apple App Attest verification endpoint
             const environment =
-                this.configService.get<string>('NODE_ENV') === 'production' ? 'production' : 'development';
+                this.configService.get<string>('NODE_ENV') === 'production'
+                    ? 'production'
+                    : 'development';
 
             const baseUrl =
                 environment === 'production'
@@ -183,10 +191,14 @@ export class IntegrityService {
             this.logger.log(`iOS integrity verdict: ${verdict}`, 'IntegrityService');
 
             return { verified, verdict };
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
-            const errorMsg = error.message || 'Unknown error';
-            this.logger.error(`iOS integrity verification failed: ${errorMsg}`, error.stack || '', 'IntegrityService');
+        } catch (error: unknown) {
+            const err = error as { message?: string; stack?: string };
+            const errorMsg = err.message || 'Unknown error';
+            this.logger.error(
+                `iOS integrity verification failed: ${errorMsg}`,
+                err.stack || '',
+                'IntegrityService'
+            );
             return { verified: false, verdict: 'VERIFICATION_ERROR' };
         }
     }

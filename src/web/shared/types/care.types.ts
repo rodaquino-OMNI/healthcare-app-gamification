@@ -25,14 +25,14 @@ export type AppointmentStatus = 'upcoming' | 'completed' | 'cancelled';
  * Used for appointment booking and management in the Care Journey
  */
 export interface Appointment {
-  id: string;
-  userId: string;
-  providerId: string;
-  dateTime: string;
-  type: AppointmentType;
-  status: AppointmentStatus;
-  reason?: string;
-  notes?: string;
+    id: string;
+    userId: string;
+    providerId: string;
+    dateTime: string;
+    type: AppointmentType;
+    status: AppointmentStatus;
+    reason?: string;
+    notes?: string;
 }
 
 /**
@@ -40,14 +40,14 @@ export interface Appointment {
  * Used for medication tracking and reminders in the Care Journey
  */
 export interface Medication {
-  id: string;
-  userId: string;
-  name: string;
-  dosage: string;
-  frequency: string;
-  startDate: string;
-  endDate?: string;
-  prescribedBy?: string;
+    id: string;
+    userId: string;
+    name: string;
+    dosage: string;
+    frequency: string;
+    startDate: string;
+    endDate?: string;
+    prescribedBy?: string;
 }
 
 /**
@@ -61,14 +61,14 @@ export type TelemedicineSessionStatus = 'connecting' | 'connected' | 'reconnecti
  * Used for virtual consultations in the Care Journey
  */
 export interface TelemedicineSession {
-  id: string;
-  appointmentId: string;
-  userId: string;
-  providerId: string;
-  status: TelemedicineSessionStatus;
-  startTime?: string;
-  endTime?: string;
-  roomUrl?: string;
+    id: string;
+    appointmentId: string;
+    userId: string;
+    providerId: string;
+    status: TelemedicineSessionStatus;
+    startTime?: string;
+    endTime?: string;
+    roomUrl?: string;
 }
 
 /**
@@ -81,17 +81,17 @@ export type TreatmentPlanStatus = 'active' | 'completed' | 'cancelled' | 'paused
  * Used for treatment tracking and compliance in the Care Journey
  */
 export interface TreatmentPlan {
-  id: string;
-  userId: string;
-  providerId: string;
-  name?: string;
-  description?: string;
-  diagnosis: string;
-  treatments: string[];
-  startDate: string;
-  endDate?: string;
-  status: TreatmentPlanStatus;
-  progress?: number;
+    id: string;
+    userId: string;
+    providerId: string;
+    name?: string;
+    description?: string;
+    diagnosis: string;
+    treatments: string[];
+    startDate: string;
+    endDate?: string;
+    status: TreatmentPlanStatus;
+    progress?: number;
 }
 
 /**
@@ -99,13 +99,13 @@ export interface TreatmentPlan {
  * Used for provider search, selection, and display in the Care Journey
  */
 export interface Provider {
-  id: string;
-  name: string;
-  specialty: string;
-  rating: number;
-  location?: string;
-  avatarUrl?: string;
-  available: boolean;
+    id: string;
+    name: string;
+    specialty: string;
+    rating: number;
+    location?: string;
+    avatarUrl?: string;
+    available: boolean;
 }
 
 /**
@@ -113,23 +113,23 @@ export interface Provider {
  * Used as route params between symptom checker screens.
  */
 export interface SymptomRegionDetail {
-  regionId: string;
-  regionLabel: string;
-  severity: number;
-  duration: string;
-  onset: Date | null;
-  notes: string;
+    regionId: string;
+    regionLabel: string;
+    severity: number;
+    duration: string;
+    onset: Date | null;
+    notes: string;
 }
 
 /**
  * Symptom condition result from the symptom checker analysis.
  */
 export interface SymptomCondition {
-  id: string;
-  name: string;
-  probability: number;
-  description: string;
-  urgency: 'low' | 'medium' | 'high' | 'emergency';
+    id: string;
+    name: string;
+    probability: number;
+    description: string;
+    urgency: 'low' | 'medium' | 'high' | 'emergency';
 }
 
 /**
@@ -137,14 +137,14 @@ export interface SymptomCondition {
  * Ensures data consistency for appointment booking
  */
 export const appointmentSchema = z.object({
-  id: z.string().uuid(),
-  userId: z.string().uuid(),
-  providerId: z.string().uuid(),
-  dateTime: z.string().datetime(),
-  type: z.enum(['telemedicine', 'in_person']),
-  status: z.enum(['upcoming', 'completed', 'cancelled']),
-  reason: z.string().optional(),
-  notes: z.string().optional(),
+    id: z.string().uuid(),
+    userId: z.string().uuid(),
+    providerId: z.string().uuid(),
+    dateTime: z.string().datetime(),
+    type: z.enum(['telemedicine', 'in_person']),
+    status: z.enum(['upcoming', 'completed', 'cancelled']),
+    reason: z.string().optional(),
+    notes: z.string().optional(),
 });
 
 /**
@@ -152,14 +152,14 @@ export const appointmentSchema = z.object({
  * Ensures data consistency for medication tracking
  */
 export const medicationSchema = z.object({
-  id: z.string().uuid(),
-  userId: z.string().uuid(),
-  name: z.string(),
-  dosage: z.string(),
-  frequency: z.string(),
-  startDate: z.string().datetime(),
-  endDate: z.string().datetime().optional(),
-  prescribedBy: z.string().optional(),
+    id: z.string().uuid(),
+    userId: z.string().uuid(),
+    name: z.string(),
+    dosage: z.string(),
+    frequency: z.string(),
+    startDate: z.string().datetime(),
+    endDate: z.string().datetime().optional(),
+    prescribedBy: z.string().optional(),
 });
 
 /**
@@ -167,14 +167,14 @@ export const medicationSchema = z.object({
  * Ensures data consistency for virtual consultations
  */
 export const telemedicineSessionSchema = z.object({
-  id: z.string().uuid(),
-  appointmentId: z.string().uuid(),
-  userId: z.string().uuid(),
-  providerId: z.string().uuid(),
-  status: z.enum(['connecting', 'connected', 'reconnecting', 'disconnected']),
-  startTime: z.string().datetime().optional(),
-  endTime: z.string().datetime().optional(),
-  roomUrl: z.string().url().optional(),
+    id: z.string().uuid(),
+    appointmentId: z.string().uuid(),
+    userId: z.string().uuid(),
+    providerId: z.string().uuid(),
+    status: z.enum(['connecting', 'connected', 'reconnecting', 'disconnected']),
+    startTime: z.string().datetime().optional(),
+    endTime: z.string().datetime().optional(),
+    roomUrl: z.string().url().optional(),
 });
 
 /**
@@ -182,14 +182,14 @@ export const telemedicineSessionSchema = z.object({
  * Ensures data consistency for treatment tracking
  */
 export const treatmentPlanSchema = z.object({
-  id: z.string().uuid(),
-  userId: z.string().uuid(),
-  providerId: z.string().uuid(),
-  diagnosis: z.string(),
-  treatments: z.array(z.string()),
-  startDate: z.string().datetime(),
-  endDate: z.string().datetime().optional(),
-  status: z.enum(['active', 'completed', 'cancelled', 'paused']),
+    id: z.string().uuid(),
+    userId: z.string().uuid(),
+    providerId: z.string().uuid(),
+    diagnosis: z.string(),
+    treatments: z.array(z.string()),
+    startDate: z.string().datetime(),
+    endDate: z.string().datetime().optional(),
+    status: z.enum(['active', 'completed', 'cancelled', 'paused']),
 });
 
 /**
@@ -197,11 +197,11 @@ export const treatmentPlanSchema = z.object({
  * Ensures data consistency for provider search and display
  */
 export const providerSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string(),
-  specialty: z.string(),
-  rating: z.number(),
-  location: z.string().optional(),
-  avatarUrl: z.string().url().optional(),
-  available: z.boolean(),
+    id: z.string().uuid(),
+    name: z.string(),
+    specialty: z.string(),
+    rating: z.number(),
+    location: z.string().optional(),
+    avatarUrl: z.string().url().optional(),
+    available: z.boolean(),
 });

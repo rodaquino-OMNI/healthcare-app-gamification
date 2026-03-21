@@ -15,7 +15,14 @@ import { WebsocketsModule } from '../websockets/websockets.module';
  * and supports gamification-related notifications.
  */
 @Module({
-    imports: [PreferencesModule, TemplatesModule, WebsocketsModule, KafkaModule, LoggerModule, TracingModule],
+    imports: [
+        PreferencesModule,
+        TemplatesModule,
+        WebsocketsModule,
+        KafkaModule,
+        LoggerModule,
+        TracingModule,
+    ],
     controllers: [NotificationsController],
     providers: [NotificationsService],
     exports: [NotificationsService],

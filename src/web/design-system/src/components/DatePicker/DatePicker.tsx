@@ -5,7 +5,7 @@ import ReactDatePickerOriginal, { registerLocale, setDefaultLocale, CalendarCont
 import styled from 'styled-components';
 
 // Cast to fix React 19 class component type incompatibility (refs property)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Third-party date library lacks strict typing
 const ReactDatePicker = ReactDatePickerOriginal as unknown as React.ComponentType<any>;
 
 import { Button } from '../../components/Button/Button';
@@ -24,9 +24,9 @@ const isValidDate = (date: unknown): date is Date => date instanceof Date && !is
 
 // Register the Brazilian Portuguese locale for the datepicker
 const ptLocale: Locale = pt as unknown as Locale;
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call -- Third-party date library lacks strict typing
 registerLocale('pt-BR', ptLocale);
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call -- Third-party date library lacks strict typing
 (setDefaultLocale as (locale: string) => void)('pt-BR');
 
 /**
@@ -281,7 +281,7 @@ export const DatePicker = forwardRef<any, DatePickerProps>((props, ref) => {
     // Render calendar container with custom styling and actions
     const renderCalendarContainer = ({ className, children }: CalendarContainerProps): React.ReactElement => (
         <Box padding="md">
-            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment */}
+            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Native module returns untyped result */}
             <CalendarContainer journey={journey} className={className}>
                 {children}
             </CalendarContainer>

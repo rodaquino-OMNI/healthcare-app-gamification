@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
 import { RolesGuard } from '@app/auth/auth/guards/roles.guard';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals'; // v29.0.0+
@@ -108,7 +108,8 @@ describe('Plans - E2E', () => {
             await prismaService.user.delete({
                 where: { id: testUserId },
             });
-        } catch (error) {
+        } catch (_error) {
+            // eslint-disable-next-line no-console -- test cleanup warning is expected output
             console.log('User already deleted or not found');
         }
     }
@@ -147,7 +148,9 @@ describe('Plans - E2E', () => {
         });
 
         it('should return 404 for non-existent plan', () => {
-            return request(app.getHttpServer()).get('/plans/non-existent-id').expect(HttpStatus.NOT_FOUND);
+            return request(app.getHttpServer())
+                .get('/plans/non-existent-id')
+                .expect(HttpStatus.NOT_FOUND);
         });
 
         it("should return 403 for accessing another user's plan", async () => {
@@ -172,7 +175,9 @@ describe('Plans - E2E', () => {
             });
 
             // Try to access another user's plan
-            await request(app.getHttpServer()).get(`/plans/${anotherPlan.id}`).expect(HttpStatus.FORBIDDEN);
+            await request(app.getHttpServer())
+                .get(`/plans/${anotherPlan.id}`)
+                .expect(HttpStatus.FORBIDDEN);
 
             // Clean up
             await prismaService.plan.delete({
@@ -227,7 +232,10 @@ describe('Plans - E2E', () => {
                 // Missing validity dates
             };
 
-            return request(app.getHttpServer()).post('/plans').send(invalidPlan).expect(HttpStatus.BAD_REQUEST);
+            return request(app.getHttpServer())
+                .post('/plans')
+                .send(invalidPlan)
+                .expect(HttpStatus.BAD_REQUEST);
         });
     });
 
@@ -315,7 +323,9 @@ describe('Plans - E2E', () => {
                 },
             });
 
-            await request(app.getHttpServer()).delete(`/plans/${planToDelete.id}`).expect(HttpStatus.OK);
+            await request(app.getHttpServer())
+                .delete(`/plans/${planToDelete.id}`)
+                .expect(HttpStatus.OK);
 
             // Verify deletion
             const deletedPlan = await prismaService.plan.findUnique({
@@ -326,7 +336,9 @@ describe('Plans - E2E', () => {
         });
 
         it('should return 404 for deleting non-existent plan', () => {
-            return request(app.getHttpServer()).delete('/plans/non-existent-id').expect(HttpStatus.NOT_FOUND);
+            return request(app.getHttpServer())
+                .delete('/plans/non-existent-id')
+                .expect(HttpStatus.NOT_FOUND);
         });
 
         it("should return 403 for deleting another user's plan", async () => {
@@ -351,7 +363,9 @@ describe('Plans - E2E', () => {
             });
 
             // Try to delete another user's plan
-            await request(app.getHttpServer()).delete(`/plans/${anotherPlan.id}`).expect(HttpStatus.FORBIDDEN);
+            await request(app.getHttpServer())
+                .delete(`/plans/${anotherPlan.id}`)
+                .expect(HttpStatus.FORBIDDEN);
 
             // Clean up
             await prismaService.plan.delete({
@@ -379,7 +393,9 @@ describe('Plans - E2E', () => {
         });
 
         it('should return 404 for non-existent plan coverage', () => {
-            return request(app.getHttpServer()).get('/plans/non-existent-id/coverage').expect(HttpStatus.NOT_FOUND);
+            return request(app.getHttpServer())
+                .get('/plans/non-existent-id/coverage')
+                .expect(HttpStatus.NOT_FOUND);
         });
     });
 
@@ -451,7 +467,9 @@ describe('Plans - E2E', () => {
         });
 
         it('should return 404 for non-existent plan benefits', () => {
-            return request(app.getHttpServer()).get('/plans/non-existent-id/benefits').expect(HttpStatus.NOT_FOUND);
+            return request(app.getHttpServer())
+                .get('/plans/non-existent-id/benefits')
+                .expect(HttpStatus.NOT_FOUND);
         });
     });
 

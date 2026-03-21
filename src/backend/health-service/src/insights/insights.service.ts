@@ -143,12 +143,7 @@ export class InsightsService {
         try {
             // Queries the database using PrismaService to retrieve
             // health metrics for the specified user.
-            /* eslint-disable
-               @typescript-eslint/no-unsafe-assignment,
-               @typescript-eslint/no-unsafe-call,
-               @typescript-eslint/no-unsafe-member-access,
-               @typescript-eslint/no-explicit-any
-               -- Prisma model delegate not exposed */
+            /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any -- Prisma model delegate not exposed */
             const metrics: HealthMetric[] = await (this.prisma as any).healthMetric.findMany({
                 where: {
                     userId: userId,
@@ -196,12 +191,7 @@ export class InsightsService {
         try {
             // Queries the database using PrismaService to
             // retrieve health goals for the specified user.
-            /* eslint-disable
-               @typescript-eslint/no-unsafe-assignment,
-               @typescript-eslint/no-unsafe-call,
-               @typescript-eslint/no-unsafe-member-access,
-               @typescript-eslint/no-explicit-any
-               -- Prisma model delegate not exposed */
+            /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any -- Prisma model delegate not exposed */
             const goals: HealthGoal[] = await (this.prisma as any).healthGoal.findMany({
                 where: {
                     recordId: userId,

@@ -1,5 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { PrismaService } from './prisma.service';
+
+// Mock PrismaClient to avoid requiring a real database adapter
+jest.mock('@prisma/client', () => {
+    return {
+        PrismaClient: class MockPrismaClient {
+            $connect = jest.fn().mockResolvedValue(undefined);
+            $disconnect = jest.fn().mockResolvedValue(undefined);
+        },
+    };
+});
 
 describe('PrismaService (Gamification)', () => {
     let service: PrismaService;

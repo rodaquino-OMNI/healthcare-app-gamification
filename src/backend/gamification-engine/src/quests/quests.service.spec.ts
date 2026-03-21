@@ -1,19 +1,20 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { Quest } from './entities/quest.entity';
 import { QuestsService } from './quests.service';
 import { PrismaService } from '../../../shared/src/database/prisma.service';
-import { ProfilesService } from '../profiles/profiles.service';
-import { AchievementsService } from '../achievements/achievements.service';
+import { AppException } from '../../../shared/src/exceptions/exceptions.types';
 import { KafkaService } from '../../../shared/src/kafka/kafka.service';
 import { LoggerService } from '../../../shared/src/logging/logger.service';
-import { AppException } from '../../../shared/src/exceptions/exceptions.types';
-import { Quest } from './entities/quest.entity';
+import { AchievementsService } from '../achievements/achievements.service';
 import { GameProfile } from '../profiles/entities/game-profile.entity';
+import { ProfilesService } from '../profiles/profiles.service';
 
 describe('QuestsService', () => {
     let service: QuestsService;
-    let prismaService: PrismaService;
-    let profilesService: ProfilesService;
+    let _prismaService: PrismaService;
+    let _profilesService: ProfilesService;
 
     const mockQuest: Quest = {
         id: 'quest-1',
@@ -89,8 +90,8 @@ describe('QuestsService', () => {
         }).compile();
 
         service = module.get<QuestsService>(QuestsService);
-        prismaService = module.get<PrismaService>(PrismaService);
-        profilesService = module.get<ProfilesService>(ProfilesService);
+        _prismaService = module.get<PrismaService>(PrismaService);
+        _profilesService = module.get<ProfilesService>(ProfilesService);
     });
 
     it('should be defined', () => {
@@ -135,7 +136,9 @@ describe('QuestsService', () => {
 
             const result = await service.findOne('quest-1');
 
-            expect(mockPrismaService.quest.findUnique).toHaveBeenCalledWith({ where: { id: 'quest-1' } });
+            expect(mockPrismaService.quest.findUnique).toHaveBeenCalledWith({
+                where: { id: 'quest-1' },
+            });
             expect(result).toEqual(mockQuest);
         });
 
@@ -207,7 +210,9 @@ describe('QuestsService', () => {
         it('should throw AppException when user profile not found', async () => {
             mockProfilesService.findById.mockRejectedValue(new Error('Profile not found'));
 
-            await expect(service.startQuest('nonexistent-user', 'quest-1')).rejects.toThrow(AppException);
+            await expect(service.startQuest('nonexistent-user', 'quest-1')).rejects.toThrow(
+                AppException
+            );
         });
     });
 
@@ -223,7 +228,10 @@ describe('QuestsService', () => {
             mockPrismaService.userQuest.findFirst.mockResolvedValue(inProgressUserQuest);
             mockPrismaService.userQuest.update.mockResolvedValue(completedUserQuest);
             mockProfilesService.update.mockResolvedValue({ ...mockGameProfile, xp: 300 });
-            mockAchievementsService.findByJourney.mockResolvedValue({ data: [], meta: { total: 0 } });
+            mockAchievementsService.findByJourney.mockResolvedValue({
+                data: [],
+                meta: { total: 0 },
+            });
             mockKafkaService.produce.mockResolvedValue(undefined);
 
             const result = await service.completeQuest('user-1', 'quest-1');
@@ -254,7 +262,9 @@ describe('QuestsService', () => {
             mockProfilesService.findById.mockResolvedValue(mockGameProfile);
             mockPrismaService.userQuest.findFirst.mockResolvedValue(null);
 
-            await expect(service.completeQuest('user-1', 'nonexistent-quest')).rejects.toThrow(NotFoundException);
+            await expect(service.completeQuest('user-1', 'nonexistent-quest')).rejects.toThrow(
+                NotFoundException
+            );
         });
 
         it('should publish kafka event on successful completion', async () => {
@@ -265,7 +275,10 @@ describe('QuestsService', () => {
             mockPrismaService.userQuest.findFirst.mockResolvedValue(inProgressUserQuest);
             mockPrismaService.userQuest.update.mockResolvedValue(completedUserQuest);
             mockProfilesService.update.mockResolvedValue({ ...mockGameProfile, xp: 300 });
-            mockAchievementsService.findByJourney.mockResolvedValue({ data: [], meta: { total: 0 } });
+            mockAchievementsService.findByJourney.mockResolvedValue({
+                data: [],
+                meta: { total: 0 },
+            });
             mockKafkaService.produce.mockResolvedValue(undefined);
 
             await service.completeQuest('user-1', 'quest-1');

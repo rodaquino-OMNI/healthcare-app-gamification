@@ -16,8 +16,8 @@ import {
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { SendNotificationDto } from './dto/send-notification.dto';
-import { NotificationsService } from './notifications.service';
 import { Notification } from './entities/notification.entity';
+import { NotificationsService } from './notifications.service';
 
 @ApiTags('notifications')
 @Controller('notifications')
@@ -28,14 +28,19 @@ export class NotificationsController {
     @UsePipes(new ValidationPipe({ whitelist: true }))
     @ApiOperation({ summary: 'Send a notification' })
     @ApiResponse({ status: 201, description: 'The notification has been sent.' })
-    async sendNotification(@Body() sendNotificationDto: SendNotificationDto): Promise<Notification> {
+    async sendNotification(
+        @Body() sendNotificationDto: SendNotificationDto
+    ): Promise<Notification> {
         return this.notificationsService.sendNotification(sendNotificationDto);
     }
 
     @Get()
     @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'Get all user notifications' })
-    async findAll(@CurrentUser() userId: string, @Query('isRead') isRead?: boolean): Promise<Notification[]> {
+    async findAll(
+        @CurrentUser() userId: string,
+        @Query('isRead') isRead?: boolean
+    ): Promise<Notification[]> {
         return this.notificationsService.findAllByUser(userId, isRead);
     }
 
@@ -49,7 +54,10 @@ export class NotificationsController {
     @Patch(':id/read')
     @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: 'Mark a notification as read' })
-    async markAsRead(@Param('id') id: string, @CurrentUser() userId: string): Promise<Notification> {
+    async markAsRead(
+        @Param('id') id: string,
+        @CurrentUser() userId: string
+    ): Promise<Notification> {
         return this.notificationsService.markAsRead(id, userId);
     }
 

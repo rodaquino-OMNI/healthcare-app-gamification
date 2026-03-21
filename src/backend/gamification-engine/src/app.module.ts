@@ -5,10 +5,10 @@ import { KafkaModule } from '@app/shared/kafka/kafka.module';
 import { LoggerModule } from '@app/shared/logging/logger.module';
 import { RedisModule } from '@app/shared/redis/redis.module';
 import { TracingModule } from '@app/shared/tracing/tracing.module';
-import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { Module } from '@nestjs/common'; // v10.0.0+
 import { ConfigModule } from '@nestjs/config'; // v3.1.1
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 import { AchievementsModule } from './achievements/achievements.module';
 import { gamificationEngine } from './config/configuration';

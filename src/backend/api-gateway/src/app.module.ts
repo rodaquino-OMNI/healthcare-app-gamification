@@ -7,12 +7,12 @@ import { ClaimsModule } from '@app/plan/claims/claims.module';
 import { AuditModule, AuditInterceptor } from '@app/shared/audit';
 import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
 import { TracingModule } from '@app/shared/tracing/tracing.module';
-import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'; // @nestjs/apollo v12.0.0+
 import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common'; // @nestjs/common v10.0.0+
 import { ConfigModule } from '@nestjs/config'; // @nestjs/config v10.0.0+
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql'; // @nestjs/graphql v12.0.0+
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 import configuration from './config/configuration';
 import { resolvers } from './graphql/resolvers';
@@ -33,11 +33,9 @@ import { RateLimitMiddleware } from './middleware/rate-limit.middleware';
             sortSchema: true,
             playground: process.env.NODE_ENV !== 'production',
             debug: process.env.NODE_ENV !== 'production',
-            /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-            /* eslint-disable @typescript-eslint/no-explicit-any */
+            /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any -- GraphQL resolvers map lacks strict typing in Apollo dynamic config */
             resolvers: resolvers as any,
-            /* eslint-enable @typescript-eslint/no-unsafe-assignment */
-            /* eslint-enable @typescript-eslint/no-explicit-any */
+            /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any */
         }),
         PrometheusModule.register(),
         ExceptionsModule,

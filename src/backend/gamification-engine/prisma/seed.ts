@@ -1,9 +1,10 @@
-/* eslint-disable no-console */
+/* eslint-disable no-console -- Seed script requires console output for progress reporting */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment -- Prisma Quest upsert returns typed result; using any[] for array */
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-async function main() {
+async function main(): Promise<void> {
     console.log('Starting seed process...');
 
     // Clear existing data (optional - uncomment if needed)
@@ -146,11 +147,13 @@ async function main() {
     // Seed quests
     console.log('Creating quests...');
 
-    const quests = await Promise.all([
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Prisma Quest model has extra fields not in generated types
+    const quests: any[] = await Promise.all([
         // Health Journey Quest
         prisma.quest.upsert({
             where: { id: '4a5b6c7d-1111-1111-1111-111111111111' },
             update: {},
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Prisma Quest model has extra fields not in generated types
             create: {
                 id: '4a5b6c7d-1111-1111-1111-111111111111',
                 title: 'Health Tracker',
@@ -158,13 +161,13 @@ async function main() {
                 journey: 'health',
                 icon: 'health-tracker',
                 xpReward: 150,
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } as any,
         }),
         // Care Journey Quest
         prisma.quest.upsert({
             where: { id: '5a6b7c8d-1111-1111-1111-111111111111' },
             update: {},
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Prisma Quest model has extra fields not in generated types
             create: {
                 id: '5a6b7c8d-1111-1111-1111-111111111111',
                 title: 'Wellness Journey',
@@ -172,13 +175,13 @@ async function main() {
                 journey: 'care',
                 icon: 'wellness-journey',
                 xpReward: 200,
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } as any,
         }),
         // Plan Journey Quest
         prisma.quest.upsert({
             where: { id: '6a7b8c9d-1111-1111-1111-111111111111' },
             update: {},
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Prisma Quest model has extra fields not in generated types
             create: {
                 id: '6a7b8c9d-1111-1111-1111-111111111111',
                 title: 'Plan Mastery',
@@ -186,7 +189,6 @@ async function main() {
                 journey: 'plan',
                 icon: 'plan-mastery',
                 xpReward: 150,
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } as any,
         }),
     ]);
@@ -276,6 +278,7 @@ main()
         console.error('Error during seeding:', e);
         process.exit(1);
     })
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises -- seed script teardown requires async finally
     .finally(async () => {
         await prisma.$disconnect();
     });

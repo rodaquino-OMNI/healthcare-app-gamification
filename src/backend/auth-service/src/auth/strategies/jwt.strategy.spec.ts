@@ -36,7 +36,7 @@ describe('JwtStrategy (Auth Service)', () => {
             mockConfigService as never,
             mockAuthService as never,
             mockUsersService as never,
-            mockLogger as never,
+            mockLogger as never
         );
     });
 
@@ -52,7 +52,7 @@ describe('JwtStrategy (Auth Service)', () => {
                 noSecretConfig as never,
                 mockAuthService as never,
                 mockUsersService as never,
-                mockLogger as never,
+                mockLogger as never
             );
         }).toThrow('JWT_SECRET environment variable is required');
     });

@@ -92,11 +92,15 @@ describe('ClaimsModule (e2e)', () => {
             amount: 100.0,
         };
 
-        const createResponse = await request(app.getHttpServer()).post('/claims').send(createClaimDto);
+        const createResponse = await request(app.getHttpServer())
+            .post('/claims')
+            .send(createClaimDto);
 
         const claimId = createResponse.body.id;
 
-        const response = await request(app.getHttpServer()).get(`/claims/${claimId}`).expect(HttpStatus.OK);
+        const response = await request(app.getHttpServer())
+            .get(`/claims/${claimId}`)
+            .expect(HttpStatus.OK);
 
         expect(response.body).toBeDefined();
         expect(response.body.id).toEqual(claimId);
@@ -116,7 +120,9 @@ describe('ClaimsModule (e2e)', () => {
             amount: 100.0,
         };
 
-        const createResponse = await request(app.getHttpServer()).post('/claims').send(createClaimDto);
+        const createResponse = await request(app.getHttpServer())
+            .post('/claims')
+            .send(createClaimDto);
 
         const claimId = createResponse.body.id;
 
@@ -147,11 +153,15 @@ describe('ClaimsModule (e2e)', () => {
             amount: 100.0,
         };
 
-        const createResponse = await request(app.getHttpServer()).post('/claims').send(createClaimDto);
+        const createResponse = await request(app.getHttpServer())
+            .post('/claims')
+            .send(createClaimDto);
 
         const claimId = createResponse.body.id;
 
-        await request(app.getHttpServer()).delete(`/claims/${claimId}`).expect(HttpStatus.NO_CONTENT);
+        await request(app.getHttpServer())
+            .delete(`/claims/${claimId}`)
+            .expect(HttpStatus.NO_CONTENT);
 
         // Verify that the claim is actually deleted
         await request(app.getHttpServer())

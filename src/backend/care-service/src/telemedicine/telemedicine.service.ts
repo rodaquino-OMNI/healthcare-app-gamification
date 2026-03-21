@@ -46,7 +46,6 @@ export class TelemedicineService {
      * @returns The created telemedicine session
      * @throws AppException if validation fails or system error occurs
      */
-    // eslint-disable-next-line max-len
     async startTelemedicineSession(
         createSessionDto: CreateSessionDto
     ): Promise<TelemedicineSession> {

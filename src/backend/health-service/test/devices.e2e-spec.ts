@@ -1,20 +1,16 @@
-import { CurrentUser } from '@app/auth/auth/decorators/current-user.decorator';
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 import { describe, it, beforeEach, afterEach, expect } from '@jest/globals'; // 29.0.0+
 import { INestApplication, HttpStatus } from '@nestjs/common'; // ^9.0.0
 import { AuthGuard } from '@nestjs/passport';
-
-const JwtAuthGuard = AuthGuard('jwt');
 import { Test, TestingModule } from '@nestjs/testing'; // ^9.0.0
-import request from 'supertest'; // 6.3.3
-import { SuperAgentTest } from 'supertest'; // 6.3.3
+import request, { SuperAgentTest } from 'supertest'; // 6.3.3
 
 import { AppModule } from '../src/app.module';
-import { DevicesController } from '../src/devices/devices.controller';
 import { DevicesService } from '../src/devices/devices.service';
 import { ConnectDeviceDto, DeviceType } from '../src/devices/dto/connect-device.dto';
-import { DeviceConnection } from '../src/devices/entities/device-connection.entity';
+
+const JwtAuthGuard = AuthGuard('jwt');
 
 /**
  * End-to-end tests for the DevicesController, verifying the correct behavior
@@ -23,8 +19,8 @@ import { DeviceConnection } from '../src/devices/entities/device-connection.enti
  */
 describe('DevicesController (e2e)', () => {
     let app: INestApplication;
-    let devicesService: DevicesService;
-    let prismaService: PrismaService;
+    let _devicesService: DevicesService;
+    let _prismaService: PrismaService;
     let agent: SuperAgentTest;
 
     const recordId = 'test-record-id';
@@ -42,9 +38,9 @@ describe('DevicesController (e2e)', () => {
             .compile();
 
         app = moduleFixture.createNestApplication();
-        devicesService = moduleFixture.get<DevicesService>(DevicesService);
-        prismaService = moduleFixture.get<PrismaService>(PrismaService);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        _devicesService = moduleFixture.get<DevicesService>(DevicesService);
+        _prismaService = moduleFixture.get<PrismaService>(PrismaService);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- E2E test uses dynamic request payload
         app.useGlobalFilters(new AllExceptionsFilter(moduleFixture.get('health' as any)));
         await app.init();
         agent = request.agent(app.getHttpServer());
@@ -74,7 +70,10 @@ describe('DevicesController (e2e)', () => {
 
     it('should get devices', async () => {
         // First connect a device to ensure there's data to retrieve
-        await agent.post(`/records/${recordId}/devices`).send(connectDeviceDto).expect(HttpStatus.CREATED);
+        await agent
+            .post(`/records/${recordId}/devices`)
+            .send(connectDeviceDto)
+            .expect(HttpStatus.CREATED);
 
         const response = await agent.get(`/records/${recordId}/devices`).expect(HttpStatus.OK);
 

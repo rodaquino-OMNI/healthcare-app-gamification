@@ -1,9 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { DevicesService } from './devices.service';
-import { WearablesService } from '../integrations/wearables/wearables.service';
-import { LoggerService } from '../../../shared/src/logging/logger.service';
 import { AppException } from '../../../shared/src/exceptions/exceptions.types';
+import { LoggerService } from '../../../shared/src/logging/logger.service';
+import { WearablesService } from '../integrations/wearables/wearables.service';
 
 describe('DevicesService', () => {
     let service: DevicesService;
@@ -63,7 +64,9 @@ describe('DevicesService', () => {
         };
 
         it('should connect a device and return a DeviceConnection', async () => {
-            (mockWearablesService as any).connect = jest.fn().mockResolvedValue(mockDeviceConnection);
+            (mockWearablesService as any).connect = jest
+                .fn()
+                .mockResolvedValue(mockDeviceConnection);
 
             const result = await service.connectDevice(recordId, connectDeviceDto as any);
 
@@ -71,31 +74,49 @@ describe('DevicesService', () => {
         });
 
         it('should call wearablesService.connect with correct arguments', async () => {
-            (mockWearablesService as any).connect = jest.fn().mockResolvedValue(mockDeviceConnection);
+            (mockWearablesService as any).connect = jest
+                .fn()
+                .mockResolvedValue(mockDeviceConnection);
 
             await service.connectDevice(recordId, connectDeviceDto as any);
 
-            expect((mockWearablesService as any).connect).toHaveBeenCalledWith(recordId, expect.any(String));
+            expect((mockWearablesService as any).connect).toHaveBeenCalledWith(
+                recordId,
+                expect.any(String)
+            );
         });
 
         it('should convert deviceType to lowercase before connecting', async () => {
-            (mockWearablesService as any).connect = jest.fn().mockResolvedValue(mockDeviceConnection);
+            (mockWearablesService as any).connect = jest
+                .fn()
+                .mockResolvedValue(mockDeviceConnection);
 
             await service.connectDevice(recordId, { deviceType: 'GOOGLE_FIT' } as any);
 
-            expect((mockWearablesService as any).connect).toHaveBeenCalledWith(recordId, 'google_fit');
+            expect((mockWearablesService as any).connect).toHaveBeenCalledWith(
+                recordId,
+                'google_fit'
+            );
         });
 
         it('should throw AppException when wearablesService.connect fails', async () => {
-            (mockWearablesService as any).connect = jest.fn().mockRejectedValue(new Error('Connection failed'));
+            (mockWearablesService as any).connect = jest
+                .fn()
+                .mockRejectedValue(new Error('Connection failed'));
 
-            await expect(service.connectDevice(recordId, connectDeviceDto as any)).rejects.toThrow(AppException);
+            await expect(service.connectDevice(recordId, connectDeviceDto as any)).rejects.toThrow(
+                AppException
+            );
         });
 
         it('should log error when connection fails', async () => {
-            (mockWearablesService as any).connect = jest.fn().mockRejectedValue(new Error('Network timeout'));
+            (mockWearablesService as any).connect = jest
+                .fn()
+                .mockRejectedValue(new Error('Network timeout'));
 
-            await expect(service.connectDevice(recordId, connectDeviceDto as any)).rejects.toThrow();
+            await expect(
+                service.connectDevice(recordId, connectDeviceDto as any)
+            ).rejects.toThrow();
 
             expect(mockLogger.error).toHaveBeenCalled();
         });

@@ -1,14 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
 import { describe, it, expect } from '@jest/globals';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-
-const JwtAuthGuard = AuthGuard('jwt');
-const RolesGuard = { canActivate: () => true };
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
 
 import { AppModule } from '../src/app.module';
+
+const JwtAuthGuard = AuthGuard('jwt');
+const RolesGuard = { canActivate: () => true };
 
 describe('AchievementsController (e2e)', () => {
     let app: INestApplication;
@@ -71,6 +71,8 @@ describe('AchievementsController (e2e)', () => {
         // Using a non-existent achievement ID
         const nonExistentId = 'non-existent-id';
 
-        return request(app.getHttpServer()).get(`/achievements/${nonExistentId}`).expect(HttpStatus.NOT_FOUND);
+        return request(app.getHttpServer())
+            .get(`/achievements/${nonExistentId}`)
+            .expect(HttpStatus.NOT_FOUND);
     });
 });

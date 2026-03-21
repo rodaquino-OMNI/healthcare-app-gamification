@@ -34,7 +34,8 @@ export class TracingService {
         try {
             // Execute the provided function within the context of the span
             // Using context.with to associate the span with the current context
-            const result = await context.with(trace.setSpan(context.active(), span), fn);
+            const activeCtx = trace.setSpan(context.active(), span);
+            const result = await context.with(activeCtx, fn);
 
             // If the function completes successfully, set the span status to OK
             if (span.isRecording()) {
@@ -43,7 +44,7 @@ export class TracingService {
 
             return result;
         } catch (error) {
-            // If the function throws an error, set the span status to ERROR and record the exception
+            // On error: set span status to ERROR and record the exception
             if (span.isRecording()) {
                 // Safe handling of error by ensuring it's an Exception type
                 if (error instanceof Error) {
@@ -62,9 +63,17 @@ export class TracingService {
 
             // Safe error logging with proper type checking
             if (error instanceof Error) {
-                this.logger.error(`Error in span ${name}: ${error.message}`, error.stack, 'AustaTracing');
+                this.logger.error(
+                    `Error in span ${name}: ${error.message}`,
+                    error.stack,
+                    'AustaTracing'
+                );
             } else {
-                this.logger.error(`Error in span ${name}: Unknown error`, undefined, 'AustaTracing');
+                this.logger.error(
+                    `Error in span ${name}: Unknown error`,
+                    undefined,
+                    'AustaTracing'
+                );
             }
 
             throw error;

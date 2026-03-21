@@ -28,19 +28,25 @@ export class CostSimulatorService {
      * @param simulateCostDto DTO containing procedure and plan information
      * @returns Cost simulation result including coverage and out-of-pocket expenses
      */
-    async simulateCost(simulateCostDto: SimulateCostDto) {
+    async simulateCost(simulateCostDto: SimulateCostDto): Promise<Record<string, unknown>> {
+        // eslint-disable-next-line @typescript-eslint/require-await -- tracing span requires async callback
         return this.tracingService.createSpan('CostSimulatorService.simulateCost', async () => {
             this.logger.log(
-                `Simulating cost for procedure ${simulateCostDto.procedureCode} (${simulateCostDto.codingStandard || 'unknown standard'}) for plan ${simulateCostDto.planId}`,
+                `Simulating cost for procedure ${simulateCostDto.procedureCode}` +
+                    ` (${simulateCostDto.codingStandard ?? 'unknown standard'})` +
+                    ` for plan ${simulateCostDto.planId}`,
                 'CostSimulatorService'
             );
 
             try {
                 // Get base coverage percentage based on procedure type
-                const baseCoveragePercentage = this.getMockCoveragePercentage(simulateCostDto.procedureType);
+                const baseCoveragePercentage = this.getMockCoveragePercentage(
+                    simulateCostDto.procedureType
+                );
 
                 // Apply network adjustment
-                const networkAdjustment = simulateCostDto.networkType === 'out-of-network' ? -20 : 0;
+                const networkAdjustment =
+                    simulateCostDto.networkType === 'out-of-network' ? -20 : 0;
 
                 // Apply facility adjustment if applicable
                 const facilityAdjustment = simulateCostDto.facilityId
@@ -48,19 +54,29 @@ export class CostSimulatorService {
                     : 0;
 
                 // Apply recurring procedure discount if applicable
+                // 2% discount per occurrence, max 10%
                 const recurringDiscount =
-                    simulateCostDto.isRecurring && simulateCostDto.occurrences && simulateCostDto.occurrences > 1
-                        ? Math.min((simulateCostDto.occurrences - 1) * 2, 10) // 2% discount per occurrence, max 10%
+                    simulateCostDto.isRecurring &&
+                    simulateCostDto.occurrences &&
+                    simulateCostDto.occurrences > 1
+                        ? Math.min((simulateCostDto.occurrences - 1) * 2, 10)
                         : 0;
 
                 // Calculate final coverage percentage
                 const coveragePercentage = Math.min(
-                    Math.max(baseCoveragePercentage + networkAdjustment + facilityAdjustment + recurringDiscount, 0),
+                    Math.max(
+                        baseCoveragePercentage +
+                            networkAdjustment +
+                            facilityAdjustment +
+                            recurringDiscount,
+                        0
+                    ),
                     100
                 );
 
                 // Calculate costs
-                const coveredAmount = simulateCostDto.estimatedFullCost * (coveragePercentage / 100);
+                const coveredAmount =
+                    simulateCostDto.estimatedFullCost * (coveragePercentage / 100);
                 const outOfPocketAmount = simulateCostDto.estimatedFullCost - coveredAmount;
 
                 // Determine cost breakdown
@@ -96,7 +112,8 @@ export class CostSimulatorService {
                 const errorStack = error instanceof Error ? error.stack : undefined;
 
                 this.logger.error(
-                    `Error simulating cost for procedure ${simulateCostDto.procedureCode}: ${errorMessage}`,
+                    `Error simulating cost for procedure` +
+                        ` ${simulateCostDto.procedureCode}: ${errorMessage}`,
                     errorStack,
                     'CostSimulatorService'
                 );
@@ -162,7 +179,10 @@ export class CostSimulatorService {
      * @param totalCost The total cost of the procedure
      * @returns Object with cost components
      */
-    private getCostBreakdown(procedureType: ProcedureType, totalCost: number): Record<string, number> {
+    private getCostBreakdown(
+        procedureType: ProcedureType,
+        totalCost: number
+    ): Record<string, number> {
         switch (procedureType) {
             case ProcedureType.CONSULTATION:
                 return {

@@ -15,12 +15,13 @@ describe('RolesGuard (Plan Service)', () => {
         guard = new RolesGuard(mockReflector);
     });
 
-    const createMockContext = (user?: { roles: string[] }): ExecutionContext => ({
-        getHandler: jest.fn(),
-        switchToHttp: () => ({
-            getRequest: () => ({ user }),
-        }),
-    } as unknown as ExecutionContext);
+    const createMockContext = (user?: { roles: string[] }): ExecutionContext =>
+        ({
+            getHandler: jest.fn(),
+            switchToHttp: () => ({
+                getRequest: () => ({ user }),
+            }),
+        }) as unknown as ExecutionContext;
 
     it('should be defined', () => {
         expect(guard).toBeDefined();

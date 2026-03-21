@@ -1,9 +1,10 @@
 import { gql } from '@apollo/client'; // version 3.7.17
+
 import {
-  healthMetricFragment,
-  healthGoalFragment,
-  medicalEventFragment,
-  deviceConnectionFragment
+    healthMetricFragment,
+    healthGoalFragment,
+    medicalEventFragment,
+    deviceConnectionFragment,
 } from '../fragments/health.fragments';
 
 /**
@@ -11,24 +12,18 @@ import {
  * Used by the Health Journey dashboard and detailed metric views
  */
 export const GET_HEALTH_METRICS = gql`
-  query GetHealthMetrics(
-    $userId: ID!
-    $types: [MetricType!]!
-    $startDate: DateTime
-    $endDate: DateTime
-    $source: MetricSource
-  ) {
-    getHealthMetrics(
-      userId: $userId
-      types: $types
-      startDate: $startDate
-      endDate: $endDate
-      source: $source
+    query GetHealthMetrics(
+        $userId: ID!
+        $types: [MetricType!]!
+        $startDate: DateTime
+        $endDate: DateTime
+        $source: MetricSource
     ) {
-      ...HealthMetricFields
+        getHealthMetrics(userId: $userId, types: $types, startDate: $startDate, endDate: $endDate, source: $source) {
+            ...HealthMetricFields
+        }
     }
-  }
-  ${healthMetricFragment}
+    ${healthMetricFragment}
 `;
 
 /**
@@ -36,12 +31,12 @@ export const GET_HEALTH_METRICS = gql`
  * Used by the Health Journey goals section for tracking and visualization
  */
 export const GET_HEALTH_GOALS = gql`
-  query GetHealthGoals($userId: ID!, $status: GoalStatus, $type: String) {
-    getHealthGoals(userId: $userId, status: $status, type: $type) {
-      ...HealthGoalFields
+    query GetHealthGoals($userId: ID!, $status: GoalStatus, $type: String) {
+        getHealthGoals(userId: $userId, status: $status, type: $type) {
+            ...HealthGoalFields
+        }
     }
-  }
-  ${healthGoalFragment}
+    ${healthGoalFragment}
 `;
 
 /**
@@ -49,24 +44,24 @@ export const GET_HEALTH_GOALS = gql`
  * Used by the Health Journey medical history timeline and detailed event views
  */
 export const GET_MEDICAL_HISTORY = gql`
-  query GetMedicalHistory(
-    $userId: ID!
-    $types: [MedicalEventType!]
-    $startDate: DateTime
-    $endDate: DateTime
-    $severity: MedicalEventSeverity
-  ) {
-    getMedicalHistory(
-      userId: $userId
-      types: $types
-      startDate: $startDate
-      endDate: $endDate
-      severity: $severity
+    query GetMedicalHistory(
+        $userId: ID!
+        $types: [MedicalEventType!]
+        $startDate: DateTime
+        $endDate: DateTime
+        $severity: MedicalEventSeverity
     ) {
-      ...MedicalEventFields
+        getMedicalHistory(
+            userId: $userId
+            types: $types
+            startDate: $startDate
+            endDate: $endDate
+            severity: $severity
+        ) {
+            ...MedicalEventFields
+        }
     }
-  }
-  ${medicalEventFragment}
+    ${medicalEventFragment}
 `;
 
 /**
@@ -74,10 +69,10 @@ export const GET_MEDICAL_HISTORY = gql`
  * Used by the Health Journey device connection management section
  */
 export const GET_CONNECTED_DEVICES = gql`
-  query GetConnectedDevices($userId: ID!) {
-    getConnectedDevices(userId: $userId) {
-      ...DeviceConnectionFields
+    query GetConnectedDevices($userId: ID!) {
+        getConnectedDevices(userId: $userId) {
+            ...DeviceConnectionFields
+        }
     }
-  }
-  ${deviceConnectionFragment}
+    ${deviceConnectionFragment}
 `;

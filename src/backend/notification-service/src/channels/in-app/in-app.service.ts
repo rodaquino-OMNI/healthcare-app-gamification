@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- WebSocket gateway and Redis operations use dynamic payloads */
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { RedisService } from '@app/shared/redis/redis.service';
 import { Injectable } from '@nestjs/common';
@@ -40,7 +40,10 @@ export class InAppService {
      */
     async send(userId: string, notification: Notification): Promise<boolean> {
         try {
-            this.logger.log(`Attempting to send in-app notification to user ${userId}`, 'InAppService');
+            this.logger.log(
+                `Attempting to send in-app notification to user ${userId}`,
+                'InAppService'
+            );
 
             // Check if user is connected to WebSocket server
             const isConnected = await this.checkUserConnection(userId);
@@ -56,7 +59,10 @@ export class InAppService {
                     timestamp: notification.createdAt || new Date(),
                 });
 
-                this.logger.debug(`In-app notification sent to connected user ${userId}`, 'InAppService');
+                this.logger.debug(
+                    `In-app notification sent to connected user ${userId}`,
+                    'InAppService'
+                );
                 return true;
             } else {
                 // If user is not connected, store notification for later delivery
@@ -108,7 +114,10 @@ export class InAppService {
      * @param notification - The notification to store
      * @returns A promise that resolves with a boolean indicating whether stored successfully
      */
-    async storeNotificationForLaterDelivery(userId: string, notification: Notification): Promise<boolean> {
+    async storeNotificationForLaterDelivery(
+        userId: string,
+        notification: Notification
+    ): Promise<boolean> {
         try {
             // Create a key for the user's pending notifications
             const pendingNotificationsKey = `user:${userId}:pending_notifications`;
@@ -132,7 +141,11 @@ export class InAppService {
             const notificationId = `${Date.now()}`;
 
             // Store the notification in a Redis hash
-            await this.redisService.hset(pendingNotificationsKey, notificationId, serializedNotification);
+            await this.redisService.hset(
+                pendingNotificationsKey,
+                notificationId,
+                serializedNotification
+            );
 
             // Set an appropriate TTL for the pending notifications key
             const journey = this.getJourneyFromNotification(notification);
@@ -169,11 +182,19 @@ export class InAppService {
 
         if (type.includes('health') || type.includes('metric') || type.includes('goal')) {
             return 'health';
-        } else if (type.includes('care') || type.includes('appointment') || type.includes('medication')) {
+        } else if (
+            type.includes('care') ||
+            type.includes('appointment') ||
+            type.includes('medication')
+        ) {
             return 'care';
         } else if (type.includes('plan') || type.includes('claim') || type.includes('coverage')) {
             return 'plan';
-        } else if (type.includes('achievement') || type.includes('quest') || type.includes('level')) {
+        } else if (
+            type.includes('achievement') ||
+            type.includes('quest') ||
+            type.includes('level')
+        ) {
             return 'game';
         }
 

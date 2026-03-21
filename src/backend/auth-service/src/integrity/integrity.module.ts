@@ -1,7 +1,7 @@
 import { LoggerModule } from '@app/shared/logging/logger.module';
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { HttpModule } from '@nestjs/axios';
 
 import { IntegrityController } from './integrity.controller';
 import { IntegrityService } from './integrity.service';

@@ -1,6 +1,14 @@
 import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
-import { Controller, Post, Body, UseGuards, UseFilters } from '@nestjs/common';
+import {
+    Controller,
+    Post,
+    Body,
+    UseGuards,
+    UseFilters,
+    UsePipes,
+    ValidationPipe,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 import { ProcessEventDto } from './dto/process-event.dto';
@@ -27,6 +35,7 @@ export class EventsController {
     @Post()
     @UseGuards(JwtAuthGuard)
     @UseFilters(AllExceptionsFilter)
+    @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
     @ApiOperation({ summary: 'Process a gamification event' })
     @ApiResponse({ status: 201, description: 'Event processed successfully' })
     async processEvent(@Body() processEventDto: ProcessEventDto): Promise<unknown> {

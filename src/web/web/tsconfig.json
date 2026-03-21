@@ -22,11 +22,11 @@
             "shared/*": ["../shared/*"],
             "src/web/design-system/src/*": ["../design-system/src/*"],
             "src/web/shared/*": ["../shared/*"],
-            "react": ["./node_modules/@types/react"],
-            "react-dom": ["./node_modules/@types/react-dom"],
-            "react/jsx-runtime": ["./node_modules/@types/react/jsx-runtime"]
+            "react": ["./node_modules/@types/react", "../node_modules/@types/react"],
+            "react-dom": ["./node_modules/@types/react-dom", "../node_modules/@types/react-dom"],
+            "react/jsx-runtime": ["./node_modules/@types/react/jsx-runtime", "../node_modules/@types/react/jsx-runtime"]
         },
-        "typeRoots": ["./node_modules/@types"],
+        "typeRoots": ["./node_modules/@types", "../node_modules/@types"],
         "types": ["node", "react", "react-dom"],
         "noImplicitAny": true,
         "noImplicitReturns": true,

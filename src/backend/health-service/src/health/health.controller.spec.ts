@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { HealthController } from './health.controller';
 import { HealthService } from './health.service';
 
@@ -64,7 +65,9 @@ describe('HealthController', () => {
         });
 
         it('should propagate validation errors', async () => {
-            mockHealthService.createHealthMetric.mockRejectedValue(new Error('Metric value cannot be negative'));
+            mockHealthService.createHealthMetric.mockRejectedValue(
+                new Error('Metric value cannot be negative')
+            );
 
             await expect(
                 controller.createHealthMetric('record-123', { ...createDto, value: -1 } as any)
@@ -102,9 +105,9 @@ describe('HealthController', () => {
                 new Error('Health metric with ID metric-999 not found')
             );
 
-            await expect(controller.updateHealthMetric('metric-999', updateDto as any)).rejects.toThrow(
-                'Health metric with ID metric-999 not found'
-            );
+            await expect(
+                controller.updateHealthMetric('metric-999', updateDto as any)
+            ).rejects.toThrow('Health metric with ID metric-999 not found');
         });
 
         it('should propagate range validation on update', async () => {
@@ -112,9 +115,9 @@ describe('HealthController', () => {
                 new Error('HEART_RATE value must be between 30 and 250')
             );
 
-            await expect(controller.updateHealthMetric('metric-123', { value: 999 } as any)).rejects.toThrow(
-                'HEART_RATE value must be between 30 and 250'
-            );
+            await expect(
+                controller.updateHealthMetric('metric-123', { value: 999 } as any)
+            ).rejects.toThrow('HEART_RATE value must be between 30 and 250');
         });
     });
 });

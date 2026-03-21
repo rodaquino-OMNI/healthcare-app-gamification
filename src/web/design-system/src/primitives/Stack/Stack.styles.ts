@@ -83,7 +83,7 @@ export interface StackStyleProps {
  * The main styled component for the Stack primitive that arranges its children in a stack layout.
  * Extends the Box component to inherit all its styling capabilities.
  */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-return -- Mock factory returns untyped test double */
 export const StackContainer = styled(Box)<StackStyleProps>`
     ${(props: StackStyleProps) => getStackStyles(props)}
 `;

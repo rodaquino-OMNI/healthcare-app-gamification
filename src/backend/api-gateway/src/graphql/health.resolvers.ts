@@ -21,7 +21,10 @@ export class HealthResolvers {
         private readonly httpService: HttpService,
         private readonly configService: ConfigService
     ) {
-        this.healthServiceUrl = this.configService.get<string>('services.health.url', 'http://health-service:3002');
+        this.healthServiceUrl = this.configService.get<string>(
+            'services.health.url',
+            'http://health-service:3002'
+        );
     }
 
     @Query('getHealthMetrics')
@@ -33,7 +36,7 @@ export class HealthResolvers {
         @Args('startDate', { nullable: true }) startDate?: Date,
         @Args('endDate', { nullable: true }) endDate?: Date,
         @Args('source', { nullable: true }) source?: string
-    ) {
+    ): Promise<unknown> {
         const params = new URLSearchParams();
         if (types) {
             params.append('types', types.join(','));
@@ -49,7 +52,9 @@ export class HealthResolvers {
         }
 
         const response = await lastValueFrom(
-            this.httpService.get(`${this.healthServiceUrl}/metrics/${userId}?${params}`)
+            this.httpService.get<unknown>(
+                `${this.healthServiceUrl}/metrics/${userId}?${String(params)}`
+            )
         );
         return response.data;
     }
@@ -61,7 +66,7 @@ export class HealthResolvers {
         @Args('userId') userId: string,
         @Args('status', { nullable: true }) status?: string,
         @Args('type', { nullable: true }) type?: string
-    ) {
+    ): Promise<unknown> {
         const params = new URLSearchParams();
         if (status) {
             params.append('status', status);
@@ -71,7 +76,9 @@ export class HealthResolvers {
         }
 
         const response = await lastValueFrom(
-            this.httpService.get(`${this.healthServiceUrl}/goals/${userId}?${params}`)
+            this.httpService.get<unknown>(
+                `${this.healthServiceUrl}/goals/${userId}?${String(params)}`
+            )
         );
         return response.data;
     }
@@ -85,7 +92,7 @@ export class HealthResolvers {
         @Args('startDate', { nullable: true }) startDate?: Date,
         @Args('endDate', { nullable: true }) endDate?: Date,
         @Args('severity', { nullable: true }) severity?: string
-    ) {
+    ): Promise<unknown> {
         const params = new URLSearchParams();
         if (types) {
             params.append('types', types.join(','));
@@ -101,15 +108,22 @@ export class HealthResolvers {
         }
 
         const response = await lastValueFrom(
-            this.httpService.get(`${this.healthServiceUrl}/medical-history/${userId}?${params}`)
+            this.httpService.get<unknown>(
+                `${this.healthServiceUrl}/medical-history/${userId}?${String(params)}`
+            )
         );
         return response.data;
     }
 
     @Query('getConnectedDevices')
     @UseGuards(JwtAuthGuard)
-    async getConnectedDevices(@CurrentUser() user: AuthenticatedUser, @Args('userId') userId: string) {
-        const response = await lastValueFrom(this.httpService.get(`${this.healthServiceUrl}/devices/${userId}`));
+    async getConnectedDevices(
+        @CurrentUser() user: AuthenticatedUser,
+        @Args('userId') userId: string
+    ): Promise<unknown> {
+        const response = await lastValueFrom(
+            this.httpService.get<unknown>(`${this.healthServiceUrl}/devices/${userId}`)
+        );
         return response.data;
     }
 
@@ -119,9 +133,12 @@ export class HealthResolvers {
         @CurrentUser() user: AuthenticatedUser,
         @Args('recordId') recordId: string,
         @Args('createMetricDto') createMetricDto: unknown
-    ) {
+    ): Promise<unknown> {
         const response = await lastValueFrom(
-            this.httpService.post(`${this.healthServiceUrl}/metrics/${recordId}`, createMetricDto)
+            this.httpService.post<unknown>(
+                `${this.healthServiceUrl}/metrics/${recordId}`,
+                createMetricDto
+            )
         );
         return response.data;
     }

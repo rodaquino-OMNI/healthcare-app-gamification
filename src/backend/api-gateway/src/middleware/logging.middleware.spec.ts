@@ -42,7 +42,7 @@ describe('LoggingMiddleware', () => {
 
             expect(next).toHaveBeenCalled();
             expect(mockLogger.log).toHaveBeenCalledWith(
-                expect.stringContaining('Request received GET /api/health'),
+                expect.stringContaining('Request received GET /api/health')
             );
         });
 

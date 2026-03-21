@@ -57,21 +57,32 @@ export class ConsentGuard implements CanActivate {
             return true;
         }
 
-        const request = context.switchToHttp().getRequest<{ user?: { id?: string; sub?: string } }>();
+        const request = context
+            .switchToHttp()
+            .getRequest<{ user?: { id?: string; sub?: string } }>();
         const user = request.user;
 
         if (!user) {
-            throw new AppException('Authentication required to verify consent', ErrorType.UNAUTHORIZED, 'CONSENT_003');
+            throw new AppException(
+                'Authentication required to verify consent',
+                ErrorType.UNAUTHORIZED,
+                'CONSENT_003'
+            );
         }
 
         const userId = user.id ?? user.sub ?? '';
         const hasConsent = await this.consentService.hasActiveConsent(userId, requiredConsent);
 
         if (!hasConsent) {
-            throw new AppException(`User consent required: ${requiredConsent}`, ErrorType.FORBIDDEN, 'CONSENT_004', {
-                requiredConsent,
-                userId,
-            });
+            throw new AppException(
+                `User consent required: ${requiredConsent}`,
+                ErrorType.FORBIDDEN,
+                'CONSENT_004',
+                {
+                    requiredConsent,
+                    userId,
+                }
+            );
         }
 
         return true;

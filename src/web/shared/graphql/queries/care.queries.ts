@@ -5,33 +5,31 @@
  */
 
 import { gql } from '@apollo/client'; // v3.7.17
-import {
-  AppointmentFragment,
-  ProviderFragment
-} from '../fragments/care.fragments';
+
+import { AppointmentFragment, ProviderFragment } from '../fragments/care.fragments';
 
 /**
  * GraphQL query to retrieve all appointments for a user
  */
 export const GET_APPOINTMENTS = gql`
-  query GetAppointments($userId: ID!) {
-    appointments(userId: $userId) {
-      ...AppointmentFragment
+    query GetAppointments($userId: ID!) {
+        appointments(userId: $userId) {
+            ...AppointmentFragment
+        }
     }
-  }
-  ${AppointmentFragment}
+    ${AppointmentFragment}
 `;
 
 /**
  * GraphQL query to retrieve a single appointment by ID
  */
 export const GET_APPOINTMENT = gql`
-  query GetAppointment($id: ID!) {
-    appointment(id: $id) {
-      ...AppointmentFragment
+    query GetAppointment($id: ID!) {
+        appointment(id: $id) {
+            ...AppointmentFragment
+        }
     }
-  }
-  ${AppointmentFragment}
+    ${AppointmentFragment}
 `;
 
 /**
@@ -39,30 +37,30 @@ export const GET_APPOINTMENT = gql`
  * with optional filtering by specialty and location
  */
 export const GET_PROVIDERS = gql`
-  query GetProviders($specialty: String, $location: String) {
-    providers(specialty: $specialty, location: $location) {
-      ...ProviderFragment
+    query GetProviders($specialty: String, $location: String) {
+        providers(specialty: $specialty, location: $location) {
+            ...ProviderFragment
+        }
     }
-  }
-  ${ProviderFragment}
+    ${ProviderFragment}
 `;
 
 /**
  * GraphQL query to retrieve treatment plans for a user
  */
 export const GET_TREATMENT_PLANS = gql`
-  query GetTreatmentPlans($userId: ID!) {
-    treatmentPlans(userId: $userId) {
-      id
-      title
-      description
-      status
-      startDate
-      endDate
-      provider {
-        ...ProviderFragment
-      }
+    query GetTreatmentPlans($userId: ID!) {
+        treatmentPlans(userId: $userId) {
+            id
+            title
+            description
+            status
+            startDate
+            endDate
+            provider {
+                ...ProviderFragment
+            }
+        }
     }
-  }
-  ${ProviderFragment}
+    ${ProviderFragment}
 `;

@@ -1,4 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- Seed script catch clauses and Prisma error codes require any */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access -- Prisma error code and message access on caught unknown errors */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment -- Prisma permission.id is typed as any in upsert result */
 import { faker } from '@faker-js/faker';
 import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
@@ -33,7 +35,7 @@ async function seed(): Promise<void> {
 
         // Create journey-specific data
         console.log('Creating journey-specific data...');
-        await seedJourneyData(prisma);
+        seedJourneyData(prisma);
 
         console.log('Database seeding completed successfully!');
     } catch (error) {
@@ -96,7 +98,12 @@ async function seedPermissions(prisma: PrismaClient): Promise<void> {
         { name: 'game:leaderboard:read', description: 'View leaderboards' },
     ];
 
-    const allPermissions = [...healthPermissions, ...carePermissions, ...planPermissions, ...gamificationPermissions];
+    const allPermissions = [
+        ...healthPermissions,
+        ...carePermissions,
+        ...planPermissions,
+        ...gamificationPermissions,
+    ];
 
     // Create all permissions in the database
     console.log(`Creating ${allPermissions.length} permissions...`);
@@ -259,7 +266,9 @@ async function seedRoles(prisma: PrismaClient): Promise<void> {
                 });
             }
 
-            console.log(`Created role: ${roleData.name} with ${permissionConnections.length} permissions`);
+            console.log(
+                `Created role: ${roleData.name} with ${permissionConnections.length} permissions`
+            );
         } catch (error) {
             console.error(`Error creating role: ${(error as any).message}`);
             throw error as any;
@@ -337,7 +346,9 @@ async function seedUsers(prisma: PrismaClient): Promise<void> {
             });
             console.log(`Created test user: ${testUser.email} with ${userRole.name} role`);
         }
-        console.log('Seed passwords set via SEED_ADMIN_PASSWORD / SEED_USER_PASSWORD env vars (or random)');
+        console.log(
+            'Seed passwords set via SEED_ADMIN_PASSWORD / SEED_USER_PASSWORD env vars (or random)'
+        );
     } catch (error) {
         console.error(`Error creating users: ${(error as any).message}`);
         throw error as any;
@@ -349,11 +360,13 @@ async function seedUsers(prisma: PrismaClient): Promise<void> {
  *
  * @param prisma - The Prisma client instance
  */
-async function seedJourneyData(_prisma: PrismaClient): Promise<void> {
+function seedJourneyData(_prisma: PrismaClient): void {
     // Models healthMetricType, deviceType, providerSpecialty, insurancePlanType,
     // claimType, and achievementType were removed from the schema.
     // Their data is now handled via enums and string fields on existing models.
-    console.log('Journey-specific seed data: no additional seeding required (models consolidated into enums/fields).');
+    console.log(
+        'Journey-specific seed data: no additional seeding required (models consolidated into enums/fields).'
+    );
 }
 
 // Run the seed function

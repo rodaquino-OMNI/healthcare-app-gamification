@@ -1,21 +1,22 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Test, TestingModule } from '@nestjs/testing';
+/* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
 import { ConfigService } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { Reward } from './entities/reward.entity';
 import { RewardsService } from './rewards.service';
 import { PrismaService } from '../../../shared/src/database/prisma.service';
-import { ProfilesService } from '../profiles/profiles.service';
+import { AppException } from '../../../shared/src/exceptions/exceptions.types';
 import { KafkaService } from '../../../shared/src/kafka/kafka.service';
 import { LoggerService } from '../../../shared/src/logging/logger.service';
 import { AchievementsService } from '../achievements/achievements.service';
-import { AppException } from '../../../shared/src/exceptions/exceptions.types';
-import { Reward } from './entities/reward.entity';
 import { GameProfile } from '../profiles/entities/game-profile.entity';
+import { ProfilesService } from '../profiles/profiles.service';
 
 describe('RewardsService', () => {
     let service: RewardsService;
-    let prismaService: PrismaService;
-    let profilesService: ProfilesService;
-    let kafkaService: KafkaService;
+    let _prismaService: PrismaService;
+    let _profilesService: ProfilesService;
+    let _kafkaService: KafkaService;
 
     const mockReward: Reward = {
         id: 'reward-1',
@@ -86,9 +87,9 @@ describe('RewardsService', () => {
         }).compile();
 
         service = module.get<RewardsService>(RewardsService);
-        prismaService = module.get<PrismaService>(PrismaService);
-        profilesService = module.get<ProfilesService>(ProfilesService);
-        kafkaService = module.get<KafkaService>(KafkaService);
+        _prismaService = module.get<PrismaService>(PrismaService);
+        _profilesService = module.get<ProfilesService>(ProfilesService);
+        _kafkaService = module.get<KafkaService>(KafkaService);
     });
 
     it('should be defined', () => {
@@ -157,7 +158,9 @@ describe('RewardsService', () => {
 
             const result = await service.findOne('reward-1');
 
-            expect(mockPrismaService.reward.findUnique).toHaveBeenCalledWith({ where: { id: 'reward-1' } });
+            expect(mockPrismaService.reward.findUnique).toHaveBeenCalledWith({
+                where: { id: 'reward-1' },
+            });
             expect(result).toEqual(mockReward);
         });
 
@@ -174,7 +177,12 @@ describe('RewardsService', () => {
         });
 
         it('should re-throw AppException without wrapping', async () => {
-            const appException = new AppException('Already thrown', 'BUSINESS' as any, 'REWARD_003', {});
+            const appException = new AppException(
+                'Already thrown',
+                'BUSINESS' as any,
+                'REWARD_003',
+                {}
+            );
             mockPrismaService.reward.findUnique.mockRejectedValue(appException);
 
             await expect(service.findOne('reward-1')).rejects.toThrow(AppException);
@@ -228,14 +236,18 @@ describe('RewardsService', () => {
         it('should throw AppException when user profile is not found', async () => {
             mockProfilesService.findById.mockRejectedValue(new Error('Profile not found'));
 
-            await expect(service.grantReward('nonexistent-user', 'reward-1')).rejects.toThrow(AppException);
+            await expect(service.grantReward('nonexistent-user', 'reward-1')).rejects.toThrow(
+                AppException
+            );
         });
 
         it('should throw AppException when reward is not found', async () => {
             mockProfilesService.findById.mockResolvedValue(mockGameProfile);
             mockPrismaService.reward.findUnique.mockResolvedValue(null);
 
-            await expect(service.grantReward('user-1', 'nonexistent-reward')).rejects.toThrow(AppException);
+            await expect(service.grantReward('user-1', 'nonexistent-reward')).rejects.toThrow(
+                AppException
+            );
         });
     });
 });

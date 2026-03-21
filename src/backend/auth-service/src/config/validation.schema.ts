@@ -1,4 +1,4 @@
-import * as Joi from 'joi';
+import Joi from 'joi';
 
 /**
  * Validation schema for the Auth Service configuration.
@@ -13,7 +13,9 @@ export class AuthServiceConfigValidation {
         // Server configuration
         PORT: Joi.number().default(3000),
         HOST: Joi.string().default('localhost'),
-        NODE_ENV: Joi.string().valid('development', 'production', 'test', 'staging').default('development'),
+        NODE_ENV: Joi.string()
+            .valid('development', 'production', 'test', 'staging')
+            .default('development'),
 
         // Authentication settings
         AUTH_JWT_SECRET: Joi.string().required(),

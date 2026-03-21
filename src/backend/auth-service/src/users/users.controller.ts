@@ -9,10 +9,12 @@ import {
     Delete,
     UseGuards,
     UseFilters,
+    UsePipes,
     Query,
     Patch,
     HttpCode,
     HttpStatus,
+    ValidationPipe,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
@@ -44,6 +46,7 @@ export class UsersController {
      * @returns The newly created user.
      */
     @Post()
+    @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
     @ApiOperation({ summary: 'Create a new user' })
     @ApiResponse({ status: 201, description: 'User created successfully' })
     create(@Body() createUserDto: CreateUserDto): Promise<User> {
@@ -76,7 +79,9 @@ export class UsersController {
         @Query() paginationDto: PaginationDto,
         @Query() filterDto: UserFilterDto
     ): Promise<PaginatedResponse<User>> {
-        return this.usersService.findAll(paginationDto, filterDto) as unknown as Promise<PaginatedResponse<User>>;
+        return this.usersService.findAll(paginationDto, filterDto) as unknown as Promise<
+            PaginatedResponse<User>
+        >;
     }
 
     /**
@@ -100,6 +105,7 @@ export class UsersController {
      * @returns The updated user.
      */
     @Patch(':id')
+    @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
     @ApiOperation({ summary: 'Update a user' })
     @ApiResponse({ status: 200, description: 'User updated successfully' })
     update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<User> {

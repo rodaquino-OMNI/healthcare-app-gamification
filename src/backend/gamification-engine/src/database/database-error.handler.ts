@@ -37,7 +37,9 @@ export class DatabaseErrorHandler implements OnApplicationBootstrap {
                     'DatabaseErrorHandler'
                 );
             } else {
-                const location = dbConfig.url ? 'using connection URL' : `at ${dbConfig.host}:${dbConfig.port}`;
+                const location = dbConfig.url
+                    ? 'using connection URL'
+                    : `at ${dbConfig.host}:${dbConfig.port}`;
                 this.logger.log(
                     `Database configuration validated. Connected to ${dbConfig.type} database ${location}`,
                     'DatabaseErrorHandler'
@@ -46,7 +48,11 @@ export class DatabaseErrorHandler implements OnApplicationBootstrap {
         } catch (error) {
             const msg = error instanceof Error ? error.message : 'Unknown error';
             const stack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Error validating database configuration: ${msg}`, stack, 'DatabaseErrorHandler');
+            this.logger.error(
+                `Error validating database configuration: ${msg}`,
+                stack,
+                'DatabaseErrorHandler'
+            );
         }
     }
 }
