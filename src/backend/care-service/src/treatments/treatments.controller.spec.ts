@@ -1,4 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
+// Mock the JwtAuthGuard to avoid auth setup in unit tests
+jest.mock('@app/auth/auth/guards/jwt-auth.guard', () => ({
+    JwtAuthGuard: jest.fn().mockImplementation(() => ({
+        canActivate: jest.fn().mockReturnValue(true),
+    })),
+}));
+
+import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 import { TracingService } from '@app/shared/tracing/tracing.service';
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -45,7 +53,10 @@ describe('TreatmentsController', () => {
                     useValue: mockTracingService,
                 },
             ],
-        }).compile();
+        })
+            .overrideGuard(JwtAuthGuard)
+            .useValue({ canActivate: () => true })
+            .compile();
 
         controller = module.get<TreatmentsController>(TreatmentsController);
     });

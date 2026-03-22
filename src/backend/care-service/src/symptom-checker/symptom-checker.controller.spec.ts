@@ -1,3 +1,11 @@
+// Mock the JwtAuthGuard to avoid auth setup in unit tests
+jest.mock('@app/auth/auth/guards/jwt-auth.guard', () => ({
+    JwtAuthGuard: jest.fn().mockImplementation(() => ({
+        canActivate: jest.fn().mockReturnValue(true),
+    })),
+}));
+
+import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { SymptomCheckerController } from './symptom-checker.controller';
@@ -22,7 +30,10 @@ describe('SymptomCheckerController', () => {
                     useValue: mockSymptomCheckerService,
                 },
             ],
-        }).compile();
+        })
+            .overrideGuard(JwtAuthGuard)
+            .useValue({ canActivate: () => true })
+            .compile();
 
         controller = module.get<SymptomCheckerController>(SymptomCheckerController);
         service = module.get<SymptomCheckerService>(SymptomCheckerService);

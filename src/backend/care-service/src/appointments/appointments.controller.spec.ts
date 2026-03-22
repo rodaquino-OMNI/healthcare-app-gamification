@@ -1,8 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
+// Mock the JwtAuthGuard to avoid auth setup in unit tests
+jest.mock('@app/auth/auth/guards/jwt-auth.guard', () => ({
+    JwtAuthGuard: jest.fn().mockImplementation(() => ({
+        canActivate: jest.fn().mockReturnValue(true),
+    })),
+}));
+
+import { JwtAuthGuard } from '@app/auth/auth/guards/jwt-auth.guard';
+import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
+import { LoggerService } from '@app/shared/logging/logger.service';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { AppointmentsController } from './appointments.controller';
 import { AppointmentsService } from './appointments.service';
+
+const mockLoggerService = {
+    log: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    debug: jest.fn(),
+};
 
 describe('AppointmentsController', () => {
     let controller: AppointmentsController;
@@ -37,8 +54,17 @@ describe('AppointmentsController', () => {
                     provide: AppointmentsService,
                     useValue: mockAppointmentsService,
                 },
+                {
+                    provide: LoggerService,
+                    useValue: mockLoggerService,
+                },
             ],
-        }).compile();
+        })
+            .overrideGuard(JwtAuthGuard)
+            .useValue({ canActivate: () => true })
+            .overrideFilter(AllExceptionsFilter)
+            .useValue({ catch: jest.fn() })
+            .compile();
 
         controller = module.get<AppointmentsController>(AppointmentsController);
     });
@@ -92,24 +118,24 @@ describe('AppointmentsController', () => {
             mockAppointmentsService.findAll.mockResolvedValue({ data: [], meta: {} });
             const query = { page: 2, limit: 5, status: 'SCHEDULED' };
 
-            await controller.findAll(query);
+            await controller.findAll(query as any);
 
             expect(mockAppointmentsService.findAll).toHaveBeenCalledWith(query);
         });
     });
 
     describe('findOne', () => {
-        it('should call appointmentsService.findOne with id', async () => {
-            mockAppointmentsService.findOne.mockResolvedValue(mockAppointment);
+        it('should call appointmentsService.findById with id', async () => {
+            mockAppointmentsService.findById.mockResolvedValue(mockAppointment);
 
             const result = await controller.findOne('appt-test-123');
 
-            expect(mockAppointmentsService.findOne).toHaveBeenCalledWith('appt-test-123');
+            expect(mockAppointmentsService.findById).toHaveBeenCalledWith('appt-test-123');
             expect(result).toEqual(mockAppointment);
         });
 
         it('should propagate not found errors', async () => {
-            mockAppointmentsService.findOne.mockRejectedValue(new Error('Appointment not found'));
+            mockAppointmentsService.findById.mockRejectedValue(new Error('Appointment not found'));
 
             await expect(controller.findOne('nonexistent-id')).rejects.toThrow(
                 'Appointment not found'
@@ -142,16 +168,16 @@ describe('AppointmentsController', () => {
     });
 
     describe('remove', () => {
-        it('should call appointmentsService.remove with id', async () => {
-            mockAppointmentsService.remove.mockResolvedValue(undefined);
+        it('should call appointmentsService.delete with id', async () => {
+            mockAppointmentsService.delete.mockResolvedValue(undefined);
 
             await controller.remove('appt-test-123');
 
-            expect(mockAppointmentsService.remove).toHaveBeenCalledWith('appt-test-123');
+            expect(mockAppointmentsService.delete).toHaveBeenCalledWith('appt-test-123');
         });
 
         it('should propagate errors from remove', async () => {
-            mockAppointmentsService.remove.mockRejectedValue(new Error('Appointment not found'));
+            mockAppointmentsService.delete.mockRejectedValue(new Error('Appointment not found'));
 
             await expect(controller.remove('nonexistent-id')).rejects.toThrow(
                 'Appointment not found'
