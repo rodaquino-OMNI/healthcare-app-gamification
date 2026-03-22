@@ -10,7 +10,7 @@ import { ScrollView, TextInput as RNTextInput } from 'react-native';
 import styled from 'styled-components/native';
 
 import { ROUTES } from '../../constants/routes';
-import type { SettingsNavigationProp, SettingsStackParamList } from '../../navigation/types';
+import type { SettingsNavigationProp } from '../../navigation/types';
 
 // --- Styled Components ---
 
@@ -201,11 +201,11 @@ export const HelpHomeScreen: React.FC = () => {
     ];
 
     const handleCategoryPress = (route: string): void => {
-        navigation.navigate(route as keyof SettingsStackParamList);
+        (navigation.navigate as (screen: string) => void)(route);
     };
 
     const handleQuickLink = (route: string): void => {
-        navigation.navigate(route as keyof SettingsStackParamList);
+        (navigation.navigate as (screen: string) => void)(route);
     };
 
     return (

@@ -74,32 +74,15 @@ export class HealthKitAdapter extends WearableAdapter {
                 throw new Error('HealthKit API credentials not configured');
             }
 
-            // In a real implementation, this would involve:
-            // 1. Generating a secure private key for authentication
-            // 2. Constructing a JWT for authentication
-            // 3. Making a request to the Apple HealthKit API to establish a connection
-            // 4. Storing the connection details securely
-
-            // Simulate a successful connection for now
-            const connectionDetails = {
-                id: `healthkit-${userId}`,
-                userId,
-                deviceType: 'Apple HealthKit',
-                deviceId: `healthkit-${Date.now()}`,
-                connectionStatus: 'connected',
-                lastSyncedAt: new Date(),
-                authToken: 'simulated-auth-token', // In a real implementation, this would be a real token
-                metadata: {
-                    deviceModel: 'iOS Device',
-                    connectionDate: new Date().toISOString(),
-                },
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            };
-
-            this.logger.log('info', `Successfully connected user ${userId} to Apple HealthKit`);
-
-            return connectionDetails as unknown as DeviceConnection;
+            // HealthKit requires server-to-server OAuth which is not yet implemented.
+            // Fail explicitly rather than returning a fake connection.
+            this.logger.warn(
+                `HealthKit connect() called for user ${userId} but real OAuth flow is not implemented`
+            );
+            throw new Error(
+                'HealthKit adapter connect() is not yet implemented. ' +
+                    'Real Apple HealthKit OAuth integration is required before this adapter can be used.'
+            );
         } catch (error: unknown) {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             const errorStack = error instanceof Error ? error.stack : undefined;

@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 
 import { AppModule } from './app.module';
+import { getHelmetOptions, parseCorsOrigins } from '../../shared/src/config/security.config';
 import { AllExceptionsFilter } from '../../shared/src/exceptions/exceptions.filter';
 import { LoggerService } from '../../shared/src/logging/logger.service';
 
@@ -16,8 +17,8 @@ async function bootstrap(): Promise<void> {
     // Create a NestJS application instance using NestFactory.create with AppModule
     const app = await NestFactory.create(AppModule);
 
-    // S1: Adds security HTTP headers via helmet middleware.
-    app.use(helmet());
+    // S1: Adds security HTTP headers via helmet middleware with CSP.
+    app.use(helmet(getHelmetOptions()));
 
     // Set up the LoggerService as the application logger
     const logger = app.get(LoggerService);
@@ -34,7 +35,7 @@ async function bootstrap(): Promise<void> {
 
     // Configure CORS settings based on allowed origins from configuration
     app.enableCors({
-        origin: ['https://app.austa.com.br', /\.austa\.com\.br$/],
+        origin: parseCorsOrigins(configService.get<string>('CORS_ORIGINS')),
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         preflightContinue: false,
         optionsSuccessStatus: 204,

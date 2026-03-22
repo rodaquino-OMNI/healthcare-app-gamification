@@ -51,15 +51,11 @@ const SymptomChecker: React.FC = () => {
 
         const symptomList = symptoms
             .split(',')
-            .map((s, index) => ({
-                id: `symptom-${index}`,
-                name: s.trim(),
-            }))
-            .filter((s) => s.name.length > 0);
+            .map((s) => s.trim())
+            .filter((s) => s.length > 0);
 
         navigation.navigate(ROUTES.CARE_SYMPTOM_BODY_MAP, {
             symptoms: symptomList,
-            description: symptoms,
         });
     };
 

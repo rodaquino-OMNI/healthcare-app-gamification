@@ -155,7 +155,7 @@ const SymptomHistory: React.FC = () => {
     }, [activeFilter]);
 
     const handleCheckPress = (checkId: string) => {
-        navigation.navigate(ROUTES.CARE_SYMPTOM_HISTORY_DETAIL, { checkId });
+        navigation.navigate(ROUTES.CARE_SYMPTOM_HISTORY_DETAIL, { sessionId: checkId });
     };
 
     const renderFilterTab = (option: (typeof FILTER_OPTIONS)[number]): React.ReactElement | null => {

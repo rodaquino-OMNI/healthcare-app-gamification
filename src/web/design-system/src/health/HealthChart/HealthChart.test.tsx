@@ -1,13 +1,13 @@
-import { describe, it, expect, jest } from '@jest/globals';
-import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { cleanup, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import HealthChart from './HealthChart';
-// @ts-expect-error Module path resolved at runtime via jest.mock
-// eslint-disable-next-line import/no-unresolved -- resolved at runtime via jest.mock
-import { JourneyProvider } from '../../../mobile/src/context/JourneyContext';
 
 const JOURNEY_IDS = { HEALTH: 'health', CARE: 'care', PLAN: 'plan' } as const;
+
+// Local mock for JourneyProvider (replaces cross-workspace import)
+const JourneyProvider = ({ children }: { children: React.ReactNode }) => <>{children}</>;
 
 // Mock health data for testing
 const mockHealthData = [
@@ -16,10 +16,9 @@ const mockHealthData = [
     { date: '2023-01-03', value: 70, min: 60, max: 100 },
 ];
 
-// Mock the chart components
+// Mock the chart components (named exports to match source imports)
 jest.mock('../../charts/LineChart/LineChart', () => ({
-    __esModule: true,
-    default: jest.fn((props: any) => (
+    LineChart: jest.fn((props: any) => (
         <div
             data-testid="line-chart"
             data-journey={props.journey}
@@ -36,8 +35,7 @@ jest.mock('../../charts/LineChart/LineChart', () => ({
 }));
 
 jest.mock('../../charts/BarChart/BarChart', () => ({
-    __esModule: true,
-    default: jest.fn((props: any) => (
+    BarChart: jest.fn((props: any) => (
         <div data-testid="bar-chart" data-journey={props.journey} aria-label={`Bar chart for ${props.title}`}>
             <div data-testid="bar-chart-data">{JSON.stringify(props.data)}</div>
             <div data-testid="bar-chart-labels">{JSON.stringify(props.labels)}</div>
@@ -48,8 +46,7 @@ jest.mock('../../charts/BarChart/BarChart', () => ({
 }));
 
 jest.mock('../../charts/RadialChart/RadialChart', () => ({
-    __esModule: true,
-    default: jest.fn((props: any) => (
+    RadialChart: jest.fn((props: any) => (
         <div data-testid="radial-chart" data-journey={props.journey} aria-label="Radial chart showing health data">
             <div data-testid="radial-chart-data">{JSON.stringify(props.data)}</div>
             <div data-testid="radial-chart-label-type">{props.labelType}</div>
@@ -57,19 +54,27 @@ jest.mock('../../charts/RadialChart/RadialChart', () => ({
     )),
 }));
 
-// Mock the useJourneyContext hook
-/* eslint-disable @typescript-eslint/no-unsafe-return -- Mock factory returns untyped test double */
-jest.mock('../../../mobile/src/context/JourneyContext', () => {
-    const original = jest.requireActual('../../../mobile/src/context/JourneyContext');
-    return {
-        ...original,
-        useJourneyContext: jest.fn().mockReturnValue({
-            journey: 'health',
-            setJourney: jest.fn(),
-        }),
-    };
-});
-/* eslint-enable @typescript-eslint/no-unsafe-return */
+// Note: HealthChart does not import JourneyContext — it accepts journey as a prop.
+// No cross-workspace mock is needed.
+
+// Mock primitives that depend on styled-components
+jest.mock('../../primitives/Box/Box', () => ({
+    Box: jest.fn(({ children, ...props }: any) => <div {...props}>{children}</div>),
+}));
+
+jest.mock('../../primitives/Text/Text', () => ({
+    Text: jest.fn(({ children, ...props }: any) => <span {...props}>{children}</span>),
+}));
+
+jest.mock('../../tokens/colors', () => ({
+    colors: {
+        journeys: {
+            health: { primary: '#0ACF83', secondary: '#05A66A' },
+            care: { primary: '#FF8C42', secondary: '#F17C3A' },
+            plan: { primary: '#3A86FF', secondary: '#2D6FD9' },
+        },
+    },
+}));
 
 // Helper function to render a component with the JourneyProvider
 const renderWithJourney = (ui: React.ReactElement, journeyId: string = JOURNEY_IDS.HEALTH) => {
@@ -104,6 +109,9 @@ describe('HealthChart', () => {
 
         // Check if the correct journey is applied to the chart
         expect(screen.getByTestId('line-chart')).toHaveAttribute('data-journey', 'health');
+
+        // Clean up before re-rendering with a different journey
+        cleanup();
 
         // Render with a different journey
         render(

@@ -21,9 +21,7 @@ import type { CareStackParamList } from '../../navigation/types';
 /**
  * Appointment with optional status field (extended from the base type).
  */
-interface AppointmentWithStatus extends Appointment {
-    status?: string;
-}
+type AppointmentWithStatus = Appointment;
 
 /**
  * Displays the details of a specific appointment with actions

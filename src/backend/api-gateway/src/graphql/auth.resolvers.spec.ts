@@ -41,7 +41,7 @@ jest.mock('@nestjs/graphql', () => ({
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { AuthResolvers } from './auth.resolvers';
 
@@ -233,6 +233,210 @@ describe('AuthResolvers', () => {
                 { name: 'Jane Updated', email: undefined }
             );
             expect(result).toEqual(updatedUser);
+        });
+
+        it('should propagate errors from auth service', async () => {
+            mockHttpService.patch.mockReturnValue(throwError(() => new Error('Forbidden')));
+
+            await expect(resolvers.updateUser({ id: 'user-1' }, 'Name', undefined)).rejects.toThrow(
+                'Forbidden'
+            );
+        });
+    });
+
+    // -------------------------------------------------------------------------
+    // register - error handling
+    // -------------------------------------------------------------------------
+    describe('register - error handling', () => {
+        it('should propagate errors from auth service', async () => {
+            mockHttpService.post.mockReturnValue(
+                throwError(() => new Error('Email already exists'))
+            );
+
+            await expect(resolvers.register('Jane', 'existing@email.com', 'pass')).rejects.toThrow(
+                'Email already exists'
+            );
+        });
+    });
+
+    // -------------------------------------------------------------------------
+    // logout - error handling
+    // -------------------------------------------------------------------------
+    describe('logout - error handling', () => {
+        it('should propagate errors from auth service', async () => {
+            mockHttpService.post.mockReturnValue(throwError(() => new Error('Session expired')));
+
+            await expect(resolvers.logout({ id: 'user-1' })).rejects.toThrow('Session expired');
+        });
+    });
+
+    // -------------------------------------------------------------------------
+    // refreshToken - error handling
+    // -------------------------------------------------------------------------
+    describe('refreshToken - error handling', () => {
+        it('should propagate errors from auth service', async () => {
+            mockHttpService.post.mockReturnValue(throwError(() => new Error('Token expired')));
+
+            await expect(resolvers.refreshToken({ id: 'user-1' })).rejects.toThrow('Token expired');
+        });
+    });
+
+    // -------------------------------------------------------------------------
+    // changePassword
+    // -------------------------------------------------------------------------
+    describe('changePassword', () => {
+        it('should POST to change password endpoint', async () => {
+            const mockUser = { id: 'user-1', email: 'test@example.com' };
+            mockHttpService.post.mockReturnValue(of({ data: { success: true } }));
+
+            const result = await resolvers.changePassword(mockUser, 'old-pass', 'new-pass');
+
+            expect(mockHttpService.post).toHaveBeenCalledWith(
+                `${mockAuthServiceUrl}/auth/password/change`,
+                { userId: 'user-1', oldPassword: 'old-pass', newPassword: 'new-pass' }
+            );
+            expect(result).toEqual({ success: true });
+        });
+
+        it('should propagate errors from auth service', async () => {
+            mockHttpService.post.mockReturnValue(throwError(() => new Error('Invalid password')));
+
+            await expect(
+                resolvers.changePassword({ id: 'user-1' }, 'wrong', 'new')
+            ).rejects.toThrow('Invalid password');
+        });
+    });
+
+    // -------------------------------------------------------------------------
+    // verifyMFA
+    // -------------------------------------------------------------------------
+    describe('verifyMFA', () => {
+        it('should POST to MFA verify endpoint with code', async () => {
+            const mockUser = { id: 'user-1' };
+            mockHttpService.post.mockReturnValue(of({ data: { verified: true } }));
+
+            const result = await resolvers.verifyMFA(mockUser, '123456');
+
+            expect(mockHttpService.post).toHaveBeenCalledWith(
+                `${mockAuthServiceUrl}/auth/mfa/verify`,
+                { userId: 'user-1', code: '123456' }
+            );
+            expect(result).toEqual({ verified: true });
+        });
+
+        it('should propagate errors for invalid code', async () => {
+            mockHttpService.post.mockReturnValue(throwError(() => new Error('Invalid MFA code')));
+
+            await expect(resolvers.verifyMFA({ id: 'u1' }, '000000')).rejects.toThrow(
+                'Invalid MFA code'
+            );
+        });
+    });
+
+    // -------------------------------------------------------------------------
+    // setupMFA
+    // -------------------------------------------------------------------------
+    describe('setupMFA', () => {
+        it('should POST to MFA setup endpoint', async () => {
+            const mockUser = { id: 'user-1' };
+            const mfaData = { qrCode: 'data:image/png;base64,...', secret: 'JBSWY3DPEHPK3PXP' };
+            mockHttpService.post.mockReturnValue(of({ data: mfaData }));
+
+            const result = await resolvers.setupMFA(mockUser);
+
+            expect(mockHttpService.post).toHaveBeenCalledWith(
+                `${mockAuthServiceUrl}/auth/mfa/setup`,
+                { userId: 'user-1' }
+            );
+            expect(result).toEqual(mfaData);
+        });
+
+        it('should propagate errors', async () => {
+            mockHttpService.post.mockReturnValue(
+                throwError(() => new Error('MFA already enabled'))
+            );
+
+            await expect(resolvers.setupMFA({ id: 'user-1' })).rejects.toThrow(
+                'MFA already enabled'
+            );
+        });
+    });
+
+    // -------------------------------------------------------------------------
+    // disableMFA
+    // -------------------------------------------------------------------------
+    describe('disableMFA', () => {
+        it('should POST to MFA disable endpoint', async () => {
+            const mockUser = { id: 'user-1' };
+            mockHttpService.post.mockReturnValue(of({ data: { success: true } }));
+
+            const result = await resolvers.disableMFA(mockUser);
+
+            expect(mockHttpService.post).toHaveBeenCalledWith(
+                `${mockAuthServiceUrl}/auth/mfa/disable`,
+                { userId: 'user-1' }
+            );
+            expect(result).toEqual({ success: true });
+        });
+
+        it('should propagate errors', async () => {
+            mockHttpService.post.mockReturnValue(throwError(() => new Error('MFA not enabled')));
+
+            await expect(resolvers.disableMFA({ id: 'u1' })).rejects.toThrow('MFA not enabled');
+        });
+    });
+
+    // -------------------------------------------------------------------------
+    // socialLogin
+    // -------------------------------------------------------------------------
+    describe('socialLogin', () => {
+        it('should POST to social login endpoint with provider and token', async () => {
+            const loginData = { access_token: 'jwt-token', user: { id: 'u1' } };
+            mockHttpService.post.mockReturnValue(of({ data: loginData }));
+
+            const result = await resolvers.socialLogin('google', 'google-oauth-token');
+
+            expect(mockHttpService.post).toHaveBeenCalledWith(
+                `${mockAuthServiceUrl}/auth/social/google`,
+                { token: 'google-oauth-token' }
+            );
+            expect(result).toEqual(loginData);
+        });
+
+        it('should propagate errors for invalid provider', async () => {
+            mockHttpService.post.mockReturnValue(throwError(() => new Error('Unknown provider')));
+
+            await expect(resolvers.socialLogin('invalid', 'token')).rejects.toThrow(
+                'Unknown provider'
+            );
+        });
+    });
+
+    // -------------------------------------------------------------------------
+    // biometricLogin
+    // -------------------------------------------------------------------------
+    describe('biometricLogin', () => {
+        it('should POST biometric data to auth service', async () => {
+            const loginData = { access_token: 'jwt-token' };
+            mockHttpService.post.mockReturnValue(of({ data: loginData }));
+
+            const result = await resolvers.biometricLogin('fingerprint-data-base64');
+
+            expect(mockHttpService.post).toHaveBeenCalledWith(
+                `${mockAuthServiceUrl}/auth/biometric`,
+                { biometricData: 'fingerprint-data-base64' }
+            );
+            expect(result).toEqual(loginData);
+        });
+
+        it('should propagate errors', async () => {
+            mockHttpService.post.mockReturnValue(
+                throwError(() => new Error('Biometric not recognized'))
+            );
+
+            await expect(resolvers.biometricLogin('bad-data')).rejects.toThrow(
+                'Biometric not recognized'
+            );
         });
     });
 });

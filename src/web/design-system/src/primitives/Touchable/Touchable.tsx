@@ -1,4 +1,5 @@
 import React, { forwardRef } from 'react';
+import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 
 import { StyledTouchableOpacity } from './Touchable.styles';
 import { borderRadius as borderRadiusTokens } from '../../tokens/borderRadius';
@@ -7,7 +8,7 @@ import { colors } from '../../tokens/colors';
 /**
  * Props interface for the Touchable component
  */
-export interface TouchableProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface TouchableProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'style'> {
     /**
      * Function called when the component is pressed
      */
@@ -79,7 +80,7 @@ export interface TouchableProps extends React.ButtonHTMLAttributes<HTMLButtonEle
     /**
      * Additional styles to apply to the component
      */
-    style?: React.CSSProperties;
+    style?: StyleProp<ViewStyle> | React.CSSProperties;
 
     /**
      * Whether the touchable should take up the full width of its container
@@ -118,19 +119,24 @@ export const Touchable = forwardRef<HTMLButtonElement, TouchableProps>((props, r
     } = props;
 
     // Determine journey-specific styles if journey is specified
-    const journeyStyle: React.CSSProperties = journey
+    const journeyStyle: ViewStyle = journey
         ? {
               borderColor: colors.journeys[journey].primary,
-              outlineColor: colors.journeys[journey].accent,
           }
         : {};
 
     // Resolve borderRadius token
-    const borderRadiusStyle: React.CSSProperties = borderRadius
-        ? { borderRadius: borderRadiusTokens[borderRadius] }
+    const borderRadiusStyle: ViewStyle = borderRadius
+        ? { borderRadius: borderRadiusTokens[borderRadius] as unknown as number }
         : {};
 
-    const combinedStyle: React.CSSProperties = { ...journeyStyle, ...borderRadiusStyle, ...style };
+    // Flatten style prop (supports RN style arrays and CSS properties) into a plain object
+    const flatStyle: Record<string, unknown> = Array.isArray(style)
+        ? ((StyleSheet.flatten(style as StyleProp<ViewStyle>) as Record<string, unknown>) ?? {})
+        : typeof style === 'object' && style !== null
+          ? (style as Record<string, unknown>)
+          : {};
+    const combinedStyle = { ...journeyStyle, ...borderRadiusStyle, ...flatStyle } as React.CSSProperties;
 
     return (
         <StyledTouchableOpacity

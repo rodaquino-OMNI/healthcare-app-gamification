@@ -14,14 +14,14 @@ interface ScreenModule {
 }
 
 // Lazy-loaded screens (require + try/catch for resilience)
-let WellnessResourcesHomeScreen: React.ComponentType<unknown> = () => null;
-let ArticleListScreen: React.ComponentType<unknown> = () => null;
-let ArticleDetailScreen: React.ComponentType<unknown> = () => null;
-let VideoLibraryScreen: React.ComponentType<unknown> = () => null;
-let VideoPlayerScreen: React.ComponentType<unknown> = () => null;
-let WellnessProgramsScreen: React.ComponentType<unknown> = () => null;
-let ProgramDetailScreen: React.ComponentType<unknown> = () => null;
-let WellnessBookmarksScreen: React.ComponentType<unknown> = () => null;
+let WellnessResourcesHomeScreen: React.ComponentType = () => null;
+let ArticleListScreen: React.ComponentType = () => null;
+let ArticleDetailScreen: React.ComponentType = () => null;
+let VideoLibraryScreen: React.ComponentType = () => null;
+let VideoPlayerScreen: React.ComponentType = () => null;
+let WellnessProgramsScreen: React.ComponentType = () => null;
+let ProgramDetailScreen: React.ComponentType = () => null;
+let WellnessBookmarksScreen: React.ComponentType = () => null;
 
 try {
     const m = require('../../screens/health/wellness-resources/WellnessResourcesHome') as ScreenModule;

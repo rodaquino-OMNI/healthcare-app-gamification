@@ -81,13 +81,13 @@ const VisitFollowUp: React.FC = () => {
 
     const handleBookFollowUp = useCallback(() => {
         navigation.navigate(ROUTES.CARE_BOOKING_CONFIRMATION, {
+            doctorId: 'doctor-001',
             appointmentId: `${appointmentId}-followup`,
-            doctorName,
-            date: selectedDate,
-            time: selectedSlot,
+            date: selectedDate ?? undefined,
+            time: selectedSlot ?? undefined,
             type: 'presencial',
         });
-    }, [navigation, appointmentId, doctorName, selectedDate, selectedSlot]);
+    }, [navigation, appointmentId, selectedDate, selectedSlot]);
 
     const handleRemindLater = useCallback(() => {
         navigation.goBack();

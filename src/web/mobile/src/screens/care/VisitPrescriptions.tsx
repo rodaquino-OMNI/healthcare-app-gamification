@@ -112,10 +112,8 @@ const VisitPrescriptions: React.FC = () => {
     }, [t]);
 
     const handleAddToMedications = useCallback(
-        (medicationName: string) => {
-            navigation.navigate(ROUTES.HEALTH_MEDICATION_ADD, {
-                prefillName: medicationName,
-            });
+        (_medicationName: string) => {
+            navigation.navigate(ROUTES.CARE_MEDICATION_TRACKING);
         },
         [navigation]
     );

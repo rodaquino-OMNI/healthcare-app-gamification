@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { HealthResolvers } from './health.resolvers';
 
@@ -109,6 +109,81 @@ describe('HealthResolvers', () => {
             const result = await resolvers.createHealthMetric(mockUser, 'record-1', { value: 72 });
 
             expect(result).toEqual(mockData);
+        });
+    });
+
+    // -------------------------------------------------------------------------
+    // Error handling and edge case tests
+    // -------------------------------------------------------------------------
+    describe('getHealthMetrics - error handling', () => {
+        it('should propagate errors from health service', async () => {
+            httpService.get.mockReturnValue(throwError(() => new Error('Service Unavailable')));
+
+            await expect(resolvers.getHealthMetrics(mockUser, 'user-1')).rejects.toThrow(
+                'Service Unavailable'
+            );
+        });
+
+        it('should pass startDate and endDate parameters', async () => {
+            httpService.get.mockReturnValue(of({ data: [] } as never));
+            const start = new Date('2024-01-01');
+            const end = new Date('2024-01-31');
+
+            await resolvers.getHealthMetrics(mockUser, 'user-1', undefined, start, end);
+
+            expect(httpService.get).toHaveBeenCalledWith(
+                expect.stringContaining('startDate=2024-01-01')
+            );
+            expect(httpService.get).toHaveBeenCalledWith(
+                expect.stringContaining('endDate=2024-01-31')
+            );
+        });
+    });
+
+    describe('getHealthGoals - edge cases', () => {
+        it('should propagate errors', async () => {
+            httpService.get.mockReturnValue(throwError(() => new Error('Not Found')));
+
+            await expect(resolvers.getHealthGoals(mockUser, 'user-1')).rejects.toThrow('Not Found');
+        });
+
+        it('should pass status and type filter params', async () => {
+            httpService.get.mockReturnValue(of({ data: [] } as never));
+
+            await resolvers.getHealthGoals(mockUser, 'user-1', 'active', 'weight');
+
+            expect(httpService.get).toHaveBeenCalledWith(expect.stringContaining('status=active'));
+            expect(httpService.get).toHaveBeenCalledWith(expect.stringContaining('type=weight'));
+        });
+    });
+
+    describe('getMedicalHistory - error handling', () => {
+        it('should propagate errors', async () => {
+            httpService.get.mockReturnValue(throwError(() => new Error('Forbidden')));
+
+            await expect(resolvers.getMedicalHistory(mockUser, 'user-1')).rejects.toThrow(
+                'Forbidden'
+            );
+        });
+    });
+
+    describe('getConnectedDevices - error handling', () => {
+        it('should propagate errors', async () => {
+            httpService.get.mockReturnValue(throwError(() => new Error('Not Found')));
+
+            await expect(resolvers.getConnectedDevices(mockUser, 'user-1')).rejects.toThrow(
+                'Not Found'
+            );
+        });
+    });
+
+    describe('createHealthMetric - error handling', () => {
+        it('should propagate errors', async () => {
+            httpService.post.mockReturnValue(throwError(() => new Error('Bad Request')));
+
+            await expect(resolvers.createHealthMetric(mockUser, 'record-1', {})).rejects.toThrow(
+                'Bad Request'
+            );
         });
     });
 });

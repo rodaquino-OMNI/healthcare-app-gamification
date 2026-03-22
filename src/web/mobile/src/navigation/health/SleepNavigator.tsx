@@ -14,18 +14,18 @@ interface ScreenModule {
 }
 
 // Lazy-loaded screens (require + try/catch for resilience)
-let SleepHomeScreen: React.ComponentType<unknown> = () => null;
-let SleepLogScreen: React.ComponentType<unknown> = () => null;
-let SleepQualityScreen: React.ComponentType<unknown> = () => null;
-let SleepDiaryScreen: React.ComponentType<unknown> = () => null;
-let SleepTrendsScreen: React.ComponentType<unknown> = () => null;
-let SleepGoalsScreen: React.ComponentType<unknown> = () => null;
-let SleepDetailScreen: React.ComponentType<unknown> = () => null;
-let BedtimeRoutineScreen: React.ComponentType<unknown> = () => null;
-let SmartAlarmScreen: React.ComponentType<unknown> = () => null;
-let SleepInsightsScreen: React.ComponentType<unknown> = () => null;
-let SleepDeviceSyncScreen: React.ComponentType<unknown> = () => null;
-let SleepExportScreen: React.ComponentType<unknown> = () => null;
+let SleepHomeScreen: React.ComponentType = () => null;
+let SleepLogScreen: React.ComponentType = () => null;
+let SleepQualityScreen: React.ComponentType = () => null;
+let SleepDiaryScreen: React.ComponentType = () => null;
+let SleepTrendsScreen: React.ComponentType = () => null;
+let SleepGoalsScreen: React.ComponentType = () => null;
+let SleepDetailScreen: React.ComponentType = () => null;
+let BedtimeRoutineScreen: React.ComponentType = () => null;
+let SmartAlarmScreen: React.ComponentType = () => null;
+let SleepInsightsScreen: React.ComponentType = () => null;
+let SleepDeviceSyncScreen: React.ComponentType = () => null;
+let SleepExportScreen: React.ComponentType = () => null;
 
 try {
     const m = require('../../screens/health/sleep/SleepHome') as ScreenModule;

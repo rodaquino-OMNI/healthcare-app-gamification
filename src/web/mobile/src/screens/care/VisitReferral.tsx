@@ -110,17 +110,14 @@ const VisitReferral: React.FC = () => {
     const { t } = useTranslation();
 
     const _appointmentId = route.params?.visitId ?? 'apt-001';
-    const referralId = 'ref-001';
+    const _referralId = 'ref-001';
 
     const referral = MOCK_REFERRAL;
     const remainingDays = getRemainingDays(referral.validUntil);
 
     const handleBookWithSpecialist = useCallback(() => {
-        navigation.navigate(ROUTES.CARE_DOCTOR_SEARCH, {
-            specialty: referral.specialist.specialty,
-            referralId,
-        });
-    }, [navigation, referral.specialist.specialty, referralId]);
+        navigation.navigate(ROUTES.CARE_DOCTOR_SEARCH);
+    }, [navigation]);
 
     const handleViewSpecialistProfile = useCallback(() => {
         navigation.navigate(ROUTES.CARE_DOCTOR_PROFILE, {

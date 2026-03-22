@@ -84,8 +84,9 @@ export class AuthMiddleware implements NestMiddleware {
                 try {
                     await this.usersService.findOne(userId);
                 } catch (error) {
-                    const errorStack = error instanceof Error ? error.stack : 'No stack trace';
-                    this.loggerService.error(`User not found: ${userId}`, errorStack);
+                    const errorType =
+                        error instanceof Error ? error.constructor.name : 'UnknownError';
+                    this.loggerService.warn(`User not found: ${errorType}`);
                     throw new HttpException('Invalid user', HttpStatus.UNAUTHORIZED);
                 }
 
@@ -95,21 +96,22 @@ export class AuthMiddleware implements NestMiddleware {
                     email: decoded.email as string | undefined,
                 };
 
-                this.loggerService.log(`Authenticated user: ${userId}`);
+                this.loggerService.debug(`Authenticated user: ${userId}`);
                 return next();
             } catch (error) {
-                const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-                const errorStack = error instanceof Error ? error.stack : 'No stack trace';
-                this.loggerService.error(`Token verification failed: ${errorMessage}`, errorStack);
+                if (error instanceof HttpException) {
+                    throw error;
+                }
+                const errorType = error instanceof Error ? error.constructor.name : 'UnknownError';
+                this.loggerService.warn(`Token verification failed: ${errorType}`);
                 throw new HttpException('Invalid or expired token', HttpStatus.UNAUTHORIZED);
             }
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;
             } else {
-                const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-                const errorStack = error instanceof Error ? error.stack : 'No stack trace';
-                this.loggerService.error(`Authentication error: ${errorMessage}`, errorStack);
+                const errorType = error instanceof Error ? error.constructor.name : 'UnknownError';
+                this.loggerService.warn(`Authentication error: ${errorType}`);
                 throw new HttpException('Authentication failed', HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
@@ -137,9 +139,7 @@ export class AuthMiddleware implements NestMiddleware {
                 return this.config.auth.jwtSecret;
             }
         } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            const errorStack = error instanceof Error ? error.stack : 'No stack trace';
-            this.loggerService.error(`Error getting JWT secret: ${errorMessage}`, errorStack);
+            this.loggerService.warn('Error resolving JWT secret from configuration');
         }
 
         // Fallback to environment variable -- no hardcoded default allowed

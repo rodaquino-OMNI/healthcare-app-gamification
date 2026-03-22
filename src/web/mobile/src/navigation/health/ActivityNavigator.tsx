@@ -14,16 +14,16 @@ interface ScreenModule {
 }
 
 // Lazy-loaded screens (require + try/catch for resilience)
-let ActivityHomeScreen: React.ComponentType<unknown> = () => null;
-let WorkoutLogScreen: React.ComponentType<unknown> = () => null;
-let WorkoutDetailScreen: React.ComponentType<unknown> = () => null;
-let WorkoutHistoryScreen: React.ComponentType<unknown> = () => null;
-let StepGoalsScreen: React.ComponentType<unknown> = () => null;
-let ActivityTrendsScreen: React.ComponentType<unknown> = () => null;
-let ExerciseLibraryScreen: React.ComponentType<unknown> = () => null;
-let ExerciseDetailScreen: React.ComponentType<unknown> = () => null;
-let ActivityDeviceSyncScreen: React.ComponentType<unknown> = () => null;
-let ActivityExportScreen: React.ComponentType<unknown> = () => null;
+let ActivityHomeScreen: React.ComponentType = () => null;
+let WorkoutLogScreen: React.ComponentType = () => null;
+let WorkoutDetailScreen: React.ComponentType = () => null;
+let WorkoutHistoryScreen: React.ComponentType = () => null;
+let StepGoalsScreen: React.ComponentType = () => null;
+let ActivityTrendsScreen: React.ComponentType = () => null;
+let ExerciseLibraryScreen: React.ComponentType = () => null;
+let ExerciseDetailScreen: React.ComponentType = () => null;
+let ActivityDeviceSyncScreen: React.ComponentType = () => null;
+let ActivityExportScreen: React.ComponentType = () => null;
 
 try {
     const m = require('../../screens/health/activity/ActivityHome') as ScreenModule;

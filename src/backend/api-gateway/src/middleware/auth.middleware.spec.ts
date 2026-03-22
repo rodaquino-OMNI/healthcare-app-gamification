@@ -87,6 +87,8 @@ function buildMiddleware(
     const mockLoggerService = {
         setContext: jest.fn(),
         log: jest.fn(),
+        warn: jest.fn(),
+        debug: jest.fn(),
         error: jest.fn(),
     };
 
@@ -287,7 +289,13 @@ describe('AuthMiddleware', () => {
             const mockUsersService = {
                 findOne: jest.fn().mockResolvedValue({ id: 'user-fn', email: 'fn@example.com' }),
             };
-            const mockLoggerService = { setContext: jest.fn(), log: jest.fn(), error: jest.fn() };
+            const mockLoggerService = {
+                setContext: jest.fn(),
+                log: jest.fn(),
+                warn: jest.fn(),
+                debug: jest.fn(),
+                error: jest.fn(),
+            };
 
             // configuration as a function — mirrors registerAs result
             const configFn = () => ({ auth: { jwtSecret: 'fn-secret' } });
@@ -315,7 +323,13 @@ describe('AuthMiddleware', () => {
             const mockUsersService = {
                 findOne: jest.fn().mockResolvedValue({ id: 'user-gw', email: 'gw@example.com' }),
             };
-            const mockLoggerService = { setContext: jest.fn(), log: jest.fn(), error: jest.fn() };
+            const mockLoggerService = {
+                setContext: jest.fn(),
+                log: jest.fn(),
+                warn: jest.fn(),
+                debug: jest.fn(),
+                error: jest.fn(),
+            };
 
             const configObj = { apiGateway: { auth: { jwtSecret: 'gw-secret' } } };
 
@@ -343,7 +357,13 @@ describe('AuthMiddleware', () => {
                     .fn()
                     .mockResolvedValue({ id: 'user-auth', email: 'auth@example.com' }),
             };
-            const mockLoggerService = { setContext: jest.fn(), log: jest.fn(), error: jest.fn() };
+            const mockLoggerService = {
+                setContext: jest.fn(),
+                log: jest.fn(),
+                warn: jest.fn(),
+                debug: jest.fn(),
+                error: jest.fn(),
+            };
 
             const configObj = { auth: { jwtSecret: 'auth-secret' } };
 
@@ -369,7 +389,13 @@ describe('AuthMiddleware', () => {
             const mockUsersService = {
                 findOne: jest.fn().mockResolvedValue({ id: 'user-env', email: 'env@example.com' }),
             };
-            const mockLoggerService = { setContext: jest.fn(), log: jest.fn(), error: jest.fn() };
+            const mockLoggerService = {
+                setContext: jest.fn(),
+                log: jest.fn(),
+                warn: jest.fn(),
+                debug: jest.fn(),
+                error: jest.fn(),
+            };
 
             // Empty configuration – secret must come from env
             const middleware = new AuthMiddleware(

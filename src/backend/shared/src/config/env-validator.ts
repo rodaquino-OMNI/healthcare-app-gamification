@@ -36,7 +36,12 @@ const commonEnvSchema = z.object({
 // ---------------------------------------------------------------------------
 
 const databaseEnvSchema = z.object({
-    DATABASE_URL: z.string().min(1, 'DATABASE_URL is required'),
+    DATABASE_URL: z
+        .string()
+        .min(1, 'DATABASE_URL is required')
+        .refine((url) => /^postgres(ql)?:\/\/.+/.test(url), {
+            message: 'DATABASE_URL must be a valid PostgreSQL connection string (postgresql://...)',
+        }),
     DATABASE_HOST: z.string().optional(),
     DATABASE_PORT: coerceInt(5432),
     DATABASE_NAME: z.string().optional(),
@@ -325,6 +330,7 @@ const gatewayEnvSchema = z.object({
     API_BASE_URL: z.string().default('http://localhost:4000'),
     GRAPHQL_PLAYGROUND: coerceBoolean,
     GRAPHQL_DEBUG: coerceBoolean,
+    GRAPHQL_INTROSPECTION: coerceBoolean,
     GRAPHQL_SCHEMA_FILE: z.string().default('schema.gql'),
     TOKEN_EXPIRATION: z.string().default('1h'),
     REFRESH_TOKEN_EXPIRATION: z.string().default('7d'),

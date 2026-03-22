@@ -159,7 +159,7 @@ export const AppointmentsList: React.FC = () => {
 
     const handleAppointmentPress = useCallback(
         (id: string) => {
-            navigation.navigate(ROUTES.CARE_APPOINTMENTS, { id });
+            navigation.navigate(ROUTES.CARE_APPOINTMENTS, { appointmentId: id });
         },
         [navigation]
     );

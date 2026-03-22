@@ -46,7 +46,7 @@ const HealthGoals: React.FC = () => {
     const userId = tokenPayload?.sub;
 
     // Fetch available health metric types using the useHealthMetrics hook
-    const { data: _healthMetricTypes, isLoading, error } = useHealthMetrics(userId, null, null, []);
+    const { data: _healthMetricTypes, isLoading, error } = useHealthMetrics(userId ?? '', null, null, []);
 
     // Access gamification data and functions using the useGamification hook
     const gamification = useGamification();

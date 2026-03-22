@@ -108,11 +108,12 @@ export class LeaderboardService {
      */
     private async calculateLeaderboard(): Promise<GameProfile[]> {
         try {
-            // Use the ProfilesService to get all game profiles
-            const profiles = await this.profilesService.getAllProfiles();
+            // Use the ProfilesService to get top profiles sorted by XP
+            const profiles = await this.profilesService.getTopProfiles(
+                this.LEADERBOARD_MAX_ENTRIES
+            );
 
-            // Sort by XP in descending order (copy first to avoid mutating the original array)
-            return [...profiles].sort((a, b) => b.xp - a.xp);
+            return profiles;
         } catch (error) {
             const msg = error instanceof Error ? error.message : 'Unknown error';
             const stack = error instanceof Error ? error.stack : undefined;

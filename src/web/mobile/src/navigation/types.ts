@@ -77,38 +77,38 @@ export type HomeStackParamList = {
 export type CareStackParamList = {
     // Core
     CareDashboard: undefined;
-    CareAppointments: { appointmentId?: string };
+    CareAppointments: { appointmentId?: string } | undefined;
     CareAppointmentBooking: undefined;
-    CareTelemedicine: { sessionId?: string };
+    CareTelemedicine: { sessionId?: string } | undefined;
     CareMedicationTracking: undefined;
     // Symptom checker flow
-    CareSymptomChecker: { symptoms?: string[]; sessionId?: string };
-    CareSymptomBodyMap: { symptoms?: string[]; sessionId?: string };
+    CareSymptomChecker: { symptoms?: string[]; sessionId?: string } | undefined;
+    CareSymptomBodyMap: { symptoms?: string[]; sessionId?: string } | undefined;
     CareSymptomDetail: { symptomId: string; sessionId?: string };
-    CareSymptomSeverity: { symptoms?: string[]; sessionId?: string };
-    CareSymptomQuestions: { symptoms?: string[]; sessionId?: string };
-    CareSymptomResult: { sessionId?: string };
-    CareSymptomRecommendation: { sessionId?: string };
+    CareSymptomSeverity: { symptoms?: string[]; sessionId?: string } | undefined;
+    CareSymptomQuestions: { symptoms?: string[]; sessionId?: string } | undefined;
+    CareSymptomResult: { sessionId?: string } | undefined;
+    CareSymptomRecommendation: { sessionId?: string } | undefined;
     // Symptom checker deep
-    CareSymptomBodyMapBack: { symptoms?: string[]; sessionId?: string };
-    CareSymptomHeadDetail: { symptoms?: string[]; sessionId?: string };
-    CareSymptomPhotoUpload: { sessionId?: string };
-    CareSymptomMedicalHistory: { sessionId?: string };
-    CareSymptomMedicationContext: { sessionId?: string };
-    CareSymptomVitals: { sessionId?: string };
-    CareSymptomAnalyzing: { sessionId?: string };
-    CareSymptomConditionsList: { sessionId?: string };
+    CareSymptomBodyMapBack: { symptoms?: string[]; sessionId?: string } | undefined;
+    CareSymptomHeadDetail: { symptoms?: string[]; sessionId?: string } | undefined;
+    CareSymptomPhotoUpload: { sessionId?: string } | undefined;
+    CareSymptomMedicalHistory: { sessionId?: string } | undefined;
+    CareSymptomMedicationContext: { sessionId?: string } | undefined;
+    CareSymptomVitals: { sessionId?: string } | undefined;
+    CareSymptomAnalyzing: { sessionId?: string } | undefined;
+    CareSymptomConditionsList: { sessionId?: string } | undefined;
     CareSymptomConditionDetail: { conditionId: string; sessionId?: string };
-    CareSymptomSelfCare: { sessionId?: string };
-    CareSymptomEmergencyWarning: { sessionId?: string };
-    CareSymptomBookAppointment: { sessionId?: string };
-    CareSymptomERLocator: { sessionId?: string };
-    CareSymptomSaveReport: { sessionId?: string };
-    CareSymptomShareReport: { sessionId?: string };
+    CareSymptomSelfCare: { sessionId?: string } | undefined;
+    CareSymptomEmergencyWarning: { sessionId?: string } | undefined;
+    CareSymptomBookAppointment: { sessionId?: string } | undefined;
+    CareSymptomERLocator: { sessionId?: string } | undefined;
+    CareSymptomSaveReport: { sessionId?: string } | undefined;
+    CareSymptomShareReport: { sessionId?: string } | undefined;
     CareSymptomHistory: undefined;
     CareSymptomHistoryDetail: { sessionId: string };
     CareSymptomAccuracyRating: { sessionId: string };
-    CareSymptomFollowUp: { sessionId?: string };
+    CareSymptomFollowUp: { sessionId?: string } | undefined;
     CareSymptomDiary: undefined;
     CareSymptomComparison: undefined;
     // Doctor search & booking
@@ -125,38 +125,40 @@ export type CareStackParamList = {
     CareBookingReason: { doctorId?: string; appointmentType?: string } | undefined;
     CareBookingDocuments: { doctorId?: string; appointmentType?: string } | undefined;
     CareBookingInsurance: { doctorId?: string; appointmentType?: string } | undefined;
-    CareBookingSuccess: {
-        appointmentId?: string;
-        doctorId?: string;
-        date?: string;
-        time?: string;
-        appointmentType?: string;
-    };
+    CareBookingSuccess:
+        | {
+              appointmentId?: string;
+              doctorId?: string;
+              date?: string;
+              time?: string;
+              appointmentType?: string;
+          }
+        | undefined;
     CareAppointmentsList: undefined;
     CareAppointmentReschedule: { appointmentId: string; doctorId?: string };
     CareAppointmentCancel: { appointmentId: string };
-    CareAppointmentCancelled: { appointmentId?: string };
-    CareAppointmentNoShow: { appointmentId?: string };
+    CareAppointmentCancelled: { appointmentId?: string; refundAmount?: string } | undefined;
+    CareAppointmentNoShow: { appointmentId?: string } | undefined;
     CarePreVisitChecklist: { appointmentId: string };
     CareRateVisit: { appointmentId: string };
     CareSavedDoctors: undefined;
     // Telemedicine deep
-    CareTelemedicineConnecting: { sessionId?: string };
-    CareTelemedicineControls: { sessionId?: string };
-    CareTelemedicineChat: { sessionId?: string };
-    CareTelemedicineScreenShare: { sessionId?: string };
-    CareTelemedicineEnd: { sessionId?: string };
+    CareTelemedicineConnecting: { sessionId?: string } | undefined;
+    CareTelemedicineControls: { sessionId?: string } | undefined;
+    CareTelemedicineChat: { sessionId?: string } | undefined;
+    CareTelemedicineScreenShare: { sessionId?: string } | undefined;
+    CareTelemedicineEnd: { sessionId?: string } | undefined;
     // Post-visit
-    CareVisitSummary: { visitId?: string };
-    CareVisitPrescriptions: { visitId?: string };
-    CareVisitFollowUp: { visitId?: string };
-    CareVisitLabOrders: { visitId?: string };
-    CareVisitReferral: { visitId?: string };
+    CareVisitSummary: { visitId?: string } | undefined;
+    CareVisitPrescriptions: { visitId?: string } | undefined;
+    CareVisitFollowUp: { visitId?: string } | undefined;
+    CareVisitLabOrders: { visitId?: string } | undefined;
+    CareVisitReferral: { visitId?: string } | undefined;
     // Payment
-    CarePaymentSummary: { appointmentId?: string };
-    CarePaymentReceipt: { paymentId?: string };
+    CarePaymentSummary: { appointmentId?: string } | undefined;
+    CarePaymentReceipt: { paymentId?: string } | undefined;
     // Records
-    CareAsyncDoctorChat: { doctorId?: string };
+    CareAsyncDoctorChat: { doctorId?: string } | undefined;
     CareMedicalRecords: undefined;
 };
 
@@ -252,32 +254,34 @@ export type HealthStackParamList = {
     HealthMedicationAdd: undefined;
     HealthMedicationDetail: { medicationId: string };
     HealthMedicationSearch: undefined;
-    HealthMedicationReminder: { medicationId?: string; medicationName?: string; medicationDosage?: string };
-    HealthMedicationAlarm: {
-        medicationId?: string;
-        medicationName?: string;
-        medicationDosage?: string;
-        nextDoseTime?: string;
-        snoozeDuration?: number;
-    };
+    HealthMedicationReminder: { medicationId?: string; medicationName?: string; medicationDosage?: string } | undefined;
+    HealthMedicationAlarm:
+        | {
+              medicationId?: string;
+              medicationName?: string;
+              medicationDosage?: string;
+              nextDoseTime?: string;
+              snoozeDuration?: number;
+          }
+        | undefined;
     // Medication deep
     HealthMedicationCalendar: undefined;
     HealthMedicationEmpty: undefined;
-    HealthMedicationAddConfirmation: { medicationId?: string };
-    HealthMedicationDoseTaken: { medicationId: string };
-    HealthMedicationDoseMissed: { medicationId: string };
+    HealthMedicationAddConfirmation: { medicationId?: string } | undefined;
+    HealthMedicationDoseTaken: { medicationId?: string } | undefined;
+    HealthMedicationDoseMissed: { medicationId?: string } | undefined;
     HealthMedicationEdit: { medicationId: string };
     HealthMedicationDeleteConfirm: { medicationId: string };
-    HealthMedicationAdherence: { medicationId?: string };
-    HealthMedicationMonthlyReport: { medicationId?: string };
-    HealthMedicationRefillReminder: { medicationId?: string };
-    HealthMedicationDrugInteraction: { medicationId?: string };
-    HealthMedicationSideEffectsLog: { medicationId?: string };
-    HealthMedicationSideEffectForm: { medicationId?: string };
+    HealthMedicationAdherence: { medicationId?: string } | undefined;
+    HealthMedicationMonthlyReport: { medicationId?: string } | undefined;
+    HealthMedicationRefillReminder: { medicationId?: string } | undefined;
+    HealthMedicationDrugInteraction: { medicationId?: string } | undefined;
+    HealthMedicationSideEffectsLog: { medicationId?: string } | undefined;
+    HealthMedicationSideEffectForm: { medicationId?: string } | undefined;
     HealthMedicationPharmacyLocator: undefined;
-    HealthMedicationPrescriptionPhoto: { medicationId?: string };
+    HealthMedicationPrescriptionPhoto: { medicationId?: string } | undefined;
     HealthMedicationOCRReview: undefined;
-    HealthMedicationShareCaregiver: { medicationId?: string };
+    HealthMedicationShareCaregiver: { medicationId?: string } | undefined;
     HealthMedicationCaregiverAccess: undefined;
     HealthMedicationExport: undefined;
     // Sub-navigator references

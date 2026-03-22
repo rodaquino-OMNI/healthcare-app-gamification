@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { CareResolvers } from './care.resolvers';
 
@@ -117,6 +117,76 @@ describe('CareResolvers', () => {
             const result = await resolvers.cancelAppointment(mockUser, 'appt-1');
 
             expect(result).toEqual(mockData);
+        });
+    });
+
+    // -------------------------------------------------------------------------
+    // Error handling tests
+    // -------------------------------------------------------------------------
+    describe('getAppointments - error handling', () => {
+        it('should propagate errors from care service', async () => {
+            httpService.get.mockReturnValue(throwError(() => new Error('Service Unavailable')));
+
+            await expect(resolvers.getAppointments(mockUser, 'user-1')).rejects.toThrow(
+                'Service Unavailable'
+            );
+        });
+    });
+
+    describe('getAppointment - error handling', () => {
+        it('should propagate errors when appointment not found', async () => {
+            httpService.get.mockReturnValue(throwError(() => new Error('Not Found')));
+
+            await expect(resolvers.getAppointment(mockUser, 'appt-999')).rejects.toThrow(
+                'Not Found'
+            );
+        });
+    });
+
+    describe('getProviders - error handling', () => {
+        it('should propagate errors from care service', async () => {
+            httpService.get.mockReturnValue(throwError(() => new Error('Internal Server Error')));
+
+            await expect(resolvers.getProviders('cardiology')).rejects.toThrow(
+                'Internal Server Error'
+            );
+        });
+    });
+
+    describe('bookAppointment - error handling', () => {
+        it('should propagate errors from care service', async () => {
+            httpService.post.mockReturnValue(throwError(() => new Error('Conflict')));
+
+            await expect(
+                resolvers.bookAppointment(mockUser, 'prov-1', '2024-01-01', 'consultation')
+            ).rejects.toThrow('Conflict');
+        });
+
+        it('should book without optional reason', async () => {
+            httpService.post.mockReturnValue(of({ data: { id: 'appt-new' } } as never));
+
+            const result = await resolvers.bookAppointment(
+                mockUser,
+                'prov-1',
+                '2024-01-01',
+                'consultation'
+            );
+
+            expect(httpService.post).toHaveBeenCalledWith(
+                'http://care-service:3003/appointments',
+                expect.objectContaining({ reason: undefined })
+            );
+            expect(result).toEqual({ id: 'appt-new' });
+        });
+    });
+
+    describe('cancelAppointment - error handling', () => {
+        it('should propagate errors from care service', async () => {
+            httpService.delete.mockReturnValue(throwError(() => new Error('Already cancelled')));
+
+            await expect(resolvers.cancelAppointment(mockUser, 'appt-1')).rejects.toThrow(
+                'Already cancelled'
+            );
         });
     });
 });

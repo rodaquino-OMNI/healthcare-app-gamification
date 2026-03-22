@@ -42,6 +42,7 @@ export const TreatmentPlanScreen: React.FC = () => {
                     const mockTreatmentPlan: TreatmentPlanType = {
                         id: TREATMENT_PLAN_ID,
                         userId: 'patient-001',
+                        patientId: 'patient-001',
                         providerId: 'provider-001',
                         name: 'Sample Treatment Plan',
                         description: 'This is a sample treatment plan to manage your health.',

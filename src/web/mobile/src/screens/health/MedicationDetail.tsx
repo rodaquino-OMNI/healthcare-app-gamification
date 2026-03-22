@@ -85,11 +85,7 @@ const MedicationDetail: React.FC = () => {
     const statusConfig = getStatusConfig(medication.status);
 
     const handleEdit = useCallback(() => {
-        navigation.navigate(ROUTES.HEALTH_MEDICATION_ADD, {
-            medicationId: medication.id,
-            medicationName: medication.name,
-            medicationDosage: medication.dosage,
-        });
+        navigation.navigate(ROUTES.HEALTH_MEDICATION_ADD);
     }, [navigation, medication]);
 
     const handlePause = useCallback(() => {

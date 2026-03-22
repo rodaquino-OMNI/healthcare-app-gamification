@@ -86,7 +86,7 @@ export const BookingSuccess: React.FC = () => {
     }, []);
 
     const handleViewAppointment = useCallback(() => {
-        navigation.navigate(ROUTES.CARE_APPOINTMENTS, { id: appointmentId });
+        navigation.navigate(ROUTES.CARE_APPOINTMENTS, { appointmentId });
     }, [navigation, appointmentId]);
 
     const handleBackToHome = useCallback(() => {

@@ -29,7 +29,9 @@ interface NotificationPayload {
 
 @WebSocketGateway({
     cors: {
-        origin: process.env.CORS_ALLOWED_ORIGINS?.split(',') ?? ['http://localhost:3000'],
+        origin: process.env.CORS_ALLOWED_ORIGINS?.split(',').filter(Boolean).length
+            ? process.env.CORS_ALLOWED_ORIGINS.split(',').filter(Boolean)
+            : ['https://app.austa.com.br', /\.austa\.com\.br$/],
         methods: ['GET', 'POST'],
         credentials: true,
     },
@@ -51,6 +53,11 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
     }
 
     afterInit(_server: Server): void {
+        if (!process.env.CORS_ALLOWED_ORIGINS && process.env.NODE_ENV === 'production') {
+            this.logger.warn(
+                'CORS_ALLOWED_ORIGINS not set in production; defaulting to app.austa.com.br'
+            );
+        }
         this.logger.log('WebSocket Gateway initialized');
         // Subscribe to Kafka notifications topic
         this.setupKafkaListener();

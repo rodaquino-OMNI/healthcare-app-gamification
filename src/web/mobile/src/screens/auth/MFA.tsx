@@ -131,7 +131,7 @@ export const MFAScreen: React.FC = () => {
             const routeParams = route?.params as Record<string, string> | undefined;
             const tempToken = routeParams?.tempToken;
 
-            await handleMfaVerification(code, tempToken);
+            await handleMfaVerification(code, tempToken ?? '');
             // Navigation after successful verification is handled by the auth context
         } catch (error) {
             console.error('MFA verification failed:', error);

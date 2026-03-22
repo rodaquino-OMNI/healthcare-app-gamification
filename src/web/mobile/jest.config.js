@@ -4,6 +4,7 @@
  */
 
 module.exports = {
+    coverageProvider: 'v8',
     // Do NOT use react-native preset — it loads Flow-annotated setupFiles
     // that fail with the custom esbuild transformer. Instead configure manually.
     // (The react-native preset's haste, transform, and setupFiles are replicated below.)

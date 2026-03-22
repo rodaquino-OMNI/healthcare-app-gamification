@@ -19,6 +19,15 @@ type ClaimFormData = {
     amount: string;
 };
 
+// Static options — defined once outside component to avoid recreation per render
+const PROCEDURE_TYPE_OPTIONS = [
+    { label: 'Medical Consultation', value: 'medical' },
+    { label: 'Dental Procedure', value: 'dental' },
+    { label: 'Vision Care', value: 'vision' },
+    { label: 'Prescription', value: 'prescription' },
+    { label: 'Other', value: 'other' },
+];
+
 /**
  * A React component that renders a form for submitting insurance claims.
  *
@@ -48,14 +57,7 @@ export const ClaimForm: React.FC = () => {
     // Access the navigation object
     const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
-    // Define options for the procedure type select
-    const procedureTypeOptions = [
-        { label: 'Medical Consultation', value: 'medical' },
-        { label: 'Dental Procedure', value: 'dental' },
-        { label: 'Vision Care', value: 'vision' },
-        { label: 'Prescription', value: 'prescription' },
-        { label: 'Other', value: 'other' },
-    ];
+    const procedureTypeOptions = PROCEDURE_TYPE_OPTIONS;
 
     // Defines the `handleSubmit` function to handle form submission,
     // calling the `submitClaim` API function and displaying success or error messages.

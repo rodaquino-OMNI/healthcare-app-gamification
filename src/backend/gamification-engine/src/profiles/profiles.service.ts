@@ -173,4 +173,38 @@ export class ProfilesService {
             throw error as any;
         }
     }
+
+    /**
+     * Retrieves top game profiles sorted by XP descending.
+     * Uses DB-side sorting and pagination to avoid loading all profiles.
+     * @param limit Maximum number of profiles to return
+     * @returns An array of top game profiles
+     */
+    async getTopProfiles(limit: number): Promise<GameProfile[]> {
+        try {
+            const profiles = await this.prisma.gameProfile.findMany({
+                orderBy: { xp: 'desc' },
+                take: limit,
+                select: {
+                    id: true,
+                    userId: true,
+                    xp: true,
+                    level: true,
+                    achievements: {
+                        select: { achievementId: true },
+                    },
+                },
+            });
+
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Prisma return type is complex; mapToDomainGameProfile accepts the raw shape
+            return profiles.map((profile) => mapToDomainGameProfile(profile as any));
+        } catch (error) {
+            this.logger.error(
+                `Failed to retrieve top ${limit} game profiles`,
+                error instanceof Error ? (error as any).stack : undefined,
+                'ProfilesService'
+            );
+            throw error as any;
+        }
+    }
 }

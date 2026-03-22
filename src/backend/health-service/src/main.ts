@@ -5,6 +5,7 @@ import helmet from 'helmet';
 
 import { AppModule } from './app.module';
 import { health } from './config/configuration';
+import { getHelmetOptions, parseCorsOrigins } from '../../shared/src/config/security.config';
 import { AllExceptionsFilter } from '../../shared/src/exceptions/exceptions.filter';
 import { LoggerService } from '../../shared/src/logging/logger.service';
 
@@ -15,8 +16,8 @@ async function bootstrap(): Promise<void> {
     // LD1: Create a NestJS application instance using AppModule.
     const app = await NestFactory.create(AppModule);
 
-    // S1: Adds security HTTP headers via helmet middleware.
-    app.use(helmet());
+    // S1: Adds security HTTP headers via helmet middleware with CSP.
+    app.use(helmet(getHelmetOptions()));
 
     // LD1: Get the configuration for the health service
     const config = health();
@@ -57,7 +58,7 @@ async function bootstrap(): Promise<void> {
     );
 
     app.enableCors({
-        origin: ['https://app.austa.com.br', /\.austa\.com\.br$/],
+        origin: parseCorsOrigins(process.env.CORS_ORIGINS),
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         preflightContinue: false,
         optionsSuccessStatus: 204,

@@ -102,7 +102,7 @@ export const PreVisitChecklist: React.FC = () => {
     }, []);
 
     const handleViewAppointment = useCallback(() => {
-        navigation.navigate(ROUTES.CARE_APPOINTMENTS, { id: appointmentId });
+        navigation.navigate(ROUTES.CARE_APPOINTMENTS, { appointmentId });
     }, [navigation, appointmentId]);
 
     const renderChecklistItem = (item: ChecklistItem): React.ReactElement | null => {

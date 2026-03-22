@@ -5,6 +5,7 @@
  * Wraps styled-components useTheme with proper typing.
  */
 
+import { useMemo } from 'react';
 import { useTheme as useStyledTheme } from 'styled-components/native';
 
 // ---------------------------------------------------------------------------
@@ -315,120 +316,138 @@ export function useTheme(): UseThemeResult {
     // eslint never sees any `any` / `error`-typed member accesses.
     const raw: unknown = useStyledTheme();
 
-    const rawColors: unknown = pick<unknown>(raw, 'colors', null);
-    const rawJourneys: unknown = pick<unknown>(rawColors, 'journeys', null);
-    const rawJourneysHealth: unknown = pick<unknown>(rawJourneys, 'health', null);
-    const rawJourneysCare: unknown = pick<unknown>(rawJourneys, 'care', null);
-    const rawJourneysPlan: unknown = pick<unknown>(rawJourneys, 'plan', null);
+    const theme: AppTheme = useMemo(() => {
+        const rawColors: unknown = pick<unknown>(raw, 'colors', null);
+        const rawJourneys: unknown = pick<unknown>(rawColors, 'journeys', null);
+        const rawJourneysHealth: unknown = pick<unknown>(rawJourneys, 'health', null);
+        const rawJourneysCare: unknown = pick<unknown>(rawJourneys, 'care', null);
+        const rawJourneysPlan: unknown = pick<unknown>(rawJourneys, 'plan', null);
 
-    const colors: AppThemeColors = {
-        brand: {
-            primary: pick<string>(pick<unknown>(rawColors, 'brand', null), 'primary', DEFAULT_COLORS.brand.primary),
-            secondary: pick<string>(
-                pick<unknown>(rawColors, 'brand', null),
-                'secondary',
-                DEFAULT_COLORS.brand.secondary
-            ),
-            tertiary: pick<string>(pick<unknown>(rawColors, 'brand', null), 'tertiary', DEFAULT_COLORS.brand.tertiary),
-        },
-        journeys: {
-            health: {
-                primary: pick<string>(rawJourneysHealth, 'primary', DEFAULT_COLORS.journeys.health.primary),
-                secondary: pick<string>(rawJourneysHealth, 'secondary', DEFAULT_COLORS.journeys.health.secondary),
-                accent: pick<string>(rawJourneysHealth, 'accent', DEFAULT_COLORS.journeys.health.accent),
-                background: pick<string>(rawJourneysHealth, 'background', DEFAULT_COLORS.journeys.health.background),
-                text: pick<string>(rawJourneysHealth, 'text', DEFAULT_COLORS.journeys.health.text),
+        const colors: AppThemeColors = {
+            brand: {
+                primary: pick<string>(pick<unknown>(rawColors, 'brand', null), 'primary', DEFAULT_COLORS.brand.primary),
+                secondary: pick<string>(
+                    pick<unknown>(rawColors, 'brand', null),
+                    'secondary',
+                    DEFAULT_COLORS.brand.secondary
+                ),
+                tertiary: pick<string>(
+                    pick<unknown>(rawColors, 'brand', null),
+                    'tertiary',
+                    DEFAULT_COLORS.brand.tertiary
+                ),
             },
-            care: {
-                primary: pick<string>(rawJourneysCare, 'primary', DEFAULT_COLORS.journeys.care.primary),
-                secondary: pick<string>(rawJourneysCare, 'secondary', DEFAULT_COLORS.journeys.care.secondary),
-                accent: pick<string>(rawJourneysCare, 'accent', DEFAULT_COLORS.journeys.care.accent),
-                background: pick<string>(rawJourneysCare, 'background', DEFAULT_COLORS.journeys.care.background),
-                text: pick<string>(rawJourneysCare, 'text', DEFAULT_COLORS.journeys.care.text),
+            journeys: {
+                health: {
+                    primary: pick<string>(rawJourneysHealth, 'primary', DEFAULT_COLORS.journeys.health.primary),
+                    secondary: pick<string>(rawJourneysHealth, 'secondary', DEFAULT_COLORS.journeys.health.secondary),
+                    accent: pick<string>(rawJourneysHealth, 'accent', DEFAULT_COLORS.journeys.health.accent),
+                    background: pick<string>(
+                        rawJourneysHealth,
+                        'background',
+                        DEFAULT_COLORS.journeys.health.background
+                    ),
+                    text: pick<string>(rawJourneysHealth, 'text', DEFAULT_COLORS.journeys.health.text),
+                },
+                care: {
+                    primary: pick<string>(rawJourneysCare, 'primary', DEFAULT_COLORS.journeys.care.primary),
+                    secondary: pick<string>(rawJourneysCare, 'secondary', DEFAULT_COLORS.journeys.care.secondary),
+                    accent: pick<string>(rawJourneysCare, 'accent', DEFAULT_COLORS.journeys.care.accent),
+                    background: pick<string>(rawJourneysCare, 'background', DEFAULT_COLORS.journeys.care.background),
+                    text: pick<string>(rawJourneysCare, 'text', DEFAULT_COLORS.journeys.care.text),
+                },
+                plan: {
+                    primary: pick<string>(rawJourneysPlan, 'primary', DEFAULT_COLORS.journeys.plan.primary),
+                    secondary: pick<string>(rawJourneysPlan, 'secondary', DEFAULT_COLORS.journeys.plan.secondary),
+                    accent: pick<string>(rawJourneysPlan, 'accent', DEFAULT_COLORS.journeys.plan.accent),
+                    background: pick<string>(rawJourneysPlan, 'background', DEFAULT_COLORS.journeys.plan.background),
+                    text: pick<string>(rawJourneysPlan, 'text', DEFAULT_COLORS.journeys.plan.text),
+                },
             },
-            plan: {
-                primary: pick<string>(rawJourneysPlan, 'primary', DEFAULT_COLORS.journeys.plan.primary),
-                secondary: pick<string>(rawJourneysPlan, 'secondary', DEFAULT_COLORS.journeys.plan.secondary),
-                accent: pick<string>(rawJourneysPlan, 'accent', DEFAULT_COLORS.journeys.plan.accent),
-                background: pick<string>(rawJourneysPlan, 'background', DEFAULT_COLORS.journeys.plan.background),
-                text: pick<string>(rawJourneysPlan, 'text', DEFAULT_COLORS.journeys.plan.text),
+            // Flat journey shorthand — derived from journeys above.
+            journey: {
+                health: pick<string>(rawJourneysHealth, 'primary', DEFAULT_COLORS.journey.health),
+                care: pick<string>(rawJourneysCare, 'primary', DEFAULT_COLORS.journey.care),
+                plan: pick<string>(rawJourneysPlan, 'primary', DEFAULT_COLORS.journey.plan),
             },
-        },
-        // Flat journey shorthand — derived from journeys above.
-        journey: {
-            health: pick<string>(rawJourneysHealth, 'primary', DEFAULT_COLORS.journey.health),
-            care: pick<string>(rawJourneysCare, 'primary', DEFAULT_COLORS.journey.care),
-            plan: pick<string>(rawJourneysPlan, 'primary', DEFAULT_COLORS.journey.plan),
-        },
-        semantic: {
-            success: pick<string>(
-                pick<unknown>(rawColors, 'semantic', null),
-                'success',
-                DEFAULT_COLORS.semantic.success
-            ),
-            warning: pick<string>(
-                pick<unknown>(rawColors, 'semantic', null),
-                'warning',
-                DEFAULT_COLORS.semantic.warning
-            ),
-            error: pick<string>(pick<unknown>(rawColors, 'semantic', null), 'error', DEFAULT_COLORS.semantic.error),
-            info: pick<string>(pick<unknown>(rawColors, 'semantic', null), 'info', DEFAULT_COLORS.semantic.info),
-            successBg: pick<string>(
-                pick<unknown>(rawColors, 'semantic', null),
-                'successBg',
-                DEFAULT_COLORS.semantic.successBg
-            ),
-            warningBg: pick<string>(
-                pick<unknown>(rawColors, 'semantic', null),
-                'warningBg',
-                DEFAULT_COLORS.semantic.warningBg
-            ),
-            errorBg: pick<string>(
-                pick<unknown>(rawColors, 'semantic', null),
-                'errorBg',
-                DEFAULT_COLORS.semantic.errorBg
-            ),
-        },
-        gray: pick<AppThemeColors['gray']>(rawColors, 'gray', DEFAULT_COLORS.gray),
-        neutral: pick<AppThemeColors['neutral']>(rawColors, 'neutral', DEFAULT_COLORS.neutral),
-        background: {
-            default: pick<string>(
-                pick<unknown>(rawColors, 'background', null),
-                'default',
-                DEFAULT_COLORS.background.default
-            ),
-            muted: pick<string>(pick<unknown>(rawColors, 'background', null), 'muted', DEFAULT_COLORS.background.muted),
-            subtle: pick<string>(
-                pick<unknown>(rawColors, 'background', null),
-                'subtle',
-                DEFAULT_COLORS.background.subtle
-            ),
-        },
-        text: {
-            default: pick<string>(pick<unknown>(rawColors, 'text', null), 'default', DEFAULT_COLORS.text.default),
-            muted: pick<string>(pick<unknown>(rawColors, 'text', null), 'muted', DEFAULT_COLORS.text.muted),
-            subtle: pick<string>(pick<unknown>(rawColors, 'text', null), 'subtle', DEFAULT_COLORS.text.subtle),
-            onBrand: pick<string>(pick<unknown>(rawColors, 'text', null), 'onBrand', DEFAULT_COLORS.text.onBrand),
-            primary: pick<string>(pick<unknown>(rawColors, 'text', null), 'default', DEFAULT_COLORS.text.primary),
-            secondary: pick<string>(pick<unknown>(rawColors, 'text', null), 'muted', DEFAULT_COLORS.text.secondary),
-        },
-        border: {
-            default: pick<string>(pick<unknown>(rawColors, 'border', null), 'default', DEFAULT_COLORS.border.default),
-            muted: pick<string>(pick<unknown>(rawColors, 'border', null), 'muted', DEFAULT_COLORS.border.muted),
-            accent: pick<string>(pick<unknown>(rawColors, 'border', null), 'accent', DEFAULT_COLORS.border.accent),
-        },
-        gamification: pick<AppThemeColors['gamification']>(rawColors, 'gamification', DEFAULT_COLORS.gamification),
-    };
+            semantic: {
+                success: pick<string>(
+                    pick<unknown>(rawColors, 'semantic', null),
+                    'success',
+                    DEFAULT_COLORS.semantic.success
+                ),
+                warning: pick<string>(
+                    pick<unknown>(rawColors, 'semantic', null),
+                    'warning',
+                    DEFAULT_COLORS.semantic.warning
+                ),
+                error: pick<string>(pick<unknown>(rawColors, 'semantic', null), 'error', DEFAULT_COLORS.semantic.error),
+                info: pick<string>(pick<unknown>(rawColors, 'semantic', null), 'info', DEFAULT_COLORS.semantic.info),
+                successBg: pick<string>(
+                    pick<unknown>(rawColors, 'semantic', null),
+                    'successBg',
+                    DEFAULT_COLORS.semantic.successBg
+                ),
+                warningBg: pick<string>(
+                    pick<unknown>(rawColors, 'semantic', null),
+                    'warningBg',
+                    DEFAULT_COLORS.semantic.warningBg
+                ),
+                errorBg: pick<string>(
+                    pick<unknown>(rawColors, 'semantic', null),
+                    'errorBg',
+                    DEFAULT_COLORS.semantic.errorBg
+                ),
+            },
+            gray: pick<AppThemeColors['gray']>(rawColors, 'gray', DEFAULT_COLORS.gray),
+            neutral: pick<AppThemeColors['neutral']>(rawColors, 'neutral', DEFAULT_COLORS.neutral),
+            background: {
+                default: pick<string>(
+                    pick<unknown>(rawColors, 'background', null),
+                    'default',
+                    DEFAULT_COLORS.background.default
+                ),
+                muted: pick<string>(
+                    pick<unknown>(rawColors, 'background', null),
+                    'muted',
+                    DEFAULT_COLORS.background.muted
+                ),
+                subtle: pick<string>(
+                    pick<unknown>(rawColors, 'background', null),
+                    'subtle',
+                    DEFAULT_COLORS.background.subtle
+                ),
+            },
+            text: {
+                default: pick<string>(pick<unknown>(rawColors, 'text', null), 'default', DEFAULT_COLORS.text.default),
+                muted: pick<string>(pick<unknown>(rawColors, 'text', null), 'muted', DEFAULT_COLORS.text.muted),
+                subtle: pick<string>(pick<unknown>(rawColors, 'text', null), 'subtle', DEFAULT_COLORS.text.subtle),
+                onBrand: pick<string>(pick<unknown>(rawColors, 'text', null), 'onBrand', DEFAULT_COLORS.text.onBrand),
+                primary: pick<string>(pick<unknown>(rawColors, 'text', null), 'default', DEFAULT_COLORS.text.primary),
+                secondary: pick<string>(pick<unknown>(rawColors, 'text', null), 'muted', DEFAULT_COLORS.text.secondary),
+            },
+            border: {
+                default: pick<string>(
+                    pick<unknown>(rawColors, 'border', null),
+                    'default',
+                    DEFAULT_COLORS.border.default
+                ),
+                muted: pick<string>(pick<unknown>(rawColors, 'border', null), 'muted', DEFAULT_COLORS.border.muted),
+                accent: pick<string>(pick<unknown>(rawColors, 'border', null), 'accent', DEFAULT_COLORS.border.accent),
+            },
+            gamification: pick<AppThemeColors['gamification']>(rawColors, 'gamification', DEFAULT_COLORS.gamification),
+        };
 
-    const theme: AppTheme = {
-        colors,
-        typography: pick<AppTheme['typography']>(raw, 'typography', DEFAULT_THEME.typography),
-        spacing: pick<AppTheme['spacing']>(raw, 'spacing', DEFAULT_THEME.spacing),
-        sizing: pick<AppTheme['sizing']>(raw, 'sizing', DEFAULT_THEME.sizing),
-        borderRadius: pick<AppTheme['borderRadius']>(raw, 'borderRadius', DEFAULT_THEME.borderRadius),
-        shadows: pick<AppTheme['shadows']>(raw, 'shadows', DEFAULT_THEME.shadows),
-        animation: pick<AppTheme['animation']>(raw, 'animation', DEFAULT_THEME.animation),
-    };
+        return {
+            colors,
+            typography: pick<AppTheme['typography']>(raw, 'typography', DEFAULT_THEME.typography),
+            spacing: pick<AppTheme['spacing']>(raw, 'spacing', DEFAULT_THEME.spacing),
+            sizing: pick<AppTheme['sizing']>(raw, 'sizing', DEFAULT_THEME.sizing),
+            borderRadius: pick<AppTheme['borderRadius']>(raw, 'borderRadius', DEFAULT_THEME.borderRadius),
+            shadows: pick<AppTheme['shadows']>(raw, 'shadows', DEFAULT_THEME.shadows),
+            animation: pick<AppTheme['animation']>(raw, 'animation', DEFAULT_THEME.animation),
+        };
+    }, [raw]);
 
     return {
         theme,

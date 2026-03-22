@@ -224,9 +224,10 @@ export const trackEvent = (eventName: string, params?: Record<string, unknown>):
 
         // Track in Google Analytics
         ReactGA.event({
-            category: params?.category || 'general',
+            category: typeof params?.category === 'string' ? params.category : 'general',
             action: formattedEventName,
-            ...params,
+            label: typeof params?.label === 'string' ? params.label : undefined,
+            value: typeof params?.value === 'number' ? params.value : undefined,
         });
 
         // Track in Datadog RUM

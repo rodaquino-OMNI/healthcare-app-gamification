@@ -1,3 +1,4 @@
+import { getHelmetOptions, parseCorsOrigins } from '@app/shared/config/security.config';
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { ValidationPipe } from '@nestjs/common';
@@ -11,8 +12,8 @@ import { AppModule } from './app.module';
 async function bootstrap(): Promise<void> {
     const app = await NestFactory.create(AppModule);
 
-    // S1: Adds security HTTP headers via helmet middleware.
-    app.use(helmet());
+    // S1: Adds security HTTP headers via helmet middleware with CSP.
+    app.use(helmet(getHelmetOptions()));
 
     const configService = app.get(ConfigService);
     const logger = app.get(LoggerService);
@@ -47,7 +48,7 @@ async function bootstrap(): Promise<void> {
     );
 
     app.enableCors({
-        origin: ['https://app.austa.com.br', /\.austa\.com\.br$/],
+        origin: parseCorsOrigins(configService.get<string>('CORS_ORIGINS')),
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         preflightContinue: false,
         optionsSuccessStatus: 204,

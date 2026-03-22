@@ -112,15 +112,15 @@ const VisitSummary: React.FC = () => {
     const [expandedDiagnosis, setExpandedDiagnosis] = useState<string | null>(null);
 
     const handleViewPrescriptions = useCallback(() => {
-        navigation.navigate(ROUTES.CARE_VISIT_PRESCRIPTIONS, { appointmentId });
+        navigation.navigate(ROUTES.CARE_VISIT_PRESCRIPTIONS, { visitId: appointmentId });
     }, [navigation, appointmentId]);
 
     const handleScheduleFollowUp = useCallback(() => {
-        navigation.navigate(ROUTES.CARE_VISIT_FOLLOW_UP, { appointmentId, doctorName });
-    }, [navigation, appointmentId, doctorName]);
+        navigation.navigate(ROUTES.CARE_VISIT_FOLLOW_UP, { visitId: appointmentId });
+    }, [navigation, appointmentId]);
 
     const handleViewLabOrders = useCallback(() => {
-        navigation.navigate(ROUTES.CARE_VISIT_LAB_ORDERS, { appointmentId });
+        navigation.navigate(ROUTES.CARE_VISIT_LAB_ORDERS, { visitId: appointmentId });
     }, [navigation, appointmentId]);
 
     const handleShareSummary = useCallback(async () => {

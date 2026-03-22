@@ -13,21 +13,21 @@ interface ScreenModule {
 
 // Lazy-loaded wellness screens.
 // These screens are created by Worker-3; safe fallbacks if not yet available.
-let CompanionChatScreen: React.FC = () => null;
-let CompanionChatActiveScreen: React.FC = () => null;
-let CompanionQuickRepliesScreen: React.FC = () => null;
-let CompanionMoodCheckInScreen: React.FC = () => null;
-let CompanionWellnessTipScreen: React.FC = () => null;
-let CompanionBreathingScreen: React.FC = () => null;
-let CompanionMeditationScreen: React.FC = () => null;
-let CompanionDailyPlanScreen: React.FC = () => null;
-let CompanionInsightsScreen: React.FC = () => null;
-let CompanionGoalsScreen: React.FC = () => null;
-let CompanionJournalScreen: React.FC = () => null;
-let CompanionJournalHistoryScreen: React.FC = () => null;
-let CompanionChallengesScreen: React.FC = () => null;
-let CompanionChallengeDetailScreen: React.FC = () => null;
-let CompanionStreaksScreen: React.FC = () => null;
+let CompanionChatScreen: React.ComponentType = () => null;
+let CompanionChatActiveScreen: React.ComponentType = () => null;
+let CompanionQuickRepliesScreen: React.ComponentType = () => null;
+let CompanionMoodCheckInScreen: React.ComponentType = () => null;
+let CompanionWellnessTipScreen: React.ComponentType = () => null;
+let CompanionBreathingScreen: React.ComponentType = () => null;
+let CompanionMeditationScreen: React.ComponentType = () => null;
+let CompanionDailyPlanScreen: React.ComponentType = () => null;
+let CompanionInsightsScreen: React.ComponentType = () => null;
+let CompanionGoalsScreen: React.ComponentType = () => null;
+let CompanionJournalScreen: React.ComponentType = () => null;
+let CompanionJournalHistoryScreen: React.ComponentType = () => null;
+let CompanionChallengesScreen: React.ComponentType = () => null;
+let CompanionChallengeDetailScreen: React.ComponentType = () => null;
+let CompanionStreaksScreen: React.ComponentType = () => null;
 
 try {
     const mod = require('../screens/wellness/CompanionChat') as ScreenModule;

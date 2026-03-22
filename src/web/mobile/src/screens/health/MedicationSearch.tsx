@@ -74,10 +74,7 @@ const MedicationSearch: React.FC = () => {
                 return [medication.name, ...filtered].slice(0, 5);
             });
 
-            navigation.navigate(ROUTES.HEALTH_MEDICATION_ADD, {
-                medicationName: medication.name,
-                medicationDosage: medication.commonDosage,
-            });
+            navigation.navigate(ROUTES.HEALTH_MEDICATION_ADD);
         },
         [navigation]
     );

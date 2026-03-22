@@ -77,7 +77,6 @@ const PaymentSummary: React.FC = () => {
 
     const handlePayNow = useCallback(() => {
         navigation.navigate(ROUTES.CARE_PAYMENT_RECEIPT, {
-            appointmentId,
             paymentId: `pay-${Date.now()}`,
         });
     }, [navigation, appointmentId]);

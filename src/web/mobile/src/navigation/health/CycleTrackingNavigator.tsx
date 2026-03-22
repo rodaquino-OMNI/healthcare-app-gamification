@@ -14,21 +14,21 @@ interface ScreenModule {
 }
 
 // Lazy-loaded screens (require + try/catch for resilience)
-let CycleHomeScreen: React.ComponentType<unknown> = () => null;
-let CycleCalendarScreen: React.ComponentType<unknown> = () => null;
-let LogPeriodStartScreen: React.ComponentType<unknown> = () => null;
-let LogSymptomsScreen: React.ComponentType<unknown> = () => null;
-let LogFlowIntensityScreen: React.ComponentType<unknown> = () => null;
-let FertilityWindowScreen: React.ComponentType<unknown> = () => null;
-let PMSPredictionsScreen: React.ComponentType<unknown> = () => null;
-let CycleHistoryScreen: React.ComponentType<unknown> = () => null;
-let CycleAnalysisScreen: React.ComponentType<unknown> = () => null;
-let CycleInsightsScreen: React.ComponentType<unknown> = () => null;
-let CycleArticleDetailScreen: React.ComponentType<unknown> = () => null;
-let CycleRemindersScreen: React.ComponentType<unknown> = () => null;
-let PartnerSharingScreen: React.ComponentType<unknown> = () => null;
-let CycleSettingsScreen: React.ComponentType<unknown> = () => null;
-let ExportCycleReportScreen: React.ComponentType<unknown> = () => null;
+let CycleHomeScreen: React.ComponentType = () => null;
+let CycleCalendarScreen: React.ComponentType = () => null;
+let LogPeriodStartScreen: React.ComponentType = () => null;
+let LogSymptomsScreen: React.ComponentType = () => null;
+let LogFlowIntensityScreen: React.ComponentType = () => null;
+let FertilityWindowScreen: React.ComponentType = () => null;
+let PMSPredictionsScreen: React.ComponentType = () => null;
+let CycleHistoryScreen: React.ComponentType = () => null;
+let CycleAnalysisScreen: React.ComponentType = () => null;
+let CycleInsightsScreen: React.ComponentType = () => null;
+let CycleArticleDetailScreen: React.ComponentType = () => null;
+let CycleRemindersScreen: React.ComponentType = () => null;
+let PartnerSharingScreen: React.ComponentType = () => null;
+let CycleSettingsScreen: React.ComponentType = () => null;
+let ExportCycleReportScreen: React.ComponentType = () => null;
 
 try {
     const m = require('../../screens/health/cycle-tracking/CycleHome') as ScreenModule;

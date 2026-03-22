@@ -103,7 +103,12 @@ export const RegisterScreen: React.FC = () => {
 
     const onSubmit = async (data: Record<string, string>): Promise<void> => {
         try {
-            const _session = await register(data);
+            const _session = await register({
+                name: data.name ?? '',
+                email: data.email ?? '',
+                password: data.password ?? '',
+                acceptedTerms: termsAccepted,
+            });
             navigation.navigate(ROUTES.AUTH_LOGIN);
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : 'Registration failed';

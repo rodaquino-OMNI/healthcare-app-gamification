@@ -14,16 +14,16 @@ interface ScreenModule {
 }
 
 // Lazy-loaded screens (require + try/catch for resilience)
-let NutritionHomeScreen: React.ComponentType<unknown> = () => null;
-let MealLogScreen: React.ComponentType<unknown> = () => null;
-let MealDetailScreen: React.ComponentType<unknown> = () => null;
-let FoodDiaryScreen: React.ComponentType<unknown> = () => null;
-let MacroTrackerScreen: React.ComponentType<unknown> = () => null;
-let WaterIntakeScreen: React.ComponentType<unknown> = () => null;
-let DietaryGoalsScreen: React.ComponentType<unknown> = () => null;
-let NutritionInsightsScreen: React.ComponentType<unknown> = () => null;
-let FoodSearchScreen: React.ComponentType<unknown> = () => null;
-let NutritionExportScreen: React.ComponentType<unknown> = () => null;
+let NutritionHomeScreen: React.ComponentType = () => null;
+let MealLogScreen: React.ComponentType = () => null;
+let MealDetailScreen: React.ComponentType = () => null;
+let FoodDiaryScreen: React.ComponentType = () => null;
+let MacroTrackerScreen: React.ComponentType = () => null;
+let WaterIntakeScreen: React.ComponentType = () => null;
+let DietaryGoalsScreen: React.ComponentType = () => null;
+let NutritionInsightsScreen: React.ComponentType = () => null;
+let FoodSearchScreen: React.ComponentType = () => null;
+let NutritionExportScreen: React.ComponentType = () => null;
 
 try {
     const m = require('../../screens/health/nutrition/NutritionHome') as ScreenModule;

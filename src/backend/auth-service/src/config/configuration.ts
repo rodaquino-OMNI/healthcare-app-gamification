@@ -102,20 +102,7 @@ const configuration = registerAs('authService', () => ({
                 : ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
             credentials: process.env.CORS_CREDENTIALS === 'true',
         },
-        contentSecurity: {
-            directives: {
-                defaultSrc: ["'self'"],
-                scriptSrc: ["'self'"],
-                styleSrc: ["'self'", "'unsafe-inline'"],
-                imgSrc: ["'self'", 'data:'],
-                connectSrc: ["'self'"],
-                fontSrc: ["'self'"],
-                objectSrc: ["'none'"],
-                frameSrc: ["'self'"],
-                baseUri: ["'self'"],
-                formAction: ["'self'"],
-            },
-        },
+        // CSP directives are now managed centrally via shared/config/security.config.ts
     },
     logging: {
         level: process.env.LOG_LEVEL || 'info',

@@ -14,12 +14,12 @@ interface ScreenModule {
 
 // Lazy-loaded gamification screens.
 // These screens are created by Worker-3; safe fallbacks if not yet available.
-let AchievementDetailScreen: React.FC = () => null;
-let LeaderboardScreen: React.FC = () => null;
-let QuestListScreen: React.FC = () => null;
-let QuestDetailScreen: React.FC = () => null;
-let RewardCatalogScreen: React.FC = () => null;
-let RewardDetailScreen: React.FC = () => null;
+let AchievementDetailScreen: React.ComponentType = () => null;
+let LeaderboardScreen: React.ComponentType = () => null;
+let QuestListScreen: React.ComponentType = () => null;
+let QuestDetailScreen: React.ComponentType = () => null;
+let RewardCatalogScreen: React.ComponentType = () => null;
+let RewardDetailScreen: React.ComponentType = () => null;
 
 try {
     const mod = require('../screens/gamification/AchievementDetail') as ScreenModule;

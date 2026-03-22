@@ -97,21 +97,18 @@ const TelemedicineControls: React.FC = () => {
 
     const handleOpenChat = useCallback(() => {
         navigation.navigate(ROUTES.CARE_TELEMEDICINE_CHAT, {
-            appointmentId,
-            doctorName,
+            sessionId: appointmentId,
         });
-    }, [navigation, appointmentId, doctorName]);
+    }, [navigation, appointmentId]);
 
     const handleEndCall = useCallback(() => {
         if (timerRef.current) {
             clearInterval(timerRef.current);
         }
         navigation.navigate(ROUTES.CARE_TELEMEDICINE_END, {
-            appointmentId,
-            doctorName,
-            callDuration: formatDuration(duration),
+            sessionId: appointmentId,
         });
-    }, [navigation, appointmentId, doctorName, duration]);
+    }, [navigation, appointmentId]);
 
     const qualityColor = getQualityColor(quality);
     const qualityBarCount = getQualityBars(quality);

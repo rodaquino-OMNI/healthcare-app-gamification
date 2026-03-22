@@ -63,7 +63,6 @@ export const MedicationDoseTaken: React.FC = () => {
     const handleSideEffectsLink = useCallback(() => {
         navigation.navigate(ROUTES.HEALTH_MEDICATION_SIDE_EFFECT_FORM, {
             medicationId: route.params?.medicationId,
-            medicationName,
         });
     }, [navigation, route.params?.medicationId, medicationName]);
 

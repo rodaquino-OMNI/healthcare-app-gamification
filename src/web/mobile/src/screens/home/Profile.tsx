@@ -11,7 +11,6 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
 import { ProfileForm } from '../../components/forms/ProfileForm';
-import { ROUTES } from '../../constants/routes';
 import { useAuth } from '../../hooks/useAuth';
 import type { SettingsStackParamList } from '../../navigation/types';
 
@@ -41,7 +40,7 @@ export const ProfileScreen: React.FC = () => {
     };
 
     const navigateToSettings = () => {
-        navigation.navigate(ROUTES.SETTINGS as keyof SettingsStackParamList);
+        navigation.navigate('SettingsMain');
     };
 
     if (!user) {

@@ -147,11 +147,11 @@ const VisitLabOrders: React.FC = () => {
     }, []);
 
     const handleScheduleLabVisit = useCallback(() => {
-        navigation.navigate(ROUTES.CARE_BOOKING_SCHEDULE);
+        navigation.navigate(ROUTES.CARE_BOOKING_SCHEDULE, { doctorId: 'doctor-001' });
     }, [navigation]);
 
     const handleViewAllLabs = useCallback(() => {
-        navigation.navigate(ROUTES.HEALTH_MEDICATION_PHARMACY_LOCATOR);
+        navigation.navigate(ROUTES.CARE_MEDICAL_RECORDS);
     }, [navigation]);
 
     const fastingTests = MOCK_LAB_TESTS.filter((test) => test.fastingRequired);

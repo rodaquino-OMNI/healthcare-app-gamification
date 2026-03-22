@@ -28,13 +28,13 @@ export const AppointmentNoShow: React.FC = () => {
 
     const handleReschedule = useCallback(() => {
         navigation.navigate(ROUTES.CARE_APPOINTMENT_RESCHEDULE, {
-            appointmentId,
+            appointmentId: appointmentId ?? '',
             doctorId: 'doc-002',
         });
     }, [navigation, appointmentId]);
 
     const handleContactSupport = useCallback(() => {
-        navigation.navigate(ROUTES.HELP_CONTACT);
+        navigation.navigate(ROUTES.CARE_DASHBOARD);
     }, [navigation]);
 
     const handleBackToAppointments = useCallback(() => {

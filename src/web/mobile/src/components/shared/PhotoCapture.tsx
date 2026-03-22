@@ -112,13 +112,15 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({ onCapture }) => {
     // Render the camera preview and capture button
     return (
         <View style={styles.container}>
-            <Camera
-                style={styles.camera}
-                device={cameraDevice}
-                isActive={hasCameraPermission}
-                ref={camera}
-                photo={true}
-            />
+            {cameraDevice && (
+                <Camera
+                    style={styles.camera}
+                    device={cameraDevice}
+                    isActive={hasCameraPermission}
+                    ref={camera}
+                    photo={true}
+                />
+            )}
             {capturedImage && <Image source={{ uri: capturedImage }} style={styles.imagePreview} />}
             <View style={styles.buttonContainer}>
                 <Button onPress={capturePhoto} style={styles.captureButton} accessibilityLabel="Capture Photo">

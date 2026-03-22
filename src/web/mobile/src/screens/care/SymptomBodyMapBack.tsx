@@ -58,7 +58,7 @@ const SymptomBodyMapBack: React.FC = () => {
     const navigation = useNavigation<CareNavigationProp>();
     const route = useRoute<RouteProp<CareStackParamList, 'CareSymptomBodyMapBack'>>();
     const sessionId = route.params?.sessionId ?? '';
-    const symptoms: Array<{ id: string; name: string }> = route.params?.symptoms ?? [];
+    const symptoms: string[] = route.params?.symptoms ?? [];
 
     const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
 
@@ -77,7 +77,7 @@ const SymptomBodyMapBack: React.FC = () => {
 
     const handleContinue = (): void => {
         navigation.navigate(ROUTES.CARE_SYMPTOM_DETAIL, {
-            symptomId: symptoms[0]?.id ?? '',
+            symptomId: symptoms[0] ?? '',
             sessionId,
         });
     };

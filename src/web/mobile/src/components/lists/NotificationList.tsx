@@ -135,6 +135,9 @@ export const NotificationList: React.FC<NotificationListProps> = ({
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
             style={styles.container}
+            windowSize={7}
+            maxToRenderPerBatch={10}
+            initialNumToRender={10}
         />
     );
 };

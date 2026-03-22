@@ -55,12 +55,12 @@ const TelemedicineEndScreen: React.FC = () => {
     }, []);
 
     const handleViewSummary = useCallback(() => {
-        navigation.navigate(ROUTES.CARE_VISIT_SUMMARY, { appointmentId });
+        navigation.navigate(ROUTES.CARE_VISIT_SUMMARY, { visitId: appointmentId });
     }, [navigation, appointmentId]);
 
     const handleBookFollowUp = useCallback(() => {
-        navigation.navigate(ROUTES.CARE_VISIT_FOLLOW_UP, { appointmentId, doctorName });
-    }, [navigation, appointmentId, doctorName]);
+        navigation.navigate(ROUTES.CARE_VISIT_FOLLOW_UP, { visitId: appointmentId });
+    }, [navigation, appointmentId]);
 
     const handleReturnDashboard = useCallback(() => {
         navigation.navigate(ROUTES.CARE_DASHBOARD);

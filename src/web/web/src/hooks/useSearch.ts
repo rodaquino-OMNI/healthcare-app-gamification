@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import { restClient } from '@/api/client';
 
@@ -31,27 +31,38 @@ export const useSearch = (): UseSearchReturn => {
     const [isSearching, setIsSearching] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
     const search = useCallback(
-        async (overrideQuery?: string): Promise<void> => {
+        (overrideQuery?: string): Promise<void> => {
             const q = overrideQuery ?? query;
             if (!q.trim()) {
-                return;
+                return Promise.resolve();
             }
 
-            setIsSearching(true);
-            setError(null);
-
-            try {
-                const response = await restClient.get<{ results: SearchResult[] }>('/search', {
-                    params: { q: q.trim() },
-                });
-                setResults(response.data.results ?? []);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'Erro ao buscar resultados');
-                setResults([]);
-            } finally {
-                setIsSearching(false);
+            if (debounceRef.current) {
+                clearTimeout(debounceRef.current);
             }
+
+            return new Promise<void>((resolve) => {
+                debounceRef.current = setTimeout(async () => {
+                    setIsSearching(true);
+                    setError(null);
+
+                    try {
+                        const response = await restClient.get<{ results: SearchResult[] }>('/search', {
+                            params: { q: q.trim() },
+                        });
+                        setResults(response.data.results ?? []);
+                    } catch (err) {
+                        setError(err instanceof Error ? err.message : 'Erro ao buscar resultados');
+                        setResults([]);
+                    } finally {
+                        setIsSearching(false);
+                    }
+                    resolve();
+                }, 300);
+            });
         },
         [query]
     );

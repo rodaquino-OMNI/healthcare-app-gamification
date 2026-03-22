@@ -81,9 +81,6 @@ export const MedicationDoseMissed: React.FC = () => {
     const handleTakeNow = useCallback(() => {
         navigation.navigate(ROUTES.HEALTH_MEDICATION_DOSE_TAKEN, {
             medicationId: route.params?.medicationId,
-            medicationName,
-            dosage,
-            scheduledTime,
         });
     }, [navigation, route.params?.medicationId, medicationName, dosage, scheduledTime]);
 

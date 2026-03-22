@@ -88,7 +88,7 @@ const SymptomBodyMap: React.FC = () => {
     const navigation = useNavigation<CareNavigationProp>();
     const route = useRoute<RouteProp<CareStackParamList, 'CareSymptomBodyMap'>>();
     const sessionId = route.params?.sessionId ?? '';
-    const symptoms: Array<{ id: string; name: string }> = route.params?.symptoms ?? [];
+    const symptoms: string[] = route.params?.symptoms ?? [];
     const _description = '';
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
@@ -130,7 +130,7 @@ const SymptomBodyMap: React.FC = () => {
 
     const handleContinue = (): void => {
         navigation.navigate(ROUTES.CARE_SYMPTOM_DETAIL, {
-            symptomId: symptoms[0]?.id ?? '',
+            symptomId: symptoms[0] ?? '',
             sessionId,
         });
     };

@@ -25,6 +25,7 @@ interface AddMetricScreenProps {
 interface AddMetricFormData {
     type: string;
     value: number | string;
+    unit?: string;
     timestamp: string;
 }
 
@@ -82,7 +83,12 @@ export const AddMetricScreen: React.FC<AddMetricScreenProps> = () => {
             // IE1: The createHealthMetric function requires recordId (userId) and createMetricDto as input.
             //      The recordId is now dynamically fetched from the user's JWT token.
             //      The createMetricDto is constructed from the form data.
-            await createHealthMetric(user.id, data);
+            await createHealthMetric(user.id, {
+                type: data.type,
+                value: typeof data.value === 'string' ? parseFloat(data.value) || 0 : data.value,
+                unit: data.unit ?? '',
+                timestamp: data.timestamp,
+            });
 
             // Reset the form
             reset();

@@ -18,6 +18,20 @@ type HealthMetricFormData = {
     type: string;
 };
 
+// Static validation schema — defined once outside component to avoid recreation per render
+const healthMetricSchema = yup.object({
+    value: yup.number().required('Value is required').positive('Value must be positive'),
+    unit: yup.string().required('Unit is required'),
+    timestamp: yup.date().required('Timestamp is required').max(new Date(), 'Timestamp cannot be in the future'),
+    type: yup.string().oneOf(Object.values(HealthMetricType)).required('Type is required'),
+});
+
+// Static options array — defined once outside component
+const METRIC_TYPE_OPTIONS = Object.values(HealthMetricType).map((type) => ({
+    label: type,
+    value: type,
+}));
+
 /**
  * Component for adding a new health metric.
  * @returns {JSX.Element} The rendered form.
@@ -26,14 +40,6 @@ export const HealthMetricForm: React.FC = () => {
     // Access the current journey context
     const { journey: _journey } = useJourney();
 
-    // Define the validation schema using Yup
-    const schema = yup.object({
-        value: yup.number().required('Value is required').positive('Value must be positive'),
-        unit: yup.string().required('Unit is required'),
-        timestamp: yup.date().required('Timestamp is required').max(new Date(), 'Timestamp cannot be in the future'),
-        type: yup.string().oneOf(Object.values(HealthMetricType)).required('Type is required'),
-    });
-
     // Initialize the form using React Hook Form with the Yup resolver
     const {
         register,
@@ -41,17 +47,14 @@ export const HealthMetricForm: React.FC = () => {
         formState: { errors },
         reset,
     } = useForm<HealthMetricFormData>({
-        resolver: yupResolver(schema) as Resolver<HealthMetricFormData>,
+        resolver: yupResolver(healthMetricSchema) as Resolver<HealthMetricFormData>,
     });
 
     // Access the useHealthMetrics hook to refetch data after submission
     const { refetch } = useHealthMetrics('', null, null, []);
 
-    // Define the options for the metric type select component
-    const metricTypeOptions = Object.values(HealthMetricType).map((type) => ({
-        label: type,
-        value: type,
-    }));
+    // Use static options defined outside component
+    const metricTypeOptions = METRIC_TYPE_OPTIONS;
 
     // Handle form submission to create a new health metric
     const onSubmit = async (data: HealthMetricFormData): Promise<void> => {

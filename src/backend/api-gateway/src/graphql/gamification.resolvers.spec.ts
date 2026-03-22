@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { GamificationResolvers } from './gamification.resolvers';
 
@@ -117,6 +117,75 @@ describe('GamificationResolvers', () => {
             const result = await resolvers.acknowledgeAchievement(mockUser, 'ach-1');
 
             expect(result).toEqual(mockData);
+        });
+    });
+
+    // -------------------------------------------------------------------------
+    // Error handling tests
+    // -------------------------------------------------------------------------
+    describe('getGameProfile - error handling', () => {
+        it('should propagate errors', async () => {
+            httpService.get.mockReturnValue(throwError(() => new Error('Profile not found')));
+
+            await expect(resolvers.getGameProfile(mockUser, 'user-1')).rejects.toThrow(
+                'Profile not found'
+            );
+        });
+    });
+
+    describe('getAchievements - error handling', () => {
+        it('should propagate errors', async () => {
+            httpService.get.mockReturnValue(throwError(() => new Error('Service down')));
+
+            await expect(resolvers.getAchievements(mockUser, 'user-1')).rejects.toThrow(
+                'Service down'
+            );
+        });
+    });
+
+    describe('getQuests - error handling', () => {
+        it('should propagate errors', async () => {
+            httpService.get.mockReturnValue(throwError(() => new Error('Not Found')));
+
+            await expect(resolvers.getQuests(mockUser, 'user-1')).rejects.toThrow('Not Found');
+        });
+    });
+
+    describe('getRewards - error handling', () => {
+        it('should propagate errors', async () => {
+            httpService.get.mockReturnValue(throwError(() => new Error('Not Found')));
+
+            await expect(resolvers.getRewards(mockUser, 'user-1')).rejects.toThrow('Not Found');
+        });
+    });
+
+    describe('claimReward - error handling', () => {
+        it('should propagate errors when reward already claimed', async () => {
+            httpService.post.mockReturnValue(throwError(() => new Error('Already claimed')));
+
+            await expect(resolvers.claimReward(mockUser, 'reward-1')).rejects.toThrow(
+                'Already claimed'
+            );
+        });
+    });
+
+    describe('completeQuestTask - error handling', () => {
+        it('should propagate errors for invalid task', async () => {
+            httpService.post.mockReturnValue(throwError(() => new Error('Task not found')));
+
+            await expect(
+                resolvers.completeQuestTask(mockUser, 'quest-1', 'task-99')
+            ).rejects.toThrow('Task not found');
+        });
+    });
+
+    describe('acknowledgeAchievement - error handling', () => {
+        it('should propagate errors', async () => {
+            httpService.post.mockReturnValue(throwError(() => new Error('Not Found')));
+
+            await expect(resolvers.acknowledgeAchievement(mockUser, 'ach-99')).rejects.toThrow(
+                'Not Found'
+            );
         });
     });
 });

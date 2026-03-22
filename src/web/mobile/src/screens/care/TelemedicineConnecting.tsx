@@ -130,8 +130,7 @@ const TelemedicineConnecting: React.FC = () => {
     useEffect(() => {
         if (elapsed === 5 && !timedOut) {
             navigation.navigate(ROUTES.CARE_TELEMEDICINE_CONTROLS, {
-                appointmentId,
-                doctorName,
+                sessionId: appointmentId,
             });
         }
     }, [elapsed, timedOut, navigation, appointmentId, doctorName]);

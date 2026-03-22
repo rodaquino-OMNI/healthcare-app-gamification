@@ -463,6 +463,7 @@ model HealthMetric {
   @@index([userId])
   @@index([type])
   @@index([timestamp])
+  @@index([userId, type, timestamp])
   @@map("health_metrics")
 }
 

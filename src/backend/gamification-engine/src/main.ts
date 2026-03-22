@@ -1,3 +1,4 @@
+import { getHelmetOptions, parseCorsOrigins } from '@app/shared/config/security.config';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { createSecureAxios } from '@app/shared/utils/secure-axios';
 import { ValidationPipe } from '@nestjs/common';
@@ -21,8 +22,8 @@ async function bootstrap(): Promise<void> {
         // Creates a NestJS application instance using NestFactory.
         app = await NestFactory.create(AppModule);
 
-        // Configure security middleware
-        app.use(helmet());
+        // Configure security middleware with CSP
+        app.use(helmet(getHelmetOptions()));
 
         // Get the ConfigService instance after app is created
         const configService = app.get(ConfigService);
@@ -91,7 +92,7 @@ async function bootstrap(): Promise<void> {
         );
 
         app.enableCors({
-            origin: ['https://app.austa.com.br', /\.austa\.com\.br$/],
+            origin: parseCorsOrigins(configService.get<string>('CORS_ORIGINS')),
             methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
             preflightContinue: false,
             optionsSuccessStatus: 204,

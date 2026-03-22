@@ -1,17 +1,21 @@
+import '@testing-library/jest-dom';
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
 import { QuestCard } from './QuestCard';
-// @ts-expect-error ThemeProvider is not exported from themes; mocked by jest.mock('styled-components')
-import { ThemeProvider } from '../../themes';
+
+// Local passthrough ThemeProvider (styled-components is mocked below)
+const ThemeProvider = ({ children }: { children: React.ReactNode }) => <>{children}</>;
 
 // Mock styled-components theme
 jest.mock('styled-components', () => {
-    const originalModule = jest.requireActual('styled-components');
+    const originalModule = jest.requireActual<Record<string, unknown>>('styled-components');
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Mock factory returns untyped test double
     return {
+        __esModule: true,
         ...originalModule,
+        default: originalModule.default ?? originalModule.styled ?? originalModule,
         ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
         useTheme: () => ({
             colors: {
@@ -119,7 +123,7 @@ jest.mock('../../primitives/Icon/Icon', () => ({
     ),
 }));
 
-jest.mock('src/web/design-system/src/themes/index', () => ({
+jest.mock('../../themes/index', () => ({
     useJourneyTheme: (journey: string) => {
         const journeyColors: Record<string, { primary: string; secondary: string }> = {
             health: { primary: '#0ACF83', secondary: '#05A66A' },
@@ -207,7 +211,7 @@ describe('QuestCard', () => {
         renderWithTheme(<QuestCard quest={baseQuest} onPress={onPressMock} />);
 
         // The Card wraps the content; fire click on the container
-        const card = screen.getByRole('region') ?? screen.getByLabelText(/Daily Steps Goal quest/i);
+        const card = screen.getByRole('button');
         fireEvent.click(card);
 
         expect(onPressMock).toHaveBeenCalledTimes(1);

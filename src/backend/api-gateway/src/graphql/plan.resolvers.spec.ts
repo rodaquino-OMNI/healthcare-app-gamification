@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { PlanResolvers } from './plan.resolvers';
 
@@ -121,6 +121,114 @@ describe('PlanResolvers', () => {
             expect(httpService.patch).toHaveBeenCalledWith(
                 'http://plan-service:3004/claims/claim-1',
                 expect.objectContaining({ status: 'CANCELLED' })
+            );
+        });
+    });
+
+    // -------------------------------------------------------------------------
+    // uploadClaimDocument
+    // -------------------------------------------------------------------------
+    describe('uploadClaimDocument', () => {
+        it('should upload a document and POST metadata to plan service', async () => {
+            const mockFile = {
+                filename: 'receipt.pdf',
+                mimetype: 'application/pdf',
+                encoding: '7bit',
+                createReadStream: jest.fn(),
+            };
+            const mockData = {
+                id: 'doc-1',
+                url: 'https://storage.austa.com/claims/claim-1/receipt.pdf',
+            };
+            httpService.post.mockReturnValue(of({ data: mockData } as never));
+
+            const result = await resolvers.uploadClaimDocument(
+                mockUser,
+                'claim-1',
+                mockFile as never
+            );
+
+            expect(httpService.post).toHaveBeenCalledWith(
+                'http://plan-service:3004/claims/claim-1/documents',
+                {
+                    fileName: 'receipt.pdf',
+                    fileType: 'application/pdf',
+                    fileUrl: 'https://storage.austa.com/claims/claim-1/receipt.pdf',
+                }
+            );
+            expect(result).toEqual(mockData);
+        });
+
+        it('should propagate errors from plan service', async () => {
+            const mockFile = {
+                filename: 'bad.exe',
+                mimetype: 'application/octet-stream',
+                encoding: '7bit',
+                createReadStream: jest.fn(),
+            };
+            httpService.post.mockReturnValue(throwError(() => new Error('Upload failed')));
+
+            await expect(
+                resolvers.uploadClaimDocument(mockUser, 'claim-1', mockFile as never)
+            ).rejects.toThrow('Upload failed');
+        });
+    });
+
+    // -------------------------------------------------------------------------
+    // Error handling tests for existing methods
+    // -------------------------------------------------------------------------
+    describe('getPlan - error handling', () => {
+        it('should propagate errors when plan not found', async () => {
+            httpService.get.mockReturnValue(throwError(() => new Error('Not Found')));
+
+            await expect(resolvers.getPlan(mockUser, 'nonexistent')).rejects.toThrow('Not Found');
+        });
+    });
+
+    describe('getClaims - error handling', () => {
+        it('should propagate errors from plan service', async () => {
+            httpService.get.mockReturnValue(throwError(() => new Error('Service Unavailable')));
+
+            await expect(resolvers.getClaims(mockUser, 'plan-1')).rejects.toThrow(
+                'Service Unavailable'
+            );
+        });
+    });
+
+    describe('submitClaim - error handling', () => {
+        it('should propagate errors from plan service', async () => {
+            httpService.post.mockReturnValue(throwError(() => new Error('Bad Request')));
+
+            await expect(
+                resolvers.submitClaim(
+                    mockUser,
+                    'plan-1',
+                    'medical',
+                    'PROC-001',
+                    'Dr. Smith',
+                    '2024-01-01',
+                    150.0
+                )
+            ).rejects.toThrow('Bad Request');
+        });
+    });
+
+    describe('updateClaim - error handling', () => {
+        it('should propagate errors from plan service', async () => {
+            httpService.patch.mockReturnValue(throwError(() => new Error('Not Found')));
+
+            await expect(resolvers.updateClaim(mockUser, 'claim-x', {})).rejects.toThrow(
+                'Not Found'
+            );
+        });
+    });
+
+    describe('cancelClaim - error handling', () => {
+        it('should propagate errors from plan service', async () => {
+            httpService.patch.mockReturnValue(throwError(() => new Error('Already cancelled')));
+
+            await expect(resolvers.cancelClaim(mockUser, 'claim-1')).rejects.toThrow(
+                'Already cancelled'
             );
         });
     });

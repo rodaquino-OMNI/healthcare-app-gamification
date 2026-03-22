@@ -13,7 +13,10 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
     imports: [
-        HttpModule,
+        HttpModule.register({
+            timeout: 5000,
+            maxRedirects: 3,
+        }),
         PassportModule,
         JwtModule.registerAsync({
             useFactory: (configService: ConfigService) => ({

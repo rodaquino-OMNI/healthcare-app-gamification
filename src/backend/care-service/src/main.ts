@@ -1,3 +1,4 @@
+import { getHelmetOptions } from '@app/shared/config/security.config';
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { ValidationPipe } from '@nestjs/common'; // v10.0.0+
@@ -20,7 +21,7 @@ async function bootstrap(): Promise<void> {
     const configService = app.get(ConfigService);
 
     // LD1: Set up global middleware (helmet, compression)
-    app.use(helmet()); // S1: Adds security HTTP headers
+    app.use(helmet(getHelmetOptions())); // S1: Adds security HTTP headers with CSP
     app.use(compression()); // S1: Enables response compression
 
     // LD1: Configure CORS with appropriate settings

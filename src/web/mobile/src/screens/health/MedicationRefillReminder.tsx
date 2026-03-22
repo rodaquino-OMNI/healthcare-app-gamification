@@ -62,10 +62,7 @@ export const MedicationRefillReminder: React.FC = () => {
     const countdownColor = getCountdownColor(daysRemaining);
 
     const handleFindPharmacy = useCallback(() => {
-        navigation.navigate(ROUTES.HEALTH_MEDICATION_PHARMACY_LOCATOR, {
-            medicationId,
-            medicationName,
-        });
+        navigation.navigate(ROUTES.HEALTH_MEDICATION_PHARMACY_LOCATOR);
     }, [navigation, medicationId, medicationName]);
 
     const handleOrderRefill = useCallback(() => {

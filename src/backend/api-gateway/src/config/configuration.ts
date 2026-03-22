@@ -54,8 +54,9 @@ export const configuration = registerAs('apiGateway', () => ({
     // GraphQL configuration
     graphql: {
         playground:
-            process.env.GRAPHQL_PLAYGROUND === 'true' || process.env.NODE_ENV !== 'production',
-        debug: process.env.GRAPHQL_DEBUG === 'true' || process.env.NODE_ENV !== 'production',
+            process.env.GRAPHQL_PLAYGROUND === 'true' && process.env.NODE_ENV !== 'production',
+        debug: process.env.GRAPHQL_DEBUG === 'true' && process.env.NODE_ENV !== 'production',
+        introspection: process.env.GRAPHQL_INTROSPECTION === 'true',
         autoSchemaFile: process.env.GRAPHQL_SCHEMA_FILE || 'schema.gql',
         sortSchema: true,
         context: ({ req, res }: { req: Request; res: Response }) => ({ req, res }),

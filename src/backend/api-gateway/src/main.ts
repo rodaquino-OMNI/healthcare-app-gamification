@@ -1,3 +1,4 @@
+import { getHelmetOptions, parseCorsOrigins } from '@app/shared/config/security.config';
 import { AllExceptionsFilter } from '@app/shared/exceptions/exceptions.filter';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { ValidationPipe } from '@nestjs/common';
@@ -18,8 +19,8 @@ async function bootstrap(): Promise<void> {
     // LD1: Creates a NestJS application instance.
     const app = await NestFactory.create(AppModule);
 
-    // S1: Adds security HTTP headers via helmet middleware.
-    app.use(helmet());
+    // S1: Adds security HTTP headers via helmet middleware with CSP.
+    app.use(helmet(getHelmetOptions()));
 
     // LD1: Retrieves the application configuration.
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- configuration token returns dynamic config object
@@ -68,7 +69,7 @@ async function bootstrap(): Promise<void> {
     );
 
     app.enableCors({
-        origin: ['https://app.austa.com.br', /\.austa\.com\.br$/],
+        origin: parseCorsOrigins(process.env.CORS_ORIGINS),
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         preflightContinue: false,
         optionsSuccessStatus: 204,

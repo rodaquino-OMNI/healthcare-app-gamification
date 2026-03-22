@@ -93,10 +93,8 @@ export const MedicationOCRReview: React.FC = () => {
     }, []);
 
     const handleConfirm = useCallback(() => {
-        navigation.navigate(ROUTES.HEALTH_MEDICATION_ADD, {
-            ocrData: fields.reduce((acc, f) => ({ ...acc, [f.id]: f.value }), {} as Record<string, string>),
-        });
-    }, [navigation, fields]);
+        navigation.navigate(ROUTES.HEALTH_MEDICATION_ADD);
+    }, [navigation]);
 
     const handleRetake = useCallback(() => {
         navigation.navigate(ROUTES.HEALTH_MEDICATION_PRESCRIPTION_PHOTO);

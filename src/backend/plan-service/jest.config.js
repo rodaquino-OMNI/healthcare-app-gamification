@@ -1,4 +1,5 @@
 module.exports = {
+    coverageProvider: 'v8',
     moduleFileExtensions: ['js', 'json', 'ts'],
     rootDir: '.',
     testRegex: '.*\\.spec\\.ts$',

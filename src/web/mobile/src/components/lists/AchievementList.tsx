@@ -45,6 +45,9 @@ const AchievementList: React.FC = () => {
                     )}
                     contentContainerStyle={styles.listContent}
                     numColumns={2}
+                    windowSize={7}
+                    maxToRenderPerBatch={10}
+                    initialNumToRender={8}
                     accessibilityLabel="List of achievements"
                 />
             ) : (

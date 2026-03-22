@@ -71,8 +71,6 @@ export const BookingInsurance: React.FC = () => {
     const handleContinue = useCallback(() => {
         navigation.navigate(ROUTES.CARE_BOOKING_SCHEDULE, {
             doctorId,
-            appointmentType,
-            insurancePlan: selectedPlanId,
         });
     }, [navigation, doctorId, appointmentType, selectedPlanId]);
 

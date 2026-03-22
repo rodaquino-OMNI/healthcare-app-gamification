@@ -89,7 +89,7 @@ const WaitingRoom: React.FC = () => {
     }, []);
 
     const handleJoinConsultation = useCallback(() => {
-        navigation.navigate(ROUTES.CARE_TELEMEDICINE, { appointmentId });
+        navigation.navigate(ROUTES.CARE_TELEMEDICINE, { sessionId: appointmentId });
     }, [navigation, appointmentId]);
 
     return (

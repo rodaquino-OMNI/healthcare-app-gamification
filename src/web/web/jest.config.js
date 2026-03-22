@@ -11,6 +11,7 @@
  */
 
 module.exports = {
+    coverageProvider: 'v8',
     // Use jsdom environment for browser-like DOM testing
     testEnvironment: 'jest-environment-jsdom',
 

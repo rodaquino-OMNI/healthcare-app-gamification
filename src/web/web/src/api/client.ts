@@ -35,7 +35,7 @@ export const graphQLClient = new ApolloClient({
             errorPolicy: 'all', // Handle errors in the UI rather than throwing
         },
         query: {
-            fetchPolicy: 'network-only', // Default to always fetching fresh data
+            fetchPolicy: 'cache-first', // Use cached data when available, fetch if missing
             errorPolicy: 'all',
         },
         mutate: {

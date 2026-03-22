@@ -13,9 +13,9 @@ interface ScreenModule {
 }
 
 // Lazy-loaded screens from home/ (existing Settings sub-screens)
-let SettingsEditScreen: React.FC = () => null;
-let SettingsNotificationsScreen: React.FC = () => null;
-let SettingsPrivacyScreen: React.FC = () => null;
+let SettingsEditScreen: React.ComponentType = () => null;
+let SettingsNotificationsScreen: React.ComponentType = () => null;
+let SettingsPrivacyScreen: React.ComponentType = () => null;
 
 try {
     const seModule = require('../screens/home/SettingsEdit') as ScreenModule;
@@ -40,35 +40,35 @@ try {
 }
 
 // Lazy-loaded screens from settings/ (new screens)
-let PersonalInfoScreen: React.FC = () => null;
-let ChangePasswordScreen: React.FC = () => null;
-let TwoFactorScreen: React.FC = () => null;
-let BiometricScreen: React.FC = () => null;
-let DataExportScreen: React.FC = () => null;
-let DeleteAccountScreen: React.FC = () => null;
-let DeleteConfirmScreen: React.FC = () => null;
-let LanguageScreen: React.FC = () => null;
-let ThemeScreen: React.FC = () => null;
-let AccessibilityScreen: React.FC = () => null;
-let ConnectedDevicesScreen: React.FC = () => null;
-let HealthPlanScreen: React.FC = () => null;
-let InsuranceDocsScreen: React.FC = () => null;
-let DependentsScreen: React.FC = () => null;
-let AddDependentScreen: React.FC = () => null;
-let EmergencyContactsScreen: React.FC = () => null;
-let AddressesScreen: React.FC = () => null;
-let AddAddressScreen: React.FC = () => null;
-let TermsScreen: React.FC = () => null;
-let PrivacyPolicyScreen: React.FC = () => null;
-let AboutScreen: React.FC = () => null;
-let LogoutScreen: React.FC = () => null;
-let FeedbackScreen: React.FC = () => null;
-let HelpHomeScreen: React.FC = () => null;
-let FAQCategoryScreen: React.FC = () => null;
-let FAQDetailScreen: React.FC = () => null;
-let ContactSupportScreen: React.FC = () => null;
-let LiveChatScreen: React.FC = () => null;
-let ReportProblemScreen: React.FC = () => null;
+let PersonalInfoScreen: React.ComponentType = () => null;
+let ChangePasswordScreen: React.ComponentType = () => null;
+let TwoFactorScreen: React.ComponentType = () => null;
+let BiometricScreen: React.ComponentType = () => null;
+let DataExportScreen: React.ComponentType = () => null;
+let DeleteAccountScreen: React.ComponentType = () => null;
+let DeleteConfirmScreen: React.ComponentType = () => null;
+let LanguageScreen: React.ComponentType = () => null;
+let ThemeScreen: React.ComponentType = () => null;
+let AccessibilityScreen: React.ComponentType = () => null;
+let ConnectedDevicesScreen: React.ComponentType = () => null;
+let HealthPlanScreen: React.ComponentType = () => null;
+let InsuranceDocsScreen: React.ComponentType = () => null;
+let DependentsScreen: React.ComponentType = () => null;
+let AddDependentScreen: React.ComponentType = () => null;
+let EmergencyContactsScreen: React.ComponentType = () => null;
+let AddressesScreen: React.ComponentType = () => null;
+let AddAddressScreen: React.ComponentType = () => null;
+let TermsScreen: React.ComponentType = () => null;
+let PrivacyPolicyScreen: React.ComponentType = () => null;
+let AboutScreen: React.ComponentType = () => null;
+let LogoutScreen: React.ComponentType = () => null;
+let FeedbackScreen: React.ComponentType = () => null;
+let HelpHomeScreen: React.ComponentType = () => null;
+let FAQCategoryScreen: React.ComponentType = () => null;
+let FAQDetailScreen: React.ComponentType = () => null;
+let ContactSupportScreen: React.ComponentType = () => null;
+let LiveChatScreen: React.ComponentType = () => null;
+let ReportProblemScreen: React.ComponentType = () => null;
 
 // Settings module screens
 try {
@@ -283,7 +283,7 @@ const Stack = createNativeStackNavigator<SettingsStackParamList>();
  * Registers existing settings sub-screens (Edit, Notifications, Privacy)
  * plus all 29 new screens (23 settings + 6 help center).
  */
-const SettingsNavigator: React.FC = () => (
+const SettingsNavigator: React.ComponentType = () => (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
         {/* Initial screen */}
         <Stack.Screen name="SettingsMain" component={SettingsScreen} />
