@@ -4,7 +4,7 @@ import { DatePicker } from 'design-system/components/DatePicker/DatePicker';
 import { Input } from 'design-system/components/Input/Input';
 import { Select } from 'design-system/components/Select/Select';
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { type Resolver, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
 import { restClient } from '@/api/client';
@@ -28,6 +28,25 @@ interface HealthGoalFormValues {
 }
 
 /**
+ * Validation schema for health goal form fields.
+ * Typed explicitly to satisfy yupResolver's ObjectSchema constraint.
+ */
+const healthGoalSchema: yup.ObjectSchema<HealthGoalFormValues> = yup.object({
+    type: yup.string().required('Goal type is required'),
+    target: yup.number().required('Target value is required').positive('Target must be positive'),
+    startDate: yup.date().required('Start date is required').nullable().defined(),
+    endDate: yup
+        .date()
+        .required('End date is required')
+        .min(yup.ref('startDate'), 'End date must be after start date')
+        .nullable()
+        .defined(),
+});
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- yupResolver's InferType produces `any` for nullable date fields; explicit Resolver typing constrains it
+const healthGoalResolver: Resolver<HealthGoalFormValues> = yupResolver(healthGoalSchema);
+
+/**
  * A form component for creating and updating health goals.
  * It allows users to set targets for various health metrics and integrates with the design system for a consistent UI.
  * @returns {JSX.Element} Rendered HealthGoalForm component
@@ -39,18 +58,7 @@ export const HealthGoalForm: React.FC<HealthGoalFormProps> = () => {
         formState: { isSubmitting, isValid },
     } = useForm<HealthGoalFormValues>({
         // 2. Defines a validation schema using Yup to ensure the form data is valid.
-        resolver: yupResolver(
-            yup.object().shape({
-                type: yup.string().required('Goal type is required'),
-                target: yup.number().required('Target value is required').positive('Target must be positive'),
-                startDate: yup.date().required('Start date is required').nullable(),
-                endDate: yup
-                    .date()
-                    .required('End date is required')
-                    .min(yup.ref('startDate'), 'End date must be after start date')
-                    .nullable(),
-            })
-        ),
+        resolver: healthGoalResolver,
         defaultValues: {
             type: '',
             target: 0,
