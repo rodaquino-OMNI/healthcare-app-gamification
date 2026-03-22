@@ -9,49 +9,49 @@ jest.mock('@/hooks/useAuth', () => ({
 }));
 
 jest.mock('@/context/AuthContext', () => ({
-    AuthContext: React.createContext({ session: { accessToken: 'mock-token' } }),
+    AuthContext: require('react').createContext({ session: { accessToken: 'mock-token' } }),
 }));
 
 jest.mock('@/components/shared/JourneyHeader', () => ({
     JourneyHeader: ({ title }: { title: string }) => <h1 data-testid="journey-header">{title}</h1>,
 }));
 
-jest.mock('design-system/components/Button/Button', () => ({
-    Button: ({
-        children,
-        onPress,
-        disabled,
-    }: {
-        children: React.ReactNode;
-        onPress?: () => void;
-        disabled?: boolean;
-    }) => (
-        <button onClick={onPress} disabled={disabled} data-testid="settings-button">
-            {children}
-        </button>
-    ),
-}));
-
-jest.mock('design-system/components/Input/Input', () => ({
-    Input: ({
-        label,
-        value,
-        onChange,
-        disabled,
-        'aria-label': ariaLabel,
-    }: {
-        label?: string;
-        value?: string;
-        onChange?: React.ChangeEventHandler;
-        disabled?: boolean;
-        'aria-label'?: string;
-    }) => (
-        <div>
-            {label && <label>{label}</label>}
-            <input value={value} onChange={onChange} disabled={disabled} aria-label={ariaLabel} />
-        </div>
-    ),
-}));
+// Single combined mock for all design-system component paths.
+// All these paths resolve to the same module via moduleNameMapper, so only
+// one jest.mock registration is needed — multiple calls overwrite each other.
+jest.mock('design-system/components/Button/Button', () => {
+    const React = require('react');
+    return {
+        Button: ({
+            children,
+            onPress,
+            disabled,
+        }: {
+            children: React.ReactNode;
+            onPress?: () => void;
+            disabled?: boolean;
+        }) => React.createElement('button', { onClick: onPress, disabled, 'data-testid': 'settings-button' }, children),
+        Input: ({
+            label,
+            value,
+            onChange,
+            disabled,
+            'aria-label': ariaLabel,
+        }: {
+            label?: string;
+            value?: string;
+            onChange?: React.ChangeEventHandler;
+            disabled?: boolean;
+            'aria-label'?: string;
+        }) =>
+            React.createElement(
+                'div',
+                null,
+                label ? React.createElement('label', null, label) : null,
+                React.createElement('input', { value, onChange, disabled, 'aria-label': ariaLabel })
+            ),
+    };
+});
 
 jest.mock('shared/constants/routes', () => ({
     WEB_AUTH_ROUTES: { LOGIN: '/auth/login' },

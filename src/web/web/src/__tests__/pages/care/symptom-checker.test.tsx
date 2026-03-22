@@ -24,43 +24,33 @@ interface MockProgressBarProps {
     ariaLabel?: string;
 }
 
-jest.mock('design-system/components/Card/Card', () => ({
-    Card: ({ children, ...props }: MockSpreadProps) => (
-        <div data-testid="card" {...props}>
-            {children}
-        </div>
-    ),
-}));
-
-jest.mock('design-system/components/Button/Button', () => ({
-    Button: ({ children, onPress, accessibilityLabel, disabled }: MockButtonProps) => (
-        <button onClick={onPress} aria-label={accessibilityLabel} disabled={disabled} data-testid="button">
-            {children}
-        </button>
-    ),
-}));
-
-jest.mock('design-system/components/Badge/Badge', () => ({
-    Badge: ({ children, status }: MockBadgeProps) => (
-        <span data-testid="badge" data-status={status}>
-            {children}
-        </span>
-    ),
-}));
-
-jest.mock('design-system/components/ProgressBar/ProgressBar', () => ({
-    ProgressBar: ({ current, total, ariaLabel }: MockProgressBarProps) => (
-        <div role="progressbar" aria-label={ariaLabel} aria-valuenow={current} aria-valuemax={total} />
-    ),
-}));
-
-jest.mock('design-system/primitives/Text/Text', () => ({
-    Text: ({ children, ...props }: MockSpreadProps) => <span {...props}>{children}</span>,
-}));
-
-jest.mock('design-system/primitives/Box/Box', () => ({
-    Box: ({ children, ...props }: MockSpreadProps) => <div {...props}>{children}</div>,
-}));
+// Single combined mock for all design-system component/primitive paths.
+// All these paths resolve to the same module via moduleNameMapper, so only
+// one jest.mock registration is needed — multiple calls overwrite each other.
+jest.mock('design-system/components/Card/Card', () => {
+    const React = require('react');
+    return {
+        Card: ({ children, ...props }: MockSpreadProps) =>
+            React.createElement('div', { 'data-testid': 'card', ...props }, children),
+        Button: ({ children, onPress, accessibilityLabel, disabled }: MockButtonProps) =>
+            React.createElement(
+                'button',
+                { onClick: onPress, 'aria-label': accessibilityLabel, disabled, 'data-testid': 'button' },
+                children
+            ),
+        Badge: ({ children, status }: MockBadgeProps) =>
+            React.createElement('span', { 'data-testid': 'badge', 'data-status': status }, children),
+        ProgressBar: ({ current, total, ariaLabel }: MockProgressBarProps) =>
+            React.createElement('div', {
+                role: 'progressbar',
+                'aria-label': ariaLabel,
+                'aria-valuenow': current,
+                'aria-valuemax': total,
+            }),
+        Text: ({ children, ...props }: MockSpreadProps) => React.createElement('span', props, children),
+        Box: ({ children, ...props }: MockSpreadProps) => React.createElement('div', props, children),
+    };
+});
 
 jest.mock('design-system/tokens/colors', () => ({
     colors: {
@@ -85,6 +75,15 @@ jest.mock('shared/constants/routes', () => ({
     WEB_CARE_ROUTES: {
         SYMPTOM_RECOMMENDATION: '/care/symptom-checker/recommendation',
     },
+}));
+
+// Mock the hooks barrel to prevent Apollo useQuery from running without a provider
+jest.mock('@/hooks', () => ({
+    useAppointments: () => ({ appointments: [], loading: false, error: null }),
+    useAuth: () => ({ session: null, isAuthenticated: false }),
+    useSymptomChecker: () => ({ results: [], isLoading: false, error: null, getRecommendations: jest.fn() }),
+    useMedications: () => ({ medications: null, loading: false, error: null, refetch: jest.fn() }),
+    useHealthMetrics: () => ({ metrics: [], loading: false, error: null }),
 }));
 
 import SymptomResultPage from '../../../pages/care/symptom-checker/result';

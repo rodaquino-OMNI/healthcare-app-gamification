@@ -25,33 +25,37 @@ jest.mock('@/layouts/CareLayout', () => ({
     CareLayout: ({ children }: MockChildrenProps) => <div data-testid="care-layout">{children}</div>,
 }));
 
+// Mock the hooks barrel to prevent Apollo useQuery from running without a provider
+jest.mock('@/hooks', () => ({
+    useAppointments: () => ({ appointments: [], loading: false, error: null }),
+    useAuth: () => ({ session: null, isAuthenticated: false }),
+    useSymptomChecker: () => ({ results: [], isLoading: false, error: null, getRecommendations: jest.fn() }),
+    useMedications: () => ({ medications: null, loading: false, error: null, refetch: jest.fn() }),
+    useHealthMetrics: () => ({ metrics: [], loading: false, error: null }),
+}));
+
 jest.mock('@/components/shared/JourneyHeader', () => ({
     JourneyHeader: ({ title }: MockTitleProps) => <h1 data-testid="journey-header">{title}</h1>,
 }));
 
-jest.mock('design-system/components/Card/Card', () => ({
-    Card: ({ children, ...props }: MockSpreadProps) => (
-        <div data-testid="card" {...props}>
-            {children}
-        </div>
-    ),
-}));
-
-jest.mock('design-system/components/Button/Button', () => ({
-    Button: ({ children, onPress, disabled, accessibilityLabel }: MockButtonProps) => (
-        <button onClick={onPress} disabled={disabled} aria-label={accessibilityLabel} data-testid="care-button">
-            {children}
-        </button>
-    ),
-}));
-
-jest.mock('design-system/primitives/Text/Text', () => ({
-    Text: ({ children, ...props }: MockSpreadProps) => <span {...props}>{children}</span>,
-}));
-
-jest.mock('design-system/primitives/Box/Box', () => ({
-    Box: ({ children, ...props }: MockSpreadProps) => <div {...props}>{children}</div>,
-}));
+// Single combined mock for all design-system component/primitive paths.
+// All these paths resolve to the same module via moduleNameMapper, so only
+// one jest.mock registration is needed — multiple calls overwrite each other.
+jest.mock('design-system/components/Card/Card', () => {
+    const React = require('react');
+    return {
+        Card: ({ children, ...props }: MockSpreadProps) =>
+            React.createElement('div', { 'data-testid': 'card', ...props }, children),
+        Button: ({ children, onPress, disabled, accessibilityLabel }: MockButtonProps) =>
+            React.createElement(
+                'button',
+                { onClick: onPress, disabled, 'aria-label': accessibilityLabel, 'data-testid': 'care-button' },
+                children
+            ),
+        Text: ({ children, ...props }: MockSpreadProps) => React.createElement('span', props, children),
+        Box: ({ children, ...props }: MockSpreadProps) => React.createElement('div', props, children),
+    };
+});
 
 jest.mock('design-system/tokens/colors', () => ({
     colors: {

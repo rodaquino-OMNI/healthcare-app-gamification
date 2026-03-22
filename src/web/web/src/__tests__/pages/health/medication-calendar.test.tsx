@@ -17,37 +17,22 @@ interface MockBadgeProps {
     status?: string;
 }
 
-jest.mock('design-system/components/Card/Card', () => ({
-    Card: ({ children, ...props }: MockSpreadProps) => (
-        <div data-testid="card" {...props}>
-            {children}
-        </div>
-    ),
-}));
-
-jest.mock('design-system/components/Button/Button', () => ({
-    Button: ({ children, onPress, accessibilityLabel }: MockButtonProps) => (
-        <button onClick={onPress} aria-label={accessibilityLabel}>
-            {children}
-        </button>
-    ),
-}));
-
-jest.mock('design-system/components/Badge/Badge', () => ({
-    Badge: ({ children, status }: MockBadgeProps) => (
-        <span data-testid="badge" data-status={status}>
-            {children}
-        </span>
-    ),
-}));
-
-jest.mock('design-system/primitives/Text/Text', () => ({
-    Text: ({ children, ...props }: MockSpreadProps) => <span {...props}>{children}</span>,
-}));
-
-jest.mock('design-system/primitives/Box/Box', () => ({
-    Box: ({ children, ...props }: MockSpreadProps) => <div {...props}>{children}</div>,
-}));
+// Single combined mock for all design-system component/primitive paths.
+// All these paths resolve to the same module via moduleNameMapper, so only
+// one jest.mock registration is needed — multiple calls overwrite each other.
+jest.mock('design-system/components/Card/Card', () => {
+    const React = require('react');
+    return {
+        Card: ({ children, ...props }: MockSpreadProps) =>
+            React.createElement('div', { 'data-testid': 'card', ...props }, children),
+        Button: ({ children, onPress, accessibilityLabel }: MockButtonProps) =>
+            React.createElement('button', { onClick: onPress, 'aria-label': accessibilityLabel }, children),
+        Badge: ({ children, status }: MockBadgeProps) =>
+            React.createElement('span', { 'data-testid': 'badge', 'data-status': status }, children),
+        Text: ({ children, ...props }: MockSpreadProps) => React.createElement('span', props, children),
+        Box: ({ children, ...props }: MockSpreadProps) => React.createElement('div', props, children),
+    };
+});
 
 jest.mock('design-system/tokens/colors', () => ({
     colors: {
@@ -72,6 +57,22 @@ jest.mock('shared/constants/routes', () => ({
     WEB_HEALTH_ROUTES: { MEDICATIONS: '/health/medications' },
 }));
 
+// Mock the hooks barrel to prevent Apollo useQuery from running without a provider
+jest.mock('@/hooks', () => ({
+    useAppointments: () => ({ appointments: [], loading: false, error: null }),
+    useAuth: () => ({ session: null, isAuthenticated: false }),
+    useSymptomChecker: () => ({ results: [], isLoading: false, error: null, getRecommendations: jest.fn() }),
+    useMedications: () => ({
+        medications: null,
+        loading: false,
+        error: null,
+        refetch: jest.fn(),
+        getMedicationById: jest.fn(),
+        searchMedications: jest.fn(() => []),
+    }),
+    useHealthMetrics: () => ({ metrics: [], loading: false, error: null }),
+}));
+
 import MedicationCalendarPage from '../../../pages/health/medications/calendar';
 
 describe('Medication Calendar Page', () => {
@@ -94,7 +95,7 @@ describe('Medication Calendar Page', () => {
         render(<MedicationCalendarPage />);
         const dayButtons = screen
             .getAllByRole('button')
-            .filter((btn) => btn.getAttribute('aria-label')?.match(/sun|mon|tue|wed|thu|fri|sat/i));
+            .filter((btn) => btn.getAttribute('aria-label')?.match(/^(sun|mon|tue|wed|thu|fri|sat)\s/i));
         expect(dayButtons.length).toBe(7);
     });
 
@@ -124,7 +125,7 @@ describe('Medication Calendar Page', () => {
         render(<MedicationCalendarPage />);
         const dayButtons = screen
             .getAllByRole('button')
-            .filter((btn) => btn.getAttribute('aria-label')?.match(/sun|mon|tue|wed|thu|fri|sat/i));
+            .filter((btn) => btn.getAttribute('aria-label')?.match(/^(sun|mon|tue|wed|thu|fri|sat)\s/i));
         if (dayButtons.length > 1) {
             fireEvent.click(dayButtons[1]);
             expect(screen.getAllByTestId('card').length).toBeGreaterThan(0);

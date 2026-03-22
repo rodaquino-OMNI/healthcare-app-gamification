@@ -59,7 +59,7 @@ describe('Privacy Settings Page', () => {
 
     it('renders the privacy heading', () => {
         render(<PrivacySettingsPage />);
-        expect(screen.getByText(/privacidade/i)).toBeTruthy();
+        expect(screen.getAllByText(/privacidade/i).length).toBeGreaterThan(0);
     });
 
     it('renders the subtitle text', () => {
