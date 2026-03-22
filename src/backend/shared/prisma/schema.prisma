@@ -378,6 +378,19 @@ model Rule {
   @@map("rules")
 }
 
+model LeaderboardEntry {
+  id        String   @id @default(uuid())
+  userId    String
+  journey   String
+  score     Int
+  rank      Int
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, journey])
+  @@index([journey, score])
+  @@map("leaderboard_entries")
+}
+
 // ──────────────────────────────────────────────────────────────
 // HEALTH-SERVICE MODELS
 // ──────────────────────────────────────────────────────────────
