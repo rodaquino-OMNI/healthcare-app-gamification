@@ -121,7 +121,7 @@ export const SleepQuality: React.FC = () => {
                                     accessibilityLabel={t(option.labelKey)}
                                     accessibilityRole="button"
                                     testID={`sleep-quality-emoji-${option.level}`}
-                                    style={{...styles.moodOption, ...(isSelected ? styles.moodOptionSelected : {})}}
+                                    style={{ ...styles.moodOption, ...(isSelected ? styles.moodOptionSelected : {}) }}
                                 >
                                     <Text fontSize="heading-2xl">{option.emoji}</Text>
                                     <Text

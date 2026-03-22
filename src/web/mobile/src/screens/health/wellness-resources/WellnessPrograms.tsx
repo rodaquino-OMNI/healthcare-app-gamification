@@ -284,7 +284,7 @@ export const WellnessPrograms: React.FC = () => {
                             accessibilityLabel={t(filter.labelKey)}
                             accessibilityRole="button"
                             testID={`wellness-resources-programs-filter-${filter.key}`}
-                            style={{...styles.filterChip, ...(isActive ? styles.filterChipActive : {})}}
+                            style={{ ...styles.filterChip, ...(isActive ? styles.filterChipActive : {}) }}
                         >
                             <Text
                                 fontSize="sm"

@@ -143,7 +143,7 @@ export const LogSymptoms: React.FC = () => {
                                     accessibilityLabel={t(symptom.labelKey)}
                                     accessibilityRole="button"
                                     testID={`symptom-${symptom.id}`}
-                                    style={{...styles.chip, ...(isSelected ? styles.chipSelected : {})}}
+                                    style={{ ...styles.chip, ...(isSelected ? styles.chipSelected : {}) }}
                                 >
                                     <Text
                                         fontSize="sm"
@@ -173,7 +173,7 @@ export const LogSymptoms: React.FC = () => {
                                     accessibilityLabel={t(mood.labelKey)}
                                     accessibilityRole="button"
                                     testID={`mood-${mood.id}`}
-                                    style={{...styles.moodOption, ...(isSelected ? styles.moodOptionSelected : {})}}
+                                    style={{ ...styles.moodOption, ...(isSelected ? styles.moodOptionSelected : {}) }}
                                 >
                                     <Text fontSize="heading-2xl">{mood.emoji}</Text>
                                     <Text
@@ -204,7 +204,10 @@ export const LogSymptoms: React.FC = () => {
                                     accessibilityLabel={t(level.labelKey)}
                                     accessibilityRole="button"
                                     testID={`energy-${level.id}`}
-                                    style={{...styles.energyOption, ...(isSelected ? styles.energyOptionSelected : {})}}
+                                    style={{
+                                        ...styles.energyOption,
+                                        ...(isSelected ? styles.energyOptionSelected : {}),
+                                    }}
                                 >
                                     <Text
                                         fontSize="md"

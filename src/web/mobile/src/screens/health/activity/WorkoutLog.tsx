@@ -203,7 +203,7 @@ export const WorkoutLog: React.FC = () => {
                                     onPress={() => handleIntensityPress(opt.key)}
                                     accessibilityLabel={t(opt.labelKey)}
                                     accessibilityRole="button"
-                                    style={{...styles.intensityChip, ...(isActive ? styles.intensityChipActive : {})}}
+                                    style={{ ...styles.intensityChip, ...(isActive ? styles.intensityChipActive : {}) }}
                                 >
                                     <Text
                                         fontSize="sm"

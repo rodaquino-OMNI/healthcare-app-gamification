@@ -298,7 +298,7 @@ export const FoodDiary: React.FC = () => {
                             accessibilityLabel={t(filter.labelKey)}
                             accessibilityRole="button"
                             testID={`nutrition-diary-filter-${filter.key}`}
-                            style={{...styles.filterTab, ...(isActive ? styles.filterTabActive : {})}}
+                            style={{ ...styles.filterTab, ...(isActive ? styles.filterTabActive : {}) }}
                         >
                             <Text
                                 fontSize="sm"

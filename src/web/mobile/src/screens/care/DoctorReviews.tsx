@@ -8,7 +8,6 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 
-
 interface Review {
     id: string;
     reviewerName: string;

@@ -8,6 +8,7 @@ import { Reward } from '@shared/types/gamification.types';
 import React, { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, Modal, SafeAreaView } from 'react-native';
+
 import { useTheme } from '../../hooks/useTheme';
 
 interface RewardDetailRouteParams {

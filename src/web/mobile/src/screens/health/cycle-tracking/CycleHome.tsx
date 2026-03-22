@@ -309,7 +309,7 @@ export const CycleHome: React.FC = () => {
                         accessibilityLabel={t(tab.labelKey)}
                         accessibilityRole="button"
                         testID={`tab-${tab.key}`}
-                        style={{...styles.tabItem, ...(activeTab === tab.key ? styles.tabItemActive : {})}}
+                        style={{ ...styles.tabItem, ...(activeTab === tab.key ? styles.tabItemActive : {}) }}
                     >
                         <Text
                             fontSize="lg"

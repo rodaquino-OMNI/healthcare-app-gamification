@@ -170,7 +170,10 @@ module.exports = {
     '@typescript-eslint/no-unsafe-return': 'warn',
     '@typescript-eslint/no-unsafe-call': 'warn',
     '@typescript-eslint/no-misused-promises': 'warn',
-    '@typescript-eslint/no-floating-promises': 'warn'
+    '@typescript-eslint/no-floating-promises': 'warn',
+    '@typescript-eslint/no-redundant-type-constituents': 'warn',
+    '@typescript-eslint/no-unsafe-enum-comparison': 'warn',
+    '@typescript-eslint/require-await': 'warn'
   },
   overrides: [
     {
@@ -209,6 +212,17 @@ module.exports = {
         'import/no-default-export': 'off',
         '@typescript-eslint/explicit-function-return-type': 'off',
         '@typescript-eslint/explicit-module-boundary-types': 'off'
+      }
+    },
+    {
+      files: ['mobile/src/**/*.tsx', 'mobile/src/**/*.ts'],
+      rules: {
+        '@typescript-eslint/explicit-function-return-type': 'off',
+        '@typescript-eslint/explicit-module-boundary-types': 'off',
+        '@typescript-eslint/unbound-method': 'warn',
+        'jsx-a11y/no-autofocus': 'off',
+        'jsx-a11y/label-has-associated-control': 'off',
+        'react-hooks/rules-of-hooks': 'warn'
       }
     }
   ]

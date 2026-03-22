@@ -8,6 +8,7 @@ import { Reward } from '@shared/types/gamification.types';
 import React, { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, ScrollView, SafeAreaView } from 'react-native';
+
 import { useTheme } from '../../hooks/useTheme';
 
 type JourneyFilter = 'all' | 'health' | 'care' | 'plan';

@@ -226,7 +226,7 @@ export const ArticleList: React.FC = () => {
                             accessibilityLabel={t(filter.labelKey)}
                             accessibilityRole="button"
                             testID={`wellness-resources-article-list-filter-${filter.key}`}
-                            style={{...styles.filterChip, ...(isActive ? styles.filterChipActive : {})}}
+                            style={{ ...styles.filterChip, ...(isActive ? styles.filterChipActive : {}) }}
                         >
                             <Text
                                 fontSize="sm"

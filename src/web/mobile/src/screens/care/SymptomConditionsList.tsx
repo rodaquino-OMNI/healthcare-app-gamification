@@ -61,7 +61,12 @@ const SymptomConditionsList: React.FC = () => {
     const navigation = useNavigation<any>();
     const route = useRoute<RouteProp<{ params: SymptomConditionsListRouteParams }, 'params'>>();
     const { t } = useTranslation();
-    const { symptoms: _symptoms = [], regions: _regions = [], overallSeverity = 5, conditions = [] } = route.params || {};
+    const {
+        symptoms: _symptoms = [],
+        regions: _regions = [],
+        overallSeverity = 5,
+        conditions = [],
+    } = route.params || {};
 
     const riskLevel = getRiskLevel(overallSeverity);
     const sortedConditions = [...conditions].sort((a, b) => b.probability - a.probability);

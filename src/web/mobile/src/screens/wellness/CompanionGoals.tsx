@@ -119,7 +119,12 @@ export const CompanionGoalsScreen: React.FC = () => {
         navigation.navigate(ROUTES.WELLNESS_DAILY_PLAN as 'WellnessDailyPlan');
     }, [navigation]);
 
-    const renderProgressRing = (progress: number, size: number, strokeWidth: number, ringColor: string): React.ReactElement | null => {
+    const renderProgressRing = (
+        progress: number,
+        size: number,
+        strokeWidth: number,
+        ringColor: string
+    ): React.ReactElement | null => {
         const radius = (size - strokeWidth) / 2;
         const _circumference = 2 * Math.PI * radius;
         const filledAngle = Math.min(progress, 1) * 360;
