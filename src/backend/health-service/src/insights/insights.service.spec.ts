@@ -1,4 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
+
+// Mock ESM/circular-dep modules before any imports resolve them
+jest.mock('../integrations/fhir/fhir.service');
+jest.mock('../integrations/wearables/wearables.service', () => ({
+    WearablesService: jest.fn(),
+    WearableAdapter: class WearableAdapter {},
+}));
+
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { AppException } from '@app/shared/exceptions/exceptions.types';
 import { KafkaService } from '@app/shared/kafka/kafka.service';
@@ -161,21 +169,61 @@ describe('InsightsService', () => {
     });
 
     describe('generateInsights (cron method)', () => {
-        it('should iterate over all users and generate insights', async () => {
+        it('should process users in batches using cursor-based pagination', async () => {
             const mockUsers = [{ id: 'user-1' }, { id: 'user-2' }];
-            mockPrismaService.user.findMany.mockResolvedValue(mockUsers);
+            // First call returns a batch; second call returns empty to end the loop
+            mockPrismaService.user.findMany
+                .mockResolvedValueOnce(mockUsers)
+                .mockResolvedValueOnce([]);
             (mockPrismaService as any).healthMetric.findMany.mockResolvedValue([]);
             (mockPrismaService as any).healthGoal.findMany.mockResolvedValue([]);
             mockKafkaService.produce.mockResolvedValue(undefined);
 
             await service.generateInsights();
 
-            expect(mockPrismaService.user.findMany).toHaveBeenCalled();
+            // First call: no cursor (initial fetch)
+            expect(mockPrismaService.user.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    take: 100,
+                    select: { id: true },
+                    orderBy: { id: 'asc' },
+                })
+            );
+            // generateUserInsights called once per user in the batch
+            expect(mockKafkaService.produce).toHaveBeenCalledTimes(2);
+        });
+
+        it('should advance the cursor to the last user id in each batch', async () => {
+            // A full batch of 100 users triggers the cursor carry-forward to the next iteration.
+            // Reset to clear any unconsumed one-time queue entries from the previous test.
+            mockPrismaService.user.findMany.mockReset();
+            const fullBatch = Array.from({ length: 100 }, (_, i) => ({ id: `user-${i + 1}` }));
+            mockPrismaService.user.findMany
+                .mockResolvedValueOnce(fullBatch)
+                .mockResolvedValueOnce([]);
+            (mockPrismaService as any).healthMetric.findMany.mockResolvedValue([]);
+            (mockPrismaService as any).healthGoal.findMany.mockResolvedValue([]);
+            mockKafkaService.produce.mockResolvedValue(undefined);
+
+            await service.generateInsights();
+
+            // Second call must carry the cursor from the last id of the first full batch
+            expect(mockPrismaService.user.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    take: 100,
+                    skip: 1,
+                    cursor: { id: 'user-100' },
+                    select: { id: true },
+                    orderBy: { id: 'asc' },
+                })
+            );
         });
 
         it('should not throw when individual user insight generation fails', async () => {
             const mockUsers = [{ id: 'user-1' }];
-            mockPrismaService.user.findMany.mockResolvedValue(mockUsers);
+            mockPrismaService.user.findMany
+                .mockResolvedValueOnce(mockUsers)
+                .mockResolvedValueOnce([]);
             (mockPrismaService as any).healthMetric.findMany.mockRejectedValue(
                 new Error('Failed for user')
             );
@@ -251,7 +299,7 @@ describe('InsightsService', () => {
 
     describe('publishInsightEvent', () => {
         const userId = 'user-test-123';
-        const insightData = { metricsCount: 5, recommendations: ['Exercise more'] };
+        const insightData = { metricsCount: 5, goalsCount: 1, recommendations: ['Exercise more'] };
 
         it('should publish event to correct Kafka topic', async () => {
             mockKafkaService.produce.mockResolvedValue(undefined);

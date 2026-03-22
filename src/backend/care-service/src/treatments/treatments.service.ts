@@ -76,9 +76,17 @@ export class TreatmentsService {
      *
      * @param userId - ID of the user whose treatment plans to retrieve
      * @param filter - Filter criteria for the query
+     * @param options - Optional pagination parameters
+     * @param options.skip - Number of records to skip (default: 0)
+     * @param options.take - Maximum number of records to return (default: 50)
      * @returns A promise resolving to a list of treatment plans
      */
-    async findAll(userId: string, filter: FilterDto): Promise<TreatmentPlan[]> {
+    async findAll(
+        userId: string,
+        filter: FilterDto,
+        options?: { skip?: number; take?: number }
+    ): Promise<TreatmentPlan[]> {
+        const { skip = 0, take = 50 } = options ?? {};
         return this.tracing.createSpan('treatments.findAll', async () => {
             this.logger.log(
                 `Retrieving treatment plans for user ${userId} with filter and pagination`,
@@ -95,6 +103,8 @@ export class TreatmentsService {
                     },
                     orderBy: filter?.orderBy as Prisma.TreatmentPlanOrderByWithRelationInput,
                     include: filter?.include,
+                    skip,
+                    take,
                 });
 
                 return treatmentPlans as unknown as TreatmentPlan[];

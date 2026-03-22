@@ -30,12 +30,16 @@ export class QuestsService {
     ) {}
 
     /**
-     * Retrieves all quests.
+     * Retrieves all quests with optional pagination.
+     * @param options - Optional pagination parameters
+     * @param options.skip - Number of records to skip (default: 0)
+     * @param options.take - Maximum number of records to return (default: 50)
      * @returns A promise that resolves to an array of quests.
      */
-    async findAll(): Promise<Quest[]> {
+    async findAll(options?: { skip?: number; take?: number }): Promise<Quest[]> {
+        const { skip = 0, take = 50 } = options ?? {};
         try {
-            return (await this.prisma.quest.findMany()) as unknown as Quest[];
+            return (await this.prisma.quest.findMany({ skip, take })) as unknown as Quest[];
         } catch (error: unknown) {
             const stack = error instanceof Error ? error.stack : String(error);
             this.logger.error('Failed to retrieve quests', stack, 'QuestsService');

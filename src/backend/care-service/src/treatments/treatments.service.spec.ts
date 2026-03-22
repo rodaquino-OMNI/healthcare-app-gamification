@@ -186,6 +186,26 @@ describe('TreatmentsService', () => {
 
             await expect(service.findAll(userId, {})).rejects.toThrow();
         });
+
+        it('should pass default skip=0 and take=50 to prisma when no options provided', async () => {
+            mockPrismaService.treatmentPlan.findMany.mockResolvedValue([]);
+
+            await service.findAll(userId, {});
+
+            expect(mockPrismaService.treatmentPlan.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({ skip: 0, take: 50 })
+            );
+        });
+
+        it('should pass provided skip and take to prisma', async () => {
+            mockPrismaService.treatmentPlan.findMany.mockResolvedValue([]);
+
+            await service.findAll(userId, {}, { skip: 20, take: 10 });
+
+            expect(mockPrismaService.treatmentPlan.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({ skip: 20, take: 10 })
+            );
+        });
     });
 
     // ----------------------------------------------------------------

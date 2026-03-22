@@ -6,6 +6,7 @@ import { lastValueFrom } from 'rxjs';
 
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { withRetry } from '../utils/http-retry';
 
 interface AuthenticatedUser {
     id: string;
@@ -43,7 +44,9 @@ export class PlanResolvers {
         @Args('planId') planId: string
     ): Promise<unknown> {
         const response = await lastValueFrom(
-            this.httpService.get<unknown>(`${this.planServiceUrl}/plans/${planId}`)
+            withRetry(this.httpService.get<unknown>(`${this.planServiceUrl}/plans/${planId}`), {
+                context: 'getPlan',
+            })
         );
         return response.data;
     }
@@ -62,7 +65,10 @@ export class PlanResolvers {
         }
 
         const response = await lastValueFrom(
-            this.httpService.get<unknown>(`${this.planServiceUrl}/claims?${String(params)}`)
+            withRetry(
+                this.httpService.get<unknown>(`${this.planServiceUrl}/claims?${String(params)}`),
+                { context: 'getClaims' }
+            )
         );
         return response.data;
     }
@@ -80,16 +86,19 @@ export class PlanResolvers {
         @Args('documents', { nullable: true }) documents?: string[]
     ): Promise<unknown> {
         const response = await lastValueFrom(
-            this.httpService.post<unknown>(`${this.planServiceUrl}/claims`, {
-                planId,
-                type,
-                procedureCode,
-                providerName,
-                serviceDate,
-                amount,
-                documents: documents || [],
-                userId: user.id,
-            })
+            withRetry(
+                this.httpService.post<unknown>(`${this.planServiceUrl}/claims`, {
+                    planId,
+                    type,
+                    procedureCode,
+                    providerName,
+                    serviceDate,
+                    amount,
+                    documents: documents || [],
+                    userId: user.id,
+                }),
+                { maxRetries: 1, context: 'submitClaim' }
+            )
         );
         return response.data;
     }
@@ -109,11 +118,17 @@ export class PlanResolvers {
         const documentUrl = `https://storage.austa.com/claims/${claimId}/${filename}`;
 
         const response = await lastValueFrom(
-            this.httpService.post<unknown>(`${this.planServiceUrl}/claims/${claimId}/documents`, {
-                fileName: filename,
-                fileType: mimetype,
-                fileUrl: documentUrl,
-            })
+            withRetry(
+                this.httpService.post<unknown>(
+                    `${this.planServiceUrl}/claims/${claimId}/documents`,
+                    {
+                        fileName: filename,
+                        fileType: mimetype,
+                        fileUrl: documentUrl,
+                    }
+                ),
+                { maxRetries: 1, context: 'uploadClaimDocument' }
+            )
         );
         return response.data;
     }
@@ -126,9 +141,12 @@ export class PlanResolvers {
         @Args('additionalInfo', { nullable: true }) additionalInfo?: unknown
     ): Promise<unknown> {
         const response = await lastValueFrom(
-            this.httpService.patch<unknown>(`${this.planServiceUrl}/claims/${id}`, {
-                additionalInfo,
-            })
+            withRetry(
+                this.httpService.patch<unknown>(`${this.planServiceUrl}/claims/${id}`, {
+                    additionalInfo,
+                }),
+                { maxRetries: 1, context: 'updateClaim' }
+            )
         );
         return response.data;
     }
@@ -140,9 +158,12 @@ export class PlanResolvers {
         @Args('id') id: string
     ): Promise<unknown> {
         const response = await lastValueFrom(
-            this.httpService.patch<unknown>(`${this.planServiceUrl}/claims/${id}`, {
-                status: 'CANCELLED',
-            })
+            withRetry(
+                this.httpService.patch<unknown>(`${this.planServiceUrl}/claims/${id}`, {
+                    status: 'CANCELLED',
+                }),
+                { maxRetries: 1, context: 'cancelClaim' }
+            )
         );
         return response.data;
     }

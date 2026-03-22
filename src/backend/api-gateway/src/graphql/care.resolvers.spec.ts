@@ -1,4 +1,5 @@
 import { HttpService } from '@nestjs/axios';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { of, throwError } from 'rxjs';
@@ -11,7 +12,16 @@ describe('CareResolvers', () => {
 
     const mockUser = { id: 'user-1', email: 'test@example.com' };
 
+    const mockCacheManager = {
+        get: jest.fn().mockResolvedValue(null),
+        set: jest.fn().mockResolvedValue(undefined),
+        del: jest.fn().mockResolvedValue(undefined),
+    };
+
     beforeEach(async () => {
+        jest.clearAllMocks();
+        mockCacheManager.get.mockResolvedValue(null);
+
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 CareResolvers,
@@ -28,6 +38,10 @@ describe('CareResolvers', () => {
                     useValue: {
                         get: jest.fn().mockReturnValue('http://care-service:3003'),
                     },
+                },
+                {
+                    provide: CACHE_MANAGER,
+                    useValue: mockCacheManager,
                 },
             ],
         }).compile();

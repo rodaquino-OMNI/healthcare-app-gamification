@@ -147,6 +147,22 @@ describe('RewardsService', () => {
 
             await expect(service.findAll()).rejects.toThrow(AppException);
         });
+
+        it('should pass default skip=0 and take=50 to prisma when no options provided', async () => {
+            mockPrismaService.reward.findMany.mockResolvedValue([]);
+
+            await service.findAll();
+
+            expect(mockPrismaService.reward.findMany).toHaveBeenCalledWith({ skip: 0, take: 50 });
+        });
+
+        it('should pass provided skip and take to prisma', async () => {
+            mockPrismaService.reward.findMany.mockResolvedValue([]);
+
+            await service.findAll({ skip: 10, take: 25 });
+
+            expect(mockPrismaService.reward.findMany).toHaveBeenCalledWith({ skip: 10, take: 25 });
+        });
     });
 
     // ----------------------------------------------------------------

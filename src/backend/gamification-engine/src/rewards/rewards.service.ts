@@ -58,13 +58,17 @@ export class RewardsService {
     }
 
     /**
-     * Retrieves all rewards.
+     * Retrieves all rewards with optional pagination.
+     * @param options - Optional pagination parameters
+     * @param options.skip - Number of records to skip (default: 0)
+     * @param options.take - Maximum number of records to return (default: 50)
      * @returns A promise that resolves to an array of rewards.
      */
-    async findAll(): Promise<Reward[]> {
+    async findAll(options?: { skip?: number; take?: number }): Promise<Reward[]> {
+        const { skip = 0, take = 50 } = options ?? {};
         try {
             this.logger.log('Retrieving all rewards', 'RewardsService');
-            return await this.prisma.reward.findMany();
+            return await this.prisma.reward.findMany({ skip, take });
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : String(error);
             const stack = error instanceof Error ? error.stack : undefined;

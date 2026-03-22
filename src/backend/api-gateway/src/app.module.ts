@@ -7,12 +7,15 @@ import { ClaimsModule } from '@app/plan/claims/claims.module';
 import { AuditModule, AuditInterceptor } from '@app/shared/audit';
 import { ExceptionsModule } from '@app/shared/exceptions/exceptions.module';
 import { TracingModule } from '@app/shared/tracing/tracing.module';
+import KeyvRedis from '@keyv/redis';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'; // @nestjs/apollo v12.0.0+
+import { CacheModule } from '@nestjs/cache-manager';
 import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common'; // @nestjs/common v10.0.0+
 import { ConfigModule, ConfigService } from '@nestjs/config'; // @nestjs/config v10.0.0+
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql'; // @nestjs/graphql v12.0.0+
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
+import Keyv from 'keyv';
 
 import configuration from './config/configuration';
 import { resolvers } from './graphql/resolvers';
@@ -44,6 +47,20 @@ import { RateLimitMiddleware } from './middleware/rate-limit.middleware';
                 resolvers: resolvers as any,
                 /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any */
             }),
+        }),
+        CacheModule.registerAsync({
+            isGlobal: true,
+            imports: [ConfigModule],
+            useFactory: (configService: ConfigService) => {
+                const host = configService.get<string>('REDIS_HOST', 'localhost');
+                const port = configService.get<number>('REDIS_PORT', 6379);
+                const redisStore = new KeyvRedis(`redis://${host}:${port}`);
+                return {
+                    stores: new Keyv({ store: redisStore }),
+                    ttl: 300_000, // 5 min default in milliseconds
+                };
+            },
+            inject: [ConfigService],
         }),
         PrometheusModule.register(),
         ExceptionsModule,

@@ -6,6 +6,9 @@ module.exports = {
     transform: {
         '^.+\\.(t|j)s$': 'ts-jest',
     },
+    transformIgnorePatterns: [
+        'node_modules/(?!(fhir-kit-client|node-fetch|cross-fetch|data-uri-to-buffer|fetch-blob|formdata-polyfill)/)',
+    ],
     collectCoverageFrom: [
         'src/**/*.(t|j)s',
         '!src/main.ts',

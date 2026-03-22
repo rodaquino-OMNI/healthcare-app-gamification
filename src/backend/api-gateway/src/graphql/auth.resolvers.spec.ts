@@ -39,6 +39,7 @@ jest.mock('@nestjs/graphql', () => ({
 }));
 
 import { HttpService } from '@nestjs/axios';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { of, throwError } from 'rxjs';
@@ -58,18 +59,26 @@ describe('AuthResolvers', () => {
         get: jest.fn(),
     };
 
+    const mockCacheManager = {
+        get: jest.fn().mockResolvedValue(null),
+        set: jest.fn().mockResolvedValue(undefined),
+        del: jest.fn().mockResolvedValue(undefined),
+    };
+
     const mockAuthServiceUrl = 'http://auth-service:3001';
 
     beforeEach(async () => {
         jest.clearAllMocks();
 
         mockConfigService.get.mockReturnValue(mockAuthServiceUrl);
+        mockCacheManager.get.mockResolvedValue(null);
 
         const module: TestingModule = await Test.createTestingModule({
             providers: [
                 AuthResolvers,
                 { provide: HttpService, useValue: mockHttpService },
                 { provide: ConfigService, useValue: mockConfigService },
+                { provide: CACHE_MANAGER, useValue: mockCacheManager },
             ],
         }).compile();
 

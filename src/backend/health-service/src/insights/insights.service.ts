@@ -50,23 +50,42 @@ export class InsightsService {
     /**
      * Generates health insights for all users.
      * This method is scheduled to run every day at midnight.
+     * Uses cursor-based batch processing to avoid loading all users into memory at once.
      * @returns A promise that resolves when the insights have been generated.
      */
     @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
     async generateInsights(): Promise<void> {
-        this.logger.log('Starting daily health insights generation...'); // Logs the start of the process
+        this.logger.log('Starting daily insight generation');
 
         try {
-            // Retrieves all users from the database using PrismaService.
-            const users = await this.prisma.user.findMany();
+            const batchSize = 100;
+            let cursor: string | undefined;
+            let totalProcessed = 0;
 
-            // Iterates through each user and generates insights by calling generateUserInsights.
-            for (const user of users) {
-                await this.generateUserInsights(user.id);
-                this.logger.log(`Generated insights for user ${user.id}`); // Logs the completion of insight generation for each user.
+            // eslint-disable-next-line no-constant-condition
+            while (true) {
+                const users = await this.prisma.user.findMany({
+                    take: batchSize,
+                    ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
+                    select: { id: true },
+                    orderBy: { id: 'asc' },
+                });
+
+                if (users.length === 0) {
+                    break;
+                }
+
+                await Promise.all(users.map((user) => this.generateUserInsights(user.id)));
+
+                totalProcessed += users.length;
+                cursor = users[users.length - 1].id;
+
+                if (users.length < batchSize) {
+                    break;
+                }
             }
 
-            this.logger.log('Daily health insights generation completed.'); // Logs the completion of the process
+            this.logger.log(`Daily insight generation complete: ${totalProcessed} users processed`);
         } catch (error: unknown) {
             const errorStack = error instanceof Error ? error.stack : undefined;
             this.logger.error('Error during daily health insights generation', errorStack); // Logs any errors that occur during the process

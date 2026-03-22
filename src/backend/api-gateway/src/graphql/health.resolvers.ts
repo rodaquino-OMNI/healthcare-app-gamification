@@ -1,11 +1,13 @@
 import { HttpService } from '@nestjs/axios';
-import { UseGuards } from '@nestjs/common';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
+import { Inject, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { lastValueFrom } from 'rxjs';
 
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { withRetry } from '../utils/http-retry';
 
 interface AuthenticatedUser {
     id: string;
@@ -19,7 +21,8 @@ export class HealthResolvers {
 
     constructor(
         private readonly httpService: HttpService,
-        private readonly configService: ConfigService
+        private readonly configService: ConfigService,
+        @Inject(CACHE_MANAGER) private readonly cacheManager: Cache
     ) {
         this.healthServiceUrl = this.configService.get<string>(
             'services.health.url',
@@ -37,6 +40,12 @@ export class HealthResolvers {
         @Args('endDate', { nullable: true }) endDate?: Date,
         @Args('source', { nullable: true }) source?: string
     ): Promise<unknown> {
+        const cacheKey = `health:metrics:${userId}:${types?.join(',') ?? ''}:${startDate?.toISOString() ?? ''}:${endDate?.toISOString() ?? ''}:${source ?? ''}`;
+        const cached = await this.cacheManager.get<unknown>(cacheKey);
+        if (cached !== undefined && cached !== null) {
+            return cached;
+        }
+
         const params = new URLSearchParams();
         if (types) {
             params.append('types', types.join(','));
@@ -52,10 +61,14 @@ export class HealthResolvers {
         }
 
         const response = await lastValueFrom(
-            this.httpService.get<unknown>(
-                `${this.healthServiceUrl}/metrics/${userId}?${String(params)}`
+            withRetry(
+                this.httpService.get<unknown>(
+                    `${this.healthServiceUrl}/metrics/${userId}?${String(params)}`
+                ),
+                { context: 'getHealthMetrics' }
             )
         );
+        await this.cacheManager.set(cacheKey, response.data, 300_000); // 300s TTL in ms
         return response.data;
     }
 
@@ -67,6 +80,12 @@ export class HealthResolvers {
         @Args('status', { nullable: true }) status?: string,
         @Args('type', { nullable: true }) type?: string
     ): Promise<unknown> {
+        const cacheKey = `health:goals:${userId}:${status ?? ''}:${type ?? ''}`;
+        const cached = await this.cacheManager.get<unknown>(cacheKey);
+        if (cached !== undefined && cached !== null) {
+            return cached;
+        }
+
         const params = new URLSearchParams();
         if (status) {
             params.append('status', status);
@@ -76,10 +95,14 @@ export class HealthResolvers {
         }
 
         const response = await lastValueFrom(
-            this.httpService.get<unknown>(
-                `${this.healthServiceUrl}/goals/${userId}?${String(params)}`
+            withRetry(
+                this.httpService.get<unknown>(
+                    `${this.healthServiceUrl}/goals/${userId}?${String(params)}`
+                ),
+                { context: 'getHealthGoals' }
             )
         );
+        await this.cacheManager.set(cacheKey, response.data, 300_000); // 300s TTL in ms
         return response.data;
     }
 
@@ -108,8 +131,11 @@ export class HealthResolvers {
         }
 
         const response = await lastValueFrom(
-            this.httpService.get<unknown>(
-                `${this.healthServiceUrl}/medical-history/${userId}?${String(params)}`
+            withRetry(
+                this.httpService.get<unknown>(
+                    `${this.healthServiceUrl}/medical-history/${userId}?${String(params)}`
+                ),
+                { context: 'getMedicalHistory' }
             )
         );
         return response.data;
@@ -122,7 +148,9 @@ export class HealthResolvers {
         @Args('userId') userId: string
     ): Promise<unknown> {
         const response = await lastValueFrom(
-            this.httpService.get<unknown>(`${this.healthServiceUrl}/devices/${userId}`)
+            withRetry(this.httpService.get<unknown>(`${this.healthServiceUrl}/devices/${userId}`), {
+                context: 'getConnectedDevices',
+            })
         );
         return response.data;
     }
@@ -135,9 +163,12 @@ export class HealthResolvers {
         @Args('createMetricDto') createMetricDto: unknown
     ): Promise<unknown> {
         const response = await lastValueFrom(
-            this.httpService.post<unknown>(
-                `${this.healthServiceUrl}/metrics/${recordId}`,
-                createMetricDto
+            withRetry(
+                this.httpService.post<unknown>(
+                    `${this.healthServiceUrl}/metrics/${recordId}`,
+                    createMetricDto
+                ),
+                { maxRetries: 1, context: 'createHealthMetric' }
             )
         );
         return response.data;

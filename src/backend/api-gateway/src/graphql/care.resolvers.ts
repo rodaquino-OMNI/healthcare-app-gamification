@@ -1,11 +1,13 @@
 import { HttpService } from '@nestjs/axios';
-import { UseGuards } from '@nestjs/common';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
+import { Inject, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { lastValueFrom } from 'rxjs';
 
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { withRetry } from '../utils/http-retry';
 
 interface AuthenticatedUser {
     id: string;
@@ -19,7 +21,8 @@ export class CareResolvers {
 
     constructor(
         private readonly httpService: HttpService,
-        private readonly configService: ConfigService
+        private readonly configService: ConfigService,
+        @Inject(CACHE_MANAGER) private readonly cacheManager: Cache
     ) {
         this.careServiceUrl = this.configService.get<string>(
             'services.care.url',
@@ -34,7 +37,12 @@ export class CareResolvers {
         @Args('userId') userId: string
     ): Promise<unknown> {
         const response = await lastValueFrom(
-            this.httpService.get<unknown>(`${this.careServiceUrl}/appointments?userId=${userId}`)
+            withRetry(
+                this.httpService.get<unknown>(
+                    `${this.careServiceUrl}/appointments?userId=${userId}`
+                ),
+                { context: 'getAppointments' }
+            )
         );
         return response.data;
     }
@@ -46,7 +54,9 @@ export class CareResolvers {
         @Args('id') id: string
     ): Promise<unknown> {
         const response = await lastValueFrom(
-            this.httpService.get<unknown>(`${this.careServiceUrl}/appointments/${id}`)
+            withRetry(this.httpService.get<unknown>(`${this.careServiceUrl}/appointments/${id}`), {
+                context: 'getAppointment',
+            })
         );
         return response.data;
     }
@@ -56,6 +66,12 @@ export class CareResolvers {
         @Args('specialty', { nullable: true }) specialty?: string,
         @Args('location', { nullable: true }) location?: string
     ): Promise<unknown> {
+        const cacheKey = `providers:${specialty ?? ''}:${location ?? ''}`;
+        const cached = await this.cacheManager.get<unknown>(cacheKey);
+        if (cached !== undefined && cached !== null) {
+            return cached;
+        }
+
         const params = new URLSearchParams();
         if (specialty) {
             params.append('specialty', specialty);
@@ -65,8 +81,12 @@ export class CareResolvers {
         }
 
         const response = await lastValueFrom(
-            this.httpService.get<unknown>(`${this.careServiceUrl}/providers?${String(params)}`)
+            withRetry(
+                this.httpService.get<unknown>(`${this.careServiceUrl}/providers?${String(params)}`),
+                { context: 'getProviders' }
+            )
         );
+        await this.cacheManager.set(cacheKey, response.data, 600_000); // 600s TTL in ms
         return response.data;
     }
 
@@ -80,13 +100,16 @@ export class CareResolvers {
         @Args('reason', { nullable: true }) reason?: string
     ): Promise<unknown> {
         const response = await lastValueFrom(
-            this.httpService.post<unknown>(`${this.careServiceUrl}/appointments`, {
-                providerId,
-                dateTime,
-                type,
-                reason,
-                userId: user.id,
-            })
+            withRetry(
+                this.httpService.post<unknown>(`${this.careServiceUrl}/appointments`, {
+                    providerId,
+                    dateTime,
+                    type,
+                    reason,
+                    userId: user.id,
+                }),
+                { maxRetries: 1, context: 'bookAppointment' }
+            )
         );
         return response.data;
     }
@@ -98,7 +121,10 @@ export class CareResolvers {
         @Args('id') id: string
     ): Promise<unknown> {
         const response = await lastValueFrom(
-            this.httpService.delete<unknown>(`${this.careServiceUrl}/appointments/${id}`)
+            withRetry(
+                this.httpService.delete<unknown>(`${this.careServiceUrl}/appointments/${id}`),
+                { maxRetries: 1, context: 'cancelAppointment' }
+            )
         );
         return response.data;
     }
