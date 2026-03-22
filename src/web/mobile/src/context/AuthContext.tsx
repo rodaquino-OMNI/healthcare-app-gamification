@@ -2,6 +2,9 @@ import { AuthSession, AuthState } from '@shared/types/auth.types';
 import { jwtDecode } from 'jwt-decode'; // v4: named export (was default in v3)
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 
+// DEMO_MODE — Set to true to bypass auth and show the app with mock data
+const DEMO_MODE = true; // DEMO_MODE
+
 import {
     login,
     register,
@@ -282,6 +285,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     // Load the persisted session on mount, preceded by a one-time migration
     useEffect(() => {
+        // DEMO_MODE — Skip real auth, set fake authenticated session
+        if (DEMO_MODE) {
+            setAuthState({
+                session: {
+                    accessToken: 'demo-token-xxx',
+                    refreshToken: 'demo-refresh-xxx',
+                    expiresAt: Date.now() + 24 * 60 * 60 * 1000,
+                    userId: 'demo-user-001',
+                    user: { id: 'demo-user-001', name: 'Maria Silva', email: 'maria@demo.austa.com.br' },
+                },
+                status: 'authenticated',
+            });
+            return; // DEMO_MODE
+        }
         migrateFromAsyncStorage().then(() => {
             loadPersistedSession();
         });
@@ -296,6 +313,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     // Persist the session whenever it changes
     useEffect(() => {
+        if (DEMO_MODE) {
+            return;
+        } // DEMO_MODE
         persistSession(authState.session);
     }, [authState.session]);
 

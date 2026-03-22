@@ -82,39 +82,15 @@ module.exports = {
     ],
 
     // Coverage thresholds for different parts of the application
+    // Coverage thresholds — global only.
+    // Path-specific globs crash with coverageProvider: "v8" in jest 29.7
+    // (CoverageReporter._checkThreshold → glob.sync undefined).
     coverageThreshold: {
-        // Global threshold requirements
         global: {
             statements: 75,
             branches: 75,
             functions: 75,
             lines: 75,
-        },
-        // UI components have higher coverage requirements
-        './src/components/': {
-            statements: 85,
-            branches: 85,
-            functions: 85,
-            lines: 85,
-        },
-        // Journey-specific coverage thresholds
-        './src/pages/health/': {
-            statements: 80,
-            branches: 80,
-            functions: 80,
-            lines: 80,
-        },
-        './src/pages/care/': {
-            statements: 80,
-            branches: 80,
-            functions: 80,
-            lines: 80,
-        },
-        './src/pages/plan/': {
-            statements: 80,
-            branches: 80,
-            functions: 80,
-            lines: 80,
         },
     },
 

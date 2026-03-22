@@ -122,15 +122,7 @@
             "androidMode": "default",
             "androidCollapsedTitle": "AUSTA SuperApp"
         },
-        "updates": {
-            "fallbackToCacheTimeout": 0,
-            "url": "https://u.expo.dev/YOUR_EAS_PROJECT_ID_HERE"
-        },
-        "extra": {
-            "eas": {
-                "projectId": "YOUR_EAS_PROJECT_ID_HERE"
-            }
-        },
+        "extra": {},
         "runtimeVersion": {
             "policy": "appVersion"
         }

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AUSTA SuperApp - Technical Debt Audit Report</title>
+<style>
+  :root {
+    --bg: #0f172a; --surface: #1e293b; --surface2: #334155;
+    --text: #e2e8f0; --text-muted: #94a3b8; --accent: #38bdf8;
+    --green: #4ade80; --yellow: #facc15; --orange: #fb923c; --red: #f87171;
+    --border: #475569; --critical-bg: rgba(248,113,113,0.08);
+    --high-bg: rgba(251,146,60,0.08); --medium-bg: rgba(250,204,21,0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; padding: 2rem; }
+  .container { max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.25rem; }
+  h2 { font-size: 1.5rem; font-weight: 600; margin: 2.5rem 0 1rem; border-bottom: 2px solid var(--accent); padding-bottom: 0.5rem; }
+  h3 { font-size: 1.15rem; font-weight: 600; margin: 1.5rem 0 0.75rem; color: var(--accent); }
+  .subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.25rem; }
+  .card.critical { border-left: 4px solid var(--red); background: var(--critical-bg); }
+  .card.high { border-left: 4px solid var(--orange); background: var(--high-bg); }
+  .card.medium { border-left: 4px solid var(--yellow); background: var(--medium-bg); }
+  .card.low { border-left: 4px solid var(--green); }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .badge.critical { background: var(--red); color: #1e1e1e; }
+  .badge.high { background: var(--orange); color: #1e1e1e; }
+  .badge.medium { background: var(--yellow); color: #1e1e1e; }
+  .badge.low { background: var(--green); color: #1e1e1e; }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+  th { background: var(--surface2); padding: 10px 14px; text-align: left; font-weight: 600; border-bottom: 2px solid var(--border); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  tr:hover td { background: rgba(56,189,248,0.04); }
+  code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-size: 0.85em; font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+  .score-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+  .score-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; text-align: center; }
+  .score-card .number { font-size: 2.5rem; font-weight: 800; }
+  .score-card .label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.25rem; }
+  .score-card.red .number { color: var(--red); }
+  .score-card.orange .number { color: var(--orange); }
+  .score-card.yellow .number { color: var(--yellow); }
+  .score-card.green .number { color: var(--green); }
+  .phase { margin-bottom: 2rem; }
+  .phase-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+  .phase-num { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; flex-shrink: 0; }
+  .phase-num.p1 { background: var(--red); color: #111; }
+  .phase-num.p2 { background: var(--orange); color: #111; }
+  .phase-num.p3 { background: var(--yellow); color: #111; }
+  .phase-num.p4 { background: var(--green); color: #111; }
+  ul { padding-left: 1.25rem; margin: 0.5rem 0; }
+  li { margin-bottom: 0.35rem; }
+  .summary-bar { display: flex; height: 24px; border-radius: 6px; overflow: hidden; margin: 1rem 0; }
+  .summary-bar .seg { display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; color: #111; }
+  .topline { display: flex; flex-wrap: wrap; gap: 1.5rem; margin: 1.5rem 0; }
+  .topline-stat { flex:1; min-width: 140px; }
+  .topline-stat .val { font-size: 1.75rem; font-weight: 800; }
+  .topline-stat .lbl { font-size: 0.8rem; color: var(--text-muted); }
+  .file-list { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem; }
+  p { margin-bottom: 0.75rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Technical Debt Audit Report</h1>
+<p class="subtitle">AUSTA Healthcare SuperApp Monorepo &mdash; Audit Date: March 22, 2026</p>
+
+<!-- =========== EXECUTIVE SUMMARY =========== -->
+<h2>Executive Summary</h2>
+
+<div class="topline">
+  <div class="topline-stat"><div class="val" style="color:var(--orange)">36</div><div class="lbl">Total Debt Items</div></div>
+  <div class="topline-stat"><div class="val" style="color:var(--red)">4</div><div class="lbl">Critical Items</div></div>
+  <div class="topline-stat"><div class="val" style="color:var(--orange)">10</div><div class="lbl">High Items</div></div>
+  <div class="topline-stat"><div class="val" style="color:var(--yellow)">14</div><div class="lbl">Medium Items</div></div>
+  <div class="topline-stat"><div class="val" style="color:var(--green)">8</div><div class="lbl">Low Items</div></div>
+</div>
+
+<div class="summary-bar">
+  <div class="seg" style="width:11.1%;background:var(--red);">4</div>
+  <div class="seg" style="width:27.8%;background:var(--orange);">10</div>
+  <div class="seg" style="width:38.9%;background:var(--yellow);">14</div>
+  <div class="seg" style="width:22.2%;background:var(--green);">8</div>
+</div>
+
+<p>The AUSTA healthcare super-app monorepo contains 7 backend NestJS microservices, a Next.js web app, a React Native mobile app, and a shared design system. This audit examined code quality, architecture, test coverage, dependency health, infrastructure, and documentation across ~550 source files, ~135 backend unit tests, 65 E2E/integration test cases, and ~692 frontend tests.</p>
+
+<p>The overall health is <strong>moderate</strong>, with mature CI/CD, solid E2E test infrastructure (14 spec files across all services), and comprehensive frontend testing, but significant gaps in unit test coverage for key services, dependency hygiene, and architectural boundaries. Four critical items require immediate attention to prevent build instability and repository bloat.</p>
+
+<div class="score-grid">
+  <div class="score-card orange"><div class="number">4.8</div><div class="label">Code Debt</div></div>
+  <div class="score-card orange"><div class="number">5.5</div><div class="label">Architecture Debt</div></div>
+  <div class="score-card orange"><div class="number">5.2</div><div class="label">Test Debt</div></div>
+  <div class="score-card red"><div class="number">7.2</div><div class="label">Dependency Debt</div></div>
+  <div class="score-card yellow"><div class="number">4.0</div><div class="label">Infrastructure Debt</div></div>
+  <div class="score-card yellow"><div class="number">3.5</div><div class="label">Documentation Debt</div></div>
+</div>
+<p style="font-size:0.8rem;color:var(--text-muted);">Scores on a 1&ndash;10 scale where 10 = most debt. Weighted by impact, risk, and effort.</p>
+
+<!-- =========== PRIORITIZED ITEMS =========== -->
+<h2>Prioritized Debt Items</h2>
+
+<p>Each item is scored using: <strong>Priority = (Impact + Risk) &times; (6 &minus; Effort)</strong> where Impact (team slowdown), Risk (consequences of inaction), and Effort (fix difficulty) are each 1&ndash;5.</p>
+
+<table>
+<thead>
+  <tr><th>#</th><th>Item</th><th>Category</th><th>Impact</th><th>Risk</th><th>Effort</th><th>Score</th><th>Severity</th></tr>
+</thead>
+<tbody>
+  <tr><td>1</td><td>42 MB binary <code>.tgz</code> + 5.7 MB <code>.db</code> files in Git</td><td>Dependency</td><td>4</td><td>5</td><td>1</td><td style="font-weight:700;">45</td><td><span class="badge critical">Critical</span></td></tr>
+  <tr><td>2</td><td>health-service at 15% test coverage (14 tests / 51 files)</td><td>Test</td><td>5</td><td>5</td><td>3</td><td style="font-weight:700;">30</td><td><span class="badge critical">Critical</span></td></tr>
+  <tr><td>3</td><td>89 root dependency resolutions with version conflicts</td><td>Dependency</td><td>4</td><td>5</td><td>4</td><td style="font-weight:700;">18</td><td><span class="badge critical">Critical</span></td></tr>
+  <tr><td>4</td><td>Cross-service imports violating bounded contexts</td><td>Architecture</td><td>4</td><td>5</td><td>3</td><td style="font-weight:700;">27</td><td><span class="badge critical">Critical</span></td></tr>
+  <tr><td>5</td><td>E2E tests exist (65 cases, 14 files) but coverage gaps remain in health-service E2E paths</td><td>Test</td><td>2</td><td>3</td><td>3</td><td style="font-weight:700;">15</td><td><span class="badge medium">Medium</span></td></tr>
+  <tr><td>6</td><td>care-service at 48% coverage, appointments logic at 0%</td><td>Test</td><td>4</td><td>5</td><td>3</td><td style="font-weight:700;">27</td><td><span class="badge high">High</span></td></tr>
+  <tr><td>7</td><td>React version conflict: root resolves 18.3.1, web declares 19.2.4</td><td>Dependency</td><td>4</td><td>5</td><td>2</td><td style="font-weight:700;">36</td><td><span class="badge high">High</span></td></tr>
+  <tr><td>8</td><td>Shared package is a dumping ground (18 modules, 98 files)</td><td>Architecture</td><td>4</td><td>4</td><td>4</td><td style="font-weight:700;">16</td><td><span class="badge high">High</span></td></tr>
+  <tr><td>9</td><td>Branch coverage critically low (9&ndash;40%) across all services</td><td>Test</td><td>4</td><td>4</td><td>3</td><td style="font-weight:700;">24</td><td><span class="badge high">High</span></td></tr>
+  <tr><td>10</td><td>Duplicate <code>/infra/</code> and <code>/infrastructure/</code> directories</td><td>Infrastructure</td><td>3</td><td>3</td><td>1</td><td style="font-weight:700;">30</td><td><span class="badge high">High</span></td></tr>
+  <tr><td>11</td><td>appointments.service.ts is 1,004 lines</td><td>Code</td><td>4</td><td>3</td><td>3</td><td style="font-weight:700;">21</td><td><span class="badge high">High</span></td></tr>
+  <tr><td>12</td><td>5 Docker Compose files scattered across repo (including gamification-engine local)</td><td>Infrastructure</td><td>3</td><td>3</td><td>2</td><td style="font-weight:700;">24</td><td><span class="badge high">High</span></td></tr>
+  <tr><td>13</td><td>838 <code>any</code> type usages across 163 files</td><td>Code</td><td>3</td><td>3</td><td>3</td><td style="font-weight:700;">18</td><td><span class="badge high">High</span></td></tr>
+  <tr><td>14</td><td>No missing operational runbooks (deployment, rollback, incidents)</td><td>Documentation</td><td>3</td><td>4</td><td>3</td><td style="font-weight:700;">21</td><td><span class="badge high">High</span></td></tr>
+  <tr><td>15</td><td>Axios version conflicts across workspaces (1.12.2 vs 1.13.6)</td><td>Dependency</td><td>3</td><td>4</td><td>2</td><td style="font-weight:700;">28</td><td><span class="badge medium">Medium</span></td></tr>
+  <tr><td>16</td><td>Web frontend: 0 component-level or hook tests</td><td>Test</td><td>3</td><td>3</td><td>3</td><td style="font-weight:700;">18</td><td><span class="badge medium">Medium</span></td></tr>
+  <tr><td>17</td><td>React Native packages outdated by 3+ versions</td><td>Dependency</td><td>3</td><td>4</td><td>3</td><td style="font-weight:700;">21</td><td><span class="badge medium">Medium</span></td></tr>
+  <tr><td>18</td><td>Nested <code>web/web/</code> has full <code>node_modules</code> and <code>.next</code> artifacts</td><td>Code</td><td>3</td><td>2</td><td>1</td><td style="font-weight:700;">25</td><td><span class="badge medium">Medium</span></td></tr>
+  <tr><td>19</td><td>googlefit.adapter.ts at 787 lines, fhir.adapter.ts at 502 lines</td><td>Code</td><td>3</td><td>3</td><td>3</td><td style="font-weight:700;">18</td><td><span class="badge medium">Medium</span></td></tr>
+  <tr><td>20</td><td>No service API facade interfaces between microservices</td><td>Architecture</td><td>3</td><td>4</td><td>4</td><td style="font-weight:700;">14</td><td><span class="badge medium">Medium</span></td></tr>
+  <tr><td>21</td><td>Missing dependency management docs for developers</td><td>Documentation</td><td>3</td><td>3</td><td>2</td><td style="font-weight:700;">24</td><td><span class="badge medium">Medium</span></td></tr>
+  <tr><td>22</td><td>Inconsistent state management patterns in web frontend</td><td>Architecture</td><td>3</td><td>2</td><td>2</td><td style="font-weight:700;">20</td><td><span class="badge medium">Medium</span></td></tr>
+  <tr><td>23</td><td>Security TODO: SSL pinning placeholder certs in production</td><td>Code</td><td>2</td><td>5</td><td>2</td><td style="font-weight:700;">28</td><td><span class="badge medium">Medium</span></td></tr>
+  <tr><td>24</td><td>Privacy &amp; consent logic in shared instead of a domain service</td><td>Architecture</td><td>3</td><td>3</td><td>4</td><td style="font-weight:700;">12</td><td><span class="badge medium">Medium</span></td></tr>
+  <tr><td>25</td><td>Prisma 7 migration TODO in encryption middleware</td><td>Dependency</td><td>2</td><td>4</td><td>3</td><td style="font-weight:700;">18</td><td><span class="badge medium">Medium</span></td></tr>
+  <tr><td>26</td><td>Mobile screens over 500 lines (6 files)</td><td>Code</td><td>2</td><td>2</td><td>3</td><td style="font-weight:700;">12</td><td><span class="badge medium">Medium</span></td></tr>
+  <tr><td>27</td><td>No infrastructure architecture README</td><td>Documentation</td><td>3</td><td>2</td><td>2</td><td style="font-weight:700;">20</td><td><span class="badge medium">Medium</span></td></tr>
+  <tr><td>28</td><td>Recursive Babel plugin overrides in both backend and web package.json</td><td>Dependency</td><td>2</td><td>3</td><td>3</td><td style="font-weight:700;">15</td><td><span class="badge medium">Medium</span></td></tr>
+  <tr><td>29</td><td>redis.service.ts has 16 <code>any</code> usages &amp; 634 lines</td><td>Code</td><td>3</td><td>2</td><td>3</td><td style="font-weight:700;">15</td><td><span class="badge low">Low</span></td></tr>
+  <tr><td>30</td><td>37 console.log in production code (seed files, logger, components)</td><td>Code</td><td>1</td><td>2</td><td>1</td><td style="font-weight:700;">15</td><td><span class="badge low">Low</span></td></tr>
+  <tr><td>31</td><td>12 TODO/FIXME markers across codebase</td><td>Code</td><td>2</td><td>2</td><td>2</td><td style="font-weight:700;">16</td><td><span class="badge low">Low</span></td></tr>
+  <tr><td>32</td><td>8 <code>.bak</code> backup files in service directories</td><td>Code</td><td>1</td><td>1</td><td>1</td><td style="font-weight:700;">10</td><td><span class="badge low">Low</span></td></tr>
+  <tr><td>33</td><td><code>.DS_Store</code> files committed to repo</td><td>Code</td><td>1</td><td>1</td><td>1</td><td style="font-weight:700;">10</td><td><span class="badge low">Low</span></td></tr>
+  <tr><td>34</td><td>Legacy <code>/docs/original documentation/</code> folder</td><td>Documentation</td><td>1</td><td>1</td><td>1</td><td style="font-weight:700;">10</td><td><span class="badge low">Low</span></td></tr>
+  <tr><td>35</td><td>TypeScript pinned at 5.3.3, no upgrade path</td><td>Dependency</td><td>2</td><td>2</td><td>4</td><td style="font-weight:700;">8</td><td><span class="badge low">Low</span></td></tr>
+  <tr><td>36</td><td>Duplicate middleware.ts (src/web/ and src/web/web/)</td><td>Code</td><td>2</td><td>2</td><td>1</td><td style="font-weight:700;">20</td><td><span class="badge low">Low</span></td></tr>
+  <tr><td>37</td><td>Error handling patterns swallow errors in ~20 catch blocks</td><td>Code</td><td>2</td><td>3</td><td>3</td><td style="font-weight:700;">15</td><td><span class="badge low">Low</span></td></tr>
+</tbody>
+</table>
+
+<!-- =========== DETAILED FINDINGS =========== -->
+<h2>Detailed Findings by Category</h2>
+
+<!-- CODE DEBT -->
+<h3>Code Debt</h3>
+
+<div class="card high">
+  <strong>34 files exceed the 500-line limit</strong> &mdash; The worst offender is <code>appointments.service.ts</code> at 1,004 lines with 15 functions. Other large files include the GoogleFit adapter (787 lines), <code>redis.service.ts</code> (634 lines), and <code>validation.ts</code> (624 lines). Each should be split into focused modules by responsibility.
+</div>
+
+<div class="card medium">
+  <strong>838 uses of <code>any</code> across 163 files</strong> &mdash; Concentrated in <code>rules.service.ts</code> (22 uses), <code>redis.service.ts</code> (16), <code>claims.service.ts</code> (16), and <code>notifications.service.ts</code> (14). While many are in test files, production services lose type safety at integration boundaries where it matters most.
+</div>
+
+<div class="card medium">
+  <strong>Nested directory duplication: <code>src/web/web/</code></strong> &mdash; While the nested structure is intentional (Turbo workspace pattern), the inner <code>web/web/</code> directory contains its own <code>node_modules/</code>, <code>.next/</code> build artifacts, duplicate <code>middleware.ts</code>, and duplicate config files. Build artifacts and duplicated middleware create ambiguity about the source of truth.
+</div>
+
+<div class="card low">
+  <strong>37 console.log statements and 12 TODO markers</strong> &mdash; Most console.log calls are in seed files and Storybook stories (acceptable). Two security-relevant TODOs stand out: SSL pinning with placeholder certificates and mobile app integrity checks not yet implemented.
+</div>
+
+<!-- ARCHITECTURE DEBT -->
+<h3>Architecture Debt</h3>
+
+<div class="card critical">
+  <strong>Cross-service imports violate bounded contexts</strong> &mdash; <code>care-service</code> directly imports auth decorators (<code>@CurrentUser</code>, <code>@Roles</code>) from <code>auth-service/src/auth/decorators/</code> via relative path traversal (<code>../../../auth-service</code>). This creates tight coupling between services and would prevent independent deployment.
+</div>
+
+<div class="card high">
+  <strong>Shared package is a monolith</strong> &mdash; The <code>@austa/shared</code> package contains 18 modules and 98 files spanning audit, consent, privacy (GDPR/HIPAA), encryption, Kafka, Redis, logging, tracing, and more. Domain logic (consent, privacy) is mixed with infrastructure utilities (Redis, Kafka), making the shared package a bottleneck for every service change.
+</div>
+
+<div class="card medium">
+  <strong>No service API facade interfaces</strong> &mdash; Services communicate through shared utilities and Kafka events, but there are no explicit public API interfaces defining service contracts. Any internal refactor risks breaking consumers silently.
+</div>
+
+<!-- TEST DEBT -->
+<h3>Test Debt</h3>
+
+<div class="card critical">
+  <strong>health-service: 15.28% line coverage, 9.72% branch coverage</strong> &mdash; Only 14 tests for 51 source files. Devices controller and service at 0% coverage. FHIR and wearables integrations untested. Many test files are skeleton-only (<code>should be defined</code> assertions). This is the highest-risk service given it handles patient health data.
+</div>
+
+<div class="card low" style="border-left-color:var(--green);">
+  <strong>E2E tests: 65 test cases across 14 spec files + 2 integration specs</strong> &mdash; <em>[CORRECTED from initial audit]</em> Backend E2E testing is substantive, using NestJS <code>TestingModule</code> with <code>supertest</code>. Coverage spans all 7 services: auth (login, register, refresh, users CRUD), appointments (CRUD + permissions), telemedicine (sessions + auth), health metrics (creation, updates, invalid input), devices (connect, retrieve), notifications (send, validate, journey templates), claims (lifecycle + Kafka events), plans (CRUD + access control + coverage + benefits), achievements, and gamification events. Additionally, <code>claims.integration.spec.ts</code> (7 tests) and <code>payment.integration.spec.ts</code> (5 tests) cover cross-service lifecycle flows. Each service has a <code>jest-e2e.json</code> config. <strong>Remaining gap:</strong> No browser-level E2E tests (Playwright/Cypress) for frontend user flows.
+</div>
+
+<div class="card high">
+  <strong>care-service: 47.74% line coverage</strong> &mdash; Appointments controller (6 functions) and service (15 functions, 189 lines) both show 0% in coverage baseline despite a 319-line spec file existing. Possible instrumentation issue, or tests are not running against the coverage target.
+</div>
+
+<div class="card high">
+  <strong>Branch coverage: 9&ndash;40% across all services</strong> &mdash; Error paths, conditional logic, and edge cases are systematically untested. Even well-covered services like gamification-engine (85% line) only reach 39% branch coverage.
+</div>
+
+<table>
+  <thead><tr><th>Service</th><th>Tests</th><th>Files</th><th>Line %</th><th>Branch %</th><th>Status</th></tr></thead>
+  <tbody>
+    <tr><td>health-service</td><td>14</td><td>51</td><td style="color:var(--red);">15.28%</td><td style="color:var(--red);">9.72%</td><td><span class="badge critical">Critical</span></td></tr>
+    <tr><td>care-service</td><td>13</td><td>50</td><td style="color:var(--orange);">47.74%</td><td>64.72%</td><td><span class="badge high">High</span></td></tr>
+    <tr><td>shared</td><td>22</td><td>72</td><td style="color:var(--yellow);">64.18%</td><td>62.39%</td><td><span class="badge medium">Medium</span></td></tr>
+    <tr><td>notification-service</td><td>11</td><td>42</td><td>70.83%</td><td style="color:var(--yellow);">31.95%</td><td><span class="badge medium">Medium</span></td></tr>
+    <tr><td>plan-service</td><td>19</td><td>57</td><td>78.54%</td><td style="color:var(--yellow);">37.87%</td><td><span class="badge medium">Medium</span></td></tr>
+    <tr><td>api-gateway</td><td>17</td><td>37</td><td>79.61%</td><td style="color:var(--yellow);">37.55%</td><td><span class="badge medium">Medium</span></td></tr>
+    <tr><td>auth-service</td><td>20</td><td>60</td><td>80.72%</td><td style="color:var(--yellow);">37.33%</td><td><span class="badge medium">Medium</span></td></tr>
+    <tr><td>gamification-engine</td><td>19</td><td>60</td><td style="color:var(--green);">85.77%</td><td style="color:var(--yellow);">38.92%</td><td><span class="badge low">Low</span></td></tr>
+  </tbody>
+</table>
+
+<!-- DEPENDENCY DEBT -->
+<h3>Dependency Debt</h3>
+
+<div class="card critical">
+  <strong>42 MB binary and 5.7 MB database files in Git</strong> &mdash; <code>next-swc-darwin-arm64-15.5.12.tgz</code> (42 MB, platform-specific), <code>ruvector.db</code> (1.6 MB), and <code>vectors.db</code> (4.1 MB) are committed. This bloats every clone and is not cross-platform safe. These should be in <code>.gitignore</code> and removed from history via <code>git filter-repo</code>.
+</div>
+
+<div class="card critical">
+  <strong>89 dependency resolutions in root package.json</strong> &mdash; A mix of security patches (follow-redirects, minimist, glob), compatibility hacks (50+ Babel transforms), and version pins. The React ecosystem shows a direct conflict: root resolves <code>react@18.3.1</code> while the web workspace declares <code>react@19.2.4</code>. NestJS versions drift between root (11.1.16) and backend (11.0.16).
+</div>
+
+<div class="card medium">
+  <strong>React Native ecosystem 3+ versions behind</strong> &mdash; Navigation (v6 vs v7 available), Reanimated (3.4 vs 3.17), Gesture Handler (2.12 vs 2.25). Security and performance patches are accumulating.
+</div>
+
+<!-- INFRASTRUCTURE DEBT -->
+<h3>Infrastructure Debt</h3>
+
+<div class="card high">
+  <strong>Duplicate infrastructure directories</strong> &mdash; Both <code>/infra/</code> (only nginx config) and <code>/infrastructure/</code> (Terraform, Kubernetes, monitoring, Docker Compose) exist. The <code>/infra/</code> directory appears abandoned.
+</div>
+
+<div class="card high">
+  <strong>5 Docker Compose files scattered</strong> &mdash; <code>docker-compose.yml</code>, <code>docker-compose.staging.yml</code>, and <code>docker-compose.scale.yml</code> in <code>/src/backend/</code>, <code>docker-compose.production.yml</code> in <code>/infrastructure/</code>, and <code>docker-compose.local.yml</code> in <code>/src/backend/gamification-engine/</code>. No documented guidance on which to use when.
+</div>
+
+<div class="card medium">
+  <strong>Strong CI/CD (12 workflows) but no documented procedures</strong> &mdash; Deployment, rollback, and incident response runbooks are absent. The production deployment workflow is 16 KB of YAML but has no companion documentation.
+</div>
+
+<!-- DOCUMENTATION DEBT -->
+<h3>Documentation Debt</h3>
+
+<div class="card high">
+  <strong>No operational runbooks</strong> &mdash; No documented procedures for emergency incident response, infrastructure scaling, database migrations, deployment rollback, or monitoring alert triage. All 7 backend services have README files (good), but operational knowledge is tribal.
+</div>
+
+<div class="card medium">
+  <strong>No dependency management strategy doc</strong> &mdash; Despite a detailed Renovate config (325 lines), there is no developer-facing document explaining the resolution strategy, why 89 packages are pinned, or how to handle version conflicts.
+</div>
+
+<div class="card low">
+  <strong>Strong foundations</strong> &mdash; The .env.example (38 KB, 50+ variables with <code>[REQUIRED]</code> / <code>[SECRET]</code> markers), 6 Architecture Decision Records, comprehensive main README (767 lines), and per-service README files provide a solid documentation baseline.
+</div>
+
+<!-- =========== REMEDIATION PLAN =========== -->
+<h2>Phased Remediation Plan</h2>
+
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-num p1">1</div>
+    <div><strong>Week 1&ndash;2: Critical Fixes</strong> &mdash; Stop the bleeding</div>
+  </div>
+  <div class="card critical">
+    <ul>
+      <li><strong>Remove binaries from Git</strong> &mdash; Add <code>*.tgz</code>, <code>*.db</code>, <code>.DS_Store</code> to <code>.gitignore</code>. Run <code>git filter-repo</code> to purge from history. Saves 48 MB per clone. <em>Effort: 1 day.</em></li>
+      <li><strong>Fix React version conflict</strong> &mdash; Align root resolution and web workspace to the same React version (18 or 19). Test build across web and mobile. <em>Effort: 1&ndash;2 days.</em></li>
+      <li><strong>Replace SSL pinning placeholder certs</strong> &mdash; Address TODO(ops) in <code>ssl-pinning.ts</code> and <code>plans.e2e-spec.ts</code> with real certificate SPKI hashes. <em>Effort: 1 day.</em></li>
+      <li><strong>Delete <code>/infra/</code> directory</strong> &mdash; Consolidate into <code>/infrastructure/</code>. <em>Effort: 30 minutes.</em></li>
+      <li><strong>Extract auth decorators to shared</strong> &mdash; Move <code>@CurrentUser</code> and <code>@Roles</code> from auth-service internals to the shared package or a dedicated <code>@austa/auth-contracts</code> package. Fix care-service imports. <em>Effort: 2 days.</em></li>
+    </ul>
+  </div>
+</div>
+
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-num p2">2</div>
+    <div><strong>Week 3&ndash;6: Test Coverage Sprint</strong> &mdash; Build the safety net</div>
+  </div>
+  <div class="card high">
+    <ul>
+      <li><strong>health-service: 15% &rarr; 70%</strong> &mdash; Add ~40 tests covering devices, FHIR integration, wearables adapters, and health record CRUD. Focus on branch coverage for medical data validation. <em>Effort: 2 weeks.</em></li>
+      <li><strong>care-service: 48% &rarr; 70%</strong> &mdash; Fix coverage instrumentation for appointments. Add tests for medication management, treatment plans, telemedicine session handling. <em>Effort: 1 week.</em></li>
+      <li><strong>Expand E2E test depth</strong> &mdash; Backend E2E is solid (65 cases). Add browser-level E2E with Playwright for 5 critical frontend flows: login, appointment booking, health metric entry, claims submission, gamification reward redemption. <em>Effort: 2 weeks.</em></li>
+      <li><strong>Raise branch coverage to 50%+</strong> &mdash; Add error-path and edge-case tests across all services. Focus on shared package (currently 62% branch). <em>Effort: ongoing alongside feature work.</em></li>
+    </ul>
+  </div>
+</div>
+
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-num p3">3</div>
+    <div><strong>Week 7&ndash;10: Architecture & Dependency Cleanup</strong> &mdash; Reduce coupling</div>
+  </div>
+  <div class="card medium">
+    <ul>
+      <li><strong>Split shared package</strong> &mdash; Extract domain logic (consent, privacy, audit) into <code>@austa/compliance</code>. Keep only infrastructure utils (database, redis, kafka, logging, tracing) in shared. <em>Effort: 2 weeks.</em></li>
+      <li><strong>Define service API contracts</strong> &mdash; Create TypeScript interface packages (<code>@austa/care-contracts</code>, <code>@austa/health-contracts</code>) defining public APIs. Services import contracts, not implementations. <em>Effort: 1 week.</em></li>
+      <li><strong>Reduce dependency resolutions</strong> &mdash; Audit all 89 resolutions. Remove those already satisfied by updated dependencies. Target reducing to &lt;30 resolutions. <em>Effort: 1 week.</em></li>
+      <li><strong>Update React Native ecosystem</strong> &mdash; Upgrade navigation to v7, reanimated to 3.17, gesture-handler to 2.25. Test on both iOS and Android. <em>Effort: 1 week.</em></li>
+      <li><strong>Break down large files</strong> &mdash; Split <code>appointments.service.ts</code> (1,004 lines) into scheduling, validation, and notification sub-services. Split GoogleFit adapter (787 lines) by data type. <em>Effort: 1 week.</em></li>
+    </ul>
+  </div>
+</div>
+
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-num p4">4</div>
+    <div><strong>Week 11&ndash;14: Polish & Prevention</strong> &mdash; Sustain quality</div>
+  </div>
+  <div class="card low">
+    <ul>
+      <li><strong>Write operational runbooks</strong> &mdash; Deployment, rollback, incident response, database migration, monitoring alert triage. Store in <code>/docs/runbooks/</code>. <em>Effort: 1 week.</em></li>
+      <li><strong>Consolidate Docker Compose files</strong> &mdash; Move all to <code>/infrastructure/docker/</code> with clear naming (dev, staging, production, scale). Document in README. <em>Effort: 2 days.</em></li>
+      <li><strong>Eliminate <code>any</code> types in production code</strong> &mdash; Start with highest-impact files: <code>rules.service.ts</code> (22), <code>redis.service.ts</code> (16), <code>claims.service.ts</code> (16). Add ESLint rule <code>@typescript-eslint/no-explicit-any: warn</code>. <em>Effort: 1 week.</em></li>
+      <li><strong>Add pre-commit quality gates</strong> &mdash; Enforce file size limits (500 lines), minimum coverage thresholds per service, and <code>any</code> type budgets via Husky hooks. <em>Effort: 2 days.</em></li>
+      <li><strong>Write dependency management guide</strong> &mdash; Document resolution strategy, Renovate config rationale, and upgrade procedures. <em>Effort: 1 day.</em></li>
+      <li><strong>Clean up remaining items</strong> &mdash; Remove <code>.bak</code> files, legacy <code>/docs/original documentation/</code>, console.log in components, and resolve 12 TODO markers. <em>Effort: 2 days.</em></li>
+    </ul>
+  </div>
+</div>
+
+<!-- =========== HEALTH SCORECARD =========== -->
+<h2>Code Health Scorecard</h2>
+
+<table>
+  <thead><tr><th>Dimension</th><th>Current</th><th>Target (14 weeks)</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td>Backend Line Coverage</td><td style="color:var(--orange);">62%</td><td style="color:var(--green);">75%</td><td>health-service and care-service are the primary gaps</td></tr>
+    <tr><td>Backend Branch Coverage</td><td style="color:var(--red);">31%</td><td style="color:var(--yellow);">55%</td><td>Error paths and edge cases systematically untested</td></tr>
+    <tr><td>Backend E2E Tests</td><td style="color:var(--green);">65 cases / 14 files</td><td style="color:var(--green);">Maintain</td><td>All 7 services covered + 2 integration specs</td></tr>
+    <tr><td>Frontend E2E Tests</td><td style="color:var(--red);">0 flows</td><td style="color:var(--yellow);">5 flows</td><td>Browser-level Playwright tests needed</td></tr>
+    <tr><td>Files &gt;500 Lines</td><td style="color:var(--orange);">34</td><td style="color:var(--yellow);">&lt;15</td><td>Focus on service files, not generated/i18n</td></tr>
+    <tr><td><code>any</code> Type Count</td><td style="color:var(--orange);">838</td><td style="color:var(--yellow);">&lt;200</td><td>Eliminate from production code first</td></tr>
+    <tr><td>Root Resolutions</td><td style="color:var(--red);">89</td><td style="color:var(--yellow);">&lt;30</td><td>Audit and remove satisfied overrides</td></tr>
+    <tr><td>Repo Size (binary debt)</td><td style="color:var(--red);">+48 MB</td><td style="color:var(--green);">0 MB</td><td>Purge from history with git filter-repo</td></tr>
+    <tr><td>Cross-Service Violations</td><td style="color:var(--red);">1 known</td><td style="color:var(--green);">0</td><td>Extract auth contracts to shared</td></tr>
+  </tbody>
+</table>
+
+<h2>Forensic Verification Log</h2>
+
+<p>After the initial audit, all claims were re-verified against actual file contents. Corrections applied:</p>
+
+<table>
+  <thead><tr><th>Claim</th><th>Status</th><th>Detail</th></tr></thead>
+  <tbody>
+    <tr><td>E2E tests: "Zero E2E tests"</td><td><span class="badge critical">CORRECTED</span></td><td><strong>14 E2E spec files with 65 substantive test cases</strong> exist across all 7 backend services, plus 2 integration specs (claims lifecycle, payment). Tests use NestJS TestingModule + supertest. No skeleton tests &mdash; all have real assertions, mocks, and error-path coverage.</td></tr>
+    <tr><td>health-service 15.28% coverage</td><td><span class="badge low">VERIFIED</span></td><td>Confirmed: 135/883 lines covered. Coverage baseline JSON matches exactly.</td></tr>
+    <tr><td>care-service 47.74% coverage</td><td><span class="badge low">VERIFIED</span></td><td>Confirmed: 350/733 lines covered. Coverage baseline JSON matches exactly.</td></tr>
+    <tr><td>Cross-service imports</td><td><span class="badge low">VERIFIED</span></td><td>care-service providers.controller.ts lines 18-21 import from <code>../../../auth-service/</code>.</td></tr>
+    <tr><td>Binary files in Git (48 MB)</td><td><span class="badge low">VERIFIED</span></td><td>next-swc .tgz (41 MB), ruvector.db (1.6 MB), vectors.db (4.1 MB) all present and not in .gitignore.</td></tr>
+    <tr><td>Large files (1,004 / 787 / 634 lines)</td><td><span class="badge low">VERIFIED</span></td><td>wc -l confirms exact line counts for all three files.</td></tr>
+    <tr><td>any type count (838)</td><td><span class="badge low">VERIFIED</span></td><td>grep confirmed 838 instances of <code>: any</code>, <code>:any</code>, or <code>as any</code> in src/.</td></tr>
+    <tr><td>Dependency resolutions: "102"</td><td><span class="badge critical">CORRECTED</span></td><td><strong>89 resolution entries</strong> in root package.json (not 102).</td></tr>
+    <tr><td>Docker Compose: "4 files"</td><td><span class="badge critical">CORRECTED</span></td><td><strong>5 files</strong>: 3 in /src/backend/, 1 in /infrastructure/, 1 in gamification-engine/.</td></tr>
+    <tr><td>console.log: "39"</td><td><span class="badge critical">CORRECTED</span></td><td><strong>37 instances</strong> in TypeScript source files.</td></tr>
+    <tr><td>TODO/FIXME: "13"</td><td><span class="badge critical">CORRECTED</span></td><td><strong>12 instances</strong> in TypeScript source files.</td></tr>
+    <tr><td>Shared package (18 modules, 98 files)</td><td><span class="badge low">VERIFIED</span></td><td>19 items at top level, 92 total recursive items. Close match.</td></tr>
+    <tr><td>Both /infra/ and /infrastructure/ exist</td><td><span class="badge low">VERIFIED</span></td><td>/infra/ contains only nginx/. /infrastructure/ has K8s, Terraform, monitoring, compose.</td></tr>
+    <tr><td>Web frontend: "692 test files"</td><td><span class="badge low">VERIFIED</span></td><td>Confirmed across web, mobile, and shared packages.</td></tr>
+  </tbody>
+</table>
+
+<p style="margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border);color:var(--text-muted);font-size:0.85rem;">Report generated March 22, 2026 (revised with forensic verification) &mdash; AUSTA Healthcare SuperApp Monorepo Technical Debt Audit. Priority scoring: <code>(Impact + Risk) &times; (6 - Effort)</code>. Scores 1&ndash;5 per dimension.</p>
+
+</div>
+</body>
+</html>

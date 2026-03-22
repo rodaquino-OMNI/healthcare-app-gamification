@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AUSTA Healthcare SuperApp — Pre-Deployment Checklist</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --card: #181b23;
+    --border: #2a2d38;
+    --text: #e1e4ea;
+    --muted: #8b8fa3;
+    --green: #22c55e;
+    --green-bg: #22c55e18;
+    --yellow: #eab308;
+    --yellow-bg: #eab30818;
+    --red: #ef4444;
+    --red-bg: #ef444418;
+    --blue: #3b82f6;
+    --blue-bg: #3b82f618;
+    --purple: #a855f7;
+    --purple-bg: #a855f718;
+    --accent: #6366f1;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  .header {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%);
+    padding: 2rem 2rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .header h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .header .subtitle { color: var(--muted); font-size: 0.9rem; }
+  .header .meta { display: flex; gap: 2rem; margin-top: 1rem; font-size: 0.82rem; color: var(--muted); flex-wrap: wrap; }
+  .header .meta span { display: flex; align-items: center; gap: 0.35rem; }
+
+  .summary-bar {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem;
+    padding: 1.25rem 2rem; background: var(--card); border-bottom: 1px solid var(--border);
+  }
+  .stat { text-align: center; }
+  .stat .num { font-size: 1.8rem; font-weight: 700; }
+  .stat .label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 2rem 4rem; }
+
+  .section { margin-bottom: 2rem; }
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.75rem 1rem; background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px 8px 0 0; cursor: pointer; user-select: none;
+  }
+  .section-header:hover { background: #1e2130; }
+  .section-header h2 { font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
+  .section-header .badge {
+    font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; font-weight: 600;
+  }
+  .badge-ready { background: var(--green-bg); color: var(--green); }
+  .badge-partial { background: var(--yellow-bg); color: var(--yellow); }
+  .badge-missing { background: var(--red-bg); color: var(--red); }
+  .badge-info { background: var(--blue-bg); color: var(--blue); }
+  .section-header .progress-mini {
+    display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--muted);
+  }
+  .section-header .chevron { transition: transform 0.2s; }
+  .section-header.collapsed .chevron { transform: rotate(-90deg); }
+
+  .section-body {
+    border: 1px solid var(--border); border-top: none;
+    border-radius: 0 0 8px 8px; overflow: hidden;
+  }
+  .section-body.hidden { display: none; }
+
+  .checklist-item {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 0.7rem 1rem; border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  .checklist-item:last-child { border-bottom: none; }
+  .checklist-item:hover { background: #1a1d28; }
+  .checklist-item.checked { opacity: 0.55; }
+  .checklist-item.checked .item-text { text-decoration: line-through; }
+
+  .checklist-item input[type="checkbox"] {
+    appearance: none; -webkit-appearance: none;
+    width: 18px; height: 18px; min-width: 18px; border: 2px solid var(--border);
+    border-radius: 4px; cursor: pointer; margin-top: 2px; position: relative;
+    transition: all 0.15s;
+  }
+  .checklist-item input[type="checkbox"]:checked {
+    background: var(--green); border-color: var(--green);
+  }
+  .checklist-item input[type="checkbox"]:checked::after {
+    content: '✓'; position: absolute; top: -1px; left: 2px;
+    font-size: 12px; color: white; font-weight: 700;
+  }
+
+  .item-content { flex: 1; }
+  .item-text { font-size: 0.88rem; }
+  .item-detail { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+
+  .status-tag {
+    font-size: 0.68rem; padding: 1px 6px; border-radius: 4px; font-weight: 600;
+    white-space: nowrap; margin-left: 0.5rem; vertical-align: middle;
+  }
+  .tag-exists { background: var(--green-bg); color: var(--green); }
+  .tag-partial { background: var(--yellow-bg); color: var(--yellow); }
+  .tag-missing { background: var(--red-bg); color: var(--red); }
+  .tag-action { background: var(--purple-bg); color: var(--purple); }
+
+  .severity-bar {
+    display: inline-block; width: 4px; height: 18px; border-radius: 2px;
+    margin-right: 0.25rem; vertical-align: middle; flex-shrink: 0; margin-top: 3px;
+  }
+  .sev-critical { background: var(--red); }
+  .sev-high { background: #f97316; }
+  .sev-medium { background: var(--yellow); }
+  .sev-low { background: var(--blue); }
+
+  .filter-bar {
+    display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;
+  }
+  .filter-btn {
+    padding: 0.35rem 0.85rem; border-radius: 6px; border: 1px solid var(--border);
+    background: var(--card); color: var(--muted); font-size: 0.8rem; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+  .filter-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+
+  .rollback-box {
+    background: var(--red-bg); border: 1px solid #ef444440; border-radius: 8px;
+    padding: 1rem 1.25rem; margin-top: 1rem;
+  }
+  .rollback-box h3 { color: var(--red); font-size: 0.9rem; margin-bottom: 0.5rem; }
+  .rollback-box ul { list-style: none; padding: 0; }
+  .rollback-box li { font-size: 0.85rem; padding: 0.25rem 0; color: var(--text); }
+  .rollback-box li::before { content: '⚠ '; color: var(--red); }
+
+  .arch-box {
+    background: var(--blue-bg); border: 1px solid #3b82f640; border-radius: 8px;
+    padding: 1rem 1.25rem; margin-bottom: 1.5rem; font-size: 0.85rem;
+  }
+  .arch-box h3 { color: var(--blue); font-size: 0.9rem; margin-bottom: 0.5rem; }
+  .arch-row { display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 0.5rem; }
+  .arch-item { display: flex; flex-direction: column; }
+  .arch-label { color: var(--muted); font-size: 0.72rem; text-transform: uppercase; }
+  .arch-val { font-weight: 600; }
+
+  .footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.78rem; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>AUSTA Healthcare SuperApp — Pre-Deployment Checklist</h1>
+  <div class="subtitle">Complete platform readiness assessment for initial production deployment</div>
+  <div class="meta">
+    <span>📅 Date: March 22, 2026</span>
+    <span>👤 Deployer: Rodrigo</span>
+    <span>🏗️ Architecture: 7 NestJS Microservices + Next.js + React Native</span>
+    <span>☁️ Target: AWS EKS (sa-east-1)</span>
+  </div>
+</div>
+
+<div class="summary-bar" id="summaryBar">
+  <div class="stat"><div class="num" id="totalCount">0</div><div class="label">Total Items</div></div>
+  <div class="stat"><div class="num" style="color:var(--green)" id="readyCount">0</div><div class="label">Ready / Done</div></div>
+  <div class="stat"><div class="num" style="color:var(--yellow)" id="partialCount">0</div><div class="label">Partial / Needs Work</div></div>
+  <div class="stat"><div class="num" style="color:var(--red)" id="missingCount">0</div><div class="label">Missing / Critical</div></div>
+  <div class="stat"><div class="num" style="color:var(--accent)" id="progressPct">0%</div><div class="label">Checked Off</div></div>
+</div>
+
+<div class="container">
+
+<div class="arch-box">
+  <h3>Platform Architecture Overview</h3>
+  <div class="arch-row">
+    <div class="arch-item"><span class="arch-label">Services</span><span class="arch-val">api-gateway, auth, health, care, plan, gamification, notification</span></div>
+    <div class="arch-item"><span class="arch-label">Database</span><span class="arch-val">PostgreSQL 14 + Prisma 7</span></div>
+    <div class="arch-item"><span class="arch-label">Cache</span><span class="arch-val">Redis 7</span></div>
+    <div class="arch-item"><span class="arch-label">Events</span><span class="arch-val">Kafka (Confluent 7.9.5)</span></div>
+    <div class="arch-item"><span class="arch-label">Registry</span><span class="arch-val">ghcr.io</span></div>
+    <div class="arch-item"><span class="arch-label">IaC</span><span class="arch-val">Terraform + Kubernetes</span></div>
+    <div class="arch-item"><span class="arch-label">CI/CD</span><span class="arch-val">GitHub Actions (12 workflows)</span></div>
+    <div class="arch-item"><span class="arch-label">Monitoring</span><span class="arch-val">Prometheus + Grafana + Loki</span></div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn" data-filter="missing">Missing / Critical</button>
+  <button class="filter-btn" data-filter="partial">Needs Work</button>
+  <button class="filter-btn" data-filter="ready">Ready</button>
+</div>
+
+<!-- ======================== SECTION 1: CI/CD & BUILD ======================== -->
+<div class="section" data-section="cicd">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>🔄 CI/CD Pipeline & Build <span class="badge badge-partial">PARTIAL</span></h2>
+    <div class="progress-mini"><span class="section-progress"></span> <span class="chevron">▼</span></div>
+  </div>
+  <div class="section-body">
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-critical"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">GitHub Actions workflows configured (12 workflows) <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">deploy-production.yml, deploy-staging.yml, backend-ci.yml, frontend-ci.yml, web-ci.yml, and more</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-critical"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Production deploy pipeline with canary strategy <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">12-job pipeline: Validate → Test → Build → Canary → Smoke → Promote → Rollback</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-critical"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Staging deploy pipeline <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">Triggers on push to staging branch, deploys to austa-staging-cluster</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-high"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Container images build for all 7 services <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">Multi-stage Dockerfiles, node:22-alpine base, non-root user, health checks</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">All CI tests passing on main branch <span class="status-tag tag-partial">VERIFY</span></div><div class="item-detail">251 test files exist (79 .spec.ts + 12 e2e + 159 .test.tsx) — run full suite and confirm green</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-medium"></div><input type="checkbox"><div class="item-content"><div class="item-text">Test coverage meets minimum thresholds <span class="status-tag tag-partial">VERIFY</span></div><div class="item-detail">Coverage uploads to Codecov but no minimum threshold enforcement — set and validate</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-medium"></div><input type="checkbox"><div class="item-content"><div class="item-text">Build succeeds for all workspaces (npm run build:all) <span class="status-tag tag-partial">VERIFY</span></div><div class="item-detail">Turbo 2.0 build orchestration configured — run and confirm zero errors</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-medium"></div><input type="checkbox"><div class="item-content"><div class="item-text">Deploy notification to Slack/Teams on success/failure <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">No webhook notifications in deploy workflows — add Slack integration to GitHub Actions</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-low"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Dependency security scanning configured <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">Renovate + Dependabot + yarn audit in CI pipeline</div></div></div>
+  </div>
+</div>
+
+<!-- ======================== SECTION 2: INFRASTRUCTURE ======================== -->
+<div class="section" data-section="infra">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>☁️ Infrastructure & Cloud <span class="badge badge-partial">PARTIAL</span></h2>
+    <div class="progress-mini"><span class="section-progress"></span> <span class="chevron">▼</span></div>
+  </div>
+  <div class="section-body">
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-critical"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Terraform IaC for AWS (VPC, EKS, RDS, S3) <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">Modules: vpc, eks, rds, s3, networking, security groups — separate staging/production tfvars</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-critical"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Kubernetes manifests for all services <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">Deployments, Services, Ingress, HPA, PDB, NetworkPolicies per service namespace</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">Terraform plan/apply executed for production environment <span class="status-tag tag-action">ACTION NEEDED</span></div><div class="item-detail">Terraform configs exist but need to be applied: terraform plan → terraform apply for production/</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">EKS cluster provisioned and healthy (austa-production-cluster) <span class="status-tag tag-action">ACTION NEEDED</span></div><div class="item-detail">Cluster defined in Terraform — verify nodes are ready, kubectl connectivity works</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">RDS PostgreSQL instance provisioned and accessible <span class="status-tag tag-action">ACTION NEEDED</span></div><div class="item-detail">Defined in Terraform — verify connectivity from EKS, run initial migration</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">Redis cluster provisioned (ElastiCache or self-hosted) <span class="status-tag tag-action">ACTION NEEDED</span></div><div class="item-detail">Redis 7 required for caching + sessions — provision and test connectivity</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">Kafka cluster provisioned (MSK or Confluent Cloud) <span class="status-tag tag-action">ACTION NEEDED</span></div><div class="item-detail">Required for event streaming — health/care/plan/user/game event topics must exist</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">S3 buckets created (uploads + telemedicine recordings) <span class="status-tag tag-action">ACTION NEEDED</span></div><div class="item-detail">Defined in Terraform — create buckets with appropriate CORS and lifecycle policies</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">TLS certificates provisioned (cert-manager on EKS) <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">No cert-manager integration found — deploy cert-manager + configure Let's Encrypt or ACM certs</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">AWS WAF configured for API Gateway ingress <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">No WAF rules found — healthcare app needs DDoS protection and OWASP rule sets</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-medium"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Network policies for service isolation <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">network-policy.yaml per service namespace — least-privilege traffic rules</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-medium"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Pod Disruption Budgets configured <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">pdb.yaml per service — prevents mass evictions during node operations</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-medium"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Horizontal Pod Autoscaler (HPA) configured <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">hpa.yaml per service with min/max replica settings</div></div></div>
+  </div>
+</div>
+
+<!-- ======================== SECTION 3: DATABASE ======================== -->
+<div class="section" data-section="database">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>🗄️ Database & Migrations <span class="badge badge-partial">PARTIAL</span></h2>
+    <div class="progress-mini"><span class="section-progress"></span> <span class="chevron">▼</span></div>
+  </div>
+  <div class="section-body">
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-critical"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Prisma schema defined (39 models, 11 enums) <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">schema.prisma covers all domains: User, Health, Care, Plan, Gamification, Notifications</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-critical"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Database migrations exist <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">Prisma migration files present, auto-run via RUN_MIGRATIONS=true env var</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">Run migrations on production database <span class="status-tag tag-action">ACTION NEEDED</span></div><div class="item-detail">Execute: npx prisma migrate deploy — test on staging first, then production</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-medium"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Seed data script for initial setup <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">seed.ts (13.7 KB) — for dev/test environments, NOT for production</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">Connection pooling tuned for production load <span class="status-tag tag-partial">VERIFY</span></div><div class="item-detail">Default: POOL_SIZE=10, MAX_CONNECTIONS=20 — validate under expected concurrency</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">Automated backup strategy (RDS snapshots + WAL archiving) <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">No backup config found — enable RDS automated backups, set retention period, test restore</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">Point-in-time recovery (PITR) tested <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">Healthcare data requires robust recovery — enable PITR on RDS, document restore procedure</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">Cross-region replication for disaster recovery <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">No replication strategy — consider RDS read replica in secondary region for DR</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-medium"></div><input type="checkbox"><div class="item-content"><div class="item-text">Automated data retention / cleanup job <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">Policy defined (2 years / 730 days) but no automated cleanup mechanism exists</div></div></div>
+  </div>
+</div>
+
+<!-- ======================== SECTION 4: SECURITY ======================== -->
+<div class="section" data-section="security">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>🔒 Security & Authentication <span class="badge badge-partial">PARTIAL</span></h2>
+    <div class="progress-mini"><span class="section-progress"></span> <span class="chevron">▼</span></div>
+  </div>
+  <div class="section-body">
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-critical"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">JWT authentication with refresh tokens <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">HS256, 1h access / 7d refresh, configurable issuer/audience</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-critical"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">OAuth2 providers (Google, Facebook, Apple) <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">Web + Mobile callback variants, client IDs/secrets from env vars</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-critical"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Multi-Factor Authentication (TOTP + SMS + Email) <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">MFA enabled by default, biometric auth supported (90-day device key)</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-high"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Password policy enforced (complexity + history + lockout) <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">Min 10 chars, upper+lower+number+special, 5-password history, 5 failed → 30min lockout</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-high"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Security headers (Helmet.js) + CORS + Rate limiting <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">Express rate-limit middleware, origin validation, security headers</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-critical"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">PHI encryption (LGPD Art. 46 compliance) <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">Encryption key required, GDPR + LGPD features enabled</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">All secrets stored in GitHub Secrets / AWS Secrets Manager <span class="status-tag tag-action">ACTION NEEDED</span></div><div class="item-detail">CI/CD uses GitHub Secrets — verify ALL production secrets are populated, no hardcoded values</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">Automatic secret rotation mechanism <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">No rotation for JWT secrets, API keys, DB credentials — implement via AWS Secrets Manager</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">Penetration testing / security audit performed <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">Healthcare app handling PHI — requires pentest before production launch</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-medium"></div><input type="checkbox"><div class="item-content"><div class="item-text">OWASP Top 10 verification <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">Validate against injection, broken auth, sensitive data exposure, etc.</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-medium"></div><input type="checkbox"><div class="item-content"><div class="item-text">Session management validated in production config <span class="status-tag tag-partial">VERIFY</span></div><div class="item-detail">Max 5 concurrent sessions, 12h absolute / 30min idle — confirm Redis-backed session store works</div></div></div>
+  </div>
+</div>
+
+<!-- ======================== SECTION 5: SECRETS & ENV ======================== -->
+<div class="section" data-section="env">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>🔑 Environment Variables & Secrets <span class="badge badge-partial">PARTIAL</span></h2>
+    <div class="progress-mini"><span class="section-progress"></span> <span class="chevron">▼</span></div>
+  </div>
+  <div class="section-body">
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-critical"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">.env.example template with all required variables <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">607 lines covering all services, OAuth, Kafka, Redis, S3, Twilio, FCM, Sentry, etc.</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">Production DATABASE_URL configured (with SSL) <span class="status-tag tag-action">ACTION NEEDED</span></div><div class="item-detail">Set to RDS endpoint with ?sslmode=require — one per schema (auth, health, care, plan, gamification, notification)</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">JWT_SECRET + JWT_REFRESH_SECRET set (production-strength) <span class="status-tag tag-action">ACTION NEEDED</span></div><div class="item-detail">Generate 256-bit random secrets — NEVER reuse from staging/dev</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">PHI_ENCRYPTION_KEY set (AES-256) <span class="status-tag tag-action">ACTION NEEDED</span></div><div class="item-detail">Healthcare data encryption key — generate, store securely, document recovery procedure</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">OAuth2 client IDs/secrets for Google, Facebook, Apple <span class="status-tag tag-action">ACTION NEEDED</span></div><div class="item-detail">Production callback URLs registered with each provider</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">Twilio credentials (SMS notifications) <span class="status-tag tag-action">ACTION NEEDED</span></div><div class="item-detail">Account SID, Auth Token, From number — verify sending works</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">FCM credentials (push notifications) <span class="status-tag tag-action">ACTION NEEDED</span></div><div class="item-detail">Firebase project configured, service account key available</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">Sentry DSN for error tracking <span class="status-tag tag-action">ACTION NEEDED</span></div><div class="item-detail">Create Sentry project, set SENTRY_DSN for all services</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-medium"></div><input type="checkbox"><div class="item-content"><div class="item-text">Kafka broker URLs for production cluster <span class="status-tag tag-action">ACTION NEEDED</span></div><div class="item-detail">Set KAFKA_BROKERS to MSK/Confluent Cloud endpoints</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-medium"></div><input type="checkbox"><div class="item-content"><div class="item-text">Redis connection string (with TLS) <span class="status-tag tag-action">ACTION NEEDED</span></div><div class="item-detail">REDIS_HOST, REDIS_PASSWORD, REDIS_TLS_ENABLED=true</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-medium"></div><input type="checkbox"><div class="item-content"><div class="item-text">AWS credentials for S3 access <span class="status-tag tag-action">ACTION NEEDED</span></div><div class="item-detail">Prefer IAM roles via IRSA (IAM Roles for Service Accounts) over static keys</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-medium"></div><input type="checkbox"><div class="item-content"><div class="item-text">Agora credentials (telemedicine video) <span class="status-tag tag-action">ACTION NEEDED</span></div><div class="item-detail">AGORA_APP_ID and AGORA_APP_CERTIFICATE for real-time video</div></div></div>
+  </div>
+</div>
+
+<!-- ======================== SECTION 6: MONITORING ======================== -->
+<div class="section" data-section="monitoring">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>📊 Monitoring & Observability <span class="badge badge-partial">PARTIAL</span></h2>
+    <div class="progress-mini"><span class="section-progress"></span> <span class="chevron">▼</span></div>
+  </div>
+  <div class="section-body">
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-critical"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Prometheus scrape configs for all 7 services <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">15s global / 10s per service, /metrics path, includes postgres/redis/node exporters</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-high"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Grafana deployment manifest <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">Kubernetes manifest in infrastructure/kubernetes/monitoring/grafana.yaml</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-high"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Loki log aggregation <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">loki.yaml manifest for centralized log collection</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-high"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Health check endpoints on all services <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">GET /health on each service (ports 3000-3006), used by K8s liveness probes</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-medium"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Structured JSON logging with file rotation <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">JSON driver, 50MB rotation in docker-compose.production.yml</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">Alerting rules (Prometheus / Grafana alerts) <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">No alert rules defined — create alerts for error rate, latency, CPU, memory, disk, and service down</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">On-call escalation path defined <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">No PagerDuty/OpsGenie integration — who gets paged when alerts fire?</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">Grafana dashboards pre-built for each service <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">Grafana exists but no dashboards checked in — create per-service and overview dashboards</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-medium"></div><input type="checkbox"><div class="item-content"><div class="item-text">Datadog integration completed <span class="status-tag tag-partial">INCOMPLETE</span></div><div class="item-detail">Env vars exist (DATADOG_RUM) but integration not fully wired — decide: Datadog OR Prometheus stack</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-medium"></div><input type="checkbox"><div class="item-content"><div class="item-text">Distributed tracing (OpenTelemetry or Jaeger) <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">7 microservices need request tracing across service boundaries</div></div></div>
+  </div>
+</div>
+
+<!-- ======================== SECTION 7: TESTING & QA ======================== -->
+<div class="section" data-section="testing">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>🧪 Testing & Quality Assurance <span class="badge badge-partial">PARTIAL</span></h2>
+    <div class="progress-mini"><span class="section-progress"></span> <span class="chevron">▼</span></div>
+  </div>
+  <div class="section-body">
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-critical"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Unit test suite (79 .spec.ts files) <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">Jest 29.7.0 with 11 test projects covering backend + shared services</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-high"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">E2E test suite (12 .e2e-spec.ts files) <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">Integration tests for API endpoints and cross-service flows</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-high"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Frontend component tests (159 .test.tsx files) <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">React component tests for web and mobile interfaces</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">Load testing / stress testing <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">No k6, JMeter, or Locust config found — critical for a healthcare platform expecting concurrent users</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">Smoke tests for production health checks <span class="status-tag tag-partial">VERIFY</span></div><div class="item-detail">Referenced in deploy pipeline — verify smoke test scripts actually exist and cover all 7 services</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-medium"></div><input type="checkbox"><div class="item-content"><div class="item-text">E2E tests pass against staging environment <span class="status-tag tag-action">ACTION NEEDED</span></div><div class="item-detail">Run full E2E suite against staging before promoting to production</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-medium"></div><input type="checkbox"><div class="item-content"><div class="item-text">Accessibility testing (WCAG compliance) <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">Healthcare app should meet WCAG 2.1 AA — no accessibility tests found</div></div></div>
+  </div>
+</div>
+
+<!-- ======================== SECTION 8: COMPLIANCE ======================== -->
+<div class="section" data-section="compliance">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>⚖️ Compliance & Healthcare Regulations <span class="badge badge-partial">PARTIAL</span></h2>
+    <div class="progress-mini"><span class="section-progress"></span> <span class="chevron">▼</span></div>
+  </div>
+  <div class="section-body">
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-critical"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">LGPD compliance features enabled <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">LGPD_ENABLED=true, GDPR_ENABLED=true, data encryption, consent tracking</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-critical"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">PHI encryption at rest <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">PHI_ENCRYPTION_KEY required, encryption layer in services</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-high"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Data retention policy defined (730 days) <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">DATA_RETENTION_DAYS=730, retention headers in config</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">Data Processing Agreement (DPA) with cloud providers <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">Required for LGPD compliance — execute DPAs with AWS, Twilio, Agora, etc.</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">Privacy Impact Assessment (PIA) completed <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">Healthcare data requires formal risk assessment — LGPD Art. 38</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">Audit logging for PHI access <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">No audit trail for who accessed patient data — required for healthcare compliance</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">User consent management workflow verified <span class="status-tag tag-partial">VERIFY</span></div><div class="item-detail">Ensure explicit consent capture for data processing, cookie consent, marketing</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-medium"></div><input type="checkbox"><div class="item-content"><div class="item-text">Right to erasure / data portability endpoints <span class="status-tag tag-partial">VERIFY</span></div><div class="item-detail">LGPD requires data subject rights — verify API endpoints exist and work correctly</div></div></div>
+  </div>
+</div>
+
+<!-- ======================== SECTION 9: DISASTER RECOVERY ======================== -->
+<div class="section" data-section="dr">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>🛡️ Disaster Recovery & Business Continuity <span class="badge badge-missing">MISSING</span></h2>
+    <div class="progress-mini"><span class="section-progress"></span> <span class="chevron">▼</span></div>
+  </div>
+  <div class="section-body">
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">Recovery Time Objective (RTO) defined <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">No formal RTO — define max acceptable downtime for each service tier</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">Recovery Point Objective (RPO) defined <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">No formal RPO — define max acceptable data loss (e.g., 1 hour, 15 minutes)</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">Disaster recovery plan documented <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">No failover strategy — document region failover, data recovery, communication plan</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">Incident response playbook / runbooks <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">No operational runbooks — create for: service down, DB corruption, security breach, data leak</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">Backup restore tested and documented <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">Never trust untested backups — perform full restore drill before go-live</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-high"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Rollback strategy in deploy pipeline <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">Automatic rollback on smoke test failure + manual workflow_dispatch rollback</div></div></div>
+  </div>
+</div>
+
+<!-- ======================== SECTION 10: API & DOCUMENTATION ======================== -->
+<div class="section" data-section="docs">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>📝 API Documentation & Runbooks <span class="badge badge-missing">MOSTLY MISSING</span></h2>
+    <div class="progress-mini"><span class="section-progress"></span> <span class="chevron">▼</span></div>
+  </div>
+  <div class="section-body">
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">OpenAPI / Swagger specification generated <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">No API docs found — NestJS supports @nestjs/swagger for auto-generation</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">API versioning strategy documented <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">Define URL-based or header-based versioning for public endpoints</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-medium"></div><input type="checkbox"><div class="item-content"><div class="item-text">Deployment runbook for operations team <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">Step-by-step deploy, rollback, and troubleshooting guide for ops</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-medium"></div><input type="checkbox"><div class="item-content"><div class="item-text">Architecture decision records (ADRs) <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">Document why key tech decisions were made (Kafka, Prisma, NestJS, etc.)</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-low"></div><input type="checkbox"><div class="item-content"><div class="item-text">Service dependency map / architecture diagram <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">Visual representation of service communication flows</div></div></div>
+  </div>
+</div>
+
+<!-- ======================== SECTION 11: PERFORMANCE ======================== -->
+<div class="section" data-section="perf">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>⚡ Performance & Scalability <span class="badge badge-partial">PARTIAL</span></h2>
+    <div class="progress-mini"><span class="section-progress"></span> <span class="chevron">▼</span></div>
+  </div>
+  <div class="section-body">
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-high"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Horizontal Pod Autoscaler per service <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">HPA configured with min/max replicas based on CPU/memory</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-high"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Resource limits (CPU + memory) per container <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">1-2GB memory, 0.5-1.5 CPU cores per service in docker-compose.production</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-medium"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Redis caching layer configured <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">TTL-based caching for API gateway and per-service data</div></div></div>
+    <div class="checklist-item" data-status="ready"><div class="severity-bar sev-medium"></div><input type="checkbox" checked><div class="item-content"><div class="item-text">Rate limiting per journey/endpoint <span class="status-tag tag-exists">EXISTS</span></div><div class="item-detail">API gateway rate limiting configured in .env</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">Load test results establishing performance baseline <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">No load testing performed — establish P50/P95/P99 latency + max throughput per service</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">CDN configured for static assets (CloudFront) <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">Next.js static assets and uploads should be served via CDN for Brazil users</div></div></div>
+    <div class="checklist-item" data-status="missing"><div class="severity-bar sev-medium"></div><input type="checkbox"><div class="item-content"><div class="item-text">Database query performance validated (slow query log) <span class="status-tag tag-missing">MISSING</span></div><div class="item-detail">Enable pg_stat_statements, review slow queries, add missing indexes</div></div></div>
+  </div>
+</div>
+
+<!-- ======================== SECTION 12: DEPLOY DAY ======================== -->
+<div class="section" data-section="deploy-day">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h2>🚀 Deploy Day Checklist <span class="badge badge-info">WHEN READY</span></h2>
+    <div class="progress-mini"><span class="section-progress"></span> <span class="chevron">▼</span></div>
+  </div>
+  <div class="section-body">
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">Deploy to staging and run full validation</div><div class="item-detail">All 7 services healthy, E2E tests pass, manual smoke test of key user flows</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">Database migrations applied to production</div><div class="item-detail">npx prisma migrate deploy — verify schema matches expected state</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">Tag release (vX.Y.Z) to trigger production deploy</div><div class="item-detail">Production pipeline triggers on git tags matching v*.*.*</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-critical"></div><input type="checkbox"><div class="item-content"><div class="item-text">Monitor canary deployment (1 replica per service)</div><div class="item-detail">Watch error rates, latency, and health checks during canary phase</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">Verify all 7 health check endpoints return 200</div><div class="item-detail">/health on ports 3000-3006 — automated by smoke test job</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">Test key user flows manually</div><div class="item-detail">Registration → Login → MFA → Health metrics → Book appointment → View insurance plan → Earn achievement</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-high"></div><input type="checkbox"><div class="item-content"><div class="item-text">Verify Kafka event processing across services</div><div class="item-detail">Create a health metric → check gamification points awarded → notification sent</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-medium"></div><input type="checkbox"><div class="item-content"><div class="item-text">Confirm monitoring dashboards show data</div><div class="item-detail">Prometheus metrics flowing, Grafana dashboards rendering, Loki capturing logs</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-medium"></div><input type="checkbox"><div class="item-content"><div class="item-text">Notify stakeholders of successful deployment</div><div class="item-detail">Send go-live confirmation to team, update status page</div></div></div>
+    <div class="checklist-item" data-status="partial"><div class="severity-bar sev-low"></div><input type="checkbox"><div class="item-content"><div class="item-text">Update changelog / release notes</div><div class="item-detail">Document v1.0.0 initial release with feature summary</div></div></div>
+  </div>
+</div>
+
+<!-- ======================== ROLLBACK TRIGGERS ======================== -->
+<div class="rollback-box">
+  <h3>🔴 Rollback Triggers — Roll back immediately if any of these occur:</h3>
+  <ul>
+    <li>Any service health check fails for > 2 minutes</li>
+    <li>API error rate exceeds 5% (baseline: &lt;1%)</li>
+    <li>P95 latency exceeds 2000ms on any service</li>
+    <li>Authentication flow fails (login, MFA, OAuth)</li>
+    <li>Database connection errors or migration failures</li>
+    <li>Kafka consumer lag exceeds 10,000 messages</li>
+    <li>PHI data exposure detected in logs or responses</li>
+    <li>Any service OOMKilled repeatedly (memory limits exceeded)</li>
+  </ul>
+</div>
+
+</div>
+
+<div class="footer">
+  Generated for AUSTA Healthcare SuperApp · March 22, 2026 · Comprehensive pre-deployment readiness assessment
+</div>
+
+<script>
+function toggleSection(header) {
+  header.classList.toggle('collapsed');
+  const body = header.nextElementSibling;
+  body.classList.toggle('hidden');
+}
+
+function updateCounts() {
+  const items = document.querySelectorAll('.checklist-item');
+  let total = 0, ready = 0, partial = 0, missing = 0, checked = 0;
+  items.forEach(item => {
+    if (item.style.display === 'none') return;
+    total++;
+    const status = item.dataset.status;
+    if (status === 'ready') ready++;
+    else if (status === 'partial') partial++;
+    else if (status === 'missing') missing++;
+    if (item.querySelector('input').checked) checked++;
+  });
+  document.getElementById('totalCount').textContent = total;
+  document.getElementById('readyCount').textContent = ready;
+  document.getElementById('partialCount').textContent = partial;
+  document.getElementById('missingCount').textContent = missing;
+  document.getElementById('progressPct').textContent = total ? Math.round(checked / total * 100) + '%' : '0%';
+
+  // Update section progress
+  document.querySelectorAll('.section').forEach(sec => {
+    const secItems = sec.querySelectorAll('.checklist-item');
+    let secTotal = 0, secChecked = 0;
+    secItems.forEach(i => { if (i.style.display !== 'none') { secTotal++; if (i.querySelector('input').checked) secChecked++; }});
+    const progEl = sec.querySelector('.section-progress');
+    if (progEl) progEl.textContent = secChecked + '/' + secTotal;
+  });
+}
+
+// Checkbox toggle
+document.querySelectorAll('.checklist-item input[type="checkbox"]').forEach(cb => {
+  cb.addEventListener('change', function() {
+    this.closest('.checklist-item').classList.toggle('checked', this.checked);
+    updateCounts();
+  });
+  if (cb.checked) cb.closest('.checklist-item').classList.add('checked');
+});
+
+// Filters
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    const filter = this.dataset.filter;
+    document.querySelectorAll('.checklist-item').forEach(item => {
+      if (filter === 'all') { item.style.display = ''; }
+      else { item.style.display = item.dataset.status === filter ? '' : 'none'; }
+    });
+    updateCounts();
+  });
+});
+
+updateCounts();
+</script>
+</body>
+</html>

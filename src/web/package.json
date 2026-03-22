@@ -239,7 +239,7 @@
     "@babel/plugin-transform-optional-catch-binding": "7.28.6",
     "@babel/plugin-transform-async-generator-functions": "7.29.0",
     "@babel/plugin-transform-unicode-property-regex": "7.28.6",
-    "glob": "13.0.6",
+    "glob": "10.4.5",
     "graphql": "16.13.1",
     "metro": "0.81.5",
     "metro-config": "0.81.5",

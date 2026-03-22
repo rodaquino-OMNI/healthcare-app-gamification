@@ -92,6 +92,9 @@ export async function checkDeviceSecurity(): Promise<DeviceSecurityStatus> {
  * Call this from App.tsx or the auth flow entry point.
  */
 export async function warnIfCompromised(): Promise<void> {
+    if (__DEV__) {
+        return;
+    } // DEMO_MODE — Skip security alert on simulator/dev
     const status = await checkDeviceSecurity();
 
     if (status.rooted) {

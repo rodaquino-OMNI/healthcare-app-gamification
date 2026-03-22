@@ -135,7 +135,8 @@ const createSecureAxiosInstance = (): AxiosInstance => {
                 urlToCheck = `${config.baseURL || ''}${urlToCheck}`;
             }
 
-            if (!isUrlSafe(urlToCheck)) {
+            // DEMO_MODE — Skip SSRF validation in dev
+            if (!__DEV__ && !isUrlSafe(urlToCheck)) {
                 throw new Error(`Security warning: URL not allowed - ${urlToCheck}`);
             }
 
@@ -202,5 +203,22 @@ const createSecureAxiosInstance = (): AxiosInstance => {
  * Enhanced with protections against SSRF, CSRF, and other vulnerabilities.
  */
 const restClient = createSecureAxiosInstance();
+
+// DEMO_MODE — Intercept failed requests and return empty successful responses
+if (__DEV__) {
+    restClient.interceptors.response.use(
+        (response) => response,
+        (error: AxiosError) => {
+            console.warn('[DEMO_MODE] API call intercepted:', error?.config?.url);
+            return Promise.resolve({
+                data: {},
+                status: 200,
+                statusText: 'OK (demo)',
+                headers: {},
+                config: error?.config,
+            });
+        }
+    );
+} // DEMO_MODE
 
 export { graphQLClient, restClient };
