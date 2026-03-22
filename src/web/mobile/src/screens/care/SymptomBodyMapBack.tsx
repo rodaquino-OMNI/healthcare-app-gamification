@@ -6,13 +6,15 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import type { Theme } from '@design-system/themes/base.theme';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, type ViewStyle } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareNavigationProp, CareStackParamList } from '../../navigation/types';
 
 /**
  * Anatomical body regions for the posterior (back) view.
@@ -44,11 +46,6 @@ const BACK_BODY_REGIONS: BodyRegion[] = [
     { id: 'right_calf_back', labelKey: 'rightCalfBack', top: 70, left: 56, width: 24, height: 22 },
 ];
 
-type SymptomBodyMapBackRouteParams = {
-    symptoms: Array<{ id: string; name: string }>;
-    description: string;
-};
-
 /**
  * Posterior (back) body map screen for selecting anatomical regions.
  * Mirror of SymptomBodyMap.tsx for the back view.
@@ -58,9 +55,10 @@ const SymptomBodyMapBack: React.FC = () => {
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: SymptomBodyMapBackRouteParams }, 'params'>>();
-    const { symptoms = [], description = '' } = route.params || {};
+    const navigation = useNavigation<CareNavigationProp>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareSymptomBodyMapBack'>>();
+    const sessionId = route.params?.sessionId ?? '';
+    const symptoms: Array<{ id: string; name: string }> = route.params?.symptoms ?? [];
 
     const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
 
@@ -78,22 +76,16 @@ const SymptomBodyMapBack: React.FC = () => {
     };
 
     const handleContinue = (): void => {
-        const selectedRegionData = BACK_BODY_REGIONS.filter((r) => selectedRegions.includes(r.id));
-
         navigation.navigate(ROUTES.CARE_SYMPTOM_DETAIL, {
-            symptoms,
-            description,
-            regions: selectedRegionData.map((r) => ({
-                id: r.id,
-                label: t(`journeys.care.symptomChecker.bodyMapBack.regions.${r.labelKey}`),
-            })),
+            symptomId: symptoms[0]?.id ?? '',
+            sessionId,
         });
     };
 
     const handleFlipToFront = (): void => {
         navigation.navigate(ROUTES.CARE_SYMPTOM_BODY_MAP, {
             symptoms,
-            description,
+            sessionId,
         });
     };
 
@@ -140,18 +132,16 @@ const SymptomBodyMapBack: React.FC = () => {
                         <Touchable
                             key={region.id}
                             onPress={() => toggleRegion(region.id)}
-                            style={
-                                [
-                                    styles.regionTouchable,
-                                    {
-                                        top: `${region.top}%`,
-                                        left: `${region.left}%`,
-                                        width: `${region.width}%`,
-                                        height: `${region.height}%`,
-                                    },
-                                    isSelected(region.id) && styles.regionSelected,
-                                ] as any
-                            }
+                            style={[
+                                styles.regionTouchable,
+                                {
+                                    top: `${region.top}%` as ViewStyle['top'],
+                                    left: `${region.left}%` as ViewStyle['left'],
+                                    width: `${region.width}%` as ViewStyle['width'],
+                                    height: `${region.height}%` as ViewStyle['height'],
+                                },
+                                isSelected(region.id) ? styles.regionSelected : null,
+                            ]}
                             accessibilityLabel={`${t(`journeys.care.symptomChecker.bodyMapBack.regions.${region.labelKey}`)}${isSelected(region.id) ? `, ${t('journeys.care.symptomChecker.bodyMapBack.selected')}` : ''}`}
                             accessibilityRole="button"
                             testID={`body-region-back-${region.id}`}

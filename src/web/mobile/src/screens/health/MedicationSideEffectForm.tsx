@@ -8,10 +8,13 @@ import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import type { Theme } from '@design-system/themes/base.theme';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, TextInput, Alert } from 'react-native';
 import { useTheme } from 'styled-components/native';
+
+import type { HealthStackParamList } from '../../navigation/types';
 
 type SeverityLevel = 'mild' | 'moderate' | 'severe';
 
@@ -48,7 +51,7 @@ const formatDate = (date: Date): string => {
  * with type selection, severity, date, and notes.
  */
 export const MedicationSideEffectForm: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
@@ -113,12 +116,7 @@ export const MedicationSideEffectForm: React.FC = () => {
                                 accessibilityLabel={`${t('medication.select')} ${effect.label}`}
                                 accessibilityRole="button"
                                 testID={`effect-${effect.id}`}
-                                style={
-                                    [
-                                        styles.effectChip,
-                                        selectedEffect === effect.id && styles.effectChipSelected,
-                                    ] as any
-                                }
+                                style={[styles.effectChip, selectedEffect === effect.id && styles.effectChipSelected]}
                             >
                                 <Text
                                     fontSize="sm"
@@ -149,15 +147,13 @@ export const MedicationSideEffectForm: React.FC = () => {
                                 accessibilityLabel={`${t('medication.severity')}: ${option.label}`}
                                 accessibilityRole="button"
                                 testID={`severity-${option.key}`}
-                                style={
-                                    [
-                                        styles.severityOption,
-                                        severity === option.key && {
-                                            backgroundColor: option.color,
-                                            borderColor: option.color,
-                                        },
-                                    ] as any
-                                }
+                                style={[
+                                    styles.severityOption,
+                                    severity === option.key && {
+                                        backgroundColor: option.color,
+                                        borderColor: option.color,
+                                    },
+                                ]}
                             >
                                 <Text
                                     fontSize="sm"

@@ -6,6 +6,9 @@ import { View, StyleSheet } from 'react-native';
 
 import { useJourney } from '../../hooks/useJourney';
 
+/** The set of journey identifiers recognised by design-system components. */
+type JourneyType = 'health' | 'care' | 'plan';
+
 /**
  * Props for the EmptyState component
  */
@@ -21,7 +24,7 @@ export interface EmptyStateProps {
     /** Optional handler for action button press */
     onAction?: () => void;
     /** Journey context for theming (health, care, plan) */
-    journey?: string;
+    journey?: JourneyType | string;
     /** Test ID for component testing */
     testID?: string;
 }
@@ -54,7 +57,11 @@ const EmptyState: React.FC<EmptyStateProps> = ({
 }) => {
     // Use the provided journey or get it from context
     const { journey: contextJourney } = useJourney();
-    const currentJourney = journey || contextJourney;
+    const currentJourney: JourneyType | string | undefined = journey ?? contextJourney;
+    const journeyForDS: JourneyType | undefined =
+        currentJourney === 'health' || currentJourney === 'care' || currentJourney === 'plan'
+            ? currentJourney
+            : undefined;
 
     // Get journey-specific primary color for the icon and button
     const getJourneyColor = () => {
@@ -76,7 +83,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({
             <Icon name={icon} size={64} color={getJourneyColor()} aria-hidden={true} />
 
             {/* Main title/message */}
-            <Text fontSize="xl" fontWeight="bold" textAlign="center" journey={currentJourney as any}>
+            <Text fontSize="xl" fontWeight="bold" textAlign="center" journey={journeyForDS}>
                 {title}
             </Text>
 
@@ -89,12 +96,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({
 
             {/* Optional action button */}
             {actionLabel && onAction && (
-                <Button
-                    variant="primary"
-                    journey={currentJourney as any}
-                    onPress={onAction}
-                    accessibilityLabel={actionLabel}
-                >
+                <Button variant="primary" journey={journeyForDS} onPress={onAction} accessibilityLabel={actionLabel}>
                     {actionLabel}
                 </Button>
             )}

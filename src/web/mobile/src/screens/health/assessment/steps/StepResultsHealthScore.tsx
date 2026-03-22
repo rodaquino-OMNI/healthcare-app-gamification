@@ -12,9 +12,16 @@ import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+interface ResultsHealthScoreData {
+    overallScore?: number;
+    categoryScores?: Record<string, number>;
+    viewRecommendations?: boolean;
+    shareWithDoctor?: boolean;
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: ResultsHealthScoreData;
+    onUpdate: (field: keyof ResultsHealthScoreData, value: boolean) => void;
 }
 
 interface CategoryConfig {

@@ -5,7 +5,8 @@ import { Card } from '@design-system/components/Card/Card';
 import { Text } from '@design-system/primitives/Text/Text';
 import { colors } from '@design-system/tokens/colors';
 import { spacingValues } from '@design-system/tokens/spacing';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView } from 'react-native';
@@ -13,12 +14,7 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { JourneyHeader } from '@components/shared/JourneyHeader';
 import { ROUTES } from '@constants/routes';
 
-/**
- * Route parameters expected by DoctorProfile.
- */
-type DoctorProfileRouteParams = {
-    doctorId: string;
-};
+import type { CareStackParamList } from '../../navigation/types';
 
 /**
  * Review data interface for displaying patient reviews.
@@ -115,9 +111,9 @@ const renderStars = (rating: number): string => {
  * Part of the Care Now journey (orange theme).
  */
 const DoctorProfile: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: DoctorProfileRouteParams }, 'params'>>();
-    const { doctorId } = route.params || { doctorId: 'doc-001' };
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareDoctorProfile'>>();
+    const { doctorId } = route.params;
     const { t } = useTranslation();
 
     // In a real app, fetch doctor details by doctorId

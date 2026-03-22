@@ -8,9 +8,13 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
 
+interface SubmissionConfirmData {
+    viewResults?: boolean;
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: SubmissionConfirmData;
+    onUpdate: (field: keyof SubmissionConfirmData, value: boolean) => void;
 }
 
 const NEXT_STEPS_KEYS = ['doctorReview', 'personalizedPlan', 'healthInsights'] as const;

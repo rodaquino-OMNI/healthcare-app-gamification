@@ -1,6 +1,12 @@
 import { GameProfile } from '@shared/types/gamification.types';
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 
+/** Minimal shape of a decoded JWT used in this context. */
+interface DecodedToken {
+    sub?: string;
+    [key: string]: unknown;
+}
+
 import { getGameProfile } from '@api/gamification';
 import { useAuth } from '@context/AuthContext';
 
@@ -13,7 +19,7 @@ interface GamificationContextType {
     /** Indicates whether the game profile is currently loading */
     isLoading: boolean;
     /** Any error that occurred while loading the game profile */
-    error: any;
+    error: Error | null;
 }
 
 /**
@@ -29,12 +35,13 @@ const GamificationContext = createContext<GamificationContextType | undefined>(u
 const GamificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     // Get the session from the authentication context and extract userId
     const { session, getUserFromToken } = useAuth();
-    const userId = session?.accessToken ? getUserFromToken(session.accessToken)?.sub : undefined;
+    const decoded = session?.accessToken ? (getUserFromToken(session.accessToken) as DecodedToken | null) : null;
+    const userId = decoded?.sub;
 
     // State for managing the game profile data
     const [gameProfile, setGameProfile] = useState<GameProfile | undefined>(undefined);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [error, setError] = useState<any>(null);
+    const [error, setError] = useState<Error | null>(null);
 
     // Fetch the game profile when the user ID changes
     useEffect(() => {
@@ -51,10 +58,10 @@ const GamificationProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             try {
                 // Get the game profile from the API
                 const profile = await getGameProfile(userId);
-                setGameProfile(profile as unknown as GameProfile | undefined);
+                setGameProfile(profile as GameProfile | undefined);
                 setError(null);
             } catch (err) {
-                setError(err);
+                setError(err instanceof Error ? err : new Error(String(err)));
                 console.error('Error fetching game profile:', err);
             } finally {
                 setIsLoading(false);

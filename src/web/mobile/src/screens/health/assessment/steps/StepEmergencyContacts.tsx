@@ -12,9 +12,19 @@ import { useTranslation } from 'react-i18next';
 import { View, TextInput, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+interface EmergencyContactsData {
+    primaryName?: string;
+    primaryRelationship?: string;
+    primaryPhone?: string;
+    showSecondary?: boolean;
+    secondaryName?: string;
+    secondaryRelationship?: string;
+    secondaryPhone?: string;
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: EmergencyContactsData;
+    onUpdate: (field: keyof EmergencyContactsData, value: string | boolean) => void;
 }
 
 const RELATIONSHIP_OPTIONS = ['spouse', 'parent', 'sibling', 'child', 'friend', 'other'] as const;
@@ -29,7 +39,7 @@ export const StepEmergencyContacts: React.FC<StepProps> = ({ data, onUpdate }) =
     const styles = createStyles(theme);
 
     const handleShowSecondary = useCallback(() => {
-        onUpdate('showSecondary', !data.showSecondary);
+        onUpdate('showSecondary', !(data.showSecondary ?? false));
     }, [data.showSecondary, onUpdate]);
 
     return (
@@ -78,7 +88,7 @@ export const StepEmergencyContacts: React.FC<StepProps> = ({ data, onUpdate }) =
                                 accessibilityLabel={t(`healthAssessment.emergencyContacts.relationship.${opt}`)}
                                 accessibilityRole="button"
                                 testID={`primary-relationship-${opt}`}
-                                style={[styles.chip, selected && styles.chipSelected] as any}
+                                style={[styles.chip, selected ? styles.chipSelected : null]}
                             >
                                 <Text
                                     fontSize="sm"
@@ -159,7 +169,7 @@ export const StepEmergencyContacts: React.FC<StepProps> = ({ data, onUpdate }) =
                                     accessibilityLabel={t(`healthAssessment.emergencyContacts.relationship.${opt}`)}
                                     accessibilityRole="button"
                                     testID={`secondary-relationship-${opt}`}
-                                    style={[styles.chip, selected && styles.chipSelected] as any}
+                                    style={[styles.chip, selected ? styles.chipSelected : null]}
                                 >
                                     <Text
                                         fontSize="sm"

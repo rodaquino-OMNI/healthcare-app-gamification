@@ -6,6 +6,7 @@ import { colors } from '@design-system/tokens/colors';
 import { sizingValues } from '@design-system/tokens/sizing';
 import { spacingValues } from '@design-system/tokens/spacing';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet, SectionList, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
@@ -13,6 +14,7 @@ import { View, Text, StyleSheet, SectionList, TouchableOpacity, ScrollView, Safe
 import { QuestListItem, CategorizedQuest } from './QuestListItem';
 import { useQuestFilters, TABS } from './useQuestFilters';
 import { useTheme } from '../../hooks/useTheme';
+import type { GamificationStackParamList } from '../../navigation/types';
 
 /**
  * Mock quest data for development and immediate rendering.
@@ -158,7 +160,7 @@ const MOCK_QUESTS: CategorizedQuest[] = [
  */
 const QuestList: React.FC = () => {
     const { t } = useTranslation();
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<GamificationStackParamList>>();
     const { theme } = useTheme();
     const styles = createStyles(theme as Theme);
 

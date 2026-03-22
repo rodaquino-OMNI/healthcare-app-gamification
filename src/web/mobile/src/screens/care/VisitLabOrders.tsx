@@ -4,19 +4,15 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
 
-/**
- * Route parameters expected by VisitLabOrders.
- */
-type VisitLabOrdersRouteParams = {
-    appointmentId: string;
-};
+import type { CareStackParamList } from '../../navigation/types';
 
 /**
  * Lab test item ordered by the doctor.
@@ -138,11 +134,11 @@ const getUrgencyStatus = (urgency: 'routine' | 'urgent' | 'stat'): 'success' | '
  * Part of the Care Now journey (orange theme).
  */
 const VisitLabOrders: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: VisitLabOrdersRouteParams }, 'params'>>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareVisitLabOrders'>>();
     const { t } = useTranslation();
 
-    const { appointmentId: _appointmentId = 'apt-001' } = route.params || {};
+    const _appointmentId = route.params?.visitId ?? 'apt-001';
 
     const [expandedTest, setExpandedTest] = useState<string | null>(null);
 

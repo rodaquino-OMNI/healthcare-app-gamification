@@ -5,11 +5,13 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, Alert } from 'react-native';
 
 import { ROUTES } from '../../constants/routes';
+import type { HealthStackParamList } from '../../navigation/types';
 
 /**
  * Share option definition
@@ -65,7 +67,7 @@ const ACTIVE_MEDICATION_COUNT = 4;
  * with caregivers via link, email, or WhatsApp, and manage access permissions.
  */
 export const MedicationShareCaregiver: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
     const { t } = useTranslation();
 
     const handleShareOption = useCallback(

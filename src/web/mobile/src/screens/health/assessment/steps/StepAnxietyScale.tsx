@@ -12,9 +12,17 @@ import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+type Gad2Key = 'gad2_nervous' | 'gad2_controlWorry';
+
+interface AnxietyScaleData {
+    gad2_nervous?: string;
+    gad2_controlWorry?: string;
+    anxietyTriggers?: string[];
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: AnxietyScaleData;
+    onUpdate: (field: keyof AnxietyScaleData, value: string | string[]) => void;
 }
 
 const GAD2_QUESTIONS = ['nervous', 'controlWorry'] as const;
@@ -48,7 +56,8 @@ export const StepAnxietyScale: React.FC<StepProps> = ({ data, onUpdate }) => {
     const getScore = (): number => {
         let total = 0;
         GAD2_QUESTIONS.forEach((q) => {
-            const answer = data[`gad2_${q}`];
+            const key = `gad2_${q}` as Gad2Key;
+            const answer = data[key];
             const option = FREQUENCY_OPTIONS.find((o) => o.key === answer);
             if (option) {
                 total += option.score;
@@ -58,7 +67,7 @@ export const StepAnxietyScale: React.FC<StepProps> = ({ data, onUpdate }) => {
     };
 
     const score = getScore();
-    const bothAnswered = GAD2_QUESTIONS.every((q) => data[`gad2_${q}`] !== undefined);
+    const bothAnswered = GAD2_QUESTIONS.every((q) => data[`gad2_${q}` as Gad2Key] !== undefined);
 
     return (
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
@@ -77,17 +86,17 @@ export const StepAnxietyScale: React.FC<StepProps> = ({ data, onUpdate }) => {
                     </Text>
                     <View style={styles.optionList}>
                         {FREQUENCY_OPTIONS.map((option) => {
-                            const selected = data[`gad2_${question}`] === option.key;
+                            const selected = data[`gad2_${question}` as Gad2Key] === option.key;
                             return (
                                 <Touchable
                                     key={option.key}
-                                    onPress={() => onUpdate(`gad2_${question}`, option.key)}
+                                    onPress={() => onUpdate(`gad2_${question}` as Gad2Key, option.key)}
                                     accessibilityLabel={t(`healthAssessment.anxietyScale.options.${option.key}`)}
                                     accessibilityRole="button"
                                     testID={`gad2-${question}-${option.key}`}
-                                    style={[styles.optionCard, selected && styles.optionCardSelected] as any}
+                                    style={[styles.optionCard, selected ? styles.optionCardSelected : null]}
                                 >
-                                    <View style={[styles.radioCircle, selected && styles.radioCircleSelected] as any}>
+                                    <View style={[styles.radioCircle, selected ? styles.radioCircleSelected : null]}>
                                         {selected && <View style={styles.radioInner} />}
                                     </View>
                                     <Text
@@ -111,7 +120,7 @@ export const StepAnxietyScale: React.FC<StepProps> = ({ data, onUpdate }) => {
                     <Text fontSize="sm" fontWeight="medium" color={colors.neutral.gray600}>
                         {t('healthAssessment.anxietyScale.scoreLabel')}
                     </Text>
-                    <View style={[styles.scoreBadge, score >= 3 && styles.scoreBadgeHigh] as any}>
+                    <View style={[styles.scoreBadge, score >= 3 ? styles.scoreBadgeHigh : null]}>
                         <Text fontSize="md" fontWeight="bold" color={colors.neutral.white}>
                             {String(score)}/6
                         </Text>
@@ -133,7 +142,7 @@ export const StepAnxietyScale: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.anxietyScale.triggers.${trigger}`)}
                             accessibilityRole="checkbox"
                             testID={`anxiety-trigger-${trigger}`}
-                            style={[styles.chip, selected && styles.chipSelected] as any}
+                            style={[styles.chip, selected ? styles.chipSelected : null]}
                         >
                             <Text
                                 fontSize="sm"

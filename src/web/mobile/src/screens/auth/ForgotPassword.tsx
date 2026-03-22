@@ -98,7 +98,8 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProp> = ({ navig
         control: _control,
         handleSubmit,
         formState: { errors },
-    } = useForm({
+    } = useForm<{ email: string }>({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment -- yupResolver schema type does not exactly match useForm generic
         resolver: yupResolver(validationSchema.email),
     });
 
@@ -116,8 +117,9 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProp> = ({ navig
             await Promise.resolve(); // placeholder for resetPassword(email)
             setIsSubmitted(true);
             showToast(t('auth.forgotPassword.successMessage'), 'success');
-        } catch (error: any) {
-            showToast(error.message || t('auth.forgotPassword.errorMessage'), 'error');
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : t('auth.forgotPassword.errorMessage');
+            showToast(message, 'error');
         } finally {
             setIsSubmitting(false);
         }
@@ -153,7 +155,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProp> = ({ navig
                 <Input
                     placeholder={t('common.labels.email')}
                     value={email}
-                    onChange={(e: any) => setEmail(e.nativeEvent.text)}
+                    onChange={(e: { nativeEvent: { text: string } }) => setEmail(e.nativeEvent.text)}
                     aria-label={t('common.labels.email')}
                     testID="email-input"
                     type="email"

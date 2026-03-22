@@ -1,5 +1,5 @@
 import { Card, Text, Icon, Badge } from '@design-system/components';
-import { useNavigation } from '@react-navigation/native'; // @react-navigation/native v6.0.0
+import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native'; // @react-navigation/native v6.0.0
 import { Notification, NotificationType, NotificationStatus } from '@shared/types/notification.types';
 import React, { useCallback } from 'react'; // react v18.0.0
 import { FlatList, TouchableOpacity, View, StyleSheet } from 'react-native'; // react-native v0.70.0
@@ -15,9 +15,9 @@ import { LoadingIndicator } from '../shared/LoadingIndicator';
  */
 interface NotificationListProps {
     /**
-     * Optional filter criteria for notifications
+     * Optional filter predicate for notifications
      */
-    filter?: object;
+    filter?: (notification: Notification) => boolean;
     /**
      * Optional callback when a notification is pressed
      */
@@ -68,12 +68,10 @@ export const NotificationList: React.FC<NotificationListProps> = ({
     const { journey: _journey } = useJourney();
 
     // Use the useNavigation hook for handling deep links
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
     // Filter notifications based on the filter prop if provided
-    const filteredNotifications = filter
-        ? notifications.filter((notification) => (filter as (n: Notification) => boolean)(notification))
-        : notifications;
+    const filteredNotifications = filter ? notifications.filter(filter) : notifications;
 
     // Limit the number of notifications based on maxItems prop if provided
     const limitedNotifications = maxItems ? filteredNotifications.slice(0, maxItems) : filteredNotifications;
@@ -86,7 +84,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({
                 try {
                     await markAsRead(item.id);
                     if (item.deepLink) {
-                        (navigation as any).navigate(item.deepLink);
+                        navigation.navigate(item.deepLink);
                     }
                     if (onNotificationPress) {
                         onNotificationPress(item);

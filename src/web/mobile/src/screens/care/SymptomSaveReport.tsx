@@ -5,12 +5,14 @@ import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchable';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView, Alert, Switch } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareNavigationProp, CareStackParamList } from '../../navigation/types';
 
 interface PossibleCondition {
     id: string;
@@ -18,13 +20,6 @@ interface PossibleCondition {
     probability: number;
     severity: 'low' | 'medium' | 'high';
 }
-
-type SymptomSaveReportRouteParams = {
-    symptoms: Array<{ id: string; name: string }>;
-    regions: Array<{ id: string; label: string }>;
-    conditions: PossibleCondition[];
-    overallSeverity: number;
-};
 
 const getSeverityLabel = (severity: number): string => {
     if (severity <= 3) {
@@ -52,11 +47,15 @@ const getSeverityBadgeStatus = (severity: number): 'success' | 'warning' | 'erro
  * or to health records.
  */
 const SymptomSaveReport: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: SymptomSaveReportRouteParams }, 'params'>>();
+    const navigation = useNavigation<CareNavigationProp>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareSymptomSaveReport'>>();
     const { t } = useTranslation();
 
-    const { symptoms = [], regions = [], conditions = [], overallSeverity = 5 } = route.params || {};
+    const sessionId = route.params?.sessionId ?? '';
+    const symptoms: Array<{ id: string; name: string }> = [];
+    const regions: Array<{ id: string; label: string }> = [];
+    const conditions: PossibleCondition[] = [];
+    const overallSeverity = 5;
 
     const [saveToRecords, setSaveToRecords] = useState(true);
     const currentDate = new Date().toLocaleDateString();
@@ -70,12 +69,7 @@ const SymptomSaveReport: React.FC = () => {
     };
 
     const handleShareReport = (): void => {
-        navigation.navigate(ROUTES.CARE_SYMPTOM_SHARE_REPORT, {
-            symptoms,
-            regions,
-            conditions,
-            overallSeverity,
-        });
+        navigation.navigate(ROUTES.CARE_SYMPTOM_SHARE_REPORT, { sessionId });
     };
 
     return (

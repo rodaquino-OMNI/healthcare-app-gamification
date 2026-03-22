@@ -12,9 +12,15 @@ import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+interface WaterIntakeData {
+    dailyWaterIntake?: string;
+    caffeineConsumption?: string;
+    sugaryDrinks?: string;
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: WaterIntakeData;
+    onUpdate: (field: keyof WaterIntakeData, value: string) => void;
 }
 
 const WATER_INTAKE_OPTIONS = [
@@ -52,7 +58,7 @@ export const StepWaterIntake: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.waterIntake.daily.${key}`)}
                             accessibilityRole="button"
                             testID={`water-intake-${key}`}
-                            style={[styles.waterCard, selected && styles.waterCardSelected] as any}
+                            style={[styles.waterCard, selected ? styles.waterCardSelected : null]}
                         >
                             {/* Glass visualization */}
                             <View style={styles.glassContainer}>
@@ -99,7 +105,7 @@ export const StepWaterIntake: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.waterIntake.caffeine.${opt}`)}
                             accessibilityRole="button"
                             testID={`caffeine-${opt}`}
-                            style={[styles.chip, selected && styles.chipSelected] as any}
+                            style={[styles.chip, selected ? styles.chipSelected : null]}
                         >
                             <Text
                                 fontSize="sm"
@@ -127,7 +133,7 @@ export const StepWaterIntake: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.waterIntake.sugary.${opt}`)}
                             accessibilityRole="button"
                             testID={`sugary-drinks-${opt}`}
-                            style={[styles.chip, selected && styles.chipSelected] as any}
+                            style={[styles.chip, selected ? styles.chipSelected : null]}
                         >
                             <Text
                                 fontSize="sm"

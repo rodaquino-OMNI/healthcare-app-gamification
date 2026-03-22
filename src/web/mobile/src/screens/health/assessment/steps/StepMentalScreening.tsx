@@ -12,9 +12,16 @@ import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+type Phq2Key = 'phq2_interest' | 'phq2_depressed';
+
+interface MentalScreeningData {
+    phq2_interest?: string;
+    phq2_depressed?: string;
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: MentalScreeningData;
+    onUpdate: (field: keyof MentalScreeningData, value: string) => void;
 }
 
 const PHQ2_QUESTIONS = ['interest', 'depressed'] as const;
@@ -34,7 +41,8 @@ export const StepMentalScreening: React.FC<StepProps> = ({ data, onUpdate }) => 
     const getScore = (): number => {
         let total = 0;
         PHQ2_QUESTIONS.forEach((q) => {
-            const answer = data[`phq2_${q}`];
+            const key = `phq2_${q}` as Phq2Key;
+            const answer = data[key];
             const option = FREQUENCY_OPTIONS.find((o) => o.key === answer);
             if (option) {
                 total += option.score;
@@ -44,7 +52,7 @@ export const StepMentalScreening: React.FC<StepProps> = ({ data, onUpdate }) => 
     };
 
     const score = getScore();
-    const bothAnswered = PHQ2_QUESTIONS.every((q) => data[`phq2_${q}`] !== undefined);
+    const bothAnswered = PHQ2_QUESTIONS.every((q) => data[`phq2_${q}` as Phq2Key] !== undefined);
 
     return (
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
@@ -63,17 +71,17 @@ export const StepMentalScreening: React.FC<StepProps> = ({ data, onUpdate }) => 
                     </Text>
                     <View style={styles.optionList}>
                         {FREQUENCY_OPTIONS.map((option) => {
-                            const selected = data[`phq2_${question}`] === option.key;
+                            const selected = data[`phq2_${question}` as Phq2Key] === option.key;
                             return (
                                 <Touchable
                                     key={option.key}
-                                    onPress={() => onUpdate(`phq2_${question}`, option.key)}
+                                    onPress={() => onUpdate(`phq2_${question}` as Phq2Key, option.key)}
                                     accessibilityLabel={t(`healthAssessment.mentalScreening.options.${option.key}`)}
                                     accessibilityRole="button"
                                     testID={`phq2-${question}-${option.key}`}
-                                    style={[styles.optionCard, selected && styles.optionCardSelected] as any}
+                                    style={[styles.optionCard, selected ? styles.optionCardSelected : null]}
                                 >
-                                    <View style={[styles.radioCircle, selected && styles.radioCircleSelected] as any}>
+                                    <View style={[styles.radioCircle, selected ? styles.radioCircleSelected : null]}>
                                         {selected && <View style={styles.radioInner} />}
                                     </View>
                                     <Text
@@ -97,7 +105,7 @@ export const StepMentalScreening: React.FC<StepProps> = ({ data, onUpdate }) => 
                     <Text fontSize="sm" fontWeight="medium" color={colors.neutral.gray600}>
                         {t('healthAssessment.mentalScreening.scoreLabel')}
                     </Text>
-                    <View style={[styles.scoreBadge, score >= 3 && styles.scoreBadgeHigh] as any}>
+                    <View style={[styles.scoreBadge, score >= 3 ? styles.scoreBadgeHigh : null]}>
                         <Text fontSize="md" fontWeight="bold" color={colors.neutral.white}>
                             {String(score)}/6
                         </Text>

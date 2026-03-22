@@ -12,6 +12,12 @@ import { useEffect } from 'react';
 import { useAuth } from './useAuth';
 import { getNotifications, markNotificationAsRead } from '../api/notifications';
 
+/** Minimal shape of a decoded JWT used in this hook. */
+interface DecodedToken {
+    sub?: string;
+    [key: string]: unknown;
+}
+
 /**
  * Custom hook to fetch and manage notifications for the current user.
  *
@@ -24,9 +30,10 @@ export const useNotifications = () => {
     const auth = useAuth();
 
     // Derive userId from the JWT in the current session
-    const userId: string | undefined = auth.session?.accessToken
-        ? auth.getUserFromToken(auth.session.accessToken)?.sub
-        : undefined;
+    const decoded = auth.session?.accessToken
+        ? (auth.getUserFromToken(auth.session.accessToken) as DecodedToken | null)
+        : null;
+    const userId: string | undefined = decoded?.sub ?? undefined;
 
     const { data, isPending, error, refetch } = useQuery<Notification[], Error>({
         queryKey: ['notifications', userId],

@@ -11,9 +11,14 @@ import { useTranslation } from 'react-i18next';
 import { View, TextInput, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+interface MedicationsData {
+    takesMedications?: boolean;
+    list?: MedicationEntry[];
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: MedicationsData;
+    onUpdate: (field: keyof MedicationsData, value: boolean | MedicationEntry[]) => void;
 }
 
 interface MedicationEntry {
@@ -33,8 +38,8 @@ export const StepMedications: React.FC<StepProps> = ({ data, onUpdate }) => {
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
-    const takesMedications: boolean = data.takesMedications || false;
-    const medicationList: MedicationEntry[] = data.list || [];
+    const takesMedications: boolean = data.takesMedications ?? false;
+    const medicationList: MedicationEntry[] = data.list ?? [];
 
     const handleToggleTakes = useCallback(
         (value: boolean) => {
@@ -76,7 +81,7 @@ export const StepMedications: React.FC<StepProps> = ({ data, onUpdate }) => {
                 accessibilityLabel={t(`healthAssessment.medications.${labelKey}`)}
                 accessibilityRole="button"
                 testID={testId}
-                style={[styles.toggleOption, isActive && styles.toggleOptionActive] as any}
+                style={[styles.toggleOption, isActive ? styles.toggleOptionActive : null]}
             >
                 <Text
                     fontSize="md"
@@ -161,9 +166,7 @@ export const StepMedications: React.FC<StepProps> = ({ data, onUpdate }) => {
                                         accessibilityLabel={t(`healthAssessment.medications.freq_${freq}`)}
                                         accessibilityRole="button"
                                         testID={`med-freq-${freq}-${index}`}
-                                        style={
-                                            [styles.freqPill, entry.frequency === freq && styles.freqPillActive] as any
-                                        }
+                                        style={[styles.freqPill, entry.frequency === freq && styles.freqPillActive]}
                                     >
                                         <Text
                                             fontSize="xs"

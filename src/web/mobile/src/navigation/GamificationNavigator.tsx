@@ -6,6 +6,12 @@ import type { GamificationStackParamList } from './types';
 import { ROUTES } from '../constants/routes';
 import Achievements from '../screens/home/Achievements';
 
+/** Shape of every lazily-loaded screen module. */
+interface ScreenModule {
+    default?: React.ComponentType;
+    [key: string]: React.ComponentType | undefined;
+}
+
 // Lazy-loaded gamification screens.
 // These screens are created by Worker-3; safe fallbacks if not yet available.
 let AchievementDetailScreen: React.FC = () => null;
@@ -16,43 +22,43 @@ let RewardCatalogScreen: React.FC = () => null;
 let RewardDetailScreen: React.FC = () => null;
 
 try {
-    const mod = require('../screens/gamification/AchievementDetail');
-    AchievementDetailScreen = mod.AchievementDetailScreen || mod.default || AchievementDetailScreen;
+    const mod = require('../screens/gamification/AchievementDetail') as ScreenModule;
+    AchievementDetailScreen = mod.AchievementDetailScreen ?? mod.default ?? AchievementDetailScreen;
 } catch {
     // AchievementDetail screen not yet available
 }
 
 try {
-    const mod = require('../screens/gamification/LeaderboardScreen');
-    LeaderboardScreen = mod.LeaderboardScreen || mod.default || LeaderboardScreen;
+    const mod = require('../screens/gamification/LeaderboardScreen') as ScreenModule;
+    LeaderboardScreen = mod.LeaderboardScreen ?? mod.default ?? LeaderboardScreen;
 } catch {
     // LeaderboardScreen not yet available
 }
 
 try {
-    const mod = require('../screens/gamification/QuestList');
-    QuestListScreen = mod.QuestListScreen || mod.default || QuestListScreen;
+    const mod = require('../screens/gamification/QuestList') as ScreenModule;
+    QuestListScreen = mod.QuestListScreen ?? mod.default ?? QuestListScreen;
 } catch {
     // QuestList screen not yet available
 }
 
 try {
-    const mod = require('../screens/gamification/QuestDetail');
-    QuestDetailScreen = mod.QuestDetailScreen || mod.default || QuestDetailScreen;
+    const mod = require('../screens/gamification/QuestDetail') as ScreenModule;
+    QuestDetailScreen = mod.QuestDetailScreen ?? mod.default ?? QuestDetailScreen;
 } catch {
     // QuestDetail screen not yet available
 }
 
 try {
-    const mod = require('../screens/gamification/RewardCatalog');
-    RewardCatalogScreen = mod.RewardCatalogScreen || mod.default || RewardCatalogScreen;
+    const mod = require('../screens/gamification/RewardCatalog') as ScreenModule;
+    RewardCatalogScreen = mod.RewardCatalogScreen ?? mod.default ?? RewardCatalogScreen;
 } catch {
     // RewardCatalog screen not yet available
 }
 
 try {
-    const mod = require('../screens/gamification/RewardDetail');
-    RewardDetailScreen = mod.RewardDetailScreen || mod.default || RewardDetailScreen;
+    const mod = require('../screens/gamification/RewardDetail') as ScreenModule;
+    RewardDetailScreen = mod.RewardDetailScreen ?? mod.default ?? RewardDetailScreen;
 } catch {
     // RewardDetail screen not yet available
 }

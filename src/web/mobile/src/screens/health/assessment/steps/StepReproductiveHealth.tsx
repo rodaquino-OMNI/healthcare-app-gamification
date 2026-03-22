@@ -12,9 +12,17 @@ import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+interface ReproductiveHealthData {
+    reproductiveSkipped?: boolean;
+    pregnancyStatus?: string;
+    lastReproductiveCheckup?: string;
+    contraception?: string;
+    menstrualRegularity?: string;
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: ReproductiveHealthData;
+    onUpdate: (field: keyof ReproductiveHealthData, value: string | boolean) => void;
 }
 
 const PREGNANCY_STATUS = ['notPregnant', 'pregnant', 'trying', 'unsure'] as const;
@@ -66,9 +74,9 @@ export const StepReproductiveHealth: React.FC<StepProps> = ({ data, onUpdate }) 
                             accessibilityLabel={t(`healthAssessment.reproductiveHealth.pregnancy.${opt}`)}
                             accessibilityRole="button"
                             testID={`pregnancy-${opt}`}
-                            style={[styles.optionCard, selected && styles.optionCardSelected] as any}
+                            style={[styles.optionCard, selected ? styles.optionCardSelected : null]}
                         >
-                            <View style={[styles.radioCircle, selected && styles.radioCircleSelected] as any}>
+                            <View style={[styles.radioCircle, selected ? styles.radioCircleSelected : null]}>
                                 {selected && <View style={styles.radioInner} />}
                             </View>
                             <Text
@@ -98,7 +106,7 @@ export const StepReproductiveHealth: React.FC<StepProps> = ({ data, onUpdate }) 
                             accessibilityLabel={t(`healthAssessment.reproductiveHealth.checkup.${opt}`)}
                             accessibilityRole="button"
                             testID={`checkup-${opt}`}
-                            style={[styles.chip, selected && styles.chipSelected] as any}
+                            style={[styles.chip, selected ? styles.chipSelected : null]}
                         >
                             <Text
                                 fontSize="sm"
@@ -126,7 +134,7 @@ export const StepReproductiveHealth: React.FC<StepProps> = ({ data, onUpdate }) 
                             accessibilityLabel={t(`healthAssessment.reproductiveHealth.contraception.${opt}`)}
                             accessibilityRole="button"
                             testID={`contraception-${opt}`}
-                            style={[styles.chipWide, selected && styles.chipSelected] as any}
+                            style={[styles.chipWide, selected ? styles.chipSelected : null]}
                         >
                             <Text
                                 fontSize="sm"
@@ -154,7 +162,7 @@ export const StepReproductiveHealth: React.FC<StepProps> = ({ data, onUpdate }) 
                             accessibilityLabel={t(`healthAssessment.reproductiveHealth.menstrual.${opt}`)}
                             accessibilityRole="button"
                             testID={`menstrual-${opt}`}
-                            style={[styles.chipWide, selected && styles.chipSelected] as any}
+                            style={[styles.chipWide, selected ? styles.chipSelected : null]}
                         >
                             <Text
                                 fontSize="sm"

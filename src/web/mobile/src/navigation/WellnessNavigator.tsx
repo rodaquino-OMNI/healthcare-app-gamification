@@ -5,6 +5,12 @@ import React from 'react'; // version 18.2.0
 import type { WellnessStackParamList } from './types';
 import { ROUTES } from '../constants/routes';
 
+/** Shape of every lazily-loaded screen module. */
+interface ScreenModule {
+    default?: React.ComponentType;
+    [key: string]: React.ComponentType | undefined;
+}
+
 // Lazy-loaded wellness screens.
 // These screens are created by Worker-3; safe fallbacks if not yet available.
 let CompanionChatScreen: React.FC = () => null;
@@ -24,107 +30,107 @@ let CompanionChallengeDetailScreen: React.FC = () => null;
 let CompanionStreaksScreen: React.FC = () => null;
 
 try {
-    const mod = require('../screens/wellness/CompanionChat');
-    CompanionChatScreen = mod.CompanionChatScreen || mod.default || CompanionChatScreen;
+    const mod = require('../screens/wellness/CompanionChat') as ScreenModule;
+    CompanionChatScreen = mod.CompanionChatScreen ?? mod.default ?? CompanionChatScreen;
 } catch {
     // CompanionChat screen not yet available
 }
 
 try {
-    const mod = require('../screens/wellness/CompanionChatActive');
-    CompanionChatActiveScreen = mod.CompanionChatActiveScreen || mod.default || CompanionChatActiveScreen;
+    const mod = require('../screens/wellness/CompanionChatActive') as ScreenModule;
+    CompanionChatActiveScreen = mod.CompanionChatActiveScreen ?? mod.default ?? CompanionChatActiveScreen;
 } catch {
     // CompanionChatActive screen not yet available
 }
 
 try {
-    const mod = require('../screens/wellness/CompanionQuickReplies');
-    CompanionQuickRepliesScreen = mod.CompanionQuickRepliesScreen || mod.default || CompanionQuickRepliesScreen;
+    const mod = require('../screens/wellness/CompanionQuickReplies') as ScreenModule;
+    CompanionQuickRepliesScreen = mod.CompanionQuickRepliesScreen ?? mod.default ?? CompanionQuickRepliesScreen;
 } catch {
     // CompanionQuickReplies screen not yet available
 }
 
 try {
-    const mod = require('../screens/wellness/CompanionMoodCheckIn');
-    CompanionMoodCheckInScreen = mod.CompanionMoodCheckInScreen || mod.default || CompanionMoodCheckInScreen;
+    const mod = require('../screens/wellness/CompanionMoodCheckIn') as ScreenModule;
+    CompanionMoodCheckInScreen = mod.CompanionMoodCheckInScreen ?? mod.default ?? CompanionMoodCheckInScreen;
 } catch {
     // CompanionMoodCheckIn screen not yet available
 }
 
 try {
-    const mod = require('../screens/wellness/CompanionWellnessTip');
-    CompanionWellnessTipScreen = mod.CompanionWellnessTipScreen || mod.default || CompanionWellnessTipScreen;
+    const mod = require('../screens/wellness/CompanionWellnessTip') as ScreenModule;
+    CompanionWellnessTipScreen = mod.CompanionWellnessTipScreen ?? mod.default ?? CompanionWellnessTipScreen;
 } catch {
     // CompanionWellnessTip screen not yet available
 }
 
 try {
-    const mod = require('../screens/wellness/CompanionBreathing');
-    CompanionBreathingScreen = mod.CompanionBreathingScreen || mod.default || CompanionBreathingScreen;
+    const mod = require('../screens/wellness/CompanionBreathing') as ScreenModule;
+    CompanionBreathingScreen = mod.CompanionBreathingScreen ?? mod.default ?? CompanionBreathingScreen;
 } catch {
     // CompanionBreathing screen not yet available
 }
 
 try {
-    const mod = require('../screens/wellness/CompanionMeditation');
-    CompanionMeditationScreen = mod.CompanionMeditationScreen || mod.default || CompanionMeditationScreen;
+    const mod = require('../screens/wellness/CompanionMeditation') as ScreenModule;
+    CompanionMeditationScreen = mod.CompanionMeditationScreen ?? mod.default ?? CompanionMeditationScreen;
 } catch {
     // CompanionMeditation screen not yet available
 }
 
 try {
-    const mod = require('../screens/wellness/CompanionDailyPlan');
-    CompanionDailyPlanScreen = mod.CompanionDailyPlanScreen || mod.default || CompanionDailyPlanScreen;
+    const mod = require('../screens/wellness/CompanionDailyPlan') as ScreenModule;
+    CompanionDailyPlanScreen = mod.CompanionDailyPlanScreen ?? mod.default ?? CompanionDailyPlanScreen;
 } catch {
     // CompanionDailyPlan screen not yet available
 }
 
 try {
-    const mod = require('../screens/wellness/CompanionInsights');
-    CompanionInsightsScreen = mod.CompanionInsightsScreen || mod.default || CompanionInsightsScreen;
+    const mod = require('../screens/wellness/CompanionInsights') as ScreenModule;
+    CompanionInsightsScreen = mod.CompanionInsightsScreen ?? mod.default ?? CompanionInsightsScreen;
 } catch {
     // CompanionInsights screen not yet available
 }
 
 try {
-    const mod = require('../screens/wellness/CompanionGoals');
-    CompanionGoalsScreen = mod.CompanionGoalsScreen || mod.default || CompanionGoalsScreen;
+    const mod = require('../screens/wellness/CompanionGoals') as ScreenModule;
+    CompanionGoalsScreen = mod.CompanionGoalsScreen ?? mod.default ?? CompanionGoalsScreen;
 } catch {
     // CompanionGoals screen not yet available
 }
 
 try {
-    const mod = require('../screens/wellness/CompanionJournal');
-    CompanionJournalScreen = mod.CompanionJournalScreen || mod.default || CompanionJournalScreen;
+    const mod = require('../screens/wellness/CompanionJournal') as ScreenModule;
+    CompanionJournalScreen = mod.CompanionJournalScreen ?? mod.default ?? CompanionJournalScreen;
 } catch {
     // CompanionJournal screen not yet available
 }
 
 try {
-    const mod = require('../screens/wellness/CompanionJournalHistory');
-    CompanionJournalHistoryScreen = mod.CompanionJournalHistoryScreen || mod.default || CompanionJournalHistoryScreen;
+    const mod = require('../screens/wellness/CompanionJournalHistory') as ScreenModule;
+    CompanionJournalHistoryScreen = mod.CompanionJournalHistoryScreen ?? mod.default ?? CompanionJournalHistoryScreen;
 } catch {
     // CompanionJournalHistory screen not yet available
 }
 
 try {
-    const mod = require('../screens/wellness/CompanionChallenges');
-    CompanionChallengesScreen = mod.CompanionChallengesScreen || mod.default || CompanionChallengesScreen;
+    const mod = require('../screens/wellness/CompanionChallenges') as ScreenModule;
+    CompanionChallengesScreen = mod.CompanionChallengesScreen ?? mod.default ?? CompanionChallengesScreen;
 } catch {
     // CompanionChallenges screen not yet available
 }
 
 try {
-    const mod = require('../screens/wellness/CompanionChallengeDetail');
+    const mod = require('../screens/wellness/CompanionChallengeDetail') as ScreenModule;
     CompanionChallengeDetailScreen =
-        mod.CompanionChallengeDetailScreen || mod.default || CompanionChallengeDetailScreen;
+        mod.CompanionChallengeDetailScreen ?? mod.default ?? CompanionChallengeDetailScreen;
 } catch {
     // CompanionChallengeDetail screen not yet available
 }
 
 try {
-    const mod = require('../screens/wellness/CompanionStreaks');
-    CompanionStreaksScreen = mod.CompanionStreaksScreen || mod.default || CompanionStreaksScreen;
+    const mod = require('../screens/wellness/CompanionStreaks') as ScreenModule;
+    CompanionStreaksScreen = mod.CompanionStreaksScreen ?? mod.default ?? CompanionStreaksScreen;
 } catch {
     // CompanionStreaks screen not yet available
 }

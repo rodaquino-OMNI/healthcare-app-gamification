@@ -4,12 +4,14 @@ import { sizing } from '@design-system/tokens/sizing';
 import { spacing, spacingValues } from '@design-system/tokens/spacing';
 import { typography } from '@design-system/tokens/typography';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
 import styled from 'styled-components/native';
 
 import { ROUTES } from '../../constants/routes';
+import type { SettingsStackParamList } from '../../navigation/types';
 
 // --- Styled Components ---
 
@@ -184,7 +186,7 @@ const CONSEQUENCE_KEYS = [
  * consequences list, and a confirmation checkbox before proceeding.
  */
 export const DeleteAccountScreen: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<SettingsStackParamList>>();
     const { t } = useTranslation();
 
     const [understood, setUnderstood] = useState(false);

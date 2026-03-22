@@ -6,13 +6,15 @@ import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import type { Theme } from '@design-system/themes/base.theme';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView, TextInput } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareNavigationProp, CareStackParamList } from '../../navigation/types';
 
 interface VitalsData {
     temperature: string;
@@ -35,15 +37,6 @@ const VITAL_RANGES = {
     spo2: { min: 70, max: 100, unit: 'percent' },
 } as const;
 
-type SymptomVitalsRouteParams = {
-    symptoms: Array<{ id: string; name: string }>;
-    description: string;
-    regions: Array<{ id: string; label: string }>;
-    photos: Array<{ id: string; uri: string }>;
-    medicalHistory: Array<{ id: string; type: string; name: string }>;
-    currentMedications: Array<{ id: string; name: string; dosage: string; frequency: string }>;
-};
-
 /**
  * Validates a single vital sign value against its allowed range.
  * Empty values are considered valid (all fields are optional).
@@ -51,7 +44,7 @@ type SymptomVitalsRouteParams = {
 const validateVital = (
     value: string,
     field: keyof typeof VITAL_RANGES,
-    t: (key: string, params?: Record<string, any>) => string
+    t: (key: string, params?: Record<string, string | number>) => string
 ): VitalValidation => {
     if (value.trim() === '') {
         return { isValid: true, error: '' };
@@ -88,16 +81,9 @@ const SymptomVitals: React.FC = () => {
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: SymptomVitalsRouteParams }, 'params'>>();
-    const {
-        symptoms = [],
-        description = '',
-        regions = [],
-        photos = [],
-        medicalHistory = [],
-        currentMedications = [],
-    } = route.params || {};
+    const navigation = useNavigation<CareNavigationProp>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareSymptomVitals'>>();
+    const sessionId = route.params?.sessionId ?? '';
 
     const [vitals, setVitals] = useState<VitalsData>({
         temperature: '',
@@ -119,7 +105,11 @@ const SymptomVitals: React.FC = () => {
     };
 
     const getValidation = (field: keyof typeof VITAL_RANGES): VitalValidation => {
-        return validateVital(vitals[field], field, t as (key: string, params?: Record<string, any>) => string);
+        return validateVital(
+            vitals[field],
+            field,
+            t as (key: string, params?: Record<string, string | number>) => string
+        );
     };
 
     const hasAnyErrors = (): boolean => {
@@ -130,48 +120,19 @@ const SymptomVitals: React.FC = () => {
         });
     };
 
-    const buildVitalsPayload = () => {
-        const payload: Record<string, number | null> = {
-            temperature: vitals.temperature ? parseFloat(vitals.temperature) : null,
-            systolic: vitals.systolic ? parseFloat(vitals.systolic) : null,
-            diastolic: vitals.diastolic ? parseFloat(vitals.diastolic) : null,
-            heartRate: vitals.heartRate ? parseFloat(vitals.heartRate) : null,
-            spo2: vitals.spo2 ? parseFloat(vitals.spo2) : null,
-        };
-        return payload;
-    };
-
     const handleContinue = (): void => {
-        navigation.navigate(ROUTES.CARE_SYMPTOM_QUESTIONS, {
-            symptoms,
-            description,
-            regions,
-            details: [],
-            vitals: buildVitalsPayload(),
-            photos,
-            medicalHistory,
-            currentMedications,
-        });
+        navigation.navigate(ROUTES.CARE_SYMPTOM_QUESTIONS, { sessionId });
     };
 
     const handleSkip = (): void => {
-        navigation.navigate(ROUTES.CARE_SYMPTOM_QUESTIONS, {
-            symptoms,
-            description,
-            regions,
-            details: [],
-            vitals: null,
-            photos,
-            medicalHistory,
-            currentMedications,
-        });
+        navigation.navigate(ROUTES.CARE_SYMPTOM_QUESTIONS, { sessionId });
     };
 
     const handleBack = (): void => {
         navigation.goBack();
     };
 
-    const hasAnyVitals = Object.values(vitals).some((v) => v.trim() !== '');
+    const hasAnyVitals = (Object.values(vitals) as string[]).some((v) => v.trim() !== '');
 
     const renderVitalField = (
         field: keyof VitalsData & keyof typeof VITAL_RANGES,

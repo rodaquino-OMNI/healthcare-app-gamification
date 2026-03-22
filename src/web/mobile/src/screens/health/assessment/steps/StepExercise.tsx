@@ -12,9 +12,15 @@ import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+interface ExerciseData {
+    exerciseFrequency?: string;
+    exerciseTypes?: string[];
+    exerciseDuration?: string;
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: ExerciseData;
+    onUpdate: (field: keyof ExerciseData, value: string | string[]) => void;
 }
 
 const FREQUENCY_OPTIONS = ['never', '1-2x', '3-4x', '5+'] as const;
@@ -65,7 +71,7 @@ export const StepExercise: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.exercise.frequency.${opt}`)}
                             accessibilityRole="button"
                             testID={`exercise-frequency-${opt}`}
-                            style={[styles.optionChip, selected && styles.optionChipSelected] as any}
+                            style={[styles.optionChip, selected ? styles.optionChipSelected : null]}
                         >
                             <Text
                                 fontSize="sm"
@@ -93,7 +99,7 @@ export const StepExercise: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.exercise.type.${key}`)}
                             accessibilityRole="button"
                             testID={`exercise-type-${key}`}
-                            style={[styles.typeCard, selected && styles.typeCardSelected] as any}
+                            style={[styles.typeCard, selected ? styles.typeCardSelected : null]}
                         >
                             <Text fontSize="heading-xl" textAlign="center">
                                 {emoji}
@@ -126,7 +132,7 @@ export const StepExercise: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.exercise.duration.${opt}`)}
                             accessibilityRole="button"
                             testID={`exercise-duration-${opt}`}
-                            style={[styles.optionChip, selected && styles.optionChipSelected] as any}
+                            style={[styles.optionChip, selected ? styles.optionChipSelected : null]}
                         >
                             <Text
                                 fontSize="sm"

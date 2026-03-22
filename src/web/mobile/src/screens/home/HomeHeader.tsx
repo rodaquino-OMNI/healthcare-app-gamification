@@ -15,6 +15,10 @@ import { useTheme } from 'styled-components/native';
 import { useAuth } from '../../context/AuthContext';
 import type { HomeTabScreenNavigationProp } from '../../navigation/types';
 
+interface TokenUser {
+    name?: string;
+}
+
 /**
  * Returns an appropriate greeting based on the current hour of the day.
  */
@@ -55,9 +59,9 @@ export const HomeHeader: React.FC = () => {
     const navigation = useNavigation<HomeTabScreenNavigationProp>();
     const { session, getUserFromToken } = useAuth();
 
-    const user = session?.accessToken ? getUserFromToken(session.accessToken) : null;
+    const user = session?.accessToken ? (getUserFromToken(session.accessToken) as TokenUser) : null;
 
-    const userName = user?.name || t('homeWidgets.defaultUser');
+    const userName = user?.name ?? t('homeWidgets.defaultUser');
     const greeting = useMemo(() => getGreeting(), []);
     const initials = useMemo(() => getInitials(userName), [userName]);
 

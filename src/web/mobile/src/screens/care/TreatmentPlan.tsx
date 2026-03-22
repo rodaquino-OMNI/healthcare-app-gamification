@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types -- return types are inferred from implementation context */
 import { Card } from '@design-system/components/Card/Card'; // Card component
 import { ProgressBar } from '@design-system/components/ProgressBar/ProgressBar'; // ProgressBar component
-import { useRoute } from '@react-navigation/native'; // @react-navigation/native v6.0.0
 import {
     TreatmentPlan as TreatmentPlanType, // TreatmentPlan interface
 } from '@shared/types/care.types';
@@ -15,14 +14,14 @@ import { ErrorState } from '@components/shared/ErrorState'; // ErrorState compon
 import { JourneyHeader } from '@components/shared/JourneyHeader'; // JourneyHeader component
 import { LoadingIndicator } from '@components/shared/LoadingIndicator'; // LoadingIndicator component
 
+/** Static treatment plan ID used by this screen. */
+const TREATMENT_PLAN_ID = 'plan-001';
+
 /**
  * Displays the details of a treatment plan and its associated medications.
  */
 export const TreatmentPlanScreen: React.FC = () => {
     const { t } = useTranslation();
-    // Access the route parameters to get the treatment plan ID.
-    const route = useRoute<any>();
-    const { treatmentPlanId } = route.params;
 
     // Set up a state variable to store the treatment plan details.
     const [treatmentPlan, setTreatmentPlan] = useState<TreatmentPlanType | null>(null);
@@ -41,26 +40,29 @@ export const TreatmentPlanScreen: React.FC = () => {
                 // Simulate API call
                 setTimeout(() => {
                     const mockTreatmentPlan: TreatmentPlanType = {
-                        id: treatmentPlanId,
-                        patientId: 'patient-001',
+                        id: TREATMENT_PLAN_ID,
+                        userId: 'patient-001',
                         providerId: 'provider-001',
                         name: 'Sample Treatment Plan',
                         description: 'This is a sample treatment plan to manage your health.',
+                        diagnosis: 'General wellness',
+                        treatments: ['Medication', 'Exercise'],
                         startDate: '2023-01-01',
                         endDate: '2023-12-31',
+                        status: 'active',
                         progress: 60,
                     };
                     setTreatmentPlan(mockTreatmentPlan);
                     setLoading(false);
                 }, 1000);
-            } catch (e: any) {
-                setError(e.message);
+            } catch (e: unknown) {
+                setError(e instanceof Error ? e.message : 'Unknown error');
                 setLoading(false);
             }
         };
 
         fetchTreatmentPlan();
-    }, [treatmentPlanId]);
+    }, []);
 
     // If the treatment plan is loading, display a LoadingIndicator.
     if (loading) {
@@ -93,7 +95,7 @@ export const TreatmentPlanScreen: React.FC = () => {
                             {t('journeys.care.treatmentPlan.endDate')}: {treatmentPlan.endDate}
                         </Text>
                         {/* Use the ProgressBar component to visualize the treatment plan progress. */}
-                        <ProgressBar current={treatmentPlan.progress} total={100} />
+                        <ProgressBar current={Number(treatmentPlan.progress ?? 0)} total={100} />
                     </View>
                     {/* Display a MedicationList for the treatment plan medications. */}
                     <MedicationList />

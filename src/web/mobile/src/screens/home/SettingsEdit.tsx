@@ -6,6 +6,7 @@ import { sizing } from '@design-system/tokens/sizing';
 import { spacing, spacingValues } from '@design-system/tokens/spacing';
 import { typography } from '@design-system/tokens/typography';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +14,7 @@ import { ScrollView, KeyboardAvoidingView, Platform, Alert, ActivityIndicator } 
 import styled from 'styled-components/native';
 
 import { restClient } from '../../api/client';
+import type { SettingsStackParamList } from '../../navigation/types';
 
 // --- Styled Components ---
 
@@ -147,6 +149,16 @@ const LoadingContainer = styled.View`
 
 // --- Types ---
 
+interface UserProfileResponse {
+    name?: string;
+    fullName?: string;
+    email?: string;
+    phone?: string;
+    dateOfBirth?: string;
+    cpf?: string;
+    photoUrl?: string;
+}
+
 interface FormState {
     fullName: string;
     email: string;
@@ -175,7 +187,7 @@ interface FormErrors {
  */
 export const SettingsEditScreen: React.FC = () => {
     const { t } = useTranslation();
-    const navigation = useNavigation();
+    const navigation = useNavigation<StackNavigationProp<SettingsStackParamList>>();
 
     const [form, setForm] = useState<FormState>({
         fullName: '',
@@ -194,8 +206,8 @@ export const SettingsEditScreen: React.FC = () => {
         const fetchProfile = async () => {
             setIsLoading(true);
             try {
-                const response = await restClient.get('/users/me');
-                const data = response.data ?? {};
+                const response = await restClient.get<UserProfileResponse>('/users/me');
+                const data: UserProfileResponse = response.data ?? {};
                 setForm({
                     fullName: data.name ?? data.fullName ?? '',
                     email: data.email ?? '',

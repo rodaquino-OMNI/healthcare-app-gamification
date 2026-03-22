@@ -12,9 +12,17 @@ import { useTranslation } from 'react-i18next';
 import { View, TextInput, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+interface InsuranceInfoData {
+    hasInsurance?: string;
+    providerName?: string;
+    planType?: string;
+    memberId?: string;
+    coverageDetails?: string[];
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: InsuranceInfoData;
+    onUpdate: (field: keyof InsuranceInfoData, value: string | string[]) => void;
 }
 
 const HAS_INSURANCE_OPTIONS = ['yes', 'no'] as const;
@@ -68,7 +76,7 @@ export const StepInsuranceInfo: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.insuranceInfo.hasInsurance.${opt}`)}
                             accessibilityRole="button"
                             testID={`insurance-has-${opt}`}
-                            style={[styles.toggleChip, selected && styles.toggleChipSelected] as any}
+                            style={[styles.toggleChip, selected ? styles.toggleChipSelected : null]}
                         >
                             <Text
                                 fontSize="sm"
@@ -113,7 +121,7 @@ export const StepInsuranceInfo: React.FC<StepProps> = ({ data, onUpdate }) => {
                                     accessibilityLabel={t(`healthAssessment.insuranceInfo.planType.${opt}`)}
                                     accessibilityRole="button"
                                     testID={`plan-type-${opt}`}
-                                    style={[styles.chip, selected && styles.chipSelected] as any}
+                                    style={[styles.chip, selected ? styles.chipSelected : null]}
                                 >
                                     <Text
                                         fontSize="sm"
@@ -156,7 +164,7 @@ export const StepInsuranceInfo: React.FC<StepProps> = ({ data, onUpdate }) => {
                                     accessibilityLabel={t(`healthAssessment.insuranceInfo.coverage.${opt}`)}
                                     accessibilityRole="checkbox"
                                     testID={`coverage-${opt}`}
-                                    style={[styles.chip, isActive && styles.chipSelected] as any}
+                                    style={[styles.chip, isActive ? styles.chipSelected : null]}
                                 >
                                     <Text
                                         fontSize="sm"

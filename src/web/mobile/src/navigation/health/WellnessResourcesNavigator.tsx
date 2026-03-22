@@ -7,6 +7,12 @@ import React from 'react';
 import { ROUTES } from '../../constants/routes';
 import type { WellnessResourcesParamList } from '../types';
 
+/** Shape of every lazily-loaded screen module. */
+interface ScreenModule {
+    default?: React.ComponentType;
+    [key: string]: React.ComponentType | undefined;
+}
+
 // Lazy-loaded screens (require + try/catch for resilience)
 let WellnessResourcesHomeScreen: React.ComponentType<unknown> = () => null;
 let ArticleListScreen: React.ComponentType<unknown> = () => null;
@@ -18,50 +24,50 @@ let ProgramDetailScreen: React.ComponentType<unknown> = () => null;
 let WellnessBookmarksScreen: React.ComponentType<unknown> = () => null;
 
 try {
-    const m = require('../../screens/health/wellness-resources/WellnessResourcesHome');
-    WellnessResourcesHomeScreen = m.WellnessResourcesHome || m.default || WellnessResourcesHomeScreen;
+    const m = require('../../screens/health/wellness-resources/WellnessResourcesHome') as ScreenModule;
+    WellnessResourcesHomeScreen = m.WellnessResourcesHome ?? m.default ?? WellnessResourcesHomeScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/wellness-resources/ArticleList');
-    ArticleListScreen = m.ArticleList || m.default || ArticleListScreen;
+    const m = require('../../screens/health/wellness-resources/ArticleList') as ScreenModule;
+    ArticleListScreen = m.ArticleList ?? m.default ?? ArticleListScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/wellness-resources/ArticleDetail');
-    ArticleDetailScreen = m.ArticleDetail || m.default || ArticleDetailScreen;
+    const m = require('../../screens/health/wellness-resources/ArticleDetail') as ScreenModule;
+    ArticleDetailScreen = m.ArticleDetail ?? m.default ?? ArticleDetailScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/wellness-resources/VideoLibrary');
-    VideoLibraryScreen = m.VideoLibrary || m.default || VideoLibraryScreen;
+    const m = require('../../screens/health/wellness-resources/VideoLibrary') as ScreenModule;
+    VideoLibraryScreen = m.VideoLibrary ?? m.default ?? VideoLibraryScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/wellness-resources/VideoPlayer');
-    VideoPlayerScreen = m.VideoPlayer || m.default || VideoPlayerScreen;
+    const m = require('../../screens/health/wellness-resources/VideoPlayer') as ScreenModule;
+    VideoPlayerScreen = m.VideoPlayer ?? m.default ?? VideoPlayerScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/wellness-resources/WellnessPrograms');
-    WellnessProgramsScreen = m.WellnessPrograms || m.default || WellnessProgramsScreen;
+    const m = require('../../screens/health/wellness-resources/WellnessPrograms') as ScreenModule;
+    WellnessProgramsScreen = m.WellnessPrograms ?? m.default ?? WellnessProgramsScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/wellness-resources/ProgramDetail');
-    ProgramDetailScreen = m.ProgramDetail || m.default || ProgramDetailScreen;
+    const m = require('../../screens/health/wellness-resources/ProgramDetail') as ScreenModule;
+    ProgramDetailScreen = m.ProgramDetail ?? m.default ?? ProgramDetailScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/wellness-resources/WellnessBookmarks');
-    WellnessBookmarksScreen = m.WellnessBookmarks || m.default || WellnessBookmarksScreen;
+    const m = require('../../screens/health/wellness-resources/WellnessBookmarks') as ScreenModule;
+    WellnessBookmarksScreen = m.WellnessBookmarks ?? m.default ?? WellnessBookmarksScreen;
 } catch {
     /* not available */
 }

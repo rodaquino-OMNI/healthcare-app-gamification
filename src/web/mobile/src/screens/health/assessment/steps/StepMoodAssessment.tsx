@@ -12,9 +12,16 @@ import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+interface MoodAssessmentData {
+    moodRating?: number;
+    moodFrequency?: string;
+    recentMoodChanges?: string;
+    sleepImpact?: string;
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: MoodAssessmentData;
+    onUpdate: (field: keyof MoodAssessmentData, value: string | number) => void;
 }
 
 const MOOD_LEVELS = [
@@ -53,15 +60,13 @@ export const StepMoodAssessment: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.moodAssessment.mood.${key}`)}
                             accessibilityRole="button"
                             testID={`mood-rating-${key}`}
-                            style={
-                                [
-                                    styles.moodCard,
-                                    selected && {
-                                        borderColor: color,
-                                        backgroundColor: colors.journeys.health.background,
-                                    },
-                                ] as any
-                            }
+                            style={[
+                                styles.moodCard,
+                                selected && {
+                                    borderColor: color,
+                                    backgroundColor: colors.journeys.health.background,
+                                },
+                            ]}
                         >
                             <Text fontSize="heading-xl" textAlign="center">
                                 {emoji}
@@ -93,9 +98,9 @@ export const StepMoodAssessment: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.moodAssessment.frequency.${freq}`)}
                             accessibilityRole="button"
                             testID={`mood-frequency-${freq}`}
-                            style={[styles.optionCard, selected && styles.optionCardSelected] as any}
+                            style={[styles.optionCard, selected ? styles.optionCardSelected : null]}
                         >
-                            <View style={[styles.radioCircle, selected && styles.radioCircleSelected] as any}>
+                            <View style={[styles.radioCircle, selected ? styles.radioCircleSelected : null]}>
                                 {selected && <View style={styles.radioInner} />}
                             </View>
                             <Text
@@ -125,7 +130,7 @@ export const StepMoodAssessment: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.moodAssessment.yesNo.${opt}`)}
                             accessibilityRole="button"
                             testID={`recent-changes-${opt}`}
-                            style={[styles.chip, selected && styles.chipSelected] as any}
+                            style={[styles.chip, selected ? styles.chipSelected : null]}
                         >
                             <Text
                                 fontSize="sm"
@@ -153,7 +158,7 @@ export const StepMoodAssessment: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.moodAssessment.sleepImpact.${opt}`)}
                             accessibilityRole="button"
                             testID={`sleep-impact-${opt}`}
-                            style={[styles.chip, selected && styles.chipSelected] as any}
+                            style={[styles.chip, selected ? styles.chipSelected : null]}
                         >
                             <Text
                                 fontSize="sm"

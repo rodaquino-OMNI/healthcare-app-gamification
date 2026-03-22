@@ -8,12 +8,15 @@ import type { Theme } from '@design-system/themes/base.theme';
 import { colors } from '@design-system/tokens/colors';
 import { spacingValues } from '@design-system/tokens/spacing';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
 import { JourneyHeader } from '@components/shared/JourneyHeader';
+
+import type { CareStackParamList } from '../../navigation/types';
 
 // Options are now inside the component to access t()
 
@@ -26,7 +29,7 @@ import { JourneyHeader } from '@components/shared/JourneyHeader';
  * Part of the Care Now journey (orange theme).
  */
 const DoctorFilters: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
@@ -93,7 +96,7 @@ const DoctorFilters: React.FC = () => {
                         key={star}
                         onPress={() => setMinRating(star === minRating ? 0 : star)}
                         accessibilityLabel={`Avaliacao minima ${star} estrelas`}
-                        style={[styles.starButton, minRating >= star && styles.starButtonActive] as any}
+                        style={minRating >= star ? [styles.starButton, styles.starButtonActive] : styles.starButton}
                     >
                         <Text
                             fontSize="xl"

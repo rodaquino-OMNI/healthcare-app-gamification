@@ -6,9 +6,12 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, FlatList, StyleSheet, Alert, ListRenderItemInfo } from 'react-native';
+
+import type { HealthStackParamList } from '../../navigation/types';
 
 interface MedicationAdherenceEntry {
     id: string;
@@ -62,7 +65,7 @@ const getFirstDayOfMonth = (month: number, year: number): number => new Date(yea
  * per-medication breakdown, and a daily grid showing taken/missed doses.
  */
 export const MedicationMonthlyReport: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
     const { t } = useTranslation();
 
     const now = new Date();

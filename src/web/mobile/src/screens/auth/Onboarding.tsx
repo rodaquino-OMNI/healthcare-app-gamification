@@ -6,12 +6,14 @@ import { sizing } from '@design-system/tokens/sizing';
 import { spacing, spacingValues } from '@design-system/tokens/spacing';
 import { typography } from '@design-system/tokens/typography';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, Dimensions, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import styled from 'styled-components/native';
 
 import { ROUTES } from '../../constants/routes';
+import type { AuthStackParamList } from '../../navigation/types';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -176,7 +178,7 @@ const NextButtonText = styled.Text`
  * - "Next" / "Get Started" button at the bottom
  */
 export default function OnboardingScreen() {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<AuthStackParamList>>();
     const { t } = useTranslation();
     const scrollRef = useRef<ScrollView>(null);
     const [currentStep, setCurrentStep] = useState(0);

@@ -7,9 +7,16 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
 
+type ReviewSummaryValue = string | number | boolean | string[] | null | undefined;
+
+interface ReviewSummaryData {
+    editSection?: string;
+    [key: string]: ReviewSummaryValue;
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: ReviewSummaryData;
+    onUpdate: (field: string, value: string) => void;
 }
 
 interface SectionConfig {
@@ -56,7 +63,7 @@ const SECTIONS: SectionConfig[] = [
     },
 ];
 
-const formatValue = (value: any): string => {
+const formatValue = (value: ReviewSummaryValue): string => {
     if (value === undefined || value === null || value === '') {
         return '--';
     }
@@ -95,7 +102,7 @@ export const StepReviewSummary: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t('healthAssessment.reviewSummary.edit')}
                             accessibilityRole="button"
                             testID={`edit-${section.key}`}
-                            style={styles.editButton as any}
+                            style={styles.editButton as unknown as React.CSSProperties}
                         >
                             <Text fontSize="sm" fontWeight="semiBold" color={colors.journeys.health.primary}>
                                 {t('healthAssessment.reviewSummary.edit')}

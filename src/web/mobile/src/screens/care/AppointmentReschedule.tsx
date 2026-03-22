@@ -4,15 +4,13 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 
-interface RouteParams {
-    appointmentId: string;
-    doctorId: string;
-}
+import type { CareStackParamList } from '../../navigation/types';
 
 const MOCK_DOCTOR: Record<string, { name: string; specialty: string }> = {
     'doc-001': { name: 'Dra. Ana Carolina Silva', specialty: 'Cardiologia' },
@@ -32,12 +30,12 @@ const getDaysInMonth = (year: number, month: number): number => new Date(year, m
 const getFirstDayOfMonth = (year: number, month: number): number => new Date(year, month, 1).getDay();
 
 export const AppointmentReschedule: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<any>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareAppointmentReschedule'>>();
     const { t } = useTranslation();
-    const { appointmentId: _appointmentId, doctorId } = route.params as RouteParams;
+    const { appointmentId: _appointmentId, doctorId = 'doc-001' } = route.params;
 
-    const doctor = MOCK_DOCTOR[doctorId] || { name: 'Dr. Medico', specialty: 'Especialidade' };
+    const doctor = MOCK_DOCTOR[doctorId] ?? { name: 'Dr. Medico', specialty: 'Especialidade' };
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth();

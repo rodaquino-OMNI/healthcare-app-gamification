@@ -87,8 +87,9 @@ export const RegisterScreen: React.FC = () => {
         handleSubmit,
         formState: { errors, isValid, isSubmitting },
         register: registerInput,
-    } = useForm({
-        resolver: yupResolver(userValidationSchema as any),
+    } = useForm<{ name: string; email: string; password: string; confirmPassword: string }>({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment -- yupResolver typing requires any cast for dynamic schema
+        resolver: yupResolver(userValidationSchema),
         mode: 'onBlur',
         defaultValues: {
             name: '',
@@ -100,12 +101,13 @@ export const RegisterScreen: React.FC = () => {
 
     const [termsAccepted, setTermsAccepted] = useState(false);
 
-    const onSubmit = async (data: any): Promise<void> => {
+    const onSubmit = async (data: Record<string, string>): Promise<void> => {
         try {
             const _session = await register(data);
             navigation.navigate(ROUTES.AUTH_LOGIN);
-        } catch (error: any) {
-            console.error('Registration failed', error.message);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : 'Registration failed';
+            console.error('Registration failed', message);
         }
     };
 

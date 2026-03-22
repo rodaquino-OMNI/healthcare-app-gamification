@@ -11,9 +11,15 @@ import { useTranslation } from 'react-i18next';
 import { View, TextInput, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+interface AllergiesData {
+    selected?: string[];
+    severities?: Record<string, Severity>;
+    other?: string;
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: AllergiesData;
+    onUpdate: (field: keyof AllergiesData, value: string | string[] | Record<string, Severity>) => void;
 }
 
 const ALLERGEN_KEYS = [
@@ -48,8 +54,8 @@ export const StepAllergies: React.FC<StepProps> = ({ data, onUpdate }) => {
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
 
-    const selected: string[] = data.selected || [];
-    const severities: Record<string, Severity> = data.severities || {};
+    const selected: string[] = data.selected ?? [];
+    const severities: Record<string, Severity> = data.severities ?? {};
 
     const handleToggle = useCallback(
         (allergen: string) => {
@@ -98,7 +104,7 @@ export const StepAllergies: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.allergies.${key}`)}
                             accessibilityRole="checkbox"
                             testID={`allergen-${key}`}
-                            style={[styles.allergenChip, isActive && styles.allergenChipActive] as any}
+                            style={[styles.allergenChip, isActive ? styles.allergenChipActive : null]}
                         >
                             <Text
                                 fontSize="sm"
@@ -137,17 +143,15 @@ export const StepAllergies: React.FC<StepProps> = ({ data, onUpdate }) => {
                                             accessibilityLabel={t(`healthAssessment.allergies.severity_${sev}`)}
                                             accessibilityRole="button"
                                             testID={`sev-${allergen}-${sev}`}
-                                            style={
-                                                [
-                                                    styles.severityBadge,
-                                                    {
-                                                        backgroundColor:
-                                                            currentSeverity === sev
-                                                                ? SEVERITY_COLORS[sev]
-                                                                : colors.neutral.gray200,
-                                                    },
-                                                ] as any
-                                            }
+                                            style={[
+                                                styles.severityBadge,
+                                                {
+                                                    backgroundColor:
+                                                        currentSeverity === sev
+                                                            ? SEVERITY_COLORS[sev]
+                                                            : colors.neutral.gray200,
+                                                },
+                                            ]}
                                         >
                                             <Text
                                                 fontSize="xs"

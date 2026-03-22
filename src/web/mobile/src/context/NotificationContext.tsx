@@ -2,6 +2,12 @@
 import { Notification, NotificationStatus } from '@shared/types/notification.types';
 import { ReactNode, createContext, useState, useEffect, useCallback, useContext } from 'react';
 
+/** Minimal shape of a decoded JWT used in this context. */
+interface DecodedToken {
+    id?: string;
+    [key: string]: unknown;
+}
+
 import { getNotifications, markNotificationAsRead } from '@api/notifications';
 
 import { useAuth } from '../hooks/useAuth';
@@ -34,13 +40,13 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     /**
      * Get the current user ID from the authentication token
      */
-    const getUserId = useCallback(() => {
+    const getUserId = useCallback((): string | null => {
         if (!auth.session?.accessToken) {
             return null;
         }
 
-        const userData = auth.getUserFromToken(auth.session.accessToken);
-        return userData?.id || null;
+        const userData = auth.getUserFromToken(auth.session.accessToken) as DecodedToken | null;
+        return userData?.id ?? null;
     }, [auth.session, auth.getUserFromToken]);
 
     /**
@@ -61,7 +67,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
             }
 
             const notificationData = await getNotifications(userId);
-            setNotifications(notificationData as unknown as Notification[]);
+            setNotifications(notificationData);
         } catch (error) {
             console.error('Failed to fetch notifications:', error);
             throw error;

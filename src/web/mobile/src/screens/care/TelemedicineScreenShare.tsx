@@ -2,19 +2,13 @@ import { Button } from '@austa/design-system/src/components/Button/Button';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 
-/**
- * Route params expected by TelemedicineScreenShare.
- */
-type TelemedicineScreenShareRouteParams = {
-    appointmentId: string;
-    doctorName: string;
-    sharedContentType: string;
-};
+import type { CareStackParamList } from '../../navigation/types';
 
 /**
  * Returns a display label for the shared content type.
@@ -39,11 +33,13 @@ const getContentTypeLabel = (contentType: string, t: (key: string) => string): s
  * overlay, and a button to return to the video call.
  */
 const TelemedicineScreenShare: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: TelemedicineScreenShareRouteParams }, 'params'>>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareTelemedicineScreenShare'>>();
     const { t } = useTranslation();
 
-    const { doctorName = '', sharedContentType = 'document' } = route.params || {};
+    const _sessionId = route.params?.sessionId ?? '';
+    const doctorName = '';
+    const sharedContentType = 'document';
 
     const contentLabel = getContentTypeLabel(sharedContentType, t);
 

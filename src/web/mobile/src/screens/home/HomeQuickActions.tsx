@@ -54,10 +54,10 @@ export const QuickActions: React.FC<QuickActionsProps> = ({ navigation, actions 
                 'NotificationSettings',
             ];
             if (homeScreens.includes(route as keyof HomeStackParamList)) {
-                (navigation as any).navigate(route);
+                navigation.navigate(route as keyof HomeStackParamList);
             } else {
                 // Tab-level navigation (Profile, Notifications, etc.)
-                (navigation as any).navigate(route);
+                navigation.navigate(route as keyof HomeStackParamList);
             }
         },
         [navigation]

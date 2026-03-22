@@ -7,6 +7,9 @@ import { View, StyleSheet } from 'react-native';
 import { useJourney } from '../../hooks/useJourney';
 import { useTheme } from '../../hooks/useTheme';
 
+/** The set of journey identifiers recognised by design-system components. */
+type JourneyType = 'health' | 'care' | 'plan';
+
 interface ErrorStateProps {
     /** Error message to display */
     message?: string;
@@ -19,7 +22,7 @@ interface ErrorStateProps {
     /** Optional retry button label */
     retryLabel?: string;
     /** Journey context for theming */
-    journey?: string;
+    journey?: JourneyType | string;
     /** Test ID for component testing */
     testID?: string;
 }
@@ -34,7 +37,11 @@ const ErrorState: React.FC<ErrorStateProps> = ({
     testID,
 }) => {
     const { journey: contextJourney } = useJourney();
-    const currentJourney = journey || contextJourney;
+    const currentJourney: JourneyType | string | undefined = journey ?? contextJourney;
+    const journeyForDS: JourneyType | undefined =
+        currentJourney === 'health' || currentJourney === 'care' || currentJourney === 'plan'
+            ? currentJourney
+            : undefined;
     const { theme } = useTheme();
 
     const getJourneyColor = () => {
@@ -74,7 +81,7 @@ const ErrorState: React.FC<ErrorStateProps> = ({
                 {onRetry && (
                     <Button
                         variant="outline"
-                        journey={currentJourney as any}
+                        journey={journeyForDS}
                         onPress={onRetry}
                         accessibilityLabel={retryLabel || 'Retry'}
                     >

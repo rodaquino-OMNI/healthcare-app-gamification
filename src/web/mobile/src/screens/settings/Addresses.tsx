@@ -199,8 +199,8 @@ export const AddressesScreen: React.FC = () => {
         const fetchAddresses = async () => {
             setLoading(true);
             try {
-                const response = await restClient.get('/users/me/addresses');
-                setAddresses(response.data ?? []);
+                const response = await restClient.get<Address[]>('/users/me/addresses');
+                setAddresses((response.data as Address[] | null) ?? []);
             } catch (err: unknown) {
                 Alert.alert('Erro', err instanceof Error ? err.message : 'Erro inesperado.');
             } finally {

@@ -8,7 +8,7 @@ import { typography } from '@design-system/tokens/typography';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, type Resolver } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import styled from 'styled-components/native';
@@ -21,7 +21,7 @@ import type { AuthNavigationProp } from '../../navigation/types';
 /**
  * Validation schema for the profile setup form.
  */
-const createProfileSetupSchema = (t: (key: string, options?: any) => string) =>
+const createProfileSetupSchema = (t: (key: string, options?: Record<string, unknown>) => string) =>
     yup.object().shape({
         fullName: yup
             .string()
@@ -151,7 +151,11 @@ const ProfileSetup: React.FC = () => {
         handleSubmit,
         formState: { errors, isValid },
     } = useForm<ProfileSetupFormData>({
-        resolver: yupResolver(createProfileSetupSchema(t as (key: string, options?: any) => string) as any),
+        resolver: yupResolver(
+            createProfileSetupSchema(
+                t as (key: string, options?: Record<string, unknown>) => string
+            ) as unknown as yup.ObjectSchema<ProfileSetupFormData>
+        ) as Resolver<ProfileSetupFormData>,
         mode: 'onBlur',
         defaultValues: {
             fullName: '',

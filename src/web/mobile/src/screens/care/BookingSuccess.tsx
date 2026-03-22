@@ -4,20 +4,15 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
 
-interface BookingSuccessParams {
-    appointmentId: string;
-    doctorId: string;
-    date: string;
-    time: string;
-    appointmentType: string;
-}
+import type { CareStackParamList } from '../../navigation/types';
 
 const MOCK_DOCTORS: Record<string, { name: string; specialty: string; location: string }> = {
     'doc-001': {
@@ -66,8 +61,8 @@ const formatDateBR = (dateStr: string): string => {
  * Shows appointment details summary, and provides actions to add to calendar or view appointment.
  */
 export const BookingSuccess: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<any>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareBookingSuccess'>>();
     const { t } = useTranslation();
     const {
         appointmentId = 'appt-001',
@@ -75,7 +70,7 @@ export const BookingSuccess: React.FC = () => {
         date = '2026-03-01',
         time = '14:00',
         appointmentType = 'in-person',
-    } = (route.params as BookingSuccessParams) || {};
+    } = route.params ?? {};
 
     const doctor = MOCK_DOCTORS[doctorId] || {
         name: 'Medico(a)',

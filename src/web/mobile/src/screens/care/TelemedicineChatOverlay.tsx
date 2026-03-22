@@ -5,19 +5,14 @@ import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import type { Theme } from '@design-system/themes/base.theme';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, FlatList, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
-/**
- * Route params expected by TelemedicineChatOverlay.
- */
-type TelemedicineChatOverlayRouteParams = {
-    appointmentId: string;
-    doctorName: string;
-};
+import type { CareStackParamList } from '../../navigation/types';
 
 /**
  * Represents a single chat message.
@@ -76,13 +71,14 @@ const QUICK_REPLIES = ['yes', 'no', 'iUnderstand', 'canYouRepeat'] as const;
  * for composing messages.
  */
 const TelemedicineChatOverlay: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: TelemedicineChatOverlayRouteParams }, 'params'>>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareTelemedicineChat'>>();
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
 
-    const { doctorName = '' } = route.params || {};
+    const _sessionId = route.params?.sessionId ?? '';
+    const doctorName = 'Dr.';
 
     const [messages, setMessages] = useState<ChatMessage[]>(() => createMockMessages(doctorName));
     const [inputText, setInputText] = useState('');

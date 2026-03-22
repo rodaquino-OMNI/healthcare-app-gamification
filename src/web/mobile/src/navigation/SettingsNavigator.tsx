@@ -6,29 +6,35 @@ import type { SettingsStackParamList } from './types';
 import { ROUTES } from '../constants/routes';
 import { SettingsScreen } from '../screens/home/Settings';
 
+/** Shape of every lazily-loaded screen module. */
+interface ScreenModule {
+    default?: React.ComponentType;
+    [key: string]: React.ComponentType | undefined;
+}
+
 // Lazy-loaded screens from home/ (existing Settings sub-screens)
 let SettingsEditScreen: React.FC = () => null;
 let SettingsNotificationsScreen: React.FC = () => null;
 let SettingsPrivacyScreen: React.FC = () => null;
 
 try {
-    const seModule = require('../screens/home/SettingsEdit');
-    SettingsEditScreen = seModule.SettingsEditScreen || seModule.default || SettingsEditScreen;
+    const seModule = require('../screens/home/SettingsEdit') as ScreenModule;
+    SettingsEditScreen = seModule.SettingsEditScreen ?? seModule.default ?? SettingsEditScreen;
 } catch {
     // SettingsEdit screen not yet available
 }
 
 try {
-    const snModule = require('../screens/home/SettingsNotifications');
+    const snModule = require('../screens/home/SettingsNotifications') as ScreenModule;
     SettingsNotificationsScreen =
-        snModule.SettingsNotificationsScreen || snModule.default || SettingsNotificationsScreen;
+        snModule.SettingsNotificationsScreen ?? snModule.default ?? SettingsNotificationsScreen;
 } catch {
     // SettingsNotifications screen not yet available
 }
 
 try {
-    const spModule = require('../screens/home/SettingsPrivacy');
-    SettingsPrivacyScreen = spModule.SettingsPrivacyScreen || spModule.default || SettingsPrivacyScreen;
+    const spModule = require('../screens/home/SettingsPrivacy') as ScreenModule;
+    SettingsPrivacyScreen = spModule.SettingsPrivacyScreen ?? spModule.default ?? SettingsPrivacyScreen;
 } catch {
     // SettingsPrivacy screen not yet available
 }
@@ -66,205 +72,205 @@ let ReportProblemScreen: React.FC = () => null;
 
 // Settings module screens
 try {
-    const m = require('../screens/settings/PersonalInfo');
-    PersonalInfoScreen = m.PersonalInfoScreen || m.default || PersonalInfoScreen;
+    const m = require('../screens/settings/PersonalInfo') as ScreenModule;
+    PersonalInfoScreen = m.PersonalInfoScreen ?? m.default ?? PersonalInfoScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/ChangePassword');
-    ChangePasswordScreen = m.ChangePasswordScreen || m.default || ChangePasswordScreen;
+    const m = require('../screens/settings/ChangePassword') as ScreenModule;
+    ChangePasswordScreen = m.ChangePasswordScreen ?? m.default ?? ChangePasswordScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/TwoFactorAuth');
-    TwoFactorScreen = m.TwoFactorAuthScreen || m.default || TwoFactorScreen;
+    const m = require('../screens/settings/TwoFactorAuth') as ScreenModule;
+    TwoFactorScreen = m.TwoFactorAuthScreen ?? m.default ?? TwoFactorScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/BiometricPrefs');
-    BiometricScreen = m.BiometricPrefsScreen || m.default || BiometricScreen;
+    const m = require('../screens/settings/BiometricPrefs') as ScreenModule;
+    BiometricScreen = m.BiometricPrefsScreen ?? m.default ?? BiometricScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/DataExport');
-    DataExportScreen = m.DataExportScreen || m.default || DataExportScreen;
+    const m = require('../screens/settings/DataExport') as ScreenModule;
+    DataExportScreen = m.DataExportScreen ?? m.default ?? DataExportScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/DeleteAccount');
-    DeleteAccountScreen = m.DeleteAccountScreen || m.default || DeleteAccountScreen;
+    const m = require('../screens/settings/DeleteAccount') as ScreenModule;
+    DeleteAccountScreen = m.DeleteAccountScreen ?? m.default ?? DeleteAccountScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/DeleteConfirm');
-    DeleteConfirmScreen = m.DeleteConfirmScreen || m.default || DeleteConfirmScreen;
+    const m = require('../screens/settings/DeleteConfirm') as ScreenModule;
+    DeleteConfirmScreen = m.DeleteConfirmScreen ?? m.default ?? DeleteConfirmScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/LanguageSelect');
-    LanguageScreen = m.LanguageSelectScreen || m.default || LanguageScreen;
+    const m = require('../screens/settings/LanguageSelect') as ScreenModule;
+    LanguageScreen = m.LanguageSelectScreen ?? m.default ?? LanguageScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/ThemeSelect');
-    ThemeScreen = m.ThemeSelectScreen || m.default || ThemeScreen;
+    const m = require('../screens/settings/ThemeSelect') as ScreenModule;
+    ThemeScreen = m.ThemeSelectScreen ?? m.default ?? ThemeScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/Accessibility');
-    AccessibilityScreen = m.AccessibilityScreen || m.default || AccessibilityScreen;
+    const m = require('../screens/settings/Accessibility') as ScreenModule;
+    AccessibilityScreen = m.AccessibilityScreen ?? m.default ?? AccessibilityScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/ConnectedDevices');
-    ConnectedDevicesScreen = m.ConnectedDevicesScreen || m.default || ConnectedDevicesScreen;
+    const m = require('../screens/settings/ConnectedDevices') as ScreenModule;
+    ConnectedDevicesScreen = m.ConnectedDevicesScreen ?? m.default ?? ConnectedDevicesScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/HealthPlanInfo');
-    HealthPlanScreen = m.HealthPlanInfoScreen || m.default || HealthPlanScreen;
+    const m = require('../screens/settings/HealthPlanInfo') as ScreenModule;
+    HealthPlanScreen = m.HealthPlanInfoScreen ?? m.default ?? HealthPlanScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/InsuranceDocs');
-    InsuranceDocsScreen = m.InsuranceDocsScreen || m.default || InsuranceDocsScreen;
+    const m = require('../screens/settings/InsuranceDocs') as ScreenModule;
+    InsuranceDocsScreen = m.InsuranceDocsScreen ?? m.default ?? InsuranceDocsScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/Dependents');
-    DependentsScreen = m.DependentsScreen || m.default || DependentsScreen;
+    const m = require('../screens/settings/Dependents') as ScreenModule;
+    DependentsScreen = m.DependentsScreen ?? m.default ?? DependentsScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/AddDependent');
-    AddDependentScreen = m.AddDependentScreen || m.default || AddDependentScreen;
+    const m = require('../screens/settings/AddDependent') as ScreenModule;
+    AddDependentScreen = m.AddDependentScreen ?? m.default ?? AddDependentScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/EmergencyContacts');
-    EmergencyContactsScreen = m.EmergencyContactsScreen || m.default || EmergencyContactsScreen;
+    const m = require('../screens/settings/EmergencyContacts') as ScreenModule;
+    EmergencyContactsScreen = m.EmergencyContactsScreen ?? m.default ?? EmergencyContactsScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/Addresses');
-    AddressesScreen = m.AddressesScreen || m.default || AddressesScreen;
+    const m = require('../screens/settings/Addresses') as ScreenModule;
+    AddressesScreen = m.AddressesScreen ?? m.default ?? AddressesScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/AddAddress');
-    AddAddressScreen = m.AddAddressScreen || m.default || AddAddressScreen;
+    const m = require('../screens/settings/AddAddress') as ScreenModule;
+    AddAddressScreen = m.AddAddressScreen ?? m.default ?? AddAddressScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/TermsOfService');
-    TermsScreen = m.TermsOfServiceScreen || m.default || TermsScreen;
+    const m = require('../screens/settings/TermsOfService') as ScreenModule;
+    TermsScreen = m.TermsOfServiceScreen ?? m.default ?? TermsScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/PrivacyPolicy');
-    PrivacyPolicyScreen = m.PrivacyPolicyScreen || m.default || PrivacyPolicyScreen;
+    const m = require('../screens/settings/PrivacyPolicy') as ScreenModule;
+    PrivacyPolicyScreen = m.PrivacyPolicyScreen ?? m.default ?? PrivacyPolicyScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/AboutApp');
-    AboutScreen = m.AboutAppScreen || m.default || AboutScreen;
+    const m = require('../screens/settings/AboutApp') as ScreenModule;
+    AboutScreen = m.AboutAppScreen ?? m.default ?? AboutScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/LogoutConfirm');
-    LogoutScreen = m.LogoutConfirmScreen || m.default || LogoutScreen;
+    const m = require('../screens/settings/LogoutConfirm') as ScreenModule;
+    LogoutScreen = m.LogoutConfirmScreen ?? m.default ?? LogoutScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/AppFeedback');
-    FeedbackScreen = m.AppFeedbackScreen || m.default || FeedbackScreen;
+    const m = require('../screens/settings/AppFeedback') as ScreenModule;
+    FeedbackScreen = m.AppFeedbackScreen ?? m.default ?? FeedbackScreen;
 } catch {
     /* not yet available */
 }
 
 // Help Center screens
 try {
-    const m = require('../screens/settings/HelpHome');
-    HelpHomeScreen = m.HelpHomeScreen || m.default || HelpHomeScreen;
+    const m = require('../screens/settings/HelpHome') as ScreenModule;
+    HelpHomeScreen = m.HelpHomeScreen ?? m.default ?? HelpHomeScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/FAQCategory');
-    FAQCategoryScreen = m.FAQCategoryScreen || m.default || FAQCategoryScreen;
+    const m = require('../screens/settings/FAQCategory') as ScreenModule;
+    FAQCategoryScreen = m.FAQCategoryScreen ?? m.default ?? FAQCategoryScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/FAQDetail');
-    FAQDetailScreen = m.FAQDetailScreen || m.default || FAQDetailScreen;
+    const m = require('../screens/settings/FAQDetail') as ScreenModule;
+    FAQDetailScreen = m.FAQDetailScreen ?? m.default ?? FAQDetailScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/ContactSupport');
-    ContactSupportScreen = m.ContactSupportScreen || m.default || ContactSupportScreen;
+    const m = require('../screens/settings/ContactSupport') as ScreenModule;
+    ContactSupportScreen = m.ContactSupportScreen ?? m.default ?? ContactSupportScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/LiveChat');
-    LiveChatScreen = m.LiveChatScreen || m.default || LiveChatScreen;
+    const m = require('../screens/settings/LiveChat') as ScreenModule;
+    LiveChatScreen = m.LiveChatScreen ?? m.default ?? LiveChatScreen;
 } catch {
     /* not yet available */
 }
 
 try {
-    const m = require('../screens/settings/ReportProblem');
-    ReportProblemScreen = m.ReportProblemScreen || m.default || ReportProblemScreen;
+    const m = require('../screens/settings/ReportProblem') as ScreenModule;
+    ReportProblemScreen = m.ReportProblemScreen ?? m.default ?? ReportProblemScreen;
 } catch {
     /* not yet available */
 }

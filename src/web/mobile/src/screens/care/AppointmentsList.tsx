@@ -4,11 +4,14 @@ import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareStackParamList } from '../../navigation/types';
 
 interface Appointment {
     id: string;
@@ -134,7 +137,7 @@ const formatDateBR = (dateStr: string): string => {
 };
 
 export const AppointmentsList: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<FilterTab>('upcoming');
 

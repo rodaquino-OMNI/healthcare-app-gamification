@@ -12,9 +12,16 @@ import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+interface DietData {
+    dietType?: string;
+    mealFrequency?: string;
+    fruitVegConsumption?: string;
+    fastFoodFrequency?: string;
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: DietData;
+    onUpdate: (field: keyof DietData, value: string) => void;
 }
 
 const DIET_TYPES = ['omnivore', 'vegetarian', 'vegan', 'pescatarian', 'keto', 'other'] as const;
@@ -56,7 +63,7 @@ export const StepDiet: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.diet.type.${opt}`)}
                             accessibilityRole="button"
                             testID={`diet-type-${opt}`}
-                            style={[styles.optionChip, selected && styles.optionChipSelected] as any}
+                            style={[styles.optionChip, selected ? styles.optionChipSelected : null]}
                         >
                             <Text
                                 fontSize="sm"
@@ -84,7 +91,7 @@ export const StepDiet: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.diet.mealFrequency.${opt}`)}
                             accessibilityRole="button"
                             testID={`meal-frequency-${opt}`}
-                            style={[styles.optionChip, selected && styles.optionChipSelected] as any}
+                            style={[styles.optionChip, selected ? styles.optionChipSelected : null]}
                         >
                             <Text
                                 fontSize="sm"
@@ -111,7 +118,7 @@ export const StepDiet: React.FC<StepProps> = ({ data, onUpdate }) => {
                         accessibilityLabel={t(`healthAssessment.diet.fruitVeg.${key}`)}
                         accessibilityRole="button"
                         testID={`fruit-veg-${key}`}
-                        style={[styles.indicatorRow, selected && styles.indicatorRowSelected] as any}
+                        style={[styles.indicatorRow, selected ? styles.indicatorRowSelected : null]}
                     >
                         <View style={[styles.indicatorDot, { backgroundColor: indicator }]} />
                         <Text
@@ -139,7 +146,7 @@ export const StepDiet: React.FC<StepProps> = ({ data, onUpdate }) => {
                         accessibilityLabel={t(`healthAssessment.diet.fastFood.${key}`)}
                         accessibilityRole="button"
                         testID={`fast-food-${key}`}
-                        style={[styles.indicatorRow, selected && styles.indicatorRowSelected] as any}
+                        style={[styles.indicatorRow, selected ? styles.indicatorRowSelected : null]}
                     >
                         <View style={[styles.indicatorDot, { backgroundColor: indicator }]} />
                         <Text

@@ -4,12 +4,14 @@ import { sizing } from '@design-system/tokens/sizing';
 import { spacing } from '@design-system/tokens/spacing';
 import { typography } from '@design-system/tokens/typography';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
 import styled from 'styled-components/native';
 
 import { ROUTES } from '../../constants/routes';
+import type { AuthStackParamList } from '../../navigation/types';
 
 // --- Styled Components ---
 
@@ -215,7 +217,7 @@ const GOALS: GoalItem[] = [
  * multiple goals from a list of options.
  */
 export const GoalSelection: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<AuthStackParamList>>();
     const { t } = useTranslation();
     const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
 

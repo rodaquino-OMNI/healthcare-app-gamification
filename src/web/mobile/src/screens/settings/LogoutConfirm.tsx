@@ -4,12 +4,20 @@ import { sizing } from '@design-system/tokens/sizing';
 import { spacing, spacingValues } from '@design-system/tokens/spacing';
 import { typography } from '@design-system/tokens/typography';
 import { useNavigation, CommonActions } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, Alert } from 'react-native';
 import styled from 'styled-components/native';
 
 import { useAuth } from '../../hooks/useAuth';
+import type { SettingsStackParamList } from '../../navigation/types';
+
+interface JwtUser {
+    name?: string;
+    email?: string;
+    [key: string]: unknown;
+}
 
 // --- Styled Components ---
 
@@ -181,13 +189,13 @@ const SecondaryButtonText = styled.Text`
  * session details, warning about consequences, and Sign Out / Cancel.
  */
 export const LogoutConfirmScreen: React.FC = () => {
-    const navigation = useNavigation();
+    const navigation = useNavigation<StackNavigationProp<SettingsStackParamList>>();
     const { t } = useTranslation();
     const { signOut, session, getUserFromToken } = useAuth();
-    const user = session?.accessToken ? getUserFromToken(session.accessToken) : null;
+    const user = session?.accessToken ? (getUserFromToken(session.accessToken) as JwtUser | null) : null;
 
-    const userName = user?.name || 'Usuario';
-    const userEmail = user?.email || 'usuario@austa.com.br';
+    const userName = user?.name ?? 'Usuario';
+    const userEmail = user?.email ?? 'usuario@austa.com.br';
 
     const getInitials = (name: string): string => {
         const parts = name.trim().split(/\s+/);

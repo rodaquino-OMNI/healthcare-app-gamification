@@ -3,7 +3,8 @@ import { Button } from '@design-system/components/Button/Button';
 import { Card } from '@design-system/components/Card/Card';
 import { Text } from '@design-system/primitives/Text/Text';
 import { colors } from '@design-system/tokens/colors';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import { useRoute, useNavigation, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import { Appointment } from '@shared/types/care.types';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,11 +16,13 @@ import { ROUTES } from '@constants/routes';
 import { useAppointments } from '@hooks/useAppointments';
 import { formatDate } from '@utils/date';
 
+import type { CareStackParamList } from '../../navigation/types';
+
 /**
- * Route parameters expected by the AppointmentDetail screen.
+ * Appointment with optional status field (extended from the base type).
  */
-interface AppointmentDetailRouteParams {
-    id: string;
+interface AppointmentWithStatus extends Appointment {
+    status?: string;
 }
 
 /**
@@ -27,9 +30,9 @@ interface AppointmentDetailRouteParams {
  * to reschedule or cancel. Uses care journey theming (#FFF8F0 / #FF8C42).
  */
 const AppointmentDetail: React.FC = () => {
-    const route = useRoute<any>();
-    const navigation = useNavigation<any>();
-    const { id } = route.params as AppointmentDetailRouteParams;
+    const route = useRoute<RouteProp<CareStackParamList, 'CareAppointments'>>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const { appointmentId: id } = route.params ?? {};
     const { t } = useTranslation();
 
     /**
@@ -42,7 +45,9 @@ const AppointmentDetail: React.FC = () => {
     };
 
     const { appointments, isLoading, error, cancel } = useAppointments();
-    const appointment: Appointment | undefined = appointments.find((appt) => appt.id === id);
+    const appointment: AppointmentWithStatus | undefined = appointments.find((appt) => appt.id === id) as
+        | AppointmentWithStatus
+        | undefined;
 
     const handleCancel = useCallback(() => {
         if (appointment) {
@@ -100,7 +105,7 @@ const AppointmentDetail: React.FC = () => {
     }
 
     const formattedDateTime = formatDate(new Date(appointment.dateTime), 'PPPp');
-    const appointmentStatus = (appointment as any).status || 'confirmed';
+    const appointmentStatus = appointment.status ?? 'confirmed';
     const statusInfo = STATUS_MAP[appointmentStatus] || STATUS_MAP.confirmed;
 
     return (

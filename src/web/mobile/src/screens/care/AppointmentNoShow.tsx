@@ -3,16 +3,15 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
 
-interface RouteParams {
-    appointmentId: string;
-}
+import type { CareStackParamList } from '../../navigation/types';
 
 const MOCK_NOSHOW = {
     doctorName: 'Dr. Ricardo Mendes',
@@ -22,10 +21,10 @@ const MOCK_NOSHOW = {
 };
 
 export const AppointmentNoShow: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<any>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareAppointmentNoShow'>>();
     const { t } = useTranslation();
-    const { appointmentId } = route.params as RouteParams;
+    const { appointmentId } = route.params ?? {};
 
     const handleReschedule = useCallback(() => {
         navigation.navigate(ROUTES.CARE_APPOINTMENT_RESCHEDULE, {

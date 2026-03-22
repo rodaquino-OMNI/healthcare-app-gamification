@@ -9,12 +9,14 @@ import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import type { Theme } from '@design-system/themes/base.theme';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, TextInput } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
 import { ROUTES } from '../../constants/routes';
+import type { HealthStackParamList } from '../../navigation/types';
 
 /**
  * Route params for the MedicationDoseMissed screen.
@@ -49,7 +51,7 @@ const MISSED_REASONS: MissedReason[] = [
  * and optionally reschedule or take the dose now.
  */
 export const MedicationDoseMissed: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
@@ -146,9 +148,9 @@ export const MedicationDoseMissed: React.FC = () => {
                                     accessibilityLabel={t(reason.labelKey)}
                                     accessibilityRole="button"
                                     testID={`reason-${reason.id}`}
-                                    style={[styles.reasonItem, isSelected && styles.reasonItemSelected] as any}
+                                    style={[styles.reasonItem, isSelected && styles.reasonItemSelected]}
                                 >
-                                    <View style={[styles.radioOuter, isSelected && styles.radioOuterSelected] as any}>
+                                    <View style={[styles.radioOuter, isSelected && styles.radioOuterSelected]}>
                                         {isSelected && <View style={styles.radioInner} />}
                                     </View>
                                     <Text

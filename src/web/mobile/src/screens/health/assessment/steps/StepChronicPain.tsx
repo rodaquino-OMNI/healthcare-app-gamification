@@ -12,9 +12,17 @@ import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+interface ChronicPainData {
+    hasPain?: string;
+    painLocations?: string[];
+    painSeverity?: number;
+    painFrequency?: string;
+    painImpact?: string;
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: ChronicPainData;
+    onUpdate: (field: keyof ChronicPainData, value: string | string[] | number) => void;
 }
 
 const PAIN_LOCATIONS = ['head', 'neck', 'back', 'shoulders', 'knees', 'hips', 'hands', 'feet'] as const;
@@ -68,7 +76,7 @@ export const StepChronicPain: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.chronicPain.hasPain.${opt}`)}
                             accessibilityRole="button"
                             testID={`has-pain-${opt}`}
-                            style={[styles.chipWide, selected && styles.chipSelected] as any}
+                            style={[styles.chipWide, selected ? styles.chipSelected : null]}
                         >
                             <Text
                                 fontSize="sm"
@@ -97,7 +105,7 @@ export const StepChronicPain: React.FC<StepProps> = ({ data, onUpdate }) => {
                                     accessibilityLabel={t(`healthAssessment.chronicPain.locations.${location}`)}
                                     accessibilityRole="checkbox"
                                     testID={`pain-location-${location}`}
-                                    style={[styles.chip, selected && styles.chipSelected] as any}
+                                    style={[styles.chip, selected ? styles.chipSelected : null]}
                                 >
                                     <Text
                                         fontSize="sm"
@@ -127,12 +135,10 @@ export const StepChronicPain: React.FC<StepProps> = ({ data, onUpdate }) => {
                                     })}
                                     accessibilityRole="button"
                                     testID={`pain-severity-${level}`}
-                                    style={
-                                        [
-                                            styles.severityCell,
-                                            selected && { backgroundColor: activeColor, borderColor: activeColor },
-                                        ] as any
-                                    }
+                                    style={[
+                                        styles.severityCell,
+                                        selected && { backgroundColor: activeColor, borderColor: activeColor },
+                                    ]}
                                 >
                                     <Text
                                         fontSize="xs"
@@ -160,9 +166,9 @@ export const StepChronicPain: React.FC<StepProps> = ({ data, onUpdate }) => {
                                     accessibilityLabel={t(`healthAssessment.chronicPain.frequency.${freq}`)}
                                     accessibilityRole="button"
                                     testID={`pain-frequency-${freq}`}
-                                    style={[styles.radioCard, selected && styles.radioCardSelected] as any}
+                                    style={[styles.radioCard, selected ? styles.radioCardSelected : null]}
                                 >
-                                    <View style={[styles.radioCircle, selected && styles.radioCircleActive] as any}>
+                                    <View style={[styles.radioCircle, selected ? styles.radioCircleActive : null]}>
                                         {selected && <View style={styles.radioInner} />}
                                     </View>
                                     <Text
@@ -191,7 +197,7 @@ export const StepChronicPain: React.FC<StepProps> = ({ data, onUpdate }) => {
                                     accessibilityLabel={t(`healthAssessment.chronicPain.impact.${impact}`)}
                                     accessibilityRole="button"
                                     testID={`pain-impact-${impact}`}
-                                    style={[styles.chip, selected && styles.chipSelected] as any}
+                                    style={[styles.chip, selected ? styles.chipSelected : null]}
                                 >
                                     <Text
                                         fontSize="sm"

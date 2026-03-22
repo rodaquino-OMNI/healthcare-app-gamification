@@ -3,7 +3,7 @@
 import { Button } from '@design-system/components/Button/Button';
 import React, { useState, useEffect, useRef } from 'react'; // React v18.0+
 import { PermissionsAndroid as _Permissions, Platform, View, Image, StyleSheet } from 'react-native'; // react-native v0.71+
-import { Camera, useCameraPermission } from 'react-native-vision-camera'; // react-native-vision-camera v3.0+
+import { Camera, useCameraPermission, type CameraDevice } from 'react-native-vision-camera'; // react-native-vision-camera v3.0+
 
 import { LoadingIndicator } from '@components/shared/LoadingIndicator';
 import { checkAndroidPermissions } from '@utils/index';
@@ -31,6 +31,7 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({ onCapture }) => {
     const [hasCameraPermission, setHasCameraPermission] = useState(false);
     const [isCameraInitialized, setIsCameraInitialized] = useState(false);
     const [capturedImage, setCapturedImage] = useState<string | null>(null);
+    const [cameraDevice, setCameraDevice] = useState<CameraDevice | undefined>(undefined);
     const camera = useRef<Camera>(null);
 
     // Request camera permissions
@@ -59,8 +60,10 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({ onCapture }) => {
                 permissionGranted = requestResult;
             }
 
-            // Set the camera permission status
+            // Set the camera permission status and resolve a device
             setHasCameraPermission(permissionGranted);
+            const devices = Camera.getAvailableCameraDevices();
+            setCameraDevice(devices[0]);
             setIsCameraInitialized(true);
         };
 
@@ -111,7 +114,7 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({ onCapture }) => {
         <View style={styles.container}>
             <Camera
                 style={styles.camera}
-                device={(Camera as any).getAvailableCameraDevices?.()[0]}
+                device={cameraDevice}
                 isActive={hasCameraPermission}
                 ref={camera}
                 photo={true}

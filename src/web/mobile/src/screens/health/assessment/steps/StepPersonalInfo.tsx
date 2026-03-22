@@ -11,9 +11,16 @@ import { useTranslation } from 'react-i18next';
 import { View, TextInput, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+interface PersonalInfoData {
+    fullName?: string;
+    dateOfBirth?: string;
+    gender?: string;
+    bloodType?: string;
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: PersonalInfoData;
+    onUpdate: (field: keyof PersonalInfoData, value: string) => void;
 }
 
 const GENDER_OPTIONS = ['male', 'female', 'other'] as const;
@@ -97,7 +104,7 @@ export const StepPersonalInfo: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.personalInfo.gender_${option}`)}
                             accessibilityRole="button"
                             testID={`gender-${option}`}
-                            style={[styles.optionPill, data.gender === option && styles.optionPillSelected] as any}
+                            style={[styles.optionPill, data.gender === option ? styles.optionPillSelected : null]}
                         >
                             <Text
                                 fontSize="sm"
@@ -124,9 +131,7 @@ export const StepPersonalInfo: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={type}
                             accessibilityRole="button"
                             testID={`blood-type-${type}`}
-                            style={
-                                [styles.bloodTypeCell, data.bloodType === type && styles.bloodTypeCellSelected] as any
-                            }
+                            style={[styles.bloodTypeCell, data.bloodType === type && styles.bloodTypeCellSelected]}
                         >
                             <Text
                                 fontSize="sm"

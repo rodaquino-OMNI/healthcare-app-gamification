@@ -7,6 +7,12 @@ import React from 'react';
 import { ROUTES } from '../../constants/routes';
 import type { SleepParamList } from '../types';
 
+/** Shape of every lazily-loaded screen module. */
+interface ScreenModule {
+    default?: React.ComponentType;
+    [key: string]: React.ComponentType | undefined;
+}
+
 // Lazy-loaded screens (require + try/catch for resilience)
 let SleepHomeScreen: React.ComponentType<unknown> = () => null;
 let SleepLogScreen: React.ComponentType<unknown> = () => null;
@@ -22,74 +28,74 @@ let SleepDeviceSyncScreen: React.ComponentType<unknown> = () => null;
 let SleepExportScreen: React.ComponentType<unknown> = () => null;
 
 try {
-    const m = require('../../screens/health/sleep/SleepHome');
-    SleepHomeScreen = m.SleepHome || m.default || SleepHomeScreen;
+    const m = require('../../screens/health/sleep/SleepHome') as ScreenModule;
+    SleepHomeScreen = m.SleepHome ?? m.default ?? SleepHomeScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/sleep/SleepLog');
-    SleepLogScreen = m.SleepLog || m.default || SleepLogScreen;
+    const m = require('../../screens/health/sleep/SleepLog') as ScreenModule;
+    SleepLogScreen = m.SleepLog ?? m.default ?? SleepLogScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/sleep/SleepQuality');
-    SleepQualityScreen = m.SleepQuality || m.default || SleepQualityScreen;
+    const m = require('../../screens/health/sleep/SleepQuality') as ScreenModule;
+    SleepQualityScreen = m.SleepQuality ?? m.default ?? SleepQualityScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/sleep/SleepDiary');
-    SleepDiaryScreen = m.SleepDiary || m.default || SleepDiaryScreen;
+    const m = require('../../screens/health/sleep/SleepDiary') as ScreenModule;
+    SleepDiaryScreen = m.SleepDiary ?? m.default ?? SleepDiaryScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/sleep/SleepTrends');
-    SleepTrendsScreen = m.SleepTrends || m.default || SleepTrendsScreen;
+    const m = require('../../screens/health/sleep/SleepTrends') as ScreenModule;
+    SleepTrendsScreen = m.SleepTrends ?? m.default ?? SleepTrendsScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/sleep/SleepGoals');
-    SleepGoalsScreen = m.SleepGoals || m.default || SleepGoalsScreen;
+    const m = require('../../screens/health/sleep/SleepGoals') as ScreenModule;
+    SleepGoalsScreen = m.SleepGoals ?? m.default ?? SleepGoalsScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/sleep/SleepDetail');
-    SleepDetailScreen = m.SleepDetail || m.default || SleepDetailScreen;
+    const m = require('../../screens/health/sleep/SleepDetail') as ScreenModule;
+    SleepDetailScreen = m.SleepDetail ?? m.default ?? SleepDetailScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/sleep/BedtimeRoutine');
-    BedtimeRoutineScreen = m.BedtimeRoutine || m.default || BedtimeRoutineScreen;
+    const m = require('../../screens/health/sleep/BedtimeRoutine') as ScreenModule;
+    BedtimeRoutineScreen = m.BedtimeRoutine ?? m.default ?? BedtimeRoutineScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/sleep/SmartAlarm');
-    SmartAlarmScreen = m.SmartAlarm || m.default || SmartAlarmScreen;
+    const m = require('../../screens/health/sleep/SmartAlarm') as ScreenModule;
+    SmartAlarmScreen = m.SmartAlarm ?? m.default ?? SmartAlarmScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/sleep/SleepInsights');
-    SleepInsightsScreen = m.SleepInsights || m.default || SleepInsightsScreen;
+    const m = require('../../screens/health/sleep/SleepInsights') as ScreenModule;
+    SleepInsightsScreen = m.SleepInsights ?? m.default ?? SleepInsightsScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/sleep/SleepDeviceSync');
-    SleepDeviceSyncScreen = m.SleepDeviceSync || m.default || SleepDeviceSyncScreen;
+    const m = require('../../screens/health/sleep/SleepDeviceSync') as ScreenModule;
+    SleepDeviceSyncScreen = m.SleepDeviceSync ?? m.default ?? SleepDeviceSyncScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/sleep/SleepExport');
-    SleepExportScreen = m.SleepExport || m.default || SleepExportScreen;
+    const m = require('../../screens/health/sleep/SleepExport') as ScreenModule;
+    SleepExportScreen = m.SleepExport ?? m.default ?? SleepExportScreen;
 } catch {
     /* not available */
 }

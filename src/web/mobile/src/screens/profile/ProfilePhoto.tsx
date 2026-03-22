@@ -165,7 +165,7 @@ const ProfilePhoto: React.FC = () => {
     const handleTakePhoto = async (): Promise<void> => {
         try {
             const { status } = await ImagePicker.requestCameraPermissionsAsync();
-            if (status !== 'granted') {
+            if (status !== ImagePicker.PermissionStatus.GRANTED) {
                 Alert.alert(t('common.permissions.camera'));
                 return;
             }
@@ -190,7 +190,7 @@ const ProfilePhoto: React.FC = () => {
     const handleChooseFromGallery = async (): Promise<void> => {
         try {
             const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-            if (status !== 'granted') {
+            if (status !== ImagePicker.PermissionStatus.GRANTED) {
                 Alert.alert(t('common.permissions.gallery'));
                 return;
             }

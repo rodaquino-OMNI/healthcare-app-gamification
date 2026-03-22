@@ -10,6 +10,7 @@ import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +18,7 @@ import { View, ScrollView, StyleSheet, Alert } from 'react-native';
 import * as yup from 'yup';
 
 import { ROUTES } from '../../constants/routes';
+import type { HealthStackParamList } from '../../navigation/types';
 
 /**
  * Form data shape for the medication add/edit form
@@ -52,7 +54,7 @@ type MedicationAddRouteParams = {
  */
 const MedicationAdd: React.FC = () => {
     const { t } = useTranslation();
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
 
     const FREQUENCY_OPTIONS = [
         { label: t('journeys.care.medications.frequency.onceDaily'), value: 'once_daily' },
@@ -89,7 +91,8 @@ const MedicationAdd: React.FC = () => {
         formState: { errors },
         setValue: _setValue,
     } = useForm<MedicationFormData>({
-        resolver: yupResolver(medicationSchema as any),
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- yupResolver returns Resolver with `any` context type
+        resolver: yupResolver(medicationSchema),
         defaultValues: {
             name: prefillName,
             dosage: prefillDosage,

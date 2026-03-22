@@ -4,6 +4,7 @@ import { Avatar } from '@design-system/components/Avatar/Avatar';
 import type { Theme } from '@design-system/themes/base.theme';
 import { colors } from '@design-system/tokens/colors';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
@@ -12,6 +13,13 @@ import { useTheme } from 'styled-components/native';
 import { ProfileForm } from '../../components/forms/ProfileForm';
 import { ROUTES } from '../../constants/routes';
 import { useAuth } from '../../hooks/useAuth';
+import type { SettingsStackParamList } from '../../navigation/types';
+
+interface TokenUser {
+    name?: string;
+    email?: string;
+    avatar?: string;
+}
 
 /**
  * Displays the user profile screen, allowing users to view and edit their profile information.
@@ -22,18 +30,18 @@ export const ProfileScreen: React.FC = () => {
     const styles = createStyles(theme);
     const { t } = useTranslation();
     const { session, getUserFromToken } = useAuth();
-    const navigation = useNavigation();
+    const navigation = useNavigation<StackNavigationProp<SettingsStackParamList>>();
     const [isEditing, setIsEditing] = useState(false);
 
     // Get user data from the JWT token
-    const user = session?.accessToken ? getUserFromToken(session.accessToken) : null;
+    const user = session?.accessToken ? (getUserFromToken(session.accessToken) as TokenUser) : null;
 
     const handleEditToggle = (): void => {
         setIsEditing(!isEditing);
     };
 
     const navigateToSettings = () => {
-        (navigation as any).navigate(ROUTES.SETTINGS);
+        navigation.navigate(ROUTES.SETTINGS as keyof SettingsStackParamList);
     };
 
     if (!user) {

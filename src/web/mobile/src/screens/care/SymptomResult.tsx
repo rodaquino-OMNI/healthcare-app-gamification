@@ -6,12 +6,14 @@ import { Stepper } from '@austa/design-system/src/components/Stepper/Stepper';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareNavigationProp, CareStackParamList } from '../../navigation/types';
 
 interface PossibleCondition {
     id: string;
@@ -81,31 +83,16 @@ const getSeverityBadgeStatus = (severity: 'low' | 'medium' | 'high'): 'success' 
 
 // getRiskLevel is now inside the component to access t()
 
-type SymptomResultRouteParams = {
-    symptoms: Array<{ id: string; name: string }>;
-    description: string;
-    regions: Array<{ id: string; label: string }>;
-    details: any[];
-    answers: Record<string, string | string[]>;
-    overallSeverity: number;
-};
-
 /**
  * Analysis results screen showing possible conditions based on the user's symptom data.
  * Displays conditions sorted by probability with severity indicators.
  * Step 6 of the symptom checker flow.
  */
 const SymptomResult: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: SymptomResultRouteParams }, 'params'>>();
-    const {
-        symptoms = [],
-        description = '',
-        regions = [],
-        details = [],
-        answers = {},
-        overallSeverity = 5,
-    } = route.params || {};
+    const navigation = useNavigation<CareNavigationProp>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareSymptomResult'>>();
+    const sessionId = route.params?.sessionId ?? '';
+    const overallSeverity = 5;
     const { t } = useTranslation();
 
     const SYMPTOM_STEPS = [
@@ -148,13 +135,7 @@ const SymptomResult: React.FC = () => {
 
     const handleViewRecommendations = (): void => {
         navigation.navigate(ROUTES.CARE_SYMPTOM_RECOMMENDATION, {
-            symptoms,
-            description,
-            regions,
-            details,
-            answers,
-            overallSeverity,
-            conditions: sortedConditions,
+            sessionId,
         });
     };
 

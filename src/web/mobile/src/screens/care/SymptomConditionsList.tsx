@@ -6,12 +6,14 @@ import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchable';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareNavigationProp, CareStackParamList } from '../../navigation/types';
 
 interface PossibleCondition {
     id: string;
@@ -42,52 +44,38 @@ const getRiskLevel = (overallSeverity: number): { label: string; badgeStatus: 's
     return { label: 'High Risk', badgeStatus: 'error' };
 };
 
-type SymptomConditionsListRouteParams = {
-    symptoms: Array<{ id: string; name: string }>;
-    description: string;
-    regions: Array<{ id: string; label: string }>;
-    details: any[];
-    answers: Record<string, string | string[]>;
-    overallSeverity: number;
-    conditions: PossibleCondition[];
-};
-
 /**
  * Ranked list of possible conditions with confidence percentages.
  * Each condition card is tappable to navigate to its detail screen.
  * Provides quick actions for self-care or booking an appointment.
  */
 const SymptomConditionsList: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: SymptomConditionsListRouteParams }, 'params'>>();
+    const navigation = useNavigation<CareNavigationProp>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareSymptomConditionsList'>>();
     const { t } = useTranslation();
-    const {
-        symptoms: _symptoms = [],
-        regions: _regions = [],
-        overallSeverity = 5,
-        conditions = [],
-    } = route.params || {};
+    const sessionId = route.params?.sessionId ?? '';
+    const overallSeverity = 5;
+    const conditions: PossibleCondition[] = [];
 
     const riskLevel = getRiskLevel(overallSeverity);
     const sortedConditions = [...conditions].sort((a, b) => b.probability - a.probability);
 
     const handleConditionPress = (condition: PossibleCondition): void => {
         navigation.navigate(ROUTES.CARE_SYMPTOM_CONDITION_DETAIL, {
-            condition,
+            conditionId: condition.id,
+            sessionId,
         });
     };
 
     const handleSelfCare = (): void => {
         navigation.navigate(ROUTES.CARE_SYMPTOM_SELF_CARE, {
-            conditions: sortedConditions,
-            overallSeverity,
+            sessionId,
         });
     };
 
     const handleBookAppointment = (): void => {
         navigation.navigate(ROUTES.CARE_SYMPTOM_BOOK_APPOINTMENT, {
-            conditions: sortedConditions,
-            overallSeverity,
+            sessionId,
         });
     };
 

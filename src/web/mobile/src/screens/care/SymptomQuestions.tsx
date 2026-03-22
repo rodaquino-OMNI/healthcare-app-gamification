@@ -6,12 +6,14 @@ import { Stepper } from '@austa/design-system/src/components/Stepper/Stepper';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareNavigationProp, CareStackParamList } from '../../navigation/types';
 
 /**
  * Question data structure for the AI-driven follow-up questions.
@@ -92,22 +94,15 @@ const MOCK_QUESTIONS: SymptomQuestion[] = [
     },
 ];
 
-type SymptomQuestionsRouteParams = {
-    symptoms: Array<{ id: string; name: string }>;
-    description: string;
-    regions: Array<{ id: string; label: string }>;
-    details: any[];
-};
-
 /**
  * Follow-up questions screen that collects additional context about the user's symptoms.
  * Questions can be single-choice (RadioButton) or multi-choice (Checkbox).
  * Step 4 of the symptom checker flow.
  */
 const SymptomQuestions: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: SymptomQuestionsRouteParams }, 'params'>>();
-    const { symptoms = [], description = '', regions = [], details = [] } = route.params || {};
+    const navigation = useNavigation<CareNavigationProp>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareSymptomQuestions'>>();
+    const sessionId = route.params?.sessionId ?? '';
     const { t } = useTranslation();
 
     const SYMPTOM_STEPS = [
@@ -172,11 +167,7 @@ const SymptomQuestions: React.FC = () => {
 
     const handleContinue = (): void => {
         navigation.navigate(ROUTES.CARE_SYMPTOM_SEVERITY, {
-            symptoms,
-            description,
-            regions,
-            details,
-            answers,
+            sessionId,
         });
     };
 
@@ -235,9 +226,8 @@ const SymptomQuestions: React.FC = () => {
                                           name={currentQuestion.id}
                                           value={option.id}
                                           checked={isOptionSelected(currentQuestion.id, option.id)}
-                                          onChange={(e: any) => {
-                                              const checked =
-                                                  e.target?.checked ?? !isOptionSelected(currentQuestion.id, option.id);
+                                          onChange={() => {
+                                              const checked = !isOptionSelected(currentQuestion.id, option.id);
                                               handleMultiAnswer(currentQuestion.id, option.id, checked);
                                           }}
                                           label={option.label}

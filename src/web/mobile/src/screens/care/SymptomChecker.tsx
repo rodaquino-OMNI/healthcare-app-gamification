@@ -10,6 +10,8 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { ROUTES } from '@constants/routes';
 import { useJourney } from '@hooks/useJourney';
 
+import type { CareNavigationProp } from '../../navigation/types';
+
 /**
  * A screen component that allows users to input their symptoms and receive a preliminary assessment.
  * This implements requirement F-102-RQ-001: Allow users to input symptoms and receive preliminary guidance.
@@ -21,7 +23,7 @@ const SymptomChecker: React.FC = () => {
     const [isLoading, _setIsLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
 
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<CareNavigationProp>();
     const { journey: _journey } = useJourney();
     const { t } = useTranslation();
 
@@ -97,7 +99,7 @@ const SymptomChecker: React.FC = () => {
                         <Input
                             label={t('journeys.care.symptomChecker.yourSymptoms')}
                             value={symptoms}
-                            onChange={(e: any) => setSymptoms(e.target?.value ?? e)}
+                            onChangeText={(text: string) => setSymptoms(text)}
                             placeholder={t('journeys.care.symptomChecker.placeholder')}
                             journey="care"
                             testID="symptom-input"

@@ -8,7 +8,7 @@ import { typography } from '@design-system/tokens/typography';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, type Resolver } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import styled from 'styled-components/native';
@@ -22,7 +22,7 @@ import type { AuthNavigationProp } from '../../navigation/types';
  * Validation schema for insurance information form.
  * Fields are optional when the user toggles "I don't have insurance".
  */
-const createInsuranceSchema = (t: (key: string, options?: any) => string) =>
+const createInsuranceSchema = (t: (key: string, options?: Record<string, unknown>) => string) =>
     yup.object().shape({
         provider: yup.string().when('$hasInsurance', {
             is: true,
@@ -224,7 +224,11 @@ const ProfileVariant2: React.FC = () => {
         watch,
         formState: { errors },
     } = useForm<InsuranceFormData>({
-        resolver: yupResolver(createInsuranceSchema(t as (key: string, options?: any) => string) as any),
+        resolver: yupResolver(
+            createInsuranceSchema(
+                t as (key: string, options?: Record<string, unknown>) => string
+            ) as unknown as yup.ObjectSchema<InsuranceFormData>
+        ) as Resolver<InsuranceFormData>,
         context: { hasInsurance },
         mode: 'onBlur',
         defaultValues: {

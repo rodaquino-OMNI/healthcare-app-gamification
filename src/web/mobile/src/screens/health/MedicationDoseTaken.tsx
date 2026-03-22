@@ -6,11 +6,13 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, TextInput } from 'react-native';
 
 import { ROUTES } from '../../constants/routes';
+import type { HealthStackParamList } from '../../navigation/types';
 
 /**
  * Route params for the MedicationDoseTaken screen.
@@ -41,7 +43,7 @@ const formatCurrentTime = (): string => {
  * Includes timestamp, notes, and side effects toggle.
  */
 export const MedicationDoseTaken: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
     const { t } = useTranslation();
     const route = useRoute<RouteProp<DoseTakenRouteParams, 'MedicationDoseTaken'>>();
 

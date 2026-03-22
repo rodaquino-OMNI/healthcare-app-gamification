@@ -4,12 +4,14 @@ import { sizingValues } from '@design-system/tokens/sizing';
 import { spacingValues } from '@design-system/tokens/spacing';
 import { typography, fontSizeValues } from '@design-system/tokens/typography';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator } from 'react-native';
 import styled from 'styled-components/native';
 
 import { useAuth } from '../../hooks/useAuth';
+import type { AuthStackParamList } from '../../navigation/types';
 
 /**
  * Styled container for the MFA screen
@@ -108,7 +110,7 @@ export const MFAScreen: React.FC = () => {
     const [code, setCode] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const navigation = useNavigation();
+    const navigation = useNavigation<StackNavigationProp<AuthStackParamList>>();
     const { t } = useTranslation();
     const { handleMfaVerification } = useAuth();
 
@@ -126,7 +128,8 @@ export const MFAScreen: React.FC = () => {
         try {
             const navState = navigation.getState();
             const route = navState?.routes[navState?.index ?? 0];
-            const tempToken = (route?.params as any)?.tempToken;
+            const routeParams = route?.params as Record<string, string> | undefined;
+            const tempToken = routeParams?.tempToken;
 
             await handleMfaVerification(code, tempToken);
             // Navigation after successful verification is handled by the auth context

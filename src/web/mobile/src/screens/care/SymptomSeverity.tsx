@@ -6,12 +6,14 @@ import { Stepper } from '@austa/design-system/src/components/Stepper/Stepper';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareNavigationProp, CareStackParamList } from '../../navigation/types';
 
 type SeverityLevel = 'mild' | 'moderate' | 'severe';
 
@@ -26,23 +28,15 @@ interface SeverityConfig {
 
 // getSeverityConfig is now inside the component to access t()
 
-type SymptomSeverityRouteParams = {
-    symptoms: Array<{ id: string; name: string }>;
-    description: string;
-    regions: Array<{ id: string; label: string }>;
-    details: any[];
-    answers: Record<string, string | string[]>;
-};
-
 /**
  * Overall severity assessment screen. Users rate their overall symptom severity
  * on a 1-10 scale with visual color-coded feedback.
  * Step 5 of the symptom checker flow.
  */
 const SymptomSeverity: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: SymptomSeverityRouteParams }, 'params'>>();
-    const { symptoms = [], description = '', regions = [], details = [], answers = {} } = route.params || {};
+    const navigation = useNavigation<CareNavigationProp>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareSymptomSeverity'>>();
+    const sessionId = route.params?.sessionId ?? '';
     const { t } = useTranslation();
 
     const SYMPTOM_STEPS = [
@@ -92,12 +86,7 @@ const SymptomSeverity: React.FC = () => {
 
     const handleAnalyze = (): void => {
         navigation.navigate(ROUTES.CARE_SYMPTOM_RESULT, {
-            symptoms,
-            description,
-            regions,
-            details,
-            answers,
-            overallSeverity,
+            sessionId,
         });
     };
 

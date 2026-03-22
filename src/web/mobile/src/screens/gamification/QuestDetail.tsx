@@ -5,20 +5,15 @@ import { borderRadiusValues } from '@design-system/tokens/borderRadius';
 import { colors } from '@design-system/tokens/colors';
 import { sizingValues } from '@design-system/tokens/sizing';
 import { spacingValues } from '@design-system/tokens/spacing';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import { Quest } from '@shared/types/gamification.types';
 import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, Share, Alert } from 'react-native';
 
 import { useTheme } from '../../hooks/useTheme';
-
-/**
- * Route params for QuestDetail.
- */
-interface QuestDetailRouteParams {
-    questId: string;
-}
+import type { GamificationStackParamList } from '../../navigation/types';
 
 /**
  * Requirement item for a quest.
@@ -156,11 +151,11 @@ const getTimeRemainingKey = (quest: Quest): { key: string; params?: Record<strin
  */
 const QuestDetail: React.FC = () => {
     const { t } = useTranslation();
-    const navigation = useNavigation();
+    const navigation = useNavigation<StackNavigationProp<GamificationStackParamList>>();
     const { theme } = useTheme();
     const styles = createStyles(theme as Theme);
-    const route = useRoute<any>();
-    const { questId } = route.params as QuestDetailRouteParams;
+    const route = useRoute<RouteProp<GamificationStackParamList, 'GamificationQuestDetail'>>();
+    const { questId } = route.params;
 
     const quest = useMemo(() => MOCK_QUESTS.find((q) => q.id === questId), [questId]);
 

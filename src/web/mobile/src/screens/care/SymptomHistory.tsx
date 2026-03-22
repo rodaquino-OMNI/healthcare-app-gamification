@@ -11,6 +11,8 @@ import { View, StyleSheet, FlatList } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
 
+import type { CareNavigationProp } from '../../navigation/types';
+
 interface PastCheck {
     id: string;
     date: string;
@@ -139,7 +141,7 @@ const getSeverityLabel = (severity: number): string => {
  * Displays a filterable list of previous symptom check sessions.
  */
 const SymptomHistory: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<CareNavigationProp>();
     const { t } = useTranslation();
     const [activeFilter, setActiveFilter] = useState<FilterOption>('all');
 

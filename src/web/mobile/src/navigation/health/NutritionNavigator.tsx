@@ -7,6 +7,12 @@ import React from 'react';
 import { ROUTES } from '../../constants/routes';
 import type { NutritionParamList } from '../types';
 
+/** Shape of every lazily-loaded screen module. */
+interface ScreenModule {
+    default?: React.ComponentType;
+    [key: string]: React.ComponentType | undefined;
+}
+
 // Lazy-loaded screens (require + try/catch for resilience)
 let NutritionHomeScreen: React.ComponentType<unknown> = () => null;
 let MealLogScreen: React.ComponentType<unknown> = () => null;
@@ -20,62 +26,62 @@ let FoodSearchScreen: React.ComponentType<unknown> = () => null;
 let NutritionExportScreen: React.ComponentType<unknown> = () => null;
 
 try {
-    const m = require('../../screens/health/nutrition/NutritionHome');
-    NutritionHomeScreen = m.NutritionHome || m.default || NutritionHomeScreen;
+    const m = require('../../screens/health/nutrition/NutritionHome') as ScreenModule;
+    NutritionHomeScreen = m.NutritionHome ?? m.default ?? NutritionHomeScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/nutrition/MealLog');
-    MealLogScreen = m.MealLog || m.default || MealLogScreen;
+    const m = require('../../screens/health/nutrition/MealLog') as ScreenModule;
+    MealLogScreen = m.MealLog ?? m.default ?? MealLogScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/nutrition/MealDetail');
-    MealDetailScreen = m.MealDetail || m.default || MealDetailScreen;
+    const m = require('../../screens/health/nutrition/MealDetail') as ScreenModule;
+    MealDetailScreen = m.MealDetail ?? m.default ?? MealDetailScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/nutrition/FoodDiary');
-    FoodDiaryScreen = m.FoodDiary || m.default || FoodDiaryScreen;
+    const m = require('../../screens/health/nutrition/FoodDiary') as ScreenModule;
+    FoodDiaryScreen = m.FoodDiary ?? m.default ?? FoodDiaryScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/nutrition/MacroTracker');
-    MacroTrackerScreen = m.MacroTracker || m.default || MacroTrackerScreen;
+    const m = require('../../screens/health/nutrition/MacroTracker') as ScreenModule;
+    MacroTrackerScreen = m.MacroTracker ?? m.default ?? MacroTrackerScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/nutrition/WaterIntake');
-    WaterIntakeScreen = m.WaterIntake || m.default || WaterIntakeScreen;
+    const m = require('../../screens/health/nutrition/WaterIntake') as ScreenModule;
+    WaterIntakeScreen = m.WaterIntake ?? m.default ?? WaterIntakeScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/nutrition/DietaryGoals');
-    DietaryGoalsScreen = m.DietaryGoals || m.default || DietaryGoalsScreen;
+    const m = require('../../screens/health/nutrition/DietaryGoals') as ScreenModule;
+    DietaryGoalsScreen = m.DietaryGoals ?? m.default ?? DietaryGoalsScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/nutrition/NutritionInsights');
-    NutritionInsightsScreen = m.NutritionInsights || m.default || NutritionInsightsScreen;
+    const m = require('../../screens/health/nutrition/NutritionInsights') as ScreenModule;
+    NutritionInsightsScreen = m.NutritionInsights ?? m.default ?? NutritionInsightsScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/nutrition/FoodSearch');
-    FoodSearchScreen = m.FoodSearch || m.default || FoodSearchScreen;
+    const m = require('../../screens/health/nutrition/FoodSearch') as ScreenModule;
+    FoodSearchScreen = m.FoodSearch ?? m.default ?? FoodSearchScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/nutrition/NutritionExport');
-    NutritionExportScreen = m.NutritionExport || m.default || NutritionExportScreen;
+    const m = require('../../screens/health/nutrition/NutritionExport') as ScreenModule;
+    NutritionExportScreen = m.NutritionExport ?? m.default ?? NutritionExportScreen;
 } catch {
     /* not available */
 }

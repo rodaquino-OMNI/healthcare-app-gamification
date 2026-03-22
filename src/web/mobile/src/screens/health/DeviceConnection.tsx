@@ -1,6 +1,5 @@
 import { Button } from '@design-system/components/Button/Button';
 import { DeviceCard } from '@design-system/health/DeviceCard/DeviceCard';
-import type { DeviceConnection as _DeviceConnectionType } from '@shared/types/health.types';
 import React, { useState } from 'react'; // react v18.2.0
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
@@ -40,15 +39,25 @@ export const DeviceConnection: React.FC = () => {
 
             {/* LD1: Renders a list of `DeviceCard` components for each connected device. */}
             {devices &&
-                devices.map((device) => (
-                    <DeviceCard
-                        key={device.id}
-                        deviceName={device.deviceId}
-                        deviceType={device.deviceType}
-                        lastSync={device.lastSync}
-                        status={device.status}
-                    />
-                ))}
+                devices.map((device) => {
+                    const id: string = String(device.id);
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- DeviceConnection props resolved via typed DeviceConnectionType
+                    const deviceName: string = device.deviceId;
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- DeviceConnection props resolved via typed DeviceConnectionType
+                    const deviceType: string = device.deviceType;
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- DeviceConnection props resolved via typed DeviceConnectionType
+                    const lastSync: string = device.lastSync;
+                    const status: string = String(device.status);
+                    return (
+                        <DeviceCard
+                            key={id}
+                            deviceName={deviceName}
+                            deviceType={deviceType}
+                            lastSync={lastSync}
+                            status={status}
+                        />
+                    );
+                })}
 
             {/* LD1: Renders a `Button` to allow users to connect a new device. */}
             <Button onPress={() => undefined} journey={journey as 'health' | 'care' | 'plan'}>

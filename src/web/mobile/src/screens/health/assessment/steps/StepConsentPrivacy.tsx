@@ -12,12 +12,19 @@ import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
-interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+interface ConsentPrivacyData {
+    shareHealthData?: boolean;
+    receiveInsights?: boolean;
+    dataProtection?: boolean;
+    viewPrivacyPolicy?: boolean;
 }
 
-const CONSENT_KEYS = ['shareHealthData', 'receiveInsights', 'dataProtection'] as const;
+interface StepProps {
+    data: ConsentPrivacyData;
+    onUpdate: (field: keyof ConsentPrivacyData, value: boolean) => void;
+}
+
+const CONSENT_KEYS: (keyof ConsentPrivacyData)[] = ['shareHealthData', 'receiveInsights', 'dataProtection'];
 
 /**
  * StepConsentPrivacy presents data consent toggles and privacy information.
@@ -29,7 +36,7 @@ export const StepConsentPrivacy: React.FC<StepProps> = ({ data, onUpdate }) => {
     const styles = createStyles(theme);
 
     const handleToggle = useCallback(
-        (key: string) => {
+        (key: keyof ConsentPrivacyData) => {
             onUpdate(key, !data[key]);
         },
         [data, onUpdate]
@@ -55,9 +62,9 @@ export const StepConsentPrivacy: React.FC<StepProps> = ({ data, onUpdate }) => {
                         accessibilityLabel={t(`healthAssessment.consentPrivacy.${key}`)}
                         accessibilityRole="checkbox"
                         testID={`consent-${key}`}
-                        style={[styles.consentRow, isChecked && styles.consentRowActive] as any}
+                        style={[styles.consentRow, isChecked ? styles.consentRowActive : null]}
                     >
-                        <View style={[styles.checkbox, isChecked && styles.checkboxActive] as any}>
+                        <View style={[styles.checkbox, isChecked ? styles.checkboxActive : null]}>
                             {isChecked && (
                                 <Text fontSize="xs" color={colors.neutral.white} textAlign="center">
                                     {'\u2713'}

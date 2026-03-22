@@ -5,23 +5,15 @@ import { borderRadiusValues } from '@design-system/tokens/borderRadius';
 import { colors } from '@design-system/tokens/colors';
 import { spacingValues } from '@design-system/tokens/spacing';
 import { fontSizeValues } from '@design-system/tokens/typography';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import { useRoute, useNavigation, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet, SafeAreaView, Alert } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
 import { restClient } from '../../api/client';
-
-/**
- * Route params for MedicationAlarm screen.
- */
-interface MedicationAlarmParams {
-    medicationName?: string;
-    medicationDosage?: string;
-    nextDoseTime?: string;
-    snoozeDuration?: number;
-}
+import type { HealthStackParamList } from '../../navigation/types';
 
 /**
  * MedicationAlarmScreen displays a fullscreen alarm-style notification
@@ -36,14 +28,13 @@ export const MedicationAlarmScreen: React.FC = () => {
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
-    const route = useRoute<any>();
-    const navigation = useNavigation();
+    const route = useRoute<RouteProp<HealthStackParamList, 'HealthMedicationAlarm'>>();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
 
-    const params = (route.params ?? {}) as MedicationAlarmParams;
-    const medicationName = params.medicationName ?? 'Medicamento';
-    const medicationDosage = params.medicationDosage ?? '1 comprimido de 500mg';
-    const nextDoseTime = params.nextDoseTime ?? '';
-    const snoozeDuration = params.snoozeDuration ?? 10;
+    const medicationName = route.params?.medicationName ?? 'Medicamento';
+    const medicationDosage = route.params?.medicationDosage ?? '1 comprimido de 500mg';
+    const nextDoseTime = route.params?.nextDoseTime ?? '';
+    const snoozeDuration = route.params?.snoozeDuration ?? 10;
 
     const journeyColors = colors.journeys.health;
 

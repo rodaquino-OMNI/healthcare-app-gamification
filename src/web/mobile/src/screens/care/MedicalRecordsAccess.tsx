@@ -7,13 +7,15 @@ import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import type { Theme } from '@design-system/themes/base.theme';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, FlatList, TouchableOpacity, Share, Alert, ScrollView } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
-type MedicalRecordsRouteParams = { appointmentId: string };
+import type { CareStackParamList } from '../../navigation/types';
+
 type RecordType = 'visit_notes' | 'lab_results' | 'prescriptions' | 'imaging' | 'referral';
 type FilterTab = 'all' | RecordType;
 
@@ -99,12 +101,12 @@ const TYPE_BADGE_STATUS: Record<RecordType, 'info' | 'success' | 'warning' | 'ne
  * download/share actions, and bulk operations.
  */
 const MedicalRecordsAccess: React.FC = () => {
-    const _navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: MedicalRecordsRouteParams }, 'params'>>();
+    const _navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    useRoute<RouteProp<CareStackParamList, 'CareMedicalRecords'>>();
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
-    const { appointmentId: _appointmentId } = route.params || { appointmentId: 'appt-001' };
+    const _appointmentId = 'appt-001';
 
     const [activeTab, setActiveTab] = useState<FilterTab>('all');
     const [expandedRecordId, setExpandedRecordId] = useState<string | null>(null);

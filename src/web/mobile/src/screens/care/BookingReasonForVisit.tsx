@@ -6,13 +6,16 @@ import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import type { Theme } from '@design-system/themes/base.theme';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareStackParamList } from '../../navigation/types';
 
 const MAX_CHARS = 500;
 
@@ -40,15 +43,13 @@ const COMMON_REASONS: ChipOption[] = [
  * select common reasons as chips, and attach files.
  */
 export const BookingReasonForVisit: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<any>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareBookingReason'>>();
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
-    const { doctorId, appointmentType } = route.params || {
-        doctorId: 'doc-001',
-        appointmentType: 'in-person',
-    };
+    const doctorId = route.params?.doctorId ?? 'doc-001';
+    const appointmentType = route.params?.appointmentType ?? 'in-person';
 
     const [reason, setReason] = useState('');
     const [selectedChips, setSelectedChips] = useState<Set<string>>(new Set());

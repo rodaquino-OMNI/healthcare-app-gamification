@@ -6,11 +6,13 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, FlatList, StyleSheet, Alert, ListRenderItemInfo } from 'react-native';
 
 import { ROUTES } from '../../constants/routes';
+import type { HealthStackParamList } from '../../navigation/types';
 
 /**
  * Medication database entry used for search autocomplete
@@ -46,7 +48,7 @@ const MEDICATIONS_DB: MedicationDBEntry[] = [
  */
 const MedicationSearch: React.FC = () => {
     const { t } = useTranslation();
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
     const [searchQuery, setSearchQuery] = useState('');
     const [recentSearches, setRecentSearches] = useState<string[]>(['Metformin', 'Lisinopril']);
 

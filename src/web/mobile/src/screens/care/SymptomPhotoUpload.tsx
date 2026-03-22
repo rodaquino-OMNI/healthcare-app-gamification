@@ -7,13 +7,15 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import type { Theme } from '@design-system/themes/base.theme';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareNavigationProp, CareStackParamList } from '../../navigation/types';
 
 const MAX_PHOTOS = 5;
 
@@ -22,12 +24,6 @@ interface PhotoItem {
     uri: string;
     timestamp: number;
 }
-
-type SymptomPhotoUploadRouteParams = {
-    symptoms: Array<{ id: string; name: string }>;
-    description: string;
-    regions: Array<{ id: string; label: string }>;
-};
 
 /**
  * Camera/gallery photo upload screen for visible symptoms.
@@ -38,9 +34,9 @@ const SymptomPhotoUpload: React.FC = () => {
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: SymptomPhotoUploadRouteParams }, 'params'>>();
-    const { symptoms = [], description = '', regions = [] } = route.params || {};
+    const navigation = useNavigation<CareNavigationProp>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareSymptomPhotoUpload'>>();
+    const sessionId = route.params?.sessionId ?? '';
 
     const [photos, setPhotos] = useState<PhotoItem[]>([]);
 
@@ -98,21 +94,11 @@ const SymptomPhotoUpload: React.FC = () => {
     };
 
     const handleContinue = (): void => {
-        navigation.navigate(ROUTES.CARE_SYMPTOM_MEDICAL_HISTORY, {
-            symptoms,
-            description,
-            regions,
-            photos: photos.map((p) => ({ id: p.id, uri: p.uri })),
-        });
+        navigation.navigate(ROUTES.CARE_SYMPTOM_MEDICAL_HISTORY, { sessionId });
     };
 
     const handleSkip = (): void => {
-        navigation.navigate(ROUTES.CARE_SYMPTOM_MEDICAL_HISTORY, {
-            symptoms,
-            description,
-            regions,
-            photos: [],
-        });
+        navigation.navigate(ROUTES.CARE_SYMPTOM_MEDICAL_HISTORY, { sessionId });
     };
 
     const handleBack = (): void => {

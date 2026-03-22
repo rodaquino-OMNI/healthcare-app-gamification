@@ -330,7 +330,7 @@ export const EmergencyContactsScreen: React.FC = () => {
                 priority: contacts.length + 1,
             });
 
-            const created: EmergencyContact = response.data ?? {
+            const created: EmergencyContact = (response.data as EmergencyContact | null) ?? {
                 id: Date.now().toString(),
                 name: newName.trim(),
                 phone: newPhone.trim(),

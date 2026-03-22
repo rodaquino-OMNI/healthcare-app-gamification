@@ -1,21 +1,54 @@
 // Analytics services mock implementations
+
+interface GAOptions {
+    userId?: string;
+    [key: string]: unknown;
+}
+
+interface GAInitOptions {
+    gaOptions?: GAOptions;
+    testMode?: boolean;
+    [key: string]: unknown;
+}
+
+interface GAEventParams {
+    category?: string;
+    action?: string;
+    [key: string]: unknown;
+}
+
+interface SentryUser {
+    id?: string;
+    [key: string]: unknown;
+}
+
+interface SentryContext {
+    tags?: Record<string, unknown>;
+    [key: string]: unknown;
+}
+
+interface DatadogUser {
+    id?: string;
+    [key: string]: unknown;
+}
+
 const ReactGA = {
-    initialize: (_trackingId: string, _options?: any) => {},
-    set: (_fieldsObject: Record<string, any>) => {},
-    event: (_params: any) => {},
-    send: (_hitType: string, _params?: any) => {},
+    initialize: (_trackingId: string, _options?: GAInitOptions) => {},
+    set: (_fieldsObject: Record<string, unknown>) => {},
+    event: (_params: GAEventParams) => {},
+    send: (_hitType: string, _params?: Record<string, unknown>) => {},
 };
 
 const Sentry = {
-    init: (_options: any) => {},
-    setUser: (_user: any | null) => {},
-    captureException: (_error: Error, _context?: any) => {},
+    init: (_options: Record<string, unknown>) => {},
+    setUser: (_user: SentryUser | null) => {},
+    captureException: (_error: Error, _context?: SentryContext) => {},
 };
 
 const datadogRum = {
-    init: (_options: any) => {},
-    addAction: (_name: string, _params: any) => {},
-    setUser: (_user: any) => {},
+    init: (_options: Record<string, unknown>) => {},
+    addAction: (_name: string, _params: Record<string, unknown>) => {},
+    setUser: (_user: DatadogUser) => {},
     clearUser: () => {},
     addTiming: (_name: string, _time: number) => {},
 };
@@ -32,28 +65,34 @@ const logger = {
     warn: (..._args: any[]): void => {},
 };
 
+import ExpoConstants from 'expo-constants';
+
 import * as Constants from '../constants/index';
+// expo-constants exposes expoConfig at runtime; we access it via the default
+// import which carries the typed ExpoConfig shape.
 
 // Default to enabling analytics
 let analyticsEnabled = true;
 
 // Analytics service IDs - configured via app.config.js extra or environment variables
-const GA_TRACKING_ID =
-    (Constants as any).expoConfig?.extra?.gaTrackingId ||
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access -- ExpoConstants.expoConfig.extra is intentionally untyped by Expo */
+const GA_TRACKING_ID: string =
+    ExpoConstants.expoConfig?.extra?.gaTrackingId ||
     (typeof process !== 'undefined' && process.env?.EXPO_PUBLIC_GA_TRACKING_ID) ||
     'G-XXXXXXXXXX';
-const DD_APP_ID =
-    (Constants as any).expoConfig?.extra?.datadogAppId ||
+const DD_APP_ID: string =
+    ExpoConstants.expoConfig?.extra?.datadogAppId ||
     (typeof process !== 'undefined' && process.env?.EXPO_PUBLIC_DATADOG_APP_ID) ||
     'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX';
-const DD_CLIENT_TOKEN =
-    (Constants as any).expoConfig?.extra?.datadogClientToken ||
+const DD_CLIENT_TOKEN: string =
+    ExpoConstants.expoConfig?.extra?.datadogClientToken ||
     (typeof process !== 'undefined' && process.env?.EXPO_PUBLIC_DATADOG_CLIENT_TOKEN) ||
     'pub_XXXXXXXX';
-const SENTRY_DSN =
-    (Constants as any).expoConfig?.extra?.sentryDsn ||
+const SENTRY_DSN: string =
+    ExpoConstants.expoConfig?.extra?.sentryDsn ||
     (typeof process !== 'undefined' && process.env?.EXPO_PUBLIC_SENTRY_DSN) ||
     'https://example@sentry.io/123456';
+/* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
 
 /**
  * Initializes the analytics services with user information and application context.
@@ -64,7 +103,7 @@ const SENTRY_DSN =
 export const initAnalytics = async (
     options: {
         userId?: string;
-        userProperties?: Record<string, any>;
+        userProperties?: Record<string, unknown>;
         enableAnalytics?: boolean;
     } = {}
 ): Promise<void> => {
@@ -137,7 +176,7 @@ export const initAnalytics = async (
  * @param journeyId The journey ID the screen belongs to (optional)
  * @param params Additional parameters to include with the event (optional)
  */
-export const trackScreenView = (screenName: string, journeyId?: string, params?: Record<string, any>): void => {
+export const trackScreenView = (screenName: string, journeyId?: string, params?: Record<string, unknown>): void => {
     if (!analyticsEnabled || !screenName) {
         return;
     }
@@ -170,7 +209,7 @@ export const trackScreenView = (screenName: string, journeyId?: string, params?:
  * @param eventName The name of the event to track
  * @param params Additional parameters to include with the event (optional)
  */
-export const trackEvent = (eventName: string, params?: Record<string, any>): void => {
+export const trackEvent = (eventName: string, params?: Record<string, unknown>): void => {
     if (!analyticsEnabled || !eventName) {
         return;
     }
@@ -205,15 +244,15 @@ export const trackEvent = (eventName: string, params?: Record<string, any>): voi
  * @param eventName The name of the event to track
  * @param params Additional parameters to include with the event (optional)
  */
-export const trackJourneyEvent = (journeyId: string, eventName: string, params?: Record<string, any>): void => {
+export const trackJourneyEvent = (journeyId: string, eventName: string, params?: Record<string, unknown>): void => {
     if (!analyticsEnabled || !journeyId || !eventName) {
         return;
     }
 
     try {
         // Validate journey ID
-        const validJourneyIds = Object.values(Constants.JOURNEY_IDS);
-        if (!validJourneyIds.includes(journeyId as any)) {
+        const validJourneyIds: string[] = Object.values(Constants.JOURNEY_IDS);
+        if (!validJourneyIds.includes(journeyId)) {
             logger.warn(`Invalid journey ID: ${journeyId}. Event not tracked.`);
             return;
         }
@@ -249,7 +288,7 @@ export const trackJourneyEvent = (journeyId: string, eventName: string, params?:
  * @param eventName The name of the event to track
  * @param params Additional parameters to include with the event (optional)
  */
-export const trackHealthEvent = (eventName: string, params?: Record<string, any>): void => {
+export const trackHealthEvent = (eventName: string, params?: Record<string, unknown>): void => {
     trackJourneyEvent(Constants.JOURNEY_IDS.MyHealth, eventName, params);
 };
 
@@ -258,7 +297,7 @@ export const trackHealthEvent = (eventName: string, params?: Record<string, any>
  * @param eventName The name of the event to track
  * @param params Additional parameters to include with the event (optional)
  */
-export const trackCareEvent = (eventName: string, params?: Record<string, any>): void => {
+export const trackCareEvent = (eventName: string, params?: Record<string, unknown>): void => {
     trackJourneyEvent(Constants.JOURNEY_IDS.CareNow, eventName, params);
 };
 
@@ -267,7 +306,7 @@ export const trackCareEvent = (eventName: string, params?: Record<string, any>):
  * @param eventName The name of the event to track
  * @param params Additional parameters to include with the event (optional)
  */
-export const trackPlanEvent = (eventName: string, params?: Record<string, any>): void => {
+export const trackPlanEvent = (eventName: string, params?: Record<string, unknown>): void => {
     trackJourneyEvent(Constants.JOURNEY_IDS.MyPlan, eventName, params);
 };
 
@@ -276,7 +315,7 @@ export const trackPlanEvent = (eventName: string, params?: Record<string, any>):
  * @param eventName The name of the event to track
  * @param params Additional parameters to include with the event (optional)
  */
-export const trackGamificationEvent = (eventName: string, params?: Record<string, any>): void => {
+export const trackGamificationEvent = (eventName: string, params?: Record<string, unknown>): void => {
     if (!analyticsEnabled || !eventName) {
         return;
     }
@@ -361,7 +400,7 @@ export const trackLevelUp = (newLevel: number, xpEarned: number): void => {
  * @param error The actual error object
  * @param context Additional context about when/where the error occurred
  */
-export const trackError = (errorName: string, error: Error, context?: Record<string, any>): void => {
+export const trackError = (errorName: string, error: Error, context?: Record<string, unknown>): void => {
     try {
         // Log error to Sentry with context
         Sentry.captureException(error, {
@@ -393,7 +432,7 @@ export const trackError = (errorName: string, error: Error, context?: Record<str
  * @param value The numeric value of the metric
  * @param context Additional context for the metric
  */
-export const trackPerformanceMetric = (metricName: string, value: number, context?: Record<string, any>): void => {
+export const trackPerformanceMetric = (metricName: string, value: number, context?: Record<string, unknown>): void => {
     if (!analyticsEnabled) {
         return;
     }
@@ -420,7 +459,7 @@ export const trackPerformanceMetric = (metricName: string, value: number, contex
  * Sets user properties for analytics segmentation.
  * @param properties Object containing user properties to set
  */
-export const setUserProperties = (properties: Record<string, any>): void => {
+export const setUserProperties = (properties: Record<string, unknown>): void => {
     if (!analyticsEnabled || !properties) {
         return;
     }
@@ -433,12 +472,10 @@ export const setUserProperties = (properties: Record<string, any>): void => {
         });
 
         // Set user attributes in Datadog RUM
-        datadogRum.setUser({
-            ...properties,
-        });
+        datadogRum.setUser({ ...properties } as DatadogUser);
 
         // Set user data in Sentry
-        Sentry.setUser(properties);
+        Sentry.setUser(properties as SentryUser);
 
         logger.log('User properties set');
     } catch (error) {

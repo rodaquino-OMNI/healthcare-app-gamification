@@ -3,12 +3,20 @@ import { Input } from '@design-system/components/Input';
 import { Select } from '@design-system/components/Select/Select';
 import { yupResolver } from '@hookform/resolvers/yup'; // ^3.0.0
 import { HealthMetricType } from '@shared/types/health.types';
-import { useForm } from 'react-hook-form'; // ^7.0.0
+import { useForm, type Resolver } from 'react-hook-form'; // ^7.0.0
 import * as yup from 'yup'; // ^1.0.0
 
-import { createHealthMetric } from '@api/health';
+import { createHealthMetric, CreateMetricInput } from '@api/health';
 import { useJourney } from '@context/JourneyContext';
 import { useHealthMetrics } from '@hooks/useHealthMetrics';
+
+/** Shape of the health metric form fields. */
+type HealthMetricFormData = {
+    value: number;
+    unit: string;
+    timestamp: string;
+    type: string;
+};
 
 /**
  * Component for adding a new health metric.
@@ -32,8 +40,8 @@ export const HealthMetricForm: React.FC = () => {
         handleSubmit,
         formState: { errors },
         reset,
-    } = useForm({
-        resolver: yupResolver(schema as any),
+    } = useForm<HealthMetricFormData>({
+        resolver: yupResolver(schema) as Resolver<HealthMetricFormData>,
     });
 
     // Access the useHealthMetrics hook to refetch data after submission
@@ -46,10 +54,16 @@ export const HealthMetricForm: React.FC = () => {
     }));
 
     // Handle form submission to create a new health metric
-    const onSubmit = async (data: any): Promise<void> => {
+    const onSubmit = async (data: HealthMetricFormData): Promise<void> => {
         try {
+            const metricInput: CreateMetricInput = {
+                type: data.type,
+                value: data.value,
+                unit: data.unit,
+                timestamp: data.timestamp || undefined,
+            };
             // Create a new health metric using the createHealthMetric API function
-            await createHealthMetric('your_record_id', data); // Replace 'your_record_id' with the actual record ID
+            await createHealthMetric('your_record_id', metricInput); // Replace 'your_record_id' with the actual record ID
 
             // Refetch health metrics to update the UI
             await refetch();

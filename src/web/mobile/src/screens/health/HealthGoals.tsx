@@ -40,7 +40,10 @@ const HealthGoals: React.FC = () => {
     const { t } = useTranslation();
     // Get the current user's ID from the authentication context
     const { session, getUserFromToken } = useAuth();
-    const userId = session?.accessToken ? getUserFromToken(session.accessToken)?.sub : undefined;
+    const tokenPayload = session?.accessToken
+        ? (getUserFromToken(session.accessToken) as { sub?: string } | null)
+        : null;
+    const userId = tokenPayload?.sub;
 
     // Fetch available health metric types using the useHealthMetrics hook
     const { data: _healthMetricTypes, isLoading, error } = useHealthMetrics(userId, null, null, []);

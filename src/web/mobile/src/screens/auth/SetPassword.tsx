@@ -240,7 +240,8 @@ export const SetPasswordScreen: React.FC = () => {
         watch,
         formState: { errors },
     } = useForm<SetPasswordFormData>({
-        resolver: yupResolver(setPasswordSchema(t as (key: string, options?: any) => string) as any),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment -- yupResolver requires any cast for dynamic schema
+        resolver: yupResolver(setPasswordSchema(t as (key: string, options?: Record<string, unknown>) => string)),
         mode: 'onChange',
         defaultValues: {
             password: '',

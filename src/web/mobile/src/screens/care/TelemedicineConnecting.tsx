@@ -2,21 +2,15 @@ import { Button } from '@austa/design-system/src/components/Button/Button';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, Animated, Easing } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
 
-/**
- * Route params expected by TelemedicineConnecting.
- */
-type TelemedicineConnectingRouteParams = {
-    appointmentId: string;
-    doctorName: string;
-    doctorSpecialty: string;
-};
+import type { CareStackParamList } from '../../navigation/types';
 
 /** Connection timeout in seconds. */
 const CONNECTION_TIMEOUT_SECONDS = 30;
@@ -47,11 +41,13 @@ const formatElapsed = (totalSeconds: number): string => {
  * provides cancel / retry actions.
  */
 const TelemedicineConnecting: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: TelemedicineConnectingRouteParams }, 'params'>>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareTelemedicineConnecting'>>();
     const { t } = useTranslation();
 
-    const { appointmentId, doctorName = '', doctorSpecialty = '' } = route.params || {};
+    const appointmentId = route.params?.sessionId ?? '';
+    const doctorName = '';
+    const doctorSpecialty = '';
 
     const [elapsed, setElapsed] = useState(0);
     const [timedOut, setTimedOut] = useState(false);

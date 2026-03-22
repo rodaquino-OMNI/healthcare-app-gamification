@@ -4,12 +4,15 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareStackParamList } from '../../navigation/types';
 
 type DocumentStatus = 'pending' | 'uploaded';
 
@@ -57,13 +60,11 @@ const INITIAL_DOCUMENTS: DocumentItem[] = [
  * for their appointment: ID, insurance card, medical referral, and exam results.
  */
 export const BookingDocuments: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<any>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareBookingDocuments'>>();
     const { t } = useTranslation();
-    const { doctorId, appointmentType } = route.params || {
-        doctorId: 'doc-001',
-        appointmentType: 'in-person',
-    };
+    const doctorId = route.params?.doctorId ?? 'doc-001';
+    const appointmentType = route.params?.appointmentType ?? 'in-person';
 
     const [documents, setDocuments] = useState<DocumentItem[]>(INITIAL_DOCUMENTS);
 

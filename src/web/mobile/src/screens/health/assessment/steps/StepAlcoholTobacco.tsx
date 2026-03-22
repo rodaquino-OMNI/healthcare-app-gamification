@@ -12,9 +12,18 @@ import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+interface AlcoholTobaccoData {
+    smokingStatus?: string;
+    cigarettesPerDay?: string;
+    yearsSmoking?: string;
+    alcoholFrequency?: string;
+    drinksPerWeek?: string;
+    drugScreening?: string;
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: AlcoholTobaccoData;
+    onUpdate: (field: keyof AlcoholTobaccoData, value: string) => void;
 }
 
 const SMOKING_STATUS = ['never', 'former', 'current'] as const;
@@ -54,9 +63,9 @@ export const StepAlcoholTobacco: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.alcoholTobacco.smoking.${opt}`)}
                             accessibilityRole="button"
                             testID={`smoking-status-${opt}`}
-                            style={[styles.radioCard, selected && styles.radioCardSelected] as any}
+                            style={[styles.radioCard, selected ? styles.radioCardSelected : null]}
                         >
-                            <View style={[styles.radioCircle, selected && styles.radioCircleSelected] as any}>
+                            <View style={[styles.radioCircle, selected ? styles.radioCircleSelected : null]}>
                                 {selected && <View style={styles.radioInner} />}
                             </View>
                             <Text
@@ -93,7 +102,7 @@ export const StepAlcoholTobacco: React.FC<StepProps> = ({ data, onUpdate }) => {
                                     accessibilityLabel={t(`healthAssessment.alcoholTobacco.cigarettesPerDay.${opt}`)}
                                     accessibilityRole="button"
                                     testID={`cigarettes-${opt}`}
-                                    style={[styles.chip, selected && styles.chipSelected] as any}
+                                    style={[styles.chip, selected ? styles.chipSelected : null]}
                                 >
                                     <Text
                                         fontSize="sm"
@@ -125,7 +134,7 @@ export const StepAlcoholTobacco: React.FC<StepProps> = ({ data, onUpdate }) => {
                                     accessibilityLabel={t(`healthAssessment.alcoholTobacco.yearsSmoking.${opt}`)}
                                     accessibilityRole="button"
                                     testID={`years-smoking-${opt}`}
-                                    style={[styles.chip, selected && styles.chipSelected] as any}
+                                    style={[styles.chip, selected ? styles.chipSelected : null]}
                                 >
                                     <Text
                                         fontSize="sm"
@@ -155,9 +164,9 @@ export const StepAlcoholTobacco: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.alcoholTobacco.alcohol.${opt}`)}
                             accessibilityRole="button"
                             testID={`alcohol-frequency-${opt}`}
-                            style={[styles.radioCard, selected && styles.radioCardSelected] as any}
+                            style={[styles.radioCard, selected ? styles.radioCardSelected : null]}
                         >
-                            <View style={[styles.radioCircle, selected && styles.radioCircleSelected] as any}>
+                            <View style={[styles.radioCircle, selected ? styles.radioCircleSelected : null]}>
                                 {selected && <View style={styles.radioInner} />}
                             </View>
                             <Text
@@ -194,7 +203,7 @@ export const StepAlcoholTobacco: React.FC<StepProps> = ({ data, onUpdate }) => {
                                     accessibilityLabel={t(`healthAssessment.alcoholTobacco.drinksPerWeek.${opt}`)}
                                     accessibilityRole="button"
                                     testID={`drinks-per-week-${opt}`}
-                                    style={[styles.chip, selected && styles.chipSelected] as any}
+                                    style={[styles.chip, selected ? styles.chipSelected : null]}
                                 >
                                     <Text
                                         fontSize="sm"
@@ -224,9 +233,9 @@ export const StepAlcoholTobacco: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.alcoholTobacco.drugScreening.${opt}`)}
                             accessibilityRole="button"
                             testID={`drug-screening-${opt}`}
-                            style={[styles.radioCard, selected && styles.radioCardSelected] as any}
+                            style={[styles.radioCard, selected ? styles.radioCardSelected : null]}
                         >
-                            <View style={[styles.radioCircle, selected && styles.radioCircleSelected] as any}>
+                            <View style={[styles.radioCircle, selected ? styles.radioCircleSelected : null]}>
                                 {selected && <View style={styles.radioInner} />}
                             </View>
                             <Text

@@ -4,12 +4,14 @@ import { sizingValues } from '@design-system/tokens/sizing';
 import { spacingValues } from '@design-system/tokens/spacing';
 import { typography, fontSizeValues } from '@design-system/tokens/typography';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, TextInput as RNTextInput } from 'react-native';
+import { Alert, TextInput as RNTextInput, NativeSyntheticEvent, TextInputKeyPressEventData } from 'react-native';
 import styled from 'styled-components/native';
 
 import { verifyEmail } from '../../api/auth';
+import type { AuthStackParamList } from '../../navigation/types';
 
 /**
  * Number of OTP digits
@@ -142,7 +144,7 @@ interface ToastState {
  * - Full design-system token compliance (zero hardcoded hex/px)
  */
 export const EmailVerifyScreen: React.FC = () => {
-    const navigation = useNavigation();
+    const navigation = useNavigation<StackNavigationProp<AuthStackParamList>>();
     const { t } = useTranslation();
 
     // OTP digit state
@@ -162,7 +164,8 @@ export const EmailVerifyScreen: React.FC = () => {
     });
 
     // Refs for each input
-    const inputRefs = useRef<(RNTextInput | null)[]>(Array(OTP_LENGTH).fill(null));
+    const initialRefs: (RNTextInput | null)[] = Array.from({ length: OTP_LENGTH }, () => null);
+    const inputRefs = useRef<(RNTextInput | null)[]>(initialRefs);
 
     // Countdown timer effect
     useEffect(() => {
@@ -214,7 +217,7 @@ export const EmailVerifyScreen: React.FC = () => {
             try {
                 await verifyEmail(otpCode);
                 Alert.alert(t('common.success'), t('auth.emailVerified'));
-                navigation.navigate('AuthLogin' as never);
+                navigation.navigate('AuthLogin');
             } catch (err) {
                 Alert.alert(t('common.error'), t('common.tryAgain'));
             } finally {
@@ -254,7 +257,7 @@ export const EmailVerifyScreen: React.FC = () => {
      * Handles backspace key to move focus to previous input
      */
     const handleKeyPress = useCallback(
-        (e: any, index: number) => {
+        (e: NativeSyntheticEvent<TextInputKeyPressEventData>, index: number) => {
             if (e.nativeEvent.key === 'Backspace' && !digits[index] && index > 0) {
                 inputRefs.current[index - 1]?.focus();
                 const newDigits = [...digits];
@@ -316,7 +319,7 @@ export const EmailVerifyScreen: React.FC = () => {
                         } as any)}
                         value={digit}
                         onChangeText={(text: string) => handleDigitChange(text, index)}
-                        onKeyPress={(e: any) => handleKeyPress(e, index)}
+                        onKeyPress={(e) => handleKeyPress(e, index)}
                         onFocus={() => setFocusedIndex(index)}
                         isFocused={focusedIndex === index}
                         keyboardType="number-pad"

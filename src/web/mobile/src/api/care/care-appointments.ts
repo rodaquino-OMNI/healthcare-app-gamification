@@ -110,7 +110,7 @@ export const getAuthSession = async (): Promise<Session | null> => {
     try {
         const tokenFromStorage = await AsyncStorage.getItem('auth_session');
         if (tokenFromStorage) {
-            return JSON.parse(tokenFromStorage);
+            return JSON.parse(tokenFromStorage) as Session;
         }
     } catch (error) {
         console.error('Failed to get auth session:', error);

@@ -3,19 +3,16 @@ import { borderRadiusValues } from '@design-system/tokens/borderRadius';
 import { colors } from '@design-system/tokens/colors';
 import { sizingValues } from '@design-system/tokens/sizing';
 import { spacingValues } from '@design-system/tokens/spacing';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import { Reward } from '@shared/types/gamification.types';
 import React, { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, Modal, SafeAreaView } from 'react-native';
 
 import { useTheme } from '../../hooks/useTheme';
+import type { GamificationStackParamList } from '../../navigation/types';
 
-interface RewardDetailRouteParams {
-    rewardId: string;
-}
-
-/** Mock reward data matching the RewardCatalog mock data. */
 const MOCK_REWARDS: Reward[] = [
     {
         id: 'r-001',
@@ -104,11 +101,11 @@ const getJourneyColor = (journey: string): string => JOURNEY_COLORS[journey] || 
  */
 const RewardDetail: React.FC = () => {
     const { t } = useTranslation();
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<GamificationStackParamList>>();
     const { theme } = useTheme();
     const styles = createStyles(theme as Theme);
-    const route = useRoute<any>();
-    const { rewardId } = route.params as RewardDetailRouteParams;
+    const route = useRoute<RouteProp<GamificationStackParamList, 'GamificationRewardDetail'>>();
+    const { rewardId } = route.params;
 
     const [showTerms, setShowTerms] = useState(false);
     const [showConfirmModal, setShowConfirmModal] = useState(false);

@@ -8,7 +8,7 @@ import { typography } from '@design-system/tokens/typography';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, type Resolver } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import styled from 'styled-components/native';
@@ -21,7 +21,7 @@ import type { AuthNavigationProp } from '../../navigation/types';
 /**
  * Validation schema for health information form.
  */
-const createHealthInfoSchema = (t: (key: string, options?: any) => string) =>
+const createHealthInfoSchema = (t: (key: string, options?: Record<string, unknown>) => string) =>
     yup.object().shape({
         bloodType: yup.string().required(t('common.validation.required')),
         allergies: yup.string().default(''),
@@ -227,7 +227,11 @@ const ProfileVariant1: React.FC = () => {
         watch,
         formState: { errors },
     } = useForm<HealthInfoFormData>({
-        resolver: yupResolver(createHealthInfoSchema(t as (key: string, options?: any) => string) as any),
+        resolver: yupResolver(
+            createHealthInfoSchema(
+                t as (key: string, options?: Record<string, unknown>) => string
+            ) as unknown as yup.ObjectSchema<HealthInfoFormData>
+        ) as Resolver<HealthInfoFormData>,
         mode: 'onBlur',
         defaultValues: {
             bloodType: '',

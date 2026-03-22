@@ -3,12 +3,15 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareStackParamList } from '../../navigation/types';
 
 type AppointmentTypeValue = 'in-person' | 'telemedicine' | 'home-visit';
 
@@ -54,10 +57,10 @@ const TYPE_OPTIONS: TypeOption[] = [
  * Each option shows estimated price and availability.
  */
 export const AppointmentType: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<any>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareAppointmentType'>>();
     const { t } = useTranslation();
-    const { doctorId } = route.params || { doctorId: 'doc-001' };
+    const doctorId = route.params?.doctorId ?? 'doc-001';
 
     const [selected, setSelected] = useState<AppointmentTypeValue | null>(null);
 

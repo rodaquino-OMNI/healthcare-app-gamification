@@ -10,11 +10,18 @@
  * for fetching a single plan by ID directly.
  */
 
-import { Plan } from '@shared/types/plan.types';
+import { Plan, Coverage } from '@shared/types/plan.types';
 import { useQuery } from '@tanstack/react-query'; // v5.22+
 
 import { getPlans } from '@api/plan';
 import { useAuth } from '@context/AuthContext';
+
+/** Minimal shape of a decoded JWT used in this hook. */
+interface DecodedToken {
+    id?: string;
+    sub?: string;
+    [key: string]: unknown;
+}
 
 /**
  * Custom hook to fetch and manage insurance coverage data for a specific plan.
@@ -29,10 +36,12 @@ export const useCoverage = (planId: string) => {
     const { session, getUserFromToken } = useAuth();
 
     // Extract user ID from the token if a session exists
-    const decodedToken = session ? getUserFromToken(session.accessToken) : null;
+    const decodedToken: DecodedToken | null = session
+        ? (getUserFromToken(session.accessToken) as DecodedToken | null)
+        : null;
 
     // Assuming the token contains either an 'id' or 'sub' claim for the user ID
-    const userId = decodedToken?.id || decodedToken?.sub;
+    const userId = decodedToken?.id ?? decodedToken?.sub;
 
     // Use React Query to fetch and cache the plan data
     // TData = Plan[], TError = Error, TResult = Plan | undefined
@@ -67,7 +76,8 @@ export const useCoverage = (planId: string) => {
     });
 
     // Extract coverage information from the plan, or empty array if plan is undefined
-    const coverage = plan?.coverages || [];
+    const coverageRaw: unknown = plan?.coverages;
+    const coverage: Coverage[] = Array.isArray(coverageRaw) ? (coverageRaw as Coverage[]) : [];
 
     // Return all relevant data and states
     return {

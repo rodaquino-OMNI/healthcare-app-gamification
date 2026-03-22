@@ -142,6 +142,26 @@ async function authHeaders(): Promise<{ Authorization: string }> {
 // 1. CORE GRAPHQL FUNCTIONS (5)
 // ===========================================================================
 
+interface GetHealthMetricsQuery {
+    getHealthMetrics: HealthMetric[];
+}
+
+interface GetConnectedDevicesQuery {
+    getConnectedDevices: HealthDevice[];
+}
+
+interface ConnectDeviceMutation {
+    connectDevice: HealthDevice;
+}
+
+interface GetMedicalHistoryQuery {
+    getMedicalHistory: HealthMetric[];
+}
+
+interface CreateHealthMetricMutation {
+    createHealthMetric: HealthMetric;
+}
+
 export async function getHealthMetrics(
     userId: string,
     types: string[],
@@ -149,7 +169,7 @@ export async function getHealthMetrics(
     endDate?: string
 ): Promise<HealthMetric[]> {
     try {
-        const { data } = await graphQLClient.query({
+        const { data } = await graphQLClient.query<GetHealthMetricsQuery>({
             query: GET_HEALTH_METRICS,
             variables: { userId, types, startDate, endDate },
             fetchPolicy: 'network-only',
@@ -163,12 +183,12 @@ export async function getHealthMetrics(
 
 export async function getConnectedDevices(userId: string): Promise<HealthDevice[]> {
     try {
-        const { data } = await graphQLClient.query({
+        const { data } = await graphQLClient.query<GetConnectedDevicesQuery>({
             query: GET_HEALTH_METRICS,
             variables: { userId, types: ['device'] },
             fetchPolicy: 'network-only',
         });
-        return data.getConnectedDevices || [];
+        return data.getConnectedDevices ?? [];
     } catch (error) {
         console.error('Error fetching connected devices:', error);
         throw error;
@@ -180,10 +200,13 @@ export async function connectDevice(
     deviceData: { deviceType: string; deviceId: string }
 ): Promise<HealthDevice> {
     try {
-        const { data } = await graphQLClient.mutate({
+        const { data } = await graphQLClient.mutate<ConnectDeviceMutation>({
             mutation: CREATE_HEALTH_METRIC,
             variables: { userId, ...deviceData },
         });
+        if (!data) {
+            throw new Error('No data returned from connectDevice');
+        }
         return data.connectDevice;
     } catch (error) {
         console.error('Error connecting device:', error);
@@ -193,12 +216,12 @@ export async function connectDevice(
 
 export async function getMedicalHistory(userId: string): Promise<HealthMetric[]> {
     try {
-        const { data } = await graphQLClient.query({
+        const { data } = await graphQLClient.query<GetMedicalHistoryQuery>({
             query: GET_HEALTH_METRICS,
             variables: { userId, types: ['history'] },
             fetchPolicy: 'network-only',
         });
-        return data.getMedicalHistory || [];
+        return data.getMedicalHistory ?? [];
     } catch (error) {
         console.error('Error fetching medical history:', error);
         throw error;
@@ -207,10 +230,13 @@ export async function getMedicalHistory(userId: string): Promise<HealthMetric[]>
 
 export async function createHealthMetric(recordId: string, createMetricDto: CreateMetricInput): Promise<HealthMetric> {
     try {
-        const { data } = await graphQLClient.mutate({
+        const { data } = await graphQLClient.mutate<CreateHealthMetricMutation>({
             mutation: CREATE_HEALTH_METRIC,
             variables: { recordId, createMetricDto },
         });
+        if (!data) {
+            throw new Error('No data returned from createHealthMetric');
+        }
         return data.createHealthMetric;
     } catch (error) {
         console.error('Error creating health metric:', error);

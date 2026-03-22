@@ -1,5 +1,5 @@
 import { Card } from '@design-system/components/Card/Card'; // Provides a styled container for claim information.
-import { useNavigation } from '@react-navigation/native'; // @react-navigation/native, ^6.0.0
+import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native'; // @react-navigation/native, ^6.0.0
 import { Claim } from '@shared/types/plan.types'; // Defines the structure of claim data.
 import React from 'react'; // React, v18.0+
 
@@ -15,7 +15,7 @@ export const ClaimList: React.FC = () => {
     const { claims, isLoading, error } = useClaims('your_plan_id'); // Replace 'your_plan_id' with the actual plan ID
 
     // Access the navigation object
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
     // If loading, display a loading indicator.
     if (isLoading) {
@@ -35,7 +35,7 @@ export const ClaimList: React.FC = () => {
                 title="No claims found"
                 description="Submit a new claim to get started."
                 actionLabel="Submit Claim"
-                onAction={() => (navigation as any).navigate('ClaimSubmission')}
+                onAction={() => navigation.navigate('ClaimSubmission')}
                 journey="plan"
             />
         );

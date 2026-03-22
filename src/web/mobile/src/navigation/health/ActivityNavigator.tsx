@@ -7,6 +7,12 @@ import React from 'react';
 import { ROUTES } from '../../constants/routes';
 import type { ActivityParamList } from '../types';
 
+/** Shape of every lazily-loaded screen module. */
+interface ScreenModule {
+    default?: React.ComponentType;
+    [key: string]: React.ComponentType | undefined;
+}
+
 // Lazy-loaded screens (require + try/catch for resilience)
 let ActivityHomeScreen: React.ComponentType<unknown> = () => null;
 let WorkoutLogScreen: React.ComponentType<unknown> = () => null;
@@ -20,62 +26,62 @@ let ActivityDeviceSyncScreen: React.ComponentType<unknown> = () => null;
 let ActivityExportScreen: React.ComponentType<unknown> = () => null;
 
 try {
-    const m = require('../../screens/health/activity/ActivityHome');
-    ActivityHomeScreen = m.ActivityHome || m.default || ActivityHomeScreen;
+    const m = require('../../screens/health/activity/ActivityHome') as ScreenModule;
+    ActivityHomeScreen = m.ActivityHome ?? m.default ?? ActivityHomeScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/activity/WorkoutLog');
-    WorkoutLogScreen = m.WorkoutLog || m.default || WorkoutLogScreen;
+    const m = require('../../screens/health/activity/WorkoutLog') as ScreenModule;
+    WorkoutLogScreen = m.WorkoutLog ?? m.default ?? WorkoutLogScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/activity/WorkoutDetail');
-    WorkoutDetailScreen = m.WorkoutDetail || m.default || WorkoutDetailScreen;
+    const m = require('../../screens/health/activity/WorkoutDetail') as ScreenModule;
+    WorkoutDetailScreen = m.WorkoutDetail ?? m.default ?? WorkoutDetailScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/activity/WorkoutHistory');
-    WorkoutHistoryScreen = m.WorkoutHistory || m.default || WorkoutHistoryScreen;
+    const m = require('../../screens/health/activity/WorkoutHistory') as ScreenModule;
+    WorkoutHistoryScreen = m.WorkoutHistory ?? m.default ?? WorkoutHistoryScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/activity/StepGoals');
-    StepGoalsScreen = m.StepGoals || m.default || StepGoalsScreen;
+    const m = require('../../screens/health/activity/StepGoals') as ScreenModule;
+    StepGoalsScreen = m.StepGoals ?? m.default ?? StepGoalsScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/activity/ActivityTrends');
-    ActivityTrendsScreen = m.ActivityTrends || m.default || ActivityTrendsScreen;
+    const m = require('../../screens/health/activity/ActivityTrends') as ScreenModule;
+    ActivityTrendsScreen = m.ActivityTrends ?? m.default ?? ActivityTrendsScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/activity/ExerciseLibrary');
-    ExerciseLibraryScreen = m.ExerciseLibrary || m.default || ExerciseLibraryScreen;
+    const m = require('../../screens/health/activity/ExerciseLibrary') as ScreenModule;
+    ExerciseLibraryScreen = m.ExerciseLibrary ?? m.default ?? ExerciseLibraryScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/activity/ExerciseDetail');
-    ExerciseDetailScreen = m.ExerciseDetail || m.default || ExerciseDetailScreen;
+    const m = require('../../screens/health/activity/ExerciseDetail') as ScreenModule;
+    ExerciseDetailScreen = m.ExerciseDetail ?? m.default ?? ExerciseDetailScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/activity/ActivityDeviceSync');
-    ActivityDeviceSyncScreen = m.ActivityDeviceSync || m.default || ActivityDeviceSyncScreen;
+    const m = require('../../screens/health/activity/ActivityDeviceSync') as ScreenModule;
+    ActivityDeviceSyncScreen = m.ActivityDeviceSync ?? m.default ?? ActivityDeviceSyncScreen;
 } catch {
     /* not available */
 }
 try {
-    const m = require('../../screens/health/activity/ActivityExport');
-    ActivityExportScreen = m.ActivityExport || m.default || ActivityExportScreen;
+    const m = require('../../screens/health/activity/ActivityExport') as ScreenModule;
+    ActivityExportScreen = m.ActivityExport ?? m.default ?? ActivityExportScreen;
 } catch {
     /* not available */
 }

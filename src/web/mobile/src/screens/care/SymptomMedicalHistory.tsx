@@ -7,13 +7,15 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import type { Theme } from '@design-system/themes/base.theme';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView, TextInput } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareNavigationProp, CareStackParamList } from '../../navigation/types';
 
 interface MedicalHistoryItem {
     id: string;
@@ -49,13 +51,6 @@ const getTypeIcon = (type: MedicalHistoryItem['type']): string => {
     }
 };
 
-type SymptomMedicalHistoryRouteParams = {
-    symptoms: Array<{ id: string; name: string }>;
-    description: string;
-    regions: Array<{ id: string; label: string }>;
-    photos: Array<{ id: string; uri: string }>;
-};
-
 /**
  * Medical history screen that pulls relevant medical history for AI context.
  * Users can mark relevant conditions, surgeries, and allergies, and add new ones.
@@ -64,9 +59,9 @@ const SymptomMedicalHistory: React.FC = () => {
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: SymptomMedicalHistoryRouteParams }, 'params'>>();
-    const { symptoms = [], description = '', regions = [], photos = [] } = route.params || {};
+    const navigation = useNavigation<CareNavigationProp>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareSymptomMedicalHistory'>>();
+    const sessionId = route.params?.sessionId ?? '';
 
     const [historyItems, setHistoryItems] = useState<MedicalHistoryItem[]>(MOCK_MEDICAL_HISTORY);
     const [newCondition, setNewCondition] = useState('');
@@ -94,23 +89,7 @@ const SymptomMedicalHistory: React.FC = () => {
     };
 
     const handleContinue = (): void => {
-        const relevantHistory = historyItems
-            .filter((item) => item.isRelevant)
-            .map((item) => ({
-                id: item.id,
-                type: item.type,
-                name: item.nameKey.startsWith('custom-')
-                    ? item.nameKey
-                    : t(`journeys.care.symptomChecker.medicalHistory.items.${item.nameKey}`),
-            }));
-
-        navigation.navigate(ROUTES.CARE_SYMPTOM_MEDICATION_CONTEXT, {
-            symptoms,
-            description,
-            regions,
-            photos,
-            medicalHistory: relevantHistory,
-        });
+        navigation.navigate(ROUTES.CARE_SYMPTOM_MEDICATION_CONTEXT, { sessionId });
     };
 
     const handleBack = (): void => {
@@ -138,7 +117,7 @@ const SymptomMedicalHistory: React.FC = () => {
                 <Touchable
                     key={item.id}
                     onPress={() => toggleRelevance(item.id)}
-                    style={[styles.historyItem, item.isRelevant && styles.historyItemRelevant] as any}
+                    style={[styles.historyItem, item.isRelevant ? styles.historyItemRelevant : null]}
                     accessibilityLabel={`${item.id.startsWith('custom-') ? item.nameKey : t(`journeys.care.symptomChecker.medicalHistory.items.${item.nameKey}`)}, ${item.dateLabel}${item.isRelevant ? `, ${t('journeys.care.symptomChecker.medicalHistory.relevant')}` : ''}`}
                     accessibilityRole="button"
                     testID={`history-item-${item.id}`}
@@ -161,7 +140,7 @@ const SymptomMedicalHistory: React.FC = () => {
                                 {item.dateLabel}
                             </Text>
                         </View>
-                        <View style={[styles.checkbox, item.isRelevant && styles.checkboxChecked] as any}>
+                        <View style={[styles.checkbox, item.isRelevant ? styles.checkboxChecked : null]}>
                             {item.isRelevant && (
                                 <Text fontSize="text-xs" color={colors.neutral.white}>
                                     {'\u2713'}

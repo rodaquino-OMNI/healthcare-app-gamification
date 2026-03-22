@@ -12,6 +12,7 @@ import styled from 'styled-components/native';
 import { updateProfile } from '../../api/auth';
 import { ROUTES } from '../../constants/routes';
 import { useAuth } from '../../context/AuthContext';
+import type { AuthNavigationProp } from '../../navigation/types';
 
 // --- Constants ---
 
@@ -181,7 +182,7 @@ const SaveButtonText = styled.Text`
  * name, phone, relationship selection, and primary toggle.
  */
 export const ProfileEmergencyContact: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<AuthNavigationProp>();
     const { t } = useTranslation();
     const { session } = useAuth();
     const [_saving, setSaving] = useState(false);

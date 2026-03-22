@@ -4,12 +4,14 @@ import { colors } from '@design-system/tokens/colors';
 import { sizingValues } from '@design-system/tokens/sizing';
 import { spacingValues } from '@design-system/tokens/spacing';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import { Reward } from '@shared/types/gamification.types';
 import React, { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, ScrollView, SafeAreaView } from 'react-native';
 
 import { useTheme } from '../../hooks/useTheme';
+import type { GamificationStackParamList } from '../../navigation/types';
 
 type JourneyFilter = 'all' | 'health' | 'care' | 'plan';
 type SortOption = 'low-high' | 'high-low' | 'popular';
@@ -141,7 +143,7 @@ const POPULARITY: Record<string, number> = {
  */
 const RewardCatalog: React.FC = () => {
     const { t } = useTranslation();
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<GamificationStackParamList>>();
     const { theme } = useTheme();
     const styles = createStyles(theme as Theme);
     const [journeyFilter, setJourneyFilter] = useState<JourneyFilter>('all');

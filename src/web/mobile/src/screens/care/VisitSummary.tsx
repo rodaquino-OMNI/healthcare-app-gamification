@@ -4,20 +4,15 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView, TouchableOpacity, Share, Alert } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
 
-/**
- * Route parameters expected by VisitSummary.
- */
-type VisitSummaryRouteParams = {
-    appointmentId: string;
-    doctorName: string;
-};
+import type { CareStackParamList } from '../../navigation/types';
 
 /**
  * Diagnosis entry from the consultation.
@@ -107,11 +102,12 @@ const getPriorityColor = (priority: 'high' | 'medium' | 'low'): string => {
  * Part of the Care Now journey (orange theme).
  */
 const VisitSummary: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: VisitSummaryRouteParams }, 'params'>>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareVisitSummary'>>();
     const { t } = useTranslation();
 
-    const { appointmentId = 'apt-001', doctorName = 'Dr. Carlos Mendes' } = route.params || {};
+    const appointmentId = route.params?.visitId ?? 'apt-001';
+    const doctorName = 'Dr. Carlos Mendes';
 
     const [expandedDiagnosis, setExpandedDiagnosis] = useState<string | null>(null);
 

@@ -6,7 +6,8 @@ import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import type { Theme } from '@design-system/themes/base.theme';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native';
@@ -14,14 +15,7 @@ import { useTheme } from 'styled-components/native';
 
 import { ROUTES } from '@constants/routes';
 
-/**
- * Route params expected by TelemedicineEndScreen.
- */
-type TelemedicineEndScreenRouteParams = {
-    appointmentId: string;
-    doctorName: string;
-    callDuration: string;
-};
+import type { CareStackParamList } from '../../navigation/types';
 
 /** Maximum star rating. */
 const MAX_STARS = 5;
@@ -37,13 +31,15 @@ const getStarChar = (filled: boolean): string => (filled ? '\u2605' : '\u2606');
  * and navigation CTAs for visit summary, follow-up booking, and dashboard.
  */
 const TelemedicineEndScreen: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: TelemedicineEndScreenRouteParams }, 'params'>>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareTelemedicineEnd'>>();
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
 
-    const { appointmentId, doctorName = '', callDuration = '00:00' } = route.params || {};
+    const appointmentId = route.params?.sessionId ?? '';
+    const doctorName = '';
+    const callDuration = '00:00';
 
     const [rating, setRating] = useState(0);
     const [feedback, setFeedback] = useState('');

@@ -9,6 +9,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, FlatList, Linking, Alert, Platform } from 'react-native';
 
+import type { CareNavigationProp } from '../../navigation/types';
+
 interface EmergencyRoom {
     id: string;
     name: string;
@@ -95,7 +97,7 @@ const getWaitTimeBadgeStatus = (waitTime: string): 'success' | 'warning' | 'erro
  * Displays nearby ERs sorted by distance with call and directions actions.
  */
 const SymptomERLocator: React.FC = () => {
-    const _navigation = useNavigation<any>();
+    const _navigation = useNavigation<CareNavigationProp>();
     const { t } = useTranslation();
 
     const sortedRooms = [...MOCK_EMERGENCY_ROOMS].sort((a, b) => a.distanceKm - b.distanceKm);

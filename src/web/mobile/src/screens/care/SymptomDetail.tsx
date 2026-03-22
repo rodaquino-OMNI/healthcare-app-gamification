@@ -10,12 +10,14 @@ import { Stepper } from '@austa/design-system/src/components/Stepper/Stepper';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareNavigationProp, CareStackParamList } from '../../navigation/types';
 
 interface RegionDetail {
     regionId: string;
@@ -26,21 +28,18 @@ interface RegionDetail {
     notes: string;
 }
 
-type SymptomDetailRouteParams = {
-    symptoms: Array<{ id: string; name: string }>;
-    description: string;
-    regions: Array<{ id: string; label: string }>;
-};
-
 /**
  * Symptom detail screen where users provide additional information for each
  * affected body region, including severity, duration, onset date, and notes.
  * Step 3 of the symptom checker flow.
  */
 const SymptomDetail: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: SymptomDetailRouteParams }, 'params'>>();
-    const { symptoms = [], description = '', regions = [] } = route.params || {};
+    const navigation = useNavigation<CareNavigationProp>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareSymptomDetail'>>();
+    const sessionId = route.params?.sessionId ?? '';
+    const _symptoms: Array<{ id: string; name: string }> = [];
+    const _description = '';
+    const regions: Array<{ id: string; label: string }> = [];
     const { t } = useTranslation();
 
     const SYMPTOM_STEPS = [
@@ -78,7 +77,7 @@ const SymptomDetail: React.FC = () => {
 
     const currentDetail = details[currentIndex];
 
-    const updateDetail = (field: keyof RegionDetail, value: any) => {
+    const updateDetail = (field: keyof RegionDetail, value: RegionDetail[keyof RegionDetail]) => {
         setDetails((prev) => prev.map((d, i) => (i === currentIndex ? { ...d, [field]: value } : d)));
     };
 
@@ -98,10 +97,7 @@ const SymptomDetail: React.FC = () => {
 
     const handleContinue = (): void => {
         navigation.navigate(ROUTES.CARE_SYMPTOM_QUESTIONS, {
-            symptoms,
-            description,
-            regions,
-            details,
+            sessionId,
         });
     };
 
@@ -240,7 +236,7 @@ const SymptomDetail: React.FC = () => {
                         <Input
                             label={t('journeys.care.symptomChecker.details.additionalNotes')}
                             value={currentDetail.notes}
-                            onChange={(e: any) => updateDetail('notes', e.target?.value ?? e)}
+                            onChangeText={(text: string) => updateDetail('notes', text)}
                             placeholder={t('journeys.care.symptomChecker.details.notesPlaceholder')}
                             journey="care"
                             aria-label={`Additional notes for ${currentDetail.regionLabel}`}

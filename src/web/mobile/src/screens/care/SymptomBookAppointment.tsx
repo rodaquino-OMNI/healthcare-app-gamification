@@ -4,12 +4,14 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareNavigationProp, CareStackParamList } from '../../navigation/types';
 
 interface PossibleCondition {
     id: string;
@@ -18,11 +20,6 @@ interface PossibleCondition {
     severity: 'low' | 'medium' | 'high';
     description: string;
 }
-
-type SymptomBookAppointmentRouteParams = {
-    conditions: PossibleCondition[];
-    overallSeverity: number;
-};
 
 const getSpecialtySuggestion = (
     conditions: PossibleCondition[],
@@ -72,15 +69,16 @@ const getSeverityLabel = (severity: number): string => {
  * Suggests a specialty and provides navigation to booking or doctor search.
  */
 const SymptomBookAppointment: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: SymptomBookAppointmentRouteParams }, 'params'>>();
+    const navigation = useNavigation<CareNavigationProp>();
+    const _route = useRoute<RouteProp<CareStackParamList, 'CareSymptomBookAppointment'>>();
     const { t } = useTranslation();
 
-    const { conditions = [], overallSeverity = 5 } = route.params || {};
+    const conditions: PossibleCondition[] = [];
+    const overallSeverity = 5;
     const specialty = getSpecialtySuggestion(conditions, overallSeverity);
 
     const handleBookNow = (): void => {
-        navigation.navigate(ROUTES.CARE_BOOKING_SCHEDULE);
+        navigation.navigate(ROUTES.CARE_APPOINTMENT_BOOKING);
     };
 
     const handleViewDoctors = (): void => {

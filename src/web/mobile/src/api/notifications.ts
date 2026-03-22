@@ -115,7 +115,7 @@ export const deleteNotification = async (notificationId: string): Promise<void> 
  */
 export const getNotificationPreferences = async (userId: string): Promise<NotificationPreferences> => {
     try {
-        const { data } = await restClient.get(`/users/${userId}/notification-preferences`);
+        const { data } = await restClient.get<NotificationPreferences>(`/users/${userId}/notification-preferences`);
         return data;
     } catch (error) {
         console.error('Error fetching notification preferences:', error);
@@ -135,7 +135,10 @@ export const updateNotificationPreferences = async (
     prefs: Partial<NotificationPreferences>
 ): Promise<NotificationPreferences> => {
     try {
-        const { data } = await restClient.put(`/users/${userId}/notification-preferences`, prefs);
+        const { data } = await restClient.put<NotificationPreferences>(
+            `/users/${userId}/notification-preferences`,
+            prefs
+        );
         return data;
     } catch (error) {
         console.error('Error updating notification preferences:', error);
@@ -150,7 +153,7 @@ export const updateNotificationPreferences = async (
  */
 export const getNotificationCategories = async (): Promise<NotificationCategory[]> => {
     try {
-        const { data } = await restClient.get('/notification-categories');
+        const { data } = await restClient.get<NotificationCategory[]>('/notification-categories');
         return data;
     } catch (error) {
         console.error('Error fetching notification categories:', error);
@@ -166,7 +169,7 @@ export const getNotificationCategories = async (): Promise<NotificationCategory[
  */
 export const getUnreadCount = async (userId: string): Promise<number> => {
     try {
-        const { data } = await restClient.get(`/notifications/unread-count?userId=${userId}`);
+        const { data } = await restClient.get<number>(`/notifications/unread-count?userId=${userId}`);
         return data;
     } catch (error) {
         console.error('Error fetching unread notification count:', error);
@@ -220,9 +223,10 @@ export const getNotificationHistory = async (
     limit?: number
 ): Promise<{ notifications: Notification[]; total: number; page: number }> => {
     try {
-        const { data } = await restClient.get('/notifications/history', {
-            params: { userId, page, limit },
-        });
+        const { data } = await restClient.get<{ notifications: Notification[]; total: number; page: number }>(
+            '/notifications/history',
+            { params: { userId, page, limit } }
+        );
         return data;
     } catch (error) {
         console.error('Error fetching notification history:', error);

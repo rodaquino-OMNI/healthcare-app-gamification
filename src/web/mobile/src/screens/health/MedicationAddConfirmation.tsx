@@ -4,11 +4,13 @@ import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet } from 'react-native';
 
 import { ROUTES } from '../../constants/routes';
+import type { HealthStackParamList } from '../../navigation/types';
 
 /**
  * Route params for MedicationAddConfirmation screen.
@@ -25,7 +27,7 @@ type AddConfirmationRouteParams = {
  * Shows the medication name and dosage, with CTAs for reminders and list.
  */
 export const MedicationAddConfirmation: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
     const { t } = useTranslation();
     const route = useRoute<RouteProp<AddConfirmationRouteParams, 'MedicationAddConfirmation'>>();
 

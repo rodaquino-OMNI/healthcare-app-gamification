@@ -6,7 +6,8 @@ import { Input } from '@design-system/components/Input';
 import { Select } from '@design-system/components/Select/Select';
 import { Text } from '@design-system/primitives/Text/Text';
 import { colors } from '@design-system/tokens/colors';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView } from 'react-native';
@@ -14,14 +15,7 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { JourneyHeader } from '@components/shared/JourneyHeader';
 import { ROUTES } from '@constants/routes';
 
-/**
- * Route params expected by BookingSchedule.
- */
-interface BookingScheduleRouteParams {
-    doctorId: string;
-    date: string;
-    time: string;
-}
+import type { CareStackParamList } from '../../navigation/types';
 
 /** Mock doctor data keyed by ID. */
 const MOCK_DOCTORS: Record<string, { name: string; specialty: string }> = {
@@ -56,9 +50,9 @@ const formatDateBR = (dateStr: string): string => {
  * appointment details before finalizing the booking.
  */
 const BookingSchedule: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<any>();
-    const { doctorId, date, time } = route.params as BookingScheduleRouteParams;
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareBookingSchedule'>>();
+    const { doctorId, date = '', time = '' } = route.params;
     const { t } = useTranslation();
 
     const doctor = MOCK_DOCTORS[doctorId] || { name: 'Medico', specialty: 'Especialidade' };
@@ -131,7 +125,7 @@ const BookingSchedule: React.FC = () => {
                     <Input
                         label={t('journeys.care.appointments.patientName')}
                         value={patientName}
-                        onChange={(e: any) => setPatientName(e.target?.value ?? e)}
+                        onChangeText={setPatientName}
                         journey="care"
                         aria-label="Nome do paciente"
                     />
@@ -139,7 +133,7 @@ const BookingSchedule: React.FC = () => {
                     <Input
                         label={t('journeys.care.appointments.dateOfBirth')}
                         value={patientDob}
-                        onChange={(e: any) => setPatientDob(e.target?.value ?? e)}
+                        onChangeText={setPatientDob}
                         journey="care"
                         placeholder="DD/MM/AAAA"
                         aria-label="Data de nascimento do paciente"
@@ -154,7 +148,7 @@ const BookingSchedule: React.FC = () => {
                     <Input
                         label={t('journeys.care.appointments.describeReason')}
                         value={reason}
-                        onChange={(e: any) => setReason(e.target?.value ?? e)}
+                        onChangeText={setReason}
                         journey="care"
                         placeholder="Ex: Dor de cabeca persistente, febre..."
                         aria-label="Motivo da consulta"

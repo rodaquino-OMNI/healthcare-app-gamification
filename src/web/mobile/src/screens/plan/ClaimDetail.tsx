@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types -- return types are inferred from implementation context */
 import type { Theme } from '@design-system/themes/base.theme';
 import { colors, typography } from '@design-system/tokens';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import { useRoute, useNavigation, type RouteProp } from '@react-navigation/native';
 import { Claim, ClaimStatus } from '@shared/types/plan.types';
 import { formatDate } from '@shared/utils/format';
 import React from 'react';
@@ -14,7 +14,7 @@ import { useClaims } from '@hooks/useClaims';
 
 import { ClaimDocuments } from './ClaimDocuments';
 import { ClaimStatusTimeline } from './ClaimStatusTimeline';
-import type { PlanNavigationProp } from '../../navigation/types';
+import type { PlanNavigationProp, PlanStackParamList } from '../../navigation/types';
 
 const { plan } = colors.journeys;
 const sp = { xs: 8, sm: 12, md: 16, lg: 20, xl: 24, '2xl': 32 };
@@ -39,13 +39,14 @@ const TYPE_LABELS: Record<string, string> = {
  */
 export const ClaimDetail: React.FC = () => {
     const { t } = useTranslation();
-    const route = useRoute<any>();
+    const route = useRoute<RouteProp<PlanStackParamList, 'ClaimDetail'>>();
     const navigation = useNavigation<PlanNavigationProp>();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
 
-    const claimId = route.params?.claimId;
-    const planId = route.params?.planId || '';
+    const claimId = route.params.claimId;
+    // planId is not in the typed params but may arrive at runtime via navigation
+    const planId = (route.params as Record<string, string>).planId ?? '';
 
     const { claims, isLoading, error } = useClaims(planId);
     const claim = claims?.find((c: Claim) => c.id === claimId);

@@ -12,9 +12,16 @@ import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+interface StressData {
+    stressLevel?: number;
+    stressSources?: string[];
+    copingMechanisms?: string[];
+    mentalHealthScreening?: string;
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: StressData;
+    onUpdate: (field: keyof StressData, value: string | string[] | number) => void;
 }
 
 const STRESS_LEVELS = [
@@ -75,15 +82,13 @@ export const StepStress: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.stress.level.${key}`)}
                             accessibilityRole="button"
                             testID={`stress-level-${key}`}
-                            style={
-                                [
-                                    styles.levelCard,
-                                    selected && {
-                                        borderColor: color,
-                                        backgroundColor: colors.journeys.health.background,
-                                    },
-                                ] as any
-                            }
+                            style={[
+                                styles.levelCard,
+                                selected && {
+                                    borderColor: color,
+                                    backgroundColor: colors.journeys.health.background,
+                                },
+                            ]}
                         >
                             <Text fontSize="heading-xl" textAlign="center">
                                 {emoji}
@@ -115,7 +120,7 @@ export const StepStress: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.stress.sources.${source}`)}
                             accessibilityRole="checkbox"
                             testID={`stress-source-${source}`}
-                            style={[styles.chip, selected && styles.chipSelected] as any}
+                            style={[styles.chip, selected ? styles.chipSelected : null]}
                         >
                             <Text
                                 fontSize="sm"
@@ -143,7 +148,7 @@ export const StepStress: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.stress.coping.${mechanism}`)}
                             accessibilityRole="checkbox"
                             testID={`stress-coping-${mechanism}`}
-                            style={[styles.chip, selected && styles.chipSelected] as any}
+                            style={[styles.chip, selected ? styles.chipSelected : null]}
                         >
                             <Text
                                 fontSize="sm"
@@ -175,7 +180,7 @@ export const StepStress: React.FC<StepProps> = ({ data, onUpdate }) => {
                                 accessibilityLabel={t(`healthAssessment.stress.mentalHealth.${opt}`)}
                                 accessibilityRole="button"
                                 testID={`mental-health-${opt}`}
-                                style={[styles.mentalHealthChip, selected && styles.mentalHealthChipSelected] as any}
+                                style={[styles.mentalHealthChip, selected ? styles.mentalHealthChipSelected : null]}
                             >
                                 <Text
                                     fontSize="sm"

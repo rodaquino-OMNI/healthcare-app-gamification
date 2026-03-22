@@ -11,9 +11,14 @@ import { useTranslation } from 'react-i18next';
 import { View, TextInput, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+interface ExistingConditionsData {
+    selected?: string[];
+    other?: string;
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: ExistingConditionsData;
+    onUpdate: (field: keyof ExistingConditionsData, value: string | string[]) => void;
 }
 
 const CONDITION_KEYS = [
@@ -72,10 +77,10 @@ export const StepExistingConditions: React.FC<StepProps> = ({ data, onUpdate }) 
                             accessibilityLabel={t(`healthAssessment.conditions.${key}`)}
                             accessibilityRole="checkbox"
                             testID={`condition-${key}`}
-                            style={[styles.conditionChip, isActive && styles.conditionChipActive] as any}
+                            style={[styles.conditionChip, isActive ? styles.conditionChipActive : null]}
                         >
                             <View style={styles.chipContent}>
-                                <View style={[styles.checkbox, isActive && styles.checkboxActive] as any}>
+                                <View style={[styles.checkbox, isActive ? styles.checkboxActive : null]}>
                                     {isActive && (
                                         <Text fontSize="xs" color={colors.neutral.white} textAlign="center">
                                             {'\u2713'}

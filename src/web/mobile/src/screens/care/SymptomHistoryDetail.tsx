@@ -4,12 +4,14 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareNavigationProp, CareStackParamList } from '../../navigation/types';
 
 interface MockCheckDetail {
     id: string;
@@ -92,10 +94,6 @@ const DEFAULT_CHECK: MockCheckDetail = {
     recommendations: ['Rest and monitor symptoms', 'Stay hydrated'],
 };
 
-type SymptomHistoryDetailRouteParams = {
-    checkId: string;
-};
-
 const getSeverityBadgeStatus = (severity: number | string): 'success' | 'warning' | 'error' => {
     if (typeof severity === 'string') {
         if (severity === 'low') {
@@ -131,33 +129,25 @@ const getSeverityLabel = (severity: number): string => {
  * conditions, and recommendations.
  */
 const SymptomHistoryDetail: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: SymptomHistoryDetailRouteParams }, 'params'>>();
+    const navigation = useNavigation<CareNavigationProp>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareSymptomHistoryDetail'>>();
     const { t } = useTranslation();
 
-    const { checkId = '' } = route.params || {};
-    const checkDetail = MOCK_CHECK_DETAILS[checkId] || DEFAULT_CHECK;
+    const sessionId = route.params?.sessionId ?? '';
+    const checkDetail = MOCK_CHECK_DETAILS[sessionId] ?? DEFAULT_CHECK;
 
     const handleCompare = (): void => {
-        navigation.navigate(ROUTES.CARE_SYMPTOM_COMPARISON, {
-            checkId1: checkDetail.id,
-        });
+        navigation.navigate(ROUTES.CARE_SYMPTOM_COMPARISON);
     };
 
     const handleRateAccuracy = (): void => {
         navigation.navigate(ROUTES.CARE_SYMPTOM_ACCURACY_RATING, {
-            checkId: checkDetail.id,
-            conditions: checkDetail.conditions,
+            sessionId: checkDetail.id,
         });
     };
 
     const handleShareReport = (): void => {
-        navigation.navigate(ROUTES.CARE_SYMPTOM_SHARE_REPORT, {
-            symptoms: checkDetail.symptoms,
-            regions: checkDetail.regions,
-            conditions: checkDetail.conditions,
-            overallSeverity: checkDetail.overallSeverity,
-        });
+        navigation.navigate(ROUTES.CARE_SYMPTOM_SHARE_REPORT, { sessionId });
     };
 
     return (

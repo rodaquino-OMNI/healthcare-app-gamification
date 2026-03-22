@@ -5,11 +5,13 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, FlatList, StyleSheet, ListRenderItemInfo } from 'react-native';
 
 import { ROUTES } from '../../constants/routes';
+import type { HealthStackParamList } from '../../navigation/types';
 
 type SeverityLevel = 'mild' | 'moderate' | 'severe';
 
@@ -70,7 +72,7 @@ const MOCK_SIDE_EFFECTS: SideEffectEntry[] = [
  * with severity badges, dates, and notes. Includes a FAB to add new entries.
  */
 export const MedicationSideEffectsLog: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
     const { t } = useTranslation();
 
     const handleAddSideEffect = useCallback(() => {

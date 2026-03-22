@@ -5,7 +5,8 @@ import { borderRadiusValues } from '@design-system/tokens/borderRadius';
 import { colors } from '@design-system/tokens/colors';
 import { spacingValues } from '@design-system/tokens/spacing';
 import { fontSizeValues } from '@design-system/tokens/typography';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import { useRoute, useNavigation, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet, ScrollView, TextInput, Alert } from 'react-native';
@@ -15,14 +16,7 @@ import { FrequencyType, FrequencyPicker, DAYS_OF_WEEK } from './MedicationRemind
 import { SnoozePicker, ReminderPreview } from './MedicationSchedulePicker';
 import { restClient } from '../../api/client';
 import { useJourney } from '../../context/JourneyContext';
-
-/**
- * Route params for MedicationReminder screen.
- */
-interface MedicationReminderParams {
-    medicationName?: string;
-    medicationDosage?: string;
-}
+import type { HealthStackParamList } from '../../navigation/types';
 
 /**
  * MedicationReminderScreen allows users to configure reminders for their medications,
@@ -32,16 +26,15 @@ export const MedicationReminderScreen: React.FC = () => {
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
-    const route = useRoute<any>();
-    const navigation = useNavigation();
+    const route = useRoute<RouteProp<HealthStackParamList, 'HealthMedicationReminder'>>();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
     const { journey: _journey } = useJourney();
 
     const [_loading, setLoading] = useState(false);
     const [_error, setError] = useState<string | null>(null);
 
-    const params = (route.params ?? {}) as MedicationReminderParams;
-    const medicationName = params.medicationName ?? 'Medicamento';
-    const medicationDosage = params.medicationDosage ?? '';
+    const medicationName = route.params?.medicationName ?? 'Medicamento';
+    const medicationDosage = route.params?.medicationDosage ?? '';
 
     // Form state
     const [time, setTime] = useState('08:00');

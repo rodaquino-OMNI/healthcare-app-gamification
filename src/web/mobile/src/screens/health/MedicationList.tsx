@@ -8,11 +8,13 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, FlatList, StyleSheet, ListRenderItemInfo } from 'react-native';
 
 import { ROUTES } from '../../constants/routes';
+import type { HealthStackParamList } from '../../navigation/types';
 
 /**
  * Medication data model used across all medication screens
@@ -115,7 +117,7 @@ type TabFilter = 'active' | 'completed';
  */
 const MedicationList: React.FC = () => {
     const { t } = useTranslation();
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
     const [activeTab, setActiveTab] = useState<TabFilter>('active');
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -272,7 +274,7 @@ const MedicationList: React.FC = () => {
                     accessibilityLabel="Show active medications"
                     accessibilityRole="button"
                     testID="tab-active"
-                    style={[styles.tab, activeTab === 'active' && styles.tabActive] as any}
+                    style={[styles.tab, activeTab === 'active' && styles.tabActive]}
                 >
                     <Text
                         fontWeight={activeTab === 'active' ? 'semiBold' : 'regular'}
@@ -286,7 +288,7 @@ const MedicationList: React.FC = () => {
                     accessibilityLabel={t('journeys.care.medications.status.completed')}
                     accessibilityRole="button"
                     testID="tab-completed"
-                    style={[styles.tab, activeTab === 'completed' && styles.tabActive] as any}
+                    style={[styles.tab, activeTab === 'completed' && styles.tabActive]}
                 >
                     <Text
                         fontWeight={activeTab === 'completed' ? 'semiBold' : 'regular'}

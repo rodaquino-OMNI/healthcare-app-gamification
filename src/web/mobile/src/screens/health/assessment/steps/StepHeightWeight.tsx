@@ -12,9 +12,15 @@ import { useTranslation } from 'react-i18next';
 import { View, TextInput, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+interface HeightWeightData {
+    unit?: UnitSystem;
+    height?: string;
+    weight?: string;
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: HeightWeightData;
+    onUpdate: (field: keyof HeightWeightData, value: string) => void;
 }
 
 type UnitSystem = 'metric' | 'imperial';
@@ -100,7 +106,7 @@ export const StepHeightWeight: React.FC<StepProps> = ({ data, onUpdate }) => {
                         accessibilityLabel={t(`healthAssessment.heightWeight.unit_${opt}`)}
                         accessibilityRole="button"
                         testID={`unit-${opt}`}
-                        style={[styles.unitTab, unit === opt && styles.unitTabActive] as any}
+                        style={[styles.unitTab, unit === opt ? styles.unitTabActive : null]}
                     >
                         <Text
                             fontSize="sm"

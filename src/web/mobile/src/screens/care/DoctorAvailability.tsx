@@ -5,7 +5,8 @@ import { Button } from '@design-system/components/Button/Button';
 import { Text } from '@design-system/primitives/Text/Text';
 import type { Theme } from '@design-system/themes/base.theme';
 import { colors } from '@design-system/tokens/colors';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
@@ -14,12 +15,7 @@ import { useTheme } from 'styled-components/native';
 import { JourneyHeader } from '@components/shared/JourneyHeader';
 import { ROUTES } from '@constants/routes';
 
-/**
- * Route params expected by the DoctorAvailability screen.
- */
-interface DoctorAvailabilityRouteParams {
-    doctorId: string;
-}
+import type { CareStackParamList } from '../../navigation/types';
 
 /**
  * Represents a single time slot.
@@ -100,7 +96,7 @@ const buildCalendarGrid = (year: number, month: number): (number | null)[][] => 
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const weeks: (number | null)[][] = [];
-    let currentWeek: (number | null)[] = new Array(firstDay).fill(null);
+    let currentWeek: (number | null)[] = Array.from<number | null>({ length: firstDay }).fill(null);
 
     for (let d = 1; d <= daysInMonth; d++) {
         currentWeek.push(d);
@@ -126,9 +122,9 @@ const buildCalendarGrid = (year: number, month: number): (number | null)[][] => 
  * before proceeding to the booking schedule.
  */
 const DoctorAvailability: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<any>();
-    const { doctorId } = route.params as DoctorAvailabilityRouteParams;
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareDoctorAvailability'>>();
+    const { doctorId } = route.params;
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);

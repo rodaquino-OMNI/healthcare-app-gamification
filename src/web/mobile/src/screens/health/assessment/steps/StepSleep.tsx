@@ -12,9 +12,16 @@ import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+interface SleepData {
+    sleepHours?: string;
+    sleepQuality?: string;
+    sleepIssues?: string[];
+    regularSchedule?: string;
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: SleepData;
+    onUpdate: (field: keyof SleepData, value: string | string[]) => void;
 }
 
 const SLEEP_HOURS = ['4h', '5h', '6h', '7h', '8h', '9h', '10h+'] as const;
@@ -63,7 +70,7 @@ export const StepSleep: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.sleep.hours.${opt}`)}
                             accessibilityRole="button"
                             testID={`sleep-hours-${opt}`}
-                            style={[styles.hourChip, selected && styles.hourChipSelected] as any}
+                            style={[styles.hourChip, selected ? styles.hourChipSelected : null]}
                         >
                             <Text fontSize="heading-lg" textAlign="center">
                                 {'\uD83C\uDF19'}
@@ -96,15 +103,13 @@ export const StepSleep: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.sleep.quality.${opt}`)}
                             accessibilityRole="button"
                             testID={`sleep-quality-${opt}`}
-                            style={
-                                [
-                                    styles.qualityCard,
-                                    selected && {
-                                        borderColor: indicatorColor,
-                                        backgroundColor: colors.journeys.health.background,
-                                    },
-                                ] as any
-                            }
+                            style={[
+                                styles.qualityCard,
+                                selected && {
+                                    borderColor: indicatorColor,
+                                    backgroundColor: colors.journeys.health.background,
+                                },
+                            ]}
                         >
                             <View style={[styles.qualityIndicator, { backgroundColor: indicatorColor }]} />
                             <Text
@@ -133,9 +138,9 @@ export const StepSleep: React.FC<StepProps> = ({ data, onUpdate }) => {
                         accessibilityLabel={t(`healthAssessment.sleep.issues.${issue}`)}
                         accessibilityRole="checkbox"
                         testID={`sleep-issue-${issue}`}
-                        style={[styles.issueRow, selected && styles.issueRowSelected] as any}
+                        style={[styles.issueRow, selected ? styles.issueRowSelected : null]}
                     >
-                        <View style={[styles.checkbox, selected && styles.checkboxSelected] as any}>
+                        <View style={[styles.checkbox, selected ? styles.checkboxSelected : null]}>
                             {selected && (
                                 <Text fontSize="xs" color={colors.neutral.white} textAlign="center">
                                     {'\u2713'}
@@ -168,7 +173,7 @@ export const StepSleep: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.sleep.schedule.${opt}`)}
                             accessibilityRole="button"
                             testID={`sleep-schedule-${opt}`}
-                            style={[styles.toggleChip, selected && styles.toggleChipSelected] as any}
+                            style={[styles.toggleChip, selected ? styles.toggleChipSelected : null]}
                         >
                             <Text
                                 fontSize="sm"

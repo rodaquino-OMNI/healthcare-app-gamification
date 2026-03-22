@@ -8,7 +8,7 @@ import { typography } from '@design-system/tokens/typography';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, type Resolver } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import styled from 'styled-components/native';
@@ -21,7 +21,7 @@ import type { AuthNavigationProp } from '../../navigation/types';
 /**
  * Validation schema for address form.
  */
-const createAddressSchema = (t: (key: string, options?: any) => string) =>
+const createAddressSchema = (t: (key: string, options?: Record<string, unknown>) => string) =>
     yup.object().shape({
         cep: yup
             .string()
@@ -43,6 +43,15 @@ interface AddressFormData {
     neighborhood: string;
     city: string;
     state: string;
+}
+
+/** ViaCEP API response shape. */
+interface ViaCepResponse {
+    erro?: boolean;
+    logradouro?: string;
+    bairro?: string;
+    localidade?: string;
+    uf?: string;
 }
 
 const BRAZILIAN_STATES = [
@@ -226,7 +235,11 @@ const ProfileAddress: React.FC = () => {
         watch,
         formState: { errors },
     } = useForm<AddressFormData>({
-        resolver: yupResolver(createAddressSchema(t as (key: string, options?: any) => string) as any),
+        resolver: yupResolver(
+            createAddressSchema(
+                t as (key: string, options?: Record<string, unknown>) => string
+            ) as unknown as yup.ObjectSchema<AddressFormData>
+        ) as Resolver<AddressFormData>,
         mode: 'onBlur',
         defaultValues: {
             cep: '',
@@ -247,16 +260,16 @@ const ProfileAddress: React.FC = () => {
             const cleanCep = cep.replace(/\D/g, '');
             setLoadingCep(true);
             fetch(`https://viacep.com.br/ws/${cleanCep}/json/`)
-                .then((res) => res.json())
+                .then((res) => res.json() as Promise<ViaCepResponse>)
                 .then((data) => {
                     if (data.erro) {
                         Alert.alert(t('profileSetup.address.cepError'));
                         return;
                     }
-                    setValue('street', data.logradouro || '', { shouldValidate: true });
-                    setValue('neighborhood', data.bairro || '', { shouldValidate: true });
-                    setValue('city', data.localidade || '', { shouldValidate: true });
-                    setValue('state', data.uf || '', { shouldValidate: true });
+                    setValue('street', data.logradouro ?? '', { shouldValidate: true });
+                    setValue('neighborhood', data.bairro ?? '', { shouldValidate: true });
+                    setValue('city', data.localidade ?? '', { shouldValidate: true });
+                    setValue('state', data.uf ?? '', { shouldValidate: true });
                 })
                 .catch(() => {
                     Alert.alert(t('profileSetup.address.cepError'));

@@ -1,5 +1,5 @@
 import { AchievementBadge } from '@design-system/gamification/AchievementBadge/AchievementBadge'; // src/web/design-system/src/gamification/AchievementBadge/AchievementBadge.tsx
-import { useNavigation } from '@react-navigation/native'; // Version 6.0.0
+import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native'; // Version 6.0.0
 import React from 'react'; // Version 18.2.0
 import { FlatList, StyleSheet, View } from 'react-native'; // Version 0.71.14
 
@@ -25,7 +25,7 @@ const AchievementList: React.FC = () => {
     const achievements = useAchievements();
 
     // Get the navigation object
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
     // Render the list of achievements or the EmptyState component
     return (
@@ -39,7 +39,7 @@ const AchievementList: React.FC = () => {
                             achievement={item}
                             onPress={() => {
                                 // Navigate to the achievement details screen when an achievement is pressed
-                                (navigation as any).navigate('AchievementDetails', { achievementId: item.id });
+                                navigation.navigate('AchievementDetails', { achievementId: item.id });
                             }}
                         />
                     )}

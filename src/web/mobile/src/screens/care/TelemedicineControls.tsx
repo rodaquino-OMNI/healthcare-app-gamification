@@ -1,20 +1,15 @@
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
 
-/**
- * Route params expected by TelemedicineControls.
- */
-type TelemedicineControlsRouteParams = {
-    appointmentId: string;
-    doctorName: string;
-};
+import type { CareStackParamList } from '../../navigation/types';
 
 /**
  * Formats seconds to HH:MM:SS or MM:SS.
@@ -62,11 +57,12 @@ const getQualityBars = (quality: ConnectionQuality): number => {
  * mute, camera, speaker, chat, and end call actions.
  */
 const TelemedicineControls: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: TelemedicineControlsRouteParams }, 'params'>>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareTelemedicineControls'>>();
     const { t } = useTranslation();
 
-    const { appointmentId, doctorName = '' } = route.params || {};
+    const appointmentId = route.params?.sessionId ?? '';
+    const doctorName = '';
 
     const [duration, setDuration] = useState(0);
     const [isMuted, setIsMuted] = useState(false);

@@ -5,7 +5,8 @@ import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import type { Theme } from '@design-system/themes/base.theme';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
@@ -13,10 +14,7 @@ import { useTheme } from 'styled-components/native';
 
 import { ROUTES } from '@constants/routes';
 
-interface RouteParams {
-    appointmentId: string;
-    appointmentType: string;
-}
+import type { CareStackParamList } from '../../navigation/types';
 
 interface ChecklistItem {
     id: string;
@@ -71,12 +69,13 @@ const filterItems = (items: ChecklistItem[], type: string): ChecklistItem[] =>
     });
 
 export const PreVisitChecklist: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<any>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CarePreVisitChecklist'>>();
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
-    const { appointmentId, appointmentType } = route.params as RouteParams;
+    const { appointmentId } = route.params;
+    const appointmentType = 'in-person';
 
     const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
 

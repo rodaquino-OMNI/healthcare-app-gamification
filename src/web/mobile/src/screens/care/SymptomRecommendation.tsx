@@ -5,12 +5,14 @@ import { Stepper } from '@austa/design-system/src/components/Stepper/Stepper';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView, Linking } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareNavigationProp, CareStackParamList } from '../../navigation/types';
 
 interface RecommendationAction {
     id: string;
@@ -41,25 +43,15 @@ const getCardBorderColor = (type: string): string => {
 
 // getTypeBadge is now inside the component to access t()
 
-type SymptomRecommendationRouteParams = {
-    symptoms: Array<{ id: string; name: string }>;
-    description: string;
-    regions: Array<{ id: string; label: string }>;
-    details: any[];
-    answers: Record<string, string | string[]>;
-    overallSeverity: number;
-    conditions: any[];
-};
-
 /**
  * Recommendation screen showing prioritized action items based on the symptom analysis.
  * Provides emergency instructions, doctor visit booking, self-care tips, and medication suggestions.
  * Step 7 (final step) of the symptom checker flow.
  */
 const SymptomRecommendation: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: SymptomRecommendationRouteParams }, 'params'>>();
-    const { overallSeverity = 5 } = route.params || {};
+    const navigation = useNavigation<CareNavigationProp>();
+    const _route = useRoute<RouteProp<CareStackParamList, 'CareSymptomRecommendation'>>();
+    const overallSeverity = 5;
     const { t } = useTranslation();
 
     const SYMPTOM_STEPS = [

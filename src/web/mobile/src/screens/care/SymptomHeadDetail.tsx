@@ -6,13 +6,15 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import type { Theme } from '@design-system/themes/base.theme';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, type ViewStyle } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareNavigationProp, CareStackParamList } from '../../navigation/types';
 
 /**
  * Head/face regions for precise symptom location.
@@ -40,12 +42,6 @@ const HEAD_REGIONS: HeadRegion[] = [
     { id: 'back_of_head', labelKey: 'backOfHead', top: 80, left: 25, width: 50, height: 14 },
 ];
 
-type SymptomHeadDetailRouteParams = {
-    symptoms: Array<{ id: string; name: string }>;
-    description: string;
-    bodyRegions: Array<{ id: string; label: string }>;
-};
-
 /**
  * Detailed head/face zoom view for precise symptom location selection.
  * Provides larger touchable areas for head-specific regions.
@@ -54,9 +50,10 @@ const SymptomHeadDetail: React.FC = () => {
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: SymptomHeadDetailRouteParams }, 'params'>>();
-    const { symptoms = [], description = '', bodyRegions = [] } = route.params || {};
+    const navigation = useNavigation<CareNavigationProp>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareSymptomHeadDetail'>>();
+    const sessionId = route.params?.sessionId ?? '';
+    const symptoms = route.params?.symptoms ?? [];
 
     const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
 
@@ -74,17 +71,9 @@ const SymptomHeadDetail: React.FC = () => {
     };
 
     const handleContinue = (): void => {
-        const selectedHeadData = HEAD_REGIONS.filter((r) => selectedRegions.includes(r.id));
-        const headRegions = selectedHeadData.map((r) => ({
-            id: r.id,
-            label: t(`journeys.care.symptomChecker.headDetail.regions.${r.labelKey}`),
-        }));
-        const allRegions = [...bodyRegions, ...headRegions];
-
         navigation.navigate(ROUTES.CARE_SYMPTOM_DETAIL, {
-            symptoms,
-            description,
-            regions: allRegions,
+            symptomId: symptoms[0] ?? '',
+            sessionId,
         });
     };
 
@@ -119,18 +108,16 @@ const SymptomHeadDetail: React.FC = () => {
                         <Touchable
                             key={region.id}
                             onPress={() => toggleRegion(region.id)}
-                            style={
-                                [
-                                    styles.regionTouchable,
-                                    {
-                                        top: `${region.top}%`,
-                                        left: `${region.left}%`,
-                                        width: `${region.width}%`,
-                                        height: `${region.height}%`,
-                                    },
-                                    isSelected(region.id) && styles.regionSelected,
-                                ] as any
-                            }
+                            style={[
+                                styles.regionTouchable,
+                                {
+                                    top: `${region.top}%` as ViewStyle['top'],
+                                    left: `${region.left}%` as ViewStyle['left'],
+                                    width: `${region.width}%` as ViewStyle['width'],
+                                    height: `${region.height}%` as ViewStyle['height'],
+                                },
+                                isSelected(region.id) ? styles.regionSelected : null,
+                            ]}
                             accessibilityLabel={`${t(`journeys.care.symptomChecker.headDetail.regions.${region.labelKey}`)}${isSelected(region.id) ? `, ${t('journeys.care.symptomChecker.headDetail.selected')}` : ''}`}
                             accessibilityRole="button"
                             testID={`head-region-${region.id}`}

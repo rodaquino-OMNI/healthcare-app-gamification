@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { FlatList } from 'react-native';
 import styled from 'styled-components/native';
 
-import { ROUTES } from '../../constants/routes';
+import type { HomeTabScreenNavigationProp } from '../../navigation/types';
 
 // --- Types ---
 
@@ -238,7 +238,7 @@ const renderStars = (rating: number): string => {
  * Each card shows avatar, name, specialty, rating, location, and a Book CTA.
  */
 export const SearchDoctorResults: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<HomeTabScreenNavigationProp>();
     const { t } = useTranslation();
 
     const handleBack = useCallback(() => {
@@ -247,14 +247,14 @@ export const SearchDoctorResults: React.FC = () => {
 
     const handleBookDoctor = useCallback(
         (doctorId: string) => {
-            navigation.navigate(ROUTES.CARE_DOCTOR_PROFILE, { doctorId });
+            navigation.navigate('Care', { screen: 'CareDoctorProfile', params: { doctorId } });
         },
         [navigation]
     );
 
     const handleDoctorPress = useCallback(
         (doctorId: string) => {
-            navigation.navigate(ROUTES.CARE_DOCTOR_PROFILE, { doctorId });
+            navigation.navigate('Care', { screen: 'CareDoctorProfile', params: { doctorId } });
         },
         [navigation]
     );

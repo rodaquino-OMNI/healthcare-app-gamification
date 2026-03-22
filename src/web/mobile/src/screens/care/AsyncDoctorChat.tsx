@@ -5,17 +5,14 @@ import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import type { Theme } from '@design-system/themes/base.theme';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, FlatList, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
-type AsyncDoctorChatRouteParams = {
-    appointmentId: string;
-    doctorName: string;
-    doctorSpecialty: string;
-};
+import type { CareStackParamList } from '../../navigation/types';
 
 type MessageSender = 'doctor' | 'patient' | 'system';
 
@@ -78,22 +75,17 @@ const MOCK_MESSAGES: ChatMessage[] = [
  * used for post-visit follow-up messages.
  */
 const AsyncDoctorChat: React.FC = () => {
-    const _navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: AsyncDoctorChatRouteParams }, 'params'>>();
+    const _navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareAsyncDoctorChat'>>();
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
     const flatListRef = useRef<FlatList>(null);
 
-    const {
-        appointmentId: _appointmentId,
-        doctorName,
-        doctorSpecialty,
-    } = route.params || {
-        appointmentId: 'appt-001',
-        doctorName: 'Dra. Ana Carolina Silva',
-        doctorSpecialty: 'Cardiologia',
-    };
+    const rawParams = route.params as { doctorId?: string } | undefined;
+    const _appointmentId = rawParams?.doctorId ?? 'appt-001';
+    const doctorName = 'Dra. Ana Carolina Silva';
+    const doctorSpecialty = 'Cardiologia';
 
     const [messages, setMessages] = useState<ChatMessage[]>(MOCK_MESSAGES);
     const [inputText, setInputText] = useState('');

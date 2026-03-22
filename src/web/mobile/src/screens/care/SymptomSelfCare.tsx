@@ -7,12 +7,14 @@ import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchable';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareNavigationProp, CareStackParamList } from '../../navigation/types';
 
 interface SelfCareCategory {
     id: string;
@@ -128,20 +130,16 @@ const getSelfCareCategories = (t: (key: string, opts?: any) => string): SelfCare
     },
 ];
 
-type SymptomSelfCareRouteParams = {
-    conditions: any[];
-    overallSeverity: number;
-};
-
 /**
  * Self-care instructions screen with categorized tips.
  * Users can check off acknowledged tips and set follow-up reminders.
  */
 const SymptomSelfCare: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: SymptomSelfCareRouteParams }, 'params'>>();
+    const navigation = useNavigation<CareNavigationProp>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareSymptomSelfCare'>>();
     const { t } = useTranslation();
-    const { conditions = [], overallSeverity = 5 } = route.params || {};
+    const sessionId = route.params?.sessionId ?? '';
+    const _overallSeverity = 5;
 
     const categories = getSelfCareCategories(t as (key: string, opts?: any) => string);
 
@@ -162,16 +160,13 @@ const SymptomSelfCare: React.FC = () => {
 
     const handleSetReminder = (): void => {
         navigation.navigate(ROUTES.CARE_SYMPTOM_FOLLOW_UP, {
-            conditions,
-            overallSeverity,
+            sessionId,
         });
     };
 
     const handleSaveReport = (): void => {
         navigation.navigate(ROUTES.CARE_SYMPTOM_SAVE_REPORT, {
-            conditions,
-            overallSeverity,
-            acknowledgedTips: Array.from(checkedItems),
+            sessionId,
         });
     };
 

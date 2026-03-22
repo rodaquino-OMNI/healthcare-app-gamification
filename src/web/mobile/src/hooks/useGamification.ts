@@ -25,12 +25,22 @@ import {
 // Internal helper
 // ---------------------------------------------------------------------------
 
+/** Minimal shape of a decoded JWT used in this hook. */
+interface DecodedToken {
+    sub?: string;
+    [key: string]: unknown;
+}
+
 /**
  * Derives the userId string from the auth context, or undefined if unavailable.
  */
 function useUserId(): string | undefined {
     const { session, getUserFromToken } = useAuth();
-    return session?.accessToken ? (getUserFromToken(session.accessToken)?.sub as string | undefined) : undefined;
+    if (!session?.accessToken) {
+        return undefined;
+    }
+    const decoded = getUserFromToken(session.accessToken) as DecodedToken | null;
+    return decoded?.sub;
 }
 
 // ---------------------------------------------------------------------------

@@ -12,6 +12,12 @@ import { useEffect } from 'react';
 import { useAuth } from './useAuth';
 import { getAppointments, cancelAppointment, Appointment } from '../api/care';
 
+/** Minimal shape of a decoded JWT used in this hook. */
+interface DecodedToken {
+    sub?: string;
+    [key: string]: unknown;
+}
+
 /**
  * Provides the list of appointments for the currently authenticated user,
  * plus a cancel function backed by a mutation that invalidates the cache.
@@ -24,9 +30,10 @@ export function useAppointments() {
     const queryClient = useQueryClient();
 
     // Derive userId from the decoded access token
-    const userId: string | undefined = auth.session?.accessToken
-        ? auth.getUserFromToken(auth.session.accessToken)?.sub
-        : undefined;
+    const decoded = auth.session?.accessToken
+        ? (auth.getUserFromToken(auth.session.accessToken) as DecodedToken | null)
+        : null;
+    const userId: string | undefined = decoded?.sub ?? undefined;
 
     const { data, isPending, error, refetch } = useQuery<Appointment[], Error>({
         queryKey: ['appointments', userId],

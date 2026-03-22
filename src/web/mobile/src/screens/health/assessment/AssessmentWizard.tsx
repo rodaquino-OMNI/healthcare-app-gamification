@@ -5,6 +5,7 @@ import { borderRadiusValues } from '@austa/design-system/src/tokens/borderRadius
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
@@ -35,36 +36,42 @@ import { StepStress } from './steps/StepStress';
 import { StepSubmissionConfirm } from './steps/StepSubmissionConfirm';
 import { StepVaccination } from './steps/StepVaccination';
 import { StepWaterIntake } from './steps/StepWaterIntake';
+import type { HealthStackParamList } from '../../../navigation/types';
 
 const TOTAL_STEPS = 26;
 
+// Each step's data is a loose record (values are typed per-step component).
+// Using Record<string, unknown> here is safe: the wizard only forwards data
+// to typed step components, which validate the shape via their own interfaces.
+type StepRecord = Record<string, unknown>;
+
 interface FormData {
-    introduction: Record<string, any>;
-    personalInfo: Record<string, any>;
-    heightWeight: Record<string, any>;
-    conditions: Record<string, any>;
-    medications: Record<string, any>;
-    allergies: Record<string, any>;
-    familyHistory: Record<string, any>;
-    exercise: Record<string, any>;
-    diet: Record<string, any>;
-    sleep: Record<string, any>;
-    stress: Record<string, any>;
-    alcoholTobacco: Record<string, any>;
-    waterIntake: Record<string, any>;
-    healthGoals: Record<string, any>;
-    mentalScreening: Record<string, any>;
-    moodAssessment: Record<string, any>;
-    anxietyScale: Record<string, any>;
-    reproductiveHealth: Record<string, any>;
-    chronicPain: Record<string, any>;
-    vaccination: Record<string, any>;
-    insuranceInfo: Record<string, any>;
-    emergencyContacts: Record<string, any>;
-    consentPrivacy: Record<string, any>;
-    reviewSummary: Record<string, any>;
-    submissionConfirm: Record<string, any>;
-    resultsHealthScore: Record<string, any>;
+    introduction: StepRecord;
+    personalInfo: StepRecord;
+    heightWeight: StepRecord;
+    conditions: StepRecord;
+    medications: StepRecord;
+    allergies: StepRecord;
+    familyHistory: StepRecord;
+    exercise: StepRecord;
+    diet: StepRecord;
+    sleep: StepRecord;
+    stress: StepRecord;
+    alcoholTobacco: StepRecord;
+    waterIntake: StepRecord;
+    healthGoals: StepRecord;
+    mentalScreening: StepRecord;
+    moodAssessment: StepRecord;
+    anxietyScale: StepRecord;
+    reproductiveHealth: StepRecord;
+    chronicPain: StepRecord;
+    vaccination: StepRecord;
+    insuranceInfo: StepRecord;
+    emergencyContacts: StepRecord;
+    consentPrivacy: StepRecord;
+    reviewSummary: StepRecord;
+    submissionConfirm: StepRecord;
+    resultsHealthScore: StepRecord;
 }
 
 const INITIAL_FORM_DATA: FormData = {
@@ -131,11 +138,11 @@ const validateStep = (step: number, data: FormData): boolean => {
             return true;
         case 1: {
             const pi = data.personalInfo;
-            return !!(pi.fullName && pi.dateOfBirth && pi.gender);
+            return !!(pi['fullName'] && pi['dateOfBirth'] && pi['gender']);
         }
         case 2: {
             const hw = data.heightWeight;
-            return !!(hw.height && hw.weight);
+            return !!(hw['height'] && hw['weight']);
         }
         case 3:
             return true;
@@ -155,13 +162,13 @@ const validateStep = (step: number, data: FormData): boolean => {
  * Renders a progress bar, step content, and navigation controls.
  */
 export const AssessmentWizard: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
     const { t } = useTranslation();
     const [activeStep, setActiveStep] = useState(0);
     const [formData, setFormData] = useState<FormData>(INITIAL_FORM_DATA);
 
     const handleUpdate = useCallback(
-        (field: string, value: any) => {
+        (field: string, value: unknown) => {
             const stepKey = STEP_KEYS[activeStep];
             setFormData((prev) => ({
                 ...prev,
@@ -200,63 +207,66 @@ export const AssessmentWizard: React.FC = () => {
     const isLastStep = activeStep === TOTAL_STEPS - 1;
     const progress = (activeStep + 1) / TOTAL_STEPS;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const castData = <T,>(d: StepRecord): T => d as unknown as T;
+
     const renderStep = (): React.ReactElement | null => {
         const stepKey = STEP_KEYS[activeStep];
         const stepData = formData[stepKey];
 
         switch (activeStep) {
             case 0:
-                return <StepIntroduction data={stepData} onUpdate={handleUpdate} />;
+                return <StepIntroduction data={castData(stepData)} onUpdate={handleUpdate} />;
             case 1:
-                return <StepPersonalInfo data={stepData} onUpdate={handleUpdate} />;
+                return <StepPersonalInfo data={castData(stepData)} onUpdate={handleUpdate} />;
             case 2:
-                return <StepHeightWeight data={stepData} onUpdate={handleUpdate} />;
+                return <StepHeightWeight data={castData(stepData)} onUpdate={handleUpdate} />;
             case 3:
-                return <StepExistingConditions data={stepData} onUpdate={handleUpdate} />;
+                return <StepExistingConditions data={castData(stepData)} onUpdate={handleUpdate} />;
             case 4:
-                return <StepMedications data={stepData} onUpdate={handleUpdate} />;
+                return <StepMedications data={castData(stepData)} onUpdate={handleUpdate} />;
             case 5:
-                return <StepAllergies data={stepData} onUpdate={handleUpdate} />;
+                return <StepAllergies data={castData(stepData)} onUpdate={handleUpdate} />;
             case 6:
-                return <StepFamilyHistory data={stepData} onUpdate={handleUpdate} />;
+                return <StepFamilyHistory data={castData(stepData)} onUpdate={handleUpdate} />;
             case 7:
-                return <StepExercise data={stepData} onUpdate={handleUpdate} />;
+                return <StepExercise data={castData(stepData)} onUpdate={handleUpdate} />;
             case 8:
-                return <StepDiet data={stepData} onUpdate={handleUpdate} />;
+                return <StepDiet data={castData(stepData)} onUpdate={handleUpdate} />;
             case 9:
-                return <StepSleep data={stepData} onUpdate={handleUpdate} />;
+                return <StepSleep data={castData(stepData)} onUpdate={handleUpdate} />;
             case 10:
-                return <StepStress data={stepData} onUpdate={handleUpdate} />;
+                return <StepStress data={castData(stepData)} onUpdate={handleUpdate} />;
             case 11:
-                return <StepAlcoholTobacco data={stepData} onUpdate={handleUpdate} />;
+                return <StepAlcoholTobacco data={castData(stepData)} onUpdate={handleUpdate} />;
             case 12:
-                return <StepWaterIntake data={stepData} onUpdate={handleUpdate} />;
+                return <StepWaterIntake data={castData(stepData)} onUpdate={handleUpdate} />;
             case 13:
-                return <StepHealthGoals data={stepData} onUpdate={handleUpdate} />;
+                return <StepHealthGoals data={castData(stepData)} onUpdate={handleUpdate} />;
             case 14:
-                return <StepMentalScreening data={stepData} onUpdate={handleUpdate} />;
+                return <StepMentalScreening data={castData(stepData)} onUpdate={handleUpdate} />;
             case 15:
-                return <StepMoodAssessment data={stepData} onUpdate={handleUpdate} />;
+                return <StepMoodAssessment data={castData(stepData)} onUpdate={handleUpdate} />;
             case 16:
-                return <StepAnxietyScale data={stepData} onUpdate={handleUpdate} />;
+                return <StepAnxietyScale data={castData(stepData)} onUpdate={handleUpdate} />;
             case 17:
-                return <StepReproductiveHealth data={stepData} onUpdate={handleUpdate} />;
+                return <StepReproductiveHealth data={castData(stepData)} onUpdate={handleUpdate} />;
             case 18:
-                return <StepChronicPain data={stepData} onUpdate={handleUpdate} />;
+                return <StepChronicPain data={castData(stepData)} onUpdate={handleUpdate} />;
             case 19:
-                return <StepVaccination data={stepData} onUpdate={handleUpdate} />;
+                return <StepVaccination data={castData(stepData)} onUpdate={handleUpdate} />;
             case 20:
-                return <StepInsuranceInfo data={stepData} onUpdate={handleUpdate} />;
+                return <StepInsuranceInfo data={castData(stepData)} onUpdate={handleUpdate} />;
             case 21:
-                return <StepEmergencyContacts data={stepData} onUpdate={handleUpdate} />;
+                return <StepEmergencyContacts data={castData(stepData)} onUpdate={handleUpdate} />;
             case 22:
-                return <StepConsentPrivacy data={stepData} onUpdate={handleUpdate} />;
+                return <StepConsentPrivacy data={castData(stepData)} onUpdate={handleUpdate} />;
             case 23:
-                return <StepReviewSummary data={stepData} onUpdate={handleUpdate} />;
+                return <StepReviewSummary data={castData(stepData)} onUpdate={handleUpdate} />;
             case 24:
-                return <StepSubmissionConfirm data={stepData} onUpdate={handleUpdate} />;
+                return <StepSubmissionConfirm data={castData(stepData)} onUpdate={handleUpdate} />;
             case 25:
-                return <StepResultsHealthScore data={stepData} onUpdate={handleUpdate} />;
+                return <StepResultsHealthScore data={castData(stepData)} onUpdate={handleUpdate} />;
             default:
                 return null;
         }

@@ -7,13 +7,15 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import type { Theme } from '@design-system/themes/base.theme';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, type ViewStyle } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareNavigationProp, CareStackParamList } from '../../navigation/types';
 
 /**
  * Anatomical body regions for symptom location selection.
@@ -77,20 +79,17 @@ const BODY_REGIONS_BASE = [
     },
 ];
 
-type SymptomBodyMapRouteParams = {
-    symptoms: Array<{ id: string; name: string }>;
-    description: string;
-};
-
 /**
  * Interactive body map screen for selecting anatomical regions where symptoms are located.
  * Step 2 of the symptom checker flow.
  * Users tap on body regions to indicate where they experience symptoms.
  */
 const SymptomBodyMap: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: SymptomBodyMapRouteParams }, 'params'>>();
-    const { symptoms = [], description = '' } = route.params || {};
+    const navigation = useNavigation<CareNavigationProp>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareSymptomBodyMap'>>();
+    const sessionId = route.params?.sessionId ?? '';
+    const symptoms: Array<{ id: string; name: string }> = route.params?.symptoms ?? [];
+    const _description = '';
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
@@ -130,12 +129,9 @@ const SymptomBodyMap: React.FC = () => {
     };
 
     const handleContinue = (): void => {
-        const selectedRegionData = BODY_REGIONS.filter((r) => selectedRegions.includes(r.id));
-
         navigation.navigate(ROUTES.CARE_SYMPTOM_DETAIL, {
-            symptoms,
-            description,
-            regions: selectedRegionData.map((r) => ({ id: r.id, label: r.label })),
+            symptomId: symptoms[0]?.id ?? '',
+            sessionId,
         });
     };
 
@@ -181,18 +177,16 @@ const SymptomBodyMap: React.FC = () => {
                         <Touchable
                             key={region.id}
                             onPress={() => toggleRegion(region.id)}
-                            style={
-                                [
-                                    styles.regionTouchable,
-                                    {
-                                        top: `${region.top}%`,
-                                        left: `${region.left}%`,
-                                        width: `${region.width}%`,
-                                        height: `${region.height}%`,
-                                    },
-                                    isSelected(region.id) && styles.regionSelected,
-                                ] as any
-                            }
+                            style={[
+                                styles.regionTouchable,
+                                {
+                                    top: `${region.top}%` as ViewStyle['top'],
+                                    left: `${region.left}%` as ViewStyle['left'],
+                                    width: `${region.width}%` as ViewStyle['width'],
+                                    height: `${region.height}%` as ViewStyle['height'],
+                                },
+                                isSelected(region.id) ? styles.regionSelected : null,
+                            ]}
                             accessibilityLabel={`${region.label} region${isSelected(region.id) ? ', selected' : ''}`}
                             accessibilityRole="button"
                             testID={`body-region-${region.id}`}

@@ -5,9 +5,12 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, Alert } from 'react-native';
+
+import type { HealthStackParamList } from '../../navigation/types';
 
 type TimeRange = 'daily' | 'weekly' | 'monthly';
 
@@ -59,7 +62,7 @@ const getBarColor = (adherence: number): string => {
  * Bar chart visualization using View bars with percentage labels.
  */
 export const MedicationAdherence: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<TimeRange>('daily');
 
@@ -139,7 +142,7 @@ export const MedicationAdherence: React.FC = () => {
                             accessibilityLabel={tab.label}
                             accessibilityRole="button"
                             testID={`tab-${tab.key}`}
-                            style={[styles.tab, activeTab === tab.key && styles.tabActive] as any}
+                            style={[styles.tab, activeTab === tab.key && styles.tabActive]}
                         >
                             <Text
                                 fontWeight={activeTab === tab.key ? 'semiBold' : 'regular'}
@@ -168,15 +171,13 @@ export const MedicationAdherence: React.FC = () => {
                                     </Text>
                                     <View style={styles.barWrapper}>
                                         <View
-                                            style={
-                                                [
-                                                    styles.bar,
-                                                    {
-                                                        height: barHeight,
-                                                        backgroundColor: getBarColor(item.adherence),
-                                                    },
-                                                ] as any
-                                            }
+                                            style={[
+                                                styles.bar,
+                                                {
+                                                    height: barHeight,
+                                                    backgroundColor: getBarColor(item.adherence),
+                                                },
+                                            ]}
                                         />
                                     </View>
                                     <Text fontSize="xs" color={colors.neutral.gray600} textAlign="center">

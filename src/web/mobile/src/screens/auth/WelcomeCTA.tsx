@@ -6,11 +6,13 @@ import { sizing } from '@design-system/tokens/sizing';
 import { spacing } from '@design-system/tokens/spacing';
 import { typography } from '@design-system/tokens/typography';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
 import { ROUTES } from '../../constants/routes';
+import type { AuthStackParamList } from '../../navigation/types';
 
 // --- Styled components ---
 
@@ -129,7 +131,7 @@ const SecondaryButtonText = styled.Text`
  * Navigates to AUTH_LOGIN or AUTH_REGISTER via the ROUTES constants.
  */
 export default function WelcomeCTAScreen() {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<AuthStackParamList>>();
     const { t } = useTranslation();
 
     const handleLogin = (): void => {

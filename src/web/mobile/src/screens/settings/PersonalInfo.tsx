@@ -4,12 +4,20 @@ import { sizing } from '@design-system/tokens/sizing';
 import { spacing, spacingValues } from '@design-system/tokens/spacing';
 import { typography } from '@design-system/tokens/typography';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import styled from 'styled-components/native';
 
 import { useAuth } from '../../hooks/useAuth';
+import type { SettingsStackParamList } from '../../navigation/types';
+
+interface JwtUser {
+    name?: string;
+    email?: string;
+    [key: string]: unknown;
+}
 
 // --- Styled Components ---
 
@@ -195,13 +203,13 @@ const BLOOD_TYPES: BloodType[] = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O
  * name, date of birth, gender selector, blood type selector, and CPF.
  */
 export const PersonalInfoScreen: React.FC = () => {
-    const navigation = useNavigation();
+    const navigation = useNavigation<StackNavigationProp<SettingsStackParamList>>();
     const { t } = useTranslation();
     const { session, getUserFromToken } = useAuth();
-    const user = session?.accessToken ? getUserFromToken(session.accessToken) : null;
+    const user = session?.accessToken ? (getUserFromToken(session.accessToken) as JwtUser | null) : null;
 
     const [form, setForm] = useState<FormState>({
-        fullName: user?.name || '',
+        fullName: user?.name ?? '',
         dateOfBirth: '',
         gender: null,
         bloodType: null,

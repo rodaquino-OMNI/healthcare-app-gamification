@@ -2,6 +2,7 @@ import { Button } from '@design-system/components/Button/Button';
 import { Input } from '@design-system/components/Input';
 import { yupResolver } from '@hookform/resolvers/yup'; // @hookform/resolvers version 3.3.4
 import { useNavigation } from '@react-navigation/native'; // @react-navigation/native version 6.1.9
+import type { StackNavigationProp } from '@react-navigation/stack';
 import { useForm } from 'react-hook-form'; // React Hook Form version 7.49.3
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native'; // React Native version 0.71+
@@ -12,11 +13,19 @@ import { JourneyHeader } from '@components/shared/JourneyHeader';
 import { useJourney } from '@context/JourneyContext';
 import { useAuth } from '@hooks/useAuth';
 
+import type { HealthStackParamList } from '../../navigation/types';
+
 /**
  * Props for the AddMetricScreen component
  */
 interface AddMetricScreenProps {
     // No specific props are defined for this screen
+}
+
+interface AddMetricFormData {
+    type: string;
+    value: number | string;
+    timestamp: string;
 }
 
 /**
@@ -28,7 +37,7 @@ export const AddMetricScreen: React.FC<AddMetricScreenProps> = () => {
     // LD1: Uses the useJourney hook to get the current journey.
     const { journey: _journey } = useJourney();
     // LD1: Uses the useNavigation hook to get the navigation object.
-    const navigation = useNavigation();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
     // LD1: Uses the useAuth hook to get the authenticated user information.
     const { session, getUserFromToken } = useAuth();
 
@@ -45,8 +54,9 @@ export const AddMetricScreen: React.FC<AddMetricScreenProps> = () => {
         handleSubmit,
         formState: { errors: _errors },
         reset,
-    } = useForm({
-        resolver: yupResolver(schema as any),
+    } = useForm<AddMetricFormData>({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- yupResolver returns Resolver with `any` context type
+        resolver: yupResolver(schema),
         defaultValues: {
             type: '',
             value: '',
@@ -55,14 +65,14 @@ export const AddMetricScreen: React.FC<AddMetricScreenProps> = () => {
     });
 
     // LD1: Defines a submit handler that calls the createHealthMetric API function.
-    const onSubmit = async (data: any): Promise<void> => {
+    const onSubmit = async (data: AddMetricFormData): Promise<void> => {
         try {
             // Get the user ID from the JWT token in the authentication session
             if (!session?.accessToken) {
                 throw new Error(t('common.errors.default'));
             }
 
-            const user = getUserFromToken(session.accessToken);
+            const user = getUserFromToken(session.accessToken) as { id?: string } | null;
             if (!user?.id) {
                 throw new Error(t('common.errors.default'));
             }

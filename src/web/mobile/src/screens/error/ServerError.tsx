@@ -4,12 +4,14 @@ import { sizing } from '@design-system/tokens/sizing';
 import { spacing } from '@design-system/tokens/spacing';
 import { typography } from '@design-system/tokens/typography';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
 import styled from 'styled-components/native';
 
 import { ROUTES } from '../../constants/routes';
+import type { SettingsStackParamList } from '../../navigation/types';
 
 // --- Types ---
 
@@ -117,7 +119,7 @@ const SecondaryButtonText = styled.Text`
  * and "Contact Support" secondary button.
  */
 export const ServerError: React.FC<ServerErrorProps> = ({ onRetry }) => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<SettingsStackParamList>>();
     const { t } = useTranslation();
 
     const handleRetry = useCallback(() => {

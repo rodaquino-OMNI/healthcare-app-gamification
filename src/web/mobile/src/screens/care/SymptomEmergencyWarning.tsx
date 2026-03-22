@@ -4,12 +4,14 @@ import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchable';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView, Linking } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareNavigationProp, CareStackParamList } from '../../navigation/types';
 
 const EMERGENCY_SYMPTOMS = [
     'Chest pain or pressure',
@@ -24,21 +26,16 @@ const EMERGENCY_SYMPTOMS = [
     'Severe abdominal pain',
 ];
 
-type SymptomEmergencyWarningRouteParams = {
-    symptoms: Array<{ id: string; name: string }>;
-    overallSeverity: number;
-};
-
 /**
  * Critical emergency warning screen with red background.
  * Provides immediate access to emergency phone numbers and ER locator.
  * Displays critical warning symptoms that require immediate medical attention.
  */
 const SymptomEmergencyWarning: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: SymptomEmergencyWarningRouteParams }, 'params'>>();
+    const navigation = useNavigation<CareNavigationProp>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareSymptomEmergencyWarning'>>();
     const { t } = useTranslation();
-    const { symptoms = [], overallSeverity = 10 } = route.params || {};
+    const sessionId = route.params?.sessionId ?? '';
 
     const handleCallSAMU = (): void => {
         Linking.openURL('tel:192');
@@ -49,10 +46,7 @@ const SymptomEmergencyWarning: React.FC = () => {
     };
 
     const handleFindER = (): void => {
-        navigation.navigate(ROUTES.CARE_SYMPTOM_ER_LOCATOR, {
-            symptoms,
-            overallSeverity,
-        });
+        navigation.navigate(ROUTES.CARE_SYMPTOM_ER_LOCATOR, { sessionId });
     };
 
     const handleDismiss = (): void => {

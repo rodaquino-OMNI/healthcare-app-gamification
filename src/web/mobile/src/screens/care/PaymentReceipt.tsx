@@ -4,17 +4,15 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView, Share, Alert } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
 
-type PaymentReceiptRouteParams = {
-    appointmentId: string;
-    paymentId: string;
-};
+import type { CareStackParamList } from '../../navigation/types';
 
 type PaymentStatus = 'paid' | 'pending' | 'failed';
 
@@ -69,14 +67,12 @@ const formatCurrency = (value: number): string => `R$ ${value.toFixed(2).replace
  * details, and actions to download/share/print the receipt.
  */
 const PaymentReceipt: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: PaymentReceiptRouteParams }, 'params'>>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CarePaymentReceipt'>>();
     const { t } = useTranslation();
 
-    const { appointmentId: _appointmentId, paymentId: _paymentId } = route.params || {
-        appointmentId: 'appt-001',
-        paymentId: 'pay-001',
-    };
+    const _paymentId = route.params?.paymentId ?? 'pay-001';
+    const _appointmentId = 'appt-001';
 
     const transaction = MOCK_TRANSACTION;
     const service = MOCK_SERVICE;

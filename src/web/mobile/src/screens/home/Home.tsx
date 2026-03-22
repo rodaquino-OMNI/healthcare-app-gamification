@@ -32,6 +32,10 @@ interface MetricSummary {
     icon: string;
 }
 
+interface TokenUser {
+    name?: string;
+}
+
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
@@ -55,9 +59,9 @@ const HomeScreen: React.FC = () => {
     const { gameProfile } = useGamification();
 
     // Derive user info from auth token
-    const user = session?.accessToken ? getUserFromToken(session.accessToken) : null;
+    const user = session?.accessToken ? (getUserFromToken(session.accessToken) as TokenUser) : null;
 
-    const _userName = user?.name || t('homeWidgets.defaultUser');
+    const _userName = user?.name ?? t('homeWidgets.defaultUser');
 
     const METRIC_SUMMARIES_LOCAL: MetricSummary[] = [
         {

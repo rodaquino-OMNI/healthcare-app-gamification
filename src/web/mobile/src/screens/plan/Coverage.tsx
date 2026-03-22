@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types -- return types are inferred from implementation context */
 import type { Theme } from '@design-system/themes/base.theme';
 import { colors, typography } from '@design-system/tokens';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, type RouteProp } from '@react-navigation/native';
 import { JOURNEY_IDS } from '@shared/constants/journeys';
 import { Coverage as CoverageType } from '@shared/types/plan.types';
 import React, { useContext, useEffect, useState } from 'react';
@@ -12,6 +12,8 @@ import { useTheme } from 'styled-components/native';
 
 import { JourneyContext } from '@context/JourneyContext';
 import { useCoverage } from '@hooks/useCoverage';
+
+import type { PlanStackParamList } from '../../navigation/types';
 
 const { plan } = colors.journeys;
 const sp = {
@@ -39,10 +41,13 @@ const Coverage: React.FC = () => {
         setJourney(JOURNEY_IDS.PLAN);
     }, [setJourney]);
 
-    const route = useRoute<any>();
-    const planId = route.params?.planId || '';
+    const route = useRoute<RouteProp<PlanStackParamList, 'Coverage'>>();
+    // planId may arrive via runtime navigation params even though Coverage has no typed params
+    const planId = (route.params as Record<string, string> | undefined)?.planId ?? '';
 
-    const { coverage, isLoading, error } = useCoverage(planId);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- useCoverage hook returns any-typed coverage
+    const { coverage: rawCoverage, isLoading, error } = useCoverage(planId);
+    const coverage = rawCoverage ?? [];
 
     // Track expanded sections by coverage type
     const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
@@ -81,7 +86,7 @@ const Coverage: React.FC = () => {
     }
 
     // Group coverage items by type
-    const grouped = (coverage as CoverageType[]).reduce<Record<string, CoverageType[]>>((acc, item) => {
+    const grouped = coverage.reduce<Record<string, CoverageType[]>>((acc, item) => {
         const key = item.type || 'other';
         if (!acc[key]) {
             acc[key] = [];
@@ -146,7 +151,9 @@ const Coverage: React.FC = () => {
                                                 <Text style={styles.copayLabel}>
                                                     {t('journeys.plan.coverage.copayment')}:
                                                 </Text>
-                                                <Text style={styles.copayValue}>R$ {item.coPayment.toFixed(2)}</Text>
+                                                <Text style={styles.copayValue}>
+                                                    R$ {Number(item.coPayment).toFixed(2)}
+                                                </Text>
                                             </View>
                                         )}
                                     </View>

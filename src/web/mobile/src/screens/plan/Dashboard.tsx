@@ -19,6 +19,11 @@ import { useClaims } from '../../hooks/useClaims';
 import { useCoverage } from '../../hooks/useCoverage';
 import type { PlanNavigationProp } from '../../navigation/types';
 
+interface DecodedToken {
+    id?: string;
+    sub?: string;
+}
+
 /**
  * Renders the main dashboard screen for the Plan journey, fetching and
  * displaying key information related to the user's insurance plan and benefits.
@@ -31,13 +36,16 @@ const PlanDashboard: React.FC = () => {
 
     const { session, getUserFromToken } = useAuth();
 
-    const decodedToken = session ? getUserFromToken(session.accessToken) : null;
-    const _userId = decodedToken?.id || decodedToken?.sub;
+    const decodedToken = session ? (getUserFromToken(session.accessToken) as DecodedToken | null) : null;
+    const _userId = decodedToken?.id ?? decodedToken?.sub;
 
     const planId = 'plan-123';
 
-    const { coverage, isLoading: isCoverageLoading, error: coverageError } = useCoverage(planId);
-    const { claims, isLoading: isClaimsLoading, error: claimsError } = useClaims(planId);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- useCoverage hook returns any-typed coverage
+    const { coverage: rawCoverage, isLoading: isCoverageLoading, error: coverageError } = useCoverage(planId);
+    const coverage = rawCoverage ?? [];
+    const { claims: rawClaims, isLoading: isClaimsLoading, error: claimsError } = useClaims(planId);
+    const claims = rawClaims ?? [];
 
     const [insuranceCardData] = React.useState({
         plan: {
@@ -170,16 +178,16 @@ const PlanDashboard: React.FC = () => {
                         description={t('common.errors.network')}
                     />
                 ) : coverage && coverage.length > 0 ? (
-                    coverage.map((item: any) => (
+                    coverage.map((item) => (
                         <TouchableOpacity
                             key={item.id}
                             style={styles.coverageItem}
                             onPress={() => handleCoveragePress(item.id)}
-                            accessibilityLabel={`Cobertura: ${item.name || item.id}`}
+                            accessibilityLabel={`Cobertura: ${item.type}`}
                         >
                             <View style={styles.coverageItemLeft}>
-                                <Text style={styles.coverageItemName}>{item.name || item.type || 'Cobertura'}</Text>
-                                {item.description && <Text style={styles.coverageItemDesc}>{item.description}</Text>}
+                                <Text style={styles.coverageItemName}>{item.type}</Text>
+                                {item.details && <Text style={styles.coverageItemDesc}>{item.details}</Text>}
                             </View>
                             <Text style={styles.chevron}>{'>'}</Text>
                         </TouchableOpacity>
@@ -205,7 +213,7 @@ const PlanDashboard: React.FC = () => {
                         description={t('common.errors.network')}
                     />
                 ) : claims && claims.length > 0 ? (
-                    claims.map((claim: any) => (
+                    claims.map((claim) => (
                         <TouchableOpacity
                             key={claim.id}
                             style={styles.claimItem}
@@ -213,7 +221,7 @@ const PlanDashboard: React.FC = () => {
                             accessibilityLabel={`Solicitacao: ${claim.id}`}
                         >
                             <View style={styles.claimItemHeader}>
-                                <Text style={styles.claimItemTitle}>{claim.type || 'Solicitacao'}</Text>
+                                <Text style={styles.claimItemTitle}>{claim.type}</Text>
                                 <View
                                     style={[
                                         styles.claimStatusBadge,
@@ -222,11 +230,11 @@ const PlanDashboard: React.FC = () => {
                                         claim.status === 'denied' && styles.claimStatusDenied,
                                     ]}
                                 >
-                                    <Text style={styles.claimStatusText}>{claim.status || 'pendente'}</Text>
+                                    <Text style={styles.claimStatusText}>{claim.status}</Text>
                                 </View>
                             </View>
                             {claim.amount !== undefined && (
-                                <Text style={styles.claimAmount}>R$ {Number(claim.amount).toFixed(2)}</Text>
+                                <Text style={styles.claimAmount}>R$ {claim.amount.toFixed(2)}</Text>
                             )}
                             <View style={styles.claimActions}>
                                 <TouchableOpacity

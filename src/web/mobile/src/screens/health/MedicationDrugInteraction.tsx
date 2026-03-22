@@ -6,9 +6,12 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, Alert } from 'react-native';
+
+import type { HealthStackParamList } from '../../navigation/types';
 
 type DrugInteractionRouteParams = {
     MedicationDrugInteraction: {
@@ -85,7 +88,7 @@ const MOCK_INTERACTIONS: DrugInteraction[] = [
  * indicators and recommendations for each interaction.
  */
 export const MedicationDrugInteraction: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
     const route = useRoute<RouteProp<DrugInteractionRouteParams, 'MedicationDrugInteraction'>>();
     const { t } = useTranslation();
 

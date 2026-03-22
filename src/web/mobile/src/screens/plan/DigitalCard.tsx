@@ -58,7 +58,7 @@ export const DigitalCardScreen: React.FC = () => {
         if (isAuthenticated && planId) {
             setLoading(true);
             getDigitalCard(planId)
-                .then((data: any) => setCardData(data))
+                .then((data: CardData) => setCardData(data))
                 .catch((error: Error) => console.error('Failed to load digital card:', error))
                 .finally(() => setLoading(false));
         }

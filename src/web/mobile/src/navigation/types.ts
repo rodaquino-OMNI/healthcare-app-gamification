@@ -117,17 +117,23 @@ export type CareStackParamList = {
     CareDoctorProfile: { doctorId: string };
     CareDoctorAvailability: { doctorId: string };
     CareBookingSchedule: { doctorId: string; date?: string; time?: string };
-    CareBookingConfirmation: { doctorId: string; appointmentId?: string };
+    CareBookingConfirmation: { doctorId: string; appointmentId?: string; date?: string; time?: string; type?: string };
     CareWaitingRoom: { appointmentId: string };
     // Consultation deep
     CareDoctorReviews: { doctorId: string };
-    CareAppointmentType: undefined;
-    CareBookingReason: undefined;
-    CareBookingDocuments: undefined;
-    CareBookingInsurance: undefined;
-    CareBookingSuccess: { appointmentId?: string };
+    CareAppointmentType: { doctorId?: string } | undefined;
+    CareBookingReason: { doctorId?: string; appointmentType?: string } | undefined;
+    CareBookingDocuments: { doctorId?: string; appointmentType?: string } | undefined;
+    CareBookingInsurance: { doctorId?: string; appointmentType?: string } | undefined;
+    CareBookingSuccess: {
+        appointmentId?: string;
+        doctorId?: string;
+        date?: string;
+        time?: string;
+        appointmentType?: string;
+    };
     CareAppointmentsList: undefined;
-    CareAppointmentReschedule: { appointmentId: string };
+    CareAppointmentReschedule: { appointmentId: string; doctorId?: string };
     CareAppointmentCancel: { appointmentId: string };
     CareAppointmentCancelled: { appointmentId?: string };
     CareAppointmentNoShow: { appointmentId?: string };
@@ -246,8 +252,14 @@ export type HealthStackParamList = {
     HealthMedicationAdd: undefined;
     HealthMedicationDetail: { medicationId: string };
     HealthMedicationSearch: undefined;
-    HealthMedicationReminder: { medicationId?: string };
-    HealthMedicationAlarm: { medicationId?: string };
+    HealthMedicationReminder: { medicationId?: string; medicationName?: string; medicationDosage?: string };
+    HealthMedicationAlarm: {
+        medicationId?: string;
+        medicationName?: string;
+        medicationDosage?: string;
+        nextDoseTime?: string;
+        snoozeDuration?: number;
+    };
     // Medication deep
     HealthMedicationCalendar: undefined;
     HealthMedicationEmpty: undefined;

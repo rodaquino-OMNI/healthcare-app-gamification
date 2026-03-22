@@ -12,9 +12,16 @@ import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+interface VaccinationData {
+    covidStatus?: string;
+    fluVaccine?: string;
+    otherVaccines?: string;
+    vaccinationCard?: string;
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: VaccinationData;
+    onUpdate: (field: keyof VaccinationData, value: string) => void;
 }
 
 const COVID_STATUS = ['fullyVaccinated', 'partiallyVaccinated', 'notVaccinated', 'preferNotToSay'] as const;
@@ -51,9 +58,9 @@ export const StepVaccination: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.vaccination.covid.${opt}`)}
                             accessibilityRole="button"
                             testID={`covid-status-${opt}`}
-                            style={[styles.optionCard, selected && styles.optionCardSelected] as any}
+                            style={[styles.optionCard, selected ? styles.optionCardSelected : null]}
                         >
-                            <View style={[styles.radioCircle, selected && styles.radioCircleSelected] as any}>
+                            <View style={[styles.radioCircle, selected ? styles.radioCircleSelected : null]}>
                                 {selected && <View style={styles.radioInner} />}
                             </View>
                             <Text
@@ -83,7 +90,7 @@ export const StepVaccination: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.vaccination.yesNo.${opt}`)}
                             accessibilityRole="button"
                             testID={`flu-vaccine-${opt}`}
-                            style={[styles.chipWide, selected && styles.chipSelected] as any}
+                            style={[styles.chipWide, selected ? styles.chipSelected : null]}
                         >
                             <Text
                                 fontSize="sm"
@@ -111,7 +118,7 @@ export const StepVaccination: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.vaccination.yesNoUnsure.${opt}`)}
                             accessibilityRole="button"
                             testID={`other-vaccines-${opt}`}
-                            style={[styles.chipWide, selected && styles.chipSelected] as any}
+                            style={[styles.chipWide, selected ? styles.chipSelected : null]}
                         >
                             <Text
                                 fontSize="sm"
@@ -139,7 +146,7 @@ export const StepVaccination: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.vaccination.yesNo.${opt}`)}
                             accessibilityRole="button"
                             testID={`vaccination-card-${opt}`}
-                            style={[styles.chipWide, selected && styles.chipSelected] as any}
+                            style={[styles.chipWide, selected ? styles.chipSelected : null]}
                         >
                             <Text
                                 fontSize="sm"

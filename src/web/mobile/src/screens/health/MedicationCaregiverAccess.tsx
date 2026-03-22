@@ -6,9 +6,12 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, FlatList, StyleSheet, Alert, ListRenderItemInfo } from 'react-native';
+
+import type { HealthStackParamList } from '../../navigation/types';
 
 /**
  * Access level type
@@ -58,7 +61,7 @@ const INITIAL_CAREGIVERS: Caregiver[] = [
  * for their medication list, including toggling access levels and revoking access.
  */
 export const MedicationCaregiverAccess: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
     const { t } = useTranslation();
     const [caregivers, setCaregivers] = useState<Caregiver[]>(INITIAL_CAREGIVERS);
 
@@ -128,9 +131,7 @@ export const MedicationCaregiverAccess: React.FC = () => {
                         accessibilityLabel={t('medication.caregiverAccess.viewOnly')}
                         accessibilityRole="button"
                         testID={`access-view-only-${item.id}`}
-                        style={
-                            [styles.toggleOption, item.accessLevel === 'view_only' && styles.toggleOptionActive] as any
-                        }
+                        style={[styles.toggleOption, item.accessLevel === 'view_only' && styles.toggleOptionActive]}
                     >
                         <Text
                             fontSize="sm"
@@ -145,12 +146,7 @@ export const MedicationCaregiverAccess: React.FC = () => {
                         accessibilityLabel={t('medication.caregiverAccess.fullAccess')}
                         accessibilityRole="button"
                         testID={`access-full-${item.id}`}
-                        style={
-                            [
-                                styles.toggleOption,
-                                item.accessLevel === 'full_access' && styles.toggleOptionActive,
-                            ] as any
-                        }
+                        style={[styles.toggleOption, item.accessLevel === 'full_access' && styles.toggleOptionActive]}
                     >
                         <Text
                             fontSize="sm"

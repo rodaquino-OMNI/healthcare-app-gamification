@@ -12,6 +12,7 @@ import styled from 'styled-components/native';
 import { updateProfile } from '../../api/auth';
 import { ROUTES } from '../../constants/routes';
 import { useAuth } from '../../context/AuthContext';
+import type { AuthNavigationProp } from '../../navigation/types';
 
 // --- Types ---
 
@@ -185,7 +186,7 @@ const InfoText = styled.Text`
  * has a toggle, icon, title, and description.
  */
 export const ProfileNotificationPrefs: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<AuthNavigationProp>();
     const { t } = useTranslation();
     const { session } = useAuth();
     const [_saving, setSaving] = useState(false);

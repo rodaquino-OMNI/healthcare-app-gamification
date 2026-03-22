@@ -8,6 +8,13 @@ import { z } from 'zod'; // latest
 
 import { useAuth } from '@hooks/useAuth';
 
+/** Minimal shape of a decoded JWT used in this component. */
+interface DecodedToken {
+    name?: string;
+    email?: string;
+    [key: string]: unknown;
+}
+
 // Define the shape of our form data
 type ProfileFormData = {
     name: string;
@@ -25,7 +32,9 @@ export const ProfileForm: React.FC = () => {
     const [updateError, setUpdateError] = useState<string | null>(null);
 
     // Get user data from the JWT token
-    const user = session?.accessToken ? getUserFromToken(session.accessToken) : null;
+    const user: DecodedToken | null = session?.accessToken
+        ? (getUserFromToken(session.accessToken) as DecodedToken | null)
+        : null;
 
     // Create a validation schema for profile updates (just name and email)
     // userValidationSchema is a ZodEffects (has .refine), so define a plain ZodObject for pick

@@ -4,10 +4,13 @@ import { sizing } from '@design-system/tokens/sizing';
 import { spacing, spacingValues } from '@design-system/tokens/spacing';
 import { typography } from '@design-system/tokens/typography';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Alert } from 'react-native';
 import styled from 'styled-components/native';
+
+import type { HomeStackParamList } from '../../navigation/types';
 
 // --- Types ---
 
@@ -208,7 +211,7 @@ const EmptyText = styled.Text`
  * Each card shows thumbnail placeholder, title, source, read time, and category badge.
  */
 export const SearchArticleResults: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<HomeStackParamList>>();
     const { t } = useTranslation();
 
     const handleBack = useCallback(() => {

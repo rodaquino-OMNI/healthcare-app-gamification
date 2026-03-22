@@ -6,11 +6,13 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, Alert } from 'react-native';
 
 import { ROUTES } from '../../constants/routes';
+import type { HealthStackParamList } from '../../navigation/types';
 
 type RefillReminderRouteParams = {
     MedicationRefillReminder: {
@@ -47,7 +49,7 @@ const SNOOZE_OPTIONS: SnoozeOption[] = [
  * and actions to find a pharmacy or order refills.
  */
 export const MedicationRefillReminder: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
     const route = useRoute<RouteProp<RefillReminderRouteParams, 'MedicationRefillReminder'>>();
     const { t } = useTranslation();
 

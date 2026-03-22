@@ -6,9 +6,12 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, FlatList, StyleSheet, TextInput, ListRenderItemInfo, Alert, Linking } from 'react-native';
+
+import type { HealthStackParamList } from '../../navigation/types';
 
 /**
  * Pharmacy data model
@@ -79,7 +82,7 @@ const MOCK_PHARMACIES: Pharmacy[] = [
  * of nearby pharmacies with contact and navigation actions.
  */
 export const MedicationPharmacyLocator: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
     const { t } = useTranslation();
     const [searchQuery, setSearchQuery] = useState('');
 

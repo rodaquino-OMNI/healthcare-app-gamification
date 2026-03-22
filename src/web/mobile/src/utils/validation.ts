@@ -46,7 +46,7 @@ export const ALLOWED_FILE_TYPES = {
  */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types -- Zod schema inference complex
 export const useMobileClaimValidationSchema = () => {
-    const baseSchema = useClaimValidationSchema();
+    const baseSchema = useClaimValidationSchema() as z.ZodObject<z.ZodRawShape>;
 
     // Extend the base schema with mobile-specific validations
     return baseSchema.extend({
@@ -67,7 +67,7 @@ export const useMobileClaimValidationSchema = () => {
  */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types -- Zod schema inference complex
 export const useMobileUserValidationSchema = () => {
-    const baseSchema = useUserValidationSchema();
+    const baseSchema = useUserValidationSchema() as z.ZodObject<z.ZodRawShape>;
 
     // Extend the base schema with mobile-specific validations
     return baseSchema.extend({
@@ -526,9 +526,8 @@ export const validateDateField = (
  * @param currentValue - The current value of the field
  * @returns True if the field has been modified, false otherwise
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- accepts any value type for comparison
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/explicit-module-boundary-types -- return type inferred from implementation
-export const isFieldModified = (initialValue: any, currentValue: any): boolean => {
+export const isFieldModified = (initialValue: unknown, currentValue: unknown): boolean => {
     // Handle different value types
     if (typeof initialValue !== typeof currentValue) {
         return true;
@@ -545,7 +544,7 @@ export const isFieldModified = (initialValue: any, currentValue: any): boolean =
             return true;
         }
 
-        return initialValue.some((val, index) => val !== currentValue[index]);
+        return initialValue.some((val: unknown, index: number) => val !== currentValue[index]);
     }
 
     // Handle objects
@@ -555,14 +554,16 @@ export const isFieldModified = (initialValue: any, currentValue: any): boolean =
         typeof currentValue === 'object' &&
         currentValue !== null
     ) {
-        const keys1 = Object.keys(initialValue);
-        const keys2 = Object.keys(currentValue);
+        const obj1 = initialValue as Record<string, unknown>;
+        const obj2 = currentValue as Record<string, unknown>;
+        const keys1 = Object.keys(obj1);
+        const keys2 = Object.keys(obj2);
 
         if (keys1.length !== keys2.length) {
             return true;
         }
 
-        return keys1.some((key) => initialValue[key] !== currentValue[key]);
+        return keys1.some((key) => obj1[key] !== obj2[key]);
     }
 
     // Simple comparison for primitive values

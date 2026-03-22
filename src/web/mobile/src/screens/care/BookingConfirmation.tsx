@@ -4,7 +4,8 @@ import { Card } from '@design-system/components/Card/Card';
 import { Checkbox } from '@design-system/components/Checkbox/Checkbox';
 import { Text } from '@design-system/primitives/Text/Text';
 import { colors } from '@design-system/tokens/colors';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView } from 'react-native';
@@ -12,16 +13,7 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { JourneyHeader } from '@components/shared/JourneyHeader';
 import { ROUTES } from '@constants/routes';
 
-/**
- * Route params expected by BookingConfirmation.
- */
-interface BookingConfirmationRouteParams {
-    appointmentId: string;
-    doctorId: string;
-    date: string;
-    time: string;
-    type: string;
-}
+import type { CareStackParamList } from '../../navigation/types';
 
 /** Mock doctor data keyed by ID. */
 const MOCK_DOCTORS: Record<string, { name: string; specialty: string; location: string }> = {
@@ -66,10 +58,10 @@ const formatDateBR = (dateStr: string): string => {
  * actions like adding to calendar or entering the waiting room.
  */
 const BookingConfirmation: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<any>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareBookingConfirmation'>>();
     const { t } = useTranslation();
-    const { appointmentId, doctorId, date, time, type } = route.params as BookingConfirmationRouteParams;
+    const { appointmentId = '', doctorId, date = '', time = '', type = '' } = route.params;
 
     const doctor = MOCK_DOCTORS[doctorId] || {
         name: 'Medico',

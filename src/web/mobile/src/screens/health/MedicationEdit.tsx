@@ -10,11 +10,14 @@ import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, Alert } from 'react-native';
 import * as yup from 'yup';
+
+import type { HealthStackParamList } from '../../navigation/types';
 
 /**
  * Form data shape for editing a medication.
@@ -66,7 +69,7 @@ const medicationEditSchema = yup.object({
  * Pre-fills form fields from route params.
  */
 export const MedicationEdit: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
     const { t } = useTranslation();
     const route = useRoute<RouteProp<MedicationEditRouteParams, 'MedicationEdit'>>();
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -81,7 +84,8 @@ export const MedicationEdit: React.FC = () => {
         handleSubmit,
         formState: { errors },
     } = useForm<MedicationEditFormData>({
-        resolver: yupResolver(medicationEditSchema as any),
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- yupResolver returns Resolver with `any` context type
+        resolver: yupResolver(medicationEditSchema),
         defaultValues: {
             name: prefillName,
             dosage: prefillDosage,

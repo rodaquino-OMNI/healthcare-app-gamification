@@ -147,7 +147,7 @@ export const HomeBottomSheet: React.FC<HomeBottomSheetProps> = ({ onClose }) => 
                     navigation.navigate('Care', { screen: 'CareAppointmentBooking' });
                     break;
                 case ROUTES.CARE_SYMPTOM_CHECKER:
-                    navigation.navigate('Care', { screen: 'CareSymptomChecker', params: {} } as any);
+                    navigation.navigate('Care', { screen: 'CareSymptomChecker', params: {} });
                     break;
                 default:
                     break;

@@ -12,9 +12,13 @@ import { useTranslation } from 'react-i18next';
 import { View, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+interface FamilyHistoryData {
+    conditions?: Record<string, FamilyCondition>;
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: FamilyHistoryData;
+    onUpdate: (field: keyof FamilyHistoryData, value: Record<string, FamilyCondition>) => void;
 }
 
 const FAMILY_CONDITION_KEYS = ['heartDisease', 'diabetes', 'cancer', 'stroke', 'hypertension', 'mentalHealth'] as const;
@@ -89,10 +93,10 @@ export const StepFamilyHistory: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.familyHistory.${key}`)}
                             accessibilityRole="checkbox"
                             testID={`family-condition-${key}`}
-                            style={styles.conditionToggle as any}
+                            style={styles.conditionToggle as unknown as React.CSSProperties}
                         >
                             <View style={styles.conditionRow}>
-                                <View style={[styles.checkbox, isActive && styles.checkboxActive] as any}>
+                                <View style={[styles.checkbox, isActive ? styles.checkboxActive : null]}>
                                     {isActive && (
                                         <Text fontSize="xs" color={colors.neutral.white} textAlign="center">
                                             {'\u2713'}
@@ -125,12 +129,7 @@ export const StepFamilyHistory: React.FC<StepProps> = ({ data, onUpdate }) => {
                                                 accessibilityLabel={t(`healthAssessment.familyHistory.relation_${rel}`)}
                                                 accessibilityRole="button"
                                                 testID={`relation-${key}-${rel}`}
-                                                style={
-                                                    [
-                                                        styles.relationPill,
-                                                        isSelected && styles.relationPillActive,
-                                                    ] as any
-                                                }
+                                                style={[styles.relationPill, isSelected && styles.relationPillActive]}
                                             >
                                                 <Text
                                                     fontSize="xs"

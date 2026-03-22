@@ -6,11 +6,13 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, FlatList, StyleSheet, ListRenderItemInfo } from 'react-native';
 
 import { ROUTES } from '../../constants/routes';
+import type { HealthStackParamList } from '../../navigation/types';
 
 /**
  * Represents a single dose slot for a medication on a given day.
@@ -109,7 +111,7 @@ const STATUS_BADGE_MAP: Record<DoseSlot['status'], { badgeStatus: 'success' | 'e
  * Each day is touchable; selecting a day shows the medication doses.
  */
 export const MedicationCalendar: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
     const { t } = useTranslation();
     const weekDays = useMemo(() => generateWeekDays(), []);
     const todayStr = useMemo(() => {
@@ -192,7 +194,7 @@ export const MedicationCalendar: React.FC = () => {
                             accessibilityLabel={`${day.label} ${day.dateNum}${isToday ? ', today' : ''}`}
                             accessibilityRole="button"
                             testID={`calendar-day-${day.key}`}
-                            style={[styles.dayCell, isSelected && styles.dayCellSelected] as any}
+                            style={[styles.dayCell, isSelected && styles.dayCellSelected]}
                         >
                             <Text fontSize="xs" color={isSelected ? colors.neutral.white : colors.neutral.gray600}>
                                 {day.label}

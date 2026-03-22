@@ -4,12 +4,14 @@ import { colors } from '@design-system/tokens/colors';
 import { spacing } from '@design-system/tokens/spacing';
 import { typography } from '@design-system/tokens/typography';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Animated, ActivityIndicator, Dimensions } from 'react-native';
 import styled from 'styled-components/native';
 
 import { ROUTES } from '../../constants/routes';
+import type { AuthStackParamList } from '../../navigation/types';
 
 const { width: _SCREEN_WIDTH, height: _SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -98,14 +100,15 @@ const LoaderContainer = styled.View`
  * - The timer is cleaned up on unmount to prevent memory leaks.
  */
 export default function WelcomeSplashScreen() {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<AuthStackParamList>>();
     const { t } = useTranslation();
     const [isFirstTime] = useState<boolean>(() => {
         // In a real implementation this would read from AsyncStorage.
         // Default to first-time for now.
         try {
-            const route = navigation.getState()?.routes?.find((r: any) => r.name === ROUTES.AUTH_WELCOME);
-            return route?.params?.isFirstTime !== false;
+            const route = navigation.getState()?.routes?.find((r) => r.name === ROUTES.AUTH_WELCOME);
+            const params = route?.params as Record<string, unknown> | undefined;
+            return params?.isFirstTime !== false;
         } catch {
             return true;
         }

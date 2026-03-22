@@ -7,7 +7,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import Link from 'next/link';
 import React, { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, type Resolver } from 'react-hook-form';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 import * as yup from 'yup';
 
@@ -57,7 +57,7 @@ const Register: React.FC = () => {
         handleSubmit,
         formState: { errors, isSubmitting },
     } = useForm<RegisterFormValues>({
-        resolver: yupResolver(validationSchema),
+        resolver: yupResolver(validationSchema) as Resolver<RegisterFormValues>,
         defaultValues: {
             name: '',
             email: '',

@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { FlatList } from 'react-native';
 import styled from 'styled-components/native';
 
-import { ROUTES } from '../../constants/routes';
+import type { HomeTabScreenNavigationProp } from '../../navigation/types';
 
 // --- Types ---
 
@@ -206,7 +206,7 @@ const EmptyText = styled.Text`
  * Each card shows pill icon, brand/generic names, dosage, and interaction badge.
  */
 export const SearchMedicationResults: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<HomeTabScreenNavigationProp>();
     const { t } = useTranslation();
 
     const handleBack = useCallback(() => {
@@ -215,7 +215,7 @@ export const SearchMedicationResults: React.FC = () => {
 
     const handleMedicationPress = useCallback(
         (medicationId: string) => {
-            navigation.navigate(ROUTES.HEALTH_MEDICATION_DETAIL, { medicationId });
+            navigation.navigate('Health', { screen: 'HealthMedicationDetail', params: { medicationId } });
         },
         [navigation]
     );

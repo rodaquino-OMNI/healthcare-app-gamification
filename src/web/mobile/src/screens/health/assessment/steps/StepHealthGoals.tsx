@@ -12,9 +12,14 @@ import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
+interface HealthGoalsData {
+    healthGoals?: string[];
+    goalPriorities?: string[];
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: HealthGoalsData;
+    onUpdate: (field: keyof HealthGoalsData, value: string[]) => void;
 }
 
 const MAX_PRIORITIES = 3;
@@ -105,7 +110,7 @@ export const StepHealthGoals: React.FC<StepProps> = ({ data, onUpdate }) => {
                             accessibilityLabel={t(`healthAssessment.healthGoals.goals.${goal}`)}
                             accessibilityRole="checkbox"
                             testID={`goal-${goal}`}
-                            style={[styles.goalChip, selected && styles.goalChipSelected] as any}
+                            style={[styles.goalChip, selected ? styles.goalChipSelected : null]}
                         >
                             <Text fontSize="heading-md" textAlign="center">
                                 {GOAL_EMOJIS[goal]}
@@ -144,7 +149,7 @@ export const StepHealthGoals: React.FC<StepProps> = ({ data, onUpdate }) => {
                                     accessibilityLabel={t(`healthAssessment.healthGoals.goals.${goal}`)}
                                     accessibilityRole="button"
                                     testID={`priority-${goal}`}
-                                    style={[styles.priorityChip, isPriority && styles.priorityChipSelected] as any}
+                                    style={[styles.priorityChip, isPriority ? styles.priorityChipSelected : null]}
                                 >
                                     {isPriority && (
                                         <View style={styles.priorityBadge}>

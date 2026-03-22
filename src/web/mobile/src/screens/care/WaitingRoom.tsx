@@ -7,7 +7,8 @@ import { ProgressBar } from '@design-system/components/ProgressBar/ProgressBar';
 import { Text } from '@design-system/primitives/Text/Text';
 import type { Theme } from '@design-system/themes/base.theme';
 import { colors } from '@design-system/tokens/colors';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView } from 'react-native';
@@ -16,12 +17,7 @@ import { useTheme } from 'styled-components/native';
 import { JourneyHeader } from '@components/shared/JourneyHeader';
 import { ROUTES } from '@constants/routes';
 
-/**
- * Route params expected by WaitingRoom.
- */
-interface WaitingRoomRouteParams {
-    appointmentId: string;
-}
+import type { CareStackParamList } from '../../navigation/types';
 
 /**
  * Represents the status of a single equipment check.
@@ -53,9 +49,9 @@ const CONNECTION_QUALITY = 85;
  * a countdown timer, and tips before joining the teleconsultation.
  */
 const WaitingRoom: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<any>();
-    const { appointmentId } = route.params as WaitingRoomRouteParams;
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareWaitingRoom'>>();
+    const { appointmentId } = route.params;
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);

@@ -7,9 +7,13 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet } from 'react-native';
 
+interface IntroductionData {
+    [key: string]: unknown;
+}
+
 interface StepProps {
-    data: Record<string, any>;
-    onUpdate: (field: string, value: any) => void;
+    data: IntroductionData;
+    onUpdate: (field: string, value: unknown) => void;
 }
 
 const BENEFITS_KEYS = [

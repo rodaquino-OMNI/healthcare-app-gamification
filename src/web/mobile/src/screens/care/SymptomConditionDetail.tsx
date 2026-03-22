@@ -8,12 +8,14 @@ import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchable';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView } from 'react-native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareNavigationProp, CareStackParamList } from '../../navigation/types';
 
 interface ConditionParam {
     id: string;
@@ -121,23 +123,22 @@ const getDefaultDetails = () => ({
     ],
 });
 
-type SymptomConditionDetailRouteParams = {
-    condition: ConditionParam;
-};
-
 /**
  * Detailed information about a single possible condition.
  * Shows overview, causes, treatments, warning signs, and prevention tips.
  */
 const SymptomConditionDetail: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: SymptomConditionDetailRouteParams }, 'params'>>();
+    const navigation = useNavigation<CareNavigationProp>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareSymptomConditionDetail'>>();
     const { t } = useTranslation();
-    const { condition } = route.params || {
-        condition: { id: '', name: '', probability: 0, severity: 'low' as const, description: '' },
-    };
+    const conditionId = route.params?.conditionId ?? '';
+    const sessionId = route.params?.sessionId ?? '';
 
-    const details = CONDITION_DETAILS[condition.id] || getDefaultDetails();
+    const condition: ConditionParam = CONDITION_DETAILS[conditionId]
+        ? { id: conditionId, name: conditionId, probability: 0, severity: 'low', description: '' }
+        : { id: conditionId, name: conditionId, probability: 0, severity: 'low', description: '' };
+
+    const details = CONDITION_DETAILS[conditionId] || getDefaultDetails();
 
     const handleBack = (): void => {
         navigation.goBack();
@@ -145,8 +146,7 @@ const SymptomConditionDetail: React.FC = () => {
 
     const handleBookAppointment = (): void => {
         navigation.navigate(ROUTES.CARE_SYMPTOM_BOOK_APPOINTMENT, {
-            conditions: [condition],
-            overallSeverity: condition.severity === 'high' ? 8 : condition.severity === 'medium' ? 5 : 3,
+            sessionId,
         });
     };
 

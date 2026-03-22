@@ -10,11 +10,13 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, FlatList, StyleSheet, Alert, ListRenderItemInfo } from 'react-native';
 
 import { ROUTES } from '../../constants/routes';
+import type { HealthStackParamList } from '../../navigation/types';
 
 /**
  * Dose history record
@@ -75,7 +77,7 @@ const getStatusConfig = (status: string) => STATUS_MAP[status] ?? { label: statu
 /** MedicationDetail shows details about a single medication with dose history and actions. */
 const MedicationDetail: React.FC = () => {
     const { t } = useTranslation();
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<HealthStackParamList>>();
     const _route = useRoute<RouteProp<MedicationDetailRouteParams, 'MedicationDetail'>>();
     const [deleteModalVisible, setDeleteModalVisible] = useState(false);
     const medication = MOCK_MEDICATION;

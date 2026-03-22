@@ -3,13 +3,21 @@ import DatePicker from '@design-system/components/DatePicker/DatePicker';
 import { Input } from '@design-system/components/Input/Input';
 import { Select } from '@design-system/components/Select/Select';
 import { yupResolver } from '@hookform/resolvers'; // latest
-import { useNavigation } from '@react-navigation/native'; // latest
+import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native'; // latest
 import { claimValidationSchema } from '@shared/utils/validation';
 import React from 'react'; // Version 18.0.0
-import { useForm, Controller } from 'react-hook-form'; // 7.0+
+import { useForm, Controller, type Resolver } from 'react-hook-form'; // 7.0+
 
 import { submitClaim } from '@api/plan';
 import { useJourney } from '@hooks/useJourney';
+
+/** Shape of the claim submission form fields. */
+type ClaimFormData = {
+    procedureType: string;
+    date: Date | null;
+    provider: string;
+    amount: string;
+};
 
 /**
  * A React component that renders a form for submitting insurance claims.
@@ -27,8 +35,8 @@ export const ClaimForm: React.FC = () => {
         control,
         handleSubmit,
         formState: { errors: _errors, isSubmitting, isValid: _isValid },
-    } = useForm({
-        resolver: yupResolver(claimValidationSchema),
+    } = useForm<ClaimFormData>({
+        resolver: yupResolver(claimValidationSchema) as Resolver<ClaimFormData>,
         defaultValues: {
             procedureType: '',
             date: null,
@@ -38,7 +46,7 @@ export const ClaimForm: React.FC = () => {
     });
 
     // Access the navigation object
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
     // Define options for the procedure type select
     const procedureTypeOptions = [
@@ -51,16 +59,22 @@ export const ClaimForm: React.FC = () => {
 
     // Defines the `handleSubmit` function to handle form submission,
     // calling the `submitClaim` API function and displaying success or error messages.
-    const onSubmit = async (data: any): Promise<void> => {
+    const onSubmit = async (data: ClaimFormData): Promise<void> => {
         try {
             // Call the submitClaim API function
-            const result = await submitClaim('your-plan-id', data);
+            const result = await submitClaim('your-plan-id', {
+                type: data.procedureType,
+                procedureCode: data.procedureType,
+                providerName: data.provider,
+                serviceDate: data.date ? data.date.toISOString() : '',
+                amount: parseFloat(data.amount) || 0,
+            });
 
             // Display success message
             alert('Claim submitted successfully!');
 
             // Navigate to confirmation screen
-            (navigation as any).navigate('ClaimConfirmation', { claimId: result.id });
+            navigation.navigate('ClaimConfirmation', { claimId: result.id });
         } catch (error) {
             // Display error message
             alert('Claim submission failed. Please try again.');
@@ -95,7 +109,7 @@ export const ClaimForm: React.FC = () => {
                         <DatePicker
                             value={
                                 field.value !== null && typeof (field.value as unknown) === 'object'
-                                    ? (field.value as Date)
+                                    ? field.value
                                     : null
                             }
                             onChange={(date) => field.onChange(date)}

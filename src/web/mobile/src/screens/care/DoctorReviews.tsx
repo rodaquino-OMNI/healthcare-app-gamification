@@ -3,10 +3,13 @@ import { Card } from '@austa/design-system/src/components/Card/Card';
 import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+
+import type { CareStackParamList } from '../../navigation/types';
 
 interface Review {
     id: string;
@@ -124,10 +127,10 @@ const renderStars = (rating: number): string => {
  * Includes star average, rating breakdown, sortable review list, and write review CTA.
  */
 export const DoctorReviews: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<any>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareDoctorReviews'>>();
     const { t } = useTranslation();
-    const { _doctorId } = route.params || { doctorId: 'doc-001' };
+    const { doctorId: _doctorId } = route.params;
 
     const [sortBy, setSortBy] = useState<SortOption>('recent');
     const [helpedIds, setHelpedIds] = useState<Set<string>>(new Set());

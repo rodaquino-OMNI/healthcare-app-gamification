@@ -3,6 +3,7 @@ import { Text } from '@design-system/primitives/Text/Text';
 import { colors } from '@design-system/tokens/colors';
 import { spacingValues } from '@design-system/tokens/spacing';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
@@ -13,6 +14,7 @@ import { ROUTES } from '@constants/routes';
 
 import { SPECIALTIES_KEYS as SPECIALTIES, SpecialtyTabs, ControlsRow } from './DoctorSearchFilters';
 import { Doctor, MOCK_DOCTORS, DoctorItem, MapPlaceholder } from './DoctorSearchList';
+import type { CareStackParamList } from '../../navigation/types';
 
 /**
  * DoctorSearch screen allows users to search for doctors by name or specialty,
@@ -21,7 +23,7 @@ import { Doctor, MOCK_DOCTORS, DoctorItem, MapPlaceholder } from './DoctorSearch
  * Part of the Care Now journey (orange theme).
  */
 const DoctorSearch: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
     const { t } = useTranslation();
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedSpecialty, setSelectedSpecialty] = useState(0);
@@ -106,7 +108,7 @@ const DoctorSearch: React.FC = () => {
             <View style={styles.searchContainer}>
                 <Input
                     value={searchQuery}
-                    onChange={(e: any) => setSearchQuery(e.target?.value ?? e)}
+                    onChangeText={setSearchQuery}
                     placeholder={t('journeys.care.doctorSearch.searchPlaceholder')}
                     journey="care"
                     type="search"

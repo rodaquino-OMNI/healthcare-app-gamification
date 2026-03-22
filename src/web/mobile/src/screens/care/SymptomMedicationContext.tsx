@@ -7,13 +7,15 @@ import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchab
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import type { Theme } from '@design-system/themes/base.theme';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView, TextInput } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
 import { ROUTES } from '@constants/routes';
+
+import type { CareNavigationProp, CareStackParamList } from '../../navigation/types';
 
 interface MedicationItem {
     id: string;
@@ -36,14 +38,6 @@ const MOCK_MEDICATIONS: MedicationItem[] = [
     { id: 'med6', nameKey: 'ibuprofen', dosage: '400mg', frequency: 'asNeeded', isCurrentlyTaking: false },
 ];
 
-type SymptomMedicationContextRouteParams = {
-    symptoms: Array<{ id: string; name: string }>;
-    description: string;
-    regions: Array<{ id: string; label: string }>;
-    photos: Array<{ id: string; uri: string }>;
-    medicalHistory: Array<{ id: string; type: string; name: string }>;
-};
-
 /**
  * Current medications screen for symptom context.
  * Users toggle which medications they are currently taking
@@ -53,9 +47,9 @@ const SymptomMedicationContext: React.FC = () => {
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: SymptomMedicationContextRouteParams }, 'params'>>();
-    const { symptoms = [], description = '', regions = [], photos = [], medicalHistory = [] } = route.params || {};
+    const navigation = useNavigation<CareNavigationProp>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CareSymptomMedicationContext'>>();
+    const sessionId = route.params?.sessionId ?? '';
 
     const [medications, setMedications] = useState<MedicationItem[]>(MOCK_MEDICATIONS);
     const [newMedication, setNewMedication] = useState('');
@@ -83,25 +77,7 @@ const SymptomMedicationContext: React.FC = () => {
     };
 
     const handleContinue = (): void => {
-        const currentMedications = medications
-            .filter((med) => med.isCurrentlyTaking)
-            .map((med) => ({
-                id: med.id,
-                name: med.id.startsWith('custom-med-')
-                    ? med.nameKey
-                    : t(`journeys.care.symptomChecker.medicationContext.medications.${med.nameKey}`),
-                dosage: med.dosage,
-                frequency: med.frequency,
-            }));
-
-        navigation.navigate(ROUTES.CARE_SYMPTOM_VITALS, {
-            symptoms,
-            description,
-            regions,
-            photos,
-            medicalHistory,
-            currentMedications,
-        });
+        navigation.navigate(ROUTES.CARE_SYMPTOM_VITALS, { sessionId });
     };
 
     const handleBack = (): void => {
@@ -140,7 +116,7 @@ const SymptomMedicationContext: React.FC = () => {
                         <Touchable
                             key={med.id}
                             onPress={() => toggleMedication(med.id)}
-                            style={[styles.medicationItem, med.isCurrentlyTaking && styles.medicationItemActive] as any}
+                            style={[styles.medicationItem, med.isCurrentlyTaking ? styles.medicationItemActive : null]}
                             accessibilityLabel={`${med.id.startsWith('custom-med-') ? med.nameKey : t(`journeys.care.symptomChecker.medicationContext.medications.${med.nameKey}`)}${med.dosage ? `, ${med.dosage}` : ''}${med.isCurrentlyTaking ? `, ${t('journeys.care.symptomChecker.medicationContext.currentlyTaking')}` : ''}`}
                             accessibilityRole="button"
                             testID={`medication-item-${med.id}`}
@@ -173,17 +149,13 @@ const SymptomMedicationContext: React.FC = () => {
                                     ) : null}
                                 </View>
                                 <View
-                                    style={
-                                        [styles.toggleIndicator, med.isCurrentlyTaking && styles.toggleActive] as any
-                                    }
+                                    style={[styles.toggleIndicator, med.isCurrentlyTaking ? styles.toggleActive : null]}
                                 >
                                     <View
-                                        style={
-                                            [
-                                                styles.toggleThumb,
-                                                med.isCurrentlyTaking && styles.toggleThumbActive,
-                                            ] as any
-                                        }
+                                        style={[
+                                            styles.toggleThumb,
+                                            med.isCurrentlyTaking ? styles.toggleThumbActive : null,
+                                        ]}
                                     />
                                 </View>
                             </View>

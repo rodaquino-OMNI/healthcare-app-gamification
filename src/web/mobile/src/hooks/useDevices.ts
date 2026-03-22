@@ -13,6 +13,12 @@ import { useEffect } from 'react';
 import { useAuth } from './useAuth';
 import { getConnectedDevices, connectDevice } from '../api/health';
 
+/** Minimal shape of a decoded JWT used in this hook. */
+interface DecodedToken {
+    sub?: string;
+    [key: string]: unknown;
+}
+
 /**
  * Custom hook that fetches connected devices for the current user and provides
  * a function to connect new devices.
@@ -26,9 +32,10 @@ export function useDevices() {
     const auth = useAuth();
 
     // Derive userId from the JWT in the current session
-    const userId: string | undefined = auth.session?.accessToken
-        ? auth.getUserFromToken(auth.session.accessToken)?.sub
-        : undefined;
+    const decoded = auth.session?.accessToken
+        ? (auth.getUserFromToken(auth.session.accessToken) as DecodedToken | null)
+        : null;
+    const userId: string | undefined = decoded?.sub ?? undefined;
 
     const { data, isPending, error, refetch } = useQuery<DeviceConnection[], Error>({
         queryKey: ['devices', userId],

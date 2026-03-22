@@ -7,7 +7,8 @@ import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
 import type { Theme } from '@design-system/themes/base.theme';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
@@ -15,10 +16,7 @@ import { useTheme } from 'styled-components/native';
 
 import { ROUTES } from '@constants/routes';
 
-type PaymentSummaryRouteParams = {
-    appointmentId: string;
-    doctorName: string;
-};
+import type { CareStackParamList } from '../../navigation/types';
 
 interface PaymentCard {
     id: string;
@@ -53,16 +51,14 @@ const formatCurrency = (value: number): string => `R$ ${value.toFixed(2).replace
  * payment methods, and action buttons to pay or defer.
  */
 const PaymentSummary: React.FC = () => {
-    const navigation = useNavigation<any>();
-    const route = useRoute<RouteProp<{ params: PaymentSummaryRouteParams }, 'params'>>();
+    const navigation = useNavigation<StackNavigationProp<CareStackParamList>>();
+    const route = useRoute<RouteProp<CareStackParamList, 'CarePaymentSummary'>>();
     const { t } = useTranslation();
     const theme = useTheme() as Theme;
     const styles = createStyles(theme);
 
-    const { appointmentId, doctorName } = route.params || {
-        appointmentId: 'appt-001',
-        doctorName: 'Dra. Ana Silva',
-    };
+    const appointmentId = route.params?.appointmentId ?? 'appt-001';
+    const doctorName = 'Dra. Ana Silva';
 
     const [selectedCardId, setSelectedCardId] = useState<string>(MOCK_CARDS[0].id);
 
