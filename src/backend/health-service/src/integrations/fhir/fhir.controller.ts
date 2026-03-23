@@ -18,7 +18,7 @@ import { FhirService } from './fhir.service';
  * ForbiddenException when patientId !== requestingUserId.
  */
 @ApiTags('fhir')
-@Controller('api/fhir')
+@Controller('fhir')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 export class FhirController {

@@ -275,6 +275,11 @@
         "$value": "#334155",
         "$description": "Gray/70 — darkest text / dark bg alt"
       },
+      "80": {
+        "$type": "color",
+        "$value": "#1F2937",
+        "$description": "Gray/80 — near-black text (code extension, matches colors.ts gray.80)"
+      },
       "100": {
         "$type": "color",
         "$value": "#f7fafc"

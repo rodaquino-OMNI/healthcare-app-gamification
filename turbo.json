@@ -4,7 +4,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "dist/**", "build/**"]
+      "outputs": [".next/**", "dist/**", "build/**", "storybook-static/**"]
     },
     "dev": {
       "cache": false,
@@ -19,8 +19,7 @@
       "outputs": []
     },
     "test": {
-      "cache": false,
-      "outputs": ["coverage/**"]
+      "cache": false
     },
     "typecheck": {
       "dependsOn": ["^build"],
@@ -35,9 +34,11 @@
       "cache": false
     },
     "test:e2e": {
+      "cache": false,
       "outputs": ["coverage/**"]
     },
     "test:cov": {
+      "cache": false,
       "outputs": ["coverage/**"]
     },
     "db:migrate": {

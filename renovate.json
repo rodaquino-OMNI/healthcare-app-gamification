@@ -238,6 +238,37 @@
     },
 
     {
+      "description": "Group 4c — Form + validation libraries: zod, react-hook-form, @hookform",
+      "groupName": "form + validation minor bumps",
+      "matchUpdateTypes": ["minor"],
+      "matchPackageNames": [
+        "/^zod$/",
+        "/^react-hook-form$/",
+        "/^@hookform/"
+      ],
+      "automerge": false,
+      "labels": ["dependencies", "renovate", "frontend"],
+      "prPriority": 3
+    },
+
+    {
+      "description": "Group 4c — Form + validation patch bumps: auto-merge after stability window",
+      "groupName": "form + validation patch bumps",
+      "matchUpdateTypes": ["patch"],
+      "matchPackageNames": [
+        "/^zod$/",
+        "/^react-hook-form$/",
+        "/^@hookform/"
+      ],
+      "automerge": true,
+      "automergeType": "pr",
+      "automergeStrategy": "squash",
+      "minimumReleaseAge": "3 days",
+      "labels": ["dependencies", "renovate", "frontend"],
+      "prPriority": 4
+    },
+
+    {
       "description": "Group 6 — All major bumps: individual PRs, never auto-merge",
       "matchUpdateTypes": ["major"],
       "automerge": false,
@@ -251,6 +282,10 @@
   "npm": {
     "minimumReleaseAge": "3 days",
     "rangeStrategy": "replace"
+  },
+
+  "pnpm": {
+    "fileMatch": ["(^|/)pnpm-lock\\.yaml$"]
   },
 
   "vulnerabilityAlerts": {
@@ -291,12 +326,12 @@
   },
 
   "postUpdateOptions": [
-    "yarnDedupeHighest"
+    "pnpmDedupe"
   ],
 
   "constraints": {
     "node": ">=18.0.0",
-    "yarn": ">=1.22.0"
+    "pnpm": ">=10.0.0"
   },
 
   "ignoreDeps": [

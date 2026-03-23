@@ -8,6 +8,7 @@ import {
     Query,
     Body,
     Logger,
+    UseGuards,
     UsePipes,
     ValidationPipe,
 } from '@nestjs/common';
@@ -17,6 +18,8 @@ import { Provider } from './entities/provider.entity';
 import { ProvidersService } from './providers.service';
 import { CurrentUser } from '../../../auth-service/src/auth/decorators/current-user.decorator';
 import { Roles } from '../../../auth-service/src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from '../../../auth-service/src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../../../auth-service/src/auth/guards/roles.guard';
 import { PaginationDto } from '../../../shared/src/dto/pagination.dto';
 import { AppException, ErrorType } from '../../../shared/src/exceptions/exceptions.types';
 
@@ -24,6 +27,7 @@ import { AppException, ErrorType } from '../../../shared/src/exceptions/exceptio
  * Controller for managing healthcare provider-related endpoints in the Care Now journey.
  */
 @Controller('providers')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class ProvidersController {
     private readonly logger = new Logger(ProvidersController.name);
 

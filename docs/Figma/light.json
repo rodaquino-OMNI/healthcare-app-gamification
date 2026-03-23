@@ -132,7 +132,8 @@
   "shadows": {
     "default": {
       "$type": "color",
-      "$value": "{colors.gray.900}"
+      "$value": "{colors.gray.80}",
+      "$description": "Shadow base color — near-black #1F2937"
     }
   }
 }

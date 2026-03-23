@@ -12,22 +12,27 @@
     "brand": {
       "5": { "value": "#EBFBFF", "type": "color", "description": "Background mais claro da marca" },
       "20": { "value": "#BDF1FF", "type": "color", "description": "Destaque leve / hover" },
-      "primary": { "value": "#00C3F7", "type": "color", "description": "Cor principal — botões, links, CTAs" },
+      "primary": { "value": "#00C3F7", "type": "color", "description": "Cor principal — botões, links, CTAs (Figma source). Code uses #05AEDB — see colors.ts" },
       "accent": { "value": "#00DBBB", "type": "color", "description": "Verde-teal — ícones, badges, destaques" }
     },
     "gray": {
       "0": { "value": "#FFFFFF", "type": "color", "description": "White — fundo principal" },
       "5": { "value": "#F8FAFC", "type": "color", "description": "Fundo de cards e seções" },
+      "10": { "value": "#F1F5F9", "type": "color", "description": "Subtle bg / alternate rows" },
       "20": { "value": "#E2E8F0", "type": "color", "description": "Bordas e separadores" },
       "30": { "value": "#CBD5E1", "type": "color", "description": "Overlays leves / Dark mode cards" },
       "40": { "value": "#94A3B8", "type": "color", "description": "Texto secundário / placeholder" },
+      "50": { "value": "#64748B", "type": "color", "description": "Secondary text" },
       "60": { "value": "#4B5563", "type": "color", "description": "Texto principal / Dark mode background" },
-      "70": { "value": "#334155", "type": "color", "description": "Dark mode alternativo" }
+      "70": { "value": "#334155", "type": "color", "description": "Dark mode alternativo" },
+      "80": { "value": "#1F2937", "type": "color", "description": "Near-black text (code-only extension, not in Figma)" }
     },
     "semantic": {
       "destructive": { "value": "#E11D48", "type": "color", "description": "Alertas, erros, ações destrutivas" },
+      "warning": { "value": "#F59E0B", "type": "color", "description": "Avisos, atenção, estados intermediários" },
       "critical": { "value": "#FF0000", "type": "color", "description": "Indicadores críticos de saúde" },
       "success": { "value": "#7AB765", "type": "color", "description": "Sucesso, positivo, meta atingida" },
+      "info": { "value": "#3B82F6", "type": "color", "description": "Informational — tips, hints" },
       "profileSetup": { "value": "rgba(111, 36, 216, 0.35)", "type": "color", "description": "Overlay roxo — setup de perfil" },
       "utilityOverlay": { "value": "rgba(0, 219, 187, 0.3)", "type": "color", "description": "Overlay teal — utilidades" }
     }
@@ -53,6 +58,27 @@
       }
     },
     "text": {
+      "2xs": {
+        "regular": {
+          "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 400, "fontSize": 10, "lineHeight": "1.5em" },
+          "type": "typography",
+          "description": "Smallest text — footnotes, legal"
+        }
+      },
+      "xs": {
+        "regular": {
+          "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 400, "fontSize": 12, "lineHeight": "1.5em" },
+          "type": "typography",
+          "description": "Captions, meta"
+        }
+      },
+      "sm": {
+        "regular": {
+          "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 400, "fontSize": 14, "lineHeight": "1.5em" },
+          "type": "typography",
+          "description": "Small body text"
+        }
+      },
       "md": {
         "regular": {
           "value": {
@@ -65,7 +91,58 @@
           "type": "typography",
           "description": "Corpo de texto padrão (Text md/Regular)"
         }
+      },
+      "lg": {
+        "regular": {
+          "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 400, "fontSize": 18, "lineHeight": "1.5em" },
+          "type": "typography",
+          "description": "Large body text"
+        }
+      },
+      "xl": {
+        "regular": {
+          "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 400, "fontSize": 20, "lineHeight": "1.5em" },
+          "type": "typography",
+          "description": "Extra large body text"
+        }
       }
+    },
+    "heading": {
+      "xs": {
+        "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 500, "fontSize": 16, "lineHeight": "1.3em" },
+        "type": "typography",
+        "description": "Heading xs — smallest heading"
+      },
+      "sm": {
+        "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 500, "fontSize": 18, "lineHeight": "1.3em" },
+        "type": "typography",
+        "description": "Heading sm"
+      },
+      "md": {
+        "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 500, "fontSize": 20, "lineHeight": "1.3em" },
+        "type": "typography",
+        "description": "Heading md"
+      },
+      "lg": {
+        "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 600, "fontSize": 24, "lineHeight": "1.3em" },
+        "type": "typography",
+        "description": "Heading lg"
+      },
+      "xl": {
+        "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 600, "fontSize": 30, "lineHeight": "1.3em" },
+        "type": "typography",
+        "description": "Heading xl"
+      },
+      "2xl": {
+        "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 600, "fontSize": 36, "lineHeight": "1.3em" },
+        "type": "typography",
+        "description": "Heading 2xl"
+      }
+    },
+    "label": {
+      "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 500, "fontSize": 14, "lineHeight": "1.3em" },
+      "type": "typography",
+      "description": "Form labels and UI element labels"
     },
     "logo": {
       "primary": {

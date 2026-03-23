@@ -19,14 +19,14 @@
 8. [Module 06 — AI Wellness Companion (15 screens)](#module-06--ai-wellness-companion)
 9. [Module 07 — AI Symptom Checker (30 screens)](#module-07--ai-symptom-checker)
 10. [Module 08 — Medication Tracker (26 screens)](#module-08--medication-tracker)
-11. [Module 09 — Sleep Management (1 placeholder)](#module-09--sleep-management)
-12. [Module 10 — Activity Tracker (1 placeholder)](#module-10--activity-tracker)
-13. [Module 11 — Nutrition Monitoring (1 placeholder)](#module-11--nutrition-monitoring)
+11. [Module 09 — Sleep Management (12 screens)](#module-09--sleep-management)
+12. [Module 10 — Activity Tracker (10 screens)](#module-10--activity-tracker)
+13. [Module 11 — Nutrition Monitoring (10 screens)](#module-11--nutrition-monitoring)
 14. [Module 12 — Period & Cycle Tracking (15 screens)](#module-12--period--cycle-tracking)
 15. [Module 13 — Doctor Consultation (38 screens)](#module-13--doctor-consultation)
 16. [Module 14 — Notification & Search (10 screens)](#module-14--notification--search)
-17. [Module 15 — Error & Utility (1 placeholder)](#module-15--error--utility)
-18. [Module 16 — Wellness Resources (1 placeholder)](#module-16--wellness-resources)
+17. [Module 15 — Error & Utility (4 screens)](#module-15--error--utility)
+18. [Module 16 — Wellness Resources (8 screens)](#module-16--wellness-resources)
 19. [Module 17 — Health Community (1 placeholder)](#module-17--health-community)
 20. [Module 18 — Profile Settings & Help Center (33 screens)](#module-18--profile-settings--help-center)
 21. [Module 19 — Achievements (7 screens)](#module-19--achievements)
@@ -40,14 +40,15 @@
 
 | Metric | Value |
 |--------|-------|
-| Total Modules (Light Mode) | 19 active + 4 placeholder |
-| Total Screens (Light Mode) | **277** |
+| Total Modules (Light Mode) | 23 active (all modules implemented in code) |
+| Total Screens (Light Mode) | **277** (Figma) / **~321** (code — includes expanded placeholder modules) |
 | Dark Mode Module Groups | **20** |
 | Bonus Dashboard Screens | **6** |
 | **Grand Total Frames** | **303** |
 | Frame Size (standard) | 375 × 812 px (iPhone X) |
 | Design System Font | Plus Jakarta Sans (primary), Nunito (logo) |
-| Primary Brand Color | #00C3F7 (Azul AUSTA) |
+| Icon Registry | **574 unique icons** (37 legacy + 537 strangeicons) — see `iconRegistry.ts` |
+| Primary Brand Color | #00C3F7 (Azul AUSTA in Figma) — Code implementation uses **#05AEDB** (see `colors.ts`) |
 
 ### Screens per Module
 
@@ -61,14 +62,14 @@
 | 06 | AI Wellness Companion | 15 | 🔶 v1.1 | P1 |
 | 07 | AI Symptom Checker | 30 | ✅ v1.0 | P0 |
 | 08 | Medication Tracker | 26 | ✅ v1.0 | P0 |
-| 09 | Sleep Management | 1 ⬜ | ⬜ v2.0 | P2 |
-| 10 | Activity Tracker | 1 ⬜ | ⬜ v2.0 | P2 |
-| 11 | Nutrition Monitoring | 1 ⬜ | ⬜ v2.0 | P2 |
+| 09 | Sleep Management | 12 (1 Figma group → 12 code screens) | ⬜ v2.0 | P2 |
+| 10 | Activity Tracker | 10 (1 Figma group → 10 code screens) | ⬜ v2.0 | P2 |
+| 11 | Nutrition Monitoring | 10 (1 Figma group → 10 code screens) | ⬜ v2.0 | P2 |
 | 12 | Period & Cycle Tracking | 15 | ⬜ v2.0 | P2 |
 | 13 | Doctor Consultation | 38 | ✅ v1.0 | P0 |
 | 14 | Notification & Search | 10 | ✅ v1.0 | P0 |
-| 15 | Error & Utility | 1 ⬜ | ✅ v1.0 | P0 |
-| 16 | Wellness Resources | 1 ⬜ | ⬜ v2.0 | P2 |
+| 15 | Error & Utility | 4 (1 Figma group → 4 code screens) | ✅ v1.0 | P0 |
+| 16 | Wellness Resources | 8 (1 Figma group → 8 code screens) | ⬜ v2.0 | P2 |
 | 17 | Health Community | 1 ⬜ | ❌ Future | P3 |
 | 18 | Profile Settings & Help Center | 33 | ✅ v1.0 | P0 |
 | 19 | Achievements | 7 | 🔶 v1.1 | P1 |
@@ -76,15 +77,16 @@
 | 21 | Bonus Dashboard (admin) | 6 | ❌ Future | P3 |
 
 > ⬜ = Placeholder frame in Figma (grouped screens not yet expanded into individual flows)
+> **Note:** Modules 09, 10, 11, 15, and 16 show as single grouped frames in Figma but have been fully implemented as individual screens in code. See each module section below for the complete screen inventory.
 
 ---
 
 ## 2. MVP Classification
 
 ### ✅ MVP v1.0 — MUST HAVE (Core Launch)
-**~172 screens** across 10 modules
+**~175 screens** across 10 modules
 
-Modules: Welcome Screen (11), Authentication (6), Profile Setup (9), Home & Health Metrics (19), AI Symptom Checker (30), Medication Tracker (26), Doctor Consultation (38), Notification & Search (10), Error & Utility (1), Profile Settings (33)
+Modules: Welcome Screen (11), Authentication (6), Profile Setup (9), Home & Health Metrics (19), AI Symptom Checker (30), Medication Tracker (26), Doctor Consultation (38), Notification & Search (10), Error & Utility (4), Profile Settings (33)
 
 ### 🔶 v1.1 — SHOULD HAVE (Fast Follow, +30 days)
 **~74 screens** across 3 modules + Dark Mode
@@ -92,9 +94,9 @@ Modules: Welcome Screen (11), Authentication (6), Profile Setup (9), Home & Heal
 Modules: Comprehensive Health Assessment (52), AI Wellness Companion (15), Achievements (7), Dark Mode (20 groups)
 
 ### ⬜ v2.0 — COULD HAVE (+90 days)
-**~18 screens** across 4 modules
+**~55 screens** across 5 modules
 
-Modules: Period & Cycle Tracking (15), Sleep Management (1), Activity Tracker (1), Nutrition Monitoring (1), Wellness Resources (1)
+Modules: Period & Cycle Tracking (15), Sleep Management (12), Activity Tracker (10), Nutrition Monitoring (10), Wellness Resources (8)
 
 ### ❌ Future — WON'T (this cycle)
 **~7 screens** across 2 modules
@@ -122,7 +124,7 @@ These screens form the onboarding carousel and splash sequence shown to first-ti
 | 01-10 | `23533:58329` | Welcome — Goal Selection | Gray/5 | User selects health goals |
 | 01-11 | `23533:58393` | Welcome — Confirmation | Gray/5 | Goals confirmed, proceed to app |
 
-**Dev Route:** `src/screens/onboarding/` → React Native carousel with pagination dots + skip/next CTA
+**Dev Route:** `src/web/mobile/src/screens/auth/` → React Native carousel with pagination dots + skip/next CTA
 
 ---
 
@@ -138,7 +140,7 @@ These screens form the onboarding carousel and splash sequence shown to first-ti
 | 02-05 | `20313:25276` | Forgot Password — Email entry | Gray/5 | Send recovery code flow |
 | 02-06 | `20313:22645` | OTP Verification — Code entry | Gray/5 | 6-digit OTP input + resend timer |
 
-**Dev Route:** `src/screens/auth/` → Firebase Auth + Social SSO + OTP verification
+**Dev Route:** `src/web/mobile/src/screens/auth/` → Firebase Auth + Social SSO + OTP verification
 
 ---
 
@@ -176,7 +178,7 @@ This is the largest module — a multi-step health questionnaire flow with paire
 | 03-25 | `23431:67881` | `23686:98060` | CHA — Submission confirmation | Gray/5 |
 | 03-26 | `23431:68034` | `23686:98213` | CHA — Results / Health Score | Brand (#00C3F7) |
 
-**Dev Route:** `src/screens/health-assessment/` → Stepper wizard with progress bar, form validation, FHIR Questionnaire resource
+**Dev Route:** `src/web/mobile/src/screens/health/assessment/` → Stepper wizard with progress bar, form validation, FHIR Questionnaire resource
 
 ---
 
@@ -195,7 +197,7 @@ This is the largest module — a multi-step health questionnaire flow with paire
 | 04-08 | `23686:100832` | Profile — Biometric auth setup | Gray/5 | Face ID / fingerprint enrollment |
 | 04-09 | `23686:100994` | Profile — Setup complete | Gray/5 | Success state + go to Home CTA |
 
-**Dev Route:** `src/screens/profile-setup/` → Multi-step form with image upload + biometric API
+**Dev Route:** `src/web/mobile/src/screens/profile/` → Multi-step form with image upload + biometric API
 
 ---
 
@@ -224,7 +226,7 @@ This is the largest module — a multi-step health questionnaire flow with paire
 | 05-18 | `23684:97063` | Home — Empty state / No data | Gray/60 | First-time user with no metrics |
 | 05-19 | `23688:102183` | Home — Connected devices | Gray/5 | Wearable pairing status |
 
-**Dev Route:** `src/screens/home/` → Main tab screen + HealthKit/Google Fit integration + recharts
+**Dev Route:** `src/web/mobile/src/screens/home/` → Main tab screen + HealthKit/Google Fit integration + recharts
 
 ---
 
@@ -249,7 +251,7 @@ This is the largest module — a multi-step health questionnaire flow with paire
 | 06-14 | `20417:47404` | Companion — Challenge detail (375×1006) | Gray/5 | Expanded challenge info |
 | 06-15 | `20417:60848` | Companion — Streak & rewards | Gray/5 | Consecutive day streak tracker |
 
-**Dev Route:** `src/screens/ai-companion/` → Claude API integration + chat UI + wellness content engine
+**Dev Route:** `src/web/mobile/src/screens/wellness/` → Claude API integration + chat UI + wellness content engine
 
 ---
 
@@ -289,7 +291,7 @@ This is the largest module — a multi-step health questionnaire flow with paire
 | 07-29 | `20409:49813` | Symptom — Feedback on accuracy | Gray/5 | "Was this helpful?" rating |
 | 07-30 | `20409:50165` | Symptom — Follow-up reminder set | Gray/5 | Schedule follow-up check-in |
 
-**Dev Route:** `src/screens/symptom-checker/` → Claude API triage + body map SVG + location services
+**Dev Route:** `src/web/mobile/src/screens/care/` (Symptom*.tsx files) → Claude API triage + body map SVG + location services
 
 ---
 
@@ -325,46 +327,78 @@ This is the largest module — a multi-step health questionnaire flow with paire
 | 08-25 | `21646:67684` | Medications — Caregiver access setup | Gray/5 | Permission management |
 | 08-26 | `21646:67716` | Medications — Export / Print list | Gray/5 | PDF export of medications |
 
-**Dev Route:** `src/screens/medications/` → Local notifications + drug database API + adherence tracking
+**Dev Route:** `src/web/mobile/src/screens/health/` (Medication*.tsx files) → Local notifications + drug database API + adherence tracking
 
 ---
 
 ## Module 09 — Sleep Management
-**Screens: 1 (placeholder)** | **MVP: ⬜ v2.0**
+**Screens: 12** (1 Figma group → 12 implemented code screens) | **MVP: ⬜ v2.0**
 
 | # | Figma Node ID | Screen Description | Fill/BG | Notes |
 |---|---------------|-------------------|---------|-------|
-| 09-01 | `20477:37838` | Sleep — Module placeholder (grouped) | Gray/40 | Contains sub-screens inside group frame |
+| 09-01 | `20477:37838` | Sleep — Module group (Figma) | Gray/40 | Parent group containing all sleep screens |
+| 09-02 | — | Sleep — Home / Dashboard | Gray/5 | `SleepHome.tsx` |
+| 09-03 | — | Sleep — Log entry | Gray/5 | `SleepLog.tsx` |
+| 09-04 | — | Sleep — Quality analysis | Gray/5 | `SleepQuality.tsx` |
+| 09-05 | — | Sleep — Trends | Gray/5 | `SleepTrends.tsx` |
+| 09-06 | — | Sleep — Detail view | Gray/5 | `SleepDetail.tsx` |
+| 09-07 | — | Sleep — Diary | Gray/5 | `SleepDiary.tsx` |
+| 09-08 | — | Sleep — Bedtime routine | Gray/5 | `BedtimeRoutine.tsx` |
+| 09-09 | — | Sleep — Smart alarm | Gray/5 | `SmartAlarm.tsx` |
+| 09-10 | — | Sleep — Goals | Gray/5 | `SleepGoals.tsx` |
+| 09-11 | — | Sleep — Insights | Gray/5 | `SleepInsights.tsx` |
+| 09-12 | — | Sleep — Device sync | Gray/5 | `SleepDeviceSync.tsx` |
+| 09-13 | — | Sleep — Export | Gray/5 | `SleepExport.tsx` |
 
-**Status:** Screens exist inside the grouped placeholder but are not individually expanded. Expected ~12-15 screens (sleep log, quality analysis, trends, bedtime routine, smart alarm).
+**Status:** ✅ Fully implemented in code. Figma group not yet expanded into individual frames.
 
-**Dev Route:** `src/screens/sleep/` — Deferred to v2.0
+**Dev Route:** `src/web/mobile/src/screens/health/sleep/`
 
 ---
 
 ## Module 10 — Activity Tracker
-**Screens: 1 (placeholder)** | **MVP: ⬜ v2.0**
+**Screens: 10** (1 Figma group → 10 implemented code screens) | **MVP: ⬜ v2.0**
 
 | # | Figma Node ID | Screen Description | Fill/BG | Notes |
 |---|---------------|-------------------|---------|-------|
-| 10-01 | `20482:62038` | Activity — Module placeholder (grouped) | Gray/40 | Contains sub-screens inside group frame |
+| 10-01 | `20482:62038` | Activity — Module group (Figma) | Gray/40 | Parent group containing all activity screens |
+| 10-02 | — | Activity — Home / Dashboard | Gray/5 | `ActivityHome.tsx` |
+| 10-03 | — | Activity — Workout log | Gray/5 | `WorkoutLog.tsx` |
+| 10-04 | — | Activity — Step goals | Gray/5 | `StepGoals.tsx` |
+| 10-05 | — | Activity — Exercise library | Gray/5 | `ExerciseLibrary.tsx` |
+| 10-06 | — | Activity — Exercise detail | Gray/5 | `ExerciseDetail.tsx` |
+| 10-07 | — | Activity — Workout detail | Gray/5 | `WorkoutDetail.tsx` |
+| 10-08 | — | Activity — Workout history | Gray/5 | `WorkoutHistory.tsx` |
+| 10-09 | — | Activity — Trends | Gray/5 | `ActivityTrends.tsx` |
+| 10-10 | — | Activity — Device sync | Gray/5 | `ActivityDeviceSync.tsx` |
+| 10-11 | — | Activity — Export | Gray/5 | `ActivityExport.tsx` |
 
-**Status:** Expected ~10-12 screens (daily activity, workout log, step goals, exercise library, wearable sync).
+**Status:** ✅ Fully implemented in code. Figma group not yet expanded into individual frames.
 
-**Dev Route:** `src/screens/activity/` — Deferred to v2.0
+**Dev Route:** `src/web/mobile/src/screens/health/activity/`
 
 ---
 
 ## Module 11 — Nutrition Monitoring
-**Screens: 1 (placeholder)** | **MVP: ⬜ v2.0**
+**Screens: 10** (1 Figma group → 10 implemented code screens) | **MVP: ⬜ v2.0**
 
 | # | Figma Node ID | Screen Description | Fill/BG | Notes |
 |---|---------------|-------------------|---------|-------|
-| 11-01 | `20488:45260` | Nutrition — Module placeholder (grouped) | Gray/40 | Contains sub-screens inside group frame |
+| 11-01 | `20488:45260` | Nutrition — Module group (Figma) | Gray/40 | Parent group containing all nutrition screens |
+| 11-02 | — | Nutrition — Home / Dashboard | Gray/5 | `NutritionHome.tsx` |
+| 11-03 | — | Nutrition — Food diary | Gray/5 | `FoodDiary.tsx` |
+| 11-04 | — | Nutrition — Meal log | Gray/5 | `MealLog.tsx` |
+| 11-05 | — | Nutrition — Meal detail | Gray/5 | `MealDetail.tsx` |
+| 11-06 | — | Nutrition — Macro tracker | Gray/5 | `MacroTracker.tsx` |
+| 11-07 | — | Nutrition — Water intake | Gray/5 | `WaterIntake.tsx` |
+| 11-08 | — | Nutrition — Dietary goals | Gray/5 | `DietaryGoals.tsx` |
+| 11-09 | — | Nutrition — Insights | Gray/5 | `NutritionInsights.tsx` |
+| 11-10 | — | Nutrition — Food search | Gray/5 | `FoodSearch.tsx` |
+| 11-11 | — | Nutrition — Export | Gray/5 | `NutritionExport.tsx` |
 
-**Status:** Expected ~10-12 screens (food diary, meal logging, calorie tracker, macros, water intake, dietary goals).
+**Status:** ✅ Fully implemented in code. Figma group not yet expanded into individual frames.
 
-**Dev Route:** `src/screens/nutrition/` — Deferred to v2.0
+**Dev Route:** `src/web/mobile/src/screens/health/nutrition/`
 
 ---
 
@@ -389,7 +423,7 @@ This is the largest module — a multi-step health questionnaire flow with paire
 | 12-14 | `23694:41173` | Cycle — Settings & preferences | Gray/5 | Cycle length, notifications config |
 | 12-15 | `20404:45148` | Cycle — Export health report | — | PDF of cycle data for doctor |
 
-**Dev Route:** `src/screens/cycle-tracking/` — Deferred to v2.0
+**Dev Route:** `src/web/mobile/src/screens/health/cycle-tracking/`
 
 ---
 
@@ -437,7 +471,7 @@ This is the largest module — a multi-step health questionnaire flow with paire
 | 13-37 | `20427:62154` | Consultation — Medical records access | Gray/5 | View shared records from visit |
 | 13-38 | `20515:42861` | Consultation — Favorites / Saved doctors | Gray/5 | Bookmarked doctor profiles |
 
-**Dev Route:** `src/screens/consultation/` → WebRTC video + calendar booking + payment gateway
+**Dev Route:** `src/web/mobile/src/screens/care/` → WebRTC video + calendar booking + payment gateway
 
 ---
 
@@ -457,31 +491,45 @@ This is the largest module — a multi-step health questionnaire flow with paire
 | 14-09 | `20427:76673` | Search — Results: Medications (375×923) | Gray/30 | Drug search results |
 | 14-10 | `20427:76810` | Search — No results state | Gray/30 | Empty search results |
 
-**Dev Route:** `src/screens/notifications/` + `src/screens/search/` → Push notifications + Algolia search
+**Dev Route:** `src/web/mobile/src/screens/home/` (notifications & search integrated in home stack) → Push notifications + Algolia search
 
 ---
 
 ## Module 15 — Error & Utility
-**Screens: 1 (placeholder)** | **MVP: ✅ v1.0**
+**Screens: 4** (1 Figma group → 4 implemented code screens) | **MVP: ✅ v1.0**
 
 | # | Figma Node ID | Screen Description | Fill/BG | Notes |
 |---|---------------|-------------------|---------|-------|
-| 15-01 | `20518:68135` | Error & Utility — Placeholder (grouped) | Green tint | Contains: 404, no connection, maintenance, loading states |
+| 15-01 | `20518:68135` | Error & Utility — Module group (Figma) | Green tint | Parent group containing all error screens |
+| 15-02 | — | Error — No internet connection | Gray/5 | `NoInternet.tsx` |
+| 15-03 | — | Error — Server error | Gray/5 | `ServerError.tsx` |
+| 15-04 | — | Error — Maintenance mode | Gray/5 | `Maintenance.tsx` |
+| 15-05 | — | Error — Force update | Gray/5 | `ForceUpdate.tsx` |
 
-**Status:** Expected ~4-6 screens inside the grouped frame (Error 404, No Internet, Server Error, Maintenance Mode, Force Update, Session Expired).
+**Status:** ✅ Fully implemented in code.
 
-**Dev Route:** `src/screens/utility/` → Global error boundary + connectivity listener
+**Dev Route:** `src/web/mobile/src/screens/error/` → Global error boundary + connectivity listener
 
 ---
 
 ## Module 16 — Wellness Resources
-**Screens: 1 (placeholder)** | **MVP: ⬜ v2.0**
+**Screens: 8** (1 Figma group → 8 implemented code screens) | **MVP: ⬜ v2.0**
 
 | # | Figma Node ID | Screen Description | Fill/BG | Notes |
 |---|---------------|-------------------|---------|-------|
-| 16-01 | `20519:43188` | Wellness Resources — Placeholder (grouped) | Gray/40 | Health articles, videos, educational content |
+| 16-01 | `20519:43188` | Wellness Resources — Module group (Figma) | Gray/40 | Parent group containing all wellness resource screens |
+| 16-02 | — | Wellness — Home / Browse | Gray/5 | `WellnessResourcesHome.tsx` |
+| 16-03 | — | Wellness — Article list | Gray/5 | `ArticleList.tsx` |
+| 16-04 | — | Wellness — Article detail | Gray/5 | `ArticleDetail.tsx` |
+| 16-05 | — | Wellness — Video library | Gray/5 | `VideoLibrary.tsx` |
+| 16-06 | — | Wellness — Video player | Gray/5 | `VideoPlayer.tsx` |
+| 16-07 | — | Wellness — Programs | Gray/5 | `WellnessPrograms.tsx` |
+| 16-08 | — | Wellness — Program detail | Gray/5 | `ProgramDetail.tsx` |
+| 16-09 | — | Wellness — Bookmarks | Gray/5 | `WellnessBookmarks.tsx` |
 
-**Dev Route:** `src/screens/wellness-resources/` — Deferred to v2.0
+**Status:** ✅ Fully implemented in code. Figma group not yet expanded into individual frames.
+
+**Dev Route:** `src/web/mobile/src/screens/health/wellness-resources/`
 
 ---
 
@@ -492,7 +540,7 @@ This is the largest module — a multi-step health questionnaire flow with paire
 |---|---------------|-------------------|---------|-------|
 | 17-01 | `20519:66013` | Health Community — Placeholder (grouped) | Gray/40 | Social features, forums, support groups |
 
-**Dev Route:** `src/screens/community/` — Deferred to future release
+**Dev Route:** `src/web/mobile/src/screens/community/` — Deferred to future release (not yet created)
 
 ---
 
@@ -535,7 +583,7 @@ This is the largest module — a multi-step health questionnaire flow with paire
 | 18-32 | `23512:45949` | Settings — Logout confirmation | — | "Sign out?" dialog |
 | 18-33 | `23512:46009` | Settings — App feedback | Gray/5 | Rate app + feedback form |
 
-**Dev Route:** `src/screens/settings/` + `src/screens/help/` → AsyncStorage prefs + LGPD compliance + support integration
+**Dev Route:** `src/web/mobile/src/screens/settings/` → AsyncStorage prefs + LGPD compliance + support integration
 
 ---
 
@@ -552,7 +600,7 @@ This is the largest module — a multi-step health questionnaire flow with paire
 | 19-06 | `20433:72823` | Achievements — Rewards store | Gray/5 | Redeem points for rewards |
 | 19-07 | `20433:72853` | Achievements — Share achievement | Gray/5 | Share to social media |
 
-**Dev Route:** `src/screens/achievements/` → Gamification engine + badge logic + push celebrations
+**Dev Route:** `src/web/mobile/src/screens/gamification/` → Gamification engine + badge logic + push celebrations
 
 ---
 
@@ -602,113 +650,53 @@ Canvas: `↳ Bonus (Dashboard)` (ID: `20578:80833`) — Desktop-sized frames (16
 | 21-05 | `21682:1976` | Dashboard — Patient management | Gray/30 | Patient list & records |
 | 21-06 | `21682:5456` | Dashboard — Settings (dark) | Gray/60 | Admin settings |
 
-**Dev Route:** `src/admin/dashboard/` — Separate web app (Next.js), not mobile. Deferred to future.
+**Dev Route:** Future separate web app (Next.js), not mobile. Deferred.
 
 ---
 
 ## Development Routing Matrix
 
-### Recommended Folder Structure
+### Actual Implemented Folder Structure
+
+> **Base path:** `src/web/mobile/src/`
 
 ```
-src/
+src/web/mobile/src/
 ├── screens/
-│   ├── onboarding/          # Module 01 — Welcome Screen (11)
-│   │   ├── SplashScreen.tsx
-│   │   ├── OnboardingCarousel.tsx
-│   │   └── GoalSelection.tsx
-│   ├── auth/                # Module 02 — Authentication (6)
-│   │   ├── LoginScreen.tsx
-│   │   ├── RegisterScreen.tsx
-│   │   ├── ForgotPasswordScreen.tsx
-│   │   └── OTPVerificationScreen.tsx
-│   ├── health-assessment/   # Module 03 — CHA (52 → 26 unique steps)
-│   │   ├── AssessmentWizard.tsx
-│   │   ├── steps/           # 26 step components
-│   │   └── AssessmentResults.tsx
-│   ├── profile-setup/       # Module 04 — Profile Setup (9)
-│   │   ├── ProfileSetupWizard.tsx
-│   │   ├── AvatarUpload.tsx
-│   │   └── BiometricSetup.tsx
-│   ├── home/                # Module 05 — Home (19)
-│   │   ├── HomeScreen.tsx
-│   │   ├── HealthMetricsCard.tsx
-│   │   ├── MetricDetail.tsx
-│   │   └── ConnectedDevices.tsx
-│   ├── ai-companion/        # Module 06 — AI Companion (15)
-│   │   ├── CompanionChat.tsx
-│   │   ├── MoodCheckIn.tsx
-│   │   ├── BreathingExercise.tsx
-│   │   └── JournalEntry.tsx
-│   ├── symptom-checker/     # Module 07 — Symptom Checker (30)
-│   │   ├── SymptomHome.tsx
-│   │   ├── BodyMap.tsx
-│   │   ├── SymptomQuestions.tsx
-│   │   ├── AIAnalysis.tsx
-│   │   ├── ResultsScreen.tsx
-│   │   └── SymptomHistory.tsx
-│   ├── medications/         # Module 08 — Medication Tracker (26)
-│   │   ├── MedicationHome.tsx
-│   │   ├── AddMedication.tsx
-│   │   ├── MedicationDetail.tsx
-│   │   ├── AdherenceChart.tsx
-│   │   └── PrescriptionScanner.tsx
-│   ├── sleep/               # Module 09 — Sleep (placeholder)
-│   ├── activity/            # Module 10 — Activity (placeholder)
-│   ├── nutrition/           # Module 11 — Nutrition (placeholder)
-│   ├── cycle-tracking/      # Module 12 — Period & Cycle (15)
-│   │   ├── CycleHome.tsx
-│   │   ├── CycleCalendar.tsx
-│   │   └── CycleAnalysis.tsx
-│   ├── consultation/        # Module 13 — Doctor Consultation (38)
-│   │   ├── DoctorBrowse.tsx
-│   │   ├── DoctorProfile.tsx
-│   │   ├── BookingFlow.tsx
-│   │   ├── VideoCall.tsx
-│   │   ├── PostVisitSummary.tsx
-│   │   └── PaymentScreen.tsx
-│   ├── notifications/       # Module 14 — Notifications (5)
-│   │   ├── NotificationList.tsx
-│   │   └── NotificationDetail.tsx
-│   ├── search/              # Module 14 — Search (5)
-│   │   ├── SearchHome.tsx
-│   │   └── SearchResults.tsx
-│   ├── utility/             # Module 15 — Error & Utility
-│   │   ├── Error404.tsx
-│   │   ├── NoConnection.tsx
-│   │   └── MaintenanceMode.tsx
-│   ├── settings/            # Module 18 — Settings (20)
-│   │   ├── SettingsHome.tsx
-│   │   ├── ProfileEdit.tsx
-│   │   ├── SecuritySettings.tsx
-│   │   ├── PrivacySettings.tsx
-│   │   ├── HealthPlanInfo.tsx
-│   │   └── DependentsManage.tsx
-│   ├── help/                # Module 18 — Help Center (13)
-│   │   ├── HelpCenter.tsx
-│   │   ├── FAQScreen.tsx
-│   │   └── SupportChat.tsx
-│   └── achievements/        # Module 19 — Achievements (7)
-│       ├── AchievementsHome.tsx
-│       └── Leaderboard.tsx
+│   ├── auth/                # Modules 01 + 02 — Welcome & Authentication
+│   ├── home/                # Module 05 — Home & Smart Health Metrics
+│   ├── health/              # Modules 03, 08, 09, 10, 11, 12, 16
+│   │   ├── assessment/      # Module 03 — CHA (AssessmentWizard + 26 steps)
+│   │   ├── Medication*.tsx   # Module 08 — 28 Medication screens
+│   │   ├── sleep/           # Module 09 — 12 Sleep screens
+│   │   ├── activity/        # Module 10 — 10 Activity screens
+│   │   ├── nutrition/       # Module 11 — 10 Nutrition screens
+│   │   ├── cycle-tracking/  # Module 12 — 15 Cycle screens
+│   │   ├── wellness-resources/ # Module 16 — 8 Wellness Resource screens
+│   │   ├── Dashboard.tsx, MetricDetail.tsx, etc.
+│   │   └── __tests__/
+│   ├── care/                # Modules 07 + 13 — Symptom Checker & Consultation
+│   │   ├── Symptom*.tsx      # Module 07 — 28 Symptom Checker screens
+│   │   ├── Doctor*.tsx       # Module 13 — Doctor browse/search/profile
+│   │   ├── Booking*.tsx      # Module 13 — Booking flow
+│   │   ├── Telemedicine*.tsx # Module 13 — Video call screens
+│   │   ├── Visit*.tsx        # Module 13 — Post-visit screens
+│   │   └── __tests__/
+│   ├── wellness/            # Module 06 — AI Wellness Companion (15 screens)
+│   ├── error/               # Module 15 — Error & Utility (4 screens)
+│   ├── profile/             # Module 04 — Profile Setup
+│   ├── settings/            # Module 18 — Settings & Help
+│   ├── gamification/        # Module 19 — Achievements
+│   ├── plan/                # My Plan (Meu Plano) screens
+│   └── community/           # Module 17 — (not yet created)
 ├── navigation/
-│   ├── RootNavigator.tsx
-│   ├── AuthStack.tsx
-│   ├── MainTabs.tsx
-│   └── stacks/              # Per-module stack navigators
-├── components/              # asklepios UI Kit shared components
-├── theme/                   # Design tokens (from token files)
-│   ├── tokens/
-│   │   ├── core.json
-│   │   ├── light.json
-│   │   ├── dark.json
-│   │   └── theme.json
-│   └── ThemeProvider.tsx
-└── services/                # API & business logic
-    ├── auth/
-    ├── health/
-    ├── ai/
-    └── consultation/
+│   ├── RootNavigator.tsx    # Auth check → AuthNavigator | MainNavigator
+│   ├── AuthNavigator.tsx    # Auth flow (20 screens)
+│   └── MainNavigator.tsx    # Bottom tabs (9 tabs) + nested stacks
+├── constants/
+│   └── routes.ts            # 269 route constants
+└── design-system/           # Separate package
+    └── src/tokens/colors.ts # Brand + journey + semantic + gray tokens
 ```
 
 ### Sprint Planning Reference
@@ -732,7 +720,8 @@ src/
 
 | Resource | Value |
 |----------|-------|
-| File Key | `OcG9oRNdUEskvAPUcKiKMe` |
+| File Key (original) | `OcG9oRNdUEskvAPUcKiKMe` |
+| File Key (Duplicate 2, working) | `izQmcRXAJhlsGALJ6FaHIF` |
 | Light Mode Canvas | `20307:23730` |
 | Dark Mode Canvas | `20552:42703` |
 | Design System Canvas | `10611:33504` |

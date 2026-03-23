@@ -25,7 +25,7 @@ interface AuthRequest {
  */
 @ApiTags('consents')
 @ApiBearerAuth()
-@Controller('api/consents')
+@Controller('consents')
 export class ConsentController {
     constructor(private readonly consentService: ConsentService) {}
 
