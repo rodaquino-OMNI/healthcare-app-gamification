@@ -63,7 +63,7 @@
         "uuid": "^9.0.1",
         "@willsoto/nestjs-prometheus": "^6.0.1",
         "prom-client": "^15.1.0",
-        "zod": "^3.25.76"
+        "zod": "^4.0.0"
     },
     "devDependencies": {
         "@nestjs/cli": "^11.0.0",

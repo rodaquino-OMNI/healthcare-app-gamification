@@ -65,7 +65,7 @@
     "send": "1.2.1",
     "serve-static": "2.2.1",
     "tar": "7.5.11",
-    "zod": "3.25.76",
+    "zod": "4.3.6",
     "js-yaml": "4.1.1",
     "fast-xml-parser": "5.5.5",
     "multer": "2.1.1",
