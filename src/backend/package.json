@@ -242,7 +242,7 @@
         "minimist": "1.2.8",
         "shelljs": "0.10.0",
         "qs": "6.15.0",
-        "ua-parser-js": "1.0.41",
+        "ua-parser-js": "2.0.9",
         "sha.js": "2.4.12",
         "lodash": "4.17.23",
         "body-parser": "2.2.2",
