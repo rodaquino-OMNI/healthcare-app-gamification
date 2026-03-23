@@ -112,6 +112,7 @@
     }
   },
   "scripts": {
+    "prisma:generate": "pnpm --filter @austa/shared exec prisma generate",
     "build": "turbo run build",
     "build:backend": "turbo run build --filter='./src/backend/*'",
     "build:frontend": "turbo run build --filter='./src/web/*'",

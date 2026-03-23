@@ -7,6 +7,7 @@ import { TracingService } from '@app/shared/tracing/tracing.service';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
+import { CreatePlanDto, UpdatePlanDto } from './dto/update-plan.dto';
 import { FilterDto } from '../dto/filter.dto';
 
 /**
@@ -33,11 +34,13 @@ export class PlansService {
      * @param plan Plan data to create
      * @returns The newly created plan
      */
-    async create(plan: Record<string, unknown>): Promise<unknown> {
+    async create(plan: CreatePlanDto): Promise<unknown> {
         return this.tracingService.createSpan('PlansService.create', async () => {
             this.logger.log(`Creating new plan`, 'PlansService');
             try {
-                return await this.prisma.plan.create({ data: plan as Prisma.PlanCreateInput });
+                return await this.prisma.plan.create({
+                    data: plan as unknown as Prisma.PlanCreateInput,
+                });
             } catch (error: unknown) {
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error';
                 const errorStack = error instanceof Error ? error.stack : undefined;
@@ -176,7 +179,7 @@ export class PlansService {
      * @param plan Plan data to update
      * @returns The updated plan
      */
-    async update(id: string, plan: Record<string, unknown>): Promise<unknown> {
+    async update(id: string, plan: UpdatePlanDto): Promise<unknown> {
         return this.tracingService.createSpan('PlansService.update', async () => {
             this.logger.log(`Updating plan with ID: ${id}`, 'PlansService');
 

@@ -17,8 +17,11 @@ import SocialAuth from '../screens/auth/SocialAuth';
 import WelcomeCTAScreen from '../screens/auth/WelcomeCTA';
 import WelcomeSplashScreen from '../screens/auth/WelcomeSplash';
 import ProfileAddressScreen from '../screens/profile/ProfileAddress';
+import ProfileBiometricSetupScreen from '../screens/profile/ProfileBiometricSetup';
 import ProfileConfirmationScreen from '../screens/profile/ProfileConfirmation';
 import ProfileDocumentsScreen from '../screens/profile/ProfileDocuments';
+import ProfileEmergencyContactScreen from '../screens/profile/ProfileEmergencyContact';
+import ProfileNotificationPrefsScreen from '../screens/profile/ProfileNotificationPrefs';
 import ProfilePhotoScreen from '../screens/profile/ProfilePhoto';
 import ProfileSetupScreen from '../screens/profile/ProfileSetup';
 import ProfileVariant1Screen from '../screens/profile/ProfileVariant1';
@@ -69,6 +72,9 @@ const AuthStack = () => {
             <Stack.Screen name={ROUTES.PROFILE_DOCUMENTS} component={ProfileDocumentsScreen} />
             <Stack.Screen name={ROUTES.PROFILE_PHOTO} component={ProfilePhotoScreen} />
             <Stack.Screen name={ROUTES.PROFILE_CONFIRMATION} component={ProfileConfirmationScreen} />
+            <Stack.Screen name={ROUTES.PROFILE_EMERGENCY_CONTACT} component={ProfileEmergencyContactScreen} />
+            <Stack.Screen name={ROUTES.PROFILE_NOTIFICATION_PREFS} component={ProfileNotificationPrefsScreen} />
+            <Stack.Screen name={ROUTES.PROFILE_BIOMETRIC_SETUP} component={ProfileBiometricSetupScreen} />
         </Stack.Navigator>
     );
 };

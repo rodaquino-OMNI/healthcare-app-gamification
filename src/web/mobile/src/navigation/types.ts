@@ -41,6 +41,9 @@ export type AuthStackParamList = {
     ProfileDocuments: undefined;
     ProfilePhoto: undefined;
     ProfileConfirmation: undefined;
+    ProfileEmergencyContact: undefined;
+    ProfileNotificationPrefs: undefined;
+    ProfileBiometricSetup: undefined;
 };
 
 // ---------------------------------------------------------------------------

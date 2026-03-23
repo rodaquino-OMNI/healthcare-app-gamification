@@ -47,7 +47,7 @@
       "@design-system/plan/*": ["./design-system/src/plan/*"],
       "@design-system/charts/*": ["./design-system/src/charts/*"]
     },
-    "typeRoots": ["./node_modules/@types", "./types"],
+    "typeRoots": ["../../node_modules/@types", "./types"],
     "types": ["node", "react", "react-dom", "jest", "styled-components", "testing-library__jest-dom"]
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],

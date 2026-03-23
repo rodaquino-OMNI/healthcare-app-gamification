@@ -251,6 +251,24 @@ export class HealthService {
     }
 
     /**
+     * Finds a health metric by ID
+     * @param id Health metric ID
+     * @returns The health metric
+     * @throws NotFoundException if not found
+     */
+    async findMetricById(id: string): Promise<HealthMetric> {
+        const metric = await this.prismaService.healthMetric.findUnique({
+            where: { id },
+        });
+
+        if (!metric) {
+            throw new NotFoundException(`Health metric with ID ${id} not found`);
+        }
+
+        return this.transformToHealthMetric(metric as PrismaHealthMetric);
+    }
+
+    /**
      * Updates an existing health metric
      * @param id Health metric ID
      * @param updateDto Update data

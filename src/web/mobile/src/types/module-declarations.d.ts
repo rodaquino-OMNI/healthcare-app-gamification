@@ -514,3 +514,16 @@ declare module '../../hooks/useTheme' {
         toggleTheme: () => void;
     };
 }
+
+// apollo-upload-client ESM subpath (v19)
+declare module 'apollo-upload-client/createUploadLink.mjs' {
+    import type { ApolloLink } from '@apollo/client';
+    interface UploadLinkOptions {
+        uri?: string;
+        fetch?: typeof fetch;
+        headers?: Record<string, string>;
+        credentials?: string;
+        isExtractableFile?: (value: unknown) => boolean;
+    }
+    export default function createUploadLink(options?: UploadLinkOptions): ApolloLink;
+}

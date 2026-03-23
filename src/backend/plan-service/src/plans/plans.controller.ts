@@ -19,6 +19,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+import { CreatePlanDto, UpdatePlanDto } from './dto/update-plan.dto';
 import { PlansService } from './plans.service';
 import { FilterDto } from '../dto/filter.dto';
 
@@ -49,7 +50,7 @@ export class PlansController {
      */
     @Post()
     @Roles('admin')
-    async create(@Body(ValidationPipe) createPlanData: Record<string, unknown>): Promise<unknown> {
+    async create(@Body(ValidationPipe) createPlanData: CreatePlanDto): Promise<unknown> {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- LoggerService import path mismatch causes unsafe-call in strict mode
         this.logger.log('Creating new plan', 'PlansController');
         return this.plansService.create(createPlanData);
@@ -95,7 +96,7 @@ export class PlansController {
     @Roles('admin')
     async update(
         @Param('id', ParseUUIDPipe) id: string,
-        @Body(ValidationPipe) updatePlanDto: Record<string, unknown>
+        @Body(ValidationPipe) updatePlanDto: UpdatePlanDto
     ): Promise<unknown> {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call -- LoggerService import path mismatch causes unsafe-call in strict mode
         this.logger.log(`Updating plan with ID: ${id}`, 'PlansController');

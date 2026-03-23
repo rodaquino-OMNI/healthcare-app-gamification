@@ -306,7 +306,7 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
      * Setup Kafka consumer for notifications
      */
     private setupKafkaListener(): void {
-        void this.kafkaService.subscribe('notifications', 'websocket-gateway', (message) => {
+        void this.kafkaService.subscribe('notifications', 'websocket-gateway', async (message) => {
             try {
                 this.logger.debug('Received notification from Kafka', {
                     key: message.key,

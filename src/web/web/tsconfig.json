@@ -26,8 +26,8 @@
             "react-dom": ["./node_modules/@types/react-dom", "../node_modules/@types/react-dom"],
             "react/jsx-runtime": ["./node_modules/@types/react/jsx-runtime", "../node_modules/@types/react/jsx-runtime"]
         },
-        "typeRoots": ["./node_modules/@types", "../node_modules/@types"],
-        "types": ["node", "react", "react-dom"],
+        "typeRoots": ["../../../node_modules/@types"],
+        "types": ["node", "react", "react-dom", "jest"],
         "noImplicitAny": true,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,

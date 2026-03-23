@@ -9,6 +9,7 @@ import {
     Put,
     Param,
     Body,
+    Req,
     UseGuards,
     UseFilters,
     HttpCode,
@@ -16,6 +17,7 @@ import {
     Inject,
     UsePipes,
     ValidationPipe,
+    ForbiddenException,
 } from '@nestjs/common'; // NestJS Common 10.0.0+
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
@@ -77,12 +79,19 @@ export class HealthController {
     @ApiOperation({ summary: 'Update an existing health metric' })
     @ApiResponse({ status: 200, description: 'Health metric updated successfully' })
     @ApiResponse({ status: 403, description: 'Consent not granted for health data sharing' })
+    @ApiResponse({ status: 404, description: 'Health metric not found' })
     @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
     async updateHealthMetric(
         @Param('id') id: string,
-        @Body() updateMetricDto: UpdateMetricDto
+        @Body() updateMetricDto: UpdateMetricDto,
+        @Req() req: { user?: { id?: string; sub?: string } }
     ): Promise<unknown> {
-        // Calls the healthService to update an existing health metric.
+        // Ownership check: fetch metric and verify user owns it
+        const metric = await this.healthService.findMetricById(id);
+        const userId = req.user?.id || req.user?.sub;
+        if (!userId || metric.userId !== userId) {
+            throw new ForbiddenException('You do not own this resource');
+        }
         return this.healthService.updateHealthMetric(id, updateMetricDto);
     }
 }

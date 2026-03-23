@@ -85,7 +85,7 @@ export class NutritionService {
             this.prismaService.nutritionLog.count({ where }),
         ]);
 
-        const result = { records, total, limit, offset };
+        const result = { records: records as unknown as NutritionRecord[], total, limit, offset };
         await this.redisService.set(cacheKey, JSON.stringify(result), CACHE_TTL_SECONDS);
         return result;
     }
@@ -106,7 +106,7 @@ export class NutritionService {
         }
 
         await this.redisService.set(cacheKey, JSON.stringify(record), CACHE_TTL_SECONDS);
-        return record;
+        return record as unknown as NutritionRecord;
     }
 
     async createNutritionRecord(
@@ -128,7 +128,7 @@ export class NutritionService {
         });
 
         await this.invalidateUserCache(userId);
-        return record;
+        return record as unknown as NutritionRecord;
     }
 
     async updateNutritionRecord(
@@ -160,7 +160,7 @@ export class NutritionService {
 
         await this.invalidateUserCache(userId);
         await this.redisService.del(`nutrition:record:${id}:${userId}`);
-        return updated;
+        return updated as unknown as NutritionRecord;
     }
 
     async getDailySummary(userId: string, dateStr?: string): Promise<DailySummary> {

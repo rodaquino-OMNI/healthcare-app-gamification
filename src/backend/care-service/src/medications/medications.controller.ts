@@ -22,6 +22,7 @@ import {
 } from '@nestjs/common'; // v10.0.0+
 
 import { CreateMedicationDto } from './dto/create-medication.dto';
+import { UpdateMedicationDto } from './dto/update-medication.dto';
 import { Medication } from './entities/medication.entity';
 import { MedicationsService } from './medications.service';
 
@@ -114,7 +115,7 @@ export class MedicationsController {
     @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
     async update(
         @Param('id') id: string,
-        @Body() updateMedicationData: Record<string, unknown>,
+        @Body() updateMedicationData: UpdateMedicationDto,
         @CurrentUser('id') userId: string
     ): Promise<Medication> {
         this.logger.log(`Updating medication ${id} for user ${userId}`, 'MedicationsController');
@@ -133,7 +134,7 @@ export class MedicationsController {
             );
         }
 
-        return this.medicationsService.update(id, updateMedicationData);
+        return this.medicationsService.update(id, updateMedicationData as Record<string, unknown>);
     }
 
     /**

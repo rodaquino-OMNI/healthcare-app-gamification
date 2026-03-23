@@ -138,7 +138,7 @@ export class SleepService {
                 source: dto.source ?? MetricSource.USER_INPUT,
                 notes: dto.notes ?? null,
                 isAbnormal: false,
-                metadata: JSON.parse(JSON.stringify(metadata)) as SleepMetadata,
+                metadata: JSON.parse(JSON.stringify(metadata)),
                 createdAt: new Date(),
                 updatedAt: new Date(),
             },
@@ -182,7 +182,7 @@ export class SleepService {
                 timestamp: dto.date ?? existing.timestamp,
                 source: dto.source ?? existing.source,
                 notes: dto.notes !== undefined ? dto.notes : existing.notes,
-                metadata: JSON.parse(JSON.stringify(updatedMetadata)) as SleepMetadata,
+                metadata: JSON.parse(JSON.stringify(updatedMetadata)),
                 updatedAt: new Date(),
             },
         });

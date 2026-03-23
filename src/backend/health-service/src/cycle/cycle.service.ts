@@ -278,7 +278,7 @@ export class CycleService {
                 continue;
             }
 
-            const symptoms = record.symptoms as CycleSymptom[];
+            const symptoms = record.symptoms as unknown as CycleSymptom[];
             if (!Array.isArray(symptoms)) {
                 continue;
             }
