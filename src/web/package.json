@@ -63,7 +63,7 @@
     "expo-image-picker": "14.7.1",
     "expo-local-authentication": "13.8.0",
     "expo-localization": "14.8.4",
-    "expo-modules-core": "2.2.3",
+    "expo-modules-core": "2.5.0",
     "expo-secure-store": "12.8.1",
     "expo-web-browser": "^55.0.10",
     "formik": "2.4.9",
