@@ -93,7 +93,7 @@ import ProfileNotificationPrefs from '../ProfileNotificationPrefs';
 describe('ProfileNotificationPrefs', () => {
     const renderComponent = () =>
         render(
-            <ThemeProvider theme={mockTheme}>
+            <ThemeProvider theme={mockTheme as any}>
                 <ProfileNotificationPrefs />
             </ThemeProvider>
         );

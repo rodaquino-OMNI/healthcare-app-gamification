@@ -93,7 +93,7 @@ import ProfileConfirmation from '../ProfileConfirmation';
 describe('ProfileConfirmation', () => {
     const renderComponent = () =>
         render(
-            <ThemeProvider theme={mockTheme}>
+            <ThemeProvider theme={mockTheme as any}>
                 <ProfileConfirmation />
             </ThemeProvider>
         );

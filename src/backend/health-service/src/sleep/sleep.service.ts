@@ -139,7 +139,7 @@ export class SleepService {
                 notes: dto.notes ?? null,
                 isAbnormal: false,
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                metadata: JSON.parse(JSON.stringify(metadata)) as Record<string, unknown>,
+                metadata: JSON.parse(JSON.stringify(metadata)),
                 createdAt: new Date(),
                 updatedAt: new Date(),
             },
@@ -184,7 +184,7 @@ export class SleepService {
                 source: dto.source ?? existing.source,
                 notes: dto.notes !== undefined ? dto.notes : existing.notes,
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                metadata: JSON.parse(JSON.stringify(updatedMetadata)) as Record<string, unknown>,
+                metadata: JSON.parse(JSON.stringify(updatedMetadata)),
                 updatedAt: new Date(),
             },
         });

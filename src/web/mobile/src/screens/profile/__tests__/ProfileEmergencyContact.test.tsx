@@ -92,7 +92,7 @@ import ProfileEmergencyContact from '../ProfileEmergencyContact';
 describe('ProfileEmergencyContact', () => {
     const renderComponent = () =>
         render(
-            <ThemeProvider theme={mockTheme}>
+            <ThemeProvider theme={mockTheme as any}>
                 <ProfileEmergencyContact />
             </ThemeProvider>
         );

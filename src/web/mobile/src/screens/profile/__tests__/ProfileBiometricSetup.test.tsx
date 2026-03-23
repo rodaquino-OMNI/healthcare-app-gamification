@@ -136,7 +136,7 @@ import { ProfileBiometricSetup } from '../ProfileBiometricSetup';
 describe('ProfileBiometricSetup', () => {
     const renderComponent = () =>
         render(
-            <ThemeProvider theme={mockTheme}>
+            <ThemeProvider theme={mockTheme as any}>
                 <ProfileBiometricSetup />
             </ThemeProvider>
         );

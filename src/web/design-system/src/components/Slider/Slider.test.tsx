@@ -13,7 +13,7 @@ describe('Slider', () => {
     it('renders with correct value', () => {
         render(<Slider value={75} onChange={jest.fn()} />);
         const input = screen.getByTestId('slider-input');
-        expect(input.value).toBe('75');
+        expect((input as HTMLInputElement).value).toBe('75');
     });
 
     it('calls onChange when value changes', () => {

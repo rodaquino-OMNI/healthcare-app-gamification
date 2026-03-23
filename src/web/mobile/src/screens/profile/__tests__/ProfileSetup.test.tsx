@@ -89,7 +89,7 @@ import ProfileSetup from '../ProfileSetup';
 describe('ProfileSetup', () => {
     const renderComponent = () =>
         render(
-            <ThemeProvider theme={mockTheme}>
+            <ThemeProvider theme={mockTheme as any}>
                 <ProfileSetup />
             </ThemeProvider>
         );

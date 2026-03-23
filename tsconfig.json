@@ -5,17 +5,12 @@
     "tsBuildInfoFile": "./.tsbuildinfo",
     "noEmit": true
   },
-  "include": [
-    "src/**/*",
-    "scripts/**/*",
-    "agents/**/*",
-    "docs/**/*"
+  "files": [],
+  "references": [
+    { "path": "src/web/design-system" },
+    { "path": "src/web/shared" },
+    { "path": "src/web/mobile" },
+    { "path": "src/web/web" }
   ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "build",
-    ".swarm",
-    ".claude"
-  ]
+  "exclude": ["node_modules"]
 }

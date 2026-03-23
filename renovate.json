@@ -11,7 +11,7 @@
   ],
 
   "timezone": "America/Sao_Paulo",
-  "schedule": ["before 6am every weekday"],
+  "schedule": ["* 0-5 * * 1-5"],
 
   "prConcurrentLimit": 5,
   "prHourlyLimit": 2,
@@ -284,10 +284,6 @@
     "rangeStrategy": "replace"
   },
 
-  "pnpm": {
-    "fileMatch": ["(^|/)pnpm-lock\\.yaml$"]
-  },
-
   "vulnerabilityAlerts": {
     "enabled": true,
     "labels": ["dependencies", "renovate", "security"],
@@ -299,25 +295,25 @@
 
   "lockFileMaintenance": {
     "enabled": true,
-    "schedule": ["before 5am on monday"],
+    "schedule": ["* 0-4 * * 1"],
     "automerge": false,
     "labels": ["dependencies", "renovate", "lockfile-maintenance"]
   },
 
   "github-actions": {
     "pinDigests": true,
-    "managerFilePatterns": ["/^\\.github/workflows/[^/]+\\.ya?ml$/"]
+    "managerFilePatterns": ["/^\\.github\\/workflows\\/[^/]+\\.ya?ml$/"]
   },
 
   "dockerfile": {
     "managerFilePatterns": [
-      "/src/backend/api-gateway/Dockerfile/",
-      "/src/backend/auth-service/Dockerfile/",
-      "/src/backend/health-service/Dockerfile/",
-      "/src/backend/care-service/Dockerfile/",
-      "/src/backend/plan-service/Dockerfile/",
-      "/src/backend/gamification-engine/Dockerfile/",
-      "/src/backend/notification-service/Dockerfile/"
+      "src/backend/api-gateway/Dockerfile",
+      "src/backend/auth-service/Dockerfile",
+      "src/backend/health-service/Dockerfile",
+      "src/backend/care-service/Dockerfile",
+      "src/backend/plan-service/Dockerfile",
+      "src/backend/gamification-engine/Dockerfile",
+      "src/backend/notification-service/Dockerfile"
     ]
   },
 

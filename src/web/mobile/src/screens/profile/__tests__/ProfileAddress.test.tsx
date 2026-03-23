@@ -94,7 +94,7 @@ import ProfileAddress from '../ProfileAddress';
 describe('ProfileAddress', () => {
     const renderComponent = () =>
         render(
-            <ThemeProvider theme={mockTheme}>
+            <ThemeProvider theme={mockTheme as any}>
                 <ProfileAddress />
             </ThemeProvider>
         );

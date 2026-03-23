@@ -96,7 +96,7 @@ import ProfileDocuments from '../ProfileDocuments';
 describe('ProfileDocuments', () => {
     const renderComponent = () =>
         render(
-            <ThemeProvider theme={mockTheme}>
+            <ThemeProvider theme={mockTheme as any}>
                 <ProfileDocuments />
             </ThemeProvider>
         );

@@ -88,7 +88,7 @@ import ProfileVariant1 from '../ProfileVariant1';
 describe('ProfileVariant1 (Health Info)', () => {
     const renderComponent = () =>
         render(
-            <ThemeProvider theme={mockTheme}>
+            <ThemeProvider theme={mockTheme as any}>
                 <ProfileVariant1 />
             </ThemeProvider>
         );

@@ -94,7 +94,7 @@ import ProfilePhoto from '../ProfilePhoto';
 describe('ProfilePhoto', () => {
     const renderComponent = () =>
         render(
-            <ThemeProvider theme={mockTheme}>
+            <ThemeProvider theme={mockTheme as any}>
                 <ProfilePhoto />
             </ThemeProvider>
         );
