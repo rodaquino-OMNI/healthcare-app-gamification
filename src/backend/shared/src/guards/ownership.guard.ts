@@ -16,13 +16,12 @@ export interface OwnershipConfig {
     method: string;
     /** Route param name containing the resource ID (default: 'id') */
     paramName?: string;
-    /** Field on the resource object containing the owner user ID (default: 'userId') */
+    /** Field on the resource containing the owner user ID (default: 'userId') */
     userField?: string;
 }
 
 /**
  * Decorator to configure OwnershipGuard on a controller method.
- * @param config - Ownership configuration specifying service, method, and field names
  */
 export const CheckOwnership =
     (config: OwnershipConfig): MethodDecorator =>
@@ -34,13 +33,6 @@ export const CheckOwnership =
 /**
  * Guard that verifies the authenticated user owns the requested resource.
  * Uses ModuleRef to dynamically resolve the configured service at runtime.
- *
- * Usage:
- *   @UseGuards(OwnershipGuard)
- *   @CheckOwnership({
- *     service: HealthService, method: 'findMetricById',
- *     paramName: 'id', userField: 'userId',
- *   })
  */
 @Injectable()
 export class OwnershipGuard implements CanActivate {
@@ -52,12 +44,14 @@ export class OwnershipGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const config = this.reflector.get<OwnershipConfig>(OWNERSHIP_KEY, context.getHandler());
 
-        // If no config, skip ownership check (guard used without decorator)
         if (!config) {
             return true;
         }
 
-        const request = context.switchToHttp().getRequest();
+        const request = context.switchToHttp().getRequest<{
+            user?: { id?: string; sub?: string };
+            params?: Record<string, string>;
+        }>();
         const userId = request.user?.id || request.user?.sub;
 
         if (!userId) {
@@ -71,21 +65,25 @@ export class OwnershipGuard implements CanActivate {
             throw new NotFoundException('Resource ID not found in request params');
         }
 
-        const service = this.moduleRef.get(config.service, { strict: false });
-        const method = (service as Record<string, (...args: unknown[]) => unknown>)[config.method];
+        const service = this.moduleRef.get(config.service, {
+            strict: false,
+        });
+        const method = (service as Record<string, (...args: unknown[]) => Promise<unknown>>)[
+            config.method
+        ];
 
         if (!method) {
             throw new Error(`Method ${config.method} not found on service`);
         }
 
-        const resource = await method.call(service, resourceId);
+        const resource = (await method.call(service, resourceId)) as Record<string, unknown> | null;
 
         if (!resource) {
             throw new NotFoundException('Resource not found');
         }
 
         const userField = config.userField || 'userId';
-        const resourceUserId = (resource as Record<string, unknown>)[userField];
+        const resourceUserId = resource[userField];
 
         if (resourceUserId !== userId) {
             throw new ForbiddenException('You do not own this resource');

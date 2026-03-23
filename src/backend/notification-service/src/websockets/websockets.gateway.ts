@@ -306,6 +306,7 @@ export class WebsocketsGateway implements OnGatewayInit, OnGatewayConnection, On
      * Setup Kafka consumer for notifications
      */
     private setupKafkaListener(): void {
+        // eslint-disable-next-line @typescript-eslint/require-await
         void this.kafkaService.subscribe('notifications', 'websocket-gateway', async (message) => {
             try {
                 this.logger.debug('Received notification from Kafka', {
