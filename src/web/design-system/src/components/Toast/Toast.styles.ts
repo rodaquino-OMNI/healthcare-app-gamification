@@ -29,14 +29,14 @@ const getBackgroundColor = (variant: ToastVariant = 'info', journey?: JourneyTyp
     // Otherwise use semantic colors with lighter background
     switch (variant) {
         case 'success':
-            return '#E6F7ED'; // Lighter shade of success
+            return colors.semantic.successBg;
         case 'error':
-            return '#FFEDEB'; // Lighter shade of error
+            return colors.semantic.errorBg;
         case 'warning':
-            return '#FFF8E6'; // Lighter shade of warning
+            return colors.semantic.warningBg;
         case 'info':
         default:
-            return '#E6F0FA'; // Lighter shade of info
+            return colors.semantic.infoBg;
     }
 };
 

@@ -39,8 +39,8 @@ export const colors = {
      * accent.300 (#00dbbb) is the secondary color.
      */
     brand: {
-        /** #00c3f7 — Azul AUSTA, primary brand color (was #0066CC) */
-        primary: '#00c3f7',
+        /** #05AEDB — Azul AUSTA, primary brand color (was #0066CC) */
+        primary: '#05AEDB',
         /** #00dbbb — Verde AUSTA, secondary brand color (was #00A3E0) */
         secondary: '#00dbbb',
         /** #6D2077 — tertiary brand color for accents (code-only extension) */
@@ -111,6 +111,7 @@ export const colors = {
         successBg: '#f0fdf4',
         warningBg: '#fffbeb',
         errorBg: '#fff1f2',
+        infoBg: '#eff6ff',
     },
 
     /**
@@ -136,6 +137,8 @@ export const colors = {
         60: '#4b5563',
         /** #334155 — darkest text / dark bg alt */
         70: '#334155',
+        /** #1F2937 — near-black text */
+        80: '#1F2937',
     },
 
     /**
@@ -145,6 +148,32 @@ export const colors = {
     gamification: {
         primary: '#6C63FF', // Main gamification accent (purple)
         background: '#f0eeff', // Light highlight background
+        gold: '#FFD700',
+        goldBg: '#FFF6DE',
+        goldText: '#D9A600',
+        silver: '#C0C0C0',
+        silverBg: '#F5F5F5',
+        silverText: '#808080',
+        bronze: '#CD7F32',
+        bronzeBg: '#FFF0E6',
+        bronzeText: '#A05A2C',
+    },
+
+    /**
+     * Component-level color tokens for Button variants and shared UI elements.
+     * Sourced from Figma component specs (Brand/60, Destructive, Gray/60, Success, Warning).
+     */
+    componentColors: {
+        /** #05AEDB — Figma Brand/60 — primary CTA */
+        brand: '#05AEDB',
+        /** #e11d48 — Figma Destructive — errors, delete */
+        destructive: '#e11d48',
+        /** #4b5563 — Figma Gray/60 — neutral actions */
+        gray: '#4b5563',
+        /** #7ab765 — Figma Success — positive indicators */
+        success: '#7ab765',
+        /** #f59e0b — Figma Warning — caution states */
+        warning: '#f59e0b',
     },
 
     /**
@@ -170,7 +199,8 @@ export const colors = {
         gray700: '#4b5563',
         /** @deprecated Use colors.gray[70] */
         gray800: '#334155',
-        gray900: '#1a202c',
+        /** @deprecated Use colors.gray[80] */
+        gray900: '#1F2937',
         black: '#000000',
     },
 } as const;

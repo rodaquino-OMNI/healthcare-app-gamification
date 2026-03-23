@@ -190,7 +190,12 @@ export const Toast: React.FC<ToastProps> = ({
                 </Touchable>
             )}
             {onDismiss && (
-                <CloseButton onPress={onDismiss} accessibilityLabel="Close notification" testID="toast-close-button">
+                <CloseButton
+                    onPress={onDismiss}
+                    accessibilityLabel="Close notification"
+                    accessibilityRole="button"
+                    testID="toast-close-button"
+                >
                     <Text color={colors.neutral.gray600} aria-hidden="true" fontSize="lg">
                         ×
                     </Text>

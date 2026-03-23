@@ -293,7 +293,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                     refreshToken: 'demo-refresh-xxx',
                     expiresAt: Date.now() + 24 * 60 * 60 * 1000,
                     userId: 'demo-user-001',
-                    user: { id: 'demo-user-001', name: 'Maria Silva', email: 'maria@demo.austa.com.br' },
                 },
                 status: 'authenticated',
             });

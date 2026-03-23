@@ -24,6 +24,15 @@ import { animation } from './animation';
 import { borderRadius, borderRadiusValues } from './borderRadius';
 import { breakpoints, breakpointValues, mediaQueries } from './breakpoints';
 import { colors, brandPalette } from './colors';
+import { effects } from './effects';
+import {
+    webFontWeights,
+    webFontConfig,
+    googleFontsUrl,
+    mobileFontAssets,
+    mobileFontConfig,
+    FontLoadingStrategy,
+} from './fonts';
 import { opacity } from './opacity';
 import { shadows } from './shadows';
 import { sizing, sizingValues } from './sizing';
@@ -40,6 +49,8 @@ export { animation };
 export { borderRadius, borderRadiusValues };
 export { sizing, sizingValues };
 export { opacity };
+export { effects };
+export { webFontWeights, webFontConfig, googleFontsUrl, mobileFontAssets, mobileFontConfig, FontLoadingStrategy };
 
 /**
  * Consolidated tokens object containing all design token categories.
@@ -68,4 +79,12 @@ export const tokens = {
     borderRadius,
     sizing,
     opacity,
+    effects,
+    fonts: {
+        webFontConfig,
+        googleFontsUrl,
+        mobileFontAssets,
+        mobileFontConfig,
+        FontLoadingStrategy,
+    },
 };

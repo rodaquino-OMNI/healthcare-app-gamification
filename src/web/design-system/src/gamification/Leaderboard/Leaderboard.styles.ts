@@ -70,11 +70,7 @@ export const LeaderboardItem = styled.li<{ isCurrentUser?: boolean; rank: number
         rank <= 3 &&
         `
     border-left: 4px solid ${
-        rank === 1
-            ? '#FFD700' // Gold
-            : rank === 2
-              ? '#C0C0C0' // Silver
-              : '#CD7F32' // Bronze
+        rank === 1 ? colors.gamification.gold : rank === 2 ? colors.gamification.silver : colors.gamification.bronze
     };
   `}
 
@@ -104,18 +100,18 @@ export const Rank = styled.div<{ rank: number }>`
     ${({ rank }) => {
         if (rank === 1) {
             return `
-        background-color: #FFF6DE;
-        color: #D9A600;
+        background-color: ${colors.gamification.goldBg};
+        color: ${colors.gamification.goldText};
       `;
         } else if (rank === 2) {
             return `
-        background-color: #F5F5F5;
-        color: #808080;
+        background-color: ${colors.gamification.silverBg};
+        color: ${colors.gamification.silverText};
       `;
         } else if (rank === 3) {
             return `
-        background-color: #FFF0E6;
-        color: #A05A2C;
+        background-color: ${colors.gamification.bronzeBg};
+        color: ${colors.gamification.bronzeText};
       `;
         }
         return `

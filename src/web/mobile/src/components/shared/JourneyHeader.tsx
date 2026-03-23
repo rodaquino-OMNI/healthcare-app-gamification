@@ -1,5 +1,6 @@
 import { Icon } from '@design-system/primitives/Icon';
 import { Text } from '@design-system/primitives/Text';
+import { colors } from '@design-system/tokens/colors';
 import { useNavigation } from '@react-navigation/native';
 import { JOURNEY_NAMES, JOURNEY_COLORS } from '@shared/constants/journeys';
 import React from 'react';
@@ -136,17 +137,17 @@ export const JourneyHeader: React.FC<JourneyHeaderProps> = ({
         <HeaderContainer backgroundColor={journeyColor} transparent={transparent} insets={insets}>
             <TitleContainer>
                 {showBackButton && (
-                    <BackButton onPress={handleBackPress} accessibilityLabel="Go back">
-                        <Icon name="arrow-back" size="24px" color={transparent ? journeyColor : '#FFFFFF'} />
+                    <BackButton onPress={handleBackPress} accessibilityLabel="Go back" accessibilityRole="button">
+                        <Icon name="arrow-back" size="24px" color={transparent ? journeyColor : colors.gray[0]} />
                     </BackButton>
                 )}
                 <Icon
                     name={journeyIcon}
                     size="24px"
-                    color={transparent ? journeyColor : '#FFFFFF'}
+                    color={transparent ? journeyColor : colors.gray[0]}
                     aria-hidden={true}
                 />
-                <Text fontSize="xl" fontWeight="medium" color={transparent ? journeyColor : '#FFFFFF'}>
+                <Text fontSize="xl" fontWeight="medium" color={transparent ? journeyColor : colors.gray[0]}>
                     {journeyName}
                 </Text>
             </TitleContainer>

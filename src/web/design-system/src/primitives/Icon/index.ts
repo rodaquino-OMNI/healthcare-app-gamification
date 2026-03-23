@@ -23,7 +23,15 @@
  * ```
  */
 
-import { Icon, type IconProps } from './Icon';
+import {
+    Icon,
+    FigmaIconContainer,
+    type IconProps,
+    type FigmaIconContainerProps,
+    type FigmaIconSize,
+    type FigmaIconColor,
+    type FigmaIconStyle,
+} from './Icon';
 
-export { Icon };
-export type { IconProps };
+export { Icon, FigmaIconContainer };
+export type { IconProps, FigmaIconContainerProps, FigmaIconSize, FigmaIconColor, FigmaIconStyle };

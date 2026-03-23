@@ -37,7 +37,7 @@ const buttonVariants = {
 
         &:hover,
         &:active {
-            background-color: #d32f2f;
+            background-color: ${colors.semantic.error};
         }
     `,
     muted: css`
@@ -46,7 +46,7 @@ const buttonVariants = {
 
         &:hover,
         &:active {
-            background-color: #d32f2f;
+            background-color: ${colors.semantic.error};
         }
     `,
     unmuted: css`

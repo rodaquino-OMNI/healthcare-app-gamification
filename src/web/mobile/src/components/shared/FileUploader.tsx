@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type -- return types are inferred from implementation context */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types -- return types are inferred from implementation context */
+import { colors } from '@design-system/tokens/colors';
 import { useNavigation } from '@react-navigation/native'; // v6.0+
 import { launchCameraAsync, launchImageLibraryAsync, MediaTypeOptions } from 'expo-image-picker'; // v14.0+
 import React, { useState, useCallback } from 'react';
@@ -97,13 +98,13 @@ const FileUploader: React.FC<FileUploaderProps> = ({ label, onFileSelected, jour
     const getJourneyColor = () => {
         switch (journey) {
             case 'health':
-                return '#0ACF83'; // Green
+                return colors.journeys.health.primary;
             case 'care':
-                return '#FF8C42'; // Orange
+                return colors.journeys.care.primary;
             case 'plan':
-                return '#3A86FF'; // Blue
+                return colors.journeys.plan.primary;
             default:
-                return '#0066CC'; // Default brand color
+                return colors.brand.primary;
         }
     };
 
@@ -149,6 +150,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ label, onFileSelected, jour
                                 onFileSelected('');
                             }}
                             accessibilityLabel="Remove file"
+                            accessibilityRole="button"
                             accessibilityHint="Removes the currently selected file"
                         >
                             <Text style={styles.removeButtonText}>✕</Text>
@@ -161,6 +163,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ label, onFileSelected, jour
                             onPress={handleCameraCapture}
                             disabled={loading}
                             accessibilityLabel="Take photo"
+                            accessibilityRole="button"
                             accessibilityHint="Opens camera to take a photo"
                         >
                             <Text style={styles.buttonText}>📷 Camera</Text>
@@ -170,6 +173,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ label, onFileSelected, jour
                             onPress={handleFileSelect}
                             disabled={loading}
                             accessibilityLabel="Select file"
+                            accessibilityRole="button"
                             accessibilityHint="Opens file picker to select a file"
                         >
                             <Text style={styles.buttonText}>📁 Gallery</Text>
@@ -190,14 +194,14 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginBottom: 8,
         fontWeight: '500',
-        color: '#333333',
+        color: colors.gray[80],
     },
     contentContainer: {
         borderWidth: 1,
-        borderColor: '#CCCCCC',
+        borderColor: colors.gray[30],
         borderRadius: 8,
         padding: 12,
-        backgroundColor: '#F9F9F9',
+        backgroundColor: colors.gray[5],
         minHeight: 120,
         justifyContent: 'center',
     },
@@ -232,7 +236,7 @@ const styles = StyleSheet.create({
     },
     loadingText: {
         marginTop: 10,
-        color: '#666666',
+        color: colors.gray[50],
         fontSize: 14,
     },
     previewContainer: {
@@ -252,7 +256,7 @@ const styles = StyleSheet.create({
     filePreview: {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#EEEEEE',
+        backgroundColor: colors.gray[10],
         borderRadius: 8,
         padding: 20,
         width: '80%',
@@ -263,7 +267,7 @@ const styles = StyleSheet.create({
     },
     fileName: {
         fontSize: 14,
-        color: '#333333',
+        color: colors.gray[80],
         maxWidth: '100%',
     },
     removeButton: {

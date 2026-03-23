@@ -81,6 +81,7 @@ export const typography = {
      */
     fontSize: {
         // Display scale (from Figma)
+        'display-xl': '60px', // display-xl — Heading xl/Bold from Figma
         'display-lg': '48px', // display-lg
         'display-md': '36px', // display-md
         'display-sm': '30px', // display-sm
@@ -131,6 +132,7 @@ export const typography = {
      * Note: Figma h1=48, h2=36, h3=30, h4=24, h5=20, h6=16 (legacy numeric aliases).
      */
     heading: {
+        h0: '60px', // Heading xl/Bold from Figma (display-xl)
         h1: '48px', // fontSizes.h1 from Figma
         h2: '36px', // fontSizes.h2 from Figma
         h3: '30px', // fontSizes.h3 from Figma
@@ -144,11 +146,19 @@ export const typography = {
      * Converted from Figma core.json lineHeights (% -> decimal).
      */
     lineHeight: {
+        /** 1.133 — 68px / 60px, for display-xl (Heading xl from Figma) */
+        display: 1.133,
         /** 1.1 — 110% tight, for display text */
         tight: 1.1,
         /** 1.2 — 120% heading line height */
         heading: 1.2,
-        /** 1.5 — 150% body line height */
+        /** 1.375 — 22px / 16px, Figma Text md */
+        body: 1.375,
+        /** 1.333 — 24px / 18px, Figma Text lg */
+        bodyLg: 1.333,
+        /** 1.429 — 20px / 14px, Figma Text sm */
+        bodySm: 1.429,
+        /** 1.5 — 150% body line height (kept for backward compat) */
         base: 1.5,
         /** 1.6 — 160% relaxed (was 1.75, updated to match Figma lineHeights.relaxed=160%) */
         relaxed: 1.6,
@@ -159,8 +169,12 @@ export const typography = {
      * Sourced from Figma core.json letterSpacing (using em equivalents).
      */
     letterSpacing: {
-        /** '-0.025em' — tight, for headings and display text */
-        tight: '-0.025em',
+        /** '-0.044em' — tight, for headings (updated from Figma) */
+        tight: '-0.044em',
+        /** '-0.03em' — tighter than normal, for display/heading (was the old tight) */
+        tighter: '-0.03em',
+        /** '-0.03em' — display letter spacing from Figma Heading xl (-1.8px / 60px) */
+        display: '-0.03em',
         /** '0' — normal, for body text */
         normal: '0',
         /** '0.025em' — wide, for improved legibility in small text */

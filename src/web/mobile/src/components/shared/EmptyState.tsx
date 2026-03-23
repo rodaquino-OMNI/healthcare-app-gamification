@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type -- return types are inferred from implementation context */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types -- return types are inferred from implementation context */
 import { Icon, Text, Button } from '@austa/design-system';
+import { colors } from '@design-system/tokens/colors';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
@@ -66,15 +67,15 @@ const EmptyState: React.FC<EmptyStateProps> = ({
     // Get journey-specific primary color for the icon and button
     const getJourneyColor = () => {
         if (currentJourney === 'health') {
-            return '#0ACF83';
+            return colors.journeys.health.primary;
         }
         if (currentJourney === 'care') {
-            return '#FF8C42';
+            return colors.journeys.care.primary;
         }
         if (currentJourney === 'plan') {
-            return '#3A86FF';
+            return colors.journeys.plan.primary;
         }
-        return '#0066CC'; // Default to brand primary if no journey specified
+        return colors.brand.primary;
     };
 
     return (

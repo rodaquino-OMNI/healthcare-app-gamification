@@ -230,6 +230,7 @@ export const Badge: React.FC<BadgeProps> = ({
             journey={journey}
             onPress={onPress}
             accessibilityLabel={accessibilityLabel}
+            accessibilityRole={onPress ? 'button' : undefined}
             testID={testID}
         >
             {children}
