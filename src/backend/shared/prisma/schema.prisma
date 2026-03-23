@@ -116,6 +116,8 @@ model User {
   medicalEvents        MedicalEvent[]
   plans                Plan[]
   claims               Claim[]
+  nutritionLogs        NutritionLog[]
+  cycleRecords         CycleRecord[]
 
   @@index([email])
   @@map("users")
@@ -487,6 +489,49 @@ model MedicalEvent {
   @@index([userId])
   @@index([date])
   @@map("medical_events")
+}
+
+model NutritionLog {
+  id        String   @id @default(uuid())
+  userId    String
+  mealType  String
+  foods     Json
+  calories  Float
+  protein   Float?
+  carbs     Float?
+  fat       Float?
+  date      DateTime
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([date])
+  @@map("nutrition_logs")
+}
+
+model CycleRecord {
+  id            String    @id @default(uuid())
+  userId        String
+  startDate     DateTime
+  endDate       DateTime?
+  cycleLength   Int?
+  periodLength  Int?
+  flowIntensity String?
+  symptoms      Json?
+  notes         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([startDate])
+  @@map("cycle_records")
 }
 
 // ──────────────────────────────────────────────────────────────

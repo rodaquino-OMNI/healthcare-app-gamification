@@ -4,14 +4,19 @@ import { ConfigModule } from '@nestjs/config'; // NestJS Config 2.3.1+
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
+import { ActivityModule } from './activity/activity.module'; // Manages activity tracking and fitness data for the Health Journey
 import { health } from './config/configuration'; // Configuration function for the Health Service
 import { validationSchema } from './config/validation.schema'; // Validation schema for environment variables
+import { CycleModule } from './cycle/cycle.module'; // Manages menstrual cycle and reproductive health tracking
 import { DevicesModule } from './devices/devices.module'; // Manages device connections for health data synchronization
 import { HealthModule } from './health/health.module'; // Core module for managing health metrics, goals, and medical history
 import { HealthCheckModule } from './healthcheck/healthcheck.module'; // Health check endpoint for service liveness/readiness
 import { InsightsModule } from './insights/insights.module'; // Provides health insights and recommendations based on user data
 import { FhirModule } from './integrations/fhir/fhir.module'; // Integrates with external health record systems using FHIR standard
 import { WearablesModule } from './integrations/wearables/wearables.module'; // Manages integration with various wearable devices
+import { NutritionModule } from './nutrition/nutrition.module'; // Manages nutritional intake tracking and dietary goals
+import { SleepModule } from './sleep/sleep.module'; // Manages sleep tracking, quality analysis, and sleep goals
+import { WellnessModule } from './wellness/wellness.module'; // Manages AI wellness companion chat and recommendations
 import { PrismaService } from '../../shared/src/database/prisma.service'; // Database access service using Prisma ORM
 import { ExceptionsModule } from '../../shared/src/exceptions/exceptions.module'; // Provides global exception handling
 import { KafkaModule } from '../../shared/src/kafka/kafka.module'; // Enables event streaming for gamification and notifications
@@ -44,6 +49,11 @@ import { TracingModule } from '../../shared/src/tracing/tracing.module'; // Enab
         WearablesModule, // Imports the WearablesModule for integrating with wearable devices.
         AuditModule,
         HealthCheckModule, // Health check endpoint for service liveness/readiness probes.
+        SleepModule, // Imports the SleepModule for managing sleep tracking and analysis.
+        ActivityModule, // Imports the ActivityModule for managing activity and fitness tracking.
+        NutritionModule, // Manages nutritional data and dietary goals.
+        CycleModule, // Manages menstrual cycle and reproductive health.
+        WellnessModule, // Manages AI wellness companion chat and recommendations.
     ],
     controllers: [], // No controllers are defined directly in the AppModule.
     providers: [PrismaService, { provide: APP_INTERCEPTOR, useClass: AuditInterceptor }],
