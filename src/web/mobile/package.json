@@ -39,12 +39,12 @@
         "axios": "1.13.6",
         "cross-fetch": "4.1.0",
         "date-fns": "^4.0.0",
-        "expo": "~55.0.0",
-        "expo-font": "~55.0.4",
-        "expo-haptics": "~55.0.9",
-        "expo-screen-capture": "~55.0.9",
-        "expo-secure-store": "~55.0.9",
-        "expo-splash-screen": "~55.0.12",
+        "expo": "~52.0.0",
+        "expo-font": "~13.0.0",
+        "expo-haptics": "~14.0.0",
+        "expo-screen-capture": "~7.0.0",
+        "expo-secure-store": "~14.0.0",
+        "expo-splash-screen": "~0.29.0",
         "formik": "2.4.9",
         "graphql-request": "7.4.0",
         "i18next": "25.8.13",
@@ -99,7 +99,7 @@
         "@testing-library/react-native": "^12.4.0",
         "@testing-library/user-event": "^14.0.0",
         "@types/jest": "29.5.14",
-        "@types/react": "18.2.37",
+        "@types/react": "^19.0.0",
         "@types/react-test-renderer": "19.1.0",
         "@typescript-eslint/eslint-plugin": "^5.59.5",
         "@typescript-eslint/parser": "^5.59.5",
@@ -124,7 +124,7 @@
         "lint-staged": "^16.0.0",
         "metro-react-native-babel-preset": "0.77.0",
         "prettier": "3.8.1",
-        "react-test-renderer": "18.3.1",
+        "react-test-renderer": "19.2.0",
         "typescript": "5.3.3"
     },
     "engines": {
@@ -139,27 +139,6 @@
             "prettier --write"
         ]
     },
-    "//overrides": "Child-specific only. 20 redundant entries removed (inherited from workspace root src/web/package.json). Kept: metro-minify-uglify/uglify-es (mobile-only), sudo-prompt ^9.2.2 (mobile needs older version, not sudo-block), animation overrides that differ from parent.",
-    "overrides": {
-        "metro-minify-uglify": "metro-minify-terser",
-        "uglify-es": "uglify-js@^3.13.0",
-        "sudo-prompt": "^9.2.2",
-        "react-native-reanimated": "3.17.5",
-        "react-native-gesture-handler": "2.25.0",
-        "react-native-safe-area-context": "5.4.0"
-    },
-    "//resolutions": "Mobile-specific: react/react-dom/types pinned to 18.x for React Native compat (parent uses 19.x). React Navigation pinned to v6 to prevent transitive v7 upgrades. react-native-haptic-feedback not in parent. All other CVE/version pins handled by root + src/web parent resolutions.",
-    "resolutions": {
-        "react": "18.3.1",
-        "react-dom": "18.3.1",
-        "@types/react": "18.2.37",
-        "@types/react-dom": "18.2.15",
-        "react-native-haptic-feedback": "^2.0.2",
-        "@react-navigation/native": "6.1.9",
-        "@react-navigation/bottom-tabs": "6.5.8",
-        "@react-navigation/drawer": "6.7.2",
-        "@react-navigation/native-stack": "6.9.13",
-        "@react-navigation/stack": "6.3.20"
-    },
+    "//overrides-moved": "All overrides/resolutions consolidated in root package.json pnpm.overrides",
     "main": "./index.js"
 }
