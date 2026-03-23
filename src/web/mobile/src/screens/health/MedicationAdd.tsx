@@ -8,14 +8,14 @@ import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchable';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, Alert } from 'react-native';
-import * as yup from 'yup';
+import { z } from 'zod';
 
 import { ROUTES } from '../../constants/routes';
 import type { HealthStackParamList } from '../../navigation/types';
@@ -45,12 +45,12 @@ type MedicationAddRouteParams = {
 };
 
 /**
- * Yup validation schema is created inside the component to access t().
+ * Zod validation schema is created inside the component to access t().
  */
 
 /**
  * MedicationAdd screen provides a form for adding or editing a medication.
- * Uses react-hook-form with yup validation, and design-system components.
+ * Uses react-hook-form with zod validation, and design-system components.
  */
 const MedicationAdd: React.FC = () => {
     const { t } = useTranslation();
@@ -65,18 +65,20 @@ const MedicationAdd: React.FC = () => {
         { label: t('journeys.care.medications.frequency.weekly'), value: 'weekly' },
     ];
 
-    const medicationSchema = yup.object({
-        name: yup.string().required(t('common.validation.required')),
-        dosage: yup.string().required(t('common.validation.required')),
-        frequency: yup.string().required(t('common.validation.required')),
-        startDate: yup
-            .date()
+    const medicationSchema = z.object({
+        name: z.string().min(1, t('common.validation.required')),
+        dosage: z.string().min(1, t('common.validation.required')),
+        frequency: z.string().min(1, t('common.validation.required')),
+        startDate: z.coerce
+            .date({
+                invalid_type_error: t('common.validation.required'),
+                required_error: t('common.validation.required'),
+            })
             .nullable()
-            .required(t('common.validation.required'))
-            .typeError(t('common.validation.required')),
-        endDate: yup.date().nullable().notRequired(),
-        notes: yup.string().default(''),
-        reminder: yup.boolean().default(true),
+            .refine((val) => val !== null, { message: t('common.validation.required') }),
+        endDate: z.coerce.date().nullable().optional(),
+        notes: z.string().default(''),
+        reminder: z.boolean().default(true),
     });
     const route = useRoute<RouteProp<MedicationAddRouteParams, 'MedicationAdd'>>();
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -91,8 +93,7 @@ const MedicationAdd: React.FC = () => {
         formState: { errors },
         setValue: _setValue,
     } = useForm<MedicationFormData>({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- yupResolver returns Resolver with `any` context type
-        resolver: yupResolver(medicationSchema),
+        resolver: zodResolver(medicationSchema),
         defaultValues: {
             name: prefillName,
             dosage: prefillDosage,

@@ -37,27 +37,8 @@ jest.mock('react-hook-form', () => ({
     },
 }));
 
-jest.mock('@hookform/resolvers/yup', () => ({
-    yupResolver: () => jest.fn(),
-}));
-
-jest.mock('yup', () => ({
-    object: () => ({
-        shape: jest.fn().mockReturnThis(),
-    }),
-    string: () => ({
-        required: jest.fn().mockReturnThis(),
-        default: jest.fn().mockReturnThis(),
-    }),
-    date: () => ({
-        nullable: jest.fn().mockReturnThis(),
-        required: jest.fn().mockReturnThis(),
-        typeError: jest.fn().mockReturnThis(),
-        notRequired: jest.fn().mockReturnThis(),
-    }),
-    boolean: () => ({
-        default: jest.fn().mockReturnThis(),
-    }),
+jest.mock('@hookform/resolvers/zod', () => ({
+    zodResolver: () => jest.fn(),
 }));
 
 jest.mock('@austa/design-system/src/tokens/colors', () => ({

@@ -5,14 +5,14 @@ import { colors } from '@design-system/tokens/colors';
 import { sizing } from '@design-system/tokens/sizing';
 import { spacing } from '@design-system/tokens/spacing';
 import { typography } from '@design-system/tokens/typography';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { useForm, Controller, type Resolver } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import styled from 'styled-components/native';
-import * as yup from 'yup';
+import { z } from 'zod';
 
 import { updateProfile } from '../../api/auth';
 import { useAuth } from '../../context/AuthContext';
@@ -22,25 +22,18 @@ import type { AuthNavigationProp } from '../../navigation/types';
  * Validation schema for insurance information form.
  * Fields are optional when the user toggles "I don't have insurance".
  */
-const createInsuranceSchema = (t: (key: string, options?: Record<string, unknown>) => string) =>
-    yup.object().shape({
-        provider: yup.string().when('$hasInsurance', {
-            is: true,
-            then: (schema) => schema.required(t('common.validation.required')),
-            otherwise: (schema) => schema.default(''),
-        }),
-        planNumber: yup.string().when('$hasInsurance', {
-            is: true,
-            then: (schema) => schema.required(t('common.validation.required')),
-            otherwise: (schema) => schema.default(''),
-        }),
-        groupNumber: yup.string().default(''),
-        planType: yup.string().when('$hasInsurance', {
-            is: true,
-            then: (schema) => schema.required(t('common.validation.required')),
-            otherwise: (schema) => schema.default(''),
-        }),
+const createInsuranceSchema = (
+    t: (key: string, options?: Record<string, unknown>) => string,
+    hasInsurance: boolean
+) => {
+    const requiredMsg = t('common.validation.required');
+    return z.object({
+        provider: hasInsurance ? z.string().min(1, requiredMsg) : z.string().default(''),
+        planNumber: hasInsurance ? z.string().min(1, requiredMsg) : z.string().default(''),
+        groupNumber: z.string().default(''),
+        planType: hasInsurance ? z.string().min(1, requiredMsg) : z.string().default(''),
     });
+};
 
 interface InsuranceFormData {
     provider: string;
@@ -224,12 +217,9 @@ const ProfileVariant2: React.FC = () => {
         watch,
         formState: { errors },
     } = useForm<InsuranceFormData>({
-        resolver: yupResolver(
-            createInsuranceSchema(
-                t as (key: string, options?: Record<string, unknown>) => string
-            ) as unknown as yup.ObjectSchema<InsuranceFormData>
-        ) as Resolver<InsuranceFormData>,
-        context: { hasInsurance },
+        resolver: zodResolver(
+            createInsuranceSchema(t as (key: string, options?: Record<string, unknown>) => string, hasInsurance)
+        ),
         mode: 'onBlur',
         defaultValues: {
             provider: '',

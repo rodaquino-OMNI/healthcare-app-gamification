@@ -1,8 +1,8 @@
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Input, Select, Button } from 'design-system/components';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import * as yup from 'yup';
+import { z } from 'zod';
 
 import { useJourney } from '@/context/JourneyContext';
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
@@ -25,13 +25,13 @@ interface AppointmentFormValues {
 }
 
 /**
- * Defines the validation schema for the appointment form using Yup.
+ * Defines the validation schema for the appointment form using Zod.
  */
-const appointmentValidationSchema = yup.object().shape({
-    provider: yup.string().required('Provider is required'),
-    date: yup.date().required('Date is required').nullable(),
-    time: yup.string().required('Time is required'),
-    reason: yup.string().optional(),
+const appointmentValidationSchema = z.object({
+    provider: z.string().min(1, 'Provider is required'),
+    date: z.coerce.date({ required_error: 'Date is required' }).nullable(),
+    time: z.string().min(1, 'Time is required'),
+    reason: z.string().optional(),
 });
 
 /**
@@ -45,8 +45,7 @@ export const AppointmentForm: React.FC<AppointmentFormProps> = () => {
         handleSubmit,
         formState: { errors },
     } = useForm<AppointmentFormValues>({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- yupResolver returns an untyped Resolver from @hookform/resolvers; the generic inference is lost at the library boundary
-        resolver: yupResolver(appointmentValidationSchema),
+        resolver: zodResolver(appointmentValidationSchema),
         defaultValues: {
             provider: '',
             date: null,

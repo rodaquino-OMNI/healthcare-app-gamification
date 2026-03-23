@@ -1,10 +1,10 @@
 import { Button } from '@design-system/components/Button/Button';
 import { Input } from '@design-system/components/Input';
 import { Select } from '@design-system/components/Select/Select';
-import { yupResolver } from '@hookform/resolvers/yup'; // ^3.0.0
+import { zodResolver } from '@hookform/resolvers/zod';
 import { HealthMetricType } from '@shared/types/health.types';
 import { useForm, type Resolver } from 'react-hook-form'; // ^7.0.0
-import * as yup from 'yup'; // ^1.0.0
+import { z } from 'zod';
 
 import { createHealthMetric, CreateMetricInput } from '@api/health';
 import { useJourney } from '@context/JourneyContext';
@@ -19,11 +19,11 @@ type HealthMetricFormData = {
 };
 
 // Static validation schema — defined once outside component to avoid recreation per render
-const healthMetricSchema = yup.object({
-    value: yup.number().required('Value is required').positive('Value must be positive'),
-    unit: yup.string().required('Unit is required'),
-    timestamp: yup.date().required('Timestamp is required').max(new Date(), 'Timestamp cannot be in the future'),
-    type: yup.string().oneOf(Object.values(HealthMetricType)).required('Type is required'),
+const healthMetricSchema = z.object({
+    value: z.number({ required_error: 'Value is required' }).positive('Value must be positive'),
+    unit: z.string().min(1, 'Unit is required'),
+    timestamp: z.string().min(1, 'Timestamp is required'),
+    type: z.enum(Object.values(HealthMetricType) as [string, ...string[]], { required_error: 'Type is required' }),
 });
 
 // Static options array — defined once outside component
@@ -40,14 +40,14 @@ export const HealthMetricForm: React.FC = () => {
     // Access the current journey context
     const { journey: _journey } = useJourney();
 
-    // Initialize the form using React Hook Form with the Yup resolver
+    // Initialize the form using React Hook Form with the Zod resolver
     const {
         register,
         handleSubmit,
         formState: { errors },
         reset,
     } = useForm<HealthMetricFormData>({
-        resolver: yupResolver(healthMetricSchema) as Resolver<HealthMetricFormData>,
+        resolver: zodResolver(healthMetricSchema) as Resolver<HealthMetricFormData>,
     });
 
     // Access the useHealthMetrics hook to refetch data after submission

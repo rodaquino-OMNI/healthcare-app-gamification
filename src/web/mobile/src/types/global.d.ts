@@ -32,12 +32,11 @@ declare module '@react-native-community/netinfo' {
 
 // Hookform resolvers
 declare module '@hookform/resolvers' {
-    export function yupResolver(schema: any): any;
     export function zodResolver(schema: any): any;
 }
 
-declare module '@hookform/resolvers/yup' {
-    export function yupResolver(schema: any): any;
+declare module '@hookform/resolvers/zod' {
+    export function zodResolver(schema: any): any;
 }
 
 // React Native Community DateTimePicker & React Native Picker

@@ -3,11 +3,12 @@ import { Input } from '@design-system/components/Input';
 import { Box } from '@design-system/primitives/Box/Box';
 import { Text } from '@design-system/primitives/Text/Text';
 import { colors } from '@design-system/tokens/colors';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation } from '@react-navigation/native';
-import { useFormik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import * as yup from 'yup';
+import { z } from 'zod';
 
 import { useAuth } from '@hooks/useAuth';
 
@@ -26,48 +27,61 @@ const LoginScreen = (): React.ReactElement => {
     const navigation = useNavigation<AuthNavigationProp>();
     const { signIn } = useAuth();
     const { t } = useTranslation();
+    const [networkError, setNetworkError] = useState(false);
 
-    // Form validation schema using yup
-    const validationSchema = yup.object({
-        email: yup.string().email(t('common.validation.email')).required(t('common.validation.required')),
-        password: yup
+    // Form validation schema using zod
+    const validationSchema = z.object({
+        email: z.string().min(1, t('common.validation.required')).email(t('common.validation.email')),
+        password: z
             .string()
-            .min(8, t('common.validation.minLength', { count: 8 }))
-            .required(t('common.validation.required')),
+            .min(1, t('common.validation.required'))
+            .min(8, t('common.validation.minLength', { count: 8 })),
     });
 
-    // Initialize form handling with formik
-    const formik = useFormik({
-        initialValues: {
+    type LoginFormData = z.infer<typeof validationSchema>;
+
+    // Initialize form handling with react-hook-form
+    const {
+        watch,
+        handleSubmit,
+        setError,
+        formState: { errors, isSubmitting, touchedFields },
+    } = useForm<LoginFormData>({
+        resolver: zodResolver(validationSchema),
+        defaultValues: {
             email: '',
             password: '',
         },
-        validationSchema,
-        onSubmit: async (values) => {
-            try {
-                // Attempt to sign in with provided credentials
-                await signIn(values.email, values.password);
-                // Navigation after successful login is handled by the auth context
-            } catch (error: unknown) {
-                // Distinguish network errors from credential errors
-                const isNetworkError =
-                    error instanceof TypeError ||
-                    (error !== null &&
-                        typeof error === 'object' &&
-                        'message' in error &&
-                        typeof (error as { message: unknown }).message === 'string' &&
-                        /network|timeout|abort|ECONNREFUSED/i.test((error as { message: string }).message));
-
-                if (isNetworkError) {
-                    formik.setStatus('network-error');
-                } else {
-                    formik.setErrors({
-                        email: t('auth.login.invalidCredentials'),
-                    });
-                }
-            }
-        },
     });
+
+    const emailValue = watch('email');
+    const passwordValue = watch('password');
+
+    const onSubmit = async (values: LoginFormData): Promise<void> => {
+        try {
+            setNetworkError(false);
+            // Attempt to sign in with provided credentials
+            await signIn(values.email, values.password);
+            // Navigation after successful login is handled by the auth context
+        } catch (error: unknown) {
+            // Distinguish network errors from credential errors
+            const isNetworkErr =
+                error instanceof TypeError ||
+                (error !== null &&
+                    typeof error === 'object' &&
+                    'message' in error &&
+                    typeof (error as { message: unknown }).message === 'string' &&
+                    /network|timeout|abort|ECONNREFUSED/i.test((error as { message: string }).message));
+
+            if (isNetworkErr) {
+                setNetworkError(true);
+            } else {
+                setError('email', {
+                    message: t('auth.login.invalidCredentials'),
+                });
+            }
+        }
+    };
 
     return (
         <Box padding="lg" backgroundColor="background.default" flex="1" justifyContent="center">
@@ -88,21 +102,21 @@ const LoginScreen = (): React.ReactElement => {
                 </Text>
                 <Input
                     testID="login-email-input"
-                    value={formik.values.email}
-                    onChange={formik.handleChange('email')}
+                    value={emailValue}
+                    onChange={handleSubmit(() => {})}
                     placeholder={t('auth.login.emailPlaceholder')}
                     aria-label={t('common.labels.email')}
                     type="email"
                 />
-                {formik.touched.email && formik.errors.email && (
+                {touchedFields.email && errors.email && (
                     <Text testID="login-error-message" color={colors.semantic.error} fontSize="sm" marginTop="xs">
-                        {formik.errors.email}
+                        {errors.email.message}
                     </Text>
                 )}
             </Box>
 
             {/* Network error banner */}
-            {formik.status === 'network-error' && (
+            {networkError && (
                 <Box
                     data-testid="network-error-message"
                     padding="md"
@@ -124,15 +138,15 @@ const LoginScreen = (): React.ReactElement => {
                 </Text>
                 <Input
                     testID="login-password-input"
-                    value={formik.values.password}
-                    onChange={formik.handleChange('password')}
+                    value={passwordValue}
+                    onChange={handleSubmit(() => {})}
                     placeholder={t('auth.login.passwordPlaceholder')}
                     aria-label={t('auth.login.password')}
                     type="password"
                 />
-                {formik.touched.password && formik.errors.password && (
+                {touchedFields.password && errors.password && (
                     <Text color={colors.semantic.error} fontSize="sm" marginTop="xs">
-                        {formik.errors.password}
+                        {errors.password.message}
                     </Text>
                 )}
             </Box>
@@ -141,9 +155,9 @@ const LoginScreen = (): React.ReactElement => {
             <Box marginBottom="lg">
                 <Button
                     testID="login-submit-button"
-                    onPress={() => formik.handleSubmit()}
-                    disabled={formik.isSubmitting}
-                    loading={formik.isSubmitting}
+                    onPress={handleSubmit(onSubmit)}
+                    disabled={isSubmitting}
+                    loading={isSubmitting}
                     journey="health"
                 >
                     {t('auth.login.submit')}

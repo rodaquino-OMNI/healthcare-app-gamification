@@ -3,7 +3,7 @@ import Input from '@design-system/components/Input';
 import { colors } from '@design-system/tokens/colors';
 import { spacingValues } from '@design-system/tokens/spacing';
 import { typography, fontSizeValues } from '@design-system/tokens/typography';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -99,8 +99,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProp> = ({ navig
         handleSubmit,
         formState: { errors },
     } = useForm<{ email: string }>({
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment -- yupResolver schema type does not exactly match useForm generic
-        resolver: yupResolver(validationSchema.email),
+        resolver: zodResolver(validationSchema.email),
     });
 
     const [email, setEmail] = useState('');

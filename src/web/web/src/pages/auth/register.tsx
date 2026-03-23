@@ -1,4 +1,4 @@
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from 'design-system/components/Button';
 import FormField from 'design-system/components/Input';
 import { Input } from 'design-system/components/Input/Input';
@@ -7,9 +7,9 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import Link from 'next/link';
 import React, { useState } from 'react';
-import { useForm, Controller, type Resolver } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
-import * as yup from 'yup';
+import { z } from 'zod';
 
 import { useAuth } from '@/hooks/useAuth';
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
@@ -24,22 +24,24 @@ interface RegisterFormValues {
 }
 
 // Create a validation schema for form validation
-const validationSchema = yup.object().shape({
-    name: yup.string().required('Nome é obrigatório'),
-    email: yup.string().required('E-mail é obrigatório').email('E-mail inválido'),
-    password: yup
-        .string()
-        .required('Senha é obrigatória')
-        .min(8, 'A senha deve ter pelo menos 8 caracteres')
-        .matches(/[A-Z]/, 'A senha deve conter pelo menos uma letra maiúscula')
-        .matches(/[a-z]/, 'A senha deve conter pelo menos uma letra minúscula')
-        .matches(/[0-9]/, 'A senha deve conter pelo menos um número')
-        .matches(/[^A-Za-z0-9]/, 'A senha deve conter pelo menos um caractere especial'),
-    confirmPassword: yup
-        .string()
-        .required('Confirme sua senha')
-        .oneOf([yup.ref('password')], 'As senhas não coincidem'),
-});
+const validationSchema = z
+    .object({
+        name: z.string().min(1, 'Nome é obrigatório'),
+        email: z.string().min(1, 'E-mail é obrigatório').email('E-mail inválido'),
+        password: z
+            .string()
+            .min(1, 'Senha é obrigatória')
+            .min(8, 'A senha deve ter pelo menos 8 caracteres')
+            .regex(/[A-Z]/, 'A senha deve conter pelo menos uma letra maiúscula')
+            .regex(/[a-z]/, 'A senha deve conter pelo menos uma letra minúscula')
+            .regex(/[0-9]/, 'A senha deve conter pelo menos um número')
+            .regex(/[^A-Za-z0-9]/, 'A senha deve conter pelo menos um caractere especial'),
+        confirmPassword: z.string().min(1, 'Confirme sua senha'),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+        message: 'As senhas não coincidem',
+        path: ['confirmPassword'],
+    });
 
 /**
  * Register component - Renders the registration page with form for new users
@@ -57,7 +59,7 @@ const Register: React.FC = () => {
         handleSubmit,
         formState: { errors, isSubmitting },
     } = useForm<RegisterFormValues>({
-        resolver: yupResolver(validationSchema) as Resolver<RegisterFormValues>,
+        resolver: zodResolver(validationSchema),
         defaultValues: {
             name: '',
             email: '',

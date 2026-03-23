@@ -2,11 +2,11 @@ import { Button } from '@design-system/components/Button/Button';
 import DatePicker from '@design-system/components/DatePicker/DatePicker';
 import { Input } from '@design-system/components/Input/Input';
 import { Select } from '@design-system/components/Select/Select';
-import { yupResolver } from '@hookform/resolvers'; // latest
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native'; // latest
 import { claimValidationSchema } from '@shared/utils/validation';
 import React from 'react'; // Version 18.0.0
-import { useForm, Controller, type Resolver } from 'react-hook-form'; // 7.0+
+import { useForm, Controller } from 'react-hook-form'; // 7.0+
 
 import { submitClaim } from '@api/plan';
 import { useJourney } from '@hooks/useJourney';
@@ -45,7 +45,7 @@ export const ClaimForm: React.FC = () => {
         handleSubmit,
         formState: { errors: _errors, isSubmitting, isValid: _isValid },
     } = useForm<ClaimFormData>({
-        resolver: yupResolver(claimValidationSchema) as Resolver<ClaimFormData>,
+        resolver: zodResolver(claimValidationSchema),
         defaultValues: {
             procedureType: '',
             date: null,

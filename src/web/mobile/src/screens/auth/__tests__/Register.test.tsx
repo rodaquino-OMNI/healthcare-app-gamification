@@ -24,8 +24,8 @@ jest.mock('react-hook-form', () => ({
     }),
 }));
 
-jest.mock('@hookform/resolvers/yup', () => ({
-    yupResolver: jest.fn(() => jest.fn()),
+jest.mock('@hookform/resolvers/zod', () => ({
+    zodResolver: jest.fn(() => jest.fn()),
 }));
 
 jest.mock('styled-components/native', () => {

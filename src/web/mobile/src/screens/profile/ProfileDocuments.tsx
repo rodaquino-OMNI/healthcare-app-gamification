@@ -4,7 +4,7 @@ import { colors } from '@design-system/tokens/colors';
 import { sizing } from '@design-system/tokens/sizing';
 import { spacing } from '@design-system/tokens/spacing';
 import { typography } from '@design-system/tokens/typography';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation } from '@react-navigation/native';
 // eslint-disable-next-line import/no-unresolved -- Native module resolved at runtime
 import * as DocumentPicker from 'expo-document-picker';
@@ -13,7 +13,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import styled from 'styled-components/native';
-import * as yup from 'yup';
+import { z } from 'zod';
 
 import { updateProfile } from '../../api/auth';
 import { useAuth } from '../../context/AuthContext';
@@ -52,12 +52,12 @@ const formatCPF = (value: string): string => {
  */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- Render helper return type is inferred from JSX
 const createDocumentsSchema = (t: (key: string, options?: Record<string, unknown>) => string) =>
-    yup.object().shape({
-        cpf: yup
+    z.object({
+        cpf: z
             .string()
-            .required(t('common.validation.required'))
-            .test('valid-cpf', t('profile.documents.cpfFormat'), validateCPF),
-        rg: yup.string().required(t('common.validation.required')),
+            .min(1, t('common.validation.required'))
+            .refine(validateCPF, { message: t('profile.documents.cpfFormat') }),
+        rg: z.string().min(1, t('common.validation.required')),
     });
 
 interface DocumentsFormData {
@@ -255,12 +255,7 @@ const ProfileDocuments: React.FC = () => {
         handleSubmit,
         formState: { errors, isValid },
     } = useForm<DocumentsFormData>({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Native module returns untyped result
-        resolver: yupResolver(
-            createDocumentsSchema(
-                t as (key: string, options?: Record<string, unknown>) => string
-            ) as yup.ObjectSchema<DocumentsFormData>
-        ),
+        resolver: zodResolver(createDocumentsSchema(t as (key: string, options?: Record<string, unknown>) => string)),
         mode: 'onBlur',
         defaultValues: {
             cpf: '',

@@ -5,14 +5,14 @@ import { colors } from '@design-system/tokens/colors';
 import { sizing } from '@design-system/tokens/sizing';
 import { spacing } from '@design-system/tokens/spacing';
 import { typography } from '@design-system/tokens/typography';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
-import { useForm, Controller, type Resolver } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import styled from 'styled-components/native';
-import * as yup from 'yup';
+import { z } from 'zod';
 
 import { updateProfile } from '../../api/auth';
 import { useAuth } from '../../context/AuthContext';
@@ -22,17 +22,17 @@ import type { AuthNavigationProp } from '../../navigation/types';
  * Validation schema for address form.
  */
 const createAddressSchema = (t: (key: string, options?: Record<string, unknown>) => string) =>
-    yup.object().shape({
-        cep: yup
+    z.object({
+        cep: z
             .string()
-            .required(t('common.validation.required'))
-            .matches(/^\d{8}$/, t('profileSetup.address.cepFormat')),
-        street: yup.string().required(t('common.validation.required')),
-        number: yup.string().required(t('common.validation.required')),
-        complement: yup.string().default(''),
-        neighborhood: yup.string().required(t('common.validation.required')),
-        city: yup.string().required(t('common.validation.required')),
-        state: yup.string().required(t('common.validation.required')),
+            .min(1, t('common.validation.required'))
+            .regex(/^\d{8}$/, t('profileSetup.address.cepFormat')),
+        street: z.string().min(1, t('common.validation.required')),
+        number: z.string().min(1, t('common.validation.required')),
+        complement: z.string().default(''),
+        neighborhood: z.string().min(1, t('common.validation.required')),
+        city: z.string().min(1, t('common.validation.required')),
+        state: z.string().min(1, t('common.validation.required')),
     });
 
 interface AddressFormData {
@@ -235,11 +235,7 @@ const ProfileAddress: React.FC = () => {
         watch,
         formState: { errors },
     } = useForm<AddressFormData>({
-        resolver: yupResolver(
-            createAddressSchema(
-                t as (key: string, options?: Record<string, unknown>) => string
-            ) as unknown as yup.ObjectSchema<AddressFormData>
-        ) as Resolver<AddressFormData>,
+        resolver: zodResolver(createAddressSchema(t as (key: string, options?: Record<string, unknown>) => string)),
         mode: 'onBlur',
         defaultValues: {
             cep: '',

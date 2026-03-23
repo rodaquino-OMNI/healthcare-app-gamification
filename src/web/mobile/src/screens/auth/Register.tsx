@@ -4,7 +4,7 @@ import { Input } from '@design-system/components/Input';
 import { colors } from '@design-system/tokens/colors';
 import { spacingValues } from '@design-system/tokens/spacing';
 import { typography } from '@design-system/tokens/typography';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation } from '@react-navigation/native';
 import { userValidationSchema } from '@shared/utils/validation';
 import React, { useState } from 'react';
@@ -88,8 +88,7 @@ export const RegisterScreen: React.FC = () => {
         formState: { errors, isValid, isSubmitting },
         register: registerInput,
     } = useForm<{ name: string; email: string; password: string; confirmPassword: string }>({
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment -- yupResolver typing requires any cast for dynamic schema
-        resolver: yupResolver(userValidationSchema),
+        resolver: zodResolver(userValidationSchema),
         mode: 'onBlur',
         defaultValues: {
             name: '',

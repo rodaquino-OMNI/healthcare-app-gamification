@@ -5,14 +5,14 @@ import { colors } from '@design-system/tokens/colors';
 import { sizingValues } from '@design-system/tokens/sizing';
 import { spacingValues } from '@design-system/tokens/spacing';
 import { typography, fontSizeValues } from '@design-system/tokens/typography';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import React, { useState, useMemo } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Alert } from 'react-native';
 import styled from 'styled-components/native';
-import * as yup from 'yup';
+import { z } from 'zod';
 
 import { setPassword } from '../../api/auth';
 import { ROUTES } from '../../constants/routes';
@@ -46,17 +46,19 @@ interface PasswordCriteria {
 
 // --- Validation Schema ---
 
-const setPasswordSchema = (t: (key: string, options?: any) => string) =>
-    yup.object({
-        password: yup
-            .string()
-            .required(t('common.validation.required'))
-            .min(8, t('common.validation.minLength', { count: 8 })),
-        confirmPassword: yup
-            .string()
-            .required(t('common.validation.required'))
-            .oneOf([yup.ref('password')], t('auth.setPassword.passwordsMustMatch')),
-    });
+const setPasswordSchema = (t: (key: string, options?: Record<string, unknown>) => string) =>
+    z
+        .object({
+            password: z
+                .string()
+                .min(1, t('common.validation.required'))
+                .min(8, t('common.validation.minLength', { count: 8 })),
+            confirmPassword: z.string().min(1, t('common.validation.required')),
+        })
+        .refine((data) => data.password === data.confirmPassword, {
+            message: t('auth.setPassword.passwordsMustMatch'),
+            path: ['confirmPassword'],
+        });
 
 type SetPasswordFormData = {
     password: string;
@@ -240,8 +242,7 @@ export const SetPasswordScreen: React.FC = () => {
         watch,
         formState: { errors },
     } = useForm<SetPasswordFormData>({
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment -- yupResolver requires any cast for dynamic schema
-        resolver: yupResolver(setPasswordSchema(t as (key: string, options?: Record<string, unknown>) => string)),
+        resolver: zodResolver(setPasswordSchema(t as (key: string, options?: Record<string, unknown>) => string)),
         mode: 'onChange',
         defaultValues: {
             password: '',

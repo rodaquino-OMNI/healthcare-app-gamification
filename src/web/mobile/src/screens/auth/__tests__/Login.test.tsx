@@ -16,28 +16,31 @@ jest.mock('react-i18next', () => ({
     }),
 }));
 
-jest.mock('formik', () => ({
-    useFormik: () => ({
-        values: { email: '', password: '' },
-        errors: {},
-        touched: {},
-        handleChange: jest.fn(() => jest.fn()),
-        handleSubmit: jest.fn(),
-        isSubmitting: false,
-        setErrors: jest.fn(),
+jest.mock('react-hook-form', () => ({
+    useForm: () => ({
+        watch: jest.fn(() => ''),
+        handleSubmit: jest.fn((fn: unknown) => fn),
+        setError: jest.fn(),
+        formState: {
+            errors: {},
+            isSubmitting: false,
+            touchedFields: {},
+        },
     }),
 }));
 
-jest.mock('yup', () => ({
-    object: jest.fn(() => ({
-        email: jest.fn(),
-        password: jest.fn(),
-    })),
-    string: jest.fn(() => ({
-        email: jest.fn().mockReturnThis(),
-        required: jest.fn().mockReturnThis(),
-        min: jest.fn().mockReturnThis(),
-    })),
+jest.mock('zod', () => ({
+    z: {
+        object: jest.fn(() => ({})),
+        string: jest.fn(() => ({
+            min: jest.fn().mockReturnThis(),
+            email: jest.fn().mockReturnThis(),
+        })),
+    },
+}));
+
+jest.mock('@hookform/resolvers/zod', () => ({
+    zodResolver: jest.fn(() => jest.fn()),
 }));
 
 jest.mock('../../hooks/useAuth', () => ({

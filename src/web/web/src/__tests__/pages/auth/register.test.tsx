@@ -20,8 +20,8 @@ jest.mock('react-i18next', () => ({
     useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
 }));
 
-jest.mock('@hookform/resolvers/yup', () => ({
-    yupResolver: () => jest.fn(),
+jest.mock('@hookform/resolvers/zod', () => ({
+    zodResolver: () => jest.fn(),
 }));
 
 jest.mock('@/hooks/useAuth', () => ({

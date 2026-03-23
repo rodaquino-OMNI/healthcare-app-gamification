@@ -82,8 +82,8 @@ jest.mock('shared/utils/validation', () => ({
     },
 }));
 
-jest.mock('@hookform/resolvers/yup', () => ({
-    yupResolver: () => () => Promise.resolve({ values: {}, errors: {} }),
+jest.mock('@hookform/resolvers/zod', () => ({
+    zodResolver: () => () => Promise.resolve({ values: {}, errors: {} }),
 }));
 
 import { ClaimForm } from '../../../pages/plan/claims/submit';
