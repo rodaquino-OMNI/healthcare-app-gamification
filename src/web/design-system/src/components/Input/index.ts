@@ -12,3 +12,5 @@
 export { default } from './Input';
 export { default as Input } from './Input';
 export type { InputProps } from './Input';
+export { PasscodeInput } from './PasscodeInput';
+export type { PasscodeInputProps } from './PasscodeInput';

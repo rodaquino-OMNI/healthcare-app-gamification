@@ -1,2 +1,2 @@
-export { ChatMessage, TypingIndicator } from './ChatMessage';
-export type { ChatMessageProps, TypingIndicatorProps } from './ChatMessage';
+export { ChatMessage, TypingIndicator, AIImmersiveInput } from './ChatMessage';
+export type { ChatMessageProps, TypingIndicatorProps, AIImmersiveInputProps, ChatMessageVariant } from './ChatMessage';

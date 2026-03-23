@@ -1,6 +1,37 @@
 import styled from 'styled-components';
 
 import { borderRadius } from '../../tokens/borderRadius';
+import { colors } from '../../tokens/colors';
+import { typography } from '../../tokens/typography';
+
+export const ProgressBarOuterContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+`;
+
+export const ProgressBarLabel = styled.span<{ position: 'above' | 'below' | 'inline' }>`
+    font-family: ${typography.fontFamily.body};
+    font-size: ${({ position }) =>
+        position === 'inline' ? typography.fontSize['text-2xs'] : typography.fontSize['text-xs']};
+    font-weight: ${typography.fontWeight.medium};
+    color: ${({ position }) => (position === 'inline' ? colors.neutral.white : colors.gray[60])};
+    line-height: 1;
+    ${({ position }) =>
+        position === 'inline'
+            ? `
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 3;
+        white-space: nowrap;
+        pointer-events: none;
+    `
+            : `
+        margin-${position === 'above' ? 'bottom' : 'top'}: 4px;
+    `}
+`;
 
 export const ProgressBarContainer = styled.div`
     position: relative;

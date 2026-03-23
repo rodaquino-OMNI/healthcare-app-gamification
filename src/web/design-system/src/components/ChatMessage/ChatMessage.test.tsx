@@ -1,8 +1,8 @@
 import { describe, it, expect } from '@jest/globals';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { ChatMessage, TypingIndicator } from './ChatMessage';
+import { ChatMessage, TypingIndicator, AIImmersiveInput } from './ChatMessage';
 
 describe('ChatMessage', () => {
     it('renders sent message', () => {
@@ -91,6 +91,46 @@ describe('ChatMessage', () => {
         render(<ChatMessage message="Test" sender="Dr. Smith" timestamp="10:30 AM" variant="received" />);
         expect(screen.getByTestId('chat-avatar')).toHaveTextContent('D');
     });
+
+    describe('AI variants', () => {
+        it('renders ai-assistant variant left-aligned with AI badge', () => {
+            render(
+                <ChatMessage
+                    message="I can help you with that."
+                    sender="Health Assistant"
+                    timestamp="10:30 AM"
+                    variant="ai-assistant"
+                />
+            );
+            expect(screen.getByTestId('chat-message')).toBeInTheDocument();
+            expect(screen.getByTestId('chat-bubble')).toBeInTheDocument();
+            expect(screen.getByTestId('chat-ai-badge')).toHaveTextContent('AI');
+        });
+
+        it('renders ai-companion variant left-aligned with AI badge', () => {
+            render(
+                <ChatMessage
+                    message="How are you feeling today?"
+                    sender="Wellness Companion"
+                    timestamp="10:31 AM"
+                    variant="ai-companion"
+                />
+            );
+            expect(screen.getByTestId('chat-message')).toBeInTheDocument();
+            expect(screen.getByTestId('chat-bubble')).toBeInTheDocument();
+            expect(screen.getByTestId('chat-ai-badge')).toHaveTextContent('AI');
+        });
+
+        it('does not render AI badge for sent variant', () => {
+            render(<ChatMessage message="Hello" sender="Alice" timestamp="10:30 AM" variant="sent" />);
+            expect(screen.queryByTestId('chat-ai-badge')).not.toBeInTheDocument();
+        });
+
+        it('does not render AI badge for received variant', () => {
+            render(<ChatMessage message="Hello" sender="Bob" timestamp="10:30 AM" variant="received" />);
+            expect(screen.queryByTestId('chat-ai-badge')).not.toBeInTheDocument();
+        });
+    });
 });
 
 describe('TypingIndicator', () => {
@@ -118,5 +158,44 @@ describe('TypingIndicator', () => {
         render(<TypingIndicator />);
         expect(screen.getByTestId('typing-indicator')).toBeInTheDocument();
         expect(screen.queryByTestId('typing-label')).not.toBeInTheDocument();
+    });
+});
+
+describe('AIImmersiveInput', () => {
+    it('renders the input container', () => {
+        render(<AIImmersiveInput value="" onChangeText={() => {}} onSend={() => {}} />);
+        expect(screen.getByTestId('ai-immersive-input')).toBeInTheDocument();
+        expect(screen.getByTestId('ai-immersive-input-field')).toBeInTheDocument();
+        expect(screen.getByTestId('ai-immersive-input-send')).toBeInTheDocument();
+    });
+
+    it('renders with custom testID', () => {
+        render(<AIImmersiveInput value="" onChangeText={() => {}} onSend={() => {}} testID="custom-input" />);
+        expect(screen.getByTestId('custom-input')).toBeInTheDocument();
+        expect(screen.getByTestId('custom-input-field')).toBeInTheDocument();
+        expect(screen.getByTestId('custom-input-send')).toBeInTheDocument();
+    });
+
+    it('calls onSend when send button is clicked', () => {
+        const onSend = jest.fn();
+        render(<AIImmersiveInput value="Hello" onChangeText={() => {}} onSend={onSend} />);
+        fireEvent.click(screen.getByTestId('ai-immersive-input-send'));
+        expect(onSend).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls onChangeText when input value changes', () => {
+        const onChangeText = jest.fn();
+        render(<AIImmersiveInput value="" onChangeText={onChangeText} onSend={() => {}} />);
+        fireEvent.change(screen.getByTestId('ai-immersive-input-field'), {
+            target: { value: 'Hello' },
+        });
+        expect(onChangeText).toHaveBeenCalledWith('Hello');
+    });
+
+    it('renders with custom placeholder', () => {
+        render(
+            <AIImmersiveInput value="" onChangeText={() => {}} onSend={() => {}} placeholder="Ask me anything..." />
+        );
+        expect(screen.getByPlaceholderText('Ask me anything...')).toBeInTheDocument();
     });
 });

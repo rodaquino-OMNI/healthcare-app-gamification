@@ -10,9 +10,14 @@ export interface BreadcrumbItem {
     href?: string;
 }
 
+/** Divider style presets for the breadcrumb separator. */
+export type BreadcrumbDividerType = 'colon' | 'icon' | 'slash';
+
 export interface BreadcrumbProps {
     items: BreadcrumbItem[];
     separator?: string;
+    /** Preset divider style. Ignored when an explicit `separator` is provided. @default 'slash' */
+    dividerType?: BreadcrumbDividerType;
     onItemPress?: (item: BreadcrumbItem, index: number) => void;
     accessibilityLabel?: string;
 }
@@ -45,12 +50,34 @@ const Separator = styled.span`
     user-select: none;
 `;
 
+/**
+ * Resolve the separator character from dividerType and explicit separator props.
+ * An explicit `separator` that differs from the default '/' always wins.
+ */
+const resolveSeparator = (dividerType: BreadcrumbDividerType, separator: string | undefined): string => {
+    // If caller explicitly provided a non-default separator, honour it
+    if (separator !== undefined && separator !== '/') {
+        return separator;
+    }
+    switch (dividerType) {
+        case 'colon':
+            return ':';
+        case 'icon':
+            return '\u203A'; // single right-pointing angle quotation mark (›)
+        case 'slash':
+        default:
+            return '/';
+    }
+};
+
 export const Breadcrumb: React.FC<BreadcrumbProps> = ({
     items,
-    separator = '/',
+    separator,
+    dividerType = 'slash',
     onItemPress,
     accessibilityLabel = 'Breadcrumb navigation',
 }) => {
+    const resolvedSeparator = resolveSeparator(dividerType, separator);
     return (
         <BreadcrumbContainer aria-label={accessibilityLabel} data-testid="breadcrumb">
             {items.map((item, index) => {
@@ -73,7 +100,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
                         </BreadcrumbLink>
                         {!isLast && (
                             <Separator aria-hidden="true" data-testid="breadcrumb-separator">
-                                {separator}
+                                {resolvedSeparator}
                             </Separator>
                         )}
                     </React.Fragment>

@@ -233,4 +233,65 @@ describe('Button', () => {
         rerender(<Button size="lg">Large</Button>);
         expect(screen.getByTestId('text')).toHaveAttribute('data-font-size', 'lg');
     });
+
+    // --- Figma color system tests ---
+
+    describe('Figma color system', () => {
+        it('renders with color=brand', () => {
+            render(<Button color="brand">Brand</Button>);
+            const button = screen.getByTestId('button');
+            expect(button).toHaveAttribute('color', 'brand');
+        });
+
+        it('renders with color=destructive', () => {
+            render(<Button color="destructive">Delete</Button>);
+            const button = screen.getByTestId('button');
+            expect(button).toHaveAttribute('color', 'destructive');
+        });
+
+        it('renders hierarchy=secondary differently than primary', () => {
+            const { rerender } = render(
+                <Button color="brand" hierarchy="primary">
+                    Primary
+                </Button>
+            );
+            const primaryButton = screen.getByTestId('button');
+            expect(primaryButton).toHaveAttribute('hierarchy', 'primary');
+
+            rerender(
+                <Button color="brand" hierarchy="secondary">
+                    Secondary
+                </Button>
+            );
+            const secondaryButton = screen.getByTestId('button');
+            expect(secondaryButton).toHaveAttribute('hierarchy', 'secondary');
+        });
+
+        it('renders hierarchy=noFill differently', () => {
+            render(
+                <Button color="brand" hierarchy="noFill">
+                    No Fill
+                </Button>
+            );
+            const button = screen.getByTestId('button');
+            expect(button).toHaveAttribute('hierarchy', 'noFill');
+        });
+
+        it('accepts isMobile prop', () => {
+            render(<Button isMobile>Mobile Button</Button>);
+            const button = screen.getByTestId('button');
+            expect(button).toBeInTheDocument();
+        });
+
+        it('maintains backward compat: variant still works without color', () => {
+            const { rerender } = render(<Button variant="primary">Primary</Button>);
+            expect(screen.getByTestId('button')).toHaveAttribute('variant', 'primary');
+
+            rerender(<Button variant="secondary">Secondary</Button>);
+            expect(screen.getByTestId('button')).toHaveAttribute('variant', 'secondary');
+
+            rerender(<Button variant="tertiary">Tertiary</Button>);
+            expect(screen.getByTestId('button')).toHaveAttribute('variant', 'tertiary');
+        });
+    });
 });

@@ -71,6 +71,15 @@ export interface BadgeProps {
      * @default 'achievement'
      */
     variant?: 'achievement' | 'status';
+
+    /**
+     * Figma display type for the badge content.
+     * - 'dot': Renders a small colored circle indicator
+     * - 'icon': Renders with a status icon glyph and optional children text
+     * - 'text': Renders with text label (default behavior)
+     * When provided, takes precedence over the `dot` prop.
+     */
+    type?: 'dot' | 'icon' | 'text';
 }
 
 /**
@@ -155,7 +164,7 @@ const getStatusBgColor = (status: 'success' | 'warning' | 'error' | 'info' | 'ne
         case 'error':
             return colors.semantic.errorBg;
         case 'info':
-            return '#eff6ff';
+            return colors.semantic.infoBg;
         case 'neutral':
             return colors.neutral.gray200;
         default:
@@ -194,6 +203,25 @@ export const StatusBadge = styled.span<{
  * A versatile Badge component for displaying status, notifications, or achievements.
  * It supports different sizes, styles, and theming based on the AUSTA SuperApp's design system.
  */
+/**
+ * Returns a status icon glyph matching the Toast component pattern.
+ */
+const getStatusIcon = (status: 'success' | 'warning' | 'error' | 'info' | 'neutral'): string => {
+    switch (status) {
+        case 'success':
+            return '\u2713'; // checkmark
+        case 'error':
+            return '\u2717'; // ballot x
+        case 'warning':
+            return '\u26A0'; // warning sign
+        case 'info':
+            return '\u2139'; // info symbol
+        case 'neutral':
+        default:
+            return '\u2014'; // em dash
+    }
+};
+
 export const Badge: React.FC<BadgeProps> = ({
     size = 'md',
     unlocked = false,
@@ -205,19 +233,30 @@ export const Badge: React.FC<BadgeProps> = ({
     status,
     dot = false,
     variant = 'achievement',
+    type,
 }) => {
     getBadgeSize(size);
 
+    // Determine effective dot state: type prop takes precedence over dot prop
+    const isDot = type === 'dot' || (type === undefined && dot);
+
     // Render status variant when explicitly set
     if (variant === 'status' && status) {
+        const showIcon = type === 'icon';
+
         return (
             <StatusBadge
                 status={status}
-                dot={dot}
+                dot={isDot}
                 data-testid={testID}
                 aria-label={accessibilityLabel || `${status} status`}
             >
-                {!dot && children}
+                {!isDot && showIcon && (
+                    <span aria-hidden="true" style={{ marginRight: spacing['3xs'] }}>
+                        {getStatusIcon(status)}
+                    </span>
+                )}
+                {!isDot && children}
             </StatusBadge>
         );
     }

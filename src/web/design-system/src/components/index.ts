@@ -8,6 +8,10 @@
  * import { Button, Card, Input, Modal } from 'design-system/components';
  */
 
+// Alert
+export { Alert } from './Alert';
+export type { AlertProps } from './Alert';
+
 // Accordion
 export { default as Accordion } from './Accordion';
 export type { AccordionProps } from './Accordion';
@@ -39,6 +43,8 @@ export type { DatePickerProps } from './DatePicker';
 // Input
 export { Input } from './Input';
 export type { InputProps } from './Input';
+export { PasscodeInput } from './Input';
+export type { PasscodeInputProps } from './Input';
 
 // Modal
 export { Modal } from './Modal';
@@ -68,13 +74,17 @@ export type { TabsProps } from './Tabs';
 export { default as Toast } from './Toast';
 export type { ToastProps } from './Toast';
 
+// Toggle
+export { Toggle } from './Toggle';
+export type { ToggleProps } from './Toggle';
+
 // Breadcrumb
 export { Breadcrumb } from './Breadcrumb';
 export type { BreadcrumbProps, BreadcrumbItem } from './Breadcrumb';
 
 // ChatMessage
-export { ChatMessage, TypingIndicator } from './ChatMessage';
-export type { ChatMessageProps, TypingIndicatorProps } from './ChatMessage';
+export { ChatMessage, TypingIndicator, AIImmersiveInput } from './ChatMessage';
+export type { ChatMessageProps, TypingIndicatorProps, AIImmersiveInputProps, ChatMessageVariant } from './ChatMessage';
 
 // Dropdown
 export { Dropdown } from './Dropdown';

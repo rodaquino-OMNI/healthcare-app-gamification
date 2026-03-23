@@ -7,6 +7,8 @@ import { shadows } from '../../tokens/shadows';
 import { spacing } from '../../tokens/spacing';
 import { typography } from '../../tokens/typography';
 
+export type TooltipColor = 'black' | 'brand' | 'white';
+
 export interface TooltipProps {
     content: React.ReactNode;
     children: React.ReactNode;
@@ -15,19 +17,37 @@ export interface TooltipProps {
     arrow?: boolean;
     delay?: number;
     accessibilityLabel?: string;
+    /**
+     * The color variant of the tooltip
+     * @default 'black'
+     */
+    color?: TooltipColor;
 }
+
+const getTooltipColors = (tooltipColor: TooltipColor): { bg: string; text: string; border: string } => {
+    switch (tooltipColor) {
+        case 'brand':
+            return { bg: colors.componentColors.brand, text: colors.neutral.white, border: 'none' };
+        case 'white':
+            return { bg: colors.neutral.white, text: colors.gray[80], border: `1px solid ${colors.gray[20]}` };
+        case 'black':
+        default:
+            return { bg: colors.gray[80], text: colors.neutral.white, border: 'none' };
+    }
+};
 
 const TooltipContainer = styled.div`
     position: relative;
     display: inline-flex;
 `;
 
-const TooltipContent = styled.div<{ placement: string; visible: boolean }>`
+const TooltipContent = styled.div<{ $placement: string; $visible: boolean; $tooltipColor: TooltipColor }>`
     position: absolute;
     z-index: 100;
     padding: ${spacing.xs} ${spacing.sm};
-    background-color: ${colors.neutral.gray900};
-    color: ${colors.neutral.white};
+    background-color: ${(props) => getTooltipColors(props.$tooltipColor).bg};
+    color: ${(props) => getTooltipColors(props.$tooltipColor).text};
+    border: ${(props) => getTooltipColors(props.$tooltipColor).border};
     font-family: ${typography.fontFamily.body};
     font-size: ${typography.fontSize.xs};
     line-height: ${typography.lineHeight.base};
@@ -35,11 +55,11 @@ const TooltipContent = styled.div<{ placement: string; visible: boolean }>`
     box-shadow: ${shadows.md};
     white-space: nowrap;
     pointer-events: none;
-    opacity: ${(props) => (props.visible ? 1 : 0)};
+    opacity: ${(props) => (props.$visible ? 1 : 0)};
     transition: opacity 0.15s ease-in-out;
 
     ${(props) => {
-        switch (props.placement) {
+        switch (props.$placement) {
             case 'top':
                 return `bottom: calc(100% + ${spacing.xs}); left: 50%; transform: translateX(-50%);`;
             case 'bottom':
@@ -54,15 +74,15 @@ const TooltipContent = styled.div<{ placement: string; visible: boolean }>`
     }}
 `;
 
-const Arrow = styled.div<{ placement: string }>`
+const Arrow = styled.div<{ $placement: string; $tooltipColor: TooltipColor }>`
     position: absolute;
     width: ${spacing.xs};
     height: ${spacing.xs};
-    background-color: ${colors.neutral.gray900};
+    background-color: ${(props) => getTooltipColors(props.$tooltipColor).bg};
     transform: rotate(45deg);
 
     ${(props) => {
-        switch (props.placement) {
+        switch (props.$placement) {
             case 'top':
                 return `bottom: -${spacing['3xs']}; left: 50%; margin-left: -${spacing['3xs']};`;
             case 'bottom':
@@ -89,6 +109,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
     arrow: showArrow = true,
     delay = 200,
     accessibilityLabel,
+    color = 'black',
 }) => {
     const [visible, setVisible] = useState(false);
     const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -128,13 +149,14 @@ export const Tooltip: React.FC<TooltipProps> = ({
             <TooltipContent
                 id="tooltip-content"
                 role="tooltip"
-                placement={placement}
-                visible={visible}
+                $placement={placement}
+                $visible={visible}
+                $tooltipColor={color}
                 aria-label={accessibilityLabel}
                 data-testid="tooltip-content"
             >
                 {content}
-                {showArrow && <Arrow placement={placement} data-testid="tooltip-arrow" />}
+                {showArrow && <Arrow $placement={placement} $tooltipColor={color} data-testid="tooltip-arrow" />}
             </TooltipContent>
         </TooltipContainer>
     );

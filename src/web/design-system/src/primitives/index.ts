@@ -17,3 +17,5 @@ export { Divider } from './Divider';
 export type { DividerProps } from './Divider';
 export { Touchable } from './Touchable';
 export type { TouchableProps } from './Touchable';
+export { Arrow } from './Arrow';
+export type { ArrowProps } from './Arrow';

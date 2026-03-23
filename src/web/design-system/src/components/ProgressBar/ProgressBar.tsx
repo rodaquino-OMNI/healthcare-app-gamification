@@ -1,7 +1,12 @@
 import React from 'react';
 import { useTheme } from 'styled-components';
 
-import { ProgressBarContainer, ProgressBarFill } from './ProgressBar.styles';
+import {
+    ProgressBarContainer,
+    ProgressBarFill,
+    ProgressBarLabel,
+    ProgressBarOuterContainer,
+} from './ProgressBar.styles';
 
 /**
  * Props for the ProgressBar component
@@ -27,6 +32,10 @@ export interface ProgressBarProps {
     testId?: string;
     /** Whether to animate the progress bar fill transitions */
     animated?: boolean;
+    /** Position of the visible label relative to the bar */
+    labelPosition?: 'above' | 'below' | 'inline' | 'none';
+    /** Custom label text; defaults to percentage (e.g. "45%") */
+    label?: string;
 }
 
 /**
@@ -57,9 +66,12 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
     size = 'md',
     testId,
     animated: _animated = true,
+    labelPosition = 'none',
+    label,
 }) => {
     const theme = useTheme();
     const progressPercentage = calculatePercentage(current, total);
+    const labelText = label ?? `${Math.round(progressPercentage)}%`;
 
     // Determine height based on size
     const getHeight = (): string => {
@@ -86,41 +98,59 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
     };
 
     return (
-        <ProgressBarContainer
-            className={className}
-            role="progressbar"
-            aria-valuenow={progressPercentage}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-label={accessibilityLabel}
-            data-testid={testId}
-            style={{ height: getHeight() }}
-        >
-            <ProgressBarFill progress={progressPercentage} journey={journey} />
-
-            {showLevels && levelMarkers.length > 0 && (
-                <>
-                    {levelMarkers.map((marker, index) => {
-                        const markerPosition = calculatePercentage(marker, total);
-                        return (
-                            <div
-                                key={`marker-${index}`}
-                                style={{
-                                    position: 'absolute',
-                                    top: 0,
-                                    left: `${markerPosition}%`,
-                                    width: '2px',
-                                    height: '100%',
-                                    backgroundColor: getMarkerColor(),
-                                    zIndex: 2,
-                                }}
-                                aria-hidden="true"
-                            />
-                        );
-                    })}
-                </>
+        <ProgressBarOuterContainer data-testid={testId ? `${testId}-outer` : undefined}>
+            {labelPosition === 'above' && (
+                <ProgressBarLabel position="above" data-testid={testId ? `${testId}-label` : undefined}>
+                    {labelText}
+                </ProgressBarLabel>
             )}
-        </ProgressBarContainer>
+            <ProgressBarContainer
+                className={className}
+                role="progressbar"
+                aria-valuenow={progressPercentage}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={accessibilityLabel}
+                data-testid={testId}
+                style={{ height: getHeight() }}
+            >
+                <ProgressBarFill progress={progressPercentage} journey={journey} />
+
+                {labelPosition === 'inline' && (
+                    <ProgressBarLabel position="inline" data-testid={testId ? `${testId}-label` : undefined}>
+                        {labelText}
+                    </ProgressBarLabel>
+                )}
+
+                {showLevels && levelMarkers.length > 0 && (
+                    <>
+                        {levelMarkers.map((marker, index) => {
+                            const markerPosition = calculatePercentage(marker, total);
+                            return (
+                                <div
+                                    key={`marker-${index}`}
+                                    style={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: `${markerPosition}%`,
+                                        width: '2px',
+                                        height: '100%',
+                                        backgroundColor: getMarkerColor(),
+                                        zIndex: 2,
+                                    }}
+                                    aria-hidden="true"
+                                />
+                            );
+                        })}
+                    </>
+                )}
+            </ProgressBarContainer>
+            {labelPosition === 'below' && (
+                <ProgressBarLabel position="below" data-testid={testId ? `${testId}-label` : undefined}>
+                    {labelText}
+                </ProgressBarLabel>
+            )}
+        </ProgressBarOuterContainer>
     );
 };
 

@@ -45,4 +45,42 @@ describe('Breadcrumb', () => {
         render(<Breadcrumb items={defaultItems} accessibilityLabel="Custom nav" />);
         expect(screen.getByTestId('breadcrumb')).toHaveAttribute('aria-label', 'Custom nav');
     });
+
+    describe('dividerType', () => {
+        it('defaults to slash separator', () => {
+            render(<Breadcrumb items={defaultItems} />);
+            const separators = screen.getAllByTestId('breadcrumb-separator');
+            expect(separators[0]).toHaveTextContent('/');
+        });
+
+        it('renders slash when dividerType="slash"', () => {
+            render(<Breadcrumb items={defaultItems} dividerType="slash" />);
+            const separators = screen.getAllByTestId('breadcrumb-separator');
+            expect(separators[0]).toHaveTextContent('/');
+        });
+
+        it('renders colon when dividerType="colon"', () => {
+            render(<Breadcrumb items={defaultItems} dividerType="colon" />);
+            const separators = screen.getAllByTestId('breadcrumb-separator');
+            expect(separators[0]).toHaveTextContent(':');
+        });
+
+        it('renders chevron when dividerType="icon"', () => {
+            render(<Breadcrumb items={defaultItems} dividerType="icon" />);
+            const separators = screen.getAllByTestId('breadcrumb-separator');
+            expect(separators[0]).toHaveTextContent('\u203A');
+        });
+
+        it('explicit separator prop overrides dividerType', () => {
+            render(<Breadcrumb items={defaultItems} dividerType="colon" separator=">" />);
+            const separators = screen.getAllByTestId('breadcrumb-separator');
+            expect(separators[0]).toHaveTextContent('>');
+        });
+
+        it('uses dividerType when separator is default slash', () => {
+            render(<Breadcrumb items={defaultItems} dividerType="icon" separator="/" />);
+            const separators = screen.getAllByTestId('breadcrumb-separator');
+            expect(separators[0]).toHaveTextContent('\u203A');
+        });
+    });
 });

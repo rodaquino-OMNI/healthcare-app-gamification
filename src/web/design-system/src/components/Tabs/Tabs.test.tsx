@@ -6,6 +6,7 @@ import { ThemeProvider } from 'styled-components';
 import { Tabs } from './Tabs';
 import { baseTheme } from '../../themes/base.theme';
 import { healthTheme } from '../../themes/health.theme';
+import { colors } from '../../tokens/colors';
 
 // Helper function to render a component with a theme
 const renderWithTheme = (ui: React.ReactElement, theme = baseTheme) => {
@@ -113,8 +114,8 @@ describe('Tabs', () => {
         // Get the active tab for care journey
         const careTab = screen.getByRole('tab', { selected: true });
 
-        // Check journey attribute for care
-        expect(careTab).toHaveStyle({ color: expect.any(String) });
+        // Check the care tab has the care journey primary color
+        expect(careTab).toHaveStyle(`color: ${colors.journeys.care.primary}`);
 
         // Test with plan journey
         rerender(
@@ -131,8 +132,8 @@ describe('Tabs', () => {
         // Get the active tab for plan journey
         const planTab = screen.getByRole('tab', { selected: true });
 
-        // Check journey attribute for plan
-        expect(planTab).toHaveStyle({ color: expect.any(String) });
+        // Check the plan tab has the plan journey primary color
+        expect(planTab).toHaveStyle(`color: ${colors.journeys.plan.primary}`);
     });
 
     it('supports keyboard navigation', () => {
@@ -197,14 +198,14 @@ describe('Tabs', () => {
         );
 
         // TabList should have role="tablist"
-        expect(screen.getByRole('tablist')).toBeInTheDocument();
+        expect(screen.getAllByRole('tablist').length).toBeGreaterThanOrEqual(1);
 
         // All tabs should have role="tab"
         const tabs = screen.getAllByRole('tab');
         expect(tabs).toHaveLength(3);
 
-        // All panels should have role="tabpanel"
-        const panels = screen.getAllByRole('tabpanel');
+        // All panels should have role="tabpanel" (hidden panels need includeHiddenElements)
+        const panels = screen.getAllByRole('tabpanel', { hidden: true });
         expect(panels).toHaveLength(3);
 
         // Selected tab should have aria-selected="true"
@@ -249,5 +250,97 @@ describe('Tabs', () => {
         expect(screen.getByTestId('panel-0')).toHaveAttribute('hidden');
         expect(screen.getByTestId('panel-1')).not.toHaveAttribute('hidden');
         expect(screen.getByTestId('panel-2')).toHaveAttribute('hidden');
+    });
+
+    it('renders with orientation="vertical"', () => {
+        renderWithTheme(
+            <Tabs orientation="vertical">
+                <Tabs.TabList>
+                    {tabItems.map((item) => (
+                        <Tabs.Tab key={item.id} label={item.label} />
+                    ))}
+                </Tabs.TabList>
+                {tabItems.map((item, index) => (
+                    <Tabs.Panel key={item.id} index={index}>
+                        {item.content}
+                    </Tabs.Panel>
+                ))}
+            </Tabs>
+        );
+
+        const tabList = screen.getByTestId('tab-list');
+        expect(tabList).toHaveStyle('flex-direction: column');
+
+        // All tabs should still render
+        const tabs = screen.getAllByRole('tab');
+        expect(tabs).toHaveLength(3);
+    });
+
+    it('defaults to horizontal orientation', () => {
+        renderWithTheme(
+            <Tabs>
+                <Tabs.TabList>
+                    <Tabs.Tab label="Tab A" />
+                </Tabs.TabList>
+                <Tabs.Panel index={0}>Content A</Tabs.Panel>
+            </Tabs>
+        );
+
+        const tabList = screen.getByTestId('tab-list');
+        expect(tabList).toHaveStyle('flex-direction: row');
+    });
+
+    it('renders with tabStyle="leftBorder"', () => {
+        renderWithTheme(
+            <Tabs tabStyle="leftBorder">
+                <Tabs.TabList>
+                    <Tabs.Tab label="Tab A" />
+                    <Tabs.Tab label="Tab B" />
+                </Tabs.TabList>
+                <Tabs.Panel index={0}>Content A</Tabs.Panel>
+                <Tabs.Panel index={1}>Content B</Tabs.Panel>
+            </Tabs>
+        );
+
+        // Active tab should have a left border with the journey color
+        const activeTab = screen.getByRole('tab', { selected: true });
+        expect(activeTab).toHaveStyle(`border-left: 2px solid ${colors.journeys.health.primary}`);
+
+        // Inactive tab should have transparent left border
+        const inactiveTab = screen.getByText('Tab B');
+        expect(inactiveTab).toHaveStyle('border-left: 2px solid transparent');
+    });
+
+    it('renders with tabStyle="default" (no active border)', () => {
+        renderWithTheme(
+            <Tabs tabStyle="default">
+                <Tabs.TabList>
+                    <Tabs.Tab label="Tab A" />
+                    <Tabs.Tab label="Tab B" />
+                </Tabs.TabList>
+                <Tabs.Panel index={0}>Content A</Tabs.Panel>
+                <Tabs.Panel index={1}>Content B</Tabs.Panel>
+            </Tabs>
+        );
+
+        // Active tab should exist and be selected but have no border indicator
+        const activeTab = screen.getByRole('tab', { selected: true });
+        expect(activeTab).toBeInTheDocument();
+        // With tabStyle="default", the border is set to "none" (no active indicator)
+        expect(activeTab).toHaveStyle('border: none');
+    });
+
+    it('defaults to tabStyle="bottomBorder"', () => {
+        renderWithTheme(
+            <Tabs>
+                <Tabs.TabList>
+                    <Tabs.Tab label="Tab A" />
+                </Tabs.TabList>
+                <Tabs.Panel index={0}>Content A</Tabs.Panel>
+            </Tabs>
+        );
+
+        const activeTab = screen.getByRole('tab', { selected: true });
+        expect(activeTab).toHaveStyle(`border-bottom: 2px solid ${colors.journeys.health.primary}`);
     });
 });

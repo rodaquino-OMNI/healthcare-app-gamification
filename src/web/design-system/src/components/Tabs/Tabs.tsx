@@ -7,12 +7,18 @@ import { colors } from '../../tokens/colors';
 import { spacing } from '../../tokens/spacing';
 import { typography } from '../../tokens/typography';
 
+// Orientation and tab style types
+export type TabOrientation = 'horizontal' | 'vertical';
+export type TabStyleVariant = 'bottomBorder' | 'default' | 'leftBorder';
+
 // Context to manage the tab state across components
 interface TabsContextType {
     activeTab: number;
     setActiveTab: (index: number) => void;
     journey: string;
     disabled: boolean;
+    orientation: TabOrientation;
+    tabStyle: TabStyleVariant;
 }
 
 const TabsContext = createContext<TabsContextType | undefined>(undefined);
@@ -89,6 +95,18 @@ export interface TabsProps {
      * @default false
      */
     scrollable?: boolean;
+
+    /**
+     * The orientation of the tab list
+     * @default 'horizontal'
+     */
+    orientation?: TabOrientation;
+
+    /**
+     * The style of the active tab indicator
+     * @default 'bottomBorder'
+     */
+    tabStyle?: TabStyleVariant;
 }
 
 // Props for the TabList component
@@ -143,17 +161,47 @@ const StyledTabsContainer = styled(Box)`
 `;
 
 // Styled component for the tab list
-const StyledTabList = styled.div`
+const StyledTabList = styled.div<{ $orientation: TabOrientation }>`
     display: flex;
-    flex-direction: row;
-    border-bottom: 1px solid ${colors.neutral.gray300};
-    overflow-x: auto;
+    flex-direction: ${(props) => (props.$orientation === 'vertical' ? 'column' : 'row')};
+    ${(props) =>
+        props.$orientation === 'vertical'
+            ? `border-right: 1px solid ${colors.neutral.gray300};`
+            : `border-bottom: 1px solid ${colors.neutral.gray300};`}
+    ${(props) =>
+        props.$orientation === 'horizontal'
+            ? `overflow-x: auto;
     &::-webkit-scrollbar {
         display: none;
     }
     scrollbar-width: none;
-    -ms-overflow-style: none;
+    -ms-overflow-style: none;`
+            : ''}
 `;
+
+// Helper to compute active border styles based on tabStyle
+const getActiveBorder = (active: boolean, tabStyleVariant: TabStyleVariant, journeyColor: string): string => {
+    if (!active) {
+        switch (tabStyleVariant) {
+            case 'leftBorder':
+                return 'border-left: 2px solid transparent;';
+            case 'default':
+                return '';
+            case 'bottomBorder':
+            default:
+                return 'border-bottom: 2px solid transparent;';
+        }
+    }
+    switch (tabStyleVariant) {
+        case 'leftBorder':
+            return `border-left: 2px solid ${journeyColor};`;
+        case 'default':
+            return '';
+        case 'bottomBorder':
+        default:
+            return `border-bottom: 2px solid ${journeyColor};`;
+    }
+};
 
 // Styled component for individual tabs
 const StyledTab = styled.button<{
@@ -162,6 +210,7 @@ const StyledTab = styled.button<{
     variant: string;
     size: string;
     disabled: boolean;
+    $tabStyleVariant: TabStyleVariant;
 }>`
     display: flex;
     flex-direction: row;
@@ -178,9 +227,12 @@ const StyledTab = styled.button<{
         }
     }};
     border: none;
-    border-bottom: 2px solid
-        ${(props) =>
-            props.active ? colors.journeys[props.journey as keyof typeof colors.journeys].primary : 'transparent'};
+    ${(props) =>
+        getActiveBorder(
+            props.active,
+            props.$tabStyleVariant,
+            colors.journeys[props.journey as keyof typeof colors.journeys].primary
+        )}
     background-color: transparent;
     color: ${(props) =>
         props.active ? colors.journeys[props.journey as keyof typeof colors.journeys].primary : colors.neutral.gray700};
@@ -234,6 +286,8 @@ export const Tabs: React.FC<TabsProps> & {
     children,
     journey = 'health',
     defaultTab = 0,
+    orientation = 'horizontal',
+    tabStyle = 'bottomBorder',
 }) => {
     const [activeTab, setActiveTab] = useState(defaultTab);
 
@@ -256,6 +310,8 @@ export const Tabs: React.FC<TabsProps> & {
                 setActiveTab: handleTabChange,
                 journey,
                 disabled: disabled || loading,
+                orientation,
+                tabStyle,
             }}
         >
             <StyledTabsContainer
@@ -278,8 +334,9 @@ export const Tabs: React.FC<TabsProps> & {
 
 // TabList component to contain the tab buttons
 const TabList: React.FC<TabListProps> = ({ children }) => {
+    const { orientation } = useTabsContext();
     return (
-        <StyledTabList role="tablist">
+        <StyledTabList role="tablist" $orientation={orientation} data-testid="tab-list">
             {React.Children.map(children, (child, index) => {
                 if (React.isValidElement<Record<string, unknown>>(child)) {
                     return React.cloneElement(child, {
@@ -295,7 +352,7 @@ const TabList: React.FC<TabListProps> = ({ children }) => {
 
 // Individual Tab component
 const Tab: React.FC<TabProps & { index?: number }> = ({ label, icon, disabled = false, accessibilityLabel, index }) => {
-    const { activeTab, setActiveTab, journey, disabled: tabsDisabled } = useTabsContext();
+    const { activeTab, setActiveTab, journey, disabled: tabsDisabled, tabStyle } = useTabsContext();
     const isActive = index === activeTab;
     const isDisabled = disabled || tabsDisabled;
 
@@ -312,6 +369,7 @@ const Tab: React.FC<TabProps & { index?: number }> = ({ label, icon, disabled = 
             variant="primary"
             size="md"
             disabled={isDisabled}
+            $tabStyleVariant={tabStyle}
             onClick={handleClick}
             role="tab"
             aria-selected={isActive}

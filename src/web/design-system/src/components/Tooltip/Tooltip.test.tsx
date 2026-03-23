@@ -3,6 +3,7 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import React from 'react';
 
 import { Tooltip } from './Tooltip';
+import { colors } from '../../tokens/colors';
 
 describe('Tooltip', () => {
     beforeEach(() => {
@@ -94,5 +95,65 @@ describe('Tooltip', () => {
             </Tooltip>
         );
         expect(screen.getByTestId('tooltip-content')).toHaveAttribute('role', 'tooltip');
+    });
+
+    it('renders with color="black" by default', () => {
+        render(
+            <Tooltip content="Black tooltip" delay={0}>
+                <button>Hover</button>
+            </Tooltip>
+        );
+        fireEvent.mouseEnter(screen.getByTestId('tooltip-trigger'));
+        act(() => {
+            jest.runAllTimers();
+        });
+        const tooltipContent = screen.getByTestId('tooltip-content');
+        expect(tooltipContent).toHaveStyle(`background-color: ${colors.gray[80]}`);
+        expect(tooltipContent).toHaveStyle(`color: ${colors.neutral.white}`);
+    });
+
+    it('renders with color="brand" and brand background', () => {
+        render(
+            <Tooltip content="Brand tooltip" color="brand" delay={0}>
+                <button>Hover</button>
+            </Tooltip>
+        );
+        fireEvent.mouseEnter(screen.getByTestId('tooltip-trigger'));
+        act(() => {
+            jest.runAllTimers();
+        });
+        const tooltipContent = screen.getByTestId('tooltip-content');
+        expect(tooltipContent).toHaveStyle(`background-color: ${colors.componentColors.brand}`);
+        expect(tooltipContent).toHaveStyle(`color: ${colors.neutral.white}`);
+    });
+
+    it('renders with color="white" and white background with border', () => {
+        render(
+            <Tooltip content="White tooltip" color="white" delay={0}>
+                <button>Hover</button>
+            </Tooltip>
+        );
+        fireEvent.mouseEnter(screen.getByTestId('tooltip-trigger'));
+        act(() => {
+            jest.runAllTimers();
+        });
+        const tooltipContent = screen.getByTestId('tooltip-content');
+        expect(tooltipContent).toHaveStyle(`background-color: ${colors.neutral.white}`);
+        expect(tooltipContent).toHaveStyle(`color: ${colors.gray[80]}`);
+        expect(tooltipContent).toHaveStyle(`border: 1px solid ${colors.gray[20]}`);
+    });
+
+    it('arrow color matches tooltip color variant', () => {
+        render(
+            <Tooltip content="Brand tooltip" color="brand" delay={0}>
+                <button>Hover</button>
+            </Tooltip>
+        );
+        fireEvent.mouseEnter(screen.getByTestId('tooltip-trigger'));
+        act(() => {
+            jest.runAllTimers();
+        });
+        const arrow = screen.getByTestId('tooltip-arrow');
+        expect(arrow).toHaveStyle(`background-color: ${colors.componentColors.brand}`);
     });
 });

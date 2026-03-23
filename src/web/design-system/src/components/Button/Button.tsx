@@ -74,6 +74,27 @@ export interface ButtonProps {
     iconOnly?: boolean;
 
     /**
+     * Figma component color variant. When provided, overrides journey-based colors.
+     * @default 'brand'
+     */
+    color?: 'brand' | 'destructive' | 'gray' | 'success';
+
+    /**
+     * Button visual hierarchy level.
+     * - primary: solid colored background, white text
+     * - secondary: 10% opacity colored background, colored text
+     * - noFill: transparent background, no border, colored text
+     * @default 'primary'
+     */
+    hierarchy?: 'primary' | 'secondary' | 'noFill';
+
+    /**
+     * Whether the button is rendered in a mobile context.
+     * @default false
+     */
+    isMobile?: boolean;
+
+    /**
      * Test ID for component testing
      */
     testID?: string;
@@ -100,6 +121,9 @@ const StyledButton = styled(Touchable)<{
     size?: string;
     journey?: string;
     disabled?: boolean;
+    color?: 'brand' | 'destructive' | 'gray' | 'success';
+    hierarchy?: 'primary' | 'secondary' | 'noFill';
+    isMobile?: boolean;
 }>`
     display: flex;
     flex-direction: row;
@@ -124,6 +148,19 @@ const StyledButton = styled(Touchable)<{
     pointer-events: ${(props) => (props.disabled ? 'none' : 'auto')};
 
     background-color: ${(props) => {
+        // When color prop is provided, use componentColors with hierarchy
+        if (props.color) {
+            const baseColor = colors.componentColors[props.color];
+            const h = props.hierarchy || 'primary';
+            if (h === 'secondary') {
+                return `${baseColor}1A`;
+            }
+            if (h === 'noFill') {
+                return 'transparent';
+            }
+            return baseColor;
+        }
+        // Fallback to journey-based colors (backward compat)
         const journeyKey = (props.journey || 'health') as 'health' | 'care' | 'plan';
         const journeyColors = colors.journeys[journeyKey];
         switch (props.variant) {
@@ -137,6 +174,16 @@ const StyledButton = styled(Touchable)<{
     }};
 
     color: ${(props) => {
+        // When color prop is provided, use componentColors with hierarchy
+        if (props.color) {
+            const baseColor = colors.componentColors[props.color];
+            const h = props.hierarchy || 'primary';
+            if (h === 'primary') {
+                return colors.neutral.white;
+            }
+            return baseColor;
+        }
+        // Fallback to journey-based colors (backward compat)
         const journeyKey = (props.journey || 'health') as 'health' | 'care' | 'plan';
         const journeyColors = colors.journeys[journeyKey];
         switch (props.variant) {
@@ -150,6 +197,15 @@ const StyledButton = styled(Touchable)<{
     }};
 
     border: ${(props) => {
+        // When color prop is provided, only secondary hierarchy has a border
+        if (props.color) {
+            const h = props.hierarchy || 'primary';
+            if (h === 'secondary') {
+                return `1px solid ${colors.componentColors[props.color]}`;
+            }
+            return 'none';
+        }
+        // Fallback to journey-based colors (backward compat)
         const journeyKey = (props.journey || 'health') as 'health' | 'care' | 'plan';
         return props.variant === 'secondary' ? `1px solid ${colors.journeys[journeyKey].primary}` : 'none';
     }};
@@ -184,7 +240,17 @@ export const Button: React.FC<ButtonProps> = ({
     children,
     journey = 'health',
     iconOnly: _iconOnly = false,
+    color,
+    hierarchy,
+    isMobile: _isMobile = false,
 }) => {
+    // Map variant to hierarchy for backward compat when hierarchy is not explicitly set
+    const variantToHierarchy: Record<string, 'primary' | 'secondary' | 'noFill'> = {
+        primary: 'primary',
+        secondary: 'secondary',
+        tertiary: 'noFill',
+    };
+    const resolvedHierarchy = hierarchy || variantToHierarchy[variant] || 'primary';
     // Determine if there's content other than just an icon
     const hasContent = React.Children.count(children) > 0;
 
@@ -214,6 +280,12 @@ export const Button: React.FC<ButtonProps> = ({
 
     // Calculate text color for loading indicator
     const getTextColor = (): string => {
+        if (color) {
+            if (resolvedHierarchy === 'primary') {
+                return colors.neutral.white;
+            }
+            return colors.componentColors[color];
+        }
         if (variant === 'primary') {
             return colors.neutral.white;
         }
@@ -230,6 +302,8 @@ export const Button: React.FC<ButtonProps> = ({
             accessibilityLabel={accessibilityLabel || (typeof children === 'string' ? children.toString() : undefined)}
             accessibilityRole="button"
             testID="button"
+            color={color}
+            hierarchy={resolvedHierarchy}
         >
             {loading ? (
                 <ActivityIndicator size={size === 'sm' ? 'small' : 'small'} color={getTextColor()} />

@@ -154,4 +154,89 @@ describe('ProgressBar', () => {
         // When total is 0, progress should be 0%
         expect(fill).toHaveStyle('width: 0%');
     });
+
+    describe('labelPosition', () => {
+        it('renders label above the bar when labelPosition is above', () => {
+            renderWithTheme(
+                <ProgressBar current={45} total={100} testId="label-progress" labelPosition="above" />,
+                healthTheme
+            );
+
+            const label = screen.getByTestId('label-progress-label');
+            expect(label).toBeInTheDocument();
+            expect(label).toHaveTextContent('45%');
+
+            // Label should appear before the bar in the DOM (above)
+            const outer = screen.getByTestId('label-progress-outer');
+            const children = Array.from(outer.children);
+            const labelIndex = children.indexOf(label);
+            const barIndex = children.indexOf(screen.getByTestId('label-progress'));
+            expect(labelIndex).toBeLessThan(barIndex);
+        });
+
+        it('renders label below the bar when labelPosition is below', () => {
+            renderWithTheme(
+                <ProgressBar current={60} total={100} testId="label-progress" labelPosition="below" />,
+                healthTheme
+            );
+
+            const label = screen.getByTestId('label-progress-label');
+            expect(label).toBeInTheDocument();
+            expect(label).toHaveTextContent('60%');
+
+            // Label should appear after the bar in the DOM (below)
+            const outer = screen.getByTestId('label-progress-outer');
+            const children = Array.from(outer.children);
+            const labelIndex = children.indexOf(label);
+            const barIndex = children.indexOf(screen.getByTestId('label-progress'));
+            expect(labelIndex).toBeGreaterThan(barIndex);
+        });
+
+        it('renders label inline inside the bar when labelPosition is inline', () => {
+            renderWithTheme(
+                <ProgressBar current={75} total={100} testId="label-progress" labelPosition="inline" />,
+                healthTheme
+            );
+
+            const label = screen.getByTestId('label-progress-label');
+            expect(label).toBeInTheDocument();
+            expect(label).toHaveTextContent('75%');
+
+            // Inline label should be a child of the bar container
+            const bar = screen.getByTestId('label-progress');
+            expect(bar.contains(label)).toBe(true);
+        });
+
+        it('shows no visible label when labelPosition is none (default)', () => {
+            renderWithTheme(<ProgressBar current={50} total={100} testId="label-progress" />, healthTheme);
+
+            expect(screen.queryByTestId('label-progress-label')).not.toBeInTheDocument();
+        });
+
+        it('renders custom label text when label prop is provided', () => {
+            renderWithTheme(
+                <ProgressBar
+                    current={50}
+                    total={100}
+                    testId="label-progress"
+                    labelPosition="above"
+                    label="Halfway there"
+                />,
+                healthTheme
+            );
+
+            const label = screen.getByTestId('label-progress-label');
+            expect(label).toHaveTextContent('Halfway there');
+        });
+
+        it('renders default percentage label when no custom label provided', () => {
+            renderWithTheme(
+                <ProgressBar current={33} total={100} testId="label-progress" labelPosition="below" />,
+                healthTheme
+            );
+
+            const label = screen.getByTestId('label-progress-label');
+            expect(label).toHaveTextContent('33%');
+        });
+    });
 });
