@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Achievement } from '@shared/types/gamification.types';
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
 
 import { useGameProfile, useAchievements } from '../../hooks/useGamification';
 import { useTheme } from '../../hooks/useTheme';
@@ -239,7 +239,12 @@ const AchievementsScreen: React.FC = () => {
 
     const renderEmpty = (): React.ReactElement | null => (
         <View style={styles.emptyContainer}>
-            <Text style={styles.emptyIcon}>{'🏅'}</Text>
+            <Image
+                source={require('@austa/design-system/assets/illustrations/achievements/achievements-01.png')}
+                style={{ width: 120, height: 120, marginBottom: spacingValues.md }}
+                resizeMode="contain"
+                accessibilityLabel={t('gamification.achievements.emptyTitle')}
+            />
             <Text style={styles.emptyTitle}>{t('gamification.achievements.emptyTitle')}</Text>
             <Text style={styles.emptySubtitle}>
                 {activeFilter === 'all'
@@ -401,7 +406,7 @@ const createStyles = (theme: Theme): ReturnType<typeof StyleSheet.create> =>
         achievementProgressFill: { height: 4, borderRadius: borderRadiusValues.xs },
         achievementProgressText: { fontSize: 10, color: theme.colors.text.subtle },
         emptyContainer: { alignItems: 'center', paddingVertical: spacingValues['5xl'] },
-        emptyIcon: { fontSize: 48, marginBottom: spacingValues.md },
+        emptyIllustration: { width: 120, height: 120, marginBottom: spacingValues.md },
         emptyTitle: {
             fontSize: fontSizeValues.lg,
             fontWeight: '600',

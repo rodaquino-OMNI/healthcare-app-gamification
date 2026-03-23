@@ -2,7 +2,11 @@ import { borderRadius } from 'design-system/tokens/borderRadius';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
+import Image from 'next/image';
 import React from 'react';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires -- static PNG asset
+const errorIllustration = require('@austa/design-system/assets/illustrations/error-utility/error-utility-01.png');
 
 const NotFoundPage: React.FC = () => {
     return (
@@ -18,6 +22,13 @@ const NotFoundPage: React.FC = () => {
                 backgroundColor: colors.neutral.white,
             }}
         >
+            <Image
+                src={errorIllustration}
+                alt="Page not found illustration"
+                width={300}
+                height={300}
+                style={{ marginBottom: '24px' }}
+            />
             <h1
                 style={{
                     fontSize: typography.fontSize['display-sm'],

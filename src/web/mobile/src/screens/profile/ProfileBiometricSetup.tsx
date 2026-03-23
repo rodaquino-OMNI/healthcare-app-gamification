@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import * as LocalAuthentication from 'expo-local-authentication';
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Alert } from 'react-native';
+import { ScrollView, Alert, Image } from 'react-native';
 import ReactNativeBiometricsImport from 'react-native-biometrics';
 import styled from 'styled-components/native';
 
@@ -55,22 +55,6 @@ const ContentWrapper = styled.View`
     align-items: center;
     flex: 1;
     justify-content: center;
-`;
-
-const IllustrationContainer = styled.View`
-    width: 140px;
-    height: 140px;
-    border-radius: 70px;
-    background-color: ${({ theme }) => theme.colors.background.muted};
-    align-items: center;
-    justify-content: center;
-    margin-bottom: ${spacing['2xl']};
-    border-width: 3px;
-    border-color: ${colors.brand.primary};
-`;
-
-const IllustrationEmoji = styled.Text`
-    font-size: 64px;
 `;
 
 const Title = styled.Text`
@@ -284,11 +268,12 @@ export const ProfileBiometricSetup: React.FC = () => {
             >
                 <ContentWrapper>
                     {/* Illustration */}
-                    <IllustrationContainer>
-                        <IllustrationEmoji accessibilityLabel={t('profile.biometricSetup.illustrationAlt')}>
-                            {'\uD83D\uDD90\uFE0F'}
-                        </IllustrationEmoji>
-                    </IllustrationContainer>
+                    <Image
+                        source={require('@austa/design-system/assets/illustrations/profile-setup/profile-setup-01.png')}
+                        style={{ width: 140, height: 140, borderRadius: 70, marginBottom: 24, resizeMode: 'contain' }}
+                        accessibilityLabel={t('profile.biometricSetup.illustrationAlt')}
+                        testID="biometric-setup-illustration"
+                    />
 
                     {/* Title & Subtitle */}
                     <Title testID="biometric-setup-title">{t('profile.biometricSetup.title')}</Title>

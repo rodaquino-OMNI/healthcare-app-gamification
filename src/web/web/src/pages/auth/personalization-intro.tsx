@@ -2,6 +2,7 @@ import { borderRadius } from 'design-system/tokens/borderRadius';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
+import Image from 'next/image';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -9,26 +10,14 @@ import { useAuth } from '@/hooks/useAuth';
 import { useSafeNavRouter as useRouter } from '@/hooks/useSafeRouter';
 import { AuthLayout } from '@/layouts/AuthLayout';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
+const personalizationIllustration = require('@austa/design-system/assets/illustrations/health-assessment/health-assessment-01.png');
+
 const ContentContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-`;
-
-const IllustrationCircle = styled.div`
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background-color: ${colors.gray[5]};
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: ${spacing.xl};
-`;
-
-const IllustrationEmoji = styled.span`
-    font-size: 48px;
 `;
 
 const Title = styled.h2`
@@ -134,9 +123,13 @@ export default function PersonalizationIntroPage(): React.ReactElement {
     return (
         <AuthLayout>
             <ContentContainer>
-                <IllustrationCircle>
-                    <IllustrationEmoji>{'\u2728'}</IllustrationEmoji>
-                </IllustrationCircle>
+                <Image
+                    src={personalizationIllustration}
+                    alt="Health assessment introduction"
+                    width={200}
+                    height={200}
+                    style={{ marginBottom: '24px' }}
+                />
 
                 <Title>Personalize sua Experiencia</Title>
                 <Subtitle>

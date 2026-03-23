@@ -1,6 +1,10 @@
 import { colors } from 'design-system/tokens/colors';
 import type { NextPage } from 'next';
+import Image from 'next/image';
 import React from 'react';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires -- static PNG asset
+const errorIllustration = require('@austa/design-system/assets/illustrations/error-utility/error-utility-02.png');
 
 const ServerErrorPage: NextPage = () => {
     // Care journey color - used for error pages to signal attention and care
@@ -10,29 +14,7 @@ const ServerErrorPage: NextPage = () => {
         <div className="error-container">
             <div className="error-content">
                 <div className="error-icon">
-                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                            stroke={careJourneyColor}
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                        <path
-                            d="M12 8V12"
-                            stroke={careJourneyColor}
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                        <path
-                            d="M12 16H12.01"
-                            stroke={careJourneyColor}
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                    </svg>
+                    <Image src={errorIllustration} alt="Server error illustration" width={300} height={300} />
                 </div>
                 <h1>Encontramos um problema</h1>
                 <p>Desculpe pelo inconveniente. Nosso servidor encontrou um erro inesperado.</p>

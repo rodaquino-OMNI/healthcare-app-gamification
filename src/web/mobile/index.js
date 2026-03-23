@@ -3,6 +3,7 @@
  * This file registers the main App component with React Native's AppRegistry and initializes essential services like internationalization before rendering the app.
  */
 
+import 'react-native-url-polyfill/auto'; // DEMO_MODE — Polyfill URL.protocol for Apollo Client (Hermes lacks it)
 import { AppRegistry, LogBox } from 'react-native'; // v0.71+
 import App from './App'; // src/web/mobile/App.tsx
 import { name as appName } from './app.json'; // 1.0.0

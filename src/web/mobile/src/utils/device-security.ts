@@ -11,7 +11,15 @@
  * @see https://github.com/react-native-device-info/react-native-device-info
  */
 import { Platform, Alert } from 'react-native';
-import DeviceInfo from 'react-native-device-info';
+
+// DEMO_MODE: Lazy-load DeviceInfo to avoid crash when native module is unavailable (Expo Go)
+let DeviceInfo: typeof import('react-native-device-info').default | null = null;
+try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    DeviceInfo = require('react-native-device-info').default;
+} catch {
+    // Native module not available (e.g. Expo Go) — functions below handle null gracefully
+}
 
 export interface DeviceSecurityStatus {
     /** True if the device is rooted (Android) or jailbroken (iOS). */
@@ -46,6 +54,9 @@ export async function isRooted(): Promise<boolean> {
     try {
         // DeviceInfo exposes isRooted/isJailBroken at runtime but
         // the v10 type declarations omit them. Cast to access safely.
+        if (!DeviceInfo) {
+            return false;
+        } // DEMO_MODE: native module unavailable
         const di = DeviceInfo as unknown as Record<string, (() => Promise<boolean>) | undefined>;
         if (Platform.OS === 'android' && typeof di.isRooted === 'function') {
             return await di.isRooted();
@@ -65,6 +76,9 @@ export async function isRooted(): Promise<boolean> {
  */
 export async function isEmulator(): Promise<boolean> {
     try {
+        if (!DeviceInfo) {
+            return false;
+        } // DEMO_MODE: native module unavailable
         return await DeviceInfo.isEmulator();
     } catch {
         return false;
@@ -125,6 +139,9 @@ export async function warnIfCompromised(): Promise<void> {
  * MASVS-RESILIENCE-1 L2: Compromised devices must restrict sensitive features.
  */
 export async function enforceDeviceSecurity(): Promise<DeviceSecurityRestriction> {
+    if (__DEV__) {
+        return 'warn';
+    } // DEMO_MODE
     const status = await checkDeviceSecurity();
 
     if (status.rooted) {

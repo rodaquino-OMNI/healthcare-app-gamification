@@ -9,6 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Image } from 'react-native';
 import styled from 'styled-components/native';
 
 import { ROUTES } from '../../constants/routes';
@@ -60,23 +61,6 @@ const Tagline = styled.Text`
     font-weight: ${typography.fontWeight.regular};
     color: ${({ theme }) => theme.colors.text.muted};
     text-align: center;
-`;
-
-const IllustrationPlaceholder = styled.View`
-    width: 100%;
-    height: 200px;
-    background-color: ${({ theme }) => theme.colors.background.subtle};
-    border-radius: ${borderRadius.lg};
-    margin-bottom: ${spacing['3xl']};
-    align-items: center;
-    justify-content: center;
-`;
-
-const IllustrationText = styled.Text`
-    font-family: ${typography.fontFamily.body};
-    font-size: ${typography.fontSize['text-sm']};
-    font-weight: ${typography.fontWeight.regular};
-    color: ${({ theme }) => theme.colors.text.subtle};
 `;
 
 const ButtonsSection = styled.View`
@@ -152,9 +136,12 @@ export default function WelcomeCTAScreen() {
                 <Tagline>{t('auth.welcome.tagline')}</Tagline>
             </TopSection>
 
-            <IllustrationPlaceholder>
-                <IllustrationText>{t('auth.welcome.illustration')}</IllustrationText>
-            </IllustrationPlaceholder>
+            <Image
+                source={require('@austa/design-system/assets/illustrations/welcome/welcome-01.png')}
+                style={{ width: 300, height: 200, resizeMode: 'contain', marginBottom: 32 }}
+                accessibilityLabel="Welcome to AUSTA"
+                testID="welcome-cta-illustration"
+            />
 
             <ButtonsSection>
                 <PrimaryButton

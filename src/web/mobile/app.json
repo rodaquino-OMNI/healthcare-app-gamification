@@ -18,7 +18,6 @@
             "supportsTablet": true,
             "bundleIdentifier": "br.com.austa.superapp",
             "buildNumber": "1",
-            "googleServicesFile": "./GoogleService-Info.plist",
             "infoPlist": {
                 "NSCameraUsageDescription": "This app uses the camera to capture photos for health documentation and insurance claims.",
                 "NSPhotoLibraryUsageDescription": "This app accesses your photos to upload health documentation and insurance claims.",
@@ -109,13 +108,12 @@
                 "BLUETOOTH_CONNECT",
                 "POST_NOTIFICATIONS",
                 "SCHEDULE_EXACT_ALARM"
-            ],
-            "googleServicesFile": "./google-services.json"
+            ]
         },
         "web": {
             "favicon": "./src/assets/images/favicon.png"
         },
-        "plugins": ["react-native-health", "expo-dev-client"],
+        "plugins": [],
         "notification": {
             "icon": "./src/assets/images/notification-icon.png",
             "color": "#ffffff",

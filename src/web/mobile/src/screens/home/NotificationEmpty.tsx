@@ -6,6 +6,7 @@ import { typography } from '@design-system/tokens/typography';
 import { useNavigation } from '@react-navigation/native';
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Image } from 'react-native';
 import styled from 'styled-components/native';
 
 import type { HomeTabScreenNavigationProp } from '../../navigation/types';
@@ -69,9 +70,8 @@ const EmptyIconContainer = styled.View`
     margin-bottom: ${spacing.xl};
 `;
 
-const EmptyIcon = styled.Text`
-    font-size: 42px;
-`;
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const NotificationIllustration = require('@austa/design-system/assets/illustrations/notifications/notifications-01.png');
 
 const EmptyTitle = styled.Text`
     font-family: ${typography.fontFamily.heading};
@@ -138,7 +138,11 @@ export const NotificationEmptyScreen: React.FC = () => {
 
             <CenterContent>
                 <EmptyIconContainer testID="notification-empty-icon">
-                    <EmptyIcon accessibilityElementsHidden>{'\uD83D\uDD14'}</EmptyIcon>
+                    <Image
+                        source={NotificationIllustration}
+                        style={{ width: 64, height: 64, resizeMode: 'contain' }}
+                        accessibilityLabel={t('notification.empty.title')}
+                    />
                 </EmptyIconContainer>
 
                 <EmptyTitle testID="notification-empty-title">{t('notification.empty.title')}</EmptyTitle>

@@ -48,8 +48,22 @@ config.transformer.getTransformOptions = async () => ({
     },
 });
 
-// DEMO_MODE — Mock react-native-mmkv (native module disabled for demo)
-config.resolver.extraNodeModules['react-native-mmkv'] = path.resolve(__dirname, 'src/mocks/mmkv-mock.js');
+// DEMO_MODE — Mock native modules not available in Expo Go
+// Uses resolveRequest to override node_modules resolution (extraNodeModules is fallback-only)
+const DEMO_MOCKS = {
+    'react-native-device-info': path.resolve(__dirname, 'src/mocks/device-info-mock.js'),
+    'react-native-mmkv': path.resolve(__dirname, 'src/mocks/mmkv-mock.js'),
+};
+const originalResolveRequest = config.resolver.resolveRequest;
+config.resolver.resolveRequest = (context, moduleName, platform) => {
+    if (DEMO_MOCKS[moduleName]) {
+        return { type: 'sourceFile', filePath: DEMO_MOCKS[moduleName] };
+    }
+    if (originalResolveRequest) {
+        return originalResolveRequest(context, moduleName, platform);
+    }
+    return context.resolveRequest(context, moduleName, platform);
+};
 
 // Performance: limit workers
 config.maxWorkers = 4;

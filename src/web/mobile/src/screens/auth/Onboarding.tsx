@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Dimensions, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
+import { ScrollView, Dimensions, NativeSyntheticEvent, NativeScrollEvent, Image } from 'react-native';
 import styled from 'styled-components/native';
 
 import { ROUTES } from '../../constants/routes';
@@ -52,6 +52,12 @@ const STEPS = [
         color: colors.journeys.community.primary,
     },
 ] as const;
+
+const ONBOARDING_IMAGES = [
+    require('@austa/design-system/assets/illustrations/splash/splash-02.png'),
+    require('@austa/design-system/assets/illustrations/splash/splash-03.png'),
+    require('@austa/design-system/assets/illustrations/splash/splash-04.png'),
+];
 
 // --- Styled components ---
 
@@ -249,7 +255,21 @@ export default function OnboardingScreen() {
             >
                 {STEPS.map((step, index) => (
                     <SlideContainer key={`step-${index}`}>
-                        <IllustrationBox bgColor={step.color} />
+                        {index < ONBOARDING_IMAGES.length ? (
+                            <Image
+                                source={ONBOARDING_IMAGES[index]}
+                                style={{
+                                    width: SCREEN_WIDTH * 0.65,
+                                    height: SCREEN_WIDTH * 0.65,
+                                    borderRadius: 16,
+                                    marginBottom: 24,
+                                    resizeMode: 'contain',
+                                }}
+                                accessibilityLabel={`Onboarding step ${index + 1} illustration`}
+                            />
+                        ) : (
+                            <IllustrationBox bgColor={step.color} />
+                        )}
                         <StepTitle>{t(step.titleKey)}</StepTitle>
                         <StepDescription>{t(step.descriptionKey)}</StepDescription>
                     </SlideContainer>

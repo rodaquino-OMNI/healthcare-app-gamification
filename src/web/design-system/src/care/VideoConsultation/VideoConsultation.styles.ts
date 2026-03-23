@@ -8,7 +8,7 @@ import { spacing } from '../../tokens/spacing';
 // Shared styles for video containers
 const videoContainerStyles = css`
     overflow: hidden;
-    background-color: ${colors.neutral.gray800};
+    background-color: ${colors.gray[80]};
     position: relative;
     border-radius: ${borderRadius.lg};
     display: flex;
@@ -21,7 +21,7 @@ const videoContainerStyles = css`
 const buttonVariants = {
     primary: css`
         background-color: ${colors.journeys.care.primary};
-        color: ${colors.neutral.white};
+        color: ${colors.gray[0]};
 
         &:hover {
             background-color: ${colors.journeys.care.secondary};
@@ -33,7 +33,7 @@ const buttonVariants = {
     `,
     danger: css`
         background-color: ${colors.semantic.error};
-        color: ${colors.neutral.white};
+        color: ${colors.gray[0]};
 
         &:hover,
         &:active {
@@ -42,7 +42,7 @@ const buttonVariants = {
     `,
     muted: css`
         background-color: ${colors.semantic.error};
-        color: ${colors.neutral.white};
+        color: ${colors.gray[0]};
 
         &:hover,
         &:active {
@@ -51,7 +51,7 @@ const buttonVariants = {
     `,
     unmuted: css`
         background-color: ${colors.journeys.care.primary};
-        color: ${colors.neutral.white};
+        color: ${colors.gray[0]};
 
         &:hover {
             background-color: ${colors.journeys.care.secondary};
@@ -62,13 +62,13 @@ const buttonVariants = {
         }
     `,
     disabled: css`
-        background-color: ${colors.neutral.gray400};
-        color: ${colors.neutral.gray600};
+        background-color: ${colors.gray[40]};
+        color: ${colors.gray[50]};
         cursor: not-allowed;
 
         &:hover,
         &:active {
-            background-color: ${colors.neutral.gray400};
+            background-color: ${colors.gray[40]};
         }
     `,
 };
@@ -79,7 +79,7 @@ export const VideoContainer = styled(Box)`
     flex-direction: column;
     width: 100%;
     height: 100%;
-    background-color: ${colors.neutral.gray900};
+    background-color: ${colors.gray[80]};
     position: relative;
     overflow: hidden;
 
@@ -116,7 +116,7 @@ export const LocalVideoContainer = styled.div`
     bottom: ${spacing.xl};
     right: ${spacing.xl};
     z-index: 10;
-    border: 2px solid ${colors.neutral.white};
+    border: 2px solid ${colors.gray[0]};
 
     video {
         width: 100%;
@@ -186,22 +186,22 @@ export const StatusIndicator = styled.div<{ status: 'connecting' | 'connected' |
             case 'connected':
                 return css`
                     background-color: ${colors.semantic.success};
-                    color: ${colors.neutral.white};
+                    color: ${colors.gray[0]};
                 `;
             case 'connecting':
                 return css`
                     background-color: ${colors.journeys.care.primary};
-                    color: ${colors.neutral.white};
+                    color: ${colors.gray[0]};
                 `;
             case 'reconnecting':
                 return css`
                     background-color: ${colors.semantic.warning};
-                    color: ${colors.neutral.gray900};
+                    color: ${colors.gray[80]};
                 `;
             case 'disconnected':
                 return css`
                     background-color: ${colors.semantic.error};
-                    color: ${colors.neutral.white};
+                    color: ${colors.gray[0]};
                 `;
             default:
                 return '';
@@ -244,7 +244,7 @@ export const ProviderInfoContainer = styled.div`
     padding: ${spacing.xs} ${spacing.md};
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: ${borderRadius.md};
-    color: ${colors.neutral.white};
+    color: ${colors.gray[0]};
     z-index: 10;
     font-size: 14px;
     font-weight: 500;
@@ -273,7 +273,7 @@ export const ConnectionQualityIndicator = styled.div<{ quality: 'excellent' | 'g
     left: ${spacing.md};
     z-index: 10;
     background-color: rgba(0, 0, 0, 0.5);
-    color: ${colors.neutral.white};
+    color: ${colors.gray[0]};
 
     /* Visual bars for connection quality */
     .bars {

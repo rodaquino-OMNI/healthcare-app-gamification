@@ -2,6 +2,7 @@ import { borderRadius } from 'design-system/tokens/borderRadius';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
+import Image from 'next/image';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
@@ -11,27 +12,14 @@ import { AuthLayout } from '@/layouts/AuthLayout';
 
 import { restClient } from '../../api/client';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-assignment
+const biometricIllustration = require('@austa/design-system/assets/illustrations/profile-setup/profile-setup-01.png');
+
 const ContentContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-`;
-
-const IllustrationCircle = styled.div`
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background-color: ${colors.gray[5]};
-    border: 3px solid ${colors.brand.primary};
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: ${spacing.xl};
-`;
-
-const IllustrationEmoji = styled.span`
-    font-size: 48px;
 `;
 
 const Title = styled.h2`
@@ -181,9 +169,13 @@ export default function BiometricSetupPage(): React.ReactElement {
     return (
         <AuthLayout>
             <ContentContainer>
-                <IllustrationCircle>
-                    <IllustrationEmoji>{'\uD83D\uDD90\uFE0F'}</IllustrationEmoji>
-                </IllustrationCircle>
+                <Image
+                    src={biometricIllustration}
+                    alt="Biometric setup illustration"
+                    width={200}
+                    height={200}
+                    style={{ marginBottom: '24px' }}
+                />
 
                 <Title>Proteja sua Conta</Title>
                 <Subtitle>Ative a autenticacao biometrica para acessar sua conta de forma rapida e segura.</Subtitle>

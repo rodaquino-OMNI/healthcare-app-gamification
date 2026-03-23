@@ -50,3 +50,8 @@ export { XPCounter };
 
 // LD1: Exports the props interface for the XPCounter component
 export type { XPCounterProps };
+
+// TODO [ASSET-005]: Integrate real badge SVGs into AchievementBadge once Figma exports are available
+// Expected tiers: bronze, silver, gold, platinum + streak-flame, level-star
+// Figma frame: 20518:68149 — blocked by API rate limit as of 2026-03-23
+// Current implementation uses programmatic graphics; replace with Figma SVGs when available

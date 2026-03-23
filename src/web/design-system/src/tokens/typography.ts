@@ -65,6 +65,8 @@ export const typography = {
      * Sourced from Figma core.json fontWeights.
      */
     fontWeight: {
+        /** 300 — Light weight for subtle/decorative text */
+        light: 300,
         /** 400 — Regular weight for most text */
         regular: 400,
         /** 500 — Medium weight for semi-emphasis */
@@ -73,6 +75,8 @@ export const typography = {
         semiBold: 600,
         /** 700 — Bold weight for headings and strong emphasis */
         bold: 700,
+        /** 800 — ExtraBold weight for maximum emphasis */
+        extraBold: 800,
     },
 
     /**
@@ -203,6 +207,10 @@ export const fontFamilyNative = {
     body: 'PlusJakartaSans-Regular',
     /** PlusJakartaSans-Regular — alias for body (backward compat) */
     base: 'PlusJakartaSans-Regular',
+    /** PlusJakartaSans-Light — light weight text on native */
+    light: 'PlusJakartaSans-Light',
+    /** PlusJakartaSans-ExtraBold — extra bold text on native */
+    extraBold: 'PlusJakartaSans-ExtraBold',
     /** Nunito-Bold — logo text on native */
     logo: 'Nunito-Bold',
 } as const;
@@ -213,8 +221,10 @@ export const fontFamilyNative = {
  * since iOS requires explicit font filenames per weight.
  */
 export const fontFamilyByWeight = {
+    300: 'PlusJakartaSans-Light',
     400: 'PlusJakartaSans-Regular',
     500: 'PlusJakartaSans-Medium',
     600: 'PlusJakartaSans-SemiBold',
     700: 'PlusJakartaSans-Bold',
+    800: 'PlusJakartaSans-ExtraBold',
 } as const;

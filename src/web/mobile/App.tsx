@@ -46,7 +46,13 @@ const StatusBarManager: React.FC = () => {
  */
 const App: React.FC = () => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-var-requires
+    // TODO [ASSET-003]: Add PlusJakartaSans-Light.ttf (weight 300) and
+    // PlusJakartaSans-ExtraBold.ttf (weight 800) to src/web/mobile/src/assets/fonts/
+    // Download from: https://fonts.google.com/specimen/Plus+Jakarta+Sans
+    // Then uncomment the Light and ExtraBold lines below.
     const [fontsLoaded]: [boolean] = (useFonts as unknown as (map: Record<string, unknown>) => [boolean])({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
+        // 'PlusJakartaSans-Light': require('./src/assets/fonts/PlusJakartaSans-Light.ttf'),
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
         'PlusJakartaSans-Regular': require('./src/assets/fonts/PlusJakartaSans-Regular.ttf'),
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
@@ -55,6 +61,8 @@ const App: React.FC = () => {
         'PlusJakartaSans-SemiBold': require('./src/assets/fonts/PlusJakartaSans-SemiBold.ttf'),
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
         'PlusJakartaSans-Bold': require('./src/assets/fonts/PlusJakartaSans-Bold.ttf'),
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
+        // 'PlusJakartaSans-ExtraBold': require('./src/assets/fonts/PlusJakartaSans-ExtraBold.ttf'),
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
         'Nunito-Bold': require('./src/assets/fonts/Nunito-Bold.ttf'),
     });

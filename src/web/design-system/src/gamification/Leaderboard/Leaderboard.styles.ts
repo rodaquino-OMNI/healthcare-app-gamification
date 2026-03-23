@@ -16,7 +16,7 @@ export const LeaderboardContainer = styled.div<{ journey?: JourneyType }>`
     display: flex;
     flex-direction: column;
     width: 100%;
-    background-color: ${colors.neutral.white};
+    background-color: ${colors.gray[0]};
     border-radius: ${borderRadius.md};
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     overflow: hidden;
@@ -64,7 +64,7 @@ export const LeaderboardItem = styled.li<{ isCurrentUser?: boolean; rank: number
     padding: ${spacing.sm} ${spacing.md};
     border-radius: ${borderRadius.xs};
     margin-bottom: ${spacing.xs};
-    background-color: ${({ isCurrentUser }) => (isCurrentUser ? colors.neutral.gray100 : 'transparent')};
+    background-color: ${({ isCurrentUser }) => (isCurrentUser ? colors.gray[10] : 'transparent')};
 
     ${({ rank }) =>
         rank <= 3 &&
@@ -75,7 +75,7 @@ export const LeaderboardItem = styled.li<{ isCurrentUser?: boolean; rank: number
   `}
 
     &:hover {
-        background-color: ${colors.neutral.gray100};
+        background-color: ${colors.gray[10]};
     }
 
     @media (min-width: ${breakpoints.md}) {
@@ -115,8 +115,8 @@ export const Rank = styled.div<{ rank: number }>`
       `;
         }
         return `
-      background-color: ${colors.neutral.gray100};
-      color: ${colors.neutral.gray700};
+      background-color: ${colors.gray[10]};
+      color: ${colors.gray[80]};
     `;
     }}
 

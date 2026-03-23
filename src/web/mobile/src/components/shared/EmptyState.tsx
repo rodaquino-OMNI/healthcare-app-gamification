@@ -3,7 +3,7 @@
 import { Icon, Text, Button } from '@austa/design-system';
 import { colors } from '@design-system/tokens/colors';
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Image, type ImageSourcePropType } from 'react-native';
 
 import { useJourney } from '../../hooks/useJourney';
 
@@ -28,6 +28,8 @@ export interface EmptyStateProps {
     journey?: JourneyType | string;
     /** Test ID for component testing */
     testID?: string;
+    /** Optional illustration image to display above the icon */
+    illustrationSource?: ImageSourcePropType;
 }
 
 /**
@@ -55,6 +57,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({
     onAction,
     journey,
     testID,
+    illustrationSource,
 }) => {
     // Use the provided journey or get it from context
     const { journey: contextJourney } = useJourney();
@@ -80,6 +83,11 @@ const EmptyState: React.FC<EmptyStateProps> = ({
 
     return (
         <View style={emptyStyles.container} testID={testID || 'empty-state'}>
+            {/* Optional illustration image */}
+            {illustrationSource && (
+                <Image source={illustrationSource} style={emptyStyles.illustration} accessibilityLabel={title} />
+            )}
+
             {/* Icon with journey-specific color */}
             <Icon name={icon} size={64} color={getJourneyColor()} aria-hidden={true} />
 
@@ -110,6 +118,11 @@ const emptyStyles = StyleSheet.create({
         alignItems: 'center',
         padding: 24,
         gap: 16,
+    },
+    illustration: {
+        width: 200,
+        height: 200,
+        resizeMode: 'contain',
     },
 });
 

@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView } from 'react-native';
+import { Image, ScrollView } from 'react-native';
 import styled from 'styled-components/native';
 
 import { ROUTES } from '../../constants/routes';
@@ -26,21 +26,6 @@ const ContentWrapper = styled.View`
     padding-bottom: ${spacing['4xl']};
     align-items: center;
     flex: 1;
-`;
-
-const IllustrationContainer = styled.View`
-    width: 160px;
-    height: 160px;
-    border-radius: 80px;
-    background-color: ${({ theme }) => colors.brand.secondary || theme.colors.background.muted};
-    align-items: center;
-    justify-content: center;
-    margin-bottom: ${spacing['2xl']};
-    margin-top: ${spacing.xl};
-`;
-
-const IllustrationEmoji = styled.Text`
-    font-size: 64px;
 `;
 
 const Title = styled.Text`
@@ -156,11 +141,12 @@ export const PersonalizationIntro: React.FC = () => {
             >
                 <ContentWrapper>
                     {/* Hero Illustration */}
-                    <IllustrationContainer>
-                        <IllustrationEmoji accessibilityLabel={t('onboarding.personalizationIntro.illustrationAlt')}>
-                            {'\u2728'}
-                        </IllustrationEmoji>
-                    </IllustrationContainer>
+                    <Image
+                        source={require('@austa/design-system/assets/illustrations/health-assessment/health-assessment-01.png')}
+                        style={{ width: 160, height: 160, borderRadius: 80, marginBottom: 24, resizeMode: 'contain' }}
+                        accessibilityLabel={t('onboarding.personalizationIntro.illustrationAlt')}
+                        testID="personalization-intro-illustration"
+                    />
 
                     {/* Title & Subtitle */}
                     <Title testID="personalization-intro-title">{t('onboarding.personalizationIntro.title')}</Title>

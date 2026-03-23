@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Animated, ActivityIndicator, Dimensions } from 'react-native';
+import { Animated, ActivityIndicator, Dimensions, Image } from 'react-native';
 import styled from 'styled-components/native';
 
 import { ROUTES } from '../../constants/routes';
@@ -47,23 +47,6 @@ const ContentContainer = styled.View`
     align-items: center;
     justify-content: center;
     padding-horizontal: ${spacing['2xl']};
-`;
-
-const LogoContainer = styled.View`
-    width: 120px;
-    height: 120px;
-    border-radius: 60px;
-    background-color: ${({ theme }) => theme.colors.background.default};
-    align-items: center;
-    justify-content: center;
-    margin-bottom: ${spacing['2xl']};
-`;
-
-const LogoText = styled.Text`
-    font-family: ${typography.fontFamily.logo};
-    font-size: ${typography.fontSize['display-md']};
-    font-weight: ${typography.fontWeight.bold};
-    color: ${colors.brand.primary};
 `;
 
 const TaglineText = styled.Text`
@@ -164,9 +147,11 @@ export default function WelcomeSplashScreen() {
                 }}
             >
                 <ContentContainer>
-                    <LogoContainer>
-                        <LogoText>A</LogoText>
-                    </LogoContainer>
+                    <Image
+                        source={require('@austa/design-system/assets/illustrations/splash/splash-01.png')}
+                        style={{ width: 120, height: 120, borderRadius: 60, marginBottom: 24, resizeMode: 'contain' }}
+                        accessibilityLabel="AUSTA splash screen"
+                    />
                     <TaglineText>AUSTA</TaglineText>
                     <SubtaglineText>{t('auth.welcome.subtagline')}</SubtaglineText>
                 </ContentContainer>
