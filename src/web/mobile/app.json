@@ -115,7 +115,7 @@
         "web": {
             "favicon": "./src/assets/images/favicon.png"
         },
-        "plugins": ["@react-native-firebase/app", "react-native-health", "expo-dev-client"],
+        "plugins": ["react-native-health", "expo-dev-client"],
         "notification": {
             "icon": "./src/assets/images/notification-icon.png",
             "color": "#ffffff",
