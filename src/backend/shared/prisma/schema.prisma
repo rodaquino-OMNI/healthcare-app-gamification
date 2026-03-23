@@ -77,6 +77,8 @@ enum MetricType {
   DISTANCE
   FLOORS
   ACTIVITY
+  MOOD
+  JOURNAL
   UNKNOWN
 }
 
