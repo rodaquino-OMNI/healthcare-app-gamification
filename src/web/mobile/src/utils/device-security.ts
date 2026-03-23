@@ -75,6 +75,9 @@ export async function isEmulator(): Promise<boolean> {
  * Run all device security checks and return a combined status.
  */
 export async function checkDeviceSecurity(): Promise<DeviceSecurityStatus> {
+    if (__DEV__) {
+        return { rooted: false, emulator: true, debugMode: true };
+    } // DEMO_MODE
     const [rootedResult, emulatorResult] = await Promise.all([isRooted(), isEmulator()]);
 
     isDeviceCompromised = rootedResult;

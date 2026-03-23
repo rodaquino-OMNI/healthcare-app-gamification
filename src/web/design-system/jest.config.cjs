@@ -16,5 +16,6 @@ module.exports = {
     '^@plan/(.*)$': '<rootDir>/src/plan/$1',
     '^@charts/(.*)$': '<rootDir>/src/charts/$1',
   },
+  setupFilesAfterEnv: ['@testing-library/jest-dom'],
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
 };

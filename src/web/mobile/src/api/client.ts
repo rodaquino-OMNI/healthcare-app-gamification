@@ -65,6 +65,9 @@ const graphQLClient = new ApolloClient({
  * @returns boolean indicating whether the URL is safe
  */
 function isUrlSafe(url: string): boolean {
+    if (__DEV__) {
+        return true;
+    } // DEMO_MODE — Skip URL validation in dev (URL API incomplete in Hermes)
     try {
         // Parse the URL
         const parsedUrl = new URL(url);

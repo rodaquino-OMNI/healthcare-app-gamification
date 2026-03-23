@@ -1,0 +1,1335 @@
+{
+  "$schema": "design-audit-remediation-manifest/v1",
+  "generated": "2026-03-22",
+  "figma_file": "OcG9oRNdUEskvAPUcKiKMe",
+  "figma_url": "https://www.figma.com/design/OcG9oRNdUEskvAPUcKiKMe/Austa-app",
+  "overall_fidelity": 0.42,
+  "total_tasks": 98,
+  "priority_tiers": {
+    "P0_critical": "Brand-breaking issues — fix first, affects every screen",
+    "P1_high": "Missing tokens & architecture gaps — fix before new features",
+    "P2_medium": "Hardcoded values & partial implementations — systematic cleanup",
+    "P3_low": "Polish & accessibility — quality improvements"
+  },
+
+  "tasks": [
+
+    {
+      "id": "TOK-001",
+      "tier": "P0",
+      "severity": "critical",
+      "category": "token_mismatch",
+      "fix_type": "token_replace",
+      "title": "Brand primary color mismatch — #00c3f7 should be #05AEDB",
+      "description": "Figma Brand/60 is #05AEDB (the primary CTA/links/active color). Code brand.primary is #00c3f7 which is azul aust (an accent/gradient color, NOT the primary). Every branded element renders the wrong blue.",
+      "file": "src/web/design-system/src/tokens/colors.ts",
+      "line_range": [42, 43],
+      "current_value": "#00c3f7",
+      "canonical_value": "#05AEDB",
+      "code_path": "colors.brand.primary",
+      "figma_token": "Brand/60",
+      "action": "Replace '#00c3f7' with '#05AEDB' on line 43. Keep brandPalette[300] as '#00c3f7' (that IS azul aust correctly)."
+    },
+
+    {
+      "id": "TOK-002",
+      "tier": "P0",
+      "severity": "critical",
+      "category": "token_missing",
+      "fix_type": "add_token",
+      "title": "Missing Gray/80 (#1F2937) — Figma's primary text color",
+      "description": "Figma uses Gray/80 (#1F2937) as the primary text/heading color. Code stops at gray.70 (#334155). This affects all headings and body text darkness.",
+      "file": "src/web/design-system/src/tokens/colors.ts",
+      "line_range": [138, 139],
+      "current_value": null,
+      "canonical_value": "#1F2937",
+      "code_path": "colors.gray[80]",
+      "figma_token": "Gray/80",
+      "action": "Add '80: \"#1F2937\"' after line 138 (after gray.70). Also add deprecated alias gray900: '#1F2937' in neutral block (line 173) pointing to gray[80]."
+    },
+
+    {
+      "id": "TOK-003",
+      "tier": "P0",
+      "severity": "critical",
+      "category": "icon_system",
+      "fix_type": "dependency_install",
+      "title": "Integrate strangeicons library — 37 hardcoded SVGs vs 5800+ specified in Figma",
+      "description": "Figma specifies strangeicons (strangehelix.bio) with 111+ health/biology icons cataloged and 5800+ total. Code has 37 hand-drawn SVG path icons in Icon.tsx. The icon system must be replaced with strangeicons.",
+      "file": "src/web/design-system/src/primitives/Icon/Icon.tsx",
+      "line_range": [1, 260],
+      "current_value": "37 hardcoded SVG path icons in iconPaths object",
+      "canonical_value": "strangeicons library from https://www.strangehelix.bio",
+      "code_path": "Icon component + iconPaths",
+      "figma_token": "Icon Set (strangeicons)",
+      "action": "1) Install strangeicons package (check npm/GitHub for @strangehelix/icons or similar). 2) Replace iconPaths with strangeicons imports. 3) Update Icon component to render strangeicons SVGs. 4) Keep IconContainer wrapper for sizing/color. 5) Map old icon names to new strangeicons names for backward compat.",
+      "sub_tasks": [
+        {
+          "id": "TOK-003a",
+          "action": "Research and install strangeicons npm package",
+          "fix_type": "dependency_install"
+        },
+        {
+          "id": "TOK-003b",
+          "action": "Create icon name mapping: old 37 names -> strangeicons equivalents",
+          "fix_type": "add_file"
+        },
+        {
+          "id": "TOK-003c",
+          "action": "Refactor Icon.tsx to import from strangeicons instead of hardcoded paths",
+          "fix_type": "refactor"
+        },
+        {
+          "id": "TOK-003d",
+          "action": "Add Icon Container component with Size×Color×Style variant props matching Figma (6 sizes × 5 colors × 4 styles = 120 variants)",
+          "fix_type": "add_component"
+        }
+      ]
+    },
+
+    {
+      "id": "TOK-004",
+      "tier": "P1",
+      "severity": "high",
+      "category": "token_missing",
+      "fix_type": "add_token",
+      "title": "Missing Heading xl/Bold — 60px font size",
+      "description": "Figma defines Heading xl/Bold at 60px/68px line-height/-1.8px letter-spacing. Code max is display-lg at 48px. Page titles render 12px too small.",
+      "file": "src/web/design-system/src/tokens/typography.ts",
+      "line_range": [83, 84],
+      "current_value": "display-lg: '48px' (max size)",
+      "canonical_value": "60px, line-height 68px (1.133), letter-spacing -1.8px (-0.03em)",
+      "code_path": "typography.fontSize['display-xl']",
+      "figma_token": "Heading xl/Bold",
+      "action": "Add 'display-xl': '60px' before display-lg in fontSize. Add h0: '60px' in heading. Add lineHeight.display: 1.133 and letterSpacing.display: '-0.03em'."
+    },
+
+    {
+      "id": "TOK-005",
+      "tier": "P1",
+      "severity": "high",
+      "category": "token_mismatch",
+      "fix_type": "token_replace",
+      "title": "Typography line-height mismatch — code uses 1.5 where Figma uses 1.375",
+      "description": "Text md: Figma line-height is 22px/16px = 1.375, code uses 1.5 (base). Text lg: Figma is 24px/18px = 1.333, code uses 1.5. This affects all body text vertical rhythm.",
+      "file": "src/web/design-system/src/tokens/typography.ts",
+      "line_range": [146, 155],
+      "current_value": "lineHeight.base = 1.5",
+      "canonical_value": "1.375 for text-md, 1.333 for text-lg",
+      "code_path": "typography.lineHeight",
+      "figma_token": "Text md/SemiBold, Text lg/SemiBold",
+      "action": "Add granular line-height tokens: lineHeight.body = 1.375 (for 14-16px text), lineHeight.bodyLg = 1.333 (for 18-20px text). Keep lineHeight.base = 1.5 as fallback for backward compat."
+    },
+
+    {
+      "id": "TOK-006",
+      "tier": "P1",
+      "severity": "high",
+      "category": "token_mismatch",
+      "fix_type": "token_replace",
+      "title": "Typography letter-spacing mismatch — code -0.025em vs Figma -0.044em",
+      "description": "Figma Text md has -0.7px/-0.044em letter-spacing, Text lg has -0.8px/-0.044em. Code has only letterSpacing.tight = -0.025em. Text appears looser than design.",
+      "file": "src/web/design-system/src/tokens/typography.ts",
+      "line_range": [161, 170],
+      "current_value": "letterSpacing.tight = '-0.025em'",
+      "canonical_value": "-0.044em for body text, -0.03em for display",
+      "code_path": "typography.letterSpacing",
+      "figma_token": "Text md letterSpacing, Text lg letterSpacing",
+      "action": "Replace letterSpacing.tight from '-0.025em' to '-0.044em'. Add letterSpacing.tighter = '-0.03em' for display/heading sizes."
+    },
+
+    {
+      "id": "TOK-007",
+      "tier": "P1",
+      "severity": "high",
+      "category": "architecture",
+      "fix_type": "refactor_architecture",
+      "title": "Button variant architecture divergence — journey-based vs Figma explicit props",
+      "description": "Figma Button has Color(Brand/Destructive/Gray/Success) × Hierarchy(Primary/Secondary/NoFill) × Size(2xl-sm=11 sizes) × State(6 states) × IsMobile = 576+ variants. Code Button has 3 sizes × 3 hierarchies × 1 state (disabled) = 9 variants.",
+      "file": "src/web/design-system/src/components/Button",
+      "line_range": null,
+      "current_value": "3 sizes (sm/md/lg), 3 hierarchies (primary/secondary/tertiary), disabled state only",
+      "canonical_value": "11 sizes (2xl-sm), 4 colors (Brand/Destructive/Gray/Success), 3 hierarchies, 6 states (Default/Disabled/Focused/Hovered/Pressed/Loading), isMobile flag",
+      "code_path": "Button component props",
+      "figma_token": "Button component set",
+      "action": "1) Add 'color' prop with values: 'brand'|'destructive'|'gray'|'success'. 2) Add sizes: '2xl'|'xl' and 'xs'|'2xs' etc. 3) Add states: focused, hovered, pressed, loading. 4) Add isMobile responsive prop. Keep journey-based aliases as convenience wrappers.",
+      "sub_tasks": [
+        {
+          "id": "TOK-007a",
+          "action": "Add 'color' prop to Button interface: 'brand' | 'destructive' | 'gray' | 'success'",
+          "file": "src/web/design-system/src/components/Button/Button.tsx"
+        },
+        {
+          "id": "TOK-007b",
+          "action": "Add missing sizes: 2xl, xl, xs, 2xs (matching Figma scale)",
+          "file": "src/web/design-system/src/components/Button/Button.tsx"
+        },
+        {
+          "id": "TOK-007c",
+          "action": "Add focused, hovered, pressed, loading states with correct visual styles per Figma",
+          "file": "src/web/design-system/src/components/Button/Button.styles.ts"
+        }
+      ]
+    },
+
+    {
+      "id": "HC-001",
+      "tier": "P2",
+      "severity": "medium",
+      "category": "hardcoded_color",
+      "fix_type": "token_replace",
+      "title": "FileUploader.tsx — 10 hardcoded hex colors",
+      "description": "FileUploader has journey colors and UI colors hardcoded instead of using design tokens.",
+      "file": "src/web/mobile/src/components/shared/FileUploader.tsx",
+      "violations": [
+        {"line": 100, "current": "#0ACF83", "replace_with": "colors.journeys.health.primary", "context": "journey color green"},
+        {"line": 102, "current": "#FF8C42", "replace_with": "colors.journeys.care.primary", "context": "journey color orange"},
+        {"line": 104, "current": "#3A86FF", "replace_with": "colors.journeys.plan.primary", "context": "journey color blue"},
+        {"line": 106, "current": "#0066CC", "replace_with": "colors.brand.primary", "context": "default brand color"},
+        {"line": 193, "current": "#333333", "replace_with": "colors.gray[80]", "context": "text color (after TOK-002)"},
+        {"line": 197, "current": "#CCCCCC", "replace_with": "colors.gray[30]", "context": "border color"},
+        {"line": 200, "current": "#F9F9F9", "replace_with": "colors.gray[5]", "context": "background color"},
+        {"line": 235, "current": "#666666", "replace_with": "colors.gray[50]", "context": "secondary text"},
+        {"line": 255, "current": "#EEEEEE", "replace_with": "colors.gray[10]", "context": "disabled background"},
+        {"line": 266, "current": "#333333", "replace_with": "colors.gray[80]", "context": "text color (after TOK-002)"}
+      ],
+      "action": "Import colors from design tokens and replace all 10 hardcoded hex values with token references."
+    },
+
+    {
+      "id": "HC-002",
+      "tier": "P2",
+      "severity": "medium",
+      "category": "hardcoded_color",
+      "fix_type": "token_replace",
+      "title": "Leaderboard.styles.ts — 9 hardcoded hex colors",
+      "description": "Gamification leaderboard uses hardcoded medal colors and UI colors.",
+      "file": "src/web/design-system/src/gamification/Leaderboard/Leaderboard.styles.ts",
+      "violations": [
+        {"line": 74, "current": "#FFD700", "replace_with": "colors.gamification.gold (add token)", "context": "gold medal"},
+        {"line": 76, "current": "#C0C0C0", "replace_with": "colors.gamification.silver (add token)", "context": "silver medal"},
+        {"line": 77, "current": "#CD7F32", "replace_with": "colors.gamification.bronze (add token)", "context": "bronze medal"},
+        {"line": 107, "current": "#FFF6DE", "replace_with": "colors.gamification.goldBg (add token)", "context": "gold bg"},
+        {"line": 108, "current": "#D9A600", "replace_with": "colors.gamification.goldText (add token)", "context": "gold text"},
+        {"line": 112, "current": "#F5F5F5", "replace_with": "colors.gray[10]", "context": "neutral bg"},
+        {"line": 113, "current": "#808080", "replace_with": "colors.gray[40]", "context": "neutral text"},
+        {"line": 117, "current": "#FFF0E6", "replace_with": "colors.gamification.bronzeBg (add token)", "context": "bronze bg"},
+        {"line": 118, "current": "#A05A2C", "replace_with": "colors.gamification.bronzeText (add token)", "context": "bronze text"}
+      ],
+      "action": "1) Add gamification medal tokens to colors.ts (gold/silver/bronze + bg variants). 2) Replace all 9 hardcoded values in Leaderboard.styles.ts."
+    },
+
+    {
+      "id": "HC-003",
+      "tier": "P2",
+      "severity": "medium",
+      "category": "hardcoded_color",
+      "fix_type": "token_replace",
+      "title": "EmptyState.tsx — 4 hardcoded journey colors",
+      "description": "EmptyState repeats the same journey color switch pattern as FileUploader.",
+      "file": "src/web/mobile/src/components/shared/EmptyState.tsx",
+      "violations": [
+        {"line": 69, "current": "#0ACF83", "replace_with": "colors.journeys.health.primary"},
+        {"line": 72, "current": "#FF8C42", "replace_with": "colors.journeys.care.primary"},
+        {"line": 75, "current": "#3A86FF", "replace_with": "colors.journeys.plan.primary"},
+        {"line": 77, "current": "#0066CC", "replace_with": "colors.brand.primary"}
+      ],
+      "action": "Import colors from design tokens and replace hardcoded journey switch with token references."
+    },
+
+    {
+      "id": "HC-004",
+      "tier": "P2",
+      "severity": "medium",
+      "category": "hardcoded_color",
+      "fix_type": "token_replace",
+      "title": "JourneyHeader.tsx — 3 hardcoded #FFFFFF",
+      "description": "JourneyHeader uses hardcoded white instead of colors.gray[0].",
+      "file": "src/web/mobile/src/components/shared/JourneyHeader.tsx",
+      "violations": [
+        {"line": 140, "current": "#FFFFFF", "replace_with": "colors.gray[0]", "context": "icon color on dark bg"},
+        {"line": 146, "current": "#FFFFFF", "replace_with": "colors.gray[0]", "context": "text color on dark bg"},
+        {"line": 149, "current": "#FFFFFF", "replace_with": "colors.gray[0]", "context": "text color on dark bg"}
+      ],
+      "action": "Import colors and replace '#FFFFFF' with colors.gray[0]."
+    },
+
+    {
+      "id": "HC-005",
+      "tier": "P2",
+      "severity": "medium",
+      "category": "hardcoded_color",
+      "fix_type": "token_replace",
+      "title": "Toast.styles.ts — 4 hardcoded background colors",
+      "description": "Toast uses hardcoded lighter semantic bg colors instead of token equivalents.",
+      "file": "src/web/design-system/src/components/Toast/Toast.styles.ts",
+      "violations": [
+        {"line": 32, "current": "#E6F7ED", "replace_with": "colors.semantic.successBg", "context": "success toast bg"},
+        {"line": 34, "current": "#FFEDEB", "replace_with": "colors.semantic.errorBg", "context": "error toast bg"},
+        {"line": 36, "current": "#FFF8E6", "replace_with": "colors.semantic.warningBg", "context": "warning toast bg"},
+        {"line": 39, "current": "#E6F0FA", "replace_with": "Add colors.semantic.infoBg token, then reference it", "context": "info toast bg"}
+      ],
+      "action": "Replace hardcoded bg colors with semantic tokens. Note: Toast success bg (#E6F7ED) differs from colors.semantic.successBg (#f0fdf4) — verify with Figma which is canonical, then align both."
+    },
+
+    {
+      "id": "HC-006",
+      "tier": "P2",
+      "severity": "medium",
+      "category": "hardcoded_color",
+      "fix_type": "token_replace",
+      "title": "VideoConsultation.styles.ts — 2 hardcoded colors",
+      "description": "Video consultation styles use hardcoded colors.",
+      "file": "src/web/design-system/src/care/VideoConsultation/VideoConsultation.styles.ts",
+      "violations": [
+        {"line": null, "current": "2 hex color references", "replace_with": "design system token equivalents"}
+      ],
+      "action": "Read file, identify hardcoded colors, replace with appropriate tokens from colors.ts."
+    },
+
+    {
+      "id": "COMP-001",
+      "tier": "P2",
+      "severity": "medium",
+      "category": "component_missing",
+      "fix_type": "add_component",
+      "title": "Missing Toggle/Switch component",
+      "description": "Figma Form Controls includes Toggle. Code has Checkbox and RadioButton but no Toggle.",
+      "file": "src/web/design-system/src/components",
+      "current_value": null,
+      "canonical_value": "Toggle component with on/off states, sizes, disabled state",
+      "figma_token": "Form Controls > Toggle",
+      "action": "Create Toggle component in src/web/design-system/src/components/Toggle/ with Toggle.tsx, Toggle.styles.ts, Toggle.test.tsx, index.ts."
+    },
+
+    {
+      "id": "COMP-002",
+      "tier": "P2",
+      "severity": "medium",
+      "category": "component_missing",
+      "fix_type": "add_component",
+      "title": "Missing standalone Alert component",
+      "description": "Figma has Alert & Notification as separate from Toast. Code only has Toast.",
+      "file": "src/web/design-system/src/components",
+      "current_value": "Only Toast component",
+      "canonical_value": "Alert component (inline, persistent) + Toast (temporary, dismissable)",
+      "figma_token": "Alert & Notification",
+      "action": "Create Alert component in src/web/design-system/src/components/Alert/ — an inline, persistent notification banner distinct from Toast overlay."
+    },
+
+    {
+      "id": "COMP-003",
+      "tier": "P2",
+      "severity": "medium",
+      "category": "component_partial",
+      "fix_type": "extend_component",
+      "title": "Badge missing Figma variant props — 94 variants vs ~5 implemented",
+      "description": "Figma Badge has Status × Size(lg/md/sm) × Type(Dot/Icon/Text) = 94 variants. Code Badge is achievement-focused with limited status variants.",
+      "file": "src/web/design-system/src/components/Badge/Badge.tsx",
+      "current_value": "Achievement badge with limited variants",
+      "canonical_value": "Status(Active/...) × Size(lg/md/sm) × Type(Dot/Icon/Text) = 94 variants",
+      "figma_token": "Badge/Tag",
+      "action": "Add props: size('lg'|'md'|'sm'), type('dot'|'icon'|'text'), status with full Figma status enum."
+    },
+
+    {
+      "id": "COMP-004",
+      "tier": "P2",
+      "severity": "medium",
+      "category": "component_partial",
+      "fix_type": "extend_component",
+      "title": "Input missing Passcode and Slider variants",
+      "description": "Figma Input includes _InputPasscodeBase (4/6 digits) and _InputSliderDot/_InputSliderRange. Code only has text input.",
+      "file": "src/web/design-system/src/components/Input/Input.tsx",
+      "current_value": "Text input only",
+      "canonical_value": "Text input + Passcode (4/6 digits) + Slider input variants",
+      "figma_token": "Input component set",
+      "action": "Add PasscodeInput sub-component with digits prop (4|6). Slider input may be covered by existing Slider component — verify and cross-reference."
+    },
+
+    {
+      "id": "COMP-005",
+      "tier": "P2",
+      "severity": "medium",
+      "category": "component_partial",
+      "fix_type": "extend_component",
+      "title": "Tabs missing orientation and style variants",
+      "description": "Figma Tabs have Orientation(Horizontal/Vertical) × Size × Style(BottomBorder/Default/LeftBorder) = 24 variants. Code has basic horizontal tabs only.",
+      "file": "src/web/design-system/src/components/Tabs/Tabs.tsx",
+      "current_value": "Basic horizontal tabs",
+      "canonical_value": "orientation('horizontal'|'vertical'), style('bottomBorder'|'default'|'leftBorder')",
+      "figma_token": "Tab component set",
+      "action": "Add orientation and style props to Tabs component. Create vertical layout variant and left-border style."
+    },
+
+    {
+      "id": "COMP-006",
+      "tier": "P2",
+      "severity": "medium",
+      "category": "component_partial",
+      "fix_type": "extend_component",
+      "title": "Tooltip missing color variants",
+      "description": "Figma Tooltip has Arrow × Color(Black/Brand/White) = 27 variants. Code has hardcoded dark theme only.",
+      "file": "src/web/design-system/src/components/Tooltip/Tooltip.tsx",
+      "current_value": "Dark theme only",
+      "canonical_value": "color('black'|'brand'|'white') × arrow direction",
+      "figma_token": "Tooltip component set",
+      "action": "Add color prop to Tooltip: 'black' (current default), 'brand' (#05AEDB bg), 'white' (light bg, dark text)."
+    },
+
+    {
+      "id": "COMP-007",
+      "tier": "P2",
+      "severity": "medium",
+      "category": "component_partial",
+      "fix_type": "extend_component",
+      "title": "ProgressBar missing Figma progression variants (108 total)",
+      "description": "Figma has 108 progression variants with Size and Label position props. Code has basic ProgressBar + ProgressCircle.",
+      "file": "src/web/design-system/src/components/ProgressBar",
+      "current_value": "Basic progress bar",
+      "canonical_value": "Progression 0-100% × Size × Label position (above/below/inline/none)",
+      "figma_token": "Progress & Indicator",
+      "action": "Add size and labelPosition props to ProgressBar. labelPosition: 'above'|'below'|'inline'|'none'."
+    },
+
+    {
+      "id": "COMP-008",
+      "tier": "P2",
+      "severity": "medium",
+      "category": "component_partial",
+      "fix_type": "extend_component",
+      "title": "ChatMessage missing AI immersive variants",
+      "description": "Figma has AI Assistant, AI Companion, and Text Input AI Immersive chat components. Code has basic ChatMessage only.",
+      "file": "src/web/design-system/src/components/ChatMessage/ChatMessage.tsx",
+      "current_value": "Basic chat bubble",
+      "canonical_value": "AI Assistant variant + AI Companion variant + AI Immersive text input",
+      "figma_token": "Chat System",
+      "action": "Add variant prop: 'user'|'ai-assistant'|'ai-companion'. Add AIImmersiveInput sub-component for the AI chat input bar."
+    },
+
+    {
+      "id": "A11Y-001",
+      "tier": "P3",
+      "severity": "medium",
+      "category": "accessibility",
+      "fix_type": "add_labels",
+      "title": "83.6% of interactive mobile components missing accessibilityLabel",
+      "description": "Of ~2493 interactive components (Pressable/TouchableOpacity/Button) in mobile src, only ~1097 have accessibilityLabel or aria-label. 56% coverage, 44% missing.",
+      "file": "src/web/mobile/src",
+      "current_value": "~1097 labels on ~2493 interactive elements",
+      "canonical_value": "100% of interactive elements must have accessibilityLabel",
+      "action": "Systematically audit all .tsx files under src/web/mobile/src for Pressable, TouchableOpacity, and Button without accessibilityLabel. Add descriptive labels. Priority files: screens with forms, navigation, and action buttons.",
+      "sub_tasks": [
+        {
+          "id": "A11Y-001a",
+          "action": "Grep for Pressable/TouchableOpacity without accessibilityLabel in the same component",
+          "fix_type": "audit"
+        },
+        {
+          "id": "A11Y-001b",
+          "action": "Add accessibilityLabel to all interactive elements in screen files",
+          "fix_type": "add_labels"
+        },
+        {
+          "id": "A11Y-001c",
+          "action": "Add accessibilityLabel to all interactive elements in shared components",
+          "fix_type": "add_labels"
+        }
+      ]
+    },
+
+    {
+      "id": "A11Y-002",
+      "tier": "P3",
+      "severity": "low",
+      "category": "accessibility",
+      "fix_type": "add_labels",
+      "title": "Icon component defaults aria-hidden=true — icons used as actions need labels",
+      "description": "Icon.tsx defaults aria-hidden to true. When icons are used as standalone action buttons (e.g., close, back arrow), they become invisible to screen readers.",
+      "file": "src/web/design-system/src/primitives/Icon/Icon.tsx",
+      "line_range": [225, 226],
+      "current_value": "aria-hidden defaults to true",
+      "canonical_value": "aria-hidden should be false when icon is interactive, with required aria-label",
+      "action": "Audit all Icon usages inside Pressable/Button wrappers. Ensure aria-hidden='false' and aria-label is provided for interactive icons. Consider adding a variant prop 'interactive' that flips the default."
+    },
+
+    {
+      "id": "TOK-008",
+      "tier": "P2",
+      "severity": "medium",
+      "category": "token_missing",
+      "fix_type": "add_token",
+      "title": "Missing semantic.infoBg token",
+      "description": "colors.semantic has successBg, warningBg, errorBg but no infoBg. Toast.styles.ts hardcodes #E6F0FA for info background.",
+      "file": "src/web/design-system/src/tokens/colors.ts",
+      "line_range": [113, 114],
+      "current_value": null,
+      "canonical_value": "#eff6ff",
+      "code_path": "colors.semantic.infoBg",
+      "action": "Add infoBg: '#eff6ff' after errorBg in semantic block (line ~114). This aligns with the blue-tinted pattern of the other semantic backgrounds."
+    },
+
+    {
+      "id": "TOK-009",
+      "tier": "P2",
+      "severity": "medium",
+      "category": "token_missing",
+      "fix_type": "add_token",
+      "title": "Missing effects/elevation tokens",
+      "description": "Figma defines Effects (Shadow, Blur, Focus) with elevation levels for cards, modals, dropdowns, and focus rings. Code has no elevation/shadow token file.",
+      "file": "src/web/design-system/src/tokens",
+      "current_value": null,
+      "canonical_value": "Elevation levels: sm (card), md (dropdown), lg (modal), focus ring styles",
+      "action": "Create src/web/design-system/src/tokens/effects.ts with elevation/shadow tokens matching Figma Effects frame. Export boxShadow scale and focusRing styles."
+    },
+
+    {
+      "id": "TOK-010",
+      "tier": "P2",
+      "severity": "medium",
+      "category": "token_missing",
+      "fix_type": "add_token",
+      "title": "Missing gamification medal color tokens",
+      "description": "Leaderboard uses hardcoded gold/silver/bronze colors. These should be formalized as design tokens.",
+      "file": "src/web/design-system/src/tokens/colors.ts",
+      "line_range": [145, 148],
+      "current_value": "gamification: { primary: '#6C63FF', background: '#f0eeff' }",
+      "canonical_value": "Add gold, silver, bronze, and their bg/text variants",
+      "code_path": "colors.gamification",
+      "action": "Extend colors.gamification with: gold: '#FFD700', goldBg: '#FFF6DE', goldText: '#D9A600', silver: '#C0C0C0', silverBg: '#F5F5F5', silverText: '#808080', bronze: '#CD7F32', bronzeBg: '#FFF0E6', bronzeText: '#A05A2C'."
+    },
+
+    {
+      "id": "COMP-009",
+      "tier": "P3",
+      "severity": "low",
+      "category": "component_missing",
+      "fix_type": "add_component",
+      "title": "Missing Arrow/Keyboard helper components",
+      "description": "Figma Misc & Helper section has Arrow (27 direction×color variants) and Key/Keyboard components. Code only has Divider.",
+      "file": "src/web/design-system/src/primitives",
+      "current_value": "Divider + Box only",
+      "canonical_value": "Arrow (27 variants), Key/Keyboard components",
+      "figma_token": "Misc & Helper",
+      "action": "Create Arrow primitive with direction and color props. Low priority — only needed if UI requires directional indicators."
+    },
+
+    {
+      "id": "COMP-010",
+      "tier": "P3",
+      "severity": "low",
+      "category": "component_partial",
+      "fix_type": "extend_component",
+      "title": "Breadcrumb missing divider type variants",
+      "description": "Figma Breadcrumb has Divider Type(Colon/Icon/Slash). Code likely defaults to one divider type.",
+      "file": "src/web/design-system/src/components/Breadcrumb/Breadcrumb.tsx",
+      "current_value": "Single divider type",
+      "canonical_value": "dividerType: 'colon' | 'icon' | 'slash'",
+      "figma_token": "Breadcrumb",
+      "action": "Add dividerType prop to Breadcrumb component."
+    },
+
+    {
+      "id": "ILL-001",
+      "tier": "P1",
+      "severity": "high",
+      "category": "illustration_assets",
+      "fix_type": "figma_export_pipeline",
+      "title": "Zero illustration assets in codebase — all Figma screens use placeholder boxes/emojis",
+      "description": "Figma has 20+ screen sections with professionally designed custom illustrations (error states, onboarding, empty states, splash, transitions). The codebase has ZERO image assets — every screen uses colored boxes, emoji, or plain text as placeholders. This is a fundamental visual fidelity gap affecting the entire user experience.",
+      "current_value": "IllustrationPlaceholder (gray box), IllustrationEmoji (emoji), IllustrationBox (colored box), plain SVG circle icons",
+      "canonical_value": "Custom vector illustrations from Figma for each screen context",
+      "figma_export_tool": "mcp__figma-developer-mcp__download_figma_images",
+      "figma_export_config": {
+        "fileKey": "OcG9oRNdUEskvAPUcKiKMe",
+        "format": "svg",
+        "pngScale": 3,
+        "localPath": "src/web/design-system/src/assets/illustrations"
+      },
+      "action": "Use Figma download_figma_images tool to export illustration nodes as SVG (preferred) or PNG@3x. Create assets/illustrations directory. Each screen section needs its illustrations extracted individually by node ID.",
+      "screen_sections": [
+        {
+          "id": "ILL-001a",
+          "figma_section": "Error & Utility",
+          "figma_frame_id": "20518:68135",
+          "illustrations_needed": [
+            {"name": "error-404-not-found", "description": "Person with magnifying glass searching (Não encontrado)"},
+            {"name": "error-401-server", "description": "Person tripping with question marks (Erro do servidor)"},
+            {"name": "error-no-internet", "description": "Phone with WiFi symbol disconnected (Sem Internet)"},
+            {"name": "error-maintenance", "description": "Worker with STOP sign and megaphone (Manutenção)"}
+          ],
+          "code_files_to_update": [
+            "src/web/web/src/pages/404.tsx",
+            "src/web/web/src/pages/500.tsx",
+            "src/web/web/src/pages/error/force-update.tsx"
+          ],
+          "current_implementation": "404.tsx: plain text '404'. 500.tsx: inline SVG circle icon. No illustrations whatsoever."
+        },
+        {
+          "id": "ILL-001b",
+          "figma_section": "Welcome Screen",
+          "figma_frame_id": "20307:23954",
+          "illustrations_needed": [
+            {"name": "welcome-onboarding-1", "description": "Onboarding slide 1 illustration"},
+            {"name": "welcome-onboarding-2", "description": "Onboarding slide 2 illustration"},
+            {"name": "welcome-onboarding-3", "description": "Onboarding slide 3 illustration"},
+            {"name": "welcome-onboarding-4", "description": "Onboarding slide 4 illustration"},
+            {"name": "welcome-splash", "description": "Splash screen brand illustration"}
+          ],
+          "code_files_to_update": [
+            "src/web/mobile/src/screens/auth/Onboarding.tsx",
+            "src/web/mobile/src/screens/auth/WelcomeCTA.tsx",
+            "src/web/mobile/src/screens/auth/WelcomeSplash.tsx",
+            "src/web/mobile/src/screens/auth/PersonalizationIntro.tsx"
+          ],
+          "current_implementation": "IllustrationPlaceholder (gray 200px box), IllustrationBox (colored View), IllustrationEmoji (emoji character). All fake."
+        },
+        {
+          "id": "ILL-001c",
+          "figma_section": "Authentication",
+          "figma_frame_id": "20307:23813",
+          "illustrations_needed": [
+            {"name": "auth-login", "description": "Login screen illustration"},
+            {"name": "auth-register", "description": "Registration illustration"},
+            {"name": "auth-forgot-password", "description": "Forgot password illustration"},
+            {"name": "auth-email-verify", "description": "Email verification illustration"}
+          ],
+          "code_files_to_update": [
+            "src/web/mobile/src/screens/auth/Login.tsx",
+            "src/web/mobile/src/screens/auth/Register.tsx",
+            "src/web/mobile/src/screens/auth/ForgotPassword.tsx",
+            "src/web/mobile/src/screens/auth/EmailVerify.tsx"
+          ]
+        },
+        {
+          "id": "ILL-001d",
+          "figma_section": "Splash & Loading",
+          "figma_frame_id": "20552:42704",
+          "illustrations_needed": [
+            {"name": "splash-brand", "description": "Animated splash/loading brand graphic"}
+          ],
+          "code_files_to_update": [
+            "src/web/mobile/src/screens/auth/WelcomeSplash.tsx"
+          ]
+        },
+        {
+          "id": "ILL-001e",
+          "figma_section": "Comprehensive Health Assessment",
+          "figma_frame_id": "23431:67051",
+          "illustrations_needed": [
+            {"name": "assessment-intro", "description": "Health assessment introduction illustration"},
+            {"name": "assessment-complete", "description": "Assessment completion/results illustration"}
+          ],
+          "code_files_to_update": [
+            "src/web/mobile/src/screens/health/assessment/steps/StepPersonalInfo.tsx",
+            "src/web/web/src/pages/health/assessment/steps/step-results-health-score.tsx"
+          ]
+        },
+        {
+          "id": "ILL-001f",
+          "figma_section": "Profile Setup & Account Completion",
+          "figma_frame_id": "20442:39819",
+          "illustrations_needed": [
+            {"name": "profile-setup", "description": "Profile setup flow illustration"},
+            {"name": "profile-biometric", "description": "Biometric setup illustration"}
+          ],
+          "code_files_to_update": [
+            "src/web/mobile/src/screens/profile/ProfileBiometricSetup.tsx",
+            "src/web/web/src/pages/profile/setup.tsx"
+          ],
+          "current_implementation": "ProfileBiometricSetup uses IllustrationContainer with emoji as placeholder."
+        },
+        {
+          "id": "ILL-001g",
+          "figma_section": "AI Wellness Companion",
+          "figma_frame_id": "20414:28939",
+          "illustrations_needed": [
+            {"name": "ai-companion-intro", "description": "AI wellness companion introduction graphic"},
+            {"name": "ai-companion-avatar", "description": "AI companion avatar/character"}
+          ],
+          "code_files_to_update": []
+        },
+        {
+          "id": "ILL-001h",
+          "figma_section": "AI Symptom Checker",
+          "figma_frame_id": "20406:25812",
+          "illustrations_needed": [
+            {"name": "symptom-checker-intro", "description": "Symptom checker intro illustration"},
+            {"name": "symptom-checker-body", "description": "Body diagram illustration"}
+          ],
+          "code_files_to_update": [
+            "src/web/mobile/src/screens/care/SymptomChecker.tsx"
+          ]
+        },
+        {
+          "id": "ILL-001i",
+          "figma_section": "Medication Tracker",
+          "figma_frame_id": "20410:27039",
+          "illustrations_needed": [
+            {"name": "medication-empty", "description": "Empty state for medication list"}
+          ],
+          "code_files_to_update": [
+            "src/web/mobile/src/components/lists/MedicationList.tsx"
+          ]
+        },
+        {
+          "id": "ILL-001j",
+          "figma_section": "Sleep Management",
+          "figma_frame_id": "20477:37838",
+          "illustrations_needed": [
+            {"name": "sleep-empty", "description": "Sleep tracking empty/intro state"}
+          ],
+          "code_files_to_update": []
+        },
+        {
+          "id": "ILL-001k",
+          "figma_section": "Activity Tracker",
+          "figma_frame_id": "20482:62038",
+          "illustrations_needed": [
+            {"name": "activity-empty", "description": "Activity tracking empty/intro state"}
+          ],
+          "code_files_to_update": []
+        },
+        {
+          "id": "ILL-001l",
+          "figma_section": "Nutrition Monitoring",
+          "figma_frame_id": "20488:45260",
+          "illustrations_needed": [
+            {"name": "nutrition-empty", "description": "Nutrition monitoring empty/intro state"}
+          ],
+          "code_files_to_update": []
+        },
+        {
+          "id": "ILL-001m",
+          "figma_section": "Period & Cycle Tracking",
+          "figma_frame_id": "20404:22832",
+          "illustrations_needed": [
+            {"name": "cycle-tracking-intro", "description": "Cycle tracking onboarding illustration"}
+          ],
+          "code_files_to_update": []
+        },
+        {
+          "id": "ILL-001n",
+          "figma_section": "Doctor Consultation",
+          "figma_frame_id": "20419:50825",
+          "illustrations_needed": [
+            {"name": "consultation-waiting", "description": "Waiting room illustration"},
+            {"name": "consultation-complete", "description": "Consultation end/summary illustration"}
+          ],
+          "code_files_to_update": [
+            "src/web/mobile/src/screens/care/WaitingRoom.tsx",
+            "src/web/mobile/src/screens/care/TelemedicineEndScreen.tsx"
+          ]
+        },
+        {
+          "id": "ILL-001o",
+          "figma_section": "Wellness Resources",
+          "figma_frame_id": "20519:43188",
+          "illustrations_needed": [
+            {"name": "wellness-empty", "description": "Wellness resources empty state"}
+          ],
+          "code_files_to_update": []
+        },
+        {
+          "id": "ILL-001p",
+          "figma_section": "Health Community",
+          "figma_frame_id": "20519:66013",
+          "illustrations_needed": [
+            {"name": "community-empty", "description": "Community feed empty state"}
+          ],
+          "code_files_to_update": []
+        },
+        {
+          "id": "ILL-001q",
+          "figma_section": "Achievements",
+          "figma_frame_id": "20433:73777",
+          "illustrations_needed": [
+            {"name": "achievements-empty", "description": "No achievements yet illustration"},
+            {"name": "achievements-celebrate", "description": "Achievement unlocked celebration"}
+          ],
+          "code_files_to_update": []
+        },
+        {
+          "id": "ILL-001r",
+          "figma_section": "Notification & Search",
+          "figma_frame_id": "20427:72389",
+          "illustrations_needed": [
+            {"name": "search-no-results", "description": "No search results illustration"},
+            {"name": "notifications-empty", "description": "No notifications empty state"}
+          ],
+          "code_files_to_update": [
+            "src/web/web/src/pages/search/no-results.tsx"
+          ]
+        }
+      ],
+      "execution_workflow": {
+        "step_1": "Wait for Figma API rate limit to reset (typically 1-2 hours)",
+        "step_2": "For each screen section, use get_figma_data with the frame_id at depth 3-4 to find the illustration child nodes",
+        "step_3": "Use download_figma_images to export each illustration node as SVG (or PNG@3x for raster art)",
+        "step_4": "Save to src/web/design-system/src/assets/illustrations/{section}/{name}.svg",
+        "step_5": "Create an illustration registry (index.ts) that exports all illustrations by name",
+        "step_6": "Update each screen component to import and render the real illustration instead of the placeholder",
+        "note": "This pipeline REQUIRES Figma MCP access — it can only run here in Cowork, not in VS Code. The screen component updates (step 6) CAN be delegated to Claude Code agents in VS Code after the exports are done."
+      },
+      "total_illustrations_estimated": 35,
+      "total_screen_sections": 18
+    },
+
+    {
+      "id": "ARCH-001",
+      "tier": "P1",
+      "severity": "high",
+      "category": "architecture",
+      "fix_type": "refactor_architecture",
+      "title": "Unify color variant system — journey-based + Figma semantic colors",
+      "description": "Figma uses Color(Brand/Destructive/Gray/Success/Warning) across all components. Code uses journey-based (health/care/plan). These need to coexist: Figma semantic colors for component variants, journey colors for page theming.",
+      "file": "src/web/design-system/src/tokens/colors.ts",
+      "current_value": "Journey-only color variant system (health/care/plan/community)",
+      "canonical_value": "Dual system: Figma semantic (Brand/Destructive/Gray/Success/Warning) for component-level, journey colors for page-level theming",
+      "action": "Add a componentColors object that maps Figma's semantic color names to values: { brand: '#05AEDB', destructive: '#e11d48', gray: '#4b5563', success: '#7ab765', warning: '#f59e0b' }. Components reference componentColors for their Color prop; page-level wrappers apply journey theming separately.",
+      "sub_tasks": [
+        {
+          "id": "ARCH-001a",
+          "action": "Add componentColors to colors.ts mapping Figma semantic names to hex values",
+          "file": "src/web/design-system/src/tokens/colors.ts"
+        },
+        {
+          "id": "ARCH-001b",
+          "action": "Update Button, Badge, Tooltip, Icon Container to accept 'color' prop from componentColors",
+          "file": "src/web/design-system/src/components"
+        },
+        {
+          "id": "ARCH-001c",
+          "action": "Keep journey theming as a higher-order wrapper (ThemeProvider) that overrides componentColors contextually",
+          "file": "src/web/design-system/src/themes"
+        }
+      ]
+    }
+  ],
+
+  "asset_export_pipeline": {
+    "description": "Complete Figma-to-codebase asset export plan. Each asset group lists what to download from Figma, the target path in the codebase, and the integration steps required after download.",
+    "figma_file_key": "OcG9oRNdUEskvAPUcKiKMe",
+    "figma_token_env_var": "FIGMA_TOKEN",
+    "export_script": "scripts/export-figma-illustrations.mjs",
+
+    "asset_groups": [
+
+      {
+        "id": "ASSET-001",
+        "name": "Screen Illustrations (SVG)",
+        "tier": "P0",
+        "status": "blocked_rate_limit",
+        "description": "35+ custom illustrations across 18 screen sections. Currently ALL screens use IllustrationPlaceholder (gray boxes), IllustrationEmoji, or plain text. Zero real illustration assets exist in codebase.",
+        "source": "Figma frames under Light Mode canvas",
+        "export_format": "svg",
+        "fallback_format": "png@3x",
+        "target_root": "src/web/design-system/src/assets/illustrations",
+        "registry_file": "src/web/design-system/src/assets/illustrations/index.ts",
+        "sections": [
+          {
+            "key": "error-utility",
+            "figma_frame_id": "20518:68135",
+            "target_dir": "src/web/design-system/src/assets/illustrations/error-utility",
+            "expected_files": [
+              {"name": "error-404-not-found.svg", "description": "Character with magnifying glass searching", "used_in": ["src/web/web/src/pages/404.tsx"]},
+              {"name": "error-401-server.svg", "description": "Character stumbling near server rack", "used_in": ["src/web/web/src/pages/500.tsx"]},
+              {"name": "error-no-internet.svg", "description": "Hand holding phone with WiFi signal", "used_in": ["src/web/mobile/src/components/shared/EmptyState.tsx"]},
+              {"name": "error-maintenance.svg", "description": "Character with STOP sign construction", "used_in": ["src/web/mobile/src/screens/error/MaintenanceScreen.tsx"]},
+              {"name": "error-forbidden.svg", "description": "Warning triangle with exclamation", "used_in": ["src/web/mobile/src/screens/error/ForbiddenScreen.tsx"]},
+              {"name": "error-blocked-resource.svg", "description": "Character locked behind shield", "used_in": ["src/web/mobile/src/screens/error/BlockedScreen.tsx"]},
+              {"name": "error-update-required.svg", "description": "Character updating device with progress bar", "used_in": ["src/web/mobile/src/screens/error/UpdateRequiredScreen.tsx"]},
+              {"name": "error-empty-state.svg", "description": "Character shrugging with empty boxes", "used_in": ["src/web/mobile/src/components/shared/EmptyState.tsx"]}
+            ]
+          },
+          {
+            "key": "welcome",
+            "figma_frame_id": "20307:23954",
+            "target_dir": "src/web/design-system/src/assets/illustrations/welcome",
+            "expected_files": [
+              {"name": "welcome-hero.svg", "description": "Main welcome screen hero illustration", "used_in": ["src/web/mobile/src/screens/auth/WelcomeCTA.tsx"]},
+              {"name": "welcome-features.svg", "description": "Feature highlights illustration", "used_in": ["src/web/mobile/src/screens/auth/WelcomeCTA.tsx"]}
+            ]
+          },
+          {
+            "key": "authentication",
+            "figma_frame_id": "20307:23813",
+            "target_dir": "src/web/design-system/src/assets/illustrations/authentication",
+            "expected_files": [
+              {"name": "auth-login.svg", "description": "Login screen illustration", "used_in": ["src/web/mobile/src/screens/auth/LoginScreen.tsx"]},
+              {"name": "auth-register.svg", "description": "Registration screen illustration", "used_in": ["src/web/mobile/src/screens/auth/RegisterScreen.tsx"]}
+            ]
+          },
+          {
+            "key": "splash",
+            "figma_frame_id": "20307:23730",
+            "target_dir": "src/web/design-system/src/assets/illustrations/splash",
+            "expected_files": [
+              {"name": "splash-logo.svg", "description": "Animated splash logo mark", "used_in": ["src/web/mobile/src/screens/auth/WelcomeSplash.tsx"]},
+              {"name": "splash-background.svg", "description": "Splash screen background pattern", "used_in": ["src/web/mobile/src/screens/auth/WelcomeSplash.tsx"]}
+            ]
+          },
+          {
+            "key": "health-assessment",
+            "figma_frame_id": "20307:24178",
+            "target_dir": "src/web/design-system/src/assets/illustrations/health-assessment",
+            "expected_files": [
+              {"name": "health-assessment-intro.svg", "description": "Health quiz intro illustration", "used_in": ["src/web/mobile/src/screens/auth/PersonalizationIntro.tsx"]}
+            ]
+          },
+          {
+            "key": "profile-setup",
+            "figma_frame_id": "20307:24332",
+            "target_dir": "src/web/design-system/src/assets/illustrations/profile-setup",
+            "expected_files": [
+              {"name": "biometric-setup.svg", "description": "Face ID / fingerprint illustration", "used_in": ["src/web/mobile/src/screens/profile/ProfileBiometricSetup.tsx"]},
+              {"name": "profile-complete.svg", "description": "Profile setup completion celebration", "used_in": ["src/web/mobile/src/screens/profile/ProfileSetupComplete.tsx"]}
+            ]
+          },
+          {
+            "key": "ai-companion",
+            "figma_frame_id": "20307:24577",
+            "target_dir": "src/web/design-system/src/assets/illustrations/ai-companion",
+            "expected_files": [
+              {"name": "ai-companion-intro.svg", "description": "AI health companion character intro", "used_in": ["src/web/mobile/src/screens/health/AICompanionIntro.tsx"]},
+              {"name": "ai-companion-chat.svg", "description": "AI chat bubble illustration", "used_in": ["src/web/mobile/src/screens/health/AICompanionChat.tsx"]}
+            ]
+          },
+          {
+            "key": "symptom-checker",
+            "figma_frame_id": "20307:24771",
+            "target_dir": "src/web/design-system/src/assets/illustrations/symptom-checker",
+            "expected_files": [
+              {"name": "symptom-checker-body.svg", "description": "Human body outline for symptom selection", "used_in": ["src/web/mobile/src/screens/health/SymptomChecker.tsx"]}
+            ]
+          },
+          {
+            "key": "medication",
+            "figma_frame_id": "20518:67928",
+            "target_dir": "src/web/design-system/src/assets/illustrations/medication",
+            "expected_files": [
+              {"name": "medication-reminder.svg", "description": "Pill bottle with clock/alarm", "used_in": ["src/web/mobile/src/screens/health/MedicationReminder.tsx"]},
+              {"name": "medication-empty.svg", "description": "No medications added yet", "used_in": ["src/web/mobile/src/screens/health/MedicationList.tsx"]}
+            ]
+          },
+          {
+            "key": "sleep",
+            "figma_frame_id": "20518:68018",
+            "target_dir": "src/web/design-system/src/assets/illustrations/sleep",
+            "expected_files": [
+              {"name": "sleep-tracking.svg", "description": "Moon and sleeping character", "used_in": ["src/web/mobile/src/screens/health/SleepTracker.tsx"]}
+            ]
+          },
+          {
+            "key": "activity",
+            "figma_frame_id": "20518:67871",
+            "target_dir": "src/web/design-system/src/assets/illustrations/activity",
+            "expected_files": [
+              {"name": "activity-tracking.svg", "description": "Running/exercise character", "used_in": ["src/web/mobile/src/screens/health/ActivityTracker.tsx"]}
+            ]
+          },
+          {
+            "key": "nutrition",
+            "figma_frame_id": "20518:67988",
+            "target_dir": "src/web/design-system/src/assets/illustrations/nutrition",
+            "expected_files": [
+              {"name": "nutrition-tracking.svg", "description": "Food/meal tracking illustration", "used_in": ["src/web/mobile/src/screens/health/NutritionTracker.tsx"]}
+            ]
+          },
+          {
+            "key": "cycle-tracking",
+            "figma_frame_id": "20518:68046",
+            "target_dir": "src/web/design-system/src/assets/illustrations/cycle-tracking",
+            "expected_files": [
+              {"name": "cycle-tracking.svg", "description": "Menstrual cycle tracking illustration", "used_in": ["src/web/mobile/src/screens/health/CycleTracker.tsx"]}
+            ]
+          },
+          {
+            "key": "consultation",
+            "figma_frame_id": "20518:68076",
+            "target_dir": "src/web/design-system/src/assets/illustrations/consultation",
+            "expected_files": [
+              {"name": "consultation-booking.svg", "description": "Doctor consultation scheduling", "used_in": ["src/web/mobile/src/screens/care/ConsultationBooking.tsx"]},
+              {"name": "consultation-video.svg", "description": "Video call with doctor", "used_in": ["src/web/design-system/src/care/VideoConsultation/VideoConsultation.tsx"]}
+            ]
+          },
+          {
+            "key": "wellness",
+            "figma_frame_id": "20518:68106",
+            "target_dir": "src/web/design-system/src/assets/illustrations/wellness",
+            "expected_files": [
+              {"name": "wellness-score.svg", "description": "Overall wellness score visualization", "used_in": ["src/web/mobile/src/screens/health/WellnessScore.tsx"]}
+            ]
+          },
+          {
+            "key": "community",
+            "figma_frame_id": "20518:68120",
+            "target_dir": "src/web/design-system/src/assets/illustrations/community",
+            "expected_files": [
+              {"name": "community-intro.svg", "description": "Community features introduction", "used_in": ["src/web/mobile/src/screens/community/CommunityIntro.tsx"]}
+            ]
+          },
+          {
+            "key": "achievements",
+            "figma_frame_id": "20518:68149",
+            "target_dir": "src/web/design-system/src/assets/illustrations/achievements",
+            "expected_files": [
+              {"name": "achievement-unlocked.svg", "description": "Achievement celebration illustration", "used_in": ["src/web/mobile/src/screens/gamification/AchievementUnlocked.tsx"]},
+              {"name": "leaderboard-hero.svg", "description": "Leaderboard top section illustration", "used_in": ["src/web/design-system/src/gamification/Leaderboard/Leaderboard.tsx"]}
+            ]
+          },
+          {
+            "key": "notifications",
+            "figma_frame_id": "20518:68163",
+            "target_dir": "src/web/design-system/src/assets/illustrations/notifications",
+            "expected_files": [
+              {"name": "notifications-empty.svg", "description": "No notifications empty state", "used_in": ["src/web/mobile/src/screens/notifications/NotificationList.tsx"]}
+            ]
+          }
+        ],
+        "post_download_steps": [
+          "1. Run SVGO optimization on all SVGs: npx svgo --folder src/web/design-system/src/assets/illustrations/ -r",
+          "2. Generate TypeScript registry (index.ts) with typed exports for each illustration",
+          "3. Replace IllustrationPlaceholder/IllustrationEmoji components with real <img> or <SvgUri> imports",
+          "4. Create responsive illustration wrapper component for consistent sizing across screen sizes"
+        ]
+      },
+
+      {
+        "id": "ASSET-002",
+        "name": "Strangeicons SVG Library (Health & Biology)",
+        "tier": "P0",
+        "status": "blocked_rate_limit",
+        "description": "111 Health & Biology icons cataloged from Figma, plus ~5700 more across 10 categories. Codebase has 37 hardcoded SVG paths. The iconRegistry.ts has been created with placeholder paths that need real SVG data from Figma.",
+        "source": "Figma Icon Set page — strangeicons by Strange Helix (strangehelix.bio)",
+        "export_format": "svg",
+        "target_root": "src/web/design-system/src/assets/icons",
+        "registry_file": "src/web/design-system/src/primitives/Icon/iconRegistry.ts",
+        "figma_icon_set_frame": "20304:20086",
+        "figma_icon_container_frame": "5546:2332",
+        "icon_categories": [
+          {
+            "name": "Health & Biology",
+            "figma_frame_id": "20580:102315",
+            "icon_count": 111,
+            "status": "cataloged",
+            "target_dir": "src/web/design-system/src/assets/icons/health-biology",
+            "subcategories": [
+              {"name": "Medical & Clinical", "icons": ["stethoscope", "syringe", "iv-drip", "hospital", "truck-ambulance", "emergency", "surgical-device-scalpel", "medical-oral-device", "briefcase-health", "health-plus", "bed", "crutches", "person-wheelchair", "person-injured", "bandaid", "face-mask", "hand-wash", "hand-heart"]},
+              {"name": "Anatomy & Body", "icons": ["heart-organ", "brain", "lungs", "kidney", "liver", "stomach", "intestines", "eye-anatomy", "ear", "tooth", "bone", "spine", "joints", "blood", "blood-drop", "blood-bag", "blood-pressure"]},
+              {"name": "Pharmacy & Drugs", "icons": ["pill", "pill-capsule", "pills-bottle", "medicine-bottle", "drug-container", "drug-container-alt", "drug-store", "pharmacy-mortar-pestle", "rx", "rx-square"]},
+              {"name": "Biology & Science", "icons": ["dna", "rna", "dna-crispr", "chromosome-xx", "chromosome-xy", "virus", "bacteria", "cell", "cell-division", "microscope", "test-tube", "flask", "petri-dish", "lab-coat"]},
+              {"name": "Diagnostics & Imaging", "icons": ["x-ray", "mri", "ct-scan", "ultrasound", "ecg-heart", "thermometer", "oximeter", "glucose-meter", "scale-weight", "blood-test"]},
+              {"name": "Wellness & Lifestyle", "icons": ["meditation", "yoga", "running", "cycling", "swimming", "sleep-moon", "nutrition-apple", "water-glass", "sun-vitamin", "mental-health"]},
+              {"name": "Reproductive & Natal", "icons": ["pregnancy", "baby", "breastfeeding", "fertility", "ultrasound-baby", "ovary", "uterus", "sperm"]},
+              {"name": "Aging & Geriatrics", "icons": ["elderly", "walker", "hearing-aid", "dentures"]},
+              {"name": "Insurance & Admin", "icons": ["health-insurance", "medical-record", "clipboard-medical", "id-card-medical", "calendar-appointment", "receipt-medical"]}
+            ]
+          },
+          {"name": "General UI", "figma_frame_id": "20580:102320", "icon_count": "unknown", "status": "structure_only", "target_dir": "src/web/design-system/src/assets/icons/general-ui"},
+          {"name": "Category 4", "figma_frame_id": "20580:102349", "icon_count": "unknown", "status": "not_fetched", "target_dir": "src/web/design-system/src/assets/icons/category-4"},
+          {"name": "Category 5", "figma_frame_id": "20580:102356", "icon_count": "unknown", "status": "not_fetched", "target_dir": "src/web/design-system/src/assets/icons/category-5"},
+          {"name": "Category 6", "figma_frame_id": "20580:102440", "icon_count": "unknown", "status": "not_fetched", "target_dir": "src/web/design-system/src/assets/icons/category-6"},
+          {"name": "Category 7", "figma_frame_id": "20580:102445", "icon_count": "unknown", "status": "not_fetched", "target_dir": "src/web/design-system/src/assets/icons/category-7"},
+          {"name": "Category 8", "figma_frame_id": "20580:102446", "icon_count": "unknown", "status": "not_fetched", "target_dir": "src/web/design-system/src/assets/icons/category-8"},
+          {"name": "Category 9", "figma_frame_id": "20580:103003", "icon_count": "unknown", "status": "not_fetched", "target_dir": "src/web/design-system/src/assets/icons/category-9"},
+          {"name": "Category 10", "figma_frame_id": "20580:103097", "icon_count": "unknown", "status": "not_fetched", "target_dir": "src/web/design-system/src/assets/icons/category-10"}
+        ],
+        "figma_icon_ids_health_biology": {
+          "stethoscope": "20327:27592", "syringe": "20327:27584", "iv-drip": "20329:489",
+          "hospital": "20329:27843", "truck-ambulance": "20328:825", "emergency": "20329:486",
+          "surgical-device-scalpel": "20329:27856", "medical-oral-device": "20329:475",
+          "briefcase-health": "20328:9101", "health-plus": "20328:9098", "bed": "20329:27993",
+          "crutches": "20329:27556", "person-wheelchair": "20329:28066", "person-injured": "20329:27891",
+          "bandaid": "20329:27527", "face-mask": "20328:865", "hand-wash": "20329:28078",
+          "hand-heart": "20328:9115"
+        },
+        "export_method": "Figma REST API /v1/images with node IDs, format=svg",
+        "post_download_steps": [
+          "1. Export each icon node as SVG via /v1/images/:file_key?ids=NODE_ID&format=svg",
+          "2. Run SVGO to clean and optimize: npx svgo --folder src/web/design-system/src/assets/icons/ -r",
+          "3. Extract <path d='...'> data from each SVG and update iconRegistry.ts placeholder circles with real paths",
+          "4. Generate React Native compatible SVG components if needed for mobile: npx @svgr/cli --native src/web/design-system/src/assets/icons/",
+          "5. Update Icon.tsx to lazy-load icon SVGs by category for bundle size optimization"
+        ]
+      },
+
+      {
+        "id": "ASSET-003",
+        "name": "Plus Jakarta Sans Font Bundle",
+        "tier": "P1",
+        "status": "partial_complete",
+        "description": "Font family used throughout the app. Mobile already has 4 TTF weights + Nunito-Bold. Web needs woff2 files for self-hosting (currently relies on external CDN or system font fallback).",
+        "source": "Google Fonts (https://fonts.google.com/specimen/Plus+Jakarta+Sans) — NOT from Figma",
+        "existing_mobile_fonts": {
+          "dir": "src/web/mobile/src/assets/fonts",
+          "files": [
+            {"name": "PlusJakartaSans-Regular.ttf", "weight": 400, "status": "exists"},
+            {"name": "PlusJakartaSans-Medium.ttf", "weight": 500, "status": "exists"},
+            {"name": "PlusJakartaSans-SemiBold.ttf", "weight": 600, "status": "exists"},
+            {"name": "PlusJakartaSans-Bold.ttf", "weight": 700, "status": "exists"},
+            {"name": "Nunito-Bold.ttf", "weight": 700, "status": "exists", "note": "Used for logo text only"}
+          ]
+        },
+        "missing_mobile_fonts": [
+          {"name": "PlusJakartaSans-ExtraBold.ttf", "weight": 800, "reason": "Figma uses ExtraBold for display-xl (60px heading)"},
+          {"name": "PlusJakartaSans-Light.ttf", "weight": 300, "reason": "Figma uses Light for large body text in some cards"}
+        ],
+        "web_fonts_needed": {
+          "target_dir": "src/web/web/public/fonts",
+          "alternative": "npm install @fontsource/plus-jakarta-sans",
+          "files": [
+            {"name": "PlusJakartaSans-Regular.woff2", "weight": 400},
+            {"name": "PlusJakartaSans-Medium.woff2", "weight": 500},
+            {"name": "PlusJakartaSans-SemiBold.woff2", "weight": 600},
+            {"name": "PlusJakartaSans-Bold.woff2", "weight": 700},
+            {"name": "PlusJakartaSans-ExtraBold.woff2", "weight": 800}
+          ]
+        },
+        "config_file_created": "src/web/design-system/src/tokens/fonts.ts",
+        "post_download_steps": [
+          "1. Option A (recommended): npm install @fontsource/plus-jakarta-sans in src/web/web/",
+          "2. Option B: Download woff2 files from Google Fonts and place in src/web/web/public/fonts/",
+          "3. Add @font-face declarations in global CSS or _app.tsx",
+          "4. Download ExtraBold and Light TTF variants for mobile: place in src/web/mobile/src/assets/fonts/",
+          "5. Update Expo useFonts in App.tsx to load new weights",
+          "6. Add font-display: swap for web performance"
+        ]
+      },
+
+      {
+        "id": "ASSET-004",
+        "name": "Logo & Brand Assets",
+        "tier": "P1",
+        "status": "needs_export",
+        "description": "Logo exists as basic raster PNG for mobile (logo.png). Missing: SVG logo for web, dark mode variant, horizontal/stacked variants, favicon SVG.",
+        "source": "Figma — Logo component or brand guidelines page",
+        "existing_assets": [
+          {"file": "src/web/mobile/src/assets/images/logo.png", "format": "png", "status": "exists", "note": "Raster only, no SVG"},
+          {"file": "src/web/mobile/src/assets/images/favicon.png", "format": "png", "status": "exists"},
+          {"file": "src/web/mobile/src/assets/images/adaptive-icon.png", "format": "png", "status": "exists"},
+          {"file": "src/web/mobile/src/assets/images/splash.png", "format": "png", "status": "exists"},
+          {"file": "src/web/mobile/src/assets/images/notification-icon.png", "format": "png", "status": "exists"}
+        ],
+        "needed_assets": [
+          {
+            "name": "logo-full.svg",
+            "target": "src/web/design-system/src/assets/brand/logo-full.svg",
+            "description": "Full Austa logo (icon + wordmark) in SVG for web, scalable",
+            "used_in": ["src/web/web/src/components/Header.tsx", "src/web/web/src/pages/index.tsx"]
+          },
+          {
+            "name": "logo-icon.svg",
+            "target": "src/web/design-system/src/assets/brand/logo-icon.svg",
+            "description": "Austa icon mark only (no text) in SVG",
+            "used_in": ["favicon generation", "mobile tab bar", "loading states"]
+          },
+          {
+            "name": "logo-full-dark.svg",
+            "target": "src/web/design-system/src/assets/brand/logo-full-dark.svg",
+            "description": "Dark mode variant — white text on transparent",
+            "used_in": ["dark mode header", "dark splash screens"]
+          },
+          {
+            "name": "splash-screen.svg",
+            "target": "src/web/design-system/src/assets/brand/splash-screen.svg",
+            "description": "Vector splash screen for both web and higher-quality mobile rendering",
+            "used_in": ["src/web/mobile/src/screens/auth/WelcomeSplash.tsx"]
+          }
+        ],
+        "post_download_steps": [
+          "1. Export logo frames from Figma as SVG (find logo component node IDs)",
+          "2. Create src/web/design-system/src/assets/brand/ directory",
+          "3. Generate favicon.ico from SVG: npx svg-to-ico logo-icon.svg",
+          "4. Create Logo React component that renders SVG inline for theming support",
+          "5. Update mobile splash.png to higher resolution (@3x) if Figma has better source"
+        ]
+      },
+
+      {
+        "id": "ASSET-005",
+        "name": "Achievement Badge Assets",
+        "tier": "P2",
+        "status": "empty_directory",
+        "description": "Achievement/gamification badges directory exists but contains only a README. Figma has achievement badge designs in the Achievements section. Lottie animations exist (achievement_unlocked.json, level_up.json) but no static badge images.",
+        "source": "Figma Achievements section (frame 20518:68149)",
+        "existing_assets": [
+          {"file": "src/web/mobile/src/assets/images/achievements/README.md", "status": "placeholder_only"},
+          {"file": "src/web/mobile/src/assets/animations/achievement_unlocked.json", "format": "lottie", "status": "exists"},
+          {"file": "src/web/mobile/src/assets/animations/level_up.json", "format": "lottie", "status": "exists"}
+        ],
+        "needed_assets": [
+          {"name": "badge-bronze.svg", "target": "src/web/design-system/src/assets/achievements/badge-bronze.svg"},
+          {"name": "badge-silver.svg", "target": "src/web/design-system/src/assets/achievements/badge-silver.svg"},
+          {"name": "badge-gold.svg", "target": "src/web/design-system/src/assets/achievements/badge-gold.svg"},
+          {"name": "badge-platinum.svg", "target": "src/web/design-system/src/assets/achievements/badge-platinum.svg"},
+          {"name": "streak-flame.svg", "target": "src/web/design-system/src/assets/achievements/streak-flame.svg"},
+          {"name": "level-star.svg", "target": "src/web/design-system/src/assets/achievements/level-star.svg"}
+        ],
+        "post_download_steps": [
+          "1. Export badge designs from Figma achievements section as SVG",
+          "2. Create src/web/design-system/src/assets/achievements/ directory",
+          "3. Update Leaderboard.styles.ts to reference badge SVGs instead of hardcoded gold/silver/bronze hex colors",
+          "4. Create AchievementBadge component that renders appropriate badge by tier"
+        ]
+      },
+
+      {
+        "id": "ASSET-006",
+        "name": "Notification & Sound Assets",
+        "tier": "P3",
+        "status": "exists_verify",
+        "description": "Notification icon and sound assets exist but may not match Figma canonical designs. Verify against Figma and replace if divergent.",
+        "existing_assets": [
+          {"file": "src/web/mobile/src/assets/images/notification-icon.png", "status": "verify_against_figma"},
+          {"file": "src/web/mobile/src/assets/sounds/achievement.wav", "status": "exists"},
+          {"file": "src/web/mobile/src/assets/sounds/notification.wav", "status": "exists"}
+        ],
+        "post_download_steps": [
+          "1. Compare notification-icon.png with Figma notification icon design",
+          "2. Export updated version if divergent",
+          "3. Sound assets are not in Figma — keep as-is unless UX specifies changes"
+        ]
+      }
+    ],
+
+    "export_execution_plan": {
+      "phase_0_immediate": {
+        "description": "Assets that can be downloaded NOW without Figma API (no rate limit)",
+        "tasks": [
+          "ASSET-003: Install @fontsource/plus-jakarta-sans via npm (web)",
+          "ASSET-003: Download ExtraBold + Light TTF from Google Fonts (mobile)"
+        ]
+      },
+      "phase_1_figma_api": {
+        "description": "Assets requiring Figma REST API (blocked until rate limit resets)",
+        "tasks": [
+          "ASSET-001: Run scripts/export-figma-illustrations.mjs with FIGMA_TOKEN",
+          "ASSET-002: Export 111 Health & Biology icon SVGs via /v1/images API",
+          "ASSET-004: Export logo variants from Figma",
+          "ASSET-005: Export achievement badge designs from Figma"
+        ],
+        "estimated_api_calls": "~200 total (18 section fetches + 111 icon exports + 30 illustration exports + logo/badge exports)",
+        "rate_limit_strategy": "Batch 10 node IDs per /v1/images call (max supported), 1 request per second, estimated 20 minutes total"
+      },
+      "phase_2_post_processing": {
+        "description": "After all downloads complete",
+        "tasks": [
+          "Run SVGO on all SVGs: npx svgo -r src/web/design-system/src/assets/",
+          "Generate TypeScript barrel exports (index.ts) for each asset directory",
+          "Extract icon SVG paths and update iconRegistry.ts",
+          "Create React Native SVG components via @svgr/cli for mobile",
+          "Update all screen components to import real assets instead of placeholders"
+        ]
+      },
+      "phase_3_integration": {
+        "description": "Wire assets into the codebase",
+        "component_updates": [
+          {"file": "src/web/web/src/pages/404.tsx", "action": "Import error-404-not-found.svg, replace plain text '404' with illustration"},
+          {"file": "src/web/web/src/pages/500.tsx", "action": "Import error-401-server.svg, replace inline SVG circle with illustration"},
+          {"file": "src/web/mobile/src/screens/auth/WelcomeCTA.tsx", "action": "Import welcome-hero.svg, replace IllustrationPlaceholder"},
+          {"file": "src/web/mobile/src/screens/auth/WelcomeSplash.tsx", "action": "Import splash-logo.svg, replace LogoContainer colored circle"},
+          {"file": "src/web/mobile/src/screens/auth/Onboarding.tsx", "action": "Import onboarding illustrations per slide"},
+          {"file": "src/web/mobile/src/screens/auth/PersonalizationIntro.tsx", "action": "Import health-assessment-intro.svg, replace placeholder"},
+          {"file": "src/web/mobile/src/screens/profile/ProfileBiometricSetup.tsx", "action": "Import biometric-setup.svg, replace placeholder"},
+          {"file": "src/web/mobile/src/components/shared/EmptyState.tsx", "action": "Import error-empty-state.svg and error-no-internet.svg, replace IllustrationEmoji"},
+          {"file": "src/web/design-system/src/primitives/Icon/Icon.tsx", "action": "Already refactored to use iconRegistry — update registry paths after SVG export"},
+          {"file": "src/web/design-system/src/gamification/Leaderboard/Leaderboard.styles.ts", "action": "Import badge SVGs, replace hardcoded gold/silver/bronze hex colors"}
+        ]
+      }
+    },
+
+    "total_assets_to_export": {
+      "illustrations": "35+ SVGs across 18 sections",
+      "icons": "111 cataloged + unknown from categories 4-10 (estimated 5800+ total)",
+      "fonts": "2 additional weights (ExtraBold, Light) for mobile + woff2 bundle for web",
+      "logos": "4 SVG variants (full, icon, dark, splash)",
+      "badges": "6 achievement badge SVGs",
+      "total_estimated_files": "~165 files minimum"
+    }
+  },
+
+  "summary": {
+    "P0_critical": 3,
+    "P1_high": 5,
+    "P2_medium": 15,
+    "P3_low": 4,
+    "total": 27,
+    "sub_tasks_total": 34,
+    "illustration_sub_tasks": 18,
+    "total_illustrations_to_export": 35,
+    "categories": {
+      "token_mismatch": 3,
+      "token_missing": 5,
+      "icon_system": 1,
+      "illustration_assets": 1,
+      "architecture": 2,
+      "hardcoded_color": 6,
+      "component_missing": 3,
+      "component_partial": 6,
+      "accessibility": 2
+    },
+    "files_affected": [
+      "src/web/design-system/src/tokens/colors.ts",
+      "src/web/design-system/src/tokens/typography.ts",
+      "src/web/design-system/src/primitives/Icon/Icon.tsx",
+      "src/web/design-system/src/components/Button/Button.tsx",
+      "src/web/design-system/src/components/Button/Button.styles.ts",
+      "src/web/design-system/src/components/Badge/Badge.tsx",
+      "src/web/design-system/src/components/Tabs/Tabs.tsx",
+      "src/web/design-system/src/components/Tooltip/Tooltip.tsx",
+      "src/web/design-system/src/components/ProgressBar",
+      "src/web/design-system/src/components/ChatMessage/ChatMessage.tsx",
+      "src/web/design-system/src/components/Breadcrumb/Breadcrumb.tsx",
+      "src/web/design-system/src/components/Input/Input.tsx",
+      "src/web/design-system/src/components/Toast/Toast.styles.ts",
+      "src/web/design-system/src/gamification/Leaderboard/Leaderboard.styles.ts",
+      "src/web/design-system/src/care/VideoConsultation/VideoConsultation.styles.ts",
+      "src/web/mobile/src/components/shared/FileUploader.tsx",
+      "src/web/mobile/src/components/shared/EmptyState.tsx",
+      "src/web/mobile/src/components/shared/JourneyHeader.tsx",
+      "src/web/mobile/src",
+      "src/web/web/src/pages/404.tsx",
+      "src/web/web/src/pages/500.tsx",
+      "src/web/mobile/src/screens/auth/Onboarding.tsx",
+      "src/web/mobile/src/screens/auth/WelcomeCTA.tsx",
+      "src/web/mobile/src/screens/auth/WelcomeSplash.tsx",
+      "src/web/mobile/src/screens/auth/PersonalizationIntro.tsx",
+      "src/web/mobile/src/screens/profile/ProfileBiometricSetup.tsx"
+    ],
+    "execution_order": [
+      "Phase 1: Token fixes (TOK-001, TOK-002, TOK-008, TOK-010) — unblocks everything",
+      "Phase 2: Architecture alignment (ARCH-001, TOK-004, TOK-005, TOK-006) — enables component fixes",
+      "Phase 3: Icon system replacement (TOK-003) — can run in parallel with Phase 2",
+      "Phase 3b: Illustration export from Figma (ILL-001) — REQUIRES Cowork with Figma MCP, run in parallel",
+      "Phase 4: Component extensions (TOK-007, COMP-001 through COMP-008) — depends on Phase 1+2",
+      "Phase 5: Hardcoded value cleanup (HC-001 through HC-006) — depends on Phase 1",
+      "Phase 5b: Integrate exported illustrations into screen components — depends on Phase 3b",
+      "Phase 6: Accessibility sweep (A11Y-001, A11Y-002) — independent, can start anytime"
+    ],
+    "agent_assignment_suggestion": {
+      "agent_1_tokens": ["TOK-001", "TOK-002", "TOK-008", "TOK-009", "TOK-010"],
+      "agent_2_typography": ["TOK-004", "TOK-005", "TOK-006"],
+      "agent_3_icons": ["TOK-003"],
+      "agent_4_architecture": ["ARCH-001", "TOK-007"],
+      "agent_5_components": ["COMP-001", "COMP-002", "COMP-003", "COMP-004", "COMP-005", "COMP-006", "COMP-007", "COMP-008"],
+      "agent_6_hardcoded": ["HC-001", "HC-002", "HC-003", "HC-004", "HC-005", "HC-006"],
+      "agent_7_accessibility": ["A11Y-001", "A11Y-002"],
+      "agent_8_component_extras": ["COMP-009", "COMP-010"],
+      "COWORK_ONLY_illustration_export": ["ILL-001 (all sub-tasks) — requires Figma MCP, must run in Cowork"],
+      "VS_CODE_illustration_integration": ["ILL-001 screen component updates — after assets are exported"]
+    },
+    "two_environment_pipeline": {
+      "cowork_tasks": "All ASSET-* exports (illustration, icon, logo, badge SVGs via Figma MCP/API) + TOK-003 (strangeicons research via web)",
+      "vs_code_tasks": "Everything else — token fixes, architecture, components, hardcoded cleanup, a11y, asset integration",
+      "handoff_artifacts": [
+        "design-audit-remediation-manifest.json",
+        "src/web/design-system/src/assets/illustrations/ (after ASSET-001)",
+        "src/web/design-system/src/assets/icons/ (after ASSET-002)",
+        "src/web/design-system/src/assets/brand/ (after ASSET-004)",
+        "src/web/design-system/src/assets/achievements/ (after ASSET-005)"
+      ]
+    },
+    "figma_export_docs_dir": "docs/Figma"
+  }
+}

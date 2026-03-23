@@ -13,6 +13,9 @@ const { getDefaultConfig } = require('expo/metro-config');
 
 const config = getDefaultConfig(__dirname);
 
+// DEMO_MODE — Force project root to mobile directory (Yarn workspaces hoists expo to parent)
+config.projectRoot = __dirname;
+
 // Path aliases for easier imports (must match tsconfig paths)
 config.resolver.extraNodeModules = {
     '@': path.resolve(__dirname, 'src'),
@@ -44,6 +47,9 @@ config.transformer.getTransformOptions = async () => ({
         inlineRequires: true,
     },
 });
+
+// DEMO_MODE — Mock react-native-mmkv (native module disabled for demo)
+config.resolver.extraNodeModules['react-native-mmkv'] = path.resolve(__dirname, 'src/mocks/mmkv-mock.js');
 
 // Performance: limit workers
 config.maxWorkers = 4;

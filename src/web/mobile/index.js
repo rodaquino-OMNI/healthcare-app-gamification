@@ -6,21 +6,10 @@
 import { AppRegistry, LogBox } from 'react-native'; // v0.71+
 import App from './App'; // src/web/mobile/App.tsx
 import { name as appName } from './app.json'; // 1.0.0
-import { i18n } from './src/i18n'; // src/web/mobile/src/i18n/index.ts
+import './src/i18n'; // Initialize i18n (side-effect import)
 
-// LD1: Initialize i18n for internationalization
-i18n.then(() => {
-  // LD1: Ignore specific LogBox warnings for development
-  LogBox.ignoreLogs([
-    'Require cycle:',
-    'Remote debugger',
-    'RCTBridge',
-    'new NativeEventEmitter',
-    "[mobx]",
-  ]);
+// LD1: Ignore specific LogBox warnings for development
+LogBox.ignoreLogs(['Require cycle:', 'Remote debugger', 'RCTBridge', 'new NativeEventEmitter', '[mobx]']);
 
-  // LD1: Register the App component with AppRegistry using the app name from app.json
-  AppRegistry.registerComponent(appName, () => App);
-}).catch((error) => {
-  console.error("Failed to initialize i18n", error);
-});
+// LD1: Register the App component with AppRegistry using the app name from app.json
+AppRegistry.registerComponent('main', () => App); // DEMO_MODE — 'main' required by Expo Go

@@ -18,7 +18,7 @@ module.exports = {
         },
     },
 
-    // DEMO_MODE — Disable Firebase auto-linking (requires modular_headers that conflict with expo-dev-menu)
+    // DEMO_MODE — Disable Firebase auto-linking (modular_headers conflict with expo-dev-menu)
     dependencies: {
         '@react-native-firebase/app': { platforms: { ios: null } },
         '@react-native-firebase/analytics': { platforms: { ios: null } },

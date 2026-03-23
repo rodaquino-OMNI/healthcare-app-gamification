@@ -59,6 +59,7 @@ tmp/
 temp/
 
 # React Native / Mobile specific
+.expo/
 android/app/build/
 android/.gradle/
 android/captures/
