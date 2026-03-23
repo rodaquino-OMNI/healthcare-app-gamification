@@ -37,8 +37,8 @@ config.resolver.extraNodeModules = {
 config.watchFolders = [
     path.resolve(__dirname, '../shared'),
     path.resolve(__dirname, '../design-system'),
-    path.resolve(__dirname, '../node_modules'),
-    path.resolve(__dirname, '../../../node_modules'),
+    path.resolve(__dirname, '../../../node_modules'), // pnpm root node_modules
+    path.resolve(__dirname, '../../..'), // project root (workspace packages)
 ];
 
 // Enable inline requires for better startup performance

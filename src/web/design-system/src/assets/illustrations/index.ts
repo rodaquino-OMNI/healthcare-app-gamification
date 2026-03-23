@@ -1,6 +1,6 @@
 /**
  * Barrel registry for all Figma PNG illustrations.
- * Auto-generated from asset-index.json -- 141 PNGs across 18 sections.
+ * Auto-generated from asset-index.json -- 176 PNGs across 18 sections.
  */
 
 export const illustrations = {
@@ -31,6 +31,25 @@ export const illustrations = {
         require('./activity/activity-23.png'),
         require('./activity/activity-24.png'),
         require('./activity/activity-25.png'),
+        require('./activity/activity-26.png'),
+        require('./activity/activity-27.png'),
+        require('./activity/activity-28.png'),
+        require('./activity/activity-29.png'),
+        require('./activity/activity-30.png'),
+        require('./activity/activity-31.png'),
+        require('./activity/activity-32.png'),
+        require('./activity/activity-33.png'),
+        require('./activity/activity-34.png'),
+        require('./activity/activity-35.png'),
+        require('./activity/activity-36.png'),
+        require('./activity/activity-37.png'),
+        require('./activity/activity-38.png'),
+        require('./activity/activity-39.png'),
+        require('./activity/activity-40.png'),
+        require('./activity/activity-41.png'),
+        require('./activity/activity-42.png'),
+        require('./activity/activity-43.png'),
+        require('./activity/activity-44.png'),
     ],
     aiCompanion: [require('./ai-companion/ai-companion-01.png')],
     authentication: [require('./authentication/authentication-01.png')],
@@ -49,6 +68,10 @@ export const illustrations = {
         require('./community/community-12.png'),
         require('./community/community-13.png'),
         require('./community/community-14.png'),
+        require('./community/community-15.png'),
+        require('./community/community-16.png'),
+        require('./community/community-17.png'),
+        require('./community/community-18.png'),
     ],
     consultation: [require('./consultation/consultation-01.png')],
     cycleTracking: [require('./cycle-tracking/cycle-tracking-01.png')],
@@ -85,6 +108,15 @@ export const illustrations = {
         require('./nutrition/nutrition-17.png'),
         require('./nutrition/nutrition-18.png'),
         require('./nutrition/nutrition-19.png'),
+        require('./nutrition/nutrition-20.png'),
+        require('./nutrition/nutrition-21.png'),
+        require('./nutrition/nutrition-22.png'),
+        require('./nutrition/nutrition-23.png'),
+        require('./nutrition/nutrition-24.png'),
+        require('./nutrition/nutrition-25.png'),
+        require('./nutrition/nutrition-26.png'),
+        require('./nutrition/nutrition-27.png'),
+        require('./nutrition/nutrition-28.png'),
     ],
     profileSetup: [
         require('./profile-setup/profile-setup-01.png'),
@@ -160,6 +192,9 @@ export const illustrations = {
         require('./wellness/wellness-08.png'),
         require('./wellness/wellness-09.png'),
         require('./wellness/wellness-10.png'),
+        require('./wellness/wellness-11.png'),
+        require('./wellness/wellness-12.png'),
+        require('./wellness/wellness-13.png'),
     ],
 } as const;
 

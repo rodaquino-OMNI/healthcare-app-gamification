@@ -1,0 +1,47 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["**/.env.*local"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "dist/**", "build/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "storybook": {
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {
+      "inputs": ["src/**", "*.ts", "*.tsx", "*.js", "*.jsx"],
+      "outputs": []
+    },
+    "test": {
+      "cache": false,
+      "outputs": ["coverage/**"]
+    },
+    "typecheck": {
+      "dependsOn": ["^build"],
+      "inputs": ["src/**", "tsconfig*.json", "*.ts", "*.tsx"],
+      "outputs": []
+    },
+    "start:dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "clean": {
+      "cache": false
+    },
+    "test:e2e": {
+      "outputs": ["coverage/**"]
+    },
+    "test:cov": {
+      "outputs": ["coverage/**"]
+    },
+    "db:migrate": {
+      "cache": false
+    }
+  }
+}

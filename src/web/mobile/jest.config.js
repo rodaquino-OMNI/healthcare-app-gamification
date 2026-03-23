@@ -15,12 +15,12 @@ module.exports = {
     // Setup files to run after the test environment is set up
     setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 
-    // Transform files using a custom esbuild-based transformer.
-    // This avoids the @babel/traverse version mismatch caused by the
-    // @babel/traverse@7.23.2 override in the web workspace package.json
-    // conflicting with newer @babel/ helpers (7.27+) used by the presets.
+    // Transform files using babel-jest with the test-mode babel.config.js presets
+    // (@babel/preset-react + @babel/preset-typescript). The custom esbuild transformer
+    // was removed after confirming that @babel/traverse is now at 7.29.0 in the
+    // pnpm single workspace, eliminating the version conflict that necessitated it.
     transform: {
-        '^.+\\.(js|jsx|ts|tsx|mjs)$': '<rootDir>/jest-esbuild-transform.js',
+        '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
     },
 
     // Don't transform modules in node_modules except for these ESM/Flow packages

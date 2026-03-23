@@ -1,12 +1,12 @@
 import { Button } from '@design-system/components/Button/Button';
 import { Input } from '@design-system/components/Input';
-import { yupResolver } from '@hookform/resolvers/yup'; // @hookform/resolvers version 3.3.4
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation } from '@react-navigation/native'; // @react-navigation/native version 6.1.9
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { useForm } from 'react-hook-form'; // React Hook Form version 7.49.3
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native'; // React Native version 0.71+
-import * as yup from 'yup'; // Yup version 1.3.2
+import { z } from 'zod';
 
 import { createHealthMetric } from '@api/health';
 import { JourneyHeader } from '@components/shared/JourneyHeader';
@@ -42,11 +42,11 @@ export const AddMetricScreen: React.FC<AddMetricScreenProps> = () => {
     // LD1: Uses the useAuth hook to get the authenticated user information.
     const { session, getUserFromToken } = useAuth();
 
-    // LD1: Defines a form schema using Yup for validation.
-    const schema = yup.object({
-        type: yup.string().required(t('common.validation.required')),
-        value: yup.number().required(t('common.validation.required')),
-        timestamp: yup.string().required(t('common.validation.required')),
+    // LD1: Defines a form schema using Zod for validation.
+    const schema = z.object({
+        type: z.string().min(1, t('common.validation.required')),
+        value: z.number({ required_error: t('common.validation.required') }),
+        timestamp: z.string().min(1, t('common.validation.required')),
     });
 
     // LD1: Uses the useForm hook to manage the form state and validation.
@@ -56,8 +56,7 @@ export const AddMetricScreen: React.FC<AddMetricScreenProps> = () => {
         formState: { errors: _errors },
         reset,
     } = useForm<AddMetricFormData>({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- yupResolver returns Resolver with `any` context type
-        resolver: yupResolver(schema),
+        resolver: zodResolver(schema),
         defaultValues: {
             type: '',
             value: '',

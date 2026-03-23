@@ -8,14 +8,14 @@ import { Text } from '@austa/design-system/src/primitives/Text/Text';
 import { Touchable } from '@austa/design-system/src/primitives/Touchable/Touchable';
 import { colors } from '@austa/design-system/src/tokens/colors';
 import { spacingValues } from '@austa/design-system/src/tokens/spacing';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState, useCallback } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { View, ScrollView, StyleSheet, Alert } from 'react-native';
-import * as yup from 'yup';
+import { z } from 'zod';
 
 import type { HealthStackParamList } from '../../navigation/types';
 
@@ -54,14 +54,17 @@ const FREQUENCY_OPTIONS = [
     { label: 'Weekly', value: 'weekly' },
 ];
 
-const medicationEditSchema = yup.object({
-    name: yup.string().required('Medication name is required'),
-    dosage: yup.string().required('Dosage is required'),
-    frequency: yup.string().required('Frequency is required'),
-    startDate: yup.date().nullable().required('Start date is required').typeError('Please select a valid date'),
-    endDate: yup.date().nullable().notRequired(),
-    notes: yup.string().default(''),
-    reminder: yup.boolean().default(true),
+const medicationEditSchema = z.object({
+    name: z.string().min(1, 'Medication name is required'),
+    dosage: z.string().min(1, 'Dosage is required'),
+    frequency: z.string().min(1, 'Frequency is required'),
+    startDate: z.coerce
+        .date({ invalid_type_error: 'Please select a valid date', required_error: 'Start date is required' })
+        .nullable()
+        .refine((val) => val !== null, { message: 'Start date is required' }),
+    endDate: z.coerce.date().nullable().optional(),
+    notes: z.string().default(''),
+    reminder: z.boolean().default(true),
 });
 
 /**
@@ -84,8 +87,7 @@ export const MedicationEdit: React.FC = () => {
         handleSubmit,
         formState: { errors },
     } = useForm<MedicationEditFormData>({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- yupResolver returns Resolver with `any` context type
-        resolver: yupResolver(medicationEditSchema),
+        resolver: zodResolver(medicationEditSchema),
         defaultValues: {
             name: prefillName,
             dosage: prefillDosage,
