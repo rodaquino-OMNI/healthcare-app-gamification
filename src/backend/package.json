@@ -29,7 +29,7 @@
         "node": ">=18.0.0"
     },
     "devDependencies": {
-        "@graphql-codegen/cli": "^5.0.7",
+        "@graphql-codegen/cli": "^6.0.0",
         "@jest/globals": "^29.7.0",
         "@nestjs/cli": "^11.0.0",
         "@nestjs/testing": "^11.0.0",
