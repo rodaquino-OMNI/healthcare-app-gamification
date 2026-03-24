@@ -934,8 +934,8 @@ importers:
         specifier: ^0.15.1
         version: 0.15.1
       date-fns:
-        specifier: ^3.3.1
-        version: 3.6.0
+        specifier: ^4.0.0
+        version: 4.1.0
       fhir-kit-client:
         specifier: ^1.9.2
         version: 1.9.2
@@ -1243,8 +1243,8 @@ importers:
         specifier: ^0.15.1
         version: 0.15.1
       date-fns:
-        specifier: ^3.3.1
-        version: 3.6.0
+        specifier: ^4.0.0
+        version: 4.1.0
       ioredis:
         specifier: ^5.10.0
         version: 5.10.1
@@ -9754,9 +9754,6 @@ packages:
 
   dataloader@2.2.3:
     resolution: {integrity: sha512-y2krtASINtPFS1rSDjacrFgn1dcUuoREVabwlOGOe4SdxenREqwjwjElAdwvbGM7kgZz9a3KVicWR7vcz8rnzA==}
-
-  date-fns@3.6.0:
-    resolution: {integrity: sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww==}
 
   date-fns@4.1.0:
     resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
@@ -18493,7 +18490,7 @@ snapshots:
 
   '@graphql-tools/merge@9.0.11(graphql@16.13.1)':
     dependencies:
-      '@graphql-tools/utils': 10.6.1(graphql@16.13.1)
+      '@graphql-tools/utils': 10.11.0(graphql@16.13.1)
       graphql: 16.13.1
       tslib: 2.8.1
 
@@ -18544,8 +18541,8 @@ snapshots:
 
   '@graphql-tools/schema@10.0.10(graphql@16.13.1)':
     dependencies:
-      '@graphql-tools/merge': 9.0.11(graphql@16.13.1)
-      '@graphql-tools/utils': 10.6.1(graphql@16.13.1)
+      '@graphql-tools/merge': 9.1.7(graphql@16.13.1)
+      '@graphql-tools/utils': 10.11.0(graphql@16.13.1)
       graphql: 16.13.1
       tslib: 2.8.1
       value-or-promise: 1.0.12
@@ -25491,8 +25488,6 @@ snapshots:
 
   dataloader@2.2.3: {}
 
-  date-fns@3.6.0: {}
-
   date-fns@4.1.0: {}
 
   dayjs@1.11.20: {}
@@ -25701,7 +25696,7 @@ snapshots:
 
   dotenv-expand@11.0.7:
     dependencies:
-      dotenv: 16.4.7
+      dotenv: 16.6.1
 
   dotenv-expand@12.0.3:
     dependencies:
