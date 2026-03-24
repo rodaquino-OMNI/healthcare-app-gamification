@@ -27,7 +27,7 @@
     "@fontsource/plus-jakarta-sans": "^5.0.0",
     "@hookform/resolvers": "^3.3.4",
     "@mui/material": "5.18.0",
-    "@react-native-async-storage/async-storage": "1.19.3",
+    "@react-native-async-storage/async-storage": "1.24.0",
     "@react-native-community/datetimepicker": "^9.1.0",
     "@react-native-firebase/analytics": "^18.8.0",
     "@react-native-firebase/crashlytics": "^18.8.0",
