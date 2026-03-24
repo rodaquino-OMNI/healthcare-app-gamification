@@ -26,7 +26,7 @@
         "@opentelemetry/api": "^1.4.1",
         "@opentelemetry/exporter-trace-otlp-grpc": "^0.213.0",
         "@opentelemetry/sdk-node": "^0.213.0",
-        "@opentelemetry/sdk-trace-base": "^1.15.2",
+        "@opentelemetry/sdk-trace-base": "^2.0.0",
         "pg": "^8.20.0",
         "firebase-admin": "^12.0.0",
         "nodemailer": "^7.0.13",

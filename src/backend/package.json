@@ -84,7 +84,7 @@
         "@opentelemetry/api": "^1.4.1",
         "@opentelemetry/exporter-trace-otlp-grpc": "^0.213.0",
         "@opentelemetry/sdk-node": "^0.213.0",
-        "@opentelemetry/sdk-trace-base": "^1.15.2",
+        "@opentelemetry/sdk-trace-base": "^2.0.0",
         "@prisma/client": "^7.0.0",
         "@sendgrid/client": "^8.1.6",
         "@sendgrid/mail": "^8.1.6",
