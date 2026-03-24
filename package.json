@@ -88,6 +88,7 @@
       "validator": "13.15.26",
       "jws": "4.0.1",
       "nodemailer": "7.0.13",
+      "file-type": "21.3.4",
 
       "@nestjs/common": "11.1.16",
       "@nestjs/core": "11.1.16",

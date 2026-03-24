@@ -5,8 +5,11 @@
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Parser } from 'expr-eval';
 
+import {
+    evaluateCondition as safeEvaluateCondition,
+    isKnownCondition,
+} from './condition-evaluator';
 import { LoggerService } from '../../../shared/src/logging/logger.service';
 import { AchievementsService } from '../achievements/achievements.service';
 import { ProfilesService } from '../profiles/profiles.service';
@@ -60,7 +63,6 @@ export interface RuleAction {
 @Injectable()
 export class RulesService implements OnModuleInit {
     private rules: Rule[] = [];
-    private readonly parser = new Parser();
     private readonly rulesRefreshInterval: number;
 
     constructor(
@@ -263,8 +265,6 @@ export class RulesService implements OnModuleInit {
                 },
             };
 
-            // Evaluate condition using expr-eval safe expression parser
-            // (no arbitrary code execution)
             const conditionResult = this.evaluateCondition(rule.condition, context);
 
             if (!conditionResult) {
@@ -296,17 +296,10 @@ export class RulesService implements OnModuleInit {
      * @returns True if the condition is met, false otherwise
      */
     private evaluateCondition(condition: string, context: any): boolean {
-        try {
-            const expr = this.parser.parse(condition);
-            return expr.evaluate(context) === true;
-        } catch (error) {
-            this.logger.error(
-                `Error evaluating condition: ${condition}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-                error instanceof Error ? error.stack : undefined,
-                'RulesService'
-            );
-            return false;
+        if (!isKnownCondition(condition)) {
+            this.logger.warn(`Unknown rule condition (denied): ${condition}`, 'RulesService');
         }
+        return safeEvaluateCondition(condition, context);
     }
 
     /**

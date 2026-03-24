@@ -48,7 +48,6 @@
         "class-validator": "^0.15.1",
         "compression": "^1.8.1",
         "date-fns": "^4.0.0",
-        "expr-eval": "^2.0.2",
         "express": "^5.1.0",
         "graphql": "16.13.1",
         "helmet": "^8.0.0",
