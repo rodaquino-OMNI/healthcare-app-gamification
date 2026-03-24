@@ -25,7 +25,7 @@
     "@datadog/browser-rum": "^6.0.0",
     "@expo/vector-icons": "15.1.1",
     "@fontsource/plus-jakarta-sans": "^5.0.0",
-    "@hookform/resolvers": "^3.3.4",
+    "@hookform/resolvers": "^5.0.0",
     "@mui/material": "5.18.0",
     "@react-native-async-storage/async-storage": "1.19.3",
     "@react-native-community/datetimepicker": "^9.1.0",
