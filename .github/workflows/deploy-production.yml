@@ -128,7 +128,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: build-and-push
-    if: ${{ !inputs.rollback }}
+    if: ${{ !inputs.rollback && secrets.AWS_ACCESS_KEY_ID != '' }}
     environment: production-canary
     steps:
       - name: Checkout code
@@ -329,7 +329,7 @@ jobs:
   rollback:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: ${{ inputs.rollback == true || failure() }}
+    if: ${{ (inputs.rollback == true || failure()) && secrets.AWS_ACCESS_KEY_ID != '' }}
     needs: [smoke-test]
     environment: production
     steps:

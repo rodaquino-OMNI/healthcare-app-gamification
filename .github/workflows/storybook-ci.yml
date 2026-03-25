@@ -53,6 +53,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Publish to Chromatic
+        if: ${{ secrets.CHROMATIC_PROJECT_TOKEN != '' }}
         uses: chromaui/action@5ec258af08deb3e8c36653bd618cb7fe52090031 # v15
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
