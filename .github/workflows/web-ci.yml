@@ -41,11 +41,11 @@ jobs:
     - name: Verify lockfile resolution integrity
       run: |
         echo "Checking for known vulnerable lockfile resolutions..."
-        if grep -q 'next@15\.4\.[0-7]:' pnpm-lock.yaml 2>/dev/null; then
+        if grep -qE '(^|[ /])next@15\.4\.[0-7]' pnpm-lock.yaml 2>/dev/null; then
           echo "::error::Lockfile drift: next resolves to a version below 15.4.8 (vulnerable)"
           exit 1
         fi
-        if grep -q 'esbuild@0\.2[0-4]\.' pnpm-lock.yaml 2>/dev/null; then
+        if grep -qE '(^|[ /])esbuild@0\.2[0-4]\.' pnpm-lock.yaml 2>/dev/null; then
           echo "::error::Lockfile drift: esbuild resolves to a version below 0.25.0 (vulnerable)"
           exit 1
         fi
@@ -55,13 +55,10 @@ jobs:
       run: node scripts/validate-package-json.js
 
     - name: Lint Web Components
-      working-directory: src/web
-      run: pnpm lint
+      run: pnpm turbo run lint --filter='./src/web/*'
 
     - name: Test Web Components
-      working-directory: src/web
-      run: pnpm test:ci
+      run: pnpm turbo run test --filter='./src/web/*' -- --ci --coverage
 
     - name: Build Web Application
-      working-directory: src/web
-      run: pnpm build
+      run: pnpm turbo run build --filter='./src/web/*'

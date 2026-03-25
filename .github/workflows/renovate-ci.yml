@@ -85,8 +85,7 @@ jobs:
         run: pnpm lint
 
       - name: Test
-        working-directory: src/backend
-        run: pnpm test -- --coverage --coverageReporters=lcov
+        run: pnpm turbo run test --filter='./src/backend/*' -- --coverage --coverageReporters=lcov
 
   build-web:
     if: github.actor == 'renovate[bot]'
@@ -110,16 +109,13 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Lint
-        working-directory: src/web
-        run: pnpm lint
+        run: pnpm turbo run lint --filter='./src/web/*'
 
       - name: Test
-        working-directory: src/web
-        run: pnpm test:ci
+        run: pnpm turbo run test --filter='./src/web/*' -- --ci --coverage
 
       - name: Build
-        working-directory: src/web
-        run: pnpm build
+        run: pnpm turbo run build --filter='./src/web/*'
 
   summary:
     if: github.actor == 'renovate[bot]' && always()
