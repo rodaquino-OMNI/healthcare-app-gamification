@@ -109,40 +109,40 @@
     },
     "heading": {
       "xs": {
-        "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 500, "fontSize": 16, "lineHeight": "1.3em" },
+        "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 500, "fontSize": 14, "lineHeight": "1.2em" },
         "type": "typography",
-        "description": "Heading xs — smallest heading"
+        "description": "Heading xs — smallest heading (from core.json)"
       },
       "sm": {
-        "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 500, "fontSize": 18, "lineHeight": "1.3em" },
+        "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 500, "fontSize": 16, "lineHeight": "1.2em" },
         "type": "typography",
-        "description": "Heading sm"
+        "description": "Heading sm (from core.json)"
       },
       "md": {
-        "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 500, "fontSize": 20, "lineHeight": "1.3em" },
+        "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 500, "fontSize": 18, "lineHeight": "1.2em" },
         "type": "typography",
-        "description": "Heading md"
+        "description": "Heading md (from core.json)"
       },
       "lg": {
-        "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 600, "fontSize": 24, "lineHeight": "1.3em" },
+        "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 600, "fontSize": 20, "lineHeight": "1.2em" },
         "type": "typography",
-        "description": "Heading lg"
+        "description": "Heading lg (from core.json)"
       },
       "xl": {
-        "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 600, "fontSize": 30, "lineHeight": "1.3em" },
+        "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 600, "fontSize": 24, "lineHeight": "1.2em" },
         "type": "typography",
-        "description": "Heading xl"
+        "description": "Heading xl (from core.json)"
       },
       "2xl": {
-        "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 600, "fontSize": 36, "lineHeight": "1.3em" },
+        "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 600, "fontSize": 28, "lineHeight": "1.2em" },
         "type": "typography",
-        "description": "Heading 2xl"
+        "description": "Heading 2xl (from core.json)"
       }
     },
     "label": {
-      "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 500, "fontSize": 14, "lineHeight": "1.3em" },
+      "value": { "fontFamily": "Plus Jakarta Sans", "fontWeight": 500, "fontSize": 12, "lineHeight": "1.2em" },
       "type": "typography",
-      "description": "Form labels and UI element labels"
+      "description": "Form labels and UI element labels (from core.json)"
     },
     "logo": {
       "primary": {

@@ -10,21 +10,23 @@ Accepted
 
 ## Context
 
-AUSTA SuperApp has 249+ mobile screens built across R4 Waves 1-14 by swarm agents. All v1.0/v1.1 modules (Welcome, Auth, Profile, Home, Symptom Checker, Medications, Consultations, Notifications, Search, Settings, Help, Achievements, Dark Mode, Health Assessment) have full Figma designs that agents followed during implementation.
+AUSTA SuperApp has 277 Figma-designed mobile screens (light mode) and ~321 implemented TSX screen files across R4 Waves 1-14. All v1.0/v1.1 modules (Welcome, Auth, Profile, Home, Symptom Checker, Medications, Consultations, Notifications, Search, Settings, Help, Achievements, Dark Mode, Health Assessment) have full Figma designs that agents followed during implementation.
 
-However, 4 v2.0 modules exist in Figma only as **placeholder grouped frames** without individual screen designs:
-- Module 09: Sleep Management (1 grouped frame, expected ~12 screens)
-- Module 10: Activity Tracker (1 grouped frame, expected ~10 screens)
-- Module 11: Nutrition Monitoring (1 grouped frame, expected ~10 screens)
-- Module 16: Wellness Resources (1 grouped frame, expected ~8 screens)
+5 v2.0/v1.0 modules existed in Figma as **placeholder grouped frames** (without individual screen-level designs) and have since been **fully implemented in code**:
+- Module 09: Sleep Management — 12 screens (`src/web/mobile/src/screens/health/sleep/`)
+- Module 10: Activity Tracker — 10 screens (`src/web/mobile/src/screens/health/activity/`)
+- Module 11: Nutrition Monitoring — 10 screens (`src/web/mobile/src/screens/health/nutrition/`)
+- Module 15: Error & Utility — 4 screens (`src/web/mobile/src/screens/error/`)
+- Module 16: Wellness Resources — 8 screens (`src/web/mobile/src/screens/health/wellness-resources/`)
 
-These modules need to be built with the same visual quality as Figma-designed modules. Without an explicit standard, swarm agents would make inconsistent design decisions, creating visual debt.
+These modules were built following this ADR's rules — composing patterns from fully-designed modules. Without an explicit standard, swarm agents would have made inconsistent design decisions, creating visual debt.
 
-Key pressures:
-- **40 new screens** must match 249 existing screens visually
+Key pressures at time of writing:
+- **44 new screens** (now implemented) had to match 277 existing Figma-designed screens visually
 - **Multiple swarm workers** build screens concurrently — no designer in the loop
 - **Dark mode** must work from day one (not retrofitted like W18)
 - **Design token files** exist (`core.json`, `light.json`, `dark.json`, `theme.json`) but were never codified as enforceable rules
+- **Icon registry** expanded to 574 custom SVG icons alongside Ionicons
 
 ## Decision
 
@@ -40,14 +42,16 @@ Zero hardcoded hex values in screen files. All colors referenced via `theme.colo
 
 Every screen belongs to a journey and uses its color token:
 
-| Journey | Token Path | Primary | Secondary | Background |
-|---------|-----------|---------|-----------|------------|
-| Health | `theme.colors.journeys.health` | `#0ACF83` | `#05A66A` | `#E6FFF5` |
-| Care | `theme.colors.journeys.care` | `#FF8C42` | `#F17C3A` | `#FFF3E8` |
-| Plan | `theme.colors.journeys.plan` | `#3A86FF` | `#2D6FD9` | `#EBF3FF` |
-| Gamification | `theme.colors.journeys.gamification` | `#9F7AEA` | — | — |
+| Journey | Token Path | Primary | Secondary | Accent | Background |
+|---------|-----------|---------|-----------|--------|------------|
+| Health | `colors.journeys.health` | `#0ACF83` | `#05A66A` | `#00875A` | `#F0FFF4` |
+| Care | `colors.journeys.care` | `#FF8C42` | `#F17C3A` | `#E55A00` | `#FFF8F0` |
+| Plan | `colors.journeys.plan` | `#3A86FF` | `#2D6FD9` | `#0057E7` | `#F0F8FF` |
+| Community | `colors.journeys.community` | `#9F7AEA` | `#805AD5` | `#6B46C1` | `#FAF5FF` |
 
-Sleep, Activity, Nutrition, and Wellness Resources all belong to the **Health** journey (green).
+> **Source of truth:** `src/web/design-system/src/tokens/colors.ts` — `journeys` object.
+
+Sleep, Activity, Nutrition, and Wellness Resources all belong to the **Health** journey (green). Error & Utility screens use neutral gray (no journey assignment).
 
 ### Rule 3: Screen Layout Patterns
 
@@ -78,13 +82,21 @@ Font family: **Plus Jakarta Sans** (primary), **Nunito** (logo only).
 
 | Usage | Token | Size | Weight | Line Height |
 |-------|-------|------|--------|-------------|
-| Screen title | `heading-xl` | 24 | SemiBold (600) | 120% |
-| Section header | `heading-md` | 18 | Medium (500) | 120% |
-| Card title | `heading-sm` | 16 | Medium (500) | 120% |
-| Body text | `text-md` | 16 | Regular (400) | 150% |
-| Caption/subtitle | `text-sm` | 14 | Regular (400) | 150% |
-| Badge/label | `label` | 12 | Medium (500) | 120% |
-| Small text | `text-xs` | 12 | Regular (400) | 150% |
+| Hero / display | `display-sm` | 30 | SemiBold (600) | tight |
+| Page title (large) | `heading-2xl` | 28 | SemiBold (600) | heading |
+| Screen title | `heading-xl` | 24 | SemiBold (600) | heading |
+| Major section header | `heading-lg` | 20 | SemiBold (600) | heading |
+| Section header | `heading-md` | 18 | Medium (500) | heading |
+| Card title | `heading-sm` | 16 | Medium (500) | heading |
+| Sub-card title | `heading-xs` | 14 | Medium (500) | heading |
+| Large body text | `text-lg` | 18 | Regular (400) | body |
+| Body text | `text-md` | 16 | Regular (400) | body |
+| Caption/subtitle | `text-sm` | 14 | Regular (400) | body |
+| Badge/label | `label` | 12 | Medium (500) | heading |
+| Small text | `text-xs` | 12 | Regular (400) | body |
+| Footnotes / legal | `text-2xs` | 10 | Regular (400) | body |
+
+> **Source of truth:** `docs/Figma/core.json` → `fontSizes.*` and `docs/Figma/theme.json` → `typography.*`
 
 ### Rule 6: Spacing
 
@@ -138,10 +150,12 @@ const createStyles = (theme: Theme) => StyleSheet.create({
 ```
 
 Color mappings (from `light.json` / `dark.json`):
-- `bg.default`: white → `#334155`
-- `bg.muted`: `#F8FAFC` → `#4B5563`
-- `fg.default`: `#334155` → white
-- `accent.default`: `#00C3F7` → `#00C3F7` (unchanged)
+- `bg.default`: white → `#334155` (gray.70)
+- `bg.muted`: `#F8FAFC` (gray.5) → `#4B5563` (gray.60)
+- `fg.default`: `#334155` (gray.70) → white
+- `accent.default`: `#00C3F7` → `#00C3F7` (unchanged across themes)
+
+> **Note:** Figma tokens reference `brand.300` = `#00C3F7` for accent. Code `colors.ts` maps `brand.primary` to `#05AEDB`. Both are valid — the token files use the Figma source value, while `colors.ts` uses the code-corrected value (see design-audit-remediation-manifest.json COL-001).
 
 ### Rule 10: Internationalization
 
@@ -166,39 +180,52 @@ Example: `SleepTrends.tsx` (main) + `SleepTrendsChart.tsx` (extracted chart) + `
 
 ### Rule 13: Icons
 
-Ionicons only (via `@expo/vector-icons`). Module-specific icons:
+Two icon sources are available:
+
+1. **Icon Registry** (`src/web/design-system/src/primitives/Icon/iconRegistry.ts`) — **574 unique custom SVG icons** (37 legacy + 537 strangeicons). Use the `Icon` design-system primitive for these. Preferred for health, medical, and wellness-specific icons.
+2. **Ionicons** (via `@expo/vector-icons`) — Used in mobile screens for standard UI chrome (back arrows, tabs, generic actions). Acceptable for navigation and utility icons.
+
+Module-specific icon recommendations:
 
 | Module | Primary Icon | Additional Icons |
 |--------|-------------|------------------|
-| Sleep | `moon-outline` | `bed-outline`, `alarm-outline`, `time-outline` |
-| Activity | `fitness-outline` | `bicycle-outline`, `walk-outline`, `heart-outline` |
-| Nutrition | `nutrition-outline` | `restaurant-outline`, `water-outline`, `leaf-outline` |
-| Wellness | `leaf-outline` | `book-outline`, `videocam-outline`, `bookmark-outline` |
+| Sleep | `moon-outline` (Ionicons) / `moon` (registry) | `bed-outline`, `alarm-outline`, `time-outline` |
+| Activity | `fitness-outline` (Ionicons) / `running` (registry) | `bicycle-outline`, `walk-outline`, `heart-outline` |
+| Nutrition | `nutrition-outline` (Ionicons) / `apple` (registry) | `restaurant-outline`, `water-outline`, `leaf-outline` |
+| Wellness | `leaf-outline` (Ionicons) / `wellness` (registry) | `book-outline`, `videocam-outline`, `bookmark-outline` |
+| Error | `warning-outline` (Ionicons) | `wifi-outline`, `construct-outline`, `refresh-outline` |
 
 ## Consequences
 
 ### Positive
 
-- **Visual consistency**: New placeholder modules are indistinguishable from Figma-designed modules because they use identical tokens, patterns, and components.
-- **No design debt**: Every screen is production-ready from day one — no future "design polish" pass needed.
-- **Swarm-safe**: Multiple concurrent agents can build screens independently while maintaining visual coherence, because rules are explicit and verifiable.
-- **Dark mode built-in**: No W18-style retrofit needed — dark mode is a day-one requirement.
+- **Visual consistency**: All 44 placeholder-module screens are indistinguishable from Figma-designed modules because they use identical tokens, patterns, and components. ✅ Validated post-implementation.
+- **No design debt**: Every screen was production-ready from day one — no "design polish" pass was needed.
+- **Swarm-safe**: Multiple concurrent agents built screens independently while maintaining visual coherence, because rules were explicit and verifiable.
+- **Dark mode built-in**: No W18-style retrofit needed — dark mode was a day-one requirement for all 44 screens.
 - **Measurable compliance**: Every rule has a `grep`-verifiable exit gate.
 
 ### Negative
 
 - **Pattern rigidity**: Novel UI patterns (e.g., a sleep stage animation) must be proposed as extensions to this ADR rather than ad-hoc implementations.
-- **No pixel-perfect Figma reference**: For placeholder modules, screens are "designed by composition" rather than pixel-matched. Minor visual differences from a hypothetical future Figma design are acceptable.
+- **No pixel-perfect Figma reference**: For placeholder modules, screens were "designed by composition" rather than pixel-matched. When Figma designs are expanded for these modules, a visual diff pass may reveal minor adjustments.
+- **Dual icon system**: Having both Ionicons and iconRegistry creates ambiguity for new contributors about which to use.
 
 ### Neutral
 
-- **Token file authority**: `docs/Figma/core.json`, `light.json`, `dark.json`, `theme.json` are the source of truth for values. If Figma tokens are updated, this ADR's value tables must be updated to match.
+- **Token file authority**: `docs/Figma/core.json`, `light.json`, `dark.json`, `theme.json` are the source of truth for design token values. `src/web/design-system/src/tokens/colors.ts` is the source of truth for journey colors and code-corrected values. If Figma tokens are updated, this ADR's value tables must be updated to match.
+- **Brand color discrepancy**: Figma uses `#00C3F7` as brand.300 (azul aust). Code corrected brand.primary to `#05AEDB` (Brand/60). Both are documented; the token files preserve Figma source values.
 
 ## References
 
-- Figma File: `OcG9oRNdUEskvAPUcKiKMe` (AUSTA SuperApp)
-- Token Files: `docs/Figma/core.json`, `light.json`, `dark.json`, `theme.json`
-- Design System: `src/web/design-system/src/tokens/colors.ts`
+- Figma File (original): `OcG9oRNdUEskvAPUcKiKMe` (AUSTA SuperApp)
+- Figma File (Duplicate 2, working): `izQmcRXAJhlsGALJ6FaHIF`
+- Token Files (DTCG): `docs/Figma/core.json`, `light.json`, `dark.json`, `theme.json`
+- Token Files (legacy): `docs/Figma/austa-design-tokens.json`, `docs/Figma/Mode 1.json`
+- Design System Colors: `src/web/design-system/src/tokens/colors.ts`
+- Icon Registry: `src/web/design-system/src/primitives/Icon/iconRegistry.ts` (574 icons)
 - Screen Inventory: `docs/Figma/AUSTA_Screen_Inventory_100pct.md`
+- Figma-to-Code Evaluation: `docs/Figma/figma-to-code-evaluation-report.md`
+- Design Audit Remediation: `docs/Figma/design-audit-remediation-manifest.json`
 - W18 Dark Mode Commit: `40d00d1`
 - ADR-001 Navigation Architecture (route naming conventions)

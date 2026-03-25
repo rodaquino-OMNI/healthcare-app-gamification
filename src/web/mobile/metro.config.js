@@ -53,6 +53,11 @@ config.transformer.getTransformOptions = async () => ({
 const DEMO_MOCKS = {
     'react-native-device-info': path.resolve(__dirname, 'src/mocks/device-info-mock.js'),
     'react-native-mmkv': path.resolve(__dirname, 'src/mocks/mmkv-mock.js'),
+    '@react-native-async-storage/async-storage': path.resolve(__dirname, 'src/mocks/async-storage-mock.js'),
+    '@react-native-community/netinfo': path.resolve(__dirname, 'src/mocks/netinfo-mock.js'),
+    'react-native-biometrics': path.resolve(__dirname, 'src/mocks/biometrics-mock.js'),
+    'react-native-ssl-pinning': path.resolve(__dirname, 'src/mocks/ssl-pinning-mock.js'),
+    'react-native-vision-camera': path.resolve(__dirname, 'src/mocks/vision-camera-mock.js'),
 };
 const originalResolveRequest = config.resolver.resolveRequest;
 config.resolver.resolveRequest = (context, moduleName, platform) => {
