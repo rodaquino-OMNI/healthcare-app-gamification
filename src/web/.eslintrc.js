@@ -70,7 +70,7 @@ module.exports = {
     'next-env.d.ts'
   ],
   rules: {
-    'import/no-unresolved': ['error', { ignore: ['\\.css$'] }],
+    'import/no-unresolved': ['error', { ignore: ['\\.css$', '\\.mjs$', '@react-native-community/', '@react-native-picker/'] }],
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': [
       'error',
