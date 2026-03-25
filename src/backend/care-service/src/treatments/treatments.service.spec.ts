@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
 import { PrismaService } from '@app/shared/database/prisma.service';
+import { AppException } from '@app/shared/exceptions/exceptions.types';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { TracingService } from '@app/shared/tracing/tracing.service';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Prisma } from '@prisma/client';
 
 import { TreatmentsService } from './treatments.service';
 
@@ -225,7 +227,14 @@ describe('TreatmentsService', () => {
         it('should throw AppException when treatment plan is not found', async () => {
             mockPrismaService.treatmentPlan.findUnique.mockResolvedValue(null);
 
-            await expect(service.findOne('nonexistent-id')).rejects.toThrow();
+            await expect(service.findOne('nonexistent-id')).rejects.toThrow(AppException);
+        });
+
+        it('should re-throw database errors from findUnique', async () => {
+            const dbError = new Error('Connection refused');
+            mockPrismaService.treatmentPlan.findUnique.mockRejectedValue(dbError);
+
+            await expect(service.findOne('plan-test-123')).rejects.toThrow('Connection refused');
         });
 
         it('should call findUnique with the correct id', async () => {
@@ -261,16 +270,16 @@ describe('TreatmentsService', () => {
             expect(result.name).toBe('Updated Plan Name');
         });
 
-        it('should throw NotFoundException when plan does not exist (Prisma P2025)', async () => {
-            const prismaError = new Error('Record not found') as any;
-            prismaError.code = 'P2025';
-            prismaError.constructor = { name: 'PrismaClientKnownRequestError' };
-            // Simulate Prisma P2025 error by checking the Prisma import path
-            mockPrismaService.treatmentPlan.update.mockRejectedValue(
-                Object.assign(prismaError, { name: 'PrismaClientKnownRequestError' })
+        it('should throw AppException when plan does not exist (Prisma P2025)', async () => {
+            const prismaError = new Prisma.PrismaClientKnownRequestError(
+                'Record to update not found.',
+                { code: 'P2025', clientVersion: '7.0.0' }
             );
+            mockPrismaService.treatmentPlan.update.mockRejectedValue(prismaError);
 
-            await expect(service.update('nonexistent-id', updateDto as any)).rejects.toThrow();
+            await expect(service.update('nonexistent-id', updateDto as any)).rejects.toThrow(
+                AppException
+            );
         });
 
         it('should only update fields that are present in updateDto', async () => {
@@ -285,6 +294,25 @@ describe('TreatmentsService', () => {
             const callData = mockPrismaService.treatmentPlan.update.mock.calls[0][0].data;
             expect(callData).toHaveProperty('progress', 75);
             expect(callData).not.toHaveProperty('name');
+        });
+
+        it('should update description, startDate, and endDate when provided', async () => {
+            const fullDto = {
+                description: 'Updated description',
+                startDate: new Date('2024-02-01'),
+                endDate: new Date('2024-12-31'),
+            };
+            mockPrismaService.treatmentPlan.update.mockResolvedValue({
+                ...mockTreatmentPlan,
+                ...fullDto,
+            });
+
+            await service.update('plan-test-123', fullDto as any);
+
+            const callData = mockPrismaService.treatmentPlan.update.mock.calls[0][0].data;
+            expect(callData).toHaveProperty('description', 'Updated description');
+            expect(callData).toHaveProperty('startDate');
+            expect(callData).toHaveProperty('endDate');
         });
     });
 
@@ -303,12 +331,14 @@ describe('TreatmentsService', () => {
             expect(result).toEqual(mockTreatmentPlan);
         });
 
-        it('should throw NotFoundException when plan does not exist', async () => {
-            const prismaError = new Error('Record not found') as any;
-            prismaError.code = 'P2025';
+        it('should throw AppException when plan does not exist (Prisma P2025)', async () => {
+            const prismaError = new Prisma.PrismaClientKnownRequestError(
+                'Record to delete does not exist.',
+                { code: 'P2025', clientVersion: '7.0.0' }
+            );
             mockPrismaService.treatmentPlan.delete.mockRejectedValue(prismaError);
 
-            await expect(service.remove('nonexistent-id')).rejects.toThrow();
+            await expect(service.remove('nonexistent-id')).rejects.toThrow(AppException);
         });
 
         it('should call delete with correct where clause', async () => {

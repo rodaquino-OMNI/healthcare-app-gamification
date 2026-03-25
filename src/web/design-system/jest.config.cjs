@@ -16,6 +16,9 @@ module.exports = {
     '^@plan/(.*)$': '<rootDir>/src/plan/$1',
     '^@charts/(.*)$': '<rootDir>/src/charts/$1',
   },
+  transformIgnorePatterns: [
+    'node_modules/(?!(react-native|@react-native|react-native-reanimated|react-native-gesture-handler|react-native-safe-area-context|react-native-svg|victory-native|@react-navigation|react-native-screens)/)',
+  ],
   setupFilesAfterEnv: ['@testing-library/jest-dom'],
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
 };
