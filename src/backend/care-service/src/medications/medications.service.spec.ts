@@ -5,6 +5,17 @@ import { CreateMedicationDto } from './dto/create-medication.dto';
 import { Medication } from './entities/medication.entity';
 import { MedicationsService } from './medications.service';
 
+const mockConfiguration = {
+    gamification: {
+        enabled: true,
+        defaultEvents: { medicationAdherence: 'MEDICATION_ADHERENCE' },
+    },
+};
+
+jest.mock('../config/configuration', () => ({
+    configuration: jest.fn(() => mockConfiguration),
+}));
+
 /**
  * Unit tests for MedicationsService.
  *
@@ -143,11 +154,18 @@ describe('MedicationsService', () => {
         });
 
         it('should not publish Kafka event when gamification is disabled', async () => {
+            mockConfiguration.gamification.enabled = false;
+            const disabledService = new MedicationsService(
+                mockPrisma as any,
+                mockLogger as any,
+                mockKafka as any
+            );
             mockPrisma.medication.create.mockResolvedValue(mockMedication);
 
-            await service.create(mockCreateDto, 'user-1');
+            await disabledService.create(mockCreateDto, 'user-1');
 
             expect(mockKafka.produce).not.toHaveBeenCalled();
+            mockConfiguration.gamification.enabled = true;
         });
 
         it('should throw AppException when creation fails', async () => {
