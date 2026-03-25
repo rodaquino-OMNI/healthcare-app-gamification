@@ -13,28 +13,28 @@
 
 | Métrica | Valor verificado |
 |---|---|
-| **Arquivos fonte totais** | ~2.100 |
-| **Arquivos TypeScript / TSX** | 1.369 (577 `.ts` + 792 `.tsx`) — excluindo testes |
-| **Arquivos TS/TSX (incluindo testes)** | 1.620 |
-| **Linhas de código TS/JS** | ~332.000 |
-| — Backend (serviços NestJS) | ~46.400 |
-| — Frontend (Next.js + React Native + Design System) | ~234.200 |
-| **Documentação Markdown** | 261 arquivos / ~99.400 linhas |
-| **Terraform IaC** | 28 arquivos / ~3.076 linhas |
+| **Arquivos fonte totais** | ~2.140 |
+| **Arquivos TypeScript / TSX** | 1.500 (702 `.ts` + 798 `.tsx`) — excluindo testes |
+| **Arquivos TS/TSX (incluindo testes)** | 2.036 |
+| **Linhas de código TS/JS** | ~415.000 |
+| — Backend (serviços NestJS) | ~86.500 |
+| — Frontend (Next.js + React Native + Design System) | ~328.600 |
+| **Documentação Markdown** | 45 arquivos em `docs/` / ~35.800 linhas (546 `.md` repo-wide / ~205.000 linhas) |
+| **Terraform IaC** | 28 arquivos / ~3.160 linhas |
 | **Manifestos Kubernetes** | 40 arquivos YAML em 8 namespaces |
-| **Arquivos de teste** | 251 (79 `.spec.ts` + 1 `.test.ts` + 12 `.e2e-spec.ts` + 159 `.test.tsx`) |
+| **Arquivos de teste** | 536 (163 `.spec.ts` + 1 `.test.ts` + 12 `.e2e-spec.ts` + 360 `.test.tsx`) |
 | **Pipelines GitHub Actions** | 12 workflows |
-| **Architecture Decision Records** | 6 ADRs |
-| **Componentes do design system** | 57 diretórios de componentes |
+| **Architecture Decision Records** | 7 ADRs |
+| **Componentes do design system** | 61 diretórios de componentes (29 UI + 8 primitivos + 4 gráficos + 5 care + 7 gamification + 4 health + 4 plan) |
 | **Schemas Prisma** | 2 (shared + gamification) |
-| **Modelos Prisma** | 39 (30 shared + 9 gamification) |
+| **Modelos Prisma** | 42 (33 shared + 9 gamification) |
 | **Enums Prisma** | 11 (no schema shared) |
 | **Schemas GraphQL** | 2 (API Gateway + web shared) |
 | **Idiomas i18n** | 2 (en-US, pt-BR) — web + mobile |
 | **Navigators mobile** | 14 (9 raiz + 5 sub-navigators de saúde) |
-| **Fluxos Maestro E2E** | 13 fluxos |
+| **Fluxos Maestro E2E** | 18 fluxos |
 
-*Verificado em 9 de março de 2026 — exclui `.git/`, `node_modules/`, `.next/`, `.claude-flow/`, `.swarm/`, `dist/`, `build/`.*
+*Verificado em 25 de março de 2026 — exclui `.git/`, `node_modules/`, `.next/`, `.claude-flow/`, `.swarm/`, `dist/`, `build/`.*
 
 ---
 
@@ -125,11 +125,11 @@ Jornada de saúde expandida com módulos dedicados:
 ```text
 ┌──────────────────────────────────────────────────────────────────┐
 │                            Clientes                              │
-│         Web App (Next.js 15)  │  Mobile App (React Native 0.73) │
+│         Web App (Next.js 15)  │  Mobile App (React Native 0.76) │
 └─────────────────────────────┬────────────────────────────────────┘
                               │  HTTPS / WSS
 ┌─────────────────────────────▼────────────────────────────────────┐
-│              API Gateway  (NestJS 11 + GraphQL + REST)           │
+│              API Gateway  (NestJS 11 + GraphQL + REST)            │
 │                    Rate limiting · Auth middleware                │
 └──────┬──────────┬──────────┬──────────┬──────────┬──────────────┘
        │          │          │          │          │
@@ -162,6 +162,7 @@ Jornada de saúde expandida com módulos dedicados:
 | [ADR-004](docs/adr/ADR-004-lgpd-compliance.md) | Arquitetura de dados em compliance com LGPD | Aceito |
 | [ADR-005](docs/adr/ADR-005-design-ui-consistency.md) | Padrões de consistência de Design e UI | Aceito |
 | [ADR-013](docs/adr/013-claude-flow-swarm-intelligence.md) | Padrão de agentes com inteligência de enxame (Claude Flow) | Aceito |
+| [ADR-014](docs/adr/ADR-014-health-domain-api-modules.md) | Módulos de API do domínio de saúde | Aceito |
 
 ---
 
@@ -170,11 +171,11 @@ Jornada de saúde expandida com módulos dedicados:
 ```text
 healthcare-super-app/
 ├── src/
-│   ├── backend/                        # Monorepo NestJS (Lerna)
-│   │   ├── api-gateway/                # Entry point GraphQL + REST       26 TS / 2.798 linhas
-│   │   ├── auth-service/               # OAuth2, JWT, MFA, biométrico     43 TS / 4.833 linhas
-│   │   ├── care-service/               # Consultas, telemedicina, Rx      50 TS / 6.647 linhas
-│   │   ├── gamification-engine/        # XP, conquistas, quests           58 TS / 6.544 linhas
+│   ├── backend/                        # Monorepo NestJS (pnpm)
+│   │   ├── api-gateway/                # Entry point GraphQL + REST       38 TS / 4.778 linhas
+│   │   ├── auth-service/               # OAuth2, JWT, MFA, biométrico     63 TS / 7.057 linhas
+│   │   ├── care-service/               # Consultas, telemedicina, Rx      54 TS / 7.781 linhas
+│   │   ├── gamification-engine/        # XP, conquistas, quests           70 TS / 26.388 linhas
 │   │   │   └── src/
 │   │   │       ├── achievements/       # Processamento de badges
 │   │   │       ├── quests/             # Motor de quests multi-etapas
@@ -183,17 +184,17 @@ healthcare-super-app/
 │   │   │       ├── rules/              # Rules engine orientado a eventos
 │   │   │       ├── profiles/           # Perfis de gamificação
 │   │   │       └── events/             # Consumers/producers Kafka
-│   │   ├── health-service/             # Sinais vitais, metas, wearables  51 TS / 6.742 linhas
-│   │   ├── notification-service/       # Push, SMS, e-mail, in-app        36 TS / 4.311 linhas
-│   │   ├── plan-service/               # Seguro, sinistros, benefícios    55 TS / 6.767 linhas
-│   │   ├── shared/                     # Utilitários e DTOs cross-service 60 TS / 7.690 linhas
-│   │   │   └── prisma/schema.prisma    # 30 models, 11 enums
+│   │   ├── health-service/             # Sinais vitais, metas, wearables  97 TS / 13.702 linhas
+│   │   ├── notification-service/       # Push, SMS, e-mail, in-app        43 TS / 5.091 linhas
+│   │   ├── plan-service/               # Seguro, sinistros, benefícios    62 TS / 7.532 linhas
+│   │   ├── shared/                     # Utilitários e DTOs cross-service 78 TS / 10.505 linhas
+│   │   │   └── prisma/schema.prisma    # 33 models, 11 enums
 │   │   └── packages/
 │   │       ├── auth/                   # Guards e decorators compartilhados
 │   │       └── shared/                 # Módulos NestJS compartilhados
 │   │
 │   └── web/                            # Monorepo Turborepo
-│       ├── web/                        # App web Next.js 15               412 arquivos / 66.396 linhas
+│       ├── web/                        # App web Next.js 15               559 arquivos / 83.043 linhas
 │       │   └── src/
 │       │       ├── pages/
 │       │       │   ├── auth/           # Login, cadastro, MFA
@@ -219,7 +220,7 @@ healthcare-super-app/
 │       │       ├── context/            # React context providers
 │       │       └── utils/              # Helpers e hooks
 │       │
-│       ├── mobile/                     # React Native 0.73 + Expo        489 arquivos / 123.965 linhas
+│       ├── mobile/                     # React Native 0.76 + Expo        628 arquivos / 148.309 linhas
 │       │   └── src/
 │       │       ├── screens/
 │       │       │   ├── auth/           # Login, cadastro, biométrico
@@ -266,11 +267,11 @@ healthcare-super-app/
 │       │       ├── context/            # Context global do app
 │       │       └── utils/              # Helpers específicos RN
 │       │
-│       ├── design-system/              # Biblioteca de componentes (Storybook 8)  548 TS/TSX / 39.728 linhas
+│       ├── design-system/              # Biblioteca de componentes (Storybook 8)  356 TS/TSX / 91.273 linhas
 │       │   └── src/
-│       │       ├── components/         # 26 componentes UI (Tabs, Input, Button,
+│       │       ├── components/         # 29 componentes UI (Tabs, Input, Button,
 │       │       │                       # Modal, Toast, Card, Table, etc.)
-│       │       ├── primitives/         # 7 primitivos (Box, Text, Stack, Icon, etc.)
+│       │       ├── primitives/         # 8 primitivos (Box, Text, Stack, Icon, etc.)
 │       │       ├── charts/             # 4 gráficos (Bar, Line, Radial, Donut)
 │       │       ├── care/               # 5 componentes (AppointmentCard, SymptomSelector,
 │       │       │                       # MedicationCard, ProviderCard, VideoConsultation)
@@ -283,11 +284,11 @@ healthcare-super-app/
 │       │       │                       # BenefitCard, InsuranceCard)
 │       │       ├── themes/             # Temas claro/escuro
 │       │       └── tokens/             # Design tokens
-│       ├── shared/                     # Hooks, utils, schema GraphQL     40 arquivos / 4.093 linhas
+│       ├── shared/                     # Hooks, utils, schema GraphQL     83 arquivos / 8.251 linhas
 │       └── types/                      # Definições TypeScript globais
 │
 ├── infrastructure/
-│   ├── kubernetes/                     # 40 manifestos em 8 namespaces
+│   ├── kubernetes/                      # 40 manifestos em 8 namespaces
 │   │   ├── api-gateway/               # Deployment, Service, HPA, PDB, NetworkPolicy, Ingress
 │   │   ├── auth-service/              # Deployment, Service, HPA, PDB, NetworkPolicy
 │   │   ├── care-journey/
@@ -296,7 +297,7 @@ healthcare-super-app/
 │   │   ├── monitoring/                # Prometheus, Grafana, Loki
 │   │   ├── notification-service/
 │   │   └── plan-journey/
-│   ├── terraform/                      # 28 arquivos .tf / ~3.076 linhas
+│   ├── terraform/                      # 28 arquivos .tf / ~3.160 linhas
 │   │   ├── modules/
 │   │   │   ├── eks/                    # Cluster EKS
 │   │   │   ├── network/                # VPC, subnets, security groups
@@ -315,7 +316,7 @@ healthcare-super-app/
 │   └── docker-compose.production.yml
 │
 ├── docs/
-│   ├── adr/                            # 6 Architecture Decision Records
+│   ├── adr/                            # 7 Architecture Decision Records
 │   ├── analysis/                       # Resultados de CI, auditoria, análise de deps
 │   ├── design/                         # 10 documentos de arquitetura e design
 │   ├── Documentação para Devs/         # 3 guias para desenvolvedores
@@ -326,7 +327,8 @@ healthcare-super-app/
 ├── .github/workflows/                  # 12 pipelines GitHub Actions
 ├── agents/                             # Definições de agentes IA (YAML)
 ├── scripts/                            # Scripts utilitários (i18n parity, validação)
-├── lerna.json                          # Configuração monorepo Lerna (Yarn)
+├── pnpm-workspace.yaml                 # Configuração monorepo pnpm
+├── turbo.json                          # Configuração Turborepo
 ├── tsconfig.base.json                  # Config base TypeScript compartilhada
 └── jest.config.js                      # Config raiz Jest
 ```
@@ -340,30 +342,30 @@ healthcare-super-app/
 | Camada | Tecnologia | Versão |
 |---|---|---|
 | Runtime | Node.js | 20+ |
-| Framework | NestJS | ^11.0.16 |
+| Framework | NestJS | ^11.0.0 |
 | API | GraphQL (Apollo Server) + REST | graphql 16.13.1 |
-| ORM | Prisma | 5.22.0 |
+| ORM | Prisma | ^7.0.0 |
 | Message broker | Apache Kafka (KafkaJS) | kafkajs ^2.2.4 |
-| Cache | Redis (ioredis) | ioredis ^5.10.0 |
+| Cache | Redis (ioredis) | ioredis ^5.10.1 |
 | BD primário | PostgreSQL | 16 |
-| Linguagem | TypeScript | 5.3.3 |
+| Linguagem | TypeScript | 5.9.3 (backend) / 5.3.3 (frontend) |
 
 ### Frontend
 
 | Camada | Tecnologia | Versão |
 |---|---|---|
-| Web framework | Next.js | 15.4.11 |
-| Mobile framework | React Native | 0.73.0 |
-| UI (web) | React | 19.0.0 |
-| UI (mobile) | React | 18.2.0 |
+| Web framework | Next.js | 15.5.12 |
+| Mobile framework | React Native | 0.76.9 |
+| UI (web) | React | 19.2.0 |
+| UI (mobile) | React | 19.2.0 |
 | Data fetching | TanStack Query (React Query) | — |
-| Estilização | Styled Components | ^6.1.8 |
+| Estilização | Styled Components | 6.3.11 |
 | Gráficos (web) | Recharts | — |
-| Gráficos (mobile) | Victory Native | 36.6.11 |
-| Linguagem | TypeScript | 5.3.3 |
+| Gráficos (mobile) | Victory Native | 36.9.2 |
+| Linguagem | TypeScript | 5.3.3 (web/mobile) |
 | Build system | Turborepo | — |
 | Documentação de componentes | Storybook | ^8.4.0 |
-| E2E mobile | Maestro | 13 fluxos |
+| E2E mobile | Maestro | 18 fluxos |
 | Distribuição mobile | EAS (Expo Application Services) | — |
 | i18n | Camada customizada | en-US + pt-BR |
 
@@ -378,7 +380,7 @@ healthcare-super-app/
 | CI/CD | GitHub Actions (12 workflows) |
 | Métricas | Prometheus + Grafana / CloudWatch |
 | Rastreamento de erros | Sentry |
-| Gerenciador de pacotes | Yarn (Lerna + Turborepo monorepo) |
+| Gerenciador de pacotes | pnpm (Turborepo monorepo) |
 | Região AWS | sa-east-1 (compliance LGPD) |
 
 ---
@@ -390,7 +392,7 @@ healthcare-super-app/
 | Ferramenta | Versão mínima |
 |---|---|
 | Node.js | 20+ |
-| Yarn | 1.22+ |
+| pnpm | 10.6+ |
 | Docker & Docker Compose | latest stable |
 | Expo CLI | `npm install -g expo-cli` |
 
@@ -401,24 +403,23 @@ healthcare-super-app/
 git clone https://github.com/rodaquino-OMNI/healthcare-super-app--w-gamification--tgfzl7.git
 cd healthcare-super-app--w-gamification--tgfzl7
 
-# 2. Instalar dependências do workspace web (mobile + web app + design system)
-cd src/web && yarn install
+# 2. Instalar dependências (todos os workspaces)
+pnpm install
 
-# 3. Instalar dependências do backend (todos os microsserviços)
-cd ../backend && yarn install
+# 3. Configurar variáveis de ambiente
+# Crie .env nos diretórios de serviço com credenciais locais de DB, Redis, Kafka
 
-# 4. Copiar e configurar variáveis de ambiente
-cp .env.example .env
-# Edite .env com credenciais locais de DB, Redis, Kafka
+# 4. Iniciar serviços de infraestrutura
+cd src/backend && docker-compose up -d
 
-# 5. Iniciar serviços de infraestrutura
-docker-compose up -d
+# 5. Gerar client Prisma
+pnpm prisma:generate
 
 # 6. Executar migrações do banco
-yarn prisma migrate dev
+pnpm --filter @austa/shared exec prisma migrate dev
 
 # 7. Popular dados de desenvolvimento (opcional)
-yarn prisma db seed
+pnpm --filter @austa/shared exec prisma db seed
 ```
 
 > **Avisos de instalação inofensivos:** `postinstall script path` e `husky .git not found` podem ser ignorados com segurança.
@@ -434,96 +435,90 @@ cd src/backend
 
 # Iniciar todos os serviços em watch mode via Docker Compose
 docker-compose up -d
-yarn start:dev
+pnpm run dev:backend       # Da raiz, via turbo
 
 # Iniciar um serviço específico
-yarn workspace @austa/api-gateway dev
-yarn workspace @austa/auth-service dev
-yarn workspace @austa/gamification-engine dev
-yarn workspace @austa/health-service dev
-yarn workspace @austa/care-service dev
-yarn workspace @austa/plan-service dev
-yarn workspace @austa/notification-service dev
+pnpm --filter @austa/api-gateway dev
+pnpm --filter @austa/auth-service dev
+pnpm --filter @austa/gamification-engine dev
+pnpm --filter @austa/health-service dev
+pnpm --filter @austa/care-service dev
+pnpm --filter @austa/plan-service dev
+pnpm --filter @austa/notification-service dev
 
 # Prisma Studio (GUI do banco)
-yarn prisma studio
+pnpm --filter @austa/shared exec prisma studio
 ```
 
 ### Aplicação Web (Next.js)
 
 ```bash
 cd src/web
-yarn web dev          # → http://localhost:3000
+pnpm run dev:web      # Da raiz → http://localhost:3000
 ```
 
 ### Aplicação Mobile (React Native)
 
 ```bash
 cd src/web/mobile
-yarn start            # Metro bundler
-yarn ios              # Simulador iOS
-yarn android          # Emulador Android
+pnpm start            # Metro bundler
+pnpm run ios          # Simulador iOS
+pnpm run android      # Emulador Android
 ```
 
 ### Design System (Storybook)
 
 ```bash
-cd src/web
-yarn design-system storybook   # → http://localhost:6006
+cd src/web/design-system
+pnpm run storybook             # → http://localhost:6006
 ```
 
 ### Qualidade de Código
 
 ```bash
 # Lint (todos os workspaces)
-yarn lint
+pnpm lint
 
 # Type-check (todos os workspaces)
-yarn typecheck
+pnpm typecheck
 
 # Format
-yarn format
+pnpm format
 ```
 
 ---
 
 ## 🧪 Testes
 
-O repositório contém **251 arquivos de teste**:
+O repositório contém **536 arquivos de teste**:
 
 | Tipo | Quantidade | Extensão |
 |---|---|---|
-| Backend unit/integration | 79 | `.spec.ts` |
+| Backend unit/integration | 163 | `.spec.ts` |
 | Backend isolado | 1 | `.test.ts` |
 | Backend end-to-end | 12 | `.e2e-spec.ts` |
-| Frontend componente/tela | 159 | `.test.tsx` |
-| Mobile E2E (Maestro) | 13 fluxos | `.yaml` |
+| Frontend componente/tela | 360 | `.test.tsx` |
+| Mobile E2E (Maestro) | 18 fluxos | `.yaml` |
 
 ```bash
 # Executar todos os testes a partir da raiz
-yarn test
+pnpm test
 
 # Testes backend
-cd src/backend
-yarn test            # unit + integration
-yarn test:e2e        # end-to-end
-yarn test:cov        # com relatório de cobertura
+pnpm test:backend
 
 # Testes web
-cd src/web
-yarn test
+pnpm test:frontend
 
 # Testes mobile
-cd src/web/mobile
-yarn test
+pnpm --filter austa-mobile test
 
 # Testes design system
-cd src/web
-yarn design-system test
+pnpm --filter @austa/design-system test
 
 # E2E mobile (requer Maestro: brew tap mobile-dev-inc/tap && brew install maestro)
 cd src/web/mobile
-maestro test .maestro/flows/        # Todos os 13 fluxos
+maestro test .maestro/flows/        # Todos os 18 fluxos
 maestro test .maestro/flows/auth-login.yaml  # Fluxo específico
 ```
 
@@ -533,6 +528,7 @@ maestro test .maestro/flows/auth-login.yaml  # Fluxo específico
 |---|---|
 | Login e autenticação | `auth-login.yaml` |
 | Envio de sinistro | `claim-submission.yaml` |
+| Rastreamento de ciclo | `cycle-tracking-log.yaml` |
 | Agendamento médico | `doctor-booking.yaml` |
 | Erro: consentimento revogado | `error-consent-revoked.yaml` |
 | Erro: sessão expirada | `error-expired-session.yaml` |
@@ -540,18 +536,22 @@ maestro test .maestro/flows/auth-login.yaml  # Fluxo específico
 | Erro: login inválido | `error-invalid-login.yaml` |
 | Erro: falha de rede | `error-network-failure.yaml` |
 | Gamificação | `gamification.yaml` |
+| Entrada de métricas de saúde | `health-metrics-entry.yaml` |
 | Configurações LGPD | `lgpd-settings.yaml` |
 | Gestão de medicamentos | `medication-mgmt.yaml` |
 | Navegação do plano | `plan-navigation.yaml` |
+| Busca e agendamento de prestador | `provider-search-book.yaml` |
+| Rastreamento de sono | `sleep-tracking-log.yaml` |
 | Verificador de sintomas | `symptom-checker.yaml` |
+| Chat companion bem-estar | `wellness-companion-chat.yaml` |
 
-### Cobertura Atual (estimada)
+### Cobertura Atual (baseline 2026-03-10)
 
-| Pacote | Atual | Meta pré-launch |
-|---|---|---|
-| Mobile | ~16% | 60% |
-| Web | ~10% | 40% |
-| Backend | ~45% | 70% |
+| Pacote | Stmts | Branches | Funcs | Lines | Meta pré-launch |
+|---|---|---|---|---|---|
+| Backend | 62.85% | 40.28% | 60.59% | 62.22% | 70% |
+| Web | 24.38% | 16.97% | 16.72% | 24.66% | 40% |
+| Design System | 83.04% | 73.24% | 80.51% | 83.46% | 80% |
 
 ---
 
@@ -639,7 +639,7 @@ O workflow `deploy-production.yml` usa estratégia **canary**:
 
 | Local | Conteúdo |
 |---|---|
-| [`docs/adr/`](docs/adr/) | 6 Architecture Decision Records |
+| [`docs/adr/`](docs/adr/) | 7 Architecture Decision Records |
 | [`docs/specifications/`](docs/specifications/) | 8 documentos formais de especificação (funcional, não-funcional, integração, UI/UX, user stories, critérios de aceite, análise de sistema, restrições técnicas) |
 | [`docs/design/`](docs/design/) | 10 documentos: arquitetura do sistema, pseudocódigo de serviços, API gateway e service mesh, arquitetura de componentes, fluxo de dados, motor de gamificação, infraestrutura de deploy, insights de pesquisa em saúde, segurança e tratamento de erros, estratégia de testes |
 | [`docs/Documentação para Devs/`](docs/Documentação%20para%20Devs/) | 3 guias essenciais: [Forward Guide](docs/Documentação%20para%20Devs/DEVELOPER_FORWARD_GUIDE.md), [Security Guide Mobile](docs/Documentação%20para%20Devs/mobile-security-guide.md), [Production Setup](docs/Documentação%20para%20Devs/production-setup-guide.md) |
@@ -660,10 +660,10 @@ Estas tarefas **não podem** ser completadas apenas por ferramentas de IA. Reque
 
 | # | Tarefa | Status | Detalhes |
 |---|---|---|---|
-| 1 | **API layer** (195 funções, 193 com endpoints reais) | � 99% | `auth` ✅, `plan` ✅, `wellness` ✅, `gamification` ✅; 1-2 stubs restantes em `health` e `care`. Ver `src/web/mobile/src/api/` |
-| 2 | **Setup do projeto Expo (EAS)** | 🔴 Pendente | Placeholders `your-project-id` em `app.json`; executar `eas init`, substituir bundle IDs, ícones e splash screen |
+| 1 | **API layer** (~222 funções exportadas, 0 stubs) | 🟢 100% | `auth` ✅, `plan` ✅, `wellness` ✅, `gamification` ✅, `health` ✅, `care` ✅. Ver `src/web/mobile/src/api/` |
+| 2 | **Setup do projeto Expo (EAS)** | 🟡 Parcial | `projectId` lê env var `EAS_PROJECT_ID` em `app.config.js`; bundle IDs configurados (`br.com.austa.superapp`); falta definir `EAS_PROJECT_ID` real via `eas init` |
 | 3 | **Provisionamento AWS** | 🔴 Pendente | EKS, RDS PostgreSQL 16, ElastiCache Redis 7, S3, Secrets Manager, CloudFront — ver Terraform em `infrastructure/terraform/` |
-| 4 | **Configuração Firebase** | 🔴 Pendente | `google-services.json` (Android) e `GoogleService-Info.plist` (iOS) para push notifications |
+| 4 | **Configuração Firebase** | 🟡 Parcial | `GoogleService-Info.plist` (iOS) ✅ presente; `google-services.json` (Android) 🔴 ausente |
 | 5 | **Credenciais de serviços terceiros** | 🔴 Pendente | Firebase, Twilio (SMS), SendGrid (e-mail), Sentry DSN, Analytics — configurar no AWS Secrets Manager e `.env` |
 | 6 | **Revisão jurídica LGPD** | 🔴 Pendente | Revisão legal de textos de consentimento, sign-off do DPO, política de rotação de chaves PHI, link de privacidade em `app.json` |
 
@@ -673,11 +673,11 @@ Estas tarefas **não podem** ser completadas apenas por ferramentas de IA. Reque
 
 | # | Tarefa | Status | Detalhes |
 |---|---|---|---|
-| 1 | **Substituição de dados mock** | � Essencialmente pronto | Scan encontrou mock data em apenas 1 arquivo de teste; telas usam dados dinâmicos via hooks/API |
-| 2 | **Aumento de cobertura de testes** | 🟡 Baixo | Mobile ~16%, Web ~10%, Backend ~45% — metas: 60/40/70%. 251 arquivos de teste existem |
-| 3 | **TypeScript strict mode** (incremental) | 🔴 Pendente | ~3.700 erros no mobile com `noImplicitAny: false`; corrigir por módulo, começando pelo design-system |
-| 4 | **Auditoria TODO/FIXME** | � Quase pronto | 8 TODOs genuínos restantes (excl. máscaras de formato); priorizar: ssl-pinning (P0), web API calls (P1) |
-| 5 | **Migração Prisma 7.x** | 🟡 Preparado | `prisma.config.ts` criado em `src/backend/shared/prisma/`; descomentar `defineConfig` ao atualizar |
+| 1 | **Substituição de dados mock** | 🟢 Concluído | Scan encontrou 0 mock data em telas; telas usam dados dinâmicos via hooks/API |
+| 2 | **Aumento de cobertura de testes** | 🟡 Em progresso | 536 arquivos de teste existem — metas: 60/40/70% |
+| 3 | **TypeScript strict mode** (incremental) | 🟡 Em progresso | `strict: true` habilitado, `noImplicitAny: false`; corrigir por módulo |
+| 4 | **Auditoria TODO/FIXME** | 🟡 Em progresso | 16 TODOs restantes no código fonte |
+| 5 | **Migração Prisma 7.x** | 🟢 Concluído | Prisma `^7.0.0` em `package.json`; `prisma.config.ts` presente em `src/backend/shared/prisma/` |
 
 > 📖 Detalhes completos: [`DEVELOPER_FORWARD_GUIDE.md` → Seção P1](docs/Documentação%20para%20Devs/DEVELOPER_FORWARD_GUIDE.md)
 
@@ -685,8 +685,8 @@ Estas tarefas **não podem** ser completadas apenas por ferramentas de IA. Reque
 
 | # | Problema | Severidade | Status / Solução |
 |---|---|---|---|
-| 1 | **~3.700 erros TypeScript no mobile** | Média | App roda; `noImplicitAny: false`. Causas: build do design-system quebrado, types RN 0.73, types compartilhados ausentes |
-| 2 | **Build do Design System quebrado** | Alta | Conflito ESM/CJS em `rollup.config.mjs` no Node 22. `"type": "module"` já adicionado. Fix recomendado: migrar para Vite |
+| 1 | **Erros TypeScript no mobile** | Média | App roda; `strict: true`, `noImplicitAny: false`. Reduzido significativamente após sprint TS-STRICT |
+| 2 | **Build do Design System** | Alta | Conflito ESM/CJS em `rollup.config.mjs` no Node 22. `"type": "module"` já adicionado. Fix recomendado: migrar para Vite |
 | 3 | **Alinhamento de portas K8s** | — | ✅ Resolvido (portas 3000-3006 alinhadas) |
 | 4 | **Mismatch estrutural i18n** | Baixa | `en-US.ts` usa chaves aninhadas, `pt-BR.ts` usa nível superior em alguns pontos. Verificar: `npx tsx scripts/check-i18n-parity.ts` |
 
@@ -696,12 +696,12 @@ Estas tarefas **não podem** ser completadas apenas por ferramentas de IA. Reque
 
 | Controle MASVS | Status | Ação necessária |
 |---|---|---|
-| MASVS-STORAGE-1 | 🟡 Parcial | Wire MMKV encrypted storage (`secure-storage.ts`) no `AuthContext.tsx` |
-| MASVS-NETWORK-2 | 🔴 Gap | Implementar certificate pinning nativo (substituir header-signaling por `react-native-ssl-pinning`) |
+| MASVS-STORAGE-1 | 🟢 Implementado | `secure-storage.ts` wired no `AuthContext.tsx` (import + uso de `secureTokenStorage`) |
+| MASVS-NETWORK-2 | 🟢 Implementado | `react-native-ssl-pinning` ^1.5.5 instalado; `native-ssl-pinning.ts` presente |
 | MASVS-AUTH-2 | 🟡 Parcial | Implementar verificação server-side de key-pair biométrica (`createKeys()` / `createSignature()`) |
-| MASVS-RESILIENCE-1 | 🟡 Parcial | Wire `warnIfCompromised()` no `App.tsx` (root/jailbreak detection já criado em `device-security.ts`) |
+| MASVS-RESILIENCE-1 | 🟢 Implementado | `warnIfCompromised()` chamado no `App.tsx` (root/jailbreak detection ativo) |
 | MASVS-RESILIENCE-2 | 🔴 Gap | Implementar anti-tampering / integrity checks (SafetyNet/Play Integrity) |
-| MASVS-CODE-1 | 🟡 Parcial | Habilitar `minifyEnabled` no `build.gradle` (`proguard-rules.pro` já criado) |
+| MASVS-CODE-1 | 🟡 Parcial | `minifyEnabled` comentado no `build.gradle`; `proguard-rules.pro` criado — descomentar para release |
 
 ### Setup de Produção — Checklist
 
@@ -722,13 +722,13 @@ Estas tarefas **não podem** ser completadas apenas por ferramentas de IA. Reque
 |---|---|---|
 | RootNavigator | `navigation/RootNavigator.tsx` | Entry point |
 | MainNavigator | `navigation/MainNavigator.tsx` | Container de tabs |
-| HealthNavigator | `navigation/HealthNavigator.tsx` | 87 telas |
+| HealthNavigator | `navigation/HealthNavigator.tsx` | 92 telas (37 + 5 sub-navigators: Activity 10, Nutrition 10, Sleep 12, Cycle 15, WellnessResources 8) |
 | CareNavigator | `navigation/CareNavigator.tsx` | 68 telas |
 | WellnessNavigator | `navigation/WellnessNavigator.tsx` | 15 telas |
-| PlanNavigator | `navigation/PlanNavigator.tsx` | 10 telas |
+| PlanNavigator | `navigation/PlanNavigator.tsx` | 8 telas |
 | SettingsNavigator | `navigation/SettingsNavigator.tsx` | 33 telas |
-| AuthNavigator | `navigation/AuthNavigator.tsx` | 6 telas |
-| GamificationNavigator | `navigation/GamificationNavigator.tsx` | ~10 telas |
+| AuthNavigator | `navigation/AuthNavigator.tsx` | 23 telas |
+| GamificationNavigator | `navigation/GamificationNavigator.tsx` | 7 telas |
 
 ---
 
@@ -764,4 +764,4 @@ O AUSTA SuperApp é comprometido em tornar a saúde mais acessível, engajante e
 
 ---
 
-*Repositório: `rodaquino-OMNI/healthcare-super-app--w-gamification--tgfzl7` · Branch: `main` · Última auditoria forense: 9 de março de 2026*
+*Repositório: `rodaquino-OMNI/healthcare-super-app--w-gamification--tgfzl7` · Branch: `main` · Última auditoria forense: 25 de março de 2026*
