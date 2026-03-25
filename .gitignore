@@ -113,6 +113,7 @@ docs/adr/013-claude-flow-swarm-intelligence.md
 
 # Generated reports (can be regenerated on demand)
 dependency-report.json
+navigation_mapping.json
 
 # Yarn vendored binaries — use system-installed yarn instead
 .yarn/releases/
