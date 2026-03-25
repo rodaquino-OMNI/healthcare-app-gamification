@@ -133,8 +133,8 @@ describe('AppointmentsService', () => {
 
             const result = await service.findAll({ page: 2, limit: 10 });
 
-            expect(result.meta.currentPage).toBe(2);
-            expect(result.meta.totalItems).toBe(25);
+            expect(result.meta.page).toBe(2);
+            expect(result.meta.total).toBe(25);
             expect(result.meta.totalPages).toBe(3);
         });
 

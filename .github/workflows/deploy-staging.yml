@@ -80,6 +80,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Generate Prisma client
+        run: pnpm --filter @austa/shared exec prisma generate
+
       - name: Run backend linters
         working-directory: src/backend
         run: pnpm lint

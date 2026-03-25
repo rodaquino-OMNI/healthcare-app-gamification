@@ -17,11 +17,11 @@ const mockTracingService = {
 };
 
 // Provide both import aliases used in the source file
-jest.mock('../../shared/src/logging/logger.service', () => ({
+jest.mock('@app/shared/logging/logger.service', () => ({
     LoggerService: jest.fn(),
 }));
 
-jest.mock('../../shared/src/tracing/tracing.service', () => ({
+jest.mock('@app/shared/tracing/tracing.service', () => ({
     TracingService: jest.fn(),
 }));
 

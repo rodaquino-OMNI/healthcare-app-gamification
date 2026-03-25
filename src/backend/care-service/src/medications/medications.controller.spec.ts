@@ -1,6 +1,7 @@
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { UpdateMedicationDto } from './dto/update-medication.dto';
 import { MedicationsController } from './medications.controller';
 import { MedicationsService } from './medications.service';
 
@@ -141,11 +142,11 @@ describe('MedicationsController', () => {
 
     describe('update', () => {
         const userId = 'user-123';
-        const updateData = { dosage: '200mg' };
+        const updateData: UpdateMedicationDto = { dosage: 200 };
 
         it('should update a medication and return it', async () => {
             mockMedicationsService.findOne.mockResolvedValue(mockMedication);
-            const updatedMed = { ...mockMedication, dosage: '200mg' };
+            const updatedMed = { ...mockMedication, dosage: 200 };
             mockMedicationsService.update.mockResolvedValue(updatedMed);
 
             const result = await controller.update('med-123', updateData, userId);

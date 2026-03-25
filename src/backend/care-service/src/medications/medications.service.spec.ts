@@ -61,23 +61,9 @@ describe('MedicationsService', () => {
         emit: jest.fn(),
     };
 
-    const mockConfig = {
-        gamification: {
-            enabled: false,
-            defaultEvents: {
-                medicationAdherence: 'medication.adherence',
-            },
-        },
-    };
-
     beforeEach(() => {
         jest.clearAllMocks();
-        service = new MedicationsService(
-            mockPrisma as any,
-            mockLogger as any,
-            mockKafka as any,
-            mockConfig as any
-        );
+        service = new MedicationsService(mockPrisma as any, mockLogger as any, mockKafka as any);
     });
 
     it('should be defined', () => {
@@ -141,13 +127,7 @@ describe('MedicationsService', () => {
             const serviceWithGamification = new MedicationsService(
                 mockPrisma as any,
                 mockLogger as any,
-                mockKafka as any,
-                {
-                    gamification: {
-                        enabled: true,
-                        defaultEvents: { medicationAdherence: 'medication.adherence' },
-                    },
-                } as any
+                mockKafka as any
             );
             mockPrisma.medication.create.mockResolvedValue(mockMedication);
             mockKafka.produce.mockResolvedValue(undefined);
