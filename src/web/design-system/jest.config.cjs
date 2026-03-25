@@ -1,3 +1,9 @@
+const path = require('path');
+
+// Force single React copy — react-native-web bundles its own nested react
+const reactDir = path.dirname(require.resolve('react/package.json'));
+const reactDomDir = path.dirname(require.resolve('react-dom/package.json'));
+
 module.exports = {
   testEnvironment: 'jsdom',
   coverageProvider: 'v8',
@@ -5,6 +11,11 @@ module.exports = {
     '^.+\\.(ts|tsx)$': ['babel-jest', { configFile: './babel.config.cjs' }],
   },
   moduleNameMapper: {
+    '^react-native$': 'react-native-web',
+    '^react$': reactDir,
+    '^react/(.*)$': `${reactDir}/$1`,
+    '^react-dom$': reactDomDir,
+    '^react-dom/(.*)$': `${reactDomDir}/$1`,
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@tokens/(.*)$': '<rootDir>/src/tokens/$1',
     '^@themes/(.*)$': '<rootDir>/src/themes/$1',

@@ -1,28 +1,24 @@
-import { render } from '@testing-library/react-native';
+import { describe, it, expect } from '@jest/globals';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { IllustrationWrapper } from './IllustrationWrapper';
 
-// Mock the image source
 const mockSource = { uri: 'https://example.com/test.png' };
 
 describe('IllustrationWrapper', () => {
     it('renders with required props', () => {
-        const { getByLabelText } = render(<IllustrationWrapper source={mockSource} alt="Test illustration" />);
-        expect(getByLabelText('Test illustration')).toBeTruthy();
+        render(<IllustrationWrapper source={mockSource} alt="Test illustration" />);
+        expect(screen.getByLabelText('Test illustration')).toBeInTheDocument();
     });
 
     it('renders with custom maxWidth', () => {
-        const { getByTestId } = render(
-            <IllustrationWrapper source={mockSource} alt="Test" maxWidth={200} testID="test-illustration" />
-        );
-        expect(getByTestId('test-illustration')).toBeTruthy();
+        render(<IllustrationWrapper source={mockSource} alt="Test" maxWidth={200} testID="test-illustration" />);
+        expect(screen.getByTestId('test-illustration')).toBeInTheDocument();
     });
 
     it('renders with custom aspectRatio', () => {
-        const { getByTestId } = render(
-            <IllustrationWrapper source={mockSource} alt="Test" aspectRatio={0.56} testID="test-ratio" />
-        );
-        expect(getByTestId('test-ratio')).toBeTruthy();
+        render(<IllustrationWrapper source={mockSource} alt="Test" aspectRatio={0.56} testID="test-ratio" />);
+        expect(screen.getByTestId('test-ratio')).toBeInTheDocument();
     });
 });
