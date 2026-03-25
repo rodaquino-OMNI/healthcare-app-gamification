@@ -3,6 +3,7 @@ import { PrismaService } from '@app/shared/database/prisma.service';
 import { AppException } from '@app/shared/exceptions/exceptions.types';
 import { LoggerService } from '@app/shared/logging/logger.service';
 import { TracingService } from '@app/shared/tracing/tracing.service';
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
 
@@ -235,6 +236,14 @@ describe('TreatmentsService', () => {
             mockPrismaService.treatmentPlan.findUnique.mockRejectedValue(dbError);
 
             await expect(service.findOne('plan-test-123')).rejects.toThrow('Connection refused');
+        });
+
+        it('should re-throw NotFoundException directly without logging', async () => {
+            const notFoundError = new NotFoundException('Treatment plan not found');
+            mockPrismaService.treatmentPlan.findUnique.mockRejectedValue(notFoundError);
+
+            await expect(service.findOne('plan-test-123')).rejects.toThrow(NotFoundException);
+            expect(mockLogger.error).not.toHaveBeenCalled();
         });
 
         it('should call findUnique with the correct id', async () => {
