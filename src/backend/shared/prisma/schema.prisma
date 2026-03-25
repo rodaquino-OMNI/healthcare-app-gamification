@@ -319,6 +319,7 @@ model Quest {
   journey     String
   icon        String
   xpReward    Int
+  steps       Int
 
   // Relations
   userQuests UserQuest[]

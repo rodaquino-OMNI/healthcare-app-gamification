@@ -161,6 +161,7 @@ async function main(): Promise<void> {
                 journey: 'health',
                 icon: 'health-tracker',
                 xpReward: 150,
+                steps: 3,
             } as any,
         }),
         // Care Journey Quest
@@ -175,6 +176,7 @@ async function main(): Promise<void> {
                 journey: 'care',
                 icon: 'wellness-journey',
                 xpReward: 200,
+                steps: 5,
             } as any,
         }),
         // Plan Journey Quest
@@ -189,6 +191,7 @@ async function main(): Promise<void> {
                 journey: 'plan',
                 icon: 'plan-mastery',
                 xpReward: 150,
+                steps: 4,
             } as any,
         }),
     ]);
