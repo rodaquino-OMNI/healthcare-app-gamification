@@ -109,10 +109,8 @@ describe('MedicationsService', () => {
         });
 
         it('should set endDate to null when not provided', async () => {
-            const dtoWithoutEndDate: CreateMedicationDto = {
-                ...mockCreateDto,
-                endDate: undefined,
-            };
+            const { endDate: _removed, ...rest } = mockCreateDto;
+            const dtoWithoutEndDate = rest as CreateMedicationDto;
             mockPrisma.medication.create.mockResolvedValue({
                 ...mockMedication,
                 endDate: null,

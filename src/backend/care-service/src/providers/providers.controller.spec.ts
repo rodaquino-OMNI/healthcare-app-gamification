@@ -1,7 +1,39 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
+// Mock the JwtAuthGuard to avoid auth setup in unit tests
+jest.mock('../../../auth-service/src/auth/guards/jwt-auth.guard', () => ({
+    JwtAuthGuard: jest.fn().mockImplementation(() => ({
+        canActivate: jest.fn().mockReturnValue(true),
+    })),
+}));
+
+jest.mock('../../../auth-service/src/auth/guards/roles.guard', () => ({
+    RolesGuard: jest.fn().mockImplementation(() => ({
+        canActivate: jest.fn().mockReturnValue(true),
+    })),
+}));
+
+jest.mock('../../../auth-service/src/auth/decorators/current-user.decorator', () => ({
+    CurrentUser: () => () => undefined,
+}));
+
+jest.mock('../../../auth-service/src/auth/decorators/roles.decorator', () => ({
+    Roles: () => () => undefined,
+}));
+
+import { LoggerService } from '@app/shared/logging/logger.service';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ProvidersController } from './providers.controller';
 import { ProvidersService } from './providers.service';
+import { JwtAuthGuard } from '../../../auth-service/src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../../../auth-service/src/auth/guards/roles.guard';
+
+const mockLoggerService = {
+    log: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    debug: jest.fn(),
+};
 
 describe('ProvidersController', () => {
     let controller: ProvidersController;
@@ -42,8 +74,17 @@ describe('ProvidersController', () => {
                     provide: ProvidersService,
                     useValue: mockProvidersService,
                 },
+                {
+                    provide: LoggerService,
+                    useValue: mockLoggerService,
+                },
             ],
-        }).compile();
+        })
+            .overrideGuard(JwtAuthGuard)
+            .useValue({ canActivate: () => true })
+            .overrideGuard(RolesGuard)
+            .useValue({ canActivate: () => true })
+            .compile();
 
         controller = module.get<ProvidersController>(ProvidersController);
         service = module.get<ProvidersService>(ProvidersService);

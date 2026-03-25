@@ -162,6 +162,19 @@ describe('SymptomCheckerService', () => {
     // checkSymptoms — disabled checker
     // ----------------------------------------------------------------
     describe('checkSymptoms (disabled)', () => {
+        afterEach(() => {
+            // Restore default config so subsequent tests are not affected
+            mockConfigService.get.mockImplementation((key: string) => {
+                if (key === 'care.symptomsChecker') {
+                    return defaultSymptomCheckerConfig;
+                }
+                if (key === 'care.integrations.emergencyServices') {
+                    return { emergencyNumber: '192' };
+                }
+                return undefined;
+            });
+        });
+
         it('should throw AppException when symptom checker is disabled', async () => {
             mockConfigService.get.mockImplementation((key: string) => {
                 if (key === 'care.symptomsChecker') {

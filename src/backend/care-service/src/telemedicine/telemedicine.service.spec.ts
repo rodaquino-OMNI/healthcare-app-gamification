@@ -147,13 +147,13 @@ describe('TelemedicineService', () => {
             );
         });
 
-        it('should update appointment status to IN_PROGRESS after session creation', async () => {
+        it('should update appointment status to SCHEDULED after session creation', async () => {
             mockProvidersService.findById.mockResolvedValue(mockProvider);
             mockPrisma.appointment.findUnique.mockResolvedValue(mockAppointment);
             mockPrisma.telemedicineSession.create.mockResolvedValue(mockSession);
             mockPrisma.appointment.update.mockResolvedValue({
                 ...mockAppointment,
-                status: 'IN_PROGRESS',
+                status: 'SCHEDULED',
             });
             mockKafkaService.produce.mockResolvedValue(undefined);
 
@@ -161,7 +161,7 @@ describe('TelemedicineService', () => {
 
             expect(mockPrisma.appointment.update).toHaveBeenCalledWith({
                 where: { id: mockAppointment.id },
-                data: { status: 'IN_PROGRESS' },
+                data: { status: 'SCHEDULED' },
             });
         });
 

@@ -107,7 +107,7 @@ describe('AppointmentsService', () => {
             mockPrisma.appointment.findMany.mockResolvedValue(appointments);
             mockPrisma.appointment.count.mockResolvedValue(1);
 
-            const result = await service.findAll({ page: 1, limit: 10 });
+            const result = await service.findAll(undefined, { page: 1, limit: 10 });
 
             expect(result).toHaveProperty('data');
             expect(result).toHaveProperty('meta');
@@ -118,7 +118,7 @@ describe('AppointmentsService', () => {
             mockPrisma.appointment.findMany.mockResolvedValue([]);
             mockPrisma.appointment.count.mockResolvedValue(0);
 
-            await service.findAll({ page: 1, limit: 10 }, { where: { userId: 'user-test-123' } });
+            await service.findAll({ where: { userId: 'user-test-123' } }, { page: 1, limit: 10 });
 
             expect(mockPrisma.appointment.findMany).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -131,7 +131,7 @@ describe('AppointmentsService', () => {
             mockPrisma.appointment.findMany.mockResolvedValue([mockAppointment]);
             mockPrisma.appointment.count.mockResolvedValue(25);
 
-            const result = await service.findAll({ page: 2, limit: 10 });
+            const result = await service.findAll(undefined, { page: 2, limit: 10 });
 
             expect(result.meta.page).toBe(2);
             expect(result.meta.total).toBe(25);
