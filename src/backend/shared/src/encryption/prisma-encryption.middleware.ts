@@ -1,21 +1,4 @@
-// TODO(prisma-7): Prisma.Middleware and Prisma.MiddlewareParams were removed in Prisma 7.x.
-// This middleware needs to be migrated to the $extends query extension API before re-enabling.
-// The type stubs below allow tsc to compile; runtime usage is disabled in prisma.service.ts.
-
 import { EncryptionService } from './encryption.service';
-
-interface PrismaMiddlewareParams {
-    model?: string;
-    action: string;
-    args: Record<string, unknown>;
-    dataPath: string[];
-    runInTransaction: boolean;
-}
-
-type PrismaMiddlewareFn = (
-    params: PrismaMiddlewareParams,
-    next: (params: PrismaMiddlewareParams) => Promise<unknown>
-) => Promise<unknown>;
 
 /**
  * PHI field definitions: maps Prisma model names to their sensitive fields
@@ -34,12 +17,6 @@ const PHI_FIELDS: Record<string, string[]> = {
     Appointment: ['notes'],
     DeviceConnection: ['authToken', 'refreshToken'],
 };
-
-/** Prisma actions that write data to the database. */
-const WRITE_ACTIONS = ['create', 'update', 'upsert', 'createMany', 'updateMany'];
-
-/** Prisma actions that read data from the database. */
-const READ_ACTIONS = ['findUnique', 'findFirst', 'findMany'];
 
 /**
  * Encrypts the specified PHI fields in a data object before writing to the DB.
@@ -111,67 +88,110 @@ function decryptResult(
     return result;
 }
 
+/** Shape of $extends $allModels query hook arguments. */
+interface ExtensionQueryArgs {
+    model: string;
+    args: Record<string, unknown>;
+    query: (args: Record<string, unknown>) => Promise<unknown>;
+}
+
+/** Return type for createEncryptionExtension — a Prisma $extends config object. */
+interface PrismaEncryptionExtension {
+    query: {
+        $allModels: Record<string, (args: ExtensionQueryArgs) => Promise<unknown>>;
+    };
+}
+
 /**
- * Creates Prisma middleware that automatically encrypts PHI fields on write
- * and decrypts them on read. Attach to PrismaService via $use().
+ * Creates a Prisma $extends query extension that automatically encrypts PHI
+ * fields on write and decrypts them on read.
  *
  * Usage in PrismaService.onModuleInit():
- *   this.$use(createEncryptionMiddleware(encryptionService));
+ *   this.extendedClient = this.$extends(createEncryptionExtension(encryptionService));
  */
-export function createEncryptionMiddleware(
+export function createEncryptionExtension(
     encryptionService: EncryptionService
-): PrismaMiddlewareFn {
-    return async (
-        params: PrismaMiddlewareParams,
-        next: (params: PrismaMiddlewareParams) => Promise<unknown>
-    ) => {
-        const model = params.model;
-        if (!model || !PHI_FIELDS[model]) {
-            return next(params);
-        }
+): PrismaEncryptionExtension {
+    return {
+        query: {
+            $allModels: {
+                async create({ model, args, query }: ExtensionQueryArgs) {
+                    const fields = PHI_FIELDS[model];
+                    if (fields && args.data) {
+                        encryptFields(
+                            args.data as Record<string, unknown>,
+                            fields,
+                            encryptionService
+                        );
+                    }
+                    const result = await query(args);
+                    return fields ? decryptResult(result, fields, encryptionService) : result;
+                },
 
-        const fields = PHI_FIELDS[model];
+                async update({ model, args, query }: ExtensionQueryArgs) {
+                    const fields = PHI_FIELDS[model];
+                    if (fields && args.data) {
+                        encryptFields(
+                            args.data as Record<string, unknown>,
+                            fields,
+                            encryptionService
+                        );
+                    }
+                    const result = await query(args);
+                    return fields ? decryptResult(result, fields, encryptionService) : result;
+                },
 
-        // Encrypt on write
-        if (params.action && WRITE_ACTIONS.includes(params.action)) {
-            const args = params.args as Record<string, Record<string, unknown> | unknown[]>;
+                async upsert({ model, args, query }: ExtensionQueryArgs) {
+                    const fields = PHI_FIELDS[model];
+                    if (fields) {
+                        if (args.create) {
+                            encryptFields(
+                                args.create as Record<string, unknown>,
+                                fields,
+                                encryptionService
+                            );
+                        }
+                        if (args.update) {
+                            encryptFields(
+                                args.update as Record<string, unknown>,
+                                fields,
+                                encryptionService
+                            );
+                        }
+                    }
+                    const result = await query(args);
+                    return fields ? decryptResult(result, fields, encryptionService) : result;
+                },
 
-            if (args?.data) {
-                encryptFields(args.data as Record<string, unknown>, fields, encryptionService);
-            }
+                async createMany({ model, args, query }: ExtensionQueryArgs) {
+                    const fields = PHI_FIELDS[model];
+                    if (fields && Array.isArray(args.data)) {
+                        for (const item of args.data as Record<string, unknown>[]) {
+                            encryptFields(item, fields, encryptionService);
+                        }
+                    }
+                    // createMany returns a count, not records — no decryption needed
+                    return query(args);
+                },
 
-            // Handle upsert which has both create and update data
-            if (params.action === 'upsert') {
-                if (args?.create) {
-                    const create = args.create as Record<string, unknown>;
-                    encryptFields(create, fields, encryptionService);
-                }
-                if (args?.update) {
-                    const update = args.update as Record<string, unknown>;
-                    encryptFields(update, fields, encryptionService);
-                }
-            }
+                async findMany({ model, args, query }: ExtensionQueryArgs) {
+                    const result = await query(args);
+                    const fields = PHI_FIELDS[model];
+                    return fields ? decryptResult(result, fields, encryptionService) : result;
+                },
 
-            // Handle createMany with array of data
-            if (params.action === 'createMany' && Array.isArray(args?.data)) {
-                for (const item of args.data as Record<string, unknown>[]) {
-                    encryptFields(item, fields, encryptionService);
-                }
-            }
-        }
+                async findFirst({ model, args, query }: ExtensionQueryArgs) {
+                    const result = await query(args);
+                    const fields = PHI_FIELDS[model];
+                    return fields ? decryptResult(result, fields, encryptionService) : result;
+                },
 
-        const result = await next(params);
-
-        // Decrypt on read
-        if (params.action && READ_ACTIONS.includes(params.action)) {
-            return decryptResult(result, fields, encryptionService);
-        }
-
-        // Also decrypt results from write operations (they return the written record)
-        if (params.action && ['create', 'update', 'upsert'].includes(params.action)) {
-            return decryptResult(result, fields, encryptionService);
-        }
-
-        return result;
+                async findUnique({ model, args, query }: ExtensionQueryArgs) {
+                    const result = await query(args);
+                    const fields = PHI_FIELDS[model];
+                    return fields ? decryptResult(result, fields, encryptionService) : result;
+                },
+            },
+        },
     };
 }

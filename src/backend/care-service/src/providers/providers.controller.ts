@@ -1,3 +1,4 @@
+import { CurrentUser, Roles, JwtAuthGuard, RolesGuard } from '@app/shared/guards';
 import {
     Controller,
     Get,
@@ -16,10 +17,6 @@ import {
 import { SearchProvidersDto } from './dto/search-providers.dto';
 import { Provider } from './entities/provider.entity';
 import { ProvidersService } from './providers.service';
-import { CurrentUser } from '../../../auth-service/src/auth/decorators/current-user.decorator';
-import { Roles } from '../../../auth-service/src/auth/decorators/roles.decorator';
-import { JwtAuthGuard } from '../../../auth-service/src/auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../../../auth-service/src/auth/guards/roles.guard';
 import { PaginationDto } from '../../../shared/src/dto/pagination.dto';
 import { AppException, ErrorType } from '../../../shared/src/exceptions/exceptions.types';
 

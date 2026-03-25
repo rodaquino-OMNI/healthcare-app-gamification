@@ -9,7 +9,7 @@ jest.mock('@prisma/client', () => {
         PrismaClient: class MockPrismaClient {
             $connect = jest.fn().mockResolvedValue(undefined);
             $disconnect = jest.fn().mockResolvedValue(undefined);
-            $use = jest.fn();
+            $extends = jest.fn().mockReturnThis();
         },
     };
 });
@@ -63,8 +63,27 @@ describe('PrismaService (Shared)', () => {
         });
     });
 
+    describe('encryption extension', () => {
+        it('should call $extends with encryption extension when EncryptionService is provided', async () => {
+            jest.spyOn(service, '$connect').mockResolvedValue();
+            const extendsSpy = jest.spyOn(service, '$extends' as never);
+
+            await service.onModuleInit();
+
+            expect(extendsSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it('should expose encrypted getter returning the extended client', async () => {
+            jest.spyOn(service, '$connect').mockResolvedValue();
+
+            await service.onModuleInit();
+
+            expect(service.encrypted).toBeDefined();
+        });
+    });
+
     describe('onModuleInit without EncryptionService', () => {
-        it('should connect without encryption middleware when EncryptionService is not provided', async () => {
+        it('should connect without encryption extension when EncryptionService is not provided', async () => {
             const moduleWithout: TestingModule = await Test.createTestingModule({
                 providers: [PrismaService],
             }).compile();
@@ -75,6 +94,16 @@ describe('PrismaService (Shared)', () => {
             await svc.onModuleInit();
 
             expect(connectSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it('should return self from encrypted getter when no EncryptionService', async () => {
+            const moduleWithout: TestingModule = await Test.createTestingModule({
+                providers: [PrismaService],
+            }).compile();
+
+            const svc = moduleWithout.get<PrismaService>(PrismaService);
+
+            expect(svc.encrypted).toBe(svc);
         });
     });
 
