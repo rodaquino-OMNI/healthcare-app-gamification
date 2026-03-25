@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any -- ioredis catch clauses and rethrow patterns require any */
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Redis, { RedisOptions } from 'ioredis';
@@ -205,7 +204,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
                 formattedError.stack,
                 'RedisService'
             );
-            throw error as any;
+            throw error;
         }
     }
 
@@ -234,7 +233,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
                 formattedError.stack,
                 'RedisService'
             );
-            throw error as any;
+            throw error;
         }
     }
 
@@ -257,7 +256,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
                 formattedError.stack,
                 'RedisService'
             );
-            throw error as any;
+            throw error;
         }
     }
 
@@ -280,7 +279,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
                 formattedError.stack,
                 'RedisService'
             );
-            throw error as any;
+            throw error;
         }
     }
 
@@ -302,7 +301,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
                 formattedError.stack,
                 'RedisService'
             );
-            throw error as any;
+            throw error;
         }
     }
 
@@ -323,7 +322,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
                 formattedError.stack,
                 'RedisService'
             );
-            throw error as any;
+            throw error;
         }
     }
 
@@ -345,7 +344,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
                 formattedError.stack,
                 'RedisService'
             );
-            throw error as any;
+            throw error;
         }
     }
 
@@ -368,7 +367,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
                 formattedError.stack,
                 'RedisService'
             );
-            throw error as any;
+            throw error;
         }
     }
 
@@ -391,7 +390,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
                 formattedError.stack,
                 'RedisService'
             );
-            throw error as any;
+            throw error;
         }
     }
 
@@ -412,7 +411,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
                 formattedError.stack,
                 'RedisService'
             );
-            throw error as any;
+            throw error;
         }
     }
 
@@ -438,7 +437,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
                 formattedError.stack,
                 'RedisService'
             );
-            throw error as any;
+            throw error;
         }
     }
 
@@ -462,7 +461,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
                 formattedError.stack,
                 'RedisService'
             );
-            throw error as any;
+            throw error;
         }
     }
 
@@ -509,7 +508,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
                 formattedError.stack,
                 'RedisService'
             );
-            throw error as any;
+            throw error;
         }
     }
 
@@ -534,7 +533,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
                 formattedError.stack,
                 'RedisService'
             );
-            throw error as any;
+            throw error;
         }
     }
 
@@ -580,7 +579,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
                 formattedError.stack,
                 'RedisService'
             );
-            throw error as any;
+            throw error;
         }
     }
 
@@ -601,7 +600,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
                 formattedError.stack,
                 'RedisService'
             );
-            throw error as any;
+            throw error;
         }
     }
 

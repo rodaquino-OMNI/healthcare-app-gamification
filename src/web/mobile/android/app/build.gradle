@@ -7,13 +7,12 @@
 android {
     buildTypes {
         release {
-            // Activate these after Expo eject or EAS custom native build.
-            // In Expo managed workflow, EAS handles minification via
-            // eas.json "android.enableProguardInReleaseBuilds" flag.
-            //
-            // minifyEnabled true
-            // shrinkResources true
-            // proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // ProGuard/R8 minification enabled for EAS custom native builds
+            // and local release builds. EAS managed workflow uses this when
+            // android.enableProguardInReleaseBuilds is true in eas.json.
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }

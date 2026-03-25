@@ -137,7 +137,7 @@ export { HealthChart } from '../health/HealthChart';
 export { IllustrationWrapper } from './IllustrationWrapper';
 export type { IllustrationWrapperProps } from './IllustrationWrapper';
 
-// TODO [ASSET-004]: Create Logo component once Figma logo SVGs are exported
+// HUMAN-ACTION(ASSET-004): Create Logo component once Figma logo SVGs are exported
 // Expected variants: full (icon+wordmark), icon (mark only), dark (white text)
 // Figma node: 10611:37841 — blocked by API rate limit as of 2026-03-23
 // Target directory: src/web/design-system/src/components/Logo/

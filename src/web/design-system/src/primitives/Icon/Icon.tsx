@@ -9,7 +9,7 @@ import { sizing } from '../../tokens/sizing';
  * Icon SVG source: strangeicons by Strange Helix (Figma plugin).
  * strangeicons is NOT available on npm — SVG paths are exported from
  * Figma and stored in iconRegistry.ts.
- * TODO: Automate SVG export from Figma via scripts/export-figma-illustrations.mjs
+ * HUMAN-ACTION(AUSTA-NNN): Automate SVG export from Figma via scripts/export-figma-illustrations.mjs
  */
 
 /**

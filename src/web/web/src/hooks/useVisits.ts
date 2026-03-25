@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+
+import { restClient } from '@/api/client';
 
 export interface Visit {
     id: string;
@@ -26,13 +28,38 @@ export interface UseVisitsReturn {
  * for the 5 visit pages in the Care Now journey.
  */
 export const useVisits = (): UseVisitsReturn => {
-    const [visits] = useState<Visit[]>([]);
-    const [currentVisit] = useState<Visit | null>(null);
-    const [isLoading] = useState(false);
-    const [error] = useState<Error | null>(null);
+    const [visits, setVisits] = useState<Visit[]>([]);
+    const [currentVisit, setCurrentVisit] = useState<Visit | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
 
-    const getVisitDetails = async (_visitId: string): Promise<void> => {};
-    const getVisitHistory = async (): Promise<void> => {};
+    const getVisitDetails = useCallback(async (visitId: string): Promise<void> => {
+        try {
+            setIsLoading(true);
+            setError(null);
+            const response = await restClient.get<Visit>(`/api/care/appointments/${visitId}`);
+            setCurrentVisit(response.data);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err : new Error('Erro ao carregar detalhes da consulta.'));
+            throw err;
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
+
+    const getVisitHistory = useCallback(async (): Promise<void> => {
+        try {
+            setIsLoading(true);
+            setError(null);
+            const response = await restClient.get<Visit[]>('/api/care/appointments');
+            setVisits(response.data);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err : new Error('Erro ao carregar histórico de consultas.'));
+            throw err;
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
 
     return {
         visits,

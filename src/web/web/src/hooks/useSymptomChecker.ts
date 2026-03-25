@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+
+import { restClient } from '@/api/client';
 
 export interface Symptom {
     id: string;
@@ -39,13 +41,48 @@ export const useSymptomChecker = (): UseSymptomCheckerReturn => {
     const [symptoms, setSymptoms] = useState<Symptom[]>([]);
     const [results, setResults] = useState<SymptomCheckResult[]>([]);
     const [currentStep, setCurrentStep] = useState(0);
-    const [isLoading] = useState(false);
-    const [error] = useState<Error | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
 
-    const addSymptom = (_symptom: Omit<Symptom, 'id'>): void => {};
-    const removeSymptom = (_id: string): void => {};
-    const submitSymptoms = async (): Promise<void> => {};
-    const getRecommendations = async (): Promise<void> => {};
+    const addSymptom = useCallback((symptom: Omit<Symptom, 'id'>): void => {
+        const newSymptom: Symptom = {
+            ...symptom,
+            id: `symptom-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+        };
+        setSymptoms((prev) => [...prev, newSymptom]);
+    }, []);
+
+    const removeSymptom = useCallback((id: string): void => {
+        setSymptoms((prev) => prev.filter((s) => s.id !== id));
+    }, []);
+
+    const submitSymptoms = useCallback(async (): Promise<void> => {
+        try {
+            setIsLoading(true);
+            setError(null);
+            const payload = symptoms.map((s) => s.name);
+            await restClient.post('/api/care/symptom-checker/submit', { symptoms: payload });
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err : new Error('Erro ao enviar sintomas.'));
+            throw err;
+        } finally {
+            setIsLoading(false);
+        }
+    }, [symptoms]);
+
+    const getRecommendations = useCallback(async (): Promise<void> => {
+        try {
+            setIsLoading(true);
+            setError(null);
+            const response = await restClient.get<SymptomCheckResult[]>('/api/care/symptom-checker/recommendations');
+            setResults(response.data);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err : new Error('Erro ao obter recomendações.'));
+            throw err;
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
 
     const resetFlow = (): void => {
         setSymptoms([]);

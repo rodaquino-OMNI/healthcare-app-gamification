@@ -96,7 +96,8 @@ const AppointmentForm: React.FC = () => {
         });
     };
 
-    // TODO(AUSTA-402): wire to real gamification service
+    // HUMAN-ACTION(AUSTA-402): wire to real gamification service
+    // requires POST /api/gamification/events endpoint
     const triggerGamificationEvent = (_eventType: string, _data: any) => {
         // Placeholder for gamification event trigger
     };

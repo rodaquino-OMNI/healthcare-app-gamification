@@ -4,7 +4,7 @@
  * Pins are SHA-256 hashes of the Subject Public Key Info (SPKI).
  * Two pins are configured per domain: primary (current cert) and backup (next rotation).
  *
- * TODO(ops): Replace placeholder pins with real certificate SPKI hashes before production.
+ * HUMAN-ACTION(AUSTA-NNN): Replace placeholder pins with real certificate SPKI hashes before production.
  * Generate with:
  *   openssl s_client -connect api.austa.com.br:443 |
  *   openssl x509 -pubkey -noout | openssl pkey -pubin -outform der |

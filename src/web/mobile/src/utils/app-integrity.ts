@@ -28,7 +28,7 @@ export async function requestIntegrityToken(): Promise<string | null> {
 
     try {
         if (Platform.OS === 'android') {
-            // TODO(AUSTA-301): Implement Play Integrity via EAS config plugin or custom dev client.
+            // HUMAN-ACTION(AUSTA-301): Implement Play Integrity via EAS config plugin or custom dev client.
             // NativeModules.PlayIntegrity is not available in Expo managed workflow.
             // When using EAS custom native modules, bridge to IntegrityManager.requestIntegrityToken().
             console.warn('[AppIntegrity] Play Integrity not available in Expo managed workflow');
@@ -36,7 +36,7 @@ export async function requestIntegrityToken(): Promise<string | null> {
         }
 
         if (Platform.OS === 'ios') {
-            // TODO(AUSTA-302): Implement App Attest via EAS config plugin or custom dev client.
+            // HUMAN-ACTION(AUSTA-302): Implement App Attest via EAS config plugin or custom dev client.
             // DCAppAttestService requires native module not available in Expo managed workflow.
             // When ejecting to bare or using EAS custom native module, implement DCAppAttestService.attestKey().
             console.warn('[AppIntegrity] App Attest not available in Expo managed workflow');

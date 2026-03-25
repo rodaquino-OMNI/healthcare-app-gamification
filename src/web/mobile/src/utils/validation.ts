@@ -580,7 +580,8 @@ export { isValidCPF, isNotEmpty };
  */
 export const showToast = (message: string, _type: 'success' | 'error' | 'warning' | 'info' = 'info'): void => {
     // In a real implementation, this would use a toast library like react-native-toast-message
-    // TODO(AUSTA-401): integrate react-native-toast-message
+    // HUMAN-ACTION(AUSTA-401): integrate react-native-toast-message
+    // install package, add <Toast /> to App.tsx, call Toast.show()
 };
 
 /**

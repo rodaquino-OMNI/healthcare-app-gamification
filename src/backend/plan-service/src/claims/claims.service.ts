@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-enum-comparison, max-len -- Prisma client returns dynamic query results; AppException constructor accepts untyped details */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { ErrorType } from '@app/shared/exceptions/error.types';
 import { AppException } from '@app/shared/exceptions/exceptions.types';
@@ -7,6 +6,7 @@ import { Injectable, Logger } from '@nestjs/common';
 
 import { CreateClaimDto } from './dto/create-claim.dto';
 import { UpdateClaimDto } from './dto/update-claim.dto';
+import { Claim, StatusHistoryItem } from './entities/claim.entity';
 import { FilterDto, PaginationDto } from '../dto/filter.dto';
 import { PlansService } from '../plans/plans.service';
 
@@ -26,7 +26,7 @@ export class ClaimsService {
      * @param createClaimDto The claim data
      * @returns The created claim
      */
-    async create(userId: string, createClaimDto: CreateClaimDto): Promise<any> {
+    async create(userId: string, createClaimDto: CreateClaimDto): Promise<Claim> {
         try {
             // Validate the user has access to the plan
             await this.validateUserPlanAccess(userId, createClaimDto.planId);
@@ -45,9 +45,9 @@ export class ClaimsService {
             });
 
             // Publish event to Kafka
-            await this.publishClaimEvent('claim.submitted', savedClaim);
+            await this.publishClaimEvent('claim.submitted', savedClaim as unknown as Claim);
 
-            return savedClaim;
+            return savedClaim as unknown as Claim;
         } catch (error: unknown) {
             if (error instanceof AppException) {
                 throw error;
@@ -59,8 +59,9 @@ export class ClaimsService {
             this.logger.error(`Failed to create claim: ${errorMessage}`, errorStack);
             throw new AppException(
                 ErrorType.PLAN_TECHNICAL_ERROR,
-                { userId, dto: createClaimDto } as any,
-                ErrorType.TECHNICAL
+                ErrorType.TECHNICAL,
+                'TECHNICAL_ERROR',
+                { userId, dto: createClaimDto as unknown as Record<string, unknown> }
             );
         }
     }
@@ -76,10 +77,10 @@ export class ClaimsService {
         userId: string,
         filterDto?: FilterDto,
         paginationDto?: PaginationDto
-    ): Promise<{ data: any[]; total: number; page: number; limit: number }> {
+    ): Promise<{ data: Claim[]; total: number; page: number; limit: number }> {
         try {
             // Build base query
-            const where: any = { userId };
+            const where: Record<string, unknown> = { userId };
 
             // Apply additional filters
             if (filterDto?.where) {
@@ -87,7 +88,9 @@ export class ClaimsService {
             }
 
             // Define order
-            const orderBy: any = filterDto?.orderBy || { submittedAt: 'desc' };
+            const orderBy: Record<string, 'asc' | 'desc'> = filterDto?.orderBy || {
+                submittedAt: 'desc',
+            };
 
             // Set up pagination
             const skip =
@@ -107,7 +110,7 @@ export class ClaimsService {
             });
 
             return {
-                data: claims,
+                data: claims as unknown as Claim[],
                 total,
                 page: paginationDto?.page || 1,
                 limit: take,
@@ -119,8 +122,13 @@ export class ClaimsService {
             this.logger.error(`Failed to retrieve claims: ${errorMessage}`, errorStack);
             throw new AppException(
                 ErrorType.PLAN_TECHNICAL_ERROR,
-                { userId, filterDto, paginationDto } as any,
-                ErrorType.TECHNICAL
+                ErrorType.TECHNICAL,
+                'TECHNICAL_ERROR',
+                {
+                    userId,
+                    filterDto: filterDto as unknown as Record<string, unknown>,
+                    paginationDto: paginationDto as unknown as Record<string, unknown>,
+                }
             );
         }
     }
@@ -130,19 +138,20 @@ export class ClaimsService {
      * @param id The claim ID
      * @returns The claim
      */
-    async findOne(id: string): Promise<any> {
+    async findOne(id: string): Promise<Claim> {
         try {
             const claim = await this.prisma.claim.findUnique({ where: { id } });
 
             if (!claim) {
                 throw new AppException(
                     ErrorType.PLAN_CLAIM_NOT_FOUND,
-                    { id } as any,
-                    ErrorType.BUSINESS
+                    ErrorType.BUSINESS,
+                    'CLAIM_NOT_FOUND',
+                    { id }
                 );
             }
 
-            return claim;
+            return claim as unknown as Claim;
         } catch (error: unknown) {
             if (error instanceof AppException) {
                 throw error;
@@ -154,8 +163,9 @@ export class ClaimsService {
             this.logger.error(`Failed to find claim: ${errorMessage}`, errorStack);
             throw new AppException(
                 ErrorType.PLAN_TECHNICAL_ERROR,
-                { id } as any,
-                ErrorType.TECHNICAL
+                ErrorType.TECHNICAL,
+                'TECHNICAL_ERROR',
+                { id }
             );
         }
     }
@@ -166,7 +176,7 @@ export class ClaimsService {
      * @param updateClaimDto The updated claim data
      * @returns The updated claim
      */
-    async update(id: string, updateClaimDto: UpdateClaimDto): Promise<any> {
+    async update(id: string, updateClaimDto: UpdateClaimDto): Promise<Claim> {
         try {
             // Find the existing claim
             const existingClaim = await this.findOne(id);
@@ -175,13 +185,14 @@ export class ClaimsService {
             if (!['submitted', 'information_required'].includes(existingClaim.status)) {
                 throw new AppException(
                     ErrorType.PLAN_CLAIM_STATUS_INVALID,
-                    { id, status: existingClaim.status } as any,
-                    ErrorType.BUSINESS
+                    ErrorType.BUSINESS,
+                    'CLAIM_STATUS_INVALID',
+                    { id, status: existingClaim.status }
                 );
             }
 
             // Build the update data
-            const updateData: any = {
+            const updateData: Record<string, unknown> = {
                 ...updateClaimDto,
                 updatedAt: new Date(),
             };
@@ -192,7 +203,7 @@ export class ClaimsService {
 
                 const note = updateClaimDto.notes || `Status updated to ${updateClaimDto.status}`;
 
-                const statusUpdate = {
+                const statusUpdate: StatusHistoryItem = {
                     status: updateClaimDto.status,
                     timestamp: new Date(),
                     note,
@@ -225,9 +236,9 @@ export class ClaimsService {
             });
 
             // Publish event to Kafka
-            await this.publishClaimEvent('claim.updated', result);
+            await this.publishClaimEvent('claim.updated', result as unknown as Claim);
 
-            return result;
+            return result as unknown as Claim;
         } catch (error: unknown) {
             if (error instanceof AppException) {
                 throw error;
@@ -239,8 +250,9 @@ export class ClaimsService {
             this.logger.error(`Failed to update claim: ${errorMessage}`, errorStack);
             throw new AppException(
                 ErrorType.PLAN_TECHNICAL_ERROR,
-                { id, updateClaimDto } as any,
-                ErrorType.TECHNICAL
+                ErrorType.TECHNICAL,
+                'TECHNICAL_ERROR',
+                { id, updateClaimDto: updateClaimDto as unknown as Record<string, unknown> }
             );
         }
     }
@@ -259,8 +271,9 @@ export class ClaimsService {
             if (existingClaim.status !== 'submitted') {
                 throw new AppException(
                     ErrorType.PLAN_CLAIM_STATUS_INVALID,
-                    { id } as any,
-                    ErrorType.BUSINESS
+                    ErrorType.BUSINESS,
+                    'CLAIM_STATUS_INVALID',
+                    { id }
                 );
             }
 
@@ -282,8 +295,9 @@ export class ClaimsService {
             this.logger.error(`Failed to delete claim: ${errorMessage}`, errorStack);
             throw new AppException(
                 ErrorType.PLAN_TECHNICAL_ERROR,
-                { id } as any,
-                ErrorType.TECHNICAL
+                ErrorType.TECHNICAL,
+                'TECHNICAL_ERROR',
+                { id }
             );
         }
     }
@@ -300,8 +314,9 @@ export class ClaimsService {
             if (plan.userId !== userId) {
                 throw new AppException(
                     ErrorType.PLAN_UNAUTHORIZED_ACCESS,
-                    { userId, planId } as any,
-                    ErrorType.BUSINESS
+                    ErrorType.BUSINESS,
+                    'UNAUTHORIZED_ACCESS',
+                    { userId, planId }
                 );
             }
         } catch (error: unknown) {
@@ -315,8 +330,9 @@ export class ClaimsService {
             this.logger.error(`Failed to validate plan access: ${errorMessage}`, errorStack);
             throw new AppException(
                 ErrorType.PLAN_TECHNICAL_ERROR,
-                { userId, planId: planId } as any,
-                ErrorType.TECHNICAL
+                ErrorType.TECHNICAL,
+                'TECHNICAL_ERROR',
+                { userId, planId }
             );
         }
     }
@@ -339,8 +355,9 @@ export class ClaimsService {
         if (!validTransitions[currentStatus]?.includes(newStatus)) {
             throw new AppException(
                 ErrorType.PLAN_CLAIM_STATUS_INVALID,
-                { currentStatus, newStatus } as any,
-                ErrorType.BUSINESS
+                ErrorType.BUSINESS,
+                'CLAIM_STATUS_INVALID',
+                { currentStatus, newStatus }
             );
         }
     }
@@ -350,7 +367,7 @@ export class ClaimsService {
      * @param eventType The type of event
      * @param claim The claim data
      */
-    private async publishClaimEvent(eventType: string, claim: any): Promise<void> {
+    private async publishClaimEvent(eventType: string, claim: Claim): Promise<void> {
         try {
             await this.kafkaProducer.send('plan.claims', {
                 eventType,

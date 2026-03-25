@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+
+import { restClient } from '@/api/client';
 
 export type RecordType = 'visit' | 'lab' | 'prescription' | 'imaging';
 
@@ -25,12 +27,46 @@ export interface UseMedicalRecordsReturn {
  * for the medical-records page in the Care Now journey.
  */
 export const useMedicalRecords = (): UseMedicalRecordsReturn => {
-    const [records] = useState<MedicalRecord[]>([]);
-    const [isLoading] = useState(false);
-    const [error] = useState<Error | null>(null);
+    const [records, setRecords] = useState<MedicalRecord[]>([]);
+    const [recordCache, setRecordCache] = useState<Record<string, MedicalRecord>>({});
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
 
-    const getRecord = (_recordId: string): MedicalRecord | null => null;
-    const searchRecords = async (_query: string): Promise<void> => {};
+    const getRecord = useCallback(
+        (recordId: string): MedicalRecord | null => {
+            const cached = recordCache[recordId];
+            if (cached) {
+                return cached;
+            }
+            // Fetch in background and update cache; return null until available
+            void restClient
+                .get<MedicalRecord>(`/api/health/records/${recordId}`)
+                .then((response) => {
+                    setRecordCache((prev) => ({ ...prev, [recordId]: response.data }));
+                })
+                .catch((err: unknown) => {
+                    setError(err instanceof Error ? err : new Error('Erro ao carregar prontuário.'));
+                });
+            return null;
+        },
+        [recordCache]
+    );
+
+    const searchRecords = useCallback(async (query: string): Promise<void> => {
+        try {
+            setIsLoading(true);
+            setError(null);
+            const response = await restClient.get<MedicalRecord[]>('/api/health/records/search', {
+                params: { q: query },
+            });
+            setRecords(response.data);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err : new Error('Erro ao buscar prontuários.'));
+            throw err;
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
 
     return {
         records,

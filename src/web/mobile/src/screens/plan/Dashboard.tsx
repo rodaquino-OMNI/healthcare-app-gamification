@@ -8,7 +8,7 @@ import { fontSizeValues } from '@design-system/tokens/typography';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Share } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
 import EmptyState from '../../components/shared/EmptyState';
@@ -72,7 +72,10 @@ const PlanDashboard: React.FC = () => {
     };
 
     const handleShareCard = (): void => {
-        // TODO(AUSTA-405): implement share card functionality
+        void Share.share({
+            title: `Carteirinha Digital - ${insuranceCardData.plan.name}`,
+            message: `Plano: ${insuranceCardData.plan.name} (${insuranceCardData.plan.type})\nNúmero: ${insuranceCardData.plan.planNumber}\nTitular: ${insuranceCardData.user.name}`,
+        });
     };
 
     const handleNewClaim = (): void => {

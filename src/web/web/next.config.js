@@ -60,14 +60,19 @@ const nextConfig = {
                     { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
                     { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
                     {
+                        // NOTE: The middleware (middleware.ts) overrides this header at runtime
+                        // with a nonce-based CSP (`script-src 'nonce-<random>'`).
+                        // This static value is only served for paths excluded from the
+                        // middleware matcher (e.g. _next/static assets), which do not execute
+                        // inline scripts and therefore do not need unsafe-inline.
                         key: 'Content-Security-Policy',
                         value: [
                             "default-src 'self'",
-                            "script-src 'self' 'unsafe-inline'",
+                            "script-src 'self'",
                             "style-src 'self' 'unsafe-inline'",
                             "img-src 'self' blob: data: https://storage.googleapis.com https://cdn.austa.com.br",
-                            "font-src 'self'",
-                            `connect-src 'self' https://*.austa.com.br https://*.sentry.io${process.env.NODE_ENV === 'development' ? ' http://localhost:* ws://localhost:*' : ''}`,
+                            "font-src 'self' https://fonts.gstatic.com",
+                            "connect-src 'self' https://*.austa.com.br https://*.sentry.io",
                             "frame-ancestors 'none'",
                             "base-uri 'self'",
                             "form-action 'self'",

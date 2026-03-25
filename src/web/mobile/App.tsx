@@ -46,7 +46,7 @@ const StatusBarManager: React.FC = () => {
  */
 const App: React.FC = () => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-var-requires
-    // TODO [ASSET-003]: Add PlusJakartaSans-Light.ttf (weight 300) and
+    // HUMAN-ACTION(ASSET-003): Add PlusJakartaSans-Light.ttf (weight 300) and
     // PlusJakartaSans-ExtraBold.ttf (weight 800) to src/web/mobile/src/assets/fonts/
     // Download from: https://fonts.google.com/specimen/Plus+Jakarta+Sans
     // Then uncomment the Light and ExtraBold lines below.

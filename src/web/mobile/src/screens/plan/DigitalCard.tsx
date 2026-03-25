@@ -75,7 +75,8 @@ export const DigitalCardScreen: React.FC = () => {
     };
 
     const handleSaveToWallet = (): void => {
-        // TODO(AUSTA-404): implement save to wallet functionality
+        // HUMAN-ACTION(AUSTA-404): implement save to wallet
+        // requires Apple PassKit / Google Pay Passes via EAS plugin
     };
 
     if (loading) {

@@ -5,16 +5,28 @@ import { ServerStyleSheet } from 'styled-components'; // styled-components@6.0+
  * Custom Document component that extends Next.js Document to enhance the HTML structure.
  * Handles server-side rendering of styled-components and sets up proper document
  * structure with appropriate meta tags and accessibility attributes.
+ *
+ * CSP nonce: the middleware generates a per-request nonce and forwards it via the
+ * `x-nonce` request header. We read it here and pass it to <NextScript> so that
+ * Next.js framework scripts carry the correct nonce attribute, satisfying the
+ * nonce-based `script-src` directive in the Content-Security-Policy.
  */
-class MyDocument extends Document {
+class MyDocument extends Document<{ nonce: string }> {
     /**
      * Collect and inject styled-components styles during server-side rendering.
      * This prevents the "flash of unstyled content" that would otherwise occur
      * when the JavaScript loads.
+     *
+     * Also extracts the CSP nonce forwarded by middleware via x-nonce so it can
+     * be threaded through to <NextScript>.
      */
-    static async getInitialProps(ctx: DocumentContext): Promise<DocumentInitialProps> {
+    static async getInitialProps(ctx: DocumentContext): Promise<DocumentInitialProps & { nonce: string }> {
         const sheet = new ServerStyleSheet();
         const originalRenderPage = ctx.renderPage;
+
+        // Read nonce forwarded by middleware.ts via the x-nonce request header.
+        // Falls back to empty string when rendering outside a real request (e.g. static export).
+        const nonce: string = (ctx.req?.headers?.['x-nonce'] as string) ?? '';
 
         try {
             // Render the app and collect styles
@@ -26,9 +38,10 @@ class MyDocument extends Document {
             // Run the parent getInitialProps
             const initialProps = await Document.getInitialProps(ctx);
 
-            // Return the initial props with styled-components styles
+            // Return the initial props with styled-components styles and nonce
             return {
                 ...initialProps,
+                nonce,
                 styles: (
                     <>
                         {initialProps.styles}
@@ -43,10 +56,13 @@ class MyDocument extends Document {
     }
 
     render(): React.ReactElement {
+        // this.props.nonce is populated by getInitialProps above
+        const { nonce } = this.props;
+
         return (
             // Set primary language to Brazilian Portuguese
             <Html lang="pt-BR">
-                <Head>
+                <Head nonce={nonce}>
                     {/* Character set and viewport meta tags */}
                     <meta charSet="utf-8" />
                     <meta
@@ -94,7 +110,8 @@ class MyDocument extends Document {
                         Pular para o conteúdo
                     </a>
                     <Main />
-                    <NextScript />
+                    {/* nonce allows Next.js framework scripts to satisfy the CSP nonce directive */}
+                    <NextScript nonce={nonce} />
                 </body>
             </Html>
         );

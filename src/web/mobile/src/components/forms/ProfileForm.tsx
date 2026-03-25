@@ -76,7 +76,8 @@ export const ProfileForm: React.FC = () => {
 
     // Placeholder function for profile updates
     const updateUserProfile = async (_data: ProfileFormData) => {
-        // TODO(AUSTA-403): replace with real API call
+        // HUMAN-ACTION(AUSTA-403): replace with real API call
+        // backend only accepts 'name'; email needs PUT /auth/profile/email
         // Simulate an API call
         return new Promise<void>((resolve, _reject) => {
             setTimeout(() => {

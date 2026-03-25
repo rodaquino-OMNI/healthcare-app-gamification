@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any -- Gamification event data and rule evaluation context are dynamically shaped */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access -- error.message/.stack accessed only after instanceof Error check */
-/* eslint-disable @typescript-eslint/no-unsafe-argument -- error.stack is string|undefined; narrowed via instanceof */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment -- rule context fields come from dynamic event data */
 import { PrismaService } from '@app/shared/database/prisma.service';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -9,9 +5,11 @@ import { ConfigService } from '@nestjs/config';
 import {
     evaluateCondition as safeEvaluateCondition,
     isKnownCondition,
+    RuleContext,
 } from './condition-evaluator';
 import { LoggerService } from '../../../shared/src/logging/logger.service';
 import { AchievementsService } from '../achievements/achievements.service';
+import { GameProfile } from '../profiles/entities/game-profile.entity';
 import { ProfilesService } from '../profiles/profiles.service';
 
 /**
@@ -22,8 +20,8 @@ export interface GamificationEvent {
     userId: string;
     timestamp: Date;
     journey: string;
-    data: Record<string, any>;
-    metadata: Record<string, any>;
+    data: Record<string, unknown>;
+    metadata: Record<string, unknown>;
 }
 
 /**
@@ -45,7 +43,7 @@ export interface Rule {
  */
 export interface RuleEvaluationResult {
     satisfied: boolean;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
 }
 
 /**
@@ -54,7 +52,7 @@ export interface RuleEvaluationResult {
 export interface RuleAction {
     type: 'AWARD_XP' | 'UNLOCK_ACHIEVEMENT' | 'PROGRESS_QUEST';
     value: number | string;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
 }
 
 /**
@@ -101,11 +99,11 @@ export class RulesService implements OnModuleInit {
             this.logger.log('RulesService initialized successfully', 'RulesService');
         } catch (error) {
             this.logger.error(
-                `Failed to initialize RulesService: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
-                error instanceof Error ? (error as any).stack : undefined,
+                `Failed to initialize RulesService: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                error instanceof Error ? error.stack : undefined,
                 'RulesService'
             );
-            throw error as any;
+            throw error;
         }
     }
 
@@ -162,8 +160,8 @@ export class RulesService implements OnModuleInit {
             );
         } catch (error) {
             this.logger.error(
-                `Error processing event ${event.type} for user ${event.userId}: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
-                error instanceof Error ? (error as any).stack : undefined,
+                `Error processing event ${event.type} for user ${event.userId}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                error instanceof Error ? error.stack : undefined,
                 'RulesService'
             );
         }
@@ -215,8 +213,8 @@ export class RulesService implements OnModuleInit {
             };
         } catch (error) {
             this.logger.error(
-                `Error processing rule ${ruleId}: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
-                error instanceof Error ? (error as any).stack : undefined,
+                `Error processing rule ${ruleId}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                error instanceof Error ? error.stack : undefined,
                 'RulesService'
             );
             return { satisfied: false };
@@ -240,7 +238,7 @@ export class RulesService implements OnModuleInit {
     private async evaluateRule(
         rule: Rule,
         event: GamificationEvent,
-        userProfile: any
+        userProfile: GameProfile
     ): Promise<void> {
         try {
             this.logger.log(
@@ -282,8 +280,8 @@ export class RulesService implements OnModuleInit {
             this.logger.log(`Rule ${rule.name} processed successfully`, 'RulesService');
         } catch (error) {
             this.logger.error(
-                `Error evaluating rule ${rule.name}: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
-                error instanceof Error ? (error as any).stack : undefined,
+                `Error evaluating rule ${rule.name}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                error instanceof Error ? error.stack : undefined,
                 'RulesService'
             );
         }
@@ -295,7 +293,7 @@ export class RulesService implements OnModuleInit {
      * @param context The context to evaluate against
      * @returns True if the condition is met, false otherwise
      */
-    private evaluateCondition(condition: string, context: any): boolean {
+    private evaluateCondition(condition: string, context: RuleContext): boolean {
         if (!isKnownCondition(condition)) {
             this.logger.warn(`Unknown rule condition (denied): ${condition}`, 'RulesService');
         }
@@ -334,8 +332,8 @@ export class RulesService implements OnModuleInit {
             }
         } catch (error) {
             this.logger.error(
-                `Error executing action ${action.type}: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
-                error instanceof Error ? (error as any).stack : undefined,
+                `Error executing action ${action.type}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                error instanceof Error ? error.stack : undefined,
                 'RulesService'
             );
         }
@@ -363,11 +361,11 @@ export class RulesService implements OnModuleInit {
             );
         } catch (error) {
             this.logger.error(
-                `Error awarding XP to user ${userId}: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
-                error instanceof Error ? (error as any).stack : undefined,
+                `Error awarding XP to user ${userId}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                error instanceof Error ? error.stack : undefined,
                 'RulesService'
             );
-            throw error as any;
+            throw error;
         }
     }
 
@@ -391,11 +389,11 @@ export class RulesService implements OnModuleInit {
             );
         } catch (error) {
             this.logger.error(
-                `Error unlocking achievement ${achievementId} for user ${userId}: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
-                error instanceof Error ? (error as any).stack : undefined,
+                `Error unlocking achievement ${achievementId} for user ${userId}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                error instanceof Error ? error.stack : undefined,
                 'RulesService'
             );
-            throw error as any;
+            throw error;
         }
     }
 
@@ -482,11 +480,11 @@ export class RulesService implements OnModuleInit {
             this.logger.log(`Loaded ${this.rules.length} rules`, 'RulesService');
         } catch (error) {
             this.logger.error(
-                `Error loading rules: ${error instanceof Error ? (error as any).message : 'Unknown error'}`,
-                error instanceof Error ? (error as any).stack : undefined,
+                `Error loading rules: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                error instanceof Error ? error.stack : undefined,
                 'RulesService'
             );
-            throw error as any;
+            throw error;
         }
     }
 }

@@ -6,7 +6,7 @@
  * and auditable. Unknown conditions fail closed (return false).
  */
 
-interface RuleContext {
+export interface RuleContext {
     event: {
         type: string;
         data: Record<string, unknown>;
