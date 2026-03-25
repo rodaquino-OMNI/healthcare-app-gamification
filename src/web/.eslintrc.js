@@ -70,6 +70,7 @@ module.exports = {
     'next-env.d.ts'
   ],
   rules: {
+    'import/no-unresolved': ['error', { ignore: ['\\.css$'] }],
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': [
       'error',

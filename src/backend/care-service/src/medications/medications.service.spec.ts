@@ -133,7 +133,7 @@ describe('MedicationsService', () => {
             await serviceWithGamification.create(mockCreateDto, 'user-1');
 
             expect(mockKafka.produce).toHaveBeenCalledWith(
-                'medication.adherence',
+                'MEDICATION_ADHERENCE',
                 expect.objectContaining({
                     eventType: 'MEDICATION_CREATED',
                     userId: 'user-1',
