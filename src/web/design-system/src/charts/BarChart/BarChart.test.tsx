@@ -2,6 +2,20 @@ import { describe, it, expect } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
+// Mock recharts to avoid ResizeObserver dependency and SVG rendering issues in jsdom
+jest.mock('recharts', () => {
+    const React = require('react');
+    return {
+        ComposedChart: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+        Bar: () => <div />,
+        XAxis: () => <div />,
+        YAxis: () => <div />,
+        CartesianGrid: () => <div />,
+        Tooltip: () => <div />,
+        ResponsiveContainer: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+    };
+});
+
 import { BarChart } from './BarChart';
 
 describe('BarChart', () => {

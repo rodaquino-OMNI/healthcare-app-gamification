@@ -48,7 +48,7 @@ If you prefer to set up manually:
 
 ```bash
 # Start infrastructure services
-docker-compose -f docker-compose.local.yml up -d
+docker compose -f infrastructure/docker/docker-compose.local.yml up -d
 
 # Install dependencies
 npm install

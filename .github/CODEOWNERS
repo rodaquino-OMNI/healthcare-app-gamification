@@ -7,7 +7,7 @@
 # Infrastructure and DevOps
 infrastructure/**                   @austa/devops-team @austa/security-team
 .github/workflows/**                @austa/devops-team
-docker-compose*.yml                 @austa/devops-team
+infrastructure/docker/docker-compose*.yml  @austa/devops-team
 
 # Backend Shared Components
 src/backend/shared/**               @austa/backend-core

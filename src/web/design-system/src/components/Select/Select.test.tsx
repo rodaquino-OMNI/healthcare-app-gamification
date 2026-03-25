@@ -29,17 +29,19 @@ jest.mock('../../primitives/Text/Text', () => ({
 }));
 
 jest.mock('../../primitives/Touchable/Touchable', () => {
-    const MockTouchable = React.forwardRef(({ children, onPress, disabled, testID, ...props }: any, ref: any) => (
-        <button
-            ref={ref}
-            data-testid={testID || 'select-trigger'}
-            onClick={!disabled ? onPress : undefined}
-            disabled={disabled}
-            {...props}
-        >
-            {children}
-        </button>
-    ));
+    const MockTouchable = require('react').forwardRef(
+        ({ children, onPress, disabled, testID, ...props }: any, ref: any) => (
+            <button
+                ref={ref}
+                data-testid={testID || 'select-trigger'}
+                onClick={!disabled ? onPress : undefined}
+                disabled={disabled}
+                {...props}
+            >
+                {children}
+            </button>
+        )
+    );
     MockTouchable.displayName = 'MockTouchable';
     return { Touchable: MockTouchable };
 });
@@ -179,7 +181,7 @@ describe('Select', () => {
         const onChangeMock = jest.fn();
         render(<Select options={defaultOptions} value="" onChange={onChangeMock} label="Choose" />);
         fireEvent.click(screen.getByTestId('select-component'));
-        fireEvent.change(screen.getByTestId('select-radio-b-input'));
+        fireEvent.click(screen.getByTestId('select-radio-b-input'));
         expect(onChangeMock).toHaveBeenCalledWith('b');
     });
 

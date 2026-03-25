@@ -6,20 +6,26 @@ import { Stack } from './Stack';
 
 // Mock Stack.styles to render a plain div
 jest.mock('./Stack.styles', () => {
+    const React = require('react');
     const MockStackContainer = React.forwardRef(
-        ({ direction, spacing, wrap, align, children, ...props }: any, ref: any) => (
-            <div
-                ref={ref}
-                data-testid="stack-container"
-                data-direction={direction}
-                data-spacing={typeof spacing === 'object' ? JSON.stringify(spacing) : spacing}
-                data-wrap={String(wrap)}
-                data-align={align}
-                {...props}
-            >
-                {children}
-            </div>
-        )
+        ({ direction, spacing, wrap, align, children, ...props }: any, ref: any) => {
+            // Spread props first, then override data-testid so a passed undefined doesn't win
+            const { 'data-testid': passedTestId, ...restProps } = props;
+            return React.createElement(
+                'div',
+                {
+                    ref,
+                    'data-direction': direction,
+                    'data-spacing': typeof spacing === 'object' ? JSON.stringify(spacing) : spacing,
+                    'data-wrap': String(wrap),
+                    'data-align': align,
+                    ...restProps,
+                    'data-testid':
+                        passedTestId !== null && passedTestId !== undefined ? passedTestId : 'stack-container',
+                },
+                children
+            );
+        }
     );
     MockStackContainer.displayName = 'MockStackContainer';
     return { StackContainer: MockStackContainer };
@@ -27,11 +33,10 @@ jest.mock('./Stack.styles', () => {
 
 // Mock Box (used by Stack.styles internally, but since we mock Stack.styles fully this is a safety net)
 jest.mock('../Box/Box', () => {
-    const MockBox = React.forwardRef(({ children, ...props }: any, ref: any) => (
-        <div ref={ref} {...props}>
-            {children}
-        </div>
-    ));
+    const React = require('react');
+    const MockBox = React.forwardRef(({ children, ...props }: any, ref: any) =>
+        React.createElement('div', { ref, ...props }, children)
+    );
     MockBox.displayName = 'MockBox';
     return { Box: MockBox };
 });

@@ -107,7 +107,7 @@ docker build -t austa/care-service .
 
 # Run the service with Docker Compose
 
-docker-compose up -d
+docker compose -f infrastructure/docker/docker-compose.dev.yml up -d
 ```markdown
 
 ## API Documentation

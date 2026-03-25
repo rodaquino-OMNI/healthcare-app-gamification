@@ -117,8 +117,8 @@
       "type": "node",
       "request": "launch",
       "name": "Start Infrastructure Services",
-      "runtimeExecutable": "docker-compose",
-      "runtimeArgs": ["-f", "docker-compose.dev.yml", "up", "-d", "db", "redis", "kafka", "zookeeper"],
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "-f", "infrastructure/docker/docker-compose.dev.yml", "up", "-d", "postgres", "redis", "kafka", "zookeeper"],
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
       "skipFiles": ["<node_internals>/**"]

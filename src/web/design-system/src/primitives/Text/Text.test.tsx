@@ -6,29 +6,54 @@ import { Text } from './Text';
 
 // Mock styled-components to render a plain element
 jest.mock('styled-components', () => {
-    const styled = {
-        span: (_strings: any, ..._args: any[]) => {
-            const Component = ({ children, as: Tag = 'span', ...props }: any) => {
-                const DomTag = Tag;
-                return (
-                    <DomTag
-                        data-testid="text-element"
-                        data-variant={props.variant}
-                        data-journey={props.journey}
-                        data-font-size={props.fontSize}
-                        data-font-weight={props.fontWeight}
-                        data-color={props.color}
-                        data-text-align={props.textAlign}
-                        data-truncate={props.truncate ? 'true' : undefined}
-                        {...props}
-                    >
-                        {children}
-                    </DomTag>
-                );
-            };
-            return Component;
-        },
+    const React = require('react');
+
+    // Build a render component that outputs all the data-* attributes the tests expect
+    const makeRenderComponent = () => {
+        const Component = ({ children, as: Tag = 'span', ...props }: any) => {
+            const { 'data-testid': passedTestId, ...restProps } = props;
+            return React.createElement(
+                Tag,
+                {
+                    'data-variant': restProps.variant,
+                    'data-journey': restProps.journey,
+                    'data-font-size': restProps.fontSize,
+                    'data-font-weight': restProps.fontWeight,
+                    'data-color': restProps.color,
+                    'data-text-align': restProps.textAlign,
+                    'data-truncate': restProps.truncate ? 'true' : undefined,
+                    ...restProps,
+                    'data-testid': passedTestId !== null && passedTestId !== undefined ? passedTestId : 'text-element',
+                },
+                children
+            );
+        };
+        return Component;
     };
+
+    // A tagged-template function that returns a component when called with template strings.
+    // Also exposes .withConfig() that itself returns another tagged-template function.
+    // This mirrors the real styled-components API:
+    //   styled.span.withConfig({})`css...`  => Component
+    const makeTaggedTemplate = () => {
+        // tagFn is called as a tagged template: tagFn`css...` => Component
+        const tagFn = (_strings: any, ..._args: any[]) => makeRenderComponent();
+        // .withConfig returns a NEW tagged-template function so the subsequent `css...` call works
+        (tagFn as any).withConfig = (_config: any) => {
+            const inner = (_strings: any, ..._args: any[]) => makeRenderComponent();
+            (inner as any).withConfig = (_config2: any) => inner;
+            return inner;
+        };
+        return tagFn;
+    };
+
+    // styled.span, styled.div, etc. — every HTML-tag access returns a tagged-template fn
+    const styled: any = new Proxy(makeTaggedTemplate(), {
+        get(_target: any, _prop: string) {
+            return makeTaggedTemplate();
+        },
+    });
+
     return { __esModule: true, default: styled };
 });
 

@@ -1,15 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- Test mocks require flexible typing */
+import { AppointmentsSchedulingService } from './appointments-scheduling.service';
 import { AppointmentsService } from './appointments.service';
 import { AppointmentStatus, AppointmentType } from './entities/appointment.entity';
-import { AppException } from '../../../shared/src/exceptions/exceptions.types';
+import { AppException, ErrorType } from '../../../shared/src/exceptions/exceptions.types';
 
 /**
- * Unit tests for AppointmentsService.
+ * Unit tests for AppointmentsService (facade).
  *
- * Uses direct instantiation to avoid NestJS DI token resolution issues.
+ * The facade delegates every call to AppointmentsSchedulingService.
+ * These tests verify correct delegation and that return values / errors
+ * propagate unchanged.
  */
 describe('AppointmentsService', () => {
     let service: AppointmentsService;
+    let mockSchedulingService: Record<string, jest.Mock>;
 
     const mockAppointment = {
         id: 'appt-test-123',
@@ -29,38 +33,26 @@ describe('AppointmentsService', () => {
         },
     };
 
-    const mockPrisma = {
-        appointment: {
-            findUnique: jest.fn(),
-            findMany: jest.fn(),
-            findFirst: jest.fn(),
-            create: jest.fn(),
-            update: jest.fn(),
-            count: jest.fn(),
-        },
-    };
-
-    const mockProvidersService = {
-        findById: jest.fn(),
-        checkAvailability: jest.fn(),
-    };
-
-    const mockTelemedicineService = {
-        startTelemedicineSession: jest.fn(),
-    };
-
-    const mockKafkaService = {
-        produce: jest.fn(),
-        emit: jest.fn(),
-    };
-
     beforeEach(() => {
         jest.clearAllMocks();
+        mockSchedulingService = {
+            findById: jest.fn(),
+            findAll: jest.fn(),
+            create: jest.fn(),
+            update: jest.fn(),
+            delete: jest.fn(),
+            count: jest.fn(),
+            completeAppointment: jest.fn(),
+            getUpcomingAppointments: jest.fn(),
+            getPastAppointments: jest.fn(),
+            confirmAppointment: jest.fn(),
+            startTelemedicineSession: jest.fn(),
+            checkUserAppointmentConflict: jest.fn(),
+            getProviderAppointments: jest.fn(),
+            getProviderTodayAppointments: jest.fn(),
+        };
         service = new AppointmentsService(
-            mockPrisma as any,
-            mockProvidersService as any,
-            mockTelemedicineService as any,
-            mockKafkaService as any
+            mockSchedulingService as unknown as AppointmentsSchedulingService
         );
     });
 
@@ -72,27 +64,27 @@ describe('AppointmentsService', () => {
     // findById
     // ----------------------------------------------------------------
     describe('findById', () => {
-        it('should return appointment when found by id', async () => {
-            mockPrisma.appointment.findUnique.mockResolvedValue(mockAppointment);
+        it('should delegate to schedulingService.findById and return appointment', async () => {
+            mockSchedulingService.findById.mockResolvedValue(mockAppointment);
 
             const result = await service.findById('appt-test-123');
 
-            expect(mockPrisma.appointment.findUnique).toHaveBeenCalledWith(
-                expect.objectContaining({ where: { id: 'appt-test-123' } })
-            );
+            expect(mockSchedulingService.findById).toHaveBeenCalledWith('appt-test-123');
             expect(result).toEqual(mockAppointment);
         });
 
-        it('should return null when appointment is not found', async () => {
-            mockPrisma.appointment.findUnique.mockResolvedValue(null);
+        it('should return null when scheduling service returns null', async () => {
+            mockSchedulingService.findById.mockResolvedValue(null);
 
             const result = await service.findById('nonexistent-id');
 
             expect(result).toBeNull();
         });
 
-        it('should throw AppException when database query fails', async () => {
-            mockPrisma.appointment.findUnique.mockRejectedValue(new Error('DB error'));
+        it('should propagate AppException from scheduling service', async () => {
+            mockSchedulingService.findById.mockRejectedValue(
+                new AppException('Failed to retrieve', ErrorType.TECHNICAL, 'CARE_101', {})
+            );
 
             await expect(service.findById('appt-test-123')).rejects.toThrow(AppException);
         });
@@ -102,34 +94,70 @@ describe('AppointmentsService', () => {
     // findAll
     // ----------------------------------------------------------------
     describe('findAll', () => {
-        it('should return paginated appointments', async () => {
-            const appointments = [mockAppointment];
-            mockPrisma.appointment.findMany.mockResolvedValue(appointments);
-            mockPrisma.appointment.count.mockResolvedValue(1);
+        it('should delegate to schedulingService.findAll and return paginated result', async () => {
+            const paginatedResult = {
+                data: [mockAppointment],
+                meta: {
+                    page: 1,
+                    limit: 10,
+                    total: 1,
+                    totalPages: 1,
+                    offset: 0,
+                    hasNext: false,
+                    hasPrev: false,
+                },
+            };
+            mockSchedulingService.findAll.mockResolvedValue(paginatedResult);
 
             const result = await service.findAll(undefined, { page: 1, limit: 10 });
 
+            expect(mockSchedulingService.findAll).toHaveBeenCalledWith(undefined, {
+                page: 1,
+                limit: 10,
+            });
             expect(result).toHaveProperty('data');
             expect(result).toHaveProperty('meta');
-            expect(result.data).toEqual(appointments);
+            expect(result.data).toEqual([mockAppointment]);
         });
 
-        it('should apply where filter from filterDto', async () => {
-            mockPrisma.appointment.findMany.mockResolvedValue([]);
-            mockPrisma.appointment.count.mockResolvedValue(0);
+        it('should pass filter to scheduling service', async () => {
+            const paginatedResult = {
+                data: [],
+                meta: {
+                    page: 1,
+                    limit: 10,
+                    total: 0,
+                    totalPages: 0,
+                    offset: 0,
+                    hasNext: false,
+                    hasPrev: false,
+                },
+            };
+            mockSchedulingService.findAll.mockResolvedValue(paginatedResult);
+            const filter = { where: { userId: 'user-test-123' } };
 
-            await service.findAll({ where: { userId: 'user-test-123' } }, { page: 1, limit: 10 });
+            await service.findAll(filter, { page: 1, limit: 10 });
 
-            expect(mockPrisma.appointment.findMany).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    where: expect.objectContaining({ userId: 'user-test-123' }),
-                })
-            );
+            expect(mockSchedulingService.findAll).toHaveBeenCalledWith(filter, {
+                page: 1,
+                limit: 10,
+            });
         });
 
-        it('should compute correct pagination metadata', async () => {
-            mockPrisma.appointment.findMany.mockResolvedValue([mockAppointment]);
-            mockPrisma.appointment.count.mockResolvedValue(25);
+        it('should return correct pagination metadata from scheduling service', async () => {
+            const paginatedResult = {
+                data: [mockAppointment],
+                meta: {
+                    page: 2,
+                    limit: 10,
+                    total: 25,
+                    totalPages: 3,
+                    offset: 10,
+                    hasNext: true,
+                    hasPrev: true,
+                },
+            };
+            mockSchedulingService.findAll.mockResolvedValue(paginatedResult);
 
             const result = await service.findAll(undefined, { page: 2, limit: 10 });
 
@@ -138,8 +166,10 @@ describe('AppointmentsService', () => {
             expect(result.meta.totalPages).toBe(3);
         });
 
-        it('should throw AppException when query fails', async () => {
-            mockPrisma.appointment.findMany.mockRejectedValue(new Error('Connection error'));
+        it('should propagate AppException from scheduling service', async () => {
+            mockSchedulingService.findAll.mockRejectedValue(
+                new AppException('Failed to retrieve', ErrorType.TECHNICAL, 'CARE_102', {})
+            );
 
             await expect(service.findAll()).rejects.toThrow(AppException);
         });
@@ -159,68 +189,54 @@ describe('AppointmentsService', () => {
             reason: 'Annual checkup',
         };
 
-        it('should create an appointment when all validations pass', async () => {
-            const mockProvider = {
-                id: 'provider-test-123',
-                name: 'Dr. Test',
-                telemedicineAvailable: true,
-            };
-            mockProvidersService.findById.mockResolvedValue(mockProvider);
-            mockProvidersService.checkAvailability.mockResolvedValue(true);
-            mockPrisma.appointment.create.mockResolvedValue(mockAppointment);
-            mockKafkaService.produce.mockResolvedValue(undefined);
+        it('should delegate to schedulingService.create and return created appointment', async () => {
+            mockSchedulingService.create.mockResolvedValue(mockAppointment);
 
             const result = await service.create(createDto as any);
 
+            expect(mockSchedulingService.create).toHaveBeenCalledWith(createDto);
             expect(result).toEqual(mockAppointment);
         });
 
-        it('should throw AppException when appointment date is in the past', async () => {
+        it('should propagate AppException for past date from scheduling service', async () => {
+            mockSchedulingService.create.mockRejectedValue(
+                new AppException('Cannot book in the past', ErrorType.BUSINESS, 'CARE_103', {})
+            );
             const pastDate = new Date(Date.now() - 24 * 60 * 60 * 1000);
             const dtoWithPastDate = { ...createDto, dateTime: pastDate.toISOString() };
-
-            mockProvidersService.findById.mockResolvedValue({ id: 'provider-test-123' });
 
             await expect(service.create(dtoWithPastDate as any)).rejects.toThrow(AppException);
         });
 
-        it('should throw AppException when provider is not available', async () => {
-            mockProvidersService.findById.mockResolvedValue({
-                id: 'provider-test-123',
-                telemedicineAvailable: false,
-            });
-            mockProvidersService.checkAvailability.mockResolvedValue(false);
+        it('should propagate AppException for unavailable provider from scheduling service', async () => {
+            mockSchedulingService.create.mockRejectedValue(
+                new AppException('Provider not available', ErrorType.BUSINESS, 'CARE_105', {})
+            );
 
             await expect(service.create(createDto as any)).rejects.toThrow(AppException);
         });
 
-        it('should throw AppException when telemedicine appointment with non-telemedicine provider', async () => {
+        it('should propagate AppException for telemedicine with non-telemedicine provider', async () => {
             const telemedicineDto = { ...createDto, type: AppointmentType.TELEMEDICINE };
-            mockProvidersService.findById.mockResolvedValue({
-                id: 'provider-test-123',
-                telemedicineAvailable: false,
-            });
-            mockProvidersService.checkAvailability.mockResolvedValue(true);
+            mockSchedulingService.create.mockRejectedValue(
+                new AppException(
+                    'Provider does not offer telemedicine',
+                    ErrorType.BUSINESS,
+                    'CARE_106',
+                    {}
+                )
+            );
 
             await expect(service.create(telemedicineDto as any)).rejects.toThrow(AppException);
         });
 
-        it('should publish Kafka event after successful creation', async () => {
-            mockProvidersService.findById.mockResolvedValue({
-                id: 'provider-test-123',
-                telemedicineAvailable: true,
-            });
-            mockProvidersService.checkAvailability.mockResolvedValue(true);
-            mockPrisma.appointment.create.mockResolvedValue(mockAppointment);
-            mockKafkaService.produce.mockResolvedValue(undefined);
+        it('should delegate creation including Kafka publishing to scheduling service', async () => {
+            mockSchedulingService.create.mockResolvedValue(mockAppointment);
 
             await service.create(createDto as any);
 
-            expect(mockKafkaService.produce).toHaveBeenCalledWith(
-                'care.appointment.created',
-                expect.objectContaining({ appointmentId: mockAppointment.id }),
-                mockAppointment.id
-            );
+            expect(mockSchedulingService.create).toHaveBeenCalledTimes(1);
+            expect(mockSchedulingService.create).toHaveBeenCalledWith(createDto);
         });
     });
 
@@ -228,44 +244,52 @@ describe('AppointmentsService', () => {
     // update
     // ----------------------------------------------------------------
     describe('update', () => {
-        it('should update appointment when it exists and is in valid state', async () => {
-            mockPrisma.appointment.findUnique.mockResolvedValue(mockAppointment);
+        it('should delegate to schedulingService.update and return updated appointment', async () => {
             const updatedAppointment = { ...mockAppointment, notes: 'Updated notes' };
-            mockPrisma.appointment.update.mockResolvedValue(updatedAppointment);
-            mockKafkaService.produce.mockResolvedValue(undefined);
-            mockPrisma.appointment.count.mockResolvedValue(0);
+            mockSchedulingService.update.mockResolvedValue(updatedAppointment);
 
             const result = await service.update('appt-test-123', { notes: 'Updated notes' } as any);
 
+            expect(mockSchedulingService.update).toHaveBeenCalledWith('appt-test-123', {
+                notes: 'Updated notes',
+            });
             expect(result.notes).toBe('Updated notes');
         });
 
-        it('should throw AppException when appointment does not exist', async () => {
-            mockPrisma.appointment.findUnique.mockResolvedValue(null);
+        it('should propagate AppException when appointment does not exist', async () => {
+            mockSchedulingService.update.mockRejectedValue(
+                new AppException('Appointment not found', ErrorType.BUSINESS, 'CARE_108', {})
+            );
 
             await expect(service.update('nonexistent', { notes: 'test' } as any)).rejects.toThrow(
                 AppException
             );
         });
 
-        it('should throw AppException when appointment is already completed', async () => {
-            const completedAppointment = {
-                ...mockAppointment,
-                status: AppointmentStatus.COMPLETED,
-            };
-            mockPrisma.appointment.findUnique.mockResolvedValue(completedAppointment);
+        it('should propagate AppException when appointment is already completed', async () => {
+            mockSchedulingService.update.mockRejectedValue(
+                new AppException(
+                    'Cannot update a completed appointment',
+                    ErrorType.BUSINESS,
+                    'CARE_109',
+                    {}
+                )
+            );
 
             await expect(service.update('appt-test-123', { notes: 'test' } as any)).rejects.toThrow(
                 AppException
             );
         });
 
-        it('should throw AppException when appointment is already cancelled', async () => {
-            const cancelledAppointment = {
-                ...mockAppointment,
-                status: AppointmentStatus.CANCELLED,
-            };
-            mockPrisma.appointment.findUnique.mockResolvedValue(cancelledAppointment);
+        it('should propagate AppException when appointment is already cancelled', async () => {
+            mockSchedulingService.update.mockRejectedValue(
+                new AppException(
+                    'Cannot update a cancelled appointment',
+                    ErrorType.BUSINESS,
+                    'CARE_109',
+                    {}
+                )
+            );
 
             await expect(service.update('appt-test-123', { notes: 'test' } as any)).rejects.toThrow(
                 AppException
@@ -277,22 +301,19 @@ describe('AppointmentsService', () => {
     // delete
     // ----------------------------------------------------------------
     describe('delete', () => {
-        it('should cancel the appointment instead of deleting it', async () => {
-            mockPrisma.appointment.findUnique.mockResolvedValue(mockAppointment);
-            mockPrisma.appointment.update.mockResolvedValue({
-                ...mockAppointment,
-                status: AppointmentStatus.CANCELLED,
-            });
-            mockPrisma.appointment.count.mockResolvedValue(0);
-            mockKafkaService.produce.mockResolvedValue(undefined);
+        it('should delegate to schedulingService.delete and return true', async () => {
+            mockSchedulingService.delete.mockResolvedValue(true);
 
             const result = await service.delete('appt-test-123');
 
+            expect(mockSchedulingService.delete).toHaveBeenCalledWith('appt-test-123');
             expect(result).toBe(true);
         });
 
-        it('should throw AppException when appointment does not exist', async () => {
-            mockPrisma.appointment.findUnique.mockResolvedValue(null);
+        it('should propagate AppException when appointment does not exist', async () => {
+            mockSchedulingService.delete.mockRejectedValue(
+                new AppException('Appointment not found', ErrorType.BUSINESS, 'CARE_115', {})
+            );
 
             await expect(service.delete('nonexistent-id')).rejects.toThrow(AppException);
         });
@@ -302,18 +323,205 @@ describe('AppointmentsService', () => {
     // count
     // ----------------------------------------------------------------
     describe('count', () => {
-        it('should return the count of matching appointments', async () => {
-            mockPrisma.appointment.count.mockResolvedValue(5);
+        it('should delegate to schedulingService.count and return the count', async () => {
+            mockSchedulingService.count.mockResolvedValue(5);
 
             const result = await service.count({ where: { userId: 'user-test-123' } });
 
+            expect(mockSchedulingService.count).toHaveBeenCalledWith({
+                where: { userId: 'user-test-123' },
+            });
             expect(result).toBe(5);
         });
 
-        it('should throw AppException when count query fails', async () => {
-            mockPrisma.appointment.count.mockRejectedValue(new Error('DB error'));
+        it('should propagate AppException when count query fails', async () => {
+            mockSchedulingService.count.mockRejectedValue(
+                new AppException('Failed to count', ErrorType.TECHNICAL, 'CARE_117', {})
+            );
 
             await expect(service.count()).rejects.toThrow(AppException);
+        });
+    });
+
+    // ----------------------------------------------------------------
+    // completeAppointment
+    // ----------------------------------------------------------------
+    describe('completeAppointment', () => {
+        it('should delegate to schedulingService.completeAppointment', async () => {
+            const completed = { ...mockAppointment, status: AppointmentStatus.COMPLETED };
+            mockSchedulingService.completeAppointment.mockResolvedValue(completed);
+
+            const result = await service.completeAppointment('appt-test-123');
+
+            expect(mockSchedulingService.completeAppointment).toHaveBeenCalledWith('appt-test-123');
+            expect(result.status).toBe(AppointmentStatus.COMPLETED);
+        });
+    });
+
+    // ----------------------------------------------------------------
+    // getUpcomingAppointments
+    // ----------------------------------------------------------------
+    describe('getUpcomingAppointments', () => {
+        it('should delegate to schedulingService.getUpcomingAppointments', async () => {
+            const paginatedResult = {
+                data: [mockAppointment],
+                meta: {
+                    page: 1,
+                    limit: 10,
+                    total: 1,
+                    totalPages: 1,
+                    offset: 0,
+                    hasNext: false,
+                    hasPrev: false,
+                },
+            };
+            mockSchedulingService.getUpcomingAppointments.mockResolvedValue(paginatedResult);
+
+            const result = await service.getUpcomingAppointments('user-test-123', {
+                page: 1,
+                limit: 10,
+            });
+
+            expect(mockSchedulingService.getUpcomingAppointments).toHaveBeenCalledWith(
+                'user-test-123',
+                { page: 1, limit: 10 }
+            );
+            expect(result.data).toEqual([mockAppointment]);
+        });
+    });
+
+    // ----------------------------------------------------------------
+    // getPastAppointments
+    // ----------------------------------------------------------------
+    describe('getPastAppointments', () => {
+        it('should delegate to schedulingService.getPastAppointments', async () => {
+            const paginatedResult = {
+                data: [mockAppointment],
+                meta: {
+                    page: 1,
+                    limit: 10,
+                    total: 1,
+                    totalPages: 1,
+                    offset: 0,
+                    hasNext: false,
+                    hasPrev: false,
+                },
+            };
+            mockSchedulingService.getPastAppointments.mockResolvedValue(paginatedResult);
+
+            const result = await service.getPastAppointments('user-test-123', {
+                page: 1,
+                limit: 10,
+            });
+
+            expect(mockSchedulingService.getPastAppointments).toHaveBeenCalledWith(
+                'user-test-123',
+                { page: 1, limit: 10 }
+            );
+            expect(result.data).toEqual([mockAppointment]);
+        });
+    });
+
+    // ----------------------------------------------------------------
+    // confirmAppointment
+    // ----------------------------------------------------------------
+    describe('confirmAppointment', () => {
+        it('should delegate to schedulingService.confirmAppointment', async () => {
+            mockSchedulingService.confirmAppointment.mockResolvedValue(mockAppointment);
+
+            const result = await service.confirmAppointment('appt-test-123');
+
+            expect(mockSchedulingService.confirmAppointment).toHaveBeenCalledWith('appt-test-123');
+            expect(result).toEqual(mockAppointment);
+        });
+    });
+
+    // ----------------------------------------------------------------
+    // startTelemedicineSession
+    // ----------------------------------------------------------------
+    describe('startTelemedicineSession', () => {
+        it('should delegate to schedulingService.startTelemedicineSession', async () => {
+            const mockSession = {
+                id: 'session-1',
+                appointmentId: 'appt-test-123',
+                userId: 'user-test-123',
+            };
+            mockSchedulingService.startTelemedicineSession.mockResolvedValue(mockSession);
+
+            const result = await service.startTelemedicineSession('appt-test-123', 'user-test-123');
+
+            expect(mockSchedulingService.startTelemedicineSession).toHaveBeenCalledWith(
+                'appt-test-123',
+                'user-test-123'
+            );
+            expect(result).toEqual(mockSession);
+        });
+    });
+
+    // ----------------------------------------------------------------
+    // checkUserAppointmentConflict
+    // ----------------------------------------------------------------
+    describe('checkUserAppointmentConflict', () => {
+        it('should delegate to schedulingService.checkUserAppointmentConflict', async () => {
+            mockSchedulingService.checkUserAppointmentConflict.mockResolvedValue(true);
+            const dateTime = new Date();
+
+            const result = await service.checkUserAppointmentConflict('user-test-123', dateTime);
+
+            expect(mockSchedulingService.checkUserAppointmentConflict).toHaveBeenCalledWith(
+                'user-test-123',
+                dateTime
+            );
+            expect(result).toBe(true);
+        });
+    });
+
+    // ----------------------------------------------------------------
+    // getProviderAppointments
+    // ----------------------------------------------------------------
+    describe('getProviderAppointments', () => {
+        it('should delegate to schedulingService.getProviderAppointments', async () => {
+            const paginatedResult = {
+                data: [mockAppointment],
+                meta: {
+                    page: 1,
+                    limit: 10,
+                    total: 1,
+                    totalPages: 1,
+                    offset: 0,
+                    hasNext: false,
+                    hasPrev: false,
+                },
+            };
+            mockSchedulingService.getProviderAppointments.mockResolvedValue(paginatedResult);
+
+            const result = await service.getProviderAppointments('provider-test-123', {
+                page: 1,
+                limit: 10,
+            });
+
+            expect(mockSchedulingService.getProviderAppointments).toHaveBeenCalledWith(
+                'provider-test-123',
+                { page: 1, limit: 10 },
+                undefined
+            );
+            expect(result.data).toEqual([mockAppointment]);
+        });
+    });
+
+    // ----------------------------------------------------------------
+    // getProviderTodayAppointments
+    // ----------------------------------------------------------------
+    describe('getProviderTodayAppointments', () => {
+        it('should delegate to schedulingService.getProviderTodayAppointments', async () => {
+            mockSchedulingService.getProviderTodayAppointments.mockResolvedValue([mockAppointment]);
+
+            const result = await service.getProviderTodayAppointments('provider-test-123');
+
+            expect(mockSchedulingService.getProviderTodayAppointments).toHaveBeenCalledWith(
+                'provider-test-123'
+            );
+            expect(result).toEqual([mockAppointment]);
         });
     });
 });

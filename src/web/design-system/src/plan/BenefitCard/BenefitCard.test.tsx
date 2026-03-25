@@ -1,8 +1,9 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
+import { ThemeProvider } from 'styled-components';
 
-// eslint-disable-next-line import/order -- Mock must be imported before module under test
 import { BenefitCard } from './BenefitCard';
+import { planTheme } from '../../themes';
 
 interface Benefit {
     id?: string;
@@ -13,12 +14,9 @@ interface Benefit {
     usage?: string;
 }
 
-// @ts-expect-error ThemeProvider is not exported from themes
-import { ThemeProvider } from '../../themes';
-
 // Helper function to render the component with theme provider
 const renderWithTheme = (ui: React.ReactElement) => {
-    return render(<ThemeProvider>{ui}</ThemeProvider>);
+    return render(<ThemeProvider theme={planTheme}>{ui}</ThemeProvider>);
 };
 
 describe('BenefitCard', () => {

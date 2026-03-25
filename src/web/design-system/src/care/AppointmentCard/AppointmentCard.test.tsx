@@ -1,8 +1,16 @@
 import { describe, it, expect } from '@jest/globals';
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
+import { ThemeProvider } from 'styled-components';
 
 import { AppointmentCard, Appointment } from './AppointmentCard';
+import { careTheme } from '../../themes/care.theme';
+
+/**
+ * Helper to render AppointmentCard with the required ThemeProvider.
+ * AppointmentCard.styles.ts accesses props.theme.*, so a theme must be provided.
+ */
+const renderWithTheme = (ui: React.ReactNode) => render(<ThemeProvider theme={careTheme}>{ui}</ThemeProvider>);
 
 describe('AppointmentCard', () => {
     // Mock data for testing
@@ -33,7 +41,9 @@ describe('AppointmentCard', () => {
     });
 
     it('renders correctly with required props', () => {
-        render(<AppointmentCard appointment={mockAppointment} provider={mockProvider} testID="appointment-card" />);
+        renderWithTheme(
+            <AppointmentCard appointment={mockAppointment} provider={mockProvider} testID="appointment-card" />
+        );
 
         // Check provider information is displayed
         expect(screen.getByText('Dr. Ana Oliveira')).toBeTruthy();
@@ -52,7 +62,7 @@ describe('AppointmentCard', () => {
             type: 'telemedicine' as const,
         };
 
-        render(
+        renderWithTheme(
             <AppointmentCard
                 appointment={telemedicineAppointment}
                 provider={mockProvider}
@@ -70,7 +80,7 @@ describe('AppointmentCard', () => {
 
     it('renders different appointment statuses correctly', () => {
         // Test completed status
-        const { rerender } = render(
+        const { rerender } = renderWithTheme(
             <AppointmentCard
                 appointment={{ ...mockAppointment, status: 'completed' }}
                 provider={mockProvider}
@@ -81,17 +91,19 @@ describe('AppointmentCard', () => {
 
         // Test cancelled status
         rerender(
-            <AppointmentCard
-                appointment={{ ...mockAppointment, status: 'cancelled' }}
-                provider={mockProvider}
-                testID="appointment-card"
-            />
+            <ThemeProvider theme={careTheme}>
+                <AppointmentCard
+                    appointment={{ ...mockAppointment, status: 'cancelled' }}
+                    provider={mockProvider}
+                    testID="appointment-card"
+                />
+            </ThemeProvider>
         );
         expect(screen.getByText('Cancelada')).toBeTruthy();
     });
 
     it('handles button clicks correctly', () => {
-        render(
+        renderWithTheme(
             <AppointmentCard
                 appointment={mockAppointment}
                 provider={mockProvider}
@@ -119,7 +131,7 @@ describe('AppointmentCard', () => {
             type: 'telemedicine' as const,
         };
 
-        render(
+        renderWithTheme(
             <AppointmentCard
                 appointment={telemedicineAppointment}
                 provider={mockProvider}
@@ -133,7 +145,7 @@ describe('AppointmentCard', () => {
     });
 
     it('hides action buttons when showActions is false', () => {
-        render(
+        renderWithTheme(
             <AppointmentCard
                 appointment={mockAppointment}
                 provider={mockProvider}
@@ -148,7 +160,9 @@ describe('AppointmentCard', () => {
     });
 
     it('has appropriate accessibility attributes', () => {
-        render(<AppointmentCard appointment={mockAppointment} provider={mockProvider} testID="appointment-card" />);
+        renderWithTheme(
+            <AppointmentCard appointment={mockAppointment} provider={mockProvider} testID="appointment-card" />
+        );
 
         // Check for aria-label with appointment description
         const card = screen.getByTestId('appointment-card');
@@ -164,7 +178,7 @@ describe('AppointmentCard', () => {
             imageUrl: undefined,
         };
 
-        render(
+        renderWithTheme(
             <AppointmentCard appointment={mockAppointment} provider={providerWithoutImage} testID="appointment-card" />
         );
 
@@ -175,7 +189,7 @@ describe('AppointmentCard', () => {
 
     it('does not show rescheduling options for non-upcoming appointments', () => {
         // Test with completed appointment
-        render(
+        renderWithTheme(
             <AppointmentCard
                 appointment={{ ...mockAppointment, status: 'completed' }}
                 provider={mockProvider}
@@ -192,7 +206,7 @@ describe('AppointmentCard', () => {
 
     it('only shows telemedicine button for upcoming telemedicine appointments', () => {
         // Create a completed telemedicine appointment
-        render(
+        renderWithTheme(
             <AppointmentCard
                 appointment={{ ...mockAppointment, type: 'telemedicine', status: 'completed' }}
                 provider={mockProvider}
@@ -206,7 +220,7 @@ describe('AppointmentCard', () => {
     });
 
     it('renders buttons with correct accessibility labels', () => {
-        render(
+        renderWithTheme(
             <AppointmentCard
                 appointment={{ ...mockAppointment, type: 'telemedicine' }}
                 provider={mockProvider}
@@ -218,17 +232,22 @@ describe('AppointmentCard', () => {
             />
         );
 
-        // Check accessibility labels for buttons
-        const viewDetailsButton = screen.getByText('Ver detalhes');
-        expect(viewDetailsButton.getAttribute('aria-label')).toBe('Ver detalhes da consulta');
+        // The Button component maps accessibilityLabel -> aria-label via the Touchable primitive.
+        // We query by the text content and then check the aria-label on the button element itself.
+        const viewDetailsButton = screen.getByText('Ver detalhes').closest('button');
+        expect(viewDetailsButton).not.toBeNull();
+        expect(viewDetailsButton!.getAttribute('aria-label')).toBe('Ver detalhes da consulta');
 
-        const startConsultationButton = screen.getByText('Iniciar consulta');
-        expect(startConsultationButton.getAttribute('aria-label')).toBe('Iniciar teleconsulta');
+        const startConsultationButton = screen.getByText('Iniciar consulta').closest('button');
+        expect(startConsultationButton).not.toBeNull();
+        expect(startConsultationButton!.getAttribute('aria-label')).toBe('Iniciar teleconsulta');
 
-        const rescheduleButton = screen.getByText('Reagendar');
-        expect(rescheduleButton.getAttribute('aria-label')).toBe('Reagendar consulta');
+        const rescheduleButton = screen.getByText('Reagendar').closest('button');
+        expect(rescheduleButton).not.toBeNull();
+        expect(rescheduleButton!.getAttribute('aria-label')).toBe('Reagendar consulta');
 
-        const cancelButton = screen.getByText('Cancelar');
-        expect(cancelButton.getAttribute('aria-label')).toBe('Cancelar consulta');
+        const cancelButton = screen.getByText('Cancelar').closest('button');
+        expect(cancelButton).not.toBeNull();
+        expect(cancelButton!.getAttribute('aria-label')).toBe('Cancelar consulta');
     });
 });

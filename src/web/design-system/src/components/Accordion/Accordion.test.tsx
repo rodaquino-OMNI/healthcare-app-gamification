@@ -19,31 +19,32 @@ describe('Accordion Component', () => {
     });
 
     it('Toggles content visibility on click', () => {
-        render(
+        const { container } = render(
             <Accordion title="Test Accordion" content={<div data-testid="accordion-content">Accordion Content</div>} />
         );
 
-        // Find the header element
-        const header = screen.getByRole('button', { name: /Test Accordion/i });
+        // The Touchable (button) wraps the AccordionHeader div which holds aria-expanded
+        const button = screen.getByRole('button', { name: /Test Accordion/i });
+        const header = container.querySelector('[aria-controls]') as HTMLElement;
 
         // Initially aria-expanded should be false
         expect(header).toHaveAttribute('aria-expanded', 'false');
 
-        // Click the header
-        fireEvent.click(header);
+        // Click the button to toggle
+        fireEvent.click(button);
 
         // After clicking, aria-expanded should be true
         expect(header).toHaveAttribute('aria-expanded', 'true');
 
         // Click again
-        fireEvent.click(header);
+        fireEvent.click(button);
 
         // After second click, aria-expanded should be false again
         expect(header).toHaveAttribute('aria-expanded', 'false');
     });
 
     it('Is expanded based on prop', () => {
-        const { rerender } = render(
+        const { rerender, container } = render(
             <Accordion
                 title="Test Accordion"
                 content={<div data-testid="accordion-content">Accordion Content</div>}
@@ -51,8 +52,8 @@ describe('Accordion Component', () => {
             />
         );
 
-        // Find the header element
-        const header = screen.getByRole('button', { name: /Test Accordion/i });
+        // The AccordionHeader div holds aria-expanded; the Touchable is the button
+        const header = container.querySelector('[aria-controls]') as HTMLElement;
 
         // Since isExpanded is true, aria-expanded should be true
         expect(header).toHaveAttribute('aria-expanded', 'true');
@@ -71,15 +72,15 @@ describe('Accordion Component', () => {
     });
 
     it('Has correct aria attributes', () => {
-        render(
+        const { container } = render(
             <Accordion title="Test Accordion" content={<div data-testid="accordion-content">Accordion Content</div>} />
         );
 
-        // Find the header and content elements
-        const header = screen.getByRole('button', { name: /Test Accordion/i });
+        // AccordionHeader is the div with aria-controls; region is the content
+        const header = container.querySelector('[aria-controls]') as HTMLElement;
         const content = screen.getByRole('region');
 
-        // Check aria attributes on header
+        // Check aria attributes on header div
         expect(header).toHaveAttribute('aria-expanded', 'false');
         expect(header).toHaveAttribute('aria-controls');
 

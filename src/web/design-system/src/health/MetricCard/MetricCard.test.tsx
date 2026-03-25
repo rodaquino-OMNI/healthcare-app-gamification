@@ -14,9 +14,9 @@ describe('MetricCard', () => {
         expect(screen.getByText('bpm')).toBeInTheDocument();
         expect(screen.getByText('stable')).toBeInTheDocument();
 
-        // Check the card has the correct accessibility label
-        const card = screen.getByTestId('metric-card');
-        expect(card).toHaveAttribute('aria-label', 'Heart Rate: 72 bpm, trend: stable');
+        // Check the card has the correct accessibility label via aria-label
+        const card = screen.getByLabelText('Heart Rate: 72 bpm, trend: stable');
+        expect(card).toBeInTheDocument();
     });
 
     it('applies journey-specific styling', () => {
@@ -27,20 +27,20 @@ describe('MetricCard', () => {
 
         // Verify the component rendered with health journey
         expect(screen.getByText('Heart Rate')).toBeInTheDocument();
-        expect(screen.getByTestId('metric-card')).toBeInTheDocument();
+        expect(screen.getByLabelText('Heart Rate: 72 bpm')).toBeInTheDocument();
 
         // Re-render with care journey
         rerender(<MetricCard metricName="Heart Rate" value={72} unit="bpm" journey="care" />);
 
         // Verify the component rendered with care journey
         expect(screen.getByText('Heart Rate')).toBeInTheDocument();
-        expect(screen.getByTestId('metric-card')).toBeInTheDocument();
+        expect(screen.getByLabelText('Heart Rate: 72 bpm')).toBeInTheDocument();
 
         // Re-render with plan journey
         rerender(<MetricCard metricName="Heart Rate" value={72} unit="bpm" journey="plan" />);
 
         // Verify the component rendered with plan journey
         expect(screen.getByText('Heart Rate')).toBeInTheDocument();
-        expect(screen.getByTestId('metric-card')).toBeInTheDocument();
+        expect(screen.getByLabelText('Heart Rate: 72 bpm')).toBeInTheDocument();
     });
 });

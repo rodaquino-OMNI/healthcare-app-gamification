@@ -1,13 +1,13 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
+import { ThemeProvider } from 'styled-components';
 
 import RewardCard from './RewardCard';
-// @ts-expect-error ThemeProvider is not exported from themes; component uses styled-components ThemeProvider
-import { ThemeProvider } from '../../themes';
+import { baseTheme } from '../../themes';
 
 // Helper function to render components with theme context
 const renderWithTheme = (ui: React.ReactElement) => {
-    return render(<ThemeProvider>{ui}</ThemeProvider>);
+    return render(<ThemeProvider theme={baseTheme}>{ui}</ThemeProvider>);
 };
 
 describe('RewardCard', () => {
@@ -123,13 +123,16 @@ describe('RewardCard', () => {
             journey: 'health' as const,
         };
 
-        renderWithTheme(<RewardCard reward={mockReward} testID="reward-card" />);
+        const { unmount: unmountFirst } = renderWithTheme(<RewardCard reward={mockReward} testID="reward-card" />);
 
         // Check if the reward card has appropriate accessibility attributes
         const card = screen.getByTestId('reward-card');
 
         // The default accessibility label should include title, description, and XP
         expect(card).toHaveAttribute('aria-label', 'Test Reward reward. A test reward. Worth 100 XP.');
+
+        // Unmount first render before rendering again with the same testID
+        unmountFirst();
 
         // Test with custom accessibility label
         const { unmount } = renderWithTheme(

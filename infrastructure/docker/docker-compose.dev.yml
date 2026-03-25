@@ -6,7 +6,7 @@ services:
     image: austa-api-gateway:latest
     container_name: api-gateway
     build:
-      context: .
+      context: ../../src/backend
       dockerfile: api-gateway/Dockerfile
     ports:
       - "3000:3000"
@@ -42,7 +42,7 @@ services:
     image: austa-auth-service:latest
     container_name: auth-service
     build:
-      context: .
+      context: ../../src/backend
       dockerfile: auth-service/Dockerfile
     ports:
       - "3001:3001"
@@ -69,7 +69,7 @@ services:
     image: austa-health-service:latest
     container_name: health-service
     build:
-      context: .
+      context: ../../src/backend
       dockerfile: health-service/Dockerfile
     ports:
       - "3002:3002"
@@ -97,7 +97,7 @@ services:
     image: austa-care-service:latest
     container_name: care-service
     build:
-      context: .
+      context: ../../src/backend
       dockerfile: care-service/Dockerfile
     ports:
       - "3003:3003"
@@ -125,7 +125,7 @@ services:
     image: austa-plan-service:latest
     container_name: plan-service
     build:
-      context: .
+      context: ../../src/backend
       dockerfile: plan-service/Dockerfile
     ports:
       - "3004:3004"
@@ -153,7 +153,7 @@ services:
     image: austa-gamification-engine:latest
     container_name: gamification-engine
     build:
-      context: .
+      context: ../../src/backend
       dockerfile: gamification-engine/Dockerfile
     ports:
       - "3005:3005"
@@ -181,7 +181,7 @@ services:
     image: austa-notification-service:latest
     container_name: notification-service
     build:
-      context: .
+      context: ../../src/backend
       dockerfile: notification-service/Dockerfile
     ports:
       - "3006:3006"

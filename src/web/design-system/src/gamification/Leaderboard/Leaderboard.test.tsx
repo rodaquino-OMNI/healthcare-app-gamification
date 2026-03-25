@@ -79,27 +79,14 @@ describe('Leaderboard', () => {
             },
         ];
 
-        // We need to mock the Card component to test journey prop passing
-        jest.mock('../../components/Card/Card', () => {
-            return {
-                Card: jest.fn(({ children, journey }) => (
-                    <div data-testid="mock-card" data-journey={journey}>
-                        {children}
-                    </div>
-                )),
-            };
-        });
-
-        // Test with health journey styling
-        render(<Leaderboard leaderboardData={leaderboardData} journey="health" />);
+        // Test with health journey styling using rerender from a single render call
+        const { rerender } = render(<Leaderboard leaderboardData={leaderboardData} journey="health" />);
 
         // Check that the current user item has the correct background color
         const currentUserItem = screen.getByText('JohnDoe').closest('li');
         expect(currentUserItem).toHaveStyle(`background-color: ${colors.journeys.health.background}`);
 
         // Test with care journey styling
-        const { rerender } = render(<Leaderboard leaderboardData={leaderboardData} journey="health" />);
-
         rerender(<Leaderboard leaderboardData={leaderboardData} journey="care" />);
         expect(screen.getByText('JohnDoe').closest('li')).toHaveStyle(
             `background-color: ${colors.journeys.care.background}`

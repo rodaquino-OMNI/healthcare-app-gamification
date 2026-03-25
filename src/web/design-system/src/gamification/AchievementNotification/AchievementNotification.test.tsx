@@ -28,8 +28,10 @@ describe('AchievementNotification', () => {
         expect(screen.getByText('This is a test achievement description.')).toBeInTheDocument();
 
         // Assertion: Verify that the AchievementBadge component is rendered with the correct achievement data.
+        // AchievementBadge aria-label template: "${title} achievement. ${description}. ${status}"
+        // The description already ends with "." so the aria-label contains ".." before "Unlocked"
         expect(
-            screen.getByLabelText('Test Achievement achievement. This is a test achievement description. Unlocked')
+            screen.getByLabelText('Test Achievement achievement. This is a test achievement description.. Unlocked')
         ).toBeInTheDocument();
     });
 

@@ -313,7 +313,12 @@ healthcare-super-app/
 │   │   └── sentry.yml
 │   ├── nginx/
 │   │   └── nginx.production.conf
-│   └── docker-compose.production.yml
+│   └── docker/                      # All Docker Compose files
+│       ├── docker-compose.dev.yml
+│       ├── docker-compose.staging.yml
+│       ├── docker-compose.production.yml
+│       ├── docker-compose.scale.yml
+│       └── docker-compose.local.yml
 │
 ├── docs/
 │   ├── adr/                            # 7 Architecture Decision Records
@@ -410,7 +415,7 @@ pnpm install
 # Crie .env nos diretórios de serviço com credenciais locais de DB, Redis, Kafka
 
 # 4. Iniciar serviços de infraestrutura
-cd src/backend && docker-compose up -d
+docker compose -f infrastructure/docker/docker-compose.dev.yml up -d
 
 # 5. Gerar client Prisma
 pnpm prisma:generate
@@ -434,7 +439,7 @@ pnpm --filter @austa/shared exec prisma db seed
 cd src/backend
 
 # Iniciar todos os serviços em watch mode via Docker Compose
-docker-compose up -d
+docker compose -f infrastructure/docker/docker-compose.dev.yml up -d
 pnpm run dev:backend       # Da raiz, via turbo
 
 # Iniciar um serviço específico
@@ -561,14 +566,13 @@ maestro test .maestro/flows/auth-login.yaml  # Fluxo específico
 
 ```bash
 # Stack completo local
-cd src/backend
-docker-compose up --build
+docker compose -f infrastructure/docker/docker-compose.dev.yml up --build
 
 # Perfil staging
-docker-compose -f docker-compose.staging.yml up --build
+docker compose -f infrastructure/docker/docker-compose.staging.yml up --build
 
 # Escalar serviços
-docker-compose -f docker-compose.scale.yml up --scale gamification-engine=3
+docker compose -f infrastructure/docker/docker-compose.scale.yml up --scale gamification-engine=3
 ```
 
 ### Namespaces Kubernetes

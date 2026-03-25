@@ -1,8 +1,13 @@
 import { describe, it, expect } from '@jest/globals';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
+import { ThemeProvider } from 'styled-components';
 
 import { LineChart as LineChartComponent } from './LineChart';
+import { baseTheme } from '../../themes/base.theme';
+
+// Wrap renders with ThemeProvider because LineChart.styles.ts accesses theme tokens
+const renderWithTheme = (ui: React.ReactElement) => render(<ThemeProvider theme={baseTheme}>{ui}</ThemeProvider>);
 
 // Sample data for testing
 const sampleData = [
@@ -17,7 +22,7 @@ const sampleData = [
 
 describe('LineChart', () => {
     it('renders the LineChart component with sample data', () => {
-        render(
+        renderWithTheme(
             <LineChartComponent
                 data={sampleData}
                 xAxisKey="name"
@@ -36,7 +41,7 @@ describe('LineChart', () => {
     });
 
     it('displays the x-axis label correctly', () => {
-        render(
+        renderWithTheme(
             <LineChartComponent
                 data={sampleData}
                 xAxisKey="name"
@@ -55,7 +60,7 @@ describe('LineChart', () => {
     });
 
     it('displays the y-axis label correctly', () => {
-        render(
+        renderWithTheme(
             <LineChartComponent
                 data={sampleData}
                 xAxisKey="name"
@@ -74,7 +79,7 @@ describe('LineChart', () => {
     });
 
     it('shows "No data available" message when data is empty', () => {
-        render(
+        renderWithTheme(
             <LineChartComponent
                 data={[]}
                 xAxisKey="name"
@@ -94,7 +99,7 @@ describe('LineChart', () => {
         // Testing different journeys to ensure they render correctly
 
         // Health journey
-        const { rerender } = render(
+        const { rerender } = renderWithTheme(
             <LineChartComponent
                 data={sampleData}
                 xAxisKey="name"
@@ -105,37 +110,42 @@ describe('LineChart', () => {
             />
         );
 
-        let chartContainer = screen.getByRole('img');
-        expect(chartContainer).toBeInTheDocument();
+        // VictoryChart may also render with role="img"; use getAllByRole and check at least one exists
+        let chartContainers = screen.getAllByRole('img');
+        expect(chartContainers.length).toBeGreaterThanOrEqual(1);
 
         // Care journey
         rerender(
-            <LineChartComponent
-                data={sampleData}
-                xAxisKey="name"
-                yAxisKey="value"
-                xAxisLabel="Month"
-                yAxisLabel="Revenue"
-                journey="care"
-            />
+            <ThemeProvider theme={baseTheme}>
+                <LineChartComponent
+                    data={sampleData}
+                    xAxisKey="name"
+                    yAxisKey="value"
+                    xAxisLabel="Month"
+                    yAxisLabel="Revenue"
+                    journey="care"
+                />
+            </ThemeProvider>
         );
 
-        chartContainer = screen.getByRole('img');
-        expect(chartContainer).toBeInTheDocument();
+        chartContainers = screen.getAllByRole('img');
+        expect(chartContainers.length).toBeGreaterThanOrEqual(1);
 
         // Plan journey
         rerender(
-            <LineChartComponent
-                data={sampleData}
-                xAxisKey="name"
-                yAxisKey="value"
-                xAxisLabel="Month"
-                yAxisLabel="Revenue"
-                journey="plan"
-            />
+            <ThemeProvider theme={baseTheme}>
+                <LineChartComponent
+                    data={sampleData}
+                    xAxisKey="name"
+                    yAxisKey="value"
+                    xAxisLabel="Month"
+                    yAxisLabel="Revenue"
+                    journey="plan"
+                />
+            </ThemeProvider>
         );
 
-        chartContainer = screen.getByRole('img');
-        expect(chartContainer).toBeInTheDocument();
+        chartContainers = screen.getAllByRole('img');
+        expect(chartContainers.length).toBeGreaterThanOrEqual(1);
     });
 });

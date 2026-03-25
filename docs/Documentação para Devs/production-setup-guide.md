@@ -137,8 +137,8 @@ Secret naming convention: `austa/<environment>/<secret-name>`.
 
 ### 3.2 Environment Variables per Service
 
-Variables are derived from `src/backend/docker-compose.yml` (local) and
-`src/backend/docker-compose.staging.yml` (staging). Each service includes a `.env.example`
+Variables are derived from `infrastructure/docker/docker-compose.dev.yml` (local) and
+`infrastructure/docker/docker-compose.staging.yml` (staging). Each service includes a `.env.example`
 file with all required variables documented. Copy to `.env` and fill in real values for
 local development.
 
@@ -271,8 +271,8 @@ Steps:
 3. Build Docker images and push to `ghcr.io/<org>/<service>:staging`
 4. Deploy to EKS cluster `austa-staging-cluster` (sa-east-1)
 
-Local staging stack: `src/backend/docker-compose.staging.yml`
-Scale testing: `src/backend/docker-compose.scale.yml`
+Local staging stack: `infrastructure/docker/docker-compose.staging.yml`
+Scale testing: `infrastructure/docker/docker-compose.scale.yml`
 
 > The `.env.staging` file is not committed to the repository. It must be created on the
 > deployment host or injected via CI secrets before the staging deploy step runs.

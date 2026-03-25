@@ -1252,7 +1252,7 @@ jobs:
       - name: Setup test environment
         run: |
           cp .env.test .env
-          docker-compose -f docker-compose.test.yml up -d
+          docker compose -f infrastructure/docker/docker-compose.dev.yml up -d
           
       - name: Run integration tests
         run: yarn test:integration
@@ -1269,7 +1269,7 @@ jobs:
       
       - name: Start application
         run: |
-          docker-compose up -d
+          docker compose -f infrastructure/docker/docker-compose.dev.yml up -d
           yarn wait-on http://localhost:3000/health
           
       - name: Run E2E tests

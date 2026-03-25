@@ -84,7 +84,7 @@ Key responsibilities include:
 5. With Docker:
 
    ```bash
-   docker-compose up -d
+   docker compose -f infrastructure/docker/docker-compose.dev.yml up -d
    ```markdown
 
 ## Configuration

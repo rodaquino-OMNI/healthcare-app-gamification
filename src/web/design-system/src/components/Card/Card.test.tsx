@@ -15,7 +15,7 @@ const renderWithTheme = (ui: React.ReactElement, theme = baseTheme) => {
 
 describe('Card', () => {
     it('renders correctly with default props', () => {
-        renderWithTheme(<Card data-testid="card" />);
+        renderWithTheme(<Card testID="card" />);
         const card = screen.getByTestId('card');
 
         expect(card).toBeInTheDocument();
@@ -32,11 +32,12 @@ describe('Card', () => {
 
     it('applies elevation styles when elevation prop is true', () => {
         // Render cards with different elevation levels
+        // Card maps testID → data-testid on Box; data-testid passed directly is dropped
         renderWithTheme(
             <>
-                <Card elevation="sm" data-testid="card-sm" />
-                <Card elevation="md" data-testid="card-md" />
-                <Card elevation="lg" data-testid="card-lg" />
+                <Card elevation="sm" testID="card-sm" />
+                <Card elevation="md" testID="card-md" />
+                <Card elevation="lg" testID="card-lg" />
             </>
         );
 
@@ -48,7 +49,7 @@ describe('Card', () => {
 
     it('handles click events', () => {
         const handleClick = jest.fn();
-        renderWithTheme(<Card onPress={handleClick} data-testid="card" />);
+        renderWithTheme(<Card onPress={handleClick} testID="card" />);
         const card = screen.getByTestId('card');
 
         fireEvent.click(card);
@@ -59,7 +60,7 @@ describe('Card', () => {
     });
 
     it('applies health journey theme correctly', () => {
-        renderWithTheme(<Card journey="health" data-testid="health-card" />);
+        renderWithTheme(<Card journey="health" testID="health-card" />);
         const card = screen.getByTestId('health-card');
 
         expect(card).toBeInTheDocument();
@@ -69,7 +70,7 @@ describe('Card', () => {
     });
 
     it('applies care journey theme correctly', () => {
-        renderWithTheme(<Card journey="care" data-testid="care-card" />);
+        renderWithTheme(<Card journey="care" testID="care-card" />);
         const card = screen.getByTestId('care-card');
 
         expect(card).toBeInTheDocument();
@@ -78,7 +79,7 @@ describe('Card', () => {
     });
 
     it('applies plan journey theme correctly', () => {
-        renderWithTheme(<Card journey="plan" data-testid="plan-card" />);
+        renderWithTheme(<Card journey="plan" testID="plan-card" />);
         const card = screen.getByTestId('plan-card');
 
         expect(card).toBeInTheDocument();
@@ -88,7 +89,7 @@ describe('Card', () => {
 
     it('applies correct testID', () => {
         const testId = 'test-card';
-        renderWithTheme(<Card data-testid={testId} />);
+        renderWithTheme(<Card testID={testId} />);
 
         expect(screen.getByTestId(testId)).toBeInTheDocument();
     });
@@ -102,7 +103,7 @@ describe('Card', () => {
                 margin="md"
                 width="200px"
                 height="100px"
-                data-testid="custom-card"
+                testID="custom-card"
             />
         );
 
@@ -113,7 +114,7 @@ describe('Card', () => {
 
     it('applies accessibility attributes correctly', () => {
         const accessibilityLabel = 'Test card for accessibility';
-        renderWithTheme(<Card accessibilityLabel={accessibilityLabel} data-testid="a11y-card" />);
+        renderWithTheme(<Card accessibilityLabel={accessibilityLabel} testID="a11y-card" />);
 
         const card = screen.getByTestId('a11y-card');
         expect(card).toHaveAttribute('aria-label', accessibilityLabel);

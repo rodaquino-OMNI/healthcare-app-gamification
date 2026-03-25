@@ -6,11 +6,10 @@ import { Box } from './Box';
 
 // Mock the styled BoxContainer to render as a plain div
 jest.mock('./Box.styles', () => {
-    const MockBoxContainer = React.forwardRef(({ children, ...props }: any, ref: any) => (
-        <div ref={ref} data-testid="box-container" {...props}>
-            {children}
-        </div>
-    ));
+    const React = require('react');
+    const MockBoxContainer = React.forwardRef(({ children, ...props }: any, ref: any) =>
+        React.createElement('div', { ref, 'data-testid': 'box-container', ...props }, children)
+    );
     MockBoxContainer.displayName = 'MockBoxContainer';
     return { BoxContainer: MockBoxContainer };
 });

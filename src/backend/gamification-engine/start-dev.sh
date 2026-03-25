@@ -2,7 +2,7 @@
 
 # Start development infrastructure
 echo "Starting development infrastructure..."
-docker-compose -f docker-compose.local.yml up -d
+docker compose -f "$(dirname "$0")/../../../infrastructure/docker/docker-compose.local.yml" up -d
 
 # Wait for services to be ready
 echo "Waiting for services to be ready..."

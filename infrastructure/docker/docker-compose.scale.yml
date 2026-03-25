@@ -5,7 +5,7 @@ services:
   api-gateway:
     image: austa-api-gateway:latest
     build:
-      context: .
+      context: ../..
       dockerfile: src/backend/api-gateway/Dockerfile
     ports:
       - "3000:3000"
@@ -46,7 +46,7 @@ services:
   auth-service:
     image: austa-auth-service:latest
     build:
-      context: .
+      context: ../..
       dockerfile: src/backend/auth-service/Dockerfile
     ports:
       - "3001:3001"
@@ -79,7 +79,7 @@ services:
   health-service:
     image: austa-health-service:latest
     build:
-      context: .
+      context: ../..
       dockerfile: src/backend/health-service/Dockerfile
     ports:
       - "3002:3002"
@@ -113,7 +113,7 @@ services:
   care-service:
     image: austa-care-service:latest
     build:
-      context: .
+      context: ../..
       dockerfile: src/backend/care-service/Dockerfile
     ports:
       - "3003:3003"
@@ -147,7 +147,7 @@ services:
   plan-service:
     image: austa-plan-service:latest
     build:
-      context: .
+      context: ../..
       dockerfile: src/backend/plan-service/Dockerfile
     ports:
       - "3004:3004"
@@ -181,7 +181,7 @@ services:
   gamification-engine:
     image: austa-gamification-engine:latest
     build:
-      context: .
+      context: ../..
       dockerfile: src/backend/gamification-engine/Dockerfile
     ports:
       - "3005:3005"
@@ -215,7 +215,7 @@ services:
   notification-service:
     image: austa-notification-service:latest
     build:
-      context: .
+      context: ../..
       dockerfile: src/backend/notification-service/Dockerfile
     ports:
       - "3006:3006"
@@ -257,7 +257,7 @@ services:
       POSTGRES_DB: austa
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./postgres-init:/docker-entrypoint-initdb.d
+      - ../../postgres-init:/docker-entrypoint-initdb.d
     deploy:
       resources:
         limits:
@@ -351,7 +351,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ../../prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'

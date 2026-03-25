@@ -6,33 +6,32 @@ import { Touchable } from './Touchable';
 
 // Mock react-native
 jest.mock('react-native', () => {
-    const MockTouchableOpacity = React.forwardRef(({ children, ...props }: any, ref: any) => (
-        <button ref={ref} {...props}>
-            {children}
-        </button>
-    ));
+    const React = require('react');
+    const MockTouchableOpacity = React.forwardRef(({ children, ...props }: any, ref: any) =>
+        React.createElement('button', { ref, ...props }, children)
+    );
     MockTouchableOpacity.displayName = 'MockTouchableOpacity';
     return {
         TouchableOpacity: MockTouchableOpacity,
         GestureResponderEvent: {},
         Platform: { OS: 'web' },
+        StyleSheet: { flatten: (s: any) => (Array.isArray(s) ? Object.assign({}, ...s) : s) },
     };
 });
 
 // Mock styled Touchable to render a button
 jest.mock('./Touchable.styles', () => {
-    const MockStyledTouchableOpacity = React.forwardRef(
-        ({ children, fullWidth, onPress, disabled, testID, ...props }: any, ref: any) => (
-            <button
-                ref={ref}
-                data-testid={testID || 'touchable'}
-                data-full-width={fullWidth ? 'true' : undefined}
-                onClick={!disabled ? onPress : undefined}
-                disabled={disabled}
-                {...props}
-            >
-                {children}
-            </button>
+    const React = require('react');
+    const MockStyledTouchableOpacity = React.forwardRef(({ children, fullWidth, disabled, ...props }: any, ref: any) =>
+        React.createElement(
+            'button',
+            {
+                ref,
+                'data-full-width': fullWidth ? 'true' : undefined,
+                disabled,
+                ...props,
+            },
+            children
         )
     );
     MockStyledTouchableOpacity.displayName = 'MockStyledTouchableOpacity';
@@ -119,7 +118,7 @@ describe('Touchable', () => {
             </Touchable>
         );
         const touchable = screen.getByTestId('touchable');
-        expect(touchable).toHaveAttribute('accessibilitylabel', 'Submit form');
+        expect(touchable).toHaveAttribute('aria-label', 'Submit form');
     });
 
     it('forwards ref correctly', () => {

@@ -4,13 +4,18 @@ import React from 'react';
 
 import { LevelIndicator } from './LevelIndicator';
 
-// Mock styled-components
+// Mock styled-components — keep the real `styled` default export intact so that
+// styled.div / styled.span etc. continue to work; only override ThemeProvider and useTheme.
 jest.mock('styled-components', () => {
-    const originalModule = jest.requireActual('styled-components');
+    const actualModule = jest.requireActual('styled-components');
+    // actualModule.default is the `styled` tagged-template function
+    const styled = actualModule.default ?? actualModule;
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return -- Mock factory returns untyped test double
     return {
-        ...originalModule,
+        ...actualModule,
+        default: styled,
+        __esModule: true,
         ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
         useTheme: () => ({
             colors: {
@@ -91,9 +96,15 @@ describe('LevelIndicator', () => {
     it('renders the LevelIndicator component with correct level and XP', () => {
         render(<LevelIndicator level={5} currentXp={500} nextLevelXp={1000} journey="health" />);
 
-        // Check level display
-        expect(screen.getByText(/Nível 5/i)).toBeInTheDocument();
-        expect(screen.getByText(/- Aventureiro/i)).toBeInTheDocument();
+        // Check level display — the level text is split across multiple DOM nodes:
+        // "Nível " + <span>5</span> + " - Aventureiro"
+        // The aria-label on the container contains the full level string.
+        // Use the accessible container to verify both level number and title are present.
+        const levelContainer = screen.getByLabelText(/Nível 5 - Aventureiro/i);
+        expect(levelContainer).toBeInTheDocument();
+        // Verify the level value span contains "5" and the text includes "Aventureiro"
+        expect(levelContainer.textContent).toContain('Nível');
+        expect(levelContainer.textContent).toContain('Aventureiro');
 
         // Check XP Counter is rendered with correct props
         const xpCounter = screen.getByTestId('xp-counter');

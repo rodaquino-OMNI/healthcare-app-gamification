@@ -56,7 +56,7 @@ cd src/web/mobile && yarn start
 cd src/web/web && yarn dev
 
 # Backend (starts all services via Docker Compose)
-cd src/backend && docker-compose up -d
+docker compose -f infrastructure/docker/docker-compose.dev.yml up -d
 # Then start NestJS in watch mode:
 yarn start:dev
 ```
@@ -442,7 +442,7 @@ src/
 │   └── shared/          # Prisma schema, shared DTOs, utils
 └── infrastructure/
     ├── kubernetes/       # K8s manifests (one dir per service)
-    └── docker-compose.*  # Local dev environments
+    └── docker/           # All Docker Compose files (dev, staging, production, scale, local)
 ```
 
 ---
