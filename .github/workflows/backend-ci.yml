@@ -26,30 +26,32 @@ jobs:
     steps:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10
+
     - name: Setup Node.js
       uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
       with:
         node-version: '20'
-        cache: 'yarn'
-        cache-dependency-path: src/backend/yarn.lock
-        
+        cache: 'pnpm'
+
     - name: Install dependencies
-      working-directory: src/backend
-      run: yarn install --frozen-lockfile
+      run: pnpm install --frozen-lockfile
 
     - name: Generate Prisma clients
-      working-directory: src/backend
       run: |
-        npx prisma generate --schema=gamification-engine/prisma/schema.prisma
-        npx prisma generate --schema=shared/prisma/schema.prisma
+        pnpm --filter @austa/shared exec prisma generate
+        pnpm --filter gamification-engine exec prisma generate
 
     - name: Lint Backend Services
       working-directory: src/backend
-      run: yarn lint
+      run: pnpm lint
 
     - name: Test Backend Services
       working-directory: src/backend
-      run: npx lerna run test -- --coverage --coverageReporters=lcov
+      run: pnpm test -- --coverage --coverageReporters=lcov
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5

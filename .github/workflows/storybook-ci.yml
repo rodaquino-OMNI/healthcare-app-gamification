@@ -18,16 +18,18 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: '20'
-          cache: 'yarn'
-          cache-dependency-path: src/web/yarn.lock
+          cache: 'pnpm'
       - name: Install dependencies
-        working-directory: src/web
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
       - name: Build Storybook
-        run: yarn build-storybook
+        run: pnpm build-storybook
         working-directory: src/web/design-system
       - name: Upload Storybook artifact
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
@@ -44,14 +46,16 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: '20'
-          cache: 'yarn'
-          cache-dependency-path: src/web/yarn.lock
+          cache: 'pnpm'
       - name: Install dependencies
-        working-directory: src/web
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
       - name: Publish to Chromatic
         uses: chromaui/action@5ec258af08deb3e8c36653bd618cb7fe52090031 # v15
         with:

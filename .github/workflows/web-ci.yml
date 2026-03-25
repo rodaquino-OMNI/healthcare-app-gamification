@@ -26,26 +26,28 @@ jobs:
     steps:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10
+
     - name: Setup Node.js
       uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
       with:
         node-version: '20'
-        cache: 'yarn'
-        cache-dependency-path: src/web/yarn.lock
-        
-    - name: Install dependencies for Web Monorepo
-      working-directory: src/web
-      run: yarn install --frozen-lockfile
+        cache: 'pnpm'
+
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
 
     - name: Verify lockfile resolution integrity
-      working-directory: src/web
       run: |
         echo "Checking for known vulnerable lockfile resolutions..."
-        if grep -q '"next@15\.4\.[0-7]:' yarn.lock 2>/dev/null; then
+        if grep -q 'next@15\.4\.[0-7]:' pnpm-lock.yaml 2>/dev/null; then
           echo "::error::Lockfile drift: next resolves to a version below 15.4.8 (vulnerable)"
           exit 1
         fi
-        if grep -q 'esbuild@0\.2[0-4]\.' yarn.lock 2>/dev/null; then
+        if grep -q 'esbuild@0\.2[0-4]\.' pnpm-lock.yaml 2>/dev/null; then
           echo "::error::Lockfile drift: esbuild resolves to a version below 0.25.0 (vulnerable)"
           exit 1
         fi
@@ -53,15 +55,15 @@ jobs:
 
     - name: Validate package.json files
       run: node scripts/validate-package-json.js
-      
+
     - name: Lint Web Components
       working-directory: src/web
-      run: yarn lint
-      
+      run: pnpm lint
+
     - name: Test Web Components
       working-directory: src/web
-      run: yarn test:ci
-      
+      run: pnpm test:ci
+
     - name: Build Web Application
       working-directory: src/web
-      run: yarn build
+      run: pnpm build

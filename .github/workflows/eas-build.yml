@@ -55,22 +55,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Setup Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'yarn'
-          cache-dependency-path: src/web/yarn.lock
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
-        working-directory: src/web
+        run: pnpm install --frozen-lockfile
+        working-directory: .
 
       - name: Lint
-        run: yarn lint
+        run: pnpm lint
 
       - name: Type check
-        run: yarn typecheck
+        run: pnpm typecheck
 
   test:
     name: Run Tests
@@ -84,19 +88,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Setup Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'yarn'
-          cache-dependency-path: src/web/yarn.lock
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
-        working-directory: src/web
+        run: pnpm install --frozen-lockfile
+        working-directory: .
 
       - name: Run tests
-        run: yarn test --ci --coverage
+        run: pnpm test --ci --coverage
 
       - name: Upload coverage
         if: always()
@@ -120,18 +128,24 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Check EXPO_TOKEN
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
-          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+          if [ -z "$EXPO_TOKEN" ]; then
             echo "::warning::EXPO_TOKEN not set. Build will be skipped."
             echo "SKIP_BUILD=true" >> $GITHUB_ENV
           fi
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'yarn'
-          cache-dependency-path: src/web/yarn.lock
+          cache: 'pnpm'
 
       - name: Setup Expo
         if: env.SKIP_BUILD != 'true'
@@ -141,8 +155,8 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
-        working-directory: src/web
+        run: pnpm install --frozen-lockfile
+        working-directory: .
 
       - name: Build preview
         if: env.SKIP_BUILD != 'true'
@@ -176,18 +190,24 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Check EXPO_TOKEN
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
-          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+          if [ -z "$EXPO_TOKEN" ]; then
             echo "::warning::EXPO_TOKEN not set. Build will be skipped."
             echo "SKIP_BUILD=true" >> $GITHUB_ENV
           fi
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'yarn'
-          cache-dependency-path: src/web/yarn.lock
+          cache: 'pnpm'
 
       - name: Setup Expo
         if: env.SKIP_BUILD != 'true'
@@ -197,8 +217,8 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
-        working-directory: src/web
+        run: pnpm install --frozen-lockfile
+        working-directory: .
 
       - name: Build production
         if: env.SKIP_BUILD != 'true'
@@ -220,18 +240,24 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Check EXPO_TOKEN
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
-          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+          if [ -z "$EXPO_TOKEN" ]; then
             echo "::warning::EXPO_TOKEN not set. Build will be skipped."
             echo "SKIP_BUILD=true" >> $GITHUB_ENV
           fi
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'yarn'
-          cache-dependency-path: src/web/yarn.lock
+          cache: 'pnpm'
 
       - name: Setup Expo
         if: env.SKIP_BUILD != 'true'
@@ -241,8 +267,8 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
-        working-directory: src/web
+        run: pnpm install --frozen-lockfile
+        working-directory: .
 
       - name: Build
         if: env.SKIP_BUILD != 'true'
@@ -264,18 +290,24 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Check EXPO_TOKEN
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
-          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+          if [ -z "$EXPO_TOKEN" ]; then
             echo "::warning::EXPO_TOKEN not set. Build will be skipped."
             echo "SKIP_BUILD=true" >> $GITHUB_ENV
           fi
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'yarn'
-          cache-dependency-path: src/web/yarn.lock
+          cache: 'pnpm'
 
       - name: Setup Expo
         if: env.SKIP_BUILD != 'true'
@@ -285,8 +317,8 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
-        working-directory: src/web
+        run: pnpm install --frozen-lockfile
+        working-directory: .
 
       - name: Submit to App Store
         if: env.SKIP_BUILD != 'true'

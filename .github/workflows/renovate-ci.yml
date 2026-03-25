@@ -39,21 +39,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Setup Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: '20'
-          cache: 'yarn'
-          cache-dependency-path: ${{ matrix.workspace.path }}/yarn.lock
+          cache: 'pnpm'
 
-      - name: Verify lockfile integrity (${{ matrix.workspace.name }})
-        working-directory: ${{ matrix.workspace.path }}
-        run: yarn install --frozen-lockfile
+      - name: Verify lockfile integrity
+        run: pnpm install --frozen-lockfile
 
       - name: Audit for high/critical vulnerabilities (${{ matrix.workspace.name }})
         working-directory: ${{ matrix.workspace.path }}
         run: |
-          yarn audit --level high || {
+          pnpm audit --prod || {
             echo "::warning::Audit found high/critical vulnerabilities"
             exit 1
           }
@@ -67,24 +70,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Setup Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: '20'
-          cache: 'yarn'
-          cache-dependency-path: src/backend/yarn.lock
+          cache: 'pnpm'
 
       - name: Install dependencies
-        working-directory: src/backend
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Lint
         working-directory: src/backend
-        run: yarn lint
+        run: pnpm lint
 
       - name: Test
         working-directory: src/backend
-        run: yarn test --coverage --coverageReporters=lcov
+        run: pnpm test -- --coverage --coverageReporters=lcov
 
   build-web:
     if: github.actor == 'renovate[bot]'
@@ -95,28 +101,31 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Setup Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: '20'
-          cache: 'yarn'
-          cache-dependency-path: src/web/yarn.lock
+          cache: 'pnpm'
 
       - name: Install dependencies
-        working-directory: src/web
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Lint
         working-directory: src/web
-        run: yarn lint
+        run: pnpm lint
 
       - name: Test
         working-directory: src/web
-        run: yarn test:ci
+        run: pnpm test:ci
 
       - name: Build
         working-directory: src/web
-        run: yarn build
+        run: pnpm build
 
   summary:
     if: github.actor == 'renovate[bot]' && always()

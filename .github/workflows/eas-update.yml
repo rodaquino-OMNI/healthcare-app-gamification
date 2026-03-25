@@ -45,18 +45,24 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Check EXPO_TOKEN
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
-          if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+          if [ -z "$EXPO_TOKEN" ]; then
             echo "::warning::EXPO_TOKEN not set. Update will be skipped."
             echo "SKIP_BUILD=true" >> $GITHUB_ENV
           fi
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'yarn'
-          cache-dependency-path: src/web/yarn.lock
+          cache: 'pnpm'
 
       - name: Setup Expo
         if: env.SKIP_BUILD != 'true'
@@ -66,14 +72,14 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
-        working-directory: src/web
+        run: pnpm install --frozen-lockfile
+        working-directory: .
 
       - name: Publish update
         if: env.SKIP_BUILD != 'true'
-        run: |
-          BRANCH="${{ github.event.inputs.branch || 'production' }}"
-          MESSAGE="${{ github.event.inputs.message || format('OTA update from {0}', github.sha) }}"
-          eas update --branch "$BRANCH" --message "$MESSAGE" --non-interactive
         env:
+          UPDATE_BRANCH: ${{ github.event.inputs.branch || 'production' }}
+          UPDATE_MESSAGE: ${{ github.event.inputs.message || format('OTA update from {0}', github.sha) }}
           APP_ENV: ${{ github.event.inputs.branch == 'preview' && 'staging' || 'production' }}
+        run: |
+          eas update --branch "$UPDATE_BRANCH" --message "$UPDATE_MESSAGE" --non-interactive
