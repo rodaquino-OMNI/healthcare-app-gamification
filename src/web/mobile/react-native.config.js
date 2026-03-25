@@ -23,13 +23,15 @@ module.exports = {
         '@react-native-firebase/app': { platforms: { ios: null } },
         '@react-native-firebase/analytics': { platforms: { ios: null } },
         '@react-native-firebase/crashlytics': { platforms: { ios: null } },
+        // DEMO_MODE — Pods that cannot resolve (NitroModules unavailable, Agora CDN broken)
+        'react-native-mmkv': { platforms: { ios: null } },
+        'react-native-agora': { platforms: { ios: null } },
         // Icon library for journey-specific icons and navigation elements
         'react-native-vector-icons': {
             platforms: {
                 ios: {},
                 android: {},
             },
-            assets: ['./node_modules/react-native-vector-icons/Fonts'],
         },
         // Linear gradient for journey-specific backgrounds and UI elements
         'react-native-linear-gradient': {
