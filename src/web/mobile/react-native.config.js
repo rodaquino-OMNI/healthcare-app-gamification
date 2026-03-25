@@ -18,10 +18,42 @@ module.exports = {
         },
     },
 
-    // DEMO_MODE — Dependency overrides for autolinking
+    // DEMO_MODE — Disable Firebase auto-linking (modular_headers conflict with expo-dev-menu)
     dependencies: {
+        '@react-native-firebase/app': { platforms: { ios: null } },
+        '@react-native-firebase/analytics': { platforms: { ios: null } },
+        '@react-native-firebase/crashlytics': { platforms: { ios: null } },
         // Icon library for journey-specific icons and navigation elements
         'react-native-vector-icons': {
+            platforms: {
+                ios: {},
+                android: {},
+            },
+            assets: ['./node_modules/react-native-vector-icons/Fonts'],
+        },
+        // Linear gradient for journey-specific backgrounds and UI elements
+        'react-native-linear-gradient': {
+            platforms: {
+                ios: {},
+                android: {},
+            },
+        },
+        // Gesture handler for enhanced touch interactions across all journeys
+        'react-native-gesture-handler': {
+            platforms: {
+                ios: {},
+                android: {},
+            },
+        },
+        // Animation library for gamification elements and UI transitions
+        'react-native-reanimated': {
+            platforms: {
+                ios: {},
+                android: {},
+            },
+        },
+        // SVG support for health metrics visualization and journey icons
+        'react-native-svg': {
             platforms: {
                 ios: {},
                 android: {},
