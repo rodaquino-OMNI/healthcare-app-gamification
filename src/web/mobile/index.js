@@ -12,5 +12,8 @@ import './src/i18n'; // Initialize i18n (side-effect import)
 // LD1: Ignore specific LogBox warnings for development
 LogBox.ignoreLogs(['Require cycle:', 'Remote debugger', 'RCTBridge', 'new NativeEventEmitter', '[mobx]']);
 
-// LD1: Register the App component with AppRegistry using the app name from app.json
-AppRegistry.registerComponent('main', () => App); // DEMO_MODE — 'main' required by Expo Go
+// LD1: Register the App component with AppRegistry
+// Register with all names: 'main' for Expo Go, 'austa' for bare RN, '' for Expo bridgeless mode
+AppRegistry.registerComponent('main', () => App);
+AppRegistry.registerComponent('austa', () => App);
+AppRegistry.registerComponent('', () => App);

@@ -50,6 +50,14 @@ config.transformer.getTransformOptions = async () => ({
 
 // DEMO_MODE — Mock native modules not available in Expo Go
 // Uses resolveRequest to override node_modules resolution (extraNodeModules is fallback-only)
+// DEMO_MODE — Force local React 18 over hoisted React 19 (monorepo resolution fix)
+const LOCAL_OVERRIDES = {
+    react: path.resolve(__dirname, 'node_modules/react'),
+    'react/jsx-runtime': path.resolve(__dirname, 'node_modules/react/jsx-runtime'),
+    'react/jsx-dev-runtime': path.resolve(__dirname, 'node_modules/react/jsx-dev-runtime'),
+    'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
+};
+
 const DEMO_MOCKS = {
     'react-native-device-info': path.resolve(__dirname, 'src/mocks/device-info-mock.js'),
     'react-native-mmkv': path.resolve(__dirname, 'src/mocks/mmkv-mock.js'),
@@ -58,9 +66,19 @@ const DEMO_MOCKS = {
     'react-native-biometrics': path.resolve(__dirname, 'src/mocks/biometrics-mock.js'),
     'react-native-ssl-pinning': path.resolve(__dirname, 'src/mocks/ssl-pinning-mock.js'),
     'react-native-vision-camera': path.resolve(__dirname, 'src/mocks/vision-camera-mock.js'),
+    'expo-auth-session': path.resolve(__dirname, 'src/mocks/auth-session-mock.js'),
+    'expo-web-browser': path.resolve(__dirname, 'src/mocks/web-browser-mock.js'),
+    'apollo-upload-client/createUploadLink.mjs': path.resolve(__dirname, 'src/mocks/apollo-upload-mock.js'),
+    '@react-native-community/datetimepicker': path.resolve(__dirname, 'src/mocks/datetimepicker-mock.js'),
+    '@react-native-picker/picker': path.resolve(__dirname, 'src/mocks/picker-mock.js'),
+    'expo-document-picker': path.resolve(__dirname, 'src/mocks/document-picker-mock.js'),
 };
 const originalResolveRequest = config.resolver.resolveRequest;
 config.resolver.resolveRequest = (context, moduleName, platform) => {
+    // Force local React 18 resolution (prevents hoisted React 19 from root node_modules)
+    if (LOCAL_OVERRIDES[moduleName]) {
+        return { type: 'sourceFile', filePath: require.resolve(moduleName, { paths: [__dirname] }) };
+    }
     if (DEMO_MOCKS[moduleName]) {
         return { type: 'sourceFile', filePath: DEMO_MOCKS[moduleName] };
     }

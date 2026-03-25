@@ -8,6 +8,7 @@ import { StatusBar, View } from 'react-native'; // v0.71+
 import { ErrorBoundary } from './src/components/shared/ErrorBoundary';
 import { config } from './src/constants/config';
 import { AuthProvider } from './src/context/AuthContext';
+import { GamificationProvider } from './src/context/GamificationContext';
 import { JourneyProvider } from './src/context/JourneyContext';
 import { NotificationProvider } from './src/context/NotificationContext';
 import { AppThemeProvider, useAppTheme } from './src/context/ThemeContext';
@@ -84,18 +85,20 @@ const App: React.FC = () => {
 
     return (
         <View style={{ flex: 1 }} onLayout={() => void onLayoutRootView()}>
-            <ErrorBoundary>
-                <AppThemeProvider>
+            <AppThemeProvider>
+                <ErrorBoundary>
                     <StatusBarManager />
                     <AuthProvider>
-                        <JourneyProvider>
-                            <NotificationProvider>
-                                <RootNavigator />
-                            </NotificationProvider>
-                        </JourneyProvider>
+                        <GamificationProvider>
+                            <JourneyProvider>
+                                <NotificationProvider>
+                                    <RootNavigator />
+                                </NotificationProvider>
+                            </JourneyProvider>
+                        </GamificationProvider>
                     </AuthProvider>
-                </AppThemeProvider>
-            </ErrorBoundary>
+                </ErrorBoundary>
+            </AppThemeProvider>
         </View>
     );
 };

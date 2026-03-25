@@ -62,7 +62,7 @@ const GamificationProvider: React.FC<{ children: ReactNode }> = ({ children }) =
                 setError(null);
             } catch (err) {
                 setError(err instanceof Error ? err : new Error(String(err)));
-                console.error('Error fetching game profile:', err);
+                console.warn('Error fetching game profile:', err);
             } finally {
                 setIsLoading(false);
             }

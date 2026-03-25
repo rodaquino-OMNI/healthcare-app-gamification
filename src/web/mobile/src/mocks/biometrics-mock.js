@@ -20,7 +20,6 @@ class ReactNativeBiometrics {
     }
 }
 
-module.exports = {
-    default: ReactNativeBiometrics,
-    ReactNativeBiometrics,
-};
+module.exports = ReactNativeBiometrics;
+module.exports.default = ReactNativeBiometrics;
+module.exports.ReactNativeBiometrics = ReactNativeBiometrics;

@@ -238,9 +238,9 @@ export const baseTheme: Theme = {
     },
     typography: {
         fontFamily: {
-            base: 'Plus Jakarta Sans, sans-serif',
-            heading: 'Plus Jakarta Sans, sans-serif',
-            logo: 'Nunito, sans-serif',
+            base: tokens.typography.fontFamily.base,
+            heading: tokens.typography.fontFamily.heading,
+            logo: tokens.typography.fontFamily.logo,
             mono: tokens.typography.fontFamily.mono,
         },
         fontWeight: {
