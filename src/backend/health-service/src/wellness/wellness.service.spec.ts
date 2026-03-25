@@ -313,7 +313,11 @@ describe('WellnessService', () => {
 
     describe('createGoal', () => {
         it('should create a wellness goal via Prisma', async () => {
-            const goalData = { type: 'MOOD_CHECKIN', targetValue: 30, period: 'MONTHLY' };
+            const goalData = {
+                type: 'MOOD_CHECKIN' as const,
+                targetValue: 30,
+                period: 'MONTHLY' as const,
+            };
             const createdGoal = {
                 id: 'goal-xyz',
                 recordId: userId,

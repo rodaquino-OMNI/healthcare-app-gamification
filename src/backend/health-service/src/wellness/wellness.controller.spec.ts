@@ -271,7 +271,11 @@ describe('WellnessController', () => {
 
     describe('createGoal', () => {
         it('should create a wellness goal and return it', async () => {
-            const goalData = { type: 'MOOD_CHECKIN', targetValue: 30, period: 'MONTHLY' };
+            const goalData = {
+                type: 'MOOD_CHECKIN' as const,
+                targetValue: 30,
+                period: 'MONTHLY' as const,
+            };
             const createdGoal = {
                 id: 'goal-1',
                 recordId: 'user-123',
