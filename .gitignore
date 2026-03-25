@@ -78,6 +78,7 @@ ios/*.xcodeproj/**/xcuserdata
 *.sqlite
 *.sqlite3
 *.db
+*.bak
 
 # Terraform
 .terraform/

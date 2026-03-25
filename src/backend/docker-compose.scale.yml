@@ -1,3 +1,4 @@
+# Scale testing — 3-replica services with rolling updates, Prometheus + Grafana monitoring, resource limits
 version: '3.8'
 
 services:
@@ -246,7 +247,7 @@ services:
       - austa-network
 
   postgres:
-    image: postgres:14
+    image: postgres:16-alpine
     container_name: postgres
     ports:
       - "5432:5432"

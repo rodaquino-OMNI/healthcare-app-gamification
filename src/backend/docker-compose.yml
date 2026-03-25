@@ -1,3 +1,4 @@
+# Development environment — 7 microservices on ports 3000-3006, PostgreSQL 16, Redis 7, Kafka with Zookeeper
 version: '3.8'
 
 services:
@@ -205,7 +206,7 @@ services:
       start_period: 40s
 
   postgres:
-    image: postgres:14
+    image: postgres:16-alpine
     container_name: postgres
     ports:
       - "5432:5432"

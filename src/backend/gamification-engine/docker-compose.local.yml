@@ -1,8 +1,9 @@
+# Gamification engine — local development with isolated PostgreSQL, Redis, Kafka, and Kafdrop UI on port 9000
 version: '3.8'
 
 services:
   postgres:
-    image: postgres:14-alpine
+    image: postgres:16-alpine
     ports:
       - '5432:5432'
     environment:
