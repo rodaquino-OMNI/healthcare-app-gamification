@@ -289,7 +289,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (DEMO_MODE) {
             setAuthState({
                 session: {
-                    accessToken: 'demo-token-xxx',
+                    accessToken:
+                        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZW1vLXVzZXItMDAxIiwibmFtZSI6IkRlbW8gVXNlciIsImlhdCI6MTkwMDAwMDAwMCwiZXhwIjoxOTAwMDg2NDAwfQ.demo-sig',
                     refreshToken: 'demo-refresh-xxx',
                     expiresAt: Date.now() + 24 * 60 * 60 * 1000,
                     userId: 'demo-user-001',

@@ -6,11 +6,11 @@ const state = {
     details: { isConnectionExpensive: false },
 };
 
-module.exports = {
-    default: {
-        fetch: async () => state,
-        refresh: async () => state,
-        addEventListener: () => () => {},
-        useNetInfo: () => state,
-    },
+const NetInfo = {
+    fetch: async () => state,
+    refresh: async () => state,
+    addEventListener: () => () => {},
+    useNetInfo: () => state,
 };
+module.exports = NetInfo;
+module.exports.default = NetInfo;

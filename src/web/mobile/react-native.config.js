@@ -5,16 +5,9 @@ module.exports = {
     project: {
         ios: {
             sourceDir: './ios',
-            podfile: './ios/Podfile',
-            xcodeProject: './ios/mobile.xcodeproj',
-            deploymentTarget: '13.0', // Minimum iOS version supported
         },
         android: {
             sourceDir: './android',
-            manifestPath: './android/app/src/main/AndroidManifest.xml',
-            packageName: 'br.com.austa.superapp',
-            buildGradlePath: './android/app/build.gradle',
-            settingsGradlePath: './android/settings.gradle',
         },
     },
 

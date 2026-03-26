@@ -8,6 +8,10 @@
  * Letter spacing: em values matching Figma letterSpacing tokens.
  */
 
+import { Platform } from 'react-native';
+
+const isNative = Platform.OS !== 'web';
+
 /**
  * Raw numeric font size values in pixels.
  * Sourced from Figma core.json fontSizes.
@@ -45,19 +49,12 @@ export const typography = {
      * Updated from Figma core.json fontFamilies.
      */
     fontFamily: {
-        /** 'Plus Jakarta Sans, sans-serif' — heading text (was Roboto) */
-        heading: 'Plus Jakarta Sans, sans-serif',
-        /** 'Plus Jakarta Sans, sans-serif' — body/base text (was Roboto) */
-        body: 'Plus Jakarta Sans, sans-serif',
-        /**
-         * Alias for body — kept for backward compatibility.
-         * @deprecated Use fontFamily.body
-         */
-        base: 'Plus Jakarta Sans, sans-serif',
-        /** 'Nunito, sans-serif' — AUSTA logo font (from Figma) */
-        logo: 'Nunito, sans-serif',
-        /** 'Roboto Mono, monospace' — code, metrics (code-only extension) */
-        mono: 'Roboto Mono, monospace',
+        heading: isNative ? 'PlusJakartaSans-Bold' : 'Plus Jakarta Sans, sans-serif',
+        body: isNative ? 'PlusJakartaSans-Regular' : 'Plus Jakarta Sans, sans-serif',
+        /** @deprecated Use fontFamily.body */
+        base: isNative ? 'PlusJakartaSans-Regular' : 'Plus Jakarta Sans, sans-serif',
+        logo: isNative ? 'Nunito-Bold' : 'Nunito, sans-serif',
+        mono: isNative ? 'monospace' : 'Roboto Mono, monospace',
     },
 
     /**

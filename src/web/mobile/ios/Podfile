@@ -59,5 +59,87 @@ target 'AUSTASuperApp' do
       :mac_catalyst_enabled => false,
       :ccache_enabled => ccache_enabled?(podfile_properties),
     )
+
+    # ---------------------------------------------------------------
+    # Sentry SDK 8.41.0 patches for Xcode 16.3+ / 26.3+ (PRs #4917 & #4918)
+    # Remove when @sentry/react-native upgrades to Sentry >= 8.46.0
+    # ---------------------------------------------------------------
+
+    # Patch 1 (PR #4918): std::vector<const T> is illegal per C++ standard;
+    # newer libc++ enforces this via static_assert.
+    sentry_header = File.join(
+      installer.sandbox.root,
+      'Sentry/Sources/Sentry/include/SentryThreadMetadataCache.hpp'
+    )
+    if File.exist?(sentry_header)
+      content = File.read(sentry_header)
+      patched = content.gsub(
+        'std::vector<const ThreadHandleMetadataPair>',
+        'std::vector<ThreadHandleMetadataPair>'
+      )
+      if content != patched
+        File.chmod(0644, sentry_header)
+        File.write(sentry_header, patched)
+        puts "[Sentry patch] Removed const from std::vector in SentryThreadMetadataCache.hpp"
+      end
+    end
+
+    # Patch 2 (PR #4917): Replace VLA via function call with static const size.
+    # sentrycrashmc_contextSize() -> sentrycrashmc_contextSize (constant).
+    sentry_ctx_header = File.join(
+      installer.sandbox.root,
+      'Sentry/Sources/SentryCrash/Recording/Tools/SentryCrashMachineContext.h'
+    )
+    if File.exist?(sentry_ctx_header)
+      content = File.read(sentry_ctx_header)
+      patched = content
+      # Add Apple header include only if not already present (idempotent)
+      if !patched.include?('SentryCrashMachineContext_Apple.h')
+        patched = patched.gsub('#include "SentryCrashThread.h"', '#include "SentryCrashMachineContext_Apple.h"' + "\n" + '#include "SentryCrashThread.h"')
+      end
+      patched = patched.gsub('sentrycrashmc_contextSize()', 'sentrycrashmc_contextSize')
+      patched = patched.gsub(/^int\nsentrycrashmc_contextSize\(void\);\n/, '')
+      patched = patched.gsub("int sentrycrashmc_contextSize(void);\n", '')
+      patched = patched.gsub("/** Get the internal size of a machine context.\n */\n", '') if !patched.include?('sentrycrashmc_contextSize(void)')
+      if content != patched
+        File.chmod(0644, sentry_ctx_header)
+        File.write(sentry_ctx_header, patched)
+        puts "[Sentry patch] Applied VLA fix in SentryCrashMachineContext.h"
+      end
+    end
+
+    # Also remove the function definition in the .c file if present
+    sentry_ctx_c = File.join(
+      installer.sandbox.root,
+      'Sentry/Sources/SentryCrash/Recording/Tools/SentryCrashMachineContext.c'
+    )
+    if File.exist?(sentry_ctx_c)
+      content = File.read(sentry_ctx_c)
+      patched = content.gsub(/\nint\nsentrycrashmc_contextSize\(void\)\n\{\n\s*return sizeof\(SentryCrashMachineContext\);\n\}\n/, "\n")
+      if content != patched
+        File.chmod(0644, sentry_ctx_c)
+        File.write(sentry_ctx_c, patched)
+        puts "[Sentry patch] Removed sentrycrashmc_contextSize() function from SentryCrashMachineContext.c"
+      end
+    end
+
+    # Ensure SentryCrashMachineContext_Apple.h has the static const size
+    sentry_apple_header = File.join(
+      installer.sandbox.root,
+      'Sentry/Sources/SentryCrash/Recording/Tools/SentryCrashMachineContext_Apple.h'
+    )
+    if File.exist?(sentry_apple_header)
+      content = File.read(sentry_apple_header)
+      if !content.include?('sentrycrashmc_contextSize') && content.include?('} SentryCrashMachineContext;')
+        patched = content
+          .gsub('#include <stdbool.h>', '#include <stdbool.h>' + "\n" + '#include <stddef.h>')
+          .gsub("} SentryCrashMachineContext;\n", "} SentryCrashMachineContext;\n\nstatic const size_t sentrycrashmc_contextSize = sizeof(SentryCrashMachineContext);\n")
+        if content != patched
+          File.chmod(0644, sentry_apple_header)
+          File.write(sentry_apple_header, patched)
+          puts "[Sentry patch] Added static const sentrycrashmc_contextSize to SentryCrashMachineContext_Apple.h"
+        end
+      end
+    end
   end
 end
