@@ -31,6 +31,7 @@
             "@charts/*": ["src/charts/*"]
         },
         "typeRoots": ["../../../node_modules/@types"],
+        "types": ["node", "react", "react-dom", "styled-components"],
         "composite": true,
         "declarationMap": true,
         "sourceMap": true,

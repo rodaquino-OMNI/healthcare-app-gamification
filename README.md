@@ -106,7 +106,7 @@ Jornada de saúde expandida com módulos dedicados:
 - Tratamento de dados conforme LGPD — ver [ADR-004](docs/adr/ADR-004-lgpd-compliance.md)
 - Controle de acesso baseado em papéis (RBAC) e permissões granulares
 - TLS ponta-a-ponta, WAF (AWS WAFv2) e isolamento de rede VPC
-- Criptografia AES-256-GCM para PHI com salt por registro
+- Criptografia AES-256-GCM para PHI com salt por registro via Prisma `$extends` query extension (automático em create/update/find)
 - Auditoria de acesso a PHI via decorator `@PhiAccess()` e interceptor
 
 ### 🌐 Internacionalização
@@ -187,8 +187,9 @@ healthcare-super-app/
 │   │   ├── health-service/             # Sinais vitais, metas, wearables  97 TS / 13.702 linhas
 │   │   ├── notification-service/       # Push, SMS, e-mail, in-app        43 TS / 5.091 linhas
 │   │   ├── plan-service/               # Seguro, sinistros, benefícios    62 TS / 7.532 linhas
-│   │   ├── shared/                     # Utilitários e DTOs cross-service 78 TS / 10.505 linhas
-│   │   │   └── prisma/schema.prisma    # 33 models, 11 enums
+│   │   ├── shared/                     # Utilitários, DTOs e compliance cross-service 78 TS / 10.505 linhas
+│   │   │   ├── prisma/schema.prisma    # 33 models, 11 enums
+│   │   │   └── src/compliance/         # Barrel re-export: consent + privacy + audit
 │   │   └── packages/
 │   │       ├── auth/                   # Guards e decorators compartilhados
 │   │       └── shared/                 # Módulos NestJS compartilhados
@@ -353,7 +354,7 @@ healthcare-super-app/
 | Message broker | Apache Kafka (KafkaJS) | kafkajs ^2.2.4 |
 | Cache | Redis (ioredis) | ioredis ^5.10.1 |
 | BD primário | PostgreSQL | 16 |
-| Linguagem | TypeScript | 5.9.3 (backend) / 5.3.3 (frontend) |
+| Linguagem | TypeScript | 5.3.3 (todos os workspaces) |
 
 ### Frontend
 
@@ -649,6 +650,7 @@ O workflow `deploy-production.yml` usa estratégia **canary**:
 | [`docs/Documentação para Devs/`](docs/Documentação%20para%20Devs/) | 3 guias essenciais: [Forward Guide](docs/Documentação%20para%20Devs/DEVELOPER_FORWARD_GUIDE.md), [Security Guide Mobile](docs/Documentação%20para%20Devs/mobile-security-guide.md), [Production Setup](docs/Documentação%20para%20Devs/production-setup-guide.md) |
 | [`docs/analysis/`](docs/analysis/) | Resultados de CI, auditoria pré-deploy, análise de dependências Renovate |
 | [`docs/Figma/`](docs/Figma/) | Design tokens JSON (core, light, dark, theme), inventário de telas (100%), definições de modo |
+| [`docs/runbooks/`](docs/runbooks/) | 5 runbooks operacionais (deployment, rollback, incident-response, database-migration, monitoring-alerts) |
 | [`docs/original documentation/`](docs/original%20documentation/) | Guia original do projeto e especificação técnica |
 | [`src/backend/docs/`](src/backend/docs/) | Padrões de path alias do backend |
 
@@ -680,7 +682,7 @@ Estas tarefas **não podem** ser completadas apenas por ferramentas de IA. Reque
 | 1 | **Substituição de dados mock** | 🟢 Concluído | Scan encontrou 0 mock data em telas; telas usam dados dinâmicos via hooks/API |
 | 2 | **Aumento de cobertura de testes** | 🟡 Em progresso | 536 arquivos de teste existem — metas: 60/40/70% |
 | 3 | **TypeScript strict mode** (incremental) | 🟡 Em progresso | `strict: true` habilitado, `noImplicitAny: false`; corrigir por módulo |
-| 4 | **Auditoria TODO/FIXME** | 🟡 Em progresso | 16 TODOs restantes no código fonte |
+| 4 | **Auditoria TODO/FIXME** | 🟢 Concluído | 0 TODOs untagged restantes; itens pendentes de equipe marcados com `HUMAN-ACTION` |
 | 5 | **Migração Prisma 7.x** | 🟢 Concluído | Prisma `^7.0.0` em `package.json`; `prisma.config.ts` presente em `src/backend/shared/prisma/` |
 
 > 📖 Detalhes completos: [`DEVELOPER_FORWARD_GUIDE.md` → Seção P1](docs/Documentação%20para%20Devs/DEVELOPER_FORWARD_GUIDE.md)
@@ -693,6 +695,7 @@ Estas tarefas **não podem** ser completadas apenas por ferramentas de IA. Reque
 | 2 | **Build do Design System** | Alta | Conflito ESM/CJS em `rollup.config.mjs` no Node 22. `"type": "module"` já adicionado. Fix recomendado: migrar para Vite |
 | 3 | **Alinhamento de portas K8s** | — | ✅ Resolvido (portas 3000-3006 alinhadas) |
 | 4 | **Mismatch estrutural i18n** | Baixa | `en-US.ts` usa chaves aninhadas, `pt-BR.ts` usa nível superior em alguns pontos. Verificar: `npx tsx scripts/check-i18n-parity.ts` |
+| 5 | **Erros TypeScript gamification-engine** | Baixa | 3 erros TS2345 de type narrowing em `events.service.ts` e `rules.service.ts` — não bloqueantes para deploy |
 
 ### Segurança Mobile — Gaps Pendentes
 
@@ -705,7 +708,7 @@ Estas tarefas **não podem** ser completadas apenas por ferramentas de IA. Reque
 | MASVS-AUTH-2 | 🟡 Parcial | Implementar verificação server-side de key-pair biométrica (`createKeys()` / `createSignature()`) |
 | MASVS-RESILIENCE-1 | 🟢 Implementado | `warnIfCompromised()` chamado no `App.tsx` (root/jailbreak detection ativo) |
 | MASVS-RESILIENCE-2 | 🔴 Gap | Implementar anti-tampering / integrity checks (SafetyNet/Play Integrity) |
-| MASVS-CODE-1 | 🟡 Parcial | `minifyEnabled` comentado no `build.gradle`; `proguard-rules.pro` criado — descomentar para release |
+| MASVS-CODE-1 | 🟢 Implementado | `minifyEnabled true` habilitado no `build.gradle`; `proguard-rules.pro` configurado para release |
 
 ### Setup de Produção — Checklist
 

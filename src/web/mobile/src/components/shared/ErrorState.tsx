@@ -1,14 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type -- return types are inferred from implementation context */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types -- return types are inferred from implementation context */
-import { Text, Button, Icon } from '@austa/design-system';
+// DEMO_MODE — Use plain RN primitives instead of @austa/design-system (web-only styled-components)
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-
-import { useJourney } from '../../hooks/useJourney';
-import { useTheme } from '../../hooks/useTheme';
-
-/** The set of journey identifiers recognised by design-system components. */
-type JourneyType = 'health' | 'care' | 'plan';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 interface ErrorStateProps {
     /** Error message to display */
@@ -22,71 +16,29 @@ interface ErrorStateProps {
     /** Optional retry button label */
     retryLabel?: string;
     /** Journey context for theming */
-    journey?: JourneyType | string;
+    journey?: string;
     /** Test ID for component testing */
     testID?: string;
 }
 
-const ErrorState: React.FC<ErrorStateProps> = ({
-    message,
-    icon = 'alert-circle',
-    title,
-    onRetry,
-    retryLabel,
-    journey,
-    testID,
-}) => {
-    const { journey: contextJourney } = useJourney();
-    const currentJourney: JourneyType | string | undefined = journey ?? contextJourney;
-    const journeyForDS: JourneyType | undefined =
-        currentJourney === 'health' || currentJourney === 'care' || currentJourney === 'plan'
-            ? currentJourney
-            : undefined;
-    const { theme } = useTheme();
-
-    const getJourneyColor = () => {
-        if (currentJourney === 'health') {
-            return theme.colors.journey.health;
-        }
-        if (currentJourney === 'care') {
-            return theme.colors.journey.care;
-        }
-        if (currentJourney === 'plan') {
-            return theme.colors.journey.plan;
-        }
-        return theme.colors.brand.primary;
-    };
-
+const ErrorState: React.FC<ErrorStateProps> = ({ message, title, onRetry, retryLabel, testID }) => {
     return (
-        <View
-            style={[styles.container, { backgroundColor: theme.colors.background.default }]}
-            testID={testID || 'error-state'}
-            accessibilityRole="alert"
-        >
+        <View style={styles.container} testID={testID || 'error-state'} accessibilityRole="alert">
             <View style={styles.inner}>
-                <Icon name={icon} size={48} color={getJourneyColor()} aria-hidden />
+                <Text style={styles.icon}>⚠️</Text>
 
-                {title && (
-                    <Text fontSize="lg" fontWeight="bold" textAlign="center" color={theme.colors.text.primary}>
-                        {title}
-                    </Text>
-                )}
+                {title && <Text style={styles.title}>{title}</Text>}
 
-                {message && (
-                    <Text fontSize="md" textAlign="center" color={theme.colors.text.secondary}>
-                        {message}
-                    </Text>
-                )}
+                {message && <Text style={styles.message}>{message}</Text>}
 
                 {onRetry && (
-                    <Button
-                        variant="outline"
-                        journey={journeyForDS}
+                    <TouchableOpacity
+                        style={styles.retryButton}
                         onPress={onRetry}
                         accessibilityLabel={retryLabel || 'Retry'}
                     >
-                        {retryLabel || 'Retry'}
-                    </Button>
+                        <Text style={styles.retryLabel}>{retryLabel || 'Retry'}</Text>
+                    </TouchableOpacity>
                 )}
             </View>
         </View>
@@ -99,11 +51,39 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 24,
+        backgroundColor: '#FFFFFF',
     },
     inner: {
         alignItems: 'center',
         padding: 24,
         gap: 16,
+    },
+    icon: {
+        fontSize: 48,
+    },
+    title: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        color: '#1A1A2E',
+    },
+    message: {
+        fontSize: 14,
+        textAlign: 'center',
+        color: '#666666',
+    },
+    retryButton: {
+        paddingHorizontal: 24,
+        paddingVertical: 12,
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#0066CC',
+        marginTop: 8,
+    },
+    retryLabel: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#0066CC',
     },
 });
 
