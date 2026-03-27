@@ -72,6 +72,8 @@ const DEMO_MOCKS = {
     '@react-native-community/datetimepicker': path.resolve(__dirname, 'src/mocks/datetimepicker-mock.js'),
     '@react-native-picker/picker': path.resolve(__dirname, 'src/mocks/picker-mock.js'),
     'expo-document-picker': path.resolve(__dirname, 'src/mocks/document-picker-mock.js'),
+    // styled-components is pulled in transitively by DS web barrels; mock it to prevent DOM API crashes
+    'styled-components': path.resolve(__dirname, 'src/mocks/styled-components-mock.js'),
 };
 const originalResolveRequest = config.resolver.resolveRequest;
 config.resolver.resolveRequest = (context, moduleName, platform) => {
