@@ -10,11 +10,10 @@
  * Raw numeric border radius values in pixels
  * Used for programmatic calculations and manipulations
  *
- * 9-step scale (none → full):
- *   none(0), 3xs(1), 2xs(2), xs(4), sm(6), md(8), lg(16), xl(24), 2xl(20), full(9999)
+ * 12-step scale (none → full), aligned with Figma DS Variables:
+ *   none(0), 3xs(1), 2xs(2), xs(4), sm(6), md(8), lg(16), xl(24), 2xl(32), 3xl(48), 4xl(64), full(9999)
  *
  * Note: 2xs(2) is the hairline rounding used for compact UI elements.
- *       2xl(20) bridges xl(24) and lg(16) for cards and modals.
  */
 export const borderRadiusValues = {
     none: 0, // No border radius (sharp corners)
@@ -24,8 +23,10 @@ export const borderRadiusValues = {
     sm: 6, // Small border radius
     md: 8, // Medium border radius
     lg: 16, // Large border radius
-    '2xl': 20, // 2x-large border radius (cards, modals)
     xl: 24, // Extra large border radius
+    '2xl': 32, // 2x-large border radius (Figma radius-2xl — was 20, corrected to match Figma)
+    '3xl': 48, // 3x-large border radius (Figma radius-3xl)
+    '4xl': 64, // 4x-large border radius (Figma radius-4xl)
     full: 9999, // Full border radius (pill shape)
 };
 
@@ -41,7 +42,9 @@ export const borderRadius = {
     sm: '6px', // Small border radius
     md: '8px', // Medium border radius
     lg: '16px', // Large border radius
-    '2xl': '20px', // 2x-large border radius (cards, modals)
     xl: '24px', // Extra large border radius
+    '2xl': '32px', // 2x-large border radius (Figma radius-2xl — was 20px, corrected)
+    '3xl': '48px', // 3x-large border radius (Figma radius-3xl)
+    '4xl': '64px', // 4x-large border radius (Figma radius-4xl)
     full: '9999px', // Full border radius (pill shape)
 };

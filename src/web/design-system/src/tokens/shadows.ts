@@ -13,11 +13,13 @@
 
 export const shadows = {
     /**
-     * Small shadow — subtle elevation.
-     * From Figma theme.json boxShadow.sm: x:0 y:1 blur:2 spread:0 rgba(0,0,0,0.05)
+     * Small shadow — subtle elevation (dual-layer).
+     * From Figma DS Variables: Shadow/sm
+     *   Layer 1: x:0 y:1 blur:2 spread:0 #0F172A @ 6% (rgba(15,23,42,0.06))
+     *   Layer 2: x:0 y:1 blur:3 spread:0 #0F172A @ 10% (rgba(15,23,42,0.1))
      * Used for buttons, cards, and slightly elevated components.
      */
-    sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+    sm: '0 1px 2px 0 rgba(15, 23, 42, 0.06), 0 1px 3px 0 rgba(15, 23, 42, 0.1)',
 
     /**
      * Medium / default shadow — moderate elevation.
