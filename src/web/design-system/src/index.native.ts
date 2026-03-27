@@ -12,7 +12,7 @@
  */
 
 import React from 'react';
-import { View, TextInput, Pressable, type ViewProps } from 'react-native';
+import { View, type ViewProps } from 'react-native';
 
 // ---------------------------------------------------------------------------
 // 1. Native primitives (real implementations)
@@ -66,56 +66,46 @@ const createStub = (displayName: string) => {
     return Stub;
 };
 
-/** Stub that renders pressable children. */
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
-const createPressableStub = (displayName: string) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const Stub = React.forwardRef<View, any>(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        ({ children, onPress, disabled, testID, style, ...rest }, ref) =>
-            React.createElement(
-                Pressable,
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                { onPress, disabled, testID, style, ref, ...rest },
-                children
-            )
-    );
-    Stub.displayName = displayName;
-    return Stub;
-};
+// ---------------------------------------------------------------------------
+// 4a. Native component implementations (real .native.tsx)
+// ---------------------------------------------------------------------------
 
-/** Stub that renders a TextInput. */
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
-const createInputStub = (displayName: string) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const Stub = React.forwardRef<TextInput, any>(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        ({ value, onChangeText, placeholder, testID, style, ...rest }, ref) =>
-            React.createElement(TextInput, {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                value,
-                onChangeText,
-                placeholder,
-                testID,
-                style,
-                ref,
-                ...rest,
-            })
-    );
-    Stub.displayName = displayName;
-    return Stub;
-};
+export { Modal } from './components/Modal/Modal.native';
+export type { ModalProps } from './components/Modal/Modal.native';
 
-// Interactive components
-export const Button = createPressableStub('Button');
-export const Avatar = createStub('Avatar');
-export const Card = createStub('Card');
-export const Checkbox = createPressableStub('Checkbox');
-export const Input = createInputStub('Input');
-export const Modal = createStub('Modal');
-export const ProgressBar = createStub('ProgressBar');
+export { Checkbox } from './components/Checkbox/Checkbox.native';
+export type { CheckboxProps } from './components/Checkbox/Checkbox.native';
+
+export { ProgressBar } from './components/ProgressBar/ProgressBar.native';
+export type { ProgressBarProps } from './components/ProgressBar/ProgressBar.native';
+
+export { Avatar } from './components/Avatar/Avatar.native';
+export type { AvatarProps } from './components/Avatar/Avatar.native';
+
+export { Select } from './components/Select/Select.native';
+export type { SelectProps } from './components/Select/Select.native';
+
+// ---------------------------------------------------------------------------
+// 4b. Native component implementations (high-use components)
+// ---------------------------------------------------------------------------
+
+export { Button } from './components/Button/Button.native';
+export type { ButtonProps } from './components/Button/Button.native';
+
+export { Card } from './components/Card/Card.native';
+export type { CardProps } from './components/Card/Card.native';
+
+export { Input } from './components/Input/Input.native';
+export type { InputNativeProps as InputProps } from './components/Input/Input.native';
+
+export { Badge } from './components/Badge/Badge.native';
+export type { BadgeProps } from './components/Badge/Badge.native';
+
+// ---------------------------------------------------------------------------
+// 4c. Remaining stubs (no native implementation yet)
+// ---------------------------------------------------------------------------
+
 export const ProgressCircle = createStub('ProgressCircle');
-export const Select = createStub('Select');
 export const Stack = createStub('Stack');
 export const Tabs = createStub('Tabs');
 
