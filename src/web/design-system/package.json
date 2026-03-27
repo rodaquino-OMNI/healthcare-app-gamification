@@ -5,6 +5,7 @@
     "private": true,
     "main": "dist/index.js",
     "module": "dist/index.esm.js",
+    "react-native": "src/index.native.ts",
     "types": "dist/index.d.ts",
     "exports": {
         ".": {
