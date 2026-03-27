@@ -102,6 +102,22 @@ export { Badge } from './components/Badge/Badge.native';
 export type { BadgeProps } from './components/Badge/Badge.native';
 
 // ---------------------------------------------------------------------------
+// 4d. Native implementations (low-use / domain components)
+// ---------------------------------------------------------------------------
+
+export { DatePicker } from './components/DatePicker/DatePicker.native';
+export type { DatePickerProps } from './components/DatePicker/DatePicker';
+
+export { LineChart } from './charts/LineChart/LineChart.native';
+export type { LineChartProps } from './charts/LineChart/LineChart';
+
+export { MetricCard } from './health/MetricCard/MetricCard.native';
+export type { MetricCardProps } from './health/MetricCard/MetricCard';
+
+export { DeviceCard } from './health/DeviceCard/DeviceCard.native';
+export type { DeviceCardProps } from './health/DeviceCard/DeviceCard.native';
+
+// ---------------------------------------------------------------------------
 // 4c. Remaining stubs (no native implementation yet)
 // ---------------------------------------------------------------------------
 

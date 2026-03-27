@@ -118,13 +118,80 @@ if (moduleName === '@austa/design-system' && platform !== 'web') {
 
 ---
 
+## Mandatory Implementation Rules
+
+### Rule 1: Icon — react-native-svg + iconRegistry.ts (NO substitution)
+
+`Icon.native.tsx` MUST use `react-native-svg` (`Svg`, `Path`) rendering the **same** `iconRegistry.ts` path data (547 icons, 2268L at `primitives/Icon/iconRegistry.ts`). The SVG path strings are pure cross-platform data.
+
+- NO icon font substitution (loses all 547 custom health/biology icons)
+- NO emoji fallback (loses visual fidelity)
+- Import `{ getIcon, IconName }` from `./iconRegistry` — same as web version
+- Render with `<Svg viewBox={icon.viewBox}><Path d={icon.path} fill={color} /></Svg>`
+
+### Rule 2: Avatar/Image — `<img>` to `<Image>`
+
+- Replace `<AvatarImage src={src} />` (styled `<img>`) with RN `<Image source={{ uri: src }} />`
+- Convert ALL `calc()` expressions to numeric JS math: `calc(${actualSize} / 2)` becomes `actualSize / 2`
+- `border-radius: 50%` becomes `borderRadius: size / 2` (numeric)
+
+### Rule 3: CSS to React Native Mapping Table
+
+Every agent implementing a `.native.tsx` variant MUST use this translation reference:
+
+| Web CSS | React Native Equivalent |
+|---------|------------------------|
+| `box-shadow: 0 2px 4px rgba(0,0,0,0.1)` | `elevation: 3` (Android) + `shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4` (iOS) |
+| `calc(X / 2)` | `X / 2` (numeric arithmetic in JS) |
+| `CSS transitions` | `Animated` API or `react-native-reanimated` (or skip for MVP) |
+| `:hover` states | `Pressable` with `({ pressed }) => [styles.base, pressed && styles.pressed]` |
+| `currentColor` | Explicit `color` prop pass-through to child `<Text>` or `<Svg>` |
+| `styled.div` | `View` |
+| `styled.span` (container) | `View` |
+| `styled.span` (inline text) | `Text` |
+| `styled.button` | `Pressable` or `TouchableOpacity` |
+| `styled.input` | `TextInput` |
+| `styled.label` | `Text` |
+| `<svg>` / `<path>` | `react-native-svg` `Svg` / `Path` |
+| `<img src={url}>` | `Image source={{ uri: url }}` |
+| `@media (min-width: X)` | `useWindowDimensions()` conditional |
+| `position: fixed` | Not available — use `position: 'absolute'` within flex container |
+| `overflow: hidden` + `border-radius` | `View` with `overflow: 'hidden'` + `borderRadius` |
+| `border-radius: 50%` | `borderRadius: width / 2` (numeric) |
+| `opacity: 0.5` | `opacity: 0.5` (same) |
+| `display: flex; flex-direction: row` | `flexDirection: 'row'` (View defaults to column) |
+| `gap: 8px` | `gap: 8` (supported in RN 0.71+) |
+| `text-align: center` | `textAlign: 'center'` |
+| `font-weight: 600` | `fontWeight: '600'` (string in RN) |
+| `cursor: pointer` | Not applicable (remove) |
+| `user-select: none` | Not applicable (remove) |
+
+### Rule 4: Visual Reference from Figma
+
+Figma file: `izQmcRXAJhlsGALJ6FaHIF` (Austa app)
+DS Components page node: `10611:33504`
+
+Each agent implementing a component MUST:
+1. Read the web `.tsx` + `.styles.ts` to understand exact props and token usage
+2. Use `get_design_context` from Figma MCP for the specific component node to see visual spec
+3. Replicate exact spacing, border-radius, colors, typography from the Figma design using DS tokens
+
+### Rule 5: Verification Screenshots
+
+Phase gates MUST include:
+1. iOS Simulator screenshot of the component rendering
+2. Comparison against Figma component screenshot (via `get_screenshot`)
+3. Both light and dark mode if the component uses theme colors
+
+---
+
 ## Implementation Pattern
 
 Each `.native.tsx` file:
 
 - Imports the same TypeScript interface from the web version (or from a shared `.types.ts`)
 - Uses RN primitives instead of HTML elements
-- Maps DS token values to RN `StyleSheet` properties
+- Maps DS token values to RN `StyleSheet` properties using the CSS→RN table above
 - Preserves the same public API (props, exports)
 
 ```tsx
