@@ -130,12 +130,9 @@ export const FormContainer = Stack;
 export const FormField = Input;
 
 // ---------------------------------------------------------------------------
-// 5. Namespace re-exports (match web barrel shape)
+// 5. Namespace re-exports — DISABLED for native
+// The web barrels (components/index.ts, gamification/index.ts, etc.) import
+// styled-components which crashes React Native. Mobile code imports individual
+// components directly from '@austa/design-system' (flat exports above), so
+// these namespace re-exports are not needed on native.
 // ---------------------------------------------------------------------------
-
-export * as primitives from './primitives';
-export * as components from './components';
-export * as gamification from './gamification';
-export * as health from './health';
-export * as care from './care';
-export * as plan from './plan';
