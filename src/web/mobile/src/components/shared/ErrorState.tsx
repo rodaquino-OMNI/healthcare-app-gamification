@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type -- return types are inferred from implementation context */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types -- return types are inferred from implementation context */
-// DEMO_MODE — Use plain RN primitives instead of @austa/design-system (web-only styled-components)
+import { Text, Button, Icon } from '@austa/design-system';
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 interface ErrorStateProps {
     /** Error message to display */
@@ -21,24 +19,33 @@ interface ErrorStateProps {
     testID?: string;
 }
 
-const ErrorState: React.FC<ErrorStateProps> = ({ message, title, onRetry, retryLabel, testID }) => {
+const ErrorState: React.FC<ErrorStateProps> = ({ message, icon, title, onRetry, retryLabel, journey, testID }) => {
     return (
         <View style={styles.container} testID={testID || 'error-state'} accessibilityRole="alert">
             <View style={styles.inner}>
-                <Text style={styles.icon}>⚠️</Text>
+                <Icon name={icon || 'alert-circle'} size={48} />
 
-                {title && <Text style={styles.title}>{title}</Text>}
+                {title && (
+                    <Text fontSize="lg" fontWeight="bold" textAlign="center">
+                        {title}
+                    </Text>
+                )}
 
-                {message && <Text style={styles.message}>{message}</Text>}
+                {message && (
+                    <Text fontSize="md" textAlign="center" color="#666666">
+                        {message}
+                    </Text>
+                )}
 
                 {onRetry && (
-                    <TouchableOpacity
-                        style={styles.retryButton}
+                    <Button
+                        variant="outline"
                         onPress={onRetry}
                         accessibilityLabel={retryLabel || 'Retry'}
+                        journey={journey}
                     >
-                        <Text style={styles.retryLabel}>{retryLabel || 'Retry'}</Text>
-                    </TouchableOpacity>
+                        {retryLabel || 'Retry'}
+                    </Button>
                 )}
             </View>
         </View>
@@ -51,39 +58,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 24,
-        backgroundColor: '#FFFFFF',
     },
     inner: {
         alignItems: 'center',
         padding: 24,
         gap: 16,
-    },
-    icon: {
-        fontSize: 48,
-    },
-    title: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        color: '#1A1A2E',
-    },
-    message: {
-        fontSize: 14,
-        textAlign: 'center',
-        color: '#666666',
-    },
-    retryButton: {
-        paddingHorizontal: 24,
-        paddingVertical: 12,
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: '#0066CC',
-        marginTop: 8,
-    },
-    retryLabel: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#0066CC',
     },
 });
 

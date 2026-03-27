@@ -72,8 +72,6 @@ const DEMO_MOCKS = {
     '@react-native-community/datetimepicker': path.resolve(__dirname, 'src/mocks/datetimepicker-mock.js'),
     '@react-native-picker/picker': path.resolve(__dirname, 'src/mocks/picker-mock.js'),
     'expo-document-picker': path.resolve(__dirname, 'src/mocks/document-picker-mock.js'),
-    // DEMO_MODE — design-system uses styled-components with web-only APIs (styled.span, <svg>)
-    '@austa/design-system': path.resolve(__dirname, 'src/mocks/design-system-mock.js'),
 };
 const originalResolveRequest = config.resolver.resolveRequest;
 config.resolver.resolveRequest = (context, moduleName, platform) => {

@@ -431,24 +431,6 @@ declare module '@design-system/primitives/Box' {
     export default Box;
 }
 
-// @design-system/components (barrel for direct imports)
-declare module '@design-system/components' {
-    export { Button } from '@austa/design-system';
-    export { Card } from '@austa/design-system';
-    export { Input } from '@austa/design-system';
-    export { Text } from '@austa/design-system';
-    export { Icon } from '@austa/design-system';
-    export { Stack } from '@austa/design-system';
-    export { Select } from '@austa/design-system';
-    export { Modal } from '@austa/design-system';
-    export { ProgressBar } from '@austa/design-system';
-    export { ProgressCircle } from '@austa/design-system';
-    export { Avatar } from '@austa/design-system';
-    export { Checkbox } from '@austa/design-system';
-    export { Tabs } from '@austa/design-system';
-    export const Badge: React.FC<any>;
-}
-
 // Note: @api/index and @components/forms are resolved via tsconfig paths
 // to their physical barrel files. Do NOT add ambient declarations here
 // as they would shadow the real file exports.
