@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v5
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: '20'
@@ -45,7 +45,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v5
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: '20'
@@ -54,7 +54,7 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Publish to Chromatic
         if: ${{ secrets.CHROMATIC_PROJECT_TOKEN != '' }}
-        uses: chromaui/action@5ec258af08deb3e8c36653bd618cb7fe52090031 # v15
+        uses: chromaui/action@f191a0224b10e1a38b2091cefb7b7a2337009116 # v15
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           workingDir: src/web/design-system
