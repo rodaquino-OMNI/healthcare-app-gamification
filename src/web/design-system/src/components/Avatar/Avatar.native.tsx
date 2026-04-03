@@ -1,23 +1,11 @@
 import React, { useState } from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
-import { Icon } from '../../primitives/Icon/Icon.native';
-import { Text } from '../../primitives/Text/Text.native';
+import type { AvatarProps } from './Avatar';
+import { Icon } from '../../primitives/Icon/Icon';
 import { colors } from '../../tokens/colors';
 import { sizingValues } from '../../tokens/sizing';
-
-export interface AvatarProps {
-    src?: string;
-    alt?: string;
-    name?: string;
-    size?: string;
-    journey?: 'health' | 'care' | 'plan';
-    showFallback?: boolean;
-    fallbackType?: 'initials' | 'icon';
-    onImageError?: () => void;
-    testID?: string;
-    sizePreset?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-}
+import { parsePx } from '../../utils/native-shadows';
 
 const getInitials = (name?: string): string => {
     if (!name) {
@@ -29,11 +17,11 @@ const getInitials = (name?: string): string => {
     return (first + last).toUpperCase();
 };
 
-const Avatar: React.FC<AvatarProps> = ({
+export const Avatar: React.FC<AvatarProps> = ({
     src,
     alt,
     name,
-    size = '40',
+    size = '40px',
     journey,
     showFallback = false,
     fallbackType = 'initials',
@@ -43,51 +31,64 @@ const Avatar: React.FC<AvatarProps> = ({
 }) => {
     const [hasError, setHasError] = useState(false);
 
-    const numericSize: number = sizePreset ? sizingValues.component[sizePreset] : parseInt(size, 10);
-
-    const shouldShowFallback = showFallback || hasError || !src;
-
-    const backgroundColor = journey ? colors.journeys[journey].primary : colors.neutral.gray300;
-
     const handleImageError = (): void => {
         setHasError(true);
         onImageError?.();
     };
 
-    const containerStyle = {
-        width: numericSize,
-        height: numericSize,
-        borderRadius: numericSize / 2,
-        backgroundColor,
-    };
+    const initials = getInitials(name);
+    const shouldShowFallback = showFallback || hasError || !src;
 
-    const accessibilityLabel = alt || (name ? `Avatar for ${name}` : 'User avatar');
+    const actualSize = sizePreset ? sizingValues.component[sizePreset] : parsePx(size);
+
+    const bgColor = journey ? colors.journeys[journey].primary : colors.neutral.gray400;
+
+    const containerStyle = [
+        styles.container,
+        {
+            width: actualSize,
+            height: actualSize,
+            borderRadius: actualSize / 2,
+            backgroundColor: bgColor,
+        },
+    ];
+
+    const accessLabel = alt || (name ? `Avatar for ${name}` : 'User avatar');
 
     return (
         <View
-            style={[styles.container, containerStyle]}
-            accessibilityLabel={accessibilityLabel}
+            style={containerStyle}
+            accessibilityLabel={accessLabel}
+            accessibilityRole="image"
             testID={testID || 'avatar'}
         >
             {!shouldShowFallback && src ? (
                 <Image
                     source={{ uri: src }}
-                    style={styles.image}
-                    resizeMode="cover"
+                    style={{
+                        width: actualSize,
+                        height: actualSize,
+                        borderRadius: actualSize / 2,
+                    }}
                     onError={handleImageError}
-                    accessibilityLabel={accessibilityLabel}
+                    accessibilityLabel={accessLabel}
+                    testID="avatar-image"
                 />
-            ) : fallbackType === 'initials' && getInitials(name) ? (
-                <Text
-                    color={colors.neutral.white}
-                    fontWeight="500"
-                    style={{ fontSize: numericSize / 3 }}
-                    testID="avatar-initials"
-                >
-                    {getInitials(name)}
-                </Text>
             ) : (
-                <Icon name="user-single" size={Math.round(numericSize / 2)} color={colors.neutral.white} />
+                <View style={styles.fallback}>
+                    {fallbackType === 'initials' && initials ? (
+                        <Text style={[styles.initials, { fontSize: actualSize * 0.4 }]} testID="avatar-initials">
+                            {initials}
+                        </Text>
+                    ) : (
+                        <Icon
+                            name="profile"
+                            size={Math.round(actualSize / 2)}
+                            color={colors.neutral.white}
+                            aria-hidden={true}
+                        />
+                    )}
+                </View>
             )}
         </View>
     );
@@ -95,15 +96,10 @@ const Avatar: React.FC<AvatarProps> = ({
 
 const styles = StyleSheet.create({
     container: {
-        overflow: 'hidden',
         alignItems: 'center',
         justifyContent: 'center',
+        overflow: 'hidden',
     },
-    image: {
-        width: '100%',
-        height: '100%',
-    },
+    fallback: { alignItems: 'center', justifyContent: 'center' },
+    initials: { color: colors.neutral.white, fontWeight: '500' },
 });
-
-export { Avatar };
-export default Avatar;

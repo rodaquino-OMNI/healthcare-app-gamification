@@ -1,176 +1,114 @@
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, type ViewStyle, type TextStyle, type TextInputProps } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 
-import { Text } from '../../primitives/Text/Text.native';
-import { borderRadiusValues } from '../../tokens/borderRadius';
+import type { InputProps } from './Input';
 import { colors } from '../../tokens/colors';
-import { spacingValues } from '../../tokens/spacing';
-import { fontFamilyByWeight } from '../../tokens/typography';
 
-type Journey = 'health' | 'care' | 'plan';
+const spacingValues = { '3xs': 4, '2xs': 6, xs: 8, sm: 12, md: 16 };
+const borderRadiusValues = { xs: 4 };
 
-export interface InputNativeProps {
-    value?: string;
-    onChangeText?: (text: string) => void;
-    placeholder?: string;
-    disabled?: boolean;
-    label?: string;
-    journey?: Journey;
-    testID?: string;
-    accessibilityLabel?: string;
-    error?: string;
-    helperText?: string;
-    secureTextEntry?: boolean;
-    multiline?: boolean;
-    keyboardType?: TextInputProps['keyboardType'];
-    autoCapitalize?: TextInputProps['autoCapitalize'];
-    autoCorrect?: boolean;
-    onBlur?: () => void;
-    onFocus?: () => void;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    style?: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string]: any;
-}
+const typeToKeyboard: Record<string, { keyboardType?: string; secureTextEntry?: boolean }> = {
+    email: { keyboardType: 'email-address' },
+    number: { keyboardType: 'numeric' },
+    tel: { keyboardType: 'phone-pad' },
+    password: { secureTextEntry: true },
+};
 
-/**
- * Input component (React Native).
- * Native implementation of the design system Input, using TextInput
- * with focus/error/disabled states and token-based styling.
- *
- * @example
- * <Input
- *   value={email}
- *   onChangeText={setEmail}
- *   placeholder="Enter your email"
- *   label="Email"
- *   journey="health"
- * />
- */
-export const Input: React.FC<InputNativeProps> = ({
+export const Input: React.FC<InputProps> = ({
     value,
+    onChange,
     onChangeText,
     placeholder,
+    type = 'text',
     disabled = false,
     label,
-    journey: _journey,
+    journey,
     testID,
-    accessibilityLabel,
     error,
     helperText,
-    secureTextEntry,
-    multiline,
-    keyboardType,
-    autoCapitalize,
-    autoCorrect,
     onBlur,
-    onFocus,
     style,
     ...rest
 }) => {
-    const [isFocused, setIsFocused] = useState(false);
+    const [focused, setFocused] = useState(false);
+    const keyboardConfig = typeToKeyboard[type] || {};
 
-    const handleFocus = (): void => {
-        setIsFocused(true);
-        onFocus?.();
+    const handleChangeText = (text: string): void => {
+        if (onChangeText) {
+            onChangeText(text);
+        } else if (onChange) {
+            (onChange as (...args: any[]) => void)(text);
+        }
     };
 
-    const handleBlur = (): void => {
-        setIsFocused(false);
-        onBlur?.();
-    };
-
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    const inputBorderColor = (() => {
-        if (error) {
-            return colors.semantic.error;
-        }
-        if (isFocused) {
-            return colors.brand.primary;
-        }
-        return colors.neutral.gray300;
-    })();
-
-    const inputStyle: TextStyle[] = [
-        styles.input,
-        { borderColor: inputBorderColor },
-        disabled ? styles.inputDisabled : null,
-        multiline ? styles.inputMultiline : null,
-        style,
-    ].filter(Boolean) as TextStyle[];
+    const borderColor = error
+        ? colors.semantic.error
+        : focused && journey
+          ? colors.journeys[journey].primary
+          : colors.neutral.gray500;
 
     return (
-        <View style={styles.container}>
-            {label !== null && label !== undefined && (
-                <Text fontSize={16} fontWeight="medium" color={colors.neutral.gray700} style={styles.label}>
+        <View style={[styles.container, style]}>
+            {label && (
+                <Text style={styles.label} accessibilityRole="text">
                     {label}
                 </Text>
             )}
             <TextInput
                 value={value}
-                onChangeText={onChangeText}
+                onChangeText={handleChangeText}
                 placeholder={placeholder}
                 placeholderTextColor={colors.neutral.gray500}
                 editable={!disabled}
-                secureTextEntry={secureTextEntry}
-                multiline={multiline}
-                keyboardType={keyboardType}
-                autoCapitalize={autoCapitalize}
-                autoCorrect={autoCorrect}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                style={inputStyle}
+                secureTextEntry={keyboardConfig.secureTextEntry}
+                keyboardType={keyboardConfig.keyboardType as any}
+                onFocus={() => setFocused(true)}
+                onBlur={(e) => {
+                    setFocused(false);
+                    onBlur?.(e);
+                }}
                 testID={testID}
-                accessibilityLabel={accessibilityLabel ?? label}
-                accessibilityState={{ disabled }}
+                accessibilityLabel={rest['aria-label'] || label}
+                style={[styles.input, { borderColor }, disabled && styles.disabled]}
                 {...rest}
             />
-            {error !== null && error !== undefined && error.length > 0 && (
-                <Text fontSize={12} color={colors.semantic.error} style={styles.subText} accessibilityRole="alert">
+            {error && (
+                <Text style={styles.error} accessibilityRole="alert">
                     {error}
                 </Text>
             )}
-            {(error === null || error === undefined || error.length === 0) &&
-                helperText !== null &&
-                helperText !== undefined &&
-                helperText.length > 0 && (
-                    <Text fontSize={12} color={colors.gray[50]} style={styles.subText}>
-                        {helperText}
-                    </Text>
-                )}
+            {!error && helperText && <Text style={styles.helper}>{helperText}</Text>}
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flexDirection: 'column',
-        marginBottom: spacingValues.sm,
-        width: '100%',
-    } as ViewStyle,
+    container: { width: '100%' },
     label: {
-        marginBottom: spacingValues.xs,
-    } as TextStyle,
+        fontSize: 14,
+        fontWeight: '500',
+        color: colors.neutral.gray700,
+        marginBottom: spacingValues['3xs'],
+    },
     input: {
+        borderWidth: 1,
+        borderRadius: borderRadiusValues.xs,
         padding: spacingValues.sm,
         fontSize: 16,
-        borderRadius: borderRadiusValues.sm,
-        borderWidth: 1,
-        color: colors.neutral.gray700,
-        fontFamily: fontFamilyByWeight[400],
-        width: '100%',
-    } as TextStyle,
-    inputDisabled: {
-        backgroundColor: colors.neutral.gray100,
-        opacity: 0.6,
-    } as TextStyle,
-    inputMultiline: {
-        minHeight: 80,
-        textAlignVertical: 'top',
-    } as TextStyle,
-    subText: {
+        color: colors.neutral.gray800,
+        backgroundColor: colors.neutral.white,
+    },
+    disabled: { opacity: 0.5, backgroundColor: colors.neutral.gray200 },
+    error: {
+        color: colors.semantic.error,
+        fontSize: 12,
         marginTop: spacingValues['3xs'],
-    } as TextStyle,
+    },
+    helper: {
+        color: colors.gray[50],
+        fontSize: 12,
+        marginTop: spacingValues['3xs'],
+    },
 });
 
 export default Input;

@@ -1,32 +1,22 @@
 import React from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
-import Icon from '../../primitives/Icon/Icon.native';
-import Text from '../../primitives/Text/Text.native';
+import { Icon } from '../../primitives/Icon/Icon';
+import { Text } from '../../primitives/Text/Text';
 import { borderRadiusValues } from '../../tokens/borderRadius';
 import { colors } from '../../tokens/colors';
 import { sizingValues } from '../../tokens/sizing';
 import { spacingValues } from '../../tokens/spacing';
+import { nativeShadow } from '../../utils/native-shadows';
 
-/**
- * Props for the DeviceCard component.
- */
-export interface DeviceCardProps {
-    /** The name of the device */
+interface DeviceCardProps {
     deviceName: string;
-    /** The type of the device (e.g., 'Smartwatch', 'Heart Rate Monitor') */
     deviceType: string;
-    /** When the device last synced, in a human-readable format (e.g., '5 minutes ago') */
     lastSync: string;
-    /** The status of the device (e.g., 'Connected', 'Disconnected') */
     status: string;
-    /** Callback function when the card is pressed */
     onPress?: () => void;
 }
 
-/**
- * Determines which icon name to use based on the device type string.
- */
 const getDeviceIconName = (deviceType: string): string => {
     const type = deviceType.toLowerCase();
     if (type.includes('watch') || type.includes('band')) {
@@ -50,14 +40,10 @@ const getDeviceIconName = (deviceType: string): string => {
     return 'heart-outline';
 };
 
-/**
- * DeviceCard displays information about a connected health device.
- * Used in the Health Journey to show connected wearable devices and their sync status.
- */
-const DeviceCard: React.FC<DeviceCardProps> = ({ deviceName, deviceType, lastSync, status, onPress }) => {
+export const DeviceCard: React.FC<DeviceCardProps> = ({ deviceName, deviceType, lastSync, status, onPress }) => {
     const isConnected = status.toLowerCase() === 'connected';
-    const iconName = getDeviceIconName(deviceType);
-    const iconColor = isConnected ? colors.semantic.success : colors.neutral.gray500;
+    const deviceIconName = getDeviceIconName(deviceType);
+    const iconColor = isConnected ? colors.semantic.success : colors.neutral.gray400;
     const statusColor = isConnected ? colors.semantic.success : colors.semantic.error;
 
     return (
@@ -65,24 +51,27 @@ const DeviceCard: React.FC<DeviceCardProps> = ({ deviceName, deviceType, lastSyn
             onPress={onPress}
             accessibilityLabel={`${deviceName}, ${deviceType}, ${status}, Last synced ${lastSync}`}
             accessibilityRole="button"
-            testID="device-card"
-            style={({ pressed }) => [styles.pressable, pressed && styles.pressed]}
+            style={styles.touchable}
         >
             <View style={styles.card}>
                 <View style={styles.row}>
-                    <View style={styles.iconWrapper}>
-                        <Icon
-                            name={iconName as Parameters<typeof Icon>[0]['name']}
-                            size={sizingValues.icon.md}
-                            color={iconColor}
-                        />
+                    <View style={styles.iconContainer}>
+                        <Icon name={deviceIconName} size={sizingValues.icon.md} color={iconColor} />
                     </View>
                     <View style={styles.content}>
-                        <Text style={styles.deviceName}>{deviceName}</Text>
-                        <Text style={styles.deviceType}>{deviceType}</Text>
-                        <View style={styles.metaRow}>
-                            <Text style={styles.lastSync}>Last sync: {lastSync}</Text>
-                            <Text style={[styles.status, { color: statusColor }]}>{status}</Text>
+                        <Text fontWeight="medium" color="gray900">
+                            {deviceName}
+                        </Text>
+                        <Text fontSize="sm" color="gray600" style={styles.deviceType}>
+                            {deviceType}
+                        </Text>
+                        <View style={styles.statusRow}>
+                            <Text fontSize="sm" color="gray600">
+                                Last sync: {lastSync}
+                            </Text>
+                            <Text fontSize="sm" fontWeight="medium" color={statusColor}>
+                                {status}
+                            </Text>
                         </View>
                     </View>
                 </View>
@@ -92,11 +81,8 @@ const DeviceCard: React.FC<DeviceCardProps> = ({ deviceName, deviceType, lastSyn
 };
 
 const styles = StyleSheet.create({
-    pressable: {
+    touchable: {
         width: '100%',
-    },
-    pressed: {
-        opacity: 0.95,
     },
     card: {
         backgroundColor: colors.neutral.white,
@@ -106,48 +92,24 @@ const styles = StyleSheet.create({
         borderLeftColor: colors.journeys.health.primary,
         borderRadius: borderRadiusValues.md,
         padding: spacingValues.md,
-        // Android elevation
-        elevation: 2,
-        // iOS shadow
-        shadowColor: '#000000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.08,
-        shadowRadius: 2,
+        ...nativeShadow('sm'),
     },
     row: {
         flexDirection: 'row',
         alignItems: 'center',
     },
-    iconWrapper: {
+    iconContainer: {
         marginRight: spacingValues.md,
     },
     content: {
         flex: 1,
     },
-    deviceName: {
-        fontWeight: '600',
-        color: colors.neutral.gray900,
-        fontSize: 16,
-    },
     deviceType: {
-        color: colors.neutral.gray600,
-        fontSize: 14,
         marginBottom: spacingValues.xs,
     },
-    metaRow: {
+    statusRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
     },
-    lastSync: {
-        color: colors.neutral.gray600,
-        fontSize: 14,
-    },
-    status: {
-        fontSize: 14,
-        fontWeight: '500',
-    },
 });
-
-export { DeviceCard };
-export default DeviceCard;

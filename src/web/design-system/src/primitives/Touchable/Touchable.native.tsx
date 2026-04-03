@@ -1,20 +1,16 @@
-import React, { forwardRef, useCallback } from 'react';
-import { Pressable, type PressableProps, type StyleProp, StyleSheet, type View, type ViewStyle } from 'react-native';
+import React, { forwardRef } from 'react';
+import { Pressable, View, StyleSheet, type ViewStyle, type StyleProp } from 'react-native';
 
 import type { TouchableProps } from './Touchable';
-import { borderRadius as borderRadiusTokens } from '../../tokens/borderRadius';
+import { borderRadiusValues } from '../../tokens/borderRadius';
 import { colors } from '../../tokens/colors';
 
-/**
- * Native implementation of the Touchable primitive using Pressable.
- * Provides press feedback via opacity and optional haptic feedback.
- */
 export const Touchable = forwardRef<View, TouchableProps>((props, ref) => {
     const {
         onPress,
         onLongPress,
         disabled = false,
-        activeOpacity = 0.7,
+        activeOpacity = 0.2,
         testID,
         journey,
         children,
@@ -23,56 +19,44 @@ export const Touchable = forwardRef<View, TouchableProps>((props, ref) => {
         borderRadius,
         accessibilityLabel,
         accessibilityHint,
+        accessibilityRole,
+        accessible,
         accessibilityState,
         ...rest
     } = props;
 
     const journeyStyle: ViewStyle = journey ? { borderColor: colors.journeys[journey].primary } : {};
 
-    const borderRadiusStyle: ViewStyle = borderRadius
-        ? { borderRadius: borderRadiusTokens[borderRadius] as unknown as number }
-        : {};
+    const radiusStyle: ViewStyle = borderRadius ? { borderRadius: borderRadiusValues[borderRadius] } : {};
 
-    const baseStyle = StyleSheet.flatten([
-        styles.base,
-        fullWidth && styles.fullWidth,
-        journeyStyle,
-        borderRadiusStyle,
-        style as StyleProp<ViewStyle>,
-    ]);
+    const baseStyle: ViewStyle = {
+        ...journeyStyle,
+        ...radiusStyle,
+        ...(fullWidth ? { alignSelf: 'stretch' } : {}),
+        ...(disabled ? { opacity: 0.5 } : {}),
+    };
 
-    const handlePress = useCallback(() => {
-        if (onPress) {
-            onPress(undefined as never);
-        }
-    }, [onPress]);
-
-    const handleLongPress = useCallback(() => {
-        if (onLongPress) {
-            onLongPress(undefined as never);
-        }
-    }, [onLongPress]);
+    const flatStyle = style ? StyleSheet.flatten(style as StyleProp<ViewStyle>) : {};
 
     return (
         <Pressable
             ref={ref}
-            onPress={handlePress}
-            onLongPress={onLongPress ? handleLongPress : undefined}
+            onPress={onPress as (event: any) => void}
+            onLongPress={onLongPress as ((event: any) => void) | undefined}
             disabled={disabled}
             testID={testID}
-            accessibilityRole="button"
+            accessible={accessible}
             accessibilityLabel={accessibilityLabel}
             accessibilityHint={accessibilityHint}
+            accessibilityRole={accessibilityRole as any}
             accessibilityState={{
-                disabled,
-                ...accessibilityState,
+                disabled: accessibilityState?.disabled ?? disabled,
+                checked: accessibilityState?.checked,
+                expanded: accessibilityState?.expanded,
+                selected: accessibilityState?.selected,
             }}
-            style={({ pressed }: { pressed: boolean }) => [
-                baseStyle,
-                disabled && styles.disabled,
-                pressed && !disabled && { opacity: activeOpacity },
-            ]}
-            {...(rest as Omit<PressableProps, keyof typeof rest>)}
+            style={({ pressed }) => [baseStyle, flatStyle, pressed && { opacity: activeOpacity }]}
+            {...rest}
         >
             {children}
         </Pressable>
@@ -80,18 +64,3 @@ export const Touchable = forwardRef<View, TouchableProps>((props, ref) => {
 });
 
 Touchable.displayName = 'Touchable';
-
-const styles = StyleSheet.create({
-    base: {
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    fullWidth: {
-        width: '100%',
-    },
-    disabled: {
-        opacity: 0.5,
-    },
-});
-
-export default Touchable;

@@ -1,107 +1,87 @@
-import React, { forwardRef } from 'react';
-import { Text as RNText, type TextStyle, type TextProps as RNTextProps } from 'react-native';
+import React from 'react';
+import { Text as RNText, type TextStyle } from 'react-native';
 
 import type { TextProps } from './Text';
 import { colors } from '../../tokens/colors';
-import { typography, fontSizeValues, fontFamilyNative, fontFamilyByWeight } from '../../tokens/typography';
+import { typography } from '../../tokens/typography';
 
-/** Numeric font-size lookup — strips "px" from token strings for RN. */
-const fontSizeNumeric: Record<string, number> = {};
-for (const [k, v] of Object.entries(typography.fontSize)) {
-    fontSizeNumeric[k] = typeof v === 'number' ? v : parseInt(String(v), 10);
-}
-for (const [k, v] of Object.entries(fontSizeValues)) {
-    fontSizeNumeric[k] = v;
-}
-
-/** Font weight token name to RN string. */
-const fontWeightStr: Record<string, TextStyle['fontWeight']> = {
-    light: '300',
-    regular: '400',
-    medium: '500',
-    semiBold: '600',
-    bold: '700',
-    extraBold: '800',
-};
-
-/** Line height ratios from typography tokens. */
-const lhRatio: Record<string, number> = {
-    display: 1.133,
-    tight: 1.1,
-    heading: 1.2,
-    body: 1.375,
-    bodyLg: 1.333,
-    bodySm: 1.429,
-    base: 1.5,
-    relaxed: 1.6,
-};
+type VariantKey = 'display' | 'heading' | 'body' | 'caption';
 
 /**
- * Variant presets — mirrors web Text.tsx variantConfig exactly.
- * display  = display-lg 48px, bold 700,     tight 1.1
- * heading  = heading-xl 24px, semiBold 600, heading 1.2
- * body     = text-md    16px, regular 400,  base 1.5
- * caption  = text-xs    12px, regular 400,  relaxed 1.6
+ * RN font family names per weight.
+ * On iOS/Android the full PostScript name is used for custom fonts.
+ * "Plus Jakarta Sans" must be installed via expo-font or linked natively.
+ * Falls back to system font if not available.
  */
-const variantConfig = {
-    display: {
-        fontFamily: fontFamilyNative.heading,
-        fontSize: 48,
-        fontWeight: '700' as TextStyle['fontWeight'],
-        lineHeight: 1.1,
-    },
-    heading: {
-        fontFamily: fontFamilyNative.heading,
-        fontSize: 24,
-        fontWeight: '600' as TextStyle['fontWeight'],
-        lineHeight: 1.2,
-    },
-    body: {
-        fontFamily: fontFamilyNative.body,
-        fontSize: 16,
-        fontWeight: '400' as TextStyle['fontWeight'],
-        lineHeight: 1.5,
-    },
-    caption: {
-        fontFamily: fontFamilyNative.body,
-        fontSize: 12,
-        fontWeight: '400' as TextStyle['fontWeight'],
-        lineHeight: 1.6,
-    },
-} as const;
+const FONT_FAMILY = 'PlusJakartaSans';
+const fontFamilyByWeight: Record<number, string> = {
+    300: `${FONT_FAMILY}-Light`,
+    400: `${FONT_FAMILY}-Regular`,
+    500: `${FONT_FAMILY}-Medium`,
+    600: `${FONT_FAMILY}-SemiBold`,
+    700: `${FONT_FAMILY}-Bold`,
+    800: `${FONT_FAMILY}-ExtraBold`,
+};
 
-type VariantName = keyof typeof variantConfig;
+const variantConfig: Record<
+    VariantKey,
+    { fontFamily: string; fontSize: number; fontWeight: string; lineHeight: number }
+> = {
+    display: { fontFamily: fontFamilyByWeight[700], fontSize: 48, fontWeight: '700', lineHeight: Math.round(1.1 * 48) },
+    heading: { fontFamily: fontFamilyByWeight[600], fontSize: 24, fontWeight: '600', lineHeight: Math.round(1.2 * 24) },
+    body: { fontFamily: fontFamilyByWeight[400], fontSize: 16, fontWeight: '400', lineHeight: Math.round(1.5 * 16) },
+    caption: { fontFamily: fontFamilyByWeight[400], fontSize: 12, fontWeight: '400', lineHeight: Math.round(1.6 * 12) },
+};
 
-const resolveFontSize = (v: string | number | undefined): number => {
-    if (v === undefined) {
+const resolveFontSize = (value: string | number | undefined): number => {
+    if (value === undefined) {
         return 16;
     }
-    if (typeof v === 'number') {
-        return v;
+    if (typeof value === 'number') {
+        return value;
     }
-    return (fontSizeNumeric[v] ?? parseInt(v, 10)) || 16;
+    const token = typography.fontSize[value as keyof typeof typography.fontSize];
+    if (token) {
+        return parseInt(token, 10);
+    }
+    return parseInt(value, 10) || 16;
 };
 
-const resolveFontWeight = (v: string | undefined): TextStyle['fontWeight'] =>
-    v === undefined ? '400' : (fontWeightStr[v] ?? (v as TextStyle['fontWeight']));
-
-const resolveLineHeight = (v: string | undefined): number =>
-    v === undefined ? 1.5 : (lhRatio[v] ?? parseFloat(v)) || 1.5;
-
-/** Resolves native font family via weight-based PostScript name lookup. */
-const resolveFontFamily = (family: string | undefined, weight: TextStyle['fontWeight']): string => {
-    const w = parseInt(String(weight), 10) || 400;
-    const byWeight = fontFamilyByWeight[w as keyof typeof fontFamilyByWeight];
-    if (byWeight) {
-        return byWeight;
+const resolveFontWeight = (value: string | number | undefined): string => {
+    if (value === undefined) {
+        return '400';
     }
-    if (family && family in fontFamilyNative) {
-        return fontFamilyNative[family as keyof typeof fontFamilyNative];
+    const strVal = String(value);
+    const token = typography.fontWeight[strVal as keyof typeof typography.fontWeight];
+    if (token !== undefined) {
+        return String(token);
     }
-    return fontFamilyNative.body;
+    return strVal;
 };
 
-const getTextColor = (color: string | undefined, journey: TextProps['journey']): string => {
+const resolveLineHeight = (value: string | number | undefined, fontSize: number): number | undefined => {
+    if (value === undefined) {
+        return undefined;
+    }
+    if (typeof value === 'number') {
+        return value < 10 ? Math.round(value * fontSize) : value;
+    }
+    const token = typography.lineHeight[value as keyof typeof typography.lineHeight];
+    if (token !== undefined) {
+        return Math.round(token * fontSize);
+    }
+    const parsed = parseFloat(value);
+    if (parsed < 10) {
+        return Math.round(parsed * fontSize);
+    }
+    return parsed || undefined;
+};
+
+const resolveFontFamily = (weight: string): string => {
+    return fontFamilyByWeight[Number(weight)] ?? fontFamilyByWeight[400];
+};
+
+const getTextColor = (color?: string, journey?: 'health' | 'care' | 'plan'): string => {
     if (color) {
         return color;
     }
@@ -111,127 +91,56 @@ const getTextColor = (color: string | undefined, journey: TextProps['journey']):
     return colors.neutral.gray900;
 };
 
-/** Picks defined spacing props into a partial TextStyle. */
-const pickSpacing = (p: Partial<TextProps>): Partial<TextStyle> => {
-    const s: Partial<TextStyle> = {};
-    if (p.margin !== undefined) {
-        s.margin = p.margin as number;
-    }
-    if (p.marginTop !== undefined) {
-        s.marginTop = p.marginTop as number;
-    }
-    if (p.marginBottom !== undefined) {
-        s.marginBottom = p.marginBottom as number;
-    }
-    if (p.marginLeft !== undefined) {
-        s.marginLeft = p.marginLeft as number;
-    }
-    if (p.marginRight !== undefined) {
-        s.marginRight = p.marginRight as number;
-    }
-    if (p.padding !== undefined) {
-        s.padding = p.padding as number;
-    }
-    if (p.paddingTop !== undefined) {
-        s.paddingTop = p.paddingTop as number;
-    }
-    if (p.paddingBottom !== undefined) {
-        s.paddingBottom = p.paddingBottom as number;
-    }
-    if (p.paddingLeft !== undefined) {
-        s.paddingLeft = p.paddingLeft as number;
-    }
-    if (p.paddingRight !== undefined) {
-        s.paddingRight = p.paddingRight as number;
-    }
-    return s;
-};
+export const Text: React.FC<TextProps> = ({
+    variant,
+    fontFamily: _fontFamily,
+    fontSize: fontSizeProp,
+    fontWeight: fontWeightProp,
+    lineHeight: lineHeightProp,
+    color,
+    textAlign,
+    journey,
+    truncate = false,
+    numberOfLines,
+    ellipsizeMode,
+    maxFontSizeMultiplier = 1.5,
+    testID,
+    accessibilityLabel,
+    children,
+    style,
+    ...rest
+}) => {
+    const vc = variant ? variantConfig[variant] : undefined;
 
-/**
- * Text component (React Native).
- * Native implementation mirroring the web Text.tsx variant system,
- * mapping typography tokens to React Native TextStyle properties.
- */
-const Text = forwardRef<RNText, TextProps & RNTextProps>((props, ref) => {
-    const {
-        variant,
-        fontFamily: ff,
-        fontSize: fs,
-        fontWeight: fw,
-        lineHeight: lh,
-        color,
-        textAlign = 'left',
-        truncate = false,
-        numberOfLines,
-        ellipsizeMode,
-        maxFontSizeMultiplier = 1.5,
-        journey,
-        testID,
-        accessibilityLabel,
-        style,
-        children,
-        as: _as,
-        'aria-label': ariaLabel,
-        'aria-hidden': _ariaHidden,
-        margin,
-        marginTop,
-        marginBottom,
-        marginLeft,
-        marginRight,
-        padding,
-        paddingTop,
-        paddingBottom,
-        paddingLeft,
-        paddingRight,
-        ...rest
-    } = props;
+    const resolvedWeight = vc ? vc.fontWeight : resolveFontWeight(fontWeightProp ?? 'regular');
+    const resolvedSize = vc ? vc.fontSize : resolveFontSize(fontSizeProp ?? 'md');
+    const resolvedFamily = vc ? vc.fontFamily : resolveFontFamily(resolvedWeight);
+    const resolvedLineHeight = vc ? vc.lineHeight : resolveLineHeight(lineHeightProp ?? 'base', resolvedSize);
 
-    const vc = variant ? variantConfig[variant as VariantName] : undefined;
-    const rFS = vc ? vc.fontSize : resolveFontSize(fs);
-    const rFW = vc ? vc.fontWeight : resolveFontWeight(fw);
-    const rLH = vc ? vc.lineHeight : resolveLineHeight(lh);
-    const rFF = vc ? vc.fontFamily : resolveFontFamily(ff, rFW);
-
-    const computedStyle: TextStyle = {
-        fontFamily: rFF,
-        fontSize: rFS,
-        fontWeight: rFW,
-        lineHeight: Math.round(rFS * rLH),
+    const textStyle: TextStyle = {
+        fontFamily: resolvedFamily,
+        fontSize: resolvedSize,
+        fontWeight: resolvedWeight as TextStyle['fontWeight'],
+        ...(resolvedLineHeight ? { lineHeight: resolvedLineHeight } : {}),
         color: getTextColor(color, journey),
-        textAlign: textAlign as TextStyle['textAlign'],
-        ...pickSpacing({
-            margin,
-            marginTop,
-            marginBottom,
-            marginLeft,
-            marginRight,
-            padding,
-            paddingTop,
-            paddingBottom,
-            paddingLeft,
-            paddingRight,
-        }),
+        ...(textAlign ? { textAlign: textAlign as TextStyle['textAlign'] } : {}),
     };
 
-    const lines = numberOfLines !== undefined ? numberOfLines : truncate ? 1 : undefined;
+    const lines = truncate ? 1 : numberOfLines;
 
     return (
         <RNText
-            ref={ref}
-            style={[computedStyle, style]}
-            numberOfLines={lines}
-            ellipsizeMode={ellipsizeMode ?? (lines ? 'tail' : undefined)}
-            maxFontSizeMultiplier={maxFontSizeMultiplier}
             testID={testID}
-            accessibilityLabel={accessibilityLabel ?? ariaLabel}
+            accessibilityLabel={accessibilityLabel}
+            numberOfLines={lines}
+            ellipsizeMode={lines ? (ellipsizeMode ?? 'tail') : undefined}
+            maxFontSizeMultiplier={maxFontSizeMultiplier}
+            style={[textStyle, style]}
             {...rest}
         >
             {children}
         </RNText>
     );
-});
+};
 
-Text.displayName = 'Text';
-
-export { Text };
 export default Text;

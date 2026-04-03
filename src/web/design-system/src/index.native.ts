@@ -1,139 +1,74 @@
 /**
- * Native barrel for @austa/design-system.
+ * Native barrel — resolved by Metro for iOS/Android bundles.
  *
- * React Native bundlers resolve index.native.ts before index.ts,
- * so this file provides RN-compatible exports for every symbol that
- * mobile code imports from '@austa/design-system'.
- *
- * - Primitives with .native.tsx implementations get real re-exports.
- * - Components without a native implementation get lightweight View/Text
- *   stubs so the app does not crash at runtime.
- * - Tokens and themes are cross-platform and re-exported as-is.
+ * Re-exports every public symbol from the design system.
+ * Components that have `.native.tsx` variants are imported from
+ * their native files; everything else (tokens, themes, types)
+ * passes through from the web barrel since they are already
+ * cross-platform plain JS objects.
  */
 
-import React from 'react';
-import { View, type ViewProps } from 'react-native';
+// ── Tokens (cross-platform — no native variant needed) ──────────
+export { colors } from './tokens/colors';
+export { spacing, spacingValues, spacingCompat, componentGap } from './tokens/spacing';
+export { borderRadius, borderRadiusValues } from './tokens/borderRadius';
+export { typography, fontSizeValues } from './tokens/typography';
+export { shadows } from './tokens/shadows';
+export { sizing, sizingValues } from './tokens/sizing';
+export { tokens } from './tokens';
 
-// ---------------------------------------------------------------------------
-// 1. Native primitives (real implementations)
-// ---------------------------------------------------------------------------
+// ── Themes (cross-platform) ─────────────────────────────────────
+export { baseTheme } from './themes/base.theme';
+export { darkTheme } from './themes/dark.theme';
 
-export { Box } from './primitives/Box/Box.native';
+// ── Primitives (native variants) ────────────────────────────────
+export { Box } from './primitives/Box/Box';
 export type { BoxProps } from './primitives/Box/Box';
-
-export { Text } from './primitives/Text/Text.native';
+export { Text } from './primitives/Text/Text';
 export type { TextProps } from './primitives/Text/Text';
-
-export { Icon, FigmaIconContainer } from './primitives/Icon/Icon.native';
-export type { IconProps } from './primitives/Icon/Icon.native';
-
-export { Touchable } from './primitives/Touchable/Touchable.native';
+export { Icon, FigmaIconContainer } from './primitives/Icon/Icon';
+export type { IconProps, FigmaIconContainerProps } from './primitives/Icon/Icon';
+export { Touchable } from './primitives/Touchable/Touchable';
 export type { TouchableProps } from './primitives/Touchable/Touchable';
+export { Stack } from './primitives/Stack';
 
-// ---------------------------------------------------------------------------
-// 2. Tokens (cross-platform pass-through)
-// ---------------------------------------------------------------------------
+// ── Components (native variants) ────────────────────────────────
+export { Button } from './components/Button/Button';
+export type { ButtonProps } from './components/Button/Button';
+export { Card } from './components/Card/Card';
+export type { CardProps } from './components/Card/Card';
+export { Input } from './components/Input/Input';
+export type { InputProps } from './components/Input/Input';
+export { Badge } from './components/Badge/Badge';
+export type { BadgeProps } from './components/Badge/Badge';
+export { Modal } from './components/Modal/Modal';
+export type { ModalProps } from './components/Modal/Modal';
+export { Checkbox } from './components/Checkbox/Checkbox';
+export type { CheckboxProps } from './components/Checkbox/Checkbox';
+export { ProgressBar } from './components/ProgressBar/ProgressBar';
+export type { ProgressBarProps } from './components/ProgressBar/ProgressBar';
+export { Avatar } from './components/Avatar/Avatar';
+export type { AvatarProps } from './components/Avatar/Avatar';
+export { Select } from './components/Select/Select';
+export type { SelectProps } from './components/Select/Select';
+export { ProgressCircle } from './components/ProgressCircle';
+export type { ProgressCircleProps } from './components/ProgressCircle';
+export { Tabs } from './components/Tabs';
+export type { TabsProps } from './components/Tabs';
 
-export * from './tokens/colors';
-export * from './tokens/spacing';
-export * from './tokens/typography';
-export * from './tokens/borderRadius';
-export * from './tokens/sizing';
-export * from './tokens/shadows';
+// ── FormContainer / FormField aliases ───────────────────────────
+export { Input as FormField } from './components/Input/Input';
+export { Stack as FormContainer } from './primitives/Stack';
 
-// ---------------------------------------------------------------------------
-// 3. Themes (cross-platform pass-through)
-// ---------------------------------------------------------------------------
-
-export * from './themes';
-
-// ---------------------------------------------------------------------------
-// 4. Component stubs for symbols mobile actually imports
-//    (Avatar, Button, Card, Checkbox, Input, Modal, ProgressBar,
-//     ProgressCircle, Select, Stack, Tabs, FormContainer, FormField)
-//
-//    Each stub renders its children inside a View so it is non-destructive
-//    at runtime. Props are typed as `any` to avoid pulling in web-only deps.
-// ---------------------------------------------------------------------------
-
-/** Minimal passthrough stub -- renders children in a View. */
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const createStub = (displayName: string) => {
-    const Stub = React.forwardRef<View, ViewProps & { children?: React.ReactNode }>(({ children, ...rest }, ref) =>
-        React.createElement(View, { ...rest, ref } as ViewProps, children)
-    );
-    Stub.displayName = displayName;
-    return Stub;
-};
-
-// ---------------------------------------------------------------------------
-// 4a. Native component implementations (real .native.tsx)
-// ---------------------------------------------------------------------------
-
-export { Modal } from './components/Modal/Modal.native';
-export type { ModalProps } from './components/Modal/Modal.native';
-
-export { Checkbox } from './components/Checkbox/Checkbox.native';
-export type { CheckboxProps } from './components/Checkbox/Checkbox.native';
-
-export { ProgressBar } from './components/ProgressBar/ProgressBar.native';
-export type { ProgressBarProps } from './components/ProgressBar/ProgressBar.native';
-
-export { Avatar } from './components/Avatar/Avatar.native';
-export type { AvatarProps } from './components/Avatar/Avatar.native';
-
-export { Select } from './components/Select/Select.native';
-export type { SelectProps } from './components/Select/Select.native';
-
-// ---------------------------------------------------------------------------
-// 4b. Native component implementations (high-use components)
-// ---------------------------------------------------------------------------
-
-export { Button } from './components/Button/Button.native';
-export type { ButtonProps } from './components/Button/Button.native';
-
-export { Card } from './components/Card/Card.native';
-export type { CardProps } from './components/Card/Card.native';
-
-import { Input as _Input } from './components/Input/Input.native';
-export const Input = _Input;
-export type { InputNativeProps as InputProps } from './components/Input/Input.native';
-
-export { Badge } from './components/Badge/Badge.native';
-export type { BadgeProps } from './components/Badge/Badge.native';
-
-// ---------------------------------------------------------------------------
-// 4d. Native implementations (low-use / domain components)
-// ---------------------------------------------------------------------------
-
-export { DatePicker } from './components/DatePicker/DatePicker.native';
-export type { DatePickerProps } from './components/DatePicker/DatePicker';
-
-export { LineChart } from './charts/LineChart/LineChart.native';
-export type { LineChartProps } from './charts/LineChart/LineChart';
-
-export { MetricCard } from './health/MetricCard/MetricCard.native';
+// ── Health (native variants) ────────────────────────────────────
+export { MetricCard } from './health/MetricCard/MetricCard';
 export type { MetricCardProps } from './health/MetricCard/MetricCard';
+export { DeviceCard } from './health/DeviceCard/DeviceCard';
 
-export { DeviceCard } from './health/DeviceCard/DeviceCard.native';
-export type { DeviceCardProps } from './health/DeviceCard/DeviceCard.native';
-
-// ---------------------------------------------------------------------------
-// 4c. Remaining stubs (no native implementation yet)
-// ---------------------------------------------------------------------------
-
-export const ProgressCircle = createStub('ProgressCircle');
-export const Stack = createStub('Stack');
-export const Tabs = createStub('Tabs');
-
-// FormContainer and FormField aliases (mirrors web barrel)
-export const FormContainer = Stack;
-export const FormField = _Input;
-
-// ---------------------------------------------------------------------------
-// 5. Namespace re-exports — DISABLED for native
-// The web barrels (components/index.ts, gamification/index.ts, etc.) import
-// styled-components which crashes React Native. Mobile code imports individual
-// components directly from '@austa/design-system' (flat exports above), so
-// these namespace re-exports are not needed on native.
-// ---------------------------------------------------------------------------
+// ── Namespace re-exports (for `import { health } from '@austa/design-system'`) ─
+export * as primitives from './primitives';
+export * as components from './components';
+export * as gamification from './gamification';
+export * as health from './health';
+export * as care from './care';
+export * as plan from './plan';

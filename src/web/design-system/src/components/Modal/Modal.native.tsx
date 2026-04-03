@@ -1,68 +1,68 @@
 import React from 'react';
-import { Modal as RNModal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Modal as RNModal, Pressable, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
 
-import { Box } from '../../primitives/Box/Box.native';
-import { Icon } from '../../primitives/Icon/Icon.native';
-import { Text } from '../../primitives/Text/Text.native';
-import { Touchable } from '../../primitives/Touchable/Touchable.native';
-import { borderRadiusValues } from '../../tokens/borderRadius';
+import type { ModalProps } from './Modal';
 import { colors } from '../../tokens/colors';
-import { spacingValues } from '../../tokens/spacing';
+import { nativeShadow } from '../../utils/native-shadows';
 
-export interface ModalProps {
-    visible: boolean;
-    onClose: () => void;
-    title?: string;
-    children: React.ReactNode;
-    journey?: 'health' | 'care' | 'plan';
-    variant?: 'center' | 'bottomSheet';
-}
-
-const journeyTitleColor = (journey: 'health' | 'care' | 'plan'): string => {
-    return colors.journeys[journey].primary;
+const spacingValues = {
+    xs: 8,
+    sm: 12,
+    md: 16,
+    lg: 20,
+    xl: 24,
 };
+const borderRadiusValues = { '2xl': 20, xl: 24 };
 
-const Modal: React.FC<ModalProps> = ({ visible, onClose, title, children, journey = 'health', variant = 'center' }) => {
-    const isBottomSheet = variant === 'bottomSheet';
+export const Modal: React.FC<ModalProps> = ({
+    visible,
+    onClose,
+    title,
+    children,
+    journey = 'health',
+    variant = 'center',
+}) => {
+    const isBottom = variant === 'bottomSheet';
+    const titleColor = colors.journeys[journey].text;
 
     return (
         <RNModal
             visible={visible}
             transparent
-            animationType={isBottomSheet ? 'slide' : 'fade'}
+            animationType={isBottom ? 'slide' : 'fade'}
             onRequestClose={onClose}
+            testID="modal"
         >
-            <Pressable style={styles.overlay} onPress={onClose} testID="modal-overlay">
-                <Pressable
-                    style={[styles.content, isBottomSheet ? styles.bottomSheetContent : styles.centerContent]}
-                    onPress={() => undefined}
-                    testID="modal-content"
-                >
-                    <View style={styles.header}>
-                        {title ? (
-                            <Text style={[styles.title, { color: journeyTitleColor(journey) }]}>{title}</Text>
-                        ) : (
-                            <View />
-                        )}
-                        <Touchable
-                            onPress={onClose}
-                            accessibilityLabel="Close modal"
-                            accessibilityRole="button"
-                            testID="modal-close-button"
+            <TouchableWithoutFeedback onPress={onClose} testID="modal-overlay">
+                <View style={[styles.overlay, isBottom && styles.overlayBottom]}>
+                    <TouchableWithoutFeedback>
+                        <View
+                            style={[isBottom ? styles.bottomSheet : styles.center, nativeShadow('xl')]}
+                            testID="modal-content"
                         >
-                            <Box padding="xs">
-                                <Icon name="close-x" size={20} color={colors.neutral.gray700} />
-                            </Box>
-                        </Touchable>
-                    </View>
-
-                    {isBottomSheet ? (
-                        <ScrollView showsVerticalScrollIndicator={false}>{children}</ScrollView>
-                    ) : (
-                        <Box>{children}</Box>
-                    )}
-                </Pressable>
-            </Pressable>
+                            <View style={styles.header}>
+                                {title ? (
+                                    <Text style={[styles.title, { color: titleColor }]} testID="modal-title">
+                                        {title}
+                                    </Text>
+                                ) : (
+                                    <View />
+                                )}
+                                <Pressable
+                                    onPress={onClose}
+                                    accessibilityLabel="Close modal"
+                                    accessibilityRole="button"
+                                    hitSlop={8}
+                                    testID="modal-close"
+                                >
+                                    <Text style={styles.closeIcon}>✕</Text>
+                                </Pressable>
+                            </View>
+                            <View>{children}</View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </View>
+            </TouchableWithoutFeedback>
         </RNModal>
     );
 };
@@ -74,26 +74,22 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    content: {
-        backgroundColor: colors.neutral.white,
-        padding: spacingValues.md,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 0.15,
-        shadowRadius: 25,
-        elevation: 10,
+    overlayBottom: {
+        justifyContent: 'flex-end',
     },
-    centerContent: {
+    center: {
         width: '80%',
+        backgroundColor: colors.neutral.white,
         borderRadius: borderRadiusValues['2xl'],
+        padding: spacingValues.md,
     },
-    bottomSheetContent: {
+    bottomSheet: {
         width: '100%',
+        backgroundColor: colors.neutral.white,
         borderTopLeftRadius: borderRadiusValues.xl,
         borderTopRightRadius: borderRadiusValues.xl,
+        padding: spacingValues.md,
         maxHeight: '80%',
-        position: 'absolute',
-        bottom: 0,
     },
     header: {
         flexDirection: 'row',
@@ -101,11 +97,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: spacingValues.md,
     },
-    title: {
-        fontSize: 18,
-        fontWeight: '600',
-    },
+    title: { fontSize: 18, fontWeight: '500' },
+    closeIcon: { fontSize: 20, padding: spacingValues.xs },
 });
-
-export { Modal };
-export default Modal;

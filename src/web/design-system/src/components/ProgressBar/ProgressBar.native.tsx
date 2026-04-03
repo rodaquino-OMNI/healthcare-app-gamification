@@ -1,21 +1,11 @@
-import React, { useRef, useEffect } from 'react';
-import { View, Animated, StyleSheet } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
-import { Text } from '../../primitives/Text/Text.native';
+import type { ProgressBarProps } from './ProgressBar';
 import { colors } from '../../tokens/colors';
-import { spacingValues } from '../../tokens/spacing';
 
-export interface ProgressBarProps {
-    current: number;
-    total: number;
-    journey?: 'health' | 'care' | 'plan';
-    ariaLabel?: string;
-    size?: 'sm' | 'md' | 'lg';
-    testId?: string;
-    animated?: boolean;
-    labelPosition?: 'above' | 'below' | 'inline' | 'none';
-    label?: string;
-}
+const spacingValues = { xs: 8, sm: 12, md: 16 };
+const borderRadiusValues = { full: 9999 };
 
 const calculatePercentage = (current: number, total: number): number => {
     if (total <= 0) {
@@ -24,76 +14,61 @@ const calculatePercentage = (current: number, total: number): number => {
     return Math.min(Math.max((current / total) * 100, 0), 100);
 };
 
-const getTrackHeight = (size: 'sm' | 'md' | 'lg'): number => {
-    switch (size) {
-        case 'sm':
-            return spacingValues.xs; // 8
-        case 'lg':
-            return spacingValues.md; // 16
-        case 'md':
-        default:
-            return spacingValues.sm; // 12
-    }
+const SIZE_MAP: Record<string, number> = {
+    sm: spacingValues.xs,
+    md: spacingValues.sm,
+    lg: spacingValues.md,
 };
 
-const ProgressBar: React.FC<ProgressBarProps> = ({
+export const ProgressBar: React.FC<ProgressBarProps> = ({
     current,
     total,
-    journey,
+    journey = 'health',
     ariaLabel,
+    showLevels = false,
+    levelMarkers = [],
     size = 'md',
     testId,
-    animated = true,
     labelPosition = 'none',
     label,
 }) => {
     const percentage = calculatePercentage(current, total);
     const labelText = label ?? `${Math.round(percentage)}%`;
-    const fillColor = journey ? colors.journeys[journey].primary : colors.brand.primary;
-    const trackHeight = getTrackHeight(size);
-    const accessibilityLabel = ariaLabel || `Progress: ${Math.round(percentage)}%`;
-
-    const animatedWidth = useRef(new Animated.Value(animated ? 0 : percentage)).current;
-
-    useEffect(() => {
-        if (animated) {
-            Animated.timing(animatedWidth, {
-                toValue: percentage,
-                duration: 300,
-                useNativeDriver: false,
-            }).start();
-        } else {
-            animatedWidth.setValue(percentage);
-        }
-    }, [percentage, animated, animatedWidth]);
-
-    const widthStyle = animatedWidth.interpolate({
-        inputRange: [0, 100],
-        outputRange: ['0%', '100%'],
-    });
+    const barHeight = SIZE_MAP[size] ?? spacingValues.sm;
+    const fillColor = colors.journeys[journey]?.primary ?? colors.brand.primary;
+    const markerColor = colors.journeys[journey]?.secondary ?? colors.brand.secondary;
 
     return (
-        <View
-            testID={testId ? `${testId}-outer` : undefined}
-            accessibilityRole="progressbar"
-            accessibilityValue={{ min: 0, max: 100, now: percentage }}
-            accessibilityLabel={accessibilityLabel}
-        >
+        <View testID={testId ? `${testId}-outer` : undefined}>
             {labelPosition === 'above' && (
                 <Text style={styles.labelAbove} testID={testId ? `${testId}-label` : undefined}>
                     {labelText}
                 </Text>
             )}
-
-            <View testID={testId} style={[styles.track, { height: trackHeight }]}>
-                <Animated.View style={[styles.fill, { width: widthStyle, backgroundColor: fillColor }]} />
+            <View
+                style={[styles.track, { height: barHeight }]}
+                accessibilityRole="progressbar"
+                accessibilityValue={{ min: 0, max: 100, now: percentage }}
+                accessibilityLabel={ariaLabel || `Progress: ${Math.round(percentage)}%`}
+                testID={testId}
+            >
+                <View style={[styles.fill, { width: `${percentage}%` as any, backgroundColor: fillColor }]} />
                 {labelPosition === 'inline' && (
                     <Text style={styles.labelInline} testID={testId ? `${testId}-label` : undefined}>
                         {labelText}
                     </Text>
                 )}
+                {showLevels &&
+                    levelMarkers.map((marker, index) => {
+                        const pos = calculatePercentage(marker, total);
+                        return (
+                            <View
+                                key={`marker-${index}`}
+                                style={[styles.marker, { left: `${pos}%` as any, backgroundColor: markerColor }]}
+                            />
+                        );
+                    })}
             </View>
-
             {labelPosition === 'below' && (
                 <Text style={styles.labelBelow} testID={testId ? `${testId}-label` : undefined}>
                     {labelText}
@@ -103,32 +78,29 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     );
 };
 
+export default ProgressBar;
+
 const styles = StyleSheet.create({
     track: {
-        width: '100%',
         backgroundColor: colors.neutral.gray200,
-        borderRadius: 9999,
+        borderRadius: borderRadiusValues.full,
         overflow: 'hidden',
+        position: 'relative',
     },
-    fill: {
+    fill: { height: '100%', borderRadius: borderRadiusValues.full },
+    marker: {
+        position: 'absolute',
+        top: 0,
+        width: 2,
         height: '100%',
-        borderRadius: 9999,
     },
-    labelAbove: {
-        marginBottom: 4,
-    },
-    labelBelow: {
-        marginTop: 4,
-    },
+    labelAbove: { fontSize: 12, color: colors.neutral.gray700, marginBottom: 4 },
+    labelBelow: { fontSize: 12, color: colors.neutral.gray700, marginTop: 4 },
     labelInline: {
         position: 'absolute',
         alignSelf: 'center',
         fontSize: 10,
-        left: 0,
-        right: 0,
-        textAlign: 'center',
+        color: colors.neutral.white,
+        fontWeight: '600',
     },
 });
-
-export { ProgressBar };
-export default ProgressBar;

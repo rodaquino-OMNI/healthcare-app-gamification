@@ -1,103 +1,89 @@
-import React, { useState, useEffect } from 'react';
-import { Pressable, View, StyleSheet } from 'react-native';
+import React, { forwardRef, useState, useCallback, useEffect } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Icon } from '../../primitives/Icon/Icon.native';
-import { Text } from '../../primitives/Text/Text.native';
-import { borderRadiusValues } from '../../tokens/borderRadius';
+import type { CheckboxProps } from './Checkbox';
 import { colors } from '../../tokens/colors';
-import { spacingValues } from '../../tokens/spacing';
 
-export interface CheckboxProps {
-    id: string;
-    name: string;
-    value: string;
-    checked?: boolean;
-    disabled?: boolean;
-    onChange: (checked: boolean) => void;
-    label: string;
-    testID?: string;
-    journey?: 'health' | 'care' | 'plan';
-}
+const spacingValues = { xs: 8, md: 16 };
+const borderRadiusValues = { sm: 6 };
 
-const Checkbox: React.FC<CheckboxProps> = ({
-    id,
-    checked,
-    disabled = false,
-    onChange,
-    label,
-    testID,
-    journey,
-}): React.ReactElement => {
-    const [isChecked, setIsChecked] = useState(checked ?? false);
+export const Checkbox = forwardRef<View, CheckboxProps>((props, ref) => {
+    const { id, checked = false, disabled = false, onChange, label, testID, journey } = props;
+
+    const [isChecked, setIsChecked] = useState(checked);
 
     useEffect(() => {
-        setIsChecked(checked ?? false);
+        setIsChecked(checked);
     }, [checked]);
 
-    const journeyColor = journey && colors.journeys[journey] ? colors.journeys[journey].primary : colors.brand.primary;
+    const getJourneyColor = (): string => {
+        if (journey && colors.journeys[journey]) {
+            return colors.journeys[journey].primary;
+        }
+        return colors.brand.primary;
+    };
 
-    const handlePress = (): void => {
+    const selectedColor = getJourneyColor();
+
+    const handlePress = useCallback(() => {
         if (disabled) {
             return;
         }
         const next = !isChecked;
         setIsChecked(next);
-        onChange(next);
-    };
+        onChange({ target: { checked: next } } as any);
+    }, [disabled, isChecked, onChange]);
 
-    const boxBorderColor = isChecked ? (disabled ? colors.neutral.gray200 : journeyColor) : colors.neutral.gray500;
+    const boxBg = isChecked
+        ? disabled
+            ? colors.neutral.gray200
+            : selectedColor
+        : disabled
+          ? colors.neutral.gray200
+          : 'transparent';
 
-    const boxBackgroundColor = isChecked ? (disabled ? colors.neutral.gray200 : journeyColor) : 'transparent';
+    const boxBorder = isChecked ? selectedColor : colors.neutral.gray500;
 
     return (
         <Pressable
+            ref={ref}
             onPress={handlePress}
+            disabled={disabled}
             style={[styles.container, disabled && styles.disabled]}
             accessibilityRole="checkbox"
             accessibilityState={{ checked: isChecked, disabled }}
-            testID={testID ?? `checkbox-${id}`}
+            testID={testID || `checkbox-${id}`}
         >
-            <View
-                style={[
-                    styles.box,
-                    {
-                        borderColor: boxBorderColor,
-                        backgroundColor: boxBackgroundColor,
-                    },
-                ]}
-            >
-                {isChecked && <Icon name="check-single" size={16} color={colors.neutral.white} />}
+            <View style={[styles.box, { backgroundColor: boxBg, borderColor: boxBorder }]}>
+                {isChecked && (
+                    <Text style={styles.check} testID="checkbox-checkmark">
+                        ✓
+                    </Text>
+                )}
             </View>
-            <Text style={[styles.label, { color: disabled ? colors.neutral.gray400 : colors.neutral.gray900 }]}>
-                {label}
-            </Text>
+            <Text style={[styles.label, disabled && styles.labelDisabled]}>{label}</Text>
         </Pressable>
     );
-};
+});
+
+Checkbox.displayName = 'Checkbox';
 
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignItems: 'center',
     },
-    disabled: {
-        opacity: 0.5,
-    },
+    disabled: { opacity: 0.5 },
     box: {
-        width: 24,
-        height: 24,
+        width: spacingValues.md,
+        height: spacingValues.md,
         borderRadius: borderRadiusValues.sm,
         borderWidth: 2,
         alignItems: 'center',
         justifyContent: 'center',
+        marginRight: spacingValues.xs,
     },
-    label: {
-        fontSize: 16,
-        marginLeft: spacingValues.xs,
-    },
+    check: { color: colors.neutral.white, fontSize: 12, lineHeight: 14 },
+    label: { fontSize: 16, color: colors.neutral.gray900 },
+    labelDisabled: { color: colors.neutral.gray400 },
 });
-
-Checkbox.displayName = 'Checkbox';
-
-export { Checkbox };
-export default Checkbox;

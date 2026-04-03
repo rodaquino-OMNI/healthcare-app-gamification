@@ -1,84 +1,32 @@
 import React from 'react';
-import { View, Pressable, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Text } from '../../primitives/Text/Text.native';
-import { borderRadiusValues } from '../../tokens/borderRadius';
+import type { BadgeProps } from './Badge';
 import { colors } from '../../tokens/colors';
-import { spacingValues } from '../../tokens/spacing';
 
-export interface BadgeProps {
-    size?: 'sm' | 'md' | 'lg';
-    unlocked?: boolean;
-    journey?: 'health' | 'care' | 'plan';
-    children?: React.ReactNode;
-    onPress?: () => void;
-    accessibilityLabel?: string;
-    testID?: string;
-    status?: 'success' | 'warning' | 'error' | 'info' | 'neutral';
-    dot?: boolean;
-    variant?: 'achievement' | 'status';
-    type?: 'dot' | 'icon' | 'text';
-}
+const spacingValues = { '3xs': 4, xs: 8 };
+const borderRadiusValues = { sm: 6, md: 8, full: 9999 };
+const badgeSizeMap = { sm: 24, md: 32, lg: 40 } as const;
 
-const getBadgeSize = (size: 'sm' | 'md' | 'lg'): number => {
-    switch (size) {
-        case 'sm':
-            return 24;
-        case 'lg':
-            return 40;
-        case 'md':
-        default:
-            return 32;
-    }
+type StatusKey = 'success' | 'warning' | 'error' | 'info' | 'neutral';
+
+const statusColorMap: Record<StatusKey, { color: string; bg: string }> = {
+    success: { color: colors.semantic.success, bg: colors.semantic.successBg },
+    warning: { color: colors.semantic.warning, bg: colors.semantic.warningBg },
+    error: { color: colors.semantic.error, bg: colors.semantic.errorBg },
+    info: { color: colors.semantic.info, bg: colors.semantic.infoBg },
+    neutral: { color: colors.neutral.gray500, bg: colors.neutral.gray200 },
 };
 
-const getStatusColor = (status: 'success' | 'warning' | 'error' | 'info' | 'neutral'): string => {
-    switch (status) {
-        case 'success':
-            return '#7ab765';
-        case 'warning':
-            return '#f59e0b';
-        case 'error':
-            return '#e11d48';
-        case 'info':
-            return '#3b82f6';
-        case 'neutral':
-        default:
-            return colors.neutral.gray500;
-    }
+const statusIconMap: Record<StatusKey, string> = {
+    success: '\u2713',
+    error: '\u2717',
+    warning: '\u26A0',
+    info: '\u2139',
+    neutral: '\u2014',
 };
 
-const getStatusBgColor = (status: 'success' | 'warning' | 'error' | 'info' | 'neutral'): string => {
-    switch (status) {
-        case 'success':
-            return '#f0fdf4';
-        case 'warning':
-            return '#fffbeb';
-        case 'error':
-            return '#fff1f2';
-        case 'info':
-            return '#eff6ff';
-        case 'neutral':
-        default:
-            return colors.neutral.gray200;
-    }
-};
-
-const getStatusIcon = (status: 'success' | 'warning' | 'error' | 'info' | 'neutral'): string => {
-    switch (status) {
-        case 'success':
-            return '\u2713';
-        case 'error':
-            return '\u2717';
-        case 'warning':
-            return '\u26A0';
-        case 'info':
-            return '\u2139';
-        case 'neutral':
-        default:
-            return '\u2014';
-    }
-};
+export { getBadgeSize } from './Badge';
 
 export const Badge: React.FC<BadgeProps> = ({
     size = 'md',
@@ -93,22 +41,20 @@ export const Badge: React.FC<BadgeProps> = ({
     variant = 'achievement',
     type,
 }) => {
-    getBadgeSize(size);
-
     const isDot = type === 'dot' || (type === undefined && dot);
 
-    // Status variant
+    // --- Status variant ---
     if (variant === 'status' && status) {
-        const fgColor = getStatusColor(status);
-        const bgColor = getStatusBgColor(status);
+        const sc = statusColorMap[status];
         const showIcon = type === 'icon';
+        const dotSize = 16;
 
         if (isDot) {
             return (
                 <View
                     testID={testID}
                     accessibilityLabel={accessibilityLabel || `${status} status`}
-                    style={[styles.dotBase, { backgroundColor: fgColor }]}
+                    style={[styles.statusDot, { width: dotSize, height: dotSize, backgroundColor: sc.color }]}
                 />
             );
         }
@@ -117,84 +63,66 @@ export const Badge: React.FC<BadgeProps> = ({
             <View
                 testID={testID}
                 accessibilityLabel={accessibilityLabel || `${status} status`}
-                style={[styles.statusContainer, { backgroundColor: bgColor }]}
+                style={[styles.statusLabel, { backgroundColor: sc.bg }]}
             >
-                {showIcon && (
-                    <Text style={[styles.statusIcon, { color: fgColor }]} accessibilityElementsHidden>
-                        {getStatusIcon(status)}
-                    </Text>
-                )}
-                {children !== undefined && children !== null && (
-                    <Text style={[styles.statusText, { color: fgColor }]}>{children}</Text>
-                )}
+                {showIcon && <Text style={[styles.statusIcon, { color: sc.color }]}>{statusIconMap[status]}</Text>}
+                {children !== null && <Text style={[styles.statusText, { color: sc.color }]}>{children}</Text>}
             </View>
         );
     }
 
-    // Achievement variant
-    const backgroundColor = unlocked ? colors.journeys[journey].primary : colors.neutral.gray200;
+    // --- Achievement variant ---
+    const dim = badgeSizeMap[size];
+    const bg = unlocked ? colors.journeys[journey].primary : colors.neutral.gray200;
     const textColor = unlocked ? colors.neutral.white : colors.neutral.gray700;
 
-    const containerStyle: ViewStyle = {
-        ...styles.achievementContainer,
-        backgroundColor,
-    };
+    const content = (
+        <>
+            {children !== null && (
+                <Text style={{ color: textColor, fontWeight: '500', fontSize: size === 'sm' ? 10 : 12 }}>
+                    {children}
+                </Text>
+            )}
+        </>
+    );
+
+    const containerStyle = [
+        styles.achievement,
+        { width: dim, height: dim, backgroundColor: bg, borderRadius: borderRadiusValues.md },
+    ];
 
     if (onPress) {
         return (
             <Pressable
-                testID={testID}
+                onPress={onPress}
                 accessibilityLabel={accessibilityLabel}
                 accessibilityRole="button"
-                onPress={onPress}
-                style={({ pressed }) => [containerStyle, pressed && styles.pressed]}
+                testID={testID}
+                style={containerStyle}
             >
-                <Text style={[styles.achievementText, { color: textColor }]}>{children}</Text>
+                {content}
             </Pressable>
         );
     }
 
     return (
-        <View testID={testID} accessibilityLabel={accessibilityLabel} style={containerStyle}>
-            <Text style={[styles.achievementText, { color: textColor }]}>{children}</Text>
+        <View accessibilityLabel={accessibilityLabel} testID={testID} style={containerStyle}>
+            {content}
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    dotBase: {
-        width: 16,
-        height: 16,
-        borderRadius: 8,
-    } as ViewStyle,
-    statusContainer: {
+    achievement: { alignItems: 'center', justifyContent: 'center' },
+    statusDot: { borderRadius: borderRadiusValues.full },
+    statusLabel: {
         flexDirection: 'row',
         alignItems: 'center',
-        alignSelf: 'flex-start',
         borderRadius: borderRadiusValues.sm,
-        paddingHorizontal: spacingValues.xs,
         paddingVertical: spacingValues['3xs'],
-    } as ViewStyle,
-    statusIcon: {
-        fontSize: 12,
-        fontWeight: '500',
-        marginRight: spacingValues['3xs'],
-    } as TextStyle,
-    statusText: {
-        fontSize: 12,
-        fontWeight: '500',
-    } as TextStyle,
-    achievementContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: borderRadiusValues.md,
-        padding: spacingValues.sm,
-        alignSelf: 'flex-start',
-    } as ViewStyle,
-    achievementText: {
-        fontSize: 14,
-    } as TextStyle,
-    pressed: {
-        opacity: 0.7,
-    } as ViewStyle,
+        paddingHorizontal: spacingValues.xs,
+        minWidth: 16,
+    },
+    statusIcon: { fontSize: 12, marginRight: spacingValues['3xs'] },
+    statusText: { fontSize: 12, fontWeight: '500' },
 });

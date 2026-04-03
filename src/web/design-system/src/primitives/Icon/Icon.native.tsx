@@ -1,94 +1,64 @@
 import React from 'react';
-import { View, ViewStyle } from 'react-native';
+import { View, type ViewStyle } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
-import { getIcon, IconName } from './iconRegistry';
+import type { IconProps, FigmaIconContainerProps, FigmaIconSize, FigmaIconColor } from './Icon';
+import { getIcon } from './iconRegistry';
 import { colors } from '../../tokens/colors';
 import { sizingValues } from '../../tokens/sizing';
 
-/**
- * Props for the Icon component (React Native).
- */
-export interface IconProps {
-    /** The name of the icon to display (e.g., 'heart', 'calendar'). */
-    name: IconName;
-    /** The size of the icon — a sizing.icon token key or a numeric px value. */
-    size?: string | number;
-    /** The color of the icon fill. */
-    color?: string;
-    /** Whether the icon is interactive (clickable/tappable). */
-    interactive?: boolean;
-    /** Accessible label for the icon. */
-    accessibilityLabel?: string;
-}
+type IconSizeKey = keyof typeof sizingValues.icon;
 
-/**
- * Resolves an icon size token key or numeric value to a number (px).
- */
 const resolveIconSize = (size: string | number): number => {
     if (typeof size === 'number') {
         return size;
     }
     if (size in sizingValues.icon) {
-        return sizingValues.icon[size as keyof typeof sizingValues.icon];
+        return sizingValues.icon[size as IconSizeKey];
     }
-    // Attempt to parse a string like '24px' or '24'
-    const parsed = parseInt(size, 10);
-    return isNaN(parsed) ? sizingValues.icon.md : parsed;
+    return parseInt(size, 10) || 24;
 };
 
-/**
- * Icon component for React Native.
- * Renders an SVG icon from the shared iconRegistry using react-native-svg.
- *
- * @example
- * ```tsx
- * <Icon name="heart" size="lg" color={colors.journeys.health.primary} />
- * ```
- */
-export const Icon: React.FC<IconProps> = ({ name, size = 'md', color, interactive = false, accessibilityLabel }) => {
+export const Icon: React.FC<IconProps & { testID?: string }> = ({
+    name,
+    size = 'md',
+    color,
+    interactive = false,
+    'aria-hidden': ariaHiddenProp,
+    'aria-label': ariaLabel,
+    testID,
+}) => {
     const icon = getIcon(name);
-
     if (!icon) {
-        console.warn(`Icon "${name}" not found in icon registry`);
+        if (__DEV__) {
+            console.warn(`Icon "${name}" not found in registry`);
+        }
         return null;
     }
 
-    const numericSize = resolveIconSize(size);
+    const resolvedAriaHidden = ariaHiddenProp !== undefined ? ariaHiddenProp : !interactive;
+    const ariaHiddenBool = resolvedAriaHidden !== false && resolvedAriaHidden !== 'false';
+    const pxSize = resolveIconSize(size);
+    const fillColor = color ?? colors.neutral.gray700;
 
     return (
         <View
-            style={{ width: numericSize, height: numericSize }}
-            accessibilityRole={interactive ? 'button' : 'image'}
-            accessibilityLabel={accessibilityLabel}
-            testID="icon-container"
+            testID={testID ?? 'icon-container'}
+            accessible={!ariaHiddenBool}
+            accessibilityLabel={ariaHiddenBool ? undefined : ariaLabel}
+            accessibilityRole={ariaHiddenBool ? undefined : 'image'}
+            style={{ width: pxSize, height: pxSize, alignItems: 'center', justifyContent: 'center' }}
         >
-            <Svg viewBox={icon.viewBox || '0 0 24 24'} width={numericSize} height={numericSize}>
-                <Path d={icon.path} fill={color || colors.neutral.gray700} />
+            <Svg width={pxSize} height={pxSize} viewBox={icon.viewBox ?? '0 0 24 24'} fill="none">
+                <Path d={icon.path} fill={fillColor} />
             </Svg>
         </View>
     );
 };
 
-// ---------------------------------------------------------------------------
-// FigmaIconContainer — Figma variant-aligned icon wrapper (React Native)
-// ---------------------------------------------------------------------------
-
-/** Figma-aligned icon container sizes */
-export type FigmaIconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
-
-/** Figma-aligned semantic color categories */
-export type FigmaIconColor = 'brand' | 'destructive' | 'gray' | 'success' | 'warning';
-
-/** Figma-aligned icon container visual style */
-export type FigmaIconStyle = 'primary' | 'secondary' | 'outlined' | 'noFill';
-
-export interface FigmaIconContainerProps {
-    size: FigmaIconSize;
-    color: FigmaIconColor;
-    style: FigmaIconStyle;
-    children: React.ReactNode;
-}
+// --------------------------------------------------------------------------
+// FigmaIconContainer
+// --------------------------------------------------------------------------
 
 const FIGMA_SIZE_MAP: Record<FigmaIconSize, number> = {
     xs: 16,
@@ -129,19 +99,15 @@ const resolveTintedBg = (c: FigmaIconColor): string => {
     }
 };
 
-/**
- * FigmaIconContainer for React Native.
- * Wraps an Icon with Figma-aligned container styling.
- */
-export const FigmaIconContainer: React.FC<FigmaIconContainerProps> = ({
+export const FigmaIconContainer: React.FC<FigmaIconContainerProps & { testID?: string }> = ({
     size,
     color: colorProp,
     style: styleProp,
     children,
+    testID,
 }) => {
     const pxSize = FIGMA_SIZE_MAP[size];
     const solidColor = resolveSolidColor(colorProp);
-
     let bgColor = 'transparent';
     let borderColor: string | undefined;
 
@@ -170,8 +136,10 @@ export const FigmaIconContainer: React.FC<FigmaIconContainerProps> = ({
     };
 
     return (
-        <View style={containerStyle} testID="figma-icon-container">
+        <View testID={testID ?? 'figma-icon-container'} style={containerStyle}>
             {children}
         </View>
     );
 };
+
+export type { FigmaIconContainerProps };
