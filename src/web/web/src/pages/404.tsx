@@ -25,9 +25,9 @@ const NotFoundPage: React.FC = () => {
             <Image
                 src={errorIllustration}
                 alt="Page not found illustration"
-                width={300}
-                height={300}
-                style={{ marginBottom: '24px' }}
+                width={200}
+                height={200}
+                style={{ marginBottom: '24px', objectFit: 'contain', maxWidth: '50vw' }}
             />
             <h1
                 style={{

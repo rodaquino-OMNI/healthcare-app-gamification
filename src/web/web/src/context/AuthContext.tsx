@@ -85,9 +85,25 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const router = useRouter();
 
+    // In development without a stored session, initialize with a mock session
+    // so pages can be tested without a running backend. Applied on both server
+    // and client to prevent hydration mismatches.
+    const isDev = process.env.NEXT_PUBLIC_ENVIRONMENT === 'development';
+    const devMock: AuthSession | null = isDev
+        ? {
+              accessToken: 'dev-mock-token',
+              refreshToken: 'dev-mock-refresh',
+              expiresAt: Date.now() + 24 * 60 * 60 * 1000,
+              userId: 'dev-user-001',
+              user: { id: 'dev-user-001', name: 'Dev User', email: 'dev@austa.com.br' },
+          }
+        : null;
+
     // Authentication state
-    const [session, setSessionState] = useState<AuthSession | null>(null);
-    const [status, setStatus] = useState<'authenticated' | 'loading' | 'unauthenticated'>('loading');
+    const [session, setSessionState] = useState<AuthSession | null>(devMock);
+    const [status, setStatus] = useState<'authenticated' | 'loading' | 'unauthenticated'>(
+        devMock ? 'authenticated' : 'loading'
+    );
 
     /**
      * Updates the authentication session and status
@@ -107,7 +123,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
 
     /**
-     * Check for existing session in localStorage on component mount
+     * Check for existing session in localStorage on component mount.
+     * In development, auto-creates a mock session so pages can be tested
+     * without a running backend.
      */
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -128,11 +146,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                     console.error('Failed to parse stored session:', error);
                     setSession(null);
                 }
-            } else {
+            } else if (!isDev) {
                 setStatus('unauthenticated');
             }
         }
-    }, []);
+    }, [isDev]);
 
     /**
      * Handles user login

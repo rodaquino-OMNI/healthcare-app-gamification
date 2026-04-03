@@ -120,6 +120,8 @@ export const useAuth = (): UseAuthReturn => {
      * Check if the current session is valid
      */
     const checkSession = useCallback(async (): Promise<void> => {
+        // Skip validation if already authenticated (e.g. restored from localStorage or mock)
+        // or if still loading (AuthContext useEffect hasn't resolved yet)
         if (auth.status !== 'loading') {
             return;
         }
@@ -131,8 +133,11 @@ export const useAuth = (): UseAuthReturn => {
             } else {
                 auth.setSession(null);
             }
-        } catch (_err) {
-            auth.setSession(null);
+        } catch {
+            // Don't clear session on network error — keep existing session if any
+            if (!auth.session) {
+                auth.setSession(null);
+            }
         }
     }, [auth]);
 
@@ -166,9 +171,8 @@ export const useAuth = (): UseAuthReturn => {
         try {
             const response = await axios.get<unknown>(`${API_BASE_URL}/auth/profile`);
             return response.data;
-        } catch (err) {
-            console.error('Error fetching profile:', err);
-            throw err;
+        } catch {
+            return null;
         }
     };
 

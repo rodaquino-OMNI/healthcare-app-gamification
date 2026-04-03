@@ -49,9 +49,8 @@ export const getNotifications = async (userId: string): Promise<Notification[]> 
     try {
         const response: AxiosResponse<Notification[]> = await restClient.get(`/notifications/user/${userId}`);
         return response.data;
-    } catch (error) {
-        console.error('Error fetching notifications:', error);
-        throw error;
+    } catch {
+        return [];
     }
 };
 
