@@ -161,8 +161,8 @@ const StyledButton = styled(Touchable)<{
             return baseColor;
         }
         // Fallback to journey-based colors (backward compat)
-        const journeyKey = (props.journey || 'health') as 'health' | 'care' | 'plan';
-        const journeyColors = colors.journeys[journeyKey];
+        const journeyKey = props.journey || 'health';
+        const journeyColors = colors.journeys[journeyKey] || colors.journeys.health;
         switch (props.variant) {
             case 'secondary':
                 return colors.neutral.white;
@@ -184,8 +184,8 @@ const StyledButton = styled(Touchable)<{
             return baseColor;
         }
         // Fallback to journey-based colors (backward compat)
-        const journeyKey = (props.journey || 'health') as 'health' | 'care' | 'plan';
-        const journeyColors = colors.journeys[journeyKey];
+        const journeyKey = props.journey || 'health';
+        const journeyColors = colors.journeys[journeyKey] || colors.journeys.health;
         switch (props.variant) {
             case 'secondary':
                 return journeyColors.primary;
@@ -206,8 +206,9 @@ const StyledButton = styled(Touchable)<{
             return 'none';
         }
         // Fallback to journey-based colors (backward compat)
-        const journeyKey = (props.journey || 'health') as 'health' | 'care' | 'plan';
-        return props.variant === 'secondary' ? `1px solid ${colors.journeys[journeyKey].primary}` : 'none';
+        const journeyKey = props.journey || 'health';
+        const jc = colors.journeys[journeyKey] || colors.journeys.health;
+        return props.variant === 'secondary' ? `1px solid ${jc.primary}` : 'none';
     }};
 
     &:hover {

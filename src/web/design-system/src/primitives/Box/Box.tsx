@@ -82,7 +82,7 @@ export const Box = React.forwardRef<HTMLDivElement, BoxProps>(
     ) => {
         // Apply journey-specific background if specified
         let bgColor = backgroundColor;
-        if (journey && !backgroundColor) {
+        if (journey && !backgroundColor && colors.journeys[journey]) {
             bgColor = colors.journeys[journey].background;
         }
 

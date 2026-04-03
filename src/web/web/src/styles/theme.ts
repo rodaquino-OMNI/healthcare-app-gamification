@@ -1,5 +1,6 @@
 import { borderRadius } from 'design-system/tokens/borderRadius';
 import { colors } from 'design-system/tokens/colors';
+import { shadows } from 'design-system/tokens/shadows';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import { createGlobalStyle } from 'styled-components';
@@ -10,6 +11,7 @@ import { createGlobalStyle } from 'styled-components';
  */
 export const theme = {
     colors,
+    shadows,
     spacing,
     borderRadius,
     typography,
