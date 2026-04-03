@@ -75,7 +75,7 @@
       "multer": "2.1.1",
       "body-parser": "2.2.2",
       "serialize-javascript": "7.0.4",
-      "path-to-regexp": "8.3.0",
+      "path-to-regexp": "8.4.0",
       "immutable": "5.1.5",
       "lodash": "4.17.23",
       "lodash.set": "4.3.2",
