@@ -93,14 +93,15 @@ const nextConfig = {
         // "Cannot read properties of null (reading 'useContext')" during SSG.
         // Several packages (e.g. @apollo/client, react-i18next) ship nested
         // React 18 copies that conflict with the workspace React 19.
-        const reactPath = path.resolve(__dirname, '../node_modules/react');
-        const reactDomPath = path.resolve(__dirname, '../node_modules/react-dom');
+        const reactPath = path.resolve(__dirname, '../../../node_modules/react');
+        const reactDomPath = path.resolve(__dirname, '../../../node_modules/react-dom');
 
         config.resolve.alias = {
             ...config.resolve.alias,
             react: reactPath,
             'react-dom': reactDomPath,
             '@shared': path.resolve(__dirname, '../shared'),
+            '@austa/design-system/assets': path.resolve(__dirname, '../design-system/src/assets'),
             'react-native$': 'react-native-web',
         };
 
