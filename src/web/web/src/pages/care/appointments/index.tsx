@@ -156,32 +156,6 @@ const AppointmentCard: React.FC<{ appointment: Appointment }> = ({ appointment }
     );
 };
 
-/**
- * Next.js server-side function to handle authentication and initial data loading.
- * @param object context
- * @returns Props to be passed to the page component.
- */
-export const getServerSideProps = (context: {
-    req: { cookies: Record<string, string> };
-}): { redirect: { destination: string; permanent: boolean } } | { props: Record<string, never> } => {
-    // LD1: Check if the user is authenticated
-    const { req } = context;
-    const { auth_session } = req.cookies;
-
-    // LD1: Redirect to login page if not authenticated
-    if (!auth_session) {
-        return {
-            redirect: {
-                destination: '/auth/login',
-                permanent: false,
-            },
-        };
-    }
-
-    // LD1: Return props for the page component
-    return {
-        props: {},
-    };
-};
+export const getServerSideProps = () => ({ props: {} });
 
 export default AppointmentsPage;

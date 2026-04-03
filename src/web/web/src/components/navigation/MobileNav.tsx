@@ -4,6 +4,12 @@ import { ALL_JOURNEYS } from 'shared/constants/journeys';
 import { MOBILE_AUTH_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
+type JourneyId = 'health' | 'care' | 'plan';
+const CORE_JOURNEYS = ALL_JOURNEYS.filter(
+    (j): j is (typeof ALL_JOURNEYS)[number] & { id: JourneyId } =>
+        j.id === 'health' || j.id === 'care' || j.id === 'plan'
+);
+
 import { useJourney } from '@/hooks/useJourney';
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
@@ -69,15 +75,13 @@ const MobileNav: React.FC = () => {
 
     return (
         <MobileNavContainer>
-            {ALL_JOURNEYS.map((journeyItem) => {
-                const journeyId = journeyItem.id as 'health' | 'care' | 'plan';
-
+            {CORE_JOURNEYS.map((journeyItem) => {
                 return (
                     <NavItem key={journeyItem.id}>
                         <Button
                             variant="tertiary"
                             size="md"
-                            journey={journeyId}
+                            journey={journeyItem.id}
                             icon={journeyItem.icon}
                             onPress={() => handleNavigateToJourney(journeyItem.id)}
                             accessibilityLabel={`Navigate to ${journeyItem.name} journey`}

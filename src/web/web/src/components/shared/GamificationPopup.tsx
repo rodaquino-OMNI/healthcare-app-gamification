@@ -101,13 +101,11 @@ export const GamificationPopup: React.FC<GamificationPopupProps> = ({ visible, o
         return null;
     }
 
+    const journeyKey: 'health' | 'care' | 'plan' =
+        achievement.journey === 'care' ? 'care' : achievement.journey === 'plan' ? 'plan' : 'health';
+
     return (
-        <Modal
-            visible={visible}
-            onClose={onClose}
-            title="Conquista Desbloqueada!"
-            journey={achievement.journey as 'health' | 'care' | 'plan'}
-        >
+        <Modal visible={visible} onClose={onClose} title="Conquista Desbloqueada!" journey={journeyKey}>
             <AchievementContainer>
                 <BadgeWrapper>
                     <AchievementBadge achievement={achievement} size="lg" />

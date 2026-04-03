@@ -46,13 +46,12 @@ export const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
     // Get the current journey from context
     const { currentJourney } = useJourney();
 
+    // Resolve to a valid DS journey key
+    const resolvedJourney: 'health' | 'care' | 'plan' =
+        currentJourney === 'care' ? 'care' : currentJourney === 'plan' ? 'plan' : 'health';
+
     // Determine color based on current journey
-    const journeyColor =
-        currentJourney === 'care'
-            ? JOURNEY_COLORS.care
-            : currentJourney === 'plan'
-              ? JOURNEY_COLORS.plan
-              : JOURNEY_COLORS.health;
+    const journeyColor = JOURNEY_COLORS[resolvedJourney];
 
     // Determine size in pixels
     const getSizeInPx = (): string => {
@@ -98,12 +97,7 @@ export const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
             />
 
             {text && (
-                <Text
-                    fontSize="md"
-                    marginTop="md"
-                    textAlign="center"
-                    journey={currentJourney as 'health' | 'care' | 'plan'}
-                >
+                <Text fontSize="md" marginTop="md" textAlign="center" journey={resolvedJourney}>
                     {text}
                 </Text>
             )}

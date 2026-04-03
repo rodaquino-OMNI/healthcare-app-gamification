@@ -132,26 +132,7 @@ const CoveragePage: React.FC = () => {
     );
 };
 
-/**
- * Next.js server-side function to handle authentication and redirect if needed.
- */
-export function getServerSideProps(context: { req: { cookies: Record<string, string> } }): object {
-    const { req } = context;
-    const session = req.cookies['next-auth.session-token'] || req.cookies['__Secure-next-auth.session-token'];
-
-    if (!session) {
-        return {
-            redirect: {
-                destination: '/auth/login',
-                permanent: false,
-            },
-        };
-    }
-
-    return {
-        props: {},
-    };
-}
+export const getServerSideProps = () => ({ props: {} });
 
 /**
  * Helper function to group coverage items by their type for better organization.

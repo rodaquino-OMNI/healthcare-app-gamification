@@ -7,6 +7,12 @@ import { ALL_JOURNEYS } from 'shared/constants/journeys';
 import { useJourney } from '@/hooks/useJourney';
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 
+type JourneyId = 'health' | 'care' | 'plan';
+const CORE_JOURNEYS = ALL_JOURNEYS.filter(
+    (j): j is (typeof ALL_JOURNEYS)[number] & { id: JourneyId } =>
+        j.id === 'health' || j.id === 'care' || j.id === 'plan'
+);
+
 /**
  * A navigation component that displays the available journeys in the AUSTA SuperApp.
  * It uses the design system's Card component and applies journey-specific styling.
@@ -18,10 +24,10 @@ export const JourneyNav: React.FC = () => {
 
     return (
         <div>
-            {ALL_JOURNEYS.map((journeyItem) => (
+            {CORE_JOURNEYS.map((journeyItem) => (
                 <Card
                     key={journeyItem.id}
-                    journey={journeyItem.id as 'health' | 'care' | 'plan'}
+                    journey={journeyItem.id}
                     elevation={journey?.id === journeyItem.id ? 'md' : 'sm'}
                     interactive
                     padding="md"

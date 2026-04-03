@@ -130,26 +130,7 @@ const nextConfig = {
         return config;
     },
 
-    // Redirects for legacy routes and journey-based URLs
-    async redirects() {
-        return [
-            {
-                source: '/health',
-                destination: '/minha-saude',
-                permanent: true,
-            },
-            {
-                source: '/care',
-                destination: '/cuidar-me-agora',
-                permanent: true,
-            },
-            {
-                source: '/plan',
-                destination: '/meu-plano-beneficios',
-                permanent: true,
-            },
-        ];
-    },
+    // No redirects — journey pages exist at /health, /care, /plan directly
 };
 
 // Export the configuration directly
