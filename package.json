@@ -34,7 +34,7 @@
       "react-native-iphone-x-helper": "npm:react-native-safe-area-context@^4.8.0",
 
       "apollo-server-express": "npm:@apollo/server@^5.0.0",
-      "apollo-server-core": "npm:@apollo/server@^5.0.0",
+      "apollo-server-core": "npm:@apollo/server@^5.5.0",
       "apollo-server-types": "npm:@apollo/server@^5.0.0",
       "apollo-server-env": "npm:@apollo/utils.fetcher@^3.0.0",
       "apollo-reporting-protobuf": "npm:@apollo/usage-reporting-protobuf@^4.0.0",
