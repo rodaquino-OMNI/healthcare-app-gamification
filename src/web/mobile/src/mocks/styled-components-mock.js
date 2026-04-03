@@ -8,34 +8,68 @@
 const React = require('react');
 const { View, Text: RNText } = require('react-native');
 
-/** styled() returns a component that renders its children in a View. */
+// HTML elements that contain text directly → must use RN Text
+const TEXT_ELEMENTS = new Set([
+    'p',
+    'span',
+    'label',
+    'a',
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6',
+    'strong',
+    'em',
+    'b',
+    'i',
+    'small',
+    'sub',
+    'sup',
+]);
+// HTML elements that are containers → use RN View
+const CONTAINER_ELEMENTS = new Set([
+    'div',
+    'section',
+    'article',
+    'main',
+    'header',
+    'footer',
+    'nav',
+    'form',
+    'ul',
+    'ol',
+    'li',
+    'table',
+    'thead',
+    'tbody',
+    'tr',
+    'td',
+    'th',
+    'figure',
+    'figcaption',
+    'aside',
+]);
+
+/** styled() returns a component that renders its children in a View or Text. */
 function styled(Component) {
     return function styledFactory() {
         const StyledComponent = React.forwardRef(function StyledComp(props, ref) {
             const { children, ...rest } = props;
-            if (
-                Component === 'div' ||
-                Component === 'span' ||
-                Component === 'section' ||
-                Component === 'article' ||
-                Component === 'main' ||
-                Component === 'header' ||
-                Component === 'footer' ||
-                Component === 'nav' ||
-                Component === 'form' ||
-                Component === 'label' ||
-                Component === 'p' ||
-                Component === 'h1' ||
-                Component === 'h2' ||
-                Component === 'h3' ||
-                Component === 'h4' ||
-                Component === 'h5' ||
-                Component === 'h6'
-            ) {
+            // Text-bearing HTML elements → RN Text (allows string children)
+            if (TEXT_ELEMENTS.has(Component)) {
+                return React.createElement(RNText, { ref, ...rest }, children);
+            }
+            // Container HTML elements → RN View
+            if (CONTAINER_ELEMENTS.has(Component)) {
                 return React.createElement(View, { ref, ...rest }, children);
             }
             if (Component === 'input' || Component === 'textarea') {
                 return React.createElement(View, { ref, ...rest });
+            }
+            if (Component === 'button') {
+                return React.createElement(View, { ref, ...rest }, children);
             }
             if (typeof Component === 'string') {
                 return React.createElement(View, { ref, ...rest }, children);

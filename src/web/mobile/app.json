@@ -2,6 +2,7 @@
     "name": "austa",
     "displayName": "AUSTA",
     "expo": {
+        "entryPoint": "./index.js",
         "name": "AUSTA SuperApp",
         "slug": "austa-superapp",
         "version": "1.0.0",

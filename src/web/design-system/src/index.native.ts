@@ -95,7 +95,8 @@ export type { ButtonProps } from './components/Button/Button.native';
 export { Card } from './components/Card/Card.native';
 export type { CardProps } from './components/Card/Card.native';
 
-export { Input } from './components/Input/Input.native';
+import { Input as _Input } from './components/Input/Input.native';
+export const Input = _Input;
 export type { InputNativeProps as InputProps } from './components/Input/Input.native';
 
 export { Badge } from './components/Badge/Badge.native';
@@ -127,7 +128,7 @@ export const Tabs = createStub('Tabs');
 
 // FormContainer and FormField aliases (mirrors web barrel)
 export const FormContainer = Stack;
-export const FormField = Input;
+export const FormField = _Input;
 
 // ---------------------------------------------------------------------------
 // 5. Namespace re-exports — DISABLED for native

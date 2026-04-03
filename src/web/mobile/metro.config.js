@@ -38,7 +38,8 @@ config.watchFolders = [
     path.resolve(__dirname, '../shared'),
     path.resolve(__dirname, '../design-system'),
     path.resolve(__dirname, '../../../node_modules'), // pnpm root node_modules
-    path.resolve(__dirname, '../../..'), // project root (workspace packages)
+    // NOTE: Do NOT add the monorepo root ('../../..') here — it causes Metro to resolve
+    // ./index relative to the monorepo root instead of projectRoot (src/web/mobile)
 ];
 
 // Enable inline requires for better startup performance
@@ -74,7 +75,14 @@ const DEMO_MOCKS = {
     'expo-document-picker': path.resolve(__dirname, 'src/mocks/document-picker-mock.js'),
     // styled-components is pulled in transitively by DS web barrels; mock it to prevent DOM API crashes
     'styled-components': path.resolve(__dirname, 'src/mocks/styled-components-mock.js'),
+    // Force @austa/design-system to native barrel — dist/index.js (web build) takes priority over
+    // the "react-native" package.json field because Metro resolves "main" first when dist/ exists
+    '@austa/design-system': path.resolve(__dirname, '../design-system/src/index.native.ts'),
 };
+// Design-system root for .native.tsx resolution
+const DS_SRC = path.resolve(__dirname, '../design-system/src');
+const fs = require('fs');
+
 const originalResolveRequest = config.resolver.resolveRequest;
 config.resolver.resolveRequest = (context, moduleName, platform) => {
     // Force local React 18 resolution (prevents hoisted React 19 from root node_modules)
@@ -84,6 +92,45 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
     if (DEMO_MOCKS[moduleName]) {
         return { type: 'sourceFile', filePath: DEMO_MOCKS[moduleName] };
     }
+
+    // Resolve @design-system/* imports to .native.tsx variants when available.
+    // If no .native.tsx exists, return a stub to prevent loading web code that crashes RN.
+    if (platform !== 'web') {
+        let resolved;
+        try {
+            if (originalResolveRequest) {
+                resolved = originalResolveRequest(context, moduleName, platform);
+            } else {
+                resolved = context.resolveRequest(context, moduleName, platform);
+            }
+        } catch {
+            // Fall through to default resolution below
+        }
+        if (resolved && resolved.type === 'sourceFile' && resolved.filePath) {
+            const fp = resolved.filePath;
+            // If the resolved file is inside design-system/src (NOT tokens/themes which are safe)
+            if (
+                fp.includes('/design-system/src/') &&
+                (fp.endsWith('.tsx') || fp.endsWith('.ts')) &&
+                !fp.endsWith('.native.tsx') &&
+                !fp.endsWith('.native.ts')
+            ) {
+                // Skip tokens and themes — they're cross-platform pure JS
+                if (fp.includes('/tokens/') || fp.includes('/themes/')) {
+                    return resolved;
+                }
+                // Check for .native.tsx variant
+                const nativeTsx = fp.replace(/\.tsx$/, '.native.tsx').replace(/\.ts$/, '.native.ts');
+                if (fs.existsSync(nativeTsx)) {
+                    return { type: 'sourceFile', filePath: nativeTsx };
+                }
+                // No .native.tsx exists — return stub to avoid loading web styled-components code
+                return { type: 'sourceFile', filePath: path.resolve(__dirname, 'src/mocks/ds-component-stub.js') };
+            }
+            return resolved;
+        }
+    }
+
     if (originalResolveRequest) {
         return originalResolveRequest(context, moduleName, platform);
     }
