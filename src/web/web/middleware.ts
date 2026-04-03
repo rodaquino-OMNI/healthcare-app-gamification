@@ -33,10 +33,13 @@ function generateNonce(): string {
 function buildCsp(nonce: string): string {
     const isDev = process.env.NODE_ENV === 'development';
     const connectExtra = isDev ? ' http://localhost:* ws://localhost:*' : '';
+    // Next.js dev mode requires unsafe-eval for HMR/hot-reload webpack runtime
+    // and unsafe-inline for inline script bootstrapping. Production uses nonce only.
+    const devScriptPolicy = isDev ? " 'unsafe-eval' 'unsafe-inline'" : '';
 
     return [
         "default-src 'self'",
-        `script-src 'self' 'nonce-${nonce}'`,
+        `script-src 'self' 'nonce-${nonce}'${devScriptPolicy}`,
         "style-src 'self' 'unsafe-inline'",
         "img-src 'self' blob: data: https://storage.googleapis.com https://cdn.austa.com.br",
         "font-src 'self' https://fonts.gstatic.com",

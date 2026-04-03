@@ -27,9 +27,6 @@ export const useGameProfile = (userId: string): UseGameProfileReturn => {
         skip: !userId,
         fetchPolicy: 'cache-and-network',
         nextFetchPolicy: 'cache-first',
-        onError: (error) => {
-            console.error('Error fetching game profile:', error);
-        },
     });
 
     return {

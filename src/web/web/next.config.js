@@ -68,11 +68,16 @@ const nextConfig = {
                         key: 'Content-Security-Policy',
                         value: [
                             "default-src 'self'",
-                            "script-src 'self'",
+                            // Development needs unsafe-eval (webpack HMR) and unsafe-inline (Next.js bootstrap)
+                            process.env.NODE_ENV === 'development'
+                                ? "script-src 'self' 'unsafe-eval' 'unsafe-inline'"
+                                : "script-src 'self'",
                             "style-src 'self' 'unsafe-inline'",
                             "img-src 'self' blob: data: https://storage.googleapis.com https://cdn.austa.com.br",
                             "font-src 'self' https://fonts.gstatic.com",
-                            "connect-src 'self' https://*.austa.com.br https://*.sentry.io",
+                            process.env.NODE_ENV === 'development'
+                                ? "connect-src 'self' https://*.austa.com.br https://*.sentry.io http://localhost:* ws://localhost:*"
+                                : "connect-src 'self' https://*.austa.com.br https://*.sentry.io",
                             "frame-ancestors 'none'",
                             "base-uri 'self'",
                             "form-action 'self'",

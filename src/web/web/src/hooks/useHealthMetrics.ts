@@ -56,10 +56,6 @@ export const useHealthMetrics = (
                 'Api-Base-Url': apiConfig.baseURL,
             },
         },
-        // Log errors but let the component handle them
-        onError: (apolloError: ApolloError) => {
-            console.error('[Health Metrics] Error:', { userId, error: apolloError.message });
-        },
     });
 
     return {
