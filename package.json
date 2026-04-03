@@ -105,7 +105,7 @@
       "rollup": "4.59.0",
       "next": "15.5.14",
       "superagent": "10.3.0",
-      "@apollo/server": "^5.0.0",
+      "@apollo/server": "^5.5.0",
       "@apollo/federation-internals": "2.13.2",
       "@remix-run/router": "1.23.2",
       "hono": "4.12.7",
