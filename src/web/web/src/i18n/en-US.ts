@@ -109,6 +109,7 @@ const translations = {
     journeys: {
         health: {
             title: 'My Health',
+            subtitle: 'Track your health metrics, goals, and integrations.',
             dashboard: 'Health Dashboard',
             metrics: {
                 title: 'Health Metrics',
@@ -178,6 +179,9 @@ const translations = {
         care: {
             title: 'Care Now',
             dashboard: 'Care Dashboard',
+            loadingDashboard: 'Loading care dashboard...',
+            errorLoading: 'Error loading care data.',
+            appointmentCount: 'You have {{count}} appointment(s).',
             appointments: {
                 title: 'Appointments',
                 upcoming: 'Upcoming Appointments',
@@ -279,7 +283,21 @@ const translations = {
         },
         plan: {
             title: 'My Plan & Benefits',
+            subtitle: 'Manage your plan, coverage and claims.',
             dashboard: 'Plan Dashboard',
+            stats: {
+                totalClaims: 'Total Claims',
+                activeBenefits: 'Active Benefits',
+                coverage: 'Coverage',
+            },
+            recentClaims: 'Recent Claims',
+            viewAll: 'View all',
+            quickActions: {
+                title: 'Quick Actions',
+                viewCoverage: 'View Coverage',
+                newClaim: 'New Claim',
+                costSimulator: 'Cost Simulator',
+            },
             coverage: {
                 title: 'Coverage Information',
                 planDetails: 'Plan Details',
@@ -374,6 +392,15 @@ const translations = {
             all: 'All Achievements',
             locked: 'Locked Achievements',
             completed: 'Completed Achievements',
+            loading: 'Loading achievements...',
+            error: 'Error loading achievements. Please try again later.',
+            empty: 'No achievements earned yet. Start completing quests to unlock achievements!',
+            xpToNext: '{{value}} XP to next level',
+            journeyLabel: {
+                health: 'My Health',
+                care: 'Care Now',
+                plan: 'My Plan',
+            },
         },
         quests: {
             title: 'Quests',
@@ -385,6 +412,7 @@ const translations = {
             timeRemaining: 'Time Remaining: {{time}}',
             startQuest: 'Start Quest',
             completeQuest: 'Complete Quest',
+            activeCount: '{{count}} active quests',
         },
         rewards: {
             title: 'Rewards',
@@ -394,6 +422,7 @@ const translations = {
             pointsNeeded: '{{points}} points needed',
             expiresOn: 'Expires on {{date}}',
             redeemSuccess: 'Reward successfully redeemed!',
+            subtitle: 'Redeem your XP',
         },
         leaderboard: {
             title: 'Leaderboard',
@@ -404,6 +433,66 @@ const translations = {
             user: 'User',
             score: 'Score',
             yourRank: 'Your Rank',
+            subtitle: 'See how you rank',
+        },
+    },
+    home: {
+        welcome: 'Welcome back!',
+        subtitle: 'Track your health and wellness in one place.',
+        sections: {
+            yourJourneys: 'Your Journeys',
+            healthMetrics: 'Health Metrics',
+            upcomingAppointments: 'Upcoming Appointments',
+            recentClaims: 'Recent Claims',
+            quickActions: 'Quick Actions',
+            recentActivity: 'Recent Activity',
+            achievements: 'Achievements',
+        },
+        viewAll: 'View all',
+        quickActions: {
+            addMetric: 'Add Metric',
+            bookAppointment: 'Book Appointment',
+            viewAlerts: 'View Alerts',
+            myProfile: 'My Profile',
+        },
+        journeyDescriptions: {
+            health: 'Track your health metrics, goals and integrations.',
+            care: 'Find professionals, book appointments and telemedicine.',
+            plan: 'View coverage, submit claims and simulate costs.',
+        },
+    },
+    wellness: {
+        title: 'AI Wellness Companion',
+        subtitle: 'Your personal wellness assistant',
+        mood: {
+            question: 'How are you feeling today?',
+            veryBad: 'Very Bad',
+            bad: 'Bad',
+            neutral: 'Neutral',
+            good: 'Good',
+            veryGood: 'Very Good',
+        },
+        actions: {
+            startChat: 'Start New Chat',
+            moodHistory: 'Mood History',
+        },
+        conversations: {
+            title: 'Recent Conversations',
+            empty: 'No recent conversations',
+            you: 'You',
+            ai: 'AI',
+        },
+        explore: {
+            title: 'Explore',
+            chat: 'Chat',
+            breathing: 'Breathing',
+            meditation: 'Meditation',
+            dailyPlan: 'Daily Plan',
+            insights: 'Insights',
+            goals: 'Goals',
+            journal: 'Journal',
+            challenges: 'Challenges',
+            streaks: 'Streaks',
         },
     },
     profile: {

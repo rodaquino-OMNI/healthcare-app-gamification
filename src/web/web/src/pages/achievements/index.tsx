@@ -8,14 +8,15 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import Link from 'next/link';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Achievement, Quest } from 'shared/types/gamification.types';
 
 import { useGameProfile } from '@/hooks/useGamification';
 
-const JOURNEY_LABELS: Record<string, string> = {
-    health: 'My Health',
-    care: 'Care Now',
-    plan: 'My Plan',
+const JOURNEY_LABEL_KEYS: Record<string, string> = {
+    health: 'gamification.achievements.journeyLabel.health',
+    care: 'gamification.achievements.journeyLabel.care',
+    plan: 'gamification.achievements.journeyLabel.plan',
 };
 
 /**
@@ -23,13 +24,14 @@ const JOURNEY_LABELS: Record<string, string> = {
  * achievements grouped by journey, and quick links to leaderboard/quests/rewards.
  */
 const AchievementsPage: React.FC = () => {
+    const { t } = useTranslation();
     const userId = 'user-123'; // Replace with actual auth context
     const { data, loading, error } = useGameProfile(userId);
 
     if (loading) {
         return (
             <div style={{ maxWidth: '960px', margin: '0 auto', padding: spacing.xl }}>
-                <Text fontSize="lg">Loading achievements...</Text>
+                <Text fontSize="lg">{t('gamification.achievements.loading')}</Text>
             </div>
         );
     }
@@ -38,7 +40,7 @@ const AchievementsPage: React.FC = () => {
         return (
             <div style={{ maxWidth: '960px', margin: '0 auto', padding: spacing.xl }}>
                 <Text fontSize="lg" color={colors.semantic.error}>
-                    Error loading achievements. Please try again later.
+                    {t('gamification.achievements.error')}
                 </Text>
             </div>
         );
@@ -66,7 +68,7 @@ const AchievementsPage: React.FC = () => {
         <div style={{ maxWidth: '960px', margin: '0 auto', padding: spacing.xl }}>
             {/* Page header */}
             <Text fontSize="2xl" fontWeight="bold" style={{ marginBottom: spacing.lg }}>
-                Achievements
+                {t('gamification.achievements.title')}
             </Text>
 
             {/* Level and XP section */}
@@ -80,11 +82,11 @@ const AchievementsPage: React.FC = () => {
                     />
                     <Box>
                         <Text fontSize="lg" fontWeight="bold">
-                            Level {profile?.level ?? 1}
+                            {t('gamification.level', { level: profile?.level ?? 1 })}
                         </Text>
                         <XPCounter currentXP={profile?.xp ?? 0} nextLevelXP={xpForNextLevel} journey="health" />
                         <Text fontSize="sm" color={colors.gray[50]} style={{ marginTop: spacing.xs }}>
-                            {xpForNextLevel - (profile?.xp ?? 0)} XP to next level
+                            {t('gamification.achievements.xpToNext', { value: xpForNextLevel - (profile?.xp ?? 0) })}
                         </Text>
                     </Box>
                 </Box>
@@ -98,10 +100,10 @@ const AchievementsPage: React.FC = () => {
                         style={{ flex: 1, minWidth: '200px', cursor: 'pointer', textDecoration: 'none' }}
                     >
                         <Text fontWeight="bold" fontSize="md">
-                            Leaderboard
+                            {t('gamification.leaderboard.title')}
                         </Text>
                         <Text fontSize="sm" color={colors.gray[50]}>
-                            See how you rank
+                            {t('gamification.leaderboard.subtitle')}
                         </Text>
                     </Card>
                 </Link>
@@ -111,10 +113,10 @@ const AchievementsPage: React.FC = () => {
                         style={{ flex: 1, minWidth: '200px', cursor: 'pointer', textDecoration: 'none' }}
                     >
                         <Text fontWeight="bold" fontSize="md">
-                            Quests
+                            {t('gamification.quests.title')}
                         </Text>
                         <Text fontSize="sm" color={colors.gray[50]}>
-                            {activeQuestCount} active quests
+                            {t('gamification.quests.activeCount', { count: activeQuestCount })}
                         </Text>
                     </Card>
                 </Link>
@@ -124,10 +126,10 @@ const AchievementsPage: React.FC = () => {
                         style={{ flex: 1, minWidth: '200px', cursor: 'pointer', textDecoration: 'none' }}
                     >
                         <Text fontWeight="bold" fontSize="md">
-                            Rewards
+                            {t('gamification.rewards.title')}
                         </Text>
                         <Text fontSize="sm" color={colors.gray[50]}>
-                            Redeem your XP
+                            {t('gamification.rewards.subtitle')}
                         </Text>
                     </Card>
                 </Link>
@@ -137,7 +139,7 @@ const AchievementsPage: React.FC = () => {
             {Object.entries(achievementsByJourney).map(([journey, journeyAchievements]) => (
                 <div key={journey} style={{ marginBottom: spacing['2xl'] }}>
                     <Text fontWeight="bold" fontSize="xl" style={{ marginBottom: spacing.md }}>
-                        {JOURNEY_LABELS[journey] ?? journey} Achievements
+                        {t(JOURNEY_LABEL_KEYS[journey] ?? journey)} {t('gamification.achievements.title')}
                     </Text>
                     <Box display="flex" style={{ gap: spacing.md, flexWrap: 'wrap' }}>
                         {journeyAchievements.map((achievement: Achievement) => (
@@ -154,7 +156,7 @@ const AchievementsPage: React.FC = () => {
             {achievements.length === 0 && (
                 <Card padding="lg" style={{ textAlign: 'center' }}>
                     <Text fontSize="lg" color={colors.gray[50]}>
-                        No achievements earned yet. Start completing quests to unlock achievements!
+                        {t('gamification.achievements.empty')}
                     </Text>
                 </Card>
             )}

@@ -1,4 +1,5 @@
 import React from 'react'; // react@18.0.0
+import { useTranslation } from 'react-i18next';
 
 import { useAppointments } from '@/hooks';
 import { CareLayout } from '@/layouts/CareLayout';
@@ -8,16 +9,17 @@ import { CareLayout } from '@/layouts/CareLayout';
  * It renders the CareLayout component.
  */
 const CareNowPage: React.FC = () => {
+    const { t } = useTranslation();
     const { appointments, loading, error } = useAppointments();
 
     return (
         <CareLayout>
-            {loading && <div>Loading care dashboard...</div>}
-            {error && <div>Error loading care data.</div>}
+            {loading && <div>{t('journeys.care.loadingDashboard')}</div>}
+            {error && <div>{t('journeys.care.errorLoading')}</div>}
             {!loading && !error && (
                 <div>
-                    <h2>Care Now Journey</h2>
-                    <p>You have {appointments.length} appointment(s).</p>
+                    <h2>{t('journeys.care.title')}</h2>
+                    <p>{t('journeys.care.appointmentCount', { count: appointments.length })}</p>
                 </div>
             )}
         </CareLayout>

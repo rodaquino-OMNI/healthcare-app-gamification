@@ -4,6 +4,7 @@ import { shadows } from 'design-system/tokens/shadows';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
     MainLayout,
@@ -18,28 +19,29 @@ import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter'; // next/rout
 
 /**
  * Journey configuration for the three core journeys displayed on the dashboard.
+ * Labels use i18n keys resolved at render time via t().
  */
 const JOURNEYS = [
     {
         id: 'health',
-        title: 'Minha Saude',
-        description: 'Acompanhe suas metricas de saude, metas e integracoes.',
+        titleKey: 'journeys.health.title',
+        descriptionKey: 'home.journeyDescriptions.health',
         color: colors.journeys.health.primary,
         background: colors.journeys.health.background,
         href: '/health',
     },
     {
         id: 'care',
-        title: 'Cuidado Agora',
-        description: 'Encontre profissionais, agende consultas e telemedicina.',
+        titleKey: 'journeys.care.title',
+        descriptionKey: 'home.journeyDescriptions.care',
         color: colors.journeys.care.primary,
         background: colors.journeys.care.background,
         href: '/care',
     },
     {
         id: 'plan',
-        title: 'Meu Plano',
-        description: 'Veja cobertura, envie sinistros e simule custos.',
+        titleKey: 'journeys.plan.title',
+        descriptionKey: 'home.journeyDescriptions.plan',
         color: colors.journeys.plan.primary,
         background: colors.journeys.plan.background,
         href: '/plan',
@@ -48,12 +50,13 @@ const JOURNEYS = [
 
 /**
  * Quick action items displayed at the bottom of the dashboard.
+ * Labels use i18n keys resolved at render time via t().
  */
 const QUICK_ACTIONS = [
-    { label: 'Adicionar Metrica', href: '/home/metrics', icon: '📊' },
-    { label: 'Agendar Consulta', href: '/care/appointments', icon: '📅' },
-    { label: 'Ver Alertas', href: '/home/alert', icon: '🔔' },
-    { label: 'Meu Perfil', href: '/profile', icon: '👤' },
+    { labelKey: 'home.quickActions.addMetric', href: '/home/metrics', icon: '📊' },
+    { labelKey: 'home.quickActions.bookAppointment', href: '/care/appointments', icon: '📅' },
+    { labelKey: 'home.quickActions.viewAlerts', href: '/home/alert', icon: '🔔' },
+    { labelKey: 'home.quickActions.myProfile', href: '/profile', icon: '👤' },
 ] as const;
 
 /**
@@ -61,6 +64,7 @@ const QUICK_ACTIONS = [
  * appointments, claims, recent activity, and achievements widgets.
  */
 const Home: React.FC = () => {
+    const { t } = useTranslation();
     const router = useRouter();
     useAuth();
     useHealthMetrics('user-123', []);
@@ -74,20 +78,22 @@ const Home: React.FC = () => {
             {/* Welcome Header */}
             <div style={pageStyles.welcomeSection}>
                 <div>
-                    <h1 style={pageStyles.welcomeTitle}>Bem-vindo de volta!</h1>
-                    <p style={pageStyles.welcomeSubtitle}>Acompanhe sua saude e bem-estar em um so lugar.</p>
+                    <h1 style={pageStyles.welcomeTitle}>{t('home.welcome')}</h1>
+                    <p style={pageStyles.welcomeSubtitle}>{t('home.subtitle')}</p>
                 </div>
                 {gameProfile && (
                     <div style={pageStyles.levelBadge}>
-                        <span style={pageStyles.levelText}>Level {gameProfile.level ?? 1}</span>
-                        <span style={pageStyles.xpText}>{gameProfile.xp ?? 0} XP</span>
+                        <span style={pageStyles.levelText}>
+                            {t('gamification.level', { level: gameProfile.level ?? 1 })}
+                        </span>
+                        <span style={pageStyles.xpText}>{t('gamification.xp', { value: gameProfile.xp ?? 0 })}</span>
                     </div>
                 )}
             </div>
 
             {/* Journey Cards */}
             <section style={pageStyles.section}>
-                <h2 style={pageStyles.sectionTitle}>Suas Jornadas</h2>
+                <h2 style={pageStyles.sectionTitle}>{t('home.sections.yourJourneys')}</h2>
                 <div style={pageStyles.journeyGrid}>
                     {JOURNEYS.map((j) => (
                         <div
@@ -106,8 +112,8 @@ const Home: React.FC = () => {
                                 }
                             }}
                         >
-                            <h3 style={{ ...pageStyles.journeyTitle, color: j.color }}>{j.title}</h3>
-                            <p style={pageStyles.journeyDescription}>{j.description}</p>
+                            <h3 style={{ ...pageStyles.journeyTitle, color: j.color }}>{t(j.titleKey)}</h3>
+                            <p style={pageStyles.journeyDescription}>{t(j.descriptionKey)}</p>
                         </div>
                     ))}
                 </div>
@@ -116,7 +122,7 @@ const Home: React.FC = () => {
             {/* Health Metrics Summary */}
             <section style={pageStyles.section}>
                 <div style={pageStyles.sectionHeader}>
-                    <h2 style={pageStyles.sectionTitle}>Metricas de Saude</h2>
+                    <h2 style={pageStyles.sectionTitle}>{t('home.sections.healthMetrics')}</h2>
                     <a
                         href="/home/metrics"
                         style={pageStyles.viewAllLink}
@@ -125,7 +131,7 @@ const Home: React.FC = () => {
                             void router.push('/home/metrics');
                         }}
                     >
-                        Ver todas
+                        {t('home.viewAll')}
                     </a>
                 </div>
                 <MetricsWidget />
@@ -133,23 +139,23 @@ const Home: React.FC = () => {
 
             {/* Appointments */}
             <section style={pageStyles.section}>
-                <h2 style={pageStyles.sectionTitle}>Proximas Consultas</h2>
+                <h2 style={pageStyles.sectionTitle}>{t('home.sections.upcomingAppointments')}</h2>
                 <AppointmentsWidget />
             </section>
 
             {/* Claims */}
             <section style={pageStyles.section}>
-                <h2 style={pageStyles.sectionTitle}>Sinistros Recentes</h2>
+                <h2 style={pageStyles.sectionTitle}>{t('home.sections.recentClaims')}</h2>
                 <ClaimsWidget />
             </section>
 
             {/* Quick Actions */}
             <section style={pageStyles.section}>
-                <h2 style={pageStyles.sectionTitle}>Acoes Rapidas</h2>
+                <h2 style={pageStyles.sectionTitle}>{t('home.sections.quickActions')}</h2>
                 <div style={pageStyles.quickActionsGrid}>
                     {QUICK_ACTIONS.map((action) => (
                         <div
-                            key={action.label}
+                            key={action.labelKey}
                             style={pageStyles.quickActionCard}
                             onClick={() => void router.push(action.href)}
                             role="button"
@@ -161,7 +167,7 @@ const Home: React.FC = () => {
                             }}
                         >
                             <span style={pageStyles.quickActionIcon}>{action.icon}</span>
-                            <span style={pageStyles.quickActionLabel}>{action.label}</span>
+                            <span style={pageStyles.quickActionLabel}>{t(action.labelKey)}</span>
                         </div>
                     ))}
                 </div>
@@ -169,13 +175,13 @@ const Home: React.FC = () => {
 
             {/* Recent Activity */}
             <section style={pageStyles.section}>
-                <h2 style={pageStyles.sectionTitle}>Atividade Recente</h2>
+                <h2 style={pageStyles.sectionTitle}>{t('home.sections.recentActivity')}</h2>
                 <RecentActivityWidget />
             </section>
 
             {/* Achievements */}
             <section style={pageStyles.section}>
-                <h2 style={pageStyles.sectionTitle}>Conquistas</h2>
+                <h2 style={pageStyles.sectionTitle}>{t('home.sections.achievements')}</h2>
                 <AchievementsWidget />
             </section>
         </MainLayout>

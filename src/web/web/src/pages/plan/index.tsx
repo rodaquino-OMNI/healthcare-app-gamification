@@ -3,6 +3,7 @@ import { InsuranceCard } from 'design-system/plan/InsuranceCard/InsuranceCard';
 import { Text } from 'design-system/primitives';
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { WEB_PLAN_ROUTES } from 'shared/constants/routes';
 
 import { useAuth, useClaims, usePlan } from '@/hooks';
@@ -15,6 +16,7 @@ const { plan } = colors.journeys;
  * The main dashboard component for the 'My Plan & Benefits' journey.
  */
 const PlanDashboard: React.FC = () => {
+    const { t } = useTranslation();
     const router = useRouter();
     const { session } = useAuth();
     const { claims } = useClaims();
@@ -23,9 +25,9 @@ const PlanDashboard: React.FC = () => {
     const recentClaims = claims.slice(0, 3);
 
     const stats = [
-        { label: 'Total de Solicitacoes', value: String(claims.length), color: plan.primary },
-        { label: 'Beneficios Ativos', value: '8', color: colors.semantic.success },
-        { label: 'Cobertura', value: '85%', color: plan.accent },
+        { label: t('journeys.plan.stats.totalClaims'), value: String(claims.length), color: plan.primary },
+        { label: t('journeys.plan.stats.activeBenefits'), value: '8', color: colors.semantic.success },
+        { label: t('journeys.plan.stats.coverage'), value: '85%', color: plan.accent },
     ];
 
     return (
@@ -33,7 +35,7 @@ const PlanDashboard: React.FC = () => {
             <div style={{ padding: spacing.xl }}>
                 {/* Page Title */}
                 <Text fontSize="2xl" fontWeight="medium">
-                    Meu Plano & Beneficios
+                    {t('journeys.plan.title')}
                 </Text>
                 <p
                     style={{
@@ -44,7 +46,7 @@ const PlanDashboard: React.FC = () => {
                         fontFamily: typography.fontFamily.body,
                     }}
                 >
-                    Gerencie seu plano, cobertura e solicitacoes
+                    {t('journeys.plan.subtitle')}
                 </p>
 
                 {/* Stats Cards */}
@@ -103,7 +105,7 @@ const PlanDashboard: React.FC = () => {
                             fontFamily: typography.fontFamily.heading,
                         }}
                     >
-                        Seu Cartao Digital
+                        {t('journeys.plan.digitalCard.title')}
                     </h2>
                     <InsuranceCard
                         plan={{
@@ -146,7 +148,7 @@ const PlanDashboard: React.FC = () => {
                                 fontFamily: typography.fontFamily.heading,
                             }}
                         >
-                            Solicitacoes Recentes
+                            {t('journeys.plan.recentClaims')}
                         </h2>
                         <a
                             href={WEB_PLAN_ROUTES.CLAIMS}
@@ -157,7 +159,7 @@ const PlanDashboard: React.FC = () => {
                                 fontFamily: typography.fontFamily.body,
                             }}
                         >
-                            Ver todas
+                            {t('journeys.plan.viewAll')}
                         </a>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
@@ -182,7 +184,7 @@ const PlanDashboard: React.FC = () => {
                             fontFamily: typography.fontFamily.heading,
                         }}
                     >
-                        Acoes Rapidas
+                        {t('journeys.plan.quickActions.title')}
                     </h2>
                     <div
                         style={{
@@ -192,12 +194,24 @@ const PlanDashboard: React.FC = () => {
                         }}
                     >
                         {[
-                            { label: 'Ver Cobertura', href: WEB_PLAN_ROUTES.COVERAGE, icon: '\u{1F6E1}' },
-                            { label: 'Nova Solicitacao', href: '/plan/claims/submit', icon: '\u{1F4DD}' },
-                            { label: 'Simulador de Custos', href: WEB_PLAN_ROUTES.COST_SIMULATOR, icon: '\u{1F4B0}' },
+                            {
+                                labelKey: 'journeys.plan.quickActions.viewCoverage',
+                                href: WEB_PLAN_ROUTES.COVERAGE,
+                                icon: '\u{1F6E1}',
+                            },
+                            {
+                                labelKey: 'journeys.plan.quickActions.newClaim',
+                                href: '/plan/claims/submit',
+                                icon: '\u{1F4DD}',
+                            },
+                            {
+                                labelKey: 'journeys.plan.quickActions.costSimulator',
+                                href: WEB_PLAN_ROUTES.COST_SIMULATOR,
+                                icon: '\u{1F4B0}',
+                            },
                         ].map((action) => (
                             <a
-                                key={action.label}
+                                key={action.labelKey}
                                 href={action.href}
                                 style={{
                                     display: 'flex',
@@ -216,7 +230,7 @@ const PlanDashboard: React.FC = () => {
                                 }}
                             >
                                 <span style={{ fontSize: '24px' }}>{action.icon}</span>
-                                {action.label}
+                                {t(action.labelKey)}
                             </a>
                         ))}
                     </div>

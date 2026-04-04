@@ -1,6 +1,7 @@
 import { Modal } from 'design-system/components/Modal/Modal';
 import { AchievementBadge } from 'design-system/gamification/AchievementBadge/AchievementBadge';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { JOURNEY_COLORS } from 'shared/constants/index';
 import { formatJourneyValue } from 'shared/utils/format';
 import styled from 'styled-components';
@@ -85,6 +86,7 @@ const XPReward = styled.div<{ journey: string }>`
  * @returns The rendered GamificationPopup component.
  */
 export const GamificationPopup: React.FC<GamificationPopupProps> = ({ visible, onClose, achievementId }) => {
+    const { t } = useTranslation();
     // Access the gamification context to get user's achievements
     const { gameProfile, isLoading } = useGamification();
 
@@ -105,7 +107,7 @@ export const GamificationPopup: React.FC<GamificationPopupProps> = ({ visible, o
         achievement.journey === 'care' ? 'care' : achievement.journey === 'plan' ? 'plan' : 'health';
 
     return (
-        <Modal visible={visible} onClose={onClose} title="Conquista Desbloqueada!" journey={journeyKey}>
+        <Modal visible={visible} onClose={onClose} title={t('gamification.achievements.unlocked')} journey={journeyKey}>
             <AchievementContainer>
                 <BadgeWrapper>
                     <AchievementBadge achievement={achievement} size="lg" />

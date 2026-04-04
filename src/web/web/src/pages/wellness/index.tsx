@@ -5,33 +5,35 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { useWellness } from '@/hooks/useWellness';
 
 const MOOD_OPTIONS = [
-    { emoji: '1', label: 'Very Bad', value: 1 },
-    { emoji: '2', label: 'Bad', value: 2 },
-    { emoji: '3', label: 'Neutral', value: 3 },
-    { emoji: '4', label: 'Good', value: 4 },
-    { emoji: '5', label: 'Very Good', value: 5 },
+    { labelKey: 'wellness.mood.veryBad', value: 1 },
+    { labelKey: 'wellness.mood.bad', value: 2 },
+    { labelKey: 'wellness.mood.neutral', value: 3 },
+    { labelKey: 'wellness.mood.good', value: 4 },
+    { labelKey: 'wellness.mood.veryGood', value: 5 },
 ];
 
 const PLACEHOLDER_USER_ID = 'me';
 
 const NAV_LINKS = [
-    { label: 'Chat', href: '/wellness/chat' },
-    { label: 'Breathing', href: '/wellness/breathing' },
-    { label: 'Meditation', href: '/wellness/meditation' },
-    { label: 'Daily Plan', href: '/wellness/daily-plan' },
-    { label: 'Insights', href: '/wellness/insights' },
-    { label: 'Goals', href: '/wellness/goals' },
-    { label: 'Journal', href: '/wellness/journal' },
-    { label: 'Challenges', href: '/wellness/challenges' },
-    { label: 'Streaks', href: '/wellness/streaks' },
+    { labelKey: 'wellness.explore.chat', href: '/wellness/chat' },
+    { labelKey: 'wellness.explore.breathing', href: '/wellness/breathing' },
+    { labelKey: 'wellness.explore.meditation', href: '/wellness/meditation' },
+    { labelKey: 'wellness.explore.dailyPlan', href: '/wellness/daily-plan' },
+    { labelKey: 'wellness.explore.insights', href: '/wellness/insights' },
+    { labelKey: 'wellness.explore.goals', href: '/wellness/goals' },
+    { labelKey: 'wellness.explore.journal', href: '/wellness/journal' },
+    { labelKey: 'wellness.explore.challenges', href: '/wellness/challenges' },
+    { labelKey: 'wellness.explore.streaks', href: '/wellness/streaks' },
 ];
 
 const WellnessHomePage: React.FC = () => {
+    const { t } = useTranslation();
     const router = useRouter();
     const [selectedMood, setSelectedMood] = useState<number | null>(null);
     const { chatHistory, loadChatHistory, submitMood } = useWellness();
@@ -67,22 +69,22 @@ const WellnessHomePage: React.FC = () => {
     return (
         <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
             <Text fontSize="2xl" fontWeight="bold" color={colors.journeys.health.text}>
-                AI Wellness Companion
+                {t('wellness.title')}
             </Text>
             <Text fontSize="md" color={colors.gray[50]} style={{ marginTop: spacing.xs, marginBottom: spacing.xl }}>
-                Your personal wellness assistant
+                {t('wellness.subtitle')}
             </Text>
 
             <Card journey="health" elevation="sm" padding="md">
                 <Text fontWeight="semiBold" fontSize="lg" style={{ marginBottom: spacing.sm }}>
-                    How are you feeling today?
+                    {t('wellness.mood.question')}
                 </Text>
                 <Box display="flex" justifyContent="space-between" style={{ marginBottom: spacing.sm }}>
                     {MOOD_OPTIONS.map((mood) => (
                         <button
                             key={mood.value}
                             onClick={() => handleMoodSelect(mood.value)}
-                            aria-label={mood.label}
+                            aria-label={t(mood.labelKey)}
                             style={{
                                 width: 56,
                                 height: 56,
@@ -105,10 +107,10 @@ const WellnessHomePage: React.FC = () => {
                 </Box>
                 <Box display="flex" justifyContent="space-between">
                     <Text fontSize="xs" color={colors.gray[40]}>
-                        Very Bad
+                        {t('wellness.mood.veryBad')}
                     </Text>
                     <Text fontSize="xs" color={colors.gray[40]}>
-                        Very Good
+                        {t('wellness.mood.veryGood')}
                     </Text>
                 </Box>
             </Card>
@@ -118,9 +120,9 @@ const WellnessHomePage: React.FC = () => {
                     variant="primary"
                     journey="health"
                     onPress={() => void router.push('/wellness/chat')}
-                    accessibilityLabel="Start new chat"
+                    accessibilityLabel={t('wellness.actions.startChat')}
                 >
-                    Start New Chat
+                    {t('wellness.actions.startChat')}
                 </Button>
                 <Button
                     variant="secondary"
@@ -129,9 +131,9 @@ const WellnessHomePage: React.FC = () => {
                         handleMoodSubmit();
                         void router.push('/wellness/mood');
                     }}
-                    accessibilityLabel="View mood history"
+                    accessibilityLabel={t('wellness.actions.moodHistory')}
                 >
-                    Mood History
+                    {t('wellness.actions.moodHistory')}
                 </Button>
             </Box>
 
@@ -141,7 +143,7 @@ const WellnessHomePage: React.FC = () => {
                 color={colors.journeys.health.text}
                 style={{ marginBottom: spacing.sm }}
             >
-                Recent Conversations
+                {t('wellness.conversations.title')}
             </Text>
             <div style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm, marginBottom: spacing['2xl'] }}>
                 {recentMessages.length > 0 ? (
@@ -174,7 +176,9 @@ const WellnessHomePage: React.FC = () => {
                                         </Text>
                                     </Box>
                                     <Text fontSize="xs" fontWeight="semiBold" color={colors.journeys.health.primary}>
-                                        {msg.role === 'user' ? 'You' : 'AI'}
+                                        {msg.role === 'user'
+                                            ? t('wellness.conversations.you')
+                                            : t('wellness.conversations.ai')}
                                     </Text>
                                 </Box>
                             </Card>
@@ -182,7 +186,7 @@ const WellnessHomePage: React.FC = () => {
                     ))
                 ) : (
                     <Text fontSize="sm" color={colors.gray[40]}>
-                        No recent conversations
+                        {t('wellness.conversations.empty')}
                     </Text>
                 )}
             </div>
@@ -193,7 +197,7 @@ const WellnessHomePage: React.FC = () => {
                 color={colors.journeys.health.text}
                 style={{ marginBottom: spacing.sm }}
             >
-                Explore
+                {t('wellness.explore.title')}
             </Text>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: spacing.sm }}>
                 {NAV_LINKS.map((link) => (
@@ -202,9 +206,9 @@ const WellnessHomePage: React.FC = () => {
                         variant="secondary"
                         journey="health"
                         onPress={() => void router.push(link.href)}
-                        accessibilityLabel={link.label}
+                        accessibilityLabel={t(link.labelKey)}
                     >
-                        {link.label}
+                        {t(link.labelKey)}
                     </Button>
                 ))}
             </div>

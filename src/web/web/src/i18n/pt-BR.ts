@@ -115,6 +115,7 @@ const translation = {
     journeys: {
         health: {
             title: 'Minha Saúde',
+            subtitle: 'Acompanhe suas métricas de saúde, metas e integrações.',
             dashboard: 'Painel de Saúde',
             metrics: {
                 title: 'Métricas de Saúde',
@@ -184,6 +185,9 @@ const translation = {
         care: {
             title: 'Cuidar-me Agora',
             dashboard: 'Painel de Cuidados',
+            loadingDashboard: 'Carregando painel de cuidados...',
+            errorLoading: 'Erro ao carregar dados de cuidados.',
+            appointmentCount: 'Você tem {{count}} consulta(s).',
             appointments: {
                 title: 'Consultas',
                 upcoming: 'Próximas Consultas',
@@ -285,7 +289,21 @@ const translation = {
         },
         plan: {
             title: 'Meu Plano & Benefícios',
+            subtitle: 'Gerencie seu plano, cobertura e solicitações.',
             dashboard: 'Painel do Plano',
+            stats: {
+                totalClaims: 'Total de Solicitações',
+                activeBenefits: 'Benefícios Ativos',
+                coverage: 'Cobertura',
+            },
+            recentClaims: 'Solicitações Recentes',
+            viewAll: 'Ver todas',
+            quickActions: {
+                title: 'Ações Rápidas',
+                viewCoverage: 'Ver Cobertura',
+                newClaim: 'Nova Solicitação',
+                costSimulator: 'Simulador de Custos',
+            },
             coverage: {
                 title: 'Informações de Cobertura',
                 planDetails: 'Detalhes do Plano',
@@ -380,6 +398,15 @@ const translation = {
             all: 'Todas as Conquistas',
             locked: 'Conquistas Bloqueadas',
             completed: 'Conquistas Concluídas',
+            loading: 'Carregando conquistas...',
+            error: 'Erro ao carregar conquistas. Tente novamente mais tarde.',
+            empty: 'Nenhuma conquista obtida ainda. Complete missões para desbloquear conquistas!',
+            xpToNext: '{{value}} XP para o próximo nível',
+            journeyLabel: {
+                health: 'Minha Saúde',
+                care: 'Cuidado Agora',
+                plan: 'Meu Plano',
+            },
         },
         quests: {
             title: 'Missões',
@@ -391,6 +418,7 @@ const translation = {
             timeRemaining: 'Tempo Restante: {{time}}',
             startQuest: 'Iniciar Missão',
             completeQuest: 'Concluir Missão',
+            activeCount: '{{count}} missões ativas',
         },
         rewards: {
             title: 'Recompensas',
@@ -400,6 +428,7 @@ const translation = {
             pointsNeeded: '{{points}} pontos necessários',
             expiresOn: 'Expira em {{date}}',
             redeemSuccess: 'Recompensa resgatada com sucesso!',
+            subtitle: 'Resgate seu XP',
         },
         leaderboard: {
             title: 'Classificação',
@@ -410,6 +439,66 @@ const translation = {
             user: 'Usuário',
             score: 'Pontuação',
             yourRank: 'Sua Posição',
+            subtitle: 'Veja sua classificação',
+        },
+    },
+    home: {
+        welcome: 'Bem-vindo de volta!',
+        subtitle: 'Acompanhe sua saúde e bem-estar em um só lugar.',
+        sections: {
+            yourJourneys: 'Suas Jornadas',
+            healthMetrics: 'Métricas de Saúde',
+            upcomingAppointments: 'Próximas Consultas',
+            recentClaims: 'Sinistros Recentes',
+            quickActions: 'Ações Rápidas',
+            recentActivity: 'Atividade Recente',
+            achievements: 'Conquistas',
+        },
+        viewAll: 'Ver todas',
+        quickActions: {
+            addMetric: 'Adicionar Métrica',
+            bookAppointment: 'Agendar Consulta',
+            viewAlerts: 'Ver Alertas',
+            myProfile: 'Meu Perfil',
+        },
+        journeyDescriptions: {
+            health: 'Acompanhe suas métricas de saúde, metas e integrações.',
+            care: 'Encontre profissionais, agende consultas e telemedicina.',
+            plan: 'Veja cobertura, envie sinistros e simule custos.',
+        },
+    },
+    wellness: {
+        title: 'Assistente de Bem-estar IA',
+        subtitle: 'Seu assistente pessoal de bem-estar',
+        mood: {
+            question: 'Como você está se sentindo hoje?',
+            veryBad: 'Muito Mal',
+            bad: 'Mal',
+            neutral: 'Neutro',
+            good: 'Bem',
+            veryGood: 'Muito Bem',
+        },
+        actions: {
+            startChat: 'Iniciar Novo Chat',
+            moodHistory: 'Histórico de Humor',
+        },
+        conversations: {
+            title: 'Conversas Recentes',
+            empty: 'Sem conversas recentes',
+            you: 'Você',
+            ai: 'IA',
+        },
+        explore: {
+            title: 'Explorar',
+            chat: 'Chat',
+            breathing: 'Respiração',
+            meditation: 'Meditação',
+            dailyPlan: 'Plano Diário',
+            insights: 'Insights',
+            goals: 'Metas',
+            journal: 'Diário',
+            challenges: 'Desafios',
+            streaks: 'Sequências',
         },
     },
     profile: {
