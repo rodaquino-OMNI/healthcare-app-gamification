@@ -93,6 +93,22 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
         return { type: 'sourceFile', filePath: DEMO_MOCKS[moduleName] };
     }
 
+    // Redirect deep @austa/design-system/* imports to the worktree's design-system.
+    // pnpm symlinks in node_modules are relative to the main repo, not the worktree,
+    // so Metro can't follow them. Rewrite to the worktree-local path instead.
+    if (moduleName.startsWith('@austa/design-system/')) {
+        const subPath = moduleName.replace('@austa/design-system/', '');
+        const dsLocal = path.resolve(DS_SRC, '..', subPath);
+        // Try each Metro extension
+        const exts = ['.native.tsx', '.native.ts', '.tsx', '.ts', '.js', ''];
+        for (const ext of exts) {
+            const candidate = dsLocal + ext;
+            if (fs.existsSync(candidate)) {
+                return { type: 'sourceFile', filePath: candidate };
+            }
+        }
+    }
+
     // Resolve @design-system/* imports to .native.tsx variants when available.
     // If no .native.tsx exists, return a stub to prevent loading web code that crashes RN.
     if (platform !== 'web') {
