@@ -2,6 +2,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { useProfile } from '@/hooks/useProfile';
@@ -144,6 +145,7 @@ interface NotificationPreference {
 export const getServerSideProps = () => ({ props: {} });
 
 export default function NotificationPreferencesPage(): React.ReactElement {
+    const { t: _t } = useTranslation();
     const { profile: _profile } = useProfile();
     const [preferences, setPreferences] = useState<NotificationPreference[]>([
         {

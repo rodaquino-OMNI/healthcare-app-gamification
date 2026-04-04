@@ -8,6 +8,7 @@ import { spacing } from 'design-system/tokens/spacing';
 import type { GetStaticPaths } from 'next';
 import Link from 'next/link';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Reward } from 'shared/types/gamification.types';
 
 import { useGameProfile } from '@/hooks/useGamification';
@@ -121,6 +122,7 @@ const JOURNEY_LABELS: Record<string, string> = {
  * terms and conditions, and a claim button.
  */
 const RewardDetailPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { id } = router.query;
     const rewardId = Array.isArray(id) ? id[0] : id;

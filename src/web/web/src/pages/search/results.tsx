@@ -2,6 +2,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { WEB_GLOBAL_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
@@ -125,6 +126,7 @@ const EmptyDescription = styled.p`
 export const getServerSideProps = () => ({ props: {} });
 
 export default function SearchResultsPage(): React.ReactElement {
+    const { t } = useTranslation();
     const router = useRouter();
     const urlQuery = (router.query.q as string) || '';
     const { query, setQuery, results, isSearching: loading, error, search } = useSearch();
@@ -158,7 +160,9 @@ export default function SearchResultsPage(): React.ReactElement {
 
                 <SearchHeader>
                     <QueryText>Resultados para &quot;{query || urlQuery}&quot;</QueryText>
-                    <ResultCount>{loading ? 'Buscando...' : `${results.length} resultados encontrados`}</ResultCount>
+                    <ResultCount>
+                        {loading ? t('common.loading') : `${results.length} resultados encontrados`}
+                    </ResultCount>
                 </SearchHeader>
 
                 {error ? (

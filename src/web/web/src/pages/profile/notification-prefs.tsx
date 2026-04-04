@@ -3,6 +3,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React, { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { useProfile } from '@/hooks/useProfile';
@@ -187,6 +188,7 @@ const PREFS: PrefItem[] = [
 export const getServerSideProps = () => ({ props: {} });
 
 export default function NotificationPrefsPage(): React.ReactElement {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { profile: _profile } = useProfile();
 

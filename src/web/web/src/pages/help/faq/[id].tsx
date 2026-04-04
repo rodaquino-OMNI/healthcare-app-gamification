@@ -1,6 +1,7 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { GetStaticPaths, NextPage } from 'next';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '@/hooks/useAuth';
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
@@ -47,6 +48,7 @@ const DEFAULT_ARTICLE: FaqArticle = {
  * Shows a full FAQ article based on the route ID.
  */
 const FaqArticlePage: NextPage = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { isAuthenticated: _isAuthenticated } = useAuth();
     const { id } = router.query;

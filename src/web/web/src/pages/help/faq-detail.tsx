@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '@/hooks/useAuth';
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
@@ -69,6 +70,7 @@ Dica: Configure lembretes alguns minutos antes do horário real para ter tempo d
  * Displays related topics and helpful Sim/Não buttons for feedback.
  */
 const FAQDetailPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { isAuthenticated: _isAuthenticated } = useAuth();
     const { id } = router.query;

@@ -2,6 +2,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
@@ -131,6 +132,7 @@ const OTP_LENGTH = 6;
 export const getServerSideProps = () => ({ props: {} });
 
 export default function EmailVerifyPage(): React.ReactElement {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { isLoading: isAuthLoading, error: authError } = useAuth();
     const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(''));

@@ -2,6 +2,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
@@ -140,6 +141,7 @@ const ErrorText = styled.p`
 export const getServerSideProps = () => ({ props: {} });
 
 export default function ForgotPasswordPage(): React.ReactElement {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { isLoading: isAuthLoading } = useAuth();
     const [email, setEmail] = useState('');

@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { useWellness } from '@/hooks/useWellness';
@@ -22,6 +23,7 @@ const PLACEHOLDER_SESSION_ID = 'session-1';
 const QUICK_SUGGESTIONS = ['Breathing exercise', 'Sleep tips', 'Stress management', 'Meditation guide'];
 
 const ChatPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { chatHistory, quickReplies, sendMessage, loadChatHistory, loadQuickReplies } = useWellness();
     const [messages, setMessages] = useState<Message[]>([]);

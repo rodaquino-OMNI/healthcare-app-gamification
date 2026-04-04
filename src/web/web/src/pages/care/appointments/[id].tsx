@@ -1,6 +1,7 @@
 import { AppointmentCard } from 'design-system/care/AppointmentCard/AppointmentCard';
 import type { GetStaticPaths } from 'next';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
 import { useAppointments } from '@/hooks/useAppointments';
@@ -17,15 +18,16 @@ const AppointmentDetail: React.FC = () => {
 
     // LD1: Fetches the appointment data using the `useAppointments` hook.
     const { loading, error, appointments } = useAppointments();
+    const { t } = useTranslation();
 
     // LD1: Renders a loading state if the appointment data is still being fetched.
     if (loading) {
-        return <div>Loading appointment details...</div>;
+        return <div>{t('common.loading')}</div>;
     }
 
     // LD1: Renders an error state if there was an error fetching the appointment data.
     if (error) {
-        return <div>Error: {error.message}</div>;
+        return <div>{t('common.error')}</div>;
     }
 
     // LD1: Filters the appointments array to find the appointment with the matching ID.

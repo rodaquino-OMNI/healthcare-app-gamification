@@ -8,6 +8,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import Link from 'next/link';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Reward } from 'shared/types/gamification.types';
 
 import { useGameProfile } from '@/hooks/useGamification';
@@ -100,6 +101,7 @@ const SORT_LABELS: Record<SortOption, string> = {
  * Includes journey filters, sort options, and XP balance header.
  */
 const RewardsPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     const userId = 'user-123';
     const { data } = useGameProfile(userId);
     const [journeyFilter, setJourneyFilter] = useState<JourneyFilter>('all');

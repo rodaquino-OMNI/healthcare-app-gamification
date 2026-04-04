@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useNutrition } from '@/hooks';
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
@@ -28,6 +29,7 @@ const inputStyle: React.CSSProperties = {
 };
 
 const MealLogPage: React.FC = () => {
+    const { t } = useTranslation();
     const { data: nutritionData, loading, error, refetch } = useNutrition();
     const router = useRouter();
     const [foodName, setFoodName] = useState('');
@@ -37,7 +39,7 @@ const MealLogPage: React.FC = () => {
     if (loading) {
         return (
             <div style={{ padding: '24px' }}>
-                <p>Loading...</p>
+                <p>{t('common.loading')}</p>
             </div>
         );
     }
@@ -45,7 +47,7 @@ const MealLogPage: React.FC = () => {
         return (
             <div style={{ padding: '24px' }}>
                 <p>
-                    Error loading data. <button onClick={refetch}>Retry</button>
+                    {t('common.error')} <button onClick={refetch}>Retry</button>
                 </p>
             </div>
         );

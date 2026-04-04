@@ -3,6 +3,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useNotifications } from '@/hooks/useNotifications';
 
@@ -97,6 +98,7 @@ const MOCK_NOTIFICATIONS: CategoryNotification[] = [
 ];
 
 const CategoryFilterPage: React.FC = () => {
+    const { t } = useTranslation();
     const [active, setActive] = useState<CategoryType>('all');
     const { notifications, isLoading } = useNotifications();
 
@@ -120,7 +122,7 @@ const CategoryFilterPage: React.FC = () => {
     if (isLoading) {
         return (
             <div style={styles.container}>
-                <p>Carregando notificacoes...</p>
+                <p>{t('common.loading')}</p>
             </div>
         );
     }

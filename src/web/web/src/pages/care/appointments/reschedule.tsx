@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
 import { useAppointments } from '@/hooks';
@@ -21,6 +22,7 @@ const ReschedulePage: React.FC = () => {
     const [selectedDay, setSelectedDay] = useState<number | null>(null);
     const [selectedTime, setSelectedTime] = useState<string | null>(null);
     const [selectedReason, setSelectedReason] = useState('');
+    const { t } = useTranslation();
 
     if (loading) {
         return (
@@ -28,7 +30,7 @@ const ReschedulePage: React.FC = () => {
                 <JourneyHeader title="Reagendar Consulta" />
                 <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
                     <Text fontSize="md" color={colors.gray[50]}>
-                        Carregando...
+                        {t('common.loading')}
                     </Text>
                 </div>
             </CareLayout>
@@ -41,7 +43,7 @@ const ReschedulePage: React.FC = () => {
                 <JourneyHeader title="Reagendar Consulta" />
                 <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
                     <Text fontSize="md" color={colors.semantic.error}>
-                        Erro ao carregar dados. Tente novamente.
+                        {t('common.error')}
                     </Text>
                 </div>
             </CareLayout>

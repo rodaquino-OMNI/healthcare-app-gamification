@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
 import { useAppointments } from '@/hooks';
@@ -74,13 +75,14 @@ const ReviewsPage: React.FC = () => {
     const router = useRouter();
     const { appointments: _appointments, loading, error } = useAppointments();
     const [sortBy, setSortBy] = useState('Mais Recentes');
+    const { t } = useTranslation();
     if (loading) {
         return (
             <CareLayout>
                 <JourneyHeader title="Avaliacoes do Medico" />
                 <div style={{ maxWidth: '960px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
                     <Text fontSize="md" color={colors.gray[50]}>
-                        Carregando...
+                        {t('common.loading')}
                     </Text>
                 </div>
             </CareLayout>
@@ -93,7 +95,7 @@ const ReviewsPage: React.FC = () => {
                 <JourneyHeader title="Avaliacoes do Medico" />
                 <div style={{ maxWidth: '960px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
                     <Text fontSize="md" color={colors.semantic.error}>
-                        Erro ao carregar avaliacoes. Tente novamente.
+                        {t('common.error')}
                     </Text>
                 </div>
             </CareLayout>

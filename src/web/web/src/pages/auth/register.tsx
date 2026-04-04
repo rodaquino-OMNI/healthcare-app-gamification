@@ -8,6 +8,7 @@ import { colors } from 'design-system/tokens/colors';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 import { z } from 'zod';
 
@@ -49,6 +50,7 @@ const validationSchema = z
 export const getServerSideProps = () => ({ props: {} });
 
 const Register: React.FC = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { register: registerUser } = useAuth();
     const [submitError, setSubmitError] = useState<string | null>(null);

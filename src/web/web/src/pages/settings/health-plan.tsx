@@ -1,6 +1,7 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { useSettings } from '@/hooks/useSettings';
@@ -12,6 +13,7 @@ const { plan } = colors.journeys;
  * Displays current plan details and member information.
  */
 const HealthPlanPage: NextPage = () => {
+    const { t } = useTranslation();
     const router = useRouter();
     const { isLoading, error } = useSettings();
 
@@ -45,7 +47,7 @@ const HealthPlanPage: NextPage = () => {
                         marginBottom: spacing.md,
                     }}
                 >
-                    Carregando...
+                    {t('common.loading')}
                 </p>
             )}
             {error && (

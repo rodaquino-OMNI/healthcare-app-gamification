@@ -3,6 +3,7 @@ import { colors, typography, spacing, borderRadius } from 'design-system/tokens'
 import { NextPage } from 'next';
 import Head from 'next/head';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useAuth, usePlan } from '@/hooks';
 
@@ -15,6 +16,7 @@ const { plan } = colors.journeys;
  * for the user's health plan with share and download actions.
  */
 const DigitalCardPage: NextPage = () => {
+    const { t } = useTranslation();
     const { session, status, isLoading: authIsLoading } = useAuth();
     const { digitalCard: digitalCardData, isLoading, error: planError } = usePlan();
 
@@ -34,7 +36,7 @@ const DigitalCardPage: NextPage = () => {
                         fontSize: typography.fontSize['text-md'],
                     }}
                 >
-                    Carregando cartao digital...
+                    {t('common.loading')}
                 </div>
             </PlanLayout>
         );
@@ -54,7 +56,7 @@ const DigitalCardPage: NextPage = () => {
                         fontSize: typography.fontSize['text-md'],
                     }}
                 >
-                    Erro ao carregar cartao digital: {error.message}
+                    {t('common.error')}: {error.message}
                 </div>
             </PlanLayout>
         );

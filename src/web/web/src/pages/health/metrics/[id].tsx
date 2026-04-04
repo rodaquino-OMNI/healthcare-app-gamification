@@ -3,6 +3,7 @@ import { Text } from 'design-system/components/index';
 import { MetricCard } from 'design-system/health/index';
 import type { GetStaticPaths } from 'next';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { HealthMetric } from 'shared/types/health.types';
 import { formatRelativeDate } from 'shared/utils/date';
 import { formatHealthMetric } from 'shared/utils/format';
@@ -16,6 +17,7 @@ import HealthLayout from '@/layouts/HealthLayout';
  * It fetches the metric ID from the URL and uses the useHealthMetrics hook to retrieve data.
  */
 const MetricDetail: React.FC = () => {
+    const { t } = useTranslation();
     // IE1: Access the Next.js router object
     const router = useRouter();
     // IE1: Extract the metric ID from the dynamic route
@@ -27,7 +29,7 @@ const MetricDetail: React.FC = () => {
 
     // Check if the ID is valid before proceeding
     if (!metricId) {
-        return <div>Invalid metric ID</div>;
+        return <div>{t('common.error')}</div>;
     }
 
     // Find the specific metric based on the ID
@@ -35,17 +37,17 @@ const MetricDetail: React.FC = () => {
 
     // Handle loading state
     if (loading) {
-        return <div>Loading...</div>;
+        return <div>{t('common.loading')}</div>;
     }
 
     // Handle error state
     if (error) {
-        return <div>Error: {error.message}</div>;
+        return <div>{t('common.error')}</div>;
     }
 
     // Handle case where metric is not found
     if (!metric) {
-        return <div>Metric not found</div>;
+        return <div>{t('common.error')}</div>;
     }
 
     // IE1: Format the metric value and timestamp

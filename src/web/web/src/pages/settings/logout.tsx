@@ -1,6 +1,7 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { logout as apiLogout } from '@/api/auth';
 import { useAuth } from '@/hooks/useAuth';
@@ -11,6 +12,7 @@ import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
  * Asks users to confirm before signing out.
  */
 const LogoutPage: NextPage = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { logout } = useAuth();
     const [loading, setLoading] = useState(false);

@@ -4,6 +4,7 @@ import { shadows } from 'design-system/tokens/shadows';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { MainLayout } from '@/components/index';
 import { useAuth } from '@/hooks/useAuth';
@@ -138,6 +139,7 @@ const formatTimestamp = (timestamp: string): string => {
  * with severity badges, dismiss functionality, and action buttons.
  */
 const AlertPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { isAuthenticated: _isAuthenticated } = useAuth();
     const [alerts, setAlerts] = useState<HealthAlert[]>(INITIAL_ALERTS);

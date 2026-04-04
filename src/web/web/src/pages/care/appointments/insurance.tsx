@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
 import { useAppointments } from '@/hooks';
@@ -28,6 +29,7 @@ const InsurancePage: React.FC = () => {
     const { appointments: _appointments, loading, error } = useAppointments();
     const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
     const [verified, setVerified] = useState(false);
+    const { t } = useTranslation();
 
     if (loading) {
         return (
@@ -35,7 +37,7 @@ const InsurancePage: React.FC = () => {
                 <JourneyHeader title="Verificacao de Convenio" />
                 <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
                     <Text fontSize="md" color={colors.gray[50]}>
-                        Carregando...
+                        {t('common.loading')}
                     </Text>
                 </div>
             </CareLayout>
@@ -48,7 +50,7 @@ const InsurancePage: React.FC = () => {
                 <JourneyHeader title="Verificacao de Convenio" />
                 <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
                     <Text fontSize="md" color={colors.semantic.error}>
-                        Erro ao carregar planos. Tente novamente.
+                        {t('common.error')}
                     </Text>
                 </div>
             </CareLayout>

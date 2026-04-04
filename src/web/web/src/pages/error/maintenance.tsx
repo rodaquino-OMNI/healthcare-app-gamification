@@ -2,10 +2,12 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '@/hooks/useAuth';
 
 const MaintenancePage: React.FC = () => {
+    const { t: _t } = useTranslation();
     const { isAuthenticated: _isAuthenticated } = useAuth();
     const estimatedTime = '2 horas';
 

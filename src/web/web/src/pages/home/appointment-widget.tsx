@@ -3,6 +3,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useAppointments } from '@/hooks';
 
@@ -39,6 +40,7 @@ const MOCK_APPOINTMENTS: Appointment[] = [
 ];
 
 const AppointmentWidgetPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     useAppointments();
 
     return (

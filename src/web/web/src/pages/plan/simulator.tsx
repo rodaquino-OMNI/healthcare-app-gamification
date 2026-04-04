@@ -1,6 +1,7 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { usePlan } from '@/hooks';
 
@@ -36,6 +37,7 @@ const PROVIDER_OPTIONS = [
  * based on procedure type and provider network.
  */
 const CostSimulatorPage: NextPage = () => {
+    const { t: _t } = useTranslation();
     const [procedureType, setProcedureType] = useState('');
     const [providerType, setProviderType] = useState('');
     const [customAmount, setCustomAmount] = useState('');

@@ -1,6 +1,7 @@
 import { Button } from 'design-system/components/Button/Button';
 import { Input } from 'design-system/components/Input/Input';
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
@@ -13,6 +14,7 @@ import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter'; // next/rout
  * @returns The rendered settings page.
  */
 const Settings: React.FC = () => {
+    const { t: _t } = useTranslation();
     // LD1: Uses the useRouter hook to get the router object.
     const router = useRouter();
 

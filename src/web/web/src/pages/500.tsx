@@ -2,11 +2,13 @@ import { colors } from 'design-system/tokens/colors';
 import type { NextPage } from 'next';
 import Image from 'next/image';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires -- static PNG asset
 const errorIllustration = require('@austa/design-system/assets/illustrations/error-utility/error-utility-02.png');
 
 const ServerErrorPage: NextPage = () => {
+    const { t: _t } = useTranslation();
     // Care journey color - used for error pages to signal attention and care
     const careJourneyColor = colors.journeys.care.primary;
 

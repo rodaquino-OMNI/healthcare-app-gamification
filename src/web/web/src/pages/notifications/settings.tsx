@@ -3,6 +3,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useNotifications } from '@/hooks/useNotifications';
 
@@ -15,6 +16,7 @@ interface NotificationToggles {
 }
 
 const NotificationSettingsPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     const { unreadCount: _unreadCount } = useNotifications();
     const [toggles, setToggles] = useState<NotificationToggles>({
         healthUpdates: true,

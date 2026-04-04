@@ -1,6 +1,7 @@
 import { Button } from 'design-system/components/Button/Button';
 import { Card } from 'design-system/components/Card/Card';
 import React from 'react'; // React v18.0+
+import { useTranslation } from 'react-i18next';
 
 import { useAppointments } from '@/hooks/useAppointments';
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter'; // next/router v13.0+
@@ -16,12 +17,13 @@ const TreatmentPlans: React.FC = () => {
 
     // Access the Next.js router for navigation.
     const router = useRouter();
+    const { t } = useTranslation();
 
     // Handle loading state: display a loading indicator while the data is being fetched.
     if (loading) {
         return (
             <CareLayout>
-                <div>Loading treatment plans...</div>
+                <div>{t('common.loading')}</div>
             </CareLayout>
         );
     }
@@ -30,7 +32,7 @@ const TreatmentPlans: React.FC = () => {
     if (error) {
         return (
             <CareLayout>
-                <div>Error fetching treatment plans.</div>
+                <div>{t('common.error')}</div>
             </CareLayout>
         );
     }

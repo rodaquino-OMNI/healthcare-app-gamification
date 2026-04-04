@@ -3,6 +3,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NotificationStatus } from 'shared/types';
 
 import { useNotifications } from '@/hooks/useNotifications';
@@ -64,6 +65,7 @@ const MOCK_UNREAD: UnreadNotification[] = [
 ];
 
 const UnreadNotificationsPage: React.FC = () => {
+    const { t } = useTranslation();
     const { notifications: allNotifications, isLoading, markAsRead, unreadCount } = useNotifications();
 
     const notifications: UnreadNotification[] = useMemo(() => {
@@ -88,7 +90,7 @@ const UnreadNotificationsPage: React.FC = () => {
     if (isLoading) {
         return (
             <div style={styles.container}>
-                <p>Carregando notificacoes...</p>
+                <p>{t('common.loading')}</p>
             </div>
         );
     }

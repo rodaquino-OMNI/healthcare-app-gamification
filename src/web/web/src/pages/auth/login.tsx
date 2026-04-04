@@ -5,6 +5,7 @@ import { Box } from 'design-system/primitives/Box/Box';
 import { Text } from 'design-system/primitives/Text/Text';
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 import { loginValidationSchema } from 'shared/utils/validation';
 
@@ -20,6 +21,7 @@ interface LoginFormData {
 export const getServerSideProps = () => ({ props: {} });
 
 export const Login: React.FC = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { login, isLoading, error: authError } = useAuth();
     const [submitError, setSubmitError] = useState<string | null>(null);

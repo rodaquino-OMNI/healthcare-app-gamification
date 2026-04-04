@@ -3,6 +3,7 @@ import { Box, Text } from 'design-system/primitives';
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import Head from 'next/head';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Coverage } from 'shared/types/plan.types';
 
 import { useAuth, useCoverage } from '@/hooks';
@@ -17,6 +18,7 @@ const { plan } = colors.journeys;
  * The main component for the coverage page that displays insurance coverage information.
  */
 const CoveragePage: React.FC = () => {
+    const { t } = useTranslation();
     const { session } = useAuth();
     const planId = session?.accessToken ?? '';
     const { data: coverageData, isLoading, isError, refetch } = useCoverage(planId);
@@ -31,7 +33,7 @@ const CoveragePage: React.FC = () => {
     if (isLoading) {
         return (
             <PlanLayout>
-                <LoadingIndicator text="Carregando informacoes de cobertura..." />
+                <LoadingIndicator text={t('common.loading')} />
             </PlanLayout>
         );
     }

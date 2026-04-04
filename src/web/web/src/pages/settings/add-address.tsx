@@ -1,6 +1,7 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { useSettings } from '@/hooks/useSettings';
@@ -10,6 +11,7 @@ import { useSettings } from '@/hooks/useSettings';
  * Allows users to register a new address.
  */
 const AddAddressPage: NextPage = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { lookupCep, saveAddress } = useSettings();
     const [label, setLabel] = useState('');

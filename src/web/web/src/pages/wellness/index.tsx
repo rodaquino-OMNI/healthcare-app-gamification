@@ -46,7 +46,7 @@ const WellnessHomePage: React.FC = () => {
         setSelectedMood(value);
     };
 
-    const handleMoodSubmit = (): void => {
+    const handleMoodSubmit = async (): Promise<void> => {
         if (selectedMood === null) {
             return;
         }
@@ -57,11 +57,15 @@ const WellnessHomePage: React.FC = () => {
             2: 'bad',
             1: 'terrible',
         };
-        void submitMood(PLACEHOLDER_USER_ID, {
-            mood: moodMap[selectedMood] ?? 'okay',
-            energy: selectedMood,
-            stress: 6 - selectedMood,
-        });
+        try {
+            await submitMood(PLACEHOLDER_USER_ID, {
+                mood: moodMap[selectedMood] ?? 'okay',
+                energy: selectedMood,
+                stress: 6 - selectedMood,
+            });
+        } catch {
+            // Error is already captured in useWellness state
+        }
     };
 
     const recentMessages = chatHistory?.messages.slice(-3) ?? [];

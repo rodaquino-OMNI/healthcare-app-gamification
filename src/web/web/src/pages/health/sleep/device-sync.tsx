@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSleep } from '@/hooks';
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
@@ -16,6 +17,7 @@ const DATA_SOURCES = [
 ];
 
 const DeviceSyncPage: React.FC = () => {
+    const { t } = useTranslation();
     const { data: sleepData, loading, error, refetch } = useSleep();
     const router = useRouter();
     const [source, setSource] = useState('manual');
@@ -24,7 +26,7 @@ const DeviceSyncPage: React.FC = () => {
     if (loading) {
         return (
             <div style={{ padding: '24px' }}>
-                <p>Loading...</p>
+                <p>{t('common.loading')}</p>
             </div>
         );
     }
@@ -32,7 +34,7 @@ const DeviceSyncPage: React.FC = () => {
         return (
             <div style={{ padding: '24px' }}>
                 <p>
-                    Error loading data. <button onClick={refetch}>Retry</button>
+                    {t('common.error')} <button onClick={refetch}>Retry</button>
                 </p>
             </div>
         );

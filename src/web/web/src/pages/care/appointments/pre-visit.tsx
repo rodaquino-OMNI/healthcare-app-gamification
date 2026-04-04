@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
 import { useAppointments } from '@/hooks';
@@ -44,6 +45,7 @@ const PreVisitPage: React.FC = () => {
     const router = useRouter();
     const { appointments: _appointments, loading, error } = useAppointments();
     const [checklist, setChecklist] = useState(INITIAL_CHECKLIST);
+    const { t } = useTranslation();
 
     if (loading) {
         return (
@@ -51,7 +53,7 @@ const PreVisitPage: React.FC = () => {
                 <JourneyHeader title="Checklist Pre-Consulta" />
                 <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
                     <Text fontSize="md" color={colors.gray[50]}>
-                        Carregando...
+                        {t('common.loading')}
                     </Text>
                 </div>
             </CareLayout>
@@ -64,7 +66,7 @@ const PreVisitPage: React.FC = () => {
                 <JourneyHeader title="Checklist Pre-Consulta" />
                 <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
                     <Text fontSize="md" color={colors.semantic.error}>
-                        Erro ao carregar dados. Tente novamente.
+                        {t('common.error')}
                     </Text>
                 </div>
             </CareLayout>

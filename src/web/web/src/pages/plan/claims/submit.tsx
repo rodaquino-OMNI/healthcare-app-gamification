@@ -5,6 +5,7 @@ import { Select } from 'design-system/components/Select/Select';
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { claimValidationSchema } from 'shared/utils/validation';
 
 import { FileUploader } from '@/components/shared/FileUploader';
@@ -20,6 +21,7 @@ const STEPS = ['Tipo', 'Detalhes', 'Documentos', 'Revisar'];
  * A React component that renders a multi-step form for submitting insurance claims.
  */
 export const ClaimForm: React.FC = () => {
+    const { t: _t } = useTranslation();
     useJourneyContext();
     const [currentStep, setCurrentStep] = useState(0);
 

@@ -2,6 +2,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { WEB_AUTH_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
@@ -112,6 +113,7 @@ const SecondaryButton = styled.button`
 export const getServerSideProps = () => ({ props: {} });
 
 export default function WelcomePage(): React.ReactElement {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { isAuthenticated: _isAuthenticated, isLoading: _isLoading } = useAuth();
 

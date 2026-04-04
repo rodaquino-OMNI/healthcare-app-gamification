@@ -6,6 +6,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useMedicalRecords } from '@/hooks';
 import type { RecordType } from '@/hooks/useMedicalRecords';
@@ -40,12 +41,13 @@ const MedicalRecordsPage: React.FC = () => {
     const router = useRouter();
     const { records, isLoading, error } = useMedicalRecords();
     const [activeTab, setActiveTab] = useState<FilterTab>('all');
+    const { t } = useTranslation();
 
     if (isLoading) {
         return (
             <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
                 <Text fontSize="md" color={colors.gray[50]}>
-                    Loading medical records...
+                    {t('common.loading')}
                 </Text>
             </div>
         );
@@ -55,7 +57,7 @@ const MedicalRecordsPage: React.FC = () => {
         return (
             <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
                 <Text fontSize="md" color={colors.semantic.error}>
-                    Failed to load medical records.
+                    {t('common.error')}
                 </Text>
             </div>
         );

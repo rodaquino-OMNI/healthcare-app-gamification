@@ -1,6 +1,7 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSettings } from '@/hooks/useSettings';
 
@@ -31,6 +32,7 @@ const MOCK_DEVICES: Device[] = [
  * Allows users to view and manage connected wearables and health devices.
  */
 const ConnectedDevicesPage: NextPage = () => {
+    const { t: _t } = useTranslation();
     const { isLoading: _isLoading } = useSettings();
     const [devices, setDevices] = useState<Device[]>(MOCK_DEVICES);
 

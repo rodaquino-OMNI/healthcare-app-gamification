@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { useWellness } from '@/hooks/useWellness';
@@ -92,6 +93,7 @@ const chipStyle = (selected: boolean): React.CSSProperties => ({
 const PLACEHOLDER_USER_ID = 'me';
 
 const MeditationPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const [activeCategory, setActiveCategory] = useState('All');
     const [playing, setPlaying] = useState<string | null>(null);
@@ -105,7 +107,7 @@ const MeditationPage: React.FC = () => {
         } else {
             setPlaying(track.id);
             const durationMins = parseInt(track.duration, 10) || 10;
-            void startMeditation(PLACEHOLDER_USER_ID, track.category, durationMins);
+            void startMeditation(PLACEHOLDER_USER_ID, track.category, durationMins).catch(() => {});
         }
     };
 

@@ -3,6 +3,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React, { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { useAuth } from '@/hooks/useAuth';
@@ -177,6 +178,7 @@ const GOALS: GoalItem[] = [
 export const getServerSideProps = () => ({ props: {} });
 
 export default function GoalSelectionPage(): React.ReactElement {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { isAuthenticated: _isAuthenticated, session: _session } = useAuth();
     const [selectedGoals, setSelectedGoals] = useState<string[]>([]);

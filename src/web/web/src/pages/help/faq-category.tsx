@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '@/hooks/useAuth';
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
@@ -48,6 +49,7 @@ const FAQ_ITEMS: FAQItem[] = [
  * Users can click to view answers and navigate to detailed FAQ.
  */
 const FAQCategoryPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { isAuthenticated: _isAuthenticated } = useAuth();
     const [expandedId, setExpandedId] = useState<string | null>(null);

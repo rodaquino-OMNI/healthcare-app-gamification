@@ -6,6 +6,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useVisits } from '@/hooks';
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
@@ -23,12 +24,13 @@ const FollowUpPage: React.FC = () => {
     const router = useRouter();
     const { isLoading, error } = useVisits();
     const suggestions: DateSuggestion[] = [];
+    const { t } = useTranslation();
 
     if (isLoading) {
         return (
             <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
                 <Text fontSize="md" color={colors.gray[50]}>
-                    Loading follow-up options...
+                    {t('common.loading')}
                 </Text>
             </div>
         );
@@ -38,7 +40,7 @@ const FollowUpPage: React.FC = () => {
         return (
             <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
                 <Text fontSize="md" color={colors.semantic.error}>
-                    Failed to load follow-up data.
+                    {t('common.error')}
                 </Text>
             </div>
         );

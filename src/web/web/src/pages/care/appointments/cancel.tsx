@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
 import { useAppointments } from '@/hooks';
@@ -24,6 +25,7 @@ const CancelPage: React.FC = () => {
     const { appointments: _appointments, loading, error } = useAppointments();
     const [reason, setReason] = useState('');
     const [acknowledged, setAcknowledged] = useState(false);
+    const { t } = useTranslation();
 
     if (loading) {
         return (
@@ -31,7 +33,7 @@ const CancelPage: React.FC = () => {
                 <JourneyHeader title="Cancelar Consulta" />
                 <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
                     <Text fontSize="md" color={colors.gray[50]}>
-                        Carregando...
+                        {t('common.loading')}
                     </Text>
                 </div>
             </CareLayout>
@@ -44,7 +46,7 @@ const CancelPage: React.FC = () => {
                 <JourneyHeader title="Cancelar Consulta" />
                 <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
                     <Text fontSize="md" color={colors.semantic.error}>
-                        Erro ao carregar consulta. Tente novamente.
+                        {t('common.error')}
                     </Text>
                 </div>
             </CareLayout>

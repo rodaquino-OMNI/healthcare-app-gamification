@@ -4,6 +4,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useCycle } from '@/hooks';
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
@@ -40,6 +41,7 @@ const generateMonthDays = (): { key: string; day: number }[] => {
 };
 
 const FertilityPage: React.FC = () => {
+    const { t } = useTranslation();
     const router = useRouter();
     const { data: cycleData, loading, error, refetch } = useCycle();
     const calendarDays = useMemo(generateMonthDays, []);
@@ -47,7 +49,7 @@ const FertilityPage: React.FC = () => {
     if (loading) {
         return (
             <div style={{ padding: '24px' }}>
-                <p>Loading...</p>
+                <p>{t('common.loading')}</p>
             </div>
         );
     }
@@ -55,7 +57,7 @@ const FertilityPage: React.FC = () => {
         return (
             <div style={{ padding: '24px' }}>
                 <p>
-                    Error loading data. <button onClick={refetch}>Retry</button>
+                    {t('common.error')} <button onClick={refetch}>Retry</button>
                 </p>
             </div>
         );

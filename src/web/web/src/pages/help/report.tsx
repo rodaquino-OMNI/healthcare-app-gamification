@@ -1,6 +1,7 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { restClient } from '@/api/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -11,6 +12,7 @@ import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
  * Allows users to submit bug reports or issues.
  */
 const ReportPage: NextPage = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { isAuthenticated: _isAuthenticated } = useAuth();
     const [category, setCategory] = useState('');

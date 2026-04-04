@@ -6,6 +6,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import type { GetStaticPaths } from 'next';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useAuth, useHealthMetrics } from '@/hooks';
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
@@ -17,6 +18,7 @@ const RELATED = [
 ];
 
 const ArticleDetailPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { session } = useAuth();
     const userId = session?.userId || '';

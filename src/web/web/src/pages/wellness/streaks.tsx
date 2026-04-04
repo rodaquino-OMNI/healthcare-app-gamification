@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { useWellness } from '@/hooks/useWellness';
@@ -39,6 +40,7 @@ const generateCalendarHeatmap = (): { day: number; active: boolean }[][] => {
 };
 
 const StreaksPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { streaks, loadStreaks } = useWellness();
     const calendarWeeks = generateCalendarHeatmap();

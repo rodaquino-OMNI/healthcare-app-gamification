@@ -6,6 +6,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import type { GetStaticPaths } from 'next';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
@@ -88,6 +89,7 @@ const DoctorProfilePage: React.FC = () => {
     const { id } = router.query;
     const { appointments: _appointments, loading, error } = useAppointments();
     const doctor = MOCK_DOCTOR; // In production, fetch by id
+    const { t } = useTranslation();
 
     if (loading) {
         return (
@@ -95,7 +97,7 @@ const DoctorProfilePage: React.FC = () => {
                 <JourneyHeader title="Perfil do Medico" />
                 <div style={{ maxWidth: '800px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
                     <Text fontSize="md" color={colors.gray[50]}>
-                        Carregando...
+                        {t('common.loading')}
                     </Text>
                 </div>
             </CareLayout>
@@ -108,7 +110,7 @@ const DoctorProfilePage: React.FC = () => {
                 <JourneyHeader title="Perfil do Medico" />
                 <div style={{ maxWidth: '800px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
                     <Text fontSize="md" color={colors.semantic.error}>
-                        Erro ao carregar dados. Tente novamente.
+                        {t('common.error')}
                     </Text>
                 </div>
             </CareLayout>

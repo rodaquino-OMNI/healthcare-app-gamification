@@ -1,6 +1,7 @@
 import { Button } from 'design-system/components/Button/Button';
 import { Card } from 'design-system/components/Card/Card';
 import React, { useState } from 'react'; // react 18.0+
+import { useTranslation } from 'react-i18next';
 // HealthMetric type is inferred from the useHealthMetrics hook
 
 import { HealthGoalForm } from '@/components/forms/HealthGoalForm';
@@ -13,6 +14,7 @@ import { useAuth, useHealthMetrics } from '@/hooks';
  * @returns {JSX.Element} The rendered Health Goals page.
  */
 const HealthGoalsPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     // LD1: Retrieves the user ID from the authentication context using the useAuth hook.
     const { session } = useAuth();
     const userId = session?.user?.id || '';

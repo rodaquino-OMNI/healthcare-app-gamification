@@ -1,6 +1,7 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { changePassword } from '@/api/auth';
 import { useAuth } from '@/hooks/useAuth';
@@ -12,6 +13,7 @@ import { useSettings } from '@/hooks/useSettings';
  * Allows users to update their account password.
  */
 const ChangePasswordPage: NextPage = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { isAuthenticated: _isAuthenticated } = useAuth();
     const { isLoading: _settingsLoading } = useSettings();

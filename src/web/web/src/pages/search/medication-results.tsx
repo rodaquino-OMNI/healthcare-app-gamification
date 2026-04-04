@@ -3,6 +3,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { useSearch } from '@/hooks/useSearch';
@@ -155,6 +156,7 @@ const mockMedications: Medication[] = [
 export const getServerSideProps = () => ({ props: {} });
 
 export default function MedicationResultsPage(): React.ReactElement {
+    const { t: _t } = useTranslation();
     const { query } = useSearch();
     const [selectedFilter, setSelectedFilter] = useState('todos');
 

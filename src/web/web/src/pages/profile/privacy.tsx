@@ -2,6 +2,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { restClient } from '@/api/client';
@@ -249,6 +250,7 @@ interface PrivacySetting {
 export const getServerSideProps = () => ({ props: {} });
 
 export default function PrivacySettingsPage(): React.ReactElement {
+    const { t: _t } = useTranslation();
     const { profile: _profile } = useProfile();
     const [_loading, setLoading] = useState(false);
     const [_error, setError] = useState<string | null>(null);

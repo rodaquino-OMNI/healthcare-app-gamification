@@ -3,6 +3,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { useAuth } from '@/hooks/useAuth';
@@ -199,6 +200,7 @@ const OAUTH_CONFIG: Record<string, OAuthProviderConfig> = {
 export const getServerSideProps = () => ({ props: {} });
 
 export default function SocialAuthPage(): React.ReactElement {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { isAuthenticated: _isAuthenticated, isLoading: _isLoading } = useAuth();
 

@@ -8,6 +8,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import type { GetStaticPaths } from 'next';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
 import { useMedications } from '@/hooks';
@@ -59,6 +60,7 @@ const MOCK_DETAIL: MedicationDetail = {
  * including dose history, adherence progress, and refill information.
  */
 const MedicationDetailPage: React.FC = () => {
+    const { t } = useTranslation();
     const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -66,7 +68,7 @@ const MedicationDetailPage: React.FC = () => {
     if (loading) {
         return (
             <div style={{ padding: '24px' }}>
-                <p>Loading...</p>
+                <p>{t('common.loading')}</p>
             </div>
         );
     }
@@ -74,7 +76,7 @@ const MedicationDetailPage: React.FC = () => {
         return (
             <div style={{ padding: '24px' }}>
                 <p>
-                    Error loading data. <button onClick={refetch}>Retry</button>
+                    {t('common.error')} <button onClick={refetch}>Retry</button>
                 </p>
             </div>
         );

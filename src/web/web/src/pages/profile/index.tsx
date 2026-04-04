@@ -1,4 +1,5 @@
 import React, { useState } from 'react'; // react latest
+import { useTranslation } from 'react-i18next';
 
 import { restClient } from '@/api/client';
 import { ProfileForm } from '@/components/forms/ProfileForm';
@@ -17,6 +18,7 @@ import { MainLayout } from '@/layouts/MainLayout';
  * @returns The rendered profile page.
  */
 const ProfilePage: React.FC = () => {
+    const { t } = useTranslation();
     // LD1: Uses the useAuth hook to get the authentication status and user data.
     const { isLoading: authLoading, isAuthenticated, error: authError, session } = useAuth();
     // LD1: Uses the useProfile hook to load profile data.
@@ -35,7 +37,7 @@ const ProfilePage: React.FC = () => {
     if (isLoading) {
         return (
             <MainLayout>
-                <LoadingIndicator text="Carregando perfil..." />
+                <LoadingIndicator text={t('common.loading')} />
             </MainLayout>
         );
     }
@@ -44,7 +46,7 @@ const ProfilePage: React.FC = () => {
     if (authError) {
         return (
             <MainLayout>
-                <ErrorState message="Falha ao carregar perfil." onRetry={() => router.refresh()} />
+                <ErrorState message={t('common.error')} onRetry={() => router.refresh()} />
             </MainLayout>
         );
     }

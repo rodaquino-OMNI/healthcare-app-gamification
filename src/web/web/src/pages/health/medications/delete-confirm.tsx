@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
 import { useMedications } from '@/hooks';
@@ -15,6 +16,7 @@ import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
  * Shows a warning and provides cancel/delete actions.
  */
 const MedicationDeleteConfirmPage: React.FC = () => {
+    const { t } = useTranslation();
     const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const { name } = router.query;
@@ -22,7 +24,7 @@ const MedicationDeleteConfirmPage: React.FC = () => {
     if (loading) {
         return (
             <div style={{ padding: '24px' }}>
-                <p>Loading...</p>
+                <p>{t('common.loading')}</p>
             </div>
         );
     }
@@ -30,7 +32,7 @@ const MedicationDeleteConfirmPage: React.FC = () => {
         return (
             <div style={{ padding: '24px' }}>
                 <p>
-                    Error loading data. <button onClick={refetch}>Retry</button>
+                    {t('common.error')} <button onClick={refetch}>Retry</button>
                 </p>
             </div>
         );

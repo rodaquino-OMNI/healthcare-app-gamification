@@ -2,6 +2,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { restClient } from '@/api/client';
@@ -358,6 +359,7 @@ const SNOOZE_OPTIONS = [
 export const getServerSideProps = () => ({ props: {} });
 
 export default function MedicationReminderPage(): React.ReactElement {
+    const { t } = useTranslation();
     const { medications, loading: medsLoading, error: medsError, refetch } = useMedications();
     const router = useRouter();
     const medicationName = (router.query.name as string) || 'Medicamento';
@@ -374,7 +376,7 @@ export default function MedicationReminderPage(): React.ReactElement {
     if (medsLoading) {
         return (
             <div style={{ padding: '24px' }}>
-                <p>Loading...</p>
+                <p>{t('common.loading')}</p>
             </div>
         );
     }
@@ -382,7 +384,7 @@ export default function MedicationReminderPage(): React.ReactElement {
         return (
             <div style={{ padding: '24px' }}>
                 <p>
-                    Error loading data. <button onClick={refetch}>Retry</button>
+                    {t('common.error')} <button onClick={refetch}>Retry</button>
                 </p>
             </div>
         );

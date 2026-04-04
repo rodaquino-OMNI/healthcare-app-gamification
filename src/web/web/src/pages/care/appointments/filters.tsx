@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
@@ -58,6 +59,7 @@ const DoctorFiltersPage: React.FC = () => {
         gender: 'any',
         acceptsInsurance: true,
     });
+    const { t } = useTranslation();
 
     if (loading) {
         return (
@@ -65,7 +67,7 @@ const DoctorFiltersPage: React.FC = () => {
                 <JourneyHeader title="Filtros de Busca" />
                 <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
                     <Text fontSize="md" color={colors.gray[50]}>
-                        Carregando...
+                        {t('common.loading')}
                     </Text>
                 </div>
             </CareLayout>
@@ -78,7 +80,7 @@ const DoctorFiltersPage: React.FC = () => {
                 <JourneyHeader title="Filtros de Busca" />
                 <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
                     <Text fontSize="md" color={colors.semantic.error}>
-                        Erro ao carregar dados. Tente novamente.
+                        {t('common.error')}
                     </Text>
                 </div>
             </CareLayout>

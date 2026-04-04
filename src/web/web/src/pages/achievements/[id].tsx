@@ -9,6 +9,7 @@ import { spacing } from 'design-system/tokens/spacing';
 import type { GetStaticPaths } from 'next';
 import Link from 'next/link';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Achievement } from 'shared/types/gamification.types';
 
 import { useGameProfile } from '@/hooks/useGamification';
@@ -31,6 +32,7 @@ const JOURNEY_LABELS: Record<string, string> = {
  * including progress, requirements, and journey context.
  */
 const AchievementDetailPage: React.FC = () => {
+    const { t } = useTranslation();
     const router = useRouter();
     const { id } = router.query;
     const userId = 'user-123';
@@ -39,7 +41,7 @@ const AchievementDetailPage: React.FC = () => {
     if (loading) {
         return (
             <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
-                <Text fontSize="lg">Loading achievement...</Text>
+                <Text fontSize="lg">{t('common.loading')}</Text>
             </div>
         );
     }
@@ -48,7 +50,7 @@ const AchievementDetailPage: React.FC = () => {
         return (
             <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
                 <Text fontSize="lg" color={colors.semantic.error}>
-                    Error loading achievement details.
+                    {t('common.error')}
                 </Text>
             </div>
         );

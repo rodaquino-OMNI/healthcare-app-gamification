@@ -4,11 +4,13 @@ import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import Image from 'next/image';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires -- static PNG asset
 const errorIllustration = require('@austa/design-system/assets/illustrations/error-utility/error-utility-01.png');
 
 const NotFoundPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     return (
         <div
             style={{

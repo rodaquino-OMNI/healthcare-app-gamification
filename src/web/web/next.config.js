@@ -130,7 +130,17 @@ const nextConfig = {
         return config;
     },
 
-    // No redirects — journey pages exist at /health, /care, /plan directly
+    // Redirect legacy Portuguese URLs to canonical English routes.
+    // The original config (pre-dd18dd51) had backwards 301s (/care → /cuidar-me-agora)
+    // pointing to pages that never existed. Those were removed. These reverse redirects
+    // ensure any cached browser 301s or old bookmarks land on the correct page.
+    async redirects() {
+        return [
+            { source: '/minha-saude', destination: '/health', permanent: true },
+            { source: '/cuidar-me-agora', destination: '/care', permanent: true },
+            { source: '/meu-plano-beneficios', destination: '/plan', permanent: true },
+        ];
+    },
 };
 
 // Export the configuration directly

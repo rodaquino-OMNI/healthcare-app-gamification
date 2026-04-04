@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useNutrition } from '@/hooks';
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
@@ -21,6 +22,7 @@ const NAV_LINKS = [
 ];
 
 const NutritionHomePage: React.FC = () => {
+    const { t } = useTranslation();
     const { data: nutritionData, loading, error, refetch } = useNutrition();
     const router = useRouter();
 
@@ -52,7 +54,7 @@ const NutritionHomePage: React.FC = () => {
     if (loading) {
         return (
             <div style={{ padding: '24px' }}>
-                <p>Loading...</p>
+                <p>{t('common.loading')}</p>
             </div>
         );
     }
@@ -60,7 +62,7 @@ const NutritionHomePage: React.FC = () => {
         return (
             <div style={{ padding: '24px' }}>
                 <p>
-                    Error loading data. <button onClick={refetch}>Retry</button>
+                    {t('common.error')} <button onClick={refetch}>Retry</button>
                 </p>
             </div>
         );

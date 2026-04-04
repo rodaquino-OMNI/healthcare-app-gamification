@@ -2,6 +2,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React, { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { WEB_PROFILE_ROUTES } from 'shared/constants/routes';
 import styled from 'styled-components';
 
@@ -149,6 +150,7 @@ const StepIndicator = styled.p`
 export const getServerSideProps = () => ({ props: {} });
 
 export default function ProfilePhotoPage(): React.ReactElement {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { profile: _profile } = useProfile();
     const fileInputRef = useRef<HTMLInputElement>(null);

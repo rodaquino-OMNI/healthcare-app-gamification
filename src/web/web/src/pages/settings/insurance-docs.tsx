@@ -1,6 +1,7 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSettings } from '@/hooks/useSettings';
 
@@ -9,6 +10,7 @@ import { useSettings } from '@/hooks/useSettings';
  * Displays available plan documents for download.
  */
 const InsuranceDocsPage: NextPage = () => {
+    const { t } = useTranslation();
     const { insuranceDocs: docs, isLoading: loading, error: hookError, downloadDoc } = useSettings();
     const [error, setError] = useState('');
 
@@ -52,7 +54,7 @@ const InsuranceDocsPage: NextPage = () => {
                         fontFamily: typography.fontFamily.body,
                     }}
                 >
-                    Carregando documentos...
+                    {t('common.loading')}
                 </p>
             ) : (
                 <div style={cardStyle}>

@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { WEB_CARE_ROUTES } from 'shared/constants/routes';
 
 import { useSymptomChecker } from '@/hooks';
@@ -31,13 +32,14 @@ const HEAD_REGIONS: HeadRegion[] = [
 const HeadDetailPage: React.FC = () => {
     const router = useRouter();
     const { addSymptom: _addSymptom, isLoading, error } = useSymptomChecker();
+    const { t } = useTranslation();
     const [selected, setSelected] = useState<string[]>([]);
 
     if (isLoading) {
         return (
             <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
                 <Text fontSize="md" color={colors.gray[50]}>
-                    Loading...
+                    {t('common.loading')}
                 </Text>
             </div>
         );

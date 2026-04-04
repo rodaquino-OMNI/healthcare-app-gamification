@@ -3,6 +3,7 @@ import { Button, Card } from 'design-system/components';
 import { Box, Text } from 'design-system/primitives';
 import Head from 'next/head'; // next/head v13.0+
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CARE_ROUTES } from 'shared/constants/routes';
 import { Appointment } from 'shared/types/care.types';
 
@@ -31,12 +32,13 @@ const AppointmentsPage: React.FC = () => {
     // LD1: Define state for filtering and sorting appointments
     const [filter, _setFilter] = useState<'upcoming' | 'past' | 'cancelled'>('upcoming');
     const [sort, _setSort] = useState<'date' | 'provider'>('date');
+    const { t } = useTranslation();
 
     // LD1: Handle loading state with LoadingIndicator component
     if (loading) {
         return (
             <CareLayout>
-                <LoadingIndicator text="Carregando suas consultas..." />
+                <LoadingIndicator text={t('common.loading')} />
             </CareLayout>
         );
     }
@@ -45,7 +47,7 @@ const AppointmentsPage: React.FC = () => {
     if (error) {
         return (
             <CareLayout>
-                <ErrorState message="Falha ao carregar suas consultas." onRetry={refetch} />
+                <ErrorState message={t('common.error')} onRetry={refetch} />
             </CareLayout>
         );
     }

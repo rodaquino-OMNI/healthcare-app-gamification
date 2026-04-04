@@ -3,10 +3,12 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useNotifications } from '@/hooks/useNotifications';
 
 const NotificationEmptyPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     const { isLoading: _isLoading } = useNotifications();
 
     return (

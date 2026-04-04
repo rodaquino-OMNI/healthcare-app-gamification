@@ -3,6 +3,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSymptomChecker } from '@/hooks';
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
@@ -25,6 +26,7 @@ const ANALYSIS_STEPS: AnalysisStep[] = [
 const AnalyzingPage: React.FC = () => {
     const router = useRouter();
     const { submitSymptoms: _submitSymptoms, isLoading: _isLoading, error } = useSymptomChecker();
+    const { t: _t } = useTranslation();
     const [activeStep, setActiveStep] = useState(0);
 
     useEffect(() => {

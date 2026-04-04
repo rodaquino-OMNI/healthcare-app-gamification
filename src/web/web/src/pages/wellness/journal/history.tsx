@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { useWellness } from '@/hooks/useWellness';
@@ -23,6 +24,7 @@ const MOOD_COLORS: Record<string, string> = {
 const PLACEHOLDER_USER_ID = 'me';
 
 const JournalHistoryPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const [activeMood, setActiveMood] = useState('All Moods');
     const { journalHistory, loadJournalHistory } = useWellness();

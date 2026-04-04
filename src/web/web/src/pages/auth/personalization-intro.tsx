@@ -4,6 +4,7 @@ import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import Image from 'next/image';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { useAuth } from '@/hooks/useAuth';
@@ -117,6 +118,7 @@ const BENEFITS = [
 export const getServerSideProps = () => ({ props: {} });
 
 export default function PersonalizationIntroPage(): React.ReactElement {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { isAuthenticated: _isAuthenticated } = useAuth();
 

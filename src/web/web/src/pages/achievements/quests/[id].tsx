@@ -8,6 +8,7 @@ import { spacing } from 'design-system/tokens/spacing';
 import type { GetStaticPaths } from 'next';
 import Link from 'next/link';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Quest } from 'shared/types/gamification.types';
 
 import { useGamification } from '@/hooks/useGamification';
@@ -149,6 +150,7 @@ const JOURNEY_LABELS: Record<string, string> = {
  * individual requirements, and reward preview.
  */
 const QuestDetailPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { id } = router.query;
     const questId = Array.isArray(id) ? id[0] : id;

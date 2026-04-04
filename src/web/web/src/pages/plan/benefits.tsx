@@ -2,6 +2,7 @@ import { BenefitCard } from 'design-system/plan/BenefitCard';
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { usePlan } from '@/hooks';
 
@@ -26,6 +27,7 @@ const FILTER_TABS: { key: FilterTab; label: string }[] = [
  * The main component that renders the Benefits page within the Plan journey.
  */
 const BenefitsPage: NextPage = () => {
+    const { t } = useTranslation();
     const [activeFilter, setActiveFilter] = useState<FilterTab>('all');
 
     useJourney();
@@ -35,7 +37,7 @@ const BenefitsPage: NextPage = () => {
 
     let content;
     if (loading) {
-        content = <LoadingIndicator text="Carregando seus beneficios..." />;
+        content = <LoadingIndicator text={t('common.loading')} />;
     } else if (error) {
         content = (
             <ErrorState message={`Erro ao carregar seus beneficios: ${error}`} onRetry={() => void refreshBenefits()} />

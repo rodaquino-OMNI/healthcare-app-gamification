@@ -2,6 +2,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { restClient } from '@/api/client';
@@ -100,6 +101,7 @@ const ActionButton = styled.button`
 export const getServerSideProps = () => ({ props: {} });
 
 export default function NotificationDetailPage(): React.ReactElement {
+    const { t } = useTranslation();
     const router = useRouter();
     const { id } = router.query;
     const { markAsRead, unreadCount: _unreadCount } = useNotifications();
@@ -177,8 +179,8 @@ export default function NotificationDetailPage(): React.ReactElement {
             <PageContainer>
                 <BackButton onClick={() => router.back()}>Voltar</BackButton>
 
-                {loading && <div>Carregando...</div>}
-                {error && <div>{error}</div>}
+                {loading && <div>{t('common.loading')}</div>}
+                {error && <div>{t('common.error')}</div>}
                 {!loading && !error && notification && (
                     <NotificationCard>
                         <JourneyBadge journeyColor={getJourneyColor(notification.journey)}>

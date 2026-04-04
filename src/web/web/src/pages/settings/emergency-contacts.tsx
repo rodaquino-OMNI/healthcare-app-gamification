@@ -1,6 +1,7 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSettings } from '@/hooks/useSettings';
 
@@ -22,6 +23,7 @@ const MOCK_CONTACTS: Contact[] = [
  * Displays and manages emergency contact list.
  */
 const EmergencyContactsPage: NextPage = () => {
+    const { t } = useTranslation();
     const { isLoading, error } = useSettings();
     const [contacts, setContacts] = useState<Contact[]>(MOCK_CONTACTS);
     const [showForm, setShowForm] = useState(false);
@@ -67,7 +69,7 @@ const EmergencyContactsPage: NextPage = () => {
                         marginBottom: spacing.md,
                     }}
                 >
-                    Carregando...
+                    {t('common.loading')}
                 </p>
             )}
             {error && (

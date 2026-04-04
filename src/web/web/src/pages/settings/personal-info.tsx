@@ -1,6 +1,7 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { useSettings } from '@/hooks/useSettings';
@@ -10,6 +11,7 @@ import { useSettings } from '@/hooks/useSettings';
  * Allows users to view and edit their personal details.
  */
 const PersonalInfoPage: NextPage = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { savePersonalInfo, personalInfo } = useSettings();
     const [name, setName] = useState(personalInfo?.name ?? 'Maria Silva');

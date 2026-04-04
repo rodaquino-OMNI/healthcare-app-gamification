@@ -1,6 +1,7 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSettings } from '@/hooks/useSettings';
 
@@ -18,6 +19,7 @@ interface ExportCategory {
  * Allows users to request export of their personal data.
  */
 const DataExportPage: NextPage = () => {
+    const { t: _t } = useTranslation();
     const { isLoading: _isLoading } = useSettings();
     const [categories, setCategories] = useState<ExportCategory[]>([
         { key: 'personal', label: 'Dados Pessoais', description: 'Nome, CPF, endereco, contato', selected: true },

@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
 import { useAppointments } from '@/hooks';
@@ -54,6 +55,7 @@ const RateVisitPage: React.FC = () => {
     );
     const [review, setReview] = useState('');
     const [recommend, setRecommend] = useState<boolean | null>(null);
+    const { t } = useTranslation();
 
     if (loading) {
         return (
@@ -61,7 +63,7 @@ const RateVisitPage: React.FC = () => {
                 <JourneyHeader title="Avaliar Consulta" />
                 <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
                     <Text fontSize="md" color={colors.gray[50]}>
-                        Carregando...
+                        {t('common.loading')}
                     </Text>
                 </div>
             </CareLayout>
@@ -74,7 +76,7 @@ const RateVisitPage: React.FC = () => {
                 <JourneyHeader title="Avaliar Consulta" />
                 <div style={{ maxWidth: '640px', margin: '0 auto', padding: spacing.xl, textAlign: 'center' }}>
                     <Text fontSize="md" color={colors.semantic.error}>
-                        Erro ao carregar dados. Tente novamente.
+                        {t('common.error')}
                     </Text>
                 </div>
             </CareLayout>

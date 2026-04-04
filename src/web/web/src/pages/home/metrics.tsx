@@ -4,6 +4,7 @@ import { shadows } from 'design-system/tokens/shadows';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { MainLayout } from '@/components/index';
 import { useHealthMetrics } from '@/hooks';
@@ -104,6 +105,7 @@ const WEEKLY_DATA = [
  * metric cards grid, and a weekly trend chart.
  */
 const MetricsPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const [activeFilter, setActiveFilter] = useState<string>('all');
     useHealthMetrics('user-123', []);

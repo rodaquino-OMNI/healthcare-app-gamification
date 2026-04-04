@@ -1,6 +1,7 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { useSettings } from '@/hooks/useSettings';
@@ -10,6 +11,7 @@ import { useSettings } from '@/hooks/useSettings';
  * Allows users to configure font size, high contrast, and reduced motion.
  */
 const AccessibilityPage: NextPage = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { saveAccessibility, isLoading: _isLoading, error: hookError } = useSettings();
     const [fontSize, setFontSize] = useState<'normal' | 'large' | 'extra-large'>('normal');

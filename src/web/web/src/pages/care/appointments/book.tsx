@@ -1,4 +1,5 @@
 import React from 'react'; // React v18.0+
+import { useTranslation } from 'react-i18next';
 
 import { AppointmentForm } from '@/components/forms/AppointmentForm';
 import { JourneyHeader } from '@/components/shared/JourneyHeader';
@@ -14,13 +15,14 @@ const AppointmentBookingPage: React.FC = () => {
     // LD1: Uses the useRouter hook to get the router object.
     useRouter();
     const { appointments: _appointments, loading, error } = useAppointments();
+    const { t } = useTranslation();
 
     if (loading) {
         return (
             <CareLayout>
                 <JourneyHeader title="Agendar Consulta" />
                 <div style={{ padding: '2rem', textAlign: 'center' }}>
-                    <p>Carregando...</p>
+                    <p>{t('common.loading')}</p>
                 </div>
             </CareLayout>
         );
@@ -31,7 +33,7 @@ const AppointmentBookingPage: React.FC = () => {
             <CareLayout>
                 <JourneyHeader title="Agendar Consulta" />
                 <div style={{ padding: '2rem', textAlign: 'center' }}>
-                    <p>Erro ao carregar consultas. Tente novamente.</p>
+                    <p>{t('common.error')}</p>
                 </div>
             </CareLayout>
         );

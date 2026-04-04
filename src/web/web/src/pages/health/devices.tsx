@@ -1,5 +1,6 @@
 import { DeviceCard } from 'design-system/components/index';
 import React from 'react'; // React v18.0+
+import { useTranslation } from 'react-i18next';
 import { DeviceConnection } from 'shared/types/health.types';
 
 import { useDevices } from '@/hooks/useDevices';
@@ -10,6 +11,7 @@ import HealthLayout from '@/layouts/HealthLayout';
  * @returns {JSX.Element} The rendered component.
  */
 const Devices: React.FC = () => {
+    const { t } = useTranslation();
     // LD1: Retrieves the user ID from the authentication context using the `useAuth` hook.
     // LD1: Fetches the list of connected devices using the `useDevices` hook.
     const { data: devices, loading, error } = useDevices();
@@ -19,8 +21,8 @@ const Devices: React.FC = () => {
     return (
         <HealthLayout>
             <h1>Connected Devices</h1>
-            {loading && <p>Loading devices...</p>}
-            {error && <p>Error: {error.message}</p>}
+            {loading && <p>{t('common.loading')}</p>}
+            {error && <p>{t('common.error')}</p>}
             {devices && devices.length > 0 ? (
                 devices.map((device: DeviceConnection) => (
                     <DeviceCard

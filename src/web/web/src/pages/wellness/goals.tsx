@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { useWellness } from '@/hooks/useWellness';
@@ -46,6 +47,7 @@ const CircularProgress: React.FC<{ percent: number; color: string; size?: number
 };
 
 const GoalsPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const [filter, setFilter] = useState('All');
     const { goals, loadGoals } = useWellness();

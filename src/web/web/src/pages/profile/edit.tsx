@@ -2,6 +2,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import { typography } from 'design-system/tokens/typography';
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { useProfile } from '@/hooks/useProfile';
@@ -134,6 +135,7 @@ interface ProfileData {
 export const getServerSideProps = () => ({ props: {} });
 
 export default function ProfileEditPage(): React.ReactElement {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { profile, isLoading: profileLoading, error: profileError } = useProfile();
     const [saving, setSaving] = useState(false);

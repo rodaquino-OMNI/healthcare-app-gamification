@@ -7,6 +7,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import Link from 'next/link';
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Quest } from 'shared/types/gamification.types';
 
 import { useAuth } from '@/hooks/useAuth';
@@ -116,6 +117,7 @@ const JOURNEY_LABELS: Record<JourneyFilter, string> = {
  * for status (active/completed) and journey.
  */
 const QuestsPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     const { userId } = useAuth();
     const { gameProfile, loading: _loading } = useGamification(userId || 'user-123');
     const [statusFilter, setStatusFilter] = useState<QuestFilter>('all');

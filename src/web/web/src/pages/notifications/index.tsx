@@ -1,4 +1,5 @@
 import React from 'react'; // react ^18.0.0
+import { useTranslation } from 'react-i18next';
 import { Notification } from 'shared/types';
 
 import { EmptyState, LoadingIndicator, JourneyHeader } from '@/components/shared';
@@ -9,6 +10,7 @@ import { MainLayout } from '@/layouts/MainLayout';
  * This component renders the notifications page, displaying a list of notifications or appropriate placeholders.
  */
 const NotificationsPage: React.FC = () => {
+    const { t } = useTranslation();
     // LD1: Uses the `useNotifications` hook to fetch notifications and related state.
     const { notifications, isLoading } = useNotifications();
 
@@ -20,7 +22,7 @@ const NotificationsPage: React.FC = () => {
 
             {/* LD1: Conditionally renders a `LoadingIndicator` if the notifications are still loading. */}
             {isLoading ? (
-                <LoadingIndicator text="Carregando notifica\u00e7\u00f5es..." fullScreen />
+                <LoadingIndicator text={t('common.loading')} fullScreen />
             ) : (
                 <>
                     {/* LD1: Conditionally renders an `EmptyState` component if there are no notifications. */}

@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useNutrition } from '@/hooks';
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
@@ -21,6 +22,7 @@ const WEEKLY_DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const WEEKLY_CALORIES = [1820, 2100, 1650, 1940, 1780, 2200, 1840];
 
 const MacroTrackerPage: React.FC = () => {
+    const { t } = useTranslation();
     const { data: nutritionData, loading, error, refetch } = useNutrition();
     const router = useRouter();
     const [period, setPeriod] = useState<Period>('7d');
@@ -28,7 +30,7 @@ const MacroTrackerPage: React.FC = () => {
     if (loading) {
         return (
             <div style={{ padding: '24px' }}>
-                <p>Loading...</p>
+                <p>{t('common.loading')}</p>
             </div>
         );
     }
@@ -36,7 +38,7 @@ const MacroTrackerPage: React.FC = () => {
         return (
             <div style={{ padding: '24px' }}>
                 <p>
-                    Error loading data. <button onClick={refetch}>Retry</button>
+                    {t('common.error')} <button onClick={refetch}>Retry</button>
                 </p>
             </div>
         );

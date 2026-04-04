@@ -1,6 +1,7 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { enable2FA, disable2FA, configure2FA } from '@/api/auth';
 import { useAuth } from '@/hooks/useAuth';
@@ -11,6 +12,7 @@ import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
  * Allows users to enable/disable and configure 2FA methods.
  */
 const TwoFactorPage: NextPage = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { session } = useAuth();
     const [enabled, setEnabled] = useState(false);

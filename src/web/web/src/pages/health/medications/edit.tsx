@@ -9,6 +9,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
 import { useMedications } from '@/hooks';
@@ -39,6 +40,7 @@ interface EditFormState {
  * the user to update medication details.
  */
 const MedicationEditPage: React.FC = () => {
+    const { t } = useTranslation();
     const { medications, loading, error, refetch } = useMedications();
     const router = useRouter();
     const { name, dosage, frequency, notes } = router.query;
@@ -57,7 +59,7 @@ const MedicationEditPage: React.FC = () => {
     if (loading) {
         return (
             <div style={{ padding: '24px' }}>
-                <p>Loading...</p>
+                <p>{t('common.loading')}</p>
             </div>
         );
     }
@@ -65,7 +67,7 @@ const MedicationEditPage: React.FC = () => {
         return (
             <div style={{ padding: '24px' }}>
                 <p>
-                    Error loading data. <button onClick={refetch}>Retry</button>
+                    {t('common.error')} <button onClick={refetch}>Retry</button>
                 </p>
             </div>
         );

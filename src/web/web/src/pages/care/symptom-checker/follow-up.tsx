@@ -2,6 +2,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSymptomChecker } from '@/hooks';
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
@@ -14,12 +15,13 @@ const FollowUpPage: React.FC = () => {
     const [status, setStatus] = useState<StatusOption>('Igual');
     const [notes, setNotes] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const { t } = useTranslation();
 
     if (isLoading) {
         return (
             <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
                 <Text fontSize="md" color={colors.gray[50]}>
-                    Loading...
+                    {t('common.loading')}
                 </Text>
             </div>
         );

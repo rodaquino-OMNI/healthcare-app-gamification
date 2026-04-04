@@ -7,6 +7,7 @@ import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import Link from 'next/link';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '@/hooks/useAuth';
 import { useGamification } from '@/hooks/useGamification';
@@ -45,6 +46,7 @@ const JOURNEY_LABELS: Record<JourneyFilter, string> = {
  * Uses the DS Leaderboard component for rendering the ranked list.
  */
 const LeaderboardPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     const { userId } = useAuth();
     const { gameProfile } = useGamification(userId || 'user-123');
     const [timeframe, setTimeframe] = useState<Timeframe>('weekly');

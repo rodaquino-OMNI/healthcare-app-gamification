@@ -1,6 +1,7 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useAuth } from '@/hooks/useAuth';
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
@@ -26,6 +27,7 @@ const INITIAL_MESSAGES: ChatMessage[] = [
  * Simple chat UI for support conversations.
  */
 const ChatPage: NextPage = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { isAuthenticated: _isAuthenticated } = useAuth();
     const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);

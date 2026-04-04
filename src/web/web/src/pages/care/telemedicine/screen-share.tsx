@@ -6,6 +6,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useTelemedicine } from '@/hooks';
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
@@ -14,12 +15,13 @@ import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 const ScreenSharePage: React.FC = () => {
     const router = useRouter();
     const { isLoading, error } = useTelemedicine();
+    const { t } = useTranslation();
 
     if (isLoading) {
         return (
             <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
                 <Text fontSize="md" color={colors.gray[50]}>
-                    Loading screen share...
+                    {t('common.loading')}
                 </Text>
             </div>
         );
@@ -29,7 +31,7 @@ const ScreenSharePage: React.FC = () => {
         return (
             <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
                 <Text fontSize="md" color={colors.semantic.error}>
-                    Screen share unavailable. Please try again.
+                    {t('common.error')}
                 </Text>
             </div>
         );

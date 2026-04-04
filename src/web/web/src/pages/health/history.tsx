@@ -1,5 +1,6 @@
 import { Card } from 'design-system/components/Card/Card';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MedicalEvent } from 'shared/types/health.types';
 import { formatRelativeDate } from 'shared/utils/date';
 import { truncateText } from 'shared/utils/format';
@@ -180,6 +181,7 @@ const TIME_PERIOD_OPTIONS = [
  * Displays the user's medical history in a chronological timeline
  */
 const HistoryPage: React.FC = () => {
+    const { t } = useTranslation();
     // Get the authenticated user
     const { session } = useAuth();
     const userId = session?.userId || '';
@@ -231,9 +233,9 @@ const HistoryPage: React.FC = () => {
                 </FilterContainer>
             </TimelineHeader>
 
-            {loading && <Loading aria-live="polite">Carregando histórico médico...</Loading>}
+            {loading && <Loading aria-live="polite">{t('common.loading')}</Loading>}
 
-            {error && <Error role="alert">Erro ao carregar histórico médico. Por favor, tente novamente.</Error>}
+            {error && <Error role="alert">{t('common.error')}</Error>}
 
             {!loading && !error && data && (
                 <Timeline>

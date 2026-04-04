@@ -6,6 +6,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { usePayments } from '@/hooks';
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
@@ -27,12 +28,13 @@ const PaymentSummaryPage: React.FC = () => {
         date: '',
         service: '',
     };
+    const { t } = useTranslation();
 
     if (isLoading) {
         return (
             <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
                 <Text fontSize="md" color={colors.gray[50]}>
-                    Loading payment summary...
+                    {t('common.loading')}
                 </Text>
             </div>
         );
@@ -42,7 +44,7 @@ const PaymentSummaryPage: React.FC = () => {
         return (
             <div style={{ maxWidth: '720px', margin: '0 auto', padding: spacing.xl }}>
                 <Text fontSize="md" color={colors.semantic.error}>
-                    Failed to load payment summary.
+                    {t('common.error')}
                 </Text>
             </div>
         );

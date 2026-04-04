@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { useWellness } from '@/hooks/useWellness';
@@ -23,6 +24,7 @@ const DURATION_OPTIONS = [3, 5, 10];
 const PLACEHOLDER_USER_ID = 'me';
 
 const BreathingPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const [isRunning, setIsRunning] = useState(false);
     const [phase, setPhase] = useState<Phase>('idle');
@@ -65,7 +67,7 @@ const BreathingPage: React.FC = () => {
                     setIsRunning(false);
                     setPhase('idle');
                     setSessionsCompleted((s) => s + 1);
-                    void startBreathing(PLACEHOLDER_USER_ID, '4-7-8', selectedDuration);
+                    void startBreathing(PLACEHOLDER_USER_ID, '4-7-8', selectedDuration).catch(() => {});
                     return 0;
                 }
                 return next;

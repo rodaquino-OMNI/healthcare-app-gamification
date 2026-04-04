@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { WEB_HEALTH_ROUTES } from 'shared/constants/routes';
 
 import { useAssessment } from '@/hooks';
@@ -66,6 +67,7 @@ const TOTAL_STEPS = STEPS.length;
  * rendering 13 step sub-components with shared form data state.
  */
 const HealthAssessmentPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const _assessment = useAssessment('default');
     void _assessment;

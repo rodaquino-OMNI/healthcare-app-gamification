@@ -1,6 +1,7 @@
 import { colors, typography, spacing, borderRadius } from 'design-system/tokens';
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { useSettings } from '@/hooks/useSettings';
@@ -22,6 +23,7 @@ const LANGUAGES: LanguageOption[] = [
  * Allows users to choose the app interface language.
  */
 const LanguagePage: NextPage = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const { saveLanguage } = useSettings();
     const [selected, setSelected] = useState('pt-BR');

@@ -5,6 +5,7 @@ import { Text } from 'design-system/primitives/Text/Text';
 import { colors } from 'design-system/tokens/colors';
 import { spacing } from 'design-system/tokens/spacing';
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useSafeRouter as useRouter } from '@/hooks/useSafeRouter';
 import { useWellness } from '@/hooks/useWellness';
@@ -36,6 +37,7 @@ const MOOD_LABEL_MAP: Record<string, number> = {
 const PLACEHOLDER_USER_ID = 'me';
 
 const MoodCheckInPage: React.FC = () => {
+    const { t: _t } = useTranslation();
     const router = useRouter();
     const [selectedMood, setSelectedMood] = useState<number | null>(null);
     const [note, setNote] = useState('');
@@ -52,18 +54,22 @@ const MoodCheckInPage: React.FC = () => {
     const weeklyAverage = previousMoodValue ?? 0;
     const entriesThisWeek = moodHistory.length;
 
-    const handleSave = (): void => {
+    const handleSave = async (): Promise<void> => {
         if (selectedMood === null) {
             return;
         }
-        void submitMood(PLACEHOLDER_USER_ID, {
-            mood: MOOD_VALUE_MAP[selectedMood] ?? 'okay',
-            energy: selectedMood,
-            stress: 6 - selectedMood,
-            notes: note || undefined,
-        });
-        setSelectedMood(null);
-        setNote('');
+        try {
+            await submitMood(PLACEHOLDER_USER_ID, {
+                mood: MOOD_VALUE_MAP[selectedMood] ?? 'okay',
+                energy: selectedMood,
+                stress: 6 - selectedMood,
+                notes: note || undefined,
+            });
+            setSelectedMood(null);
+            setNote('');
+        } catch {
+            // Error is already captured in useWellness state — no unhandled rejection
+        }
     };
 
     return (
