@@ -39,7 +39,7 @@
       "apollo-server-env": "npm:@apollo/utils.fetcher@^3.0.0",
       "apollo-reporting-protobuf": "npm:@apollo/usage-reporting-protobuf@^4.0.0",
       "apollo-server-errors": "npm:@apollo/server@^5.0.0",
-      "apollo-server-plugin-base": "npm:@apollo/server@^5.0.0",
+      "apollo-server-plugin-base": "npm:@apollo/server@^5.5.0",
       "@apollo/federation": "npm:@apollo/subgraph@^2.13.1",
       "@humanwhocodes/config-array": "npm:@eslint/config-array@^0.19.0",
       "@humanwhocodes/object-schema": "npm:@eslint/object-schema@^2.1.0",
