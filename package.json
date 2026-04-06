@@ -27,7 +27,7 @@
       "acorn-import-assertions": "npm:acorn-import-attributes@^1.9.5",
       "lodash.omit": "npm:lodash@^4.17.21",
       "lodash.throttle": "npm:lodash@^4.17.21",
-      "lodash.debounce": "npm:lodash@^4.17.21",
+      "lodash.debounce": "npm:lodash@^4.18.1",
       "abab": "npm:base64-js@^1.5.1",
       "metro-minify-uglify": "npm:metro-minify-terser@^0.81.0",
       "uglify-es": "npm:uglify-js@^3.13.0",
