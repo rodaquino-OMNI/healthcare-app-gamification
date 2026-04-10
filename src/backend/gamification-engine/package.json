@@ -43,7 +43,7 @@
         "@opentelemetry/sdk-node": "^0.213.0",
         "@opentelemetry/sdk-trace-base": "^1.15.2",
         "@prisma/client": "^7.0.0",
-        "axios": "1.13.6",
+        "axios": "1.15.0",
         "class-transformer": "^0.5.1",
         "class-validator": "^0.15.1",
         "compression": "^1.8.1",
