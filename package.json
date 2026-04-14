@@ -47,7 +47,7 @@
       "typescript": "5.3.3",
       "graphql": "16.13.1",
       "axios": "1.13.6",
-      "follow-redirects": "1.15.11",
+      "follow-redirects": "1.16.0",
       "semver": "7.7.4",
       "json5": "2.2.3",
       "word-wrap": "1.2.5",
