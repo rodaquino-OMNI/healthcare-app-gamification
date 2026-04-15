@@ -124,7 +124,7 @@
     "metro-config": "0.81.5",
     "metro-react-native-babel-preset": "0.77.0",
     "next-compose-plugins": "^2.2.1",
-    "tar": "6.2.1",
+    "tar": "7.5.11",
     "typescript": "5.3.3"
   },
   "//overrides-moved": "All overrides/resolutions consolidated in root package.json pnpm.overrides",
