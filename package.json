@@ -52,7 +52,7 @@
       "json5": "2.2.3",
       "word-wrap": "1.2.5",
       "tough-cookie": "4.1.4",
-      "postcss": "8.5.8",
+      "postcss": "8.5.10",
       "webpack": "5.105.4",
       "node-fetch": "3.3.2",
       "glob-parent": "6.0.2",
