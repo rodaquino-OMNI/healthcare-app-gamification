@@ -88,7 +88,7 @@
         "@prisma/client": "^7.0.0",
         "@sendgrid/client": "^8.1.6",
         "@sendgrid/mail": "^8.1.6",
-        "@sentry/node": "^8.0.0",
+        "@sentry/node": "^10.51.0",
         "agora-rtc-sdk-ng": "4.24.2",
         "axios": "^1.12.2",
         "bcrypt": "^6.0.0",
