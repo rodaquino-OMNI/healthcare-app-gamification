@@ -40,7 +40,7 @@
         "@nestjs/swagger": "^11.0.7",
         "@opentelemetry/api": "^1.4.1",
         "@opentelemetry/exporter-trace-otlp-grpc": "^0.213.0",
-        "@opentelemetry/sdk-node": "^0.213.0",
+        "@opentelemetry/sdk-node": "^0.217.0",
         "@opentelemetry/sdk-trace-base": "^1.15.2",
         "@prisma/client": "^7.0.0",
         "axios": "1.13.6",

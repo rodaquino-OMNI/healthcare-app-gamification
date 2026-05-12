@@ -36,7 +36,7 @@
         "@nestjs/websockets": "^11.0.0",
         "@opentelemetry/api": "^1.4.1",
         "@opentelemetry/exporter-trace-otlp-grpc": "^0.213.0",
-        "@opentelemetry/sdk-node": "^0.213.0",
+        "@opentelemetry/sdk-node": "^0.217.0",
         "@opentelemetry/sdk-trace-base": "^1.15.2",
         "@willsoto/nestjs-prometheus": "^6.0.1",
         "cache-manager": "^7.2.8",
