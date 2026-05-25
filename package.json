@@ -59,7 +59,7 @@
       "loader-utils": "3.3.1",
             "minimist": "1.2.8",
       "shelljs": "0.10.0",
-      "qs": "6.15.0",
+      "qs": "6.15.2",
       "ua-parser-js": "1.0.41",
       "@babel/traverse": "7.29.0",
       "terser": "5.46.0",
