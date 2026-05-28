@@ -59,7 +59,7 @@
         "typescript": "5.3.3"
     },
     "dependencies": {
-        "@apollo/server": "^5.0.0",
+        "@apollo/server": "^5.5.0",
         "@apollo/subgraph": "^2.13.1",
         "@apollo/usage-reporting-protobuf": "^4.0.0",
         "@apollo/utils.fetcher": "^3.0.0",
