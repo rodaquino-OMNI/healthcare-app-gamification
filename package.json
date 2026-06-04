@@ -90,7 +90,7 @@
       "file-type": "21.3.4",
 
       "@nestjs/common": "11.1.16",
-      "@nestjs/core": "11.1.16",
+      "@nestjs/core": "11.1.18",
       "@nestjs/platform-express": "11.1.16",
       "@prisma/client": "^7.0.0",
       "prisma": "^7.0.0",
